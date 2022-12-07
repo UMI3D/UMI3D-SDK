@@ -25,10 +25,25 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public class Cylinder : AbstractPrimitive
     {
+        /// <summary>
+        /// Radius of the cylinder.
+        /// </summary>
         public float radius { get; private set; }
+        /// <summary>
+        /// Heigth of the cylinder.
+        /// </summary>
         public float height { get; private set; }
+        /// <summary>
+        /// Position of the cylinder.
+        /// </summary>
         public Vector3 position;
+        /// <summary>
+        /// Rotation of the cylinder.
+        /// </summary>
         public Quaternion rotation;
+        /// <summary>
+        /// Scale of the cylinder.
+        /// </summary>
         public Vector3 scale;
 
         /// <summary>
@@ -97,7 +112,7 @@ namespace umi3d.cdk.volumes
                             1f / scale.x,
                             1f / scale.y,
                             1f / scale.z),
-                        Quaternion.Inverse(rotation) * (point - position));
+                        Quaternion.Inverse(rootNode?.transform.rotation ?? Quaternion.identity) * (point - (rootNode?.transform.position ?? Vector3.zero)));
 
 
             if (Vector3.ProjectOnPlane(localCoordinate, Vector3.up).magnitude > radius)

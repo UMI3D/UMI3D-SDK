@@ -18,8 +18,16 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// <see cref="AbstractOperationDto"/> to control the list of the streamed bones.
+    /// </summary>
+    /// Use this operation to reduce the number of bones to track, if some are not necessary.
+    /// This will lighthen the load on the networking system, but parts of the user's skeletton won't correspond to the user movements anymore.
     public class SetStreamedBonesDto : AbstractOperationDto
     {
+        /// <summary>
+        /// List of streamed bones using their boneType id in <see cref="userCapture.BoneType"/>
+        /// </summary>
         public List<uint> streamedBones;
     }
 }

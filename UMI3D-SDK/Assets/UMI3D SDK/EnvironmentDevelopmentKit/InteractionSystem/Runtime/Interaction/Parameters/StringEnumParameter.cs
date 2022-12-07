@@ -20,6 +20,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Editable <see cref="enum"/> parameter using values as <see cref="string"/>.
+    /// </summary>
     public class StringEnumParameter : AbstractParameter
     {
         /// <summary>
@@ -63,11 +66,13 @@ namespace umi3d.edk.interaction
             epDto.value = value;
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.StringEnumParameter;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -75,7 +80,7 @@ namespace umi3d.edk.interaction
                 + UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -97,6 +102,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
@@ -105,6 +111,7 @@ namespace umi3d.edk.interaction
                     uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
                     if (UMI3DParameterKeys.Enum == parameterId)
                     {
+                        UMI3DNetworkingHelper.Read<bool>(container);
                         value = UMI3DNetworkingHelper.Read<string>(container);
                         onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
                     }

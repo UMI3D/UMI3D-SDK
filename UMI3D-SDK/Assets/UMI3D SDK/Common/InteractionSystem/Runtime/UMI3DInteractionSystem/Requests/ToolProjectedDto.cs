@@ -16,20 +16,30 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// DTO describing a projection of a tool on a browser.
+    /// </summary>
     public class ToolProjectedDto : AbstractBrowserRequestDto
     {
-
+        /// <summary>
+        /// Projected tool id
+        /// </summary>
         public ulong toolId;
+
+        /// <summary>
+        /// Bone type the tool is attached to.
+        /// </summary>
         public uint boneType;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.ToolProjected; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
                 + UMI3DNetworkingHelper.Write(toolId)
                 + UMI3DNetworkingHelper.Write(boneType);
         }
-
     }
 }

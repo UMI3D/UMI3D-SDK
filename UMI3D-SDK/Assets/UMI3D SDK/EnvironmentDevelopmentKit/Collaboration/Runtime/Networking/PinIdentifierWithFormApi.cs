@@ -22,16 +22,25 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Identifier that requires to fill a form to connect.
+    /// </summary>
     [CreateAssetMenu(fileName = "PinIdentifierWithFormApi", menuName = "UMI3D/Pin Identifier With Form")]
     public class PinIdentifierWithFormApi : PinIdentifierApi
     {
+        /// <summary>
+        /// Form to fill up to connect.
+        /// </summary>
+        [Tooltip("Form to fill up to connect.")]
         public UMI3DForm form;
 
+        /// <inheritdoc/>
         public override FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
             return form.ToDto(user) as FormDto;
         }
 
+        /// <inheritdoc/>
         public override StatusType UpdateIdentity(UMI3DCollaborationUser user, UserConnectionAnswerDto identity)
         {
             return base.UpdateIdentity(user, identity);

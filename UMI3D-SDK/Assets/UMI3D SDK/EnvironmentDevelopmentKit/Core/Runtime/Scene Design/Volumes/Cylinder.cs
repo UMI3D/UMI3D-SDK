@@ -21,21 +21,35 @@ using UnityEngine;
 
 namespace umi3d.edk.volume
 {
-
+    /// <summary>
+    /// Cylindric shaped volume cell.
+    /// </summary>
     public class Cylinder : AbstractPrimitive
     {
-        [SerializeField]
+        /// <summary>
+        /// Radius of the cylinder.
+        /// </summary>
+        [SerializeField, Tooltip("Radius of the cylinder.")]
         [EditorReadOnly]
         public float radius_inspector = 1;
 
-        [SerializeField]
+        /// <summary>
+        /// Heigth of the cylinder.
+        /// </summary>
+        [SerializeField, Tooltip("Height of the cylinder.")]
         [EditorReadOnly]
         public float height_inspector = 3;
 
+        /// <summary>
+        /// Radius of the cylinder.
+        /// </summary>
         public UMI3DAsyncProperty<float> radius;
+        /// <summary>
+        /// Heigth of the cylinder.
+        /// </summary>
         public UMI3DAsyncProperty<float> height;
 
-
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new CylinderDto()
@@ -44,11 +58,13 @@ namespace umi3d.edk.volume
                 height = height.GetValue(),
                 radius = radius.GetValue(),
                 rootNodeId = GetRootNode().Id(),
-                rootNodeToLocalMatrix = GetRootNodeToLocalMatrix(),
                 isTraversable = IsTraversable()
             };
         }
 
+        /// <summary>
+        /// Unity's OnDrawGizmos function
+        /// </summary>
         public void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;

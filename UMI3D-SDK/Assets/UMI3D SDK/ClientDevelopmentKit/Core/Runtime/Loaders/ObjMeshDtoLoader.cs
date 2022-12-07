@@ -17,6 +17,7 @@ limitations under the License.
 using AsImpL;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -35,16 +36,42 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>() { ".mtl" };
         }
 
-        ///<inheritdoc/>
-        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+        /// <inheritdoc/>
+        public override async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
+        {
+            bool finished = false;
+            object result = null;
+            Exception e = null;
+            Action<object> callback = (o) => { result = o; finished = true; };
+            Action<Exception> failCallback = (o) => { e = o; finished = true; };
+
+            _UrlToObject2(url, extension, authorization, callback, failCallback, pathIfObjectInBundle);
+
+            while (!finished)
+                await UMI3DAsyncManager.Yield();
+            if (e != null)
+                throw e;
+
+            return result;
+        }
+
+
+        protected virtual void _UrlToObject2(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
             if (!url.Contains("http")) url = "file://" + url;
 #endif
+
+            bool isUsingResourceServer = url.StartsWith("http") && !UMI3DClientServer.Instance.AuthorizationInHeader;
+            if (isUsingResourceServer)
+            {
+                url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(url, authorization);
+            }
+
             var createdObj = new GameObject();
 
             ObjectImporter objImporter = createdObj.AddComponent<ObjectImporter>();
-            ImportOptions importOptions = CreateImportOption(authorization);
+            ImportOptions importOptions = CreateImportOption(authorization, isUsingResourceServer);
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(
                 UMI3DEnvironmentLoader.Instance.GetBaseMaterialBeforeAction(
                     (m) =>
@@ -56,7 +83,7 @@ namespace umi3d.cdk
                         objImporter.ImportError += (s) =>
                         {
                             failed = true;
-                            failCallback(new Umi3dException(401, $"Importing failed for : {url}"));
+                            failCallback(new Umi3dNetworkingException(401, s, url, $"Importing failed for"));
                         };
 
                         objImporter.ImportingComplete += () =>
@@ -73,7 +100,7 @@ namespace umi3d.cdk
                                 }
                                 catch (Exception e)
                                 {
-                                    failCallback(new Umi3dException(e, $"Importing completed but callback failed for : {url}"));
+                                    failCallback(new Umi3dLoadingException($"Importing completed but callback failed for : {url} {e.Message}"));
                                 }
                                 GameObject.Destroy(objImporter.gameObject, 1);
                             }
@@ -93,19 +120,20 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="authorization"></param>
         /// <returns></returns>
-        private ImportOptions CreateImportOption(string authorization)
+        private ImportOptions CreateImportOption(string authorization, bool isUsingResourceServer)
         {
-            return new ImportOptions()
+            var options = new ImportOptions()
             {
                 localPosition = UMI3DResourcesManager.Instance.transform.position,
                 localEulerAngles = UMI3DResourcesManager.Instance.transform.eulerAngles + rotOffset,
                 localScale = UMI3DResourcesManager.Instance.transform.lossyScale,
-                authorization = authorization,
+                authorization = isUsingResourceServer ? string.Empty : authorization,
                 authorizationName = common.UMI3DNetworkingKeys.Authorization,
                 zUp = false,
                 hideWhileLoading = true,
-
             };
+
+            return options;
         }
 
         private Vector3 rotOffset = new Vector3(0, 180, 0);

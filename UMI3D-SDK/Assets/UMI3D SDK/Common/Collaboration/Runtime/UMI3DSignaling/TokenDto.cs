@@ -19,11 +19,14 @@ using System;
 namespace umi3d.common.collaboration
 {
     /// <summary>
-    /// Abstract class to describe an operation
+    /// DTO to describe an update of a token.
     /// </summary>
     [Serializable]
     public class TokenDto : UMI3DDto
     {
+        /// <summary>
+        /// Token to update.
+        /// </summary>
         public string token = null;
     }
 }

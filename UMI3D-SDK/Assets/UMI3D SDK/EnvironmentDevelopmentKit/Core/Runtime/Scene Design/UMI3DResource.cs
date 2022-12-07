@@ -21,13 +21,19 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// A UMI3D resource. A same resource could have several variants.
+    /// </summary>
     [System.Serializable]
     public class UMI3DResource
     {
-        [SerializeField]
+        /// <summary>
+        /// Variants of the resource from different files.
+        /// </summary>
+        [SerializeField, Tooltip("Variants of the resource from different files.")]
         public List<UMI3DResourceFile> variants = new List<UMI3DResourceFile>();
 
+        /// <inheritdoc/>
         public ResourceDto ToDto()
         {
             var dto = new ResourceDto();
@@ -35,10 +41,10 @@ namespace umi3d.edk
             return dto;
         }
 
+        /// <inheritdoc/>
         public Bytable ToByte()
         {
             return UMI3DNetworkingHelper.WriteIBytableCollection(variants);
         }
-
     }
 }

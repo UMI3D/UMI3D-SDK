@@ -20,18 +20,33 @@ using umi3d.common;
 namespace umi3d.edk
 {
     /// <summary>
-    /// Interface for UMI3D entities.
+    /// Interface for UMI3D entities that could be loaded on clients.
     /// </summary>
     public interface UMI3DLoadableEntity : UMI3DMediaEntity
     {
+        /// <summary>
+        /// Ask the clients to load the entity.
+        /// </summary>
+        /// <param name="users">Target clients user set.</param>
+        /// <returns>The operation to send to makes clients load the entity</returns>
         LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null);
 
+        /// <summary>
+        /// Ask the clients to delete the entity.
+        /// </summary>
+        /// <param name="users">Target clients user set.</param>
+        /// <returns>The operation to send to makes clients delete the entity</returns>
         DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null);
 
+        /// <summary>
+        /// Convert the entity to a DTO.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns>Entity as a DTO</returns>
         IEntity ToEntityDto(UMI3DUser user);
 
         /// <summary>
-        /// 
+        ///  Convert the entity to a list of bytes as a bytable.
         /// </summary>
         /// <param name="baseSize"></param>
         /// <param name="user"></param>
@@ -40,7 +55,7 @@ namespace umi3d.edk
         /// This method return the updated position (position + required size) and the (required size + base size);
         /// The byte array given should be at least of size position + required size;
         /// </returns>
+        /// Used in networking with bytes.
         Bytable ToBytes(UMI3DUser user);
     }
-
 }

@@ -29,18 +29,25 @@ namespace umi3d.edk
         public class OperationChain : IBytable
         {
             public Operation Operation;
+
+            /// <summary>
+            /// Progress of the animation, in seconds.  
+            /// </summary>
             public float progress;
 
+            /// <inheritdoc/>
             public UMI3DNodeAnimationDto.OperationChainDto Todto(UMI3DUser user)
             {
                 return new UMI3DNodeAnimationDto.OperationChainDto() { operation = Operation.ToOperationDto(user), startOnProgress = progress };
             }
 
+            /// <inheritdoc/>
             public Bytable ToBytes(UMI3DUser user)
             {
                 return UMI3DNetworkingHelper.Write(progress) + Operation.ToBytable(user);
             }
 
+            /// <inheritdoc/>
             Bytable IBytable.ToBytableArray(params object[] parameters)
             {
                 if (parameters.Length < 1)
@@ -48,6 +55,7 @@ namespace umi3d.edk
                 return ToBytes(parameters[0] as UMI3DUser);
             }
 
+            /// <inheritdoc/>
             bool IBytable.IsCountable()
             {
                 return false;
@@ -61,16 +69,19 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<float> objectDuration;
         private UMI3DAsyncListProperty<OperationChain> objectAnimationChain;
 
+        /// <summary>
+        /// Duration of the animation, in seconds.
+        /// </summary>
         public UMI3DAsyncProperty<float> ObjectDuration { get { Register(); return objectDuration; } protected set => objectDuration = value; }
         public UMI3DAsyncListProperty<OperationChain> ObjectAnimationChain { get { Register(); return objectAnimationChain; } protected set => objectAnimationChain = value; }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DNodeAnimationDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             var equality = new UMI3DAsyncPropertyEquality();
@@ -82,7 +93,7 @@ namespace umi3d.edk
             ObjectAnimationChain.OnValueChanged += (l) => animationChain = l;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -91,6 +102,7 @@ namespace umi3d.edk
             NAdto.duration = ObjectDuration.GetValue(user);
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.WriteIBytableCollection(animationChain, user)

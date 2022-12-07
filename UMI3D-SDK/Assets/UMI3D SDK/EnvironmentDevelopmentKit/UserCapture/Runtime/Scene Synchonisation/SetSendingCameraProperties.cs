@@ -17,16 +17,24 @@ using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// <see cref="Operation"/> to control the tracking of camera properties.
+    /// </summary>
     public class SetSendingCameraProperties : Operation
     {
+        /// <summary>
+        /// Should the client send its camera properties? 
+        /// </summary>
         public bool activeSending;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetSendingCameraProperty)
                 + UMI3DNetworkingHelper.Write(activeSending);
         }
 
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var sendingCamera = new SetSendingCameraPropertiesDto()

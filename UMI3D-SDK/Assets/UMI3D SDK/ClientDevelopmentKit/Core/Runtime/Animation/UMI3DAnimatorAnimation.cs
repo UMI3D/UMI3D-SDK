@@ -23,7 +23,15 @@ namespace umi3d.cdk
 {
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
+        /// <summary>
+        /// Get an <see cref="UMI3DAnimatorAnimation"/> by its UMI3D id.
+        /// </summary>
+        /// <param name="id">UMI3D id</param>
+        /// <returns></returns>
         public static new UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
+        /// <summary>
+        /// DTO local copy.
+        /// </summary>
         protected new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; set => base.dto = value; }
 
         private bool started = false;
@@ -32,13 +40,13 @@ namespace umi3d.cdk
         {
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetProgress()
         {
             return 0;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start()
         {
             if (started) return;
@@ -61,12 +69,12 @@ namespace umi3d.cdk
             (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>().Play(dto.stateName);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Stop()
         {
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnEnd()
         {
             started = false;
@@ -90,7 +98,7 @@ namespace umi3d.cdk
             action.Invoke();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -109,11 +117,12 @@ namespace umi3d.cdk
             return true;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start(float atTime)
         {
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
         }

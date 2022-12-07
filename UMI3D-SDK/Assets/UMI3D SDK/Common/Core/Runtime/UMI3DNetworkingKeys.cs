@@ -16,11 +16,14 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains all the URI required for HTTP requests within the UMI3D protocol. 
+    /// </summary>
     public static class UMI3DNetworkingKeys
     {
         //users
-        public const string identity = "/me";
-        public const string identity_update = "/me/update";
+        public const string connectionInfo = "/me";
+        public const string connection_information_update = "/me/update";
         public const string status_update = "/me/status_update";
         public const string logout = "/logout";
         public const string localData = "/LocalData/key/:param";
@@ -29,6 +32,8 @@ namespace umi3d.common
         //MEDIA
         public const string root = "/";
         public const string media = "/media";
+        public const string connect = "/connect";
+        public const string renew_connect = "/renew_connect";
 
         //RESOURCES
         public const string libraries = "/libraries";
@@ -39,6 +44,7 @@ namespace umi3d.common
         public const string directory_zip = "/zip/";
 
         //ENVIRONMENT
+        public const string register = "/register";
         public const string environment = "/environment";
         public const string join = "/environment/join";
         public const string entity = "/environment/entity";
@@ -46,17 +52,9 @@ namespace umi3d.common
         public const string playerCount = "/environment/player_count";
 
         //Prefix
-        /*
-        public const string websocket = "/socket";
-        public const string websocket_reliable_data = "/reliabledata";
-        public const string websocket_unreliable_data = "/unreliabledata";
-        public const string websocket_reliable_tracking = "/reliabletracking";
-        public const string websocket_unreliable_tracking = "/unreliabletracking";
-        public const string websocket_audio = "/audio";
-        public const string websocket_video = "/video";
-        */
-        public const string websocketProtocol = "echo-protocol";//"access_token";
+        public const string websocketProtocol = "echo-protocol";
         public const string Authorization = "AUTHORIZATION";
+        public const string ResourceServerAuthorization = "umi3dResourceToken";
         public const string bearer = "BEARER";
         public const string contentHeader = "FileName";
 

@@ -20,6 +20,9 @@ using System.Linq;
 using umi3d.common;
 namespace umi3d.edk
 {
+    /// <summary>
+    /// A user in a UMI3D context
+    /// </summary>
     public class UMI3DUser : UMI3DMediaEntity
     {
 
@@ -28,9 +31,8 @@ namespace umi3d.edk
         /// <summary>
         /// The unique user identifier.
         /// </summary>
-        private ulong userId;
+        protected virtual ulong userId { get; set; } = 0;
 
-        public bool hasJoined => status == StatusType.ACTIVE || status == StatusType.AWAY || status == StatusType.MISSING;
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
@@ -45,21 +47,34 @@ namespace umi3d.edk
         #endregion
 
         #region session
-        public bool hasImmersiveDevice;
+        /// <summary>
+        /// Does the user have an immersive device?
+        /// </summary>
+        public bool hasImmersiveDevice { get; protected set; } = true;
 
+        /// <summary>
+        /// UMI3D status of the object. 
+        /// </summary>
+        /// See <see cref="StatusType"/>.
         public StatusType status { get; protected set; } = StatusType.CREATED;
 
-        public virtual void OnJoin(bool hasImmersiveDevice/* TBD camera properties,  TBD First 6D pose*/)
-        {
-            this.hasImmersiveDevice = hasImmersiveDevice;
-            SetStatus(StatusType.READY);
-        }
+        public bool IsReadyToGetResources = true;
 
+        /// <summary>
+        /// Has the user joined the environment?
+        /// </summary>
+        public bool hasJoined = false;
+
+        /// <summary>
+        /// Setter for the <see cref="status"/>
+        /// </summary>
+        /// <param name="status"></param>
         public virtual void SetStatus(StatusType status)
         {
             this.status = status;
         }
 
+        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             throw new NotImplementedException();
@@ -68,16 +83,19 @@ namespace umi3d.edk
         #region filter
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        /// <inheritdoc/>
         public bool LoadOnConnection(UMI3DUser user)
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
 
+        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Remove(filter);

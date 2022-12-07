@@ -17,6 +17,9 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing volume cells.
+    /// </summary>
     public abstract class AbstractVolumeCellDto : AbstractVolumeDescriptorDto
     {
         /// <summary>
@@ -25,11 +28,8 @@ namespace umi3d.common.volume
         public ulong rootNodeId;
 
         /// <summary>
-        /// Relative to the node linked to AbstractVolumeCellDto.nodeId.
-        /// vectorInRootNodeCoordinates = transform * vectorInBoxCordinate
+        /// Should user be able to enter this volume?
         /// </summary>
-        public SerializableMatrix4x4 rootNodeToLocalMatrix;
-
         public bool isTraversable = true;
     }
 }

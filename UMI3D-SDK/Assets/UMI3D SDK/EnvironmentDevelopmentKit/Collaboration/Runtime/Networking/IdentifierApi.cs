@@ -23,11 +23,13 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
-    public abstract class IdentifierApi : ScriptableObject
+    /// <summary>
+    /// Identifier for users access.
+    /// </summary>
+    [CreateAssetMenu(fileName = "DefaultIdentifierApi", menuName = "UMI3D/Default Identifier")]
+    public class IdentifierApi : ScriptableObject
     {
         private Dictionary<ulong, bool> librariesUpdateStatus;
-
-        public virtual UMI3DAuthenticator GetAuthenticator(ref AuthenticationType type) { return null; }
 
         /// <summary>
         /// Update a client status acording to a userconnectionDto
@@ -74,7 +76,7 @@ namespace umi3d.edk.collaboration
         public virtual bool getLibrariesUpdateSatus(UMI3DCollaborationUser user)
         {
             if (librariesUpdateStatus == null) librariesUpdateStatus = new Dictionary<ulong, bool>();
-            return librariesUpdateStatus.ContainsKey(user.Id()) ? librariesUpdateStatus[user.Id()] : false;
+            return librariesUpdateStatus.ContainsKey(user.Id()) && librariesUpdateStatus[user.Id()];
         }
     }
 }

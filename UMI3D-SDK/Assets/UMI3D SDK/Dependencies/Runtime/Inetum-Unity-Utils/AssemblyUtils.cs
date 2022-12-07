@@ -28,7 +28,7 @@ namespace inetum.unityUtils.editor
         public static void ExportAssembliesTo(IEnumerable<string> assemblyNames, string ouputDirectory)
         {
             Assembly[] playerAssemblies = CompilationPipeline.GetAssemblies(AssembliesType.Player);
-            foreach (var assembly in playerAssemblies)
+            foreach (Assembly assembly in playerAssemblies)
             {
                 if (assemblyNames.Contains(assembly.name))
                 {

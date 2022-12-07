@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Tagging interface for all UMI3D entities.
+    /// </summary>
     public interface IEntity
     {
     }

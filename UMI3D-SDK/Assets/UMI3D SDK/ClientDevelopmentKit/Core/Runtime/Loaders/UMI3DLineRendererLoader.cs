@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -32,6 +33,25 @@ namespace umi3d.cdk
 
         protected LineRenderer line;
 
+        LineRenderer GetOrCreateLine(GameObject node)
+        {
+            if (node == null)
+                return null;
+            var line = node.GetComponent<LineRenderer>();
+            if (line == null)
+            {
+                line = node.AddComponent<LineRenderer>();
+                Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
+
+                if (UMI3DMat == null)
+                {
+                    UMI3DMat = new Material(Shader.Find("Sprites/Default"));
+                }
+                line.material = UMI3DMat;
+            }
+            return line;
+        }
+
         /// <summary>
         /// Load a mesh node.
         /// </summary>
@@ -39,42 +59,43 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
             var lineDto = dto as UMI3DLineDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException(0, "dto should be an  UMI3DAbstractNodeDto"));
-                return;
+                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
             }
 
-            base.ReadUMI3DExtension(dto, node, () =>
-            {
-                line = node.GetComponent<LineRenderer>();
-                if (line == null)
-                {
-                    line = node.AddComponent<LineRenderer>();
-                    line.material = new Material(Shader.Find("Sprites/Default"));
-                }
-                line.startColor = lineDto.startColor;
-                line.endColor = lineDto.endColor;
-                line.loop = lineDto.loop;
-                line.useWorldSpace = lineDto.useWorldSpace;
-                line.endWidth = lineDto.endWidth;
-                line.startWidth = lineDto.startWidth;
-                line.positionCount = lineDto.positions.Count();
-                line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v).ToArray());
-                finished?.Invoke();
-            }, failed);
+            await base.ReadUMI3DExtension(dto, node);
+
+            line = GetOrCreateLine(node);
+            line.startColor = lineDto.startColor;
+            line.endColor = lineDto.endColor;
+            line.loop = lineDto.loop;
+            line.useWorldSpace = lineDto.useWorldSpace;
+            line.endWidth = lineDto.endWidth;
+            line.startWidth = lineDto.startWidth;
+            line.positionCount = lineDto.positions.Count();
+            line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v).ToArray());
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(lineDto.id);
+            if (nodeInstance != null)
+                nodeInstance.renderers = new List<Renderer>() { line };
+            SetMaterialOverided(lineDto, nodeInstance);
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
-            if (entity?.dto is UMI3DLineDto)
+            if (entity?.dto is UMI3DLineDto && entity is UMI3DNodeInstance node)
             {
                 if (base.SetUMI3DProperty(entity, property)) return true;
                 var extension = (entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DLineDto;
                 if (extension == null) return false;
+
+                line = GetOrCreateLine(node.gameObject);
+                if (line == null) return false;
+
                 switch (property.property)
                 {
                     case UMI3DPropertyKeys.LineEndColor:
@@ -129,6 +150,7 @@ namespace umi3d.cdk
                     default:
                         return false;
                 }
+                UpdateModelCollider(node, line);
                 return true;
             }
             else
@@ -137,6 +159,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
@@ -145,6 +168,10 @@ namespace umi3d.cdk
             if (extension == null) return false;
 
             var node = entity as UMI3DNodeInstance;
+
+            line = GetOrCreateLine(node.gameObject);
+            if (line == null) return false;
+
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LineEndColor:
@@ -202,7 +229,72 @@ namespace umi3d.cdk
                 default:
                     return false;
             }
+            UpdateModelCollider(node, line);
             return true;
+        }
+
+        /// <inheritdoc/>
+        protected override void SetModelCollider(ulong id, UMI3DNodeInstance node, ColliderDto dto)
+        {
+            if (node == null) return;
+
+            line = GetOrCreateLine(node.gameObject);
+            if (line == null) return;
+
+            MeshCollider meshCollider = node.gameObject?.AddComponent<MeshCollider>();
+            node.colliders.Add(meshCollider);
+            UpdateModelCollider(node, line, meshCollider);
+
+            if (line.useWorldSpace)
+            {
+                UMI3DLogger.LogWarning("Collider is not supported for now with LineRendere.useWorldSpace", DebugScope.CDK);
+            }
+        }
+
+        private async void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
+        {
+            if (nodeInstance == null || line == null || nodeInstance.gameObject == null) return;
+            if (meshCollider == null)
+                meshCollider = nodeInstance.gameObject.GetComponent<MeshCollider>();
+            if (meshCollider == null) return;
+
+            Mesh mesh = new Mesh();
+            mesh.name = "line-renderer-mesh";
+
+            await UMI3DAsyncManager.Yield();
+
+            line.BakeMesh(mesh, true);
+
+            await UMI3DAsyncManager.Yield();
+
+            if (AtLeast3DistinctVertice(mesh))
+                meshCollider.sharedMesh = mesh;
+        }
+
+        bool AtLeast3DistinctVertice(Mesh mesh)
+        {
+            if (mesh != null && mesh.vertices != null && mesh.vertices.Count() < 3)
+                return false;
+
+            Vector3? a = null, b = null;
+
+            foreach (var v in mesh.vertices)
+            {
+                if (a == null)
+                    a = v;
+                else if (b == null)
+                {
+                    if (Vector3.Distance(a ?? Vector3.zero, v) > 0.01)
+
+                        b = v;
+                }
+                else if (Vector3.Distance(a ?? Vector3.zero, v) > 0.01 && Vector3.Distance(b ?? Vector3.zero, v) > 0.01)
+                {
+                    return true;
+                }
+            }
+
+            return false;
         }
 
     }

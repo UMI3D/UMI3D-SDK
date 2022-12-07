@@ -25,8 +25,15 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public abstract class AbstractVolumeCell
     {
+        /// <summary>
+        /// Get UMI3D id.
+        /// </summary>
+        /// <returns></returns>
         public abstract ulong Id();
 
+        /// <summary>
+        /// Can the volume be entered?
+        /// </summary>
         public bool isTraversable = true;
 
         /// <summary>

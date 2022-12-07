@@ -15,50 +15,42 @@ limitations under the License.
 */
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.cdk.menu.interaction;
 using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
     /// <summary>
-    /// Client's side interactable object.
+    /// List of <see cref="GlobalTool"/> as a <see cref="GlobalTool"/>.
     /// </summary>
-    /// <see cref="InteractableDto"/>
-    public class Toolbox
+    public class Toolbox : GlobalTool
     {
-        public static List<Toolbox> Toolboxes() { return UMI3DEnvironmentLoader.Entities().Where(e => e?.Object is Toolbox).Select(e => e?.Object as Toolbox).ToList(); }
-        public static ToolboxSubMenu IdToMenu(ulong id) { return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox).sub; }
+        /// <summary>
+        /// Get all instanciated toolboxes
+        /// </summary>
+        /// <returns></returns>
+        public static List<Toolbox> GetToolboxes()
+        {
+            return instances.Values.ToList().Where(tool => tool is Toolbox).ToList().ConvertAll(t => t as Toolbox);
+        }
 
         /// <summary>
-        /// Interactable dto describing this object.
+        /// Get a toolbox by id.
         /// </summary>
-        public ToolboxDto dto;
-        public ToolboxSubMenu sub;
-        public List<Tool> tools;
-
-        public bool Active => dto?.Active ?? false;
-
-        public Toolbox(ToolboxDto dto)
+        /// <param name="id">Toolbox id</param>
+        /// <returns></returns>
+        public static Toolbox GetToolbox(ulong id)
         {
-            tools = new List<Tool>();
-
-            this.dto = dto;
-            UMI3DEntityInstance node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this, Destroy);
-            sub = new ToolboxSubMenu()
-            {
-                Name = dto.name,
-                toolbox = this
-            };
-            node.NotifyLoaded();
+            return instances[id] as Toolbox;
         }
 
-        public void Destroy()
-        {
-            foreach (Tool t in tools)
-            {
-                UMI3DEnvironmentLoader.DeleteEntity(t.dto.id, null);
-            }
-        }
+        public Toolbox(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto, parent) { }
 
+        /// <summary>
+        /// Tools within the toolbox.
+        /// </summary>
+        public List<GlobalToolDto> tools { get => (abstractDto as ToolboxDto).tools; set => (abstractDto as ToolboxDto).tools = value; }
+
+        /// <inheritdoc/>
+        protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolboxDto; }
     }
 }

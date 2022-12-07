@@ -26,27 +26,34 @@ namespace umi3d.edk.volume
     /// <summary>
     /// Volume cell represented by an .obj
     /// </summary>
+    [RequireComponent(typeof(UMI3DAbstractNode))]
     public class OBJVolume : MonoBehaviour, IVolume
     {
         /// <summary>
-        /// Event raised when a user enter the cell.
+        /// Event raised when a user enters the cell.
         /// </summary>
-        [SerializeField] private UMI3DUserEvent onUserEnter = new UMI3DUserEvent();
+        [SerializeField, Tooltip("Event raised when a user enters the cell.")] 
+        private UMI3DUserEvent onUserEnter = new UMI3DUserEvent();
 
         /// <summary>
-        /// Event raised when a user exit the cell.
+        /// Event raised when a user exits the cell.
         /// </summary>
-        [SerializeField] private UMI3DUserEvent onUserExit = new UMI3DUserEvent();
+        [SerializeField, Tooltip("Event raised when a user exits the cell.")] 
+        private UMI3DUserEvent onUserExit = new UMI3DUserEvent();
 
-        [SerializeField] private string fileURL = null;
+        /// <summary>
+        /// URL of the .obj file to define the cell.
+        /// </summary>
+        [SerializeField, Tooltip("URL of the .obj file to define the cell.")] 
+        private string fileURL = null;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public UMI3DUserEvent GetUserEnter()
         {
             return onUserEnter;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public UMI3DUserEvent GetUserExit()
         {
             return onUserExit;
@@ -80,8 +87,11 @@ namespace umi3d.edk.volume
             return operation;
         }
 
-
+        /// <summary>
+        /// UMI3D id.
+        /// </summary>
         private ulong? id = null;
+        /// <inheritdoc/>
         public ulong Id()
         {
             if (id == null)
@@ -112,12 +122,13 @@ namespace umi3d.edk.volume
         }
         #endregion
 
+        /// <inheritdoc/>
         public virtual IEntity ToEntityDto(UMI3DUser user)
         {
             //Taken from UMI3DResourceFile.GetUrl()
             string path = fileURL;
             path = path.Replace(@"\", "/");
-            if (path != null && path != "" && !(path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
+            if (path != null && path != "" && !path.StartsWith("/") /*|| Path.StartsWith(@"\")*/)
             {
                 path = "/" + path;
             }
@@ -131,19 +142,25 @@ namespace umi3d.edk.volume
                 id = Id(),
                 objFile = path,
                 rootNodeId = scene.Id(),
-                rootNodeToLocalMatrix = scene.transform.localToWorldMatrix * this.transform.worldToLocalMatrix,
                 isTraversable = IsTraversable()
             };
             return dto;
         }
 
+        /// <inheritdoc/>
+        /// Currently not implemented.
         public Bytable ToBytes(UMI3DUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        [SerializeField]
+
+        /// <summary>
+        /// If true, a user can enter the volume.
+        /// </summary>
+        [SerializeField, Tooltip("If true, a user can enter the volume.")]
         private bool isTraversable = true;
+        /// <inheritdoc/>
         public bool IsTraversable()
         {
             return isTraversable;

@@ -16,10 +16,24 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Type of shadow mapping technique to use.
+    /// </summary>
     public enum ShadowType
     {
+        /// <summary>
+        /// No shadows.
+        /// </summary>
         None = 0,
+
+        /// <summary>
+        /// Average several shadow maps. More expensive to compute than <see cref="Hard"/>.
+        /// </summary>
         Soft = 1,
+
+        /// <summary>
+        /// Take the nearest shadow map.
+        /// </summary>
         Hard = 2
     }
 }

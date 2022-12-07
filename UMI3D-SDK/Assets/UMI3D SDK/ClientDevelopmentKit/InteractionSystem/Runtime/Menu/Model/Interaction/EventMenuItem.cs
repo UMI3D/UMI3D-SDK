@@ -19,14 +19,20 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> for events of interactions
+    /// </summary>
     public class EventMenuItem : InteractionMenuItem
     {
         /// <summary>
-        /// If true, the button will stay pressed on selection.
+        /// If true, represents an holdable event.
         /// </summary>
-        public bool toggle = false;
+        public bool hold = false;
 
-        private bool pressedState = false;
+        /// <summary>
+        /// Value of the event menu item
+        /// </summary>
+        private bool value = false;
 
         /// <summary>
         /// Subscribers on value change
@@ -61,21 +67,27 @@ namespace umi3d.cdk.menu.interaction
             return Name;
         }
 
+        /// <summary>
+        /// Get the value of the menu item
+        /// </summary>
+        /// <returns></returns>
         public virtual bool GetValue()
         {
-            return pressedState;
+            return value;
         }
 
+        /// <summary>
+        /// Setter for <see cref="value"/>.
+        /// </summary>
+        /// <param name="newValue">New value</param>
+        /// <param name="forceRaiseEvent">If true, will notify every suscriber, even if <see cref="value"/> is already equal to <paramref name="newValue"/>.</param>
         public virtual void NotifyValueChange(bool newValue)
         {
-            if (toggle)
-            {
-                pressedState = !pressedState;
-            }
+            value = newValue;
 
             foreach (UnityAction<bool> sub in subscribers)
             {
-                sub.Invoke(pressedState);
+                sub.Invoke(value);
             }
         }
     }

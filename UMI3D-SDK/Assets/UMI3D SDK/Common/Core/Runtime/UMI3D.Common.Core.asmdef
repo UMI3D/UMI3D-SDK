@@ -3,7 +3,9 @@
     "references": [
         "GUID:215efa65361782e41b5e3fac87a2c7e3",
         "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b",
-        "GUID:d60799ab2a985554ea1a39cd38695018"
+        "GUID:d60799ab2a985554ea1a39cd38695018",
+        "GUID:15fc0a57446b3144c949da3e2b9737a9",
+        "GUID:df380645f10b7bc4b97d4f5eb6303d95"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -17,6 +19,15 @@
             "name": "com.unity.postprocessing",
             "expression": "",
             "define": "UNITY_POST_PROCESSING"
+        },
+        {
+
+            "name": "com.unity.render-pipelines.universal",
+
+            "expression": "0.0",
+
+            "define": "USING_URP"
+
         }
     ],
     "noEngineReferences": false

@@ -19,13 +19,13 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// Abstract class to describe an entity
+    /// Abstract DTO to describe a UMI3D entity.
     /// </summary>
     [Serializable]
     public abstract class AbstractEntityDto : UMI3DDto
     {
         /// <summary>
-        /// Id of the entity
+        /// Id of the entity.
         /// </summary>
         public ulong id = 0;
     }

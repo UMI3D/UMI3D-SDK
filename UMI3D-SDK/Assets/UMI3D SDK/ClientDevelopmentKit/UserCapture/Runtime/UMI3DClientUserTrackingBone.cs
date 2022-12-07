@@ -22,13 +22,23 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Representation for each tracked bone.
+    /// </summary>
     public class UMI3DClientUserTrackingBone : MonoBehaviour
     {
         public static Dictionary<uint, UMI3DClientUserTrackingBone> instances = new Dictionary<uint, UMI3DClientUserTrackingBone>();
 
-        [ConstEnum(typeof(BoneType), typeof(uint))]
+        /// <summary>
+        /// Bone type in UMI3D standards. See <see cref="BoneDto"/>.
+        /// </summary>
+        [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
         public uint boneType;
 
+        /// <summary>
+        /// Should the bone data be sent to the server?
+        /// </summary>
+        [Tooltip("Should the bone data be sent to the server?")]
         public bool isTracked;
 
         /// <summary>

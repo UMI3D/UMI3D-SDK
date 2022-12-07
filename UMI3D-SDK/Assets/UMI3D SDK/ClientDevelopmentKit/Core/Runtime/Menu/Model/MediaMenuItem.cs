@@ -17,13 +17,14 @@ using umi3d.common;
 
 namespace umi3d.cdk.menu
 {
+    /// <summary>
+    /// Menu with a media.
+    /// </summary>
     public class MediaMenuItem : MenuItem
     {
         /// <summary>
         /// Media represented.
         /// </summary>
         public MediaDto media;
-
-
     }
 }

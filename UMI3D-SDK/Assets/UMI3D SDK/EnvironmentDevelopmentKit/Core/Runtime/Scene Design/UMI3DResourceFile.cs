@@ -19,7 +19,9 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// File info for a <see cref="UMI3DResource"/>.
+    /// </summary>
     [System.Serializable]
     public class UMI3DResourceFile : IBytable
     {
@@ -36,6 +38,7 @@ namespace umi3d.edk
         public bool isInLibrary = false;
         public AssetLibrary libraryKey = null;
 
+        /// <inheritdoc/>
         public FileDto ToDto()
         {
             var dto = new FileDto
@@ -50,6 +53,7 @@ namespace umi3d.edk
             return dto;
         }
 
+        /// <inheritdoc/>
         public Bytable ToByte()
         {
             return UMI3DNetworkingHelper.Write(GetUrl())
@@ -61,6 +65,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null);
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
@@ -69,16 +74,17 @@ namespace umi3d.edk
         public string GetUrl()
         {
             path = path.Replace(@"\", "/");
-            if (path != null && path != "" && !(path.StartsWith("/") /*|| Path.StartsWith(@"\")*/))
+            if (path != null && path != "" && !path.StartsWith("/") /*|| Path.StartsWith(@"\")*/)
             {
                 path = "/" + path;
             }
             if (isLocalFile)
-                return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetHttpUrl(), UMI3DNetworkingKeys.files, path));
+                return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, path));
             else
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return ToByte();

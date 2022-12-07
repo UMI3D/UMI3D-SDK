@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Font emphasis style for text in UMI3D.
+    /// </summary>
+    /// Choices are Normal, Bold, Italic or Bold Intalic.
     public enum FontStyleType
     {
         Normal,

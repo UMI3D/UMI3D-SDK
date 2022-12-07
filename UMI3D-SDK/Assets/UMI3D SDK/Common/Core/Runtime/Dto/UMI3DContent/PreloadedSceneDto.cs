@@ -17,11 +17,14 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// extension for preloaded scenes
+    /// DTO for preloaded scenes
     /// </summary>
     [System.Serializable]
     public class PreloadedSceneDto : UMI3DDto
     {
+        /// <summary>
+        /// Scene as a serialized glTF file with extensions.
+        /// </summary>
         public ResourceDto scene;
     }
 }

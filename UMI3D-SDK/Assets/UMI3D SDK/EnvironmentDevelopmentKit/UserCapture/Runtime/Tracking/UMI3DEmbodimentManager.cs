@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -25,11 +26,26 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
-    public class UMI3DEmbodimentManager : PersistentSingleton<UMI3DEmbodimentManager>
+    /// <summary>
+    /// Manager for al embodiment related events. Handles skeletons, avatars, animations, and poses.
+    /// </summary>
+    public class UMI3DEmbodimentManager : PersistentSingleBehaviour<UMI3DEmbodimentManager>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
 
+        /// <summary>
+        /// Should the embodiment system be active?
+        /// </summary>
+        /// Should not be changed at runtime.
+        [Tooltip("Should the embodiment system be active?\n" +
+            "Warning: Should not be changed when Play Mode is running.")]
+        public bool ActivateEmbodiments = true;
+
         public UMI3DScene EmbodimentsScene;
+        /// <summary>
+        /// Unity's prefab of the skeleton.
+        /// </summary>
+        [Tooltip("Prefab of the skeleton of the user.")]
         public GameObject SkeletonPrefab;
 
         public Dictionary<ulong, UMI3DAvatarNode> embodimentInstances = new Dictionary<ulong, UMI3DAvatarNode>();
@@ -45,7 +61,13 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
-        ///<inheritdoc/>
+        /// <summary>
+        /// Emote configuration for the environment.
+        /// </summary>
+        [SerializeField, Tooltip("Emote configuration for the environment.")]
+        public UMI3DEmotesConfig emotesConfig;
+
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -55,12 +77,14 @@ namespace umi3d.edk.userCapture
             DeletionEvent = new EmbodimentBoneEvent();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected virtual void Start()
         {
-            UMI3DServer.Instance.OnUserJoin.AddListener(CreateEmbodiment);
-            UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
-            WriteCollections();
+            if (ActivateEmbodiments)
+            {
+                UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
+                WriteCollections();
+            }
         }
 
         #region Tracking Data
@@ -73,79 +97,95 @@ namespace umi3d.edk.userCapture
                 return false;
         }
 
-        public void JoinDtoReception(ulong userId, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
-        {
-            if (embodimentSize.ContainsKey(userId))
-                UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
-            else
-                embodimentSize.Add(userId, (Vector3)userSize);
-
-            if (embodimentTrackedBonetypes.ContainsKey(userId))
-                UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
-            else
-                embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
-        }
-
         /// <summary>
-        /// Create an Embodiment for a User.
+        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, Dictionary{uint, bool})"/>.
         /// </summary>
-        /// <param name="user">the concerned UMI3DUser</param>
-        protected void CreateEmbodiment(UMI3DUser user)
+        static object joinLock = new object();
+
+        public async Task JoinDtoReception(UMI3DUser user, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
         {
-            var trackedUser = user as UMI3DTrackedUser;
-            if (embodimentInstances.ContainsKey(user.Id()))
+            if (ActivateEmbodiments && user is UMI3DTrackedUser trackedUser)
             {
-                UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
-                return;
+                ulong userId = user.Id();
+
+                lock (joinLock)
+                {
+                    UMI3DLogger.Log("EmbodimentManager.JoinDtoReception before " + userId, scope);
+
+                    if (embodimentSize.ContainsKey(userId))
+                        UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
+                    else
+                        embodimentSize.Add(userId, (Vector3)userSize);
+
+                    if (embodimentTrackedBonetypes.ContainsKey(userId))
+                        UMI3DLogger.LogWarning("Internal error : the user tracked data are already registered", scope);
+                    else
+                        embodimentTrackedBonetypes.Add(userId, trackedBonetypes);
+
+                    if (embodimentInstances.ContainsKey(userId))
+                    {
+                        UMI3DLogger.LogWarning("Internal error : the user is already registered", scope);
+                        return;
+                    }
+
+                    var embd = new GameObject("Embodiment" + userId, typeof(UMI3DAvatarNode));
+                    embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
+                    embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
+
+                    if (EmbodimentsScene != null)
+                        embd.transform.SetParent(EmbodimentsScene.transform);
+                    else
+                        UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
+
+                    trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
+
+                    LoadAvatarNode(trackedUser.Avatar);
+
+                    GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
+
+                    if (embodimentSize.ContainsKey(userId))
+                        skeleton.transform.localScale = embodimentSize[userId];
+                    else
+                        UMI3DLogger.LogError("EmbodimentSize does not contain key " + userId, scope);
+
+                    trackedUser.Avatar.userId = userId;
+                    trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
+
+                    embodimentInstances.Add(userId, trackedUser.Avatar);
+                }
+
+                await UMI3DAsyncManager.Yield();
+
+                NewEmbodiment.Invoke(trackedUser.Avatar);
+
+                UMI3DLogger.Log("EmbodimentManager.JoinDtoReception end " + userId, scope);
             }
-
-            var embd = new GameObject("Embodiment" + user.Id(), typeof(UMI3DAvatarNode));
-            embd.transform.position = UMI3DEnvironment.objectStartPosition.GetValue(user);
-            embd.transform.rotation = UMI3DEnvironment.objectStartOrientation.GetValue(user);
-
-            if (EmbodimentsScene != null)
-                embd.transform.SetParent(EmbodimentsScene.transform);
-            else
-                UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
-
-            trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
-
-            LoadAvatarNode(trackedUser.Avatar);
-
-            GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
-            skeleton.transform.localScale = embodimentSize[user.Id()];
-
-            trackedUser.Avatar.userId = user.Id();
-            trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
-
-            embodimentInstances.Add(user.Id(), trackedUser.Avatar);
-
-            NewEmbodiment.Invoke(trackedUser.Avatar);
         }
-
 
         /// <summary>
         /// Update the Embodiment from the received Dto.
         /// </summary>
         /// <param name="dto">a dto containing the tracking data</param>
-        public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId)
+        public void UserTrackingReception(UserTrackingFrameDto dto, ulong userId, float timestep)
         {
-            if (!embodimentInstances.ContainsKey(userId))
+            if (ActivateEmbodiments)
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
-                return;
+                if (!embodimentInstances.ContainsKey(userId))
+                {
+                    UMI3DLogger.LogWarning($"Internal error : the user [{userId}] is not registered", scope);
+                    return;
+                }
+
+                UMI3DAvatarNode userEmbd = embodimentInstances[userId];
+                userEmbd.transform.localPosition = dto.position;
+                userEmbd.transform.localRotation = dto.rotation;
+
+                userEmbd.skeletonAnimator.transform.parent.position = userEmbd.transform.position + new Vector3(0, dto.skeletonHighOffset, 0);
+
+                UpdateNodeTransform(userEmbd);
+
+                userEmbd.UpdateEmbodiment(dto);
             }
-
-            UMI3DAvatarNode userEmbd = embodimentInstances[userId];
-            userEmbd.transform.localPosition = dto.position;
-            userEmbd.transform.localRotation = dto.rotation;
-            // userEmbd.transform.localScale = Vector3.one;
-
-            userEmbd.skeletonAnimator.transform.parent.position = userEmbd.transform.position + new Vector3(0, dto.skeletonHighOffset, 0);
-
-            UpdateNodeTransform(userEmbd);
-
-            userEmbd.UpdateEmbodiment(dto);
         }
 
         /// <summary>
@@ -155,12 +195,14 @@ namespace umi3d.edk.userCapture
         /// <param name="user">the concerned user</param>
         public void UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
         {
-            StartCoroutine(_UserCameraReception(dto, user));
+            if (ActivateEmbodiments)
+                StartCoroutine(_UserCameraReception(dto, user));
         }
 
         public void UserCameraReception(uint operationKey, ByteContainer container, UMI3DUser user)
         {
-            StartCoroutine(_UserCameraReception(operationKey, container, user));
+            if (ActivateEmbodiments)
+                StartCoroutine(_UserCameraReception(operationKey, container, user));
         }
 
         private IEnumerator _UserCameraReception(UserCameraPropertiesDto dto, UMI3DUser user)
@@ -188,23 +230,52 @@ namespace umi3d.edk.userCapture
         }
 
         /// <summary>
+        /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.
+        /// </summary>
+        /// <param name="emoteId">Emote to trigger UMI3D id.</param>
+        /// <param name="user">Sending emote user.</param>
+        /// <param name="trigger">True for triggering, false to interrupt.</param>
+        public void DispatchChangeEmoteReception(ulong emoteId, UMI3DUser user, bool trigger)
+        {
+            //? avoid the data channel filtering
+            var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
+            targetUsers.Remove(user);
+            var req = new EmoteDispatchRequest(reliable: true, users: targetUsers)
+            {
+                sendingUserId = user.Id(),
+                shouldTrigger = trigger,
+                emoteId = emoteId
+            };
+
+            req.Dispatch();
+        }
+
+        /// <summary>
         /// Delete the User's Embodiment.
         /// </summary>
         /// <param name="user">the concerned user</param>
         protected void DeleteEmbodiment(UMI3DUser user)
         {
-            if (!embodimentInstances.ContainsKey(user.Id()))
+            if (ActivateEmbodiments)
             {
-                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is  not registered", scope);
-                return;
+                if (!embodimentInstances.ContainsKey(user.Id()))
+                {
+                    UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is  not registered", scope);
+                    return;
+                }
+
+                UMI3DAvatarNode embd = embodimentInstances[user.Id()];
+
+                DeleteEmbodimentObj(embd);
+
+                Destroy(embd.transform.gameObject);
+
+                if (user?.Id() != null)
+                {
+                    embodimentInstances.Remove(user.Id());
+                    embodimentSize.Remove(user.Id());
+                }
             }
-
-            UMI3DAvatarNode embd = embodimentInstances[user.Id()];
-
-            DeleteEmbodimentObj(embd);
-
-            Destroy(embd.transform.gameObject);
-            embodimentInstances.Remove(user.Id());
         }
 
         /// <summary>
@@ -451,7 +522,7 @@ namespace umi3d.edk.userCapture
 
         #endregion
 
-        #region Hand Animation
+        #region Body & Hand Animation
 
         [HideInInspector]
         public List<ulong> handPoseIds = new List<ulong>();
@@ -459,18 +530,169 @@ namespace umi3d.edk.userCapture
         [EditorReadOnly]
         public List<UMI3DHandPose> PreloadedHandPoses = new List<UMI3DHandPose>();
 
+        [HideInInspector]
+        public List<ulong> bodyPoseIds = new List<ulong>();
+
+        [EditorReadOnly]
+        public List<UMI3DBodyPose> PreloadedBodyPoses = new List<UMI3DBodyPose>();
+
+        #region Runtime referencing of handpose
+        /// <summary>
+        /// Add a new handpose at run time to subscribe
+        /// </summary>
+        /// <param name="Hp">A umi3D hand pose to add</param>
+        public void AddAnHandPoseRef(UMI3DHandPose Hp)
+        {
+            if (!PreloadedHandPoses.Contains(Hp))
+            {
+                PreloadedHandPoses.Add(Hp);
+                ReWriteHandPoseCollection();
+            }
+        }
+        /// <summary>
+        /// Remove An handpose at run time
+        /// </summary>
+        /// <param name="hp">A umi3D hand pose to remove</param>
+        public void RemoveHandPose(UMI3DHandPose hp)
+        {
+            PreloadedHandPoses.Remove(hp);
+            ReWriteHandPoseCollection();
+        }
+        /// <summary>
+        /// Rewrite the collection after modifiction of the handpose
+        /// </summary>
+        public void ReWriteHandPoseCollection()
+        {
+            handPoseIds.Clear();
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()).ToList());
+        }
+        #endregion
+
         protected virtual void WriteCollections()
         {
             handPoseIds.Clear();
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()).ToList());
 
-            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()));
+            bodyPoseIds.Clear();
+            bodyPoseIds.AddRange(PreloadedBodyPoses.Select(bp => bp.Id()).ToList());
         }
 
         public virtual void WriteNodeCollections(UMI3DAvatarNodeDto avatarNodeDto, UMI3DUser user)
         {
             if (avatarNodeDto.userId.Equals(user.Id()))
+            {
                 avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
+                avatarNodeDto.bodyPoses = PreloadedBodyPoses.Select(bp => bp.ToDto()).ToList();
+
+                if (emotesConfig != null)
+                    avatarNodeDto.emotesConfigDto = (UMI3DEmotesConfigDto)emotesConfig.ToEntityDto(user);
+            }
         }
+        #endregion
+
+        #region BoardedVehicle
+
+        /// <summary>
+        /// <UserId, (embarkment confirmation received, vehicle)>.
+        /// </summary>
+        Dictionary<ulong, (bool, UMI3DAbstractNode)> Embarkments = new Dictionary<ulong, (bool, UMI3DAbstractNode)>();
+
+        private bool setTransform = false;
+        private Vector3 localPosition;
+        private Quaternion localRotation;
+
+        public void ConfirmEmbarkment(VehicleConfirmation dto, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
+
+        public void ConfirmEmbarkment(uint operationKey, ByteContainer container, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
+
+        private IEnumerator _ConfirmeEmbarkment(UMI3DUser user)
+        {
+            while (!embodimentInstances.ContainsKey(user.Id()))
+            {
+                UMI3DLogger.LogWarning($"Internal error : the user [{user.Id()}] is not registered", scope);
+                yield return new WaitForFixedUpdate();
+            }
+
+            Embarkments[user.Id()] = (true, Embarkments[user.Id()].Item2);
+
+            Transaction tr = new Transaction();
+            tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(Embarkments[user.Id()].Item2.GetComponent<UMI3DAbstractNode>()));
+            if (setTransform)
+            {
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(localPosition));
+                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(localRotation));
+            }
+            tr.Dispatch();
+        }
+
+        public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle = null)
+        {
+            if (user == null)
+                return;
+
+            setTransform = false;
+
+            VehicleRequest vr;
+
+            if (vehicle != null)
+            {
+                Embarkments[user.Id()] = (false, vehicle);
+
+                if (vehicle != EmbodimentsScene)
+                    vr = new VehicleRequest(vehicle.Id());
+                else
+                    vr = new VehicleRequest(EmbodimentsScene.Id());
+            }
+            else
+            {
+                Embarkments[user.Id()] = (false, EmbodimentsScene);
+
+                vr = new VehicleRequest(EmbodimentsScene.Id());
+            }
+
+            vr.users = new HashSet<UMI3DUser>() { user };
+
+            vr.Dispatch();
+        }
+
+        public void VehicleEmbarkment(UMI3DUser user, ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, UMI3DAbstractNode vehicle = null, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion())
+        {
+            if (user == null)
+                return;
+
+            BoardedVehicleRequest vr;
+
+            if (vehicle != null)
+            {
+                Embarkments[user.Id()] = (false, vehicle);
+
+                if (vehicle != EmbodimentsScene)
+                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, vehicle.Id(), stopNavigation, position, rotation, true);
+                else
+                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation, true);
+            }
+            else
+            {
+                Embarkments[user.Id()] = (false, EmbodimentsScene);
+
+                vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation, true);
+            }
+
+            localPosition = position;
+            localRotation = rotation;
+            setTransform = true;
+
+            vr.users = new HashSet<UMI3DUser>() { user };
+
+            vr.Dispatch();
+        }
+
         #endregion
     }
 }

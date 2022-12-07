@@ -19,18 +19,24 @@ using umi3d.common.interaction;
 
 namespace umi3d.edk.interaction
 {
-
+    /// <summary>
+    /// UMI3D <see cref="Operation"/> forcing the release of a tool on clients.
+    /// </summary>
     public class ReleaseTool : Operation
     {
+        /// <summary>
+        /// Tool to release.
+        /// </summary>
         public AbstractTool tool;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ReleaseTool)
                 + UMI3DNetworkingHelper.Write(tool.Id());
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new ReleaseToolDto() { toolId = tool.Id() };

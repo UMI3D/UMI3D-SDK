@@ -8,6 +8,9 @@ var namespaceumi3d_1_1cdk_1_1interaction =
     [ "AutoProjectOnHover", "d7/d53/classumi3d_1_1cdk_1_1interaction_1_1_auto_project_on_hover.html", null ],
     [ "EventNode", "da/d75/classumi3d_1_1cdk_1_1interaction_1_1_event_node.html", "da/d75/classumi3d_1_1cdk_1_1interaction_1_1_event_node" ],
     [ "FormNode", "dd/d8e/classumi3d_1_1cdk_1_1interaction_1_1_form_node.html", "dd/d8e/classumi3d_1_1cdk_1_1interaction_1_1_form_node" ],
+    [ "GlobalTool", "d0/d9f/classumi3d_1_1cdk_1_1interaction_1_1_global_tool.html", "d0/d9f/classumi3d_1_1cdk_1_1interaction_1_1_global_tool" ],
+    [ "GlobalToolEvent", "d8/dd4/classumi3d_1_1cdk_1_1interaction_1_1_global_tool_event.html", null ],
+    [ "GlobalToolMenuManager", "d0/ddd/classumi3d_1_1cdk_1_1interaction_1_1_global_tool_menu_manager.html", "d0/ddd/classumi3d_1_1cdk_1_1interaction_1_1_global_tool_menu_manager" ],
     [ "Interactable", "d9/db8/classumi3d_1_1cdk_1_1interaction_1_1_interactable.html", "d9/db8/classumi3d_1_1cdk_1_1interaction_1_1_interactable" ],
     [ "InteractableContainer", "d6/dab/classumi3d_1_1cdk_1_1interaction_1_1_interactable_container.html", "d6/dab/classumi3d_1_1cdk_1_1interaction_1_1_interactable_container" ],
     [ "InteractionMapper", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper.html", "d7/dde/classumi3d_1_1cdk_1_1interaction_1_1_interaction_mapper" ],
@@ -23,7 +26,6 @@ var namespaceumi3d_1_1cdk_1_1interaction =
     [ "RequestedUsingSelector", "d4/d78/classumi3d_1_1cdk_1_1interaction_1_1_requested_using_selector.html", "d4/d78/classumi3d_1_1cdk_1_1interaction_1_1_requested_using_selector" ],
     [ "RollbackAfterFailure", "d5/d35/classumi3d_1_1cdk_1_1interaction_1_1_rollback_after_failure.html", null ],
     [ "SwitchController", "d3/dab/classumi3d_1_1cdk_1_1interaction_1_1_switch_controller.html", null ],
-    [ "Tool", "dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool.html", "dd/d0e/classumi3d_1_1cdk_1_1interaction_1_1_tool" ],
     [ "Toolbox", "d9/d59/classumi3d_1_1cdk_1_1interaction_1_1_toolbox.html", "d9/d59/classumi3d_1_1cdk_1_1interaction_1_1_toolbox" ],
     [ "ToolNeedToBeUpdated", "d5/d35/classumi3d_1_1cdk_1_1interaction_1_1_tool_need_to_be_updated.html", null ]
 ];

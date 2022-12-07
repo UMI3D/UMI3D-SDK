@@ -25,9 +25,15 @@ namespace umi3d.cdk.volumes
     /// </summary>
     public class OBJVolumeCell : AbstractVolumeCell
     {
+        /// <summary>
+        /// List of mesh that sum up to the volume.
+        /// </summary>
         public List<Mesh> meshes;
         public List<GameObject> parts;
 
+        /// <summary>
+        /// UMI3D id of the cell.
+        /// </summary>
         public ulong id;
 
         /// <inheritdoc/>

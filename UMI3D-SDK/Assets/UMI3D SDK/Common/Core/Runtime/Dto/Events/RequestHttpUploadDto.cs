@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Request to upload a file.
+    /// </summary>
     [System.Serializable]
     public class RequestHttpUploadDto : UMI3DDto
     {

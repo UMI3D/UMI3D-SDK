@@ -18,7 +18,10 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.utils.extrapolation;
+using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.utils.serialization;
 using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
@@ -26,9 +29,9 @@ using UnityEngine.Rendering;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// 
+    /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
-    public class UMI3DEnvironmentLoader : Singleton<UMI3DEnvironmentLoader>
+    public class UMI3DEnvironmentLoader : inetum.unityUtils.SingleBehaviour<UMI3DEnvironmentLoader>
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
@@ -67,23 +70,52 @@ namespace umi3d.cdk
             }
         }
 
+        public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id)
+        {
+            if (!Exists)
+                throw new Umi3dException("Do Not Exist");
+            if (Instance.entitywaited == null)
+                throw new Umi3dException("Do Not Exist");
+
+            UMI3DEntityInstance node = GetEntity(id);
+            if (node != null && node.IsLoaded)
+            {
+                return (node);
+            }
+            UMI3DEntityInstance loaded = null;
+            bool error = false;
+            bool finished = false;
+
+            Action<UMI3DEntityInstance> entityLoaded = (e) => { loaded = e; finished = true; };
+            Action entityFailedToLoad = () => { error = true; finished = true; };
+
+            WaitForAnEntityToBeLoaded(id, entityLoaded, entityFailedToLoad);
+
+            while (!finished)
+                await UMI3DAsyncManager.Yield();
+            if (error)
+                throw new Umi3dException("Entity Failed to be loaded");
+
+            return loaded;
+        }
+
         private static bool NotifyEntityToBeLoaded(ulong id)
         {
-            return Exists ? Instance.entityToBeLoaded.Add(id) : false;
+            return Exists && Instance.entityToBeLoaded.Add(id);
         }
 
         private static bool IsEntityToBeLoaded(ulong id)
         {
-            return Exists ? Instance.entityToBeLoaded.Contains(id) : false;
+            return Exists && Instance.entityToBeLoaded.Contains(id);
         }
         private static bool IsEntityToFailedBeLoaded(ulong id)
         {
-            return Exists ? Instance.entityFailedToBeLoaded.Contains(id) : false;
+            return Exists && Instance.entityFailedToBeLoaded.Contains(id);
         }
 
         private static bool RemoveEntityToFailedBeLoaded(ulong id)
         {
-            return Exists ? Instance.entityFailedToBeLoaded.Remove(id) : false;
+            return Exists && Instance.entityFailedToBeLoaded.Remove(id);
         }
 
         private static void NotifyEntityLoad(ulong id)
@@ -143,6 +175,13 @@ namespace umi3d.cdk
         /// <param name="collider">collider.</param>
         /// <returns></returns>
         public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : 0; }
+
+        /// <summary>
+        /// Get node id associated to <paramref name="t"/>.
+        /// </summary>
+        /// <param name="t"></param>
+        /// <returns></returns>
+        public static ulong GetNodeID(Transform t) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).transform == t).Key : 0; }
 
         /// <summary>
         /// Register a node instance.
@@ -206,29 +245,6 @@ namespace umi3d.cdk
         /// </summary>
         private GlTFEnvironmentDto environment;
 
-        /// <summary>
-        /// Number of UMI3D nodes.
-        /// = Number of scenes + Number of glTF nodes
-        /// </summary>
-        private float nodesToInstantiate = 0;
-
-        /// <summary>
-        /// Number of UMI3D nodes.
-        /// = Number of scenes + Number of glTF nodes
-        /// </summary>
-        private float instantiatedNodes = 0;
-
-        /// <summary>
-        /// Number of UMI3D nodes.
-        /// = Number of scenes + Number of glTF nodes
-        /// </summary>
-        private float resourcesToLoad = 0;
-
-        /// <summary>
-        /// Number of loaded resources.
-        /// </summary>
-        private float loadedResources = 0;
-
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
 
@@ -245,7 +261,9 @@ namespace umi3d.cdk
         {
             //UMI3DLogger.Log("GetBaseMaterial",scope);
             if (baseMaterial == null)
-                return null;
+            {
+                throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
+            }
             return new Material(baseMaterial);
         }
 
@@ -267,7 +285,7 @@ namespace umi3d.cdk
         /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
         public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material(newBaseMat); }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void Awake()
         {
             base.Awake();
@@ -278,23 +296,9 @@ namespace umi3d.cdk
         #region workflow
 
         /// <summary>
-        /// Indicates if a UMI3D environment has been loaded
-        /// </summary>
-        public bool started { get; private set; } = false;
-
-        /// <summary>
-        /// Indicates if the UMI3D environment's resources has been loaded
-        /// </summary>
-        public bool downloaded { get; private set; } = false;
-
-        /// <summary>
         /// Indicates if the UMI3D environment has been fully loaded
         /// </summary>
         public bool loaded { get; private set; } = false;
-
-        [System.Serializable]
-        public class ProgressListener : UnityEvent<float> { }
-        public ProgressListener onProgressChange = new ProgressListener();
 
         public UnityEvent onResourcesLoaded = new UnityEvent();
         public UnityEvent onEnvironmentLoaded = new UnityEvent();
@@ -304,12 +308,6 @@ namespace umi3d.cdk
         /// </summary>
         public bool isEnvironmentLoaded = false;
 
-
-        public void NotifyLoad()
-        {
-            onProgressChange.Invoke(0);
-        }
-
         /// <summary>
         /// Load the Environment.
         /// </summary>
@@ -317,68 +315,111 @@ namespace umi3d.cdk
         /// <param name="onSuccess">Finished callback.</param>
         /// <param name="onError">Error callback.</param>
         /// <returns></returns>
-        public IEnumerator Load(GlTFEnvironmentDto dto, Action onSuccess, Action<string> onError)
+        public async Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress)
         {
-            onProgressChange.Invoke(0.1f);
+            Progress downloadingProgress = new Progress(0, "Downloading");
+            Progress ReadingDataProgress = new Progress(2, "Reading Data");
+            MultiProgress loadingProgress = new MultiProgress("Loading");
+            Progress endProgress = new Progress(6, "Cleaning the room");
+            LoadProgress.Add(downloadingProgress);
+            LoadProgress.Add(ReadingDataProgress);
+            LoadProgress.Add(loadingProgress);
+            LoadProgress.Add(endProgress);
+
+            if (baseMaterial == null)
+            {
+                throw new Exception("Base Material on UMI3DEnvironmentLoader should never be null");
+            }
+
             isEnvironmentLoaded = false;
 
             environment = dto;
             RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
-            nodesToInstantiate = dto.scenes.Count;
-            foreach (GlTFSceneDto sce in dto.scenes)
-                nodesToInstantiate += sce.nodes.Count;
-
             //
             // Load resources
             //
-            StartCoroutine(LoadResources(dto));
-            while (!downloaded)
-            {
-                onProgressChange.Invoke(resourcesToLoad == 0 ? 0.2f : 0.1f + loadedResources / resourcesToLoad * 0.4f);
-                yield return null;
-            }
-            onProgressChange.Invoke(0.5f);
+            await LoadResources(dto, downloadingProgress);
+
             onResourcesLoaded.Invoke();
 
+            ReadingDataProgress.AddComplete();
             //
             // Instantiate nodes
             //
+            await ReadUMI3DExtension(dto, null);
+            ReadingDataProgress.AddComplete();
+            await InstantiateNodes(loadingProgress);
 
-            ReadUMI3DExtension(dto, null);
+            endProgress.AddComplete();
+            await UMI3DAsyncManager.Delay(200);
 
-            InstantiateNodes();
-            while (!loaded)
-            {
-                onProgressChange.Invoke(nodesToInstantiate == 0 ? 0.6f : 0.5f + instantiatedNodes / nodesToInstantiate * 0.4f);
-                yield return null;
-            }
-
-            onProgressChange.Invoke(0.9f);
-            yield return new WaitForSeconds(0.3f);
-            isEnvironmentLoaded = true;
-            Action onFinish = () =>
-            {
-                StartCoroutine(Load());
-            };
-
-            IEnumerator Load()
-            {
-                onProgressChange.Invoke(1f);
-                yield return new WaitForSeconds(0.3f);
-                onEnvironmentLoaded.Invoke();
-                yield return null;
-                onSuccess.Invoke();
-            }
-
-
+            endProgress.AddComplete();
             if (UMI3DVideoPlayerLoader.HasVideoToLoad)
             {
-                UMI3DVideoPlayerLoader.LoadVideoPlayers(() => { onFinish(); });
+                endProgress.SetStatus("Loading videos");
+                Debug.Log("wait for video");
+                await UMI3DVideoPlayerLoader.LoadVideoPlayers();
+                Debug.Log("wait for video end");
+            }
+            endProgress.AddComplete();
+
+            endProgress.SetStatus("Rendering Probes");
+            if (QualitySettings.realtimeReflectionProbes)
+            {
+                await RenderProbes();
             }
             else
             {
-                onFinish();
+                Debug.Log("Rendering probes not enabled on this browser.");
             }
+            endProgress.AddComplete();
+            await UMI3DAsyncManager.Yield();
+
+            endProgress.SetStatus("Updating the world");
+            await WaitForFirstTransaction();
+            endProgress.AddComplete();
+            await UMI3DAsyncManager.Yield();
+
+            isEnvironmentLoaded = true;
+            onEnvironmentLoaded.Invoke();
+
+            await UMI3DAsyncManager.Yield();
+            endProgress.AddComplete();
+        }
+
+        protected virtual Task WaitForFirstTransaction()
+        {
+            return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// Renders all <see cref="ReflectionProbe"/> set to <see cref=" ReflectionProbeMode.Realtime"/> 
+        /// and <see cref="ReflectionProbeRefreshMode.OnAwake"/> of the environment.
+        /// </summary>
+        private async Task RenderProbes()
+        {
+            List<(ReflectionProbe probe, int id)> probeList = new List<(ReflectionProbe, int)>();
+
+            foreach (var entity in entities)
+            {
+                if (entity.Value.dto is GlTFSceneDto && entity.Value is UMI3DNodeInstance scene)
+                {
+                    foreach (var probe in scene.gameObject.GetComponentsInChildren<ReflectionProbe>())
+                    {
+                        if (probe.mode == ReflectionProbeMode.Realtime && probe.refreshMode == ReflectionProbeRefreshMode.OnAwake)
+                        {
+                            var id = probe.RenderProbe();
+                            probeList.Add((probe, id));
+                        }
+                    }
+                }
+            }
+            await Task.WhenAll(probeList.Select(
+                async p =>
+                {
+                    while (!p.probe.IsFinishedRendering(p.id))
+                        await UMI3DAsyncManager.Yield();
+                }));
         }
 
         #endregion
@@ -388,15 +429,12 @@ namespace umi3d.cdk
         /// <summary>
         /// Load the environment's resources
         /// </summary>
-        private IEnumerator LoadResources(GlTFEnvironmentDto dto)
+        private async Task LoadResources(GlTFEnvironmentDto dto, Progress progress)
         {
-            started = true;
-            downloaded = false;
             List<string> ids = dto.extensions.umi3d.LibrariesId;
             foreach (GlTFSceneDto scene in dto.scenes)
                 ids.AddRange(scene.extensions.umi3d.LibrariesId);
-            yield return StartCoroutine(UMI3DResourcesManager.LoadLibraries(ids, (i) => { loadedResources = i; }, (i) => { resourcesToLoad = i; }));
-            downloaded = true;
+            await UMI3DResourcesManager.LoadLibraries(ids, progress);
         }
 
         #endregion
@@ -414,10 +452,10 @@ namespace umi3d.cdk
         /// <summary>
         /// Load the environment's resources
         /// </summary>
-        private void InstantiateNodes()
+        private async Task InstantiateNodes(MultiProgress progress)
         {
-            Action finished = () => { loaded = true; };
-            StartCoroutine(_InstantiateNodes(environment.scenes, finished));
+            await _InstantiateNodes(environment.scenes, progress);
+            loaded = true;
         }
 
         /// <summary>
@@ -425,30 +463,29 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="scenes">scenes to loads</param>
         /// <returns></returns>
-        private IEnumerator _InstantiateNodes(List<GlTFSceneDto> scenes, Action finished)
+        private async Task _InstantiateNodes(List<GlTFSceneDto> scenes, MultiProgress progress)
         {
+
             //Load scenes without hierarchy
-            foreach (GlTFSceneDto scene in scenes)
+            await Task.WhenAll(scenes.Select(async scene =>
             {
-                float tmpLoadedNodes = instantiatedNodes;
-                bool isFinished = false;
-                float total = 0;
-                sceneLoader.LoadGlTFScene(scene, () => isFinished = true, (i) => total = i, (i) => instantiatedNodes = tmpLoadedNodes + i * 0.5f);
-                yield return new WaitUntil(() => isFinished == true);
-                instantiatedNodes = tmpLoadedNodes + total * 0.5f;
-            }
-            int count = 0;
+                Progress progress1 = new Progress(0, $"Load scene {scene.name}");
+                progress.Add(progress1);
+                await sceneLoader.LoadGlTFScene(scene, progress1);
+
+            }));
             //Organize scenes
-            foreach (GlTFSceneDto scene in scenes)
+            await Task.WhenAll(scenes.Select(async scene =>
             {
-                count += 1;
+                Progress progress1 = new Progress(2, $"Generate scene {scene.name}");
+                progress.Add(progress1);
+                progress1.AddComplete();
                 var node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject, () => { count -= 1; instantiatedNodes += 0.5f; }, (s) => { count -= 1; UMI3DLogger.LogWarning(s, scope); });
+                await sceneLoader.ReadUMI3DExtension(umi3dScene, node.gameObject);
+                progress1.AddComplete();
                 node.gameObject.SetActive(true);
-            }
-            yield return new WaitUntil(() => count <= 0);
-            finished.Invoke();
+            }));
         }
 
         #endregion
@@ -458,14 +495,15 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        public static void LoadEntity(IEntity entity, Action performed)
+        public static async Task LoadEntity(IEntity entity)
         {
-            if (Exists) Instance._LoadEntity(entity, performed);
+            if (Exists) await Instance._LoadEntity(entity);
         }
 
-        public static void LoadEntity(ByteContainer container, Action performed)
+        public static async Task LoadEntity(ByteContainer container)
         {
-            if (Exists) Instance._LoadEntity(container, performed);
+            if (Exists)
+                await Instance._LoadEntity(container);
         }
 
         /// <summary>
@@ -473,43 +511,50 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        private void _LoadEntity(IEntity entity, Action performed)
+        private async Task _LoadEntity(IEntity entity)
         {
-            switch (entity)
+            try
             {
-                case GlTFSceneDto scene:
-                    StartCoroutine(_InstantiateNodes(new List<GlTFSceneDto>() { scene }, performed));
-                    break;
-                case GlTFNodeDto node:
-                    StartCoroutine(nodeLoader.LoadNodes(new List<GlTFNodeDto>() { node }, performed));
-                    break;
-                case AssetLibraryDto library:
-                    UMI3DResourcesManager.DownloadLibrary(library,
-                        UMI3DClientServer.Media.name,
-                        () =>
+                switch (entity)
+                {
+                    case GlTFSceneDto scene:
+                        await _InstantiateNodes(new List<GlTFSceneDto>() { scene }, new MultiProgress("Load Entity"));
+                        break;
+                    case GlTFNodeDto node:
+                        await nodeLoader.LoadNodes(new List<GlTFNodeDto>() { node }, new Progress(0, "Load Entity"));
+                        break;
+                    case AssetLibraryDto library:
+                        await UMI3DResourcesManager.DownloadLibrary(library, UMI3DClientServer.Media.name, new MultiProgress("Load Entity"));
+                        await UMI3DResourcesManager.LoadLibrary(library.libraryId);
+                        break;
+                    case AbstractEntityDto dto:
+                        await Parameters.ReadUMI3DExtension(dto, null);
+                        break;
+                    case GlTFMaterialDto matDto:
+                        Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
                         {
-                            UMI3DResourcesManager.LoadLibrary(library.libraryId, performed);
+
+                            if (matDto.name != null && matDto.name.Length > 0)
+                                m.name = matDto.name;
+                            //register the material
+                            if (m == null)
+                            {
+                                RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, new List<Material>()).NotifyLoaded();
+                            }
+                            else
+                            {
+                                RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
+                            }
                         });
-                    break;
-                case AbstractEntityDto dto:
-                    Parameters.ReadUMI3DExtension(dto, null, performed, (s) => { UMI3DLogger.Log(s, scope); performed.Invoke(); });
-                    break;
-                case GlTFMaterialDto matDto:
-                    Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
-                    {
-
-                        if (matDto.name != null && matDto.name.Length > 0)
-                            m.name = matDto.name;
-                        //register the material
-                        RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
-                        performed.Invoke();
-                    });
-                    break;
-                default:
-                    UMI3DLogger.Log($"load entity fail missing case {entity.GetType()}", scope);
-                    performed.Invoke();
-                    break;
-
+                        break;
+                    default:
+                        UMI3DLogger.Log($"load entity fail missing case {entity.GetType()}", scope);
+                        break;
+                }
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
             }
         }
 
@@ -518,32 +563,32 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        private void _LoadEntity(ByteContainer container, Action performed)
+        private async Task _LoadEntity(ByteContainer container)
         {
             List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
             ids.ForEach(id => NotifyEntityToBeLoaded(id));
-            int count = ids.Count;
-            int performedCount = 0;
-            Action performed2 = () => { performedCount++; if (performedCount == count) performed.Invoke(); };
-            Action<LoadEntityDto> callback = (load) =>
+
+            try
             {
-                foreach (IEntity item in load.entities)
-                {
-                    if (item is MissingEntityDto missing)
+                var load = await UMI3DClientServer.GetEntity(ids);
+
+                await Task.WhenAll(
+                    load.entities.Select(async item =>
                     {
-                        NotifyEntityFailedToLoad(missing.id);
-                        UMI3DLogger.Log($"Get entity [{missing.id}] failed : {missing.reason}", scope);
-                    }
-                    else
-                        LoadEntity(item, performed2);
-                }
-            };
-            Action<string> error = (s) =>
+                        if (item is MissingEntityDto missing)
+                        {
+                            NotifyEntityFailedToLoad(missing.id);
+                            UMI3DLogger.Log($"Get entity [{missing.id}] failed : {missing.reason}", scope);
+                        }
+                        else
+                            await LoadEntity(item);
+                    }));
+
+            }
+            catch (Exception e)
             {
-                UMI3DLogger.LogError(s, scope);
-                performed2.Invoke();
-            };
-            UMI3DClientServer.GetEntity(ids, callback, error);
+                UMI3DLogger.LogException(e, scope);
+            }
         }
 
         /// <summary>
@@ -551,11 +596,17 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entityId"></param>
         /// <param name="performed"></param>
-        public static void DeleteEntity(ulong entityId, Action performed)
+        public static async Task DeleteEntity(ulong entityId)
         {
             if (Instance.entities.ContainsKey(entityId))
             {
                 UMI3DEntityInstance entity = Instance.entities[entityId];
+
+                if (entity.Object is UMI3DAbstractAnimation animation)
+                {
+                    animation.Stop();
+                }
+
                 if (entity is UMI3DNodeInstance)
                 {
                     var node = entity as UMI3DNodeInstance;
@@ -570,7 +621,8 @@ namespace umi3d.cdk
             }
             else if (UMI3DEnvironmentLoader.IsEntityToBeLoaded(entityId))
             {
-                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) => DeleteEntity(entityId, null));
+                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId);
+                await DeleteEntity(entityId);
             }
             else if (UMI3DEnvironmentLoader.IsEntityToFailedBeLoaded(entityId))
             {
@@ -580,23 +632,38 @@ namespace umi3d.cdk
             {
                 UMI3DLogger.LogError($"Entity [{entityId}] To Destroy Not Found And Not in Entities to be loaded", scope);
             }
-
-            performed?.Invoke();
         }
 
         /// <summary>
         /// Clear an environement and make the client ready to load a new environment.
         /// </summary>
-        public static void Clear()
+        public static void Clear(bool clearCache = true)
         {
             Instance.entityFilters.Clear();
 
             foreach (ulong entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
-                DeleteEntity(entity, null);
+                DeleteEntity(entity);
             }
-            UMI3DResourcesManager.Instance.ClearCache();
-            Instance.isEnvironmentLoaded = false;
+            if (clearCache)
+                UMI3DResourcesManager.Instance.ClearCache();
+
+            Instance.InternalClear();
+        }
+
+        protected virtual void InternalClear()
+        {
+            UMI3DVideoPlayerLoader.Clear();
+
+            entities.Clear();
+            entitywaited.Clear();
+            entityToBeLoaded.Clear();
+            Instance.entityFailedToBeLoaded.Clear();
+
+            isEnvironmentLoaded = false;
+
+            environment = null;
+            loaded = false;
         }
 
         /// <summary>
@@ -604,7 +671,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="node"></param>
-        public virtual void ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node)
+        public virtual async Task ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node)
         {
             UMI3DEnvironmentDto extension = dto?.extensions?.umi3d;
             if (extension != null)
@@ -615,7 +682,8 @@ namespace umi3d.cdk
                     LoadDefaultMaterial(extension.defaultMaterial);
                 }
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
-                    Parameters.ReadUMI3DExtension(scene, node, null, null);
+                    await Parameters.ReadUMI3DExtension(scene, node);
+
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor;
                 RenderSettings.ambientEquatorColor = extension.horizontalColor;
@@ -623,9 +691,8 @@ namespace umi3d.cdk
                 RenderSettings.ambientIntensity = extension.ambientIntensity;
                 if (extension.skybox != null)
                 {
-                    Parameters.loadSkybox(extension.skybox);
+                    Parameters.LoadSkybox(extension.skybox, extension.skyboxType, extension.skyboxRotation, extension.skyboxExposure);
                 }
-
             }
         }
 
@@ -633,25 +700,16 @@ namespace umi3d.cdk
         /// Load DefaultMaterial from matDto
         /// </summary>
         /// <param name="matDto"></param>
-        private void LoadDefaultMaterial(ResourceDto matDto)
+        private async void LoadDefaultMaterial(ResourceDto matDto)
         {
             FileDto fileToLoad = Parameters.ChooseVariant(matDto.variants);
             if (fileToLoad == null) return;
-            string url = fileToLoad.url;
             string ext = fileToLoad.extension;
-            string authorization = fileToLoad.authorization;
             IResourcesLoader loader = Parameters.SelectLoader(ext);
             if (loader != null)
             {
-                UMI3DResourcesManager.LoadFile(
-                    UMI3DGlobalID.EnvironementId,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (mat) => SetBaseMaterial((Material)mat),
-                    (e) => UMI3DLogger.LogWarning(e.Message, scope),
-                    loader.DeleteObject
-                    );
+                var mat = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                SetBaseMaterial((Material)mat);
             }
         }
 
@@ -661,33 +719,18 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (Exists)
-                return Instance._SetUMI3DPorperty(entity, property);
+                return Instance._SetUMI3DProperty(entity, property);
             else
                 return false;
         }
 
-        public static bool ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
+        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (Exists)
-                return Instance._ReadUMI3DPorperty(ref value, propertyKey, container);
-            else
-                return false;
-        }
-
-
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">Entity to update.</param>
-        /// <param name="property">Property containing the new value.</param>
-        /// <returns></returns>
-        public static bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            if (Exists)
-                return Instance._SetUMI3DPorperty(entity, operationId, propertyKey, container);
+                return Instance._ReadUMI3DProperty(ref value, propertyKey, container);
             else
                 return false;
         }
@@ -699,15 +742,55 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        {
+            if (Exists)
+                return Instance._SetUMI3DProperty(entity, operationId, propertyKey, container);
+            else
+                return false;
+        }
+
+
+        /// <summary>
+        /// Update a property.
+        /// </summary>
+        /// <param name="entity">Entity to update.</param>
+        /// <param name="property">Property containing the new value.</param>
+        /// <returns></returns>
+        protected virtual bool _SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null) return false;
-            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
             if (dto == null) return false;
+
             switch (property.property)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
                     return Parameters.SetUMI3DProperty(entity, property);
+                case UMI3DPropertyKeys.AmbientType:
+                    RenderSettings.ambientMode = (AmbientMode)property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyColor:
+                    RenderSettings.ambientSkyColor = (SerializableColor)property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientHorizontalColor:
+                    RenderSettings.ambientEquatorColor = (SerializableColor)property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientGroundColor:
+                    RenderSettings.ambientGroundColor = (SerializableColor)property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientIntensity:
+                    RenderSettings.ambientIntensity = (float)property.value;
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxImage:
+                    if (dto.skybox != null)
+                    {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
+                    }
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxRotation:
+                case UMI3DPropertyKeys.AmbientSkyboxExposure:
+                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
                 default:
                     return false;
             }
@@ -720,22 +803,47 @@ namespace umi3d.cdk
         /// <param name="entity">Entity to update.</param>
         /// <param name="property">Property containing the new value.</param>
         /// <returns></returns>
-        protected virtual bool _SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        protected virtual bool _SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
-            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
             if (dto == null) return false;
 
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
                     return Parameters.SetUMI3DProperty(entity, operationId, propertyKey, container);
+                case UMI3DPropertyKeys.AmbientType:
+                    RenderSettings.ambientMode = (AmbientMode)UMI3DNetworkingHelper.Read<int>(container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyColor:
+                    RenderSettings.ambientSkyColor = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientHorizontalColor:
+                    RenderSettings.ambientEquatorColor = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientGroundColor:
+                    RenderSettings.ambientGroundColor = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientIntensity:
+                    RenderSettings.ambientIntensity = UMI3DNetworkingHelper.Read<float>(container);
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxImage:
+                    dto.skybox = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
+                    return true;
+                case UMI3DPropertyKeys.AmbientSkyboxRotation:
+                    dto.skyboxRotation = UMI3DNetworkingHelper.Read<float>(container);
+                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
+                case UMI3DPropertyKeys.AmbientSkyboxExposure:
+                    dto.skyboxExposure = UMI3DNetworkingHelper.Read<float>(container);
+                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, dto.skyboxExposure);
                 default:
                     return false;
             }
         }
 
-        protected virtual bool _ReadUMI3DPorperty(ref object value, uint propertyKey, ByteContainer container)
+        protected virtual bool _ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
             {
@@ -756,7 +864,8 @@ namespace umi3d.cdk
             if (!Exists) return;
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.entityId, (e) =>
             {
-                SetEntity(e, dto);
+                if (!SetEntity(e, dto))
+                    UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + dto.entityId + "   propKey : " + dto.property, scope);
             });
 
 
@@ -771,7 +880,8 @@ namespace umi3d.cdk
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                SetEntity(e, operationId, entityId, propertyKey, container);
+                if (!SetEntity(e, operationId, entityId, propertyKey, container))
+                    UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
             }
             );
         }
@@ -786,15 +896,12 @@ namespace umi3d.cdk
         {
             if (Instance.entityFilters.ContainsKey(dto.entityId) && Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
             {
-                float now = Time.time;
-                Instance.entityFilters[dto.entityId][dto.property].measuresPerSecond = 1 / (now - Instance.entityFilters[dto.entityId][dto.property].lastMessageTime);
-                Instance.entityFilters[dto.entityId][dto.property].lastMessageTime = now;
-                Instance.PropertyKalmanUpdate(Instance.entityFilters[dto.entityId][dto.property], dto.value);
+                Instance.entityFilters[dto.entityId][dto.property].AddMeasure(dto.value.Deserialize());
                 return true;
             }
             else
             {
-                if (SetUMI3DPorperty(node, dto)) return true;
+                if (SetUMI3DProperty(node, dto)) return true;
                 if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
                 return Parameters.SetUMI3DProperty(node, dto);
             }
@@ -810,25 +917,22 @@ namespace umi3d.cdk
         {
             if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(propertyKey))
             {
-                float now = Time.time;
-                Instance.entityFilters[entityId][propertyKey].measuresPerSecond = 1 / (now - Instance.entityFilters[entityId][propertyKey].lastMessageTime);
-                Instance.entityFilters[entityId][propertyKey].lastMessageTime = now;
                 object value = null;
                 ReadValueEntity(ref value, propertyKey, container);
-                Instance.PropertyKalmanUpdate(Instance.entityFilters[entityId][propertyKey], value);
+                Instance.entityFilters[entityId][propertyKey].AddMeasure(value.Deserialize());
                 return true;
             }
             else
             {
-                if (SetUMI3DPorperty(node, operationId, propertyKey, container)) return true;
+                if (SetUMI3DProperty(node, operationId, propertyKey, container)) return true;
                 if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, operationId, propertyKey, container)) return true;
                 return Parameters.SetUMI3DProperty(node, operationId, propertyKey, container);
             }
         }
 
-        public static bool ReadValueEntity(ref object value, uint propertyKey, ByteContainer container)
+        private static bool ReadValueEntity(ref object value, uint propertyKey, ByteContainer container)
         {
-            if (ReadUMI3DPorperty(ref value, propertyKey, container)) return true;
+            if (ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
             return Parameters.ReadUMI3DProperty(ref value, propertyKey, container);
         }
@@ -836,7 +940,7 @@ namespace umi3d.cdk
 
         private static bool SimulatedSetEntity(UMI3DEntityInstance node, SetEntityPropertyDto dto)
         {
-            if (SetUMI3DPorperty(node, dto)) return true;
+            if (SetUMI3DProperty(node, dto)) return true;
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(node, dto)) return true;
             return Parameters.SetUMI3DProperty(node, dto);
         }
@@ -869,7 +973,7 @@ namespace umi3d.cdk
                 catch (Exception e)
                 {
                     UMI3DLogger.LogWarning("SetEntity not apply on this object, id = " + id + " ,  property = " + dto.property, scope);
-                    UMI3DLogger.LogWarning(e, scope);
+                    UMI3DLogger.LogException(e, scope);
                 }
             }
             return true;
@@ -893,14 +997,15 @@ namespace umi3d.cdk
                 {
                     WaitForAnEntityToBeLoaded(id, (e) =>
                     {
-                        if (!SetEntity(e, operationId, id, propertyKey, container))
-                            UMI3DLogger.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {container}", scope | DebugScope.Bytes);
+                        var newContainer = new ByteContainer(container);
+                        if (!SetEntity(e, operationId, id, propertyKey, newContainer))
+                            UMI3DLogger.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {newContainer}", scope | DebugScope.Bytes);
                     });
                 }
                 catch (Exception e)
                 {
-                    UMI3DLogger.LogWarning($"SetEntity not apply on this object, id = {  id },  operation = { operationId } ,  property = { propertyKey }", scope | DebugScope.Bytes);
-                    UMI3DLogger.LogWarning(e, scope);
+                    UMI3DLogger.LogWarning($"SetEntity not apply on this object, id = {id},  operation = {operationId} ,  property = {propertyKey}", scope | DebugScope.Bytes);
+                    UMI3DLogger.LogException(e, scope);
                 }
             }
             return true;
@@ -908,53 +1013,9 @@ namespace umi3d.cdk
 
         #region interpolation
 
-        private abstract class AbstractKalmanEntity
-        {
-            public float measuresPerSecond;
-            public float lastMessageTime;
-            public ulong entityId;
-            public ulong property;
-            public object regressed_value;
 
-            public AbstractKalmanEntity(double q, double r) { }
-        }
 
-        private class KalmanEntity : AbstractKalmanEntity
-        {
-            public UMI3DUnscentedKalmanFilter KalmanFilter;
-            public double[] estimations;
-            public double[] previous_prediction;
-            public double[] prediction;
-
-            public KalmanEntity(double q, double r) : base(q, r)
-            {
-                KalmanFilter = new UMI3DUnscentedKalmanFilter(q, r);
-                estimations = new double[] { };
-                previous_prediction = new double[] { };
-                prediction = new double[] { };
-                lastMessageTime = 0;
-            }
-        }
-
-        private class KalmanRotationEntity : AbstractKalmanEntity
-        {
-            // forward, up
-            public Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter> KalmanFilters;
-            public Tuple<double[], double[]> estimations;
-            public Tuple<double[], double[]> previous_prediction;
-            public Tuple<double[], double[]> prediction;
-
-            public KalmanRotationEntity(double q, double r) : base(q, r)
-            {
-                KalmanFilters = new Tuple<UMI3DUnscentedKalmanFilter, UMI3DUnscentedKalmanFilter>(new UMI3DUnscentedKalmanFilter(q, r), new UMI3DUnscentedKalmanFilter(q, r));
-                estimations = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                previous_prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                prediction = new Tuple<double[], double[]>(new double[] { }, new double[] { });
-                lastMessageTime = 0;
-            }
-        }
-
-        private readonly Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractKalmanEntity>>();
+        private readonly Dictionary<ulong, Dictionary<ulong, AbstractExtrapolator>> entityFilters = new Dictionary<ulong, Dictionary<ulong, AbstractExtrapolator>>();
 
         private void Update()
         {
@@ -963,15 +1024,15 @@ namespace umi3d.cdk
                 foreach (ulong property in Instance.entityFilters[entityId].Keys)
                 {
                     UMI3DEntityInstance node = UMI3DEnvironmentLoader.GetEntity(entityId);
-                    AbstractKalmanEntity kalmanEntity = Instance.entityFilters[entityId][property];
+                    AbstractExtrapolator extrapolator = Instance.entityFilters[entityId][property];
 
-                    Instance.PropertyRegression(kalmanEntity);
+                    extrapolator.UpdateRegressedValue();
 
                     var entityPropertyDto = new SetEntityPropertyDto()
                     {
-                        entityId = kalmanEntity.entityId,
-                        property = kalmanEntity.property,
-                        value = kalmanEntity.regressed_value
+                        entityId = extrapolator.entityId,
+                        property = extrapolator.property,
+                        value = extrapolator.GetRegressedValue().ToSerializable()
                     };
 
                     SimulatedSetEntity(node, entityPropertyDto);
@@ -989,7 +1050,7 @@ namespace umi3d.cdk
             if (!Exists) return false;
             WaitForAnEntityToBeLoaded(dto.entityId, (e) =>
             {
-                StartInterpolation(e, dto);
+                Instance.StartInterpolation(e, dto.entityId, dto.property, dto.startValue);
             }
             );
             return true;
@@ -1005,111 +1066,52 @@ namespace umi3d.cdk
             if (!Exists) return false;
             ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
             uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
-            uint frequence = UMI3DNetworkingHelper.Read<uint>(container);
             WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                StartInterpolation(e, entityId, propertyKey, frequence, container);
+                object value = null;
+                ReadValueEntity(ref value, propertyKey, container);
+                Instance.StartInterpolation(e, entityId, propertyKey, value.Deserialize());
             }
             );
             return true;
         }
 
-        /// <summary>
-        /// Handle StartInterpolationPropertyDto operation.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public static bool StartInterpolation(UMI3DEntityInstance node, StartInterpolationPropertyDto dto)
+        protected bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, ulong propertyKey, object startValue)
         {
-            if (!Instance.entityFilters.ContainsKey(dto.entityId))
+            if (!entityFilters.ContainsKey(entityId))
             {
-                Instance.entityFilters.Add(dto.entityId, new Dictionary<ulong, AbstractKalmanEntity>());
+                entityFilters.Add(entityId, new Dictionary<ulong, AbstractExtrapolator>());
             }
 
-            if (!Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
+            if (!entityFilters[entityId].ContainsKey(propertyKey))
             {
-
-                AbstractKalmanEntity newKalmanEntity;
-
-                if (dto.property.Equals(UMI3DPropertyKeys.Rotation))
+                AbstractExtrapolator newExtrapolator;
+                if (propertyKey == UMI3DPropertyKeys.Rotation)
                 {
-                    newKalmanEntity = new KalmanRotationEntity(50, 0.5)
+                    newExtrapolator = new QuaternionLinearDelayedExtrapolator()
                     {
-                        lastMessageTime = Time.time,
-                        entityId = dto.entityId,
-                        property = dto.property
+                        entityId = entityId,
+                        property = propertyKey
                     };
                 }
                 else
                 {
-                    newKalmanEntity = new KalmanEntity(50, 0.5)
+                    newExtrapolator = new Vector3LinearDelayedExtrapolator()
                     {
-                        lastMessageTime = Time.time,
-                        entityId = dto.entityId,
-                        property = dto.property
-                    };
-                }
-
-                Instance.entityFilters[dto.entityId].Add(dto.property, newKalmanEntity);
-
-                Instance.PropertyKalmanUpdate(newKalmanEntity, dto.startValue);
-
-                var entityPropertyDto = new SetEntityPropertyDto()
-                {
-                    entityId = dto.entityId,
-                    property = dto.property,
-                    value = dto.startValue
-                };
-
-                SetEntity(node, entityPropertyDto);
-                return true;
-            }
-            return false;
-        }
-
-        public static bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, uint frequence, ByteContainer container)
-        {
-            if (!Instance.entityFilters.ContainsKey(entityId))
-            {
-                Instance.entityFilters.Add(entityId, new Dictionary<ulong, AbstractKalmanEntity>());
-            }
-
-            if (!Instance.entityFilters[entityId].ContainsKey(property))
-            {
-                AbstractKalmanEntity newKalmanEntity;
-
-                if (property.Equals(UMI3DPropertyKeys.Rotation))
-                {
-                    newKalmanEntity = new KalmanRotationEntity(50, 0.5)
-                    {
-                        lastMessageTime = Time.time,
                         entityId = entityId,
-                        property = property
-                    };
-                }
-                else
-                {
-                    newKalmanEntity = new KalmanEntity(50, 0.5)
-                    {
-                        lastMessageTime = Time.time,
-                        entityId = entityId,
-                        property = property
+                        property = propertyKey
                     };
                 }
 
-                Instance.entityFilters[entityId].Add(property, newKalmanEntity);
+                entityFilters[entityId].Add(propertyKey, newExtrapolator);
 
-                object value = null;
-                ReadValueEntity(ref value, property, container);
-
-                Instance.PropertyKalmanUpdate(newKalmanEntity, value);
+                newExtrapolator.AddMeasure(startValue);
 
                 var entityPropertyDto = new SetEntityPropertyDto()
                 {
                     entityId = entityId,
-                    property = property,
-                    value = value
+                    property = propertyKey,
+                    value = startValue.ToSerializable()
                 };
 
                 SetEntity(node, entityPropertyDto);
@@ -1128,7 +1130,7 @@ namespace umi3d.cdk
             if (!Exists) return false;
             WaitForAnEntityToBeLoaded(dto.entityId, e =>
             {
-                StopInterpolation(e, dto);
+                Instance.StopInterpolation(e, dto.entityId, dto.property, dto.stopValue);
             }
              );
             return true;
@@ -1141,53 +1143,25 @@ namespace umi3d.cdk
             uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
             WaitForAnEntityToBeLoaded(entityId, (e) =>
             {
-                StopInterpolation(e, entityId, propertyKey, container);
+                object value = null;
+                ReadValueEntity(ref value, propertyKey, container);
+                Instance.StopInterpolation(e, entityId, propertyKey, value.Deserialize());
             });
 
             return true;
         }
 
-        /// <summary>
-        /// Handle StopInterpolationPropertyDto operation.
-        /// </summary>
-        /// <param name="node"></param>
-        /// <param name="dto"></param>
-        /// <returns></returns>
-        public static bool StopInterpolation(UMI3DEntityInstance node, StopInterpolationPropertyDto dto)
+
+        protected bool StopInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, object stopValue)
         {
-            if (Instance.entityFilters.ContainsKey(dto.entityId) && Instance.entityFilters[dto.entityId].ContainsKey(dto.property))
+            if (entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(property))
             {
-                Instance.entityFilters[dto.entityId].Remove(dto.property);
-                var entityPropertyDto = new SetEntityPropertyDto()
-                {
-                    entityId = dto.entityId,
-                    property = dto.property,
-                    value = dto.stopValue
-                };
-
-                SetEntity(node, entityPropertyDto);
-
-                return true;
-            }
-
-            UMI3DLogger.LogWarning("Need to determine what happens when not in interpolation", scope);
-
-            return false;
-        }
-
-        public static bool StopInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, ByteContainer container)
-        {
-            if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(property))
-            {
-                object value = null;
-                ReadValueEntity(ref value, property, container);
-
                 Instance.entityFilters[entityId].Remove(property);
                 var entityPropertyDto = new SetEntityPropertyDto()
                 {
                     entityId = entityId,
                     property = property,
-                    value = value
+                    value = stopValue.ToSerializable()
                 };
 
                 SetEntity(node, entityPropertyDto);
@@ -1197,206 +1171,34 @@ namespace umi3d.cdk
             return false;
         }
 
-        private void PropertyRegression(AbstractKalmanEntity kalmanEntity)
+        #endregion
+
+        #region Navmesh
+
+        public delegate void NodeNavmeshModifiedDelegate(UMI3DNodeInstance node);
+
+        public event NodeNavmeshModifiedDelegate onNodePartOfNavmeshSet;
+
+        /// <summary>
+        /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its part of navmesh status.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="isPartOfNavmesh"></param>
+        public void SetNodePartOfNavmesh(UMI3DNodeInstance node)
         {
-            if (kalmanEntity.property.Equals(UMI3DPropertyKeys.Rotation))
-            {
-                if ((kalmanEntity as KalmanRotationEntity).previous_prediction.Item1.Length > 0)
-                {
-                    double check = kalmanEntity.lastMessageTime;
-                    double now = Time.time;
-
-                    double delta = now - check;
-
-                    if (delta * kalmanEntity.measuresPerSecond <= 1)
-                    {
-                        double fw_value_x = ((kalmanEntity as KalmanRotationEntity).prediction.Item1[0] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[0]) * kalmanEntity.measuresPerSecond * delta + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[0];
-                        double fw_value_y = ((kalmanEntity as KalmanRotationEntity).prediction.Item1[1] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[1]) * kalmanEntity.measuresPerSecond * delta + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[1];
-                        double fw_value_z = ((kalmanEntity as KalmanRotationEntity).prediction.Item1[2] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[2]) * kalmanEntity.measuresPerSecond * delta + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item1[2];
-
-                        double up_value_x = ((kalmanEntity as KalmanRotationEntity).prediction.Item2[0] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[0]) * kalmanEntity.measuresPerSecond * delta + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[0];
-                        double up_value_y = ((kalmanEntity as KalmanRotationEntity).prediction.Item2[1] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[1]) * kalmanEntity.measuresPerSecond * delta + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[1];
-                        double up_value_z = ((kalmanEntity as KalmanRotationEntity).prediction.Item2[2] - (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[2]) * kalmanEntity.measuresPerSecond * delta + (kalmanEntity as KalmanRotationEntity).previous_prediction.Item2[2];
-
-                        (kalmanEntity as KalmanRotationEntity).estimations = new Tuple<double[], double[]>(new double[] { fw_value_x, fw_value_y, fw_value_z }, new double[] { up_value_x, up_value_y, up_value_z });
-
-                        var res = Quaternion.LookRotation(new Vector3((float)fw_value_x, (float)fw_value_y, (float)fw_value_z), new Vector3((float)up_value_x, (float)up_value_y, (float)up_value_z));
-
-                        kalmanEntity.regressed_value = new SerializableVector4(res.x, res.y, res.z, res.w);
-                    }
-                }
-            }
-
-            else
-            {
-                if ((kalmanEntity as KalmanEntity).previous_prediction.Length > 0)
-                {
-                    double check = kalmanEntity.lastMessageTime;
-                    double now = Time.time;
-
-                    double delta = now - check;
-
-                    double new_value_1;
-                    double new_value_2;
-                    double new_value_3;
-                    double new_value_4;
-
-                    if (delta * kalmanEntity.measuresPerSecond <= 1)
-                    {
-                        switch (kalmanEntity.regressed_value)
-                        {
-                            case int n:
-                                new_value_1 = ((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[0];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1 };
-                                kalmanEntity.regressed_value = (int)new_value_1;
-
-                                break;
-                            case float f:
-                                new_value_1 = ((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[0];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1 };
-                                kalmanEntity.regressed_value = (float)new_value_1;
-
-                                break;
-                            case SerializableVector2 v:
-                                new_value_1 = ((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = ((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[1];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1, new_value_2 };
-                                kalmanEntity.regressed_value = new SerializableVector2((float)new_value_1, (float)new_value_2);
-
-                                break;
-                            case SerializableVector3 v:
-                                new_value_1 = ((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = ((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[1];
-                                new_value_3 = ((kalmanEntity as KalmanEntity).prediction[2] - (kalmanEntity as KalmanEntity).previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[2];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1, new_value_2, new_value_3 };
-                                kalmanEntity.regressed_value = new SerializableVector3((float)new_value_1, (float)new_value_2, (float)new_value_3);
-
-                                break;
-                            case SerializableVector4 v:
-                                double[] estimations;
-                                object regressed_value;
-
-                                new_value_1 = ((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = ((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[1];
-                                new_value_3 = ((kalmanEntity as KalmanEntity).prediction[2] - (kalmanEntity as KalmanEntity).previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[2];
-                                new_value_4 = ((kalmanEntity as KalmanEntity).prediction[3] - (kalmanEntity as KalmanEntity).previous_prediction[3]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[3];
-
-                                estimations = new double[] { new_value_1, new_value_2, new_value_3, new_value_4 };
-                                regressed_value = new SerializableVector4((float)new_value_1, (float)new_value_2, (float)new_value_3, (float)new_value_4);
-
-                                (kalmanEntity as KalmanEntity).estimations = estimations;
-                                kalmanEntity.regressed_value = regressed_value;
-
-                                break;
-                            case SerializableColor v:
-                                new_value_1 = ((kalmanEntity as KalmanEntity).prediction[0] - (kalmanEntity as KalmanEntity).previous_prediction[0]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[0];
-                                new_value_2 = ((kalmanEntity as KalmanEntity).prediction[1] - (kalmanEntity as KalmanEntity).previous_prediction[1]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[1];
-                                new_value_3 = ((kalmanEntity as KalmanEntity).prediction[2] - (kalmanEntity as KalmanEntity).previous_prediction[2]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[2];
-                                new_value_4 = ((kalmanEntity as KalmanEntity).prediction[3] - (kalmanEntity as KalmanEntity).previous_prediction[3]) * delta * kalmanEntity.measuresPerSecond + (kalmanEntity as KalmanEntity).previous_prediction[3];
-
-                                (kalmanEntity as KalmanEntity).estimations = new double[] { new_value_1, new_value_2, new_value_3, new_value_4 };
-                                kalmanEntity.regressed_value = new SerializableVector4((float)new_value_1, (float)new_value_2, (float)new_value_3, (float)new_value_4);
-                                break;
-                            default:
-                                break;
-                        }
-                    }
-                }
-            }
+            onNodePartOfNavmeshSet?.Invoke(node);
         }
 
-        private void PropertyKalmanUpdate(AbstractKalmanEntity abstractKalman, object value)
+        public event NodeNavmeshModifiedDelegate onNodeTraversableSet;
+
+        /// <summary>
+        /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its traversable status.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="isTraversable"></param>
+        public void SetNodeTraversable(UMI3DNodeInstance node)
         {
-            object measurement;
-
-            switch (value)
-            {
-                case int n:
-                    measurement = new double[] { n };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = n;
-                    break;
-                case float f:
-                    measurement = new double[] { f };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = f;
-                    break;
-                case SerializableVector2 v:
-                    measurement = new double[] { v.X, v.Y };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-                    break;
-                case SerializableVector3 v:
-                    measurement = new double[] { v.X, v.Y, v.Z };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-                    break;
-                case SerializableVector4 v:
-                    if (abstractKalman.property.Equals(UMI3DPropertyKeys.Rotation))
-                    {
-                        var quaternionMeasurment = new Quaternion(v.X, v.Y, v.Z, v.W);
-
-                        Vector3 targetForward = quaternionMeasurment * Vector3.forward;
-                        Vector3 targetUp = quaternionMeasurment * Vector3.up;
-
-                        double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
-                        double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
-
-                        measurement = new Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
-                    }
-                    else
-                    {
-                        measurement = new double[] { v.X, v.Y, v.Z, v.W };
-                    }
-
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-
-                    break;
-                case SerializableColor v:
-                    measurement = new double[] { v.R, v.G, v.B, v.A };
-                    if (abstractKalman.regressed_value == null)
-                        abstractKalman.regressed_value = v;
-                    break;
-                default:
-                    measurement = new double[0];
-                    break;
-            }
-
-            if (abstractKalman.property.Equals(UMI3DPropertyKeys.Rotation))
-            {
-                (abstractKalman as KalmanRotationEntity).KalmanFilters.Item1.Update((measurement as Tuple<double[], double[]>).Item1); // forward
-                (abstractKalman as KalmanRotationEntity).KalmanFilters.Item2.Update((measurement as Tuple<double[], double[]>).Item2);
-
-                (abstractKalman as KalmanRotationEntity).prediction = new Tuple<double[], double[]>((abstractKalman as KalmanRotationEntity).KalmanFilters.Item1.getState(), (abstractKalman as KalmanRotationEntity).KalmanFilters.Item2.getState());
-
-                if ((abstractKalman as KalmanRotationEntity).estimations.Item1.Length > 0)
-                    (abstractKalman as KalmanRotationEntity).previous_prediction = (abstractKalman as KalmanRotationEntity).estimations;
-                else
-                    (abstractKalman as KalmanRotationEntity).previous_prediction = new System.Tuple<double[], double[]>((measurement as Tuple<double[], double[]>).Item1, (measurement as Tuple<double[], double[]>).Item2);
-            }
-
-            else if ((measurement as double[]).Length > 0)
-            {
-                (abstractKalman as KalmanEntity).KalmanFilter.Update((measurement as double[]));
-
-                double[] newValueState = (abstractKalman as KalmanEntity).KalmanFilter.getState();
-
-                (abstractKalman as KalmanEntity).prediction = newValueState;
-
-                if ((abstractKalman as KalmanEntity).estimations.Length > 0)
-                    (abstractKalman as KalmanEntity).previous_prediction = (abstractKalman as KalmanEntity).estimations;
-                else
-                    (abstractKalman as KalmanEntity).previous_prediction = (measurement as double[]);
-            }
-            else
-            {
-                throw new Exception("Datatype not filterable");
-            }
+            onNodeTraversableSet?.Invoke(node);
         }
 
         #endregion

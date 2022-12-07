@@ -19,11 +19,14 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to ask a browser to delete an entity.
+    /// Operation DTO to ask a browser to delete an entity.
     /// </summary>
     [Serializable]
     public class DeleteEntityDto : AbstractOperationDto
     {
+        /// <summary>
+        /// UMI3D Id of the entity to delete.
+        /// </summary>
         public ulong entityId;
     }
 }

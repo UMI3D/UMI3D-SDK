@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains the keys for all available operations within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning operations or request between the server and clients 
+    /// to identify which process should be started on the receiving side.
     public static class UMI3DOperationKeys
     {
         public const uint Transaction = 1;
@@ -25,6 +30,15 @@ namespace umi3d.common
         public const uint TeleportationRequest = 5;
         public const uint UploadFileRequest = 6;
         public const uint GetLocalInfoRequest = 7;
+        public const uint RedirectionRequest = 8;
+        public const uint ForceLogoutRequest = 9;
+
+        public const uint UserMicrophoneStatus = 21;
+        public const uint UserAvatarStatus = 22;
+        public const uint UserAttentionStatus = 23;
+        public const uint MuteAllMicrophoneStatus = 24;
+        public const uint MuteAllAvatarStatus = 25;
+        public const uint MuteAllAttentionStatus = 26;
 
         public const uint SetEntityProperty = 101;
         public const uint SetEntityDictionnaryProperty = 103;
@@ -48,6 +62,8 @@ namespace umi3d.common
         public const uint StopInterpolationProperty = 303;
         public const uint SetSendingCameraProperty = 304;
         public const uint SetSendingTracking = 305;
+        public const uint VehicleRequest = 306;
+        public const uint VehicleConfirmation = 307;
 
         public const uint InteractionRequest = 10001;
         public const uint EventStateChanged = 10002;
@@ -62,10 +78,20 @@ namespace umi3d.common
         public const uint ToolReleased = 10011;
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
+        public const uint NotificationCallback = 10014;
+        public const uint BoardedVehicleRequest = 10015;
+
+        public const uint EmoteRequest = 10020;
 
         public const uint VolumeUserTransit = 10100;
 
     }
+
+    /// <summary>
+    /// Contains the keys for all available parameter types within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning operations or request between the server and clients 
+    /// to identify what parameters to apply on processes started on the receiving side.
     public static class UMI3DParameterKeys
     {
         public const uint FloatRange = 1;

@@ -20,7 +20,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu
 {
     /// <summary>
-    /// Button input menu item.
+    /// <see cref="MenuItem"/> for Button input.
     /// </summary>
     /// <see cref="BooleanInputMenuItem"/>
     public class ButtonInputMenuItem : AbstractInputMenuItem<bool>
@@ -35,7 +35,9 @@ namespace umi3d.cdk.menu
         /// </summary>
         public Sprite sprite;
 
-
+        /// <summary>
+        /// Is the button pressed ?
+        /// </summary>
         private bool pressedState = false;
 
         /// <summary>

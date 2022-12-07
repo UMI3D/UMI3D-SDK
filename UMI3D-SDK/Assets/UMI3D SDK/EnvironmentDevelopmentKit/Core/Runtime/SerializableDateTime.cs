@@ -20,25 +20,28 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// Custom serialization of date time formats.
+    /// </summary>
     [System.Serializable]
     public class SerializableDateTime : ISerializationCallbackReceiver
     {
         [HideInInspector] private DateTime dateTime;
-        [HideInInspector] [SerializeField] private string _dateTime;
+        [HideInInspector][SerializeField] private string _dateTime;
 
-        [HideInInspector] [SerializeField] private int day;
-        [HideInInspector] [SerializeField] private int month;
-        [HideInInspector] [SerializeField] private int year;
+        [HideInInspector][SerializeField] private int day;
+        [HideInInspector][SerializeField] private int month;
+        [HideInInspector][SerializeField] private int year;
 
-        [HideInInspector] [SerializeField] private int hours;
-        [HideInInspector] [SerializeField] private int minutes;
-        [HideInInspector] [SerializeField] private int seconds;
+        [HideInInspector][SerializeField] private int hours;
+        [HideInInspector][SerializeField] private int minutes;
+        [HideInInspector][SerializeField] private int seconds;
 
-        [HideInInspector] [SerializeField] private bool setNow;
+        [Tooltip("Pressing this button will update the date time to the current one.")]
+        [HideInInspector][SerializeField] private bool setNow;
 
-        [HideInInspector] [SerializeField] private string culture = "en-US";
-        [HideInInspector] [SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
+        [HideInInspector][SerializeField] private string culture = "en-US";
+        [HideInInspector][SerializeField] private string format = "dd/MM/yyyy  HH:mm:ss";
 
         public void OnAfterDeserialize()
         {
@@ -66,7 +69,7 @@ namespace umi3d.edk
             _dateTime = dateTime.ToString();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return dateTime.ToString(format);
@@ -75,12 +78,11 @@ namespace umi3d.edk
         public string Culture() { return culture; }
         public static implicit operator DateTime(SerializableDateTime date)
         {
-            return (date.dateTime);
+            return date.dateTime;
         }
         public static implicit operator SerializableDateTime(DateTime date)
         {
             return new SerializableDateTime() { dateTime = date };
         }
-
     }
 }

@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.edk
 {
     /// <summary>
-    /// Abstract class for Interpolation class
+    /// Abstract parent for Interpolation properties.
     /// </summary>
     public abstract class AbstractInterpolationProperty : Operation
     {

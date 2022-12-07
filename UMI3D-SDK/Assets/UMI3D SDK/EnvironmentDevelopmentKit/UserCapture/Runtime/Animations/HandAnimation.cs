@@ -14,24 +14,96 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    [RequireComponent(typeof(umi3d.edk.UMI3DNodeAnimation))]
+    /// <summary>
+    /// Hand pose animation component.
+    /// </summary>
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandAnimation : MonoBehaviour
     {
-        public UMI3DNodeAnimation NodeAnimation;
-        public bool ActivePose = false;
-        public bool HoverPose = false;
-        public UMI3DHandPose HandPose;
+        /// <summary>
+        /// Animation associated with the hand pose.
+        /// </summary>
+        [SerializeField, EditorReadOnly]
+        protected UMI3DNodeAnimation nodeAnimation;
+        /// <summary>
+        /// Should the pose be active?
+        /// </summary>
+        [SerializeField, EditorReadOnly]
+        protected bool activePose = false;
+        /// <summary>
+        /// Should the animation be triggered on hover/pointing?
+        /// </summary>*
+        [SerializeField, EditorReadOnly]
+        protected bool hoverPose = false;
+        /// <summary>
+        /// Hand pose associated with the animation.
+        /// </summary>
+        [SerializeField, EditorReadOnly]
+        protected UMI3DHandPose handPose;
 
-        // Start is called before the first frame update
+        /// <summary>
+        /// Animation associated with the hand pose.
+        /// </summary>
+        public UMI3DNodeAnimation NodeAnimation
+        {
+            get => nodeAnimation; set
+            {
+                nodeAnimation = value;
+                Start();
+            }
+        }
+        /// <summary>
+        /// Hand pose associated with the animation.
+        /// </summary>
+        public UMI3DHandPose HandPose
+        {
+            get => handPose; set
+            {
+                handPose = value;
+                Start();
+            }
+        }
+        /// <summary>
+        /// Should the pose be active?
+        /// </summary
+        public bool ActivePose
+        {
+            get => activePose; set
+            {
+                activePose = value;
+                Start();
+            }
+        }
+        /// <summary>
+        /// Should the animation be triggered on hover/pointing?
+        /// </summary>
+        public bool HoverPose
+        {
+            get => hoverPose; set
+            {
+                hoverPose = value;
+                Start();
+            }
+        }
+
+
         private void Start()
         {
+            SetUp();
+        }
+
+        public void SetUp()
+        {
+            if (NodeAnimation == null)
+                NodeAnimation = GetComponent<UMI3DNodeAnimation>();
+
             if (NodeAnimation != null && HandPose != null)
             {
                 HandPose.HoverAnimation = HoverPose;
@@ -40,7 +112,7 @@ namespace umi3d.edk.userCapture
 
                 var operation = new SetEntityProperty()
                 {
-                    users = UMI3DServer.Instance.UserSet(),
+                    users = UMI3DServer.Instance.UserSetWhenHasJoined(),
                     entityId = HandPose.Id(),
                     property = UMI3DPropertyKeys.ActiveHandPose,
                     value = ActivePose

@@ -25,14 +25,14 @@ namespace inetum.unityUtils.editor
     [CustomPropertyDrawer(typeof(ConstEnumAttribute))]
     public class ConstEnumDrawer : PropertyDrawer
     {
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
-            ConstEnumAttribute cseAttribute = attribute as ConstEnumAttribute;
+            var cseAttribute = attribute as ConstEnumAttribute;
 
             int index = 0;
 
-            var value = cseAttribute.reader(property);
+            object value = cseAttribute.reader(property);
             if (value != null)
             {
                 index = Array.IndexOf(cseAttribute.values, value);

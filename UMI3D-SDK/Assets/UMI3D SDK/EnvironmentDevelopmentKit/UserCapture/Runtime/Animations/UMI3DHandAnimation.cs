@@ -37,11 +37,13 @@ namespace umi3d.edk.userCapture
             public string Phalanx;
             public Vector3 PhalanxEulerRotation;
 
+            /// <inheritdoc/>
             public bool IsCountable()
             {
                 return true;
             }
 
+            /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return UMI3DNetworkingHelper.Write(Phalanx)
@@ -52,6 +54,7 @@ namespace umi3d.edk.userCapture
         // set up with gizmos
         public List<PhalanxRotations> Phalanxes;
 
+        /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(isRight)
@@ -61,6 +64,9 @@ namespace umi3d.edk.userCapture
                 + UMI3DNetworkingHelper.Write(Phalanxes);
         }
 
+        /// <summary>
+        /// Draw gizmos on the unity editor when the object is selected
+        /// </summary>
         private void OnDrawGizmosSelected()
         {
             // Draw a yellow sphere at the transform's position

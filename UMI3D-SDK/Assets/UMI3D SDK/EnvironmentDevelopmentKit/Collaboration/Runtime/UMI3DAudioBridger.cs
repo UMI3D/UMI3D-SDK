@@ -15,14 +15,19 @@ limitations under the License.
 */
 
 using System.Collections;
-using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DAudioBridger : Singleton<UMI3DAudioBridger>
+    /// <summary>
+    /// Manager to handle audio spatialization in the environment.
+    /// </summary>
+    public class UMI3DAudioBridger : inetum.unityUtils.SingleBehaviour<UMI3DAudioBridger>
     {
-        [SerializeField]
+        /// <summary>
+        /// Is sound spatialized?
+        /// </summary>
+        [SerializeField, Tooltip("Should sound be spatialized?")]
         private bool _Spacialized = false;
         public bool Spacialized
         {
@@ -105,8 +110,5 @@ namespace umi3d.edk.collaboration
                 }
             }
         }
-
-
-
     }
 }

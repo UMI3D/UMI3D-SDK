@@ -24,18 +24,27 @@ namespace umi3d.edk.volume
     /// <summary>
     /// Base class for volume primitive.
     /// </summary>
+    [RequireComponent(typeof(UMI3DAbstractNode))]
     public abstract class AbstractPrimitive : MonoBehaviour, IVolume
     {
+        /// <summary>
+        /// Triggered when a user enters the volume.
+        /// </summary>
+        [Tooltip("Triggered when a user enters the volume.")]
         public UMI3DUserEvent onUserEnter = new UMI3DUserEvent();
+        /// <summary>
+        /// Triggered when a user exits the volume.
+        /// </summary>
+        [Tooltip("Triggered when a user exits the volume.")]
         public UMI3DUserEvent onUserExit = new UMI3DUserEvent();
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public UMI3DUserEvent GetUserEnter()
         {
             return onUserEnter;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public UMI3DUserEvent GetUserExit()
         {
             return onUserExit;
@@ -47,12 +56,7 @@ namespace umi3d.edk.volume
         /// <returns></returns>
         public UMI3DAbstractNode GetRootNode()
         {
-            return this.gameObject.GetComponentInParent<UMI3DAbstractNode>();
-        }
-
-        public Matrix4x4 GetRootNodeToLocalMatrix()
-        {
-            return GetRootNode().transform.localToWorldMatrix * this.transform.worldToLocalMatrix;
+            return this.gameObject.GetComponent<UMI3DAbstractNode>();
         }
 
         /// <summary>
@@ -83,8 +87,11 @@ namespace umi3d.edk.volume
             return operation;
         }
 
-
+        /// <summary>
+        /// UMI3D id.
+        /// </summary>
         private ulong? id = null;
+        /// <inheritdoc/>
         public ulong Id()
         {
             if (id == null)
@@ -114,18 +121,23 @@ namespace umi3d.edk.volume
         }
         #endregion
 
+        /// <inheritdoc/>
         public abstract IEntity ToEntityDto(UMI3DUser user);
 
         protected virtual void Awake()
         {
         }
 
+        /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             throw new System.NotImplementedException();
         }
 
-        [SerializeField]
+        /// <summary>
+        /// If true, a user can enter the volume.
+        /// </summary>
+        [SerializeField, Tooltip("If true, a user can enter the volume.")]
         private bool isTraversable = true;
         public bool IsTraversable()
         {

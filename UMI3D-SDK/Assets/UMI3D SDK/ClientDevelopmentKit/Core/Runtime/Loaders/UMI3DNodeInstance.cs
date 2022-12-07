@@ -29,6 +29,46 @@ namespace umi3d.cdk
         public GameObject gameObject;
         public Transform transform => gameObject.transform;
 
+        private bool isPartOfNavmesh = false;
+
+        public GameObject mainInstance;
+        /// <summary>
+        /// Is this node part of the navmesh ?
+        /// </summary>
+        public bool IsPartOfNavmesh
+        {
+            get => isPartOfNavmesh;
+
+            set
+            {
+                if (isPartOfNavmesh != value)
+                {
+                    isPartOfNavmesh = value;
+                    UMI3DEnvironmentLoader.Instance.SetNodePartOfNavmesh(this);
+                }
+            }
+        }
+
+
+        private bool isTraversable = true;
+
+        /// <summary>
+        /// Is this node traversable ?
+        /// </summary>
+        public bool IsTraversable
+        {
+            get => isTraversable;
+
+            set
+            {
+                if (isTraversable != value)
+                {
+                    isTraversable = value;
+                    UMI3DEnvironmentLoader.Instance.SetNodeTraversable(this);
+                }
+            }
+        }
+
         /// <summary>
         /// Event call when the transform is updated.
         /// </summary>
@@ -61,6 +101,8 @@ namespace umi3d.cdk
             }
             set => _colliders = value;
         }
+
+        public PrefabLightmapData prefabLightmapData;
 
         /// <summary>
         /// The list of Subnode instance when the model has tracked subMeshs. Empty if sub Models are not tracked.

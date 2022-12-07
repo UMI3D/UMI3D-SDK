@@ -22,7 +22,7 @@ namespace umi3d.edk.volume
     /// <summary>
     /// Centralise volume management.
     /// </summary>
-    public class VolumeManager : Singleton<VolumeManager>
+    public class VolumeManager : inetum.unityUtils.SingleBehaviour<VolumeManager>
     {
         /// <summary>
         /// Volume cells instances.

@@ -23,7 +23,7 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool IsSuitableFor(GlTFMaterialDto gltfMatDto)
         {
             if (gltfMatDto.extensions.umi3d is ExternalMaterialDto)
@@ -31,8 +31,8 @@ namespace umi3d.cdk
             return false;
         }
 
-        ///<inheritdoc/>
-        public override void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null)
+        /// <inheritdoc/>
+        public override async void LoadMaterialFromExtension(GlTFMaterialDto dto, Action<Material> callback, Material oldMaterial = null)
         {
             var externalMat = dto.extensions.umi3d as ExternalMaterialDto;
             KHR_texture_transform KhrTT = dto.extensions.KHR_texture_transform;
@@ -46,45 +46,30 @@ namespace umi3d.cdk
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 if (loader != null)
                 {
-                    UMI3DResourcesManager.LoadFile(
-                   (dto.extensions.umi3d as ExternalMaterialDto)?.id ?? 0,
-                   fileToLoad,
-                   loader.UrlToObject,
-                   loader.ObjectFromCache,
-                   (o) =>
-                   {
-                       var newMat = (Material)o;
-                       if (newMat != null)
-                       {
-                           try
-                           {
-                               //     ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
-
-                               callback.Invoke(newMat);
-                               ReadAdditionalShaderProperties(externalMat.id, externalMat.shaderProperties, newMat);
-                           }
-                           catch
-                           {
-                               UMI3DLogger.LogError("Fail to load material : " + url, scope);
-                           }
-
-                       }
-                       else
-                       {
-                           UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}", scope);
-                       }
-                   },
-                   e => UMI3DLogger.LogWarning(e, scope),
-                   loader.DeleteObject
-                   );
+                    var o = await UMI3DResourcesManager.LoadFile((dto.extensions.umi3d as ExternalMaterialDto)?.id ?? 0, fileToLoad, loader);
+                    var newMat = (Material)o;
+                    if (newMat != null)
+                    {
+                        try
+                        {
+                            //     ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
+                            callback.Invoke(newMat);
+                            ReadAdditionalShaderProperties(externalMat.id, externalMat.shaderProperties, newMat);
+                        }
+                        catch
+                        {
+                            UMI3DLogger.LogError("Fail to load material : " + url, scope);
+                        }
+                    }
+                    else
+                    {
+                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Material)}", scope);
+                    }
                 }
                 else
                 {
                     UMI3DLogger.LogWarning("Loader is null for external material", scope);
                 }
-
-
-
             }
             else
             {

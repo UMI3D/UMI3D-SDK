@@ -21,21 +21,49 @@ using UnityEngine.Video;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Video animation support in UMI3D. A video player enables the playing of video resources.
+    /// </summary>
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
+        /// <summary>
+        /// VideoPlayer from Unity that used to synchonize video progress.
+        /// </summary>
+        /// It could be null.
+        [Tooltip("VideoPlayer from Unity. Could be null. mainly used to synchronize the video progress.")]
+        public VideoPlayer video;
 
-        public VideoPlayer video; // could be null, used to synchonize video progreess
-        [SerializeField]
+        /// <summary>
+        /// Material on which the video is applied to.
+        /// </summary>
+        [SerializeField, Tooltip("Material on which the video is applied to.")]
         private MaterialSO material;
-        [SerializeField, EditorReadOnly]
-        private UMI3DResource videoResources;
-        public UMI3DAudioPlayer audioPlayer;
-        private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
 
+        /// <summary>
+        /// Video to play as a resource.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Video to play as a resource.")]
+        private UMI3DResource videoResources;
+
+        /// <summary>
+        /// Audio player for the sound of the video.
+        /// </summary>
+        [Tooltip("Audio player for the sound of the video.")]
+        public UMI3DAudioPlayer audioPlayer;
+        /// <summary>
+        /// See <see cref="videoResources"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<UMI3DResource> objectVideoResource;
+        /// <summary>
+        /// See <see cref="material"/>.
+        /// </summary>
         public UMI3DAsyncProperty<MaterialSO> ObjectMaterial;
+        /// <summary>
+        /// See <see cref="videoResources"/>.
+        /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> ObjectVideoResource { get { Register(); return objectVideoResource; } protected set => objectVideoResource = value; }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
@@ -46,7 +74,7 @@ namespace umi3d.edk
             ObjectVideoResource.OnValueChanged += (r) => videoResources = r;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractAnimationDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -59,12 +87,13 @@ namespace umi3d.edk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
         {
             return new UMI3DVideoPlayerDto();
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(ObjectMaterial.GetValue(user)?.Id() ?? 0)

@@ -18,14 +18,40 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a scene as a node.
+    /// </summary>
     [System.Serializable]
     public class UMI3DSceneNodeDto : UMI3DAbstractNodeDto
     {
+        /// <summary>
+        /// Scene reference point's position.
+        /// </summary>
         public SerializableVector3 position;
+
+        /// <summary>
+        /// Scene reference rotation.
+        /// </summary>
         public SerializableVector4 rotation;
+
+        /// <summary>
+        /// Scene reference scale.
+        /// </summary>
         public SerializableVector3 scale;
+
+        /// <summary>
+        /// Animations packeaged with the scene.
+        /// </summary>
         public List<UMI3DAbstractAnimationDto> animations = new List<UMI3DAbstractAnimationDto>();
+
+        /// <summary>
+        /// All UMI3D entities that are not on the scene graph.
+        /// </summary>
         public List<IEntity> otherEntities;
+
+        /// <summary>
+        /// Libraries required in the scene by their named ID.
+        /// </summary>
         public List<string> LibrariesId;
     }
 }

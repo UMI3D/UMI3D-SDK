@@ -22,6 +22,7 @@ namespace umi3d.edk
     /// <summary>
     /// UI RectTransform
     /// </summary>
+    /// See <see cref="RectTransform"/>.
     [RequireComponent(typeof(RectTransform))]
     public class UIRect : UMI3DNode
     {
@@ -124,16 +125,13 @@ namespace umi3d.edk
             RectMask = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.RectMask, rectMask);
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UIRectDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -149,6 +147,7 @@ namespace umi3d.edk
             rectDto.rectMask = RectMask.GetValue(user);
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
@@ -162,6 +161,5 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(SizeDelta.GetValue(user))
                 + UMI3DNetworkingHelper.Write(RectMask.GetValue(user));
         }
-
     }
 }

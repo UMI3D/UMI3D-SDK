@@ -13,14 +13,20 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk
 {
-
+    /// <summary>
+    /// Request to teleport a user. Adds rotation compared to a <see cref="NavigationRequest"/>.
+    /// </summary>
     public class TeleportRequest : NavigationRequest
     {
+        /// <summary>
+        /// Rotation of th user as a quaternion;
+        /// </summary>
         public SerializableVector4 rotation;
 
         public TeleportRequest(Vector3 position, Quaternion rotation, bool reliable) : base(position, reliable)
@@ -28,11 +34,13 @@ namespace umi3d.edk
             this.rotation = rotation;
         }
 
+        /// <inheritdoc/>
         protected override uint GetOperationKey()
         {
             return UMI3DOperationKeys.TeleportationRequest;
         }
 
+        /// <inheritdoc/>
         protected override Bytable ToBytable()
         {
             if (rotation == null) rotation = new SerializableVector4();
@@ -40,7 +48,10 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(rotation);
         }
 
+        /// <inheritdoc/>
         protected override NavigateDto CreateDto() { return new TeleportDto(); }
+
+        /// <inheritdoc/>
         protected override void WriteProperties(NavigateDto dto)
         {
             base.WriteProperties(dto);

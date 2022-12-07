@@ -20,14 +20,16 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="UMI3DAbstractAnimationDto"/>.
+    /// </summary>
     public static class UMI3DAnimationLoader
     {
-        public static void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public static void ReadUMI3DExtension(UMI3DAbstractAnimationDto dto, GameObject node)
         {
             if (dto == null)
             {
-                failed?.Invoke(new Umi3dException("dto shouldn't be null"));
-                return;
+                throw (new Umi3dException("dto shouldn't be null"));
             }
 
             switch (dto)
@@ -48,7 +50,6 @@ namespace umi3d.cdk
                     new UMI3DAudioPlayer(audioPlayer);
                     break;
             }
-            finished?.Invoke();
         }
 
 
@@ -70,6 +71,5 @@ namespace umi3d.cdk
         {
             return UMI3DAbstractAnimation.ReadUMI3DProperty(ref value, propertyKey, container);
         }
-
     }
 }

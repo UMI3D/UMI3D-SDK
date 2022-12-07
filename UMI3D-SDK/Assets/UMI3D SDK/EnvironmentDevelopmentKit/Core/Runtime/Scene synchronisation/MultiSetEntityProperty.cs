@@ -31,13 +31,14 @@ namespace umi3d.edk
         /// <summary>
         /// The name of the modified property
         /// </summary>
-        public ulong property;
+        public uint property;
 
         /// <summary>
         /// The new value for the property
         /// </summary>
         public object value;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty)
@@ -47,7 +48,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new MultiSetEntityPropertyDto()

@@ -32,8 +32,10 @@ namespace umi3d.common.interaction
         /// </summary>
         public SerializableVector4 rotation;
 
+        /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.ManipulationRequest; }
 
+        /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             if (translation == null)

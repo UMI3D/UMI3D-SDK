@@ -38,6 +38,5 @@ namespace umi3d.common
         {
             return ShouldSerializescenes() && scene >= 0 && scene < scenes.Count;
         }
-
     }
 }

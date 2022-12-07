@@ -16,10 +16,23 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
+    /// <summary>
+    /// Abstract base template for range parameters DTO.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
     public abstract class AbstractRangeParameterDto<T> : AbstractParameterDto<T> where T : System.IComparable
     {
+        /// <summary>
+        /// Min value of range
+        /// </summary>
         public T min;
+        /// <summary>
+        /// Max value of range
+        /// </summary>
         public T max;
+        /// <summary>
+        /// Increment of range between two values
+        /// </summary>
         public T increment;
     }
 }

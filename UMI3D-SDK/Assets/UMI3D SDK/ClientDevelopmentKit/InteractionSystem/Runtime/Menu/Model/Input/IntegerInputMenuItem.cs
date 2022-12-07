@@ -20,7 +20,9 @@ namespace umi3d.cdk.menu
 {
     public class IntegerInputMenuItem : AbstractInputMenuItem<int>
     {
-
+        /// <summary>
+        /// Integer value of the input menu item.
+        /// </summary>
         private int value = 0;
 
         /// <summary>
@@ -54,23 +56,22 @@ namespace umi3d.cdk.menu
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void UnSubscribe(UnityAction<int> callback)
         {
             subscribers.Remove(callback);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override string ToString()
         {
             return Name;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override int GetValue()
         {
             return value;
         }
-
     }
 }

@@ -9,6 +9,7 @@ var classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input =
     [ "IsCompatibleWith", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a1869530a528015dabdf38bb5fc72fdf9", null ],
     [ "UpdateHoveredObjectId", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a62690e5d9b04c0213c1754382ecb698e", null ],
     [ "DegreesOfFreedom", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a41db84fe06d30a3822e06678c87fabe5", null ],
+    [ "Menu", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a347e349e9fe60cf735ff74ac98d14206", null ],
     [ "onInputDown", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#ab6cc52994fd35dcba051e2808811fe41", null ],
     [ "onInputUp", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a8c31b48070902124e2fba539776dbdcc", null ],
     [ "controller", "d7/d63/classumi3d_1_1cdk_1_1interaction_1_1_abstract_u_m_i3_d_input.html#a644bbaf0811583cf11a1387d631e8369", null ]

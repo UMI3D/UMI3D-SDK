@@ -19,7 +19,7 @@ using umi3d.common;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for media menu item display.
+    /// Abstract base class for <see cref="MediaMenuItem"/> display.
     /// </summary>
     public abstract class AbstractMediaMenuItemDisplayer : AbstractDisplayer, ISelectable
     {
@@ -59,6 +59,5 @@ namespace umi3d.cdk.menu.view
         {
             return (menu is MediaMenuItem) ? 2 : 0;
         }
-
     }
 }

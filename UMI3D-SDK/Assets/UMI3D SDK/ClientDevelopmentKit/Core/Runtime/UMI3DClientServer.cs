@@ -16,30 +16,41 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DClientServer : PersistentSingleton<UMI3DClientServer>
+    /// <summary>
+    /// UMI3D server on the browser.
+    /// </summary>
+    public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Networking;
         /// <summary>
         /// Environment connected to.
         /// </summary>
-        protected MediaDto environment;
+        protected MediaDto _media;
+        /// <summary>
+        /// Environment connected to.
+        /// </summary>
+        protected virtual ForgeConnectionDto connectionDto { get; }
+
+        /// <summary>
+        /// If true, authorizations must be set in headers.
+        /// </summary>
+        public bool AuthorizationInHeader => connectionDto?.authorizationInHeader ?? false;
 
         /// <summary>
         /// Environment connected to.
         /// </summary>
-        public static MediaDto Media
-        {
-            get => Exists ? Instance.environment : null;
-            set
-            {
-                if (Exists)
-                    Instance.environment = value;
-            }
-        }
+        public static MediaDto Media => Exists ? Instance._media : null;
+        /// <summary>
+        /// Environment connected to.
+        /// </summary>
+        public static ForgeConnectionDto Environement => Exists ? Instance.connectionDto : null;
 
+        // Enable to access the Collaboration implementation. Should not be there and will be reworked.
         public static string getAuthorization()
         {
             if (Exists)
@@ -53,11 +64,16 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="argument">failed request argument</param>
         /// <returns></returns>
-        public virtual bool TryAgainOnHttpFail(RequestFailedArgument argument)
+        public virtual async Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument)
         {
-            return false;
+            return await Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Send a browser request to the server.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
         public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
@@ -66,6 +82,7 @@ namespace umi3d.cdk
 
         protected virtual void _Send(AbstractBrowserRequestDto dto, bool reliable) { }
 
+        // Enable to access the Collaboration implementation. Should not be there and will be reworked.
         public static void SendTracking(AbstractBrowserRequestDto dto)
         {
             if (Exists)
@@ -73,24 +90,56 @@ namespace umi3d.cdk
         }
         protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
-
-        public static void GetFile(string url, Action<byte[]> callback, Action<string> onError)
+        // Enable to access the Collaboration implementation. Should not be there and will be reworked.
+        public static async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
         {
-            if (Exists)
-                Instance._GetFile(url, callback, onError);
+            try
+            {
+                if (Exists)
+                {
+                    byte[] bytes = await Instance._GetFile(url, useParameterInsteadOfHeader);
+                    if (bytes != null)
+                        return (bytes);
+                    throw new Umi3dLoadingException($"No Data in response for {url}");
+                }
+                throw new Exception($"Instance of UMI3DClientServer is null");
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
+                throw;
+            }
+
         }
 
-        protected virtual void _GetFile(string url, Action<byte[]> callback, Action<string> onError) { onError.Invoke("GetFile Not Implemented"); }
-
-        public static void GetEntity(List<ulong> ids, Action<LoadEntityDto> callback, Action<string> onError)
+        protected virtual Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader)
         {
-            if (Exists)
-                Instance._GetEntity(ids, callback, onError);
+            throw new NotImplementedException();
         }
 
-        protected virtual void _GetEntity(List<ulong> id, Action<LoadEntityDto> callback, Action<string> onError) { onError.Invoke("GetEntity Not Implemented"); }
+        // Enable to access the Collaboration implementation. Should not be there and will be reworked.
+        public static async Task<LoadEntityDto> GetEntity(List<ulong> ids)
+        {
+            if (Exists)
+            {
+                LoadEntityDto dto = await Instance._GetEntity(ids);
+                return (dto);
+            }
+            else
+                throw new Exception($"Instance of UMI3DClientServer is null");
+        }
 
-        public virtual ulong GetId() { return 0; }
+        protected virtual Task<LoadEntityDto> _GetEntity(List<ulong> id)
+        {
+            throw new NotImplementedException();
+        }
+
+        /// <summary>
+        /// Return the user ID attributed by the server.
+        /// </summary>
+        /// <returns></returns>
+        /// Default is 0.
+        public virtual ulong GetUserId() { return 0; }
 
         /// <summary>
         /// return time server in millisecond, use synchronised time in collaborative cases.
@@ -103,5 +152,7 @@ namespace umi3d.cdk
         /// </summary>
         public virtual Object GetHttpClient() { return null; }
 
+        // Enable to access the Collaboration implementation. Should not be there and will be reworked.
+        public virtual double GetRoundTripLAtency() { return 0; }
     }
 }

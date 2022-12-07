@@ -20,7 +20,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for upload file input display.
+    /// Base class for <see cref="UploadInputMenuItem"/> display.
     /// </summary>
     public abstract class AbstractUploadInputDisplayer : AbstractInputMenuItemDisplayer<string>, IObservable<string>
     {
@@ -100,6 +100,5 @@ namespace umi3d.cdk.menu.view
                 throw new System.Exception("MenuItem must be an UploadInput");
             }
         }
-
     }
 }

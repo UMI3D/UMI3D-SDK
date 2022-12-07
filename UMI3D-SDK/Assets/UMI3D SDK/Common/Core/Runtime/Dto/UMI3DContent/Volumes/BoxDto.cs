@@ -16,9 +16,19 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing a box-shaped volume cell.
+    /// </summary>
     public class BoxDto : AbstractPrimitiveDto
     {
+        /// <summary>
+        /// Box center position.
+        /// </summary>
         public SerializableVector3 center;
+
+        /// <summary>
+        /// Scale of the box.
+        /// </summary>
         public SerializableVector3 size;
     }
 }

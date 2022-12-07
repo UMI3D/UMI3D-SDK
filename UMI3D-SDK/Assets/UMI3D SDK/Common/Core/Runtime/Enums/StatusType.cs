@@ -16,5 +16,17 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public enum StatusType { NONE, CREATED, READY, AWAY, MISSING, ACTIVE }
+    /// <summary>
+    /// User server status type.
+    /// </summary>
+    public enum StatusType 
+    { 
+        NONE, 
+        REGISTERED, 
+        CREATED, 
+        READY, 
+        MISSING, 
+        AWAY, 
+        ACTIVE 
+    }
 }

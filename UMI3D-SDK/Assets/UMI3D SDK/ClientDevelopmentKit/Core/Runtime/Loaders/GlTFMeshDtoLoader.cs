@@ -19,12 +19,13 @@ using GLTFast.Loading;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace umi3d.cdk
 {
     /// <summary>
-    /// MeshDto loader for gltf
+    /// MeshDto loader for gltf meshes
     /// </summary>
     public class GlTFMeshDtoLoader : AbstractMeshDtoLoader
     {
@@ -41,8 +42,27 @@ namespace umi3d.cdk
         }
 
 
-        ///<inheritdoc/>
-        public override void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+        /// <inheritdoc/>
+        public override async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
+        {
+            bool finished = false;
+            object result = null;
+            Exception e = null;
+            Action<object> callback = (o) => { result = o; finished = true; };
+            Action<Exception> failCallback = (o) => { e = o; finished = true; };
+
+            _UrlToObject2(url, extension, authorization, callback, failCallback, pathIfObjectInBundle);
+
+            while (!finished)
+                await UMI3DAsyncManager.Yield();
+            if (e != null)
+                throw e;
+
+            return result;
+        }
+
+
+        protected virtual void _UrlToObject2(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
             if (!url.Contains("http")) url = "file://" + url;
@@ -70,12 +90,12 @@ namespace umi3d.cdk
                     }
                     catch (Exception e)
                     {
-                        failCallback(new Umi3dException(e, "Importing failed for " + url));
+                        failCallback(new Umi3dNetworkingException(0,e.Message, url, "Importing failed for "));
                     }
                 }
                 else
                 {
-                    failCallback(new Umi3dException($"Importing failed for { url } \nLoad failed"));
+                    failCallback(new Umi3dException($"Importing failed for {url} \nLoad failed"));
                 }
                 GameObject.Destroy(gltfComp.gameObject, 1);
             };
@@ -90,13 +110,22 @@ namespace umi3d.cdk
 
             if (authorization != null && authorization != "")
             {
-                var authorizationHeader = new HttpHeader
-                {
-                    Key = common.UMI3DNetworkingKeys.Authorization,
-                    Value = authorization
-                };
+                var headers = new HttpHeader[] { };
 
-                var headers = new HttpHeader[] { authorizationHeader };
+                if (!UMI3DClientServer.Instance.AuthorizationInHeader && url.StartsWith("http"))
+                {
+                    url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(url, authorization);
+                }
+                else
+                {
+                    var authorizationHeader = new HttpHeader
+                    {
+                        Key = common.UMI3DNetworkingKeys.Authorization,
+                        Value = authorization
+                    };
+                    headers = new HttpHeader[] { authorizationHeader };
+                }
+
                 var customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
                 MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(() => gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator)));
             }
@@ -118,12 +147,11 @@ namespace umi3d.cdk
             callback.Invoke();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override Vector3 GetRotationOffset()
         {
             return new Vector3(0, 180, 0);
         }
-
     }
 }
 

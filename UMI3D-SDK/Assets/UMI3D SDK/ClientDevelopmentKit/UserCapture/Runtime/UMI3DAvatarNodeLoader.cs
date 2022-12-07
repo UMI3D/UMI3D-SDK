@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -25,7 +26,7 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for Avatar node
+    /// Loader for <see cref="UMI3DAvatarNodeDto"/>.
     /// </summary>
     public class UMI3DAvatarNodeLoader : UMI3DNodeLoader
     {
@@ -36,25 +37,23 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
             {
-                failed.Invoke(new Umi3dException("dto should be an UMI3DAbstractNodeDto"));
-                return;
+                throw (new Umi3dException("dto should be an UMI3DAbstractNodeDto"));
             }
-            base.ReadUMI3DExtension(dto, node, () =>
-            {
-                if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetId()))
-                {
-                    UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
-                    ua.Set(dto as UMI3DAvatarNodeDto);
-                    UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
-                }
 
-                finished.Invoke();
-            }, (s) => failed.Invoke(s));
+            await base.ReadUMI3DExtension(dto, node);
+
+            if ((dto as UMI3DAvatarNodeDto).userId.Equals(UMI3DClientServer.Instance.GetUserId()))
+            {
+                UserAvatar ua = node.GetOrAddComponent<UserAvatar>();
+                ua.Set(dto as UMI3DAvatarNodeDto);
+                UMI3DClientUserTracking.Instance.RegisterEmbd((nodeDto as UMI3DAvatarNodeDto).userId, ua);
+            }
+
         }
 
         /// <summary>
@@ -76,13 +75,13 @@ namespace umi3d.cdk
                             switch (property)
                             {
                                 case SetEntityListAddPropertyDto add:
-                                    embd.AddBinding(add.index, (property.value as BoneBindingDto));
+                                    embd.AddBinding(add.index, property.value as BoneBindingDto);
                                     break;
                                 case SetEntityListRemovePropertyDto rem:
                                     embd.RemoveBinding(rem.index);
                                     break;
                                 case SetEntityListPropertyDto set:
-                                    embd.UpdateBinding(set.index, (property.value as BoneBindingDto));
+                                    embd.UpdateBinding(set.index, property.value as BoneBindingDto);
                                     break;
                                 default:
                                     embd.SetBindings(property.value as List<BoneBindingDto>);
@@ -115,6 +114,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;

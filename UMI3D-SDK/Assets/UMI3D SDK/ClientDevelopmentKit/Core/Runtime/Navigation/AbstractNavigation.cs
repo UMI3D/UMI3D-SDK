@@ -24,12 +24,12 @@ namespace umi3d.cdk
     public abstract class AbstractNavigation : MonoBehaviour
     {
         /// <summary>
-        /// Disable this navigation method.
+        /// Disable this navigation system.
         /// </summary>
         public abstract void Disable();
 
         /// <summary>
-        /// Activate this navigation method.
+        /// Activate this navigation system.
         /// </summary>
         public abstract void Activate();
 
@@ -46,5 +46,12 @@ namespace umi3d.cdk
         /// <param name="data"></param>
         /// <seealso cref="Navigate(NavigateDto)"/>
         public abstract void Teleport(TeleportDto data);
+
+        /// <summary>
+        /// Apply teleport request from server.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <seealso cref="Teleport(TeleportDto)"/>
+        public abstract void Embark(VehicleDto data);
     }
 }

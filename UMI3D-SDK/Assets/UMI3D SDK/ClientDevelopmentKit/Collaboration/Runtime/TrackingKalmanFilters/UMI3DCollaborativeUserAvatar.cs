@@ -18,43 +18,104 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.utils.extrapolation;
 using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Client description of a user's avatar, like <see cref="UserAvatar"/>, but in a collaborative context.
+    /// </summary>
     public class UMI3DCollaborativeUserAvatar : UserAvatar
     {
-        private readonly Dictionary<uint, KalmanRotation> boneRotationFilters = new Dictionary<uint, KalmanRotation>();
-        private GameObject skeleton;
-        private bool isProcessing = false;
+        #region Fields
 
-        protected KalmanPosition skeletonHeightFilter = new KalmanPosition(50, 0.5);
+        /// <summary>
+        /// Tools to perfom interpolation for every avatar bones.
+        /// </summary>
+        private readonly Dictionary<uint, QuaternionLinearDelayedExtrapolator> boneRotationFilters = new Dictionary<uint, QuaternionLinearDelayedExtrapolator>();
+
+        /// <summary>
+        /// Reference to the skeleton object of the avatar.
+        /// </summary>
+        private GameObject skeleton;
+
+        /// <summary>
+        /// Extrapolator for the avatar jump height.
+        /// </summary>
+        protected FloatLinearDelayedExtrapolator skeletonHeightExtrapolator;
+
+        /// <summary>
+        /// Coroutine used to update avatar position.
+        /// </summary>
+        Coroutine updateCoroutine = null;
+        private Animator userAnimator;
+
+        #endregion
+
+        #region Methods
+
+        private void Start()
+        {
+            viewpointObject = GetComponentInChildren<UMI3DViewpointHelper>()?.transform;
+            userAnimator = skeleton.GetComponentInChildren<Animator>();
+        }
 
         private void Update()
         {
-            RegressionPosition(nodePositionFilter);
-            RegressionRotation(nodeRotationFilter);
-            RegressionSkeletonPosition(skeletonHeightFilter);
+            // void not to receive unity update messages
+        }
 
-            this.transform.localPosition = nodePositionFilter.regressed_position;
-            this.transform.localRotation = nodeRotationFilter.regressed_rotation;
-            skeleton.transform.localPosition = skeletonHeightFilter.regressed_position;
+        private void LateUpdate()
+        {
+            if (nodePositionExtrapolator != null)
+                this.transform.localPosition = nodePositionExtrapolator.ExtrapolateState();
 
-            Animator userAnimator = skeleton.GetComponentInChildren<Animator>();
+            if (nodeRotationExtrapolator != null)
+                this.transform.localRotation = nodeRotationExtrapolator.ExtrapolateState();
 
+            if (skeleton == null)
+                return;
+
+            if (skeletonHeightExtrapolator != null)
+            {
+                var e = skeletonHeightExtrapolator.ExtrapolateState();
+                skeleton.transform.localPosition = new Vector3(0, skeletonHeightExtrapolator.ExtrapolateState(), 0);
+            }
+
+            if (ForceDisablingBinding)
+                return;
+            if (userAnimator == null)
+                userAnimator = skeleton.GetComponentInChildren<Animator>();
+            if (userAnimator == null)
+                return;
+            UpdateBoneBindings();
+        }
+
+        public void UpdateBoneBindings()
+        {
             foreach (uint boneType in boneRotationFilters.Keys)
             {
-                RegressionRotation(boneRotationFilters[boneType]);
-
                 Transform boneTransform;
 
-                if (!boneType.Equals(BoneType.CenterFeet))
-                    boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
+                if (boneType.Equals(BoneType.Viewpoint))
+                {
+                    boneTransform = viewpointObject;
+                    if (boneRotationFilters[boneType] != null)
+                        boneTransform.parent.localRotation = boneRotationFilters[boneType].ExtrapolateState();
+                }
                 else
-                    boneTransform = skeleton.transform;
+                {
+                    if (boneType.Equals(BoneType.CenterFeet))
+                        boneTransform = skeleton.transform;
+                    else
+                        boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
 
-                boneTransform.localRotation = boneRotationFilters[boneType].regressed_rotation;
+                    if (boneRotationFilters[boneType] != null)
+                        boneTransform.localRotation = boneRotationFilters[boneType].ExtrapolateState();
+                }
+
 
                 List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneType);
                 foreach (BoneBindingDto boneBindingDto in bindings)
@@ -64,7 +125,15 @@ namespace umi3d.cdk.collaboration
                         SavedTransform st = savedTransforms[new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }];
                         if (boneBindingDto.syncPosition)
                             st.obj.position = boneTransform.position + boneTransform.TransformDirection((Vector3)boneBindingDto.offsetPosition);
-                        st.obj.rotation = boneTransform.rotation * (Quaternion)boneBindingDto.offsetRotation;
+                        if (boneBindingDto.syncRotation)
+                            st.obj.rotation = boneTransform.rotation * bounds.Find(b => st.obj == b.obj).anchorRelativeRot * (Quaternion)boneBindingDto.offsetRotation;
+                        if (boneBindingDto.freezeWorldScale)
+                        {
+                            Vector3 WscaleMemory = st.savedLossyScale;
+                            Vector3 WScaleParent = st.obj.parent.lossyScale;
+
+                            st.obj.localScale = new Vector3(WscaleMemory.x / WScaleParent.x, WscaleMemory.y / WScaleParent.y, WscaleMemory.z / WScaleParent.z) + boneBindingDto.offsetScale;
+                        }
                     }
                 }
             }
@@ -76,167 +145,125 @@ namespace umi3d.cdk.collaboration
         /// <param name="id">the user id</param>
         public static void SkeletonCreation(ulong id)
         {
-            if (id != UMI3DClientServer.Instance.GetId())
+            if (id != UMI3DClientServer.Instance.GetUserId()
+                && UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(id, out UserAvatar value)
+                && value is UMI3DCollaborativeUserAvatar ua
+                && ua.skeleton == null)
             {
-                var ua = UMI3DClientUserTracking.Instance.embodimentDict[id] as UMI3DCollaborativeUserAvatar;
                 ua.skeleton = Instantiate((UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking).UnitSkeleton, ua.transform);
                 ua.skeleton.transform.localScale = ua.userSize;
             }
         }
 
         /// <summary>
-        /// Filtering a boneDto position
+        /// Updates avatar (position, rotation and bones rotations).
         /// </summary>
-        /// <param name="dto"></param>
-        private void BoneKalmanUpdate(BoneDto dto)
+        /// <param name="trackingFrameDto"></param>
+        /// <param name="timeFrame"></param>
+        public void UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            KalmanRotation boneRotationKalman = boneRotationFilters[dto.boneType];
+            if (timeFrame < lastFrameTime)
+                return;
 
-            var quaternionMeasurment = new Quaternion(dto.rotation.X, dto.rotation.Y, dto.rotation.Z, dto.rotation.W);
+            if (UMI3DEnvironmentLoader.GetNode(trackingFrameDto.parentId)?.transform != transform.parent)
+                return;
 
-            Vector3 targetForward = quaternionMeasurment * Vector3.forward;
-            Vector3 targetUp = quaternionMeasurment * Vector3.up;
+            if (updateCoroutine != null)
+                StopCoroutine(updateCoroutine);
 
-            double[] targetForwardMeasurement = new double[] { targetForward.x, targetForward.y, targetForward.z };
-            double[] targetUpMeasurement = new double[] { targetUp.x, targetUp.y, targetUp.z };
-
-
-            boneRotationKalman.KalmanFilters.Item1.Update(targetForwardMeasurement); // forward
-            boneRotationKalman.KalmanFilters.Item2.Update(targetUpMeasurement); // up
-
-            boneRotationKalman.prediction = new System.Tuple<double[], double[]>(boneRotationKalman.KalmanFilters.Item1.getState(), boneRotationKalman.KalmanFilters.Item2.getState());
-
-            if (boneRotationKalman.estimations.Item1.Length > 0)
-                boneRotationKalman.previous_prediction = boneRotationKalman.estimations;
-            else
-                boneRotationKalman.previous_prediction = new System.Tuple<double[], double[]>(targetForwardMeasurement, targetUpMeasurement);
+            updateCoroutine = StartCoroutine(UpdateAvatarPositionCoroutine(trackingFrameDto, timeFrame));
         }
 
-        private void SkeletonKalmanUpdate(float skeletonNodePosY)
-        {
-            double[] heightMeasurement = new double[] { skeletonNodePosY };
-
-            skeletonHeightFilter.KalmanFilter.Update(heightMeasurement);
-
-            double[] newHeightMeasurement = skeletonHeightFilter.KalmanFilter.getState();
-            skeletonHeightFilter.prediction = newHeightMeasurement;
-
-            if (skeletonHeightFilter.estimations.Length > 0)
-                skeletonHeightFilter.previous_prediction = skeletonHeightFilter.estimations;
-            else
-                skeletonHeightFilter.previous_prediction = heightMeasurement;
-        }
-
-        private void RegressionSkeletonPosition(KalmanPosition tools)
-        {
-            if (tools.previous_prediction.Length > 0)
-            {
-                double check = lastMessageTime;
-                double now = Time.time;
-
-                double delta = now - check;
-
-                if (delta * MeasuresPerSecond <= 1)
-                {
-                    double value_x = (tools.prediction[0] - tools.previous_prediction[0]) * delta * MeasuresPerSecond + tools.previous_prediction[0];
-
-                    tools.estimations = new double[] { value_x };
-
-                    tools.regressed_position = new Vector3(0, (float)value_x, 0);
-                }
-            }
-        }
 
         /// <summary>
-        /// Update the a UserAvatar directly sent by another client.
+        /// Update the a UserAvatar skeleton directly sent by another client.
         /// </summary>
         /// <param name="trackingFrameDto">a dto containing the tracking data</param>
         /// <param name="timeFrame">sending time in ms</param>
-        public IEnumerator UpdateAvatarPosition(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
+        public IEnumerator UpdateAvatarPositionCoroutine(UserTrackingFrameDto trackingFrameDto, ulong timeFrame)
         {
-            if (!isProcessing)
+            MeasuresPerSecond = 1f / (timeFrame - lastFrameTime);
+            lastFrameTime = timeFrame;
+            lastMessageTime = Time.time;
+
+            if (nodePositionExtrapolator == null)
             {
-                isProcessing = true;
+                nodePositionExtrapolator = new Vector3LinearDelayedExtrapolator();
+                nodePositionExtrapolator.AddMeasure(transform.localPosition, lastMessageTime);
+            }
+            nodePositionExtrapolator.AddMeasure(trackingFrameDto.position, lastMessageTime);
 
-                MeasuresPerSecond = 1000 / (timeFrame - lastFrameTime);
-                lastFrameTime = timeFrame;
-                lastMessageTime = Time.time;
+            if (nodeRotationExtrapolator == null)
+            {
+                nodeRotationExtrapolator = new QuaternionLinearDelayedExtrapolator();
+                nodeRotationExtrapolator.AddMeasure(transform.localRotation, lastMessageTime);
+            }
 
-                NodeKalmanUpdate(trackingFrameDto.position, trackingFrameDto.rotation);
-                SkeletonKalmanUpdate(trackingFrameDto.skeletonHighOffset);
+            nodeRotationExtrapolator.AddMeasure(trackingFrameDto.rotation, lastMessageTime);
 
-                foreach (BoneDto boneDto in trackingFrameDto.bones)
+            if (skeletonHeightExtrapolator == null)
+            {
+                skeletonHeightExtrapolator = new FloatLinearDelayedExtrapolator();
+                skeletonHeightExtrapolator.AddMeasure(skeleton.transform.localPosition.y, lastMessageTime);
+            }
+
+            skeletonHeightExtrapolator.AddMeasure(trackingFrameDto.skeletonHighOffset, lastMessageTime);
+
+
+            foreach (BoneDto boneDto in trackingFrameDto.bones)
+            {
+                if (!boneRotationFilters.ContainsKey(boneDto.boneType))
+                    boneRotationFilters.Add(boneDto.boneType, new QuaternionLinearDelayedExtrapolator());
+                boneRotationFilters[boneDto.boneType].AddMeasure(boneDto.rotation, lastMessageTime);
+
+                List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
+                foreach (BoneBindingDto boneBindingDto in bindings)
                 {
-                    if (!boneRotationFilters.ContainsKey(boneDto.boneType))
-                        boneRotationFilters.Add(boneDto.boneType, new KalmanRotation(50f, 0.001f));
-
-                    BoneKalmanUpdate(boneDto);
-
-                    List<BoneBindingDto> bindings = userBindings.FindAll(binding => binding.boneType == boneDto.boneType);
-                    foreach (BoneBindingDto boneBindingDto in bindings)
+                    if (boneBindingDto.active)
                     {
+                        UMI3DNodeInstance node = null;
+                        UMI3DNodeInstance boneBindingnode = null;
+                        Transform obj = null;
 
-                        if (boneBindingDto.active)
+                        var wait = new WaitForFixedUpdate();
+
+
+                        UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => node = e as UMI3DNodeInstance);
+
+                        while (node == null)
+                            yield return wait;
+
+
+                        if (boneBindingDto.rigName != "")
                         {
-                            UMI3DNodeInstance node = null;
-                            UMI3DNodeInstance boneBindingnode = null;
-                            Transform obj = null;
-
-                            var wait = new WaitForFixedUpdate();
-
-
-                            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => node = e as UMI3DNodeInstance);
-
-                            while (node == null)
+                            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = e as UMI3DNodeInstance);
+                            while (boneBindingnode == null)
                                 yield return wait;
-
-
-                            if (boneBindingDto.rigName != "")
+                            while (
+                                (obj = boneBindingnode.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null
+                                && (obj = InspectBoundRigs(boneBindingDto)) == null)
                             {
-                                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(boneBindingDto.objectId, (e) => boneBindingnode = (e as UMI3DNodeInstance));
-                                while (boneBindingnode == null)
-                                    yield return wait;
-                                while (
-                                    (obj = boneBindingnode.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == boneBindingDto.rigName)) == null
-                                    && (obj = InspectBoundRigs(boneBindingDto)) == null)
-                                {
-                                    yield return wait;
-                                }
-
-                                if (!boundRigs.Contains(obj))
-                                    boundRigs.Add(obj);
-                            }
-                            else
-                            {
-                                obj = node.transform;
+                                yield return wait;
                             }
 
-                            if (!savedTransforms.ContainsKey(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }))
-                            {
-                                var savedTransform = new SavedTransform
-                                {
-                                    obj = obj,
-                                    savedParent = obj.parent,
-                                    savedPosition = obj.localPosition,
-                                    savedRotation = obj.localRotation
-                                };
+                            if (!boundRigs.Contains(obj))
+                                boundRigs.Add(obj);
+                        }
+                        else
+                        {
+                            obj = node.transform;
+                        }
 
-                                savedTransforms.Add(new BoundObject() { objectId = boneBindingDto.objectId, rigname = boneBindingDto.rigName }, savedTransform);
-
-                                if (boneBindingDto.rigName == "")
-                                    node.updatePose = false;
-                            }
-
-                            if (boneBindingDto.rigName == "")
-                            {
-                                node.updatePose = false;
-                            }
+                        if (boneBindingDto.rigName == "")
+                        {
+                            node.updatePose = false;
                         }
                     }
                 }
-
-                isProcessing = false;
             }
+            updateCoroutine = null;
         }
+
+        #endregion
     }
 }

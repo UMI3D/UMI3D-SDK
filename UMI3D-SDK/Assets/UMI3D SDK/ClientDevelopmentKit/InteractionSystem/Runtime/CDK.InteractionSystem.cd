@@ -1,380 +1,452 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <ClassDiagram MajorVersion="1" MinorVersion="1">
   <Class Name="umi3d.cdk.interaction.AbstractController" Collapsed="true">
-    <Position X="24.75" Y="0.5" Width="1.5" />
+    <Position X="26" Y="0.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABABAAQAAgARAQAQACIAIAAAAgBAAAAhAABBAACA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractController.cs</FileName>
+      <HashCode>AAQABABAAQAAgARAQAQACIAIAAAAoBAAAAhAABBCACA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractController.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.AbstractInteractionMapper" Collapsed="true">
-    <Position X="26.5" Y="0.5" Width="1.5" />
+    <Position X="5.5" Y="15.5" Width="2" />
     <TypeIdentifier>
-      <HashCode>ACAAAAAgoAwAAAAIIIAAAAEAYCABAAAAwAAABAAAAEA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractInteractionMapper.cs</FileName>
+      <HashCode>AAAAAAAgoEQAAAAIIIAQAAEA4CABAAAAwAAABAAAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractInteractionMapper.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.AbstractSelector" Collapsed="true">
-    <Position X="24.75" Y="1.5" Width="1.5" />
+    <Position X="31.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAEAAAAAAABAAABAAAAAQAAAAAAAABAAAAAAYAAAAEA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractSelector.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractSelector.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.AbstractTool" Collapsed="true">
-    <Position X="6.75" Y="12.5" Width="1.5" />
+    <Position X="1.75" Y="15.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AQAAAEAAAAAAAAAAIAAgAAAgAABEQAAAAAAAAAAAEgA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractTool.cs</FileName>
+      <HashCode>AQAAAEAAAAAAAEAAIAkgAEAgAAJEQAAgQAAAAAEAEgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractTool.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.AbstractUMI3DInput" Collapsed="true">
-    <Position X="26.5" Y="1.5" Width="1.5" />
+    <Position X="26" Y="1.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAgAAEAQAAAAAAFAAAAgAAQAIACAIAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractUMI3DInput.cs</FileName>
+      <HashCode>AAAAAAAAAAAgAAEAQgAAAAAFAAAIgAAQAIACAIAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\AbstractUMI3DInput.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.FileUploader" Collapsed="true">
+    <Position X="27.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAAAIAAAAAgQAAAQAAAAAAAQAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\FileUploader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.GlobalToolEvent" Collapsed="true">
+    <Position X="29.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\GlobalTool.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.GlobalTool" Collapsed="true">
+    <Position X="2.75" Y="16.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAABAAAIAAAAgAAFACAAAAAQAAAAAEAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\GlobalTool.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.Interactable" Collapsed="true">
-    <Position X="5.5" Y="13.75" Width="1.5" />
+    <Position X="0.5" Y="16.75" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAECAAAAAAAAAAAAAAAAAgAABAAAAIAAQAAAAAAQA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\Interactable.cs</FileName>
+      <HashCode>AAAAECAAAAAAAAAAAACAAAAgAABAAAAIBAQAAAAAAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\Interactable.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.InteractableContainer" Collapsed="true">
-    <Position X="28.25" Y="1.5" Width="1.5" />
+    <Position X="27.75" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>ACABAAAAAAAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAEA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractableContainer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractableContainer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.InteractionMapper" Collapsed="true">
+    <Position X="5.5" Y="17" Width="1.75" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAEgoEQAAAAIIABAAAEA4CABAAAAwAAABCEAAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMapper.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.InteractionMappingReason" Collapsed="true">
-    <Position X="16.5" Y="9.5" Width="1.5" />
+    <Position X="10" Y="12.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.SwitchController" Collapsed="true">
-    <Position X="11" Y="10.75" Width="1.5" />
+    <Position X="1.25" Y="13.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.ToolNeedToBeUpdated" Collapsed="true">
+    <Position X="7.25" Y="13.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.RequestedByEnvironment" Collapsed="true">
-    <Position X="13.25" Y="10.75" Width="1.5" />
+    <Position X="10" Y="13.75" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.RequestedByUser" Collapsed="true">
-    <Position X="17.75" Y="10.75" Width="1.5" />
+    <Position X="15.75" Y="13.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.RequestedFromMenu" Collapsed="true">
-    <Position X="15.5" Y="12.25" Width="1.5" />
+    <Position X="12.75" Y="15.25" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.RequestedUsingSelector" Collapsed="true">
-    <Position X="18.75" Y="12.25" Width="1.5" />
+    <Position X="17" Y="15.25" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.AutoProjectOnHover" Collapsed="true">
-    <Position X="17.75" Y="13.75" Width="1.5" />
+    <Position X="15.25" Y="16.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.RequestedUsingSelector&lt;Selector&gt;" Collapsed="true">
-    <Position X="20" Y="13.75" Width="1.5" />
+    <Position X="17.75" Y="16.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.RollbackAfterFailure&lt;OriginalReason&gt;" Collapsed="true">
-    <Position X="22.25" Y="10.75" Width="1.5" />
+    <Position X="3.75" Y="13.75" Width="2.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\InteractionMappingReasons.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.ProjectionMemory" Collapsed="true">
-    <Position X="24.75" Y="2.5" Width="1.5" />
+    <Position X="31.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AUAAAAAgAQAAAAAAAAAACAAAAAAAAAAAAAAAAAAAEkA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.ProjectionTreeNode" Collapsed="true">
-    <Position X="4" Y="9.5" Width="1.5" />
+    <Position X="5.25" Y="9.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAgQAAAEAQFAAAAAAAAAAAAAAAAAAAgAAAAEgA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.EventNode" Collapsed="true">
-    <Position X="0.75" Y="10.75" Width="1.5" />
+    <Position X="10" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.ManipulationNode" Collapsed="true">
-    <Position X="3" Y="10.75" Width="1.5" />
+    <Position X="0.75" Y="10.75" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAQAAAAAAAAAQAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.FormNode" Collapsed="true">
-    <Position X="5.25" Y="10.75" Width="1.5" />
+    <Position X="3.25" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.LinkNode" Collapsed="true">
+    <Position X="5.5" Y="10.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.ParameterNode" Collapsed="true">
-    <Position X="7.5" Y="10.75" Width="1.5" />
+    <Position X="7.75" Y="10.75" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.cdk.interaction.Tool" Collapsed="true">
-    <Position X="7.75" Y="13.75" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAACAEAAAAAAAAAAAAAAAgAAAIAAAAAAQAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\Tool.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\ProjectionMemory.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.Toolbox" Collapsed="true">
-    <Position X="26.5" Y="2.5" Width="1.5" />
+    <Position X="2.75" Y="18.25" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAABAAEAAAAAAAAAAAAAEAAAABAAAAAAAQAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\Toolbox.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgQCBAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Interaction\Toolbox.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.UMI3DAbstractToolLoader" Collapsed="true">
-    <Position X="24.75" Y="3.5" Width="1.5" />
+    <Position X="27.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAAAAAQAAAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DAbstractToolLoader.cs</FileName>
+      <HashCode>EAQAAAQAAAAAAAEAAAAAAAAAAAAAABAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DAbstractToolLoader.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.interaction.UMI3DGlobalToolLoader" Collapsed="true">
+    <Position X="29.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAQIAAwAIAFAAAEAAACkAAAEAAAAAAAAAAAAAgAAABA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DGlobalToolLoader.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.interaction.UMI3DInteractableLoader" Collapsed="true">
-    <Position X="26.5" Y="3.5" Width="1.5" />
+    <Position X="31.25" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>gAAAAAQAAAAAAAAAAAAEAAAAAAAAAACAAAAAAAAgAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DInteractableLoader.cs</FileName>
+      <HashCode>AAQAAAQAAAAAAAAAAAAEAAAAAAAAAACAAAAAAAAgAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DInteractableLoader.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.cdk.interaction.UMI3DToolBoxLoader" Collapsed="true">
-    <Position X="28.25" Y="3.5" Width="1.5" />
+  <Class Name="umi3d.cdk.interaction.GlobalToolMenuManager" Collapsed="true">
+    <Position X="26" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAQAAABAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DToolboxLoader.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.cdk.interaction.UMI3DToolLoader" Collapsed="true">
-    <Position X="30" Y="3.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAQAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Loader\UMI3DToolLoader.cs</FileName>
+      <HashCode>ACAEAAAAECAAAAAAAgAAAAQAACAAAAAIAAAAABCAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\GlobalToolMenuManager.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.AbstractInputMenuItem&lt;T&gt;" Collapsed="true">
-    <Position X="7.75" Y="2" Width="1.5" />
+    <Position X="12" Y="2" Width="2" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAAACAAAAQARAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\AbstractInputMenuItem.cs</FileName>
+      <HashCode>AAAQAAAAIAAAAAAAAAAAAAAAAAACAAAAQARAAABAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\AbstractInputMenuItem.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.cdk.menu.AbstractInputMenuItem" Collapsed="true">
-    <Position X="7.75" Y="0.5" Width="1.5" />
+    <Position X="12.25" Y="0.5" Width="1.75" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\AbstractInputMenuItem.cs</FileName>
+      <HashCode>AAAQAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\AbstractInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.AbstractRangeInputMenuItem&lt;T&gt;" Collapsed="true">
-    <Position X="10" Y="3.5" Width="1.5" />
+    <Position X="7" Y="3.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAMAAAAAAQAAAAAAAAACAAAAAAACAAAACAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\AbstractRangeInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\AbstractRangeInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.AbstractEnumInputMenuItem&lt;T&gt;" Collapsed="true">
-    <Position X="14.5" Y="3.5" Width="1.5" />
+    <Position X="14.25" Y="3.5" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AEAAAAAAIAAAAAAAAAAAAAAAAAACACABQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\AbstractEnumInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\AbstractEnumInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.BooleanInputMenuItem" Collapsed="true">
-    <Position X="1" Y="3.5" Width="1.5" />
+    <Position X="20" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAACACABQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\BooleanInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\BooleanInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.ButtonInputMenuItem" Collapsed="true">
-    <Position X="3.25" Y="3.5" Width="1.5" />
+    <Position X="22.75" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAABACAAABQEBQAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\ButtonInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\ButtonInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.DropDownInputMenuItem" Collapsed="true">
-    <Position X="14.5" Y="4.75" Width="1.5" />
+    <Position X="14.25" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\DropDownInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\DropDownInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.FloatInputMenuItem" Collapsed="true">
-    <Position X="5.5" Y="3.5" Width="1.5" />
+    <Position X="1.5" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAACACABQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\FloatInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\FloatInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.FloatRangeInputMenuItem" Collapsed="true">
-    <Position X="10" Y="4.75" Width="1.5" />
+    <Position X="7" Y="4.75" Width="2.25" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAAACAAAAACAAABQADAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\FloatRangeInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\FloatRangeInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.IntegerInputMenuItem" Collapsed="true">
-    <Position X="7.75" Y="3.5" Width="1.5" />
+    <Position X="4.25" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAACACABQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\IntegerInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\IntegerInputMenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.LocalInfoRequestInputMenuItem" Collapsed="true">
+    <Position X="10" Y="3.5" Width="3.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAEAAAIAAAAAAACACABQABAABAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\LocalInfoRequestInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.TextInputMenuItem" Collapsed="true">
-    <Position X="12.25" Y="3.5" Width="1.5" />
+    <Position X="17.25" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAACACABQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\TextInputMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\TextInputMenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.UploadInputMenuItem" Collapsed="true">
+    <Position X="17.25" Y="4.75" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Input\UploadInputMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.MenuTools" Collapsed="true">
-    <Position X="30" Y="1.5" Width="1.5" />
+    <Position X="29.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAgAAAAEAAAAAAAAAAAFAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\MenuTools.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAgAAAAEAAAAAAAAAAAFAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\MenuTools.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.interaction.GlobalToolMenu" Collapsed="true">
+    <Position X="31.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAACAAAgABAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\GlobalToolMenu.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.interaction.EventMenuItem" Collapsed="true">
-    <Position X="0.5" Y="14" Width="1.5" />
+    <Position X="13.75" Y="11" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\EventMenuItem.cs</FileName>
+      <HashCode>AAAAAAAAIAAAAAAEAAAAAAAAAAACACAJQABAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\EventMenuItem.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.menu.interaction.FormMenuItem" Collapsed="true">
+    <Position X="16" Y="11" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAAAAAAAABCAAABQARAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\FormMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.interaction.InteractionMenuItem" Collapsed="true">
-    <Position X="1.75" Y="12.5" Width="1.5" />
+    <Position X="16" Y="9.5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>ABAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAEAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\InteractionMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\InteractionMenuItem.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.interaction.ManipulationMenuItem" Collapsed="true">
-    <Position X="2.75" Y="14" Width="1.5" />
+    <Position X="18.25" Y="11" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAIAAAAAAAAAIAAAAAAACAAABQAAAQAAAEAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\ManipulationMenuItem.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\ManipulationMenuItem.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
-  <Class Name="umi3d.cdk.menu.interaction.ToolboxSubMenu" Collapsed="true">
-    <Position X="28.25" Y="2.5" Width="1.5" />
+  <Class Name="umi3d.cdk.menu.interaction.ToolboxMenu" Collapsed="true">
+    <Position X="26" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\ToolboxSubMenu.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.cdk.menu.interaction.ToolMenuItem" Collapsed="true">
-    <Position X="30" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAgAAAAAAAAAAAAAAAAABAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\Interaction\ToolMenuItem.cs</FileName>
+      <HashCode>AAAAAAAACAAAAABAAAAAAAAAAAAAAAgAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\Model\ToolboxMenu.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractManipulationMenuItemDisplayer" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="28.25" Y="0.5" Width="1.5" />
+    <Position X="27.75" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAIAAAAAAAAAAAEAAAAACBAEBQAAAQAEAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\AbstractManipulationMenuItemDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\AbstractManipulationMenuItemDisplayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractMediaMenuItemDisplayer" Collapsed="true" BaseTypeListCollapsed="true">
-    <Position X="30" Y="0.5" Width="1.5" />
+    <Position X="29.5" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAIABAEAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\AbstractMediaMenuItemDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\AbstractMediaMenuItemDisplayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractBooleanInputDisplayer" Collapsed="true">
-    <Position X="9.75" Y="8" Width="1.5" />
+    <Position X="22.5" Y="8" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAQAAAAAAACAAEBQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractBooleanInputDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractBooleanInputDisplayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractButtonInputDisplayer" Collapsed="true">
-    <Position X="0.75" Y="8" Width="1.5" />
+    <Position X="1.5" Y="8" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAEAAAAAAAAAQAAAAAAAABAEAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractButtonInputDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractButtonInputDisplayer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractDropDownInputDisplayer" Collapsed="true">
-    <Position X="3" Y="8" Width="1.5" />
+    <Position X="4.75" Y="8" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAQAAAAAAACBAEBQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractDropDownInputDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractDropDownInputDisplayer.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractInputMenuItemDisplayer&lt;T&gt;" Collapsed="true">
-    <Position X="5.25" Y="6.5" Width="1.5" />
+    <Position X="12" Y="6.5" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractInputMenuItemDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractInputMenuItemDisplayer.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="umi3d.cdk.menu.view.AbstractLocalInfoRequestInputDisplayer" Collapsed="true">
+    <Position X="8" Y="8" Width="4" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAAAAAAAQAAAAAAACAAEBQABAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractLocalInfoRequestInputDisplayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractRangeInputDisplayer" Collapsed="true">
-    <Position X="5.25" Y="8" Width="1.5" />
+    <Position X="12.75" Y="8" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAQAAAAAAACBAEBQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractRangeInputDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractRangeInputDisplayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>
   <Class Name="umi3d.cdk.menu.view.AbstractTextInputDisplayer" Collapsed="true">
-    <Position X="7.5" Y="8" Width="1.5" />
+    <Position X="16" Y="8" Width="2.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAIAAAAAAAAAAQAAAAAAACBAEBQABAAAAAAAA=</HashCode>
-      <FileName>Assets\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractTextInputDisplayer.cs</FileName>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractTextInputDisplayer.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.cdk.menu.view.AbstractUploadInputDisplayer" Collapsed="true">
+    <Position X="19.25" Y="8" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAgAIAAAAAAAAAAQAAAAAAACAAEBQABAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\ClientDevelopmentKit\InteractionSystem\Runtime\Menu\View\Displayers\Input\AbstractUploadInputDisplayer.cs</FileName>
     </TypeIdentifier>
     <Lollipop Position="0.2" />
   </Class>

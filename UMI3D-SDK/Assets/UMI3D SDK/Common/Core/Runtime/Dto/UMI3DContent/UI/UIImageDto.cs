@@ -16,11 +16,25 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing an Image in the UI.
+    /// </summary>
     [System.Serializable]
     public class UIImageDto : UIRectDto
     {
+        /// <summary>
+        /// Tint color.
+        /// </summary>
         public SerializableColor color;
+
+        /// <summary>
+        /// Sprite (2D graphic object constructed from a bitmap image) ressource file.
+        /// </summary>
         public ResourceDto sprite;
+
+        /// <summary>
+        /// Type of way to display the image.
+        /// </summary>
         public ImageType type;
 
         public UIImageDto() : base() { }

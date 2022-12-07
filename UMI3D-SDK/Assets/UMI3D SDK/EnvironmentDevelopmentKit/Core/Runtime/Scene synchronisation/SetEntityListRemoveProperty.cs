@@ -25,7 +25,7 @@ namespace umi3d.edk
     /// </summary>
     public class SetEntityListRemoveProperty : SetEntityListProperty
     {
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var setEntity = new SetEntityListRemovePropertyDto
@@ -38,6 +38,7 @@ namespace umi3d.edk
             return setEntity;
         }
 
+        /// <inheritdoc/>
         public override uint GetOperationKeys()
         {
             return UMI3DOperationKeys.SetEntityListRemoveProperty;
@@ -56,6 +57,5 @@ namespace umi3d.edk
             }
             return a;
         }
-
     }
 }

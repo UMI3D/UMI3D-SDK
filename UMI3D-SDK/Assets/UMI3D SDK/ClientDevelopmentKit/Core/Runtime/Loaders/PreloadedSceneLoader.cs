@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -23,7 +24,7 @@ using UnityEngine.SceneManagement;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Loader for Preloade Scene
+    /// Loader for <see cref="PreloadedSceneDto"/>.
     /// </summary>
     public class PreloadedSceneLoader
     {
@@ -36,13 +37,12 @@ namespace umi3d.cdk
         /// <param name="node">node on which the scene should be loaded.</param>
         /// <param name="finished">finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public static void ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public static async Task ReadUMI3DExtension(PreloadedSceneDto dto, GameObject node)
         {
-            CreatePreloadedScene(dto, node);
-            finished?.Invoke();
+            await CreatePreloadedScene(dto, node);
         }
 
-        private static void CreatePreloadedScene(PreloadedSceneDto scenesdto, GameObject node)
+        private static async Task CreatePreloadedScene(PreloadedSceneDto scenesdto, GameObject node)
         {
             ResourceDto resourceScene = scenesdto.scene;
 
@@ -55,25 +55,15 @@ namespace umi3d.cdk
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
                 if (loader != null)
                 {
-                    UMI3DResourcesManager.LoadFile(
-                        UMI3DGlobalID.EnvironementId,
-                        fileToLoad,
-                        loader.UrlToObject,
-                        loader.ObjectFromCache,
-                        (o) =>
-                        {
-                            UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
-                        },
-                        e => UMI3DLogger.LogWarning(e, scope),
-                        loader.DeleteObject
-                        );
+                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                    UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
                 }
             }
         }
 
         private static void Unload(PreloadedSceneDto scenesdto, GameObject node)
         {
-            SceneManager.UnloadSceneAsync((UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle));
+            SceneManager.UnloadSceneAsync(UMI3DEnvironmentLoader.Parameters.ChooseVariant(scenesdto.scene.variants).pathIfInBundle);
         }
 
         /// <summary>
@@ -85,7 +75,7 @@ namespace umi3d.cdk
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null) return false;
-            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
             if (dto == null) return false;
             if (property.property == UMI3DPropertyKeys.PreloadedScenes)
             {
@@ -139,7 +129,7 @@ namespace umi3d.cdk
         public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null) return false;
-            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions as GlTFEnvironmentExtensions)?.umi3d;
+            UMI3DEnvironmentDto dto = ((entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d;
             if (dto == null) return false;
             if (propertyKey == UMI3DPropertyKeys.PreloadedScenes)
             {
@@ -188,9 +178,6 @@ namespace umi3d.cdk
         {
             return false;
         }
-
     }
-
-
 }
 

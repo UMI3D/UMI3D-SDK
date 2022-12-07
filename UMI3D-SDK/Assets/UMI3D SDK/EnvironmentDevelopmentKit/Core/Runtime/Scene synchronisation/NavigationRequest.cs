@@ -19,9 +19,14 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Request to move a user in the clients.
+    /// </summary>
     public class NavigationRequest : DispatchableRequest
     {
-
+        /// <summary>
+        /// New positon of the user.
+        /// </summary>
         public SerializableVector3 position;
 
         public NavigationRequest(Vector3 position, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
@@ -30,6 +35,10 @@ namespace umi3d.edk
 
         }
 
+        /// <summary>
+        /// Get operation related key in <see cref="UMI3DOperationKeys"/>.
+        /// </summary>
+        /// <returns></returns>
         protected virtual uint GetOperationKey()
         {
             return UMI3DOperationKeys.NavigationRequest;
@@ -42,11 +51,13 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(position);
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBytes()
         {
             return ToBytable().ToBytes();
         }
 
+        /// <inheritdoc/>
         public override byte[] ToBson()
         {
             NavigateDto dto = CreateDto();

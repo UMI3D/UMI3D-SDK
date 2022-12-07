@@ -18,8 +18,17 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO for a group of several Asset Libraries as a single entity. See <see cref="AssetLibraryDto"/>.
+    /// Assets libraries are package of assets that are loaded by a user at the connection, if they do not already possess it.
+    /// </summary>
+    /// They are used to reduce the amount of data to transfer when joining a same environment several times. 
+    /// The assets are stored locally. A same library could be used by several environments.
     public class LibrariesDto : UMI3DDto, IEntity
     {
+        /// <summary>
+        /// Libraries are package of assets that are loaded by a user at the connection, if they do not already possess it.
+        /// </summary>
         public List<AssetLibraryDto> libraries;
     }
 }

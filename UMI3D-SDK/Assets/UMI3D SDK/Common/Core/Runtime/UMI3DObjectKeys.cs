@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains the keys for available objects types within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used for byte serialization and deserialization of objects.
     public static class UMI3DObjectKeys
     {
         public const byte None = 0;

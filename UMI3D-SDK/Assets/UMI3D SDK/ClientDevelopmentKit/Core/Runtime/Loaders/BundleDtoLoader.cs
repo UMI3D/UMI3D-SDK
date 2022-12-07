@@ -17,6 +17,9 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Runtime.Remoting.Messaging;
+using System.Threading;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -43,20 +46,20 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>();
         }
 
-        /// <see cref="IResourcesLoader.IsSuitableFor"/>
+        /// <inheritdoc/>
         public bool IsSuitableFor(string extension)
         {
             return supportedFileExtentions.Contains(extension);
         }
 
-        /// <see cref="IResourcesLoader.IsToBeIgnored"/>
+        /// <inheritdoc/>
         public bool IsToBeIgnored(string extension)
         {
             return ignoredFileExtentions.Contains(extension);
         }
 
-        /// <see cref="IResourcesLoader.UrlToObject"/>
-        public virtual void UrlToObject(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+         /// <inheritdoc/>
+        public virtual async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
             // add bundle in the cache
 #if UNITY_ANDROID
@@ -65,43 +68,27 @@ namespace umi3d.cdk
             UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
 #endif
             SetCertificate(www, authorization);
-            UMI3DResourcesManager.DownloadObject(www,
-                () =>
-                {
-                    try
-                    {
-                        if (www.downloadHandler is DownloadHandlerAssetBundle downloadHandlerAssetBundle)
-                        {
-                            AssetBundle bundle = downloadHandlerAssetBundle?.assetBundle;
-                            if (bundle != null)
-                                callback.Invoke(bundle);
+            await UMI3DResourcesManager.DownloadObject(www);
 
-#if UNITY_2020
-                            if (downloadHandlerAssetBundle?.error != null)
-                                throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
+            if (www.downloadHandler is DownloadHandlerAssetBundle downloadHandlerAssetBundle)
+            {
+                AssetBundle bundle = downloadHandlerAssetBundle?.assetBundle;
+                www.Dispose();
+                if (bundle != null)
+                    return (bundle);
+#if UNITY_2020_OR_NEWER
+                    else if (downloadHandlerAssetBundle?.error != null)
+                        throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
 #endif
-                            else
-                                throw new Umi3dException("The asset bundle was empty. An error might have occurred during the decoding of the asset bundle’s assets.");
-                        }
-                        else
-                            throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
-                    }
-                    catch (Exception e)
-                    {
-                        failCallback.Invoke(new Umi3dException(e));
-                    }
-                },
-                s => { failCallback?.Invoke(s); }
-            );
+                else
+                    throw new Umi3dException("The asset bundle was empty. An error might have occurred during the decoding of the asset bundle’s assets.");
+            }
+            www.Dispose();
+            throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
         }
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual void ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
-        {
-            UMI3DEnvironmentLoader.StartCoroutine(_ObjectFromCache(o, callback, pathIfObjectInBundle));
-        }
-
-        private IEnumerator _ObjectFromCache(object o, Action<object> callback, string pathIfObjectInBundle)
+        public virtual async Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
         {
             /*     
                 Usefull to find pathIfObjectInBundle in a bundle
@@ -111,38 +98,48 @@ namespace umi3d.cdk
             */
             if (pathIfObjectInBundle != null && pathIfObjectInBundle != "" && o is AssetBundle bundle)
             {
-                if (Array.Exists((bundle).GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
+                if (Array.Exists(bundle.GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
                 {
 #if UNITY_2020_1_OR_NEWER
                     var load = bundle.LoadAssetAsync(pathIfObjectInBundle);
-                    yield return load;
+                    while (!load.isDone)
+                        await UMI3DAsyncManager.Yield();
+
                     UnityEngine.Object objectInBundle = load.asset;
 #else
                     UnityEngine.Object objectInBundle = bundle.LoadAsset(pathIfObjectInBundle);
 #endif
-                    if (objectInBundle is GameObject)
+                    if (objectInBundle is Material)
                     {
-                        AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                        return (new Material(objectInBundle as Material));
                     }
-                    callback.Invoke(objectInBundle);
+                    else
+                    {
+                        if (objectInBundle is GameObject)
+                        {
+                            AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
+                        }
+                        return (objectInBundle);
+                    }
                 }
                 else
                 {
-                    if (Array.Exists((bundle).GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
+                    if (Array.Exists(bundle.GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
                     {
                         AsyncOperation scene = SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
-                        yield return scene;
-                        callback.Invoke(null);
+                        while (!scene.isDone)
+                            await UMI3DAsyncManager.Yield();
+                        return null;
                     }
                     else
                     {
                         UMI3DLogger.LogWarning($"Path {pathIfObjectInBundle} not found in Assets nor Scene", scope);
-                        callback.Invoke(o);
+                        return (o);
                     }
                 }
             }
-            else
-                callback.Invoke(o);
+
+            return (o);
         }
 
         /// <summary>
@@ -155,15 +152,21 @@ namespace umi3d.cdk
             if (fileAuthorization != null && fileAuthorization != "")
             {
                 string authorization = fileAuthorization;
-                www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
+                if (!UMI3DClientServer.Instance.AuthorizationInHeader && www.url.StartsWith("http"))
+                {
+                    www.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(www.url, fileAuthorization);
+                }
+                else
+                {
+                    www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
+                }
             }
         }
 
-        /// <see cref="IResourcesLoader.DeleteObject"/>
+        /// <inheritdoc/>
         public void DeleteObject(object objectLoaded, string reason)
         {
             if (objectLoaded != null) ((AssetBundle)objectLoaded).Unload(true);
         }
-
     }
 }

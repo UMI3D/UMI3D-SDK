@@ -18,11 +18,24 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> for <see cref="AbstractInteractionDto"/>
+    /// </summary>
     public class InteractionMenuItem : MenuItem
     {
+        /// <summary>
+        /// Interaction that belongs to the menu item.
+        /// </summary>
         public virtual AbstractInteractionDto interaction { get; set; }
+        /// <summary>
+        /// Tool id if the interaciton belongs to one.
+        /// </summary>
         public virtual ulong toolId { get; set; }
 
+        /// <summary>
+        /// Is the interaction projected on a controller ?
+        /// </summary>
+        /// <returns></returns>
         public bool isProjected()
         {
             if ((interaction == null) || (interaction.id == 0))
@@ -34,7 +47,7 @@ namespace umi3d.cdk.menu.interaction
             AbstractController controller = AbstractInteractionMapper.Instance.GetController(toolId);
             if (controller != null)
             {
-                return controller.inputs.Exists(input => (input.CurrentInteraction() != null) ? input.CurrentInteraction().id.Equals(interaction.id) : false);
+                return controller.inputs.Exists(input => (input.CurrentInteraction() != null) && input.CurrentInteraction().id.Equals(interaction.id));
             }
             else
             {

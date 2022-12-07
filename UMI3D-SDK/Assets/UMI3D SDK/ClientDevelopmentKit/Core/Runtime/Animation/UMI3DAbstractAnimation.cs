@@ -22,10 +22,15 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Abstract class for animation class.
+    /// Abstract class for all components that could be played.
     /// </summary>
     public abstract class UMI3DAbstractAnimation
     {
+        /// <summary>
+        /// Get an animation by id.
+        /// </summary>
+        /// <param name="id">UMI3D id of the animation.</param>
+        /// <returns></returns>
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
         /// <summary>
@@ -147,12 +152,15 @@ namespace umi3d.cdk
                         return true;
                     if (UMI3DAudioPlayer.ReadMyUMI3DProperty(ref value, propertyKey, container))
                         return true;
-                    return (UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container));
+                    return UMI3DNodeAnimation.ReadMyUMI3DProperty(ref value, propertyKey, container);
 
             }
             return true;
         }
 
+        /// <summary>
+        /// DTO local copy.
+        /// </summary>
         protected UMI3DAbstractAnimationDto dto { get; set; }
 
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
@@ -192,21 +200,45 @@ namespace umi3d.cdk
             Start(time);
         }
 
-        public void Destroy()
+        /// <summary>
+        /// Remove the animation from the environment.
+        /// </summary>
+        public async void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
+            await UMI3DEnvironmentLoader.DeleteEntity(dto.id);
         }
 
+        /// <summary>
+        /// Get the current progress of the animation between 0 (start) and 1 (end).
+        /// </summary>
+        /// <returns></returns>
         public abstract float GetProgress();
 
+        /// <summary>
+        /// Set the current progress of the animation between 0 (start) and 1 (end).
+        /// </summary>
+        /// <returns></returns>
         public abstract void SetProgress(long frame);
 
+        /// <summary>
+        /// Play the animation.
+        /// </summary>
         public abstract void Start();
 
+        /// <summary>
+        /// Play animation starting from <paramref name="atTime"/>, a value between 0 and 1.
+        /// </summary>
+        /// <param name="atTime">Time in ms</param>
         public abstract void Start(float atTime);
 
+        /// <summary>
+        /// Interrupt the animation.
+        /// </summary>
         public abstract void Stop();
 
+        /// <summary>
+        /// Performed at the end of the animation.
+        /// </summary>
         public virtual void OnEnd()
         {
             if (dto.looping)

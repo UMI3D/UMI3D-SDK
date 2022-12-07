@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// DTO describing a texture that could be rescaled.
+    /// </summary>
     [System.Serializable]
     public class ScalableTextureDto : TextureDto
     {

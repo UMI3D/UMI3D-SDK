@@ -20,23 +20,24 @@ using System.Xml.Serialization;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Configuration of the server.
+    /// </summary>
     [Serializable]
     public class ConfigServer
     {
-
         /// <summary>
         /// Set the name of the environment.
         /// </summary>
         public string nameParam = "";
         /// <summary>
-        /// Set the public ip of the server.
+        /// Set the public IP address of the server.
         /// </summary>
         public string ipParam = "";
         /// <summary>
-        /// Set the Authentification type. 
-        /// <see cref="common.AuthenticationType"/>
+        /// Set the resources' default URL.
         /// </summary>
-        public string authParam = "";
+        public string resourcesDefaultUrlParam = "";
         /// <summary>
         /// Set the token life span.
         /// </summary>
@@ -50,7 +51,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public ushort udpportParam = 0;
         /// <summary>
-        /// Set the public ip of the master server.
+        /// Set the public IP address of the master server.
         /// </summary>
         public string masterIpParam = "";
         /// <summary>
@@ -58,11 +59,11 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public ushort masterPortParam = 0;
         /// <summary>
-        /// Set the public ip of the master server.
+        /// Set the public IP address of the NAT server.
         /// </summary>
         public string natIpParam = "";
         /// <summary>
-        /// Set the port of the master server.
+        /// Set the port of the NAT server.
         /// </summary>
         public ushort natPortParam = 0;
         /// <summary>
@@ -78,7 +79,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string sessionCommentParam = "";
         /// <summary>
-        /// Set the icon url of the server.
+        /// Set the icon URL of the server.
         /// </summary>
         public string iconUrlParam = "";
         /// <summary>
@@ -134,6 +135,5 @@ namespace umi3d.edk.collaboration
             ser.Serialize(writer, conf);
             writer.Close();
         }
-
     }
 }

@@ -22,8 +22,14 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Interaction representing a form.
+    /// </summary>
     public class UMI3DForm : AbstractInteraction
     {
+        /// <summary>
+        /// Form fields as a list of <see cref="AbstractParameter"/>.
+        /// </summary>
         public List<AbstractParameter> Fields = new List<AbstractParameter>();
 
         [System.Serializable]
@@ -46,34 +52,36 @@ namespace umi3d.edk.interaction
         /// </summary>
         public FormListener onFormCompleted = new FormListener();
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override AbstractInteractionDto CreateDto()
         {
             return new FormDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(AbstractInteractionDto dto_, UMI3DUser user)
         {
             base.WriteProperties(dto_, user);
-            var dto = (dto_ as FormDto);
+            var dto = dto_ as FormDto;
             if (dto == null)
                 return;
             dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.Form;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
                 + UMI3DNetworkingHelper.WriteIBytableCollection(Fields);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, InteractionRequestDto interactionRequest)
         {
             switch (interactionRequest)
@@ -87,6 +95,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (interactionId)

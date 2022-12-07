@@ -19,21 +19,24 @@ using umi3d.common.collaboration;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Root node of any collaborative environment.
+    /// </summary>
     public class UMI3DCollaborationEnvironment : UMI3DEnvironment
     {
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override UMI3DEnvironmentDto CreateDto()
         {
             return new UMI3DCollaborationEnvironmentDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DEnvironmentDto _dto, UMI3DUser user)
         {
             base.WriteProperties(_dto, user);
             if (_dto is UMI3DCollaborationEnvironmentDto dto)
             {
-                dto.userList = UMI3DCollaborationServer.Collaboration.ToDto();
+                dto.userList = UMI3DCollaborationServer.Collaboration.ToDto(user);
             }
         }
     }

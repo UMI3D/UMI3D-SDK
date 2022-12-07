@@ -21,10 +21,23 @@ using umi3d.common;
 
 namespace umi3d.cdk
 {
-    public class UMI3DNavigation : Singleton<UMI3DNavigation>
+    /// <summary>
+    /// Navigation manager for user displacement in the environment. 
+    /// </summary>
+    public class UMI3DNavigation : inetum.unityUtils.SingleBehaviour<UMI3DNavigation>
     {
+        /// <summary>
+        /// Current navigation system.
+        /// </summary>
         public AbstractNavigation currentNav { get; protected set; } = null;
+        /// <summary>
+        /// Different available navigation system.
+        /// </summary>
         public List<AbstractNavigation> navigations;
+
+        public delegate void OnEmbarkVehicleDelegate(ulong vehicleId);
+
+        public static event OnEmbarkVehicleDelegate onEmbarkVehicleDelegate;
 
         // Start is called before the first frame update
         private void Start()
@@ -34,7 +47,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// Move the user acording to a NavigationDto
+        /// Move the user acording to a <see cref="NavigateDto"/>.
         /// </summary>
         /// <param name="dto"></param>
         public static IEnumerator Navigate(NavigateDto dto)
@@ -43,6 +56,19 @@ namespace umi3d.cdk
             {
                 switch (dto)
                 {
+                    case VehicleDto vehicleDto:
+                        onEmbarkVehicleDelegate?.Invoke(vehicleDto.VehicleId);
+
+                        Instance.currentNav.Embark(vehicleDto);
+
+                        var vConfirmation = new VehicleConfirmation()
+                        {
+                            embarkedUserId = UMI3DClientServer.Instance.GetUserId()
+                        };
+
+                        UMI3DClientServer.SendData(vConfirmation, true);
+
+                        break;
                     case TeleportDto teleportDto:
                         Instance.currentNav.Teleport(teleportDto);
                         break;

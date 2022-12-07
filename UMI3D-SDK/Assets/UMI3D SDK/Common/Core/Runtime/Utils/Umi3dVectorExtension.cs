@@ -19,7 +19,10 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-
+    /// <summary>
+    /// Helper serializer for vectors.
+    /// </summary>
+    [System.Obsolete]
     public static class Umi3dVectorExtension
     {
         public static SerializableVector2 Unscaled(this SerializableVector2 v2, SerializableVector2 scale)
@@ -51,6 +54,5 @@ namespace umi3d.common
         {
             return (SerializableVector4)((Vector4)v4).Scaled(scale);
         }
-
     }
 }

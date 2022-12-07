@@ -24,6 +24,9 @@ namespace umi3d.cdk.menu
     /// </summary>
     public abstract class AbstractInputMenuItem<T> : AbstractInputMenuItem, IObservable<T>
     {
+        /// <summary>
+        /// Parameter DTO the menu is for.
+        /// </summary>
         public AbstractParameterDto<T> dto;
 
         /// <summary>
@@ -41,6 +44,7 @@ namespace umi3d.cdk.menu
 
         public System.Func<T, ParameterSettingRequestDto> GetParameterFunc;
 
+        /// <inheritdoc/>
         public override ParameterSettingRequestDto GetParameter()
         {
             return GetParameterFunc?.Invoke(GetValue());
@@ -66,6 +70,10 @@ namespace umi3d.cdk.menu
     /// </summary>
     public abstract class AbstractInputMenuItem : MenuItem
     {
+        /// <summary>
+        /// Get the associated <see cref="ParameterSettingRequestDto"/>
+        /// </summary>
+        /// <returns></returns>
         public abstract ParameterSettingRequestDto GetParameter();
     }
 }

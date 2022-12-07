@@ -21,14 +21,18 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Helper to serialize classes of the Collaboration module.
+    /// </summary>
     public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
     {
+        /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
             {
                 case true when typeof(T) == typeof(UserDto):
-                    if (container.length < 2 * sizeof(uint) + 4 * sizeof(ulong))
+                    if (container.length < (2 * sizeof(uint)) + (4 * sizeof(ulong)) + sizeof(int))
                     {
                         result = default(T);
                         readable = false;
@@ -42,7 +46,18 @@ namespace umi3d.cdk.collaboration
                         audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
                         audioFrequency = UMI3DNetworkingHelper.Read<int>(container),
                         videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
-                        networkId = UMI3DNetworkingHelper.Read<uint>(container)
+                        networkId = UMI3DNetworkingHelper.Read<uint>(container),
+
+                        microphoneStatus = UMI3DNetworkingHelper.Read<bool>(container),
+                        avatarStatus = UMI3DNetworkingHelper.Read<bool>(container),
+                        attentionRequired = UMI3DNetworkingHelper.Read<bool>(container),
+
+                        audioServerUrl = UMI3DNetworkingHelper.Read<string>(container),
+                        audioChannel = UMI3DNetworkingHelper.Read<string>(container),
+                        audioLogin = UMI3DNetworkingHelper.Read<string>(container),
+                        audioUseMumble = UMI3DNetworkingHelper.Read<bool>(container),
+
+                        login = UMI3DNetworkingHelper.Read<string>(container)
                     };
                     result = (T)(object)user;
                     readable = true;
@@ -108,6 +123,7 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
+        /// <inheritdoc/>
         public override bool Write<T>(T value, out Bytable bytable)
         {
             bytable = null;

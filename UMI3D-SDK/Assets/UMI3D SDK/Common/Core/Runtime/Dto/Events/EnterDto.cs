@@ -16,11 +16,23 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Describes the entrance point in an environment.
+    /// </summary>
     [System.Serializable]
     public class EnterDto : UMI3DDto
     {
+        /// <summary>
+        /// User spawn position.
+        /// </summary>
         public SerializableVector3 userPosition;
+        /// <summary>
+        /// User spawn rotation.
+        /// </summary>
         public SerializableVector4 userRotation;
+        /// <summary>
+        /// Has the dto alredy been used?
+        /// </summary>
         public bool usedDto;
 
         public EnterDto() : base() { }

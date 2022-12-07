@@ -25,11 +25,14 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Abstract base for renderded node.
+    /// </summary>
     public class AbstractRenderedNodeLoader : UMI3DNodeLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -73,7 +76,7 @@ namespace umi3d.cdk
                             {
                                 if (extension.applyCustomMaterial)
                                 {
-                                    var node = ((UMI3DNodeInstance)entity);
+                                    var node = (UMI3DNodeInstance)entity;
                                     ulong newMatId = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).newMaterialId;
                                     bool shouldAdd = ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).addMaterialIfNotExists;
                                     UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(newMatId, ((UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value).overridedMaterialsId, node, null, shouldAdd));
@@ -86,10 +89,9 @@ namespace umi3d.cdk
                                 extension.overridedMaterials.Insert(((SetEntityListAddPropertyDto)property).index, (UMI3DRenderedNodeDto.MaterialOverrideDto)addProperty.value);
                                 if (extension.applyCustomMaterial)
                                 {
-                                    var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
+                                    var node = (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId);
                                     SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
                                 }
-
                             }
                             //       
                             break;
@@ -121,7 +123,7 @@ namespace umi3d.cdk
                                 bool shouldAdd = ((UMI3DRenderedNodeDto.MaterialOverrideDto)changeProperty.value).addMaterialIfNotExists;
 
                                 //Apply new overrider (Apply again the list from the new element to then end of the list)
-                                var node = ((UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId));
+                                var node = (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(property.entityId);
                                 UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(propertValue.newMaterialId, propertValue.overridedMaterialsId, node, () =>
                                 {
                                     for (int i = changeProperty.index + 1; i < extension.overridedMaterials.Count; i++)
@@ -404,7 +406,6 @@ namespace umi3d.cdk
 
                         modified = true;
                     }
-
                 }
                 if (modified)
                 {
@@ -440,7 +441,7 @@ namespace umi3d.cdk
                         }
                     }
                     if (oldMats.Length != matsToApply.Length)
-                        renderer.materials = ((IEnumerable<Material>)matsToApply).Take(oldMats.Length).ToArray();
+                        renderer.materials = matsToApply.Take(oldMats.Length).ToArray();
                     else
                         renderer.materials = matsToApply;
                 }
@@ -465,7 +466,7 @@ namespace umi3d.cdk
                         {
                             if (i < oldMats.Length)
                             {
-                                matsToApply[i] = (oldMats[i]);
+                                matsToApply[i] = oldMats[i];
                             }
                             else
                             {
@@ -506,12 +507,9 @@ namespace umi3d.cdk
             }
 
             var newMat = matEntity.Object as Material;
-            Dictionary<string, object> shaderProperties = null;
-            if (newMat == null)
-            {
-                // apply shader properties 
-                shaderProperties = (matEntity.dto as GlTFMaterialDto)?.extensions.umi3d.shaderProperties;
-            }
+            // apply shader properties 
+            Dictionary<string, object> shaderProperties = shaderProperties = (matEntity.dto as GlTFMaterialDto)?.extensions.umi3d.shaderProperties;
+
             if (listToOverride.Contains("ANY_mat"))
             {
                 OverrideMaterial(newMatId, node, newMat, (s) => true, matEntity, shaderProperties);
@@ -520,7 +518,7 @@ namespace umi3d.cdk
             {
                 foreach (string matKey in listToOverride)
                 {
-                    OverrideMaterial(newMatId, node, newMat, (s) => s.Equals(matKey) || (s.Equals(matKey + " (Instance)")), matEntity, shaderProperties, addIfNotExists);
+                    OverrideMaterial(newMatId, node, newMat, (s) => s.Equals(matKey) || s.Equals(matKey + " (Instance)") || matKey.Equals(s + " (Instance)"), matEntity, shaderProperties, addIfNotExists);
                 }
             }
 
@@ -545,13 +543,18 @@ namespace umi3d.cdk
                 UMI3DLogger.LogWarning("Renderers list was empty, That should not happen", scope);
                 return node.renderers;
             }
+            if (((GlTFNodeDto)node.dto).extensions.umi3d is UMI3DLineDto)
+            {
+                if (node.renderers != null && node.renderers.Count > 0)
+                    return node.renderers;
+                node.renderers = new List<Renderer>() { node.gameObject.GetComponent<LineRenderer>() };
+                return node.renderers;
+
+            }
 
             UMI3DLogger.LogError("RendererNodeLoader used for non rendered node", scope);
             return new List<Renderer>();
         }
-
-
-
     }
 }
 

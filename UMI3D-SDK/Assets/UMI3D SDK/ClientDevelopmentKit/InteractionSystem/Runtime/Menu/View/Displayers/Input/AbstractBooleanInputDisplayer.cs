@@ -20,7 +20,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for boolean input display.
+    /// Base class for <see cref="BooleanInputMenuItem"/> display.
     /// </summary>
     public abstract class AbstractBooleanInputDisplayer : AbstractInputMenuItemDisplayer<bool>, IObservable<bool>
     {
@@ -96,6 +96,5 @@ namespace umi3d.cdk.menu.view
                 throw new System.Exception("MenuItem must be a BooleanInput");
             }
         }
-
     }
 }

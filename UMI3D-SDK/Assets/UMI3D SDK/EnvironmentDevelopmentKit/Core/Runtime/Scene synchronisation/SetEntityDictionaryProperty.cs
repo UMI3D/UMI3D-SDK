@@ -30,7 +30,7 @@ namespace umi3d.edk
         /// </summary>
         public object key;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var setEntity = new SetEntityDictionaryPropertyDto
@@ -43,11 +43,13 @@ namespace umi3d.edk
             return setEntity;
         }
 
+        /// <inheritdoc/>
         public override uint GetOperationKeys()
         {
             return UMI3DOperationKeys.SetEntityDictionnaryProperty;
         }
 
+        /// <inheritdoc/>
         public override Bytable ValueToBytes(UMI3DUser user)
         {
             return
@@ -68,6 +70,5 @@ namespace umi3d.edk
             }
             return a;
         }
-
     }
 }

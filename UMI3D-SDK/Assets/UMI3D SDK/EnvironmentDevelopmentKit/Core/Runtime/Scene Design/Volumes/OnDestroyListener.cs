@@ -21,7 +21,7 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// When this component is destroy, a DestroyEntity operation will be sent for every UMI3DEntity in children.
+    /// When this component is destroyed, a DestroyEntity operation will be sent for every UMI3DEntity in children.
     /// </summary>
     public class OnDestroyListener : MonoBehaviour
     {
@@ -32,7 +32,7 @@ namespace umi3d.edk
                     new DeleteEntity()
                     {
                         entityId = entity.Id(),
-                        users = UMI3DServer.Instance.UserSet()
+                        users = UMI3DServer.Instance.UserSetWhenHasJoined()
                     });
 
             if (deleteOperations.Count > 0)

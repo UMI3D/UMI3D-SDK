@@ -17,8 +17,9 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Data Tranfert Object for UMI3D media
+    /// Data Tranfert Object for UMI3D media, the abstraction of a set of environments.
     /// </summary>
+    /// A media can either be a world or a single environment.
     [System.Serializable]
     public class MediaDto : UMI3DDto
     {
@@ -38,23 +39,31 @@ namespace umi3d.common
         public ResourceDto icon3D;
 
         /// <summary>
-        /// Type of Navigation.
+        /// Major part of the version of the media.
         /// </summary>
-        public NavigationType navigationType;
-
-        /// <summary>
-        /// Type of Environment
-        /// </summary>
-        public EnvironmentType environmentType;
-
+        /// Versions are Major.Minor.Status.Date
         public string versionMajor;
+        /// <summary>
+        /// Minor part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionMinor;
+        /// <summary>
+        /// Status part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionStatus;
+        /// <summary>
+        /// Date part of the version of the media.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
         public string versionDate;
 
-        public ForgeConnectionDto connection;
+        /// <summary>
+        /// Path of the media.
+        /// </summary>
+        public string url;
 
         public MediaDto() : base() { }
-
     }
 }

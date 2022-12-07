@@ -20,8 +20,8 @@ namespace umi3d.common
 {
     /// <summary>
     /// glTF 2.0 extension for ligths
-    /// https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_lights_punctual
     /// </summary>
+    /// See <a href="https://github.com/KhronosGroup/glTF/tree/master/extensions/2.0/Khronos/KHR_lights_punctual"/>.
     [System.Serializable]
     public class KHR_lights_punctual
     {

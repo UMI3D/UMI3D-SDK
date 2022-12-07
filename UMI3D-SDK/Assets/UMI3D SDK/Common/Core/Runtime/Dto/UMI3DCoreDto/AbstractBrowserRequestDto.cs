@@ -19,23 +19,29 @@ using System;
 namespace umi3d.common
 {
     /// <summary>
-    /// Abstract class to represent any message sent by a UMI3D Browser.
+    /// Abstract DTO to represent any message sent by a UMI3D Browser.
     /// </summary>
     [Serializable]
     public abstract class AbstractBrowserRequestDto : UMI3DDto, IBytable
     {
         /// <summary>
-        /// Defines if the message have to be reliable.
+        /// Defines if the message have to be reliable. A reliable message will be more expensive but always be delivered.
         /// </summary>
         protected bool reliable = true;
 
-
+        /// <summary>
+        /// Retrieve the UMI3D operation ID assccoiated to the request.
+        /// </summary>
+        /// <returns></returns>
         protected abstract uint GetOperationId();
+
+        /// <inheritdoc/>
         public virtual Bytable ToBytableArray(params object[] parameters)
         {
             return UMI3DNetworkingHelper.Write(GetOperationId());
         }
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return true;

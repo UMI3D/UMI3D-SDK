@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.volume;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace umi3d.cdk.volumes
     /// <summary>
     /// Manager for volumes created with external data (.obj).
     /// </summary>
-    public class ExternalVolumeDataManager : Singleton<ExternalVolumeDataManager>
+    public class ExternalVolumeDataManager : inetum.unityUtils.SingleBehaviour<ExternalVolumeDataManager>
     {
         private static readonly Dictionary<ulong, AbstractVolumeCell> cells = new Dictionary<ulong, AbstractVolumeCell>();
 
@@ -72,38 +73,36 @@ namespace umi3d.cdk.volumes
             onVolumeDelete.RemoveListener(callback);
         }
 
-        public void CreateOBJVolume(OBJVolumeDto dto, UnityAction<AbstractVolumeCell> finished)
+        public async Task<AbstractVolumeCell> CreateOBJVolume(OBJVolumeDto dto)
         {
             var loader = new ObjMeshDtoLoader();
 
-            Action<object> success = obj =>
+            var obj = await loader.UrlToObject(dto.objFile, ".obj", UMI3DClientServer.getAuthorization());
+
+            var cell = new OBJVolumeCell()
             {
-                var cell = new OBJVolumeCell()
-                {
-                    id = dto.id,
-                    meshes = (obj as GameObject).GetComponentsInChildren<MeshFilter>().ToList().ConvertAll(filter => filter.mesh),
-                    parts = new List<GameObject>() { obj as GameObject }
-                };
-
-                Matrix4x4 m = dto.rootNodeToLocalMatrix;
-                foreach (Mesh mesh in cell.meshes)
-                {
-                    mesh.vertices = mesh.vertices.ToList().ConvertAll(v => Vector3.Scale(v, new Vector3(-1, 1, -1))).ToArray(); //asimpl right handed coordinate system dirty fix
-                    mesh.vertices = mesh.vertices.ToList().ConvertAll(v => m.MultiplyPoint(v)).ToArray(); //apply dto transform
-                }
-
-                cell.isTraversable = dto.isTraversable;
-                cells.Add(cell.id, cell);
-                onVolumeCreation.Invoke(cell);
-                finished.Invoke(cell);
+                id = dto.id,
+                meshes = (obj as GameObject).GetComponentsInChildren<MeshFilter>().ToList().ConvertAll(filter => filter.mesh),
+                parts = new List<GameObject>() { obj as GameObject }
             };
 
-            Action<Umi3dException> failed = e =>
-            {
-                Debug.LogError("Failed to load obj file : " + e.Message);
-            };
+            UMI3DNodeInstance root = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId);
 
-            loader.UrlToObject(dto.objFile, ".obj", UMI3DClientServer.getAuthorization(), success, failed);
+            if (root == null)
+                UMI3DLogger.LogError("Root node of a Volume must not be null : node with id " + dto.rootNodeId + " not found.", DebugScope.CDK);
+
+            Matrix4x4 m = root?.transform.localToWorldMatrix ?? Matrix4x4.identity;
+
+            foreach (Mesh mesh in cell.meshes)
+            {
+                mesh.vertices = mesh.vertices.ToList().ConvertAll(v => Vector3.Scale(v, new Vector3(-1, 1, -1))).ToArray(); //asimpl right handed coordinate system dirty fix
+                mesh.vertices = mesh.vertices.ToList().ConvertAll(v => m.MultiplyPoint(v)).ToArray(); //apply dto transform
+            }
+
+            cell.isTraversable = dto.isTraversable;
+            cells.Add(cell.id, cell);
+            onVolumeCreation.Invoke(cell);
+            return (cell);
         }
 
         public void DeleteOBJVolume(ulong id)

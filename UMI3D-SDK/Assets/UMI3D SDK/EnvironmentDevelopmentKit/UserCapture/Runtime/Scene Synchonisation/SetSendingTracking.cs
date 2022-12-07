@@ -17,16 +17,21 @@ using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// <see cref="Operation"/> to control the tracking of the avatar.
+    /// </summary>
     public class SetSendingTracking : Operation
     {
         public bool activeSending;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetSendingTracking)
                 + UMI3DNetworkingHelper.Write(activeSending);
         }
 
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var sendingCamera = new SetSendingTrackingDto()

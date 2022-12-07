@@ -17,13 +17,19 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Dto for entity that has been requested but where not provided by the server
+    /// DTO for an entity that has been requested but was not provided by the server.
     /// </summary>
     public class MissingEntityDto : AbstractEntityDto, IEntity
     {
+        /// <summary>
+        /// Reason why the entity is missing.
+        /// </summary>
         public MissingEntityDtoReason reason;
     }
 
+    /// <summary>
+    /// Possible reasons for an entity to be missing.
+    /// </summary>
     public enum MissingEntityDtoReason
     {
         NotFound,

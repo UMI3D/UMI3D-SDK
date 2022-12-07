@@ -14,23 +14,36 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common;
-
 namespace umi3d.cdk
 {
-    public class UMI3DAnimationManager : Singleton<UMI3DAnimationManager>
+    /// <summary>
+    /// Helper class to manage animated entities.
+    /// </summary>
+    public class UMI3DAnimationManager : inetum.unityUtils.SingleBehaviour<UMI3DAnimationManager>
     {
+        /// <summary>
+        /// Get an animation by UMI3D id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
+        /// <summary>
+        /// Start playing an animation.
+        /// </summary>
+        /// <param name="id">Animation UMI3D id.</param>
         public static void Start(ulong id)
         {
             Get(id)?.Start();
         }
 
+        /// <summary>
+        /// Stop playing an animation.
+        /// </summary>
+        /// <param name="id">Animation UMI3D id.</param>
         public static void Stop(ulong id)
         {
             Get(id)?.Stop();
         }
-
     }
 }

@@ -16,10 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    [System.Serializable]
     /// <summary>
-    /// Requests a browser to project one tool by replacing  another tool
+    /// DTO to request a browser to project one tool by replacing another tool.
     /// </summary>
+    [System.Serializable]
     public class SwitchToolDto : ProjectToolDto
     {
         /// <summary>

@@ -21,6 +21,9 @@ using umi3d.common.interaction;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Default implementation of <see cref="AbstractInteractionMapper"/>.
+    /// </summary>
     public class InteractionMapper : AbstractInteractionMapper
     {
         public static new InteractionMapper Instance => AbstractInteractionMapper.Instance as InteractionMapper;
@@ -282,32 +285,6 @@ namespace umi3d.cdk.interaction
         #region CRUD
 
         /// <inheritdoc/>
-        public override void CreateToolbox(Toolbox toolbox)
-        {
-            toolboxMenu.Add(toolbox.sub);
-        }
-
-        /// <inheritdoc/>
-        public override void CreateTool(Tool tool)
-        {
-            foreach (AbstractInteractionDto interaction in tool.dto.interactions)
-            {
-                interactionsIdToDto[interaction.id] = interaction;
-            }
-            tool.Menu.Subscribe(() =>
-            {
-                if (tool.Menu.toolSelected)
-                {
-                    ReleaseTool(tool.id, new RequestedFromMenu());
-                }
-                else
-                {
-                    SelectTool(tool.id, true, 0, new RequestedFromMenu());
-                }
-            });
-        }
-
-        /// <inheritdoc/>
         public override Toolbox GetToolbox(ulong id)
         {
             if (!ToolboxExists(id))
@@ -318,7 +295,7 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override IEnumerable<Toolbox> GetToolboxes(Predicate<Toolbox> condition)
         {
-            return Toolbox.Toolboxes().FindAll(condition);
+            return Toolbox.GetToolboxes().FindAll(condition);
         }
 
         /// <inheritdoc/>
@@ -353,13 +330,13 @@ namespace umi3d.cdk.interaction
         /// <inheritdoc/>
         public override bool ToolboxExists(ulong id)
         {
-            return UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox != null;
+            return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as Toolbox) != null;
         }
 
         /// <inheritdoc/>
         public override bool ToolExists(ulong id)
         {
-            return UMI3DEnvironmentLoader.GetEntity(id)?.Object as AbstractTool != null;
+            return (UMI3DEnvironmentLoader.GetEntity(id)?.Object as AbstractTool) != null;
         }
 
         /// <inheritdoc/>

@@ -21,7 +21,6 @@ using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
-
     /// <summary>
     /// Add this class to launch an environment on start.
     /// Handle batchmode.
@@ -34,7 +33,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public const string nameParam = Separator + "name";
         /// <summary>
-        /// Set the public ip of the server.
+        /// Set the public IP address of the server.
         /// </summary>
         public const string ipParam = Separator + "ip";
         /// <summary>
@@ -47,15 +46,21 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public const string tokenLifeParam = Separator + "tokenlife";
         /// <summary>
-        /// Set the http port.
+        /// Set the HTTP port.
         /// </summary>
         public const string httpPortParam = Separator + "httpport";
+
+        /// <summary>
+        /// Set the default ressource path.
+        /// </summary>
+        public const string resourcesDefaultUrlParam = Separator + "resourcesDefaultUrlParam";
+
         /// <summary>
         /// Set the websocket port.
         /// </summary>
         public const string forgePortParam = Separator + "udpport";
         /// <summary>
-        /// Set the public ip of the master server.
+        /// Set the public IP address of the master server.
         /// </summary>
         public const string masterIpParam = Separator + "masterip";
         /// <summary>
@@ -63,11 +68,11 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public const string masterPortParam = Separator + "masterport";
         /// <summary>
-        /// Set the public ip of the master server.
+        /// Set the public IP address of the NAT server.
         /// </summary>
         public const string natIpParam = Separator + "natip";
         /// <summary>
-        /// Set the port of the master server.
+        /// Set the port of the NAT server.
         /// </summary>
         public const string natPortParam = Separator + "natport";
         /// <summary>
@@ -106,7 +111,15 @@ namespace umi3d.edk.collaboration
         /// Set the log file output path.
         /// </summary>
         public const string logOutputPathParam = Separator + "logfilepath";
+        /// <summary>
+        /// Set the murmur server.
+        /// </summary>
+        public const string murmurServerParam = Separator + "murmur";
 
+        /// <summary>
+        /// Set the Murmur server.
+        /// </summary>
+        public const string httpMurmurServerParam = Separator + "murmurHttp";
 
 
         public const string generateconfigFileParam = Separator + "createconfig";
@@ -117,53 +130,44 @@ namespace umi3d.edk.collaboration
 
 
         /// <summary>
-        /// Should the server be launch at start.
-        /// if set to true, the server will be lauch about 3 second after the <see cref="Start"/> is called.
+        /// Should the server be launched at start?
         /// </summary>
+        /// If set to true, the server will be launched about 3 second after the <see cref="Start"/> is called.
+        [Tooltip("Should the server be launched when this component is started?")]
         public bool LaunchServerOnStart = false;
 
         /// <summary>
-        /// method called when param <see cref="nameParam"/> is found
+        /// Called when param <see cref="nameParam"/> is found.
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetName(string arg) { UMI3DCollaborationEnvironment.Instance.environmentName = arg; }
 
         /// <summary>
-        /// method called when param <see cref="sessionId"/> is found
+        /// Called when param <see cref="sessionId"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetSessionId(string arg) { UMI3DCollaborationServer.Instance.sessionId = arg; }
 
         /// <summary>
-        /// method called when param <see cref="sessioncomment"/> is found
+        /// Called when param <see cref="sessioncomment"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetSessionComment(string arg) { UMI3DCollaborationServer.Instance.descriptionComment = arg; }
 
         /// <summary>
-        /// method called when param <see cref="sessionId"/> is found
+        /// Called when param <see cref="iconUrlParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetIconServerUrl(string arg) { UMI3DCollaborationServer.Instance.iconServerUrl = arg; }
 
         /// <summary>
-        /// method called when param <see cref="ipParam"/> is found
+        /// Called when param <see cref="ipParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetIp(string arg) { UMI3DCollaborationServer.Instance.SetIP(arg); }
 
         /// <summary>
-        /// method called when param <see cref="authParam"/> is found
-        /// </summary>
-        /// <param arg="arg">argument after parameter</param>
-        protected virtual void SetAuth(string arg)
-        {
-            if (Enum.TryParse(arg, out common.AuthenticationType result))
-                UMI3DCollaborationServer.Instance.Authentication = result;
-        }
-
-        /// <summary>
-        /// method called when param <see cref="tokenParam"/> is found
+        /// Called when param <see cref="tokenParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetTokenLife(string arg)
@@ -173,7 +177,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="httpPortParam"/> is found
+        /// Called when param <see cref="httpPortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetHttpPort(string arg)
@@ -190,7 +194,16 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="forgePortParam"/> is found
+        /// Called when param <see cref="resourcesDefaultUrlParam"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetResourcesDefaultUrl(string arg)
+        {
+            UMI3DCollaborationServer.Instance.resourcesUrl = arg;
+        }
+
+        /// <summary>
+        /// Called when param <see cref="forgePortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetUdpPort(string arg)
@@ -207,13 +220,13 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="masterIpParam"/> is found
+        /// Called when param <see cref="masterIpParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetMasterServerIp(string arg) { UMI3DCollaborationServer.Instance.forgeMasterServerHost = arg; }
 
         /// <summary>
-        /// method called when param <see cref="forgePortParam"/> is found
+        /// Called when param <see cref="forgePortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetMasterServerPort(string arg)
@@ -225,13 +238,13 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="natIpParam"/> is found
+        /// Called when param <see cref="natIpParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetNatServerIp(string arg) { UMI3DCollaborationServer.Instance.forgeNatServerHost = arg; }
 
         /// <summary>
-        /// method called when param <see cref="forgePortParam"/> is found
+        /// Called when param <see cref="forgePortParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetNatServerPort(string arg)
@@ -243,7 +256,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="maxNbPlayerParam"/> is found
+        /// Called when param <see cref="maxNbPlayerParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetMaxNbPlayers(string arg)
@@ -255,7 +268,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="loggingScopeParam"/> is found
+        /// Called when param <see cref="loggingScopeParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetLogScope(string arg)
@@ -273,7 +286,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="loggingLevelParam"/> is found
+        /// Called when param <see cref="loggingLevelParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetLogLevel(string arg)
@@ -285,7 +298,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="loginfoOutputPathParam"/> is found
+        /// Called when param <see cref="loginfoOutputPathParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetloginfoOutputPathParam(string arg)
@@ -295,7 +308,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="loginfoFrequencyParam"/> is found
+        /// Called when param <see cref="loginfoFrequencyParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetLoginfoFrequencyParam(string arg)
@@ -306,8 +319,19 @@ namespace umi3d.edk.collaboration
             }
         }
 
+
+        protected virtual void SetMurmurServer(string arg)
+        {
+            UMI3DCollaborationServer.Instance.mumbleIp = arg;
+        }
+
+        protected virtual void SetHttpMurmurServer(string arg)
+        {
+            UMI3DCollaborationServer.Instance.mumbleHttpIp = arg;
+        }
+
         /// <summary>
-        /// method called when param <see cref="loginfoOutputPathParam"/> is found
+        /// Called when param <see cref="loginfoOutputPathParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void SetlogOutputPathParam(string arg)
@@ -339,7 +363,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// method called when param <see cref="configFileParam"/> is found
+        /// Called when param <see cref="configFileParam"/> is found
         /// </summary>
         /// <param arg="arg">argument after parameter</param>
         protected virtual void ApplyConfigFile(ConfigServer conf)
@@ -352,8 +376,8 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.ipParam))
                     SetIp(conf.ipParam);
 
-                if (!string.IsNullOrEmpty(conf.authParam))
-                    SetAuth(conf.authParam);
+                if (!string.IsNullOrEmpty(conf.resourcesDefaultUrlParam))
+                    SetResourcesDefaultUrl(conf.resourcesDefaultUrlParam);
 
                 if (conf.tokenLifeParam > 0)
                     SetTokenLife(conf.tokenLifeParam.ToString());
@@ -398,15 +422,13 @@ namespace umi3d.edk.collaboration
                 if (!string.IsNullOrEmpty(conf.logOutputPathParam))
                     SetlogOutputPathParam(conf.logOutputPathParam);
             }
-
         }
 
         /// <summary>
-        /// method called if a parameter wasn't catch.
+        /// Called if a parameter wasn't catch.
         /// </summary>
         /// <param name="i">current index. 
         /// It should be set to last argument used.
-        /// 
         /// </param>
         /// <param name="args"></param>
         protected virtual void OtherParam(ref int i, string[] args) { }
@@ -420,12 +442,11 @@ namespace umi3d.edk.collaboration
 
         /// <summary>
         /// Launch the server.
-        /// Called automaticaly, 3f second after <see cref="Start"/> is called, if <see cref="LaunchServerOnStart"/> is true.
         /// </summary>
+        /// Called automaticaly, 3 seconds after <see cref="Start"/> is called, if <see cref="LaunchServerOnStart"/> is true.
         public virtual void LaunchServer() { UMI3DCollaborationServer.Instance.Init(); }
 
 
-        // Start is called before the first frame update
         protected virtual void Start()
         {
             string[] args = System.Environment.GetCommandLineArgs();
@@ -445,7 +466,6 @@ namespace umi3d.edk.collaboration
                         GenerateConfigFile(args[i]);
                     Application.Quit();
                 }
-
             }
 
             //then aplly other arguments
@@ -461,10 +481,10 @@ namespace umi3d.edk.collaboration
                     if (++i < length)
                         SetIp(args[i]);
                 }
-                else if (args[i].Equals(authParam, StringComparison.OrdinalIgnoreCase))
+                else if (args[i].Equals(resourcesDefaultUrlParam, StringComparison.OrdinalIgnoreCase))
                 {
                     if (++i < length)
-                        SetAuth(args[i]);
+                        SetResourcesDefaultUrl(args[i]);
                 }
                 else if (args[i].Equals(tokenLifeParam, StringComparison.OrdinalIgnoreCase))
                 {
@@ -540,6 +560,16 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetloginfoOutputPathParam(args[i]);
+                }
+                else if (args[i].Equals(murmurServerParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetMurmurServer(args[i]);
+                }
+                else if (args[i].Equals(httpMurmurServerParam, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetHttpMurmurServer(args[i]);
                 }
                 else if (args[i].Equals(logOutputPathParam, StringComparison.OrdinalIgnoreCase))
                 {

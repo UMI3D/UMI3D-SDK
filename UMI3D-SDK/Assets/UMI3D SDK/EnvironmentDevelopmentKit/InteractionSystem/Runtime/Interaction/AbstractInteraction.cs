@@ -26,7 +26,7 @@ using UnityEngine.Events;
 namespace umi3d.edk.interaction
 {
     /// <summary>
-    /// Abstract UMI3D interaction.
+    /// Abstract UMI3D interaction. Base class for all interactions.
     /// </summary>
     public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IBytable
     {
@@ -38,7 +38,7 @@ namespace umi3d.edk.interaction
         public class InteractionEvent : UnityEvent<InteractionEventContent> { }
 
         /// <summary>
-        /// InteractionEvent Content. 
+        /// <see cref="InteractionEvent"/> content indicating who is interacting with which interaction.
         /// </summary>
         [Serializable]
         public class InteractionEventContent
@@ -90,15 +90,17 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Indicates if the interaction is part of another.
         /// </summary>
-        [HideInInspector] public bool IsSubInteraction = false;
+        [HideInInspector] 
+        public bool IsSubInteraction = false;
 
+        /// <summary>
+        /// Available display information on the interaction
+        /// </summary>
         public InteractionDisplay Display = new InteractionDisplay()
         {
             name = null
         };
 
-        public UMI3DNodeAnimation TriggerAnimation;
-        public UMI3DNodeAnimation ReleaseAnimation;
 
         /// <summary>
         /// The interaction's unique id. 
@@ -115,7 +117,10 @@ namespace umi3d.edk.interaction
             return interactionId;
         }
 
-        private void Register()
+        /// <summary>
+        /// Register the interaction in the <see cref="UMI3DEnvironment"/> if necessary.
+        /// </summary>
+        protected virtual void Register()
         {
             if (interactionId == 0 && UMI3DEnvironment.Exists)
             {
@@ -193,9 +198,9 @@ namespace umi3d.edk.interaction
         protected abstract AbstractInteractionDto CreateDto();
 
         /// <summary>
-        /// Write the UMI3DNode properties in an object UMI3DNodeDto is assignable from.
+        /// Write the AbstractInteractionDto properties in an object AbstractInteractionDto is assignable from.
         /// </summary>
-        /// <param name="scene">The UMI3DNodeDto to be completed</param>
+        /// <param name="dto">The AbstractInteractionDto to be completed</param>
         /// <param name="user">User to convert for</param>
         /// <returns></returns>
         protected virtual void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
@@ -207,8 +212,17 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
         }
 
+        /// <summary>
+        /// Retrieve the key associated to the interaction from <see cref="UMI3DInteractionKeys"/>.
+        /// </summary>
+        /// <returns></returns>
         protected abstract byte GetInteractionKey();
 
+        /// <summary>
+        /// Convert interaction to a <see cref="Bytable"/> container for a given user.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public virtual Bytable ToByte(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(GetInteractionKey())
@@ -219,6 +233,7 @@ namespace umi3d.edk.interaction
                     + UMI3DNetworkingHelper.Write(Display.description);
         }
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
@@ -226,6 +241,7 @@ namespace umi3d.edk.interaction
             return ToByte(parameters[0] as UMI3DUser);
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return true;
@@ -234,16 +250,19 @@ namespace umi3d.edk.interaction
         #region filter
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
+        /// <inheritdoc/>
         public bool LoadOnConnection(UMI3DUser user)
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
 
+        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Remove(filter);

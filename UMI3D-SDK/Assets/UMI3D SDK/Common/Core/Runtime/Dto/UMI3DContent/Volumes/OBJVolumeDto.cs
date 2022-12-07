@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.volume
 {
+    /// <summary>
+    /// Abstract DTO describing a volume cell based on a .obj resource.
+    /// </summary>
     public class OBJVolumeDto : AbstractVolumeCellDto
     {
         /// <summary>

@@ -18,12 +18,15 @@ using MrtkShader;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk
 {
-
+    /// <summary>
+    /// Loader for <see cref="UMI3DSceneNodeDto"/>, also supports loading of <see cref="GlTFSceneDto"/>.
+    /// </summary>
     public class UMI3DSceneLoader : UMI3DAbstractNodeLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
@@ -33,11 +36,13 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="finished"></param>
-        public void LoadGlTFScene(GlTFSceneDto dto, System.Action finished, System.Action<int> ToLoadNodesCount, System.Action<int> LoadedNodesCount)
+        public async Task LoadGlTFScene(GlTFSceneDto dto, Progress progress)
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
-
+                progress.AddTotal();
+                progress.AddTotal();
+                progress.AddComplete();
                 var go = new GameObject(dto.name);
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.RegisterNodeInstance(
                     dto.extensions.umi3d.id,
@@ -50,24 +55,15 @@ namespace umi3d.cdk
                             UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
                     });
 
-                void finished2()
-                {
-                    node.NotifyLoaded();
-                    finished?.Invoke();
-                }
 
                 go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
                 //Load Materials and then Nodes
-                LoadSceneMaterials(dto,
-                    () =>
-                    {
-                        UMI3DEnvironmentLoader.StartCoroutine(
-                            UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, finished2, ToLoadNodesCount, LoadedNodesCount));
-                    }
-                );
+                LoadSceneMaterials(dto);
+                
+                await UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, progress);
+                progress.AddComplete();
+                node.NotifyLoaded();
             }
-            else
-                finished?.Invoke();
         }
 
         /// <summary>
@@ -75,30 +71,25 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="node"></param>
         /// <param name="dto"></param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
-            base.ReadUMI3DExtension(dto, node, () =>
-            {
-                var sceneDto = dto as UMI3DSceneNodeDto;
-                if (sceneDto == null) return;
-                node.transform.localPosition = sceneDto.position;
-                node.transform.localRotation = sceneDto.rotation;
-                node.transform.localScale = sceneDto.scale;
-                foreach (string library in sceneDto.LibrariesId)
-                    UMI3DResourcesManager.LoadLibrary(library, null, sceneDto.id);
-                int count = 0;
-                if (sceneDto.otherEntities != null)
-                {
-                    foreach (IEntity entity in sceneDto.otherEntities)
-                    {
-                        count++;
-                        UMI3DEnvironmentLoader.LoadEntity(entity, () => { count--; if (count == 0) finished.Invoke(); });
-                    }
-                }
+            await base.ReadUMI3DExtension(dto, node);
+            var sceneDto = dto as UMI3DSceneNodeDto;
+            if (sceneDto == null) return;
+            node.transform.localPosition = sceneDto.position;
+            node.transform.localRotation = sceneDto.rotation;
+            node.transform.localScale = sceneDto.scale;
+            await Task.WhenAll(sceneDto.LibrariesId.Select(async libraryId => await UMI3DResourcesManager.LoadLibrary(libraryId, sceneDto.id)));
 
-                if (count == 0)
-                    finished.Invoke();
-            }, failed);
+            if (sceneDto.otherEntities != null)
+            {
+                await Task.WhenAll(sceneDto.otherEntities.Select(
+                    async entity =>
+                    {
+                       await  UMI3DEnvironmentLoader.LoadEntity(entity);
+                    }));
+            }
+
         }
 
         /// <summary>
@@ -116,7 +107,7 @@ namespace umi3d.cdk
             }
             if (base.SetUMI3DProperty(entity, property))
                 return true;
-            var dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
+            UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -165,7 +156,7 @@ namespace umi3d.cdk
             }
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            var dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DSceneNodeDto;
+            UMI3DSceneNodeDto dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -199,6 +190,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (ReadUMI3DMaterialProperty(ref value, propertyKey, container))
@@ -222,7 +214,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        public void LoadSceneMaterials(GlTFSceneDto dto, Action callback)
+        public void LoadSceneMaterials(GlTFSceneDto dto)
         {
             foreach (GlTFMaterialDto material in dto.materials)
             {
@@ -233,9 +225,16 @@ namespace umi3d.cdk
                     {
                         if (material.name != null && material.name.Length > 0 && m != null)
                             m.name = material.name;
+
                         //register the material
-                        UMI3DEntityInstance entity = UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m);
-                        entity.NotifyLoaded();
+                        if (m == null)
+                        {
+                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, new List<Material>()).NotifyLoaded();
+                        }
+                        else
+                        {
+                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m).NotifyLoaded();
+                        }
                     }
                     );
 
@@ -245,7 +244,6 @@ namespace umi3d.cdk
                     UMI3DLogger.LogError("this material failed to load : " + material.name, scope);
                 }
             }
-            callback.Invoke();
         }
 
         private float RoughnessToSmoothness(float f)
@@ -274,12 +272,12 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    materialToModify.color = ((SerializableColor)property.value);
+                    materialToModify.color = (SerializableColor)property.value;
                     glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = (SerializableColor)property.value;
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ((SerializableColor)property.value));
+                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (SerializableColor)property.value);
                     glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)(Color)(SerializableColor)property.value;
                     break;
 
@@ -583,7 +581,7 @@ namespace umi3d.cdk
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
                             key = UMI3DNetworkingHelper.Read<string>(container);
-                            extension.shaderProperties.Remove((string)key);
+                            extension.shaderProperties.Remove(key);
                             UMI3DLogger.LogWarning("Warning a property is removed but it cannot be applied", scope);
                             break;
                         case UMI3DOperationKeys.SetEntityDictionnaryProperty:
@@ -959,7 +957,5 @@ namespace umi3d.cdk
 
             return true;
         }
-
     }
-
 }

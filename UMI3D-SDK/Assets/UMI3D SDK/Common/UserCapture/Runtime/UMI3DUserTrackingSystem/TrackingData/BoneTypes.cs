@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Indexes all the available bones in UMI3D. 
+    /// </summary>
+    /// A bone is a part of the skeleton associated to a user. It represents a part of the human body.
+    /// See complentary documentation for the exact position of each bone.
     [System.Serializable]
     public static class BoneType
     {

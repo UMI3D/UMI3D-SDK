@@ -18,25 +18,26 @@ using umi3d.common;
 namespace umi3d.edk
 {
     /// <summary>
-    /// An operation to start interpolatation on a property's entity
+    /// An operation to start interpolatation on a property's entity.
     /// </summary>
     public class StartInterpolationProperty : AbstractInterpolationProperty
     {
         /// <summary>
-        /// The value with witch to start interpolation
+        /// The value at which to start interpolation.
         /// </summary>
         public object startValue;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StartInterpolationProperty)
                 + UMI3DNetworkingHelper.Write(entityId)
                 + UMI3DNetworkingHelper.Write(property)
-                + UMI3DNetworkingHelper.Write((uint)0)
                 + UMI3DNetworkingHelper.Write(startValue);
 
         }
 
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var startInterpolation = new StartInterpolationPropertyDto

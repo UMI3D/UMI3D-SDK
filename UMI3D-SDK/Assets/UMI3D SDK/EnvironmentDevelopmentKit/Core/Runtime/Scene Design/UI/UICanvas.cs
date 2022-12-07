@@ -23,19 +23,28 @@ namespace umi3d.edk
     /// <summary>
     /// UI Canvas
     /// </summary>
+    /// /// See <see cref="Canvas"/>.
     [RequireComponent(typeof(CanvasScaler))]
     public class UICanvas : UIRect
     {
         /// <summary>
-        /// If true, this component will on init convert every image, text and rectTransform to corresponding UMI3D component.
+        /// If true, this component will convert every image, text and rectTransform to corresponding UMI3D component on init.
         /// </summary>
-        /// <see cref="Cascade"/>
+        /// See <seealso cref="Cascade"/>
+        [Tooltip("If true, this component will convert every image, text and rectTransform to corresponding UMI3D component on init.")]
         public bool autoCascade = false;
 
+        /// <summary>
+        /// Reference to the <see cref="CanvasScaler.dynamicPixelsPerUnit"/> property of the attached CanvasScaler
+        /// </summary>
         private float _dynamicPixelsPerUnit => GetComponent<CanvasScaler>().dynamicPixelsPerUnit;
-
+        /// <summary>
+        /// Reference to the <see cref="CanvasScaler.referencePixelsPerUnit"/> property of the attached CanvasScaler
+        /// </summary>
         private float _referencePixelsPerUnit => GetComponent<CanvasScaler>().referencePixelsPerUnit;
-
+        /// <summary>
+        /// Reference to the <see cref="Canvas.sortingOrder"/> property of the attached Canvas
+        /// </summary>
         private int _orderInLayer => GetComponent<Canvas>().sortingOrder;
 
         /// <summary>
@@ -73,7 +82,7 @@ namespace umi3d.edk
             OrderInLayer = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.OrderInLayer, _orderInLayer);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -83,6 +92,7 @@ namespace umi3d.edk
             canvasDto.orderInLayer = OrderInLayer.GetValue(user);
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
@@ -91,10 +101,7 @@ namespace umi3d.edk
                 + UMI3DNetworkingHelper.Write(OrderInLayer.GetValue(user));
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UICanvasDto();
@@ -120,6 +127,5 @@ namespace umi3d.edk
             foreach (RectTransform r in rects)
                 r.gameObject.AddComponent<UIRect>();
         }
-
     }
 }

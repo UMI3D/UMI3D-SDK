@@ -18,8 +18,16 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Helper class to convert bonetypes from/to the UMI3D standard
+    /// </summary>
     public static class BoneTypeConverter
     {
+        /// <summary>
+        /// Convert Unity's Bonetypes to UMI3D Bonetypes
+        /// </summary>
+        /// <param name="HumanBodyBones"></param>
+        /// <returns></returns>
         public static uint Convert(this HumanBodyBones HumanBodyBones)
         {
             switch (HumanBodyBones)
@@ -261,6 +269,5 @@ namespace umi3d.common.userCapture
                     return null;
             }
         }
-
     }
 }

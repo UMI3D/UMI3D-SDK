@@ -897,10 +897,10 @@ public class HandPoseSetterEditor : Editor
             Handles.color = handAnimation.PhalanxColor;
 
             if (handAnimation.ShowRightHand)
-                Handles.SphereHandleCap(0, posRightThumbProximal, Quaternion.Euler(RightThumbFirstPhalanx.Pos), 0.01f, EventType.Repaint);
+                Handles.SphereHandleCap(0, posRightThumbProximal, Quaternion.Euler(RightThumbFirstPhalanx.Rot), 0.01f, EventType.Repaint);
 
             if (handAnimation.ShowLeftHand)
-                Handles.SphereHandleCap(0, posLeftThumbProximal, Quaternion.Euler(LeftThumbFirstPhalanx.Pos), 0.01f, EventType.Repaint);
+                Handles.SphereHandleCap(0, posLeftThumbProximal, Quaternion.Euler(LeftThumbFirstPhalanx.Rot), 0.01f, EventType.Repaint);
 
             Quaternion rotRightThumbProximal, rotLeftThumbProximal;
             rotRightThumbProximal = rotLeftThumbProximal = Quaternion.identity;

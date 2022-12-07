@@ -23,11 +23,22 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Animation composed of a chain of severam animations
+    /// </summary>
     public class UMI3DAnimation : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        /// <summary>
+        /// Get an animation by id.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
         public static new UMI3DAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimation; }
+        /// <summary>
+        /// DTO local copy.
+        /// </summary>
         protected new UMI3DAnimationDto dto { get => base.dto as UMI3DAnimationDto; set => base.dto = value; }
 
         private readonly List<Coroutine> Coroutines = new List<Coroutine>();
@@ -40,13 +51,13 @@ namespace umi3d.cdk
 
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetProgress()
         {
             return progress;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start()
         {
             if (started) return;
@@ -64,7 +75,7 @@ namespace umi3d.cdk
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Stop()
         {
             if (!started) return;
@@ -75,7 +86,7 @@ namespace umi3d.cdk
                 UMI3DAnimationManager.StopCoroutine(c);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnEnd()
         {
             PlayingCoroutines = null;
@@ -105,7 +116,7 @@ namespace umi3d.cdk
             action.Invoke();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (base.SetUMI3DProperty(entity, property)) return true;
@@ -123,6 +134,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
@@ -140,6 +152,7 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)
@@ -178,30 +191,9 @@ namespace umi3d.cdk
 
         private bool UpdateChain(uint operationId, uint propertyKey, ByteContainer container)
         {
-            switch (operationId)
-            {
-                case UMI3DOperationKeys.SetEntityListAddProperty:
-                    int ind = UMI3DNetworkingHelper.Read<int>(container);
-                    UMI3DAnimationDto.AnimationChainDto value = UMI3DNetworkingHelper.Read<UMI3DAnimationDto.AnimationChainDto>(container);
-                    if (ind == dto.animationChain.Count())
-                        dto.animationChain.Add(value);
-                    else if (ind < dto.animationChain.Count() && ind >= 0)
-                        dto.animationChain.Insert(ind, value);
-                    else
-                        UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {dto.animationChain.Count}", scope);
-                    break;
-                case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    dto.animationChain.RemoveAt(UMI3DNetworkingHelper.Read<int>(container));
-                    break;
-                case UMI3DOperationKeys.SetEntityListProperty:
-                    int index = UMI3DNetworkingHelper.Read<int>(container);
-                    UMI3DAnimationDto.AnimationChainDto v = UMI3DNetworkingHelper.Read<UMI3DAnimationDto.AnimationChainDto>(container);
-                    dto.animationChain[index] = v;
-                    break;
-                default:
-                    dto.animationChain = UMI3DNetworkingHelper.ReadList<UMI3DAnimationDto.AnimationChainDto>(container);
-                    break;
-            }
+            if (dto.animationChain == null)
+                dto.animationChain = new List<UMI3DAnimationDto.AnimationChainDto>();
+            UMI3DNetworkingHelper.ReadList(operationId, container, dto.animationChain);
             return true;
         }
 
@@ -211,7 +203,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start(float atTime)
         {
             if (started) return;
@@ -229,6 +221,7 @@ namespace umi3d.cdk
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
             progress = frame;

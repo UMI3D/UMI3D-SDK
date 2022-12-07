@@ -16,9 +16,18 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Ambient lighting type in UMI3D.
+    /// </summary>
     public enum AmbientType
     {
+        /// <summary>
+        /// Compute the ambient color from the Skybox.
+        /// </summary>
         Skybox,
+        /// <summary>
+        /// Single ambient color.
+        /// </summary>
         Flat,
         Gradient
     }

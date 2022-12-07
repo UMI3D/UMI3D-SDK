@@ -18,10 +18,19 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// <see cref="UMI3DUser"/> with a UMI3D Avatar attached to it.
+    /// </summary>
     public class UMI3DTrackedUser : UMI3DUser
     {
+        /// <summary>
+        /// User's avatar
+        /// </summary>
         private UMI3DAvatarNode avatar;
 
+        /// <summary>
+        /// User's avatar
+        /// </summary>
         public UMI3DAvatarNode Avatar
         {
             get => avatar;

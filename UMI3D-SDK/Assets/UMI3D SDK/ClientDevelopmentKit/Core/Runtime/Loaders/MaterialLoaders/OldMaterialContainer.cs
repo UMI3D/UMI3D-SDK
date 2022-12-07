@@ -48,6 +48,5 @@ namespace umi3d.cdk
             _oldMats = new Material[lenght];
 
         }
-
     }
 }

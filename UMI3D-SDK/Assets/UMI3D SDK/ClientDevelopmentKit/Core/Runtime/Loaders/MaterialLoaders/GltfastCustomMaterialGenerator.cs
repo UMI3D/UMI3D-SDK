@@ -28,7 +28,7 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override UnityEngine.Material GenerateMaterial(GLTFast.Schema.Material gltfMaterial, ref GLTFast.Schema.Texture[] textures, ref GLTFast.Schema.Image[] schemaImages, ref Dictionary<int, Texture2D>[] imageVariants, string url, int id)
         {
             UnityEngine.Material material;
@@ -137,7 +137,7 @@ namespace umi3d.cdk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void TrySetTextureTransform(
             GLTFast.Schema.TextureInfo textureInfo,
             UnityEngine.Material material,
@@ -189,11 +189,17 @@ namespace umi3d.cdk
                 offset.y = 1 - offset.y;
                 scale.y = -scale.y;
             }
-            material.SetTextureOffset(propertyId, offset);
-            material.SetTextureScale(propertyId, scale);
+
+            if (material.HasProperty(propertyId))
+            {
+                material.SetTextureOffset(propertyId, offset);
+                material.SetTextureScale(propertyId, scale);
+            }
+            else
+                UMI3DLogger.LogWarning("Impossible to applay texture offset and scale because " + material.shader.name + " has no properpy with id : " + propertyId, scope);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided = false)
         {
             UnityEngine.Material res = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
@@ -242,7 +248,6 @@ namespace umi3d.cdk
                 {
                     UMI3DLogger.LogError($"Texture #{bcTextureIndex} not found", scope);
                 }
-
             }
             return null;
 
@@ -264,6 +269,5 @@ namespace umi3d.cdk
                 }
             }
         }
-
     }
 }

@@ -2,6 +2,7 @@ var classumi3d_1_1common_1_1_u_m_i3_d_logger =
 [
     [ "_Log", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html#a5b279a9480b2863b5e38c41eded95a7f", null ],
     [ "_LogError", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html#a897d6a29b857ec40efc37330ca55c287", null ],
+    [ "_LogException", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html#ae0ba182d2a94c71c8410a2f1cf65ebf7", null ],
     [ "_LogWarning", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html#ad3e01be67b76961eda6c4c86541719e2", null ],
     [ "_Register", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html#a2408995fd1bd1a5576b190bbcf66c586", null ],
     [ "_Unregister", "df/d12/classumi3d_1_1common_1_1_u_m_i3_d_logger.html#aca459cb7bcb9ce15b1ee30c923254591", null ],

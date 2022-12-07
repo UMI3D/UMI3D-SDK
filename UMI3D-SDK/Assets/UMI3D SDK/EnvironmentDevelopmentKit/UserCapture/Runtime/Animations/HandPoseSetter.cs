@@ -21,36 +21,94 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Allow the edition of hand poses directly in the environment.
+    /// </summary>
+    /// Displays gizmos for all the bones and enables to move them relatively one to another.
     [RequireComponent(typeof(umi3d.edk.UMI3DNode))]
     public class HandPoseSetter : MonoBehaviour
     {
+        /// <summary>
+        /// Name of the hand pose.
+        /// </summary
+        [Tooltip("Name of the hand pose")]
         public string PoseName;
 
+        /// <summary>
+        /// Should the pose have a precise position reatively to the node?
+        /// </summary>
+        [Tooltip("Should the pose have a precise position reatively to the node?")]
         public bool IsRelativeToNode = true;
 
+        /// <summary>
+        /// Display the right hand in the editor.
+        /// </summary>
+        [Tooltip("Display the right hand in the editor.")]
         public bool ShowRightHand = false;
+        /// <summary>
+        /// Display the left hand in the editor.
+        /// </summary>
+        [Tooltip("Display the left hand in the editor.")]
         public bool ShowLeftHand = false;
 
         public bool EditHandPosition = false;
+        /// <summary>
+        /// Displays the gizmos to move the thumb finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the thumb finger's bones.")]
         public bool EditThumb = false;
+        /// <summary>
+        /// Displays the gizmos to move the index finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the index finger's bones.")]
         public bool EditIndex = false;
+        /// <summary>
+        /// Displays the gizmos to move the middle finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the middle finger's bones.")]
         public bool EditMiddle = false;
+        /// <summary>
+        /// Displays the gizmos to move the ring finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the ring finger's bones.")]
         public bool EditRing = false;
+        /// <summary>
+        /// Displays the gizmos to move the little finger's bones.
+        /// </summary>
+        [Tooltip("Displays the gizmos to move the little finger's bones.")]
         public bool EditLittle = false;
 
+        /// <summary>
+        /// Displays line gizmos between bones to improve the vizualisation.
+        /// </summary>
+        [Tooltip("Displays line gizmos between bones to improve the vizualisation.")]
         public bool DrawLine = false;
 
+        /// <summary>
+        /// Color of the hand in the editor.
+        /// </summary>
         [HideInInspector]
         public Color HandColor = Color.blue;
+        /// <summary>
+        /// Color of the phalanx joints in the editor.
+        /// </summary>
         [HideInInspector]
         public Color PhalanxColor = new Color(1f, 0.5f, 0f);
+        /// <summary>
+        /// Color of the helping line gizmos in the editor.
+        /// </summary>
         [HideInInspector]
         public Color LineColor = Color.green;
 
         [HideInInspector]
         public HandDescription ScriptableHand;
+        /// <summary>
+        /// The hand pose to edit.
+        /// </summary>
+        [Tooltip("The hand pose to edit.")]
         public UMI3DHandPose HandPose;
 
+        // todo To remove.
         public bool tempValueForTest = true;
 
         private void Reset()
@@ -65,6 +123,9 @@ namespace umi3d.edk.userCapture
             ScriptableObject.Destroy(ScriptableHand);
         }
 
+        /// <summary>
+        /// Set hand bones' positions to default values.
+        /// </summary>
         private void SetHandDictionary()
         {
             ScriptableHand.Add(nameof(BoneType.LeftThumbProximal), new SpatialDataInfo(new Vector3(-0.03788809f, -0.02166997f, 0.03003088f), Vector3.zero));
@@ -129,6 +190,9 @@ namespace umi3d.edk.userCapture
             SceneView.RepaintAll();
         }
 
+        /// <summary>
+        /// Save an edited hand pose.
+        /// </summary>
         public void SavePose()
         {
             if (HandPose != null)
@@ -153,48 +217,53 @@ namespace umi3d.edk.userCapture
 
                 HandPose.PhalanxRotations.Clear();
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightThumbProximal, nameof(BoneType.RightThumbProximal), ScriptableHand.Get(nameof(BoneType.RightThumbProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightThumbIntermediate, nameof(BoneType.RightThumbIntermediate), ScriptableHand.Get(nameof(BoneType.RightThumbIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightThumbDistal, nameof(BoneType.RightThumbDistal), ScriptableHand.Get(nameof(BoneType.RightThumbDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightThumbProximal, nameof(BoneType.RightThumbProximal), ScriptableHand.Get(nameof(BoneType.RightThumbProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightThumbIntermediate, nameof(BoneType.RightThumbIntermediate), ScriptableHand.Get(nameof(BoneType.RightThumbIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightThumbDistal, nameof(BoneType.RightThumbDistal), ScriptableHand.Get(nameof(BoneType.RightThumbDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightIndexProximal, nameof(BoneType.RightIndexProximal), ScriptableHand.Get(nameof(BoneType.RightIndexProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightIndexIntermediate, nameof(BoneType.RightIndexIntermediate), ScriptableHand.Get(nameof(BoneType.RightIndexIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightIndexDistal, nameof(BoneType.RightIndexDistal), ScriptableHand.Get(nameof(BoneType.RightIndexDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightIndexProximal, nameof(BoneType.RightIndexProximal), ScriptableHand.Get(nameof(BoneType.RightIndexProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightIndexIntermediate, nameof(BoneType.RightIndexIntermediate), ScriptableHand.Get(nameof(BoneType.RightIndexIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightIndexDistal, nameof(BoneType.RightIndexDistal), ScriptableHand.Get(nameof(BoneType.RightIndexDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightMiddleProximal, nameof(BoneType.RightMiddleProximal), ScriptableHand.Get(nameof(BoneType.RightMiddleProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightMiddleIntermediate, nameof(BoneType.RightMiddleIntermediate), ScriptableHand.Get(nameof(BoneType.RightMiddleIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightMiddleDistal, nameof(BoneType.RightMiddleDistal), ScriptableHand.Get(nameof(BoneType.RightMiddleDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightMiddleProximal, nameof(BoneType.RightMiddleProximal), ScriptableHand.Get(nameof(BoneType.RightMiddleProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightMiddleIntermediate, nameof(BoneType.RightMiddleIntermediate), ScriptableHand.Get(nameof(BoneType.RightMiddleIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightMiddleDistal, nameof(BoneType.RightMiddleDistal), ScriptableHand.Get(nameof(BoneType.RightMiddleDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightRingProximal, nameof(BoneType.RightRingProximal), ScriptableHand.Get(nameof(BoneType.RightRingProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightRingIntermediate, nameof(BoneType.RightRingIntermediate), ScriptableHand.Get(nameof(BoneType.RightRingIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightRingDistal, nameof(BoneType.RightRingDistal), ScriptableHand.Get(nameof(BoneType.RightRingDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightRingProximal, nameof(BoneType.RightRingProximal), ScriptableHand.Get(nameof(BoneType.RightRingProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightRingIntermediate, nameof(BoneType.RightRingIntermediate), ScriptableHand.Get(nameof(BoneType.RightRingIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightRingDistal, nameof(BoneType.RightRingDistal), ScriptableHand.Get(nameof(BoneType.RightRingDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightLittleProximal, nameof(BoneType.RightLittleProximal), ScriptableHand.Get(nameof(BoneType.RightLittleProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightLittleIntermediate, nameof(BoneType.RightLittleIntermediate), ScriptableHand.Get(nameof(BoneType.RightLittleIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.RightLittleDistal, nameof(BoneType.RightLittleDistal), ScriptableHand.Get(nameof(BoneType.RightLittleDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightLittleProximal, nameof(BoneType.RightLittleProximal), ScriptableHand.Get(nameof(BoneType.RightLittleProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightLittleIntermediate, nameof(BoneType.RightLittleIntermediate), ScriptableHand.Get(nameof(BoneType.RightLittleIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.RightLittleDistal, nameof(BoneType.RightLittleDistal), ScriptableHand.Get(nameof(BoneType.RightLittleDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftThumbProximal, nameof(BoneType.LeftThumbProximal), ScriptableHand.Get(nameof(BoneType.LeftThumbProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftThumbIntermediate, nameof(BoneType.LeftThumbIntermediate), ScriptableHand.Get(nameof(BoneType.LeftThumbIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftThumbDistal, nameof(BoneType.LeftThumbDistal), ScriptableHand.Get(nameof(BoneType.LeftThumbDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftThumbProximal, nameof(BoneType.LeftThumbProximal), ScriptableHand.Get(nameof(BoneType.LeftThumbProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftThumbIntermediate, nameof(BoneType.LeftThumbIntermediate), ScriptableHand.Get(nameof(BoneType.LeftThumbIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftThumbDistal, nameof(BoneType.LeftThumbDistal), ScriptableHand.Get(nameof(BoneType.LeftThumbDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftIndexProximal, nameof(BoneType.LeftIndexProximal), ScriptableHand.Get(nameof(BoneType.LeftIndexProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftIndexIntermediate, nameof(BoneType.LeftIndexIntermediate), ScriptableHand.Get(nameof(BoneType.LeftIndexIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftIndexDistal, nameof(BoneType.LeftIndexDistal), ScriptableHand.Get(nameof(BoneType.LeftIndexDistal)).Rot)); ;
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftIndexProximal, nameof(BoneType.LeftIndexProximal), ScriptableHand.Get(nameof(BoneType.LeftIndexProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftIndexIntermediate, nameof(BoneType.LeftIndexIntermediate), ScriptableHand.Get(nameof(BoneType.LeftIndexIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftIndexDistal, nameof(BoneType.LeftIndexDistal), ScriptableHand.Get(nameof(BoneType.LeftIndexDistal)).Rot)); ;
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftMiddleProximal, nameof(BoneType.LeftMiddleProximal), ScriptableHand.Get(nameof(BoneType.LeftMiddleProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftMiddleIntermediate, nameof(BoneType.LeftMiddleIntermediate), ScriptableHand.Get(nameof(BoneType.LeftMiddleIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftMiddleDistal, nameof(BoneType.LeftMiddleDistal), ScriptableHand.Get(nameof(BoneType.LeftMiddleDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftMiddleProximal, nameof(BoneType.LeftMiddleProximal), ScriptableHand.Get(nameof(BoneType.LeftMiddleProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftMiddleIntermediate, nameof(BoneType.LeftMiddleIntermediate), ScriptableHand.Get(nameof(BoneType.LeftMiddleIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftMiddleDistal, nameof(BoneType.LeftMiddleDistal), ScriptableHand.Get(nameof(BoneType.LeftMiddleDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftRingProximal, nameof(BoneType.LeftRingProximal), ScriptableHand.Get(nameof(BoneType.LeftRingProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftRingIntermediate, nameof(BoneType.LeftRingIntermediate), ScriptableHand.Get(nameof(BoneType.LeftRingIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftRingDistal, nameof(BoneType.LeftRingDistal), ScriptableHand.Get(nameof(BoneType.LeftRingDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftRingProximal, nameof(BoneType.LeftRingProximal), ScriptableHand.Get(nameof(BoneType.LeftRingProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftRingIntermediate, nameof(BoneType.LeftRingIntermediate), ScriptableHand.Get(nameof(BoneType.LeftRingIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftRingDistal, nameof(BoneType.LeftRingDistal), ScriptableHand.Get(nameof(BoneType.LeftRingDistal)).Rot));
 
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftLittleProximal, nameof(BoneType.LeftLittleProximal), ScriptableHand.Get(nameof(BoneType.LeftLittleProximal)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftLittleIntermediate, nameof(BoneType.LeftLittleIntermediate), ScriptableHand.Get(nameof(BoneType.LeftLittleIntermediate)).Rot));
-                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation(BoneType.LeftLittleDistal, nameof(BoneType.LeftLittleDistal), ScriptableHand.Get(nameof(BoneType.LeftLittleDistal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftLittleProximal, nameof(BoneType.LeftLittleProximal), ScriptableHand.Get(nameof(BoneType.LeftLittleProximal)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftLittleIntermediate, nameof(BoneType.LeftLittleIntermediate), ScriptableHand.Get(nameof(BoneType.LeftLittleIntermediate)).Rot));
+                HandPose.PhalanxRotations.Add(new UMI3DHandPose.PhalanxRotation((int)BoneType.LeftLittleDistal, nameof(BoneType.LeftLittleDistal), ScriptableHand.Get(nameof(BoneType.LeftLittleDistal)).Rot));
             }
+
+            EditorUtility.SetDirty(HandPose);
         }
 
+        /// <summary>
+        /// Load a hand pose.
+        /// </summary>
         public void LoadPose()
         {
             if (HandPose != null)
@@ -233,6 +302,9 @@ namespace umi3d.edk.userCapture
             }
         }
 
+        /// <summary>
+        /// Transfer the settings of the right hand to the left hand by planar symmetry.
+        /// </summary>
         public void CreateLeftSymmetry()
         {
             Vector3 tempData;
@@ -281,6 +353,9 @@ namespace umi3d.edk.userCapture
             SceneView.RepaintAll();
         }
 
+        /// <summary>
+        /// Transfer the settings of the left hand to the right hand by planar symmetry.
+        /// </summary>
         public void CreateRightSymmetry()
         {
             Vector3 tempData;

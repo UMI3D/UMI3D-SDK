@@ -20,7 +20,7 @@ using UnityEngine.Events;
 namespace umi3d.cdk.menu.view
 {
     /// <summary>
-    /// Base class for DropDown input display.
+    /// Base class for <see cref="DropDownInputMenuItem"/> display.
     /// </summary>
     public abstract class AbstractDropDownInputDisplayer : AbstractInputMenuItemDisplayer<string>
     {

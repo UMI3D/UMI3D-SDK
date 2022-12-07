@@ -16,6 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains the keys for the available properties within the UMI3D protocol.
+    /// </summary>
+    /// Those keys are used when exchaning DTOs between the server and clients to identify 
+    /// which property is affected by an operation or a request.
     public static class UMI3DPropertyKeys
     {
         public const uint None = 0;
@@ -46,12 +51,27 @@ namespace umi3d.common
         public const uint PreloadedScenes = 2001;
         public const uint UserList = 2002;
 
+        public const uint UserAudioFrequency = 2011;
+        public const uint UserMicrophoneStatus = 2012;
+        public const uint UserAvatarStatus = 2013;
+        public const uint UserAttentionRequired = 2014;
+        public const uint UserAudioServer = 2015;
+        public const uint UserAudioChannel = 2016;
+        public const uint UserAudioUseMumble = 2017;
+        public const uint UserAudioPassword = 2018;
+        public const uint UserAudioLogin = 2019;
+        public const uint UserOnStartSpeakingAnimationId = 2020;
+        public const uint UserOnStopSpeakingAnimationId = 2021;
+
+
         public const uint AmbientType = 2101;
         public const uint AmbientSkyColor = 2102;
         public const uint AmbientHorizontalColor = 2103;
         public const uint AmbientGroundColor = 2104;
         public const uint AmbientIntensity = 2105;
         public const uint AmbientSkyboxImage = 2106;
+        public const uint AmbientSkyboxRotation = 2107;
+        public const uint AmbientSkyboxExposure = 2108;
         #endregion
 
         #region Model
@@ -70,6 +90,9 @@ namespace umi3d.common
         public const uint LineStartWidth = 3012;
         public const uint LineEndWidth = 3013;
 
+        public const uint IsTraversable = 3020;
+        public const uint IsPartOfNavmesh = 3021;
+
         #endregion
 
         #region KHR_light
@@ -84,26 +107,26 @@ namespace umi3d.common
 
         #region tool
         // 5000 - 5999
-        public const uint ToolboxName = 5001;
-        public const uint ToolboxDescription = 5002;
-        public const uint ToolboxIcon2D = 5003;
-        public const uint ToolboxIcon3D = 5004;
-        public const uint ToolboxTools = 5005;
-        public const uint ToolboxSceneId = 5006;
-
-        public const uint ToolboxActive = 5010;
-        public const uint ToolActive = 5011;
+        public const uint ToolboxTools = 5001;
 
         public const uint AbstractToolName = 5101;
         public const uint AbstractToolDescription = 5102;
         public const uint AbstractToolIcon2D = 5103;
         public const uint AbstractToolIcon3D = 5104;
         public const uint AbstractToolInteractions = 5105;
+        public const uint AbstractToolActive = 5106;
+        public const uint GlobalToolParent = 5107;
 
         public const uint InteractableNodeId = 5201;
         public const uint InteractableNotifyHoverPosition = 5202;
         public const uint InteractableNotifySubObject = 5203;
         public const uint InteractableHasPriority = 5204;
+        public const uint InteractableInteractionDistance = 5205;
+
+        public const uint InteractableHoverEnterAnimation = 5301;
+        public const uint InteractableHoverExitAnimation = 5302;
+        public const uint EventTriggerAnimation = 5303;
+        public const uint EventReleaseAnimation = 5304;
         #endregion
 
         #region UI
@@ -174,16 +197,22 @@ namespace umi3d.common
         public const uint ActiveBindings = 11002;
 
         public const uint ActiveHandPose = 11003;
+        public const uint ActiveBodyPose = 11004;
+
+        public const uint ChangeEmoteConfig = 11005;
+        public const uint ActiveEmote = 11006;
         #endregion
 
         #region notification
         // 12000-12999
-        public const uint NotificationTitle = 12001;
-        public const uint NotificationContent = 12002;
-        public const uint NotificationDuration = 12003;
-        public const uint NotificationIcon2D = 12004;
-        public const uint NotificationIcon3D = 12005;
-        public const uint NotificationObjectId = 12006;
+        public const uint NotificationPriority = 12001;
+        public const uint NotificationTitle = 12002;
+        public const uint NotificationContent = 12003;
+        public const uint NotificationCallback = 12004;
+        public const uint NotificationDuration = 12005;
+        public const uint NotificationIcon2D = 12006;
+        public const uint NotificationIcon3D = 12007;
+        public const uint NotificationObjectId = 12008;
         #endregion
 
         #region Animation

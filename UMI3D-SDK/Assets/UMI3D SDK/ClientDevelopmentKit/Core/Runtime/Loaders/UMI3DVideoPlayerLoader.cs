@@ -14,17 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk
 {
     /// <summary>
-    /// This class is reponsible for delaying the load of VideoPlayer on Android devices.
+    /// Loader for <see cref="UMI3DVideoPlayerDto"/>.
     /// </summary>
+    /// This class is reponsible for delaying the load of VideoPlayer on Android devices.
     public class UMI3DVideoPlayerLoader
     {
         /// <summary>
@@ -32,7 +36,12 @@ namespace umi3d.cdk
         /// </summary>
         public static Queue<UMI3DVideoPlayerDto> videoPlayersToLoad = new Queue<UMI3DVideoPlayerDto>();
 
-        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0;
+        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0 || UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).Any(v => (v != null && !(v.isPrepared || v.preparationFailed)));
+
+        public static void Clear()
+        {
+            UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v.Clean());
+        }
 
         /// <summary>
         /// Asks to load a <see cref="UMI3DVideoPlayer"/> from a <see cref="UMI3DVideoPlayerDto"/>. 
@@ -56,10 +65,15 @@ namespace umi3d.cdk
         /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
         /// <param name="onFinish"></param>
         /// </summary>
-        public static void LoadVideoPlayers(Action onFinish)
+        public static async Task LoadVideoPlayers()
         {
-            if (HasVideoToLoad)
-                UMI3DAnimationManager.StartCoroutine(LoadVideoPlayersCoroutine(onFinish));
+            if (videoPlayersToLoad.Count > 0)
+                await LoadVideoPlayersCoroutine();
+            while (HasVideoToLoad)
+            {
+                await UMI3DAsyncManager.Yield();
+            }
+            await UMI3DAsyncManager.Delay(100);
         }
 
         /// <summary>
@@ -67,25 +81,21 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="onFinish"></param>
         /// <returns></returns>
-        private static IEnumerator LoadVideoPlayersCoroutine(Action onFinish)
+        private static async Task LoadVideoPlayersCoroutine()
         {
             var wait = new WaitForSeconds(.1f);
 
-            yield return wait;
-
             while (videoPlayersToLoad.Count > 0)
             {
+                await UMI3DAsyncManager.Delay(100);
+
                 UMI3DVideoPlayerDto videoPlayer = videoPlayersToLoad.Dequeue();
 
                 var player = new UMI3DVideoPlayer(videoPlayer);
 
-                while (!player.isPrepared)
-                    yield return null;
-
-                yield return wait;
+                while (!player.isPrepared && !player.preparationFailed)
+                    await UMI3DAsyncManager.Yield();
             }
-
-            onFinish?.Invoke();
         }
     }
 }

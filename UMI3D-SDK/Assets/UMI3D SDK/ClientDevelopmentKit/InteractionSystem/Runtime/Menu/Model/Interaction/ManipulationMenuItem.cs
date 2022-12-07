@@ -20,6 +20,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.menu.interaction
 {
+    /// <summary>
+    /// <see cref="MenuItem"/> for <see cref="ManipulationDto"/>
+    /// </summary>
     public class ManipulationMenuItem : InteractionMenuItem, ITogglable
     {
         /// <summary>

@@ -20,15 +20,18 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Operation to send to clients for them to apply it. An operation aims to modify an entity or one of its properties.
+    /// </summary>
     public abstract class Operation : IBytable
     {
         /// <summary>
-        /// List of users to which this operation should be send.
+        /// List of users to which this operation should be sent.
         /// </summary>
         public HashSet<UMI3DUser> users = new HashSet<UMI3DUser>();
 
         /// <summary>
-        /// Return the operationDto of this Dto.
+        /// Return the <see cref="AbstractOperationDto"/> of this Dto.
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
@@ -41,6 +44,7 @@ namespace umi3d.edk
         /// <returns>the size needed ans a function to set the byte array at a position and return the size again</returns>
         public abstract Bytable ToBytable(UMI3DUser user);
 
+        /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
@@ -48,6 +52,7 @@ namespace umi3d.edk
             return ToBytable(parameters[0] as UMI3DUser);
         }
 
+        /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
             return false;
@@ -82,6 +87,5 @@ namespace umi3d.edk
             }
             return a;
         }
-
     }
 }

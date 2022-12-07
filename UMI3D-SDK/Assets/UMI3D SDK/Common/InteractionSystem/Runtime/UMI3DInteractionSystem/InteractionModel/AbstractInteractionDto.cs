@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Abstract Class to describe an interaction
+    /// Abstract DTO to describe an interaction
     /// </summary>
     [System.Serializable]
     public abstract class AbstractInteractionDto : AbstractEntityDto

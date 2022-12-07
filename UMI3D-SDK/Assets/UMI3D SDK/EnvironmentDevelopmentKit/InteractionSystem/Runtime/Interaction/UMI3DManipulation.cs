@@ -22,6 +22,9 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.interaction
 {
+    /// <summary>
+    /// Interaction related to the displacement of an object using translation and/or rotations.
+    /// </summary>
     public class UMI3DManipulation : AbstractInteraction
     {
         [System.Serializable]
@@ -86,11 +89,13 @@ namespace umi3d.edk.interaction
                 mDto.dofSeparationOptions.Add(entity.ToDto(user));
         }
 
+        /// <inheritdoc/>
         protected override byte GetInteractionKey()
         {
             return UMI3DInteractionKeys.Manipulation;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToByte(UMI3DUser user)
         {
             return base.ToByte(user)
@@ -113,6 +118,7 @@ namespace umi3d.edk.interaction
             }
         }
 
+        /// <inheritdoc/>
         public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
             switch (operationId)
@@ -133,14 +139,22 @@ namespace umi3d.edk.interaction
         [System.Serializable]
         public class DofGroup : IBytable
         {
+            /// <summary>
+            /// Name of the group.
+            /// </summary>
             public string name;
+            /// <summary>
+            /// Degree of freedom combination in <see cref="DofGroupEnum"/>.
+            /// </summary>
             public DofGroupEnum dofs;
 
+            /// <inheritdoc/>
             public bool IsCountable()
             {
                 return true;
             }
 
+            /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return UMI3DNetworkingHelper.Write(name)
@@ -169,18 +183,23 @@ namespace umi3d.edk.interaction
         [System.Serializable]
         public class DofGroupOption : IBytable
         {
+            /// <summary>
+            /// Name of the group.
+            /// </summary>
             public string name;
             public List<DofGroup> separations = new List<DofGroup>();
 
+            /// <inheritdoc/>
             public bool IsCountable()
             {
                 return true;
             }
 
+            /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return UMI3DNetworkingHelper.Write(name)
-                    + UMI3DNetworkingHelper.WriteIBytableCollection((IEnumerable<IBytable>)separations);
+                    + UMI3DNetworkingHelper.WriteIBytableCollection(separations);
             }
 
             /// <summary>

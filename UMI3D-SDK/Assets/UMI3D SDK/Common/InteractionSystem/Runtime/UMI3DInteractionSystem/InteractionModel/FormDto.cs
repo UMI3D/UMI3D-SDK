@@ -19,11 +19,14 @@ using System.Collections.Generic;
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// 
+    /// DTO describing forms.
     /// </summary>
     [System.Serializable]
     public class FormDto : AbstractInteractionDto
     {
+        /// <summary>
+        /// Fields of the form that are themselves DTOs as <see cref="AbstractParameterDto"/>.
+        /// </summary>
         public List<AbstractParameterDto> fields = new List<AbstractParameterDto>();
 
         public FormDto() : base() { }

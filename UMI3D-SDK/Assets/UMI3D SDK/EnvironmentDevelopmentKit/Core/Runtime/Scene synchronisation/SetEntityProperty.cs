@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -40,11 +41,16 @@ namespace umi3d.edk
         /// </summary>
         public object value;
 
+        /// <summary>
+        /// Return the key associated to this operation in <see cref="UMI3DOperationKeys"/>.
+        /// </summary>
+        /// <returns></returns>
         public virtual uint GetOperationKeys()
         {
             return UMI3DOperationKeys.SetEntityProperty;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(GetOperationKeys())
@@ -58,7 +64,7 @@ namespace umi3d.edk
             return UMI3DNetworkingHelper.Write(value);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             var setEntity = new SetEntityPropertyDto
@@ -83,6 +89,5 @@ namespace umi3d.edk
             }
             return a;
         }
-
     }
 }

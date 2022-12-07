@@ -20,18 +20,24 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// <see cref="Operation"/> to send to request the deletion of an object on clients.
+    /// </summary>
     public class DeleteEntity : Operation
     {
-
+        /// <summary>
+        /// UMI3D id of the entity to delete.
+        /// </summary>
         public ulong entityId;
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.DeleteEntity)
                 + UMI3DNetworkingHelper.Write(entityId);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return new DeleteEntityDto() { entityId = entityId };
@@ -51,6 +57,5 @@ namespace umi3d.edk
             }
             return a;
         }
-
     }
 }

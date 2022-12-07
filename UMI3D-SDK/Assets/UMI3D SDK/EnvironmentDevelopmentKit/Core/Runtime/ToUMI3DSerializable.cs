@@ -19,6 +19,9 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Helper class to serialize common Unity structs.
+    /// </summary>
     public static class ToUMI3DSerializable
     {
         public static SerializableColor ToSerializableColor(Color color, UMI3DUser user) { return color; }

@@ -24,21 +24,27 @@ using UnityEngine;
 namespace umi3d.edk
 {
     /// <summary>
-    /// UMI3D empty object.
+    /// UMI3D empty object to load on the clients on their scene graph.
     /// </summary>
     [DisallowMultipleComponent]
     [SelectionBase]
     public class UMI3DNode : UMI3DAbstractNode
     {
 
-        #region properties
+        #region fields
 
         /// <summary>
-        /// Indicates if the object is permanently facing the users XBillboard
+        /// Name given to the node.
+        /// </summary>
+        public string nodeName;
+
+        #region asyncproperties
+        /// <summary>
+        /// Should the object be permanently facing the users XBillboard?
         /// </summary>
         public UMI3DAsyncProperty<bool> objectXBillboard { get { Register(); return _objectXBillboard; } protected set => _objectXBillboard = value; }
         /// <summary>
-        /// Indicates if the object is permanently facing the users YBillboard
+        /// Should the object be permanently facing the users YBillboard?
         /// </summary>
         public UMI3DAsyncProperty<bool> objectYBillboard { get { Register(); return _objectYBillboard; } protected set => _objectYBillboard = value; }
 
@@ -48,94 +54,131 @@ namespace umi3d.edk
         /// </summary>
         public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();
 
+        #endregion asyncproperties
 
         /// <summary>
         /// An editor field to modify default objectXBillboard value
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Should the object be permanently facing the users XBillboard?")]
         private bool xBillboard = false;
         /// <summary>
         /// An editor field to modify default objectYBillboard value
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Should the object be permanently facing the users YBillboard?")]
         private bool yBillboard = false;
 
-
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// Does the node possess a collider?
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Check this box if a collider is attached to that node.")]
         protected bool hasCollider = false;
 
-        #region collider fields for editor
+
+        #region collider
 
         /// <summary>
         /// Type of the collider generated in front end.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Type of the collider generated in front end.")]
         protected ColliderType colliderType = ColliderType.Mesh;
 
         /// <summary>
-        /// In case of a mesh collider, should it be convex ?
+        /// In case of a mesh collider, should it be convex?
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("In case of a mesh collider, should it be convex?")]
         protected bool convex = false;
 
         /// <summary>
-        /// Center of the collider for box, sphere and capsule collider
+        /// Center of the collider for box, sphere and capsule collider.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Center of the collider for box, sphere and capsule collider.")]
         protected Vector3 colliderCenter;
 
         /// <summary>
-        /// The radius for sphere and capsule collider
+        /// The radius for sphere and capsule collider.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Radius for sphere and capsule collider.")]
         protected float colliderRadius = 1f;
 
         /// <summary>
-        /// The box scale for boxCollider
+        /// The box scale for boxCollider.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Box scale for boxCollider")]
         protected Vector3 colliderBoxSize = Vector3.one;
 
         /// <summary>
-        /// The height of le collider for capsule collider
+        /// The height of the collider for capsule collider.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Height of the collider for capsule collider.")]
         protected float colliderHeight = 1f;
 
         /// <summary>
-        /// The collider direction for capsule collider
+        /// The collider direction for capsule collider.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("The collider direction for capsule collider.")]
         protected DirectionalType colliderDirection = DirectionalType.Y_Axis;
 
         /// <summary>
-        /// true if un custom mesh is used for the MeshCollider
+        /// True if a custom mesh is used for the MeshCollider.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("True if a custom mesh is used for the MeshCollider.")]
         protected bool isMeshCustom = false;
 
         /// <summary>
-        /// Custom MeshCollider used if isMeshCustom
+        /// Custom MeshCollider used if isMeshCustom.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Custom MeshCollider used if isMeshCustom.")]
         protected UMI3DResource customMeshCollider;
 
+        #region asyncproperties
 
-        // UMI3DAsyncProperties for 
+        /// <summary>
+        /// See <see cref="hasCollider"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectHasCollider { get { Register(); return _objectHasCollider; } protected set => _objectHasCollider = value; }
+        /// <summary>
+        /// See <see cref="colliderType"/>.
+        /// </summary>
         public UMI3DAsyncProperty<ColliderType> objectColliderType { get { Register(); return _objectColliderType; } protected set => _objectColliderType = value; }
+        /// <summary>
+        /// See <see cref="convex"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectIsConvexe { get { Register(); return _objectIsConvexe; } protected set => _objectIsConvexe = value; }
+        /// <summary>
+        /// See <see cref="colliderCenter"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Vector3> objectColliderCenter { get { Register(); return _objectColliderCenter; } protected set => _objectColliderCenter = value; }
+        /// <summary>
+        /// See <see cref="colliderRadius"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectColliderRadius { get { Register(); return _objectColliderRadius; } protected set => _objectColliderRadius = value; }
+        /// <summary>
+        /// See <see cref="colliderBoxSize"/>.
+        /// </summary>
         public UMI3DAsyncProperty<Vector3> objectColliderBoxSize { get { Register(); return _objectColliderBoxSize; } protected set => _objectColliderBoxSize = value; }
+        /// <summary>
+        /// See <see cref="colliderHeight"/>.
+        /// </summary>
         public UMI3DAsyncProperty<float> objectColliderHeight { get { Register(); return _objectColliderHeight; } protected set => _objectColliderHeight = value; }
+        /// <summary>
+        /// See <see cref="colliderDirection"/>.
+        /// </summary>
         public UMI3DAsyncProperty<DirectionalType> objectColliderDirection { get { Register(); return _objectColliderDirection; } protected set => _objectColliderDirection = value; }
+        /// <summary>
+        /// See <see cref="isMeshCustom"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectIsMeshCustom { get { Register(); return _objectIsMeshCustom; } protected set => _objectIsMeshCustom = value; }
-        // custom mesh collider is not synchronized at runtime
+        /// <summary>
+        /// See <see cref="customMeshCollider"/>.
+        /// </summary>
+        /// Custom mesh collider is not synchronized at runtime
         public UMI3DAsyncProperty<UMI3DResource> objectCustomMeshCollider { get { Register(); return _objectCustomMeshCollider; } protected set => _objectCustomMeshCollider = value; }
 
+        #endregion asyncproperties
 
-        #endregion
+        #endregion collider
+
+        #region asyncproperties
 
         public UMI3DAsyncProperty<UMI3DKHRLight> objectLight { get { Register(); return _objectLight; } protected set => _objectLight = value; }
 
@@ -153,28 +196,21 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<UMI3DResource> _objectCustomMeshCollider;
         private UMI3DAsyncProperty<UMI3DKHRLight> _objectLight;
 
-        #endregion
+        #endregion asyncproperties
+
+        #endregion fields
 
 
         #region initialization
-
-        /// <summary>
-        /// Unity MonoBehaviour Start method.
-        /// </summary>
-        //protected virtual void Start()
-        //{
-        //    //SyncProperties();
-        //}
 
         /// <summary>
         /// Initialize object's properties.
         /// </summary>
         protected override void InitDefinition(ulong id)
         {
-            //PropertiesHandler = new AsyncPropertiesHandler();
-            //PropertiesHandler.DelegateBroadcastUpdate += BroadcastUpdates;
-            //PropertiesHandler.DelegatebroadcastUpdateForUser += BroadcastUpdates;
             base.InitDefinition(id);
+
+            nodeName = gameObject.name;
 
             objectXBillboard = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.XBillboard, this.xBillboard);
             objectXBillboard.OnValueChanged += (bool b) => xBillboard = b;
@@ -225,15 +261,19 @@ namespace umi3d.edk
         /// <returns></returns>
         internal GlTFNodeDto ToGlTFNodeDto(UMI3DUser user)
         {
+            if (gameObject == null)
+                UMI3DLogger.LogError($"UMI3DNode.ToGLTFNodeDto(userId: {user.Id()}) : Gameobject null for {name}, should not happen. \n {Environment.StackTrace}", DebugScope.EDK);
+
             var dto = new GlTFNodeDto
             {
-                name = gameObject.name,
+                name = nodeName,
                 position = objectPosition.GetValue(user),
                 scale = objectScale.GetValue(user),
                 rotation = objectRotation.GetValue(user)
             };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
             dto.extensions.KHR_lights_punctual = objectLight.GetValue(user)?.ToDto(user);
+
             return dto;
         }
 
@@ -298,6 +338,7 @@ namespace umi3d.edk
             nodeDto.skinnedRendererLinks = skinnedRendererLinks;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
@@ -331,17 +372,28 @@ namespace umi3d.edk
             return lodg;
         }
 
+        /// <summary>
+        /// Get <see cref="UMI3DLodDto"/> as a byte array.
+        /// Not implemented yet.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception>
         private Bytable LodToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);
         }
 
+        /// <summary>
+        /// Get the collider as a <see cref="ColliderDto"/>.
+        /// </summary>
+        /// <returns></returns>
         private ColliderDto GetColliderDto()
         {
             if (!hasCollider)
@@ -388,13 +440,22 @@ namespace umi3d.edk
             return res;
         }
 
+        /// <summary>
+        /// Get <see cref="ColliderDto"/> as a byte array.
+        /// Not implemented yet.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        /// <exception cref="NotImplementedException"></exception
         private Bytable ColliderToBytes(UMI3DUser user)
         {
             throw new NotImplementedException();
         }
 
 
-
+        /// <summary>
+        /// Look for a collider in the node, and fills out the adequate fields.
+        /// </summary>
         public void SearchCollider()
         {
             Collider c = GetComponent<Collider>();
@@ -434,16 +495,10 @@ namespace umi3d.edk
 
                     default:
                         //hasCollider = false;
-
-
                         break;
                 }
             }
-
         }
-
-
     }
-
 }
 

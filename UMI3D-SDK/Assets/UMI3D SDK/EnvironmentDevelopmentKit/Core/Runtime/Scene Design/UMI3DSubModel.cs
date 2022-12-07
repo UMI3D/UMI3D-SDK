@@ -15,21 +15,44 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.edk
 {
     public class UMI3DSubModel : AbstractRenderedNode
-
-
     {
-
+        /// <summary>
+        /// Model that serves as a based for the submodel.
+        /// </summary>
+        [Tooltip("Model that serves as a based for the submodel.")]
         public UMI3DModel parentModel;
+
+        /// <summary>
+        /// Named label of the submodel.
+        /// </summary>
         public string subModelName { get; protected set; }
+
+        /// <summary>
+        /// List of submodel name in hierachy from root to this subModel
+        /// </summary>
+        public List<string> subModelHierachyNames = new List<string>();/*{ get; set; }*/
+
+        /// <summary>
+        /// List of submodel index in hierachy from root to this subModel
+        /// </summary>
+        public List<int> subModelHierachyIndexes = new List<int>();/*{ get; set; }*/
+
         //    private UMI3DAsyncProperty<bool> _objectMaterialOverrided;
-        [SerializeField, EditorReadOnly]
+        /// <summary>
+        /// If true, the submodel won't be impacted by a change of material on the model.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("If true, the submodel won't be impacted by a change of material on the model.")]
         protected bool ignoreModelMaterialOverride = false;
+        /// <summary>
+        /// See <see cref="ignoreModelMaterialOverride"/>.
+        /// </summary>
         public UMI3DAsyncProperty<bool> objectIgnoreModelMaterialOverride;
 
 
@@ -39,17 +62,37 @@ namespace umi3d.edk
         public bool isPartOfNavmesh = false;
 
         /// <summary>
+        /// Property to change if th object is part of the navmesh. This property has priority over <see cref="objectTraversable"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectPartOfNavmesh { get { Register(); return _objectPartOfNavmesh; } protected set => _objectPartOfNavmesh = value; }
+
+        private UMI3DAsyncProperty<bool> _objectPartOfNavmesh;
+
+        /// <summary>
         /// Indicate whether or not the user is allowed to navigate through this object.
         /// </summary>
         public bool isTraversable = true;
 
+        /// <summary>
+        /// Property to set or not the object as traversable.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectTraversable { get { Register(); return _objectTraversable; } protected set => _objectTraversable = value; }
 
-        ///<inheritdoc/>
+        private UMI3DAsyncProperty<bool> _objectTraversable;
+
+
+        /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
 
             objectIgnoreModelMaterialOverride = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.IgnoreModelMaterialOverride, ignoreModelMaterialOverride);
+
+            _objectPartOfNavmesh = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsPartOfNavmesh, isPartOfNavmesh);
+            _objectPartOfNavmesh.OnValueChanged += b => isPartOfNavmesh = b;
+
+            _objectTraversable = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsTraversable, isTraversable);
+            _objectTraversable.OnValueChanged += b => isTraversable = b;
         }
 
         /// <summary>
@@ -65,7 +108,7 @@ namespace umi3d.edk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToGlTFNodeDto(user);
@@ -93,16 +136,21 @@ namespace umi3d.edk
             var subDto = dto as SubModelDto;
             subDto.modelId = parentModel.Id();
             subDto.subModelName = subModelName;
+            subDto.subModelHierachyIndexes = subModelHierachyIndexes;
+            subDto.subModelHierachyNames = subModelHierachyNames;
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
             subDto.isTraversable = isTraversable;
             subDto.isPartOfNavmesh = isPartOfNavmesh;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
                 + UMI3DNetworkingHelper.Write(this.parentModel.Id())
                 + UMI3DNetworkingHelper.Write(this.subModelName)
+                + UMI3DNetworkingHelper.Write(this.subModelHierachyIndexes)
+                + UMI3DNetworkingHelper.Write(this.subModelHierachyNames)
                 + UMI3DNetworkingHelper.Write(this.ignoreModelMaterialOverride)
                 + UMI3DNetworkingHelper.Write(this.isPartOfNavmesh)
                 + UMI3DNetworkingHelper.Write(this.isTraversable);

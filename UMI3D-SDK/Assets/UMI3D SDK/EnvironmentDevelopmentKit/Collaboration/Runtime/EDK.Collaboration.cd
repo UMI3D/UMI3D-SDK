@@ -1,123 +1,349 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
-<ClassDiagram MajorVersion="1" MinorVersion="1">
+<ClassDiagram MajorVersion="1" MinorVersion="1" GroupingSetting="Access" MembersFormat="FullSignature">
   <Class Name="umi3d.edk.collaboration.HttpRoutingUtil" Collapsed="true">
-    <Position X="5.25" Y="0.5" Width="1.5" />
+    <Position X="14.25" Y="0.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAQEAAAAQAAAAIAAAAABAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\HttpRoutingUtil.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\HttpRoutingUtil.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.IdentifierApi" Collapsed="true">
-    <Position X="1.75" Y="4.75" Width="1.5" />
+    <Position X="4.75" Y="6.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAhAAAAAAAAAAAAAAAAAAAAAAAEAAAAAAAQEA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\IdentifierApi.cs</FileName>
+      <HashCode>AAAAAAAAhAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAQEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\IdentifierApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.PinIdentifierApi" Collapsed="true">
-    <Position X="0.5" Y="6.25" Width="1.5" />
+    <Position X="4.75" Y="8" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAAAAAAAAAAAAAAAAAACAAAAAAAAAAAAEAAAAAABAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\PinIdentifierApi.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.collaboration.UMI3DApi" Collapsed="true">
-    <Position X="7" Y="0.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAIAAAAAAAAAAAAAQAAAIBAQAHAAAA2AAEEAAgYQg=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DApi.cs</FileName>
+      <HashCode>AAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\PinIdentifierApi.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.UMI3DHttp" Collapsed="true">
-    <Position X="7" Y="1.5" Width="1.5" />
+    <Position X="10.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AIAAAAAAAAIAAAAAgAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DHttp.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.collaboration.UMI3DWebRTC" Collapsed="true">
-    <Position X="10.5" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>CAAAAOBAAAAAAAAAAIAAABAAABAAAABAAgEAAQAIAAY=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWebRTC.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.collaboration.UMI3DWebsocket" Collapsed="true">
-    <Position X="5.25" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWebsocket.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.collaboration.UMI3DWebSocketConnection" Collapsed="true">
-    <Position X="7" Y="2.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AgAAAAEAAIAAAAAABABAAIAAAAIAAAAAQAKAAAJAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DWebSocketConnection.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.collaboration.UnsecuredIdentifierApi" Collapsed="true">
-    <Position X="2.75" Y="6.25" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>AAAAAAAAgAAAAAAABAAAAAAAAAAAAAAAEAAAAAABQAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UnsecuredIdentifierApi.cs</FileName>
+      <HashCode>AIAAAAAAAAIAAAAAgAAAAQAAAAAEAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\UMI3DHttp.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.WebServiceMethod" Collapsed="true">
-    <Position X="8.75" Y="2.5" Width="1.5" />
+    <Position X="14.25" Y="4.5" Width="1.5" />
     <TypeIdentifier>
       <HashCode>AAAAAAAIAAAAAAIAAhAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethod.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\WebServiceMethod.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.WebServiceMethodAttribute" Collapsed="true">
-    <Position X="1.75" Y="0.5" Width="1.5" />
+    <Position X="5.75" Y="3.5" Width="2" />
     <TypeIdentifier>
       <HashCode>AAAAAgAAAAAAAAAAIAQCAAAAAAABAAAAAAAAAAAABAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethodAttributes.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\WebServiceMethodAttributes.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.HttpGet" Collapsed="true">
-    <Position X="0.5" Y="2" Width="1.5" />
+    <Position X="4.5" Y="5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethodAttributes.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\WebServiceMethodAttributes.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.HttpPost" Collapsed="true">
-    <Position X="2.75" Y="2" Width="1.5" />
+    <Position X="7" Y="5" Width="1.75" />
     <TypeIdentifier>
       <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\WebServiceMethodAttributes.cs</FileName>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\WebServiceMethodAttributes.cs</FileName>
     </TypeIdentifier>
   </Class>
-  <Class Name="umi3d.edk.collaboration.UMI3DCollaborationServer" Collapsed="true">
-    <Position X="8.75" Y="0.5" Width="1.5" />
+  <Class Name="umi3d.edk.collaboration.UMI3DCollaborationServer" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="12.5" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>wI0AABAAABEgMEJQAMoAIAIgAAAQEgAQ9SACQIBIAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationServer.cs</FileName>
+      <HashCode>AIcBSDgEgiGAkMBICM4gIAekAKABgwCQ9WoGyZBCAog=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationServer.cs</FileName>
     </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
   </Class>
   <Class Name="umi3d.edk.collaboration.UMI3DCollaborationUser" Collapsed="true">
-    <Position X="10.5" Y="0.5" Width="1.5" />
+    <Position X="14.25" Y="2.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>AAEAAAACAAACAAAAAAABAAIAQAAAAAAAAAAIAAAAEAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationUser.cs</FileName>
-    </TypeIdentifier>
-  </Class>
-  <Class Name="umi3d.edk.collaboration.UMI3DCollabTrackingManager" Collapsed="true">
-    <Position X="5.25" Y="1.5" Width="1.5" />
-    <TypeIdentifier>
-      <HashCode>IAAAAAAAACAACAAAAAAAAAAAAAAAAAAAQAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollabTrackingManager.cs</FileName>
+      <HashCode>EEUAIEADAFAEAAAAGoAgQBIEREAAgAAAAAAIAIUAEgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationUser.cs</FileName>
     </TypeIdentifier>
   </Class>
   <Class Name="umi3d.edk.collaboration.UMI3DUserManager" Collapsed="true">
-    <Position X="8.75" Y="1.5" Width="1.5" />
+    <Position X="17.75" Y="3.5" Width="1.5" />
     <TypeIdentifier>
-      <HashCode>IAAAACAAAQIwCAAAAAAAAAIAAAAAAAAAEAAAAAAAAAA=</HashCode>
-      <FileName>Assets\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DUserManager.cs</FileName>
+      <HashCode>YAEAgCAAAQKQCgAAAYAwACMAAwgAEQACFQAAgAAEAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DUserManager.cs</FileName>
     </TypeIdentifier>
   </Class>
+  <Class Name="umi3d.edk.collaboration.ConfigServer" Collapsed="true">
+    <Position X="10.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABAAAAAAAABBBAAFACAAgAISkCEAAAAABAAAiAAABAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\ConfigServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.PinIdentifierWithFormApi" Collapsed="true">
+    <Position X="4.5" Y="9.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AQAAAAAAgAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAQAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\PinIdentifierWithFormApi.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.RedirectionRequest" Collapsed="true">
+    <Position X="19.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAQAAAAAAAAAAgAAAAQBAAAAAEIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\RedirectionRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.RelayDescription" Collapsed="true">
+    <Position X="10.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\Relay\RelayDescription.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.RelayVolume" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="14.25" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ACACwQAgCAAgUAAIBBAAgAgEAAAAAAAEAAIAQAAACEA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\Relay\RelayVolume.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DEnvironmentApi" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAIAIEAEAAAAgAAAQgABMFAQABIgQA+QAEEAAiYAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DEnvironmentApi.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DForgeServer" Collapsed="true">
+    <Position X="19.5" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAABAAAAAKIACABCAABoAwAAABCgWUAQKQKgiIAACAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DForgeServer.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DTrackingRelay" Collapsed="true">
+    <Position X="7.5" Y="7.75" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DTrackingRelay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DRelay&lt;T&gt;" Collapsed="true">
+    <Position X="7.75" Y="6.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ISAAAAhAoQAAAACIEAgRgAQECAhAoAEEABQAEAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DTrackingRelay.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DAudioBridger" Collapsed="true">
+    <Position X="19.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAADAAAAAAAAEACACAAAAAEAAAAAAAAAAIAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DAudioBridger.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DCollaborationEnvironment" Collapsed="true">
+    <Position X="10.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAQAAAAAAAAAAAAAAAQAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DCollaborationEnvironment.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DEnvironmentNetworkingCollaborationModule" Collapsed="true">
+    <Position X="17.75" Y="2.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAgAAAAAAAAAAAAAAEAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DEnvironmentNetworkingCollaborationModule.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.UMI3DLauncher" Collapsed="true">
+    <Position X="12.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>DJAAswAAACFhBBAlILkAhAgUkHEAAFgIBJAASACAhAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\UMI3DLauncher.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="ForceLogoutRequest" Collapsed="true">
+    <Position X="12.5" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAACAQgAAAAAAAAAAAAAAQBAAAAAAIAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\ForceLogoutRequest.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="StandAloneKeyGenerator" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="17.75" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAQAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\StandAlone\StandAloneKeyGenerator.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.edk.collaboration.murmur.MumbleManager" Collapsed="true">
+    <Position X="16" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>IBEABEEADRBIDgAEAQCoAABEAGkAAEAgAgAgIAAAkEQ=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Murmur\MumbleManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.murmur.MurmurAPI" Collapsed="true">
+    <Position X="17.75" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAgIAAAAAAAAkAkAgAACgQACJMAAgKAAAAAABAAg=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Murmur\MurmurAPI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.edk.collaboration.editor.RelayDescriptionEditor" Collapsed="true">
+    <Position X="12.5" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAACAAIQAQAAAFAAAACAAEAACAAEAQAABQAAACDAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\Relay\RelayDescriptionEditor.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.cdk.collaboration.UMI3DNetworkManager" Collapsed="true">
+    <Position X="14.25" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAACAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\Networking\UMI3DNetworkManager.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.StandAloneIAM" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16" Y="1.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABEAAAAAAAACAgAAAAQAAAgAAAAAAAQAgAAgAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\StandAlone\StandAloneIAM.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.worldController.StandAloneWorldControler" Collapsed="true">
+    <Position X="0.5" Y="3.5" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAkACQAIABAAAAAAAKgAAAAAAAAAECAAAAAAAAI=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\StandAlone\StandAloneWorldControler.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.UMI3DStandAloneApi" Collapsed="true" BaseTypeListCollapsed="true">
+    <Position X="16" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAIAAAAQEAAAAgAAgAAAAAIAAAACAAgAAAAQA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\StandAlone\UMI3DStandAloneApi.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" Collapsed="true" />
+  </Class>
+  <Class Name="umi3d.worldController.User" Collapsed="true">
+    <Position X="12.5" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>ABRAAABAAAIABEABAAAEQAgAAAAEAgAIAAQCAAgBAgA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\StandAlone\User.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.StandAloneWorldControllerAPI" Collapsed="true">
+    <Position X="0.5" Y="2" Width="2.25" />
+    <TypeIdentifier>
+      <HashCode>QAAAAAAACAAAAIAAAAAAAIgAIAAAAAAABEAgAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\StandAloneWorldControllerAPI.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="1.113" />
+  </Class>
+  <Class Name="umi3d.worldController.UMI3DWorldControllerForgeClient" Collapsed="true">
+    <Position X="19.5" Y="3.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAEAAAAAhAAEAhAAADAAAgAEAAIiAQBAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\UPDWorldController\UMI3DWorldControllerForgeClient.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.UMI3DWorldControllerMessageKeys" Collapsed="true">
+    <Position X="10.75" Y="4.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>EAAAAAAAAAAAAAAAAAAAAAAAAAgAAAAAAgAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\UPDWorldController\WorldControllerMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.WorldControllerMessage" Collapsed="true">
+    <Position X="0.75" Y="4.5" Width="2" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAAAAAAAAAAAAAABIEAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\UPDWorldController\WorldControllerMessage.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Class Name="umi3d.worldController.WorldControllerUserJoinMessage" Collapsed="true">
+    <Position X="0.5" Y="5.75" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>ACAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\UPDWorldController\WorldControllerMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.WorldControllerUserLeaveMessage" Collapsed="true">
+    <Position X="0.5" Y="7.25" Width="2.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAABAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\UPDWorldController\WorldControllerMessage.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.UPDWorldControllerAPI" Collapsed="true">
+    <Position X="3.5" Y="2" Width="2" />
+    <TypeIdentifier>
+      <HashCode>AgUAGAAAiAAIAAgAAAAACCEBAAABAAAAICqEAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\UPDWorldControllerAPI.cs</FileName>
+    </TypeIdentifier>
+  </Class>
+  <Class Name="umi3d.worldController.WorldControllerAPI" Collapsed="true">
+    <Position X="2.25" Y="0.5" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgBAAAAACAAIAAAAAAAAACAAAAAAAAAAICAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\WorldControllerAPI.cs</FileName>
+    </TypeIdentifier>
+    <Lollipop Position="0.2" />
+  </Class>
+  <Interface Name="IHttpApi" Collapsed="true">
+    <Position X="12.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAAAIAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\HttpCore\IHttpApi.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="IEnvironment" Collapsed="true">
+    <Position X="10.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAAAAABAAAABAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\Interface\IEnvironment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.worldController.IIAM" Collapsed="true">
+    <Position X="14.25" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAACAAAAAAQAAAgAAAAAAAQAgAAgAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\Interface\IIAM.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.worldController.IKeyGenerator" Collapsed="true">
+    <Position X="16" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAAAAAAAAAAAQAAAQAAAAAAAAAAAAACA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\Interface\IKeyGenerator.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.worldController.IWorldController" Collapsed="true">
+    <Position X="17.75" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AAAAAAAAAAAAAIAAAAAAAAAAAAAAAAAAAAAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\Interface\IWorldController.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
+  <Interface Name="umi3d.worldController.IWorldController_Environment" Collapsed="true">
+    <Position X="19.5" Y="5.75" Width="1.5" />
+    <TypeIdentifier>
+      <HashCode>AgAAAAAAAAAIAAAAAAAAACAAAAAAAAAAACAAAAAAAAA=</HashCode>
+      <FileName>Assets\UMI3D SDK\EnvironmentDevelopmentKit\Collaboration\Runtime\WorldController\Interface\IWorldController_Environment.cs</FileName>
+    </TypeIdentifier>
+  </Interface>
   <Font Name="Segoe UI" Size="9" />
 </ClassDiagram>

@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Contains supported assets formats for UMI3D.
+    /// </summary>
     public static class UMI3DAssetFormat
     {
         public const string gltf = "gltf";
@@ -25,7 +28,9 @@ namespace umi3d.common
         public const string jpg = "jpg";
         //Unity
         public const string unity_standalone = "unity_standalone";
+        public const string unity_standalone_urp = "unity_standalone_urp";
         public const string unity_android = "unity_android";
+        public const string unity_android_urp = "unity_android_urp";
         public const string unity_ios = "unity_ios";
     }
 }

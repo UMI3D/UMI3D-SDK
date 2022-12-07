@@ -20,11 +20,14 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for <see cref="NotificationDto"/>.
+    /// </summary>
     [CreateAssetMenu(fileName = "DefaultNotificationLoader", menuName = "UMI3D/Default Notification Loader")]
     public class NotificationLoader : ScriptableObject
     {
         /// <summary>
-        /// Load a notification
+        /// Load a notification.
         /// </summary>
         /// <param name="dto"></param>
         public virtual void Load(NotificationDto dto)
@@ -70,6 +73,13 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <summary>
+        /// Update a property directly.
+        /// </summary>
+        /// <param name="value">Value extracted as output.</param>
+        /// <param name="propertyKey">UMI3D key of the property to update.</param>
+        /// <param name="container">New value in a container.</param>
+        /// <returns></returns>
         public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             switch (propertyKey)

@@ -24,7 +24,7 @@ using UnityEngine.UI;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// LOader for an UMI3D UI Text
+    /// Loader for <see cref="UITextDto"/>.
     /// </summary>
     public class UMI3DUITextNodeLoader
     {
@@ -43,7 +43,7 @@ namespace umi3d.cdk
             text.color = dto.color;
             text.fontSize = dto.fontSize;
             text.fontStyle = dto.fontStyle.Convert();
-            text.font = Resources.GetBuiltinResource<Font>(dto.font + ".ttf") as Font;
+            text.font = Resources.GetBuiltinResource<Font>(dto.font + ".ttf");
             text.horizontalOverflow = dto.horizontalOverflow.Convert();
             text.verticalOverflow = dto.verticalOverflow.Convert();
             text.lineSpacing = dto.lineSpacing;
@@ -57,7 +57,8 @@ namespace umi3d.cdk
         /// <summary>
         /// Update a property.
         /// </summary>
-        /// <param name="entity">entity to be updated.</param>
+        /// <param name="dto">Received DTO copy.</param>
+        /// <param name="node">Node where the entity to update is attached.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
         public bool SetUMI3DPorperty(UITextDto dto, UMI3DNodeInstance node, SetEntityPropertyDto property)
@@ -85,7 +86,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextFont:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.font = Resources.GetBuiltinResource<Font>((string)property.value) as Font;
+                        text.font = Resources.GetBuiltinResource<Font>((string)property.value);
                         dto.font = (string)property.value;
                     }
                     break;
@@ -181,7 +182,7 @@ namespace umi3d.cdk
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
                         string fontName = UMI3DNetworkingHelper.Read<string>(container);
-                        text.font = Resources.GetBuiltinResource<Font>(fontName) as Font;
+                        text.font = Resources.GetBuiltinResource<Font>(fontName);
                         dto.font = fontName;
                     }
                     break;

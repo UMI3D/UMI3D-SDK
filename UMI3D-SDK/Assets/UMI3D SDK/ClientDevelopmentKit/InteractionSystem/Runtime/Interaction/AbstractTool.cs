@@ -20,6 +20,9 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
 {
+    /// <summary>
+    /// Abstract class describing a list of interactions that could be projected on a client controller, grouped into a same entity.
+    /// </summary>
     public abstract class AbstractTool
     {
         /// <summary>
@@ -47,6 +50,9 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public ResourceDto icon3D => abstractDto.icon3D;
 
+        /// <summary>
+        /// Is the tool active ?
+        /// </summary>
         public bool Active => abstractDto?.active ?? false;
 
         /// <summary>
@@ -57,8 +63,17 @@ namespace umi3d.cdk.interaction
         // could be removed if unity project version is 2020.1 or newer 
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
 
+        /// <summary>
+        /// Trigerred when the tool is updated.
+        /// </summary>
         public UnityEvent OnUpdated = new UnityEvent();
+        /// <summary>
+        /// Trigerred when the tool is added.
+        /// </summary>
         public UnityEvent<AbstractInteractionDto> OnAdded = new AbstractInteractionDtoEvent();
+        /// <summary>
+        /// Trigerred when the tool is removed.
+        /// </summary>
         public UnityEvent<AbstractInteractionDto> OnRemoved = new AbstractInteractionDtoEvent();
 
         public void Updated() { OnUpdated.Invoke(); }
@@ -103,8 +118,14 @@ namespace umi3d.cdk.interaction
 
         }
 
+        /// <summary>
+        /// Abstract DTO associated to the tool.
+        /// </summary>
         protected abstract AbstractToolDto abstractDto { get; set; }
 
+        /// <summary>
+        /// Safely destroy a tool.
+        /// </summary>
         public virtual void Destroy()
         {
             if (InteractionMapper.Instance.IsToolSelected(id))

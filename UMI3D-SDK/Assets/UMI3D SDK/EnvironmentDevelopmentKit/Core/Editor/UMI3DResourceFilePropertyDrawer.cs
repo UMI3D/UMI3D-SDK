@@ -50,7 +50,7 @@ namespace umi3d.edk.editor
         public float LineHeight;
         public float TitleLineHeight;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             isLocalFile = property.FindPropertyRelative("isLocalFile");
@@ -58,13 +58,13 @@ namespace umi3d.edk.editor
             isInLibrary = property.FindPropertyRelative("isInLibrary");
             float height = 0;
             LineHeight = EditorGUIUtility.singleLineHeight;
-            height = (1.25f * LineHeight) * (foldout ? (isLocalFile.boolValue ? 0 : 1) + 7 : 1);
+            height = 1.25f * LineHeight * (foldout ? (isLocalFile.boolValue ? 0 : 1) + 7 : 1);
             if (foldout && foldoutMetrics)
-                height += (1.25f * LineHeight) * 2f;
+                height += 1.25f * LineHeight * 2f;
             return height;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             EditorGUI.BeginChangeCheck();
@@ -163,10 +163,8 @@ namespace umi3d.edk.editor
                                 this.extension.stringValue = System.IO.Path.GetExtension(FilePath);
                                 this.size.floatValue = new FileInfo(FilePath).Length / 1000f;
                             }
-
                         }
                     }
-
                 }
 
                 RLine.y += LineHeight;

@@ -29,7 +29,7 @@ namespace umi3d.edk.editor
         private SerializedProperty receiveShadow;
         private SerializedProperty ignoreParent;
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
@@ -42,7 +42,7 @@ namespace umi3d.edk.editor
             ignoreParent = serializedObject.FindProperty("ignoreModelMaterialOverride"); // could be null
 
         }
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
@@ -68,7 +68,6 @@ namespace umi3d.edk.editor
 
             serializedObject.ApplyModifiedProperties();
         }
-
     }
 }
 #endif

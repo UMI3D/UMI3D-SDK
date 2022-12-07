@@ -19,11 +19,16 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.UI;
 
 namespace umi3d.edk
 {
-    [Obsolete("This class isn't mean to be use in production", false)]
+    /// <summary>
+    /// Obsolete simple way to make transaction automatic on UMI3D Entities.
+    /// This class isn't meant to be used in production.
+    /// </summary>
+    [Obsolete("This class isn't meant to be used in production", false)]
     public partial class SimpleModificationListener : MonoBehaviour
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Editor;
@@ -35,12 +40,15 @@ namespace umi3d.edk
         public int max = 0;
         private Dictionary<ulong, Dictionary<ulong, SetEntityProperty>> sets;
 
+        public UnityEvent SetNodes = new UnityEvent();
 
         // Start is called before the first frame update
         private void Start()
         {
             nodes = GetComponentsInChildren<UMI3DNode>();
             scenes = GetComponentsInChildren<UMI3DScene>();
+
+            SetNodes.Invoke();
         }
 
         // Update is called once per frame
@@ -73,6 +81,8 @@ namespace umi3d.edk
                 }
                 nodes = GetComponentsInChildren<UMI3DNode>();
                 scenes = GetComponentsInChildren<UMI3DScene>();
+
+                SetNodes.Invoke();
             }
         }
 
@@ -122,8 +132,8 @@ namespace umi3d.edk
                 switch (mat)
                 {
                     case PBRMaterial pbrmat:
-                        setOperation((pbrmat).objectBaseColorFactor.SetValue(pbrmat.baseColorFactor));
-                        setOperation((pbrmat).objectEmissiveFactor.SetValue(pbrmat.emissive));
+                        setOperation(pbrmat.objectBaseColorFactor.SetValue(pbrmat.baseColorFactor));
+                        setOperation(pbrmat.objectEmissiveFactor.SetValue(pbrmat.emissive));
                         setOperation(pbrmat.objectEmissiveTexture.SetValue(pbrmat.textures.emissiveTexture));
                         setOperation(pbrmat.objectHeightTexture.SetValue(pbrmat.textures.heightTexture));
                         setOperation(pbrmat.objectHeightTextureScale.SetValue(pbrmat.textures.heightTexture.scale));
@@ -148,7 +158,6 @@ namespace umi3d.edk
                         UMI3DLogger.LogWarning("unsupported material type", scope);
                         break;
                 }
-
             }
         }
 
@@ -247,9 +256,11 @@ namespace umi3d.edk
                     UMI3DLogger.Log("property = " + operation.property, scope);
 
                 }
-
             }
         }
-
+        public void RemoveNode(UMI3DNode node)
+        {
+            nodes = nodes.Where(n => !n.Equals(node)).ToArray();
+        }
     }
 }

@@ -24,14 +24,16 @@ namespace umi3d.cdk.menu.view
     /// Abstract class for display containers (such as carousels, raidals, ...).
     /// </summary>
     [System.Serializable]
-    public abstract class AbstractMenuDisplayContainer : AbstractDisplayer, IEnumerable<AbstractDisplayer>
+    public abstract partial class AbstractMenuDisplayContainer : AbstractDisplayer
     {
-
         /// <summary>
-        /// Is the container being displayed ?
+        /// Is the container being expanded?
         /// </summary>
         [SerializeField]
         public bool isExpanded { get; protected set; }
+        /// <summary>
+        /// Is the container being displayed?
+        /// </summary>
         public bool isDisplayed { get; protected set; }
 
         #region Navigation
@@ -48,43 +50,87 @@ namespace umi3d.cdk.menu.view
         }
 
         /// <summary>
-        /// Generation to replace on Expand. Negative value means no replacement; 0 replace siblings;
+        /// Generation to replace on Expand. Negative value means no replacement, 0 replace siblings.
         /// </summary>
+        [Tooltip("Generation to replace on Expand. Negative value means no replacement, 0 replace siblings.")]
         public int generationOffsetOnExpand = -1;
 
         /// <summary>
-        /// Does the container allow to navigate on several branch at once
+        /// Does the container allow to navigate on several branches at once?
         /// </summary>
+        [Tooltip("Does the container allow to navigate on several branches at once?")]
         public bool parallelNavigation = false;
 
         /// <summary>
         /// Parent container (if any).
         /// </summary>
+        [Tooltip("Parent container (if any).")]
         public AbstractMenuDisplayContainer parent;
 
         /// <summary>
-        /// Display child
+        /// Expands and displays child
         /// </summary>
         /// <param name="forceUpdate"></param>
-        public abstract void Expand(bool forceUpdate = false);
+        public virtual void Expand(bool forceUpdate = false)
+        {
+            if (isExpanded && !forceUpdate)
+                return;
+            isExpanded = true;
+            ExpandImp();
+        }
 
         /// <summary>
-        /// Hide without destroying
+        /// Expands [container] and displays child of [container]
         /// </summary>
+        /// <param name="container"></param>
         /// <param name="forceUpdate"></param>
-        public abstract void Collapse(bool forceUpdate = false);
+        public virtual void ExpandAs(AbstractMenuDisplayContainer container, bool forceUpdate = false)
+        {
+            if (container.isExpanded && !forceUpdate)
+                return;
+            container.isExpanded = true;
+            ExpandAsImp(container);
+        }
 
         /// <summary>
-        /// Display child of Container
+        /// Collapses and hide children without destroying
         /// </summary>
-        /// <param name="container"> container to display</param>
         /// <param name="forceUpdate"></param>
-        public abstract void ExpandAs(AbstractMenuDisplayContainer container, bool forceUpdate = false);
+        public virtual void Collapse(bool forceUpdate = false)
+        {
+            if (!isExpanded && !forceUpdate)
+                return;
+            isExpanded = false;
+            CollapseImp();
+        }
 
         /// <summary>
         /// The AbstractMenuDisplayContainer that have is content displayed in this container. 
         /// </summary>
         public abstract AbstractMenuDisplayContainer CurrentMenuDisplayContainer();
+
+        #region navigation Implementation
+
+        /// <summary>
+        /// Implementation of the Expand methode.
+        /// <see cref="Expand"/>
+        /// </summary>
+        protected abstract void ExpandImp();
+
+        /// <summary>
+        /// Implementation of the ExpandAs methode.
+        /// <see cref="ExpandAs(AbstractMenuDisplayContainer, bool)"/>
+        /// </summary>
+        /// <param name="container"></param>
+        protected abstract void ExpandAsImp(AbstractMenuDisplayContainer container);
+
+        /// <summary>
+        /// Implementation of the Collapse methode.
+        /// <see cref="Collapse(bool)"/>
+        /// </summary>
+        protected abstract void CollapseImp();
+
+        #endregion
 
         #endregion
 
@@ -158,8 +204,11 @@ namespace umi3d.cdk.menu.view
         protected abstract IEnumerable<AbstractDisplayer> GetDisplayers();
 
         #endregion
-        #region Enumerable
 
+    }
+
+    public abstract partial class AbstractMenuDisplayContainer : IEnumerable<AbstractDisplayer>
+    {
         public IEnumerator<AbstractDisplayer> GetEnumerator()
         {
             return GetDisplayers().GetEnumerator();
@@ -175,7 +224,5 @@ namespace umi3d.cdk.menu.view
             get;
             set;
         }
-
-        #endregion
     }
 }

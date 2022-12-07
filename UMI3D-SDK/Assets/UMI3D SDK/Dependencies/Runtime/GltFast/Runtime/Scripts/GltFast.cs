@@ -181,7 +181,7 @@ namespace GLTFast {
             var download = downloadProvider.Request(url);
             yield return download;
 
-            if(download.success) {
+            if(download.success && download.data != null) {
                 if(gltfBinary) {
                     LoadGlb(download.data,url);
                 } else {

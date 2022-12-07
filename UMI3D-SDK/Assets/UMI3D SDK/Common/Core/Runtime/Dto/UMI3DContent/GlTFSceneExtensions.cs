@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// GlTF extension for scenes/ <see cref="GlTFSceneDto"/>.
+    /// </summary>
     public class GlTFSceneExtensions : AbstractGlTFExtensions<UMI3DSceneNodeDto>
     {
 

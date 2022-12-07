@@ -23,6 +23,7 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
+using static umi3d.common.NotificationDto;
 
 namespace umi3d.edk.collaboration
 {
@@ -34,8 +35,13 @@ namespace umi3d.edk.collaboration
         /// Contain the users connected to the scene.
         /// </summary>
         private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
-        private readonly Dictionary<string, ulong> loginMap = new Dictionary<string, ulong>();
+        private readonly Dictionary<ulong, UMI3DCollaborationUser> lostUsers = new Dictionary<ulong, UMI3DCollaborationUser>();
+        private readonly Dictionary<string, UMI3DCollaborationUser> guidMap = new Dictionary<string, UMI3DCollaborationUser>();
         private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
+
+        private readonly List<string> oldTokenOfUpdatedUser = new List<string>();
+
+
         private UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
 
@@ -46,7 +52,7 @@ namespace umi3d.edk.collaboration
         {
             get
             {
-                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto() : (object)u);
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto(user) : (object)u);
                 return _objectUserList;
             }
         }
@@ -55,11 +61,15 @@ namespace umi3d.edk.collaboration
         /// get all userDto collection
         /// </summary>
         /// <returns></returns>
-        public List<UserDto> ToDto()
+        public List<UserDto> ToDto(UMI3DUser user)
         {
-            return objectUserList.GetValue().Select(u => u.ToUserDto()).ToList();
+            return objectUserList.GetValue().Select(u => u.ToUserDto(user)).ToList();
         }
 
+        /// <summary>
+        /// Get the current number of connected users in the environment as a DTO.
+        /// </summary>
+        /// <returns></returns>
         public PlayerCountDto GetPlayerCount()
         {
             var pc = new PlayerCountDto
@@ -101,17 +111,45 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
-        public UMI3DCollaborationUser GetUserByToken(string authorization)
+        public (UMI3DCollaborationUser user, bool oldToken) GetUserByToken(string authorization)
+        {
+            if (authorization.StartsWith(UMI3DNetworkingKeys.bearer))
+            {
+                string token = authorization.Remove(0, UMI3DNetworkingKeys.bearer.Length);
+                return GetUserByNakedToken(token);
+            }
+            return (null, false);
+        }
+
+        private (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
         {
             lock (users)
             {
                 foreach (UMI3DCollaborationUser u in users.Values)
                 {
-                    if (UMI3DNetworkingKeys.bearer + u.token == authorization)
-                        return u;
+                    if (u.token == token)
+                        return (u, true);
+                }
+                if (oldTokenOfUpdatedUser.Contains(token))
+                {
+                    return (null, true);
                 }
             }
-            return null;
+            return (null, false);
+        }
+
+        public (UMI3DCollaborationUser user, bool oldToken, bool oldUser) GetUserByNakedTokenForConnection(string token)
+        {
+            (UMI3DCollaborationUser user, bool oldToken) connected = GetUserByNakedToken(token);
+            if (connected.oldToken || connected.user != null)
+                return (connected.user, connected.oldToken, false);
+            foreach (UMI3DCollaborationUser user in lostUsers.Values)
+            {
+                if (user.token == token)
+                    return (user, true, true);
+            }
+            return (null, false, false);
+
         }
 
         /// <summary>
@@ -143,18 +181,51 @@ namespace umi3d.edk.collaboration
         /// logout a user
         /// </summary>
         /// <param name="user"></param>
-        public void Logout(UMI3DCollaborationUser user)
+        public async void Logout(UMI3DCollaborationUser user, bool notifiedByUser)
         {
+            UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId} {notifiedByUser}", scope);
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
+
             lock (users)
             {
                 users.Remove(user.Id());
                 SetLastUpdate();
             }
-            loginMap.Remove(user.login);
+            guidMap.Remove(user.guid);
             forgeMap.Remove(user.networkPlayer.NetworkId);
+
             user.SetStatus(StatusType.NONE);
+
+            if (!notifiedByUser)
+            {
+                if (!lostUsers.ContainsKey(user.Id()))
+                    lostUsers.Add(user.Id(), user);
+                else
+                    UMI3DLogger.LogError($"Lost users already contains a key with {user.Id()}", scope);
+
+                await UMI3DAsyncManager.Delay(600000); // wait 10 min for reco
+                if (user.status == StatusType.NONE)
+                {
+                    lostUsers.Remove(user.Id());
+                    UMI3DCollaborationServer.Instance.NotifyUnregistered(user);
+                    return;
+                }
+            }
+
             user.Logout();
+            UMI3DCollaborationServer.Instance.NotifyUnregistered(user);
+        }
+
+        public void reconnectUser(UMI3DCollaborationUser user)
+        {
+            lock (users)
+            {
+                users.Add(user.Id(), user);
+                SetLastUpdate();
+            }
+            lostUsers.Remove(user.Id());
+            guidMap.Add(user.guid, user);
+            forgeMap.Add(user.networkPlayer.NetworkId, user.Id());
         }
 
         /// <summary>
@@ -162,9 +233,38 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public void ConnectionClose(UMI3DCollaborationUser user)
+        public void ConnectionClose(UMI3DCollaborationUser user, uint networkId)
         {
-            user?.SetStatus(StatusType.MISSING);
+            if (user.networkPlayer.NetworkId == networkId)
+                user?.SetStatus(StatusType.MISSING);
+        }
+
+        public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
+        {
+            (UMI3DCollaborationUser user, bool oldToken, bool oldUser) res = GetUserByNakedTokenForConnection(token);
+            UMI3DCollaborationUser user = res.user;
+            UMI3DLogger.Log($"Connect User {user != null} {res}", scope);
+            if (user != null)
+            {
+                if (res.oldUser)
+                {
+                    UMI3DLogger.Log($"Reconnection of lost user ", scope);
+                    reconnectUser(user);
+                }
+
+                bool reconnection = user.networkPlayer != null || res.oldUser;
+                if (reconnection)
+                    forgeMap.Remove(user.networkPlayer.NetworkId);
+                UMI3DLogger.Log($"Reconnection {reconnection}", scope);
+
+                user.networkPlayer = player;
+                forgeMap.Add(player.NetworkId, user.Id());
+
+                acceptUser(true);
+                onUserCreated.Invoke(user, reconnection);
+            }
+            else
+                acceptUser(false);
         }
 
         /// <summary>
@@ -172,50 +272,43 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="LoginDto">Login of the user.</param>
         /// <param name="onUserCreated">Callback called when the user has been created.</param>
-        public void CreateUser(NetworkingPlayer player, IdentityDto LoginDto, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
+        public void CreateUser(RegisterIdentityDto LoginDto, Action<UMI3DCollaborationUser, bool> onUserCreated)
         {
-            lock (users)
-            {
-                UMI3DCollaborationUser user;
-                bool reconnection = false;
-                if (LoginDto == null)
-                {
-                    UMI3DLogger.LogWarning("user try to use empty login", scope);
-                    acceptUser(false);
-                    return;
-                }
-                if (LoginDto.login == null || LoginDto.login == "")
-                {
-                    LoginDto.login = player.NetworkId.ToString();
-                }
+            UMI3DLogger.Log($"CreateUser() begins", scope);
 
-                if (loginMap.ContainsKey(LoginDto.login))
+            UMI3DCollaborationUser user;
+            bool reconnection = false;
+            if (guidMap.ContainsKey(LoginDto.guid))
+            {
+                user = guidMap[LoginDto.guid];
+
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} already contained in guidMap", scope);
+
+                oldTokenOfUpdatedUser.Add(user.token);
+                forgeMap.Remove(user.networkPlayer.NetworkId);
+                (UMI3DCollaborationServer.ForgeServer.GetNetWorker() as UDPServer).Disconnect(user.networkPlayer, true);
+                user.Update(LoginDto);
+                user.SetStatus(StatusType.CREATED);
+                reconnection = true;
+            }
+            else
+            {
+                user = new UMI3DCollaborationUser(LoginDto);
+
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
+                lock (users)
                 {
-                    if (loginMap[LoginDto.login] != LoginDto.userId || LoginDto.userId != 0 && users.ContainsKey(LoginDto.userId))
-                    {
-                        UMI3DLogger.LogWarning($"Login [{LoginDto.login}] already us by an other user", scope);
-                        acceptUser(false);
-                        return;
-                    }
-                    else
-                    {
-                        user = users[LoginDto.userId];
-                        forgeMap.Remove(user.networkPlayer.NetworkId);
-                        reconnection = true;
-                    }
-                }
-                else
-                {
-                    user = new UMI3DCollaborationUser(LoginDto.login);
-                    SetLastUpdate();
-                    loginMap[LoginDto.login] = user.Id();
                     users.Add(user.Id(), user);
                 }
-                user.networkPlayer = player;
-                forgeMap.Add(player.NetworkId, user.Id());
-                acceptUser(true);
-                onUserCreated.Invoke(user, reconnection);
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} added to users, release lock", scope);
+
+                guidMap.Add(LoginDto.guid, user);
+                SetLastUpdate();
             }
+
+            onUserCreated.Invoke(user, reconnection);
+
+            UMI3DLogger.Log($"CreateUser() ends", scope);
         }
 
         /// <summary>
@@ -240,8 +333,10 @@ namespace umi3d.edk.collaboration
         private IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            SetEntityProperty op = objectUserList.Add(user);
-            op.users.Remove(user);
+            objectUserList.Add(user);
+
+            SetEntityProperty op = objectUserList.GetSetEntityOperationForUsers(u => u.hasJoined);
+
             var tr = new Transaction() { reliable = true };
             tr.AddIfNotNull(op);
             UMI3DServer.Dispatch(tr);
@@ -263,19 +358,13 @@ namespace umi3d.edk.collaboration
         private IEnumerator UpdateUser(UMI3DCollaborationUser user)
         {
             yield return new WaitForFixedUpdate();
-            int index = objectUserList.GetValue().IndexOf(user);
-            var operation = new SetEntityListProperty()
-            {
-                users = new HashSet<UMI3DUser>() { },
-                entityId = UMI3DGlobalID.EnvironementId,
-                property = UMI3DPropertyKeys.UserList,
-                index = index,
-                value = UMI3DEnvironment.Instance.useDto ? user.ToUserDto() : (object)user,
-            };
-            operation += UMI3DCollaborationServer.Collaboration.Users;
-            var tr = new Transaction() { reliable = true };
-            tr.AddIfNotNull(operation);
-            UMI3DServer.Dispatch(tr);
+
+            Transaction transaction = new Transaction() { reliable = true };
+
+            var operation = objectUserList.GetSetEntityOperationForUsers(u => u.hasJoined);
+
+            transaction.AddIfNotNull(operation);
+            transaction.Dispatch();
         }
 
 
@@ -288,6 +377,147 @@ namespace umi3d.edk.collaboration
             {
                 users[id].SetStatus(status);
             }
+        }
+
+        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequest dto)
+        {
+            var tr = new Transaction
+            {
+                reliable = true
+            };
+            switch (dto.operation)
+            {
+                case UMI3DOperationKeys.UserMicrophoneStatus:
+                    if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
+                        tr.AddIfNotNull(users[dto.id].microphoneStatus.SetValue(dto.value));
+
+                    if (tr.Count() > 0 && user.Id() != dto.id)
+                    {
+                        tr.AddIfNotNull(GetMuteNotification(user).GetLoadEntity(new HashSet<UMI3DUser> { users[dto.id] }));
+                    }
+                    break;
+
+                case UMI3DOperationKeys.UserAvatarStatus:
+                    if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
+                        tr.AddIfNotNull(users[dto.id].avatarStatus.SetValue(dto.value));
+                    break;
+
+                case UMI3DOperationKeys.UserAttentionStatus:
+                    if (users.ContainsKey(dto.id) && user.Id() == dto.id)
+                        tr.AddIfNotNull(users[dto.id].attentionRequired.SetValue(dto.value));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllMicrophoneStatus:
+                    tr.AddIfNotNull(MuteAll(user));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAvatarStatus:
+                    foreach (UMI3DCollaborationUser u in users.Values)
+                        tr.AddIfNotNull(u.avatarStatus.SetValue(false));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAttentionStatus:
+                    foreach (UMI3DCollaborationUser u in users.Values)
+                        tr.AddIfNotNull(u.attentionRequired.SetValue(false));
+                    break;
+            }
+            tr.Dispatch();
+        }
+
+        public void CollaborationRequest(UMI3DUser user, uint operationKey, ByteContainer container)
+        {
+            bool value;
+            ulong id;
+            var tr = new Transaction
+            {
+                reliable = true
+            };
+            switch (operationKey)
+            {
+                case UMI3DOperationKeys.UserMicrophoneStatus:
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+
+                    if (users.ContainsKey(id) && (!value || (user.Id() == id)))
+                        tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
+
+                    if (tr.Count() > 0 && user.Id() != id)
+                    {
+                        tr.AddIfNotNull(GetMuteNotification(user).GetLoadEntity(new HashSet<UMI3DUser> { users[id] }));
+                    }
+                    break;
+
+                case UMI3DOperationKeys.UserAvatarStatus:
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    if (users.ContainsKey(id) && (!value || (user.Id() == id)))
+                        tr.AddIfNotNull(users[id].avatarStatus.SetValue(value));
+                    break;
+
+                case UMI3DOperationKeys.UserAttentionStatus:
+                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    if (users.ContainsKey(id) && id == user.Id())
+                        tr.AddIfNotNull(users[id].attentionRequired.SetValue(value));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllMicrophoneStatus:
+                    tr.AddIfNotNull(MuteAll(user));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAvatarStatus:
+                    foreach (UMI3DCollaborationUser u in users.Values)
+                        tr.AddIfNotNull(u.avatarStatus.SetValue(false));
+                    break;
+
+                case UMI3DOperationKeys.MuteAllAttentionStatus:
+                    foreach (UMI3DCollaborationUser u in users.Values)
+                        tr.AddIfNotNull(u.attentionRequired.SetValue(false));
+                    break;
+            }
+            tr.Dispatch();
+        }
+
+        /// <summary>
+        /// Mute everyone except <see cref="user"/>
+        /// </summary>
+        /// <param name="user">User who muted everyone</param>
+        /// <returns></returns>
+        private List<Operation> MuteAll(UMI3DUser user)
+        {
+            List<Operation> ops = new List<Operation>();
+            HashSet<UMI3DUser> usersMuted = new HashSet<UMI3DUser>();
+
+            foreach (UMI3DCollaborationUser u in users.Values)
+            {
+                if (u != user && u.microphoneStatus.GetValue())
+                {
+                    ops.Add(u.microphoneStatus.SetValue(false));
+                    usersMuted.Add(u);
+                }
+            }
+
+            ops.Add(GetMuteNotification(user).GetLoadEntity(usersMuted));
+
+            return ops;
+        }
+
+        /// <summary>
+        /// Returns a notification to display to users they were muted by <paramref name="user"/>.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        private UMI3DNotification GetMuteNotification(UMI3DUser user)
+        {
+            UMI3DNotification notif;
+
+            if (user is UMI3DCollaborationUser collabUser)
+                notif = new UMI3DNotification(NotificationPriority.Low, "Microphone",
+                    "You were muted by " + (string.IsNullOrEmpty(collabUser.login) ? "user " + collabUser.Id() : collabUser.login), 2.5f, null, null);
+            else
+                notif = new UMI3DNotification(NotificationPriority.Low, "Microphone", "You were muted.", 2.5f, null, null);
+
+            return notif;
         }
     }
 }

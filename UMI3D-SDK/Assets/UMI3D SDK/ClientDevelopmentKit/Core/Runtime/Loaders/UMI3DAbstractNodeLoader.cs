@@ -15,13 +15,14 @@ limitations under the License.
 */
 
 using System;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk
 {
     /// <summary>
-    /// loader for abstract node
+    /// Loader for <see cref="UMI3DAbstractNodeDto"/>.
     /// </summary>
     public class UMI3DAbstractNodeLoader
     {
@@ -32,23 +33,35 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public virtual void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public virtual async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
             var nodeDto = dto as UMI3DAbstractNodeDto;
             if (node == null)
-            {
-                failed.Invoke(new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
-                return;
-            }
+                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
+            
             if (dto != null)
             {
-
                 if (nodeDto.pid != 0)
                 {
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
                     {
                         if (e is UMI3DNodeInstance instance)
-                            node.transform.SetParent(instance.transform, false);
+                        {
+                            var nodeInstance = UMI3DEnvironmentLoader.GetEntity(nodeDto.pid) as UMI3DNodeInstance;
+                            if ( nodeInstance != null && nodeInstance.mainInstance != null)
+                            {
+                                node.transform.SetParent(nodeInstance.mainInstance.transform, false);
+                            }
+                            else
+                                node.transform.SetParent(instance.transform, false);
+
+                            ModelTracker modelTracker = node.GetComponentInParent<ModelTracker>();
+                            if(modelTracker != null && modelTracker.areSubObjectTracked)
+                            {
+                                modelTracker.RebindAnimators();
+                            }
+                        }
+
                     });
                 }
                 else
@@ -61,12 +74,6 @@ namespace umi3d.cdk
 
                 if (nodeDto.isStatic != node.isStatic)
                     node.isStatic = nodeDto.isStatic;
-                finished?.Invoke();
-
-            }
-            else
-            {
-                finished?.Invoke();
             }
         }
 
@@ -81,7 +88,7 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
-            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (property.property)
             {
@@ -99,6 +106,14 @@ namespace umi3d.cdk
                     ulong pid = dto.pid = (ulong)(long)property.value;
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                    if(parent != null)
+                    {
+                        ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();
+                        if (modelTracker != null && modelTracker.areSubObjectTracked)
+                        {
+                            modelTracker.RebindAnimators();
+                        }
+                    }
 
                     break;
                 default:
@@ -137,7 +152,7 @@ namespace umi3d.cdk
             var node = entity as UMI3DNodeInstance;
             if (node == null) return false;
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
-            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
+            if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
             switch (propertyKey)
             {
@@ -155,13 +170,19 @@ namespace umi3d.cdk
                     ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
-
+                    if (parent != null)
+                    {
+                        ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();
+                        if (modelTracker != null && modelTracker.areSubObjectTracked)
+                        {
+                            modelTracker.RebindAnimators();
+                        }
+                    }
                     break;
                 default:
                     return false;
             }
             return true;
         }
-
     }
 }

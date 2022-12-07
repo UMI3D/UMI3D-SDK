@@ -17,12 +17,12 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of an entity's list property changed.
+    /// Operation DTO to inform a browser the value of an entity's list property has changed.
     /// </summary>
     public class SetEntityListPropertyDto : SetEntityPropertyDto
     {
         /// <summary>
-        /// position in list
+        /// Position in list.
         /// </summary>
         public int index;
     }

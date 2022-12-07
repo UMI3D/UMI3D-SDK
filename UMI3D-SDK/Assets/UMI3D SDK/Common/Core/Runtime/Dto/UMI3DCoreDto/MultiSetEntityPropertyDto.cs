@@ -20,23 +20,23 @@ using System.Collections.Generic;
 namespace umi3d.common
 {
     /// <summary>
-    /// An operation to inform a browser the value of an entity's property changed.
+    /// Ooperation DTO  to inform a browser the value of an entity's property has changed.
     /// </summary>
     [Serializable]
     public class MultiSetEntityPropertyDto : AbstractOperationDto
     {
         /// <summary>
-        /// The identifiers list of the entities
+        /// The identifiers list of the entities.
         /// </summary>
         public List<ulong> entityIds;
 
         /// <summary>
-        /// The name of the modified property
+        /// The name of the modified property.
         /// </summary>
         public ulong property;
 
         /// <summary>
-        /// The new value for the property
+        /// The new value for the property.
         /// </summary>
         public object value;
     }

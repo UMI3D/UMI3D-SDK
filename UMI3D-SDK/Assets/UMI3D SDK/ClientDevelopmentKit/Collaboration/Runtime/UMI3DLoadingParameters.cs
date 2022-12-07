@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.volumes;
@@ -29,10 +30,13 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-
+    /// <summary>
+    /// Loading helper.
+    /// </summary>
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
     public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
     {
+
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
 
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
@@ -51,83 +55,119 @@ namespace umi3d.cdk
 
         [SerializeField]
         private Material _skyboxMaterial;
-        public Material skyboxMaterial { get { if (_skyboxMaterial == null) { _skyboxMaterial = new Material(RenderSettings.skybox); RenderSettings.skybox = _skyboxMaterial; } return _skyboxMaterial; } }
+        public Material skyboxMaterial
+        {
+            get
+            {
+                if (defaultMat == null)
+                    defaultMat = new Material(RenderSettings.skybox);
+                if (_skyboxMaterial == null)
+                {
+                    _skyboxMaterial = new Material(RenderSettings.skybox);
+                    RenderSettings.skybox = _skyboxMaterial;
+                }
+
+                return _skyboxMaterial;
+            }
+        }
+
+        public Material defaultMat = null;
+
+        [SerializeField]
+        private Material _skyboxEquirectangularMaterial;
+
+        public Material skyboxEquirectangularMaterial
+        {
+            get
+            {
+                if (defaultMat == null)
+                    defaultMat = new Material(RenderSettings.skybox);
+                if (_skyboxEquirectangularMaterial == null)
+                {
+                    _skyboxEquirectangularMaterial = new Material(RenderSettings.skybox);
+                    RenderSettings.skybox = _skyboxEquirectangularMaterial;
+                }
+
+                return _skyboxEquirectangularMaterial;
+            }
+        }
 
         public List<IResourcesLoader> ResourcesLoaders { get; } = new List<IResourcesLoader>() { new ObjMeshDtoLoader(), new ImageDtoLoader(), new GlTFMeshDtoLoader(), new BundleDtoLoader(), new AudioLoader() };
 
         public List<AbstractUMI3DMaterialLoader> MaterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader(), new UMI3DOriginalMaterialLoader() };
 
         /// <summary>
-        /// Load an UMI3DObject.
+        /// Load an UMI3D Object.
         /// </summary>
         /// <param name="dto">dto.</param>
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override void ReadUMI3DExtension(UMI3DDto dto, GameObject node, Action finished, Action<Umi3dException> failed)
+        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
         {
-            Action callback = () => { if (AnchorLoader != null) AnchorLoader.ReadUMI3DExtension(dto, node, finished, failed); else finished.Invoke(); };
+            bool loadAnchor = false;
             switch (dto)
             {
                 case EntityGroupDto e:
                     EntityGroupLoader.ReadUMI3DExtension(e);
-                    finished?.Invoke();
                     break;
                 case UMI3DAbstractAnimationDto a:
-                    UMI3DAnimationLoader.ReadUMI3DExtension(a, node, finished, failed);
+                    UMI3DAnimationLoader.ReadUMI3DExtension(a, node);
                     break;
                 case PreloadedSceneDto ps:
-                    PreloadedSceneLoader.ReadUMI3DExtension(ps, node, finished, failed);
+                    await PreloadedSceneLoader.ReadUMI3DExtension(ps, node);
                     break;
                 case InteractableDto i:
-                    UMI3DInteractableLoader.ReadUMI3DExtension(i, node, finished, failed);
+                    await UMI3DInteractableLoader.ReadUMI3DExtension(i, node);
                     break;
-                case ToolboxDto t:
-                    UMI3DToolBoxLoader.ReadUMI3DExtension(t, node, finished, failed);
-                    break;
-                case AbstractVolumeDescriptorDto v:
-                    UMI3DVolumeLoader.ReadUMI3DExtension(v, callback, failed);
-                    break;
-                case ToolDto t:
-                    UMI3DToolLoader.ReadUMI3DExtension(t);
-                    finished?.Invoke();
+                case GlobalToolDto t:
+                    await UMI3DGlobalToolLoader.ReadUMI3DExtension(t);
                     break;
                 case UMI3DMeshNodeDto m:
-                    meshLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await meshLoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case UMI3DLineDto m:
-                    lineLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await lineLoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case SubModelDto s:
-                    SubMeshLoader.ReadUMI3DExtension(s, node, callback, failed);
+                    await SubMeshLoader.ReadUMI3DExtension(s, node);
+                    loadAnchor = true;
+                    break;
+                case AbstractVolumeDescriptorDto v:
+                    await UMI3DVolumeLoader.ReadUMI3DExtension(v);
+                    loadAnchor = true;
                     break;
                 case UIRectDto r:
-                    UILoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await UILoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case UMI3DAvatarNodeDto a:
-                    avatarLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await avatarLoader.ReadUMI3DExtension(dto, node);
+                    loadAnchor = true;
                     break;
                 case UMI3DHandPoseDto h:
                     UMI3DHandPoseLoader.Load(h);
-                    finished?.Invoke();
+                    break;
+                case UMI3DEmotesConfigDto e:
+                    UMI3DEmotesConfigLoader.Load(e);
+                    break;
+                case UMI3DEmoteDto e:
+                    UMI3DEmoteLoader.Load(e);
                     break;
                 case NotificationDto n:
                     notificationLoader.Load(n);
-                    finished?.Invoke();
                     break;
                 default:
-                    nodeLoader.ReadUMI3DExtension(dto, node, callback, failed);
+                    await nodeLoader.ReadUMI3DExtension(dto, node);
                     break;
             }
-
+            if (loadAnchor && AnchorLoader != null)
+                await AnchorLoader.ReadUMI3DExtension(dto, node);
         }
 
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             if (entity == null)
@@ -142,17 +182,15 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DInteractableLoader.SetUMI3DProperty(entity, property))
                 return true;
-            if (UMI3DToolLoader.SetUMI3DProperty(entity, property))
-                return true;
-            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, property))
-                return true;
-            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, property))
+            if (UMI3DGlobalToolLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (notificationLoader != null && notificationLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (SubMeshLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, property))
+                return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (lineLoader.SetUMI3DProperty(entity, property))
                 return true;
@@ -162,6 +200,12 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, property))
                 return true;
+            if (UMI3DBodyPoseLoader.SetUMI3DProperty(entity, property))
+                return true;
+            if (UMI3DEmotesConfigLoader.SetUMI3DProperty(entity, property))
+                return true;
+            if (UMI3DEmoteLoader.SetUMI3DProperty(entity, property))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, property))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DProperty(entity, property))
@@ -169,7 +213,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, property);
         }
 
-
+        /// <inheritdoc/>
         public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (entity == null)
@@ -184,9 +228,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DInteractableLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
-            if (UMI3DToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
-                return true;
-            if (UMI3DToolBoxLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+            if (UMI3DGlobalToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (UMI3DVolumeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
@@ -196,6 +238,8 @@ namespace umi3d.cdk
                 return true;
             if (meshLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (UMI3DVolumeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (lineLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (UILoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
@@ -204,6 +248,12 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DHandPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
+            if (UMI3DBodyPoseLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (UMI3DEmotesConfigLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
+            if (UMI3DEmoteLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+                return true;
             if (nodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
                 return true;
             if (AnchorLoader != null && AnchorLoader.SetUMI3DPorperty(entity, operationId, propertyKey, container))
@@ -211,6 +261,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.SetUMI3DProperty(entity, operationId, propertyKey, container);
         }
 
+        /// <inheritdoc/>
         public override bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
             if (UMI3DEnvironmentLoader.Exists && UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(ref value, propertyKey, container))
@@ -221,9 +272,7 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DInteractableLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
-            if (UMI3DToolLoader.ReadUMI3DProperty(ref value, propertyKey, container))
-                return true;
-            if (UMI3DToolBoxLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+            if (UMI3DGlobalToolLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (notificationLoader != null && notificationLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
@@ -239,6 +288,12 @@ namespace umi3d.cdk
                 return true;
             if (UMI3DHandPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
+            if (UMI3DBodyPoseLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DEmotesConfigLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
+            if (UMI3DEmoteLoader.ReadUMI3DProperty(ref value, propertyKey, container))
+                return true;
             if (nodeLoader.ReadUMI3DProperty(ref value, propertyKey, container))
                 return true;
             if (AnchorLoader != null && AnchorLoader.ReadUMI3DProperty(ref value, propertyKey, container))
@@ -246,7 +301,7 @@ namespace umi3d.cdk
             return GlTFNodeLoader.ReadUMI3DProperty(ref value, propertyKey, container);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
         {
             UMI3DLocalAssetDirectory res = null;
@@ -270,7 +325,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// is "a" bigger than "b" and inferior than max
+        /// Is <paramref name="a"/> bigger than <paramref name="b"/> and inferior than <paramref name="max"/>?
         /// </summary>
         /// <param name="a"></param>
         /// <param name="b"></param>
@@ -284,7 +339,7 @@ namespace umi3d.cdk
             return false;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override FileDto ChooseVariant(List<FileDto> files)
         {
             FileDto res = null;
@@ -311,7 +366,7 @@ namespace umi3d.cdk
             return res;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override IResourcesLoader SelectLoader(string extension)
         {
             foreach (IResourcesLoader loader in ResourcesLoaders)
@@ -321,11 +376,10 @@ namespace umi3d.cdk
                 if (loader.IsToBeIgnored(extension))
                     return null;
             }
-            UMI3DLogger.LogError("there is no compatible loader for this extention : " + extension, scope);
-            return null;
+            throw new Umi3dException("there is no compatible loader for this extention : " + extension);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override AbstractUMI3DMaterialLoader SelectMaterialLoader(GlTFMaterialDto gltfMatDto)
         {
             foreach (AbstractUMI3DMaterialLoader loader in MaterialLoaders)
@@ -337,121 +391,164 @@ namespace umi3d.cdk
             return null;
         }
 
-        ///<inheritdoc/>
-        public override void loadSkybox(ResourceDto skybox)
+        /// <inheritdoc/>
+        public override async void LoadSkybox(ResourceDto skybox, SkyboxType type, float skyboxRotation, float skyboxExposure)
         {
-            FileDto fileToLoad = ChooseVariant(skybox.variants);
-            if (fileToLoad == null) return;
-            string url = fileToLoad.url;
-            string ext = fileToLoad.extension;
-            string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = SelectLoader(ext);
-            if (loader != null)
+            try
             {
-                UMI3DResourcesManager.LoadFile(
-                    UMI3DGlobalID.EnvironementId,
-                    fileToLoad,
-                    loader.UrlToObject,
-                    loader.ObjectFromCache,
-                    (o) =>
+                if (skybox == null)
+                {
+                    RenderSettings.skybox = defaultMat;
+                    return;
+                }
+
+                FileDto fileToLoad = ChooseVariant(skybox.variants);
+                if (fileToLoad == null) return;
+                string ext = fileToLoad.extension;
+                IResourcesLoader loader = SelectLoader(ext);
+                if (loader != null)
+                {
+                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                    var tex = (Texture2D)o;
+                    if (tex != null)
                     {
-
-                        var tex = (Texture2D)o;
-                        if (tex != null)
+                        switch (type)
                         {
-
-                            Cubemap cube;
-                            Color[] imageColors;
-
-                            //prerequises: 
-                            // 1) image is in format
-                            //     +y
-                            //  -x +z +x -z
-                            //     -Y
-                            // 2) faces are cubes
-
-                            int size = tex.width / 4;
-                            cube = new Cubemap(size, TextureFormat.RGB24, false);
-
-                            //Need to invert y ? Oo
-                            var buffer = new Texture2D(tex.width, tex.height);
-                            buffer.SetPixels(tex.GetPixels());
-                            for (int x = 0; x < tex.width; x++)
-                            {
-                                for (int y = 0; y < tex.height; y++)
-                                    tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
-                            }
-
-                            imageColors = tex.GetPixels(size, 0, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.PositiveY);
-
-                            imageColors = tex.GetPixels(0, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.NegativeX);
-
-                            imageColors = tex.GetPixels(size, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.PositiveZ);
-
-                            imageColors = tex.GetPixels(size * 2, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.PositiveX);
-
-                            imageColors = tex.GetPixels(size * 3, size, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.NegativeZ);
-
-                            imageColors = tex.GetPixels(size, size * 2, size, size);
-                            cube.SetPixels(imageColors, CubemapFace.NegativeY);
-
-                            cube.Apply();
-                            skyboxMaterial.SetTexture("_Tex", cube);
-                            RenderSettings.skybox = skyboxMaterial;
+                            case SkyboxType.Equirectangular:
+                                LoadEquirectangularSkybox(tex, skyboxRotation, skyboxExposure);
+                                break;
+                            case SkyboxType.Cubemap:
+                                LoadCubeMapSkybox(tex);
+                                break;
+                            default:
+                                break;
                         }
-                        else
-                        {
-                            UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-                        }
-                    },
-                    e => UMI3DLogger.LogWarning(e, scope),
-                    loader.DeleteObject
-                    );
+                    }
+                    else
+                    {
+                        UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                    }
+                }
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
             }
         }
 
-        ///<inheritdoc/>
-        public override void UnknownOperationHandler(AbstractOperationDto operation, Action performed)
+        private void LoadCubeMapSkybox(Texture2D tex)
+        {
+            try
+            {
+                Cubemap cube;
+                Color[] imageColors;
+
+                //prerequises: 
+                // 1) image is in format
+                //     +y
+                //  -x +z +x -z
+                //     -Y
+                // 2) faces are cubes
+
+                int size = tex.width / 4;
+                cube = new Cubemap(size, TextureFormat.RGB24, false);
+
+                //Need to invert y ? Oo
+                var buffer = new Texture2D(tex.width, tex.height);
+                buffer.SetPixels(tex.GetPixels());
+                for (int x = 0; x < tex.width; x++)
+                {
+                    for (int y = 0; y < tex.height; y++)
+                        tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
+                }
+
+                imageColors = tex.GetPixels(size, 0, size, size);
+                cube.SetPixels(imageColors, CubemapFace.PositiveY);
+
+                imageColors = tex.GetPixels(0, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.NegativeX);
+
+                imageColors = tex.GetPixels(size, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.PositiveZ);
+
+                imageColors = tex.GetPixels(size * 2, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.PositiveX);
+
+                imageColors = tex.GetPixels(size * 3, size, size, size);
+                cube.SetPixels(imageColors, CubemapFace.NegativeZ);
+
+                imageColors = tex.GetPixels(size, size * 2, size, size);
+                cube.SetPixels(imageColors, CubemapFace.NegativeY);
+
+                cube.Apply();
+                skyboxMaterial.SetTexture("_Tex", cube);
+                RenderSettings.skybox = skyboxMaterial;
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogException(e, scope);
+            }
+        }
+
+        private void LoadEquirectangularSkybox(Texture2D texture, float rotation, float exposure)
+        {
+            skyboxEquirectangularMaterial.SetTexture("_Tex", texture);
+
+            SetSkyboxProperties(SkyboxType.Equirectangular, rotation, exposure);
+
+            RenderSettings.skybox = skyboxEquirectangularMaterial;
+        }
+
+        public override bool SetSkyboxProperties(SkyboxType type, float skyboxRotation, float skyboxExposure)
+        {
+            if (type == SkyboxType.Equirectangular)
+            {
+                if (skyboxEquirectangularMaterial.HasProperty("_Rotation"))
+                {
+                    skyboxEquirectangularMaterial.SetFloat("_Rotation", skyboxRotation);
+                }
+
+                if (skyboxEquirectangularMaterial.HasProperty("_Exposure"))
+                {
+                    skyboxEquirectangularMaterial.SetFloat("_Exposure", skyboxExposure);
+                }
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public override Task UnknownOperationHandler(AbstractOperationDto operation)
         {
             switch (operation)
             {
                 case SwitchToolDto switchTool:
                     AbstractInteractionMapper.Instance.SwitchTools(switchTool.toolId, switchTool.replacedToolId, switchTool.releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case ProjectToolDto projection:
                     AbstractInteractionMapper.Instance.SelectTool(projection.toolId, projection.releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case ReleaseToolDto release:
                     AbstractInteractionMapper.Instance.ReleaseTool(release.toolId, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case SetTrackingTargetFPSDto setTargetFPS:
-                    UMI3DClientUserTracking.Instance.setFPSTarget(setTargetFPS.targetFPS);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetFPSTarget(setTargetFPS.targetFPS);
                     break;
                 case SetStreamedBonesDto streamedBones:
-                    UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones.streamedBones);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones.streamedBones);
                     break;
                 case SetSendingCameraPropertiesDto sendingCamera:
-                    UMI3DClientUserTracking.Instance.setCameraPropertiesSending(sendingCamera.activeSending);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
                     break;
                 case SetSendingTrackingDto sendingTracking:
-                    UMI3DClientUserTracking.Instance.setTrackingSending(sendingTracking.activeSending);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetTrackingSending(sendingTracking.activeSending);
                     break;
             }
+            return Task.CompletedTask;
         }
 
-        public override void UnknownOperationHandler(uint operationId, ByteContainer container, Action performed)
+        /// <inheritdoc/>
+        public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
             ulong id;
             bool releasable;
@@ -463,40 +560,34 @@ namespace umi3d.cdk
                     ulong oldid = UMI3DNetworkingHelper.Read<ulong>(container);
                     releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.ProjectTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     releasable = UMI3DNetworkingHelper.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SelectTool(id, releasable, 0, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.ReleaseTool:
                     id = UMI3DNetworkingHelper.Read<ulong>(container);
                     AbstractInteractionMapper.Instance.ReleaseTool(id, new interaction.RequestedByEnvironment());
-                    performed.Invoke();
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
                     int target = UMI3DNetworkingHelper.Read<int>(container);
-                    UMI3DClientUserTracking.Instance.setFPSTarget(target);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetFPSTarget(target);
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
                     List<uint> streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
-                    UMI3DClientUserTracking.Instance.setStreamedBones(streamedBones);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones);
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
                     bool sendCamera = UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.setCameraPropertiesSending(sendCamera);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendCamera);
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
                     bool sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.setTrackingSending(sendTracking);
-                    performed.Invoke();
+                    UMI3DClientUserTracking.Instance.SetTrackingSending(sendTracking);
                     break;
             }
+            return Task.CompletedTask;
         }
     }
 }

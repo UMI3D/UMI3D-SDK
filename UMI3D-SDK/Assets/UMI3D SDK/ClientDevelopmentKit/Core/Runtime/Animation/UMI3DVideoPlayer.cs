@@ -21,6 +21,9 @@ using UnityEngine.Video;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Video player, enriched playable video resource.
+    /// </summary>
     public class UMI3DVideoPlayer : UMI3DAbstractAnimation
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
@@ -29,9 +32,24 @@ namespace umi3d.cdk
         private readonly Material mat;
         private readonly RenderTexture renderTexture;
 
+        /// <summary>
+        /// Get an <see cref="UMI3DVideoPlayer"/> by id.
+        /// </summary>
+        /// <param name="id">UMI3D id</param>
+        /// <returns></returns>
         public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
 
+        /// <summary>
+        /// Has the VideoPlayer successfully prepared the content to be played ?
+        /// </summary>
         public bool isPrepared => videoPlayer?.isPrepared ?? false;
+
+        bool readyOrFailed => isPrepared || preparationFailed;
+
+        /// <summary>
+        /// Has the preparation of the video content failed?
+        /// </summary>
+        public bool preparationFailed { get; private set; } = false;
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
@@ -52,7 +70,13 @@ namespace umi3d.cdk
             var videoPlayerGameObject = new GameObject("video");
             videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
-            videoPlayer.url = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants).url;
+
+            FileDto fileDto = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants);
+            if (!UMI3DClientServer.Instance.AuthorizationInHeader)
+                videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
+            else
+                videoPlayer.url = fileDto.url;
+
             videoPlayer.targetTexture = renderTexture;
 
             videoPlayer.source = VideoSource.Url;
@@ -62,6 +86,8 @@ namespace umi3d.cdk
             videoPlayer.waitForFirstFrame = false;
             videoPlayer.isLooping = dto.looping;
             videoPlayer.Prepare();
+            videoPlayer.errorReceived += VideoPlayer_errorReceived;
+
 
 
             if (dto.playing)
@@ -86,6 +112,17 @@ namespace umi3d.cdk
             }
         }
 
+        public void Clean()
+        {
+            videoPlayer.Stop();
+        }
+
+        private async void VideoPlayer_errorReceived(VideoPlayer source, string message)
+        {
+            await UMI3DAsyncManager.Delay(100);
+            preparationFailed = true;
+        }
+
         /// <summary>
         /// Coroutine to set <see cref="videoPlayer"/> audioSource.
         /// </summary>
@@ -100,7 +137,7 @@ namespace umi3d.cdk
 
             videoPlayer.Prepare();
 
-            while (!videoPlayer.isPrepared)
+            while (!readyOrFailed)
                 yield return null;
 
             if (dto.playing)
@@ -118,7 +155,7 @@ namespace umi3d.cdk
 
         private IEnumerator StartAfterLoading()
         {
-            while (!videoPlayer.isPrepared)
+            while (!readyOrFailed)
             {
                 yield return new WaitForEndOfFrame();
             }
@@ -126,7 +163,7 @@ namespace umi3d.cdk
             if (dto.playing)
             {
                 ulong now = UMI3DClientServer.Instance.GetTime();
-                Start((float)(now - dto.startTime));
+                Start(now - dto.startTime);
             }
         }
 
@@ -146,7 +183,7 @@ namespace umi3d.cdk
             yield return null;
             yield return null;
 
-            while (!videoPlayer.isPrepared)
+            while (!readyOrFailed)
             {
                 yield return new WaitForEndOfFrame();
             }
@@ -174,7 +211,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// Fix added for some issues encountered on Android (<see cref="VideoPlayer.time"/> not necessarily correctly set.
+        /// Fix added for some issues encountered on Android (<see cref="VideoPlayer.time"/> not necessarily correctly set).
         /// </summary>
         /// <param name="time"></param>
         /// <returns></returns>
@@ -194,7 +231,7 @@ namespace umi3d.cdk
                     videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
                     UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded((dto as UMI3DVideoPlayerDto).audioId, (e) =>
                     {
-                        UMI3DAnimationManager.StartCoroutine(ReSetAudioSource((dto as UMI3DVideoPlayerDto), e, time));
+                        UMI3DAnimationManager.StartCoroutine(ReSetAudioSource(dto as UMI3DVideoPlayerDto, e, time));
                     });
                 }
                 else
@@ -225,7 +262,7 @@ namespace umi3d.cdk
             }
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override float GetProgress()
         {
             float res = 0;
@@ -234,13 +271,13 @@ namespace umi3d.cdk
             return res;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start()
         {
             Start(0);
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Stop()
         {
             if (videoPlayer != null)
@@ -249,19 +286,23 @@ namespace umi3d.cdk
             }
         }
 
+        /// <summary>
+        /// When set to true, makes the video loop.
+        /// </summary>
+        /// <param name="b"></param>
         public void SetLoopValue(bool b)
         {
             videoPlayer.isLooping = b;
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         public override void Start(float atTime)
         {
             if (videoPlayer != null)
             {
-                if (videoPlayer.isPrepared)
+                if (readyOrFailed)
                 {
-                    videoPlayer.frame = (int)(Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000));
+                    videoPlayer.frame = (int)Mathf.Max(0f, atTime * videoPlayer.frameRate / 1000);
                     videoPlayer.Play();
                 }
                 else
@@ -273,6 +314,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override void SetProgress(long frame)
         {
             UMI3DAnimationManager.StartCoroutine(SetTime());

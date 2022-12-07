@@ -17,23 +17,42 @@ using System.Collections.Generic;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// A dispatchable request is any request from the server the clients that does not concern a UMI3D entity.
+    /// </summary>
     public abstract class DispatchableRequest
     {
         /// <summary>
-        /// List of users to which this operation should be send.
+        /// List of users to which this request should be send.
         /// </summary>
         public HashSet<UMI3DUser> users;
+        /// <summary>
+        /// Reliable requests are request where receiving is ensuring.
+        /// </summary>
+        /// Note that requests that are not reliable are lighter.
         public bool reliable;
 
         public DispatchableRequest(bool reliable, HashSet<UMI3DUser> users)
         {
-            this.users = users ?? new HashSet<UMI3DUser>();
+            this.users = users ?? (UMI3DServer.Exists ? UMI3DServer.Instance.UserSetWhenHasJoined() : new HashSet<UMI3DUser>());
             this.reliable = reliable;
         }
 
+        /// <summary>
+        /// Convert the request to a byte array.
+        /// </summary>
+        /// <returns></returns>
         public abstract byte[] ToBytes();
 
+        /// <summary>
+        /// Convert the request to a BSON as a byte array.
+        /// </summary>
+        /// <returns></returns>
         public abstract byte[] ToBson();
 
+        public void Dispatch()
+        {
+            UMI3DServer.Dispatch(this);
+        }
     }
 }

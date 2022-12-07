@@ -1,0 +1,26 @@
+var classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api =
+[
+    [ "ReceiveLocalInfoEvent", "dd/d04/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api_1_1_receive_local_info_event.html", null ],
+    [ "SendLocalinfoEvent", "d6/daa/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api_1_1_send_localinfo_event.html", null ],
+    [ "UMI3DEnvironmentApi", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#abf8160dcd5f49f1b32c3aa6ae289971b", null ],
+    [ "GetConnectionInformation", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#ae6868421d239c9ad6984ad7e22290489", null ],
+    [ "GetDirectory", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a8d8c2f63afd0507d93ebc03d582e6e6f", null ],
+    [ "GetDirectoryAsZip", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a9d81d361cc19e1b83682f2b042eb3eff", null ],
+    [ "GetEnvironment", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a755e3a45e98184ded30391a56e7d9160", null ],
+    [ "GetLibraries", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a9d9b0c059f51dc3966e4ccf11e87dfed", null ],
+    [ "GetPlayerCount", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a09e0610358e189c84c35137d5083f273", null ],
+    [ "GetPlayerLocalInfo", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a81fd2648054a96c1d0e1e28fa5e70d6d", null ],
+    [ "GetPrivateFile", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a5a2ae7dcbe304c09c600e77baa3c8d6c", null ],
+    [ "GetPublicFile", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a83b06567963fa8db5097a31546b78563", null ],
+    [ "GetScene", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#afc01f128fa3d93772c2bd67607ec7b29", null ],
+    [ "isAuthenticated", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a55d8f25e0611586db1fdb9a059e0f557", null ],
+    [ "JoinEnvironment", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a8313fb86754218b30b892efe21b9326e", null ],
+    [ "Logout", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#ad3c0e8e94b38c41e7e80c12f60a2732d", null ],
+    [ "PostEntity", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a172e3787d4bd80a41abdec68e6f6d97f", null ],
+    [ "PostPlayerLocalInfo", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a35fde902bd8b091102ebbc7cf25fd53c", null ],
+    [ "PostUploadFile", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a40620d08306099528ee60631bacceedb", null ],
+    [ "Register", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a27931ecbd2957b9e02592c9784e7a0c8", null ],
+    [ "Stop", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#add72ae621863a5af0f6027f79d2b8fcb", null ],
+    [ "UpdateConnectionInformation", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a073369065b56984ea7f93e7fac850d6d", null ],
+    [ "UpdateStatus", "d1/d7d/classumi3d_1_1edk_1_1collaboration_1_1_u_m_i3_d_environment_api.html#a2c3bd8b4e05db48b34646ce50276cc6b", null ]
+];

@@ -23,6 +23,7 @@ namespace umi3d.edk
     /// <summary>
     /// UI Image
     /// </summary>
+    /// /// See <see cref="Image"/>.
     [RequireComponent(typeof(Image))]
     public class UIImage : UIRect
     {
@@ -37,9 +38,9 @@ namespace umi3d.edk
         private Image.Type type => GetComponent<Image>().type;
 
         /// <summary>
-        /// Image's sprite url
+        /// Image's sprite URL.
         /// </summary>
-        [SerializeField, EditorReadOnly]
+        [SerializeField, EditorReadOnly, Tooltip("Image's sprite URL.")]
         public UMI3DResource sprite = new UMI3DResource();
 
         private UMI3DAsyncProperty<UMI3DResource> _sprite;
@@ -47,7 +48,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Image.Type> _imageType;
 
         /// <summary>
-        /// Sprite url (if any).
+        /// Sprite's URL (if any).
         /// </summary>
         public UMI3DAsyncProperty<UMI3DResource> Sprite { get { Register(); return _sprite; } protected set => _sprite = value; }
 
@@ -73,16 +74,13 @@ namespace umi3d.edk
             Sprite = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Image, sprite, (s, u) => s.ToDto());
         }
 
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UIImageDto();
         }
 
-        ///<inheritdoc/>
+        /// <inheritdoc/>
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
@@ -93,12 +91,12 @@ namespace umi3d.edk
                 rectDto.sprite = Sprite.GetValue().ToDto();
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
                 + UMI3DNetworkingHelper.Write(Color.GetValue(user))
                 + UMI3DNetworkingHelper.Write((int)ImageType.GetValue(user).Convert());
         }
-
     }
 }
