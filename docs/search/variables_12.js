@@ -48,7 +48,7 @@ var searchData=
   ['skybox_45',['skybox',['../df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html#a1ec6267f221b49b16d0f7e01498ad3bb',1,'umi3d::common::UMI3DEnvironmentDto']]],
   ['skyboxexposure_46',['skyboxExposure',['../df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html#ac419f40063404b56975d8e132ecd685e',1,'umi3d::common::UMI3DEnvironmentDto']]],
   ['skyboxrotation_47',['skyboxRotation',['../df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html#ade495004074038765c2cdc3114520343',1,'umi3d::common::UMI3DEnvironmentDto']]],
-  ['skyboxtype_48',['skyboxType',['../df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html#a2269f7a44e90a4e1747b3a0f1b9fbedf',1,'umi3d::common::UMI3DEnvironmentDto']]],
+  ['skyboxtype_48',['skyboxType',['../df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html#a2269f7a44e90a4e1747b3a0f1b9fbedf',1,'umi3d.common.UMI3DEnvironmentDto.skyboxType()'],['../d2/d98/classumi3d_1_1edk_1_1_u_m_i3_d_environment.html#a93ecd6a6a8ea50a3b8eb58a7bf08aead',1,'umi3d.edk.UMI3DEnvironment.skyboxType()']]],
   ['skycolor_49',['skyColor',['../df/d82/classumi3d_1_1common_1_1_u_m_i3_d_environment_dto.html#a75389be01f8553427a926e8dbad1aec5',1,'umi3d::common::UMI3DEnvironmentDto']]],
   ['source_50',['source',['../d6/d7f/classumi3d_1_1edk_1_1collaboration_1_1_web_service_method.html#a33785b9bb5c79c9d2d25cca11541538a',1,'umi3d::edk::collaboration::WebServiceMethod']]],
   ['spatialblend_51',['spatialBlend',['../de/d13/classumi3d_1_1common_1_1_u_m_i3_d_audio_player_dto.html#af9c79a75185a951083b4ff8a367cc3ca',1,'umi3d::common::UMI3DAudioPlayerDto']]],

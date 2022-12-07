@@ -1,10 +1,6 @@
 var classumi3d_1_1edk_1_1_material_s_o =
 [
-    [ "AlphaMode", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7", [
-      [ "OPAQUE", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7af05b252996befbe2cb461cc80c9ccbed", null ],
-      [ "MASK", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7a0a9501840acacfc8efe7522f5340000c", null ],
-      [ "BLEND", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7af58072a9536aaeef0196115e445fa4d8", null ]
-    ] ],
+    [ "AlphaMode", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#ad1459f476c85b2d853a6b5f7ef6b4fc7", null ],
     [ "AddConnectionFilter", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#aa54674facd9ff61174904381d1fed54e", null ],
     [ "GetDeleteEntity", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a6a4555e46bd2b472e07c68909254850b", null ],
     [ "GetId", "d1/d8e/classumi3d_1_1edk_1_1_material_s_o.html#a63c5ac8160ceaf57807ddea32f0fc329", null ],
