@@ -60,6 +60,12 @@ namespace Mumble
             if (_pendingAudioVolume >= 0)
                 _audioSource.volume = _pendingAudioVolume;
             _pendingAudioVolume = -1f;
+
+            AudioSettings.OnAudioConfigurationChanged += (b) =>
+            {
+                if (_isPlaying)
+                    _audioSource.Play();
+            };
         }
         public string GetUsername()
         {
