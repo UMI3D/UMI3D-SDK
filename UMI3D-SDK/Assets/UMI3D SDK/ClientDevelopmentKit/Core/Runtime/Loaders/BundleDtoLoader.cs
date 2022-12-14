@@ -58,7 +58,7 @@ namespace umi3d.cdk
             return ignoredFileExtentions.Contains(extension);
         }
 
-         /// <inheritdoc/>
+        /// <inheritdoc/>
         public virtual async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
             // add bundle in the cache
@@ -73,15 +73,15 @@ namespace umi3d.cdk
             if (www.downloadHandler is DownloadHandlerAssetBundle downloadHandlerAssetBundle)
             {
                 AssetBundle bundle = downloadHandlerAssetBundle?.assetBundle;
+
                 www.Dispose();
-                if (bundle != null)
-                    return (bundle);
+                if (bundle != null) return (bundle);
 #if UNITY_2020_OR_NEWER
                     else if (downloadHandlerAssetBundle?.error != null)
                         throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
 #endif
                 else
-                    throw new Umi3dException("The asset bundle was empty. An error might have occurred during the decoding of the asset bundle’s assets.");
+                    throw new Umi3dException($"Asset bundle empty: \n\n\"{url}\" \n\nAn error might have occurred during the decoding of the asset bundle’s assets.");
             }
             www.Dispose();
             throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
