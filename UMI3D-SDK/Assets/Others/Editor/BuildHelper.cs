@@ -34,7 +34,7 @@ public class BuildHelper : EditorWindow
     const string _scriptableFolderPath = "EXCLUDED";
     const string scriptablePathNoExt = "Assets/" + _scriptableFolderPath + "/BuildHelperData";
     const string scriptablePath = scriptablePathNoExt + ".asset";
-    //static string scriptablePath => Application.dataPath + _scriptablePath;
+    //static string path => Application.dataPath + _scriptablePath;
 
     BuildHelperData _data;
 
