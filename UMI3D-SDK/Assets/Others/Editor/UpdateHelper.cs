@@ -23,8 +23,36 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
+
+public class UpdateHelper : InitedWindow<UpdateHelper>
+{
+    const string fileName = "UpdateHelperData";
+
+    ScriptableLoader<UpdateHelperData> draw;
+
+    // Add menu named "My Window" to the Window menu
+    [MenuItem("UMI3D/Update")]
+    static void Open()
+    {
+        OpenWindow();
+    }
+
+    protected override void Init()
+    {
+        draw = new ScriptableLoader<UpdateHelperData>(fileName);
+    }
+
+    protected override void Draw()
+    {
+        draw.editor?.OnInspectorGUI();
+    }
+}
+
+
 public class SubUpdateHelper : EditorWindow
 {
+    bool inited = false;
+
     public static void Open(bool sourceIsA, string name1, string name2, string path1, string path2, Action<(bool,List<string>)> callback, List<string> folders = null)
     {
         // Get existing open window or if none, make a new one :
@@ -64,6 +92,7 @@ public class SubUpdateHelper : EditorWindow
 
     void Init(bool sourceIsA, string name1, string name2, string path1, string path2, List<string> folders, Action<(bool, List<string>)> callback)
     {
+        inited = true;
         if (folders == null)
             folders = new List<string>();
 
@@ -83,6 +112,9 @@ public class SubUpdateHelper : EditorWindow
 
     void OnGUI()
     {
+        if(!inited)
+            Close();
+
         EditorGUILayout.BeginHorizontal();
         EditorGUILayout.LabelField("Source");
         if (GUILayout.Button(sourceIsA ? name1 : name2))
@@ -214,76 +246,5 @@ public class SubUpdateHelper : EditorWindow
         return selected;
     }
 
-}
-
-public class UpdateHelper : EditorWindow
-{
-    const string _scriptableFolderPath = "EXCLUDED";
-    const string scriptablePathNoExt = "Assets/" + _scriptableFolderPath + "/UpdateHelperData";
-    const string scriptablePath = scriptablePathNoExt + ".asset";
-
-    UpdateHelperData _data;
-
-    // Add menu named "My Window" to the Window menu
-    [MenuItem("UMI3D/Update")]
-    static void Open()
-    {
-        UpdateHelper window = (UpdateHelper)EditorWindow.GetWindow(typeof(UpdateHelper));
-        window.Init();
-        window.Show();
-    }
-
-    void Init()
-    {
-        _data = GetScriptable();
-        GetEditor();
-    }
-
-    void OnGUI()
-    {
-        var editor = GetEditor();
-        UnityEngine.Debug.Assert(_data != null);
-        UnityEngine.Debug.Assert(editor != null);
-
-        editor?.OnInspectorGUI();
-    }
-
-    #region Scriptable Handler
-
-    Editor ScriptableEditor;
-    Editor GetEditor()
-    {
-        if (ScriptableEditor == null)
-            ScriptableEditor = Editor.CreateEditor(_data);
-        return ScriptableEditor;
-    }
-
-    static UpdateHelperData GetScriptable() => LoadScriptable() ?? CreateScriptable();
-
-    static UpdateHelperData CreateScriptable()
-    {
-        CreateFolder();
-        UpdateHelperData asset = ScriptableObject.CreateInstance<UpdateHelperData>();
-        AssetDatabase.CreateAsset(asset, scriptablePath);
-        AssetDatabase.SaveAssets();
-        return asset;
-    }
-
-    static void CreateFolder()
-    {
-        if (!System.IO.Directory.Exists(Application.dataPath + System.IO.Path.GetDirectoryName(scriptablePath).TrimStart("Assets".ToCharArray())))
-        {
-            AssetDatabase.CreateFolder("Assets", _scriptableFolderPath);
-        }
-    }
-
-    static UpdateHelperData LoadScriptable()
-    {
-        var asset = AssetDatabase.LoadAssetAtPath<UpdateHelperData>(scriptablePath);
-        UnityEngine.Debug.Assert(asset != null, scriptablePath);
-        return asset;
-    }
-
-    #endregion
 }
 #endif

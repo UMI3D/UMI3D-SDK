@@ -19,121 +19,57 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
 using System.IO;
-using System.Text.RegularExpressions;
 using System.Threading.Tasks;
-using System.Windows.Input;
-using umi3d;
-using umi3d.cdk;
 using UnityEditor;
 using UnityEngine;
 
-public class BuildHelper : EditorWindow
+public class BuildHelper : InitedWindow<BuildHelper>
 {
-    const string _scriptableFolderPath = "EXCLUDED";
-    const string scriptablePathNoExt = "Assets/" + _scriptableFolderPath + "/BuildHelperData";
-    const string scriptablePath = scriptablePathNoExt + ".asset";
-    //static string path => Application.dataPath + _scriptablePath;
+    const string filename =  "BuildHelperData";
+    ScriptableLoader<BuildHelperData> data;
+    VersionGUI version;
+    LogScrollView info;
 
-    BuildHelperData _data;
+    string CommitMessage => $"SDK {version.version}";
 
-    public string old => UMI3DVersion.version;
-    public int major = 1;
-    public int minor = 2;
-    public string status = "c";
-    public DateTime _date;
-    public string date => _date.ToString("yyMMdd");
-
-    class VersionRegex {
-        Regex reg;
-        string pattern;
-        Func<string> replacement;
-
-        public VersionRegex(string part1, string part2, Func<object> content)
-        {
-            pattern = part1 + "(.*)" + part2;
-            replacement = () =>
-            {
-                var c = content();
-                return part1 + c.ToString() + part2;
-            };
-            reg = new Regex(pattern);
-        }
-
-        public string Replace(string text)
-        {
-            return Regex.Replace(text, pattern, replacement());
-        }
-    }
-
-    public string newVersion => $"{major}.{minor}.{status}.{date}";
-
-
-    const string browserVersionPath = @"\UMI3D SDK\Common\Core\Runtime\UMI3DVersion.cs";
-
-    VersionRegex patternMajor ;
-    VersionRegex patternMinor ;
-    VersionRegex patternCount ;
-    VersionRegex patternDate ;
-
-    string CommitMessage => $"SDK {newVersion}";
-
-
-    string info = "";
-    Vector2 ScrollPos;
     bool isBuilding = false;
-    string branchName = "";
-    //\StandardAssets\Changelog
 
-    // Add menu named "My Window" to the Window menu
     [MenuItem("UMI3D/Release")]
     static void Open()
     {
-
-        // \Assets\Scripts\UI\UXML\
-        // Get existing open window or if none, make a new one :
-        BuildHelper window = (BuildHelper)EditorWindow.GetWindow(typeof(BuildHelper));
-        window.Init();
-        window.Show();
+        OpenWindow();
     }
 
-    void Init()
+    protected override void Init()
     {
-         patternMajor = new VersionRegex("string major = \"", "\";", () => major);
-         patternMinor = new VersionRegex("string minor = \"", "\";", () => minor);
-         patternCount = new VersionRegex("string status = \"", "\";", () => status);
-         patternDate = new VersionRegex("string date = \"", "\";", () => date);
+        UnityEngine.Debug.Log("init");
 
-        ResetVersion();
-
-        _data = GetScriptable();
-        GetEditor();
-
+        version = new VersionGUI();
+        UnityEngine.Debug.Log("init a");
+        data = new ScriptableLoader<BuildHelperData>(filename);
+        UnityEngine.Debug.Log("init b");
+        info = new LogScrollView();
+        UnityEngine.Debug.Log("init c");
         RefreshBranch();
-
     }
 
     async void RefreshBranch()
     {
-        _data.Branch = await GetBranchName();
+        data.data.Branch = await GetBranchName();
     }
 
-    void OnGUI()
+    protected override void Draw()
     {
         GUI.enabled = !isBuilding;
 
-        var editor = GetEditor();
-        UnityEngine.Debug.Assert(_data != null);
-        UnityEngine.Debug.Assert(editor != null);
-
-        editor?.OnInspectorGUI();
+        data.editor?.OnInspectorGUI();
 
 
         EditorGUILayout.BeginHorizontal();
 
         EditorGUILayout.LabelField("Current Branch");
-        EditorGUILayout.LabelField(_data.Branch);
+        EditorGUILayout.LabelField(data.data.Branch);
         if (GUILayout.Button("Refresh Branch"))
             RefreshBranch();
 
@@ -141,45 +77,19 @@ public class BuildHelper : EditorWindow
 
         GUILayout.Label("Build Version", EditorStyles.boldLabel);
 
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.Space();
+        version.Draw();
 
-        EditorGUILayout.LabelField("Old version");
-        EditorGUILayout.LabelField(old);
-        EditorGUILayout.EndHorizontal();
-
-        EditorGUILayout.BeginHorizontal();
-        EditorGUILayout.LabelField("New version");
-        int.TryParse(EditorGUILayout.TextField(major.ToString()), out major);
-        int.TryParse(EditorGUILayout.TextField(minor.ToString()), out minor);
-        status = EditorGUILayout.TextField(status);
-        var _day = EditorGUILayout.TextField(date);
-        SetDate(_day);
-        EditorGUILayout.EndHorizontal();
-
-        EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Reset Version"))
-            ResetVersion();
-        if (GUILayout.Button("Major +1"))
-            major += 1;
-        if (GUILayout.Button("Minor +1"))
-            minor += 1;
-        GUI.enabled = false;
-        GUILayout.Button("     ");
         GUI.enabled = !isBuilding;
-        if (GUILayout.Button("Set To Now"))
-            _date = DateTime.Now;
-        EditorGUILayout.EndHorizontal();
 
         EditorGUILayout.Separator();
-        EditorGUILayout.LabelField(_data.CommitMessageCommonTitle);
-        _data.Commonmessage = EditorGUILayout.TextArea(_data.Commonmessage);
+        EditorGUILayout.LabelField(data.data.CommitMessageCommonTitle);
+        data.data.Commonmessage = EditorGUILayout.TextArea(data.data.Commonmessage);
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField(_data.CommitMessageEdkTitle);
-        _data.Edkmessage = EditorGUILayout.TextArea(_data.Edkmessage);
+        EditorGUILayout.LabelField(data.data.CommitMessageEdkTitle);
+        data.data.Edkmessage = EditorGUILayout.TextArea(data.data.Edkmessage);
         EditorGUILayout.Space();
-        EditorGUILayout.LabelField(_data.CommitMessageCdkTitle);
-        _data.Cdkmessage = EditorGUILayout.TextArea(_data.Cdkmessage);
+        EditorGUILayout.LabelField(data.data.CommitMessageCdkTitle);
+        data.data.Cdkmessage = EditorGUILayout.TextArea(data.data.Cdkmessage);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Full Changelog: <...>");
         EditorGUILayout.Separator();
@@ -188,23 +98,22 @@ public class BuildHelper : EditorWindow
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Build but not push"))
             CleanComputeBuild(false);
-        if (GUILayout.Button($"Build and push on {_data.Branch}"))
+        if (GUILayout.Button($"Build and push on {data.data.Branch}"))
             CleanComputeBuild(true);
         EditorGUILayout.EndHorizontal();
-        //if (GUILayout.Button("Test"))
-        //    Test();
+        if (GUILayout.Button("Test"))
+            Test();
 
-        GUI.enabled = true;
-        ScrollPos = EditorGUILayout.BeginScrollView(ScrollPos);
-        GUI.enabled = false;
-        EditorGUILayout.TextArea(info);
-        GUI.enabled = true;
-        EditorGUILayout.EndScrollView();
+        info.Draw();
     }
 
     async void Test()
     {
-
+        for (int i = 0; i < 3000; i++)
+        {
+            info.NewLine($"print {i}");
+            await Task.Delay(500);
+        }
     }
 
     async void CleanComputeBuild(bool comit)
@@ -213,34 +122,35 @@ public class BuildHelper : EditorWindow
         await Task.Yield();
         try
         {
-            info = "";
-            UpdateVersion();
+            info.NewTitle($"Build");
 
-            cleanBuildFolder( _data.PackageFolderPath);
+            info.Clear();
+            version.UpdateVersion();
+
+            cleanBuildFolder( data.data.PackageFolderPath);
 
             await Task.Delay(100);
             // Build player.
-            var assets = Build(_data.PackageFolderPath);
+            var assets = Build(data.data.PackageFolderPath);
+
             foreach(var asset in assets)
-            {
-                info += $"Build {asset.Item2} : {asset.Item1}\n";
-            }
+                info.NewLine($"Build {asset.Item2} : {asset.Item1}");
+
             await Task.Delay(100);
 
             if (comit)
             {
-                info += $"Commit";
-
+                info.NewTitle( $"Commit");
 
                 await CommitAll();
 
-                info += $"Release";
+                info.NewTitle($"Release");
 
-                ReleaseSdk._ReleaseSdk(_data.Token, newVersion, _data.Branch, assets, _data.message);
+                ReleaseSdk._ReleaseSdk(data.data.Token, version.version, data.data.Branch, assets, data.data.message);
             }
 
             //Open folder
-            OpenFile(Application.dataPath + "/../" + _data.PackageFolderPath+"/");
+            OpenFile(Application.dataPath + "/../" + data.data.PackageFolderPath+"/");
         }
         catch (Exception e)
         {
@@ -250,21 +160,9 @@ public class BuildHelper : EditorWindow
     }
 
     #region OnGUI Utils
-    void SetDate(string date)
-    {
-        if (!DateTime.TryParseExact($"{date}", "yyMMdd", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out _date))
-        {
-            UnityEngine.Debug.Log($"Error in pasing date : {date} with yyMMdd");
-        };
-    }
 
-    void ResetVersion()
-    {
-        int.TryParse(UMI3DVersion.major, out major);
-        int.TryParse(UMI3DVersion.minor, out minor);
-        status = UMI3DVersion.status;
-        SetDate(UMI3DVersion.date);
-    }
+
+
 
     #endregion
 
@@ -289,21 +187,9 @@ public class BuildHelper : EditorWindow
         string gitCommitArgument = $"commit -m \"{CommitMessage}\"";
         string gitPushArgument = @"push";
 
-        await ExecuteCommand(gitCommand, gitAddArgument, (s) => info += $"\n{s}", (s) => info += $"\nError : {s}");
-        await ExecuteCommand(gitCommand, gitCommitArgument, (s) => info += $"\n{s}", (s) => info += $"\nError : {s}");
-        await ExecuteCommand(gitCommand, gitPushArgument, (s) => info += $"\n{s}", (s) => info += $"\nError : {s}");
-
-    }
-
-    void UpdateVersion()
-    {
-        string text = File.ReadAllText(Application.dataPath + browserVersionPath);
-        text = patternMajor.Replace(text);
-        text = patternMinor.Replace(text);
-        text = patternCount.Replace(text);
-        text = patternDate.Replace(text);
-
-        File.WriteAllText(Application.dataPath + browserVersionPath, text);
+        await ExecuteCommand(gitCommand, gitAddArgument, info.NewLine, info.NewError);
+        await ExecuteCommand(gitCommand, gitCommitArgument, info.NewLine, info.NewError);
+        await ExecuteCommand(gitCommand, gitPushArgument, info.NewLine, info.NewError);
     }
 
     void cleanBuildFolder(string buildFolder)
@@ -372,45 +258,6 @@ public class BuildHelper : EditorWindow
 
     #endregion
 
-    #region Scriptable Handler
-
-    Editor ScriptableEditor;
-    Editor GetEditor()
-    {
-        if (ScriptableEditor == null)
-            ScriptableEditor = Editor.CreateEditor(_data);
-        return ScriptableEditor;
-    }
-
-    static BuildHelperData GetScriptable() => LoadScriptable() ?? CreateScriptable();
-
-    static BuildHelperData CreateScriptable()
-    {
-        CreateFolder();
-        BuildHelperData asset = ScriptableObject.CreateInstance<BuildHelperData>();
-        AssetDatabase.CreateAsset(asset, scriptablePath);
-        AssetDatabase.SaveAssets();
-        return asset;
-    }
-
-    static void CreateFolder()
-    {
-        if (!System.IO.Directory.Exists(Application.dataPath + System.IO.Path.GetDirectoryName(scriptablePath).TrimStart("Assets".ToCharArray())))
-        {
-            AssetDatabase.CreateFolder("Assets", _scriptableFolderPath);
-        }
-
-    }
-
-    static BuildHelperData LoadScriptable()
-    {
-        var asset = AssetDatabase.LoadAssetAtPath<BuildHelperData>(scriptablePath);
-        UnityEngine.Debug.Assert(asset != null, scriptablePath);
-        return asset;
-    }
-
-    #endregion
-
     //
     #region Command
     public async Task ExecuteISCC(string command)
@@ -418,7 +265,7 @@ public class BuildHelper : EditorWindow
         command = command.Replace('/', '\\');
         string exe = "\"C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe\"";
         //ExecuteCommandSync(exe + " " + command);
-        await ExecuteCommand(exe, $"\"{command}\"", (s)=>info +=$"\n{s}", (s) => info += $"\nError : {s}");
+        await ExecuteCommand(exe, $"\"{command}\"", info.NewLine, info.NewError);
     }
 
     public static async Task ExecuteCommand(string command, string args, Action<string> output, Action<string> error)
@@ -459,3 +306,44 @@ public class BuildHelper : EditorWindow
     #endregion
 }
 #endif
+
+
+class Command
+{
+
+    public static async Task ExecuteCommand(string command, string args, Action<string> output, Action<string> error)
+    {
+        var processInfo = new ProcessStartInfo(command, args)
+        {
+            CreateNoWindow = true,
+            UseShellExecute = false,
+            RedirectStandardError = true,
+            RedirectStandardOutput = true,
+        };
+
+        var process = Process.Start(processInfo);
+
+        if (output != null)
+            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => output(e.Data);
+        else
+            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
+            UnityEngine.Debug.Log("Information while executing command { <i>" + command + " " + args + "</i> } : <b>D>" + e.Data + "</b>");
+
+        process.BeginOutputReadLine();
+
+        if (error != null)
+            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => error(e.Data);
+        else
+            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
+            UnityEngine.Debug.Log("Error while executing command { <i>" + command + " " + args + "</i> } : <b>E>" + e.Data + "</b>");
+
+        process.BeginErrorReadLine();
+
+        while (!process.HasExited)
+        {
+            await Task.Yield();
+        }
+
+        process.Close();
+    }
+}

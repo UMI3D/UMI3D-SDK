@@ -14,19 +14,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 public abstract class InitedWindow<T> : EditorWindow where T : InitedWindow<T>
 {
+    const string filename = "InitedWindowData";
+    private ScriptableLoader<InitedWindowData> data;
+
     /// <summary>
     /// Open T window.
     /// </summary>
-    static protected void OpenWindow()
+    static protected void OpenWindow(bool canReload = true)
     {
         T window = (T)EditorWindow.GetWindow(typeof(T));
+        window.data = new ScriptableLoader<InitedWindowData>(filename);
+
+        var type = typeof(T).FullName;
+        (bool canReload, bool showMessage, bool lastValue) memory = (true, true, true);
+        if (window.data.data.dontShowCantreloadMessage.ContainsKey(type))
+        {
+            memory = window.data.data.dontShowCantreloadMessage[type];
+        }
+        memory.lastValue = memory.showMessage;
+        memory.canReload = canReload;
+        window.data.data.dontShowCantreloadMessage[type] = memory;
+
         window.Show();
     }
 
@@ -38,13 +52,35 @@ public abstract class InitedWindow<T> : EditorWindow where T : InitedWindow<T>
     /// <summary>
     /// call init if inited is false.
     /// </summary>
-    void _Init()
+    bool _Init()
     {
-        if (!inited)
+        if (!inited || data == null)
         {
-            inited = true;
+            UnityEngine.Debug.Log("_init");
+            data = new ScriptableLoader<InitedWindowData>(filename);
+            var type = typeof(T).FullName;
+            if (data.data.dontShowCantreloadMessage.ContainsKey(type))
+            {
+                if (!data.data.dontShowCantreloadMessage[type].canReload)
+                {
+                    if (data.data.dontShowCantreloadMessage[type].lastShowMessageValue)
+                    {
+                        EditorGUILayout.LabelField("This window cannot be reloaded. This may be due to a recompilation of the scripts.");
+                        var memo = data.data.dontShowCantreloadMessage[type];
+                        memo.showMessage = !EditorGUILayout.Toggle(memo.showMessage, "don't show again");
+                        data.data.dontShowCantreloadMessage[type] = memo;
+                        if (GUILayout.Button("Close"))
+                            Close();
+                    }
+                    else
+                        Close();
+                    return false;
+                }
+            }
             Init();
+            inited = true;
         }
+        return true;
     }
 
     /// <summary>
@@ -52,8 +88,8 @@ public abstract class InitedWindow<T> : EditorWindow where T : InitedWindow<T>
     /// </summary>
     protected void OnGUI()
     {
-        _Init();
-        Draw();
+        if (_Init())
+            Draw();
     }
 
     /// <summary>
@@ -62,7 +98,14 @@ public abstract class InitedWindow<T> : EditorWindow where T : InitedWindow<T>
     protected abstract void Init();
 
     /// <summary>
-    /// 
+    /// Draw the GUI of the window.
+    /// This is called by OnGUI.
     /// </summary>
     protected abstract void Draw();
+}
+
+public class InitedWindowData : ScriptableObject
+{
+    public Dictionary<string,(bool canReload,bool showMessage, bool lastShowMessageValue)> dontShowCantreloadMessage = new Dictionary<string, (bool, bool, bool)>();
+    
 }
