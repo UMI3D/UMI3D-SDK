@@ -484,7 +484,7 @@ namespace umi3d.cdk
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
                 await sceneLoader.ReadUMI3DExtension(new ReadUMI3DExtensionData(umi3dScene, node.gameObject));
                 progress1.AddComplete();
-                node.gameObject.SetActive(true);
+                node.gameObject.SetActive(umi3dScene.active);
             }));
         }
 
