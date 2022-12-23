@@ -75,11 +75,6 @@ namespace umi3d.common
         public float skyboxRotation = 0;
 
         /// <summary>
-        /// Exposure for <see cref="skybox"/>, only works with <see cref="SkyboxType.Equirectangular"/>.
-        /// </summary>
-        public float skyboxExposure = 0;
-
-        /// <summary>
         /// ressource of the material applied to all objects by default.
         /// </summary>
         public ResourceDto defaultMaterial;
