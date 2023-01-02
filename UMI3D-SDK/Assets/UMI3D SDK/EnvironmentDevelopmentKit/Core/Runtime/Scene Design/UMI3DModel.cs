@@ -67,7 +67,7 @@ namespace umi3d.edk
         /// <summary>
         /// Should this mesh be used for navmesh generation on the browser?
         /// </summary>
-        [Tooltip("Should this mesh be used for navmesh generation on the browser?")]
+        [Tooltip("Should this mesh be used for navmesh generation on the browser? The model should have a collider.")]
         public bool isPartOfNavmesh = false;
 
         /// <summary>
