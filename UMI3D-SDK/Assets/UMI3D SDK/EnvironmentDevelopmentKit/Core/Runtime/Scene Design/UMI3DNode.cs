@@ -499,6 +499,66 @@ namespace umi3d.edk
                 }
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            if (hasCollider)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.matrix = transform.localToWorldMatrix;
+
+                switch (colliderType)
+                {
+                    case ColliderType.Sphere:
+                        Gizmos.DrawWireSphere(colliderCenter, colliderRadius);
+                        break;
+                    case ColliderType.Box:
+                        Gizmos.DrawWireCube(colliderCenter, colliderBoxSize);
+                        break;
+                    case ColliderType.Capsule:
+
+                        Quaternion axis = Quaternion.identity;
+                        switch (colliderDirection)
+                        {
+                            case DirectionalType.X_Axis:
+                                axis = Quaternion.Euler(0, 0, 90);
+                                break;
+                            case DirectionalType.Z_Axis:
+                                axis = Quaternion.Euler(90, 0, 0);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        Matrix4x4 angleMatrix = Matrix4x4.TRS(transform.position + transform.rotation * colliderCenter, transform.rotation * axis, UnityEditor.Handles.matrix.lossyScale);
+
+                        using (new UnityEditor.Handles.DrawingScope(angleMatrix))
+                        {
+                            UnityEditor.Handles.color = Gizmos.color;
+
+                            var pointOffset = (Mathf.Max(colliderHeight, 2f) - (colliderRadius * 2)) / 2;
+
+                            //draw sideways
+                            UnityEditor.Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.left, Vector3.back, -180, colliderRadius);
+                            UnityEditor.Handles.DrawLine(new Vector3(0, pointOffset, -colliderRadius), new Vector3(0, -pointOffset, -colliderRadius));
+                            UnityEditor.Handles.DrawLine(new Vector3(0, pointOffset, colliderRadius), new Vector3(0, -pointOffset, colliderRadius));
+                            UnityEditor.Handles.DrawWireArc(Vector3.down * pointOffset, Vector3.left, Vector3.back, 180, colliderRadius);
+                            //draw frontways
+                            UnityEditor.Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.back, Vector3.left, 180, colliderRadius);
+                            UnityEditor.Handles.DrawLine(new Vector3(-colliderRadius, pointOffset, 0), new Vector3(-colliderRadius, -pointOffset, 0));
+                            UnityEditor.Handles.DrawLine(new Vector3(colliderRadius, pointOffset, 0), new Vector3(colliderRadius, -pointOffset, 0));
+                            UnityEditor.Handles.DrawWireArc(Vector3.down * pointOffset, Vector3.back, Vector3.left, -180, colliderRadius);
+                            //draw center
+                            UnityEditor.Handles.DrawWireDisc(Vector3.up * pointOffset, Vector3.up, colliderRadius);
+                            UnityEditor.Handles.DrawWireDisc(Vector3.down * pointOffset, Vector3.up, colliderRadius);
+
+                        }
+                        break;
+                }
+            }
+        }
+#endif
     }
 }
 
