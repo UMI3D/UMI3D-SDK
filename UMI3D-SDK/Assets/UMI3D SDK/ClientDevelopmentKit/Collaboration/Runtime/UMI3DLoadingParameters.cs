@@ -369,7 +369,10 @@ namespace umi3d.cdk
 
                 if (skyboxEquirectangularMaterial.HasProperty("_Exposure"))
                 {
-                    skyboxEquirectangularMaterial.SetFloat("_Exposure", skyboxExposure);
+                    if (RenderSettings.ambientMode == UnityEngine.Rendering.AmbientMode.Skybox)
+                        skyboxEquirectangularMaterial.SetFloat("_Exposure", skyboxExposure);
+                    else
+                        skyboxEquirectangularMaterial.SetFloat("_Exposure", 1f);
                 }
             }
 
