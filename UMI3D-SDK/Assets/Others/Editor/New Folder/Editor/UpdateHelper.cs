@@ -23,7 +23,6 @@ using System.Linq;
 using UnityEditor;
 using UnityEngine;
 
-
 public class UpdateHelper : InitedWindow<UpdateHelper>
 {
     const string fileName = "UpdateHelperData";

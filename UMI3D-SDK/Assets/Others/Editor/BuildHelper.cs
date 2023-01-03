@@ -18,7 +18,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using UnityEditor;
@@ -56,7 +55,7 @@ public class BuildHelper : InitedWindow<BuildHelper>
 
     async void RefreshBranch()
     {
-        data.data.Branch = await GetBranchName();
+        data.data.Branch = await Git.GetBranchName();
     }
 
     protected override void Draw()
@@ -142,11 +141,11 @@ public class BuildHelper : InitedWindow<BuildHelper>
             {
                 info.NewTitle( $"Commit");
 
-                await CommitAll();
+                await Git.CommitAll(CommitMessage, info.NewLine, info.NewError);
 
                 info.NewTitle($"Release");
 
-                ReleaseSdk._ReleaseSdk(data.data.Token, version.version, data.data.Branch, assets, data.data.message);
+                ReleaseSdk.Release(data.data.Token, version.version, data.data.Branch, assets, data.data.message);
             }
 
             //Open folder
@@ -159,38 +158,7 @@ public class BuildHelper : InitedWindow<BuildHelper>
         isBuilding = false;
     }
 
-    #region OnGUI Utils
-
-
-
-
-    #endregion
-
     #region BuildUtils
-
-    //git branch --show-current
-    async Task<string> GetBranchName()
-    {
-        string gitCommand = "git";
-        string gitAddArgument = @"branch --show-current";
-        string answer = null;
-
-        await ExecuteCommand(gitCommand, gitAddArgument, (s) => answer += s, (s) => answer += s);
-        
-        return answer;
-    }
-
-    async Task CommitAll()
-    {
-        string gitCommand = "git";
-        string gitAddArgument = @"add .";
-        string gitCommitArgument = $"commit -m \"{CommitMessage}\"";
-        string gitPushArgument = @"push";
-
-        await ExecuteCommand(gitCommand, gitAddArgument, info.NewLine, info.NewError);
-        await ExecuteCommand(gitCommand, gitCommitArgument, info.NewLine, info.NewError);
-        await ExecuteCommand(gitCommand, gitPushArgument, info.NewLine, info.NewError);
-    }
 
     void cleanBuildFolder(string buildFolder)
     {
@@ -257,93 +225,5 @@ public class BuildHelper : InitedWindow<BuildHelper>
     }
 
     #endregion
-
-    //
-    #region Command
-    public async Task ExecuteISCC(string command)
-    {
-        command = command.Replace('/', '\\');
-        string exe = "\"C:\\Program Files (x86)\\Inno Setup 6\\ISCC.exe\"";
-        //ExecuteCommandSync(exe + " " + command);
-        await ExecuteCommand(exe, $"\"{command}\"", info.NewLine, info.NewError);
-    }
-
-    public static async Task ExecuteCommand(string command, string args, Action<string> output, Action<string> error)
-    {
-        var processInfo = new ProcessStartInfo(command, args)
-        {
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-        };
-
-        var process = Process.Start(processInfo);
-
-        if (output != null)
-            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => output(e.Data);
-        else
-            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-            UnityEngine.Debug.Log("Information while executing command { <i>" + command + " " + args + "</i> } : <b>D>" + e.Data + "</b>");
-
-        process.BeginOutputReadLine();
-
-        if (error != null)
-            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => error(e.Data);
-        else
-            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
-            UnityEngine.Debug.Log("Error while executing command { <i>" + command + " " + args + "</i> } : <b>E>" + e.Data + "</b>");
-
-        process.BeginErrorReadLine();
-
-        while (!process.HasExited)
-        {
-            await Task.Yield();
-        }
-
-        process.Close();
-    }
-    #endregion
 }
 #endif
-
-
-class Command
-{
-
-    public static async Task ExecuteCommand(string command, string args, Action<string> output, Action<string> error)
-    {
-        var processInfo = new ProcessStartInfo(command, args)
-        {
-            CreateNoWindow = true,
-            UseShellExecute = false,
-            RedirectStandardError = true,
-            RedirectStandardOutput = true,
-        };
-
-        var process = Process.Start(processInfo);
-
-        if (output != null)
-            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) => output(e.Data);
-        else
-            process.OutputDataReceived += (object sender, DataReceivedEventArgs e) =>
-            UnityEngine.Debug.Log("Information while executing command { <i>" + command + " " + args + "</i> } : <b>D>" + e.Data + "</b>");
-
-        process.BeginOutputReadLine();
-
-        if (error != null)
-            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) => error(e.Data);
-        else
-            process.ErrorDataReceived += (object sender, DataReceivedEventArgs e) =>
-            UnityEngine.Debug.Log("Error while executing command { <i>" + command + " " + args + "</i> } : <b>E>" + e.Data + "</b>");
-
-        process.BeginErrorReadLine();
-
-        while (!process.HasExited)
-        {
-            await Task.Yield();
-        }
-
-        process.Close();
-    }
-}

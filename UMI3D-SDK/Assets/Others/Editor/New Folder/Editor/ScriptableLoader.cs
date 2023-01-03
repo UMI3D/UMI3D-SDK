@@ -13,10 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+#if UNITY_EDITOR
 
-using inetum.unityUtils;
-using System.Collections;
-using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
@@ -116,3 +114,4 @@ public class ScriptableLoader<T>  where T : ScriptableObject
     }
     #endregion
 }
+#endif
