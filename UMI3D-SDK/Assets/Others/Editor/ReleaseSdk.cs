@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using Github;
+using inetum.unityUtils;
 
 public class ReleaseSdk
 {
@@ -25,7 +25,7 @@ public class ReleaseSdk
         changelog += await ComputeChangeLog(branch, version, token);
         var release = await _Release(branch, version, changelog, true, false, token);
         foreach(var file in files)
-            await Github.Github.AddFileToRelease(release, file.path, file.name, token);
+            await Github.AddFileToRelease(release, file.path, file.name, token);
     }
 
     static async Task<release> _Release(string branch, string Version, string changeLog, bool preRelease, bool draft, string token)
@@ -42,7 +42,7 @@ public class ReleaseSdk
         };
 
         const string url = "https://api.github.com/repos/UMI3D/UMI3D-SDK/releases";
-        return await Github.Github.Release(release, token, url);
+        return await Github.Release(release, token, url);
     }
 
     static async Task<string> ComputeChangeLog(string branch, string tag, string token, string baseTag = null)
@@ -58,12 +58,12 @@ public class ReleaseSdk
     static async Task<string> GenerateReleaseNote(generate_note noteRequest, string token)
     {
         const string url = "https://api.github.com/repos/UMI3D/UMI3D-SDK/releases/generate-notes";
-        return (await Github.Github.GenerateReleaseNote(noteRequest,token,url)).getFullChangeLogLine();
+        return (await Github.GenerateReleaseNote(noteRequest,token,url)).getFullChangeLogLine();
     }
 
     static async Task<release[]> GetRelease(string token)
     {
         const string url = @"https://api.github.com/repos/UMI3D/UMI3D-SDK/releases";
-        return await Github.Github.GetReleases(token, url);
+        return await Github.GetReleases(token, url);
     }
 }

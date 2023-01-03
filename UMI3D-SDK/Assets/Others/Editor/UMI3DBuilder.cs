@@ -16,17 +16,19 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Threading.Tasks;
+using umi3d;
 using UnityEditor;
 using UnityEngine;
 
-public class BuildHelper : InitedWindow<BuildHelper>
+public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 {
-    const string filename =  "BuildHelperData";
-    ScriptableLoader<BuildHelperData> data;
+    const string filename =  "UMI3DBuilderData";
+    ScriptableLoader<UMI3DBuilderData> data;
     VersionGUI version;
     LogScrollView info;
 
@@ -34,7 +36,7 @@ public class BuildHelper : InitedWindow<BuildHelper>
 
     bool isBuilding = false;
 
-    [MenuItem("UMI3D/Release")]
+    [MenuItem("UMI3D/Release SDK")]
     static void Open()
     {
         OpenWindow();
@@ -42,14 +44,18 @@ public class BuildHelper : InitedWindow<BuildHelper>
 
     protected override void Init()
     {
-        UnityEngine.Debug.Log("init");
+        version = new VersionGUI(
+                Application.dataPath + @"\UMI3D SDK\Common\Core\Runtime\UMI3DVersion.cs",
+                "I.I.s.yyMMdd",
+                () => UMI3DVersion.version,
+                ("major", () => UMI3DVersion.major),
+                ("minor", () => UMI3DVersion.minor),
+                ("status", () => UMI3DVersion.status),
+                ("date", () => UMI3DVersion.date)
+            );
 
-        version = new VersionGUI();
-        UnityEngine.Debug.Log("init a");
-        data = new ScriptableLoader<BuildHelperData>(filename);
-        UnityEngine.Debug.Log("init b");
+        data = new ScriptableLoader<UMI3DBuilderData>(filename);
         info = new LogScrollView();
-        UnityEngine.Debug.Log("init c");
         RefreshBranch();
     }
 
@@ -63,7 +69,6 @@ public class BuildHelper : InitedWindow<BuildHelper>
         GUI.enabled = !isBuilding;
 
         data.editor?.OnInspectorGUI();
-
 
         EditorGUILayout.BeginHorizontal();
 
@@ -95,24 +100,13 @@ public class BuildHelper : InitedWindow<BuildHelper>
 
         EditorGUILayout.Space();
         EditorGUILayout.BeginHorizontal();
-        if (GUILayout.Button("Build but not push"))
+        if (GUILayout.Button("Build Packages but don't push"))
             CleanComputeBuild(false);
         if (GUILayout.Button($"Build and push on {data.data.Branch}"))
             CleanComputeBuild(true);
         EditorGUILayout.EndHorizontal();
-        if (GUILayout.Button("Test"))
-            Test();
 
         info.Draw();
-    }
-
-    async void Test()
-    {
-        for (int i = 0; i < 3000; i++)
-        {
-            info.NewLine($"print {i}");
-            await Task.Delay(500);
-        }
     }
 
     async void CleanComputeBuild(bool comit)
@@ -121,7 +115,7 @@ public class BuildHelper : InitedWindow<BuildHelper>
         await Task.Yield();
         try
         {
-            info.NewTitle($"Build");
+            info.NewTitle($"Build Packages");
 
             info.Clear();
             version.UpdateVersion();
@@ -149,7 +143,7 @@ public class BuildHelper : InitedWindow<BuildHelper>
             }
 
             //Open folder
-            OpenFile(Application.dataPath + "/../" + data.data.PackageFolderPath+"/");
+            Command.OpenFile(Application.dataPath + "/../" + data.data.PackageFolderPath+"/");
         }
         catch (Exception e)
         {
@@ -171,59 +165,6 @@ public class BuildHelper : InitedWindow<BuildHelper>
     {
         return PackagesExporter.ExportPackages(buildFolder+"/");
     }
-
-    static void OpenFile(string path)
-    {
-        path = path.Replace('/', '\\');
-
-        if (File.Exists(path))
-        {
-            FileAttributes attr = File.GetAttributes(path);
-            //detect whether its a directory or file
-            if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-            {
-                OpenFileWith("explorer.exe", path, "/root,");
-            }
-            else
-            {
-                OpenFileWith("explorer.exe", path, "/select,");
-            }
-        }
-        else
-            UnityEngine.Debug.LogError("no file at "+path);
-    }
-
-    static void OpenFileWith(string exePath, string path, string arguments)
-    {
-        if (path == null)
-            return;
-
-        try
-        {
-            System.Diagnostics.Process process = new System.Diagnostics.Process();
-            process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
-            if (exePath != null)
-            {
-                process.StartInfo.FileName = exePath;
-                //Pre-post insert quotes for fileNames with spaces.
-                process.StartInfo.Arguments = string.Format("{0}\"{1}\"", arguments, path);
-            }
-            else
-            {
-                process.StartInfo.FileName = path;
-                process.StartInfo.WorkingDirectory = System.IO.Path.GetDirectoryName(path);
-            }
-            if (!path.Equals(process.StartInfo.WorkingDirectory))
-            {
-                process.Start();
-            }
-        }
-        catch (System.ComponentModel.Win32Exception ex)
-        {
-            UnityEngine.Debug.LogException(ex);
-        }
-    }
-
     #endregion
 }
 #endif

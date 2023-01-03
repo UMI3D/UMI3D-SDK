@@ -13,19 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using Newtonsoft.Json;
-using System;
-using System.Linq;
-using System.Threading.Tasks;
-using umi3d.cdk;
-using UnityEngine.Networking;
-using UnityEngine;
-using System.Collections.Generic;
-using System.IO;
-
-namespace Github
+namespace inetum.unityUtils
 {
+    using Newtonsoft.Json;
+    using System;
+    using System.Linq;
+    using System.Threading.Tasks;
+    using UnityEngine.Networking;
+    using UnityEngine;
+    using System.Collections.Generic;
+    using System.IO;
+
+
+
     public class Github
     {
         static async public Task<release[]> GetReleases(string token, string url)
@@ -110,7 +110,7 @@ namespace Github
                     await Task.Yield();
                 if (www.isNetworkError || www.isHttpError)
                 {
-                    throw new Umi3dNetworkingException(www, "Request Failed\n" + www.error + "\n" + www.url);
+                    throw new Exception("Request Failed\n" + www.error + "\n" + www.url);
                 }
                 if (ComputeData != null)
                     return ComputeData(www);
@@ -128,7 +128,7 @@ namespace Github
                 if (www.isNetworkError || www.isHttpError)
                 {
                     UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(bytes));
-                    throw new Umi3dNetworkingException(www, "Request Failed\n" + www.error + "\n" + www.url);
+                    throw new Exception("Request Failed\n" + www.error + "\n" + www.url);
                 }
                 if (ComputeData != null)
                     return ComputeData(www);
@@ -164,7 +164,7 @@ namespace Github
                     await Task.Yield();
                 if (www.isNetworkError || www.isHttpError)
                 {
-                    throw new Umi3dNetworkingException(www, "Request Failed\n" + www.error + "\n" + www.url);
+                    throw new Exception("Request Failed\n" + www.error + "\n" + www.url);
                 }
                 if (ComputeData != null)
                     return ComputeData(www);
