@@ -14,17 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #if UNITY_EDITOR
-using inetum.unityUtils;
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using System.IO;
 using UnityEditor;
 using UnityEngine;
-using static UnityEngine.GraphicsBuffer;
 
-//[CreateAssetMenu(fileName = "BuildHelperData", menuName = "Build Helper/Build Helper Data", order = 1)]
-public class BuildHelperData : ScriptableObject
+//[CreateAssetMenu(fileName = "UMI3DBuilderData", menuName = "Build Helper/Build Helper Data", order = 1)]
+public class UMI3DBuilderData : ScriptableObject
 {
     public string Branch;
     public string Token;
@@ -39,19 +34,17 @@ public class BuildHelperData : ScriptableObject
     public readonly string CommitMessageCdkTitle = "## CDK";
     public readonly string CommitMessageCommonTitle = "## Common";
     public string message => CommitMessageCommonTitle + "\n" + Commonmessage + "\n\n" + CommitMessageEdkTitle + "\n" + Edkmessage + "\n\n" + CommitMessageCdkTitle + "\n" + Cdkmessage + "\n\n";
-
 }
 
-[CustomEditor(typeof(BuildHelperData))]
+[CustomEditor(typeof(UMI3DBuilderData))]
 public class BuildHelperDataEditor : Editor
 {
 
-    BuildHelperData data;
-    static bool showTileEditor = false;
+    UMI3DBuilderData data;
 
     public void OnEnable()
     {
-        data = (BuildHelperData)target;
+        data = (UMI3DBuilderData)target;
     }
 
     public override void OnInspectorGUI()

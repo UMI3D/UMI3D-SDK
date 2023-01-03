@@ -61,7 +61,7 @@ public class PackagesExporter
     const string interactionSystemFolder = "/InteractionSystem";
     const string userCaptureFolder = "/UserCapture";
 
-    [MenuItem("UMI3D/Build Dll")]
+    //[MenuItem("UMI3D/Build Dll")]
     public static void BuildDll()
     {
         ClearOrCreateDirectory(dllFolder);
@@ -112,7 +112,7 @@ public class PackagesExporter
         }
     }
 
-    [MenuItem("UMI3D/Export Packages")]
+    //[MenuItem("UMI3D/Export Packages")]
     public static void ExportPackagesAll()
     {
         ExportPackages(true, "../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
@@ -124,7 +124,7 @@ public class PackagesExporter
     }
 
 
-    [MenuItem("UMI3D/Export Packages (EDK & CDK only)")]
+    //[MenuItem("UMI3D/Export Packages (EDK & CDK only)")]
     static void ExportPackagesEDKCDK()
     {
         ExportPackages(false,"../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
