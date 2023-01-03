@@ -57,7 +57,7 @@ namespace inetum.unityUtils
         public static void Open(bool sourceIsA, string name1, string name2, string path1, string path2, Action<(bool, List<string>)> callback, List<string> folders = null)
         {
             // Get existing open window or if none, make a new one :
-            SubUpdateHelper window = (SubUpdateHelper)EditorWindow.GetWindow(typeof(SubUpdateHelper));
+            SubUpdateHelper window = (SubUpdateHelper)EditorWindow.GetWindow(typeof(SubUpdateHelper),false, "Folders");
             window.Init(sourceIsA, name1, name2, path1, path2, folders, callback);
             window.Show();
         }

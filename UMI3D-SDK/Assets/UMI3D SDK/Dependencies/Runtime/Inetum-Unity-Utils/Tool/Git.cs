@@ -42,5 +42,20 @@ namespace inetum.unityUtils
             await Command.ExecuteCommand(gitCommand, gitCommitArgument, output, error);
             await Command.ExecuteCommand(gitCommand, gitPushArgument, output, error);
         }
+
+        static public async Task CommitAllWithTag(string CommitMessage, string tagName, string tagMessage, Action<string> output, Action<string> error)
+        {
+            string gitCommand = "git";
+            string gitAddArgument = @"add .";
+            string gitCommitArgument = $"commit -m \"{CommitMessage}\"";
+            string gitTagArgument = $"tag -a {tagName} -m \"{tagMessage}\"";
+            string gitPushArgument = @"push --follow-tags";
+
+            await Command.ExecuteCommand(gitCommand, gitAddArgument, output, error);
+            await Command.ExecuteCommand(gitCommand, gitCommitArgument, output, error);
+            await Command.ExecuteCommand(gitCommand, gitTagArgument, output, error);
+            await Command.ExecuteCommand(gitCommand, gitPushArgument, output, error);
+        }
+
     }
 }
