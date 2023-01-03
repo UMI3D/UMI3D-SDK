@@ -42,7 +42,7 @@ namespace umi3d.edk.editor
         private SerializedProperty colliderHeight;
         private SerializedProperty colliderDirection;
         private SerializedProperty customMeshCollider;
-        private SerializedProperty activeCollider;
+        protected SerializedProperty activeCollider;
         protected SerializedProperty isMeshCustom;
 
 
@@ -98,14 +98,10 @@ namespace umi3d.edk.editor
                 Target.SearchCollider();
             }
 
-
             EditorGUILayout.PropertyField(activeCollider);
             if (activeCollider.boolValue)
             {
                 EditorGUI.indentLevel++;
-
-
-
 
                 EditorGUILayout.PropertyField(colliderType);
 
