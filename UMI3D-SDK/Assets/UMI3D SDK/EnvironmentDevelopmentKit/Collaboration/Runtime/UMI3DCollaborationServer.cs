@@ -182,6 +182,9 @@ namespace umi3d.edk.collaboration
 
         private void Start()
         {
+            Debug.Assert(Identifier != null, "Identifier cannot be null");
+            Debug.Assert(WorldController != null, "WorldController cannot be null");
+
             QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
