@@ -18,6 +18,7 @@ limitations under the License.
 
 using System;
 using System.IO;
+using System.Linq;
 using UnityEditor;
 using UnityEngine;
 using Path = inetum.unityUtils.Path;
@@ -187,13 +188,35 @@ namespace umi3d.edk.editor
                 EditorGUI.LabelField(BundleLabel, GIsInBundleLabel);
                 EditorGUI.indentLevel = 0;
                 var BundleRect = new Rect(RLine.x + BundleLabel.width + offset, RLine.y, 20f, RLine.height);
-                var BundleRect2 = new Rect(BundleRect.x + BundleRect.width, RLine.y, RLine.width - BundleRect.width - BundleLabel.width - offset, RLine.height);
+                var lenght = (RLine.width - BundleRect.width - BundleLabel.width - offset);
+                var BundleRect2 = new Rect(BundleRect.x + BundleRect.width, RLine.y, lenght * .75f, RLine.height);
                 var GisInBundle = new GUIContent("", "is this resource in a Bundle ?");
                 EditorGUI.PropertyField(BundleRect, isInBundle, GisInBundle);
                 if (isInBundle.boolValue)
                 {
                     var GBundleKey = new GUIContent("", "The path to the object in his bundle");
                     EditorGUI.PropertyField(BundleRect2, pathIfInBundle, GBundleKey);
+
+                    var findInBundleRect = new Rect(BundleRect.x + BundleRect.width + BundleRect2.width, RLine.y, lenght * 0.25f, RLine.height);
+                    var findInBundle = new GUIContent("Find path", "Search for the path of the first object in the bundle");
+
+                    if (GUI.Button(findInBundleRect, findInBundle))
+                    {
+                        var bundlePath = Path.Combine(Application.dataPath, UMI3DServer.dataPath, path.stringValue);
+
+                        if (File.Exists(bundlePath) && extension.stringValue == ".bundle")
+                        {
+                            var myLoadedAssetBundle = AssetBundle.LoadFromFile(bundlePath);
+
+                            if (myLoadedAssetBundle != null)
+                            {
+                                pathIfInBundle.stringValue = myLoadedAssetBundle.GetAllAssetNames().FirstOrDefault();
+                                pathIfInBundle.serializedObject.ApplyModifiedProperties();
+                            }
+
+                            myLoadedAssetBundle?.Unload(false);
+                        }
+                    }
                 }
 
                 RLine.y += LineHeight;
