@@ -24,67 +24,49 @@ namespace inetum.unityUtils
 
     public class LogScrollView
     {
-        string info = "";
+        public string text;
         Vector2 ScrollPos;
-        bool lockDown;
-        float? lastValue = null;
-        bool expand;
+
+        readonly bool expand;
         public LogScrollView(bool expand = true)
         {
-            info = "";
+            text = "";
             ScrollPos = Vector2.zero;
-            lockDown = true;
             this.expand = expand;
         }
 
         public void Clear()
         {
-            info = "";
+            text = "";
         }
 
         public void NewLine(string line)
         {
-            info += line + "\n";
+            text += line + "\n";
         }
 
         public void NewError(string line)
         {
-            info += $"<color=red>Error : {line}</color>\n";
+            text += $"<color=red>Error : {line}</color>\n";
         }
 
         public void NewTitle(string line)
         {
-            info += "\n";
-            info += "-------------------------------------\n";
-            info += line + "\n";
-            info += "-------------------------------------\n";
-            info += "\n";
+            text += "\n";
+            text += "-------------------------------------\n";
+            text += line + "\n";
+            text += "-------------------------------------\n";
+            text += "\n";
         }
 
         public void Draw()
         {
-            //if (true )//&& lastValue != null && lockDown)
-            //    ScrollPos.y = float.MaxValue;
-
-            //Debug.Log($"A {ScrollPos.x} {ScrollPos.y} {lastValue} {lockDown}");
-
-            //GUI.enabled = true;
 
             ScrollPos = EditorGUILayout.BeginScrollView(ScrollPos, false, true, GUILayout.ExpandHeight(expand));
 
-            //if (lastValue == null)
-            //    lastValue = ScrollPos.y;
-            //else if(lockDown)
-            //{
-            //    if (ScrollPos.y < lastValue)
-            //        lockDown = false;
-            //    lastValue = ScrollPos.y;
-            //}
-
-            //Debug.Log($"B {ScrollPos.x} {ScrollPos.y} {lastValue} {lockDown}");
 
             GUI.enabled = false;
-            EditorGUILayout.TextArea(info, GUILayout.ExpandHeight(true));
+            EditorGUILayout.TextArea(text, GUILayout.ExpandHeight(true));
             GUI.enabled = true;
             EditorGUILayout.EndScrollView();
         }

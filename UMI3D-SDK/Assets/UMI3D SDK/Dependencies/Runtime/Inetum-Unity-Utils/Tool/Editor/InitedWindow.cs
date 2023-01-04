@@ -52,6 +52,16 @@ namespace inetum.unityUtils
         /// </summary>
         bool inited = false;
 
+
+        /// <summary>
+        /// force call of Init.
+        /// </summary>
+        public bool ReInit()
+        {
+            inited = false;
+            return _Init();
+        }
+
         /// <summary>
         /// call init if inited is false.
         /// </summary>
