@@ -111,6 +111,7 @@ namespace inetum.unityUtils
 
             while (i < format.Length)
             {
+                var tmpCompute = ComputeVersion;
                 int k = j;
                 switch (format[i])
                 {
@@ -130,7 +131,7 @@ namespace inetum.unityUtils
                                     GUI.enabled = enable;
                                 }
                             );
-                        ComputeVersion = () => ComputeVersion() + data.data.versions[j].ToString();
+                        ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
                         j++;
                         i++;
                         break;
@@ -155,7 +156,7 @@ namespace inetum.unityUtils
                                     data.data.versions[k] = (int)data.data.versions[k] + 1;
                             }
                         );
-                        ComputeVersion = () => ComputeVersion() + data.data.versions[k].ToString();
+                        ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
                         i++;
                         j++;
                         break;
@@ -187,11 +188,12 @@ namespace inetum.unityUtils
                                         data.data.versions[k] = DateTime.Now.ToString(datePattern);
                                 }
                             );
-                        ComputeVersion = () => ComputeVersion() + data.data.versions[k].ToString();
+                        ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
                         j++;
                         break;
                     default:
-                        ComputeVersion = () => ComputeVersion() + format[i];
+                        int tmpI = i;
+                        ComputeVersion = () => tmpCompute() + format[tmpI];
                         i++;
                         break;
                 }
@@ -262,11 +264,6 @@ namespace inetum.unityUtils
 
             File.WriteAllText(browserVersionPath, text);
         }
-    }
-
-    public class VersionData : ScriptableObject
-    {
-        public object[] versions = null;
     }
 }
 #endif

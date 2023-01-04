@@ -53,7 +53,6 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
                 ("status", () => UMI3DVersion.status),
                 ("date", () => UMI3DVersion.date)
             );
-
         data = new ScriptableLoader<UMI3DBuilderData>(filename);
         info = new LogScrollView();
         RefreshBranch();
@@ -115,9 +114,8 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         await Task.Yield();
         try
         {
-            info.NewTitle($"Build Packages");
-
             info.Clear();
+            info.NewTitle($"Build Packages");
             version.UpdateVersion();
 
             cleanBuildFolder( data.data.PackageFolderPath);
