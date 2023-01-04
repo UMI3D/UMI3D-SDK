@@ -26,7 +26,7 @@ public class ReleaseSdk
         var release = await _Release(branch, version, changelog, true, false, token);
         foreach(var file in files)
             await Github.AddFileToRelease(release, file.path, file.name, token);
-        return release.url;
+        return release.html_url;
     }
 
     static async Task<release> _Release(string branch, string Version, string changeLog, bool preRelease, bool draft, string token)
