@@ -137,11 +137,13 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
                 info.NewTitle($"Release");
 
-                ReleaseSdk.Release(data.data.Token, version.version, data.data.Branch, assets, data.data.message);
+                var url = await ReleaseSdk.Release(data.data.Token, version.version, data.data.Branch, assets, data.data.message);
+
+                Application.OpenURL(url);
             }
 
             //Open folder
-            Command.OpenFile(Application.dataPath + "/../" + data.data.PackageFolderPath+"/");
+            Command.OpenFile(Application.dataPath + "/../" + data.data.PackageFolderPath);
         }
         catch (Exception e)
         {

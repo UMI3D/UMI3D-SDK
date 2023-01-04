@@ -166,7 +166,7 @@ public class PackagesExporter
         {
             Directory.CreateDirectory(fullpath + "/module");
         }
-        Debug.Log($"Export package at {fullpath}");
+        //Debug.Log($"Export package at {fullpath}");
 
         List<(string,string)> list = new List<(string, string)>();
 

@@ -49,13 +49,12 @@ namespace inetum.unityUtils
             return await PostRequest(url, bytes, WWWToRelease, headers, "application/json", true);
         }
 
-        static public async Task AddFileToRelease(release release, string filePath, string fileName, string token)
+        static public async Task<string> AddFileToRelease(release release, string filePath, string fileName, string token)
         {
             var url = release.upload_url.Split('{')[0] + $"?name={fileName}";
             List<(string, string)> headers = new List<(string, string)>() { ("Accept", "application/vnd.github+json"), ("Authorization", $"Bearer {token}") };
             byte[] bytes = File.ReadAllBytes(filePath);
-            UnityEngine.Debug.Log(url + " " + bytes.Length);
-            await PostRequest(url, bytes, WWWToDebug, headers, "application/octet-stream", true);
+            return await PostRequest(url, bytes, WWWToDebug, headers, "application/octet-stream", true);
         }
 
         #region WWW methods

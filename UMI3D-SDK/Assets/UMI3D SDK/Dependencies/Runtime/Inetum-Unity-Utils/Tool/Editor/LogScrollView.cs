@@ -28,11 +28,13 @@ namespace inetum.unityUtils
         Vector2 ScrollPos;
         bool lockDown;
         float? lastValue = null;
-        public LogScrollView()
+        bool expand;
+        public LogScrollView(bool expand = true)
         {
             info = "";
             ScrollPos = Vector2.zero;
             lockDown = true;
+            this.expand = expand;
         }
 
         public void Clear()
@@ -67,7 +69,8 @@ namespace inetum.unityUtils
             //Debug.Log($"A {ScrollPos.x} {ScrollPos.y} {lastValue} {lockDown}");
 
             //GUI.enabled = true;
-            ScrollPos = EditorGUILayout.BeginScrollView(ScrollPos);
+
+            ScrollPos = EditorGUILayout.BeginScrollView(ScrollPos, false, true, GUILayout.ExpandHeight(expand));
 
             //if (lastValue == null)
             //    lastValue = ScrollPos.y;
@@ -81,7 +84,7 @@ namespace inetum.unityUtils
             //Debug.Log($"B {ScrollPos.x} {ScrollPos.y} {lastValue} {lockDown}");
 
             GUI.enabled = false;
-            EditorGUILayout.TextArea(info);
+            EditorGUILayout.TextArea(info, GUILayout.ExpandHeight(true));
             GUI.enabled = true;
             EditorGUILayout.EndScrollView();
         }
