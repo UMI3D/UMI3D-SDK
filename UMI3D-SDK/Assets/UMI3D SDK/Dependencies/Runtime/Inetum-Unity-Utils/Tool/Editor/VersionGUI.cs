@@ -33,9 +33,9 @@ namespace inetum.unityUtils
             readonly Func<string> replacement;
             readonly Action drawAction;
             readonly Action drawButton;
-            readonly Func<object> reset;
+            readonly Func<string,object> reset;
 
-            public VersionRegex(string name, Func<object> reset, Func<string> content, Action draw, Action drawButton)
+            public VersionRegex(string name, Func<string,object> reset, Func<string> content, Action draw, Action drawButton)
             {
                 var part1 = $"string {name} = \"";
                 var part2 = "\";";
@@ -80,9 +80,9 @@ namespace inetum.unityUtils
                 drawButton();
             }
 
-            public void Reset()
+            public void Reset(string oldVersion)
             {
-                reset();
+                reset(oldVersion);
             }
         }
 
@@ -93,7 +93,7 @@ namespace inetum.unityUtils
         readonly Func<string> ComputeVersion;
         public string version => ComputeVersion();
 
-        public VersionGUI(string filePath, string format, Func<string> oldVersion, params (string name, Func<object> resetValue)[] datas)
+        public VersionGUI(string filePath, string format, Func<string> oldVersion, params (string name, Func<string,object> resetValue)[] datas)
         {
             browserVersionPath = filePath;
             old = oldVersion;
@@ -106,6 +106,8 @@ namespace inetum.unityUtils
 
             int i = 0;
             int j = 0;
+
+            Debug.Log(datas.Length);
 
             ComputeVersion = () => "";
 
@@ -120,7 +122,7 @@ namespace inetum.unityUtils
                             data.data.versions[j] = "";
                         versions[j] = new VersionRegex(
                                 datas[j].name,
-                                () => data.data.versions[k] = datas[k].resetValue(),
+                                (s) => data.data.versions[k] = datas[k].resetValue(s),
                                 () => data.data.versions[k].ToString(),
                                 () => data.data.versions[k] = EditorGUILayout.TextField(data.data.versions[k].ToString()),
                                 () =>
@@ -140,7 +142,7 @@ namespace inetum.unityUtils
                             data.data.versions[j] = 0;
                         versions[j] = new VersionRegex(
                             datas[j].name,
-                            () => data.data.versions[k] = datas[k].resetValue(),
+                            (s) => data.data.versions[k] = datas[k].resetValue(s),
                             () => data.data.versions[k].ToString(),
                             () =>
                             {
@@ -164,12 +166,16 @@ namespace inetum.unityUtils
                     case 'm':
                     case 'M':
                     case 'd':
+                    case 'h':
+                    case 'H':
                         string datePattern = GetDatePattern(format, ref i);
+                        Debug.Log(datePattern);
+                        Debug.Log(j);
                         if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(DateTime))
                             data.data.versions[j] = DateTime.Now.ToString(datePattern);
                         versions[j] = new VersionRegex(
                                 datas[j].name,
-                                () => data.data.versions[k] = datas[k].resetValue(),
+                                (s) => data.data.versions[k] = datas[k].resetValue(s),
                                 () => data.data.versions[k].ToString(),
                                 () =>
                                 {
@@ -215,6 +221,8 @@ namespace inetum.unityUtils
                     case 'm':
                     case 'M':
                     case 'd':
+                    case 'h':
+                    case 'H':
                         dateFormat += format[i];
                         i++;
                         break;
@@ -260,11 +268,12 @@ namespace inetum.unityUtils
 
         public void ResetVersion()
         {
+            string _old = old();
             foreach (var version in versions)
-                version.Reset();
+                version.Reset(_old);
         }
 
-        public void UpdateVersion()
+        public virtual void UpdateVersion()
         {
             string text = File.ReadAllText(browserVersionPath);
             foreach (var version in versions)

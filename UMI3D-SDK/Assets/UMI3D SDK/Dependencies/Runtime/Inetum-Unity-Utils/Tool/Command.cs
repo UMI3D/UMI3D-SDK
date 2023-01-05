@@ -63,25 +63,11 @@ namespace inetum.unityUtils
         {
             path = System.IO.Path.GetFullPath(path);
             path = path.Replace('/', '\\');
-            
 
             if (File.Exists(path))
-            {
-                //FileAttributes attr = File.GetAttributes(path);
-                ////detect whether its a directory or file
-                //if ((attr & FileAttributes.Directory) == FileAttributes.Directory)
-                //{
-                //    OpenFileWith("explorer.exe", path, "/root,");
-                //}
-                //else
-                //{
-                    OpenFileWith("explorer.exe", path, "/select,");
-                //}
-            }
+                OpenFileWith("explorer.exe", path, "/select,");
             else if (Directory.Exists(path))
-            {
                 OpenFileWith("explorer.exe", path, "/root,");
-            }
             else
                 UnityEngine.Debug.LogError("no file at " + path);
         }

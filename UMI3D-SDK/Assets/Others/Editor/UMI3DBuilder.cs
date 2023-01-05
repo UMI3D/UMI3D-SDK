@@ -48,10 +48,10 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
                 Application.dataPath + @"\UMI3D SDK\Common\Core\Runtime\UMI3DVersion.cs",
                 "I.I.s.yyMMdd",
                 () => UMI3DVersion.version,
-                ("major", () => UMI3DVersion.major),
-                ("minor", () => UMI3DVersion.minor),
-                ("status", () => UMI3DVersion.status),
-                ("date", () => UMI3DVersion.date)
+                ("major", (s) => UMI3DVersion.major),
+                ("minor", (s) => UMI3DVersion.minor),
+                ("status", (s) => UMI3DVersion.status),
+                ("date", (s) => UMI3DVersion.date)
             );
         data = new ScriptableLoader<UMI3DBuilderData>(filename);
         info = new LogScrollView();
