@@ -28,6 +28,9 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
         /// <summary>

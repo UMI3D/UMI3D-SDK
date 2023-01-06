@@ -32,7 +32,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// 
         /// </summary>
-        public ForgeConnectionDto connectionDto;
+        public EnvironmentConnectionDto connectionDto;
 
         /// <summary>
         /// Libraries possessed by the user.

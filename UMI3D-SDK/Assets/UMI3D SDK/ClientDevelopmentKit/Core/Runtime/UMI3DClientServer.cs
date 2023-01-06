@@ -34,7 +34,9 @@ namespace umi3d.cdk
         /// <summary>
         /// Environment connected to.
         /// </summary>
-        protected virtual ForgeConnectionDto connectionDto { get; }
+        protected virtual EnvironmentConnectionDto connectionDto { get; }
+
+        public virtual UMI3DVersion.Version version { get; }
 
         /// <summary>
         /// If true, authorizations must be set in headers.
@@ -48,7 +50,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Environment connected to.
         /// </summary>
-        public static ForgeConnectionDto Environement => Exists ? Instance.connectionDto : null;
+        public static EnvironmentConnectionDto Environement => Exists ? Instance.connectionDto : null;
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
         public static string getAuthorization()

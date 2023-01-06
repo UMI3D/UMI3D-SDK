@@ -122,11 +122,11 @@ namespace umi3d.edk
         }*/
 
         /// <summary>
-        /// Return a <see cref="ForgeConnectionDto"/> with essential info for connection. 
+        /// Return a <see cref="EnvironmentConnectionDto"/> with essential info for connection. 
         /// Warning : returns null.
         /// </summary>
         /// <returns></returns>
-        public virtual ForgeConnectionDto ToDto()
+        public virtual EnvironmentConnectionDto ToDto()
         {
             return null;
         }

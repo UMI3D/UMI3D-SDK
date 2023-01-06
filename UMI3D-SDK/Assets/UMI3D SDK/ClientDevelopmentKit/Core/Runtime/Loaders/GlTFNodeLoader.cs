@@ -33,6 +33,9 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
         /// <summary>
         /// Constructor.
         /// </summary>

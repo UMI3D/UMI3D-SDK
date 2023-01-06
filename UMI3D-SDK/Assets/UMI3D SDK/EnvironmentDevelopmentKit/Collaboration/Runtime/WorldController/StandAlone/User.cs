@@ -131,7 +131,7 @@ namespace umi3d.worldController
             privateIdentity.key = headerToken;
         }
 
-        public void Set(common.ForgeConnectionDto connectionDto)
+        public void Set(common.EnvironmentConnectionDto connectionDto)
         {
             privateIdentity.connectionDto = connectionDto;
         }

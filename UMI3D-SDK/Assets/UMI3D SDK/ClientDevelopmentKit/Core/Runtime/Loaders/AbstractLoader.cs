@@ -100,6 +100,9 @@ namespace umi3d.cdk
 
     public abstract class AbstractLoader : IHandler<ReadUMI3DExtensionData, bool>, IHandler<SetUMI3DPropertyData, bool>, IHandler<SetUMI3DPropertyContainerData, bool>, IHandler<ReadUMI3DPropertyData, bool>
     {
+
+        public abstract UMI3DVersion.VersionCompatibility version { get; }
+
         AbstractLoader successor;
 
         public AbstractLoader GetNext()
@@ -164,7 +167,7 @@ namespace umi3d.cdk
 
         public async Task<bool> Handle(ReadUMI3DExtensionData value)
         {
-            if (CanReadUMI3DExtension(value)) 
+            if (version.IsCompatible(UMI3DClientServer.Instance.version) && CanReadUMI3DExtension(value)) 
             {
                 await ReadUMI3DExtension(value);
                 return true;
@@ -176,7 +179,7 @@ namespace umi3d.cdk
 
         public async Task<bool> Handle(SetUMI3DPropertyData value)
         {
-            if (await SetUMI3DProperty(value))
+            if (version.IsCompatible(UMI3DClientServer.Instance.version) && await SetUMI3DProperty(value))
                 return true;
             if (successor != null)
                 return await successor.Handle(value);
@@ -185,7 +188,7 @@ namespace umi3d.cdk
 
         public async Task<bool> Handle(SetUMI3DPropertyContainerData value)
         {
-            if (await SetUMI3DProperty(value))
+            if (version.IsCompatible(UMI3DClientServer.Instance.version) && await SetUMI3DProperty(value))
                 return true;
             if (successor != null)
                 return await successor.Handle(value);
@@ -194,7 +197,7 @@ namespace umi3d.cdk
 
         public async Task<bool> Handle(ReadUMI3DPropertyData value)
         {
-            if (await ReadUMI3DProperty(value))
+            if (version.IsCompatible(UMI3DClientServer.Instance.version) && await ReadUMI3DProperty(value))
                 return true;
             if (successor != null)
                 return await successor.Handle(value);

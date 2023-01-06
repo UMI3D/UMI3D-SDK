@@ -49,7 +49,8 @@ namespace umi3d.cdk.collaboration
 
         public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
 
-        protected override ForgeConnectionDto connectionDto => environmentClient?.connectionDto;
+        protected override EnvironmentConnectionDto connectionDto => environmentClient?.connectionDto;
+        public override UMI3DVersion.Version version => environmentClient?.version;
 
         public static Func<MultiProgress> EnvironmentProgress = null;
 

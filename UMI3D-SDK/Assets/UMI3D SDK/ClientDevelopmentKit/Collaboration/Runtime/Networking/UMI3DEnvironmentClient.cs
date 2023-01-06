@@ -60,7 +60,12 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Data for connection through the Forge server.
         /// </summary>
-        public readonly ForgeConnectionDto connectionDto;
+        public readonly EnvironmentConnectionDto connectionDto;
+
+        /// <summary>
+        /// Computed version of the environment
+        /// </summary>
+        public readonly UMI3DVersion.Version version;
 
         private readonly UMI3DWorldControllerClient worldControllerClient;
 
@@ -188,13 +193,14 @@ namespace umi3d.cdk.collaboration
         public UserInfo UserDto = new UserInfo();
 
 
-        public UMI3DEnvironmentClient(ForgeConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient, MultiProgress progress)
+        public UMI3DEnvironmentClient(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient, MultiProgress progress)
         {
             this.isJoinning = false;
             this.isConnecting = false;
             this.isConnected = false;
             this.disconected = false;
             this.connectionDto = connectionDto;
+            this.version = new UMI3DVersion.Version(connectionDto.version);
             this.worldControllerClient = worldControllerClient;
 
             this.progress = progress;
@@ -206,6 +212,8 @@ namespace umi3d.cdk.collaboration
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
             needToGetFirstConnectionInfo = true;
+
+            
         }
 
         /// <summary>
