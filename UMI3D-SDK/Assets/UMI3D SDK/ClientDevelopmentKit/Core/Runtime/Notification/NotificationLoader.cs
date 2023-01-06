@@ -36,6 +36,8 @@ namespace umi3d.cdk
 
     public class InternalNotificationLoader : AbstractLoader
     {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {

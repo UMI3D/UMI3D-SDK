@@ -29,6 +29,8 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public class UMI3DAbstractToolLoader : AbstractLoader
     {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {

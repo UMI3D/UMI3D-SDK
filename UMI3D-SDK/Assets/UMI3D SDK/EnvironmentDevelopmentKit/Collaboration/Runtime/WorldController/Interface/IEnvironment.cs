@@ -22,5 +22,5 @@ public interface IEnvironment
 {
     Task Register(RegisterIdentityDto identityDto);
 
-    Task<ForgeConnectionDto> ToDto();
+    Task<EnvironmentConnectionDto> ToDto();
 }

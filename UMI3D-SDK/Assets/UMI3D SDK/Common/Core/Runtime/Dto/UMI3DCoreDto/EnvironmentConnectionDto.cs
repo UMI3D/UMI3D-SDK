@@ -20,7 +20,7 @@ namespace umi3d.common
     /// Essential data to enable the connection to an environment using a Forge server.
     /// </summary>
     [System.Serializable]
-    public class ForgeConnectionDto : UMI3DDto
+    public class EnvironmentConnectionDto : UMI3DDto
     {
         public string name;
         public string httpUrl;
@@ -33,6 +33,12 @@ namespace umi3d.common
         public ushort forgeMasterServerPort;
         public ushort forgeNatServerPort;
 
-        public ForgeConnectionDto() : base() { }
+        /// <summary>
+        /// Umi3d version of the environment.
+        /// </summary>
+        /// Versions are Major.Minor.Status.Date
+        public string version;
+
+        public EnvironmentConnectionDto() : base() { }
     }
 }

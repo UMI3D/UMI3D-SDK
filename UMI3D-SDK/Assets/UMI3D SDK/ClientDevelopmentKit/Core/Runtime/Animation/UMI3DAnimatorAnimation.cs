@@ -24,6 +24,9 @@ namespace umi3d.cdk
 {
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
         /// <summary>
         /// Get an <see cref="UMI3DAnimatorAnimation"/> by its UMI3D id.
         /// </summary>

@@ -139,12 +139,12 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Get the <see cref="ForgeConnectionDto"/>.
+        /// Get the <see cref="EnvironmentConnectionDto"/>.
         /// </summary>
         /// <returns></returns>
-        public override ForgeConnectionDto ToDto()
+        public override EnvironmentConnectionDto ToDto()
         {
-            var dto = new ForgeConnectionDto
+            var dto = new EnvironmentConnectionDto
             {
                 name = UMI3DEnvironment.Instance.environmentName,
                 forgeHost = ip,
@@ -167,7 +167,7 @@ namespace umi3d.edk.collaboration
             await Task.CompletedTask;
         }
 
-        Task<ForgeConnectionDto> IEnvironment.ToDto()
+        Task<EnvironmentConnectionDto> IEnvironment.ToDto()
         {
             return Task.FromResult(ToDto());
         }

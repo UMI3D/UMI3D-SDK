@@ -324,7 +324,7 @@ namespace umi3d.cdk.collaboration
                 return new PrivateIdentityDto()
                 {
                     GlobalToken = GlobalToken,
-                    connectionDto = UMI3DDto.FromJson<ForgeConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
+                    connectionDto = UMI3DDto.FromJson<EnvironmentConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
                     libraries = libraries,
                     localToken = localToken,
                     headerToken = headerToken,
