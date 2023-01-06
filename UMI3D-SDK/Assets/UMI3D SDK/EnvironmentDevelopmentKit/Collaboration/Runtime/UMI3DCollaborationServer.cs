@@ -155,7 +155,8 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost = forgeNatServerHost,
                 forgeNatServerPort = forgeNatServerPort,
                 resourcesUrl = _GetResourcesUrl(),
-                authorizationInHeader = !IsResourceServerSetup
+                authorizationInHeader = !IsResourceServerSetup,
+                version = UMI3DVersion.version
             };
             return dto;
         }

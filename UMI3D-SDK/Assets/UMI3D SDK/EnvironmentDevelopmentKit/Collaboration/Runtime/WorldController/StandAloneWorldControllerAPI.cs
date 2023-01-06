@@ -74,11 +74,6 @@ namespace umi3d.worldController
                 name = worldName,
                 url = ip,
 
-                versionMajor = UMI3DVersion.major,
-                versionMinor = UMI3DVersion.minor,
-                versionStatus = UMI3DVersion.status,
-                versionDate = UMI3DVersion.date,
-
                 icon2D = Icon2D.ToDto(),
                 icon3D = Icon3D.ToDto()
             };

@@ -393,10 +393,6 @@ namespace umi3d.common.collaboration
                         UMI3DNetworkingHelper.TryRead(container, out name)
                         && UMI3DNetworkingHelper.TryRead(container, out icon2D)
                         && UMI3DNetworkingHelper.TryRead(container, out icon3D)
-                        && UMI3DNetworkingHelper.TryRead(container, out versionMajor)
-                        && UMI3DNetworkingHelper.TryRead(container, out versionMinor)
-                        && UMI3DNetworkingHelper.TryRead(container, out versionStatus)
-                        && UMI3DNetworkingHelper.TryRead(container, out versionDate)
                         && UMI3DNetworkingHelper.TryRead(container, out url)
                         )
                     {
@@ -405,10 +401,6 @@ namespace umi3d.common.collaboration
                             name = name,
                             icon2D = icon2D,
                             icon3D = icon3D,
-                            versionMajor = versionMajor,
-                            versionMinor = versionMinor,
-                            versionStatus = versionStatus,
-                            versionDate = versionDate,
                             url = url
                         };
                         readable = true;
@@ -575,10 +567,6 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DNetworkingHelper.Write(media.name)
                         + UMI3DNetworkingHelper.Write(media.icon2D)
                         + UMI3DNetworkingHelper.Write(media.icon3D)
-                        + UMI3DNetworkingHelper.Write(media.versionMajor)
-                        + UMI3DNetworkingHelper.Write(media.versionMinor)
-                        + UMI3DNetworkingHelper.Write(media.versionStatus)
-                        + UMI3DNetworkingHelper.Write(media.versionDate)
                         + UMI3DNetworkingHelper.Write(media.url);
                     break;
                 case GateDto gate:
