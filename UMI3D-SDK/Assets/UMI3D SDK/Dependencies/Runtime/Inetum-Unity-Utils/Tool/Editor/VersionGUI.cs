@@ -209,8 +209,6 @@ namespace inetum.unityUtils
 
         string GetDatePattern(string format, ref int i)
         {
-            int j = 0;
-
             string dateFormat = "";
             bool date = true;
             while (i < format.Length && date)
