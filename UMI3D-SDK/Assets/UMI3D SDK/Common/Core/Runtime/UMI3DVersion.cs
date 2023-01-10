@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using ICSharpCode.NRefactory.Ast;
 using System;
 using System.Globalization;
 
