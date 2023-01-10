@@ -45,9 +45,9 @@ namespace umi3d.common.userCapture
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
-                + UMI3DNetworkingHelper.Write(emoteId)
-                + UMI3DNetworkingHelper.Write(shouldTrigger)
-                + UMI3DNetworkingHelper.Write(sendingUserId);
+                + UMI3DSerializer.Write(emoteId)
+                + UMI3DSerializer.Write(shouldTrigger)
+                + UMI3DSerializer.Write(sendingUserId);
         }
     }
 }

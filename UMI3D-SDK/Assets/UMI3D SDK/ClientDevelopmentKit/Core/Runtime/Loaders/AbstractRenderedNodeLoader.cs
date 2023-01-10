@@ -207,7 +207,7 @@ namespace umi3d.cdk
             {
 
                 case UMI3DPropertyKeys.ApplyCustomMaterial:
-                    extension.applyCustomMaterial = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    extension.applyCustomMaterial = UMI3DSerializer.Read<bool>(data.container);
 
                     if (!extension.applyCustomMaterial) //revert original materials
                     {
@@ -237,8 +237,8 @@ namespace umi3d.cdk
                     switch (data.operationId)
                     {
                         case UMI3DOperationKeys.SetEntityListAddProperty:
-                            index = UMI3DNetworkingHelper.Read<int>(data.container);
-                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
+                            index = UMI3DSerializer.Read<int>(data.container);
+                            mat = UMI3DSerializer.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
                             if (index == extension.overridedMaterials.Count)
                             {
                                 if (extension.applyCustomMaterial)
@@ -259,10 +259,10 @@ namespace umi3d.cdk
                             //       
                             break;
                         case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                            index = UMI3DNetworkingHelper.Read<int>(data.container);
+                            index = UMI3DSerializer.Read<int>(data.container);
                             if (extension.applyCustomMaterial)
                             {
-                                mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
+                                mat = UMI3DSerializer.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
                                 RevertOneOverrider((UMI3DNodeInstance)data.entity, mat);
                                 extension.overridedMaterials.RemoveAt(index);
 
@@ -275,8 +275,8 @@ namespace umi3d.cdk
                             }
                             break;
                         case UMI3DOperationKeys.SetEntityListProperty:
-                            index = UMI3DNetworkingHelper.Read<int>(data.container);
-                            mat = UMI3DNetworkingHelper.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
+                            index = UMI3DSerializer.Read<int>(data.container);
+                            mat = UMI3DSerializer.Read<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
                             if (extension.applyCustomMaterial)
                             {
                                 //Remove old overrider
@@ -304,7 +304,7 @@ namespace umi3d.cdk
 
                             break;
                         case UMI3DOperationKeys.SetEntityProperty:
-                            List<UMI3DRenderedNodeDto.MaterialOverrideDto> list = UMI3DNetworkingHelper.ReadList<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
+                            List<UMI3DRenderedNodeDto.MaterialOverrideDto> list = UMI3DSerializer.ReadList<UMI3DRenderedNodeDto.MaterialOverrideDto>(data.container);
                             if (extension.applyCustomMaterial)
                             {
                                 RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
@@ -326,7 +326,7 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.CastShadow:
-                    extension.castShadow = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    extension.castShadow = UMI3DSerializer.Read<bool>(data.container);
                     if (data.entity is UMI3DNodeInstance)
                     {
                         foreach (Renderer renderer in node.renderers)
@@ -339,7 +339,7 @@ namespace umi3d.cdk
 
                     break;
                 case UMI3DPropertyKeys.ReceiveShadow:
-                    extension.receiveShadow = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    extension.receiveShadow = UMI3DSerializer.Read<bool>(data.container);
                     if (data.entity is UMI3DNodeInstance)
                     {
                         foreach (Renderer renderer in node.renderers)

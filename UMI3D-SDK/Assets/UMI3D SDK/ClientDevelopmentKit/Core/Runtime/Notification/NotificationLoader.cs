@@ -89,24 +89,24 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.NotificationTitle:
-                    dto.title = UMI3DNetworkingHelper.Read<string>(value.container);
+                    dto.title = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationContent:
-                    dto.content = UMI3DNetworkingHelper.Read<string>(value.container);
+                    dto.content = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationDuration:
-                    dto.duration = UMI3DNetworkingHelper.Read<float>(value.container);
+                    dto.duration = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationIcon2D:
-                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    dto.icon2D = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationIcon3D:
-                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    dto.icon3D = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationObjectId:
                     var Odto = dto as NotificationOnObjectDto;
                     if (Odto == null) return false;
-                    Odto.objectId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    Odto.objectId = UMI3DSerializer.Read<ulong>(value.container);
                     break;
                 default:
                     return false;
@@ -126,22 +126,22 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.NotificationTitle:
-                    value.result = UMI3DNetworkingHelper.Read<string>(value.container);
+                    value.result = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationContent:
-                    value.result = UMI3DNetworkingHelper.Read<string>(value.container);
+                    value.result = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationDuration:
-                    value.result = UMI3DNetworkingHelper.Read<float>(value.container);
+                    value.result = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationIcon2D:
-                    value.result = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    value.result = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationIcon3D:
-                    value.result = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    value.result = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationObjectId:
-                    value.result = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    value.result = UMI3DSerializer.Read<ulong>(value.container);
                     break;
                 default:
                     return false;

@@ -133,7 +133,7 @@ namespace umi3d.edk.interaction
                     onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
                     break;
                 case UMI3DOperationKeys.EventStateChanged:
-                    bool active = UMI3DNetworkingHelper.Read<bool>(container);
+                    bool active = UMI3DSerializer.Read<bool>(container);
                     if (active)
                     {
                         onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
@@ -150,7 +150,7 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                    + UMI3DNetworkingHelper.Write(Hold);
+                    + UMI3DSerializer.Write(Hold);
                     //+ ((UMI3DLoadableEntity)this.triggerAnimation).ToBytes(user)
                     //+ ((UMI3DLoadableEntity)this.releaseAnimation).ToBytes(user);
         }

@@ -32,7 +32,7 @@ namespace umi3d.common.interaction
         /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
-            return base.ToBytableArray(parameters) + UMI3DNetworkingHelper.Write(state);
+            return base.ToBytableArray(parameters) + UMI3DSerializer.Write(state);
         }
     }
 }

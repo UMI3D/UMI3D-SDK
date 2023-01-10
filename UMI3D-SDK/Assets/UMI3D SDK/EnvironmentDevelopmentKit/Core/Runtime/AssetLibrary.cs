@@ -82,12 +82,12 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(id)
-                + UMI3DNetworkingHelper.Write(Id())
-                + UMI3DNetworkingHelper.Write(date.Format())
-                + UMI3DNetworkingHelper.Write(date.Culture())
-                + UMI3DNetworkingHelper.Write(date.ToString())
-                + UMI3DNetworkingHelper.WriteIBytableCollection(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
+            return UMI3DSerializer.Write(id)
+                + UMI3DSerializer.Write(Id())
+                + UMI3DSerializer.Write(date.Format())
+                + UMI3DSerializer.Write(date.Culture())
+                + UMI3DSerializer.Write(date.ToString())
+                + UMI3DSerializer.WriteIBytableCollection(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
         }
 
         /// <inheritdoc/>

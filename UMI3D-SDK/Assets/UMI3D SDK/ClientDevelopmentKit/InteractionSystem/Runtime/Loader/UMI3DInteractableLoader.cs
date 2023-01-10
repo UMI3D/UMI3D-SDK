@@ -95,21 +95,21 @@ namespace umi3d.cdk.interaction
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.InteractableNotifyHoverPosition:
-                    dto.notifyHoverPosition = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    dto.notifyHoverPosition = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 case UMI3DPropertyKeys.InteractableNotifySubObject:
-                    dto.notifySubObject = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    dto.notifySubObject = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 case UMI3DPropertyKeys.InteractableNodeId:
                     RemoveInteractableOnNode(dto);
-                    dto.nodeId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    dto.nodeId = UMI3DSerializer.Read<ulong>(value.container);
                     setInteractableOnNode(dto);
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:
-                    dto.hasPriority = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    dto.hasPriority = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 case UMI3DPropertyKeys.InteractableInteractionDistance:
-                    dto.interactionDistance = UMI3DNetworkingHelper.Read<float>(value.container);
+                    dto.interactionDistance = UMI3DSerializer.Read<float>(value.container);
                     break;
                 default:
                     return false;
@@ -131,19 +131,19 @@ namespace umi3d.cdk.interaction
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.InteractableNotifyHoverPosition:
-                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.InteractableNotifySubObject:
-                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.InteractableNodeId:
-                    data.result = UMI3DNetworkingHelper.Read<ulong>(data.container);
+                    data.result = UMI3DSerializer.Read<ulong>(data.container);
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:
-                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.InteractableInteractionDistance:
-                    data.result = UMI3DNetworkingHelper.Read<float>(data.container);
+                    data.result = UMI3DSerializer.Read<float>(data.container);
                     break;
                 default:
                     return false;

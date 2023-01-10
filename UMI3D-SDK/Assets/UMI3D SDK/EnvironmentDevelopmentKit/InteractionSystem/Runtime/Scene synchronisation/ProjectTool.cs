@@ -36,9 +36,9 @@ namespace umi3d.edk.interaction
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ProjectTool)
-                + UMI3DNetworkingHelper.Write(tool.Id())
-                + UMI3DNetworkingHelper.Write(releasable);
+            return UMI3DSerializer.Write(UMI3DOperationKeys.ProjectTool)
+                + UMI3DSerializer.Write(tool.Id())
+                + UMI3DSerializer.Write(releasable);
         }
 
         /// <inheritdoc/>

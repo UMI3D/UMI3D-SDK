@@ -47,8 +47,8 @@ namespace umi3d.edk
         protected virtual Bytable ToBytable()
         {
             if (position == null) position = new SerializableVector3();
-            return UMI3DNetworkingHelper.Write(GetOperationKey())
-                + UMI3DNetworkingHelper.Write(position);
+            return UMI3DSerializer.Write(GetOperationKey())
+                + UMI3DSerializer.Write(position);
         }
 
         /// <inheritdoc/>

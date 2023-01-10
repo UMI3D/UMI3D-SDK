@@ -37,8 +37,8 @@ namespace umi3d.edk.volume
             switch (operationKey)
             {
                 case UMI3DOperationKeys.VolumeUserTransit:
-                    ulong volumeId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    bool direction = UMI3DNetworkingHelper.Read<bool>(container);
+                    ulong volumeId = UMI3DSerializer.Read<ulong>(container);
+                    bool direction = UMI3DSerializer.Read<bool>(container);
                     DispatchBrowserRequest(user, volumeId, direction);
                     break;
                 default:

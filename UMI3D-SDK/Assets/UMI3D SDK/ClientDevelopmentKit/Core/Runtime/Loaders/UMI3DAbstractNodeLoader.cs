@@ -134,13 +134,13 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.Active:
-                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    data.result = UMI3DNetworkingHelper.Read<ulong>(data.container);
+                    data.result = UMI3DSerializer.Read<ulong>(data.container);
                     break;
                 default:
                     return false;
@@ -164,17 +164,17 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    dto.isStatic = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    dto.isStatic = UMI3DSerializer.Read<bool>(data.container);
                     if (dto.isStatic != node.gameObject.isStatic)
                         node.gameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
-                    dto.active = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    dto.active = UMI3DSerializer.Read<bool>(data.container);
                     if (node.gameObject.activeSelf != dto.active)
                         node.gameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(data.container);
+                    ulong pid = dto.pid = UMI3DSerializer.Read<ulong>(data.container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
                     node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
                     if (parent != null)

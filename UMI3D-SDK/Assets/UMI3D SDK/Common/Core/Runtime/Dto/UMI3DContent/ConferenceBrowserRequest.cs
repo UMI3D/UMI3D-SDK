@@ -68,8 +68,8 @@ namespace umi3d.common
         {
             if (operation != UMI3DOperationKeys.MuteAllAttentionStatus && operation != UMI3DOperationKeys.MuteAllAvatarStatus && operation != UMI3DOperationKeys.MuteAllMicrophoneStatus)
                 return base.ToBytableArray(parameters)
-                    + UMI3DNetworkingHelper.Write(id)
-                    + UMI3DNetworkingHelper.Write(value);
+                    + UMI3DSerializer.Write(id)
+                    + UMI3DSerializer.Write(value);
             return base.ToBytableArray(parameters);
         }
     }

@@ -151,15 +151,15 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(AnchoredPosition.GetValue(user))
-                + UMI3DNetworkingHelper.Write(AnchoredPosition3D.GetValue(user))
-                + UMI3DNetworkingHelper.Write(AnchorMax.GetValue(user))
-                + UMI3DNetworkingHelper.Write(AnchorMin.GetValue(user))
-                + UMI3DNetworkingHelper.Write(OffsetMax.GetValue(user))
-                + UMI3DNetworkingHelper.Write(OffsetMin.GetValue(user))
-                + UMI3DNetworkingHelper.Write(Pivot.GetValue(user))
-                + UMI3DNetworkingHelper.Write(SizeDelta.GetValue(user))
-                + UMI3DNetworkingHelper.Write(RectMask.GetValue(user));
+                + UMI3DSerializer.Write(AnchoredPosition.GetValue(user))
+                + UMI3DSerializer.Write(AnchoredPosition3D.GetValue(user))
+                + UMI3DSerializer.Write(AnchorMax.GetValue(user))
+                + UMI3DSerializer.Write(AnchorMin.GetValue(user))
+                + UMI3DSerializer.Write(OffsetMax.GetValue(user))
+                + UMI3DSerializer.Write(OffsetMin.GetValue(user))
+                + UMI3DSerializer.Write(Pivot.GetValue(user))
+                + UMI3DSerializer.Write(SizeDelta.GetValue(user))
+                + UMI3DSerializer.Write(RectMask.GetValue(user));
         }
     }
 }

@@ -46,8 +46,8 @@ namespace umi3d.common.userCapture
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return
-                UMI3DNetworkingHelper.Write(boneType)
-                + UMI3DNetworkingHelper.Write(rotation);
+                UMI3DSerializer.Write(boneType)
+                + UMI3DSerializer.Write(rotation);
         }
     }
 }

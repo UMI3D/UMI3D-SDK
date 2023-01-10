@@ -41,11 +41,11 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.MultiSetEntityProperty)
-                + UMI3DNetworkingHelper.WriteCollection(entityIds.Select(e => e.Id()))
-                + UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
-                + UMI3DNetworkingHelper.Write(property)
-                + UMI3DNetworkingHelper.Write(value);
+            return UMI3DSerializer.Write(UMI3DOperationKeys.MultiSetEntityProperty)
+                + UMI3DSerializer.WriteCollection(entityIds.Select(e => e.Id()))
+                + UMI3DSerializer.Write(UMI3DOperationKeys.SetEntityProperty)
+                + UMI3DSerializer.Write(property)
+                + UMI3DSerializer.Write(value);
         }
 
         /// <inheritdoc/>

@@ -435,8 +435,8 @@ namespace umi3d.edk.collaboration
             switch (operationKey)
             {
                 case UMI3DOperationKeys.UserMicrophoneStatus:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
 
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
@@ -448,15 +448,15 @@ namespace umi3d.edk.collaboration
                     break;
 
                 case UMI3DOperationKeys.UserAvatarStatus:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].avatarStatus.SetValue(value));
                     break;
 
                 case UMI3DOperationKeys.UserAttentionStatus:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
                     if (users.ContainsKey(id) && id == user.Id())
                         tr.AddIfNotNull(users[id].attentionRequired.SetValue(value));
                     break;

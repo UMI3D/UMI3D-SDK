@@ -99,8 +99,8 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(frameOfReference.Id())
-                + UMI3DNetworkingHelper.WriteIBytableCollection(dofSeparationOptions);
+                + UMI3DSerializer.Write(frameOfReference.Id())
+                + UMI3DSerializer.WriteIBytableCollection(dofSeparationOptions);
         }
 
         /// <summary>
@@ -124,8 +124,8 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.ManipulationRequest:
-                    Vector3 translation = UMI3DNetworkingHelper.Read<Vector3>(container);
-                    Quaternion rotation = UMI3DNetworkingHelper.Read<Quaternion>(container);
+                    Vector3 translation = UMI3DSerializer.Read<Vector3>(container);
+                    Quaternion rotation = UMI3DSerializer.Read<Quaternion>(container);
                     onManipulated.Invoke(new ManipulationEventContent(user, toolId, interactionId, hoverredId, boneType, translation, rotation));
                     break;
                 default:
@@ -157,8 +157,8 @@ namespace umi3d.edk.interaction
             /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
-                return UMI3DNetworkingHelper.Write(name)
-                    + UMI3DNetworkingHelper.Write((int)dofs);
+                return UMI3DSerializer.Write(name)
+                    + UMI3DSerializer.Write((int)dofs);
             }
 
             /// <summary>
@@ -198,8 +198,8 @@ namespace umi3d.edk.interaction
             /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
-                return UMI3DNetworkingHelper.Write(name)
-                    + UMI3DNetworkingHelper.WriteIBytableCollection(separations);
+                return UMI3DSerializer.Write(name)
+                    + UMI3DSerializer.WriteIBytableCollection(separations);
             }
 
             /// <summary>

@@ -84,8 +84,8 @@ namespace umi3d.edk
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return base.ToBytesAux(user)
-                + UMI3DNetworkingHelper.Write(ObjectNode.GetValue(user).Id())
-                + UMI3DNetworkingHelper.Write(ObjectStateName.GetValue(user));
+                + UMI3DSerializer.Write(ObjectNode.GetValue(user).Id())
+                + UMI3DSerializer.Write(ObjectStateName.GetValue(user));
         }
     }
 }

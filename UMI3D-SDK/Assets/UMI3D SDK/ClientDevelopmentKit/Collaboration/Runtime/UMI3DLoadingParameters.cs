@@ -418,34 +418,34 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.SwitchTool:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    ulong oldid = UMI3DNetworkingHelper.Read<ulong>(container);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    ulong oldid = UMI3DSerializer.Read<ulong>(container);
+                    releasable = UMI3DSerializer.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
                     break;
                 case UMI3DOperationKeys.ProjectTool:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    releasable = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    releasable = UMI3DSerializer.Read<bool>(container);
                     AbstractInteractionMapper.Instance.SelectTool(id, releasable, 0, new interaction.RequestedByEnvironment());
                     break;
                 case UMI3DOperationKeys.ReleaseTool:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
                     AbstractInteractionMapper.Instance.ReleaseTool(id, new interaction.RequestedByEnvironment());
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
-                    int target = UMI3DNetworkingHelper.Read<int>(container);
+                    int target = UMI3DSerializer.Read<int>(container);
                     UMI3DClientUserTracking.Instance.SetFPSTarget(target);
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
-                    List<uint> streamedBones = UMI3DNetworkingHelper.ReadList<uint>(container);
+                    List<uint> streamedBones = UMI3DSerializer.ReadList<uint>(container);
                     UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones);
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
-                    bool sendCamera = UMI3DNetworkingHelper.Read<bool>(container);
+                    bool sendCamera = UMI3DSerializer.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendCamera);
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
-                    bool sendTracking = UMI3DNetworkingHelper.Read<bool>(container);
+                    bool sendTracking = UMI3DSerializer.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.SetTrackingSending(sendTracking);
                     break;
             }

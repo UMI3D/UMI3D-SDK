@@ -125,7 +125,7 @@ namespace umi3d.cdk
         {
             if (groupDto.entitiesId == null)
                 groupDto.entitiesId = new List<ulong>();
-            UMI3DNetworkingHelper.ReadList(operationId, container, groupDto.entitiesId);
+            UMI3DSerializer.ReadList(operationId, container, groupDto.entitiesId);
         }
     }
 }

@@ -144,14 +144,14 @@ namespace umi3d.edk.interaction
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
 
-                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DSerializer.Read<uint>(container);
                     if (UMI3DParameterKeys.StringUploadFile == parameterId)
                     {
-                        UMI3DNetworkingHelper.Read<bool>(container);
-                        value = UMI3DNetworkingHelper.Read<string>(container);
-                        List<string> exts = UMI3DNetworkingHelper.ReadList<string>(container);
-                        string fileId = UMI3DNetworkingHelper.Read<string>(container);
-                        //authorizedExtensions = UMI3DNetworkingHelper.ReadList<string>(container);
+                        UMI3DSerializer.Read<bool>(container);
+                        value = UMI3DSerializer.Read<string>(container);
+                        List<string> exts = UMI3DSerializer.ReadList<string>(container);
+                        string fileId = UMI3DSerializer.Read<string>(container);
+                        //authorizedExtensions = UMI3DSerializer.ReadList<string>(container);
                         //UnityEngine.UMI3DLogger.Log(value);
                         //if (System.IO.File.Exists(value))
                         //{

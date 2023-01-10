@@ -220,13 +220,13 @@ namespace umi3d.edk
         /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(ObjectNode.GetValue(user)?.Id() ?? 0)
-                + UMI3DNetworkingHelper.Write(ObjectVolume.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ObjectPitch.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ObjectSpacialBlend.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ObjectVolumeAttenuationMode.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ObjectVolumeMaxDistance.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ObjectVolumeCustomCurve.GetValue(user))
+            return UMI3DSerializer.Write(ObjectNode.GetValue(user)?.Id() ?? 0)
+                + UMI3DSerializer.Write(ObjectVolume.GetValue(user))
+                + UMI3DSerializer.Write(ObjectPitch.GetValue(user))
+                + UMI3DSerializer.Write(ObjectSpacialBlend.GetValue(user))
+                + UMI3DSerializer.Write(ObjectVolumeAttenuationMode.GetValue(user))
+                + UMI3DSerializer.Write(ObjectVolumeMaxDistance.GetValue(user))
+                + UMI3DSerializer.Write(ObjectVolumeCustomCurve.GetValue(user))
                 + ObjectAudioResource.GetValue(user).ToByte();
         }
 

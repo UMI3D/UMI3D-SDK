@@ -95,7 +95,7 @@ namespace umi3d.cdk.volumes
             {
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Center:
                     var box_1 = value.entity.Object as Box;
-                    Vector3 newCenter = UMI3DNetworkingHelper.Read<Vector3>(value.container);
+                    Vector3 newCenter = UMI3DSerializer.Read<Vector3>(value.container);
                     Vector3 size = box_1.bounds.size;
                     box_1.SetBounds(new Bounds(newCenter, size));
                     return true;
@@ -103,18 +103,18 @@ namespace umi3d.cdk.volumes
                 case UMI3DPropertyKeys.VolumePrimitive_Box_Size:
                     var box_2 = value.entity.Object as Box;
                     Vector3 center = box_2.bounds.center;
-                    Vector3 newsize = UMI3DNetworkingHelper.Read<Vector3>(value.container);
+                    Vector3 newsize = UMI3DSerializer.Read<Vector3>(value.container);
                     box_2.SetBounds(new Bounds(center, newsize));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Cylinder_Height:
                     var cyl_1 = value.entity.Object as Cylinder;
-                    cyl_1.SetHeight(UMI3DNetworkingHelper.Read<float>(value.container));
+                    cyl_1.SetHeight(UMI3DSerializer.Read<float>(value.container));
                     return true;
 
                 case UMI3DPropertyKeys.VolumePrimitive_Cylinder_Radius:
                     var cyl_2 = value.entity.Object as Cylinder;
-                    cyl_2.SetRadius(UMI3DNetworkingHelper.Read<float>(value.container));
+                    cyl_2.SetRadius(UMI3DSerializer.Read<float>(value.container));
                     return true;
 
                 default:

@@ -38,8 +38,8 @@ namespace umi3d.common.interaction
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
-                + UMI3DNetworkingHelper.Write(toolId)
-                + UMI3DNetworkingHelper.Write(boneType);
+                + UMI3DSerializer.Write(toolId)
+                + UMI3DSerializer.Write(boneType);
         }
     }
 }

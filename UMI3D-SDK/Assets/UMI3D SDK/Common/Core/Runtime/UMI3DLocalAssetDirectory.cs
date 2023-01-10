@@ -62,11 +62,11 @@ namespace umi3d.common
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
             return
-                UMI3DNetworkingHelper.Write(name)
-                + UMI3DNetworkingHelper.Write(path)
-                + UMI3DNetworkingHelper.Write(metrics.resolution)
-                + UMI3DNetworkingHelper.Write(metrics.size)
-                + UMI3DNetworkingHelper.WriteCollection(formats);
+                UMI3DSerializer.Write(name)
+                + UMI3DSerializer.Write(path)
+                + UMI3DSerializer.Write(metrics.resolution)
+                + UMI3DSerializer.Write(metrics.size)
+                + UMI3DSerializer.WriteCollection(formats);
         }
         //public List<string> dependencies = new List<string>();
     }

@@ -65,7 +65,7 @@ namespace umi3d.cdk.userCapture
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    dto.emotes = UMI3DNetworkingHelper.Read<List<UMI3DEmoteDto>>(value.container);
+                    dto.emotes = UMI3DSerializer.Read<List<UMI3DEmoteDto>>(value.container);
                     UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
                     break;
 
@@ -84,7 +84,7 @@ namespace umi3d.cdk.userCapture
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    data.result = UMI3DNetworkingHelper.Read<UMI3DEmotesConfigDto>(data.container);
+                    data.result = UMI3DSerializer.Read<UMI3DEmotesConfigDto>(data.container);
 
                     UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(data.result as UMI3DEmotesConfigDto);
                     break;

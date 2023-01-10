@@ -68,7 +68,7 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.ActiveBodyPose:
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
                     break;
 
                 default:
@@ -90,7 +90,7 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.ActiveBodyPose:
-                    dto.IsActive = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.IsActive = UMI3DSerializer.Read<bool>(container);
                     UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
                     break;
                 default:

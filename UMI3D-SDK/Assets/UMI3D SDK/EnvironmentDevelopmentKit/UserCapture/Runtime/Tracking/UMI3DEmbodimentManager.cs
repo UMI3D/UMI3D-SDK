@@ -226,7 +226,7 @@ namespace umi3d.edk.userCapture
             }
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
-            userEmbd.userCameraPropertiesDto = UMI3DNetworkingHelper.Read<UserCameraPropertiesDto>(container);
+            userEmbd.userCameraPropertiesDto = UMI3DSerializer.Read<UserCameraPropertiesDto>(container);
         }
 
         /// <summary>

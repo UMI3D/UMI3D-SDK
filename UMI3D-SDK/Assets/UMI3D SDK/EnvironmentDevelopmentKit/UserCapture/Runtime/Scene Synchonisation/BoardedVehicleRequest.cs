@@ -65,9 +65,9 @@ namespace umi3d.edk.userCapture
         {
             if (rotation == null) rotation = new SerializableVector4();
             return base.ToBytable()
-                + UMI3DNetworkingHelper.Write(BodyAnimationId)
-                + UMI3DNetworkingHelper.Write(ChangeBonesToStream)
-                + UMI3DNetworkingHelper.WriteCollection(BonesToStream);
+                + UMI3DSerializer.Write(BodyAnimationId)
+                + UMI3DSerializer.Write(ChangeBonesToStream)
+                + UMI3DSerializer.WriteCollection(BonesToStream);
         }
 
         /// <inheritdoc/>

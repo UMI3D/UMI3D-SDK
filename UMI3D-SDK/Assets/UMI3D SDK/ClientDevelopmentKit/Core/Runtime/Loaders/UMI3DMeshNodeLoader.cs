@@ -128,10 +128,10 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.IsPartOfNavmesh:
-                    (data.entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    (data.entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DSerializer.Read<bool>(data.container);
                     return true;
                 case UMI3DPropertyKeys.IsTraversable:
-                    (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DSerializer.Read<bool>(data.container);
                     return true;
                 default:
                     return false;

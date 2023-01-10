@@ -264,14 +264,14 @@ namespace umi3d.edk
         public virtual Bytable ToBytes(UMI3DUser user)
         {
             UMI3DAnchorDto anchor = objectAnchor.GetValue(user);
-            return UMI3DNetworkingHelper.Write(Id())
-                + UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0)
-                + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user))
-                + UMI3DNetworkingHelper.Write(anchor.positionOffset)
-                + UMI3DNetworkingHelper.Write(anchor.rotationOffset)
-                + UMI3DNetworkingHelper.Write(anchor.scaleOffset);
+            return UMI3DSerializer.Write(Id())
+                + UMI3DSerializer.Write(objectParentId.GetValue(user)?.Id() ?? 0)
+                + UMI3DSerializer.Write(objectActive.GetValue(user))
+                + UMI3DSerializer.Write(objectIsStatic.GetValue(user))
+                + UMI3DSerializer.Write(objectImmersiveOnly.GetValue(user))
+                + UMI3DSerializer.Write(anchor.positionOffset)
+                + UMI3DSerializer.Write(anchor.rotationOffset)
+                + UMI3DSerializer.Write(anchor.scaleOffset);
         }
 
 

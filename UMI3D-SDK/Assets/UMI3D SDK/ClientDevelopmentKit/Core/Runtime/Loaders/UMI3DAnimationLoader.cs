@@ -75,16 +75,16 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
-                    value.result = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    value.result = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
-                    value.result = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    value.result = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    value.result = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    value.result = UMI3DSerializer.Read<ulong>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    value.result = UMI3DNetworkingHelper.Read<long>(value.container);
+                    value.result = UMI3DSerializer.Read<long>(value.container);
                     break;
                 default:
                     if (await UMI3DAnimation.ReadMyUMI3DProperty(value))

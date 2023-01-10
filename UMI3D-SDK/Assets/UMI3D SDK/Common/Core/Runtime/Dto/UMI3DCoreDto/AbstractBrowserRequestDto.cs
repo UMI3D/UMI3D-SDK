@@ -38,7 +38,7 @@ namespace umi3d.common
         /// <inheritdoc/>
         public virtual Bytable ToBytableArray(params object[] parameters)
         {
-            return UMI3DNetworkingHelper.Write(GetOperationId());
+            return UMI3DSerializer.Write(GetOperationId());
         }
 
         /// <inheritdoc/>

@@ -46,8 +46,8 @@ namespace umi3d.edk.userCapture
             /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
-                return UMI3DNetworkingHelper.Write(Phalanx)
-                    + UMI3DNetworkingHelper.Write(PhalanxEulerRotation);
+                return UMI3DSerializer.Write(Phalanx)
+                    + UMI3DSerializer.Write(PhalanxEulerRotation);
             }
         }
 
@@ -57,11 +57,11 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(isRight)
-                + UMI3DNetworkingHelper.Write(HandLocalPosition)
-                + UMI3DNetworkingHelper.Write(HandLocalEulerRotation)
-                + UMI3DNetworkingHelper.Write(HandLocalPosition)
-                + UMI3DNetworkingHelper.Write(Phalanxes);
+            return UMI3DSerializer.Write(isRight)
+                + UMI3DSerializer.Write(HandLocalPosition)
+                + UMI3DSerializer.Write(HandLocalEulerRotation)
+                + UMI3DSerializer.Write(HandLocalPosition)
+                + UMI3DSerializer.Write(Phalanxes);
         }
 
         /// <summary>

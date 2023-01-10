@@ -80,11 +80,11 @@ namespace umi3d.worldController
         public async void OnMessage(ulong timeStep, int groupId, byte[] bytes)
         {
             var b = new ByteContainer(timeStep, bytes);
-            uint id = UMI3DNetworkingHelper.Read<uint>(b);
+            uint id = UMI3DSerializer.Read<uint>(b);
             switch (id)
             {
                 case UMI3DWorldControllerMessageKeys.RegisterUser:
-                    RegisterIdentityDto identityDto = UMI3DNetworkingHelper.Read<RegisterIdentityDto>(b);
+                    RegisterIdentityDto identityDto = UMI3DSerializer.Read<RegisterIdentityDto>(b);
                     await UMI3DCollaborationServer.Instance.Register(identityDto);
                     break;
                 default:

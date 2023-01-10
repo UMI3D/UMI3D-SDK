@@ -56,13 +56,13 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToByte()
         {
-            return UMI3DNetworkingHelper.Write(GetUrl())
-                + UMI3DNetworkingHelper.Write(format)
-                + UMI3DNetworkingHelper.Write(extension)
-                + UMI3DNetworkingHelper.Write(metrics.resolution)
-                + UMI3DNetworkingHelper.Write(metrics.size)
-                + UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null)
-                + UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null);
+            return UMI3DSerializer.Write(GetUrl())
+                + UMI3DSerializer.Write(format)
+                + UMI3DSerializer.Write(extension)
+                + UMI3DSerializer.Write(metrics.resolution)
+                + UMI3DSerializer.Write(metrics.size)
+                + UMI3DSerializer.Write(isInBundle ? pathIfInBundle : null)
+                + UMI3DSerializer.Write(isInLibrary ? libraryKey?.id : null);
         }
 
         /// <inheritdoc/>

@@ -173,16 +173,16 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(PoseId)
-                + UMI3DNetworkingHelper.Write(PoseName)
-                + UMI3DNetworkingHelper.Write(IsActive)
-                + UMI3DNetworkingHelper.Write(HoverAnimation)
-                + UMI3DNetworkingHelper.Write(isRelativeToNode)
-                + UMI3DNetworkingHelper.Write(RightHandPosition)
-                + UMI3DNetworkingHelper.Write(RightHandEulerRotation)
-                + UMI3DNetworkingHelper.Write(LeftHandPosition)
-                + UMI3DNetworkingHelper.Write(LeftHandEulerRotation)
-                + UMI3DNetworkingHelper.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation));
+            return UMI3DSerializer.Write(PoseId)
+                + UMI3DSerializer.Write(PoseName)
+                + UMI3DSerializer.Write(IsActive)
+                + UMI3DSerializer.Write(HoverAnimation)
+                + UMI3DSerializer.Write(isRelativeToNode)
+                + UMI3DSerializer.Write(RightHandPosition)
+                + UMI3DSerializer.Write(RightHandEulerRotation)
+                + UMI3DSerializer.Write(LeftHandPosition)
+                + UMI3DSerializer.Write(LeftHandEulerRotation)
+                + UMI3DSerializer.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation));
         }
 
         /// <inheritdoc/>

@@ -145,7 +145,7 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    dto.duration = UMI3DNetworkingHelper.Read<float>(value.container);
+                    dto.duration = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(value.operationId, value.propertyKey, value.container);
@@ -162,7 +162,7 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    value.result = UMI3DNetworkingHelper.Read<float>(value.container);
+                    value.result = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(value);
@@ -175,7 +175,7 @@ namespace umi3d.cdk
 
         private static bool UpdateChain(ReadUMI3DPropertyData value)
         {
-            value.result = UMI3DNetworkingHelper.ReadList<UMI3DAnimationDto.AnimationChainDto>(value.container);
+            value.result = UMI3DSerializer.ReadList<UMI3DAnimationDto.AnimationChainDto>(value.container);
             return true;
         }
 
@@ -203,7 +203,7 @@ namespace umi3d.cdk
         {
             if (dto.animationChain == null)
                 dto.animationChain = new List<UMI3DAnimationDto.AnimationChainDto>();
-            UMI3DNetworkingHelper.ReadList(operationId, container, dto.animationChain);
+            UMI3DSerializer.ReadList(operationId, container, dto.animationChain);
             return true;
         }
 

@@ -38,8 +38,8 @@ public class ForceLogoutRequest : DispatchableRequest
 
     protected virtual Bytable ToBytable()
     {
-        return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.ForceLogoutRequest)
-            + UMI3DNetworkingHelper.Write(reason);
+        return UMI3DSerializer.Write(UMI3DOperationKeys.ForceLogoutRequest)
+            + UMI3DSerializer.Write(reason);
     }
 
     /// <inheritdoc/>

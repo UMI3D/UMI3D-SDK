@@ -126,7 +126,7 @@ namespace umi3d.cdk
             Light light = node?.gameObject?.GetComponent<Light>();
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
-                KHR_lights_punctual lightdto = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(container);
+                KHR_lights_punctual lightdto = UMI3DSerializer.Read<KHR_lights_punctual>(container);
                 if (light != null && lightdto == null) GameObject.Destroy(light);
                 else if (lightdto != null) CreateLight(lightdto, node.gameObject);
                 return true;
@@ -135,16 +135,16 @@ namespace umi3d.cdk
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LightIntensity:
-                    light.intensity = dto.intensity = UMI3DNetworkingHelper.Read<float>(container);
+                    light.intensity = dto.intensity = UMI3DSerializer.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightColor:
-                    light.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                    light.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
                     break;
                 case UMI3DPropertyKeys.LightRange:
-                    light.range = dto.range = UMI3DNetworkingHelper.Read<float>(container);
+                    light.range = dto.range = UMI3DSerializer.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightType:
-                    dto.type = UMI3DNetworkingHelper.Read<string>(container);
+                    dto.type = UMI3DSerializer.Read<string>(container);
                     if (dto.type == KHR_lights_punctual.LightTypes.Directional.ToString())
                     {
                         light.type = LightType.Directional;
@@ -161,7 +161,7 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.LightSpot:
-                    KHR_lights_punctual.KHR_spot value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
+                    KHR_lights_punctual.KHR_spot value = UMI3DSerializer.Read<KHR_lights_punctual.KHR_spot>(container);
                     light.innerSpotAngle = dto.spot.innerConeAngle = value.innerConeAngle;
                     light.spotAngle = dto.spot.outerConeAngle = value.outerConeAngle;
                     break;
@@ -175,25 +175,25 @@ namespace umi3d.cdk
         {
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
-                value = UMI3DNetworkingHelper.Read<KHR_lights_punctual>(container);
+                value = UMI3DSerializer.Read<KHR_lights_punctual>(container);
                 return true;
             }
             switch (propertyKey)
             {
                 case UMI3DPropertyKeys.LightIntensity:
-                    value = UMI3DNetworkingHelper.Read<float>(container);
+                    value = UMI3DSerializer.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightColor:
-                    value = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                    value = UMI3DSerializer.Read<SerializableColor>(container);
                     break;
                 case UMI3DPropertyKeys.LightRange:
-                    value = UMI3DNetworkingHelper.Read<float>(container);
+                    value = UMI3DSerializer.Read<float>(container);
                     break;
                 case UMI3DPropertyKeys.LightType:
-                    value = UMI3DNetworkingHelper.Read<string>(container);
+                    value = UMI3DSerializer.Read<string>(container);
                     break;
                 case UMI3DPropertyKeys.LightSpot:
-                    value = UMI3DNetworkingHelper.Read<KHR_lights_punctual.KHR_spot>(container);
+                    value = UMI3DSerializer.Read<KHR_lights_punctual.KHR_spot>(container);
                     break;
                 default:
                     return false;

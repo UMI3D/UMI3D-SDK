@@ -62,15 +62,15 @@ namespace umi3d.common
         {
             if (CollectionType != 0)
             {
-                return UMI3DNetworkingHelper.Write(CollectionType)
-                    + UMI3DNetworkingHelper.Write(size)
-                    + UMI3DNetworkingHelper.Write(Type)
-                    + UMI3DNetworkingHelper.Write(value);
+                return UMI3DSerializer.Write(CollectionType)
+                    + UMI3DSerializer.Write(size)
+                    + UMI3DSerializer.Write(Type)
+                    + UMI3DSerializer.Write(value);
             }
             else
             {
-                return UMI3DNetworkingHelper.Write(Type)
-                    + UMI3DNetworkingHelper.Write(value);
+                return UMI3DSerializer.Write(Type)
+                    + UMI3DSerializer.Write(value);
             }
         }
 
@@ -82,7 +82,7 @@ namespace umi3d.common
 
         private static object _FromByte(ByteContainer container)
         {
-            byte Type = UMI3DNetworkingHelper.Read<byte>(container);
+            byte Type = UMI3DSerializer.Read<byte>(container);
             return _FromByte(container, Type);
         }
 
@@ -92,8 +92,8 @@ namespace umi3d.common
             {
                 case UMI3DShaderPropertyType.Array:
                     {
-                        int size = UMI3DNetworkingHelper.Read<int>(container);
-                        byte contentType = UMI3DNetworkingHelper.Read<byte>(container);
+                        int size = UMI3DSerializer.Read<int>(container);
+                        byte contentType = UMI3DSerializer.Read<byte>(container);
                         var result = new List<object>();
                         for (int i = 0; i < size; i++)
                         {
@@ -103,8 +103,8 @@ namespace umi3d.common
                     }
                 case UMI3DShaderPropertyType.List:
                     {
-                        int size = UMI3DNetworkingHelper.Read<int>(container);
-                        byte contentType = UMI3DNetworkingHelper.Read<byte>(container);
+                        int size = UMI3DSerializer.Read<int>(container);
+                        byte contentType = UMI3DSerializer.Read<byte>(container);
                         var result = new List<object>();
                         for (int i = 0; i < size; i++)
                         {
@@ -113,17 +113,17 @@ namespace umi3d.common
                         return result;
                     }
                 case UMI3DShaderPropertyType.Bool:
-                    return UMI3DNetworkingHelper.Read<bool>(container);
-                case UMI3DShaderPropertyType.Double: return UMI3DNetworkingHelper.Read<double>(container);
-                case UMI3DShaderPropertyType.Float: return UMI3DNetworkingHelper.Read<float>(container);
-                case UMI3DShaderPropertyType.Int: return UMI3DNetworkingHelper.Read<int>(container);
+                    return UMI3DSerializer.Read<bool>(container);
+                case UMI3DShaderPropertyType.Double: return UMI3DSerializer.Read<double>(container);
+                case UMI3DShaderPropertyType.Float: return UMI3DSerializer.Read<float>(container);
+                case UMI3DShaderPropertyType.Int: return UMI3DSerializer.Read<int>(container);
 
-                case UMI3DShaderPropertyType.Vector2: return UMI3DNetworkingHelper.Read<Vector2>(container);
-                case UMI3DShaderPropertyType.Vector3: return UMI3DNetworkingHelper.Read<Vector3>(container);
-                case UMI3DShaderPropertyType.Vector4: return UMI3DNetworkingHelper.Read<Vector4>(container);
-                case UMI3DShaderPropertyType.Color: return UMI3DNetworkingHelper.Read<Color>(container);
+                case UMI3DShaderPropertyType.Vector2: return UMI3DSerializer.Read<Vector2>(container);
+                case UMI3DShaderPropertyType.Vector3: return UMI3DSerializer.Read<Vector3>(container);
+                case UMI3DShaderPropertyType.Vector4: return UMI3DSerializer.Read<Vector4>(container);
+                case UMI3DShaderPropertyType.Color: return UMI3DSerializer.Read<Color>(container);
 
-                case UMI3DShaderPropertyType.Texture: return UMI3DNetworkingHelper.Read<TextureDto>(container);
+                case UMI3DShaderPropertyType.Texture: return UMI3DSerializer.Read<TextureDto>(container);
             }
             return null;
         }

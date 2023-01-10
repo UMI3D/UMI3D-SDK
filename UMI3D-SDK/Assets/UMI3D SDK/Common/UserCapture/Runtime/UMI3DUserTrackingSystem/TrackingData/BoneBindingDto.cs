@@ -91,17 +91,17 @@ namespace umi3d.common.userCapture
         public Bytable ToBytableArray(params object[] parameters)
         {
 
-            return UMI3DNetworkingHelper.Write(bindingId)
-                + UMI3DNetworkingHelper.Write(rigName)
-                + UMI3DNetworkingHelper.Write(active)
-                + UMI3DNetworkingHelper.Write(boneType)
-                + UMI3DNetworkingHelper.Write(objectId)
-                + UMI3DNetworkingHelper.Write(offsetPosition)
-                + UMI3DNetworkingHelper.Write(offsetRotation)
-                + UMI3DNetworkingHelper.Write(offsetScale)
-                + UMI3DNetworkingHelper.Write(syncPosition)
-                + UMI3DNetworkingHelper.Write(syncRotation)
-                + UMI3DNetworkingHelper.Write(freezeWorldScale);
+            return UMI3DSerializer.Write(bindingId)
+                + UMI3DSerializer.Write(rigName)
+                + UMI3DSerializer.Write(active)
+                + UMI3DSerializer.Write(boneType)
+                + UMI3DSerializer.Write(objectId)
+                + UMI3DSerializer.Write(offsetPosition)
+                + UMI3DSerializer.Write(offsetRotation)
+                + UMI3DSerializer.Write(offsetScale)
+                + UMI3DSerializer.Write(syncPosition)
+                + UMI3DSerializer.Write(syncRotation)
+                + UMI3DSerializer.Write(freezeWorldScale);
         }
     }
 }

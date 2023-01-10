@@ -118,11 +118,11 @@ namespace umi3d.edk.userCapture
         public Bytable ToBytes(UMI3DUser user)
         {
             var label = string.IsNullOrEmpty(this.label) ? this.stateName : this.label;
-            Bytable bytable = UMI3DNetworkingHelper.Write<ulong>(id)
-                            + UMI3DNetworkingHelper.Write<string>(label)
-                            + UMI3DNetworkingHelper.Write<string>(stateName)
-                            + UMI3DNetworkingHelper.Write<bool>(availableAtStart)
-                            + UMI3DNetworkingHelper.Write<FileDto>(iconResource.ToDto());
+            Bytable bytable = UMI3DSerializer.Write<ulong>(id)
+                            + UMI3DSerializer.Write<string>(label)
+                            + UMI3DSerializer.Write<string>(stateName)
+                            + UMI3DSerializer.Write<bool>(availableAtStart)
+                            + UMI3DSerializer.Write<FileDto>(iconResource.ToDto());
 
             return bytable;
         }

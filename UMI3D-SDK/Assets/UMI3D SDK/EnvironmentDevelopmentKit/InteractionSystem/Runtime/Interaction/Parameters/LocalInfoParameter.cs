@@ -94,12 +94,12 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(appName)
-                + UMI3DNetworkingHelper.Write(serverName)
-                + UMI3DNetworkingHelper.Write(reason)
-                + UMI3DNetworkingHelper.Write(key)
-                + UMI3DNetworkingHelper.Write(readValue)
-                + UMI3DNetworkingHelper.Write(writeValue);
+                + UMI3DSerializer.Write(appName)
+                + UMI3DSerializer.Write(serverName)
+                + UMI3DSerializer.Write(reason)
+                + UMI3DSerializer.Write(key)
+                + UMI3DSerializer.Write(readValue)
+                + UMI3DSerializer.Write(writeValue);
         }
 
         /// <inheritdoc/>

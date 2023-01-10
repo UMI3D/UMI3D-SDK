@@ -42,7 +42,7 @@ namespace umi3d.worldController
 
         public virtual Bytable ToBytable()
         {
-            return UMI3DNetworkingHelper.Write(messageId) + GetMessage();
+            return UMI3DSerializer.Write(messageId) + GetMessage();
         }
 
         public Bytable ToBytableArray(params object[] parameters)
@@ -63,7 +63,7 @@ namespace umi3d.worldController
 
         protected override Bytable GetMessage()
         {
-            return UMI3DNetworkingHelper.Write(uid);
+            return UMI3DSerializer.Write(uid);
         }
     }
 

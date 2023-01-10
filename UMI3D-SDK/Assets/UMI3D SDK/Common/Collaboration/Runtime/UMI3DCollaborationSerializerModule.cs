@@ -22,7 +22,7 @@ namespace umi3d.common.collaboration
     /// <summary>
     /// Helper module to serialize objects related to the Collaboration module.
     /// </summary>
-    public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
+    public class UMI3DCollaborationSerializerModule : UMI3DSerializerModule
     {
         /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
@@ -35,9 +35,9 @@ namespace umi3d.common.collaboration
                     {
                         var usercam = new UserCameraPropertiesDto
                         {
-                            scale = UMI3DNetworkingHelper.Read<float>(container),
-                            projectionMatrix = UMI3DNetworkingHelper.Read<SerializableMatrix4x4>(container),
-                            boneType = UMI3DNetworkingHelper.Read<uint>(container)
+                            scale = UMI3DSerializer.Read<float>(container),
+                            projectionMatrix = UMI3DSerializer.Read<SerializableMatrix4x4>(container),
+                            boneType = UMI3DSerializer.Read<uint>(container)
                         };
                         result = (T)Convert.ChangeType(usercam, typeof(T));
                     }
@@ -49,10 +49,10 @@ namespace umi3d.common.collaboration
                     return true;
 
                 case true when typeof(T) == typeof(VoiceDto):
-                    if (UMI3DNetworkingHelper.TryRead(container, out string voiceUrl) &&
-                        UMI3DNetworkingHelper.TryRead(container, out string login) &&
-                        UMI3DNetworkingHelper.TryRead(container, out string password) &&
-                        UMI3DNetworkingHelper.TryRead(container, out string channel))
+                    if (UMI3DSerializer.TryRead(container, out string voiceUrl) &&
+                        UMI3DSerializer.TryRead(container, out string login) &&
+                        UMI3DSerializer.TryRead(container, out string password) &&
+                        UMI3DSerializer.TryRead(container, out string channel))
                     {
                         readable = true;
                         var voice = new VoiceDto
@@ -75,8 +75,8 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BoneDto):
                     uint type;
                     SerializableVector4 rot;
-                    if (UMI3DNetworkingHelper.TryRead(container, out type)
-                        && UMI3DNetworkingHelper.TryRead(container, out rot))
+                    if (UMI3DSerializer.TryRead(container, out type)
+                        && UMI3DSerializer.TryRead(container, out rot))
                     {
                         var bone = new BoneDto() { boneType = type, rotation = rot };
                         result = (T)Convert.ChangeType(bone, typeof(T));
@@ -100,17 +100,17 @@ namespace umi3d.common.collaboration
                     SerializableVector3 offsetPosition;
                     SerializableVector4 offsetRotation;
                     SerializableVector3 offsetScale;
-                    if (UMI3DNetworkingHelper.TryRead(container, out bindingId)
-                        && UMI3DNetworkingHelper.TryRead(container, out rigName)
-                        && UMI3DNetworkingHelper.TryRead(container, out active)
-                        && UMI3DNetworkingHelper.TryRead(container, out boneType)
-                        && UMI3DNetworkingHelper.TryRead(container, out objectId)
-                        && UMI3DNetworkingHelper.TryRead(container, out offsetPosition)
-                        && UMI3DNetworkingHelper.TryRead(container, out offsetRotation)
-                        && UMI3DNetworkingHelper.TryRead(container, out offsetScale)
-                        && UMI3DNetworkingHelper.TryRead(container, out syncPosition)
-                        && UMI3DNetworkingHelper.TryRead(container, out syncRotation)
-                        && UMI3DNetworkingHelper.TryRead(container, out freezeWorldScale))
+                    if (UMI3DSerializer.TryRead(container, out bindingId)
+                        && UMI3DSerializer.TryRead(container, out rigName)
+                        && UMI3DSerializer.TryRead(container, out active)
+                        && UMI3DSerializer.TryRead(container, out boneType)
+                        && UMI3DSerializer.TryRead(container, out objectId)
+                        && UMI3DSerializer.TryRead(container, out offsetPosition)
+                        && UMI3DSerializer.TryRead(container, out offsetRotation)
+                        && UMI3DSerializer.TryRead(container, out offsetScale)
+                        && UMI3DSerializer.TryRead(container, out syncPosition)
+                        && UMI3DSerializer.TryRead(container, out syncRotation)
+                        && UMI3DSerializer.TryRead(container, out freezeWorldScale))
                     {
                         var bone = new BoneBindingDto()
                         {
@@ -145,15 +145,15 @@ namespace umi3d.common.collaboration
                     SerializableVector3 RightHandEulerRotation;
                     SerializableVector3 LeftHandPosition;
                     SerializableVector3 LeftHandEulerRotation;
-                    if (UMI3DNetworkingHelper.TryRead(container, out id)
-                        && UMI3DNetworkingHelper.TryRead(container, out Name)
-                        && UMI3DNetworkingHelper.TryRead(container, out IsActive)
-                        && UMI3DNetworkingHelper.TryRead(container, out HoverPose)
-                        && UMI3DNetworkingHelper.TryRead(container, out isRelativeToNode)
-                        && UMI3DNetworkingHelper.TryRead(container, out RightHandPosition)
-                        && UMI3DNetworkingHelper.TryRead(container, out RightHandEulerRotation)
-                        && UMI3DNetworkingHelper.TryRead(container, out LeftHandPosition)
-                        && UMI3DNetworkingHelper.TryRead(container, out LeftHandEulerRotation))
+                    if (UMI3DSerializer.TryRead(container, out id)
+                        && UMI3DSerializer.TryRead(container, out Name)
+                        && UMI3DSerializer.TryRead(container, out IsActive)
+                        && UMI3DSerializer.TryRead(container, out HoverPose)
+                        && UMI3DSerializer.TryRead(container, out isRelativeToNode)
+                        && UMI3DSerializer.TryRead(container, out RightHandPosition)
+                        && UMI3DSerializer.TryRead(container, out RightHandEulerRotation)
+                        && UMI3DSerializer.TryRead(container, out LeftHandPosition)
+                        && UMI3DSerializer.TryRead(container, out LeftHandEulerRotation))
                     {
                         var HandPose = new UMI3DHandPoseDto()
                         {
@@ -179,12 +179,12 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(UMI3DEmotesConfigDto):
                     var conf = new UMI3DEmotesConfigDto();
                     result = default(T);
-                    readable = UMI3DNetworkingHelper.TryRead<bool>(container, out conf.allAvailableByDefault);
-                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out conf.defaultStateName);
+                    readable = UMI3DSerializer.TryRead<bool>(container, out conf.allAvailableByDefault);
+                    readable &= UMI3DSerializer.TryRead<string>(container, out conf.defaultStateName);
 
                     if (readable)
                     {
-                        readable = UMI3DNetworkingHelper.TryRead<int>(container, out int nbEmotes);
+                        readable = UMI3DSerializer.TryRead<int>(container, out int nbEmotes);
                         if (readable)
                         {
                             for (uint i = 0; i < nbEmotes; i++)
@@ -205,11 +205,11 @@ namespace umi3d.common.collaboration
                     var e = new UMI3DEmoteDto();
                     result = default(T);
 
-                    readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out e.id);
-                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.label);
-                    readable &= UMI3DNetworkingHelper.TryRead<string>(container, out e.stateName);
-                    readable &= UMI3DNetworkingHelper.TryRead<bool>(container, out e.available);
-                    readable &= UMI3DNetworkingHelper.TryRead<FileDto>(container, out e.iconResource);
+                    readable = UMI3DSerializer.TryRead<ulong>(container, out e.id);
+                    readable &= UMI3DSerializer.TryRead<string>(container, out e.label);
+                    readable &= UMI3DSerializer.TryRead<string>(container, out e.stateName);
+                    readable &= UMI3DSerializer.TryRead<bool>(container, out e.available);
+                    readable &= UMI3DSerializer.TryRead<FileDto>(container, out e.iconResource);
 
                     if (!readable)
                         return false;
@@ -217,13 +217,13 @@ namespace umi3d.common.collaboration
                     return true;
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
-                    readable = UMI3DNetworkingHelper.TryRead<ulong>(container, out mat.newMaterialId);
+                    readable = UMI3DSerializer.TryRead<ulong>(container, out mat.newMaterialId);
                     if (readable)
                     {
-                        readable = UMI3DNetworkingHelper.TryRead<bool>(container, out mat.addMaterialIfNotExists);
+                        readable = UMI3DSerializer.TryRead<bool>(container, out mat.addMaterialIfNotExists);
                         if (readable)
                         {
-                            mat.overridedMaterialsId = UMI3DNetworkingHelper.ReadList<string>(container);
+                            mat.overridedMaterialsId = UMI3DSerializer.ReadList<string>(container);
                             result = (T)Convert.ChangeType(mat, typeof(T));
                         }
                         else
@@ -241,12 +241,12 @@ namespace umi3d.common.collaboration
                     {
                         var scalableTexture = new ScalableTextureDto
                         {
-                            variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
+                            variants = UMI3DSerializer.ReadList<FileDto>(container)
                         };
-                        if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
-                            && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
-                            && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId)
-                            && UMI3DNetworkingHelper.TryRead(container, out float scale))
+                        if (UMI3DSerializer.TryRead(container, out string animationId)
+                            && UMI3DSerializer.TryRead(container, out string audioSourceId)
+                            && UMI3DSerializer.TryRead(container, out string streamingFromUserId)
+                            && UMI3DSerializer.TryRead(container, out float scale))
                         {
                             scalableTexture.animationId = animationId;
                             scalableTexture.audioSourceId = audioSourceId;
@@ -264,7 +264,7 @@ namespace umi3d.common.collaboration
                     {
                         var texture = new TextureDto
                         {
-                            variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
+                            variants = UMI3DSerializer.ReadList<FileDto>(container)
                         };
                         if (texture.variants.Count == 0)
                         {
@@ -272,9 +272,9 @@ namespace umi3d.common.collaboration
                             readable = true;
                             return true;
                         }
-                        else if (UMI3DNetworkingHelper.TryRead(container, out string animationId)
-                          && UMI3DNetworkingHelper.TryRead(container, out string audioSourceId)
-                          && UMI3DNetworkingHelper.TryRead(container, out string streamingFromUserId))
+                        else if (UMI3DSerializer.TryRead(container, out string animationId)
+                          && UMI3DSerializer.TryRead(container, out string audioSourceId)
+                          && UMI3DSerializer.TryRead(container, out string streamingFromUserId))
                         {
                             texture.animationId = animationId;
                             texture.audioSourceId = audioSourceId;
@@ -290,7 +290,7 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(ResourceDto):
                     var resource = new ResourceDto
                     {
-                        variants = UMI3DNetworkingHelper.ReadList<FileDto>(container)
+                        variants = UMI3DSerializer.ReadList<FileDto>(container)
                     };
                     if (resource.variants.Count == 0)
                     {
@@ -306,13 +306,13 @@ namespace umi3d.common.collaboration
                     {
                         metrics = new AssetMetricDto()
                     };
-                    readable = UMI3DNetworkingHelper.TryRead<string>(container, out file.url)
-                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.format)
-                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.extension)
-                               && UMI3DNetworkingHelper.TryRead<int>(container, out file.metrics.resolution)
-                               && UMI3DNetworkingHelper.TryRead<float>(container, out file.metrics.size)
-                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.pathIfInBundle)
-                               && UMI3DNetworkingHelper.TryRead<string>(container, out file.libraryKey);
+                    readable = UMI3DSerializer.TryRead<string>(container, out file.url)
+                               && UMI3DSerializer.TryRead<string>(container, out file.format)
+                               && UMI3DSerializer.TryRead<string>(container, out file.extension)
+                               && UMI3DSerializer.TryRead<int>(container, out file.metrics.resolution)
+                               && UMI3DSerializer.TryRead<float>(container, out file.metrics.size)
+                               && UMI3DSerializer.TryRead<string>(container, out file.pathIfInBundle)
+                               && UMI3DSerializer.TryRead<string>(container, out file.libraryKey);
                     if (readable)
                     {
                         result = (T)Convert.ChangeType(file, typeof(T));
@@ -327,8 +327,8 @@ namespace umi3d.common.collaboration
                     MediaDto media;
                     GateDto gate;
                     if (
-                        UMI3DNetworkingHelper.TryRead<MediaDto>(container, out media)
-                        && UMI3DNetworkingHelper.TryRead<GateDto>(container, out gate)
+                        UMI3DSerializer.TryRead<MediaDto>(container, out media)
+                        && UMI3DSerializer.TryRead<GateDto>(container, out gate)
                         )
                     {
 
@@ -348,7 +348,7 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(ForceLogoutDto):
                     string reason;
                     if (
-                        UMI3DNetworkingHelper.TryRead<string>(container, out reason)
+                        UMI3DSerializer.TryRead<string>(container, out reason)
                         )
                     {
 
@@ -368,10 +368,10 @@ namespace umi3d.common.collaboration
                     string gateid;
                     byte[] data;
                     if (
-                        UMI3DNetworkingHelper.TryRead<string>(container, out gateid)
+                        UMI3DSerializer.TryRead<string>(container, out gateid)
                         )
                     {
-                        data = UMI3DNetworkingHelper.ReadArray<byte>(container);
+                        data = UMI3DSerializer.ReadArray<byte>(container);
 
                         var _gate = new GateDto
                         {
@@ -390,10 +390,10 @@ namespace umi3d.common.collaboration
                     string name, versionMajor, versionMinor, versionStatus, versionDate, url;
                     ResourceDto icon2D, icon3D;
                     if (
-                        UMI3DNetworkingHelper.TryRead(container, out name)
-                        && UMI3DNetworkingHelper.TryRead(container, out icon2D)
-                        && UMI3DNetworkingHelper.TryRead(container, out icon3D)
-                        && UMI3DNetworkingHelper.TryRead(container, out url)
+                        UMI3DSerializer.TryRead(container, out name)
+                        && UMI3DSerializer.TryRead(container, out icon2D)
+                        && UMI3DSerializer.TryRead(container, out icon3D)
+                        && UMI3DSerializer.TryRead(container, out url)
                         )
                     {
                         var _media = new MediaDto
@@ -419,16 +419,16 @@ namespace umi3d.common.collaboration
                     SerializableVector4 rotation;
 
                     if (
-                        UMI3DNetworkingHelper.TryRead(container, out idKey)
-                        && UMI3DNetworkingHelper.TryRead(container, out userId)
-                        && UMI3DNetworkingHelper.TryRead(container, out parentId)
-                        && UMI3DNetworkingHelper.TryRead(container, out skeletonHighOffset)
-                        && UMI3DNetworkingHelper.TryRead(container, out position)
-                        && UMI3DNetworkingHelper.TryRead(container, out rotation)
-                        && UMI3DNetworkingHelper.TryRead(container, out refreshFrequency)
+                        UMI3DSerializer.TryRead(container, out idKey)
+                        && UMI3DSerializer.TryRead(container, out userId)
+                        && UMI3DSerializer.TryRead(container, out parentId)
+                        && UMI3DSerializer.TryRead(container, out skeletonHighOffset)
+                        && UMI3DSerializer.TryRead(container, out position)
+                        && UMI3DSerializer.TryRead(container, out rotation)
+                        && UMI3DSerializer.TryRead(container, out refreshFrequency)
                         )
                     {
-                        System.Collections.Generic.List<BoneDto> bones = UMI3DNetworkingHelper.ReadList<BoneDto>(container);
+                        System.Collections.Generic.List<BoneDto> bones = UMI3DSerializer.ReadList<BoneDto>(container);
 
                         if (bones != default)
                         {
@@ -470,120 +470,120 @@ namespace umi3d.common.collaboration
             switch (value)
             {
                 case LocalInfoRequestParameterValue localInfovalue:
-                    bytable = UMI3DNetworkingHelper.Write(localInfovalue.read)
-                        + UMI3DNetworkingHelper.Write(localInfovalue.write);
+                    bytable = UMI3DSerializer.Write(localInfovalue.read)
+                        + UMI3DSerializer.Write(localInfovalue.write);
                     break;
                 case UserCameraPropertiesDto camera:
-                    bytable = UMI3DNetworkingHelper.Write(camera.scale)
-                        + UMI3DNetworkingHelper.Write(camera.projectionMatrix)
-                        + UMI3DNetworkingHelper.Write(camera.boneType);
+                    bytable = UMI3DSerializer.Write(camera.scale)
+                        + UMI3DSerializer.Write(camera.projectionMatrix)
+                        + UMI3DSerializer.Write(camera.boneType);
                     break;
                 case EnumParameterDto<string> param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Enum)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.Enum)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value);
                     break;
                 case BooleanParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Bool)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.Bool)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value);
                     break;
                 case FloatParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Float)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.Float)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value);
                     break;
                 case IntegerParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.Int)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.Int)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value);
 
                     break;
                 case StringParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.String)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.String)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value);
                     break;
                 case UploadFileParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.StringUploadFile)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value)
-                        + UMI3DNetworkingHelper.Write(param.authorizedExtensions);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.StringUploadFile)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value)
+                        + UMI3DSerializer.Write(param.authorizedExtensions);
                     break;
                 case IntegerRangeParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.IntRange)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value)
-                        + UMI3DNetworkingHelper.Write(param.min)
-                        + UMI3DNetworkingHelper.Write(param.max)
-                        + UMI3DNetworkingHelper.Write(param.increment);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.IntRange)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value)
+                        + UMI3DSerializer.Write(param.min)
+                        + UMI3DSerializer.Write(param.max)
+                        + UMI3DSerializer.Write(param.increment);
                     break;
                 case FloatRangeParameterDto param:
-                    bytable = UMI3DNetworkingHelper.Write(UMI3DParameterKeys.FloatRange)
-                        + UMI3DNetworkingHelper.Write(param.privateParameter)
-                        + UMI3DNetworkingHelper.Write(param.value)
-                        + UMI3DNetworkingHelper.Write(param.min)
-                        + UMI3DNetworkingHelper.Write(param.max)
-                        + UMI3DNetworkingHelper.Write(param.increment);
+                    bytable = UMI3DSerializer.Write(UMI3DParameterKeys.FloatRange)
+                        + UMI3DSerializer.Write(param.privateParameter)
+                        + UMI3DSerializer.Write(param.value)
+                        + UMI3DSerializer.Write(param.min)
+                        + UMI3DSerializer.Write(param.max)
+                        + UMI3DSerializer.Write(param.increment);
                     break;
                 case UMI3DRenderedNodeDto.MaterialOverrideDto material:
-                    bytable = UMI3DNetworkingHelper.Write(material.newMaterialId)
-                        + UMI3DNetworkingHelper.Write(material.addMaterialIfNotExists)
-                        + UMI3DNetworkingHelper.WriteCollection(material.overridedMaterialsId);
+                    bytable = UMI3DSerializer.Write(material.newMaterialId)
+                        + UMI3DSerializer.Write(material.addMaterialIfNotExists)
+                        + UMI3DSerializer.WriteCollection(material.overridedMaterialsId);
                     break;
                 case ScalableTextureDto scalableTextureDto:
-                    bytable = UMI3DNetworkingHelper.WriteCollection(scalableTextureDto.variants)
-                        + UMI3DNetworkingHelper.Write(scalableTextureDto.animationId)
-                        + UMI3DNetworkingHelper.Write(scalableTextureDto.audioSourceId)
-                        + UMI3DNetworkingHelper.Write(scalableTextureDto.streamingFromUserId)
-                        + UMI3DNetworkingHelper.Write(scalableTextureDto.scale);
+                    bytable = UMI3DSerializer.WriteCollection(scalableTextureDto.variants)
+                        + UMI3DSerializer.Write(scalableTextureDto.animationId)
+                        + UMI3DSerializer.Write(scalableTextureDto.audioSourceId)
+                        + UMI3DSerializer.Write(scalableTextureDto.streamingFromUserId)
+                        + UMI3DSerializer.Write(scalableTextureDto.scale);
                     break;
                 case TextureDto textureDto:
-                    bytable = UMI3DNetworkingHelper.WriteCollection(textureDto.variants)
-                        + UMI3DNetworkingHelper.Write(textureDto.animationId)
-                        + UMI3DNetworkingHelper.Write(textureDto.audioSourceId)
-                        + UMI3DNetworkingHelper.Write(textureDto.streamingFromUserId);
+                    bytable = UMI3DSerializer.WriteCollection(textureDto.variants)
+                        + UMI3DSerializer.Write(textureDto.animationId)
+                        + UMI3DSerializer.Write(textureDto.audioSourceId)
+                        + UMI3DSerializer.Write(textureDto.streamingFromUserId);
                     break;
                 case ResourceDto resourceDto:
-                    bytable = UMI3DNetworkingHelper.WriteCollection(resourceDto.variants);
+                    bytable = UMI3DSerializer.WriteCollection(resourceDto.variants);
                     break;
                 case FileDto fileDto:
-                    bytable = UMI3DNetworkingHelper.Write(fileDto.url)
-                        + UMI3DNetworkingHelper.Write(fileDto.format)
-                        + UMI3DNetworkingHelper.Write(fileDto.extension)
-                        + UMI3DNetworkingHelper.Write(fileDto.metrics?.resolution ?? 0)
-                        + UMI3DNetworkingHelper.Write(fileDto.metrics?.size ?? 0f)
-                        + UMI3DNetworkingHelper.Write(fileDto.pathIfInBundle)
-                        + UMI3DNetworkingHelper.Write(fileDto.libraryKey);
+                    bytable = UMI3DSerializer.Write(fileDto.url)
+                        + UMI3DSerializer.Write(fileDto.format)
+                        + UMI3DSerializer.Write(fileDto.extension)
+                        + UMI3DSerializer.Write(fileDto.metrics?.resolution ?? 0)
+                        + UMI3DSerializer.Write(fileDto.metrics?.size ?? 0f)
+                        + UMI3DSerializer.Write(fileDto.pathIfInBundle)
+                        + UMI3DSerializer.Write(fileDto.libraryKey);
                     break;
                 case RedirectionDto redirection:
-                    bytable = UMI3DNetworkingHelper.Write(redirection.media)
-                        + UMI3DNetworkingHelper.Write(redirection.gate);
+                    bytable = UMI3DSerializer.Write(redirection.media)
+                        + UMI3DSerializer.Write(redirection.gate);
                     break;
                 case ForceLogoutDto forceLogout:
-                    bytable = UMI3DNetworkingHelper.Write(forceLogout.reason);
+                    bytable = UMI3DSerializer.Write(forceLogout.reason);
                     break;
                 case MediaDto media:
-                    bytable = UMI3DNetworkingHelper.Write(media.name)
-                        + UMI3DNetworkingHelper.Write(media.icon2D)
-                        + UMI3DNetworkingHelper.Write(media.icon3D)
-                        + UMI3DNetworkingHelper.Write(media.url);
+                    bytable = UMI3DSerializer.Write(media.name)
+                        + UMI3DSerializer.Write(media.icon2D)
+                        + UMI3DSerializer.Write(media.icon3D)
+                        + UMI3DSerializer.Write(media.url);
                     break;
                 case GateDto gate:
-                    bytable = UMI3DNetworkingHelper.Write(gate.gateId)
-                        + UMI3DNetworkingHelper.WriteCollection(gate.metaData);
+                    bytable = UMI3DSerializer.Write(gate.gateId)
+                        + UMI3DSerializer.WriteCollection(gate.metaData);
                     break;
                 case VoiceDto voice:
-                    bytable = UMI3DNetworkingHelper.Write(voice.url)
-                        + UMI3DNetworkingHelper.Write(voice.login)
-                        + UMI3DNetworkingHelper.Write(voice.password)
-                        + UMI3DNetworkingHelper.Write(voice.channelName);
+                    bytable = UMI3DSerializer.Write(voice.url)
+                        + UMI3DSerializer.Write(voice.login)
+                        + UMI3DSerializer.Write(voice.password)
+                        + UMI3DSerializer.Write(voice.channelName);
                     break;
                 default:
                     if (typeof(T) == typeof(ResourceDto))
                     {
                         // value is null
-                        bytable = UMI3DNetworkingHelper.WriteCollection(new System.Collections.Generic.List<FileDto>());
+                        bytable = UMI3DSerializer.WriteCollection(new System.Collections.Generic.List<FileDto>());
                         return true;
                     }
                     bytable = null;

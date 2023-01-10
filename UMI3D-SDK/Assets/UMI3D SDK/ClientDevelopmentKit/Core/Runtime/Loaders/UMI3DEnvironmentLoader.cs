@@ -565,7 +565,7 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         private async Task _LoadEntity(ByteContainer container)
         {
-            List<ulong> ids = UMI3DNetworkingHelper.ReadList<ulong>(container);
+            List<ulong> ids = UMI3DSerializer.ReadList<ulong>(container);
             ids.ForEach(id => NotifyEntityToBeLoaded(id));
 
             try
@@ -811,25 +811,25 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.PreloadedScenes:
                     return await Parameters.SetUMI3DProperty(data);
                 case UMI3DPropertyKeys.AmbientType:
-                    RenderSettings.ambientMode = (AmbientMode)UMI3DNetworkingHelper.Read<int>(data.container);
+                    RenderSettings.ambientMode = (AmbientMode)UMI3DSerializer.Read<int>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = UMI3DNetworkingHelper.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<SerializableColor>(data.container);
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = UMI3DNetworkingHelper.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<SerializableColor>(data.container);
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = UMI3DNetworkingHelper.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<SerializableColor>(data.container);
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
-                    RenderSettings.ambientIntensity = UMI3DNetworkingHelper.Read<float>(data.container);
+                    RenderSettings.ambientIntensity = UMI3DSerializer.Read<float>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
-                    dto.skybox = UMI3DNetworkingHelper.Read<ResourceDto>(data.container);
+                    dto.skybox = UMI3DSerializer.Read<ResourceDto>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
-                    dto.skyboxRotation = UMI3DNetworkingHelper.Read<float>(data.container);
+                    dto.skyboxRotation = UMI3DSerializer.Read<float>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 default:
                     return false;
@@ -981,9 +981,9 @@ namespace umi3d.cdk
         public static async Task<bool> SetMultiEntity(ByteContainer container)
         {
             if (!Exists) return false;
-            List<ulong> idList = UMI3DNetworkingHelper.ReadList<ulong>(container);
-            uint operationId = UMI3DNetworkingHelper.Read<uint>(container);
-            uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
+            List<ulong> idList = UMI3DSerializer.ReadList<ulong>(container);
+            uint operationId = UMI3DSerializer.Read<uint>(container);
+            uint propertyKey = UMI3DSerializer.Read<uint>(container);
 
             foreach (ulong id in idList)
             {
@@ -1054,8 +1054,8 @@ namespace umi3d.cdk
         public static async Task<bool> StartInterpolation(ByteContainer container)
         {
             if (!Exists) return false;
-            ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
-            uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
+            ulong entityId = UMI3DSerializer.Read<ulong>(container);
+            uint propertyKey = UMI3DSerializer.Read<uint>(container);
             var e = await WaitForAnEntityToBeLoaded(entityId);
 
             var value = new ReadUMI3DPropertyData(propertyKey, container);
@@ -1122,8 +1122,8 @@ namespace umi3d.cdk
         public static async Task<bool> StopInterpolation(ByteContainer container)
         {
             if (!Exists) return false;
-            ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
-            uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
+            ulong entityId = UMI3DSerializer.Read<ulong>(container);
+            uint propertyKey = UMI3DSerializer.Read<uint>(container);
             var e = await WaitForAnEntityToBeLoaded(entityId);
 
             var value = new ReadUMI3DPropertyData(propertyKey, container);

@@ -33,8 +33,8 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.LoadEntity)
-                + UMI3DNetworkingHelper.Write(entities.Select((e) => e.Id()));
+            return UMI3DSerializer.Write(UMI3DOperationKeys.LoadEntity)
+                + UMI3DSerializer.Write(entities.Select((e) => e.Id()));
         }
 
         /// <inheritdoc/>

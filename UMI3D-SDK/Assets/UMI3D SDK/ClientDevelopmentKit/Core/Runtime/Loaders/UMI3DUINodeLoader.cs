@@ -171,53 +171,53 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnchoredPosition:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition = dto.anchoredPosition = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.anchoredPosition = dto.anchoredPosition = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.AnchoredPosition3D:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition3D = dto.anchoredPosition3D = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container);
+                        transform.anchoredPosition3D = dto.anchoredPosition3D = UMI3DSerializer.Read<SerializableVector3>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMax = dto.anchorMax = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.anchorMax = dto.anchorMax = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMin = dto.anchorMin = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.anchorMin = dto.anchorMin = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMax = dto.offsetMax = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.offsetMax = dto.offsetMax = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMin = dto.offsetMin = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.offsetMin = dto.offsetMin = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.Pivot:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.pivot = dto.pivot = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.pivot = dto.pivot = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.SizeDelta:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.sizeDelta = dto.sizeDelta = UMI3DNetworkingHelper.Read<SerializableVector2>(data.container);
+                        transform.sizeDelta = dto.sizeDelta = UMI3DSerializer.Read<SerializableVector2>(data.container);
                     }
                     break;
                 case UMI3DPropertyKeys.RectMask:
-                    dto.rectMask = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    dto.rectMask = UMI3DSerializer.Read<bool>(data.container);
                     if (dto.rectMask)
                     {
                         node.gameObject.GetOrAddComponent<RectMask2D>();

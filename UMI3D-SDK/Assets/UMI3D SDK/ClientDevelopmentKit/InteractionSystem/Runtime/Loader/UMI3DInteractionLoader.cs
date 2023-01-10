@@ -89,7 +89,7 @@ namespace umi3d.cdk.interaction
             {
                 if(value.propertyKey == UMI3DPropertyKeys.Interaction_UI_Link)
                 {
-                    abstractDto.uiLinkId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    abstractDto.uiLinkId = UMI3DSerializer.Read<ulong>(value.container);
                     UnityEngine.Debug.Log("TODO need to update UI link");
                     return true;
                 }
@@ -101,10 +101,10 @@ namespace umi3d.cdk.interaction
                         switch (value.propertyKey)
                         {
                             case UMI3DPropertyKeys.EventTriggerAnimation:
-                                dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                                dto.TriggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
                                 break;
                             case UMI3DPropertyKeys.EventReleaseAnimation:
-                                dto.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                                dto.TriggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
                                 break;
                             default:
                                 return false;
@@ -141,103 +141,103 @@ namespace umi3d.cdk.interaction
         public static AbstractInteractionDto ReadAbstractInteractionDto(ByteContainer container, out bool readable)
         {
             AbstractInteractionDto interaction;
-            byte interactionCase = UMI3DNetworkingHelper.Read<byte>(container);
+            byte interactionCase = UMI3DSerializer.Read<byte>(container);
             switch (interactionCase)
             {
                 case UMI3DInteractionKeys.Event:
                     var Event = new EventDto();
                     ReadAbstractInteractionDto(Event, container);
-                    Event.hold = UMI3DNetworkingHelper.Read<bool>(container);
-                    Event.TriggerAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    Event.ReleaseAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    Event.hold = UMI3DSerializer.Read<bool>(container);
+                    Event.TriggerAnimationId = UMI3DSerializer.Read<ulong>(container);
+                    Event.ReleaseAnimationId = UMI3DSerializer.Read<ulong>(container);
                     interaction = Event;
                     break;
                 case UMI3DInteractionKeys.Manipulation:
                     var Manipulation = new ManipulationDto();
                     ReadAbstractInteractionDto(Manipulation, container);
-                    Manipulation.frameOfReference = UMI3DNetworkingHelper.Read<ulong>(container);
-                    Manipulation.dofSeparationOptions = UMI3DNetworkingHelper.ReadList<DofGroupOptionDto>(container);
+                    Manipulation.frameOfReference = UMI3DSerializer.Read<ulong>(container);
+                    Manipulation.dofSeparationOptions = UMI3DSerializer.ReadList<DofGroupOptionDto>(container);
                     interaction = Manipulation;
                     break;
                 case UMI3DInteractionKeys.Form:
                     var Form = new FormDto();
                     ReadAbstractInteractionDto(Form, container);
-                    Form.fields = UMI3DNetworkingHelper.ReadList<ulong>(container);
+                    Form.fields = UMI3DSerializer.ReadList<ulong>(container);
                     interaction = Form;
                     break;
                 case UMI3DInteractionKeys.Link:
                     var Link = new LinkDto();
                     ReadAbstractInteractionDto(Link, container);
-                    Link.url = UMI3DNetworkingHelper.Read<string>(container);
+                    Link.url = UMI3DSerializer.Read<string>(container);
                     interaction = Link;
                     break;
                 case UMI3DInteractionKeys.BooleanParameter:
                     var Bool = new BooleanParameterDto();
                     ReadAbstractParameterDto(Bool, container);
-                    Bool.value = UMI3DNetworkingHelper.Read<bool>(container);
+                    Bool.value = UMI3DSerializer.Read<bool>(container);
                     interaction = Bool;
                     break;
                 case UMI3DInteractionKeys.ColorParameter:
                     var Color = new ColorParameterDto();
                     ReadAbstractParameterDto(Color, container);
-                    Color.value = UMI3DNetworkingHelper.Read<Color>(container);
+                    Color.value = UMI3DSerializer.Read<Color>(container);
                     interaction = Color;
                     break;
                 case UMI3DInteractionKeys.Vector2Parameter:
                     var Vector2 = new Vector2ParameterDto();
                     ReadAbstractParameterDto(Vector2, container);
-                    Vector2.value = UMI3DNetworkingHelper.Read<Vector2>(container);
+                    Vector2.value = UMI3DSerializer.Read<Vector2>(container);
                     interaction = Vector2;
                     break;
                 case UMI3DInteractionKeys.Vector3Parameter:
                     var Vector3 = new Vector3ParameterDto();
                     ReadAbstractParameterDto(Vector3, container);
-                    Vector3.value = UMI3DNetworkingHelper.Read<Vector3>(container);
+                    Vector3.value = UMI3DSerializer.Read<Vector3>(container);
                     interaction = Vector3;
                     break;
                 case UMI3DInteractionKeys.Vector4Parameter:
                     var Vector4 = new Vector4ParameterDto();
                     ReadAbstractParameterDto(Vector4, container);
-                    Vector4.value = UMI3DNetworkingHelper.Read<Vector4>(container);
+                    Vector4.value = UMI3DSerializer.Read<Vector4>(container);
                     interaction = Vector4;
                     break;
                 case UMI3DInteractionKeys.UploadParameter:
                     var Upload = new UploadFileParameterDto();
                     ReadAbstractParameterDto(Upload, container);
-                    Upload.value = UMI3DNetworkingHelper.Read<string>(container);
-                    Upload.authorizedExtensions = UMI3DNetworkingHelper.Read<List<string>>(container);
+                    Upload.value = UMI3DSerializer.Read<string>(container);
+                    Upload.authorizedExtensions = UMI3DSerializer.Read<List<string>>(container);
                     interaction = Upload;
                     break;
                 case UMI3DInteractionKeys.StringParameter:
                     var String = new StringParameterDto();
                     ReadAbstractParameterDto(String, container);
-                    String.value = UMI3DNetworkingHelper.Read<string>(container);
+                    String.value = UMI3DSerializer.Read<string>(container);
                     interaction = String;
                     break;
                 case UMI3DInteractionKeys.LocalInfoParameter:
                     var LocalInfo = new LocalInfoRequestParameterDto();
                     ReadAbstractParameterDto(LocalInfo, container);
-                    LocalInfo.app_id = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.serverName = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.reason = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.key = UMI3DNetworkingHelper.Read<string>(container);
-                    LocalInfo.value = new LocalInfoRequestParameterValue(UMI3DNetworkingHelper.Read<bool>(container), UMI3DNetworkingHelper.Read<bool>(container));
+                    LocalInfo.app_id = UMI3DSerializer.Read<string>(container);
+                    LocalInfo.serverName = UMI3DSerializer.Read<string>(container);
+                    LocalInfo.reason = UMI3DSerializer.Read<string>(container);
+                    LocalInfo.key = UMI3DSerializer.Read<string>(container);
+                    LocalInfo.value = new LocalInfoRequestParameterValue(UMI3DSerializer.Read<bool>(container), UMI3DSerializer.Read<bool>(container));
                     interaction = LocalInfo;
                     break;
                 case UMI3DInteractionKeys.StringEnumParameter:
                     var EString = new EnumParameterDto<string>();
                     ReadAbstractParameterDto(EString, container);
-                    EString.possibleValues = UMI3DNetworkingHelper.ReadList<string>(container);
-                    EString.value = UMI3DNetworkingHelper.Read<string>(container);
+                    EString.possibleValues = UMI3DSerializer.ReadList<string>(container);
+                    EString.value = UMI3DSerializer.Read<string>(container);
                     interaction = EString;
                     break;
                 case UMI3DInteractionKeys.FloatRangeParameter:
                     var RFloat = new FloatRangeParameterDto();
                     ReadAbstractParameterDto(RFloat, container);
-                    RFloat.min = UMI3DNetworkingHelper.Read<float>(container);
-                    RFloat.max = UMI3DNetworkingHelper.Read<float>(container);
-                    RFloat.increment = UMI3DNetworkingHelper.Read<float>(container);
-                    RFloat.value = UMI3DNetworkingHelper.Read<float>(container);
+                    RFloat.min = UMI3DSerializer.Read<float>(container);
+                    RFloat.max = UMI3DSerializer.Read<float>(container);
+                    RFloat.increment = UMI3DSerializer.Read<float>(container);
+                    RFloat.value = UMI3DSerializer.Read<float>(container);
                     interaction = RFloat;
                     break;
                 default:
@@ -258,11 +258,11 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         private static void ReadAbstractInteractionDto(AbstractInteractionDto interactionDto, ByteContainer container)
         {
-            interactionDto.id = UMI3DNetworkingHelper.Read<ulong>(container);
-            interactionDto.name = UMI3DNetworkingHelper.Read<string>(container);
-            interactionDto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-            interactionDto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-            interactionDto.description = UMI3DNetworkingHelper.Read<string>(container);
+            interactionDto.id = UMI3DSerializer.Read<ulong>(container);
+            interactionDto.name = UMI3DSerializer.Read<string>(container);
+            interactionDto.icon2D = UMI3DSerializer.Read<ResourceDto>(container);
+            interactionDto.icon3D = UMI3DSerializer.Read<ResourceDto>(container);
+            interactionDto.description = UMI3DSerializer.Read<string>(container);
 
         }
 
@@ -276,8 +276,8 @@ namespace umi3d.cdk.interaction
         private static void ReadAbstractParameterDto(AbstractParameterDto ParameterDto, ByteContainer container)
         {
             ReadAbstractParameterDto(ParameterDto, container);
-            ParameterDto.privateParameter = UMI3DNetworkingHelper.Read<bool>(container);
-            ParameterDto.isDisplayer = UMI3DNetworkingHelper.Read<bool>(container);
+            ParameterDto.privateParameter = UMI3DSerializer.Read<bool>(container);
+            ParameterDto.isDisplayer = UMI3DSerializer.Read<bool>(container);
         }
     }
 }

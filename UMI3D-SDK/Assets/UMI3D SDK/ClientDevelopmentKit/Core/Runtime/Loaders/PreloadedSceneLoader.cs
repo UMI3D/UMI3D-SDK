@@ -125,7 +125,7 @@ namespace umi3d.cdk
                         UMI3DLogger.Log($"Case not handled {value.operationId}", scope);
                         break;
                     default:
-                        List<PreloadedSceneDto> newList = UMI3DNetworkingHelper.ReadList<PreloadedSceneDto>(value.container);
+                        List<PreloadedSceneDto> newList = UMI3DSerializer.ReadList<PreloadedSceneDto>(value.container);
                         List<PreloadedSceneDto> oldList = dto.preloadedScenes;
                         var scenesToUnload = new List<PreloadedSceneDto>();
                         var scenesToLoad = new List<PreloadedSceneDto>();

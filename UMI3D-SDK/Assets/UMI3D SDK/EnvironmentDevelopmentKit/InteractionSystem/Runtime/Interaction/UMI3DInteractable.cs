@@ -269,9 +269,9 @@ namespace umi3d.edk.interaction
         /// <param name="dto"></param>
         public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
-            Vector3 pos = UMI3DNetworkingHelper.Read<Vector3>(container);
-            Vector3 norm = UMI3DNetworkingHelper.Read<Vector3>(container);
-            Vector3 dir = UMI3DNetworkingHelper.Read<Vector3>(container);
+            Vector3 pos = UMI3DSerializer.Read<Vector3>(container);
+            Vector3 norm = UMI3DSerializer.Read<Vector3>(container);
+            Vector3 dir = UMI3DSerializer.Read<Vector3>(container);
             onHovered?.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }
 
@@ -295,10 +295,10 @@ namespace umi3d.edk.interaction
         /// <param name="dto"></param>
         public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
         {
-            Vector3 pos = UMI3DNetworkingHelper.Read<Vector3>(container);
-            Vector3 norm = UMI3DNetworkingHelper.Read<Vector3>(container);
-            Vector3 dir = UMI3DNetworkingHelper.Read<Vector3>(container);
-            bool state = UMI3DNetworkingHelper.Read<bool>(container);
+            Vector3 pos = UMI3DSerializer.Read<Vector3>(container);
+            Vector3 norm = UMI3DSerializer.Read<Vector3>(container);
+            Vector3 dir = UMI3DSerializer.Read<Vector3>(container);
+            bool state = UMI3DSerializer.Read<bool>(container);
             if (state) onHoverEnter.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
             else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
         }

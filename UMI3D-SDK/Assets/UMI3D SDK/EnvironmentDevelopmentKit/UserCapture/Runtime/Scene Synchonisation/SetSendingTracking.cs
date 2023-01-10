@@ -27,8 +27,8 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetSendingTracking)
-                + UMI3DNetworkingHelper.Write(activeSending);
+            return UMI3DSerializer.Write(UMI3DOperationKeys.SetSendingTracking)
+                + UMI3DSerializer.Write(activeSending);
         }
 
         /// <inheritdoc/>
