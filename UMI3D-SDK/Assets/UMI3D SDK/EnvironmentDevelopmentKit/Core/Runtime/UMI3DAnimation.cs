@@ -54,8 +54,8 @@ namespace umi3d.edk
             /// <inheritdoc/>
             public Bytable ToByte(UMI3DUser user)
             {
-                return UMI3DNetworkingHelper.Write(Animation.Id())
-                    + UMI3DNetworkingHelper.Write(Progress);
+                return UMI3DSerializer.Write(Animation.Id())
+                    + UMI3DSerializer.Write(Progress);
             }
 
             public UMI3DAnimationDto.AnimationChainDto Todto(UMI3DUser user)
@@ -136,8 +136,8 @@ namespace umi3d.edk
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return base.ToBytesAux(user)
-                + UMI3DNetworkingHelper.WriteIBytableCollection(ObjectAnimationChain.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ObjectDuration.GetValue(user));
+                + UMI3DSerializer.WriteIBytableCollection(ObjectAnimationChain.GetValue(user))
+                + UMI3DSerializer.Write(ObjectDuration.GetValue(user));
         }
     }
 }

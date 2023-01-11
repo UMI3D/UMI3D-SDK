@@ -106,9 +106,9 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            Bytable bytable = UMI3DNetworkingHelper.Write(allAvailableAtStartByDefault);
-            bytable += UMI3DNetworkingHelper.Write(defaultStateName);
-            UMI3DNetworkingHelper.Write(IncludedEmotes.Count);
+            Bytable bytable = UMI3DSerializer.Write(allAvailableAtStartByDefault);
+            bytable += UMI3DSerializer.Write(defaultStateName);
+            UMI3DSerializer.Write(IncludedEmotes.Count);
             foreach (UMI3DEmote emote in IncludedEmotes)
             {
                 bytable += emote.ToBytes(user);

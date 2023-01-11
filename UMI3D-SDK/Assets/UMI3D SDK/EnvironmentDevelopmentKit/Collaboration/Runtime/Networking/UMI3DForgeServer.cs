@@ -337,7 +337,7 @@ namespace umi3d.edk.collaboration
             else
             {
                 var container = new ByteContainer(frame);
-                uint id = UMI3DNetworkingHelper.Read<uint>(container);
+                uint id = UMI3DSerializer.Read<uint>(container);
                 switch (id)
                 {
                     case UMI3DOperationKeys.UserCameraProperties:
@@ -375,8 +375,8 @@ namespace umi3d.edk.collaboration
                     case UMI3DOperationKeys.EmoteRequest:
                         MainThreadManager.Run(() =>
                         {
-                            var emoteToTriggerId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            var trigger = UMI3DNetworkingHelper.Read<bool>(container);
+                            var emoteToTriggerId = UMI3DSerializer.Read<ulong>(container);
+                            var trigger = UMI3DSerializer.Read<bool>(container);
                             UMI3DEmbodimentManager.Instance.DispatchChangeEmoteReception(emoteToTriggerId, user, trigger);
                         });
                         break;
@@ -429,16 +429,16 @@ namespace umi3d.edk.collaboration
                 trackingFrame = new UserTrackingFrameDto();
 
                 var container = new ByteContainer(frame);
-                uint id = UMI3DNetworkingHelper.Read<uint>(container);
+                uint id = UMI3DSerializer.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
-                    trackingFrame.userId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    trackingFrame.parentId = UMI3DNetworkingHelper.Read<ulong>(container);
-                    trackingFrame.skeletonHighOffset = UMI3DNetworkingHelper.Read<float>(container);
-                    trackingFrame.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                    trackingFrame.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                    trackingFrame.refreshFrequency = UMI3DNetworkingHelper.Read<float>(container);
-                    trackingFrame.bones = UMI3DNetworkingHelper.ReadList<common.userCapture.BoneDto>(container);
+                    trackingFrame.userId = UMI3DSerializer.Read<ulong>(container);
+                    trackingFrame.parentId = UMI3DSerializer.Read<ulong>(container);
+                    trackingFrame.skeletonHighOffset = UMI3DSerializer.Read<float>(container);
+                    trackingFrame.position = UMI3DSerializer.Read<SerializableVector3>(container);
+                    trackingFrame.rotation = UMI3DSerializer.Read<SerializableVector4>(container);
+                    trackingFrame.refreshFrequency = UMI3DSerializer.Read<float>(container);
+                    trackingFrame.bones = UMI3DSerializer.ReadList<common.userCapture.BoneDto>(container);
                 }
             }
 

@@ -147,13 +147,13 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(this.parentModel.Id())
-                + UMI3DNetworkingHelper.Write(this.subModelName)
-                + UMI3DNetworkingHelper.Write(this.subModelHierachyIndexes)
-                + UMI3DNetworkingHelper.Write(this.subModelHierachyNames)
-                + UMI3DNetworkingHelper.Write(this.ignoreModelMaterialOverride)
-                + UMI3DNetworkingHelper.Write(this.isPartOfNavmesh)
-                + UMI3DNetworkingHelper.Write(this.isTraversable);
+                + UMI3DSerializer.Write(this.parentModel.Id())
+                + UMI3DSerializer.Write(this.subModelName)
+                + UMI3DSerializer.Write(this.subModelHierachyIndexes)
+                + UMI3DSerializer.Write(this.subModelHierachyNames)
+                + UMI3DSerializer.Write(this.ignoreModelMaterialOverride)
+                + UMI3DSerializer.Write(this.isPartOfNavmesh)
+                + UMI3DSerializer.Write(this.isTraversable);
         }
     }
 }

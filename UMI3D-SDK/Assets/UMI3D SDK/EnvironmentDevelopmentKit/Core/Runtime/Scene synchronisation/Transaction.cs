@@ -64,8 +64,8 @@ namespace umi3d.edk
             IEnumerable<Operation> operation = Operations.Where((op) => { return op.users.Contains(user); });
             if (operation.Count() > 0)
             {
-                Bytable b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
-                    + UMI3DNetworkingHelper.WriteIBytableCollection(operation, user);
+                Bytable b = UMI3DSerializer.Write(UMI3DOperationKeys.Transaction)
+                    + UMI3DSerializer.WriteIBytableCollection(operation, user);
                 return (b.ToBytes(), true);
             }
             return (null, false);

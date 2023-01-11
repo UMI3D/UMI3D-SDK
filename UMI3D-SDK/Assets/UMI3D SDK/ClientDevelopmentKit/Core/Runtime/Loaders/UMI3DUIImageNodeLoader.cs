@@ -133,19 +133,19 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                        image.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.type = (dto.type = (ImageType)UMI3DNetworkingHelper.Read<int>(container)).Convert();
+                        image.type = (dto.type = (ImageType)UMI3DSerializer.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.Image:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        dto.sprite = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                        dto.sprite = UMI3DSerializer.Read<ResourceDto>(container);
                         FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)
                         {

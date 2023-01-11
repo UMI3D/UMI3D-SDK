@@ -24,7 +24,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Helper to serialize classes of the Collaboration module.
     /// </summary>
-    public class UMI3DCollaborationNetworkingModule : Umi3dNetworkingHelperModule
+    public class UMI3DCollaborationSerializerModule : UMI3DSerializerModule
     {
         /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
@@ -40,24 +40,24 @@ namespace umi3d.cdk.collaboration
                     }
                     var user = new UserDto
                     {
-                        id = UMI3DNetworkingHelper.Read<ulong>(container),
-                        status = (StatusType)UMI3DNetworkingHelper.Read<uint>(container),
-                        avatarId = UMI3DNetworkingHelper.Read<ulong>(container),
-                        audioSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
-                        audioFrequency = UMI3DNetworkingHelper.Read<int>(container),
-                        videoSourceId = UMI3DNetworkingHelper.Read<ulong>(container),
-                        networkId = UMI3DNetworkingHelper.Read<uint>(container),
+                        id = UMI3DSerializer.Read<ulong>(container),
+                        status = (StatusType)UMI3DSerializer.Read<uint>(container),
+                        avatarId = UMI3DSerializer.Read<ulong>(container),
+                        audioSourceId = UMI3DSerializer.Read<ulong>(container),
+                        audioFrequency = UMI3DSerializer.Read<int>(container),
+                        videoSourceId = UMI3DSerializer.Read<ulong>(container),
+                        networkId = UMI3DSerializer.Read<uint>(container),
 
-                        microphoneStatus = UMI3DNetworkingHelper.Read<bool>(container),
-                        avatarStatus = UMI3DNetworkingHelper.Read<bool>(container),
-                        attentionRequired = UMI3DNetworkingHelper.Read<bool>(container),
+                        microphoneStatus = UMI3DSerializer.Read<bool>(container),
+                        avatarStatus = UMI3DSerializer.Read<bool>(container),
+                        attentionRequired = UMI3DSerializer.Read<bool>(container),
 
-                        audioServerUrl = UMI3DNetworkingHelper.Read<string>(container),
-                        audioChannel = UMI3DNetworkingHelper.Read<string>(container),
-                        audioLogin = UMI3DNetworkingHelper.Read<string>(container),
-                        audioUseMumble = UMI3DNetworkingHelper.Read<bool>(container),
+                        audioServerUrl = UMI3DSerializer.Read<string>(container),
+                        audioChannel = UMI3DSerializer.Read<string>(container),
+                        audioLogin = UMI3DSerializer.Read<string>(container),
+                        audioUseMumble = UMI3DSerializer.Read<bool>(container),
 
-                        login = UMI3DNetworkingHelper.Read<string>(container)
+                        login = UMI3DSerializer.Read<string>(container)
                     };
                     result = (T)(object)user;
                     readable = true;
@@ -72,8 +72,8 @@ namespace umi3d.cdk.collaboration
                         }
                         var value = new UMI3DAnimationDto.AnimationChainDto()
                         {
-                            animationId = UMI3DNetworkingHelper.Read<ulong>(container),
-                            startOnProgress = UMI3DNetworkingHelper.Read<float>(container),
+                            animationId = UMI3DSerializer.Read<ulong>(container),
+                            startOnProgress = UMI3DSerializer.Read<float>(container),
                         };
                         result = (T)(object)value;
                         readable = true;
@@ -81,7 +81,7 @@ namespace umi3d.cdk.collaboration
                     }
                 case true when typeof(T) == typeof(UMI3DNodeAnimation.OperationChain):
                     {
-                        float at = UMI3DNetworkingHelper.Read<float>(container);
+                        float at = UMI3DSerializer.Read<float>(container);
                         var op = new ByteContainer(container);
                         var value = new UMI3DNodeAnimation.OperationChain(op, at);
                         result = (T)(object)value;
@@ -98,8 +98,8 @@ namespace umi3d.cdk.collaboration
                     {
                         var value = new DofGroupOptionDto
                         {
-                            name = UMI3DNetworkingHelper.Read<string>(container),
-                            separations = UMI3DNetworkingHelper.ReadList<DofGroupDto>(container)
+                            name = UMI3DSerializer.Read<string>(container),
+                            separations = UMI3DSerializer.ReadList<DofGroupDto>(container)
                         };
                         result = (T)(object)value;
                         readable = true;
@@ -109,8 +109,8 @@ namespace umi3d.cdk.collaboration
                     {
                         var value = new DofGroupDto
                         {
-                            name = UMI3DNetworkingHelper.Read<string>(container),
-                            dofs = (DofGroupEnum)UMI3DNetworkingHelper.Read<int>(container)
+                            name = UMI3DSerializer.Read<string>(container),
+                            dofs = (DofGroupEnum)UMI3DSerializer.Read<int>(container)
                         };
                         result = (T)(object)value;
                         readable = true;

@@ -353,7 +353,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                Bytable bytable = UMI3DNetworkingHelper.Write(Me) + UMI3DNetworkingHelper.WriteCollection(sample.Take(length));
+                Bytable bytable = UMI3DSerializer.Write(Me) + UMI3DSerializer.WriteCollection(sample.Take(length));
                 voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), Receivers.All, MessageGroupIds.VOIP, false);
             }
             client.Send(voice);
@@ -437,7 +437,7 @@ namespace umi3d.cdk.collaboration
             else
             {
                 var container = new ByteContainer(frame);
-                uint TransactionId = UMI3DNetworkingHelper.Read<uint>(container);
+                uint TransactionId = UMI3DSerializer.Read<uint>(container);
                 switch (TransactionId)
                 {
                     case UMI3DOperationKeys.Transaction:
@@ -451,7 +451,7 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.NavigationRequest:
                         {
-                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
                             var nav = new NavigateDto() { position = pos };
                             MainThreadManager.Run(() =>
                             {
@@ -463,8 +463,8 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.TeleportationRequest:
                         {
-                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                            SerializableVector4 rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                            SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
                             var nav = new TeleportDto() { position = pos, rotation = rot };
                             MainThreadManager.Run(() =>
                             {
@@ -477,10 +477,10 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.VehicleRequest:
                         {
-                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                            SerializableVector4 rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                            ulong vehicleId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            bool stopNavigation = UMI3DNetworkingHelper.Read<bool>(container);
+                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                            SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                            ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
+                            bool stopNavigation = UMI3DSerializer.Read<bool>(container);
 
                             var nav = new VehicleDto()
                             {
@@ -501,13 +501,13 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.BoardedVehicleRequest:
                         {
-                            SerializableVector3 pos = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
-                            SerializableVector4 rot = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
-                            ulong vehicleId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            bool stopNavigation = UMI3DNetworkingHelper.Read<bool>(container);
-                            ulong bodyAnimationId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            bool changeBonesToStream = UMI3DNetworkingHelper.Read<bool>(container);
-                            System.Collections.Generic.List<uint> bonesToStream = UMI3DNetworkingHelper.ReadList<uint>(container);
+                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                            SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                            ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
+                            bool stopNavigation = UMI3DSerializer.Read<bool>(container);
+                            ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);
+                            bool changeBonesToStream = UMI3DSerializer.Read<bool>(container);
+                            System.Collections.Generic.List<uint> bonesToStream = UMI3DSerializer.ReadList<uint>(container);
 
                             var nav = new BoardedVehicleDto()
                             {
@@ -532,9 +532,9 @@ namespace umi3d.cdk.collaboration
                         break;
                     case UMI3DOperationKeys.EmoteRequest:
                         {
-                            ulong emoteId = UMI3DNetworkingHelper.Read<ulong>(container);
-                            bool trigger = UMI3DNetworkingHelper.Read<bool>(container);
-                            ulong sendingUserId = UMI3DNetworkingHelper.Read<ulong>(container);
+                            ulong emoteId = UMI3DSerializer.Read<ulong>(container);
+                            bool trigger = UMI3DSerializer.Read<bool>(container);
+                            ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
                             MainThreadManager.Run(() =>
                             {
                                 if (trigger)
@@ -548,15 +548,15 @@ namespace umi3d.cdk.collaboration
                         }
                         break;
                     case UMI3DOperationKeys.GetLocalInfoRequest:
-                        string key = UMI3DNetworkingHelper.Read<string>(container);
+                        string key = UMI3DSerializer.Read<string>(container);
                         MainThreadManager.Run(() =>
                         {
                             SendGetLocalInfo(key);
                         });
                         break;
                     case UMI3DOperationKeys.UploadFileRequest:
-                        string token = UMI3DNetworkingHelper.Read<string>(container);
-                        string fileId = UMI3DNetworkingHelper.Read<string>(container);
+                        string token = UMI3DSerializer.Read<string>(container);
+                        string fileId = UMI3DSerializer.Read<string>(container);
                         string name = FileUploader.GetFileName(fileId);
                         byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
                         if (bytesToUpload != null)
@@ -571,7 +571,7 @@ namespace umi3d.cdk.collaboration
                         }
                         break;
                     case UMI3DOperationKeys.RedirectionRequest:
-                        RedirectionDto redirection = UMI3DNetworkingHelper.Read<RedirectionDto>(container);
+                        RedirectionDto redirection = UMI3DSerializer.Read<RedirectionDto>(container);
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.Connect(redirection);
@@ -581,7 +581,7 @@ namespace umi3d.cdk.collaboration
                         });
                         break;
                     case UMI3DOperationKeys.ForceLogoutRequest:
-                        ForceLogoutDto forceLogout = UMI3DNetworkingHelper.Read<ForceLogoutDto>(container);
+                        ForceLogoutDto forceLogout = UMI3DSerializer.Read<ForceLogoutDto>(container);
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
@@ -670,7 +670,7 @@ namespace umi3d.cdk.collaboration
                 var container = new ByteContainer(frame);
                 try
                 {
-                    System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DNetworkingHelper.ReadList<UserTrackingFrameDto>(container);
+                    System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);
                     foreach (UserTrackingFrameDto trackingFrame in frames)
                     {
                         if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar) && userAvatar is UMI3DCollaborativeUserAvatar user)

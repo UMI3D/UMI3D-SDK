@@ -247,7 +247,7 @@ namespace umi3d.cdk
                 switch (data.propertyKey)
                 {
                     case UMI3DPropertyKeys.IgnoreModelMaterialOverride:
-                        extension.ignoreModelMaterialOverride = UMI3DNetworkingHelper.Read<bool>(data.container);
+                        extension.ignoreModelMaterialOverride = UMI3DSerializer.Read<bool>(data.container);
                         if (extension.ignoreModelMaterialOverride) //revert model override and apply only subModel overriders 
                         {
                             RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
@@ -263,11 +263,11 @@ namespace umi3d.cdk
                         break;
 
                     case UMI3DPropertyKeys.IsPartOfNavmesh:
-                        (data.entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DNetworkingHelper.Read<bool>(data.container);
+                        (data.entity as UMI3DNodeInstance).IsPartOfNavmesh = UMI3DSerializer.Read<bool>(data.container);
                         return true;
 
                     case UMI3DPropertyKeys.IsTraversable:
-                        (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DNetworkingHelper.Read<bool>(data.container);
+                        (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DSerializer.Read<bool>(data.container);
                         return true;
 
                     default:

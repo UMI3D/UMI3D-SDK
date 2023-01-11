@@ -143,21 +143,21 @@ namespace umi3d.cdk
                             switch (data.operationId)
                             {
                                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                                    index = UMI3DNetworkingHelper.Read<int>(data.container);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(data.container);
+                                    index = UMI3DSerializer.Read<int>(data.container);
+                                    bone = UMI3DSerializer.Read<BoneBindingDto>(data.container);
                                     embd.AddBinding(index, bone);
                                     break;
                                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                                    index = UMI3DNetworkingHelper.Read<int>(data.container);
+                                    index = UMI3DSerializer.Read<int>(data.container);
                                     embd.RemoveBinding(index);
                                     break;
                                 case UMI3DOperationKeys.SetEntityListProperty:
-                                    index = UMI3DNetworkingHelper.Read<int>(data.container);
-                                    bone = UMI3DNetworkingHelper.Read<BoneBindingDto>(data.container);
+                                    index = UMI3DSerializer.Read<int>(data.container);
+                                    bone = UMI3DSerializer.Read<BoneBindingDto>(data.container);
                                     embd.UpdateBinding(index, bone);
                                     break;
                                 default:
-                                    embd.SetBindings(UMI3DNetworkingHelper.ReadList<BoneBindingDto>(data.container));
+                                    embd.SetBindings(UMI3DSerializer.ReadList<BoneBindingDto>(data.container));
                                     break;
                             }
                         }
@@ -173,7 +173,7 @@ namespace umi3d.cdk
                         UserAvatar embd = node.gameObject.GetComponent<UserAvatar>();
                         if (embd != null)
                         {
-                            embd.SetActiveBindings(UMI3DNetworkingHelper.Read<bool>(data.container));
+                            embd.SetActiveBindings(UMI3DSerializer.Read<bool>(data.container));
                         }
                         else
                         {

@@ -44,8 +44,8 @@ namespace umi3d.common.interaction
                 rotation = new SerializableVector4();
 
             return base.ToBytableArray(parameters)
-                + UMI3DNetworkingHelper.Write(translation)
-                + UMI3DNetworkingHelper.Write(rotation);
+                + UMI3DSerializer.Write(translation)
+                + UMI3DSerializer.Write(rotation);
         }
     }
 }

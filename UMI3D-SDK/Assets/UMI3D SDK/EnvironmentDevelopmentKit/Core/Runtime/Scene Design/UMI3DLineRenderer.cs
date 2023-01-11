@@ -207,13 +207,13 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(startColor)
-                + UMI3DNetworkingHelper.Write(endColor)
-                + UMI3DNetworkingHelper.Write(loop)
-                + UMI3DNetworkingHelper.Write(useWorldSpace)
-                + UMI3DNetworkingHelper.Write(startWidth)
-                + UMI3DNetworkingHelper.Write(endWidth)
-                + UMI3DNetworkingHelper.Write(positions);
+                + UMI3DSerializer.Write(startColor)
+                + UMI3DSerializer.Write(endColor)
+                + UMI3DSerializer.Write(loop)
+                + UMI3DSerializer.Write(useWorldSpace)
+                + UMI3DSerializer.Write(startWidth)
+                + UMI3DSerializer.Write(endWidth)
+                + UMI3DSerializer.Write(positions);
         }
     }
 }

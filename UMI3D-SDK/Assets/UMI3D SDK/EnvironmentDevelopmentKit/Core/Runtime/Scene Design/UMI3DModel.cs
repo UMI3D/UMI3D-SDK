@@ -296,11 +296,11 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(areSubobjectsTracked)
-                + UMI3DNetworkingHelper.Write(!areSubobjectsTracked || isRightHanded)
-                + UMI3DNetworkingHelper.Write(idGenerator)
-                + UMI3DNetworkingHelper.Write(isPartOfNavmesh)
-                + UMI3DNetworkingHelper.Write(isTraversable)
+                + UMI3DSerializer.Write(areSubobjectsTracked)
+                + UMI3DSerializer.Write(!areSubobjectsTracked || isRightHanded)
+                + UMI3DSerializer.Write(idGenerator)
+                + UMI3DSerializer.Write(isPartOfNavmesh)
+                + UMI3DSerializer.Write(isTraversable)
                 + objectModel.GetValue(user).ToByte();
         }
 

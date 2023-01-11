@@ -54,10 +54,10 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public override byte[] ToBytes()
         {
-            return (UMI3DNetworkingHelper.Write(UMI3DOperationKeys.EmoteRequest)
-                + UMI3DNetworkingHelper.Write(emoteId)
-                + UMI3DNetworkingHelper.Write(shouldTrigger)
-                + UMI3DNetworkingHelper.Write(sendingUserId)).ToBytes();
+            return (UMI3DSerializer.Write(UMI3DOperationKeys.EmoteRequest)
+                + UMI3DSerializer.Write(emoteId)
+                + UMI3DSerializer.Write(shouldTrigger)
+                + UMI3DSerializer.Write(sendingUserId)).ToBytes();
         }
     }
 }

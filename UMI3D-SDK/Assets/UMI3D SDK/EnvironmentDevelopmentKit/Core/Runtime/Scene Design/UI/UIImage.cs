@@ -95,8 +95,8 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(Color.GetValue(user))
-                + UMI3DNetworkingHelper.Write((int)ImageType.GetValue(user).Convert());
+                + UMI3DSerializer.Write(Color.GetValue(user))
+                + UMI3DSerializer.Write((int)ImageType.GetValue(user).Convert());
         }
     }
 }

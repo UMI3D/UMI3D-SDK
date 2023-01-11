@@ -212,9 +212,9 @@ namespace umi3d.edk.userCapture
         {
             return
                 base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(userId)
-                + UMI3DNetworkingHelper.Write(activeBindings.GetValue(user))
-                + UMI3DNetworkingHelper.WriteIBytableCollection(bindings.GetValue(user), user);
+                + UMI3DSerializer.Write(userId)
+                + UMI3DSerializer.Write(activeBindings.GetValue(user))
+                + UMI3DSerializer.WriteIBytableCollection(bindings.GetValue(user), user);
         }
     }
 }

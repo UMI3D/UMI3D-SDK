@@ -224,19 +224,19 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = UMI3DNetworkingHelper.Read<float>(value.container);
+                    audioSource.volume = ADto.volume = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = UMI3DNetworkingHelper.Read<float>(value.container);
+                    audioSource.pitch = ADto.pitch = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = UMI3DNetworkingHelper.Read<float>(value.container);
+                    audioSource.spatialBlend = ADto.spatialBlend = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.VolumeMaxDistance:
-                    audioSource.maxDistance = ADto.spatialBlend = Mathf.Max(UMI3DNetworkingHelper.Read<float>(value.container), 0);
+                    audioSource.maxDistance = ADto.spatialBlend = Mathf.Max(UMI3DSerializer.Read<float>(value.container), 0);
                     break;
                 case UMI3DPropertyKeys.VolumeAttenuationMode:
-                    var mode = (AudioSourceCurveMode)UMI3DNetworkingHelper.Read<int>(value.container);
+                    var mode = (AudioSourceCurveMode)UMI3DSerializer.Read<int>(value.container);
                     ADto.volumeAttenuationMode = mode;
                     SetVolumeAttenuationMode(mode);
                     break;
@@ -244,7 +244,7 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = UMI3DNetworkingHelper.Read<SerializableAnimationCurve>(value.container);
+                    var curve = UMI3DSerializer.Read<SerializableAnimationCurve>(value.container);
                     if (curve.keys.Count > 0)
                         audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
 
@@ -252,7 +252,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
-                    ADto.audioResource = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    ADto.audioResource = UMI3DSerializer.Read<ResourceDto>(value.container);
                     if (ADto.audioResource == res) return true;
                     FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
@@ -268,7 +268,7 @@ namespace umi3d.cdk
                     GameObject g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
                     audioSource = null;
-                    ADto.nodeID = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    ADto.nodeID = UMI3DSerializer.Read<ulong>(value.container);
                     InitPlayer(ADto);
                     break;
                 default:

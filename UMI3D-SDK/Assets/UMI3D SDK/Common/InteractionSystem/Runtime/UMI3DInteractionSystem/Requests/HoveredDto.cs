@@ -44,9 +44,9 @@ namespace umi3d.common.interaction
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
-                + UMI3DNetworkingHelper.Write(position)
-                + UMI3DNetworkingHelper.Write(normal)
-                + UMI3DNetworkingHelper.Write(direction);
+                + UMI3DSerializer.Write(position)
+                + UMI3DSerializer.Write(normal)
+                + UMI3DSerializer.Write(direction);
         }
     }
 }

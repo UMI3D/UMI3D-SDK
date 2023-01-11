@@ -37,26 +37,32 @@ namespace umi3d
         public class Version
         {
             public readonly string version;
-            public readonly int major;
-            public readonly int minor;
+            public readonly int? major;
+            public readonly int? minor;
             public readonly string status;
-            public readonly DateTime date;
+            public readonly DateTime? date;
 
             public Version(string version)
             {
                 this.version = version;
 
                 var split = version.Split('.');
-                if (split.Length == 4)
-                {
-                    if (!int.TryParse(split[0], out major)) major = -1;
-                    if (!int.TryParse(split[1], out minor)) minor = -1;
 
-                    status = split[2];
+                int res;
+                DateTime dt;
 
-                    if (!DateTime.TryParseExact(split[3], "yyMMdd", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out date))
-                        date = DateTime.MinValue;
-                }
+                if (split.Length > 0 && int.TryParse(split[0], out res)) major = res;
+                if (split.Length > 1 && int.TryParse(split[1], out res)) minor = res;
+                status = (split.Length > 2) ? split[2] : null;
+                if (split.Length > 3 && DateTime.TryParseExact(split[3], "yyMMdd", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out dt))
+                    date = dt;
+
+
+
+                this.version = date?.ToString("yyMMdd");
+                this.version = (this.version == null) ? status : (status ?? "*") + this.version;
+                this.version = (this.version == null) ? minor?.ToString() : (minor?.ToString() ?? "*") + this.version;
+                this.version = (this.version == null) ? major?.ToString() : (major?.ToString() ?? "*") + this.version;
             }
 
             public Version(int major, int minor, string status, DateTime date)
@@ -89,13 +95,13 @@ namespace umi3d
 
             public VersionCompatibility(Version min, Version max)
             {
-                major_max = max.major;
-                major_min= min.major;
+                major_max = max.major ?? int.MaxValue;
+                major_min= min.major ?? int.MinValue;
 
-                minor_max= max.minor;
-                minor_min= min.minor;
+                minor_max= max.minor ?? int.MaxValue;
+                minor_min = min.minor ?? int.MinValue;
 
-                if (min.status != max.status)
+                if (min.status != max.status || min.status == null || min.status == string.Empty)
                 {
                     status = "*";
                     status_all = true;
@@ -103,8 +109,8 @@ namespace umi3d
                 else
                     status = min.status;
 
-                date_max = min.date;
-                date_min = min.date;
+                date_max = min.date ?? DateTime.MaxValue;
+                date_min = min.date ?? DateTime.MinValue;
             }
 
             public VersionCompatibility(string pattern)

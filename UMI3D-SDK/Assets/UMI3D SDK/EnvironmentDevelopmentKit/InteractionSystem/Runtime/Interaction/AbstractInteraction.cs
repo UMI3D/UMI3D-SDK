@@ -223,7 +223,7 @@ namespace umi3d.edk.interaction
             dto.icon3D = Display.icon3D.ToDto();
             dto.id = Id();
             dto.description = Display.description;
-            dto.uiLinkId = ObjectUIRect.GetValue(user).Id();
+            dto.uiLinkId = ObjectUIRect.GetValue(user)?.Id() ?? 0;
         }
 
         /// <summary>
@@ -239,12 +239,12 @@ namespace umi3d.edk.interaction
         /// <returns></returns>
         public virtual Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(GetInteractionKey())
-                    + UMI3DNetworkingHelper.Write(Id())
-                    + UMI3DNetworkingHelper.Write(Display.name)
+            return UMI3DSerializer.Write(GetInteractionKey())
+                    + UMI3DSerializer.Write(Id())
+                    + UMI3DSerializer.Write(Display.name)
                     + Display.icon2D.ToByte()
                     + Display.icon3D.ToByte()
-                    + UMI3DNetworkingHelper.Write(Display.description);
+                    + UMI3DSerializer.Write(Display.description);
         }
 
         /// <inheritdoc/>

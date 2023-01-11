@@ -39,7 +39,7 @@ namespace umi3d.edk.collaboration
             if (UMI3DEnvironment.Instance.useDto)
                 return (new UMI3DDtoListDto<UserTrackingFrameDto>() { values = frames }).ToBson();
             else
-                return UMI3DNetworkingHelper.WriteCollection(frames).ToBytes();
+                return UMI3DSerializer.WriteCollection(frames).ToBytes();
 
         }
     }

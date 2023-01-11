@@ -201,11 +201,11 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(Id())
-                + UMI3DNetworkingHelper.Write(objectPlaying.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectLooping.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectStartTime.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectPauseTime.GetValue(user))
+            return UMI3DSerializer.Write(Id())
+                + UMI3DSerializer.Write(objectPlaying.GetValue(user))
+                + UMI3DSerializer.Write(objectLooping.GetValue(user))
+                + UMI3DSerializer.Write(objectStartTime.GetValue(user))
+                + UMI3DSerializer.Write(objectPauseTime.GetValue(user))
                 + ToBytesAux(user);
         }
 

@@ -171,8 +171,8 @@ namespace umi3d.cdk.interaction
                     switch (data.operationId)
                     {
                         case UMI3DOperationKeys.SetEntityListAddProperty:
-                            int ind = UMI3DNetworkingHelper.Read<int>(data.container);
-                            GlobalToolDto value = UMI3DNetworkingHelper.Read<GlobalToolDto>(data.container);
+                            int ind = UMI3DSerializer.Read<int>(data.container);
+                            GlobalToolDto value = UMI3DSerializer.Read<GlobalToolDto>(data.container);
                             if (ind == list.Count)
                                 list.Add(value);
                             else if (ind < list.Count && ind >= 0)
@@ -185,20 +185,20 @@ namespace umi3d.cdk.interaction
                             await ReadUMI3DExtension(value, null);
                             break;
                         case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                            int i = UMI3DNetworkingHelper.Read<int>(data.container);
+                            int i = UMI3DSerializer.Read<int>(data.container);
                             RemoveTool(tb.tools[i]);
                             list.RemoveAt(i);
                             break;
                         case UMI3DOperationKeys.SetEntityListProperty:
-                            int index = UMI3DNetworkingHelper.Read<int>(data.container);
-                            GlobalToolDto v = UMI3DNetworkingHelper.Read<GlobalToolDto>(data.container);
+                            int index = UMI3DSerializer.Read<int>(data.container);
+                            GlobalToolDto v = UMI3DSerializer.Read<GlobalToolDto>(data.container);
                             list[index] = v;
                             break;
                         default:
                             foreach (GlobalToolDto t in list)
                                 RemoveTool(t);
                             list.Clear();
-                            list.AddRange(UMI3DNetworkingHelper.ReadList<GlobalToolDto>(data.container));
+                            list.AddRange(UMI3DSerializer.ReadList<GlobalToolDto>(data.container));
                             foreach (GlobalToolDto t in list)
                                 await ReadUMI3DExtension(t, null);
                             break;
@@ -238,7 +238,7 @@ namespace umi3d.cdk.interaction
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ToolboxTools:
-                    data.result = UMI3DNetworkingHelper.ReadList<GlobalToolDto>(data.container);
+                    data.result = UMI3DSerializer.ReadList<GlobalToolDto>(data.container);
                     return true;
                 default:
                     return false;

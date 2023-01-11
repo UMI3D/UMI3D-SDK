@@ -45,7 +45,7 @@ namespace umi3d.edk
         {
             if (rotation == null) rotation = new SerializableVector4();
             return base.ToBytable()
-                + UMI3DNetworkingHelper.Write(rotation);
+                + UMI3DSerializer.Write(rotation);
         }
 
         /// <inheritdoc/>

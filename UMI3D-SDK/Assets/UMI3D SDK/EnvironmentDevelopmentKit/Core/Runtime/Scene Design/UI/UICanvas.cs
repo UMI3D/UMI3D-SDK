@@ -96,9 +96,9 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(DynamicPixelPerUnit.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ReferencePixelPerUnit.GetValue(user))
-                + UMI3DNetworkingHelper.Write(OrderInLayer.GetValue(user));
+                + UMI3DSerializer.Write(DynamicPixelPerUnit.GetValue(user))
+                + UMI3DSerializer.Write(ReferencePixelPerUnit.GetValue(user))
+                + UMI3DSerializer.Write(OrderInLayer.GetValue(user));
         }
 
         /// <inheritdoc/>

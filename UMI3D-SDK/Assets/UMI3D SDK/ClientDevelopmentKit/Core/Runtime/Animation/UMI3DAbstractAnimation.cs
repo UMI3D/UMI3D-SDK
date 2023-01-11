@@ -120,7 +120,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
                     bool old = dto.playing;
-                    dto.playing = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    dto.playing = UMI3DSerializer.Read<bool>(value.container);
                     if (old != dto.playing)
                     {
                         if (dto.playing)
@@ -141,17 +141,17 @@ namespace umi3d.cdk
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationLooping:
-                    dto.looping = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    dto.looping = UMI3DSerializer.Read<bool>(value.container);
                     if (dto is UMI3DVideoPlayerDto)
                     {
                         (value.entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
-                    dto.startTime = UMI3DNetworkingHelper.Read<ulong>(value.container);
+                    dto.startTime = UMI3DSerializer.Read<ulong>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationPauseFrame:
-                    dto.pauseTime = UMI3DNetworkingHelper.Read<long>(value.container);
+                    dto.pauseTime = UMI3DSerializer.Read<long>(value.container);
                     SetProgress(dto.pauseTime);
                     break;
                 default:

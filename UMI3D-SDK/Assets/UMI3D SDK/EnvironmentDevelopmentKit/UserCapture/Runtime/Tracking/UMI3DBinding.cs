@@ -58,16 +58,16 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public Bytable ToByte(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(boneType)
-                    + UMI3DNetworkingHelper.Write(isBinded)
-                    + UMI3DNetworkingHelper.Write(this.node?.Id() ?? 0)
-                    + UMI3DNetworkingHelper.Write(rigName)
-                    + UMI3DNetworkingHelper.Write(offsetPosition)
-                    + UMI3DNetworkingHelper.Write(offsetRotation)
-                    + UMI3DNetworkingHelper.Write(offsetScale)
-                    + UMI3DNetworkingHelper.Write(syncPosition)
-                    + UMI3DNetworkingHelper.Write(syncRotation)
-                    + UMI3DNetworkingHelper.Write(freezeWorldScale);
+            return UMI3DSerializer.Write(boneType)
+                    + UMI3DSerializer.Write(isBinded)
+                    + UMI3DSerializer.Write(this.node?.Id() ?? 0)
+                    + UMI3DSerializer.Write(rigName)
+                    + UMI3DSerializer.Write(offsetPosition)
+                    + UMI3DSerializer.Write(offsetRotation)
+                    + UMI3DSerializer.Write(offsetScale)
+                    + UMI3DSerializer.Write(syncPosition)
+                    + UMI3DSerializer.Write(syncRotation)
+                    + UMI3DSerializer.Write(freezeWorldScale);
         }
 
         /// <inheritdoc/>

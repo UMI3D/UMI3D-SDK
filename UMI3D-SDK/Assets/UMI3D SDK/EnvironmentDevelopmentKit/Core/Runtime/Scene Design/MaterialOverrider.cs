@@ -106,9 +106,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         Bytable IBytable.ToBytableArray(params object[] parameters)
         {
-            return UMI3DNetworkingHelper.Write(newMaterial.Id())
-                + UMI3DNetworkingHelper.Write(addMaterialIfNotExists)
-                + UMI3DNetworkingHelper.WriteCollection(overrideAllMaterial ? ANY_mat : overidedMaterials);
+            return UMI3DSerializer.Write(newMaterial.Id())
+                + UMI3DSerializer.Write(addMaterialIfNotExists)
+                + UMI3DSerializer.WriteCollection(overrideAllMaterial ? ANY_mat : overidedMaterials);
         }
 
         /// <inheritdoc/>

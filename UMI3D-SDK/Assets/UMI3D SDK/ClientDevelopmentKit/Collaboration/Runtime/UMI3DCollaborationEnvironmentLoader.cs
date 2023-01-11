@@ -156,12 +156,12 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAvatarStatus:
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                     {
-                        bool value = UMI3DNetworkingHelper.Read<bool>(data.container);
+                        bool value = UMI3DSerializer.Read<bool>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 case UMI3DPropertyKeys.UserAudioFrequency:
                     {
-                        int value = UMI3DNetworkingHelper.Read<int>(data.container);
+                        int value = UMI3DSerializer.Read<int>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 case UMI3DPropertyKeys.UserAudioLogin:
@@ -169,7 +169,7 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioServer:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     {
-                        string value = UMI3DNetworkingHelper.Read<string>(data.container);
+                        string value = UMI3DSerializer.Read<string>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 default:
@@ -227,16 +227,16 @@ namespace umi3d.cdk.collaboration
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    InsertUser(dto, UMI3DNetworkingHelper.Read<int>(container), UMI3DNetworkingHelper.Read<UserDto>(container));
+                    InsertUser(dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    RemoveUserAt(dto, UMI3DNetworkingHelper.Read<int>(container));
+                    RemoveUserAt(dto, UMI3DSerializer.Read<int>(container));
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    ReplaceUser(dto, UMI3DNetworkingHelper.Read<int>(container), UMI3DNetworkingHelper.Read<UserDto>(container));
+                    ReplaceUser(dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
                     break;
                 default:
-                    ReplaceAllUser(dto, UMI3DNetworkingHelper.ReadList<UserDto>(container));
+                    ReplaceAllUser(dto, UMI3DSerializer.ReadList<UserDto>(container));
                     break;
             }
             return true;

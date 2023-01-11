@@ -53,15 +53,15 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(GetOperationKeys())
-                + UMI3DNetworkingHelper.Write(entityId)
-                + UMI3DNetworkingHelper.Write(property)
+            return UMI3DSerializer.Write(GetOperationKeys())
+                + UMI3DSerializer.Write(entityId)
+                + UMI3DSerializer.Write(property)
                 + ValueToBytes(user);
         }
 
         public virtual Bytable ValueToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(value);
+            return UMI3DSerializer.Write(value);
         }
 
         /// <inheritdoc/>

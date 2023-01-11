@@ -160,15 +160,15 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(PoseId)
-                + UMI3DNetworkingHelper.Write(PoseName)
-                + UMI3DNetworkingHelper.Write(IsActive)
-                + UMI3DNetworkingHelper.Write(isRelativeToNode)
-                + UMI3DNetworkingHelper.Write(AllowOverriding)
-                + UMI3DNetworkingHelper.Write(BodyPosition)
-                + UMI3DNetworkingHelper.Write(BodyEulerRotation)
-                //+ UMI3DNetworkingHelper.Write(JointRotations.ToDictionary(x => x.jointId, x => (SerializableVector3)x.JointEulerRotation));
-                + UMI3DNetworkingHelper.Write(TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3, Vector3>(x.relativePosition, x.relativeRotation)));
+            return UMI3DSerializer.Write(PoseId)
+                + UMI3DSerializer.Write(PoseName)
+                + UMI3DSerializer.Write(IsActive)
+                + UMI3DSerializer.Write(isRelativeToNode)
+                + UMI3DSerializer.Write(AllowOverriding)
+                + UMI3DSerializer.Write(BodyPosition)
+                + UMI3DSerializer.Write(BodyEulerRotation)
+                //+ UMI3DSerializer.Write(JointRotations.ToDictionary(x => x.jointId, x => (SerializableVector3)x.JointEulerRotation));
+                + UMI3DSerializer.Write(TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3, Vector3>(x.relativePosition, x.relativeRotation)));
         }
 
         /// <inheritdoc/>

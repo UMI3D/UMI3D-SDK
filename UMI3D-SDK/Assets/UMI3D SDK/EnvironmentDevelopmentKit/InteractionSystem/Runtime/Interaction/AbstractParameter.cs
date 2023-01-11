@@ -77,8 +77,8 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(isPrivate)
-                + UMI3DNetworkingHelper.Write(isDisplayer);
+                + UMI3DSerializer.Write(isPrivate)
+                + UMI3DSerializer.Write(isDisplayer);
         }
     }
 }

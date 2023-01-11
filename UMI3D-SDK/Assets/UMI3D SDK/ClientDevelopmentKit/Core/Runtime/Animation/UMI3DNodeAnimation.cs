@@ -189,7 +189,7 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationDuration:
-                    dto.duration = UMI3DNetworkingHelper.Read<float>(value.container);
+                    dto.duration = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(value.operationId, value.propertyKey, value.container);
@@ -227,7 +227,7 @@ namespace umi3d.cdk
         {
             if (operationChains == null)
                 operationChains = new List<OperationChain>();
-            UMI3DNetworkingHelper.ReadList(operationId, container, operationChains);
+            UMI3DSerializer.ReadList(operationId, container, operationChains);
             Stop();
             Start(progress);
             return true;

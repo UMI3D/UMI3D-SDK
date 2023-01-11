@@ -77,7 +77,7 @@ namespace umi3d.cdk
         {
             int transaction = count++;
             int opCount = 0;
-            foreach (ByteContainer c in UMI3DNetworkingHelper.ReadIndexesList(container))
+            foreach (ByteContainer c in UMI3DSerializer.ReadIndexesList(container))
             {
                 bool performed = false;
                 var ErrorTime = Time.time + secondBeforeError;
@@ -146,7 +146,7 @@ namespace umi3d.cdk
         /// <param name="performed">Callback.</param>
         public static async Task PerformOperation(ByteContainer container)
         { 
-            uint operationId = UMI3DNetworkingHelper.Read<uint>(container);
+            uint operationId = UMI3DSerializer.Read<uint>(container);
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
@@ -154,7 +154,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DOperationKeys.DeleteEntity:
                     {
-                        ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
+                        ulong entityId = UMI3DSerializer.Read<ulong>(container);
                         await UMI3DEnvironmentLoader.DeleteEntity(entityId);
                         break;
                     }
@@ -171,8 +171,8 @@ namespace umi3d.cdk
                 default:
                     if (UMI3DOperationKeys.SetEntityProperty <= operationId && operationId <= UMI3DOperationKeys.SetEntityMatrixProperty)
                     {
-                        ulong entityId = UMI3DNetworkingHelper.Read<ulong>(container);
-                        uint propertyKey = UMI3DNetworkingHelper.Read<uint>(container);
+                        ulong entityId = UMI3DSerializer.Read<ulong>(container);
+                        uint propertyKey = UMI3DSerializer.Read<uint>(container);
                         UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
                     }
                     else

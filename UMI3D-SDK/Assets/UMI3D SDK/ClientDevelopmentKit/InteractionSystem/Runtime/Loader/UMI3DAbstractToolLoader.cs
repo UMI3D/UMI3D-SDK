@@ -80,21 +80,21 @@ namespace umi3d.cdk.interaction
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AbstractToolName:
-                    dto.name = UMI3DNetworkingHelper.Read<string>(value.container);
+                    dto.name = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolDescription:
-                    dto.description = UMI3DNetworkingHelper.Read<string>(value.container);
+                    dto.description = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolIcon2D:
-                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    dto.icon2D = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolIcon3D:
-                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(value.container);
+                    dto.icon3D = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return SetInteractions(dto, tool, value.operationId, value.propertyKey, value.container);
                 case UMI3DPropertyKeys.AbstractToolActive:
-                    dto.active = UMI3DNetworkingHelper.Read<bool>(value.container);
+                    dto.active = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 default:
                     return false;
@@ -115,21 +115,21 @@ namespace umi3d.cdk.interaction
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.AbstractToolName:
-                    data.result = UMI3DNetworkingHelper.Read<string>(data.container);
+                    data.result = UMI3DSerializer.Read<string>(data.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolDescription:
-                    data.result = UMI3DNetworkingHelper.Read<string>(data.container);
+                    data.result = UMI3DSerializer.Read<string>(data.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolIcon2D:
-                    data.result = UMI3DNetworkingHelper.Read<ResourceDto>(data.container);
+                    data.result = UMI3DSerializer.Read<ResourceDto>(data.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolIcon3D:
-                    data.result = UMI3DNetworkingHelper.Read<ResourceDto>(data.container);
+                    data.result = UMI3DSerializer.Read<ResourceDto>(data.container);
                     break;
                 case UMI3DPropertyKeys.AbstractToolInteractions:
                     return ReadInteractions(data);
                 case UMI3DPropertyKeys.AbstractToolActive:
-                    data.result = UMI3DNetworkingHelper.Read<bool>(data.container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 default:
                     return false;
@@ -156,8 +156,8 @@ namespace umi3d.cdk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(container);
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
+                    index = UMI3DSerializer.Read<int>(container);
+                    value = UMI3DSerializer.Read<ulong>(container);
                     if (index == dto.interactions.Count)
                         dto.interactions.Add(value);
                     else if (index < dto.interactions.Count)
@@ -165,7 +165,7 @@ namespace umi3d.cdk.interaction
                     else return false;
                     tool.Added(UMI3DEnvironmentLoader.GetEntity(value).dto as AbstractInteractionDto); break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(container);
+                    index = UMI3DSerializer.Read<int>(container);
                     if (index < dto.interactions.Count)
                     {
                         AbstractInteractionDto removed = UMI3DEnvironmentLoader.GetEntity(dto.interactions[index]).dto as AbstractInteractionDto;
@@ -175,15 +175,15 @@ namespace umi3d.cdk.interaction
                     else return false;
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    index = UMI3DNetworkingHelper.Read<int>(container);
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
+                    index = UMI3DSerializer.Read<int>(container);
+                    value = UMI3DSerializer.Read<ulong>(container);
                     if (index < dto.interactions.Count)
                         dto.interactions[index] = value;
                     else return false;
                     tool.Updated();
                     break;
                 default:
-                    dto.interactions = UMI3DNetworkingHelper.ReadList<ulong>(container);
+                    dto.interactions = UMI3DSerializer.ReadList<ulong>(container);
                     tool.Updated();
                     break;
             }
@@ -232,7 +232,7 @@ namespace umi3d.cdk.interaction
         /// <returns>Always true</returns>
         private static bool ReadInteractions(ReadUMI3DPropertyData data)
         {
-            data.result = UMI3DNetworkingHelper.ReadList<AbstractInteractionDto>(data.container);
+            data.result = UMI3DSerializer.ReadList<AbstractInteractionDto>(data.container);
             return true;
         }
     }

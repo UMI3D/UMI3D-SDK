@@ -128,10 +128,10 @@ namespace umi3d.edk
 
             return
                 base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(position)
-                + UMI3DNetworkingHelper.Write(scale)
-                + UMI3DNetworkingHelper.Write(rotation)
-                + UMI3DNetworkingHelper.Write(LibrariesId)
+                + UMI3DSerializer.Write(position)
+                + UMI3DSerializer.Write(scale)
+                + UMI3DSerializer.Write(rotation)
+                + UMI3DSerializer.Write(LibrariesId)
                 + f;
         }
 

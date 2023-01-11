@@ -106,15 +106,15 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = node.transform.localPosition = UMI3DNetworkingHelper.Read<SerializableVector3>(value.container);
+                    dto.position = node.transform.localPosition = UMI3DSerializer.Read<SerializableVector3>(value.container);
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(value.container);
+                    node.transform.localRotation = dto.rotation = UMI3DSerializer.Read<SerializableVector4>(value.container);
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = node.transform.localScale = UMI3DNetworkingHelper.Read<Vector3>(value.container);
+                    dto.scale = node.transform.localScale = UMI3DSerializer.Read<Vector3>(value.container);
                     node.SendOnPoseUpdated();
                     break;
                 default:
@@ -131,13 +131,13 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    data.result = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container);
+                    data.result = UMI3DSerializer.Read<SerializableVector3>(data.container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    data.result = UMI3DNetworkingHelper.Read<SerializableVector4>(data.container);
+                    data.result = UMI3DSerializer.Read<SerializableVector4>(data.container);
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    data.result = UMI3DNetworkingHelper.Read<SerializableVector3>(data.container);
+                    data.result = UMI3DSerializer.Read<SerializableVector3>(data.container);
                     break;
                 default:
                     return false;

@@ -179,7 +179,7 @@ namespace umi3d.edk.collaboration
             user.SetStatus(dto.status);
         }
 
-        private List<Umi3dNetworkingHelperModule> collaborativeModule;
+        private List<UMI3DSerializerModule> collaborativeModule;
 
         private void Start()
         {
@@ -208,8 +208,15 @@ namespace umi3d.edk.collaboration
             mumbleManager = murmur.MumbleManager.Create(mumbleIp, mumbleHttpIp, guid);
 
             if (collaborativeModule == null)
-                collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
-            UMI3DNetworkingHelper.AddModule(collaborativeModule);
+                collaborativeModule = new List<UMI3DSerializerModule>() {
+                    new UMI3DSerializerBasicModules(),
+                    new UMI3DSerializerStringModules(),
+                    new UMI3DSerializerVectorModules(),
+                    new UMI3DSerializerAnimationModules(),
+                    new UMI3DSerializerShaderModules(),
+                    new UMI3DEnvironmentSerializerCollaborationModule(),
+                    new common.collaboration.UMI3DCollaborationSerializerModule() };
+            UMI3DSerializer.AddModule(collaborativeModule);
 
             if (!useIp)
                 ip = GetLocalIPAddress();
@@ -359,7 +366,7 @@ namespace umi3d.edk.collaboration
         private void _Stop()
         {
             if (collaborativeModule != null)
-                UMI3DNetworkingHelper.RemoveModule(collaborativeModule);
+                UMI3DSerializer.RemoveModule(collaborativeModule);
             http?.Stop();
             forgeServer?.Stop();
             if (isRunning)

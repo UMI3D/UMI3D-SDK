@@ -96,8 +96,8 @@ namespace umi3d.edk
         /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(ObjectMaterial.GetValue(user)?.Id() ?? 0)
-                + UMI3DNetworkingHelper.Write(audioPlayer?.Id() ?? 0)
+            return UMI3DSerializer.Write(ObjectMaterial.GetValue(user)?.Id() ?? 0)
+                + UMI3DSerializer.Write(audioPlayer?.Id() ?? 0)
                 + ObjectVideoResource.GetValue(user).ToByte();
         }
     }

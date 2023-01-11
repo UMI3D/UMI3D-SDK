@@ -47,9 +47,9 @@ namespace umi3d.common.userCapture
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
-                + UMI3DNetworkingHelper.Write(scale)
-                + UMI3DNetworkingHelper.Write(projectionMatrix)
-                + UMI3DNetworkingHelper.Write(boneType);
+                + UMI3DSerializer.Write(scale)
+                + UMI3DSerializer.Write(projectionMatrix)
+                + UMI3DSerializer.Write(boneType);
 
         }
     }

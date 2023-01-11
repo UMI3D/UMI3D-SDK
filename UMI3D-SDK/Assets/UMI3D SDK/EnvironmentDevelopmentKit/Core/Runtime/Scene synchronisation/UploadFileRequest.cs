@@ -44,8 +44,8 @@ namespace umi3d.edk
 
         protected virtual Bytable ToBytable()
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.UploadFileRequest)
-                + UMI3DNetworkingHelper.Write(token) + UMI3DNetworkingHelper.Write(fileId);
+            return UMI3DSerializer.Write(UMI3DOperationKeys.UploadFileRequest)
+                + UMI3DSerializer.Write(token) + UMI3DSerializer.Write(fileId);
         }
 
         /// <inheritdoc/>

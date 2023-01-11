@@ -68,7 +68,7 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(value);
+                + UMI3DSerializer.Write(value);
         }
 
         /// <inheritdoc/>
@@ -99,10 +99,10 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
-                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
-                    UMI3DNetworkingHelper.Read<bool>(container);
-                    UMI3DNetworkingHelper.Read<bool>(container);
-                    value = UMI3DNetworkingHelper.Read<Vector4>(container);
+                    uint parameterId = UMI3DSerializer.Read<uint>(container);
+                    UMI3DSerializer.Read<bool>(container);
+                    UMI3DSerializer.Read<bool>(container);
+                    value = UMI3DSerializer.Read<Vector4>(container);
                     onChange.Invoke(new ParameterEventContent<Vector4>(user, toolId, interactionId, hoverredId, boneType, value));
                     break;
                 default:
