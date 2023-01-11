@@ -223,7 +223,7 @@ namespace umi3d.edk.interaction
             dto.icon3D = Display.icon3D.ToDto();
             dto.id = Id();
             dto.description = Display.description;
-            dto.uiLinkId = ObjectUIRect.GetValue(user).Id();
+            dto.uiLinkId = ObjectUIRect.GetValue(user)?.Id() ?? 0;
         }
 
         /// <summary>
