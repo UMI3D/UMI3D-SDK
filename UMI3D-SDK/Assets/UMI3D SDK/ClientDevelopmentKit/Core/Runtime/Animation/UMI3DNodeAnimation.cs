@@ -157,9 +157,9 @@ namespace umi3d.cdk
         async void PerformChain(OperationChain chain)
         {
             if (chain.IsByte)
-                await UMI3DTransactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
+                await UMI3DClientServer.transactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
             else
-                await UMI3DTransactionDispatcher.PerformOperation(chain.operation);
+                await UMI3DClientServer.transactionDispatcher.PerformOperation(chain.operation);
         }
 
         /// <inheritdoc/>
