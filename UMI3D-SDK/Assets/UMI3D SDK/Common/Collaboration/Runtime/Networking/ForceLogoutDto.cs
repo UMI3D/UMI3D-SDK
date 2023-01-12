@@ -24,7 +24,7 @@ namespace umi3d.common.collaboration
     /// <summary>
     /// DTO describing a forced logout order.
     /// </summary>
-    public class ForceLogoutDto : UMI3DDto
+    public class ForceLogoutDto : AbstractOperationDto
     {
         /// <summary>
         /// Reason for forcing user logout.

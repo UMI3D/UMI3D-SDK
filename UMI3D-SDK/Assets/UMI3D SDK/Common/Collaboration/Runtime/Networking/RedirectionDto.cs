@@ -19,7 +19,7 @@ namespace umi3d.common.collaboration
     /// <summary>
     /// DTO describing the order to a user to disconnect from an environment and connect to an other.
     /// </summary>
-    public class RedirectionDto : UMI3DDto
+    public class RedirectionDto : AbstractOperationDto
     {
         /// <summary>
         /// MediaDto of the media to connect to.

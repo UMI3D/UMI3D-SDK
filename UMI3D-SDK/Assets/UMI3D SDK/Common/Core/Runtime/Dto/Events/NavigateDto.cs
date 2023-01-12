@@ -20,7 +20,7 @@ namespace umi3d.common
     /// DTO ordering the displacement of a user to a new position.
     /// </summary>
     [System.Serializable]
-    public class NavigateDto : UMI3DDto
+    public class NavigateDto : AbstractOperationDto
     {
         /// <summary>
         /// New position of the user.

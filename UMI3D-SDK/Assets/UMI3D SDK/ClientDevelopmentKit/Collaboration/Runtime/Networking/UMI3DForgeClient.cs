@@ -17,6 +17,7 @@ using BeardedManStudios.Forge.Networking.Unity;
 using System;
 using System.Collections;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.common;
@@ -362,6 +363,15 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
+            if(UMI3DClientServer.Exists && UMI3DClientServer.transactionDispatcher == null)
+            {
+                UMI3DClientServer.transactionDispatcher = new UMI3DTransactionDispatcher((dto) => PerformOperation(dto),(id,c)=>PerformOperation(id,c));
+
+            }
+
+            if (UMI3DClientServer.transactionDispatcher == null)
+                throw new Exception("Transaction Dispatcher should not be null");
+
             if (useDto)
             {
                 var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
@@ -371,66 +381,18 @@ namespace umi3d.cdk.collaboration
                     case TransactionDto transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DTransactionDispatcher.PerformTransaction(transaction);
+                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(transaction);
                             if(UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
 
                         break;
-                    case NavigateDto navigate:
-                        MainThreadManager.Run(() =>
-                        {
-                            StartCoroutine(UMI3DNavigation.Navigate(navigate));
-                            if (UMI3DCollaborationClientServer.transactionPending != null)
-                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                        });
 
-                        break;
-                    case GetLocalInfoRequestDto requestGet:
-                        MainThreadManager.Run(() =>
-                        {
-                            SendGetLocalInfo(requestGet.key);
-
-                            if (UMI3DCollaborationClientServer.transactionPending != null)
-                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                        });
-
-                        break;
-                    case RequestHttpUploadDto uploadFileRequest:
-                        string token = uploadFileRequest.uploadToken;
-                        string fileId = uploadFileRequest.fileId;
-
-                        string fileName = FileUploader.GetFileName(fileId);
-                        byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
-                        if (bytesToUpload != null)
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                SendPostFile(token, fileName, bytesToUpload);
-
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case RedirectionDto redirection:
-                        MainThreadManager.Run(() =>
-                        {
-                            UMI3DCollaborationClientServer.Connect(redirection);
-                            if (UMI3DCollaborationClientServer.transactionPending != null)
-                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                        });
-                        break;
-                    case ForceLogoutDto forceLogout:
-                        MainThreadManager.Run(() =>
-                        {
-                            UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
-                            if (UMI3DCollaborationClientServer.transactionPending != null)
-                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                        });
-                        break;
                     default:
-                        UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
+                        });
                         break;
                 }
             }
@@ -443,153 +405,13 @@ namespace umi3d.cdk.collaboration
                     case UMI3DOperationKeys.Transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DTransactionDispatcher.PerformTransaction(container);
+                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
 
                             if (UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
                         break;
-                    case UMI3DOperationKeys.NavigationRequest:
-                        {
-                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                            var nav = new NavigateDto() { position = pos };
-                            MainThreadManager.Run(() =>
-                            {
-                                StartCoroutine(UMI3DNavigation.Navigate(nav));
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case UMI3DOperationKeys.TeleportationRequest:
-                        {
-                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                            SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
-                            var nav = new TeleportDto() { position = pos, rotation = rot };
-                            MainThreadManager.Run(() =>
-                            {
-                                StartCoroutine(UMI3DNavigation.Navigate(nav));
 
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case UMI3DOperationKeys.VehicleRequest:
-                        {
-                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                            SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
-                            ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
-                            bool stopNavigation = UMI3DSerializer.Read<bool>(container);
-
-                            var nav = new VehicleDto()
-                            {
-                                position = pos,
-                                rotation = rot,
-                                VehicleId = vehicleId,
-                                StopNavigation = stopNavigation,
-                            };
-
-                            MainThreadManager.Run(() =>
-                            {
-                                StartCoroutine(UMI3DNavigation.Navigate(nav));
-
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case UMI3DOperationKeys.BoardedVehicleRequest:
-                        {
-                            SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                            SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
-                            ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
-                            bool stopNavigation = UMI3DSerializer.Read<bool>(container);
-                            ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);
-                            bool changeBonesToStream = UMI3DSerializer.Read<bool>(container);
-                            System.Collections.Generic.List<uint> bonesToStream = UMI3DSerializer.ReadList<uint>(container);
-
-                            var nav = new BoardedVehicleDto()
-                            {
-                                position = pos,
-                                rotation = rot,
-                                VehicleId = vehicleId,
-                                StopNavigation = stopNavigation,
-                                BodyAnimationId = bodyAnimationId,
-                                ChangeBonesToStream = changeBonesToStream,
-                                BonesToStream = bonesToStream
-                            };
-
-                            MainThreadManager.Run(() =>
-                            {
-                                StartCoroutine(UMI3DNavigation.Navigate(nav));
-                                UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
-
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case UMI3DOperationKeys.EmoteRequest:
-                        {
-                            ulong emoteId = UMI3DSerializer.Read<ulong>(container);
-                            bool trigger = UMI3DSerializer.Read<bool>(container);
-                            ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
-                            MainThreadManager.Run(() =>
-                            {
-                                if (trigger)
-                                    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
-                                else
-                                    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
-
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case UMI3DOperationKeys.GetLocalInfoRequest:
-                        string key = UMI3DSerializer.Read<string>(container);
-                        MainThreadManager.Run(() =>
-                        {
-                            SendGetLocalInfo(key);
-                        });
-                        break;
-                    case UMI3DOperationKeys.UploadFileRequest:
-                        string token = UMI3DSerializer.Read<string>(container);
-                        string fileId = UMI3DSerializer.Read<string>(container);
-                        string name = FileUploader.GetFileName(fileId);
-                        byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
-                        if (bytesToUpload != null)
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                SendPostFile(token, name, bytesToUpload);
-
-                                if (UMI3DCollaborationClientServer.transactionPending != null)
-                                    UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                            });
-                        }
-                        break;
-                    case UMI3DOperationKeys.RedirectionRequest:
-                        RedirectionDto redirection = UMI3DSerializer.Read<RedirectionDto>(container);
-                        MainThreadManager.Run(() =>
-                        {
-                            UMI3DCollaborationClientServer.Connect(redirection);
-
-                            if (UMI3DCollaborationClientServer.transactionPending != null)
-                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                        });
-                        break;
-                    case UMI3DOperationKeys.ForceLogoutRequest:
-                        ForceLogoutDto forceLogout = UMI3DSerializer.Read<ForceLogoutDto>(container);
-                        MainThreadManager.Run(() =>
-                        {
-                            UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
-
-                            if (UMI3DCollaborationClientServer.transactionPending != null)
-                                UMI3DCollaborationClientServer.transactionPending.areDispatchableRequestPending = false;
-                        });
-                        break;
                     default:
                         MainThreadManager.Run(() =>
                         {
@@ -598,6 +420,185 @@ namespace umi3d.cdk.collaboration
                         break;
                 }
             }
+        }
+
+        public async Task<bool> PerformOperation(AbstractOperationDto operation)
+        {
+            switch (operation)
+            {
+                case NavigateDto navigate:
+                    MainThreadManager.Run(() =>
+                    {
+                        StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                    });
+
+                    break;
+                case GetLocalInfoRequestDto requestGet:
+                    MainThreadManager.Run(() =>
+                    {
+                        SendGetLocalInfo(requestGet.key);
+                    });
+
+                    break;
+                case RequestHttpUploadDto uploadFileRequest:
+                    string token = uploadFileRequest.uploadToken;
+                    string fileId = uploadFileRequest.fileId;
+
+                    string fileName = FileUploader.GetFileName(fileId);
+                    byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
+                    if (bytesToUpload != null)
+                    {
+                        MainThreadManager.Run(() =>
+                        {
+                            SendPostFile(token, fileName, bytesToUpload);
+                        });
+                    }
+                    break;
+                case RedirectionDto redirection:
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DCollaborationClientServer.Connect(redirection);
+                    });
+                    break;
+                case ForceLogoutDto forceLogout:
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
+                    });
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        public async Task<bool> PerformOperation(uint operationId, ByteContainer container)
+        {
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.NavigationRequest:
+                    {
+                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        var nav = new NavigateDto() { position = pos };
+                        MainThreadManager.Run(() =>
+                        {
+                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                        });
+                    }
+                    break;
+                case UMI3DOperationKeys.TeleportationRequest:
+                    {
+                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                        var nav = new TeleportDto() { position = pos, rotation = rot };
+                        MainThreadManager.Run(() =>
+                        {
+                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+
+                        });
+                    }
+                    break;
+                case UMI3DOperationKeys.VehicleRequest:
+                    {
+                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                        ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
+                        bool stopNavigation = UMI3DSerializer.Read<bool>(container);
+
+                        var nav = new VehicleDto()
+                        {
+                            position = pos,
+                            rotation = rot,
+                            VehicleId = vehicleId,
+                            StopNavigation = stopNavigation,
+                        };
+
+                        MainThreadManager.Run(() =>
+                        {
+                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                        });
+                    }
+                    break;
+                case UMI3DOperationKeys.BoardedVehicleRequest:
+                    {
+                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                        ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
+                        bool stopNavigation = UMI3DSerializer.Read<bool>(container);
+                        ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);
+                        bool changeBonesToStream = UMI3DSerializer.Read<bool>(container);
+                        System.Collections.Generic.List<uint> bonesToStream = UMI3DSerializer.ReadList<uint>(container);
+
+                        var nav = new BoardedVehicleDto()
+                        {
+                            position = pos,
+                            rotation = rot,
+                            VehicleId = vehicleId,
+                            StopNavigation = stopNavigation,
+                            BodyAnimationId = bodyAnimationId,
+                            ChangeBonesToStream = changeBonesToStream,
+                            BonesToStream = bonesToStream
+                        };
+
+                        MainThreadManager.Run(() =>
+                        {
+                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
+                        });
+                    }
+                    break;
+                case UMI3DOperationKeys.EmoteRequest:
+                    {
+                        ulong emoteId = UMI3DSerializer.Read<ulong>(container);
+                        bool trigger = UMI3DSerializer.Read<bool>(container);
+                        ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
+                        MainThreadManager.Run(() =>
+                        {
+                            if (trigger)
+                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
+                            else
+                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
+                        });
+                    }
+                    break;
+                case UMI3DOperationKeys.GetLocalInfoRequest:
+                    string key = UMI3DSerializer.Read<string>(container);
+                    MainThreadManager.Run(() =>
+                    {
+                        SendGetLocalInfo(key);
+                    });
+                    break;
+                case UMI3DOperationKeys.UploadFileRequest:
+                    string token = UMI3DSerializer.Read<string>(container);
+                    string fileId = UMI3DSerializer.Read<string>(container);
+                    string name = FileUploader.GetFileName(fileId);
+                    byte[] bytesToUpload = FileUploader.GetFileToUpload(fileId);
+                    if (bytesToUpload != null)
+                    {
+                        MainThreadManager.Run(() =>
+                        {
+                            SendPostFile(token, name, bytesToUpload);
+                        });
+                    }
+                    break;
+                case UMI3DOperationKeys.RedirectionRequest:
+                    RedirectionDto redirection = UMI3DSerializer.Read<RedirectionDto>(container);
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DCollaborationClientServer.Connect(redirection);
+                    });
+                    break;
+                case UMI3DOperationKeys.ForceLogoutRequest:
+                    ForceLogoutDto forceLogout = UMI3DSerializer.Read<ForceLogoutDto>(container);
+                    MainThreadManager.Run(() =>
+                    {
+                        UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
+                    });
+                    break;
+                default:
+                    return false;
+            }
+            return true;
         }
 
         private async void SendGetLocalInfo(string key)
@@ -749,6 +750,11 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void Start()
         {
+            if (UMI3DClientServer.Exists && UMI3DClientServer.transactionDispatcher == null)
+            {
+                UMI3DClientServer.transactionDispatcher = new UMI3DTransactionDispatcher((dto) => PerformOperation(dto), (id, c) => PerformOperation(id, c));
+
+            }
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);

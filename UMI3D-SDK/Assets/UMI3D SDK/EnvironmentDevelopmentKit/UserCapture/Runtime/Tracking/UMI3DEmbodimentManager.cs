@@ -240,14 +240,15 @@ namespace umi3d.edk.userCapture
             //? avoid the data channel filtering
             var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
             targetUsers.Remove(user);
-            var req = new EmoteDispatchRequest(reliable: true, users: targetUsers)
+            var req = new EmoteDispatchRequest()
             {
                 sendingUserId = user.Id(),
                 shouldTrigger = trigger,
-                emoteId = emoteId
+                emoteId = emoteId,
+                users = targetUsers
             };
 
-            req.Dispatch();
+            req.ToTransaction(true).Dispatch();
         }
 
         /// <summary>
@@ -658,7 +659,7 @@ namespace umi3d.edk.userCapture
 
             vr.users = new HashSet<UMI3DUser>() { user };
 
-            vr.Dispatch();
+            vr.ToTransaction(true).Dispatch();
         }
 
         public void VehicleEmbarkment(UMI3DUser user, ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, UMI3DAbstractNode vehicle = null, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion())
@@ -673,15 +674,15 @@ namespace umi3d.edk.userCapture
                 Embarkments[user.Id()] = (false, vehicle);
 
                 if (vehicle != EmbodimentsScene)
-                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, vehicle.Id(), stopNavigation, position, rotation, true);
+                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, vehicle.Id(), stopNavigation, position, rotation);
                 else
-                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation, true);
+                    vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation);
             }
             else
             {
                 Embarkments[user.Id()] = (false, EmbodimentsScene);
 
-                vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation, true);
+                vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation);
             }
 
             localPosition = position;
@@ -690,7 +691,7 @@ namespace umi3d.edk.userCapture
 
             vr.users = new HashSet<UMI3DUser>() { user };
 
-            vr.Dispatch();
+            vr.ToTransaction(true).Dispatch();
         }
 
         #endregion

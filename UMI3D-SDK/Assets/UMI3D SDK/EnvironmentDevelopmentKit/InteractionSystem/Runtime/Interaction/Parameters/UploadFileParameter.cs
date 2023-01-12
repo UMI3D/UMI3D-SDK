@@ -195,11 +195,10 @@ namespace umi3d.edk.interaction
         protected virtual void OnChange(ParameterEventContent<(string, string)> responseContainer)
         {
             //RequestHttpUploadDto httpDto = new RequestHttpUploadDto();
-            var request = new UploadFileRequest(true, responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
+            var request = new UploadFileRequest(responseContainer.value.Item2) { users = new HashSet<UMI3DUser>() { responseContainer.user } };
             uploadTokens.Add(request.token, this);
 
-
-            UMI3DServer.Dispatch(request);
+            request.ToTransaction(true).Dispatch();
         }
 
         /// <summary>

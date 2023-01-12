@@ -209,20 +209,8 @@ namespace umi3d.edk
             if (Exists) Instance._Dispatch(transaction);
         }
 
-        /// <summary>
-        /// Send a <see cref="DispatchableRequest"/> to all clients.
-        /// </summary>
-        /// <param name="transaction"></param>
-        public static void Dispatch(DispatchableRequest dispatchableRequest)
-        {
-            if (Exists) Instance._Dispatch(dispatchableRequest);
-        }
-
         //? empty ?
         protected virtual void _Dispatch(Transaction transaction)
-        {
-        }
-        protected virtual void _Dispatch(DispatchableRequest dispatchable)
         {
         }
 
