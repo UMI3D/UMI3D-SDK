@@ -750,6 +750,11 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void Start()
         {
+            if (UMI3DClientServer.Exists && UMI3DClientServer.transactionDispatcher == null)
+            {
+                UMI3DClientServer.transactionDispatcher = new UMI3DTransactionDispatcher((dto) => PerformOperation(dto), (id, c) => PerformOperation(id, c));
+
+            }
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
