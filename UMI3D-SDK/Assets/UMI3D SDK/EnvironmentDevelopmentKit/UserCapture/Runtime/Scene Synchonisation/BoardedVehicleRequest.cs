@@ -40,14 +40,14 @@ namespace umi3d.edk.userCapture
         /// </summary>
         public List<uint> BonesToStream = new List<uint>();
 
-        public BoardedVehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
+        public BoardedVehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) : base(position, rotation)
         {
             this.BodyAnimationId = 0;
             this.ChangeBonesToStream = false;
             this.BonesToStream = new List<uint>();
         }
 
-        public BoardedVehicleRequest(ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, ulong vehicleId = 0, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(vehicleId, stopNavigation, position, rotation, reliable)
+        public BoardedVehicleRequest(ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, ulong vehicleId = 0, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) : base(vehicleId, stopNavigation, position, rotation)
         {
             this.BodyAnimationId = bodyAnimationId;
             this.ChangeBonesToStream = changeBonesToStream;
@@ -61,10 +61,9 @@ namespace umi3d.edk.userCapture
         }
 
         /// <inheritdoc/>
-        protected override Bytable ToBytable()
+        public override Bytable ToBytable(UMI3DUser user)
         {
-            if (rotation == null) rotation = new SerializableVector4();
-            return base.ToBytable()
+            return base.ToBytable(user)
                 + UMI3DSerializer.Write(BodyAnimationId)
                 + UMI3DSerializer.Write(ChangeBonesToStream)
                 + UMI3DSerializer.WriteCollection(BonesToStream);

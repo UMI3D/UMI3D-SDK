@@ -33,13 +33,13 @@ namespace umi3d.edk
         /// </summary>
         public bool StopNavigation = false;
 
-        public VehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
+        public VehicleRequest(Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) : base(position, rotation)
         {
             this.VehicleId = 0;
             this.StopNavigation = false;
         }
 
-        public VehicleRequest(ulong vehicleId = 0, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion(), bool reliable = true) : base(position, rotation, reliable)
+        public VehicleRequest(ulong vehicleId = 0, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) : base(position, rotation)
         {
             this.VehicleId = vehicleId;
             this.StopNavigation = stopNavigation;
@@ -52,10 +52,10 @@ namespace umi3d.edk
         }
 
         /// <inheritdoc/>
-        protected override Bytable ToBytable()
+        public override Bytable ToBytable(UMI3DUser user)
         {
             if (rotation == null) rotation = new SerializableVector4();
-            return base.ToBytable()
+            return base.ToBytable(user)
                 + UMI3DSerializer.Write(VehicleId)
                 + UMI3DSerializer.Write(StopNavigation);
         }
