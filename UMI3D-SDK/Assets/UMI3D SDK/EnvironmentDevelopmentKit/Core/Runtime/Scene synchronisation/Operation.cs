@@ -87,5 +87,12 @@ namespace umi3d.edk
             }
             return a;
         }
+
+        public Transaction ToTransaction(bool reliable)
+        {
+            var t = new Transaction(reliable);
+            t.Add(this);
+            return t;
+        }
     }
 }

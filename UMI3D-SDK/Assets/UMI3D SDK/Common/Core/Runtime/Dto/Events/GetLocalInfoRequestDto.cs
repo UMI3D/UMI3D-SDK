@@ -20,7 +20,7 @@ namespace umi3d.common
     /// DTO for Local Info Requests, that act like cookies.
     /// </summary>
     [System.Serializable]
-    public class GetLocalInfoRequestDto : UMI3DDto
+    public class GetLocalInfoRequestDto : AbstractOperationDto
     {
         /// <summary>
         /// Local file id. Used in the http Get request. It should only contains only lower case letter or number.

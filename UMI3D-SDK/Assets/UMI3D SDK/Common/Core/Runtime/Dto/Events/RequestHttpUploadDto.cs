@@ -20,7 +20,7 @@ namespace umi3d.common
     /// Request to upload a file.
     /// </summary>
     [System.Serializable]
-    public class RequestHttpUploadDto : UMI3DDto
+    public class RequestHttpUploadDto : AbstractOperationDto
     {
         public RequestHttpUploadDto() : base() { }
 

@@ -31,6 +31,23 @@ namespace umi3d.cdk
         /// Environment connected to.
         /// </summary>
         protected MediaDto _media;
+
+        protected UMI3DTransactionDispatcher _transactionDispatcher;
+        public static UMI3DTransactionDispatcher transactionDispatcher
+        {
+            get
+            {
+                return Exists ? Instance._transactionDispatcher : null;
+            }
+            set
+            {
+                if(Exists)
+                {
+                    Instance._transactionDispatcher = value;
+                }
+            }
+        }
+
         /// <summary>
         /// Environment connected to.
         /// </summary>

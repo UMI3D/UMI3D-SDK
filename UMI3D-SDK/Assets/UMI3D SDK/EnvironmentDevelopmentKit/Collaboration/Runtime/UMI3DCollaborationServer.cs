@@ -579,36 +579,6 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        /// <inheritdoc/>
-        protected override void _Dispatch(DispatchableRequest dispatchableRequest)
-        {
-            base._Dispatch(dispatchableRequest);
-            foreach (UMI3DUser u in dispatchableRequest.users)
-            {
-                if (u is UMI3DCollaborationUser user)
-                {
-                    if (user.status == StatusType.NONE)
-                    {
-                        continue;
-                    }
-
-                    if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
-                    {
-
-                        if (!DispatchableToBeSend.ContainsKey(user))
-                        {
-                            DispatchableToBeSend[user] = new List<DispatchableRequest>();
-                        }
-
-                        DispatchableToBeSend[user].Add(dispatchableRequest);
-                        continue;
-                    }
-
-                    SendNavigationRequest(user, dispatchableRequest);
-                }
-            }
-        }
-
         private void SendTransaction(UMI3DCollaborationUser user, Transaction transaction)
         {
             (byte[], bool) c = UMI3DEnvironment.Instance.useDto ? transaction.ToBson(user) : transaction.ToBytes(user);
@@ -616,19 +586,11 @@ namespace umi3d.edk.collaboration
                 ForgeServer.SendData(user.networkPlayer, c.Item1, transaction.reliable);
         }
 
-        private void SendNavigationRequest(UMI3DCollaborationUser user, DispatchableRequest dispatchableRequest)
-        {
-            byte[] data = UMI3DEnvironment.Instance.useDto ? dispatchableRequest.ToBson() : dispatchableRequest.ToBytes();
-            ForgeServer.SendData(user.networkPlayer, data, dispatchableRequest.reliable);
-        }
-
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> DispatchableToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
 
         public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
         {
-            areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user))),
-            areDispatchableRequestPending = (DispatchableToBeSend.ContainsKey(user) && DispatchableToBeSend[user].Any(o => o.users.Contains(user)))
+            areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user)))
         };
 
         private void Update()
@@ -646,20 +608,6 @@ namespace umi3d.edk.collaboration
                 transaction.Simplify();
                 SendTransaction(user, transaction);
                 TransactionToBeSend.Remove(user);
-            }
-            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in DispatchableToBeSend.ToList())
-            {
-                UMI3DCollaborationUser user = kp.Key;
-                List<DispatchableRequest> navigations = kp.Value;
-                if (user.status == StatusType.NONE)
-                {
-                    DispatchableToBeSend.Remove(user);
-                    continue;
-                }
-                if (user.status < StatusType.ACTIVE) continue;
-                foreach (var navigation in navigations)
-                    SendNavigationRequest(user, navigation);
-                DispatchableToBeSend.Remove(user);
             }
         }
 

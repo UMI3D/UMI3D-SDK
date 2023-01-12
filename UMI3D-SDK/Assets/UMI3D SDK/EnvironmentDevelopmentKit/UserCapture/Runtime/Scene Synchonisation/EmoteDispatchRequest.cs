@@ -22,7 +22,7 @@ namespace umi3d.edk.userCapture
     /// <summary>
     /// <see cref="DispatchableRequest"/> to trigger or interrupt emotes on other avatars.
     /// </summary>
-    public class EmoteDispatchRequest : DispatchableRequest
+    public class EmoteDispatchRequest : Operation
     {
         /// <summary>
         /// UMI3D id of the emote to trigger/interrupt.
@@ -37,27 +37,25 @@ namespace umi3d.edk.userCapture
         /// </summary>
         public ulong sendingUserId;
 
-        public EmoteDispatchRequest(bool reliable, HashSet<UMI3DUser> users) : base(reliable, users)
+        public EmoteDispatchRequest()
         {
         }
 
-        /// <inheritdoc/>
-        public override byte[] ToBson()
+        public override Bytable ToBytable(UMI3DUser user)
+        {
+            return (UMI3DSerializer.Write(UMI3DOperationKeys.EmoteRequest)
+                + UMI3DSerializer.Write(emoteId)
+                + UMI3DSerializer.Write(shouldTrigger)
+                + UMI3DSerializer.Write(sendingUserId));
+        }
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             EmoteRequest dto = new EmoteRequest();
             dto.emoteId = emoteId;
             dto.shouldTrigger = shouldTrigger;
             dto.sendingUserId = sendingUserId;
-            return dto.ToBson();
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBytes()
-        {
-            return (UMI3DSerializer.Write(UMI3DOperationKeys.EmoteRequest)
-                + UMI3DSerializer.Write(emoteId)
-                + UMI3DSerializer.Write(shouldTrigger)
-                + UMI3DSerializer.Write(sendingUserId)).ToBytes();
+            return dto;
         }
     }
 }

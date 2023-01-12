@@ -26,10 +26,5 @@ namespace umi3d.common.collaboration
         /// Are there Transactions still to wait before finishing the loading?
         /// </summary>
         public bool areTransactionPending { get; set; }
-
-        /// <summary>
-        /// Are there DispatachableRequests still to wait before finishing the loading?
-        /// </summary>
-        public bool areDispatchableRequestPending { get; set; }
     }
 }
