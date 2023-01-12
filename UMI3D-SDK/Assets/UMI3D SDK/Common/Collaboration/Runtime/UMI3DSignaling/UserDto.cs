@@ -25,6 +25,11 @@ namespace umi3d.common.collaboration
     public class UserDto : AbstractEntityDto
     {
         /// <summary>
+        /// String that state the langue of a user.
+        /// </summary>
+        public string language;
+
+        /// <summary>
         /// Current attributed status of the user.
         /// </summary>
         public StatusType status;

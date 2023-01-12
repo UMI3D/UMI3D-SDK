@@ -52,6 +52,8 @@ namespace umi3d.cdk.collaboration
                         avatarStatus = UMI3DSerializer.Read<bool>(container),
                         attentionRequired = UMI3DSerializer.Read<bool>(container),
 
+                        language = UMI3DSerializer.Read<string>(container),
+
                         audioServerUrl = UMI3DSerializer.Read<string>(container),
                         audioChannel = UMI3DSerializer.Read<string>(container),
                         audioLogin = UMI3DSerializer.Read<string>(container),
