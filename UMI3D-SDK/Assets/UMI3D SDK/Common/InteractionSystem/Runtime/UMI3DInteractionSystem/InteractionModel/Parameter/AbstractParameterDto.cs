@@ -55,6 +55,11 @@ namespace umi3d.common.interaction
         public bool isDisplayer;
 
         /// <summary>
+        /// Mark a field with a tag to enable autocompletion 
+        /// </summary>
+        public string tag;
+
+        /// <summary>
         /// Retrieve the parameter value.
         /// </summary>
         /// <returns>Parameter value to retrieve</returns>
