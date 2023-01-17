@@ -424,6 +424,7 @@ namespace umi3d.edk
         public void Dispatch()
         {
             if (Count() > 0) UMI3DServer.Dispatch(this);
+            else UMI3DLogger.LogWarning("Transaction does not have any operation and will be not be send",DebugScope.EDK);
         }
     }
 }
