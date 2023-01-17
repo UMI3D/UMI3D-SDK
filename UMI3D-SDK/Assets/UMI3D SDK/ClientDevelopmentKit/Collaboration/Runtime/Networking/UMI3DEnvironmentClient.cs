@@ -212,8 +212,6 @@ namespace umi3d.cdk.collaboration
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
             needToGetFirstConnectionInfo = true;
-
-            
         }
 
         /// <summary>

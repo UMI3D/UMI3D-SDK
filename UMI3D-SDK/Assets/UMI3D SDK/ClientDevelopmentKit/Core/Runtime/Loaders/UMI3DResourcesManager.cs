@@ -436,31 +436,55 @@ namespace umi3d.cdk
             return false;
         }
 
-        public void ClearCache()
+        public void ClearCache(List<Library> exceptLibraries = null)
         {
+            var NsubModelsCache = new Dictionary<string, SubmodelDataCollection>();
+
+            if (subModelsCache == null)
+                subModelsCache = new Dictionary<string, SubmodelDataCollection>();
+
             if (CacheCollection != null)
             {
-                foreach (ObjectData ObjectValue in CacheCollection)
+                foreach (ObjectData ObjectValue in CacheCollection.ToList())
                 {
-                    if (ObjectValue.state == ObjectData.Estate.Loading )
+                    if (exceptLibraries != null)
                     {
-                        ObjectValue.state = ObjectData.Estate.NotLoaded;
+                        foreach (var id in ObjectValue.libraryIds.Where(i => !exceptLibraries.Contains(i)).ToList())
+                            ObjectValue.libraryIds.Remove(id);
                     }
+                    else
+                        ObjectValue.libraryIds.Clear();
 
-                    ObjectValue.DeleteAction?.Invoke(ObjectValue.value, "clear all cache");
+                    if (ObjectValue.libraryIds.Count() == 0)
+                    {
+
+                        if (subModelsCache.ContainsKey(ObjectValue.url))
+                        {
+                            NsubModelsCache.Add(ObjectValue.url, subModelsCache[ObjectValue.url]);
+                            subModelsCache.Remove(ObjectValue.url);
+                        }
+
+                        if (ObjectValue.state == ObjectData.Estate.Loading)
+                        {
+                            ObjectValue.state = ObjectData.Estate.NotLoaded;
+                        }
+
+                        ObjectValue.DeleteAction?.Invoke(ObjectValue.value, "clear all cache");
+
+                        CacheCollection.Remove(ObjectValue);
+                    }
                 }
-            }
-            if (subModelsCache != null)
-            {
-                foreach (SubmodelDataCollection item in subModelsCache.Values)
-                {
-                    item.Destroy();
-                }
-                subModelsCache.Clear();
             }
             else
-                subModelsCache = new Dictionary<string, SubmodelDataCollection>();
-            CacheCollection = new List<ObjectData>();
+                CacheCollection = new List<ObjectData>();
+
+            foreach (var item in subModelsCache.Values)
+            {
+                item.Destroy();
+            }
+
+            subModelsCache = NsubModelsCache;
+
             StopAllCoroutines();
             libraries = new Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>>();
             LoadLocalLib();
@@ -566,6 +590,9 @@ namespace umi3d.cdk
         public static async Task LoadLibraries(List<Library> ids, Progress progress)
         {
             progress.AddTotal();
+
+            Instance.ClearCache(ids);
+
             var downloaded = Instance.CacheCollection.Where((p) => { return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Any(c => c == i)); })
                 .Select(async (data) =>
                 {
