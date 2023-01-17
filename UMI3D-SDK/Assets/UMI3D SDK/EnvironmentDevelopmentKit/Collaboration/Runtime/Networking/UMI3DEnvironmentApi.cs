@@ -364,6 +364,7 @@ namespace umi3d.edk.collaboration
             if (content == null)
             {
                 Return404(response);
+                UMI3DLogger.LogError(file,scope);
                 return;
             }
             if (file.EndsWith(".html"))

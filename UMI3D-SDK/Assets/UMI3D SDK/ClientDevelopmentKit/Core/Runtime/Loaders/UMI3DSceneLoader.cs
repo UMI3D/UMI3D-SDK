@@ -15,7 +15,6 @@ limitations under the License.
 */
 using inetum.unityUtils;
 using MrtkShader;
-using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -54,7 +53,6 @@ namespace umi3d.cdk
                         foreach (string library in sceneDto.LibrariesId)
                             UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
                     });
-
 
                 go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
                 //Load Materials and then Nodes

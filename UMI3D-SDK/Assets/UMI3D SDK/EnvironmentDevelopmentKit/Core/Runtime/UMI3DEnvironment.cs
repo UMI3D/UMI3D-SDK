@@ -120,7 +120,7 @@ namespace umi3d.edk
         /// <param name="user"></param>
         protected virtual void WriteProperties(UMI3DEnvironmentDto dto, UMI3DUser user)
         {
-            dto.LibrariesId = globalLibraries.Select(l => l.id).ToList();
+            dto.LibrariesId = globalLibraries.Select(l => l.idVersion).ToList();
             dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
             dto.ambientType = (AmbientType)objectAmbientType.GetValue(user);
             dto.skyColor = objectSkyColor.GetValue(user);

@@ -15,19 +15,14 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Drawing;
-using System.Globalization;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
-using System.Threading;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.Networking;
 using WebSocketSharp;
 using Path = inetum.unityUtils.Path;
@@ -40,9 +35,53 @@ namespace umi3d.cdk
 
         #region const
         private const string dataFile = "data.json";
+        private const string libraryFolder = "libraries";
         private const string assetDirectory = "asset";
         #endregion
         #region data
+
+
+        public struct Library
+        {
+            public string id;
+            public string version;
+
+            public Library(string id, string version)
+            {
+                this.id = id;
+                this.version = version;
+            }
+
+            public Library(string idVersion)
+            {
+                if (idVersion == null)
+                    throw new Exception("The idVersion should never be null. See Library.GetLibrary");
+
+                var s = idVersion.Split(':');
+
+                this.id = s[0];
+                this.version = s.Length > 1 ? s[1] : "-";
+            }
+
+            public static Library? GetLibrary(string idVersion)
+            {
+                return idVersion == null ? (Library?)null : new Library(idVersion); 
+            }
+
+            public override bool Equals(object obj)
+            {
+                if(obj is Library lib)
+                    return id.Equals(lib.id) && version.Equals(lib.version);
+                return false;
+            }
+
+            public static bool operator == (Library a, Library b)
+                => a.Equals(b);
+
+            public static bool operator !=(Library a, Library b)
+                =>  !a.Equals(b);
+
+        }
 
         /// <summary>
         /// Discribe a library and its content.
@@ -53,21 +92,21 @@ namespace umi3d.cdk
             public List<Data> files;
             public string path;
             public string key;
+            public string version;
             public string date;
-            public string culture;
-            public string dateformat;
             public List<string> applications = new List<string>();
 
+            public DateTime Date => DateTime.Parse("yyMMdd_HHmm");
+            public Library library => new Library(key, version);
 
-            public DataFile(string key, string path, List<string> applications, string date, string format, string culture)
+            public DataFile(Library library, string path, List<string> applications, DateTime date)
             {
                 this.path = path;
-                this.key = key;
-                this.date = date;
-                this.dateformat = format;
-                this.culture = culture;
+                this.key = library.id;
+                this.version = library.version;
                 files = new List<Data>();
                 this.applications = applications;
+                this.date = date.ToString("yyMMdd_HHmm");
             }
         }
         /// <summary>
@@ -148,7 +187,7 @@ namespace umi3d.cdk
             /// entityId of all object using this object.
             /// </summary>
             public HashSet<ulong> entityIds;
-            public HashSet<string> libraryIds;
+            public HashSet<Library> libraryIds;
 
             /// <summary
             /// Loading state.
@@ -206,22 +245,36 @@ namespace umi3d.cdk
             /// </summary>
             /// <param name="url">Url to match.</param>
             /// <returns></returns>
-            public bool MatchUrl(Match Matchurl, string url, string libraryId = null)
+            public bool MatchUrl(Match Matchurl, string url, Library? library = null)
             {
-                if (url == this.url)
+                if (url == this.url && (library == null || libraryIds.Any(lib => lib == library)))
                     return true;
 
                 if (a.Success && Matchurl.Success)
-                    return (a.Groups[1].Captures[0].Value == Matchurl.Groups[1].Captures[0].Value
-                                && (a.Groups[2].Captures.Count == Matchurl.Groups[2].Captures.Count)
-                                && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == Matchurl.Groups[2].Captures[0].Value)
-                                && a.Groups[3].Captures[0].Value == Matchurl.Groups[3].Captures[0].Value)
-                        || (!string.IsNullOrEmpty(fileRelativePath)
-                                && !string.IsNullOrEmpty(libraryId)
-                                && libraryIds.Contains(libraryId)
-                                && Matchurl.Groups[3].Captures[0].Value.Contains(fileRelativePath));
+                {
+                    if (library == null)
+                        return MatchUrlUrl(a, Matchurl);
+                    else
+                        return MatchUrlLibrary(library.Value, Matchurl);
+                }
 
                 return false;
+            }
+
+            bool MatchUrlLibrary(Library library, Match match)
+            {
+                return (!string.IsNullOrEmpty(fileRelativePath)
+                                && library != null
+                                && libraryIds.Any(lib => lib == library))
+                                && match.Groups[3].Captures[0].Value.Contains(fileRelativePath);
+            }
+
+            bool MatchUrlUrl(Match matchA, Match matchB)
+            {
+                return (matchA.Groups[1].Captures[0].Value == matchB.Groups[1].Captures[0].Value
+                                && (matchA.Groups[2].Captures.Count == matchB.Groups[2].Captures.Count)
+                                && (matchA.Groups[2].Captures.Count == 0 || matchA.Groups[2].Captures[0].Value == matchB.Groups[2].Captures[0].Value)
+                                && matchA.Groups[3].Captures[0].Value == matchB.Groups[3].Captures[0].Value);
             }
 
             private bool MatchServerUrl()
@@ -256,7 +309,7 @@ namespace umi3d.cdk
             {
                 this.value = value;
                 entityIds = entityId;
-                libraryIds = new HashSet<string>();
+                libraryIds = new HashSet<Library>();
                 state = Estate.Loaded;
                 downloadedPath = null;
                 this.url = url;
@@ -267,7 +320,7 @@ namespace umi3d.cdk
             {
                 this.value = value;
                 entityIds = new HashSet<ulong>() { entityId };
-                libraryIds = new HashSet<string>();
+                libraryIds = new HashSet<Library>();
                 state = Estate.Loaded;
                 downloadedPath = null;
                 this.url = url;
@@ -278,7 +331,7 @@ namespace umi3d.cdk
             {
                 value = null;
                 entityIds = entityId;
-                libraryIds = new HashSet<string>();
+                libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
                 this.url = url;
@@ -291,7 +344,7 @@ namespace umi3d.cdk
             {
                 value = null;
                 entityIds = new HashSet<ulong>() { entityId };
-                libraryIds = new HashSet<string>();
+                libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
                 this.url = url;
@@ -300,11 +353,11 @@ namespace umi3d.cdk
                 this.authorization = ComputeAuthorization(authorization);
             }
 
-            public ObjectData(string url, string extension, string authorization, string libraryId, string downloadedPath, string fileRelativePath)
+            public ObjectData(string url, string extension, string authorization, Library library, string downloadedPath, string fileRelativePath)
             {
                 value = null;
                 entityIds = new HashSet<ulong>();
-                libraryIds = new HashSet<string>() { libraryId };
+                libraryIds = new HashSet<Library>(){ library };
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
                 this.url = url;
@@ -318,7 +371,7 @@ namespace umi3d.cdk
             {
                 value = null;
                 entityIds = new HashSet<ulong>() { entityId };
-                libraryIds = new HashSet<string>();
+                libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
                 this.url = url;
@@ -328,9 +381,9 @@ namespace umi3d.cdk
             }
         }
 
-        public Dictionary<ulong, string> librariesMap = new Dictionary<ulong, string>();
+        public Dictionary<ulong, Library> librariesMap = new Dictionary<ulong, Library>();
         private List<ObjectData> CacheCollection;
-        private Dictionary<string, KeyValuePair<DataFile, HashSet<ulong>>> libraries;
+        private Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>> libraries;
         public static List<DataFile> Libraries => Exists ? Instance.libraries.Values.Select(k => k.Key).ToList() : new List<DataFile>();
 
         #endregion
@@ -353,7 +406,7 @@ namespace umi3d.cdk
                 deserializer?.Stop();
         }
 
-        public static bool ClearCache(string VariantUrl, string LibraryId = null)
+        public static bool ClearCache(string VariantUrl, Library? LibraryId = null)
         {
             Match matchUrl = ObjectData.rx.Match(VariantUrl);
             return VariantUrl != null && Exists && Instance.ClearCache(ob => ob.MatchUrl(matchUrl, VariantUrl, LibraryId));
@@ -409,7 +462,7 @@ namespace umi3d.cdk
                 subModelsCache = new Dictionary<string, SubmodelDataCollection>();
             CacheCollection = new List<ObjectData>();
             StopAllCoroutines();
-            libraries = new Dictionary<string, KeyValuePair<DataFile, HashSet<ulong>>>();
+            libraries = new Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>>();
             LoadLocalLib();
         }
 
@@ -425,30 +478,39 @@ namespace umi3d.cdk
 
         private void LoadLocalLib()
         {
-            string path = Application.persistentDataPath;
-            foreach (string directory in Directory.GetDirectories(path).ToList())
-            {
-                DataFile data = GetData(directory);
-                if (data != null && data.path != null && data.key != null && data.files != null)
+            string path = Path.Combine(Application.persistentDataPath, libraryFolder);
+            if (Directory.Exists(path))
+                foreach (string Iddirectory in Directory.GetDirectories(path).ToList())
                 {
-                    foreach (Data file in data.files)
+                    bool all = true;
+                    foreach (string directory in Directory.GetDirectories(Iddirectory).ToList())
                     {
-                        Match matchUrl = ObjectData.rx.Match(file.url);
-                        ObjectData objectData = CacheCollection.Find((o) =>
+                        DataFile data = GetData(directory);
+                        if (data != null && data.path != null && data.key != null && data.files != null)
                         {
-                            return o.MatchUrl(matchUrl, file.url, data.key);
-                        });
-                        if (objectData != null)
-                            objectData.downloadedPath = file.path;
+                            all = false;
+                            foreach (Data file in data.files)
+                            {
+                                Match matchUrl = ObjectData.rx.Match(file.url);
+                                ObjectData objectData = CacheCollection.Find((o) =>
+                                {
+                                    return o.MatchUrl(matchUrl, file.url, data.library);
+                                });
+                                if (objectData != null)
+                                    objectData.downloadedPath = file.path;
+                                else
+                                    CacheCollection.Insert(0, new ObjectData(file.url, null, null, data.library, file.path, file.fileRelativePath));
+                            }
+                            libraries.Add(data.library, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
+                        }
                         else
-                            CacheCollection.Insert(0, new ObjectData(file.url, null, null, data.key, file.path, file.fileRelativePath));
+                            Directory.Delete(directory, true);
+                        if (all)
+                            Directory.Delete(Iddirectory, true);
                     }
-                    libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
                 }
-                //else
-                //    Directory.Delete(directory, true);
-            }
         }
+
         #endregion
         #region library Load
         /// <summary>
@@ -459,16 +521,16 @@ namespace umi3d.cdk
         /// <param name="SceneId">id of the scene which use this library</param>
         public static async Task LoadLibrary(string libraryId, ulong SceneId = 0)
         {
-            await (_LoadLibrary(libraryId, SceneId));
+            await (_LoadLibrary(Library.GetLibrary(libraryId).Value, SceneId));
         }
 
-        public static async Task _LoadLibrary(string libraryId, ulong SceneId)
+        public static async Task _LoadLibrary(Library library, ulong SceneId)
         {
-            KeyValuePair<DataFile, HashSet<ulong>> lib = Instance.libraries.Where((p) => { return p.Key == libraryId; }).Select((p) => { return p.Value; }).FirstOrDefault();
+            KeyValuePair<DataFile, HashSet<ulong>> lib = Instance.libraries.FirstOrDefault(l => l.Key == library).Value;
             if (lib.Key != null && SceneId != 0)
                 lib.Value.Add(SceneId);
 
-            var downloaded = Instance.CacheCollection.Where((od) => { return od.state == ObjectData.Estate.NotLoaded && od.libraryIds.Contains(libraryId); }).
+            var downloaded = Instance.CacheCollection.Where((od) => { return od.state == ObjectData.Estate.NotLoaded && od.libraryIds.Any(c => c == library ); }).
                 Select(async pair =>
                 {
                     
@@ -488,17 +550,23 @@ namespace umi3d.cdk
             await Task.WhenAll(downloaded);
         }
 
+
+        public static async Task LoadLibraries(List<string> ids, Progress progress)
+        {
+            await LoadLibraries( ids.Select(id => Library.GetLibrary(id).Value).ToList(), progress);
+        }
+
         /// <summary>
         /// LOad a collection of libraries.
         /// </summary>
-        /// <param name="ids">libraries id to load</param>
+        /// <param name="ids">libraries id to load with format <id>:<version></param>
         /// <param name="loadedResources">call each time a library have been loaded with the count of all loaded libraries in parameter.</param>
         /// <param name="resourcesToLoad">call with the total count of libraries to load in parameter.</param>
         /// <returns></returns>
-        public static async Task LoadLibraries(List<string> ids, Progress progress)
+        public static async Task LoadLibraries(List<Library> ids, Progress progress)
         {
             progress.AddTotal();
-            var downloaded = Instance.CacheCollection.Where((p) => { return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Contains(i)); })
+            var downloaded = Instance.CacheCollection.Where((p) => { return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Any(c => c == i)); })
                 .Select(async (data) =>
                 {
                     progress.AddTotal();
@@ -511,10 +579,10 @@ namespace umi3d.cdk
                             ulong? id = data.entityIds?.FirstOrDefault();
                             if (id == null)
                             {
-                                string libId = data.libraryIds?.FirstOrDefault();
-                                if (libId != null && Instance.librariesMap.ContainsValue(libId))
+                                var lib = data.libraryIds?.FirstOrDefault();
+                                if (lib != null && Instance.librariesMap.ContainsValue(lib.Value))
                                 {
-                                    id = Instance.librariesMap.FirstOrDefault(l => l.Value == libId).Key;
+                                    id = Instance.librariesMap.FirstOrDefault(l => l.Value == lib).Key;
                                 }
                             }
                             if (id == null)
@@ -604,7 +672,8 @@ namespace umi3d.cdk
                 try
                 {
                     objectData.state = ObjectData.Estate.Loading;
-                    string path = GetFilePath(objectData.url, objectData.libraryIds.FirstOrDefault());
+                    var libID = objectData.libraryIds.FirstOrDefault();
+                    string path = GetFilePath(objectData.url, libID);
                     objectData.value = await UrlToObjectWithPolicy(path, objectData.extension, objectData, null, loader);
                     objectData.state = ObjectData.Estate.Loaded;
                 }
@@ -668,7 +737,7 @@ namespace umi3d.cdk
             Match matchUrl = ObjectData.rx.Match(file.url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, file.url, file.libraryKey);
+                return o.MatchUrl(matchUrl, file.url, Library.GetLibrary(file.libraryKey));
             });
 
             if (objectData == null)
@@ -679,14 +748,13 @@ namespace umi3d.cdk
             return await _LoadFile(id, objectData, loader, file.pathIfInBundle);
         }
 
-        private string GetFilePath(string url, string libraryKey = null)
+        private string GetFilePath(string url, Library? library = null)
         {
             Match matchUrl = ObjectData.rx.Match(url);
 
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-
-                return o.MatchUrl(matchUrl, url, libraryKey);
+                return o.MatchUrl(matchUrl, url, library);
             });
 
             if (objectData != null && objectData.downloadedPath != null)
@@ -699,13 +767,13 @@ namespace umi3d.cdk
             }
         }
 
-        public static async Task<byte[]> GetFile(string url, string libraryKey = null)
+        public static async Task<byte[]> GetFile(string url, Library? library = null)
         {
             //ObjectData objectData = Instance.CacheCollection.Find((o) => { return o.MatchUrl(url, libraryKey); });
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = Instance.CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, url, libraryKey);
+                return o.MatchUrl(matchUrl, url, library);
             });
 
             if (objectData != null && objectData.downloadedPath != null)
@@ -729,16 +797,10 @@ namespace umi3d.cdk
                 {
                     try
                     {
-                        if (libraries.ContainsKey(assetLibrary.libraryId))
+                        var lib = new Library(assetLibrary.libraryId, assetLibrary.version);
+                        if (libraries.ContainsKey(lib))
                         {
-                            DataFile dt = libraries[assetLibrary.libraryId].Key;
-                            var info = new CultureInfo(assetLibrary.culture);
-                            var dtInfo = new CultureInfo(dt.culture);
-                            if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out DateTime local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out DateTime server))
-                            {
-                                if (local.Ticks >= server.Ticks)
-                                    continue;
-                            }
+                            continue;
                         }
                     }
                     catch { };
@@ -796,44 +858,38 @@ namespace umi3d.cdk
             progress.Add(progress2);
             progress.Add(progress3);
 
+            var lib = new Library(assetLibrary.libraryId, assetLibrary.version);
+
             try
             {
                 progress1.AddComplete();
                 var applications = new List<string>() { application };
-                librariesMap[assetLibrary.id] = assetLibrary.libraryId;
-                string directoryPath = Path.Combine(Application.persistentDataPath, assetLibrary.libraryId);
+                librariesMap[assetLibrary.id] = lib;
+                string directoryPath = Path.Combine(Application.persistentDataPath, libraryFolder, assetLibrary.libraryId, assetLibrary.version);
                 if (Directory.Exists(directoryPath))
                 {
                     try
                     {
-                        DataFile dt = Instance.libraries[assetLibrary.libraryId].Key;
-                        var info = new CultureInfo(assetLibrary.culture);
-                        var dtInfo = new CultureInfo(dt.culture);
-                        if (DateTime.TryParseExact(dt.date, dt.dateformat, dtInfo, DateTimeStyles.None, out DateTime local) && DateTime.TryParseExact(assetLibrary.date, assetLibrary.format, info, DateTimeStyles.None, out DateTime server))
+                        DataFile dt = Instance.libraries[librariesMap[assetLibrary.id]].Key;
+                        if (dt.applications == null)
+                            dt.applications = new List<string>();
+                        if (!dt.applications.Contains(application))
                         {
-                            if (dt.applications == null)
-                                dt.applications = new List<string>();
-                            if (local.Ticks >= server.Ticks)
-                            {
-                                if (!dt.applications.Contains(application))
-                                {
-                                    dt.applications.Add(application);
-                                    SetData(dt, directoryPath);
-                                }
-                                progress.SetAsCompleted();
-                                return;
-                            }
-                            applications = dt.applications;
-                            if (!applications.Contains(application))
-                                applications.Add(application);
+                            dt.applications.Add(application);
+                            SetData(dt, directoryPath);
                         }
+                        progress.SetAsCompleted();
+                        UnityEngine.Debug.Log($"{assetLibrary.id} {assetLibrary.version} already in scene");
+                        return;
                     }
                     catch (Exception e)
                     {
                         UMI3DLogger.LogException(e, scope);
                     }
-                    RemoveLibrary(assetLibrary.libraryId);
+                    RemoveLibrary(lib);
                 }
+
+                UnityEngine.Debug.Log($"{assetLibrary.id} {assetLibrary.version} add");
 
                 UMI3DLocalAssetDirectory variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
 
@@ -842,31 +898,29 @@ namespace umi3d.cdk
                 var dto = await deserializer.FromBson(bytes);
                 progress1.AddComplete();
                 string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
+                UnityEngine.Debug.Log($"add to {assetDirectoryPath}");
                 if (dto is FileListDto)
                 {
+                    if (!Directory.Exists(directoryPath))
+                        Directory.CreateDirectory(directoryPath);
                     var data = await
                         DownloadFiles(
-                            assetLibrary.libraryId,
+                            lib,
                             directoryPath,
                             assetDirectoryPath,
                             applications,
-                            assetLibrary.date,
-                            assetLibrary.format,
-                            assetLibrary.culture,
                             dto as FileListDto,
                             progress2
                             );
-                    if (!Directory.Exists(directoryPath))
-                        Directory.CreateDirectory(directoryPath);
                     SetData(data, directoryPath);
                 }
                 progress3.AddComplete();
-
+                UnityEngine.Debug.Log($"add end");
             }
             catch (Exception e)
             {
                 UMI3DLogger.LogException(e, scope);
-                RemoveLibrary(assetLibrary.libraryId);
+                RemoveLibrary(lib);
                 if (!await progress.ResumeAfterFail(e))
                     throw;
             }
@@ -874,7 +928,7 @@ namespace umi3d.cdk
 
         public static bool isKnowedLibrary(ulong key)
         {
-            if (Instance.librariesMap.TryGetValue(key, out string libraryID))
+            if (Instance.librariesMap.TryGetValue(key, out Library libraryID))
                 return Instance.libraries.ContainsKey(libraryID);
             return false;
         }
@@ -885,15 +939,21 @@ namespace umi3d.cdk
 
             if (Instance.librariesMap.ContainsKey(id))
             {
-                string libraryID = Instance.librariesMap[id];
+                var libraryID = Instance.librariesMap[id];
                 UnloadLibrary(libraryID, SceneId);
             }
         }
 
-        public static void UnloadLibrary(string libraryID, ulong SceneId = 0)
+        public static void UnloadLibrary(string libraryIDVersion, ulong SceneId = 0)
         {
-            KeyValuePair<DataFile, HashSet<ulong>> dataf = Instance.libraries.Where((p) => { return p.Key == libraryID; }).Select((p) => { return p.Value; }).FirstOrDefault();
+            UnloadLibrary(Library.GetLibrary(libraryIDVersion).Value, SceneId);
+        }
 
+        public static void UnloadLibrary(Library libraryID, ulong SceneId = 0)
+        {
+
+
+            var dataf = Instance.libraries.Where(p => p.Key == libraryID).Select(v => v.Value).FirstOrDefault();
             if (dataf.Key != null)
             {
                 if (SceneId != 0 && dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
@@ -907,33 +967,38 @@ namespace umi3d.cdk
             }
         }
 
-        public static void RemoveLibrary(string libraryId, ulong SceneId = 0)
+        public static void RemoveLibrary(Library library, ulong SceneId = 0)
         {
-            KeyValuePair<DataFile, HashSet<ulong>> dataf = Instance.libraries.Where((p) => { return p.Key == libraryId; }).Select((p) => { return p.Value; }).FirstOrDefault();
-
-            if (dataf.Key != null)
+            if (Exists && Instance.libraries != null && Instance.libraries.ContainsKey(library))
             {
-                if (SceneId != 0 && dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
-                if (dataf.Value.Count == 0)
+                KeyValuePair<DataFile, HashSet<ulong>> dataf = Instance.libraries[library];
+
+                if (dataf.Key != null)
                 {
-                    foreach (Data data in dataf.Key.files)
+                    if (SceneId != 0 && dataf.Value.Contains(SceneId)) dataf.Value.Remove(SceneId);
+                    if (dataf.Value.Count == 0)
                     {
-                        Instance.UnloadFile(data.url, libraryId, true);
+                        foreach (Data data in dataf.Key.files)
+                        {
+                            Instance.UnloadFile(data.url, library, true);
+                        }
+                        Instance.libraries.Remove(library);
                     }
-                    Instance.libraries.Remove(libraryId);
+                    Directory.Delete(dataf.Key.path, true);
                 }
-                Directory.Delete(dataf.Key.path, true);
             }
         }
 
         #endregion
         #region file downloading
-        private async Task<DataFile> DownloadFiles(string key, string rootDirectoryPath, string directoryPath, List<string> applications, string date, string format, string culture, FileListDto list, Progress progress)
+        private async Task<DataFile> DownloadFiles(Library key, string rootDirectoryPath, string directoryPath, List<string> applications, FileListDto list, Progress progress)
         {
-            var data = new DataFile(key, rootDirectoryPath, applications, date, format, culture);
+
+            var data = new DataFile(key, rootDirectoryPath, applications, DateTime.Now);
             progress.SetTotal(list.files.Count);
             foreach (string name in list.files)
             {
+                UnityEngine.Debug.Log($"add file {name} {directoryPath}");
                 try
                 {
                     string path = null;
@@ -951,22 +1016,28 @@ namespace umi3d.cdk
                 }
                 catch (Exception e)
                 {
+                    UnityEngine.Debug.Log(e);
                     UMI3DLogger.LogException(e, scope);
                     if (!await progress.AddFailed(e))
                         throw;
                 }
             }
-            libraries.Add(data.key, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
+            libraries.Add(key, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
             return (data);
         }
 
-        private async Task DownloadFile(string key, string directoryPath, string filePath, string url, string fileRelativePath)
+        private async Task DownloadFile(Library key, string directoryPath, string filePath, string url, string fileRelativePath, bool force = false)
         {
             Match matchUrl = ObjectData.rx.Match(url);
-            ObjectData objectData = CacheCollection.Find((o) =>
+            UnityEngine.Debug.Log($"find {url} {key.id} {key.version}");
+            ObjectData objectData = force ? null : CacheCollection.Find((o) =>
             {
                 return o.MatchUrl(matchUrl, url, key);
             });
+
+            if (objectData != null)
+                foreach(var lib in objectData.libraryIds)
+                UnityEngine.Debug.Log($"<color=red>{lib.id} {lib.version} {lib == key}</color>");
 
             if (objectData != null)
             {
@@ -986,11 +1057,14 @@ namespace umi3d.cdk
 
             var bytes = await UMI3DClientServer.GetFile(url, !UMI3DClientServer.Instance.AuthorizationInHeader);
 
-            if (!Directory.Exists(directoryPath)) Directory.CreateDirectory(directoryPath);
+            UnityEngine.Debug.Log($"<color=green>{directoryPath} {filePath}</color>");
+
+            if (!Directory.Exists(directoryPath)) 
+                Directory.CreateDirectory(directoryPath);
             File.WriteAllBytes(filePath, bytes);
         }
 
-        private void UnloadFile(string url, string id, bool delete = false)
+        private void UnloadFile(string url, Library id, bool delete = false)
         {
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = CacheCollection.Find((o) =>

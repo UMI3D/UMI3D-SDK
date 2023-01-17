@@ -34,7 +34,8 @@ namespace umi3d.common
         public string pathIfInBundle;
 
         /// <summary>
-        /// Unique name of the library if the assets belongs to an asset library.
+        /// Unique name of the library if the assets belongs to an asset library and its version.
+        /// format is <id>:<version>
         /// </summary>
         public string libraryKey;
 

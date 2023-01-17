@@ -50,7 +50,8 @@ namespace umi3d.common
         public List<IEntity> otherEntities;
 
         /// <summary>
-        /// Libraries required in the scene by their named ID.
+        /// Libraries required in the scene by their named ID and version.
+        /// format is <id>:<version>
         /// </summary>
         public List<string> LibrariesId;
     }

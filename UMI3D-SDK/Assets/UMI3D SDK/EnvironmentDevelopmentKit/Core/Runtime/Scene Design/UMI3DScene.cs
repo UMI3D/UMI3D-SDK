@@ -108,7 +108,7 @@ namespace umi3d.edk
             nodeDto.position = objectPosition.GetValue(user);
             nodeDto.scale = objectScale.GetValue(user);
             nodeDto.rotation = objectRotation.GetValue(user);
-            nodeDto.LibrariesId = libraries.Select(l => { return l.id; }).ToList();
+            nodeDto.LibrariesId = libraries.Select(l => { return l.idVersion; }).ToList();
             nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e => e.ToEntityDto(user)).ToList();
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
@@ -124,7 +124,7 @@ namespace umi3d.edk
             Vector3 position = objectPosition.GetValue(user);
             Vector3 scale = objectScale.GetValue(user);
             Quaternion rotation = objectRotation.GetValue(user);
-            var LibrariesId = libraries.Select(l => { return l.id; }).ToList();
+            var LibrariesId = libraries.Select(l => { return l.idVersion; }).ToList();
 
             return
                 base.ToBytes(user)

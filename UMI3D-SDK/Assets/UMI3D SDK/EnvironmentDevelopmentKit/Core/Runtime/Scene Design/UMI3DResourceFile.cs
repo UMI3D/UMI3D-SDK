@@ -48,7 +48,7 @@ namespace umi3d.edk
                 extension = extension,
                 metrics = metrics,
                 pathIfInBundle = isInBundle ? pathIfInBundle : null,
-                libraryKey = isInLibrary ? libraryKey?.id : null
+                libraryKey = isInLibrary ? libraryKey?.idVersion : null
             };
             return dto;
         }
@@ -62,7 +62,7 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(metrics.resolution)
                 + UMI3DSerializer.Write(metrics.size)
                 + UMI3DSerializer.Write(isInBundle ? pathIfInBundle : null)
-                + UMI3DSerializer.Write(isInLibrary ? libraryKey?.id : null);
+                + UMI3DSerializer.Write(isInLibrary ? libraryKey?.idVersion : null);
         }
 
         /// <inheritdoc/>

@@ -42,14 +42,13 @@ namespace umi3d.edk
         private ulong eId = 0;
 
         /// <summary>
-        /// Last time the library has been updated.
+        /// Version of the library.
         /// </summary>
-        /// Note that when updating a library, this date should be updated manually. A "Now" button is available in the inspector to that purpose.
+        /// Note that it should be updated when the content is updated.
         [SerializeField]
-        [Tooltip("Last time the library has been updated.\n" +
-                 "Note that when updating a library, this date should be updated manually. \n" +
-                 "Press the 'Now' button designed to that purpose.")]
-        public SerializableDateTime date;
+        [Tooltip("version of the library, it should be updated when the content is updated")]
+        public string version;
+
         /// <summary>
         /// Directories where a stored all the variants of the library.
         /// </summary>
@@ -59,6 +58,9 @@ namespace umi3d.edk
                  "A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.")]
         public List<UMI3DLocalAssetDirectory> variants = new List<UMI3DLocalAssetDirectory>();
 
+
+        public string idVersion => id + ":" + version;
+
         /// <inheritdoc/>
         public AssetLibraryDto ToDto()
         {
@@ -66,9 +68,7 @@ namespace umi3d.edk
             {
                 libraryId = id,
                 id = Id(),
-                format = date.Format(),
-                culture = date.Culture(),
-                date = date.ToString(),
+                version = version, 
                 variants = new List<UMI3DLocalAssetDirectory>()
             };
             foreach (UMI3DLocalAssetDirectory variant in variants)
@@ -84,9 +84,7 @@ namespace umi3d.edk
         {
             return UMI3DSerializer.Write(id)
                 + UMI3DSerializer.Write(Id())
-                + UMI3DSerializer.Write(date.Format())
-                + UMI3DSerializer.Write(date.Culture())
-                + UMI3DSerializer.Write(date.ToString())
+                + UMI3DSerializer.Write(version)
                 + UMI3DSerializer.WriteIBytableCollection(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
         }
 
