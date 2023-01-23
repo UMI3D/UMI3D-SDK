@@ -40,6 +40,8 @@ namespace umi3d.cdk
 
         private bool started = false;
 
+        public bool IsPlayin() { return started; }
+
         public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
         {
         }
