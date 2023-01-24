@@ -15,16 +15,129 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
+using umi3d.cdk.userCapture;
+using umi3d.common;
 using umi3d.common.userCapture;
+using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.collaboration
 {
     public class SkeletonManager : Singleton<SkeletonManager>
     {
-        public Skeleton[] Skeletons { get; protected set; }
+        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+        public Dictionary<ulong,Skeleton> skeletons { get; protected set; }
+
+        public PersonalSkeleton skeleton;
+
+        /// <summary>
+        /// If true the avatar tracking is sent.
+        /// </summary>
+        public bool sendTracking => _sendTracking;
+
+        /// <summary>
+        /// If true the avatar tracking is sent.
+        /// </summary>
+        [Tooltip("If true the avatar tracking is sent.")]
+        protected bool _sendTracking = true;
+
+        float targetTrackingFPS;
+        bool sendCameraProperties;
+        bool sendTrackingLoopOnce = false;
 
         public TrackingOption option;
 
-        public UserTrackingFrameDto GetFrame() { throw new System.NotImplementedException(); }
+        public UserTrackingFrameDto GetFrame()
+        {
+            return skeleton.GetFrame(option);
+        }
+
+        public void UpdateFrames(List<UserTrackingFrameDto> frames)
+        {
+            foreach (var frame in frames)
+                UpdateFrame(frame);
+        }
+
+        public void UpdateFrame(UserTrackingFrameDto frame)
+        {
+            Skeleton userAvatar;
+
+            if (!skeletons.TryGetValue(frame.userId, out userAvatar))
+                UMI3DLogger.LogWarning("User Avatar not found.", scope);
+
+            userAvatar.UpdateFrame(frame);
+        }
+
+        public UserCameraPropertiesDto GetCameraProperty()
+        {
+            return skeleton.GetCameraProperty();
+        }
+
+        private async void SendTrackingLoop()
+        {
+            if (sendTrackingLoopOnce)
+                return;
+            sendTrackingLoopOnce = true;
+            while (Exists && sendTracking)
+            {
+                if (targetTrackingFPS > 0)
+                {
+                    try
+                    {
+                        var frame = GetFrame();
+
+                        if (frame != null && UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
+                            UMI3DClientServer.SendTracking(frame);
+
+                        if (sendCameraProperties)
+                            GetCameraProperty();
+                    }
+                    catch { }
+
+                    await UMI3DAsyncManager.Delay((int)(1f / (targetTrackingFPS * 1000f)));
+                }
+                else
+                    await UMI3DAsyncManager.Yield();
+            }
+            sendTrackingLoopOnce = false;
+        }
+
+        /// <summary>
+        /// Set the number of tracked frame per second that are sent to the server.
+        /// </summary>
+        /// <param name="newFPSTarget"></param>
+        public void SetFPSTarget(int newFPSTarget)
+        {
+            targetTrackingFPS = newFPSTarget;
+        }
+
+        /// <summary>
+        /// Set the list of streamed bones.
+        /// </summary>
+        /// <param name="bonesToStream"></param>
+        public void SetStreamedBones(List<uint> bonesToStream)
+        {
+            UMI3DLogger.LogWarning("TODO", scope);
+        }
+
+        /// <summary>
+        /// Setter for <see cref="sendCameraProperties"/>.
+        /// </summary>
+        /// <param name="activeSending"></param>
+        public void SetCameraPropertiesSending(bool activeSending)
+        {
+            sendCameraProperties = activeSending;
+        }
+
+        /// <summary>
+        /// Setter for <see cref="sendTracking"/>.
+        /// </summary>
+        /// <param name="activeSending"></param>
+        public void SetTrackingSending(bool activeSending)
+        {
+            this._sendTracking = activeSending;
+            if (_sendTracking)
+                SendTrackingLoop();
+        }
     }
 }

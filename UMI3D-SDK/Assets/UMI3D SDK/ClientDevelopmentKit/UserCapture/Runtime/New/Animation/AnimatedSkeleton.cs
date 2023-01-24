@@ -26,6 +26,11 @@ namespace umi3d.cdk.userCapture
     {
         public SkeletonMapper mapper;
 
+        public UserCameraPropertiesDto GetCameraDto()
+        {
+            return null;
+        }
+
         public PoseDto GetPose()
         {
             if (!mapper.animations.Select(id => UMI3DAnimatorAnimation.Get(id)).Any(a => a?.IsPlayin() ?? false))
@@ -38,7 +43,7 @@ namespace umi3d.cdk.userCapture
             throw new System.NotImplementedException();
         }
 
-        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame)
+        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             throw new System.NotImplementedException();
         }

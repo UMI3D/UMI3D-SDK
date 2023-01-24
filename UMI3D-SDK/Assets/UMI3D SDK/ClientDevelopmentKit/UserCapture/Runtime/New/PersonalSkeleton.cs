@@ -14,14 +14,43 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common;
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+
     public class PersonalSkeleton : Skeleton {
 
-        public UserTrackingFrameDto GetFrame(TrackingOption option) { throw new System.NotImplementedException(); }
+        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        public UserTrackingFrameDto GetFrame(TrackingOption option) {
+            var frame = new UserTrackingFrameDto();
+
+            foreach (var skeleton in Skeletons)
+                skeleton.WriteTrackingFrame(frame, option);
+
+            return frame;
+        }
+
+        public UserCameraPropertiesDto GetCameraProperty()
+        {
+            foreach(var skeleton in Skeletons)
+            {
+                var c = skeleton.GetCameraDto();
+                if(c != null)
+                    return c;
+            }
+            return null;
+        }
+
+        public override void UpdateFrame(UserTrackingFrameDto frame)
+        {
+            UMI3DLogger.LogWarning("The personal Skeleton should not receive frame", scope);
+        }
     }
+
+
 
 }

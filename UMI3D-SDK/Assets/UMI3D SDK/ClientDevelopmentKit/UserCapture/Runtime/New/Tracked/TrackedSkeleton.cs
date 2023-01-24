@@ -17,12 +17,27 @@ limitations under the License.
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
     public class TrackedSkeleton : ISubSkeleton
     {
         public IController[] controllers;
+
+        public Matrix4x4 projectionMatrix;
+        public uint viewpointBonetype;
+
+
+        public UserCameraPropertiesDto GetCameraDto()
+        {
+            return new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = projectionMatrix,
+                boneType = viewpointBonetype,
+            };
+        }
 
         public PoseDto GetPose()
         {
@@ -35,7 +50,7 @@ namespace umi3d.cdk.userCapture
             throw new System.NotImplementedException();
         }
 
-        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame)
+        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             throw new System.NotImplementedException();
         }

@@ -22,7 +22,9 @@ namespace umi3d.cdk.userCapture
     {
         void Update(UserTrackingFrameDto trackingFrame);
         PoseDto GetPose();
-        void WriteTrackingFrame(UserTrackingFrameDto trackingFrame);
+        void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option);
+
+        UserCameraPropertiesDto GetCameraDto(); 
     }
 
 }

@@ -182,6 +182,7 @@ namespace umi3d.cdk.collaboration
 
                         UMI3DEnvironmentClient env = environmentClient;
                         environmentClient = null;
+                        //UMI3DEnvironmentLoader.Clear();
 
                         if (env != null)
                             await env.Logout();

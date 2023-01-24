@@ -36,9 +36,14 @@ namespace umi3d.cdk.userCapture
             throw new System.NotImplementedException();
         }
 
-        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame)
+        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             throw new System.NotImplementedException();
+        }
+
+        public UserCameraPropertiesDto GetCameraDto()
+        {
+            return null;
         }
     }
 

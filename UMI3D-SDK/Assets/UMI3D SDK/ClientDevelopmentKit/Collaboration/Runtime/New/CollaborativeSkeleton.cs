@@ -23,7 +23,12 @@ namespace umi3d.cdk.collaboration
 
         public UMI3DUser User;
 
-        public void Update(UserTrackingFrameDto trackingFrame) { throw new System.NotImplementedException(); }
+        public override void UpdateFrame(UserTrackingFrameDto frame)
+        {
+            if (Skeletons != null)
+                foreach (var skeleton in Skeletons)
+                    skeleton.Update(frame);
+        }
 
     }
 }

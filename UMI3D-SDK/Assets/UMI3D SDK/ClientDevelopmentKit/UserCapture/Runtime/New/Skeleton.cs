@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -25,9 +26,48 @@ namespace umi3d.cdk.userCapture
         public Dictionary<uint, Transform> Bones { get; protected set; }
         public ISubSkeleton[] Skeletons { get; set; }
 
-        public Skeleton Compute() { return this; }
+        public abstract void UpdateFrame(UserTrackingFrameDto frame);
+
+        public Skeleton Compute()
+        {
+            for (int i = Skeletons.Length - 1; i > 0; i--)
+            {
+                ISubSkeleton skeleton = Skeletons[i];
+                skeleton.GetPose();
+            }
+
+            //TODO
+
+            return this;
+        }
+
+        public void Bind(BoneBindingDto boneBinding) { }
+
+
+    }
+
+    public interface ISkeleton
+    {
+        public Dictionary<uint, Transform> Bones { get; protected set; }
+        public ISubSkeleton[] Skeletons { get; set; }
+
+        public abstract void UpdateFrame(UserTrackingFrameDto frame);
+
+        public ISkeleton Compute()
+        {
+            for (int i = Skeletons.Length - 1; i > 0; i--)
+            {
+                ISubSkeleton skeleton = Skeletons[i];
+                skeleton.GetPose();
+            }
+
+            //TODO
+
+            return this;
+        }
 
         public void Bind(BoneBindingDto boneBinding) { }
     }
+
 
 }

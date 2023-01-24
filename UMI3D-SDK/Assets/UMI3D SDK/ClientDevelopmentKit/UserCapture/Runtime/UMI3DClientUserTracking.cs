@@ -52,17 +52,6 @@ namespace umi3d.cdk.userCapture
         public bool trackingReception { get; protected set; }
 
         /// <summary>
-        /// If true the avatar tracking is sent.
-        /// </summary>
-        public bool SendTracking => sendTracking;
-
-        /// <summary>
-        /// If true the avatar tracking is sent.
-        /// </summary>
-        [Tooltip("If true the avatar tracking is sent.")]
-        protected bool sendTracking = true;
-
-        /// <summary>
         /// Frequency indicating the number tracked frames send to the server per seconds.
         /// </summary>
         [field: SerializeField, Tooltip(" Frequency indicating the number tracked frames send to the server per seconds.")]
@@ -220,11 +209,11 @@ namespace umi3d.cdk.userCapture
         protected virtual void Start()
         {
             streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
-            sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
-            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
+            //sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
+            //startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+            //UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
+            //UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+            //UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitParentId);
             UMI3DNavigation.onEmbarkVehicleDelegate += UpdateParentId;
             EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
@@ -261,56 +250,56 @@ namespace umi3d.cdk.userCapture
                 Debug.LogError("Parent id not valid.");
         }
 
-        /// <summary>
-        /// Dispatch User Tracking data through Tracking Channel
-        /// </summary>
-        protected virtual IEnumerator DispatchTracking()
-        {
-            while (sendTracking)
-            {
-                if (targetTrackingFPS > 0)
-                {
-                    BonesIterator();
+        ///// <summary>
+        ///// Dispatch User Tracking data through Tracking Channel
+        ///// </summary>
+        //protected virtual IEnumerator DispatchTracking()
+        //{
+        //    while (sendTracking)
+        //    {
+        //        if (targetTrackingFPS > 0)
+        //        {
+        //            BonesIterator();
 
-                    if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0 && LastFrameDto != null)
-                        UMI3DClientServer.SendTracking(LastFrameDto);
+        //            if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0 && LastFrameDto != null)
+        //                UMI3DClientServer.SendTracking(LastFrameDto);
 
-                    if (sendCameraProperties)
-                        sendingCameraProperties.Invoke();
+        //            if (sendCameraProperties)
+        //                sendingCameraProperties.Invoke();
 
-                    yield return new WaitForSeconds(1f / targetTrackingFPS);
-                }
-                else
-                {
-                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
-                }
-            }
-        }
+        //            yield return new WaitForSeconds(1f / targetTrackingFPS);
+        //        }
+        //        else
+        //        {
+        //            yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
+        //        }
+        //    }
+        //}
 
         /// <summary>
         /// Dispatch Camera data through Tracking Channel
         /// </summary>
         /// <returns></returns>
-        protected virtual IEnumerator DispatchCamera()
-        {
-            while (UMI3DClientServer.Instance.GetUserId() == 0)
-            {
-                yield return null;
-            }
+        //protected virtual IEnumerator DispatchCamera()
+        //{
+        //    while (UMI3DClientServer.Instance.GetUserId() == 0)
+        //    {
+        //        yield return null;
+        //    }
 
-            var newCameraProperties = new UserCameraPropertiesDto()
-            {
-                scale = 1f,
-                projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
-                boneType = viewpointBonetype,
-            };
+        //    var newCameraProperties = new UserCameraPropertiesDto()
+        //    {
+        //        scale = 1f,
+        //        projectionMatrix = viewpoint.TryGetComponent(out Camera camera) ? camera.projectionMatrix : new Matrix4x4(),
+        //        boneType = viewpointBonetype,
+        //    };
 
-            if (!newCameraProperties.Equals(CameraPropertiesDto))
-            {
-                UMI3DClientServer.SendData(newCameraProperties, true);
-                CameraPropertiesDto = newCameraProperties;
-            }
-        }
+        //    if (!newCameraProperties.Equals(CameraPropertiesDto))
+        //    {
+        //        UMI3DClientServer.SendData(newCameraProperties, true);
+        //        CameraPropertiesDto = newCameraProperties;
+        //    }
+        //}
 
 
 
@@ -482,15 +471,15 @@ namespace umi3d.cdk.userCapture
             this.sendCameraProperties = activeSending;
         }
 
-        /// <summary>
-        /// Setter for <see cref="sendTracking"/>.
-        /// </summary>
-        /// <param name="activeSending"></param>
-        public void SetTrackingSending(bool activeSending)
-        {
-            this.sendTracking = activeSending;
-            startingSendingTracking.Invoke();
-        }
+        ///// <summary>
+        ///// Setter for <see cref="sendTracking"/>.
+        ///// </summary>
+        ///// <param name="activeSending"></param>
+        //public void SetTrackingSending(bool activeSending)
+        //{
+        //    this.sendTracking = activeSending;
+        //    startingSendingTracking.Invoke();
+        //}
 
         /// <summary>
         /// Make a user board in in a vehicle that supports boarded users.
