@@ -10,9 +10,10 @@ For more information about UMI3D, visit the [UMI3D Consortium's website](https:/
 
 ### Version And Documentation
 
-The Current UMI3D-SDK version is 2.5<br>
+The Current UMI3D-SDK version is 2.6<br>
 The documentation can be found [here](https://umi3d.github.io/UMI3D-SDK/index.html)<br>
-The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f1 and 2021.3.8f1 (See [Unity Archive](https://unity3d.com/fr/get-unity/download/archive)).
+The sdk is developed on unity version 2021.3.15f (See [Unity Archive](https://unity3d.com/fr/get-unity/download/archive)).
+For older unity compatibility please look at the [2.5 Umi3d Release] (https://github.com/UMI3D/UMI3D-SDK/releases/tag/2.5.r.221207)
 
 ### UMI3D Browser & Samples
 
@@ -45,7 +46,8 @@ The sdk is developed on unity version 2019.4.10f1 and tested on unity 2020.3.11f
 
 ### Installation through Unity's Package Manager 
 
-The minimum required unity version is (LTS) 2019.4 (See [Unity Archive](https://unity3d.com/fr/get-unity/download/archive)).
+The minimum required unity version is (LTS) 2021.3.15f (See [Unity Archive](https://unity3d.com/fr/get-unity/download/archive)).
+
 
 This method is only suited for **hight internet connection**.
 

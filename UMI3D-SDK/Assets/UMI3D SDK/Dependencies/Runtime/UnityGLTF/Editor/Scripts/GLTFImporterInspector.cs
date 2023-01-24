@@ -9,7 +9,7 @@ namespace UnityGLTF
 {
 	[CustomEditor(typeof(GLTFImporter))]
 	[CanEditMultipleObjects]
-	public class GLTFImporterInspector : UnityEditor.Experimental.AssetImporters.AssetImporterEditor
+	public class GLTFImporterInspector : UnityEditor.AssetImporters.AssetImporterEditor
 	{
 		private string[] _importNormalsNames;
 
