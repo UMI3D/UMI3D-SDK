@@ -142,6 +142,7 @@ namespace umi3d.edk
                         case SetEntityDictionaryRemoveProperty r:
                         case SetEntityListAddProperty al:
                         case SetEntityListRemoveProperty rl:
+                        case MultiSetEntityProperty msep:
                             newOperations.Add(op);
                             break;
 
