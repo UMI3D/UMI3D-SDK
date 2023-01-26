@@ -21,35 +21,10 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public abstract class Skeleton
-    {
-        public Dictionary<uint, Transform> Bones { get; protected set; }
-        public ISubSkeleton[] Skeletons { get; set; }
-
-        public abstract void UpdateFrame(UserTrackingFrameDto frame);
-
-        public Skeleton Compute()
-        {
-            for (int i = Skeletons.Length - 1; i > 0; i--)
-            {
-                ISubSkeleton skeleton = Skeletons[i];
-                skeleton.GetPose();
-            }
-
-            //TODO
-
-            return this;
-        }
-
-        public void Bind(BoneBindingDto boneBinding) { }
-
-
-    }
-
     public interface ISkeleton
     {
-        public Dictionary<uint, Transform> Bones { get; protected set; }
-        public ISubSkeleton[] Skeletons { get; set; }
+        Dictionary<uint, Transform> Bones { get; set; }
+        ISubSkeleton[] Skeletons { get; set; }
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
 
@@ -67,7 +42,7 @@ namespace umi3d.cdk.userCapture
         }
 
         public void Bind(BoneBindingDto boneBinding) { }
+
+
     }
-
-
 }

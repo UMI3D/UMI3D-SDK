@@ -26,9 +26,9 @@ namespace umi3d.cdk.collaboration
     public class SkeletonManager : Singleton<SkeletonManager>
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
-        public Dictionary<ulong,Skeleton> skeletons { get; protected set; }
+        public Dictionary<ulong,ISkeleton> skeletons { get; protected set; }
 
-        public PersonalSkeleton skeleton;
+        PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
 
         /// <summary>
         /// If true the avatar tracking is sent.
@@ -41,15 +41,24 @@ namespace umi3d.cdk.collaboration
         [Tooltip("If true the avatar tracking is sent.")]
         protected bool _sendTracking = true;
 
-        float targetTrackingFPS;
-        bool sendCameraProperties;
+        float targetTrackingFPS = 1f;
+        bool sendCameraProperties = true;
         bool sendTrackingLoopOnce = false;
 
         public TrackingOption option;
 
+        public SkeletonManager() : base()
+        {
+            UnityEngine.Debug.Log("<color=green>New</color>");
+            SetTrackingSending(_sendTracking);
+        }
+
         public UserTrackingFrameDto GetFrame()
         {
-            return skeleton.GetFrame(option);
+            var frame = skeleton.GetFrame(option);
+            frame.userId = UMI3DCollaborationClientServer.Instance.GetUserId();
+            frame.refreshFrequency = targetTrackingFPS;
+            return frame;
         }
 
         public void UpdateFrames(List<UserTrackingFrameDto> frames)
@@ -60,7 +69,7 @@ namespace umi3d.cdk.collaboration
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
-            Skeleton userAvatar;
+            ISkeleton userAvatar;
 
             if (!skeletons.TryGetValue(frame.userId, out userAvatar))
                 UMI3DLogger.LogWarning("User Avatar not found.", scope);
@@ -75,6 +84,7 @@ namespace umi3d.cdk.collaboration
 
         private async void SendTrackingLoop()
         {
+            UnityEngine.Debug.Log("<color=green>Send loop</color>");
             if (sendTrackingLoopOnce)
                 return;
             sendTrackingLoopOnce = true;
@@ -82,6 +92,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (targetTrackingFPS > 0)
                 {
+                    UnityEngine.Debug.Log("<color=green>Send</color>");
                     try
                     {
                         var frame = GetFrame();
@@ -92,9 +103,9 @@ namespace umi3d.cdk.collaboration
                         if (sendCameraProperties)
                             GetCameraProperty();
                     }
-                    catch { }
+                    catch (System.Exception e){ UnityEngine.Debug.LogException(e); }
 
-                    await UMI3DAsyncManager.Delay((int)(1f / (targetTrackingFPS * 1000f)));
+                    await UMI3DAsyncManager.Delay((int)(1000f / targetTrackingFPS));
                 }
                 else
                     await UMI3DAsyncManager.Yield();

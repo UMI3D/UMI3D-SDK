@@ -21,21 +21,24 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public class TrackedSkeleton : ISubSkeleton
+    public class TrackedSkeleton : MonoBehaviour, ISubSkeleton
     {
         public IController[] controllers;
 
-        public Matrix4x4 projectionMatrix;
-        public uint viewpointBonetype;
+        public Camera viewpoint;
 
+        public void Start()
+        {
+            controllers = GetComponentsInChildren<IController>();
+        }
 
         public UserCameraPropertiesDto GetCameraDto()
         {
             return new UserCameraPropertiesDto()
             {
                 scale = 1f,
-                projectionMatrix = projectionMatrix,
-                boneType = viewpointBonetype,
+                projectionMatrix = viewpoint.projectionMatrix,
+                boneType = BoneType.Viewpoint,
             };
         }
 
@@ -43,6 +46,8 @@ namespace umi3d.cdk.userCapture
         {
             throw new System.NotImplementedException();
         }
+
+        public virtual void Update() { }
 
         public void Update(UserTrackingFrameDto trackingFrame)
         {
@@ -52,7 +57,8 @@ namespace umi3d.cdk.userCapture
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            throw new System.NotImplementedException();
+            trackingFrame.bones = new List<BoneDto>();
         }
     }
+
 }

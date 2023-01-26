@@ -14,16 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    public class CollaborativeSkeleton : Skeleton {
+    public class CollaborativeSkeleton : ISkeleton
+    {
 
         public UMI3DUser User;
 
-        public override void UpdateFrame(UserTrackingFrameDto frame)
+        public Dictionary<uint, Transform> Bones { get; set; }
+        public ISubSkeleton[] Skeletons { get; set; }
+
+        public void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)
                 foreach (var skeleton in Skeletons)

@@ -14,19 +14,38 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 namespace umi3d.cdk.userCapture
 {
 
-    public class PersonalSkeleton : Skeleton {
+    public class PersonalSkeleton : SingleBehaviour<PersonalSkeleton>, ISkeleton 
+    {
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        public ISubSkeleton[] Skeletons { get; set; }
+
+        public Dictionary<uint, Transform> Bones { get; set; }
+
+        public TrackedSkeleton TrackedSkeleton;
+
+        public float skeletonHighOffset = 0;
+
+        public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
+
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
-            var frame = new UserTrackingFrameDto();
+            var frame = new UserTrackingFrameDto()
+            {
+                position = transform.position,
+                rotation = transform.rotation,
+                skeletonHighOffset = skeletonHighOffset,
+            };
 
             foreach (var skeleton in Skeletons)
                 skeleton.WriteTrackingFrame(frame, option);
@@ -45,10 +64,22 @@ namespace umi3d.cdk.userCapture
             return null;
         }
 
-        public override void UpdateFrame(UserTrackingFrameDto frame)
+        public virtual void UpdateFrame(UserTrackingFrameDto frame)
         {
-            UMI3DLogger.LogWarning("The personal Skeleton should not receive frame", scope);
+            UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
         }
+
+
+        private void Start()
+        {
+            Skeletons = new ISubSkeleton[1];
+            Skeletons[0] = TrackedSkeleton;
+
+        }
+
+
+
+
     }
 
 
