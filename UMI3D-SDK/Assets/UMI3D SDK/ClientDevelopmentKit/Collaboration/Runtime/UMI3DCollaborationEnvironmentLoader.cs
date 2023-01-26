@@ -39,6 +39,12 @@ namespace umi3d.cdk.collaboration
 
         private ulong lastTimeUserMessageListReceived = 0;
 
+        public void Start()
+        {
+            if (!SkeletonManager.Exists)
+                new SkeletonManager();
+        }
+
         public UMI3DUser GetClientUser()
         {
             return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());

@@ -45,37 +45,37 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnReconnect.AddListener(() => embodimentDict.Clear());
         }
 
-        /// <inheritdoc/>
-        protected override IEnumerator DispatchTracking()
-        {
-            while (sendTracking)
-            {
-                if (targetTrackingFPS > 0)
-                {
-                    if (UMI3DCollaborationClientServer.Connected())
-                    {
-                        BonesIterator();
-                        if (LastFrameDto != null)
-                        {
-                            UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
-                        }
-                    }
-                    yield return new WaitForSeconds(1f / targetTrackingFPS);
-                }
-                else
-                {
-                    yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
-                }
-            }
-        }
+        ///// <inheritdoc/>
+        //protected override IEnumerator DispatchTracking()
+        //{
+        //    while (sendTracking)
+        //    {
+        //        if (targetTrackingFPS > 0)
+        //        {
+        //            if (UMI3DCollaborationClientServer.Connected())
+        //            {
+        //                BonesIterator();
+        //                if (LastFrameDto != null)
+        //                {
+        //                    UMI3DCollaborationClientServer.SendTracking(LastFrameDto);
+        //                }
+        //            }
+        //            yield return new WaitForSeconds(1f / targetTrackingFPS);
+        //        }
+        //        else
+        //        {
+        //            yield return new WaitUntil(() => targetTrackingFPS > 0 || !sendTracking);
+        //        }
+        //    }
+        //}
 
         /// <inheritdoc/>
-        protected override IEnumerator DispatchCamera()
-        {
-            yield return new WaitUntil(() => UMI3DCollaborationClientServer.Connected());
+        //protected override IEnumerator DispatchCamera()
+        //{
+        //    yield return new WaitUntil(() => UMI3DCollaborationClientServer.Connected());
 
-            base.DispatchCamera();
-        }
+        //    base.DispatchCamera();
+        //}
 
         /// <summary>
         /// Collection of emotes' coroutine related to playing for each user.

@@ -393,18 +393,6 @@ namespace umi3d.cdk
                 case ReleaseToolDto release:
                     AbstractInteractionMapper.Instance.ReleaseTool(release.toolId, new interaction.RequestedByEnvironment());
                     break;
-                case SetTrackingTargetFPSDto setTargetFPS:
-                    UMI3DClientUserTracking.Instance.SetFPSTarget(setTargetFPS.targetFPS);
-                    break;
-                case SetStreamedBonesDto streamedBones:
-                    UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones.streamedBones);
-                    break;
-                case SetSendingCameraPropertiesDto sendingCamera:
-                    UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
-                    break;
-                case SetSendingTrackingDto sendingTracking:
-                    UMI3DClientUserTracking.Instance.SetTrackingSending(sendingTracking.activeSending);
-                    break;
             }
             return Task.CompletedTask;
         }
@@ -431,22 +419,6 @@ namespace umi3d.cdk
                 case UMI3DOperationKeys.ReleaseTool:
                     id = UMI3DSerializer.Read<ulong>(container);
                     AbstractInteractionMapper.Instance.ReleaseTool(id, new interaction.RequestedByEnvironment());
-                    break;
-                case UMI3DOperationKeys.SetUTSTargetFPS:
-                    int target = UMI3DSerializer.Read<int>(container);
-                    UMI3DClientUserTracking.Instance.SetFPSTarget(target);
-                    break;
-                case UMI3DOperationKeys.SetStreamedBones:
-                    List<uint> streamedBones = UMI3DSerializer.ReadList<uint>(container);
-                    UMI3DClientUserTracking.Instance.SetStreamedBones(streamedBones);
-                    break;
-                case UMI3DOperationKeys.SetSendingCameraProperty:
-                    bool sendCamera = UMI3DSerializer.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.SetCameraPropertiesSending(sendCamera);
-                    break;
-                case UMI3DOperationKeys.SetSendingTracking:
-                    bool sendTracking = UMI3DSerializer.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.SetTrackingSending(sendTracking);
                     break;
             }
             return Task.CompletedTask;
