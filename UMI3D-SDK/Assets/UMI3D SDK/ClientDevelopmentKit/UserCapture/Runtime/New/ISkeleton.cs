@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -33,10 +34,26 @@ namespace umi3d.cdk.userCapture
             for (int i = Skeletons.Length - 1; i > 0; i--)
             {
                 ISubSkeleton skeleton = Skeletons[i];
-                skeleton.GetPose();
+                List<BonePoseDto> bones = new List<BonePoseDto>();
+                bones = skeleton.GetPose().bones.ToList();
+                bones.ForEach(b =>
+                {
+                    Bones.TryGetValue(b.boneType, out var pose);
+                    if (pose != null)
+                    {
+                        Bones[b.boneType].rotation = b.rotation;
+                        Bones[b.boneType].position = b.position;
+                    }
+                    else
+                    {
+                        GameObject new_obj = new GameObject();
+                        Transform new_trans = new_obj.transform;
+                        new_trans.position = b.position;
+                        new_trans.rotation = b.rotation;
+                        Bones.TryAdd(b.boneType, new_trans);
+                    }
+                });
             }
-
-            //TODO
 
             return this;
         }
