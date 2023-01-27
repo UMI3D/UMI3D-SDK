@@ -19,6 +19,7 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
+using System;
 
 namespace umi3d.cdk.userCapture
 {
@@ -31,26 +32,44 @@ namespace umi3d.cdk.userCapture
 
         public ISkeleton Compute()
         {
+            if (CheckNulls())
+            {
+                return this;
+            }
+
             for (int i = Skeletons.Length - 1; i > 0; i--)
             {
                 ISubSkeleton skeleton = Skeletons[i];
                 List<BonePoseDto> bones = new List<BonePoseDto>();
-                bones = skeleton.GetPose().bones.ToList();
+                
+                try
+                {
+                    bones = skeleton.GetPose().bones.ToList();
+                }
+                catch(Exception e)
+                {
+                    Debug.Log($"<color=red> {e} </color>");
+                    return this;
+                }
+
                 bones.ForEach(b =>
                 {
-                    Bones.TryGetValue(b.boneType, out var pose);
-                    if (pose != null)
+                    if (b.rotation != null && b.position != null)
                     {
-                        Bones[b.boneType].rotation = b.rotation;
-                        Bones[b.boneType].position = b.position;
-                    }
-                    else
-                    {
-                        GameObject new_obj = new GameObject();
-                        Transform new_trans = new_obj.transform;
-                        new_trans.position = b.position;
-                        new_trans.rotation = b.rotation;
-                        Bones.TryAdd(b.boneType, new_trans);
+                        Bones.TryGetValue(b.boneType, out var pose);
+                        if (pose != null)
+                        {
+                            Bones[b.boneType].rotation = b.rotation;
+                            Bones[b.boneType].position = b.position;
+                        }
+                        else
+                        {
+                            GameObject new_obj = new GameObject();
+                            Transform new_trans = new_obj.transform;
+                            new_trans.position = b.position;
+                            new_trans.rotation = b.rotation;
+                            Bones.TryAdd(b.boneType, new_trans);
+                        }
                     }
                 });
             }
@@ -58,6 +77,20 @@ namespace umi3d.cdk.userCapture
             return this;
         }
 
+        private bool CheckNulls()
+        {
+            if (Bones == null)
+            {
+                Bones = new Dictionary<uint, Transform>();
+            }
+
+            if (Skeletons == null || Skeletons.Length == 0)
+            {
+                return true;
+            }
+
+            return false;
+        }
         public void Bind(BoneBindingDto boneBinding) { }
 
 
