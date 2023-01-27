@@ -74,7 +74,7 @@ public class IPoseSkeleton_Test
 
         Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
         //Lets mock the method of interest
-        mock.Setup(x => x.NameLengthInMyImaginaryWorld("Jean-Paul Muller")).Returns(159);
+        mock.Setup(x => x.GetPose());
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
         animatedSkeletons.Add(new AnimatedSkeleton());

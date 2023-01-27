@@ -5,7 +5,8 @@
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
         "UMI3D.CDK.UserCapture",
-        "UMI3D.CDK.Collaboration"
+        "UMI3D.CDK.Collaboration",
+        "UMI3D.Common.UserCapture"
     ],
     "includePlatforms": [
         "Editor"
