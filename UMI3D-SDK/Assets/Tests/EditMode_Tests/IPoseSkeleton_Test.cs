@@ -57,7 +57,21 @@ public class IPoseSkeleton_Test
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
         animatedSkeletons.Add(new AnimatedSkeleton());
         animatedSkeletons.Add(new AnimatedSkeleton());
-        animatedSkeletons.Add(new AnimatedSkeleton());
+
+        iskeletton.Skeletons = animatedSkeletons.ToArray();
+
+        //When
+        ISkeleton results = iskeletton.Compute();
+
+        //Then
+        Assert.IsTrue(results.Bones.Count == 0);
+    }
+
+    [Test]
+    public void Test_Compute_OneAnimatedSkeletonWithhBones()
+    {
+        //Given
+        ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
         animatedSkeletons.Add(new AnimatedSkeleton());
         animatedSkeletons.Add(new AnimatedSkeleton());
 
