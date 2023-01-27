@@ -21,7 +21,7 @@ namespace umi3d.common.userCapture
     public class PoseDto {
         public uint boneAnchor { get; set; }
 
-        public AbstractBonePoseDto[] bones { get; set; }
+        public BonePoseDto[] bones { get; set; }
     }
 
     public abstract class AbstractBonePoseDto

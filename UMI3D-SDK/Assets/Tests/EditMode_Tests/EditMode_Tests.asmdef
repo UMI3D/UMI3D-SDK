@@ -1,17 +1,22 @@
 {
-    "name": "glTFast.Runtime.Tests",
+    "name": "EditMode_Tests",
+    "rootNamespace": "",
     "references": [
-        "glTFast",
-        "glTFSampleModels",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "UMI3D.CDK.UserCapture",
+        "UMI3D.CDK.Collaboration",
+        "UMI3D.Common.UserCapture"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Moq.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
