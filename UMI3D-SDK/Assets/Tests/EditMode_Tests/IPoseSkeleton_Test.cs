@@ -3,6 +3,7 @@ using NUnit.Framework;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.collaboration;
 using System.Diagnostics;
+using Moq;
 
 public class IPoseSkeleton_Test
 {
@@ -70,20 +71,21 @@ public class IPoseSkeleton_Test
     [Test]
     public void Test_Compute_OneAnimatedSkeletonWithhBones()
     {
-        //Mock<ExternalStuff> mock = new Mock<ExternalStuff>();
-        ////Lets mock the method of interest
-        //mock.Setup(x => x.NameLengthInMyImaginaryWorld("Jean-Paul Muller")).Returns(159);
-        ////Given
-        //ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
-        //animatedSkeletons.Add(new AnimatedSkeleton());
-        //animatedSkeletons.Add(new AnimatedSkeleton());
 
-        //iskeletton.Skeletons = animatedSkeletons.ToArray();
+        Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
+        //Lets mock the method of interest
+        mock.Setup(x => x.NameLengthInMyImaginaryWorld("Jean-Paul Muller")).Returns(159);
+        //Given
+        ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
+        animatedSkeletons.Add(new AnimatedSkeleton());
+        animatedSkeletons.Add(new AnimatedSkeleton());
 
-        ////When
-        //ISkeleton results = iskeletton.Compute();
+        iskeletton.Skeletons = animatedSkeletons.ToArray();
 
-        ////Then
-        //Assert.IsTrue(results.Bones.Count == 0);
+        //When
+        ISkeleton results = iskeletton.Compute();
+
+        //Then
+        Assert.IsTrue(results.Bones.Count == 0);
     }
 }
