@@ -41,7 +41,7 @@ namespace umi3d.cdk.collaboration
         [Tooltip("If true the avatar tracking is sent.")]
         protected bool _sendTracking = true;
 
-        float targetTrackingFPS = 1f;
+        float targetTrackingFPS = 30f;
         bool sendCameraProperties = true;
         bool sendTrackingLoopOnce = false;
 

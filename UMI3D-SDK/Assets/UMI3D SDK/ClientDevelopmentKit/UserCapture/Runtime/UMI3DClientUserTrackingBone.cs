@@ -55,6 +55,16 @@ namespace umi3d.cdk.userCapture
             };
         }
 
+        public BonePoseDto ToBonePose()
+        {
+            return boneType == BoneType.None ? null : new BonePoseDto()
+            {
+                boneType = boneType,
+                rotation = this.transform.localRotation,
+                position = this.transform.position
+            };
+        }
+
         protected virtual void OnDestroy()
         {
             instances.Remove(boneType);

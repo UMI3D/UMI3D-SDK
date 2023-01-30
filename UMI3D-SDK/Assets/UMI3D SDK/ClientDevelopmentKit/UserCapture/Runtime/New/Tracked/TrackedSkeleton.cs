@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -26,10 +27,13 @@ namespace umi3d.cdk.userCapture
         public IController[] controllers;
 
         public Camera viewpoint;
+        UMI3DClientUserTrackingBone[] trackedBones;
+
 
         public void Start()
         {
             controllers = GetComponentsInChildren<IController>();
+            trackedBones = GetComponentsInChildren<UMI3DClientUserTrackingBone>();
         }
 
         public UserCameraPropertiesDto GetCameraDto()
@@ -44,7 +48,10 @@ namespace umi3d.cdk.userCapture
 
         public PoseDto GetPose()
         {
-            throw new System.NotImplementedException();
+            return new PoseDto()
+            {
+                bones = trackedBones.Select(tb => (AbstractBonePoseDto)tb.ToBonePose()).ToArray()
+            };
         }
 
         public virtual void Update() { }
@@ -57,7 +64,7 @@ namespace umi3d.cdk.userCapture
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            trackingFrame.bones = new List<BoneDto>();
+            trackingFrame.bones = trackedBones.Select(tb => tb.ToDto()).Where(b => b != null).ToList();
         }
     }
 
