@@ -25,10 +25,21 @@ namespace umi3d.cdk.userCapture
 {
     public interface ISkeleton
     {
-        Dictionary<uint, Transform> Bones { get; set; }
+        protected Dictionary<uint, s_Transform> Bones { get; set; }
+        public bool activeUserBindings { get; protected set; }
         ISubSkeleton[] Skeletons { get; set; }
+        protected class s_Transform
+        {
+            public Vector3 s_Position;
+            public Quaternion s_Rotation;
+        }
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
+
+        /// <summary>
+        /// List of currently applied <see cref="BoneBindingDto"/> to the user's skeleton.
+        /// </summary>
+        public List<BoneBindingDto> userBindings { get; protected set; }
 
         public ISkeleton Compute()
         {
@@ -59,16 +70,16 @@ namespace umi3d.cdk.userCapture
                         Bones.TryGetValue(b.boneType, out var pose);
                         if (pose != null)
                         {
-                            Bones[b.boneType].rotation = b.rotation;
-                            Bones[b.boneType].position = b.position;
+                            Bones[b.boneType].s_Rotation = b.rotation;
+                            Bones[b.boneType].s_Position = b.position;
                         }
                         else
                         {
-                            GameObject new_obj = new GameObject();
-                            Transform new_trans = new_obj.transform;
-                            new_trans.position = b.position;
-                            new_trans.rotation = b.rotation;
-                            Bones.TryAdd(b.boneType, new_trans);
+                            Bones.TryAdd(b.boneType, new s_Transform()
+                            {
+                                s_Position= b.position,
+                                s_Rotation= b.rotation
+                            });
                         }
                     }
                 });
@@ -81,7 +92,7 @@ namespace umi3d.cdk.userCapture
         {
             if (Bones == null)
             {
-                Bones = new Dictionary<uint, Transform>();
+                Bones = new Dictionary<uint, s_Transform>();
             }
 
             if (Skeletons == null || Skeletons.Length == 0)
@@ -91,8 +102,34 @@ namespace umi3d.cdk.userCapture
 
             return false;
         }
-        public void Bind(BoneBindingDto boneBinding) { }
 
+        #region bindings
+        public void AddBinding(int index, BoneBindingDto boneBinding) 
+        {
+            if (index <= userBindings.Count - 1)
+            {
+                BoneBindingDto dtoAtIndex = userBindings[index];
 
+                if (!boneBinding.bindingId.Contains(dtoAtIndex.bindingId) && !dtoAtIndex.bindingId.Contains(boneBinding.bindingId))
+                    AddBinding_(index, boneBinding);
+            }
+            else
+            {
+                AddBinding_(index, boneBinding);
+            }
+        }
+
+        private void AddBinding_(int index, BoneBindingDto boneBinding)
+        {
+            userBindings.Insert(index, boneBinding);
+            if (activeUserBindings && boneBinding.active)
+                //UpdateBindingPosition(boneBinding);
+        }
+
+        public void UnBind(BoneBindingDto boneBinding)
+        {
+        
+        }
+        #endregion
     }
 }
