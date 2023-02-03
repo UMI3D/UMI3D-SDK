@@ -254,9 +254,8 @@ namespace umi3d.cdk.userCapture
             userBindings.Insert(index, boneBinding);
             if (activeUserBindings && boneBinding.active)
             {
-
+                UpdateBindingPosition(boneBinding);
             }
-                //UpdateBindingPosition(boneBinding);
         }
         /// <summary>
         /// Remove the BoneBindingDto at the given index.
@@ -307,30 +306,6 @@ namespace umi3d.cdk.userCapture
             {
                 WaitForOtherRig(dto);
             }
-        }
-
-        protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
-        {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
-            {
-                if (entityInstance is UMI3DNodeInstance node)
-                {
-                    WaitForRig(node, dto, bone);
-                }
-            }
-            );
-        }
-
-        protected void WaitForOtherRig(BoneBindingDto dto)
-        {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
-            {
-                if (entityInstance is UMI3DNodeInstance node)
-                {
-                    await WaitForFrame();
-                    WaitingForOtherEntityRig(node, dto);
-                }
-            });
         }
 
         protected Transform InspectBoundRigs(BoneBindingDto dto)
@@ -415,6 +390,29 @@ namespace umi3d.cdk.userCapture
         }
         #endregion
         #region Waiting
+        protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        {
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
+            {
+                if (entityInstance is UMI3DNodeInstance node)
+                {
+                    WaitForRig(node, dto, bone);
+                }
+            }
+            );
+        }
+
+        protected void WaitForOtherRig(BoneBindingDto dto)
+        {
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
+            {
+                if (entityInstance is UMI3DNodeInstance node)
+                {
+                    await WaitForFrame();
+                    WaitingForOtherEntityRig(node, dto);
+                }
+            });
+        }
         protected void WaitingForOtherEntityRig(UMI3DNodeInstance node, BoneBindingDto dto)
         {
             Transform obj = null;

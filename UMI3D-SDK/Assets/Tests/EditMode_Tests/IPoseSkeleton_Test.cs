@@ -23,6 +23,7 @@ public class IPoseSkeleton_Test
 
     }
 
+    #region Skeleton calculation
     [Test]
     public void Test_Compute_ListNotSet()
     {
@@ -93,4 +94,12 @@ public class IPoseSkeleton_Test
         //Then
         Assert.IsTrue(results.Bones.Count == 1);
     }
+    #endregion
+
+    #region Bindings
+    #region
+
+
+    #endregion
+    #endregion
 }
