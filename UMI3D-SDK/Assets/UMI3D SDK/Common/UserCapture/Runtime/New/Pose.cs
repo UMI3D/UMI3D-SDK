@@ -31,6 +31,13 @@ namespace umi3d.common.userCapture
 
     public class BonePoseDto : AbstractBonePoseDto
     {
+        public BonePoseDto() { }   
+        public BonePoseDto(uint boneType, Vector3 position, Quaternion rotation) 
+        { 
+            this.boneType= boneType;
+            this.position= position;
+            this.rotation= rotation;
+        }
         public uint boneType { get; set; }
         public SerializableVector3 position;
         public SerializableVector4 rotation;

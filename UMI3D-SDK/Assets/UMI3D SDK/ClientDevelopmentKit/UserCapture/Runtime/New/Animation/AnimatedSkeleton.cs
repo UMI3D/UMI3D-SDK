@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture
             return null;
         }
 
-        public PoseDto GetPose()
+        public virtual PoseDto GetPose()
         {
             if (!mapper.animations.Select(id => UMI3DAnimatorAnimation.Get(id)).Any(a => a?.IsPlayin() ?? false))
                 return null;

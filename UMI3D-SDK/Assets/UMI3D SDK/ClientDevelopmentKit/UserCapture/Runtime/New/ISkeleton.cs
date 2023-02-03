@@ -117,7 +117,7 @@ namespace umi3d.cdk.userCapture
                 return this;
             }
 
-            for (int i = Skeletons.Length - 1; i > 0; i--)
+            for (int i = Skeletons.Length - 1; i >= 0; i--)
             {
                 ISubSkeleton skeleton = Skeletons[i];
                 List<BonePoseDto> bones = new List<BonePoseDto>();
@@ -131,6 +131,8 @@ namespace umi3d.cdk.userCapture
                     Debug.Log($"<color=red> {e} </color>");
                     return this;
                 }
+
+                Debug.Log("hey");
 
                 bones.ForEach(b =>
                 {

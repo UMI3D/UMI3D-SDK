@@ -2,8 +2,9 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.collaboration;
-using System.Diagnostics;
 using Moq;
+using umi3d.common.userCapture;
+using UnityEngine;
 
 public class IPoseSkeleton_Test
 {
@@ -73,12 +74,16 @@ public class IPoseSkeleton_Test
     {
         //TODO -- finish this test
         Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
+        PoseDto poseDto= new PoseDto();
+        poseDto.bones = new BonePoseDto[]
+        {
+            new BonePoseDto(BoneType.CenterFeet, Vector3.zero, Quaternion.identity),
+        };
         //Lets mock the method of interest
-        mock.Setup(x => x.GetPose());
+        mock.Setup(x => x.GetPose()).Returns(poseDto);
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
-        animatedSkeletons.Add(new AnimatedSkeleton());
-        animatedSkeletons.Add(new AnimatedSkeleton());
+        animatedSkeletons.Add(mock.Object);
 
         iskeletton.Skeletons = animatedSkeletons.ToArray();
 
@@ -86,6 +91,6 @@ public class IPoseSkeleton_Test
         ISkeleton results = iskeletton.Compute();
 
         //Then
-        Assert.IsTrue(results.Bones.Count == 0);
+        Assert.IsTrue(results.Bones.Count == 1);
     }
 }
