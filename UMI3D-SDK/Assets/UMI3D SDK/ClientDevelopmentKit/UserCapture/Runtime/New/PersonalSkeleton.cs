@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -28,9 +29,8 @@ namespace umi3d.cdk.userCapture
     {
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
-
-        public ISubSkeleton[] Skeletons { get; set; }
-
+        ISubSkeleton[] Skeletons { get; set; }
+        ISubSkeleton[] ISkeleton.Skeletons { get => Skeletons; set { Skeletons = value; } }
         public Dictionary<uint, Transform> Bones { get; set; }
 
         public TrackedSkeleton TrackedSkeleton;
@@ -38,6 +38,38 @@ namespace umi3d.cdk.userCapture
         public float skeletonHighOffset = 0;
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
+
+        #region Iskeleeton Fields
+        /// <summary>
+        /// stores the different rotation and position of the bones
+        /// </summary>
+        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get; set; }
+        /// <summary>
+        /// Saves of the transform of objects before they had been bound to a user's bone.
+        /// </summary>
+        Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get; set; }
+
+        /// <summary>
+        /// Has the user currently active bindings?
+        /// </summary>
+        bool ISkeleton.activeUserBindings { get; set; }
+        /// <summary>
+        /// User's registered id
+        /// </summary>
+        ulong ISkeleton.userId { get; set; }
+        List<ISkeleton.Bound> ISkeleton.bounds { get; set; }
+        List<Transform> ISkeleton.boundRigs { get; set; }
+        List<BoneBindingDto> ISkeleton.userBindings { get; set; }
+        /// <summary>
+        /// Extrapolator for the avatar position.
+        /// </summary>
+        Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get; set; }
+        /// <summary>
+        /// Extrapolator for the avatar rotation.
+        /// </summary>
+        QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get; set; }
+
+        #endregion
 
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
             var frame = new UserTrackingFrameDto()
@@ -64,7 +96,7 @@ namespace umi3d.cdk.userCapture
             return null;
         }
 
-        public virtual void UpdateFrame(UserTrackingFrameDto frame)
+        public void UpdateFrame(UserTrackingFrameDto frame)
         {
             UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
         }
@@ -74,12 +106,7 @@ namespace umi3d.cdk.userCapture
         {
             Skeletons = new ISubSkeleton[1];
             Skeletons[0] = TrackedSkeleton;
-
         }
-
-
-
-
     }
 
 

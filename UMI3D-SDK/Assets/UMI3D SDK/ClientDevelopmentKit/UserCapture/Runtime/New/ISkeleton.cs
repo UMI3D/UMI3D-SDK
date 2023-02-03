@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
         /// Saves of the transform of objects before they had been bound to a user's bone.
         /// </summary>
         protected Dictionary<BoundObject, SavedTransform> savedTransforms { get; set; }
-        ISubSkeleton[] Skeletons { get; set; }
+        public ISubSkeleton[] Skeletons { get; set; }
         #region Fields
         /// <summary>
         /// Has the user currently active bindings?
@@ -55,6 +55,9 @@ namespace umi3d.cdk.userCapture
         /// Extrapolator for the avatar rotation.
         /// </summary>
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator { get; set; }
+
+        protected abstract List<Bound> bounds { get; set; }
+        public List<Transform> boundRigs { get; set; }
 
         #endregion
         #region Data struture
@@ -98,9 +101,6 @@ namespace umi3d.cdk.userCapture
             public ulong objectId;
             public string rigname;
         }
-
-        protected List<Bound> bounds { get; set; }
-        public List<Transform> boundRigs { get; set; }
         #endregion
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
