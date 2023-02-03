@@ -20,6 +20,8 @@ namespace umi3d.cdk.userCapture
 {
     public interface IController
     {
+        public bool isActif { set; get; }
+        public void Destroy();
         public uint boneType { get; }
         public Vector3 position { get; }
         public Quaternion rotation { get; }

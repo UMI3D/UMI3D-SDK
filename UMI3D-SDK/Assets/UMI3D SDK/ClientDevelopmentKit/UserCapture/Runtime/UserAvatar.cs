@@ -340,14 +340,14 @@ namespace umi3d.cdk.userCapture
         {
             if (userId == UMI3DClientServer.Instance.GetUserId())
             {
-                if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
-                {
-                    WaitForRig(dto, bone);
-                }
-                else
-                {
-                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances", scope);
-                }
+                //if (TrackedSkeletonBone.instances.TryGetValue(dto.boneType, out TrackedSkeletonBone bone))
+                //{
+                //    WaitForRig(dto, bone);
+                //}
+                //else
+                //{
+                //    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances", scope);
+                //}
             }
             else
             {
@@ -420,7 +420,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        protected void WaitForRig(BoneBindingDto dto, TrackedSkeletonBone bone)
         {
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, (e) =>
             {
@@ -432,7 +432,7 @@ namespace umi3d.cdk.userCapture
             );
         }
 
-        protected IEnumerator WaitForRig(UMI3DNodeInstance node, BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        protected IEnumerator WaitForRig(UMI3DNodeInstance node, BoneBindingDto dto, TrackedSkeletonBone bone)
         {
             Transform obj = null;
             if (dto.rigName != "")

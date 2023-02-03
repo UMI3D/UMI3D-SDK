@@ -208,7 +208,7 @@ namespace umi3d.cdk.userCapture
 
         protected virtual void Start()
         {
-            streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+            //streamedBonetypes = TrackedSkeletonBone.instances.Keys.ToList();
             //sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
             //startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
             //UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
@@ -307,50 +307,50 @@ namespace umi3d.cdk.userCapture
         /// Iterate through the bones of the browser's skeleton to create BoneDto
         /// </summary>
         /// <param name="forceNotNullDto">If true, <see cref="LastFrameDto"/> won't be null.</param>
-        protected void BonesIterator()
-        {
-            if (UMI3DEnvironmentLoader.Exists)
-            {
-                var bonesList = new List<BoneDto>();
-                if (!IgnoreBones)
-                {
-                    foreach (UMI3DClientUserTrackingBone bone in UMI3DClientUserTrackingBone.instances.Values)
-                    {
-                        if (streamedBonetypes.Contains(bone.boneType))
-                        {
-                            BoneDto dto = bone.ToDto();
-                            if (dto != null)
-                                bonesList.Add(dto);
-                        }
-                    }
-                }
+        //protected void BonesIterator()
+        //{
+        //    if (UMI3DEnvironmentLoader.Exists)
+        //    {
+        //        var bonesList = new List<BoneDto>();
+        //        if (!IgnoreBones)
+        //        {
+        //            foreach (TrackedSkeletonBone bone in TrackedSkeletonBone.instances.Values)
+        //            {
+        //                if (streamedBonetypes.Contains(bone.boneType))
+        //                {
+        //                    BoneDto dto = bone.ToDto();
+        //                    if (dto != null)
+        //                        bonesList.Add(dto);
+        //                }
+        //            }
+        //        }
 
-                Vector3 position = UMI3DNavigation.Instance.transform.localPosition - (UMI3DNavigation.Instance.transform.position - transform.position);
-                Quaternion rotation = UMI3DNavigation.Instance.transform.localRotation * Quaternion.Inverse(UMI3DNavigation.Instance.transform.rotation) * transform.rotation;
+        //        Vector3 position = UMI3DNavigation.Instance.transform.localPosition - (UMI3DNavigation.Instance.transform.position - transform.position);
+        //        Quaternion rotation = UMI3DNavigation.Instance.transform.localRotation * Quaternion.Inverse(UMI3DNavigation.Instance.transform.rotation) * transform.rotation;
 
-                if (!HasPlayerMoved(position, rotation, bonesList) && (Time.realtimeSinceStartup < lastTimeFrameSent + maximumTimeBetweenFramesSent))
-                {
-                    LastFrameDto = null;
-                }
-                else
-                {
-                    lastTimeFrameSent = Time.realtimeSinceStartup;
+        //        if (!HasPlayerMoved(position, rotation, bonesList) && (Time.realtimeSinceStartup < lastTimeFrameSent + maximumTimeBetweenFramesSent))
+        //        {
+        //            LastFrameDto = null;
+        //        }
+        //        else
+        //        {
+        //            lastTimeFrameSent = Time.realtimeSinceStartup;
 
-                    LastFrameDto = new UserTrackingFrameDto()
-                    {
-                        bones = bonesList,
-                        skeletonHighOffset = skeletonContainer.localPosition.y,
-                        position = position, //position relative to UMI3DEnvironmentLoader node
-                        rotation = rotation, //rotation relative to UMI3DEnvironmentLoader node
-                        refreshFrequency = targetTrackingFPS,
-                        userId = UMI3DClientServer.Instance.GetUserId(),
-                        parentId = parentId
-                    };
-                }
+        //            LastFrameDto = new UserTrackingFrameDto()
+        //            {
+        //                bones = bonesList,
+        //                skeletonHighOffset = skeletonContainer.localPosition.y,
+        //                position = position, //position relative to UMI3DEnvironmentLoader node
+        //                rotation = rotation, //rotation relative to UMI3DEnvironmentLoader node
+        //                refreshFrequency = targetTrackingFPS,
+        //                userId = UMI3DClientServer.Instance.GetUserId(),
+        //                parentId = parentId
+        //            };
+        //        }
 
-                skeletonParsedEvent.Invoke();
-            }
-        }
+        //        skeletonParsedEvent.Invoke();
+        //    }
+        //}
 
         /// <summary>
         /// Defines if user has moved since last time.
@@ -457,10 +457,10 @@ namespace umi3d.cdk.userCapture
         /// Set the list of streamed bones.
         /// </summary>
         /// <param name="bonesToStream"></param>
-        public void SetStreamedBones(List<uint> bonesToStream)
-        {
-            this.streamedBonetypes = bonesToStream;
-        }
+        //public void SetStreamedBones(List<uint> bonesToStream)
+        //{
+        //    this.streamedBonetypes = bonesToStream;
+        //}
 
         /// <summary>
         /// Setter for <see cref="sendCameraProperties"/>.
@@ -497,11 +497,11 @@ namespace umi3d.cdk.userCapture
                 }
             }
 
-            var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+            //var bones = TrackedSkeletonBone.instances.Keys.ToList();
 
-            bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+           // bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
 
-            SetStreamedBones(bones);
+            //SetStreamedBones(bones);
         }
     }
 }

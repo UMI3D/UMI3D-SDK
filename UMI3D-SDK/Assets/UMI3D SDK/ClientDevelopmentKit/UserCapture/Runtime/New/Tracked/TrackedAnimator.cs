@@ -14,28 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using umi3d.common.userCapture;
+using System;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public class Controller : MonoBehaviour, IController
+    public class TrackedAnimator : MonoBehaviour
     {
-        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))]
-        uint _boneType;
+        public Action<int> IkCallback;
 
-        public uint boneType => _boneType;
-
-        public Vector3 position => transform.position;
-
-        public Quaternion rotation => transform.rotation;
-
-        public bool isActif { get; set; }
-
-        public void Destroy()
+        private void OnAnimatorIK(int layerIndex)
         {
-           GameObject.Destroy(gameObject);
+            IkCallback?.Invoke(layerIndex);
         }
     }
+
 }

@@ -47,6 +47,7 @@ namespace umi3d.cdk.userCapture
                 skeletonHighOffset = skeletonHighOffset,
             };
 
+            Debug.Log(Skeletons.Length);
             foreach (var skeleton in Skeletons)
                 skeleton.WriteTrackingFrame(frame, option);
 
@@ -74,14 +75,6 @@ namespace umi3d.cdk.userCapture
         {
             Skeletons = new ISubSkeleton[1];
             Skeletons[0] = TrackedSkeleton;
-
         }
-
-
-
-
     }
-
-
-
 }

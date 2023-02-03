@@ -25,21 +25,13 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Representation for each tracked bone.
     /// </summary>
-    public class UMI3DClientUserTrackingBone : MonoBehaviour
+    public class TrackedSkeletonBone : MonoBehaviour
     {
-        public static Dictionary<uint, UMI3DClientUserTrackingBone> instances = new Dictionary<uint, UMI3DClientUserTrackingBone>();
-
         /// <summary>
         /// Bone type in UMI3D standards. See <see cref="BoneDto"/>.
         /// </summary>
         [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
         public uint boneType;
-
-        /// <summary>
-        /// Should the bone data be sent to the server?
-        /// </summary>
-        [Tooltip("Should the bone data be sent to the server?")]
-        public bool isTracked;
 
         /// <summary>
         /// Convert this bone to a dto.
@@ -64,28 +56,41 @@ namespace umi3d.cdk.userCapture
                 position = this.transform.position
             };
         }
+    }
 
-        protected virtual void OnDestroy()
+    public class TrackedSkeletonBoneController : MonoBehaviour, IController
+    {
+        public Vector3 position
         {
-            instances.Remove(boneType);
-        }
-
-        private void OnDisable()
-        {
-            instances.Remove(boneType);
-        }
-
-        private void OnEnable()
-        {
-            if (boneType == BoneType.None) return;
-            if (instances.ContainsKey(boneType))
+            get
             {
-                if (gameObject.GetComponents<UMI3DClientUserTrackingBone>().Count() > 1)
-                    throw new System.Exception("There can be only one bone per gameobject !");
-                else
-                    throw new System.Exception("Internal error");
+                return this.transform.position;
             }
-            instances.Add(boneType, this);
+
+            set
+            {
+                this.transform.position = value;
+            }
+        }
+
+        public Quaternion rotation
+        {
+            get
+            {
+                return this.transform.localRotation;
+            }
+            set
+            {
+                this.transform.rotation = value;
+            }
+        }
+
+        public uint boneType { get; set; }
+        public bool isActif { get; set; }
+
+        public void Destroy()
+        {
+            GameObject.Destroy(this.gameObject);
         }
     }
 }

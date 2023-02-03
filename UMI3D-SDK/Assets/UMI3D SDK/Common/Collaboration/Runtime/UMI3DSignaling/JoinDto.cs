@@ -26,7 +26,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Bones tracked by the user tracking system.
         /// </summary>
-        public Dictionary<uint, bool> trackedBonetypes;
+        public List<uint> controller;
 
         /// <summary>
         /// User size scale relative to the environment.

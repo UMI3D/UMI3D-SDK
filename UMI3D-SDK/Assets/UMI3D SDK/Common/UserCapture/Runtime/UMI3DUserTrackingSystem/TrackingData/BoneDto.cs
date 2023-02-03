@@ -36,6 +36,11 @@ namespace umi3d.common.userCapture
         /// </summary>
         public SerializableVector4 rotation;
 
+        /// <summary>
+        /// Position relative to the tracked node.
+        /// </summary>
+        public SerializableVector3 position;
+
         /// <inheritdoc/>
         bool IBytable.IsCountable()
         {
@@ -47,7 +52,8 @@ namespace umi3d.common.userCapture
         {
             return
                 UMI3DSerializer.Write(boneType)
-                + UMI3DSerializer.Write(rotation);
+                + UMI3DSerializer.Write(rotation ?? new SerializableVector4())
+                + UMI3DSerializer.Write(position ?? new SerializableVector3());
         }
     }
 }

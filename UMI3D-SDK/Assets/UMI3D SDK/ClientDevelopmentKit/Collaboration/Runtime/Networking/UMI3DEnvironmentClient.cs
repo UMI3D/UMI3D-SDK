@@ -547,10 +547,11 @@ namespace umi3d.cdk.collaboration
 
             var joinDto = new JoinDto()
             {
-                trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<uint, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(x => x.Key, x => x.Value),
+                controller = PersonalSkeleton.Instance.TrackedSkeleton.controllers.Select(trackingBone => trackingBone.boneType).ToList(),
                 userSize = PersonalSkeleton.Instance.worldSize,
             };
             try
+
             {
                 PostJoinProgress.AddComplete();
                 EnterDto enter = await HttpClient.SendPostJoin(joinDto);

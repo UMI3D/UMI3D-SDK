@@ -25,5 +25,11 @@ namespace umi3d.cdk.userCapture
         public Vector3 position { get; set; }
 
         public Quaternion rotation { get; set; }
+        public bool isActif { get; set; }
+
+        public void Destroy()
+        {
+            
+        }
     }
 }

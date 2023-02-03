@@ -55,6 +55,7 @@ namespace umi3d.cdk.collaboration
 
         public UserTrackingFrameDto GetFrame()
         {
+            UnityEngine.Debug.Log("GetFrame");
             var frame = skeleton.GetFrame(option);
             frame.userId = UMI3DCollaborationClientServer.Instance.GetUserId();
             frame.refreshFrequency = targetTrackingFPS;

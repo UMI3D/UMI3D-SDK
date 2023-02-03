@@ -50,7 +50,7 @@ namespace umi3d.edk.userCapture
 
         public Dictionary<ulong, UMI3DAvatarNode> embodimentInstances = new Dictionary<ulong, UMI3DAvatarNode>();
         public Dictionary<ulong, Vector3> embodimentSize = new Dictionary<ulong, Vector3>();
-        public Dictionary<ulong, Dictionary<uint, bool>> embodimentTrackedBonetypes = new Dictionary<ulong, Dictionary<uint, bool>>();
+        public Dictionary<ulong, List<uint>> embodimentTrackedBonetypes = new Dictionary<ulong, List<uint>>();
 
         public class EmbodimentEvent : UnityEvent<UMI3DAvatarNode> { };
         public class EmbodimentBoneEvent : UnityEvent<UMI3DUserEmbodimentBone> { };
@@ -92,17 +92,17 @@ namespace umi3d.edk.userCapture
         public virtual bool BoneTrackedInformation(ulong userId, uint bonetype)
         {
             if (embodimentTrackedBonetypes.ContainsKey(userId))
-                return embodimentTrackedBonetypes[userId][bonetype];
+                return embodimentTrackedBonetypes[userId].Contains(bonetype);
             else
                 return false;
         }
 
         /// <summary>
-        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, Dictionary{uint, bool})"/>.
+        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, List{uint})"/>.
         /// </summary>
         static object joinLock = new object();
 
-        public async Task JoinDtoReception(UMI3DUser user, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
+        public async Task JoinDtoReception(UMI3DUser user, SerializableVector3 userSize, List<uint> trackedBonetypes)
         {
             if (ActivateEmbodiments && user is UMI3DTrackedUser trackedUser)
             {
