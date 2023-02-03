@@ -71,7 +71,7 @@ public class IPoseSkeleton_Test
     [Test]
     public void Test_Compute_OneAnimatedSkeletonWithhBones()
     {
-
+        //TODO -- finish this test
         Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
         //Lets mock the method of interest
         mock.Setup(x => x.GetPose());
