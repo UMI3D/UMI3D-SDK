@@ -21,6 +21,9 @@ using umi3d.common.userCapture;
 using UnityEngine;
 using System;
 using System.Collections;
+using umi3d.cdk.utils.extrapolation;
+using System.Xml.Serialization;
+using System.Threading.Tasks;
 
 namespace umi3d.cdk.userCapture
 {
@@ -42,6 +45,16 @@ namespace umi3d.cdk.userCapture
         /// User's registered id
         /// </summary>
         public ulong userId { get; protected set; }
+
+        /// <summary>
+        /// Extrapolator for the avatar position.
+        /// </summary>
+        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator { get; set; }
+
+        /// <summary>
+        /// Extrapolator for the avatar rotation.
+        /// </summary>
+        protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator { get; set; }
 
         #endregion
         #region Data struture
@@ -86,6 +99,8 @@ namespace umi3d.cdk.userCapture
             public string rigname;
         }
 
+        protected List<Bound> bounds { get; set; }
+        public List<Transform> boundRigs { get; set; }
         #endregion
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
@@ -294,11 +309,11 @@ namespace umi3d.cdk.userCapture
 
         protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, (e) =>
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
             {
-                if (e is UMI3DNodeInstance node)
+                if (entityInstance is UMI3DNodeInstance node)
                 {
-                    //TODO --> assych method == StartCorroutine(WaitForRig(node, dto, bone));
+                    WaitForRig(node, dto, bone);
                 }
             }
             );
@@ -306,9 +321,13 @@ namespace umi3d.cdk.userCapture
 
         protected void WaitForOtherRig(BoneBindingDto dto)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, (e) =>
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
             {
-                //TODO --> assych method StartCoroutine(WaitingForOtherEntityRig(e as UMI3DNodeInstance, dto));
+                if (entityInstance is UMI3DNodeInstance node)
+                {
+                    await WaitForFrame();
+                    WaitingForOtherEntityRig(node, dto);
+                }
             });
         }
 
@@ -374,7 +393,7 @@ namespace umi3d.cdk.userCapture
                 }
                 else
                 {
-                    Destroy(node.gameObject);
+                     GameObject.Destroy(node.gameObject);
                 }
             }
 
@@ -393,14 +412,9 @@ namespace umi3d.cdk.userCapture
             nodeRotationExtrapolator = null;
         }
         #endregion
-        #region assynch updates
-        protected IEnumerator WaitingForOtherEntityRig(UMI3DNodeInstance node, BoneBindingDto dto)
+        #region Waiting
+        protected void WaitingForOtherEntityRig(UMI3DNodeInstance node, BoneBindingDto dto)
         {
-            if (node == null)
-                yield break;
-
-            yield return null;
-
             Transform obj = null;
             if (dto.rigName != "")
             {
@@ -439,14 +453,14 @@ namespace umi3d.cdk.userCapture
                 savedTransforms.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, savedTransform);
             }
         }
-        protected IEnumerator WaitForRig(UMI3DNodeInstance node, BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        protected async Task WaitForRig(UMI3DNodeInstance node, BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
         {
             Transform obj = null;
             if (dto.rigName != "")
             {
                 while ((obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName)) == null && (obj = InspectBoundRigs(dto)) == null)
                 {
-                    yield return null;
+                    await WaitForFrame();
                 }
 
                 if (!boundRigs.Contains(obj))
@@ -523,6 +537,18 @@ namespace umi3d.cdk.userCapture
                 }
             }
         }
+
+        #region Tasks
+        private async Task WaitForFrame()
+        {
+            var actual = Time.frameCount;
+
+            while (actual == Time.frameCount)
+            {
+                await Task.Yield();
+            }
+        }
+        #endregion
 
         #endregion
         #endregion
