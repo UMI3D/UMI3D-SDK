@@ -26,5 +26,4 @@ namespace umi3d.cdk.userCapture
 
         UserCameraPropertiesDto GetCameraDto(); 
     }
-
 }
