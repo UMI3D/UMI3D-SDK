@@ -128,11 +128,9 @@ namespace umi3d.cdk.userCapture
                 }
                 catch(Exception e)
                 {
-                    Debug.Log($"<color=red> {e} </color>");
+                    Debug.Log($"<color=red> _{e} </color>");
                     return this;
                 }
-
-                Debug.Log("hey");
 
                 bones.ForEach(b =>
                 {

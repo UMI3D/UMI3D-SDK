@@ -6,7 +6,7 @@ using Moq;
 using umi3d.common.userCapture;
 using UnityEngine;
 
-public class IPoseSkeleton_Test
+public class ISkeleton_Test
 {
     List<AnimatedSkeleton> animatedSkeletons = null;
     CollaborativeSkeleton collaborativeSkeleton = new CollaborativeSkeleton();
