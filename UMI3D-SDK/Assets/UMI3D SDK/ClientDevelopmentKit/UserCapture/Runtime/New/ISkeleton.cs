@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture
     public interface ISkeleton
     {
         Dictionary<uint, Transform> Bones { get; set; }
-        ISubSkeleton[] Skeletons { get; set; }
+        List<ISubSkeleton> Skeletons { get; set; }
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
 
