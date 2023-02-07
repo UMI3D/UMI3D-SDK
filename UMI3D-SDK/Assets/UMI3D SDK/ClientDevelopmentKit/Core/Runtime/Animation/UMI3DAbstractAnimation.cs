@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using MainThreadDispatcher;
+using System;
 using System.Collections;
 using System.ComponentModel;
 using System.Threading.Tasks;
@@ -33,6 +34,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id of the animation.</param>
         /// <returns></returns>
+        [Obsolete("Use UMI3DEnvironmentLoader.Instance.GetEntity<UMI3DAbstractAnimation> instead.")]
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
 
@@ -165,10 +167,19 @@ namespace umi3d.cdk
         /// </summary>
         protected UMI3DAbstractAnimationDto dto { get; set; }
 
+        public ulong Id => dto.id;
+
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
         {
             this.dto = dto;
-            UMI3DEntityInstance node = UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, this);
+            Init();
+        }
+
+        public virtual void Init()
+        {
+            UMI3DEntityInstance node = UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, this);
+
+            #if !UNITY_EDITOR
             if (dto.playing)
             {
                 if (dto.startTime == default)
@@ -177,6 +188,7 @@ namespace umi3d.cdk
                     UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
             }
             UnityMainThreadDispatcher.Instance().Enqueue(node.NotifyLoaded);
+            #endif
         }
 
         /// <summary>
