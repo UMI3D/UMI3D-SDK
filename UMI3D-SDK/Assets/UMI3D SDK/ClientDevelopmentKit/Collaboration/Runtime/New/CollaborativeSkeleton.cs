@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser User;
 
         public Dictionary<uint, Transform> Bones { get; set; }
-        public ISubSkeleton[] Skeletons { get; set; }
+        public List<ISubSkeleton> Skeletons { get; set; }
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {

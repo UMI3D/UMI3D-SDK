@@ -2,8 +2,8 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.collaboration;
-using System.Diagnostics;
 using Moq;
+using umi3d.common.userCapture;
 
 public class IPoseSkeleton_Test
 {
@@ -28,7 +28,7 @@ public class IPoseSkeleton_Test
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
         animatedSkeletons = null;
-        iskeletton.Skeletons = animatedSkeletons?.ToArray();
+        iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
         ISkeleton results = iskeletton.Compute();
@@ -42,7 +42,7 @@ public class IPoseSkeleton_Test
     {
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
-        iskeletton.Skeletons = animatedSkeletons.ToArray();
+        iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
         ISkeleton results = iskeletton.Compute();
@@ -56,10 +56,11 @@ public class IPoseSkeleton_Test
     {
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
-        animatedSkeletons.Add(new AnimatedSkeleton());
-        animatedSkeletons.Add(new AnimatedSkeleton());
+        Mock<SkeletonMapper> mockSkeletonMapper = new Mock<SkeletonMapper>();
+        animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
+        animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
 
-        iskeletton.Skeletons = animatedSkeletons.ToArray();
+        iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
         ISkeleton results = iskeletton.Compute();
@@ -77,10 +78,11 @@ public class IPoseSkeleton_Test
         mock.Setup(x => x.GetPose());
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
-        animatedSkeletons.Add(new AnimatedSkeleton());
-        animatedSkeletons.Add(new AnimatedSkeleton());
+        Mock<SkeletonMapper> mockSkeletonMapper = new Mock<SkeletonMapper>();
+        animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
+        animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
 
-        iskeletton.Skeletons = animatedSkeletons.ToArray();
+        iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
         ISkeleton results = iskeletton.Compute();
