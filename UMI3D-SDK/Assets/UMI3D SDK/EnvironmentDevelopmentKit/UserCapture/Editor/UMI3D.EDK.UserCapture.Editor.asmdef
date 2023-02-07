@@ -1,0 +1,17 @@
+{
+    "name": "UMI3D.EDK.UserCapture.Editor",
+    "rootNamespace": "",
+    "references": [
+        "UMI3D.Common.UserCapture",
+        "UMI3D.EDK.UserCapture"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
