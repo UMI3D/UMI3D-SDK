@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2022 Inetum
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,25 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
+using System;
+using System.Collections.Generic;
+using umi3d.common;
 using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(UMI3DAbstractAnimation), true)]
-    [CanEditMultipleObjects]
-    public class UMI3DAbstractAnimationEditor : Editor
+    [CustomEditor(typeof(UMI3DAnimatorAnimation))]
+    public class UMI3DAnimatorAnimationEditor : UMI3DAbstractAnimationEditor
     {
-        protected SerializedProperty playing;
-        protected SerializedProperty looping;
-        protected SerializedProperty startTime;
-        protected SerializedProperty pauseFrame;
+        private SerializedProperty node;
+        private SerializedProperty stateName;
 
-        protected virtual void OnEnable()
+        protected override void OnEnable()
         {
-            playing = serializedObject.FindProperty("playing");
-            looping = serializedObject.FindProperty("looping");
-            startTime = serializedObject.FindProperty("startTime");
-            pauseFrame = serializedObject.FindProperty("pauseFrame");
+            base.OnEnable();
+            node = serializedObject.FindProperty("node");
+            stateName = serializedObject.FindProperty("stateName");
         }
 
         public override void OnInspectorGUI()
@@ -45,8 +46,13 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(looping);
             EditorGUILayout.PropertyField(startTime);
             EditorGUILayout.PropertyField(pauseFrame);
+            EditorGUILayout.PropertyField(node);
+            EditorGUILayout.PropertyField(stateName);
 
             serializedObject.ApplyModifiedProperties();
         }
+
+
+
     }
 }
