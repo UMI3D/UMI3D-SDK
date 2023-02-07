@@ -56,6 +56,8 @@ namespace umi3d.common.userCapture
         /// </summary>
         public SerializableVector4 rotation;
 
+        public ulong[] animationsPlaying;
+
         /// <summary>
         /// Frequency in frame per second (FPS) at which the user tracking is sent to the server.
         /// </summary>
