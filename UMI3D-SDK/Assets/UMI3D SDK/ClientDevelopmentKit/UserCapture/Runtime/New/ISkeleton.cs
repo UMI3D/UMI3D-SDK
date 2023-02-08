@@ -29,8 +29,8 @@ namespace umi3d.cdk.userCapture
 {
     public interface ISkeleton
     {
-        public Dictionary<uint, s_Transform> Bones { get; set; }
-        public List<ISubSkeleton> Skeletons { get; set; }
+        Dictionary<uint, Transform> Bones { get; set; }
+        ISubSkeleton[] Skeletons { get; set; }
 
         #region Data struture
         public class s_Transform
@@ -42,22 +42,6 @@ namespace umi3d.cdk.userCapture
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
 
-        /// <summary>
-        /// Call Once
-        /// </summary>
-        public void Init()
-        {
-            if (Skeletons == null)
-            {
-                Skeletons= new List<ISubSkeleton>();
-            }
-
-            if (Bones == null)
-            {
-                Bones= new Dictionary<uint, s_Transform>();
-            }
-        }
-
         #region Compute current skeleton
         public ISkeleton Compute()
         {
@@ -66,7 +50,7 @@ namespace umi3d.cdk.userCapture
                 return this;
             }
 
-            for (int i = Skeletons.Count - 1; i >= 0; i--)
+            for (int i = Skeletons.Length - 1; i > 0; i--)
             {
                 ISubSkeleton skeleton = Skeletons[i];
                 List<BonePoseDto> bones = new List<BonePoseDto>();
