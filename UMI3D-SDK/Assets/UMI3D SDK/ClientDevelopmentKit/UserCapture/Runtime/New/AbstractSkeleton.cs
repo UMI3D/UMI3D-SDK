@@ -220,7 +220,7 @@ public abstract class AbstractSkeleton : ISkeleton
     {
         if (userId == UMI3DClientServer.Instance.GetUserId())
         {
-            if (UMI3DClientUserTrackingBone.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
+            if (BoneType.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
             {
                 WaitForRig(dto, bone);
             }
