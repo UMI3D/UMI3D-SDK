@@ -35,8 +35,8 @@ namespace umi3d.cdk.userCapture
 
         public void Init()
         {
-            subSkeletons = new List<ISubSkeleton>();
-            subSkeletons[0] = TrackedSkeleton;
+            skeletons = new List<ISubSkeleton>();
+            skeletons[0] = TrackedSkeleton;
         }
 
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
@@ -47,7 +47,7 @@ namespace umi3d.cdk.userCapture
                 skeletonHighOffset = skeletonHighOffset,
             };
 
-            foreach (var skeleton in subSkeletons)
+            foreach (var skeleton in skeletons)
                 skeleton.WriteTrackingFrame(frame, option);
 
             return frame;
@@ -55,7 +55,7 @@ namespace umi3d.cdk.userCapture
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
-            foreach(var skeleton in subSkeletons)
+            foreach(var skeleton in skeletons)
             {
                 var c = skeleton.GetCameraDto();
                 if(c != null)

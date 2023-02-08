@@ -28,10 +28,9 @@ namespace umi3d.cdk.collaboration
 
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            if (subSkeletons != null)
-                foreach (var skeleton in subSkeletons)
+            if (skeletons != null)
+                foreach (var skeleton in skeletons)
                     skeleton.Update(frame);
         }
-
     }
 }

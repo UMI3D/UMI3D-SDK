@@ -11,10 +11,16 @@ using UnityEngine;
 
 public abstract class AbstractSkeleton : ISkeleton
 {
-    public Dictionary<uint, ISkeleton.s_Transform> Bones { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    protected List<ISubSkeleton> subSkeletons= new List<ISubSkeleton>();
-    List<ISubSkeleton> ISkeleton.Skeletons { get => subSkeletons; set => subSkeletons = value; }
+    public Dictionary<uint, ISkeleton.s_Transform> Bones { get => bones; set => bones = value; }
+    protected Dictionary<uint, ISkeleton.s_Transform> bones;
+    public List<ISubSkeleton> Skeletons { get => skeletons; set => skeletons = value; }
+    protected List<ISubSkeleton> skeletons;
     protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+
+    protected AbstractSkeleton()
+    {
+
+    }
 
     /// <summary>
     /// Has the user currently active bindings?
