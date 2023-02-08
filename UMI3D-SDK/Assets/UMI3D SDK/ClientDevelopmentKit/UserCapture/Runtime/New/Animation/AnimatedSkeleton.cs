@@ -24,26 +24,60 @@ namespace umi3d.cdk.userCapture
 
     public class AnimatedSkeleton : ISubSkeleton
     {
-        public SkeletonMapper mapper;
+        private SkeletonMapper mapper;
+        
+        /// <summary>
+        /// Reference to the skeleton mapper that computes related links into a pose.
+        /// </summary>
+        public SkeletonMapper Mapper { get; protected set; }
 
-        public UserCameraPropertiesDto GetCameraDto()
+        private UMI3DEnvironmentLoader environmentLoader;
+
+        public AnimatedSkeleton(SkeletonMapper mapper)
+        {
+            Mapper = mapper;
+            environmentLoader = UMI3DEnvironmentLoader.Instance;
+        }
+
+        public AnimatedSkeleton(SkeletonMapper mapper, UMI3DEnvironmentLoader environmentLoader)
+        {
+            Mapper = mapper;
+            this.environmentLoader = environmentLoader;
+        }
+
+        ///<inheritdoc/>
+        /// Always returns null for AnimatonSkeleton.
+        public virtual UserCameraPropertiesDto GetCameraDto()
         {
             return null;
         }
 
-        public PoseDto GetPose()
+        /// <summary>
+        /// Get the skeleton pose based on the position of this AnimationSkeleton.
+        /// </summary>
+        /// <returns></returns>
+        public virtual PoseDto GetPose()
         {
             if (!mapper.animations.Select(id => UMI3DAnimatorAnimation.Get(id)).Any(a => a?.IsPlayin() ?? false))
                 return null;
             return mapper.GetPose();
         }
 
-        public void Update(UserTrackingFrameDto trackingFrame)
+        /// <summary>
+        /// Activate / Deactivate animations accordingly to the <paramref name="trackingFrame"/>.
+        /// </summary>
+        /// <param name="trackingFrame"></param>
+        public virtual void Update(UserTrackingFrameDto trackingFrame)
         {
             throw new System.NotImplementedException();
         }
 
-        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
+        /// <summary>
+        /// Fill out <paramref name="trackingFrame"/> with currently playing animations.
+        /// </summary>
+        /// <param name="trackingFrame"></param>
+        /// <param name="option"></param>
+        public virtual void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             throw new System.NotImplementedException();
         }
