@@ -18,12 +18,34 @@ using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Behaviur of a piece of skeleton position to merge to have the whole skeleton position.
+    /// </summary>
     public interface ISubSkeleton
     {
+        /// <summary>
+        /// Update the position of this subskeleton according to the received <paramref name="trackingFrame"/>.
+        /// </summary>
+        /// <param name="trackingFrame"></param>
         void Update(UserTrackingFrameDto trackingFrame);
+
+        /// <summary>
+        /// Get the skeleton pose based on the position of this subskeleton.
+        /// </summary>
+        /// <returns></returns>
         PoseDto GetPose();
+
+        /// <summary>
+        /// Fill out the <paramref name="trackingFrame"/> with data from the subskeleton.
+        /// </summary>
+        /// <param name="trackingFrame"></param>
+        /// <param name="option"></param>
         void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option);
 
+        /// <summary>
+        /// Get subskeleton camera parameters.
+        /// </summary>
+        /// <returns></returns>
         UserCameraPropertiesDto GetCameraDto(); 
     }
 

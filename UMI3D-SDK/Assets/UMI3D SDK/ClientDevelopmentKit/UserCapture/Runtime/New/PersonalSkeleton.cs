@@ -29,7 +29,10 @@ namespace umi3d.cdk.userCapture
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
-        public ISubSkeleton[] Skeletons { get; set; }
+        /// <summary>
+        /// List of sub-skeletons that should be merged to form the main skeleton
+        /// </summary>
+        public List<ISubSkeleton> Skeletons { get; set; } = new();
 
         public Dictionary<uint, Transform> Bones { get; set; }
 
@@ -72,9 +75,7 @@ namespace umi3d.cdk.userCapture
 
         private void Start()
         {
-            Skeletons = new ISubSkeleton[1];
-            Skeletons[0] = TrackedSkeleton;
-
+            Skeletons.Add(TrackedSkeleton);
         }
 
 
