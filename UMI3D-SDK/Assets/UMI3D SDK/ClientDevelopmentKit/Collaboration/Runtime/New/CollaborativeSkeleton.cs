@@ -24,7 +24,6 @@ namespace umi3d.cdk.collaboration
 {
     public class CollaborativeSkeleton : AbstractSkeleton
     {
-
         public UMI3DUser User;
 
         public override void UpdateFrame(UserTrackingFrameDto frame)

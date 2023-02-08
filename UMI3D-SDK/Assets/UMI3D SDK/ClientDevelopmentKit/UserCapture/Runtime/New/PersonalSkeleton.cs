@@ -27,8 +27,6 @@ namespace umi3d.cdk.userCapture
 
     public class PersonalSkeleton : AbstractSkeleton
     {
-        public Dictionary<uint, Transform> Bones { get; set; }
-
         public TrackedSkeleton TrackedSkeleton;
 
         public float skeletonHighOffset = 0;

@@ -42,6 +42,22 @@ namespace umi3d.cdk.userCapture
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
 
+        /// <summary>
+        /// Call Once
+        /// </summary>
+        public void Init()
+        {
+            if (Skeletons == null)
+            {
+                Skeletons= new List<ISubSkeleton>();
+            }
+
+            if (Bones == null)
+            {
+                Bones= new Dictionary<uint, s_Transform>();
+            }
+        }
+
         #region Compute current skeleton
         public ISkeleton Compute()
         {

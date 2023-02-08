@@ -23,17 +23,6 @@ public class ISkeleton_Test
     {
         SceneManager.LoadScene("Assets/Tests/PlayMode_Tests/TestScenes/TESTSCENE_Bindings");
 
-        GameObject go = new GameObject();
-        personalSkeleton = go.AddComponent<PersonalSkeleton>();
-        skeleton = (personalSkeleton as ISkeleton);
-        BoneBindingDto dto = new BoneBindingDto();
-        dto.bindingId = "5648";
-        skeleton.AddBinding(0, dto);
-        BoneBindingDto dto2 = new BoneBindingDto();
-        dto2.bindingId = "94856";
-        skeleton.AddBinding(0, dto2);
-
-        Debug.Log(skeleton.userId);
 
     }
 
@@ -47,7 +36,6 @@ public class ISkeleton_Test
     [UnityTest]
     public IEnumerator TestUpdateBinding()
     {
-        Debug.Log(skeleton.userId);
 
         yield return null;
     }

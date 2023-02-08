@@ -33,6 +33,8 @@ namespace umi3d.cdk.userCapture
 
         private UMI3DEnvironmentLoader environmentLoader;
 
+        public AnimatedSkeleton() { }
+
         public AnimatedSkeleton(SkeletonMapper mapper)
         {
             Mapper = mapper;
