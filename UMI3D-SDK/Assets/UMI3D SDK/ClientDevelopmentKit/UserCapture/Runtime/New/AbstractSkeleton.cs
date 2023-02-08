@@ -14,7 +14,7 @@ public abstract class AbstractSkeleton : ISkeleton
     public Dictionary<uint, ISkeleton.s_Transform> Bones { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
     protected List<ISubSkeleton> subSkeletons= new List<ISubSkeleton>();
     List<ISubSkeleton> ISkeleton.Skeletons { get => subSkeletons; set => subSkeletons = value; }
-    private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+    protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
     /// <summary>
     /// Has the user currently active bindings?
