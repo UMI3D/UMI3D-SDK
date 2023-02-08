@@ -45,7 +45,7 @@ namespace umi3d.cdk.userCapture
 
         ///<inheritdoc/>
         /// Always returns null for AnimatonSkeleton.
-        public UserCameraPropertiesDto GetCameraDto()
+        public virtual UserCameraPropertiesDto GetCameraDto()
         {
             return null; //! to implement only in TrackedAvatar
         }
@@ -54,7 +54,7 @@ namespace umi3d.cdk.userCapture
         /// Get the skeleton pose based on the position of this AnimationSkeleton.
         /// </summary>
         /// <returns></returns>
-        public PoseDto GetPose()
+        public virtual PoseDto GetPose()
         {
             if (!Mapper.animations
                 .Select(id => UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(id))
@@ -67,7 +67,7 @@ namespace umi3d.cdk.userCapture
         /// Activate / Deactivate animations accordingly to the <paramref name="trackingFrame"/>.
         /// </summary>
         /// <param name="trackingFrame"></param>
-        public void Update(UserTrackingFrameDto trackingFrame)
+        public virtual void Update(UserTrackingFrameDto trackingFrame)
         {
             var animations = from animId in Mapper.animations 
                              select (id: animId, UMI3DAnimation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId));
@@ -97,7 +97,7 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="trackingFrame"></param>
         /// <param name="option"></param>
-        public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
+        public virtual void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             var activeAnimations = from animId in Mapper.animations
                                    select (id: animId, animation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId))

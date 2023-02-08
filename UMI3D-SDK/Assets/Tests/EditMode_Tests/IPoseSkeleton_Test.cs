@@ -28,7 +28,6 @@ public class IPoseSkeleton_Test
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
         animatedSkeletons = null;
-        iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
         ISkeleton results = iskeletton.Compute();
@@ -42,13 +41,14 @@ public class IPoseSkeleton_Test
     {
         //Given
         ISkeleton iskeletton = (collaborativeSkeleton as ISkeleton);
+        iskeletton.Skeletons = new();
         iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
         ISkeleton results = iskeletton.Compute();
 
         //Then
-        Assert.IsTrue(results.Bones.Count == 0);  
+        Assert.IsTrue(results.Bones.Count == 0);
     }
 
     [Test]
@@ -60,6 +60,7 @@ public class IPoseSkeleton_Test
         animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
         animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
 
+        iskeletton.Skeletons = new();
         iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
@@ -82,6 +83,7 @@ public class IPoseSkeleton_Test
         animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
         animatedSkeletons.Add(new AnimatedSkeleton(mockSkeletonMapper.Object));
 
+        iskeletton.Skeletons = new();
         iskeletton.Skeletons.AddRange(animatedSkeletons);
 
         //When
