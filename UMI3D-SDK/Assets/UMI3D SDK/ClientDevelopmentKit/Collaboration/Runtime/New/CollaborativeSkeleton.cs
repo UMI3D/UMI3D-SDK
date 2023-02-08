@@ -27,13 +27,10 @@ namespace umi3d.cdk.collaboration
 
         public UMI3DUser User;
 
-        public Dictionary<uint, Transform> Bones { get; set; }
-        public List<ISubSkeleton> Skeletons { get; set; } = new();
-
-        public void UpdateFrame(UserTrackingFrameDto frame)
+        public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            if (Skeletons != null)
-                foreach (var skeleton in Skeletons)
+            if (subSkeletons != null)
+                foreach (var skeleton in subSkeletons)
                     skeleton.Update(frame);
         }
 

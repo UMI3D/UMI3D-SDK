@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
         public Dictionary<ulong,ISkeleton> skeletons { get; protected set; }
 
-        PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
+        public PersonalSkeleton skeleton => new PersonalSkeleton();
 
         /// <summary>
         /// If true the avatar tracking is sent.
@@ -51,6 +51,7 @@ namespace umi3d.cdk.collaboration
         {
             UnityEngine.Debug.Log("<color=green>New</color>");
             SetTrackingSending(_sendTracking);
+            skeleton.Init();
         }
 
         public UserTrackingFrameDto GetFrame()

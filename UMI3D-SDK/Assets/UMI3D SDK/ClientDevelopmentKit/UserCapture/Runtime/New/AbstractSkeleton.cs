@@ -12,7 +12,9 @@ using UnityEngine;
 public abstract class AbstractSkeleton : ISkeleton
 {
     public Dictionary<uint, ISkeleton.s_Transform> Bones { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-    public ISubSkeleton[] Skeletons { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+    protected List<ISubSkeleton> subSkeletons= new List<ISubSkeleton>();
+    List<ISubSkeleton> ISkeleton.Skeletons { get => subSkeletons; set => subSkeletons = value; }
+    private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
     /// <summary>
     /// Has the user currently active bindings?
@@ -33,7 +35,7 @@ public abstract class AbstractSkeleton : ISkeleton
     /// </summary>
     protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator { get; set; }
 
-    protected abstract List<Bound> bounds { get; set; }
+    protected List<Bound> bounds { get; set; }
 
     public List<Transform> boundRigs { get; set; }
     /// <summary>
@@ -83,10 +85,7 @@ public abstract class AbstractSkeleton : ISkeleton
     }
     #endregion
 
-    public void UpdateFrame(UserTrackingFrameDto frame)
-    {
-        throw new System.NotImplementedException();
-    }
+    public abstract void UpdateFrame(UserTrackingFrameDto frame);
 
     #region bindings
     #region Add/Remove

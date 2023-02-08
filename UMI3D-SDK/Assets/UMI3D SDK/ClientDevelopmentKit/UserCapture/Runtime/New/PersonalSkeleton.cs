@@ -27,10 +27,6 @@ namespace umi3d.cdk.userCapture
 
     public class PersonalSkeleton : AbstractSkeleton
     {
-
-        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
-        ISubSkeleton[] Skeletons { get; set; }
-        ISubSkeleton[] ISkeleton.Skeletons { get => Skeletons; set { Skeletons = value; } }
         public Dictionary<uint, Transform> Bones { get; set; }
 
         public TrackedSkeleton TrackedSkeleton;
@@ -39,47 +35,21 @@ namespace umi3d.cdk.userCapture
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
-        #region Iskeleeton Fields
-        /// <summary>
-        /// stores the different rotation and position of the bones
-        /// </summary>
-        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get; set; }
-        /// <summary>
-        /// Saves of the transform of objects before they had been bound to a user's bone.
-        /// </summary>
-        Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get; set; }
-
-        /// <summary>
-        /// Has the user currently active bindings?
-        /// </summary>
-        bool ISkeleton.activeUserBindings { get; set; }
-        /// <summary>
-        /// User's registered id
-        /// </summary>
-        ulong ISkeleton.userId { get; set; }
-        List<ISkeleton.Bound> ISkeleton.bounds { get; set; }
-        List<Transform> ISkeleton.boundRigs { get; set; }
-        List<BoneBindingDto> ISkeleton.userBindings { get; set; }
-        /// <summary>
-        /// Extrapolator for the avatar position.
-        /// </summary>
-        Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get; set; }
-        /// <summary>
-        /// Extrapolator for the avatar rotation.
-        /// </summary>
-        QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get; set; }
-
-        #endregion
+        public void Init()
+        {
+            subSkeletons = new List<ISubSkeleton>();
+            subSkeletons[0] = TrackedSkeleton;
+        }
 
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
             var frame = new UserTrackingFrameDto()
             {
-                position = transform.position,
-                rotation = transform.rotation,
+                position = PoseManager.Instance.transform.position,
+                rotation = PoseManager.Instance.transform.rotation,
                 skeletonHighOffset = skeletonHighOffset,
             };
 
-            foreach (var skeleton in Skeletons)
+            foreach (var skeleton in subSkeletons)
                 skeleton.WriteTrackingFrame(frame, option);
 
             return frame;
@@ -87,7 +57,7 @@ namespace umi3d.cdk.userCapture
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
-            foreach(var skeleton in Skeletons)
+            foreach(var skeleton in subSkeletons)
             {
                 var c = skeleton.GetCameraDto();
                 if(c != null)
@@ -96,19 +66,9 @@ namespace umi3d.cdk.userCapture
             return null;
         }
 
-        public void UpdateFrame(UserTrackingFrameDto frame)
+        public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
         }
-
-
-        private void Start()
-        {
-            Skeletons = new ISubSkeleton[1];
-            Skeletons[0] = TrackedSkeleton;
-        }
     }
-
-
-
 }
