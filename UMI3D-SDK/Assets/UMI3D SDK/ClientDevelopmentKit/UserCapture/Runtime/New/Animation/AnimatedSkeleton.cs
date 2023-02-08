@@ -14,16 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
-using umi3d.common;
 using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
+
     public class AnimatedSkeleton : ISubSkeleton
     {
-        private const DebugScope debugScope = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
-
+        private SkeletonMapper mapper;
+        
         /// <summary>
         /// Reference to the skeleton mapper that computes related links into a pose.
         /// </summary>
@@ -47,7 +49,7 @@ namespace umi3d.cdk.userCapture
         /// Always returns null for AnimatonSkeleton.
         public virtual UserCameraPropertiesDto GetCameraDto()
         {
-            return null; //! to implement only in TrackedAvatar
+            return null;
         }
 
         /// <summary>
@@ -56,11 +58,9 @@ namespace umi3d.cdk.userCapture
         /// <returns></returns>
         public virtual PoseDto GetPose()
         {
-            //if (!Mapper.animations
-            //    .Select(id => UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(id))
-            //    .Any(a => a?.IsPlaying() ?? false))
-            //    return null;
-            return Mapper.GetPose();
+            if (!mapper.animations.Select(id => UMI3DAnimatorAnimation.Get(id)).Any(a => a?.IsPlayin() ?? false))
+                return null;
+            return mapper.GetPose();
         }
 
         /// <summary>
@@ -69,27 +69,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="trackingFrame"></param>
         public virtual void Update(UserTrackingFrameDto trackingFrame)
         {
-            //var animations = from animId in Mapper.animations 
-            //                 select (id: animId, UMI3DAnimation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId));
-
-            //foreach (var anim in animations)
-            //{
-            //    if (anim.UMI3DAnimation == null) // animation could not be found
-            //    {
-            //        UMI3DLogger.LogWarning($"Trying to play/stop a unreferenced animation. ID : {anim.id}", debugScope);
-            //        continue;
-            //    }
-            //    //if (trackingFrame.animationsPlaying.Any(animId => animId == anim.id))
-            //    //{
-            //    //    if (!anim.UMI3DAnimation.IsPlaying())
-            //    //        anim.UMI3DAnimation.Start();
-            //    //}
-            //    else
-            //    {
-            //        if (anim.UMI3DAnimation.IsPlaying())
-            //            anim.UMI3DAnimation.Stop();
-            //    }
-            //}
+            throw new System.NotImplementedException();
         }
 
         /// <summary>
@@ -99,13 +79,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="option"></param>
         public virtual void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            //var activeAnimations = from animId in Mapper.animations
-            //                       select (id: animId, animation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId))
-            //                       into anim
-            //                       where anim.animation.IsPlaying()
-            //                       select anim.id;
-
-            //trackingFrame.animationsPlaying = activeAnimations.ToArray();
+            throw new System.NotImplementedException();
         }
     }
 }
