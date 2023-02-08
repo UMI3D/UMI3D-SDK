@@ -22,7 +22,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    public class CollaborativeSkeleton : ISkeleton
+    public class CollaborativeSkeleton : AbstractSkeleton
     {
 
         public UMI3DUser User;

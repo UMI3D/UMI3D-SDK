@@ -25,7 +25,7 @@ using UnityEngine.Assertions.Must;
 namespace umi3d.cdk.userCapture
 {
 
-    public class PersonalSkeleton : SingleBehaviour<PersonalSkeleton>, ISkeleton 
+    public class PersonalSkeleton : AbstractSkeleton
     {
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
