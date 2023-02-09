@@ -19,7 +19,7 @@ MonoBehaviour:
     width: 1920
     height: 989
   m_ShowMode: 4
-  m_Title: Console
+  m_Title: Project
   m_RootView: {fileID: 14}
   m_MinSize: {x: 875, y: 300}
   m_MaxSize: {x: 10000, y: 10000}
@@ -39,9 +39,9 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 355
+    x: 522
     y: 0
-    width: 533
+    width: 418
     height: 346
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 4000, y: 4000}
@@ -69,12 +69,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 593
-    width: 888
+    width: 940
     height: 346
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 94
+  controlID: 153
 --- !u!114 &4
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -90,9 +90,9 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 355
+    x: 410
     y: 0
-    width: 533
+    width: 530
     height: 593
   m_MinSize: {x: 232, y: 271}
   m_MaxSize: {x: 10002, y: 10021}
@@ -119,10 +119,10 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 355
+    width: 410
     height: 593
-  m_MinSize: {x: 200, y: 200}
-  m_MaxSize: {x: 4000, y: 4000}
+  m_MinSize: {x: 202, y: 221}
+  m_MaxSize: {x: 4002, y: 4021}
   m_ActualView: {fileID: 21}
   m_Panes:
   - {fileID: 21}
@@ -147,12 +147,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 888
+    width: 940
     height: 593
   m_MinSize: {x: 200, y: 100}
   m_MaxSize: {x: 16192, y: 8096}
   vertical: 0
-  controlID: 202
+  controlID: 85
 --- !u!114 &7
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -170,7 +170,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 355
+    width: 522
     height: 346
   m_MinSize: {x: 100, y: 100}
   m_MaxSize: {x: 4000, y: 4000}
@@ -196,14 +196,14 @@ MonoBehaviour:
   - {fileID: 3}
   m_Position:
     serializedVersion: 2
-    x: 658
+    x: 513
     y: 0
-    width: 888
+    width: 940
     height: 939
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 16192, y: 16192}
   vertical: 1
-  controlID: 201
+  controlID: 152
 --- !u!114 &9
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -221,10 +221,10 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 542
-    width: 658
+    width: 513
     height: 397
-  m_MinSize: {x: 201, y: 221}
-  m_MaxSize: {x: 4001, y: 4021}
+  m_MinSize: {x: 200, y: 200}
+  m_MaxSize: {x: 4000, y: 4000}
   m_ActualView: {fileID: 23}
   m_Panes:
   - {fileID: 23}
@@ -249,12 +249,12 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 658
+    width: 513
     height: 939
   m_MinSize: {x: 100, y: 200}
   m_MaxSize: {x: 8096, y: 16192}
   vertical: 1
-  controlID: 125
+  controlID: 184
 --- !u!114 &11
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -272,7 +272,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: 0
     y: 0
-    width: 658
+    width: 513
     height: 542
   m_MinSize: {x: 200, y: 200}
   m_MaxSize: {x: 4000, y: 4000}
@@ -306,7 +306,7 @@ MonoBehaviour:
   m_MinSize: {x: 400, y: 200}
   m_MaxSize: {x: 32384, y: 16192}
   vertical: 0
-  controlID: 226
+  controlID: 76
 --- !u!114 &13
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -322,9 +322,9 @@ MonoBehaviour:
   m_Children: []
   m_Position:
     serializedVersion: 2
-    x: 1546
+    x: 1453
     y: 0
-    width: 374
+    width: 467
     height: 939
   m_MinSize: {x: 275, y: 50}
   m_MaxSize: {x: 4000, y: 4000}
@@ -424,24 +424,24 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: -907
+    x: -885
     y: 621
-    width: 531
+    width: 416
     height: 325
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
   m_Spl:
-    ID: 2388
-    splitterInitialOffset: 329
+    ID: 210
+    splitterInitialOffset: 291
     currentActiveSplitter: -1
     realSizes:
-    - 220
-    - 35
+    - 223
+    - 32
     relativeSizes:
-    - 0.8642384
-    - 0.13576162
+    - 0.8745098
+    - 0.12549019
     minSizes:
     - 32
     - 32
@@ -456,7 +456,7 @@ MonoBehaviour:
     oldMinSizes: 
     oldMaxSizes: 
     oldSplitSize: 0
-  m_TestTypeToolbarIndex: 0
+  m_TestTypeToolbarIndex: 1
   m_PlayModeTestListGUI:
     m_Window: {fileID: 17}
     m_NewResultList:
@@ -465,7 +465,7 @@ MonoBehaviour:
       name: UMI3D-SDK
       fullName: UMI3D-SDK
       resultStatus: 1
-      duration: 0.1584204
+      duration: 0.1326025
       messages: 
       output: 
       stacktrace: 
@@ -476,12 +476,12 @@ MonoBehaviour:
       categories: []
       parentId: 
       parentUniqueId: 
-    - id: 1004
+    - id: 1003
       uniqueId: '[PlayMode_Tests][C:/Inetum/SDK/UMI3D-SDK/UMI3D-SDK/Library/ScriptAssemblies/PlayMode_Tests.dll][suite]'
       name: PlayMode_Tests.dll
       fullName: C:/Inetum/SDK/UMI3D-SDK/UMI3D-SDK/Library/ScriptAssemblies/PlayMode_Tests.dll
       resultStatus: 1
-      duration: 0.0523664
+      duration: 0.0374802
       messages: 
       output: 
       stacktrace: 
@@ -497,7 +497,7 @@ MonoBehaviour:
       name: ISkeleton_Test
       fullName: ISkeleton_Test
       resultStatus: 1
-      duration: 0.0432883
+      duration: 0.0267493
       messages: 
       output: 
       stacktrace: 
@@ -506,14 +506,14 @@ MonoBehaviour:
       description: 
       isSuite: 1
       categories: []
-      parentId: 1004
+      parentId: 1003
       parentUniqueId: '[PlayMode_Tests][C:/Inetum/SDK/UMI3D-SDK/UMI3D-SDK/Library/ScriptAssemblies/PlayMode_Tests.dll][suite]'
     - id: 1002
-      uniqueId: PlayMode_Tests.dll/ISkeleton_Test/[PlayMode_Tests][ISkeleton_Test.ISkeleton_]
-      name: ISkeleton_
-      fullName: ISkeleton_Test.ISkeleton_
+      uniqueId: PlayMode_Tests.dll/ISkeleton_Test/[PlayMode_Tests][ISkeleton_Test.TestUpdateBinding]
+      name: TestUpdateBinding
+      fullName: ISkeleton_Test.TestUpdateBinding
       resultStatus: 1
-      duration: 0.0225495
+      duration: 0.0146782
       messages: 
       output: 
       stacktrace: 
@@ -525,12 +525,12 @@ MonoBehaviour:
       - Uncategorized
       parentId: 1001
       parentUniqueId: PlayMode_Tests.dll/[PlayMode_Tests][ISkeleton_Test][suite]
-    m_ResultText: ISkeleton_ (0,023s)
+    m_ResultText: TestUpdateBinding (0,015s)
     m_ResultStacktrace: 
     m_TestListState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: c7c9c6f9
-      m_LastClickedID: -104412729
+      m_SelectedIDs: c8319cb2
+      m_LastClickedID: -1298386488
       m_ExpandedIDs: 257b4b96151859a1dc7700e39e35b627dcdb2937ffffff7f
       m_RenameOverlay:
         m_UserAcceptedRename: 0
@@ -566,7 +566,7 @@ MonoBehaviour:
       name: UMI3D-SDK
       fullName: UMI3D-SDK
       resultStatus: 1
-      duration: 0.0641899
+      duration: 0.1114551
       messages: 
       output: 
       stacktrace: 
@@ -582,7 +582,7 @@ MonoBehaviour:
       name: EditMode_Tests.dll
       fullName: C:/Inetum/SDK/UMI3D-SDK/UMI3D-SDK/Library/ScriptAssemblies/EditMode_Tests.dll
       resultStatus: 1
-      duration: 0.0350448
+      duration: 0.083064
       messages: 
       output: 
       stacktrace: 
@@ -593,12 +593,122 @@ MonoBehaviour:
       categories: []
       parentId: 1002
       parentUniqueId: '[UMI3D-SDK][suite]'
+    - id: 1006
+      uniqueId: EditMode_Tests.dll/[EditMode_Tests][AbstractSkeleton_Test][suite]
+      name: AbstractSkeleton_Test
+      fullName: AbstractSkeleton_Test
+      resultStatus: 1
+      duration: 0.0302698
+      messages: 
+      output: 'You are trying to create a MonoBehaviour using the ''new'' keyword. 
+        This is not allowed.  MonoBehaviours can only be added using AddComponent().
+        Alternatively, your script can inherit from ScriptableObject or no base class
+        at all
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 1
+      categories: []
+      parentId: 1017
+      parentUniqueId: '[EditMode_Tests][C:/Inetum/SDK/UMI3D-SDK/UMI3D-SDK/Library/ScriptAssemblies/EditMode_Tests.dll][suite]'
+    - id: 1008
+      uniqueId: EditMode_Tests.dll/AbstractSkeleton_Test/[EditMode_Tests][AbstractSkeleton_Test.TestAddBinding]
+      name: TestAddBinding
+      fullName: AbstractSkeleton_Test.TestAddBinding
+      resultStatus: 1
+      duration: 0.011185
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1006
+      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][AbstractSkeleton_Test][suite]
+    - id: 1010
+      uniqueId: EditMode_Tests.dll/AbstractSkeleton_Test/[EditMode_Tests][AbstractSkeleton_Test.TestAddMultipleDifferentBindings]
+      name: TestAddMultipleDifferentBindings
+      fullName: AbstractSkeleton_Test.TestAddMultipleDifferentBindings
+      resultStatus: 1
+      duration: 0.0002836
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1006
+      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][AbstractSkeleton_Test][suite]
+    - id: 1009
+      uniqueId: EditMode_Tests.dll/AbstractSkeleton_Test/[EditMode_Tests][AbstractSkeleton_Test.TestAddMultipleSameBindings]
+      name: TestAddMultipleSameBindings
+      fullName: AbstractSkeleton_Test.TestAddMultipleSameBindings
+      resultStatus: 1
+      duration: 0.0002693
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1006
+      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][AbstractSkeleton_Test][suite]
+    - id: 1007
+      uniqueId: EditMode_Tests.dll/AbstractSkeleton_Test/[EditMode_Tests][AbstractSkeleton_Test.TestAddNullBindingNullList]
+      name: TestAddNullBindingNullList
+      fullName: AbstractSkeleton_Test.TestAddNullBindingNullList
+      resultStatus: 1
+      duration: 0.0002101
+      messages: 
+      output: 
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1006
+      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][AbstractSkeleton_Test][suite]
+    - id: 1011
+      uniqueId: EditMode_Tests.dll/AbstractSkeleton_Test/[EditMode_Tests][AbstractSkeleton_Test.TestRemoveBindingAtIndex]
+      name: TestRemoveBindingAtIndex
+      fullName: AbstractSkeleton_Test.TestRemoveBindingAtIndex
+      resultStatus: 1
+      duration: 0.0019446
+      messages: 
+      output: 'hehhehe
+
+        hehhehe
+
+'
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1006
+      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][AbstractSkeleton_Test][suite]
     - id: 1001
       uniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
       name: ISkeleton_Test
       fullName: ISkeleton_Test
       resultStatus: 1
-      duration: 0.0315132
+      duration: 0.0821291
       messages: 
       output: 
       stacktrace: 
@@ -614,24 +724,7 @@ MonoBehaviour:
       name: Test_Compute_EmptyList
       fullName: ISkeleton_Test.Test_Compute_EmptyList
       resultStatus: 1
-      duration: 0.0091298
-      messages: 
-      output: 
-      stacktrace: 
-      notRunnable: 0
-      ignoredOrSkipped: 0
-      description: 
-      isSuite: 0
-      categories:
-      - Uncategorized
-      parentId: 1001
-      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    - id: 1002
-      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.Test_Compute_ListNotSet]
-      name: Test_Compute_ListNotSet
-      fullName: ISkeleton_Test.Test_Compute_ListNotSet
-      resultStatus: 1
-      duration: 0.0001972
+      duration: 0.0011887
       messages: 
       output: 
       stacktrace: 
@@ -648,13 +741,36 @@ MonoBehaviour:
       name: Test_Compute_ListWithEmpties
       fullName: ISkeleton_Test.Test_Compute_ListWithEmpties
       resultStatus: 1
-      duration: 0.0032125
+      duration: 0.0061556
       messages: 
-      output: "<color=red> _System.NullReferenceException: Object reference not set
-        to an instance of an object\r\n  at umi3d.cdk.userCapture.AnimatedSkeleton.GetPose
-        () [0x00000] in C:\\Inetum\\SDK\\UMI3D-SDK\\UMI3D-SDK\\Assets\\UMI3D SDK\\ClientDevelopmentKit\\UserCapture\\Runtime\\New\\Animation\\AnimatedSkeleton.cs:36
-        \r\n  at umi3d.cdk.userCapture.ISkeleton.Compute () [0x00026] in C:\\Inetum\\SDK\\UMI3D-SDK\\UMI3D-SDK\\Assets\\UMI3D
-        SDK\\ClientDevelopmentKit\\UserCapture\\Runtime\\New\\ISkeleton.cs:127  </color>\r\n"
+      output: "You are trying to create a MonoBehaviour using the 'new' keyword. 
+        This is not allowed.  MonoBehaviours can only be added using AddComponent().
+        Alternatively, your script can inherit from ScriptableObject or no base class
+        at all\r\nYou are trying to create a MonoBehaviour using the 'new' keyword. 
+        This is not allowed.  MonoBehaviours can only be added using AddComponent().
+        Alternatively, your script can inherit from ScriptableObject or no base class
+        at all\r\n<color=red> _System.NullReferenceException: Object reference not
+        set to an instance of an object\r\n  at umi3d.cdk.userCapture.AnimatedSkeleton.GetPose
+        () [0x00001] in C:\\Inetum\\SDK\\UMI3D-SDK\\UMI3D-SDK\\Assets\\UMI3D SDK\\ClientDevelopmentKit\\UserCapture\\Runtime\\New\\Animation\\AnimatedSkeleton.cs:63
+        \r\n  at umi3d.cdk.userCapture.ISkeleton.Compute () [0x00036] in C:\\Inetum\\SDK\\UMI3D-SDK\\UMI3D-SDK\\Assets\\UMI3D
+        SDK\\ClientDevelopmentKit\\UserCapture\\Runtime\\New\\ISkeleton.cs:70  </color>\r\n"
+      stacktrace: 
+      notRunnable: 0
+      ignoredOrSkipped: 0
+      description: 
+      isSuite: 0
+      categories:
+      - Uncategorized
+      parentId: 1001
+      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
+    - id: 1002
+      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.Test_Compute_NullList]
+      name: Test_Compute_NullList
+      fullName: ISkeleton_Test.Test_Compute_NullList
+      resultStatus: 1
+      duration: 0.0002371
+      messages: 
+      output: 
       stacktrace: 
       notRunnable: 0
       ignoredOrSkipped: 0
@@ -669,9 +785,16 @@ MonoBehaviour:
       name: Test_Compute_OneAnimatedSkeletonWithhBones
       fullName: ISkeleton_Test.Test_Compute_OneAnimatedSkeletonWithhBones
       resultStatus: 1
-      duration: 0.0566023
+      duration: 0.0692105
       messages: 
-      output: 
+      output: "You are trying to create a MonoBehaviour using the 'new' keyword. 
+        This is not allowed.  MonoBehaviours can only be added using AddComponent().
+        Alternatively, your script can inherit from ScriptableObject or no base class
+        at all\r\n<color=red> _System.NullReferenceException: Object reference not
+        set to an instance of an object\r\n  at umi3d.cdk.userCapture.AnimatedSkeleton.GetPose
+        () [0x00001] in C:\\Inetum\\SDK\\UMI3D-SDK\\UMI3D-SDK\\Assets\\UMI3D SDK\\ClientDevelopmentKit\\UserCapture\\Runtime\\New\\Animation\\AnimatedSkeleton.cs:63
+        \r\n  at umi3d.cdk.userCapture.ISkeleton.Compute () [0x00036] in C:\\Inetum\\SDK\\UMI3D-SDK\\UMI3D-SDK\\Assets\\UMI3D
+        SDK\\ClientDevelopmentKit\\UserCapture\\Runtime\\New\\ISkeleton.cs:70  </color>\r\n"
       stacktrace: 
       notRunnable: 0
       ignoredOrSkipped: 0
@@ -681,112 +804,13 @@ MonoBehaviour:
       - Uncategorized
       parentId: 1001
       parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    - id: 1007
-      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.TestAddBinding]
-      name: TestAddBinding
-      fullName: ISkeleton_Test.TestAddBinding
-      resultStatus: 1
-      duration: 0.0090272
-      messages: 
-      output: 
-      stacktrace: 
-      notRunnable: 0
-      ignoredOrSkipped: 0
-      description: 
-      isSuite: 0
-      categories:
-      - Uncategorized
-      parentId: 1001
-      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    - id: 1009
-      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.TestAddMultipleDifferentBindings]
-      name: TestAddMultipleDifferentBindings
-      fullName: ISkeleton_Test.TestAddMultipleDifferentBindings
-      resultStatus: 1
-      duration: 0.0108111
-      messages: 
-      output: 
-      stacktrace: 
-      notRunnable: 0
-      ignoredOrSkipped: 0
-      description: 
-      isSuite: 0
-      categories:
-      - Uncategorized
-      parentId: 1001
-      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    - id: 1008
-      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.TestAddMultipleSameBindings]
-      name: TestAddMultipleSameBindings
-      fullName: ISkeleton_Test.TestAddMultipleSameBindings
-      resultStatus: 1
-      duration: 0.0114675
-      messages: 
-      output: 
-      stacktrace: 
-      notRunnable: 0
-      ignoredOrSkipped: 0
-      description: 
-      isSuite: 0
-      categories:
-      - Uncategorized
-      parentId: 1001
-      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    - id: 1006
-      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.TestAddNullBindingNullList]
-      name: TestAddNullBindingNullList
-      fullName: ISkeleton_Test.TestAddNullBindingNullList
-      resultStatus: 1
-      duration: 0.0099683
-      messages: 
-      output: 
-      stacktrace: 
-      notRunnable: 0
-      ignoredOrSkipped: 0
-      description: 
-      isSuite: 0
-      categories:
-      - Uncategorized
-      parentId: 1001
-      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    - id: 1010
-      uniqueId: EditMode_Tests.dll/ISkeleton_Test/[EditMode_Tests][ISkeleton_Test.TestRemoveBindingAtIndex]
-      name: TestRemoveBindingAtIndex
-      fullName: ISkeleton_Test.TestRemoveBindingAtIndex
-      resultStatus: 1
-      duration: 0.015343
-      messages: 
-      output: 'hehhehe
-
-        hoohohoh
-
-        hehhehe
-
-'
-      stacktrace: 
-      notRunnable: 0
-      ignoredOrSkipped: 0
-      description: 
-      isSuite: 0
-      categories:
-      - Uncategorized
-      parentId: 1001
-      parentUniqueId: EditMode_Tests.dll/[EditMode_Tests][ISkeleton_Test][suite]
-    m_ResultText: 'TestRemoveBindingAtIndex (0,015s)
-
-      ---
-
-      hehhehe
-
-      hoohohoh
-
-      hehhehe'
+    m_ResultText: ISkeleton_Test (0,082s)
     m_ResultStacktrace: 
     m_TestListState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 544e4f7b
-      m_LastClickedID: 2068794964
-      m_ExpandedIDs: 5c244a87151859a15c42a702f51ce038ffffff7f
+      m_SelectedIDs: 5c244a87
+      m_LastClickedID: -2025184164
+      m_ExpandedIDs: 5c244a87151859a1f1ef0ee15c42a702f51ce038ffffff7f
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -861,16 +885,16 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: -907
+    x: -997
     y: 28
-    width: 531
+    width: 528
     height: 572
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
     m_LastAppliedPresetName: Default
     m_SaveData: []
   m_SearchFilter:
-    m_NameFilter: 
+    m_NameFilter: boneSkel
     m_ClassNames: []
     m_AssetLabels: []
     m_AssetBundleNames: []
@@ -882,22 +906,22 @@ MonoBehaviour:
     m_SkipHidden: 0
     m_SearchArea: 1
     m_Folders:
-    - Assets/UMI3D SDK/ClientDevelopmentKit/UserCapture/Runtime/New/Tracked
+    - Assets/UMI3D SDK/Common/Core/Runtime/Dto
     m_Globs: []
-    m_OriginalText: 
+    m_OriginalText: boneSkel
   m_ViewMode: 1
   m_StartGridSize: 16
   m_LastFolders:
-  - Assets/UMI3D SDK/ClientDevelopmentKit/UserCapture/Runtime/New/Tracked
+  - Assets/UMI3D SDK/Common/Core/Runtime/Dto/New
   m_LastFoldersGridSize: 16
   m_LastProjectPath: C:\Inetum\SDK\UMI3D-SDK\UMI3D-SDK
   m_LockTracker:
     m_IsLocked: 0
   m_FolderTreeState:
-    scrollPos: {x: 0, y: 0}
-    m_SelectedIDs: d28c0000
-    m_LastClickedID: 36050
-    m_ExpandedIDs: 00000000286b00002a6b00002c6b00002e6b0000306b0000346b0000366b0000386b00003a6b00003c6b00003e6b0000406b0000426b0000446b0000466b0000486b00004a6b00004c6b00004e6b0000506b0000626b0000646b0000ec6b00008a8600007c8e000000ca9a3bffffff7f
+    scrollPos: {x: 0, y: 248}
+    m_SelectedIDs: e8780000
+    m_LastClickedID: 30952
+    m_ExpandedIDs: 0000000096660000986600009a6600009c6600009e660000a0660000a2660000a4660000a6660000a8660000aa660000ac660000ae660000b0660000b2660000b4660000b6660000b8660000ba660000bc66000084680000866800008e680000b8680000ba680000bc680000be6800000074000028740000e878000000ca9a3bffffff7f
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -925,7 +949,7 @@ MonoBehaviour:
     scrollPos: {x: 0, y: 0}
     m_SelectedIDs: 
     m_LastClickedID: 0
-    m_ExpandedIDs: 00000000286b00002a6b00002c6b00002e6b0000306b0000326b0000346b0000366b0000386b00003a6b00003c6b00003e6b0000406b0000426b0000446b0000466b0000486b00004a6b00004c6b00004e6b0000506b0000
+    m_ExpandedIDs: 0000000096660000986600009a6600009c6600009e660000a0660000a2660000a4660000a6660000a8660000aa660000ac660000ae660000b0660000b2660000b4660000b6660000b8660000ba660000bc660000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
       m_Name: 
@@ -956,15 +980,15 @@ MonoBehaviour:
     m_ExpandedInstanceIDs: c6230000
     m_RenameOverlay:
       m_UserAcceptedRename: 0
-      m_Name: ISkeleton_Test
-      m_OriginalName: ISkeleton_Test
+      m_Name: New
+      m_OriginalName: New
       m_EditFieldRect:
         serializedVersion: 2
         x: 0
         y: 0
         width: 0
         height: 0
-      m_UserData: 36076
+      m_UserData: 30970
       m_IsWaitingForDelay: 0
       m_IsRenaming: 0
       m_OriginalEventType: 0
@@ -980,7 +1004,7 @@ MonoBehaviour:
     m_ScrollPosition: {x: 0, y: 0}
     m_GridSize: 16
   m_SkipHiddenPackages: 0
-  m_DirectoriesAreaWidth: 191
+  m_DirectoriesAreaWidth: 243
 --- !u!114 &20
 MonoBehaviour:
   m_ObjectHideFlags: 52
@@ -1002,9 +1026,9 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: -374
+    x: -467
     y: 28
-    width: 373
+    width: 466
     height: 918
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -1044,9 +1068,9 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: -1262
+    x: -1407
     y: 28
-    width: 353
+    width: 408
     height: 572
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -1055,9 +1079,9 @@ MonoBehaviour:
   m_SceneHierarchy:
     m_TreeViewState:
       scrollPos: {x: 0, y: 0}
-      m_SelectedIDs: 
+      m_SelectedIDs: da780000
       m_LastClickedID: 0
-      m_ExpandedIDs: a294fffffc94ffff9496ffffa49ffffffe9fffff9ea1fffffaa1ffff54a2fffff4a3ffff88afffffccb0ffff70b2ffffe2b2ffff30b3ffff8cb3ffff16b6ffff34b6ffff64b7ffffd2b7ffff06b9ffff3abaffffa0baffffccbbffff10bdffff40beffff74bfffffa8c0ffffe0c1ffff46c2ffff40c4fffff6c6ffffbcc9ffff78cbffffb6ccfffff4cdffff5cd1ffff94d2fffffed2ffff44d4ffff60d6ffff1cd9ffff10dbffff08ddffff3adeffff80dfffffbee0ffffb4e2ffffb2e4ffffa8e6ffffdee7ffff12e9ffff84eaffff4aeeffffc8efffff14fbffff
+      m_ExpandedIDs: ca56ffff7c58ffffca64ffff4267ffff126cffff2070ffff8473ffff7076ffffe078ffff7c7dffffb280ffff4c82ffffee83ffff8885ffff5a8affffca8cffff428fffffe292ffffdc96ffff0699ffff0e9dffff769fffff10a1ffff78a3ffff64a6ffffdea9ffff78abffff7aaeffff1cb0ffffb6b1ffff4ab4ffff00b6ffff62d1ffffbcd1ffff54d3ffffdad4ffff34d5ffffc6d6ffff4ed8ffffa8d8ffff4cd9ffff8cdbffffe6dbffff8adcffff0cdeffff66defffffedfffff88e2ffffe2e2ffff82e3ffff06e5ffff60e5fffff8e6ffff98ebffff0cecffff60ecffff64ecffff68ecffff6cecffff70ecffff74ecffff78ecffff80ecffff84ecffff88ecffff8cecffffa4ecffffb6ecffff5aeeffff5eeeffff70eeffff10f7ffff6af7ffff04f9ffff38fbffff
       m_RenameOverlay:
         m_UserAcceptedRename: 0
         m_Name: 
@@ -1104,7 +1128,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: -1920
     y: 28
-    width: 657
+    width: 512
     height: 521
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -1443,7 +1467,7 @@ MonoBehaviour:
     serializedVersion: 2
     x: -1920
     y: 570
-    width: 657
+    width: 512
     height: 376
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
@@ -1455,7 +1479,7 @@ MonoBehaviour:
   m_ShowGizmos: 0
   m_TargetDisplay: 0
   m_ClearColor: {r: 0, g: 0, b: 0, a: 0}
-  m_TargetSize: {x: 657, y: 355}
+  m_TargetSize: {x: 512, y: 355}
   m_TextureFilterMode: 0
   m_TextureHideFlags: 61
   m_RenderIMGUI: 1
@@ -1470,8 +1494,8 @@ MonoBehaviour:
     m_VRangeLocked: 0
     hZoomLockedByDefault: 0
     vZoomLockedByDefault: 0
-    m_HBaseRangeMin: -328.5
-    m_HBaseRangeMax: 328.5
+    m_HBaseRangeMin: -256
+    m_HBaseRangeMax: 256
     m_VBaseRangeMin: -177.5
     m_VBaseRangeMax: 177.5
     m_HAllowExceedBaseRangeMin: 1
@@ -1491,23 +1515,23 @@ MonoBehaviour:
       serializedVersion: 2
       x: 0
       y: 21
-      width: 657
+      width: 512
       height: 355
     m_Scale: {x: 1, y: 1}
-    m_Translation: {x: 328.5, y: 177.5}
+    m_Translation: {x: 256, y: 177.5}
     m_MarginLeft: 0
     m_MarginRight: 0
     m_MarginTop: 0
     m_MarginBottom: 0
     m_LastShownAreaInsideMargins:
       serializedVersion: 2
-      x: -328.5
+      x: -256
       y: -177.5
-      width: 657
+      width: 512
       height: 355
     m_MinimalGUI: 1
   m_defaultScale: 1
-  m_LastWindowPixelSize: {x: 657, y: 376}
+  m_LastWindowPixelSize: {x: 512, y: 376}
   m_ClearInEditMode: 1
   m_NoCameraWarning: 1
   m_LowResolutionForAspectRatios: 01000000000000000000
@@ -1534,9 +1558,9 @@ MonoBehaviour:
     m_Tooltip: 
   m_Pos:
     serializedVersion: 2
-    x: -1262
+    x: -1407
     y: 621
-    width: 353
+    width: 520
     height: 325
   m_ViewDataDictionary: {fileID: 0}
   m_OverlayCanvas:
