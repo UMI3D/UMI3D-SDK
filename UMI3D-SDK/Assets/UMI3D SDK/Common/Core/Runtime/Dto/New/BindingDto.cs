@@ -10,12 +10,15 @@ namespace umi3d.common.collaboration
 
         public BindingDto(ulong objectId, bool active, BindingDataDto data)
         {
-            this.objectId = objectId;
+            this.bindingId = objectId;
             this.active = active;
             this.data = data;
         }
 
-        public ulong objectId { get; private set; }
+        /// <summary>
+        /// An identifier defined by the designer.
+        /// </summary>
+        public ulong bindingId { get; private set; }
         public bool active { get; private set; }
         public BindingDataDto data { get; private set; }
     }

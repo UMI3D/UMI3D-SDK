@@ -24,6 +24,7 @@ using System.Collections;
 using umi3d.cdk.utils.extrapolation;
 using System.Xml.Serialization;
 using System.Threading.Tasks;
+using umi3d.common.collaboration;
 
 namespace umi3d.cdk.userCapture
 {
@@ -140,13 +141,13 @@ namespace umi3d.cdk.userCapture
 
         public List<Transform> boundRigs { get; set; }
         /// <summary>
-        /// List of currently applied <see cref="BoneBindingDto"/> to the user's skeleton.
+        /// List of currently applied <see cref="BindingDto"/> to the user's skeleton.
         /// </summary>
-        public List<BoneBindingDto> userBindings { get; protected set; }
+        public List<BindingDto> userBindings { get; protected set; }
         /// <summary>
         /// Saves of the transform of objects before they had been bound to a user's bone.
         /// </summary>
-        protected Dictionary<BoundObject, SavedTransform> savedTransforms { get; set; }
+        protected Dictionary<ulong, SavedTransform> savedTransforms { get; set; }
 
         #region Data Structure
         /// <summary>
@@ -158,12 +159,10 @@ namespace umi3d.cdk.userCapture
             public uint bonetype;
             public Transform obj;
             public Vector3 offsetPosition;
-            public Quaternion offsetRotation;
+            public Vector4 offsetRotation;
             public Vector3 offsetScale;
             public bool syncPos;
             public bool syncRot;
-            public bool freezeWorldScale;
-            public Vector3 frozenLossyScale;
             public Quaternion anchorRelativeRot;
         }
 
@@ -174,15 +173,6 @@ namespace umi3d.cdk.userCapture
             public Quaternion savedRotation;
             public Vector3 savedLocalScale;
             public Vector3 savedLossyScale;
-        }
-
-        /// <summary>
-        /// Object that has been bound through a bone binding.
-        /// </summary>
-        protected struct BoundObject
-        {
-            public ulong objectId;
-            public string rigname;
         }
         #endregion
 
@@ -200,7 +190,7 @@ namespace umi3d.cdk.userCapture
             {
                 if (activeUserBindings)
                 {
-                    foreach (BoneBindingDto dto in userBindings)
+                    foreach (BindingDto dto in userBindings)
                     {
                         if (dto.active)
                             UpdateBindingPosition(dto);
@@ -208,9 +198,9 @@ namespace umi3d.cdk.userCapture
                 }
                 else
                 {
-                    foreach (BoneBindingDto dto in userBindings)
+                    foreach (BindingDto dto in userBindings)
                     {
-                        if (savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
+                        if (savedTransforms.ContainsKey(dto.bindingId))
                             ResetObjectBindings(dto);
                     }
                 }
@@ -221,11 +211,11 @@ namespace umi3d.cdk.userCapture
         /// Set a new list of BoneBindingDto.
         /// </summary>
         /// <param name="newBindings">a list of dto containing binding data</param>
-        public void SetBindings(List<BoneBindingDto> newBindings)
+        public void SetBindings(List<BindingDto> newBindings)
         {
-            foreach (BoneBindingDto dto in userBindings)
+            foreach (BindingDto dto in userBindings)
             {
-                if (savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
+                if (savedTransforms.ContainsKey(dto.bindingId ))
                     ResetObjectBindings(dto);
             }
 
@@ -233,7 +223,7 @@ namespace umi3d.cdk.userCapture
 
             if (activeUserBindings && userBindings != null)
             {
-                foreach (BoneBindingDto dto in userBindings)
+                foreach (BindingDto dto in userBindings)
                 {
                     if (dto.active)
                         UpdateBindingPosition(dto);
@@ -246,17 +236,17 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="index">the index in the list of bindings</param>
         /// <param name="dto"></param>
-        public void AddBinding(int index, BoneBindingDto boneBinding)
+        public void AddBinding(int index, BindingDto boneBinding)
         {
             if (boneBinding == null) return;
 
-            if (userBindings == null) userBindings = new List<BoneBindingDto>();
+            if (userBindings == null) userBindings = new List<BindingDto>();
 
             if (index <= userBindings.Count - 1)
             {
-                BoneBindingDto dtoAtIndex = userBindings[index];
+                BindingDto dtoAtIndex = userBindings[index];
 
-                if (!boneBinding.bindingId.Contains(dtoAtIndex.bindingId) && !dtoAtIndex.bindingId.Contains(boneBinding.bindingId))
+                if (boneBinding.bindingId != dtoAtIndex.bindingId)
                 {
                     AddBinding_(index, boneBinding);
                 }
@@ -267,7 +257,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        private void AddBinding_(int index, BoneBindingDto boneBinding)
+        private void AddBinding_(int index, BindingDto boneBinding)
         {
             userBindings.Insert(index, boneBinding);
             if (activeUserBindings && boneBinding.active)
@@ -284,7 +274,7 @@ namespace umi3d.cdk.userCapture
         public void RemoveBinding(int index)
         {
             if (userBindings == null) return;
-            BoneBindingDto dto = userBindings[index];
+            BindingDto dto = userBindings[index];
             userBindings.RemoveAt(index);
             ResetObjectBindings(dto);
         }
@@ -297,30 +287,30 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="index">the index in the list of bindings</param>
         /// <param name="dto"></param>
-        public void UpdateBinding(int index, BoneBindingDto dto)
+        public void UpdateBinding(int index, BindingDto dto)
         {
             userBindings[index] = dto;
             if (activeUserBindings)
             {
                 if (dto.active)
                     UpdateBindingPosition(dto);
-                else if (savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
+                else if (savedTransforms.ContainsKey(dto.bindingId))
                     ResetObjectBindings(dto);
             }
         }
 
-        protected void UpdateBindingPosition(BoneBindingDto dto)
+        protected void UpdateBindingPosition(BindingDto dto)
         {
             if (userId == UMI3DClientServer.Instance.GetUserId())
             {
-                //if (BoneType.instances.TryGetValue(dto.boneType, out UMI3DClientUserTrackingBone bone))
-                //{
-                //    WaitForRig(dto, bone);
-                //}
-                //else
-                //{
-                //    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances", scope);
-                //}
+                if (UMI3DClientUserTrackingBone.instances.TryGetValue((dto.data as RigBindingDataDto).boneType, out UMI3DClientUserTrackingBone bone))
+                {
+                    WaitForRig(dto, bone);
+                }
+                else
+                {
+                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances", scope);
+                }
             }
             else
             {
@@ -328,12 +318,12 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        protected Transform InspectBoundRigs(BoneBindingDto dto)
+        protected Transform InspectBoundRigs(BindingDto dto)
         {
             Transform obj = null;
             foreach (Transform rig in boundRigs)
             {
-                if ((obj = rig.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName)) != null)
+                if ((obj = rig.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == (dto.data as RigBindingDataDto).rigName)) != null)
                     return obj;
             }
             return obj;
@@ -343,24 +333,24 @@ namespace umi3d.cdk.userCapture
         /// Replace an object associated with a binding to its saved state.
         /// </summary>
         /// <param name="dto"></param>
-        protected void ResetObjectBindings(BoneBindingDto dto)
+        protected void ResetObjectBindings(BindingDto dto)
         {
-            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.objectId);
+            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.bindingId);
 
 
             if (node != null)
             {
-                if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out SavedTransform savedTransform))
+                if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.bindingId, rigname = (dto.data as RigBindingDataDto).rigName }, out SavedTransform savedTransform))
                 {
 
                     ResetSavedTansform(dto, savedTransform, node);
 
-                    if (dto.rigName == "" && node != null)
+                    if ((dto.data as RigBindingDataDto).rigName == "" && node != null)
                         node.updatePose = true;
                     else
                         boundRigs.Remove(savedTransform.obj);
 
-                    savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
+                    savedTransforms.Remove(dto.bindingId);
                 }
                 else
                 {
@@ -372,11 +362,11 @@ namespace umi3d.cdk.userCapture
             {
                 if (savedTransforms == null) return;
 
-                savedTransforms.Remove(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName });
+                savedTransforms.Remove(dto.bindingId);
             }
         }
 
-        protected void ResetSavedTansform(BoneBindingDto dto, SavedTransform savedTransform, UMI3DNodeInstance node)
+        protected void ResetSavedTansform(BindingDto dto, SavedTransform savedTransform, UMI3DNodeInstance node)
         {
             if (savedTransform.obj != null)
             {
@@ -385,7 +375,7 @@ namespace umi3d.cdk.userCapture
                 Bound bd = bounds[index];
                 bounds.Remove(bd);
 
-                if (dto.rigName == "")
+                if ((dto.data as RigBindingDataDto).rigName == "")
                 {
                     if (node.dto is GlTFNodeDto)
                     {
@@ -420,9 +410,9 @@ namespace umi3d.cdk.userCapture
         }
         #endregion
         #region Waiting
-        protected void WaitForRig(BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        protected void WaitForRig(BindingDto dto, BoneSkeleton bone)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, (entityInstance) =>
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.bindingId, (entityInstance) =>
             {
                 if (entityInstance is UMI3DNodeInstance node)
                 {
@@ -432,9 +422,9 @@ namespace umi3d.cdk.userCapture
             );
         }
 
-        protected void WaitForOtherRig(BoneBindingDto dto)
+        protected void WaitForOtherRig(BindingDto dto)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.objectId, async (entityInstance) =>
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.bindingId, async (entityInstance) =>
             {
                 if (entityInstance is UMI3DNodeInstance node)
                 {
@@ -443,12 +433,13 @@ namespace umi3d.cdk.userCapture
                 }
             });
         }
-        protected void WaitingForOtherEntityRig(UMI3DNodeInstance node, BoneBindingDto dto)
+        protected void WaitingForOtherEntityRig(UMI3DNodeInstance node, BindingDto dto)
         {
+            RigBindingDataDto rigDto = (dto.data as RigBindingDataDto);
             Transform obj = null;
-            if (dto.rigName != "")
+            if (rigDto.rigName != "")
             {
-                obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName);
+                obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == (dto.data as RigBindingDataDto).rigName);
             }
             else
             {
@@ -457,18 +448,19 @@ namespace umi3d.cdk.userCapture
 
             AddANewBound(dto, obj, node);
 
-            if (!savedTransforms.ContainsKey(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }))
+            if (!savedTransforms.ContainsKey(dto.bindingId))
             {
                 SaveTransform(dto, obj);
             }
         }
 
-        protected async Task WaitForRig(UMI3DNodeInstance node, BoneBindingDto dto, UMI3DClientUserTrackingBone bone)
+        protected async Task WaitForRig(UMI3DNodeInstance node, BindingDto dto, BoneSkeleton bone)
         {
+            RigBindingDataDto rigDto = (dto.data as RigBindingDataDto);
             Transform obj = null;
-            if (dto.rigName != "")
+            if (rigDto.rigName != "")
             {
-                while ((obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == dto.rigName)) == null && (obj = InspectBoundRigs(dto)) == null)
+                while ((obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == (dto.data as RigBindingDataDto).rigName)) == null && (obj = InspectBoundRigs(dto)) == null)
                 {
                     await WaitForFrame();
                 }
@@ -481,19 +473,19 @@ namespace umi3d.cdk.userCapture
                 obj = node.transform;
             }
 
-            if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, out SavedTransform savedTransform))
+            if (savedTransforms.TryGetValue(dto.bindingId, out SavedTransform savedTransform))
             {
-                int index = bounds.FindIndex(b => b.obj == savedTransform.obj && b.bonetype == dto.boneType);
+
+                int index = bounds.FindIndex(b => b.obj == savedTransform.obj && b.bonetype == rigDto.boneType);
 
                 if (index >= 0)
                 {
                     Bound bound = bounds[index];
-                    bound.offsetPosition = dto.offsetPosition;
-                    bound.offsetRotation = dto.offsetRotation;
-                    bound.offsetScale = dto.offsetScale;
-                    bound.syncPos = dto.syncPosition;
-                    bound.syncRot = dto.syncRotation;
-                    bound.freezeWorldScale = dto.freezeWorldScale;
+                    bound.offsetPosition = rigDto.offSetPosition;
+                    bound.offsetRotation = rigDto.offSetRotation;
+                    bound.offsetScale = rigDto.offSetScale;
+                    bound.syncPos = rigDto.syncPosition;
+                    bound.syncRot = rigDto.syncRotation;
                     bounds[index] = bound;
                 }
                 else
@@ -506,29 +498,28 @@ namespace umi3d.cdk.userCapture
                 SaveTransform(dto, obj);
                 AddANewBound(dto, obj, node);
 
-                if (dto.rigName == "")
+                if (rigDto.rigName == "")
                     node.updatePose = false;
             }
         }
 
-        void AddANewBound(BoneBindingDto dto, Transform obj, UMI3DNodeInstance node)
+        void AddANewBound(BindingDto dto, Transform obj, UMI3DNodeInstance node)
         {
+            RigBindingDataDto rigDto = dto.data as RigBindingDataDto;
             bounds.Add(new Bound()
             {
-                bonetype = dto.boneType,
+                bonetype = rigDto.boneType,
                 obj = obj,
-                offsetPosition = dto.offsetPosition,
-                offsetRotation = dto.offsetRotation,
-                offsetScale = dto.offsetScale,
-                syncPos = dto.syncPosition,
-                syncRot = dto.syncRotation,
-                freezeWorldScale = dto.freezeWorldScale,
-                frozenLossyScale = obj.lossyScale,
-                anchorRelativeRot = dto.rigName == "" ? Quaternion.identity : Quaternion.Inverse(node.transform.rotation) * obj.rotation
+                offsetPosition = rigDto.offSetPosition,
+                offsetRotation = rigDto.offSetRotation,
+                offsetScale = rigDto.offSetScale,
+                syncPos = rigDto.syncPosition,
+                syncRot = rigDto.syncRotation,
+                anchorRelativeRot = rigDto.rigName == "" ? Quaternion.identity : Quaternion.Inverse(node.transform.rotation) * obj.rotation
             });
         }
 
-        void SaveTransform(BoneBindingDto dto, Transform obj)
+        void SaveTransform(BindingDto dto, Transform obj)
         {
             var savedTransform = new SavedTransform
             {
@@ -539,7 +530,7 @@ namespace umi3d.cdk.userCapture
                 savedLossyScale = obj.lossyScale,
             };
 
-            savedTransforms.Add(new BoundObject() { objectId = dto.objectId, rigname = dto.rigName }, savedTransform);
+            savedTransforms.Add(dto.bindingId, savedTransform);
         }
 
         #region Tasks
