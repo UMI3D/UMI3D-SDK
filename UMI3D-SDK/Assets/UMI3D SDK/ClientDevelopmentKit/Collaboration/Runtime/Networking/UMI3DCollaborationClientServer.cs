@@ -112,6 +112,7 @@ namespace umi3d.cdk.collaboration
 
         private void Start()
         {
+            _ = UMI3DCollaborationEnvironmentLoader.Instance; // force right service instanciation
             UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
             UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
             UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
