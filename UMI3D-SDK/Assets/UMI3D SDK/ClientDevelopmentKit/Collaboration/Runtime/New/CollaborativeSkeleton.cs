@@ -22,15 +22,48 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    public class CollaborativeSkeleton : AbstractSkeleton
+    public class CollaborativeSkeleton : ISkeleton
     {
-        public UMI3DUser User;
+        #region fields
+        #region interface Fields
+        public Dictionary<uint, ISkeleton.s_Transform> Bones { get => bones; set => bones = value; }
+        public List<ISubSkeleton> Skeletons { get => skeletons; set => skeletons = value; }
+        bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
+        ulong ISkeleton.userId { get => userId; set => userId = value; }
+        Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
+        QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
+        List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
+        List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
+        List<BoneBindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
+        Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        #endregion
+        protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
+        protected List<ISubSkeleton> skeletons = new List<ISubSkeleton>();
+        protected bool activeUserBindings;
+        protected ulong userId;
+        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
+        protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
+        protected List<ISkeleton.Bound> bounds = new List<ISkeleton.Bound>();
+        protected List<Transform> boundRigs = new List<Transform>();
+        protected List<BoneBindingDto> userBindings = new List<BoneBindingDto>();
+        protected Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform>();
+        #endregion
 
-        public override void UpdateFrame(UserTrackingFrameDto frame)
+
+
+
+    public UMI3DUser User;
+
+        public void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (skeletons != null)
                 foreach (var skeleton in skeletons)
                     skeleton.Update(frame);
+        }
+
+        void ISkeleton.UpdateFrame(UserTrackingFrameDto frame)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

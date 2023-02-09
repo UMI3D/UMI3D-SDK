@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
         public Dictionary<ulong,ISkeleton> skeletons { get; protected set; }
 
-        public PersonalSkeleton skeleton => new PersonalSkeleton();
+        public PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
 
         /// <summary>
         /// If true the avatar tracking is sent.
