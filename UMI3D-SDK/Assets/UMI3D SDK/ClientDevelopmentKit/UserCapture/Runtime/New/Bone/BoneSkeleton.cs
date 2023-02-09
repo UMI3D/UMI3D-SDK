@@ -6,6 +6,12 @@ using UnityEngine;
 
 public class BoneSkeleton : MonoBehaviour
 {
+    public void Init(uint boneTypes, Transform node)
+    {
+        this.boneTypes = boneTypes;
+        this.node = node;
+    }
+
     public uint boneTypes;
     public Transform node;
 }
