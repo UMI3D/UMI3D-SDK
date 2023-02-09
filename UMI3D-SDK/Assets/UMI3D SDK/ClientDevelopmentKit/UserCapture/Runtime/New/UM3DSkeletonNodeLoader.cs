@@ -51,17 +51,22 @@ namespace umi3d.cdk.userCapture
 
             var modelTracker = data.node.GetOrAddComponent<ModelTracker>();
 
-            SkeletonMapper skeletonMapper = go.GetComponentInChildren<SkeletonMapper>();
+            SkeletonMapper skeletonMapper = go.GetComponentInChildren<SkeletonMapper>(); //? should it come with the bundle ??
             if (skeletonMapper == null) //? hopefully not necessary because it would imply to rebind everything
             {
                 skeletonMapper = go.AddComponent<SkeletonMapper>();
-                skeletonMapper.BoneAnchor = go.GetComponent<UMI3DClientUserTrackingBone>().boneType;
+                if (go.TryGetComponent(out UMI3DClientUserTrackingBone bone))
+                    skeletonMapper.BoneAnchor = bone.boneType;
+                else
+                    Debug.Log("No bone found");
             }
 
             AnimatedSkeleton animationSkeleton = new(skeletonMapper);
             PersonalSkeleton.Instance.Skeletons.Add(animationSkeleton);
 
-            go.layer = LayerMask.NameToLayer("Invisible"); // should not see AnimationSkeletons
+
+            foreach (var renderer in go.GetComponentsInChildren<Renderer>())
+                renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
 
             //if (go.TryGetComponent(out Animator animator)) //! may delete that if already done in base class
             //    modelTracker.animatorsToRebind.Add(animator);
