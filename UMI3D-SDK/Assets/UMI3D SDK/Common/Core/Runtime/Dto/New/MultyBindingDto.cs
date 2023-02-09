@@ -4,6 +4,9 @@ using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
+    /// <summary>
+    /// In multy binding the priority state which binding should be match the most.
+    /// </summary>
     public class MultyBindingDto : BindingDataDto
     {
         public MultyBindingDto() { }
