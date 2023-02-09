@@ -2,17 +2,21 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class BindingDto : MonoBehaviour
+namespace umi3d.common.collaboration
 {
-    // Start is called before the first frame update
-    void Start()
+    public class BindingDto : UMI3DDto
     {
-        
-    }
+        public BindingDto() { }
 
-    // Update is called once per frame
-    void Update()
-    {
-        
+        public BindingDto(ulong objectId, bool active, BindingDataDto data)
+        {
+            this.objectId = objectId;
+            this.active = active;
+            this.data = data;
+        }
+
+        public ulong objectId { get; private set; }
+        public bool active { get; private set; }
+        public BindingDataDto data { get; private set; }
     }
 }
