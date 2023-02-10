@@ -17,6 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.utils.extrapolation;
+using umi3d.common.collaboration;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -26,16 +27,17 @@ namespace umi3d.cdk.collaboration
     {
         #region fields
         #region interface Fields
-        public Dictionary<uint, ISkeleton.s_Transform> Bones { get => bones; set => bones = value; }
-        public List<ISubSkeleton> Skeletons { get => skeletons; set => skeletons = value; }
+        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get => bones; set => bones = value; }
+        List<ISubSkeleton> ISkeleton.Skeletons { get => skeletons; set => skeletons = value; }
         bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
         ulong ISkeleton.userId { get => userId; set => userId = value; }
         Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
         QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
         List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
-        List<BoneBindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
-        Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
+        Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
         protected List<ISubSkeleton> skeletons = new List<ISubSkeleton>();
@@ -45,14 +47,15 @@ namespace umi3d.cdk.collaboration
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
         protected List<ISkeleton.Bound> bounds = new List<ISkeleton.Bound>();
         protected List<Transform> boundRigs = new List<Transform>();
-        protected List<BoneBindingDto> userBindings = new List<BoneBindingDto>();
-        protected Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform>();
+        protected List<BindingDto> userBindings = new List<BindingDto>();
+        protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ulong, ISkeleton.SavedTransform>();
+
         #endregion
 
 
 
 
-    public UMI3DUser User;
+        public UMI3DUser User;
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {

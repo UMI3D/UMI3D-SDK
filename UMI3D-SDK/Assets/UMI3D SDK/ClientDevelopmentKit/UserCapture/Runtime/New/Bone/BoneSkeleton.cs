@@ -12,6 +12,13 @@ public class BoneSkeleton : MonoBehaviour
         this.node = node;
     }
 
+    private void Awake()
+    {
+        bonSkeletonInstances.TryAdd(boneTypes, this);
+    }
+
+    public static Dictionary<uint, BoneSkeleton> bonSkeletonInstances = new Dictionary<uint, BoneSkeleton>();
+
     public uint boneTypes;
     public Transform node;
 }

@@ -5,6 +5,7 @@ using Moq;
 using umi3d.common.userCapture;
 using UnityEngine;
 using umi3d.cdk.utils.extrapolation;
+using umi3d.common.collaboration;
 
 public class ISkeleton_Test
 {
@@ -15,16 +16,17 @@ public class ISkeleton_Test
     {
         #region fields
         #region interface Fields
-        public Dictionary<uint, ISkeleton.s_Transform> Bones { get => bones; set => bones = value; }
-        public List<ISubSkeleton> Skeletons { get => skeletons; set => skeletons = value; }
+        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get => bones; set => bones = value; }
+        List<ISubSkeleton> ISkeleton.Skeletons { get => skeletons; set => skeletons = value; }
         bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
         ulong ISkeleton.userId { get => userId; set => userId = value; }
         Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
         QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
         List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
-        List<BoneBindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
-        Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
+        Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones;
         protected List<ISubSkeleton> skeletons;
@@ -34,8 +36,9 @@ public class ISkeleton_Test
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
         protected List<ISkeleton.Bound> bounds;
         protected List<Transform> boundRigs;
-        protected List<BoneBindingDto> userBindings;
-        protected Dictionary<ISkeleton.BoundObject, ISkeleton.SavedTransform> savedTransforms;
+        protected List<BindingDto> userBindings;
+        protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms;
+
         #endregion
 
         public void UpdateFrame(UserTrackingFrameDto frame)
@@ -143,7 +146,7 @@ public class ISkeleton_Test
     [Test]
     public void TestAddBinding()
     {
-        BoneBindingDto dto = new BoneBindingDto();
+        BindingDto dto = new BindingDto();
         fakeSkeleton.AddBinding(0, dto);
 
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
@@ -152,11 +155,9 @@ public class ISkeleton_Test
     [Test]
     public void TestAddMultipleSameBindings()
     {
-        BoneBindingDto dto = new BoneBindingDto();
-        dto.bindingId = "123";
+        BindingDto dto = new BindingDto(1 , true, null);
         fakeSkeleton.AddBinding(0, dto);
-        BoneBindingDto dto2 = new BoneBindingDto();
-        dto2.bindingId = "1";
+        BindingDto dto2 = new BindingDto(1, true, null);
         fakeSkeleton.AddBinding(0, dto2);
 
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
@@ -165,12 +166,10 @@ public class ISkeleton_Test
     [Test]
     public void TestAddMultipleDifferentBindings()
     {
-        BoneBindingDto dto = new BoneBindingDto();
-        dto.bindingId = "5648";
+        BindingDto dto = new BindingDto(5648, true, null);
         fakeSkeleton.AddBinding(0, dto);
-        BoneBindingDto dto2 = new BoneBindingDto();
-        dto2.bindingId = "94856";
-        fakeSkeleton.AddBinding(0, dto2);
+        BindingDto dto2 = new BindingDto(94856, true, null);
+        fakeSkeleton.AddBinding(1, dto2);
 
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 2);
     }
@@ -178,17 +177,12 @@ public class ISkeleton_Test
     [Test]
     public void TestRemoveBindingAtIndex()
     {
-        BoneBindingDto dto = new BoneBindingDto();
-        dto.bindingId = "5648";
+        BindingDto dto = new BindingDto(5648, true, null);
         fakeSkeleton.AddBinding(0, dto);
-        BoneBindingDto dto2 = new BoneBindingDto();
-        dto2.bindingId = "94856";
+        BindingDto dto2 = new BindingDto(94856, true, null);
         fakeSkeleton.AddBinding(1, dto2);
 
-
-        Debug.Log("hehhehe");
         fakeSkeleton.RemoveBinding(0);
-        Debug.Log("hehhehe");
 
         Assert.IsTrue(fakeSkeleton.userBindings.Contains(dto2));
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);

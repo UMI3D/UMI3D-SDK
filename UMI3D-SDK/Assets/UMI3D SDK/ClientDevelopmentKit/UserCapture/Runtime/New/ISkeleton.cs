@@ -303,13 +303,13 @@ namespace umi3d.cdk.userCapture
         {
             if (userId == UMI3DClientServer.Instance.GetUserId())
             {
-                if (UMI3DClientUserTrackingBone.instances.TryGetValue((dto.data as RigBindingDataDto).boneType, out UMI3DClientUserTrackingBone bone))
+                if (BoneSkeleton.bonSkeletonInstances.TryGetValue((dto.data as RigBindingDataDto).boneType, out BoneSkeleton bone))
                 {
                     WaitForRig(dto, bone);
                 }
                 else
                 {
-                    UMI3DLogger.LogWarning(dto.boneType + "not found in bones instances", scope);
+                    UMI3DLogger.LogWarning((dto.data as RigBindingDataDto).boneType + "not found in bones instances", scope);
                 }
             }
             else
@@ -340,7 +340,7 @@ namespace umi3d.cdk.userCapture
 
             if (node != null)
             {
-                if (savedTransforms.TryGetValue(new BoundObject() { objectId = dto.bindingId, rigname = (dto.data as RigBindingDataDto).rigName }, out SavedTransform savedTransform))
+                if (savedTransforms.TryGetValue((dto.data as RigBindingDataDto).boneType, out SavedTransform savedTransform))
                 {
 
                     ResetSavedTansform(dto, savedTransform, node);
