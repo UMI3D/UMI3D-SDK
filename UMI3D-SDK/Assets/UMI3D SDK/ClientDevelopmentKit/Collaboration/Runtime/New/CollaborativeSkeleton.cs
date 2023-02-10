@@ -52,9 +52,6 @@ namespace umi3d.cdk.collaboration
 
         #endregion
 
-
-
-
         public UMI3DUser User;
 
         public void UpdateFrame(UserTrackingFrameDto frame)

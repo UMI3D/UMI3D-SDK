@@ -98,15 +98,5 @@ namespace umi3d.cdk.userCapture
         {
             UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
         }
-
-        void ISkeleton.UpdateFrame(UserTrackingFrameDto frame)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        void ISkeleton.Init()
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
