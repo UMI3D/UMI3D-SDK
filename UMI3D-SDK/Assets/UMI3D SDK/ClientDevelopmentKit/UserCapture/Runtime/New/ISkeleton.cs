@@ -20,11 +20,9 @@ using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
 using System;
-using System.Collections;
 using umi3d.cdk.utils.extrapolation;
-using System.Xml.Serialization;
-using System.Threading.Tasks;
 using umi3d.common.collaboration;
+using System.Threading.Tasks;
 
 namespace umi3d.cdk.userCapture
 {
@@ -51,6 +49,8 @@ namespace umi3d.cdk.userCapture
         {
             if(Bones == null) Bones= new Dictionary<uint, s_Transform>();
             if(Skeletons == null) Skeletons = new List<ISubSkeleton>();
+
+            
         }
 
 
@@ -144,6 +144,7 @@ namespace umi3d.cdk.userCapture
         /// List of currently applied <see cref="BindingDto"/> to the user's skeleton.
         /// </summary>
         public List<BindingDto> userBindings { get; protected set; }
+        protected List<BindingDto> pooledBinding { get; set; }
         /// <summary>
         /// Saves of the transform of objects before they had been bound to a user's bone.
         /// </summary>
@@ -424,15 +425,15 @@ namespace umi3d.cdk.userCapture
 
         protected void WaitForOtherRig(BindingDto dto)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.bindingId, async (entityInstance) =>
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.bindingId, (entityInstance) =>
             {
                 if (entityInstance is UMI3DNodeInstance node)
                 {
-                    await WaitForFrame();
                     WaitingForOtherEntityRig(node, dto);
                 }
             });
         }
+
         protected void WaitingForOtherEntityRig(UMI3DNodeInstance node, BindingDto dto)
         {
             RigBindingDataDto rigDto = (dto.data as RigBindingDataDto);
@@ -454,7 +455,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        protected async Task WaitForRig(UMI3DNodeInstance node, BindingDto dto, BoneSkeleton bone)
+        protected void WaitForRig(UMI3DNodeInstance node, BindingDto dto, BoneSkeleton bone)
         {
             RigBindingDataDto rigDto = (dto.data as RigBindingDataDto);
             Transform obj = null;
@@ -462,17 +463,42 @@ namespace umi3d.cdk.userCapture
             {
                 while ((obj = node.transform.GetComponentsInChildren<Transform>().FirstOrDefault(t => t.name == (dto.data as RigBindingDataDto).rigName)) == null && (obj = InspectBoundRigs(dto)) == null)
                 {
-                    await WaitForFrame();
-                }
 
+                }
+                
+                // Task scheduler
+                // TODO -- set bellow in an action called later
                 if (!boundRigs.Contains(obj))
                     boundRigs.Add(obj);
+
+                SaveTransform(dto, obj, node);
             }
             else
             {
                 obj = node.transform;
+                SaveTransform(dto, obj, node);
             }
+        }
 
+        void AddANewBound(BindingDto dto, Transform obj, UMI3DNodeInstance node)
+        {
+            RigBindingDataDto rigDto = dto.data as RigBindingDataDto;
+            bounds.Add(new Bound()
+            {
+                bonetype = rigDto.boneType,
+                obj = obj,
+                offsetPosition = rigDto.offSetPosition,
+                offsetRotation = rigDto.offSetRotation,
+                offsetScale = rigDto.offSetScale,
+                syncPos = rigDto.syncPosition,
+                syncRot = rigDto.syncRotation,
+                anchorRelativeRot = rigDto.rigName == "" ? Quaternion.identity : Quaternion.Inverse(node.transform.rotation) * obj.rotation
+            });
+        }
+
+        void SaveTransform(BindingDto dto, Transform obj, UMI3DNodeInstance node)
+        {
+            RigBindingDataDto rigDto = (dto.data as RigBindingDataDto);
             if (savedTransforms.TryGetValue(dto.bindingId, out SavedTransform savedTransform))
             {
 
@@ -503,22 +529,6 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        void AddANewBound(BindingDto dto, Transform obj, UMI3DNodeInstance node)
-        {
-            RigBindingDataDto rigDto = dto.data as RigBindingDataDto;
-            bounds.Add(new Bound()
-            {
-                bonetype = rigDto.boneType,
-                obj = obj,
-                offsetPosition = rigDto.offSetPosition,
-                offsetRotation = rigDto.offSetRotation,
-                offsetScale = rigDto.offSetScale,
-                syncPos = rigDto.syncPosition,
-                syncRot = rigDto.syncRotation,
-                anchorRelativeRot = rigDto.rigName == "" ? Quaternion.identity : Quaternion.Inverse(node.transform.rotation) * obj.rotation
-            });
-        }
-
         void SaveTransform(BindingDto dto, Transform obj)
         {
             var savedTransform = new SavedTransform
@@ -532,18 +542,6 @@ namespace umi3d.cdk.userCapture
 
             savedTransforms.Add(dto.bindingId, savedTransform);
         }
-
-        #region Tasks
-        private async Task WaitForFrame()
-        {
-            var actual = Time.frameCount;
-
-            while (actual == Time.frameCount)
-            {
-                await Task.Yield();
-            }
-        }
-        #endregion
 
         #endregion
         #endregion
