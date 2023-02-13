@@ -32,15 +32,16 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
+        [Obsolete("Use EnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>() instead.")]
         public static new UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
         /// <summary>
         /// DTO local copy.
         /// </summary>
-        protected new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; set => base.dto = value; }
+        public new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; protected set => base.dto = value; }
 
         private bool started = false;
 
-        public bool IsPlayin() { return started; }
+        public virtual bool IsPlaying() { return started; }
 
         public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
         {

@@ -27,8 +27,8 @@ namespace umi3d.common.userCapture
         [ConstEnum(typeof(BoneType),typeof(uint))]
         public uint BoneAnchor;
         public SkeletonMapping[] mappings { get; set; }
-        public ulong[] animations { get; set; }
-        public PoseDto GetPose()
+        public virtual ulong[] animations { get; set; }
+        public virtual PoseDto GetPose()
         {
             try
             {

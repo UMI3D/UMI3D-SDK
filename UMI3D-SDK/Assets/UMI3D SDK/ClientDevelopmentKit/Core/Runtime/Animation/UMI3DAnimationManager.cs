@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.cdk
 {
     /// <summary>
@@ -26,24 +28,46 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
+        [Obsolete("Use UMI3DEnvironmentLoader.Instance.GetEntity<UMI3DAbstractAnimation>() instead.")]
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
         /// <summary>
         /// Start playing an animation.
         /// </summary>
         /// <param name="id">Animation UMI3D id.</param>
+        [Obsolete("Use Instance.StartAnimation() instead.")]
         public static void Start(ulong id)
         {
             Get(id)?.Start();
         }
 
         /// <summary>
+        /// Start playing an animation.
+        /// </summary>
+        /// <param name="id">Animation UMI3D id.</param>
+        public virtual void StartAnimation(ulong id)
+        {
+            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Start();
+        }
+
+
+        /// <summary>
         /// Stop playing an animation.
         /// </summary>
         /// <param name="id">Animation UMI3D id.</param>
+        [Obsolete("Use Instance.StopAnimation() instead.")]
         public static void Stop(ulong id)
         {
             Get(id)?.Stop();
+        }
+
+        /// <summary>
+        /// Stop playing an animation.
+        /// </summary>
+        /// <param name="id">Animation UMI3D id.</param>
+        public virtual void StopAnimation(ulong id)
+        {
+            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Stop();
         }
     }
 }

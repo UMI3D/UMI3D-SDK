@@ -29,7 +29,26 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationEnvironmentLoader : UMI3DEnvironmentLoader
     {
-        public static new UMI3DCollaborationEnvironmentLoader Instance { get => UMI3DEnvironmentLoader.Instance as UMI3DCollaborationEnvironmentLoader; set => UMI3DEnvironmentLoader.Instance = value; }
+        public static new UMI3DCollaborationEnvironmentLoader Instance
+        { 
+            get
+            {
+                if (ApplicationIsQuitting)
+                    return null;
+                if (!Exists)
+                    instance = new UMI3DCollaborationEnvironmentLoader();
+                if (UMI3DEnvironmentLoader.Instance is UMI3DCollaborationEnvironmentLoader collabEnvironmentLoader)
+                    return collabEnvironmentLoader;
+                else
+                    throw new Umi3dException("EnvironmentLoader instance is no UMI3DCollaborationEnvironmentLoader");
+            }    
+        }
+
+        public UMI3DCollaborationEnvironmentLoader() : base()
+        {
+            if (!SkeletonManager.Exists)
+                new SkeletonManager();
+        }
 
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
@@ -38,12 +57,6 @@ namespace umi3d.cdk.collaboration
         public static event Action OnUpdateJoinnedUserList;
 
         private ulong lastTimeUserMessageListReceived = 0;
-
-        public void Start()
-        {
-            if (!SkeletonManager.Exists)
-                new SkeletonManager();
-        }
 
         public UMI3DUser GetClientUser()
         {
