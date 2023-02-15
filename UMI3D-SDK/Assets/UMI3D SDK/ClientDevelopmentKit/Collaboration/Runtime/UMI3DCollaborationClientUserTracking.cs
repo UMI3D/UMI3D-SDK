@@ -122,7 +122,7 @@ namespace umi3d.cdk.collaboration
         {
             embodimentDict[userId].ForceDisablingBinding = true;
             animator.enabled = true;
-            animator.Play(emote.stateName, layer: 0);
+            //animator.Play(emote.animation, layer: 0);
             animator.Update(0);
             yield return new WaitWhile(() =>
             {

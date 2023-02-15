@@ -35,16 +35,16 @@ namespace umi3d.cdk.userCapture
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmotesConfigDto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
-                UMI3DEnvironmentLoader.RegisterEntityInstance(emoteDto.id, emoteDto, null).NotifyLoaded();
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(emoteDto.id, emoteDto, null).NotifyLoaded();
             UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             var dto = value.entity.dto as UMI3DEmotesConfigDto;
-            if (dto == null) return false;
+            if (dto is null) return false;
             switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
@@ -61,7 +61,7 @@ namespace umi3d.cdk.userCapture
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             var dto = value.entity.dto as UMI3DEmotesConfigDto;
-            if (dto == null) return false;
+            if (dto is null) return false;
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:

@@ -38,7 +38,7 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            if (data.dto is not UMI3DSkeletonNodeDto nodeDto)
+             if (data.dto is not UMI3DSkeletonNodeDto nodeDto)
                 throw new Umi3dException("DTO should be an UM3DSkeletonNodeDto");
 
             await base.ReadUMI3DExtension(data);

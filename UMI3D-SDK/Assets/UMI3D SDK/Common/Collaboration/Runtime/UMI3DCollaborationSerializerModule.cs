@@ -179,18 +179,17 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(UMI3DEmotesConfigDto):
                     var conf = new UMI3DEmotesConfigDto();
                     result = default(T);
-                    readable = UMI3DSerializer.TryRead<bool>(container, out conf.allAvailableByDefault);
-                    readable &= UMI3DSerializer.TryRead<string>(container, out conf.defaultStateName);
+                    readable = UMI3DSerializer.TryRead(container, out conf.allAvailableByDefault);
+                    readable &= UMI3DSerializer.TryRead(container, out conf.defaultStateName);
 
                     if (readable)
                     {
-                        readable = UMI3DSerializer.TryRead<int>(container, out int nbEmotes);
+                        readable = UMI3DSerializer.TryRead(container, out int nbEmotes);
                         if (readable)
                         {
                             for (uint i = 0; i < nbEmotes; i++)
                             {
-                                UMI3DEmoteDto emote;
-                                Read<UMI3DEmoteDto>(container, out readable, out emote);
+                                Read(container, out readable, out UMI3DEmoteDto emote);
                                 if (!readable)
                                     break;
                                 else
@@ -205,11 +204,11 @@ namespace umi3d.common.collaboration
                     var e = new UMI3DEmoteDto();
                     result = default(T);
 
-                    readable = UMI3DSerializer.TryRead<ulong>(container, out e.id);
-                    readable &= UMI3DSerializer.TryRead<string>(container, out e.label);
-                    readable &= UMI3DSerializer.TryRead<string>(container, out e.stateName);
-                    readable &= UMI3DSerializer.TryRead<bool>(container, out e.available);
-                    readable &= UMI3DSerializer.TryRead<FileDto>(container, out e.iconResource);
+                    readable = UMI3DSerializer.TryRead(container, out e.id);
+                    readable &= UMI3DSerializer.TryRead(container, out e.label);
+                    readable &= UMI3DSerializer.TryRead(container, out e.animation);
+                    readable &= UMI3DSerializer.TryRead(container, out e.available);
+                    readable &= UMI3DSerializer.TryRead(container, out e.iconResource);
 
                     if (!readable)
                         return false;

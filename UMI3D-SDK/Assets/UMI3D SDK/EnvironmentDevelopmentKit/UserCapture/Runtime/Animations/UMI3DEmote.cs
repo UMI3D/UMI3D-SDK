@@ -34,17 +34,16 @@ namespace umi3d.edk.userCapture
         public ulong id;
 
         /// <summary>
-        /// Emote state name in Animator
-        /// </summary>
-        [Tooltip("Emote state name in Animator.")]
-        public string stateName;
-
-        /// <summary>
         /// Emote name displayed to players
         /// </summary>
-        [Tooltip("Emote name displayed to players. If let empty, take the value of the state name.")]
+        [Tooltip("Emote name displayed to players.")]
         public string label;
 
+        /// <summary>
+        /// Emote animation
+        /// </summary>
+        [Tooltip("Animation of the emote.")]
+        public UMI3DAbstractAnimation animation;
 
         /// <summary>
         /// If the user can see and play the emote.
@@ -105,8 +104,8 @@ namespace umi3d.edk.userCapture
         {
             return new UMI3DEmoteDto()
             {
-                label = string.IsNullOrEmpty(this.label) ? this.stateName : this.label,
-                stateName = this.stateName,
+                label = this.label,
+                animation = this.animation.ToAnimationDto(user), // create a DTO
                 id = this.Id(),
                 available = this.availableAtStart,
                 iconResource = this.iconResource.ToDto(),
@@ -117,12 +116,11 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            var label = string.IsNullOrEmpty(this.label) ? this.stateName : this.label;
-            Bytable bytable = UMI3DSerializer.Write<ulong>(id)
-                            + UMI3DSerializer.Write<string>(label)
-                            + UMI3DSerializer.Write<string>(stateName)
-                            + UMI3DSerializer.Write<bool>(availableAtStart)
-                            + UMI3DSerializer.Write<FileDto>(iconResource.ToDto());
+            Bytable bytable = UMI3DSerializer.Write(id)
+                            + UMI3DSerializer.Write(label)
+                            + UMI3DSerializer.Write(animation.ToEntityDto(user))
+                            + UMI3DSerializer.Write(availableAtStart)
+                            + UMI3DSerializer.Write(iconResource.ToDto());
 
             return bytable;
         }

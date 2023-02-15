@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "UMI3D.Common.UserCapture",
-        "UMI3D.EDK.UserCapture"
+        "UMI3D.EDK.UserCapture",
+        "UMI3D.EDK.Core.Editor"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

@@ -34,7 +34,7 @@ namespace umi3d.cdk.userCapture
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmoteDto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
         }
 

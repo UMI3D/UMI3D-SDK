@@ -27,26 +27,26 @@ namespace umi3d.edk.userCapture
     /// </summary>
     /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit 
     /// which ones are allow ed to be used for each user.
-    [CreateAssetMenu(fileName = "UMI3DEmotesConfig", menuName = "UMI3D/Emotes Config")]
+
+    [CreateAssetMenu(fileName = "UMI3DEmotesConfigTemplate", menuName = "UMI3D/Emotes Config")]
     public class UMI3DEmotesConfig : ScriptableObject, UMI3DLoadableEntity
     {
         /// <summary>
         /// Entity id
         /// </summary>
-        [HideInInspector]
         private ulong id;
 
         /// <summary>
         /// Name of the default state in the avatar emote animator.
         /// </summary>
         /// The one that is played when the user is not doing anything special.
-        [Tooltip("Name of the default state in the avatar emote animator. The one that is played when the user is not doing anything special.")]
+        [Tooltip("Name of the default state in the avatar emote animator if one is used. The one that is played when the user is not doing anything special.")]
         public string defaultStateName = "Idle";
 
         /// <summary>
         /// Should the emotes be available by default to users ?
         /// </summary>
-        [Tooltip("Should the emotes be available by default to users ?")]
+        [Tooltip("Should the emotes be available by default to users? This setting will override all availaability settings in the emotes list.")]
         public bool allAvailableAtStartByDefault = false;
 
         /// <summary>
@@ -126,7 +126,7 @@ namespace umi3d.edk.userCapture
         {
             if (!registered)
             {
-                id = UMI3DEnvironment.Register(this);
+                id = UMI3DEnvironment.Instance.RegisterEntity(this);
                 registered = true;
             }
             return id;

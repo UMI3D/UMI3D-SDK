@@ -397,6 +397,11 @@ namespace umi3d.edk
             }
         }
 
+        public virtual ulong RegisterEntity(UMI3DEntity entity)
+        {
+            return Register(entity);
+        }
+
         /// <summary>
         /// Register an entity to the environment with an id, and return it's id. 
         /// </summary>

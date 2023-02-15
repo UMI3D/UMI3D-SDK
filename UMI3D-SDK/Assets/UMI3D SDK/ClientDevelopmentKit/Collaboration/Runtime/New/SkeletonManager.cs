@@ -84,6 +84,7 @@ namespace umi3d.cdk.collaboration
 
         private async void SendTrackingLoop()
         {
+            return;
             UnityEngine.Debug.Log("<color=green>Send loop</color>");
             if (sendTrackingLoopOnce)
                 return;
