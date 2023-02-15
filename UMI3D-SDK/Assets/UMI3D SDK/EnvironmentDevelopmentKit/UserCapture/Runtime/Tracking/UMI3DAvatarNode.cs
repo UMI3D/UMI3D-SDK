@@ -165,7 +165,7 @@ namespace umi3d.edk.userCapture
                 transform = skeletonAnimator.GetBoneTransform(dto.boneType.ConvertToBoneType().GetValueOrDefault());
 
             else
-                transform = GetComponentInChildren<UMI3DAvatarViewpointHelper>()?.transform;
+                transform = GetComponentInChildren<UMI3DAvatarViewpointHelper>()?.transform.parent;
 
             if (transform != null)
                 transform.localRotation = dto.rotation;
