@@ -26,7 +26,7 @@ using UnityEngine.Assertions.Must;
 namespace umi3d.cdk.userCapture
 {
 
-    public class PersonalSkeleton : Singleton<PersonalSkeleton>, ISkeleton
+    public class PersonalSkeleton : SingleBehaviour<PersonalSkeleton>, ISkeleton
     {
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
         #region fields
