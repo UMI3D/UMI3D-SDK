@@ -8,7 +8,9 @@
         "UMI3D.CDK.Collaboration",
         "UMI3D.CDK.UserCapture",
         "UMI3D.Common.UserCapture",
-        "inetum.unityUtils"
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration",
+        "UMI3D.Common.Core"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
