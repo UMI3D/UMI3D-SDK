@@ -13,6 +13,7 @@ using umi3d.common.collaboration;
 using System;
 using System.Reflection;
 using System.Linq;
+using umi3d.cdk;
 
 public class ISkeleton_Test
 {
@@ -100,6 +101,46 @@ public class ISkeleton_Test
             object[] parameters = new object[] { dto, obj };
             type.GetTypeInfo().GetDeclaredMethods("SaveTransform").ToList()[1].Invoke(fakeSkeleton, parameters);
             Assert.IsTrue(fakeSkeleton.SavedTransforms.Count == 1);
+        }
+
+        yield return null;
+    }
+    #endregion
+
+    #region Add new bound
+    [UnityTest]
+    public IEnumerator TestAddBoundNull()
+    {
+        Type type = typeof(ISkeleton);
+        if (type != null)
+        {
+            BindingDto dto = null;
+            Transform obj = null;
+            UMI3DNodeInstance node = null;
+            object[] parameters = new object[] { dto, obj, node };
+            MethodInfo mi = type.GetTypeInfo().GetDeclaredMethods("AddANewBound").ToList()[0];
+            mi.Invoke(fakeSkeleton, parameters);
+            Assert.IsTrue(fakeSkeleton.Bounds.Count == 0);
+        }
+
+        yield return null;
+    }
+
+    [UnityTest]
+    public IEnumerator TestAddBound()
+    {
+        Type type = typeof(ISkeleton);
+        if (type != null)
+        {
+            BindingDto dto = new BindingDto();
+            Transform obj = (new GameObject()).transform;
+            UMI3DNodeInstance node = new UMI3DNodeInstance(() => Debug.Log("t"));
+
+            object[] parameters = new object[] { dto, obj, node };
+            MethodInfo mi = type.GetTypeInfo().GetDeclaredMethods("AddANewBound").ToList()[0];
+            mi.Invoke(fakeSkeleton, parameters);
+
+            Assert.IsTrue(fakeSkeleton.Bounds.Count == 1);
         }
 
         yield return null;

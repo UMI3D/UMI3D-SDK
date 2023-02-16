@@ -52,6 +52,7 @@ namespace umi3d.cdk.userCapture
             if(Bones == null) Bones= new Dictionary<uint, s_Transform>();
             if(Skeletons == null) Skeletons = new List<ISubSkeleton>();
             if(savedTransforms == null) savedTransforms = new Dictionary<ulong, SavedTransform>();
+            if (bounds == null) bounds = new List<Bound>();
             
         }
 
@@ -140,6 +141,7 @@ namespace umi3d.cdk.userCapture
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator { get; set; }
 
         protected List<Bound> bounds { get; set; }
+        public List<Bound> Bounds { get => bounds; }
 
         public List<Transform> boundRigs { get; set; }
         /// <summary>
@@ -482,8 +484,9 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        void AddANewBound(BindingDto dto, Transform obj, UMI3DNodeInstance node)
+        private void AddANewBound(BindingDto dto, Transform obj, UMI3DNodeInstance node)
         {
+            if (dto == null || obj == null || node == null) return;
             RigBindingDataDto rigDto = dto.data as RigBindingDataDto;
             bounds.Add(new Bound()
             {
@@ -501,6 +504,7 @@ namespace umi3d.cdk.userCapture
         private void SaveTransform(BindingDto dto, Transform obj, UMI3DNodeInstance node)
         {
             RigBindingDataDto rigDto = (dto.data as RigBindingDataDto);
+            if (rigDto == null) return;
             if (savedTransforms.TryGetValue(dto.bindingId, out SavedTransform savedTransform))
             {
 
