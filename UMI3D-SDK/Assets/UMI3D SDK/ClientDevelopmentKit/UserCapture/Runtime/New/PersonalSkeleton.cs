@@ -44,7 +44,7 @@ namespace umi3d.cdk.userCapture
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
-        protected List<ISubSkeleton> skeletons = new List<ISubSkeleton>();
+        public List<ISubSkeleton> skeletons = new List<ISubSkeleton>();
         protected bool activeUserBindings;
         protected ulong userId;
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
