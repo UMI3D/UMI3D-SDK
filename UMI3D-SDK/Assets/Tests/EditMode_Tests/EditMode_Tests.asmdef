@@ -4,12 +4,16 @@
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
+        "UMI3D.Common.Core",
+        "UMI3D.Common.UserCapture",
+        "UMI3D.CDK.Core",
         "UMI3D.CDK.UserCapture",
         "UMI3D.CDK.Collaboration",
         "UMI3D.CDK.Core",
         "UMI3D.Common.UserCapture",
         "inetum.unityUtils",
         "UMI3D.Common.Core"
+        "inetum.unityUtils"
     ],
     "includePlatforms": [
         "Editor"

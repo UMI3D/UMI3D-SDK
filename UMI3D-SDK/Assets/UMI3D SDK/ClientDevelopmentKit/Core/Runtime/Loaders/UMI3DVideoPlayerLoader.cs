@@ -40,7 +40,7 @@ namespace umi3d.cdk
 
         public static void Clear()
         {
-            UMI3DEnvironmentLoader.Entities()?.Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v.Clean());
+            UMI3DEnvironmentLoader.Entities()?.Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v?.Clean());
         }
 
         /// <summary>
