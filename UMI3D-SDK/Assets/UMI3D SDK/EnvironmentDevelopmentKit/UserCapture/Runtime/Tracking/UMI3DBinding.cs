@@ -86,18 +86,22 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public BoneBindingDto ToDto(UMI3DUser user)
         {
-            var dto = new BoneBindingDto()
-            {
-                rigName = rigName,
-                active = isBinded,
-                syncPosition = syncPosition,
-                syncRotation = syncRotation,
-                freezeWorldScale = freezeWorldScale,
-                boneType = boneType,
-                offsetPosition = offsetPosition,
-                offsetRotation = offsetRotation,
-                offsetScale = offsetScale,
-            };
+            RigBindingDataDto rigBindingDataDto = new RigBindingDataDto(
+                rigName : rigName, 
+                boneType : boneType,
+                userId : user.Id(),
+                simpleBindings : null, //to be discuss
+                offSetScale : offsetScale,
+                offSetRotation : offsetRotation,
+                offSetPosition : offsetPosition,
+                syncScale : false, //to be discussed
+                syncRotation : syncRotation,
+                syncPosition : syncPosition,
+                partialFit : false, //to be discussed
+                priority : 10
+            );
+
+            BindingDto bindingDto = new BindingDto();
 
             if (node != null)
                 dto.objectId = node.Id();

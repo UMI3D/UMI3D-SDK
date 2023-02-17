@@ -18,17 +18,29 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.userCapture
 {
     public class SimpleBoneBindingDto : SimpleBindingDto
     {
         public SimpleBoneBindingDto() { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId">The user to which the object i going to be binded ID</param>
+        /// <param name="boneType">The bone to which the object is going to be binded</param>
+        /// <param name="syncRotation">Do we sync the Rotation of the binding with the rest of the system</param>
+        /// <param name="syncScale">Do we sync the Scale of the binding with the rest of the system</param>
+        /// <param name="syncPosition">Do we sync the position of the binding with the rest of the system</param>
+        /// <param name="offSetPosition">offSet Position of the binding</param>
+        /// <param name="offSetRotation">offset rotation of the binding</param>
+        /// <param name="offSetScale">offSet Scale of the binding</param>
+        /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
+        /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
         public SimpleBoneBindingDto(ulong userId, uint boneType,
-                        SimpleBindingDto[] simpleBindings,
                         bool syncRotation, bool syncScale, bool syncPosition,
                         Vector3 offSetPosition, Vector4 offSetRotation, Vector3 offSetScale,
-                        int priority, bool partialFit) : base(simpleBindings, syncRotation, syncScale, syncPosition,
+                        int priority, bool partialFit) : base( syncRotation, syncScale, syncPosition,
                                                                 offSetPosition, offSetRotation, offSetScale,
                                                                 priority, partialFit)
         {
@@ -36,7 +48,14 @@ namespace umi3d.common.collaboration
             this.boneType = boneType;
         }
 
+        /// <summary>
+        /// The user to which the object i going to be binded ID
+        /// </summary>
         public ulong userId { get; private set; }
+
+        /// <summary>
+        /// The bone to which the object is going to be binded
+        /// </summary>
         public uint boneType { get; private set; }  
      }
 }

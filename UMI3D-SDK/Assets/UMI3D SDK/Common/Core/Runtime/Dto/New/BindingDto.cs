@@ -18,7 +18,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.userCapture
 {
     public class BindingDto : UMI3DDto
     {
