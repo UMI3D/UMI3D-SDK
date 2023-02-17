@@ -14,7 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using umi3d.common.userCapture;
+using umi3d.common;
 using UnityEngine;
+using UnityEngine.UIElements;
+using inetum.unityUtils;
+using System;
+using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
@@ -46,5 +53,75 @@ namespace umi3d.edk.userCapture
                 UMI3DServer.Instance.NotifyUserChanged(this);
             }
         }
+
+        #region Bindings
+        /// <summary>
+        /// If true, the avatar could receive bindings.
+        /// </summary>
+        [SerializeField, EditorReadOnly,
+            Tooltip("If true, the avatar could receive bindings.")]
+        private bool activeAvatarBindings_ = true;
+
+        public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
+        public UMI3DAsyncProperty<bool> activeBindings { get { Register(); return _activeBindings; } protected set => _activeBindings = value; }
+
+        public class OnActivationValueChanged : UnityEvent<ulong, bool> { };
+
+        public static OnActivationValueChanged onActivationValueChanged = new OnActivationValueChanged();
+        private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
+        private UMI3DAsyncProperty<bool> _activeBindings;
+
+        /// <inheritdoc/>
+        protected override void InitDefinition(ulong id)
+        {
+            base.InitDefinition(id);
+
+            activeBindings = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ActiveBindings, activeAvatarBindings_);
+            activeBindings.OnValueChanged += (b) =>
+            {
+                activeAvatarBindings_ = b;
+            };
+
+            bindings = new UMI3DAsyncListProperty<UMI3DBinding>(Id(), UMI3DPropertyKeys.UserBindings, new List<UMI3DBinding>(), (b, u) => b.ToDto(u));
+        }
+
+        protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
+        {
+            base.WriteProperties(dto, user);
+            var avatarNodeDto = dto as UMI3DAvatarNodeDto;
+
+            avatarNodeDto.userId = userId;
+            avatarNodeDto.activeBindings = activeBindings.GetValue(user);
+
+            if (UMI3DEmbodimentManager.Instance.embodimentSize.ContainsKey(userId))
+                avatarNodeDto.userSize = UMI3DEmbodimentManager.Instance.embodimentSize[userId];
+            else
+            {
+                UMI3DLogger.LogError("EmbodimentSize does not contain key " + user.Id(), DebugScope.EDK);
+            }
+
+            var bindingDtoList = new List<BoneBindingDto>();
+
+            foreach (UMI3DBinding item in bindings.GetValue(user))
+            {
+                bindingDtoList.Add(item.ToDto(user));
+            }
+
+            avatarNodeDto.bindings = bindingDtoList;
+
+            UMI3DEmbodimentManager.Instance.WriteNodeCollections(avatarNodeDto, user);
+        }
+
+        /// <inheritdoc/>
+        public override Bytable ToBytes(UMI3DUser user)
+        {
+            return
+                base.ToBytes(user)
+            + UMI3DSerializer.Write(userId)
+                + UMI3DSerializer.Write(activeBindings.GetValue(user))
+                + UMI3DSerializer.WriteIBytableCollection(bindings.GetValue(user), user);
+        }
+
+        #endregion
     }
 }
