@@ -32,9 +32,9 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="obj">the avatar node</param>
     /// <param name="b">the activation value</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty UpdateBindingActivation(UMI3DAvatarNode obj, bool b)
+    public SetEntityProperty UpdateBindingActivation(UMI3DTrackedUser obj, bool b)
     {
-        UMI3DAvatarNode.onActivationValueChanged.Invoke(obj.userId, b);
+        UMI3DTrackedUser.onActivationValueChanged.Invoke(obj.Id(), b);
         return obj.activeBindings.SetValue(b);
     }
 
@@ -45,9 +45,9 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="obj">the avatar node</param>
     /// <param name="b">the activation value</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty UpdateBindingActivation(UMI3DUser user, UMI3DAvatarNode obj, bool b)
+    public SetEntityProperty UpdateBindingActivation(UMI3DUser user, UMI3DTrackedUser obj, bool b)
     {
-        UMI3DAvatarNode.onActivationValueChanged.Invoke(obj.userId, b);
+        UMI3DTrackedUser.onActivationValueChanged.Invoke(obj.Id(), b);
         return obj.activeBindings.SetValue(user, b);
     }
 
@@ -57,7 +57,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="obj">the avatar node</param>
     /// <param name="bindings">the list of bindings</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty UpdateBindingList(UMI3DAvatarNode obj, List<UMI3DBinding> bindings)
+    public SetEntityProperty UpdateBindingList(UMI3DTrackedUser obj, List<UMI3DBinding> bindings)
     {
         return obj.bindings.SetValue(bindings);
     }
@@ -69,7 +69,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="obj">the avatar node</param>
     /// <param name="bindings">the list of bindings</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty UpdateBindingList(UMI3DUser user, UMI3DAvatarNode obj, List<UMI3DBinding> bindings)
+    public SetEntityProperty UpdateBindingList(UMI3DUser user, UMI3DTrackedUser obj, List<UMI3DBinding> bindings)
     {
         return obj.bindings.SetValue(user, bindings);
     }
@@ -81,7 +81,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="index">the given index</param>
     /// <param name="binding">the new binding value</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty UpdateBinding(UMI3DAvatarNode obj, int index, UMI3DBinding binding)
+    public SetEntityProperty UpdateBinding(UMI3DTrackedUser obj, int index, UMI3DBinding binding)
     {
         return obj.bindings.SetValue(index, binding);
     }
@@ -94,7 +94,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="index">the given index</param>
     /// <param name="binding">the new binding value</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty UpdateBinding(UMI3DUser user, UMI3DAvatarNode obj, int index, UMI3DBinding binding)
+    public SetEntityProperty UpdateBinding(UMI3DUser user, UMI3DTrackedUser obj, int index, UMI3DBinding binding)
     {
         return obj.bindings.SetValue(user, index, binding);
     }
@@ -105,7 +105,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="obj">the avatar node</param>
     /// <param name="binding">the new binding value</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty AddBinding(UMI3DAvatarNode obj, UMI3DBinding binding)
+    public SetEntityProperty AddBinding(UMI3DTrackedUser obj, UMI3DBinding binding)
     {
         return obj.bindings.Add(binding);
     }
@@ -117,7 +117,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="obj">the avatar node</param>
     /// <param name="binding">the new binding value</param>
     /// <returns>The associated SetEntityProperty</returns>
-    public SetEntityProperty AddBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding)
+    public SetEntityProperty AddBinding(UMI3DUser user, UMI3DTrackedUser obj, UMI3DBinding binding)
     {
         return obj.bindings.Add(user, binding);
     }
@@ -130,7 +130,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
     /// <param name="newparent">a transform intended to be the new parent. If keepWorldPosition is true, newparent must be specified.</param>
     /// <returns>The list of associated SetEntityProperty.</returns>
-    public List<SetEntityProperty> RemoveBinding(UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
+    public List<SetEntityProperty> RemoveBinding(UMI3DTrackedUser obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
     {
         var operations = new List<SetEntityProperty>();
 
@@ -156,7 +156,7 @@ public class BindingManager : Singleton<BindingManager>
     /// <param name="keepWorldPosition">the boolean to freeze the object in the world</param>
     /// <param name="newparent">a transform intended to be the new parent. If keepWorldPosition is true, newparent must be specified.</param>
     /// <returns>The list of associated SetEntityProperty</returns>
-    public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DAvatarNode obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
+    public List<SetEntityProperty> RemoveBinding(UMI3DUser user, UMI3DTrackedUser obj, UMI3DBinding binding, bool keepWorldPosition = false, UMI3DAbstractNode newparent = null)
     {
         var operations = new List<SetEntityProperty>();
 

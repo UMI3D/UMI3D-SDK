@@ -24,6 +24,12 @@ namespace umi3d.common.userCapture
     {
         public BindingDto() { }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="objectId">An identifier defined by the designer.</param>
+        /// <param name="active">Is it activated</param>
+        /// <param name="data">A ref to the Dto containing all the information about the said binding or bindings</param>
         public BindingDto(ulong objectId, bool active, BindingDataDto data)
         {
             this.bindingId = objectId;
@@ -35,7 +41,13 @@ namespace umi3d.common.userCapture
         /// An identifier defined by the designer.
         /// </summary>
         public ulong bindingId { get; private set; }
+        /// <summary>
+        /// Is it activated
+        /// </summary>
         public bool active { get; private set; }
+        /// <summary>
+        /// A ref to the Dto containing all the information about the said binding or bindings
+        /// </summary>
         public BindingDataDto data { get; private set; }
     }
 }

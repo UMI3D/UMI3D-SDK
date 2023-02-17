@@ -58,8 +58,6 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// If true, the avatar could receive bindings.
         /// </summary>
-        [SerializeField, EditorReadOnly,
-            Tooltip("If true, the avatar could receive bindings.")]
         private bool activeAvatarBindings_ = true;
 
         public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { Register(); return _bindings; } protected set => _bindings = value; }
@@ -100,7 +98,7 @@ namespace umi3d.edk.userCapture
                 UMI3DLogger.LogError("EmbodimentSize does not contain key " + user.Id(), DebugScope.EDK);
             }
 
-            var bindingDtoList = new List<BoneBindingDto>();
+            var bindingDtoList = new List<BindingDto>();
 
             foreach (UMI3DBinding item in bindings.GetValue(user))
             {
@@ -115,9 +113,8 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
-            return
-                base.ToBytes(user)
-            + UMI3DSerializer.Write(userId)
+            return base.ToBytes(user)
+                + UMI3DSerializer.Write(userId)
                 + UMI3DSerializer.Write(activeBindings.GetValue(user))
                 + UMI3DSerializer.WriteIBytableCollection(bindings.GetValue(user), user);
         }

@@ -32,12 +32,15 @@ namespace umi3d.edk.userCapture
         public bool isBinded = true;
         public bool syncPosition = true;
         public bool syncRotation = true;
+        public bool syncScale = true;
         public bool freezeWorldScale = true;
         public UMI3DAbstractNode node;
         public string rigName = "";
         public Vector3 offsetPosition = Vector3.zero;
-        public Quaternion offsetRotation = Quaternion.identity;
+        public Vector4 offsetRotation = Vector4.zero;
         public Vector3 offsetScale = Vector3.zero;
+        public bool partialFit = true;
+        public int priotity = 0;
 
         public UMI3DBinding() { }
 
@@ -47,12 +50,15 @@ namespace umi3d.edk.userCapture
             isBinded = b.isBinded;
             syncPosition = b.syncPosition;
             syncRotation = b.syncRotation;
+            syncScale = b.syncScale;
             freezeWorldScale = b.freezeWorldScale;
             node = b.node;
             rigName = b.rigName;
             offsetPosition = b.offsetPosition;
             offsetRotation = b.offsetRotation;
             offsetScale = b.offsetScale;
+            partialFit = b.partialFit; 
+            priotity= b.priotity;
         }
 
         /// <inheritdoc/>
@@ -67,7 +73,10 @@ namespace umi3d.edk.userCapture
                     + UMI3DSerializer.Write(offsetScale)
                     + UMI3DSerializer.Write(syncPosition)
                     + UMI3DSerializer.Write(syncRotation)
-                    + UMI3DSerializer.Write(freezeWorldScale);
+                    + UMI3DSerializer.Write(syncScale)
+                    + UMI3DSerializer.Write(freezeWorldScale)
+                    + UMI3DSerializer.Write(partialFit)
+                    + UMI3DSerializer.Write(priotity);
         }
 
         /// <inheritdoc/>
@@ -84,36 +93,46 @@ namespace umi3d.edk.userCapture
             return true;
         }
         /// <inheritdoc/>
-        public BoneBindingDto ToDto(UMI3DUser user)
+        public BindingDto ToDto(UMI3DUser user)
         {
             RigBindingDataDto rigBindingDataDto = new RigBindingDataDto(
                 rigName : rigName, 
                 boneType : boneType,
                 userId : user.Id(),
-                simpleBindings : null, //to be discuss
                 offSetScale : offsetScale,
                 offSetRotation : offsetRotation,
                 offSetPosition : offsetPosition,
-                syncScale : false, //to be discussed
+                syncScale : syncScale,
                 syncRotation : syncRotation,
                 syncPosition : syncPosition,
-                partialFit : false, //to be discussed
-                priority : 10
+                partialFit : partialFit,
+                priority : priotity
             );
 
-            BindingDto bindingDto = new BindingDto();
+            BindingDto bindingDto = new BindingDto(
+                objectId: NodeCheckForId(),
+                active: true,
+                data : rigBindingDataDto
+            ) ;
 
+            //if (user != null)
+            //    dto.bindingId = user.Id() + "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
+            //else
+            //    dto.bindingId = "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
+
+            return bindingDto;
+        }
+
+        private ulong NodeCheckForId()
+        {
             if (node != null)
-                dto.objectId = node.Id();
+            {
+                return node.Id();
+            }
             else
-                dto.objectId = 0;
-
-            if (user != null)
-                dto.bindingId = user.Id() + "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
-            else
-                dto.bindingId = "binding_" + boneType + "_" + rigName + "_" + dto.objectId;
-
-            return dto;
+            {
+                return 0;
+            }
         }
     }
 }
