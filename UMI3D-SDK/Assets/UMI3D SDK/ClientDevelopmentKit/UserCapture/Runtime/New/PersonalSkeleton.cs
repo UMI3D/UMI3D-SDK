@@ -61,7 +61,7 @@ namespace umi3d.cdk.userCapture
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
-        public void Init()
+        public void Start()
         {
             skeletons = new List<ISubSkeleton>();
             skeletons[0] = TrackedSkeleton;
@@ -70,8 +70,8 @@ namespace umi3d.cdk.userCapture
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
             var frame = new UserTrackingFrameDto()
             {
-                position = PoseManager.Instance.transform.position,
-                rotation = PoseManager.Instance.transform.rotation,
+                position = transform.position,
+                rotation = transform.rotation,  
                 skeletonHighOffset = skeletonHighOffset,
             };
 

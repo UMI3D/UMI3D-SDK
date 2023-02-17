@@ -60,10 +60,5 @@ namespace umi3d.cdk.collaboration
                 foreach (var skeleton in skeletons)
                     skeleton.Update(frame);
         }
-
-        void ISkeleton.UpdateFrame(UserTrackingFrameDto frame)
-        {
-            throw new System.NotImplementedException();
-        }
     }
 }
