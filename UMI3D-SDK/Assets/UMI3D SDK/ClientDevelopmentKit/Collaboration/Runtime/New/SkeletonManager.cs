@@ -49,9 +49,7 @@ namespace umi3d.cdk.collaboration
 
         public SkeletonManager() : base()
         {
-            UnityEngine.Debug.Log("<color=green>New</color>");
             SetTrackingSending(_sendTracking);
-            skeleton.Init();
         }
 
         public UserTrackingFrameDto GetFrame()
