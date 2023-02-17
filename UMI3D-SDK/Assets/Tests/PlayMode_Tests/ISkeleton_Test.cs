@@ -35,6 +35,9 @@ public class ISkeleton_Test
 {
     List<AnimatedSkeleton> animatedSkeletons = null;
 
+    /// <summary>
+    /// Class to fake an implementation of the interface 
+    /// </summary>
     public class FakeSkeleton : ISkeleton
     {
         #region fields
@@ -89,6 +92,10 @@ public class ISkeleton_Test
 
     #region Bindings
     #region SaveTranform
+    /// <summary>
+    /// Test if we don't save transforms if the dto received and the transfom received are null
+    /// </summary>
+    /// <returns></returns>
     [UnityTest]
     public IEnumerator TestSaveTransformWitNullInputs()
     {
@@ -106,6 +113,10 @@ public class ISkeleton_Test
         yield return null;
     }
 
+    /// <summary>
+    /// Test that we save a transform when its not null
+    /// </summary>
+    /// <returns></returns>
     [UnityTest]
     public IEnumerator TestSaveTransform()
     {
@@ -124,6 +135,10 @@ public class ISkeleton_Test
     #endregion
 
     #region Add new bound
+    /// <summary>
+    /// Test that we dont add null bounds
+    /// </summary>
+    /// <returns></returns>
     [UnityTest]
     public IEnumerator TestAddBoundNull()
     {
@@ -142,6 +157,10 @@ public class ISkeleton_Test
         yield return null;
     }
 
+    /// <summary>
+    /// test that we add bounds when not null
+    /// </summary>
+    /// <returns></returns>
     [UnityTest]
     public IEnumerator TestAddBound()
     {

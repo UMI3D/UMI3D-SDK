@@ -29,6 +29,9 @@ public class ISkeleton_Test
     List<AnimatedSkeleton> animatedSkeletons = null;
     ISkeleton fakeSkeleton = null;
 
+    /// <summary>
+    /// Class to fake an implementation of the interface 
+    /// </summary>
     public class FakeSkeleton : ISkeleton
     {
         #region fields
@@ -79,6 +82,9 @@ public class ISkeleton_Test
     }
 
     #region Skeleton calculation
+    /// <summary>
+    /// Test that we can handle a null list of sub - skeleton in the cmpute method
+    /// </summary>
     [Test]
     public void Test_Compute_NullList()
     {
@@ -92,6 +98,9 @@ public class ISkeleton_Test
         Assert.IsTrue(results.Bones.Count == 0);
     }
 
+    /// <summary>
+    /// test that we can handle an empty list of sub skeleton i the compute méthod
+    /// </summary>
     [Test]
     public void Test_Compute_EmptyList()
     {
@@ -106,6 +115,9 @@ public class ISkeleton_Test
         Assert.IsTrue(results.Bones.Count == 0);  
     }
 
+    /// <summary>
+    /// Tesst that we handle a a subskeleton  that has a list of animated skeleton composed of not initialized animated skeletons
+    /// </summary>
     [Test]
     public void Test_Compute_ListWithEmpties()
     {
@@ -121,6 +133,9 @@ public class ISkeleton_Test
         Assert.IsTrue(results.Bones.Count == 0);
     }
 
+    /// <summary>
+    /// Test that we can compute correctly With one animated skelton with bones 
+    /// </summary>
     [Test]
     public void Test_Compute_OneAnimatedSkeletonWithhBones()
     {
@@ -152,6 +167,9 @@ public class ISkeleton_Test
     #region Bindings
     #region Add/remove
     #region public methods
+    /// <summary>
+    /// Test that adding null bindings will not break our user bindings system
+    /// </summary>
     [Test]
     public void TestAddNullBindingNullList()
     {
@@ -160,6 +178,9 @@ public class ISkeleton_Test
         Assert.IsTrue(fakeSkeleton.userBindings == null);
     }
 
+    /// <summary>
+    /// Test that we can add a binding
+    /// </summary>
     [Test]
     public void TestAddBinding()
     {
@@ -168,7 +189,9 @@ public class ISkeleton_Test
 
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
     }
-
+    /// <summary>
+    ///     testc that we can add multiple bindings at once
+    /// </summary>
     [Test]
     public void TestAddMultipleSameBindings()
     {
@@ -179,7 +202,9 @@ public class ISkeleton_Test
 
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
     }
-
+    /// <summary>
+    /// test taht we can add multiple different bindings at once
+    /// </summary>
     [Test]
     public void TestAddMultipleDifferentBindings()
     {
@@ -191,6 +216,9 @@ public class ISkeleton_Test
         Assert.IsTrue(fakeSkeleton.userBindings.Count == 2);
     }
 
+    /// <summary>
+    /// test that we can add a binding at a specific index 
+    /// </summary>
     [Test]
     public void TestRemoveBindingAtIndex()
     {
