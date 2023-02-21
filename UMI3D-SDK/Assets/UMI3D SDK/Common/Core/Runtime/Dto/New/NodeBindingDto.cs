@@ -25,10 +25,9 @@ namespace umi3d.common.userCapture
         public NodeBindingDto() { }
 
         public NodeBindingDto(ulong objectID,
-                        SimpleBindingDto[] simpleBindings,
                         bool syncRotation, bool syncScale, bool syncPosition,
                         Vector3 offSetPosition, Vector4 offSetRotation, Vector3 offSetScale,
-                        int priority, bool partialFit) : base(simpleBindings, syncRotation, syncScale, syncPosition,
+                        int priority, bool partialFit) : base( syncRotation, syncScale, syncPosition,
                                                                 offSetPosition, offSetRotation, offSetScale,
                                                                 priority, partialFit)
         {

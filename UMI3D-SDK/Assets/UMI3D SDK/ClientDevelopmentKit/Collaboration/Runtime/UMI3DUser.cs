@@ -15,9 +15,12 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.userCapture;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -232,7 +235,6 @@ namespace umi3d.cdk.collaboration
                     OnUserMicrophoneUseMumbleUpdated.Invoke(this);
                     return true;
 
-
                 case UMI3DPropertyKeys.UserAudioPassword:
                     audioPassword = (string)value;
                     OnUserMicrophoneIdentityUpdated.Invoke(this);
@@ -252,10 +254,19 @@ namespace umi3d.cdk.collaboration
                     dto.audioChannel = (string)value;
                     OnUserMicrophoneChannelUpdated.Invoke(this);
                     return true;
-            }
-            return false;
-        }
 
+                case UMI3DPropertyKeys.UserBindings:
+                    SetBindingProperty(value);
+                    return true;
+
+                case UMI3DPropertyKeys.ActiveBindings:
+                     ActivateBindings(value);
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
 
         public void SetMicrophoneStatus(bool microphoneStatus)
         {
@@ -290,6 +301,52 @@ namespace umi3d.cdk.collaboration
         public static void MuteAllAttention()
         {
             UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
+        }
+
+        private void SetBindingProperty(object value)
+        {
+            if(value is SetUMI3DPropertyData data)
+            {
+                SkeletonManager embd = UMI3DEnvironmentLoader.GetNode(data.property.entityId).gameObject.GetComponent<UserAvatar>();
+                if (embd != null)
+                {
+                    switch (data.property)
+                    {
+                        case SetEntityListAddPropertyDto add:
+                            embd.AddBinding(add.index, data.property.value as BoneBindingDto);
+                            break;
+                        case SetEntityListRemovePropertyDto rem:
+                            embd.RemoveBinding(rem.index);
+                            break;
+                        case SetEntityListPropertyDto set:
+                            embd.UpdateBinding(set.index, data.property.value as BoneBindingDto);
+                            break;
+                        default:
+                            embd.SetBindings(data.property.value as List<BoneBindingDto>);
+                            break;
+                    }
+                }
+                else
+                {
+                    throw new System.Exception("Internal error");
+                }
+            }
+        }
+
+        private void ActivateBindings(object value)
+        {
+            if (value is SetUMI3DPropertyData data)
+            {
+                UserAvatar embd = UMI3DEnvironmentLoader.GetNode(data.property.entityId).gameObject.GetComponent<UserAvatar>();
+                if (embd != null)
+                {
+                    embd.SetActiveBindings((bool)data.property.value);
+                }
+                else
+                {
+                    throw new System.Exception("Internal error");
+                }
+            }
         }
 
         public override string ToString()
