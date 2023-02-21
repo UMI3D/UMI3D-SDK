@@ -307,6 +307,7 @@ namespace umi3d.cdk.collaboration
         {
             if(value is SetUMI3DPropertyData data)
             {
+                if (SkeletonManager.Instance 
                 SkeletonManager embd = UMI3DEnvironmentLoader.GetNode(data.property.entityId).gameObject.GetComponent<UserAvatar>();
                 if (embd != null)
                 {
