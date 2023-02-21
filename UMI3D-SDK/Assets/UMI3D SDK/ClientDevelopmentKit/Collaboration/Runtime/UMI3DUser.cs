@@ -307,30 +307,32 @@ namespace umi3d.cdk.collaboration
         {
             if(value is SetUMI3DPropertyData data)
             {
-                if (SkeletonManager.Instance 
-                SkeletonManager embd = UMI3DEnvironmentLoader.GetNode(data.property.entityId).gameObject.GetComponent<UserAvatar>();
-                if (embd != null)
+                if (SkeletonManager.Instance.GetSkeletonById(data.property.entityId) is ISkeleton skeleton)
                 {
-                    switch (data.property)
+                    if (skeleton != null)
                     {
-                        case SetEntityListAddPropertyDto add:
-                            embd.AddBinding(add.index, data.property.value as BoneBindingDto);
-                            break;
-                        case SetEntityListRemovePropertyDto rem:
-                            embd.RemoveBinding(rem.index);
-                            break;
-                        case SetEntityListPropertyDto set:
-                            embd.UpdateBinding(set.index, data.property.value as BoneBindingDto);
-                            break;
-                        default:
-                            embd.SetBindings(data.property.value as List<BoneBindingDto>);
-                            break;
+                        switch (data.property)
+                        {
+                            case SetEntityListAddPropertyDto add:
+                                skeleton.AddBinding(add.index, data.property.value as BindingDto);
+                                break;
+                            case SetEntityListRemovePropertyDto rem:
+                                skeleton.RemoveBinding(rem.index);
+                                break;
+                            case SetEntityListPropertyDto set:
+                                skeleton.UpdateBinding(set.index, data.property.value as BindingDto);
+                                break;
+                            default:
+                                skeleton.SetBindings(data.property.value as List<BindingDto>);
+                                break;
+                        }
+                    }
+                    else
+                    {
+                        throw new System.Exception("Internal error");
                     }
                 }
-                else
-                {
-                    throw new System.Exception("Internal error");
-                }
+
             }
         }
 
@@ -338,14 +340,16 @@ namespace umi3d.cdk.collaboration
         {
             if (value is SetUMI3DPropertyData data)
             {
-                UserAvatar embd = UMI3DEnvironmentLoader.GetNode(data.property.entityId).gameObject.GetComponent<UserAvatar>();
-                if (embd != null)
+                if (SkeletonManager.Instance.GetSkeletonById(data.property.entityId) is ISkeleton skeleton)
                 {
-                    embd.SetActiveBindings((bool)data.property.value);
-                }
-                else
-                {
-                    throw new System.Exception("Internal error");
+                    if (skeleton != null)
+                    {
+                        skeleton.SetActiveBindings((bool)data.property.value);
+                    }
+                    else
+                    {
+                        throw new System.Exception("Internal error");
+                    }
                 }
             }
         }
