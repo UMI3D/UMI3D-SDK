@@ -16,6 +16,7 @@ limitations under the License.
 using System;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
@@ -88,53 +89,89 @@ namespace umi3d.common.collaboration
                         readable = false;
                     }
                     return true;
-                case true when typeof(T) == typeof(BoneBindingDto):
-                    string bindingId;
-                    string rigName;
+
+                case true when typeof(T) == typeof(BindingDto):
+                    ulong bindindId;
                     bool active;
-                    uint boneType;
-                    ulong objectId;
-                    bool syncPosition;
-                    bool syncRotation;
-                    bool freezeWorldScale;
-                    SerializableVector3 offsetPosition;
-                    SerializableVector4 offsetRotation;
-                    SerializableVector3 offsetScale;
-                    if (UMI3DSerializer.TryRead(container, out bindingId)
-                        && UMI3DSerializer.TryRead(container, out rigName)
-                        && UMI3DSerializer.TryRead(container, out active)
-                        && UMI3DSerializer.TryRead(container, out boneType)
-                        && UMI3DSerializer.TryRead(container, out objectId)
-                        && UMI3DSerializer.TryRead(container, out offsetPosition)
-                        && UMI3DSerializer.TryRead(container, out offsetRotation)
-                        && UMI3DSerializer.TryRead(container, out offsetScale)
-                        && UMI3DSerializer.TryRead(container, out syncPosition)
-                        && UMI3DSerializer.TryRead(container, out syncRotation)
-                        && UMI3DSerializer.TryRead(container, out freezeWorldScale))
+                    readable = UMI3DSerializer.TryRead<ulong>(container, out bindindId);
+                    readable &= UMI3DSerializer.TryRead<bool>(container, out active);
+                   
+                    if (readable)
                     {
-                        var bone = new BoneBindingDto()
+                        BindingDataDto bindingDataDto;
+                        Read<BindingDataDto>(container, out readable, out bindingDataDto);
+
+                        if (!readable)
                         {
-                            bindingId = bindingId,
-                            rigName = rigName,
-                            active = active,
-                            boneType = boneType,
-                            objectId = objectId,
-                            offsetPosition = offsetPosition,
-                            offsetRotation = offsetRotation,
-                            offsetScale = offsetScale,
-                            syncPosition = syncPosition,
-                            syncRotation = syncRotation,
-                            freezeWorldScale = freezeWorldScale
-                        };
-                        result = (T)Convert.ChangeType(bone, typeof(T));
-                        readable = true;
+                            result = default(T);
+                            return false;
+                        }
+
+                        BindingDto bindingDto = new BindingDto(
+                            objectId : bindindId,
+                            active : active,
+                            data : bindingDataDto
+                        );
+                        result = (T)Convert.ChangeType(bindingDto, typeof(T));
+                        return true;
                     }
                     else
                     {
                         result = default(T);
-                        readable = false;
+                        return false;
                     }
-                    return true;
+
+                case true when typeof(T) == typeof(RigBindingDataDto):
+                    string rigName;
+                    readable = UMI3DSerializer.TryRead(container, out rigName);
+
+                    if (readable)
+                    {
+                        SimpleBoneBindingDto simpleBindingDto;
+                        Read<SimpleBoneBindingDto>(container, out readable, out simpleBindingDto);
+
+                        if (!readable)
+                        {
+                            result = default(T);
+                            return false;
+                        }
+
+                        RigBindingDataDto rigBindingDataDto = new RigBindingDataDto(
+                               rigName : rigName, 
+                               simpleBindingDto : simpleBindingDto
+                        );
+                        result = (T)Convert.ChangeType(rigBindingDataDto, typeof(T));
+                        return true;
+                    }
+                    else
+                    {
+                        result = default(T);
+                        return false;
+                    }
+
+
+
+                case true when typeof(T) == typeof(BindingDataDto):
+                    int priority;
+                    bool partialFit;
+                    readable = UMI3DSerializer.TryRead<int>(container, out priority);
+                    readable &= UMI3DSerializer.TryRead<bool>(container, out partialFit);
+
+                    if (readable)
+                    {
+                        BindingDataDto bindingDataDto = new BindingDataDto(
+                            priority : priority,
+                            partialFit: partialFit
+                        );
+                        result = (T)Convert.ChangeType(bindingDataDto, typeof(T));
+                        return true;
+                    }
+                    else
+                    {
+                        result = default(T);
+                        return false;
+                    }
+
                 case true when typeof(T) == typeof(UMI3DHandPoseDto):
                     ulong id;
                     string Name;
@@ -578,6 +615,15 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(voice.login)
                         + UMI3DSerializer.Write(voice.password)
                         + UMI3DSerializer.Write(voice.channelName);
+                    break;
+                case BindingDto bindingDto:
+                    bytable = UMI3DSerializer.Write(bindingDto.bindingId)
+                        + UMI3DSerializer.Write(bindingDto.active);
+
+                    Debug.Log("gaueSZAOKPDIDVBKUI");
+                    //Write(bindingDto.data, out Bytable bytable1);
+
+                    //bytable += bytable1;
                     break;
                 default:
                     if (typeof(T) == typeof(ResourceDto))

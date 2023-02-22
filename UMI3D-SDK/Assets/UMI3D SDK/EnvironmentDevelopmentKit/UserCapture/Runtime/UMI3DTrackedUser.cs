@@ -42,28 +42,28 @@ namespace umi3d.edk.userCapture
         private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
         private UMI3DAsyncProperty<bool> _activeBindings;
 
-        ///// <summary>
-        ///// User's avatar
-        ///// </summary>
-        //private UMI3DAvatarNode avatar;
+        /// <summary>
+        /// User's avatar
+        /// </summary>
+        private UMI3DAvatarNode avatar;
 
-        ///// <summary>
-        ///// User's avatar
-        ///// </summary>
-        //public UMI3DAvatarNode Avatar
-        //{
-        //    get => avatar;
-        //    set
-        //    {
-        //        if (avatar == value)
-        //            return;
-        //        if (avatar != null)
-        //            GameObject.Destroy(avatar.gameObject);
-        //        if (value != null)
-        //            value.userId = Id();
-        //        avatar = value;
-        //        UMI3DServer.Instance.NotifyUserChanged(this);
-        //    }
-        //}
+        /// <summary>
+        /// User's avatar
+        /// </summary>
+        public UMI3DAvatarNode Avatar
+        {
+            get => avatar;
+            set
+            {
+                if (avatar == value)
+                    return;
+                if (avatar != null)
+                    GameObject.Destroy(avatar.gameObject);
+                if (value != null)
+                    value.userId = Id();
+                avatar = value;
+                UMI3DServer.Instance.NotifyUserChanged(this);
+            }
+        }
     }
 }

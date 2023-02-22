@@ -327,12 +327,11 @@ namespace umi3d.cdk.collaboration
                                 break;
                         }
                     }
-                    else
-                    {
-                        throw new System.Exception("Internal error");
-                    }
                 }
-
+            }
+            else
+            {
+                throw new System.Exception("Internal error");
             }
         }
 

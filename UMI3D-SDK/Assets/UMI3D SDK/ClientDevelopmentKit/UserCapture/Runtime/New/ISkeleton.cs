@@ -21,7 +21,6 @@ using umi3d.common.userCapture;
 using UnityEngine;
 using System;
 using umi3d.cdk.utils.extrapolation;
-using umi3d.common.collaboration;
 using System.Threading.Tasks;
 using System.Collections;
 using umi3d.cdk;

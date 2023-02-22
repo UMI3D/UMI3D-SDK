@@ -50,6 +50,15 @@ namespace umi3d.common.userCapture
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="rigName">Name of the rig</param>
+        public RigBindingDataDto(string rigName, SimpleBoneBindingDto simpleBindingDto) : base(simpleBindingDto)
+        {
+            this.rigName = rigName;
+        }
+
+        /// <summary>
         /// Name of the rig
         /// </summary>
         public string rigName { get; private set; }

@@ -137,9 +137,9 @@ namespace umi3d.edk.userCapture
                     else
                         UMI3DLogger.LogWarning("The embodiments scene is not set !", scope);
 
-                    trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
+                    //trackedUser.Avatar = embd.GetComponent<UMI3DAvatarNode>();
 
-                    LoadAvatarNode(trackedUser.Avatar);
+                    //LoadAvatarNode(trackedUser.Avatar);
 
                     GameObject skeleton = Instantiate(SkeletonPrefab, embd.transform);
 
@@ -148,15 +148,15 @@ namespace umi3d.edk.userCapture
                     else
                         UMI3DLogger.LogError("EmbodimentSize does not contain key " + userId, scope);
 
-                    trackedUser.Avatar.userId = userId;
-                    trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
+                    //trackedUser.Avatar.userId = userId;
+                    //trackedUser.Avatar.skeletonAnimator = skeleton.GetComponentInChildren<Animator>();
 
-                    embodimentInstances.Add(userId, trackedUser.Avatar);
+                    //embodimentInstances.Add(userId, trackedUser.Avatar);
                 }
 
                 await UMI3DAsyncManager.Yield();
 
-                NewEmbodiment.Invoke(trackedUser.Avatar);
+                //NewEmbodiment.Invoke(trackedUser.Avatar);
 
                 UMI3DLogger.Log("EmbodimentManager.JoinDtoReception end " + userId, scope);
             }
@@ -623,13 +623,13 @@ namespace umi3d.edk.userCapture
             Embarkments[user.Id()] = (true, Embarkments[user.Id()].Item2);
 
             Transaction tr = new Transaction();
-            tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(Embarkments[user.Id()].Item2.GetComponent<UMI3DAbstractNode>()));
-            if (setTransform)
-            {
-                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(localPosition));
-                tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(localRotation));
-            }
-            tr.Dispatch();
+            //tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectParentId.SetValue(Embarkments[user.Id()].Item2.GetComponent<UMI3DAbstractNode>()));
+            //if (setTransform)
+            //{
+            //    tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectPosition.SetValue(localPosition));
+            //    tr.AddIfNotNull((user as UMI3DTrackedUser).Avatar.objectRotation.SetValue(localRotation));
+            //}
+            //tr.Dispatch();
         }
 
         public void VehicleEmbarkment(UMI3DUser user, UMI3DAbstractNode vehicle = null)
