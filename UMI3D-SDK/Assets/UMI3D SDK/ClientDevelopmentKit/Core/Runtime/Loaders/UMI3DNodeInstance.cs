@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace umi3d.cdk
 {
@@ -79,7 +80,7 @@ namespace umi3d.cdk
 
         public override string ToString()
         {
-            if(dto is GlTFNodeDto gltf)
+            if (dto is GlTFNodeDto gltf)
                 return $"UMI3DNodeInstance [{dto} : {gltf.name} : {gltf.extensions?.umi3d} : {Object} : {gameObject}]";
             return $"UMI3DNodeInstance [{dto} : {Object} : {gameObject}]";
         }
@@ -117,6 +118,11 @@ namespace umi3d.cdk
         /// </summary>
         private List<UMI3DNodeInstance> _subNodeInstances;
 
+        /// <summary>
+        /// If this object is a Unity Scene Bundle.
+        /// </summary>
+        public Scene scene;
+
         public UMI3DNodeInstance(Action loadedCallback) : base(loadedCallback)
         {
         }
@@ -132,5 +138,20 @@ namespace umi3d.cdk
             set => _subNodeInstances = value;
         }
 
+        /// <summary>
+        /// Clean all loaded data before destroying <see cref="gameObject"/>.
+        /// </summary>
+        public virtual async void ClearBeforeDestroy()
+        {
+            if (scene != null && scene.isLoaded)
+            {
+                var op = SceneManager.UnloadSceneAsync(scene);
+
+                while (!op.isDone)
+                    await UMI3DAsyncManager.Yield();
+
+                LightProbes.TetrahedralizeAsync();
+            }
+        }
     }
 }

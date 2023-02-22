@@ -48,7 +48,7 @@ namespace umi3d.cdk
                 throw (new Umi3dException("nodeDto should not be null"));
             }
 
-            
+
             var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId);
             LoadSubModel(e, data.node, nodeDto);
         }
@@ -72,8 +72,7 @@ namespace umi3d.cdk
 
                     UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, subDto.subModelHierachyIndexes, subDto.subModelHierachyNames, (o) =>
                     {
-
-                            instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
+                        instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
 
                         AbstractMeshDtoLoader.ShowModelRecursively(instance);
                         if (!rootDto.isRightHanded)
@@ -81,7 +80,7 @@ namespace umi3d.cdk
                             instance.transform.localEulerAngles += new Vector3(0, 180, 0);
                         }
 
-                            SetCollider(subDto.id, UMI3DEnvironmentLoader.GetNode(subDto.id), ((UMI3DNodeDto)entity.dto).colliderDto);
+                        SetCollider(subDto.id, UMI3DEnvironmentLoader.GetNode(subDto.id), subDto.colliderDto);
 
                         UMI3DEnvironmentLoader.GetNode(subDto.modelId).subNodeInstances.Add(nodeInstance);
                         Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
