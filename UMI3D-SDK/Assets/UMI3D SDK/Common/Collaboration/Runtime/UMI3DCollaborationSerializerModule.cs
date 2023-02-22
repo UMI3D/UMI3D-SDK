@@ -141,12 +141,21 @@ namespace umi3d.common.collaboration
                                         catch
                                         {
                                             container = new ByteContainer(temp_container);
-                                            Read(container, out readable, out bindingDataDto);
-
-                                            if (!readable)
+                                            try
                                             {
-                                                result = default(T);
-                                                return false;
+                                                Read(container, out readable, out multyBindingDto);
+                                                bindingDataDto = multyBindingDto;
+                                            }
+                                            catch
+                                            {
+                                                container = new ByteContainer(temp_container);
+                                                Read(container, out readable, out bindingDataDto);
+
+                                                if (!readable)
+                                                {
+                                                    result = default(T);
+                                                    return false;
+                                                }
                                             }
                                         }
                                     }
@@ -276,6 +285,31 @@ namespace umi3d.common.collaboration
                                 offSetPosition: offSetPosition,
                                 offSetRotation: offSetRotation,
                                 offSetScale: offSetScale
+                            );
+                            result = (T)Convert.ChangeType(simpleBindingDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(MultyBindingDto):
+                    {
+                        BindingDataDto bindingDataDto;
+
+                        BindingDataDto[] bindings;
+
+                        readable = UMI3DSerializer.TryRead(container, out bindingDataDto);
+                        bindings = UMI3DSerializer.ReadArray<BindingDataDto>(container);
+
+                        if (readable)
+                        {
+                            MultyBindingDto simpleBindingDto = new MultyBindingDto(
+                                bindingDataDto : bindingDataDto,
+                                Bindings : bindings           
                             );
                             result = (T)Convert.ChangeType(simpleBindingDto, typeof(T));
                             return true;
@@ -809,6 +843,11 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(simpleBindingDto.offSetPosition)
                         + UMI3DSerializer.Write(simpleBindingDto.offSetRotation)
                         + UMI3DSerializer.Write(simpleBindingDto.offSetScale);
+                    break;
+                case MultyBindingDto multyBindingDto:
+                    bytable = UMI3DSerializer.Write(multyBindingDto.priority)
+                        + UMI3DSerializer.Write(multyBindingDto.partialFit)
+                        + UMI3DSerializer.WriteCollection(multyBindingDto.Bindings);
                     break;
                 case BindingDataDto bindingDataDto:
                     bytable = UMI3DSerializer.Write(bindingDataDto.priority)

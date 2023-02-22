@@ -25,6 +25,8 @@ using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
+using System;
+using UnityEditor;
 
 namespace EditMode_Tests
 {
@@ -285,6 +287,51 @@ namespace EditMode_Tests
 
             Assert.IsTrue((result.data as RigBindingDataDto).rigName
                  == (bindingDto.data as RigBindingDataDto).rigName);
+        }
+        #endregion
+
+        #region Multi binding
+        [Test]
+        public void ReadBindingDTO_MultiBinding()
+        {
+            MultyBindingDto multyBindingDto = new MultyBindingDto(
+                priority: 10,
+                partialFit: true,
+                Bindings :  GetTestBindingsArray()         
+            );
+
+            BindingDto bindingDto = new BindingDto(
+                objectId: 123,
+                active: true,
+                data: multyBindingDto
+            );
+
+            collabSerializerModule.Write<BindingDto>(bindingDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BindingDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.active == bindingDto.active);
+            Assert.IsTrue(result.bindingId == bindingDto.bindingId);
+            Assert.IsTrue(result.data.priority == bindingDto.data.priority);
+            Assert.IsTrue(result.data.partialFit == bindingDto.data.partialFit);
+
+            MultyBindingDto multiRes = result.data as MultyBindingDto;
+            for (int i = 0; i < multiRes.Bindings.Length; i++)
+            {
+                Assert.IsTrue(multiRes.Bindings[i].priority == multyBindingDto.Bindings[i].priority);
+            }
+        }
+
+        private BindingDataDto[] GetTestBindingsArray()
+        {
+            return new BindingDataDto[] {
+                new BindingDataDto(3, true),
+                new BindingDataDto(4, true),
+                new BindingDataDto(9, true),
+                new BindingDataDto(4, true),
+            };
         }
         #endregion
     }

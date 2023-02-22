@@ -23,6 +23,12 @@ namespace umi3d.common.userCapture
             this.Bindings = Bindings;
         }
 
+        public MultyBindingDto(BindingDataDto[] Bindings, BindingDataDto bindingDataDto)
+            : base(bindingDataDto.priority, bindingDataDto.partialFit)
+        {
+            this.Bindings = Bindings;
+        }
+
         /// <summary>
         /// List Of all the simple bindings to apply
         /// </summary>
