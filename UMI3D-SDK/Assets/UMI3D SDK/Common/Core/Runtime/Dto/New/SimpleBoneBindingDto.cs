@@ -48,13 +48,12 @@ namespace umi3d.common.userCapture
             this.boneType = boneType;
         }
 
-        public SimpleBoneBindingDto(SimpleBoneBindingDto simpleBoneBindingDto) : base(simpleBoneBindingDto.syncRotation, simpleBoneBindingDto.syncScale, simpleBoneBindingDto.syncPosition,
-                                                                simpleBoneBindingDto.offSetPosition, simpleBoneBindingDto.offSetRotation, simpleBoneBindingDto.offSetScale,
-                                                                simpleBoneBindingDto.priority, simpleBoneBindingDto.partialFit)
-           
-        {
-            this.userId = simpleBoneBindingDto.userId;
-            this.boneType = simpleBoneBindingDto.boneType;
+        public SimpleBoneBindingDto(SimpleBindingDto simpleBinding, ulong userId, uint boneType) : base(simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition,
+                                                                simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
+                                                                simpleBinding.priority, simpleBinding.partialFit)
+        { 
+            this.userId = userId;
+            this.boneType = boneType;
         }
 
         /// <summary>
