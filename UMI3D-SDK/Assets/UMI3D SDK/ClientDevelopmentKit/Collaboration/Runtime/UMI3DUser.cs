@@ -257,6 +257,7 @@ namespace umi3d.cdk.collaboration
 
                 case UMI3DPropertyKeys.UserBindings:
                     SetBindingProperty(value);
+
                     return true;
 
                 case UMI3DPropertyKeys.ActiveBindings:
