@@ -131,6 +131,55 @@ namespace EditMode_Tests
         }
 
         [Test]
+        public void ReadBindingDTO_NodeBindingDTO()
+        {
+            NodeBindingDto nodeBindingDto = new NodeBindingDto(
+                priority: 10,
+                partialFit: true,
+                syncRotation: true,
+                syncPosition: true,
+                syncScale: true,
+                offSetPosition: Vector3.one,
+                offSetRotation: Vector4.one,
+                offSetScale: Vector3.left,
+                objectID : 1523
+            );
+
+            BindingDto bindingDto = new BindingDto(
+                objectId: 123,
+                active: true,
+                data: nodeBindingDto
+            );
+
+            collabSerializerModule.Write<BindingDto>(bindingDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BindingDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.active == bindingDto.active);
+            Assert.IsTrue(result.bindingId == bindingDto.bindingId);
+            Assert.IsTrue(result.data.priority == bindingDto.data.priority);
+            Assert.IsTrue(result.data.partialFit == bindingDto.data.partialFit);
+
+            Assert.IsTrue((result.data as SimpleBindingDto).offSetRotation
+                == (bindingDto.data as SimpleBindingDto).offSetRotation);
+            Assert.IsTrue((result.data as SimpleBindingDto).offSetPosition
+                == (bindingDto.data as SimpleBindingDto).offSetPosition);
+            Assert.IsTrue((result.data as SimpleBindingDto).offSetScale
+                == (bindingDto.data as SimpleBindingDto).offSetScale);
+            Assert.IsTrue((result.data as SimpleBindingDto).syncScale
+                == (bindingDto.data as SimpleBindingDto).syncScale);
+            Assert.IsTrue((result.data as SimpleBindingDto).syncPosition
+                == (bindingDto.data as SimpleBindingDto).syncPosition);
+            Assert.IsTrue((result.data as SimpleBindingDto).syncRotation
+                == (bindingDto.data as SimpleBindingDto).syncRotation);
+
+            Assert.IsTrue((result.data as NodeBindingDto).objectId
+                == (bindingDto.data as NodeBindingDto).objectId);
+        }
+
+        [Test]
         public void ReadBindingDTO_SimpleBoneBindingDTO()
         {
             SimpleBoneBindingDto simpleBoneBindingDto = new SimpleBoneBindingDto(

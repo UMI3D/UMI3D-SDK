@@ -127,19 +127,27 @@ namespace umi3d.common.collaboration
                                     container = new ByteContainer(temp_container);
                                     try
                                     {
-                                        Read(container, out readable, out simpleBindingDto);
-                                        bindingDataDto = simpleBindingDto;
+                                        Read(container, out readable, out nodeBindingDto);
+                                        bindingDataDto = nodeBindingDto;
                                     }
                                     catch
                                     {
                                         container = new ByteContainer(temp_container);
-                                        Read(container, out readable, out bindingDataDto);
-
-
-                                        if (!readable)
+                                        try
                                         {
-                                            result = default(T);
-                                            return false;
+                                            Read(container, out readable, out simpleBindingDto);
+                                            bindingDataDto = simpleBindingDto;
+                                        }
+                                        catch
+                                        {
+                                            container = new ByteContainer(temp_container);
+                                            Read(container, out readable, out bindingDataDto);
+
+                                            if (!readable)
+                                            {
+                                                result = default(T);
+                                                return false;
+                                            }
                                         }
                                     }
                                 }
@@ -204,6 +212,31 @@ namespace umi3d.common.collaboration
                                 boneType: 15
                             );
                             result = (T)Convert.ChangeType(simpleBoneBindingDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(NodeBindingDto):
+                    {
+                        SimpleBindingDto simpleBindingDto;
+
+                        uint objectId;
+
+                        readable = UMI3DSerializer.TryRead(container, out simpleBindingDto);
+                        readable &= UMI3DSerializer.TryRead(container, out objectId);
+
+                        if (readable)
+                        {
+                            NodeBindingDto nodeBindingDto = new NodeBindingDto(
+                                simpleBinding: simpleBindingDto,
+                                objectID : objectId
+                            );
+                            result = (T)Convert.ChangeType(nodeBindingDto, typeof(T));
                             return true;
                         }
                         else
@@ -755,6 +788,17 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(simpleBoneBindingDto.offSetScale)
                         + UMI3DSerializer.Write(simpleBoneBindingDto.userId)
                         + UMI3DSerializer.Write(simpleBoneBindingDto.boneType);
+                    break;
+                case NodeBindingDto nodeBindingDto:
+                    bytable = UMI3DSerializer.Write(nodeBindingDto.priority)
+                        + UMI3DSerializer.Write(nodeBindingDto.partialFit)
+                        + UMI3DSerializer.Write(nodeBindingDto.syncRotation)
+                        + UMI3DSerializer.Write(nodeBindingDto.syncScale)
+                        + UMI3DSerializer.Write(nodeBindingDto.syncPosition)
+                        + UMI3DSerializer.Write(nodeBindingDto.offSetPosition)
+                        + UMI3DSerializer.Write(nodeBindingDto.offSetRotation)
+                        + UMI3DSerializer.Write(nodeBindingDto.offSetScale)
+                        + UMI3DSerializer.Write(nodeBindingDto.objectId);
                     break;
                 case SimpleBindingDto simpleBindingDto:
                     bytable = UMI3DSerializer.Write(simpleBindingDto.priority)

@@ -34,6 +34,13 @@ namespace umi3d.common.userCapture
             this.objectId = objectID;
         }
 
+        public NodeBindingDto(SimpleBindingDto simpleBinding, uint objectID) : base (simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition,
+                                                                simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
+                                                                simpleBinding.priority, simpleBinding.partialFit)
+        {
+            this.objectId = objectID;
+        }
+
         public ulong objectId { get; private set; }
     }
 }
