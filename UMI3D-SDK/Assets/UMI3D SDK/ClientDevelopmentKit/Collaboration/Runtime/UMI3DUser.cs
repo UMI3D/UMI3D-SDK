@@ -15,9 +15,12 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.userCapture;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -232,7 +235,6 @@ namespace umi3d.cdk.collaboration
                     OnUserMicrophoneUseMumbleUpdated.Invoke(this);
                     return true;
 
-
                 case UMI3DPropertyKeys.UserAudioPassword:
                     audioPassword = (string)value;
                     OnUserMicrophoneIdentityUpdated.Invoke(this);
@@ -252,10 +254,20 @@ namespace umi3d.cdk.collaboration
                     dto.audioChannel = (string)value;
                     OnUserMicrophoneChannelUpdated.Invoke(this);
                     return true;
-            }
-            return false;
-        }
 
+                case UMI3DPropertyKeys.UserBindings:
+                    SetBindingProperty(value);
+
+                    return true;
+
+                case UMI3DPropertyKeys.ActiveBindings:
+                     ActivateBindings(value);
+                    return true;
+
+                default:
+                    return false;
+            }
+        }
 
         public void SetMicrophoneStatus(bool microphoneStatus)
         {
@@ -290,6 +302,56 @@ namespace umi3d.cdk.collaboration
         public static void MuteAllAttention()
         {
             UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
+        }
+
+        private void SetBindingProperty(object value)
+        {
+            if(value is SetUMI3DPropertyData data)
+            {
+                if (SkeletonManager.Instance.GetSkeletonById(data.property.entityId) is ISkeleton skeleton)
+                {
+                    if (skeleton != null)
+                    {
+                        switch (data.property)
+                        {
+                            case SetEntityListAddPropertyDto add:
+                                skeleton.AddBinding(add.index, data.property.value as BindingDto);
+                                break;
+                            case SetEntityListRemovePropertyDto rem:
+                                skeleton.RemoveBinding(rem.index);
+                                break;
+                            case SetEntityListPropertyDto set:
+                                skeleton.UpdateBinding(set.index, data.property.value as BindingDto);
+                                break;
+                            default:
+                                skeleton.SetBindings(data.property.value as List<BindingDto>);
+                                break;
+                        }
+                    }
+                }
+            }
+            else
+            {
+                throw new System.Exception("Internal error");
+            }
+        }
+
+        private void ActivateBindings(object value)
+        {
+            if (value is SetUMI3DPropertyData data)
+            {
+                if (SkeletonManager.Instance.GetSkeletonById(data.property.entityId) is ISkeleton skeleton)
+                {
+                    if (skeleton != null)
+                    {
+                        skeleton.SetActiveBindings((bool)data.property.value);
+                    }
+                    else
+                    {
+                        throw new System.Exception("Internal error");
+                    }
+                }
+            }
         }
 
         public override string ToString()

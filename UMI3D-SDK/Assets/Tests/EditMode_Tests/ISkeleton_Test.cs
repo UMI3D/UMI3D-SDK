@@ -22,7 +22,6 @@ using Moq;
 using umi3d.common.userCapture;
 using UnityEngine;
 using umi3d.cdk.utils.extrapolation;
-using umi3d.common.collaboration;
 
 public class ISkeleton_Test
 {
