@@ -163,10 +163,6 @@ namespace umi3d.cdk
 
             LightProbes.TetrahedralizeAsync();
 
-            sceneObj.transform.SetParent(UMI3DResourcesManager.Instance.transform);
-            sceneObj.transform.localPosition = Vector3.zero;
-            AbstractMeshDtoLoader.HideModelRecursively(sceneObj);
-
             return (sceneObj, scene);
         }
 

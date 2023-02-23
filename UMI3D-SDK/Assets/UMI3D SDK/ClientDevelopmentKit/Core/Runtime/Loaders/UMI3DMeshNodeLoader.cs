@@ -238,8 +238,20 @@ namespace umi3d.cdk
                 root = go;
             }
 
-            var instance = GameObject.Instantiate(root, parent, true);
+            GameObject instance = null;
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
+
+            if (data is Scene scene)
+            {
+                go.transform.SetParent(parent);
+                instance = go;
+                nodeInstance.scene = scene;
+            }
+            else
+            {
+                instance = GameObject.Instantiate(root, parent, true);
+            }
+
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
@@ -269,9 +281,6 @@ namespace umi3d.cdk
 
             nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
             nodeInstance.IsTraversable = dto.isTraversable;
-
-            if (data is Scene scene)
-                nodeInstance.scene = scene;
         }
 
         /// <summary>

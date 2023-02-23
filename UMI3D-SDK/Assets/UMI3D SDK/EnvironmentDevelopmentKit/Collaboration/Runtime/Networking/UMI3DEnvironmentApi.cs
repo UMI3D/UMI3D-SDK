@@ -64,16 +64,16 @@ namespace umi3d.edk.collaboration
         [HttpGet(UMI3DNetworkingKeys.connectionInfo, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void GetConnectionInformation(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
+            UMI3DCollaborationUser user = GetUserFor(e.Request);
+            UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
             try
             {
-                UMI3DCollaborationUser user = GetUserFor(e.Request);
-                UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
                 var connectionInformation = user.ToUserConnectionDto();
                 e.Response.WriteContent(connectionInformation.ToBson());
-            } catch (Exception ex)
+            }
+            catch (Exception ex)
             {
-                UMI3DLogger.LogError($"Exception Get Connection Information", scope);
-                UMI3DLogger.LogException(ex, scope);
+                UnityEngine.Debug.LogException(ex);
             }
         }
 
@@ -371,7 +371,7 @@ namespace umi3d.edk.collaboration
             if (content == null)
             {
                 Return404(response);
-                UMI3DLogger.LogError(file,scope);
+                UMI3DLogger.LogError(file, scope);
                 return;
             }
             if (file.EndsWith(".html"))
