@@ -14,16 +14,20 @@ namespace umi3d.common.userCapture
         /// </summary>
         /// <param name="bonePoseDtos">all the bone pose that are composing the current pose</param>
         /// <param name="boneAnchor"></param>
-        public PoseDto(BonePoseDto[] bonePoseDtos, uint boneAnchor)
+        public PoseDto(BonePoseDto[] bones, uint boneAnchor)
         {
-            this.BonePoseDtos = bonePoseDtos;
+            this.bones = bones;
             this.boneAnchor = boneAnchor;
         }
 
         /// <summary>
         /// all the bone pose that are composing the current pose
         /// </summary>
-        public BonePoseDto[] BonePoseDtos { get; private set; }
+        public BonePoseDto[] bones { get; private set; }
+        public void SetBonePoseDtoArray(BonePoseDto[] bones)
+        {
+            this.bones = bones;
+        }
 
         public uint boneAnchor { get; private set; }
     }

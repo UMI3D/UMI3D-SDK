@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
         public class s_Transform
         {
             public Vector3 s_Position;
-            public Quaternion s_Rotation;
+            public Vector4 s_Rotation;
         }
         #endregion
 
@@ -83,15 +83,15 @@ namespace umi3d.cdk.userCapture
                 {
                     if (b.rotation != null && b.position != null)
                     {
-                        Bones.TryGetValue(b.boneType, out var pose);
+                        Bones.TryGetValue(b.bone, out var pose);
                         if (pose != null)
                         {
-                            Bones[b.boneType].s_Rotation = b.rotation;
-                            Bones[b.boneType].s_Position = b.position;
+                            Bones[b.bone].s_Rotation = b.rotation;
+                            Bones[b.bone].s_Position = b.position;
                         }
                         else
                         {
-                            Bones.TryAdd(b.boneType, new s_Transform()
+                            Bones.TryAdd(b.bone, new s_Transform()
                             {
                                 s_Position= b.position,
                                 s_Rotation= b.rotation
