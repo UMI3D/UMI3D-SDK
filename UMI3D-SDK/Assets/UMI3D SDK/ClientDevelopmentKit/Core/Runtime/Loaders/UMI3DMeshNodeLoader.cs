@@ -21,6 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace umi3d.cdk
 {
@@ -71,8 +72,18 @@ namespace umi3d.cdk
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(nodeDto.id, fileToLoad, loader);
-                if (o is GameObject g && data.dto is UMI3DMeshNodeDto meshDto)
-                    await CallbackAfterLoadingForMesh(g, meshDto, data.node.transform, offset);
+
+                if (data.dto is UMI3DMeshNodeDto meshDto)
+                {
+                    if (o is GameObject g)
+                    {
+                        await CallbackAfterLoadingForMesh(g, meshDto, data.node.transform, offset, null);
+                    }
+                    else if (o is (GameObject go, Scene scene))
+                    {
+                        await CallbackAfterLoadingForMesh(go, meshDto, data.node.transform, offset, scene);
+                    }
+                }
                 else
                     throw (new Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {data.dto.GetType()} into UMI3DMeshNodeDto"));
             }
@@ -213,7 +224,7 @@ namespace umi3d.cdk
             }
         }
 
-        private async Task CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader)
+        private async Task CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, object data)
         {
             var modelTracker = parent.gameObject.AddComponent<ModelTracker>();
             GameObject root = null;
@@ -227,8 +238,20 @@ namespace umi3d.cdk
                 root = go;
             }
 
-            var instance = GameObject.Instantiate(root, parent, true);
+            GameObject instance = null;
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
+
+            if (data is Scene scene)
+            {
+                go.transform.SetParent(parent);
+                instance = go;
+                nodeInstance.scene = scene;
+            }
+            else
+            {
+                instance = GameObject.Instantiate(root, parent, true);
+            }
+
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
