@@ -334,6 +334,86 @@ namespace EditMode_Tests
             };
         }
         #endregion
+
+        #region Pose Conditions
+        [Test]
+        public void ReadMagnitudeCondition()
+        {
+            MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
+                magnitude: 1220
+            );
+
+            collabSerializerModule.Write(magnitudeConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out MagnitudeConditionDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.magnitude == magnitudeConditionDto.magnitude);
+        }
+        [Test]
+        public void ReadBoneRotationCondition()
+        {
+            BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto(
+                boneId: 8,
+                rotation : Vector4.one
+            );
+
+            collabSerializerModule.Write(boneRotationConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BoneRotationConditionDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.boneId == boneRotationConditionDto.boneId);
+            Assert.IsTrue(result.rotation == boneRotationConditionDto.rotation);
+        }
+        [Test]
+        public void ReadDirectionCondition()
+        {
+            DirectionConditionDto directionConditionDto = new DirectionConditionDto(
+                direction : Vector3.one
+            );
+
+            collabSerializerModule.Write(directionConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out DirectionConditionDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.direction == directionConditionDto.direction);
+        }
+        [Test]
+        public void ReadUserScaleCondition()
+        {
+            UserScaleConditinoDto userScaleConditinoDto = new UserScaleConditinoDto(
+                scale : Vector3.one
+            );
+
+            collabSerializerModule.Write(userScaleConditinoDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out UserScaleConditinoDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.scale == userScaleConditinoDto.scale);
+        }
+        [Test]
+        public void ReadScaleCondition()
+        {
+            ScaleConditionDto scaleConditionDto = new ScaleConditionDto(
+                scale: Vector3.one
+            );
+
+            collabSerializerModule.Write(scaleConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out ScaleConditionDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue(result.scale == scaleConditionDto.scale);
+        }
+        #endregion
     }
 }
 

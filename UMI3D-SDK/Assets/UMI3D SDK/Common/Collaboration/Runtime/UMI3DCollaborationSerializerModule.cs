@@ -90,6 +90,115 @@ namespace umi3d.common.collaboration
                     }
                     return true;
 
+                #region Pose Condition
+                case true when typeof(T) == typeof(MagnitudeConditionDto):
+                    {
+                        float magnitude;
+                        readable = UMI3DSerializer.TryRead(container, out magnitude);
+
+                        if (readable)
+                        {
+                            MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
+                                magnitude: magnitude
+                            );
+                            result = (T)Convert.ChangeType(magnitudeConditionDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(BoneRotationConditionDto):
+                    {
+                        uint boneId;
+                        Vector4 rotation;
+                        readable = UMI3DSerializer.TryRead(container, out boneId);
+                        readable &= UMI3DSerializer.TryRead(container, out rotation);
+
+                        if (readable)
+                        {
+                            BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto(
+                                boneId: boneId,
+                                rotation: rotation
+                            );
+                            result = (T)Convert.ChangeType(boneRotationConditionDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(DirectionConditionDto):
+                    {
+                        Vector3 direction;
+                        readable = UMI3DSerializer.TryRead(container, out direction);
+
+                        if (readable)
+                        {
+                            DirectionConditionDto directionConditionDto = new DirectionConditionDto(
+                                direction : direction
+                            );
+                            result = (T)Convert.ChangeType(directionConditionDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(UserScaleConditinoDto):
+                    {
+                        Vector3 scale;
+                        readable = UMI3DSerializer.TryRead(container, out scale);
+
+                        if (readable)
+                        {
+                            UserScaleConditinoDto userScaleConditinoDto = new UserScaleConditinoDto(
+                                scale: scale
+                            );
+                            result = (T)Convert.ChangeType(userScaleConditinoDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(ScaleConditionDto):
+                    {
+                        Vector3 scale;
+                        readable = UMI3DSerializer.TryRead(container, out scale);
+
+                        if (readable)
+                        {
+                            ScaleConditionDto scaleCondition = new ScaleConditionDto(
+                                scale: scale
+                            );
+                            result = (T)Convert.ChangeType(scaleCondition, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+                case true when typeof(T) == typeof(PoseConditionDto):
+                    {
+
+                    }
+                #endregion
+                #region Bindings
                 case true when typeof(T) == typeof(BindingDto):
                     {
                         ulong bindindId;
@@ -343,6 +452,7 @@ namespace umi3d.common.collaboration
                             return false;
                         }
                     }
+                #endregion
 
                 case true when typeof(T) == typeof(UMI3DHandPoseDto):
                     ulong id;
@@ -792,6 +902,32 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(voice.channelName);
                     break;
 
+                #region PoseCondition Dto
+                case MagnitudeConditionDto magnitudeConditionDto:
+                    bytable = UMI3DSerializer.Write(magnitudeConditionDto.magnitude);
+                    break;
+                case RangeConditionDto rangeConditionDto:
+                    bytable = UMI3DSerializer.Write(rangeConditionDto.conditionA)
+                        + UMI3DSerializer.Write(rangeConditionDto.conditionB);
+                    break;
+                case BoneRotationConditionDto boneRotationConditionDto:
+                    bytable = UMI3DSerializer.Write(boneRotationConditionDto.boneId)
+                        + UMI3DSerializer.Write(boneRotationConditionDto.rotation);
+                    break;
+                case DirectionConditionDto directionConditionDto:
+                    bytable = UMI3DSerializer.Write(directionConditionDto.direction);
+                    break;
+                case NotConditionDto notConditionDto:
+                    bytable = UMI3DSerializer.WriteCollection(notConditionDto.conditions);
+                    break;
+                case UserScaleConditinoDto userScaleConditinoDto:
+                    bytable = UMI3DSerializer.Write(userScaleConditinoDto.scale);
+                    break;
+                case ScaleConditionDto scaleConditionDto:
+                    bytable = UMI3DSerializer.Write(scaleConditionDto.scale);
+                    break;
+                #endregion
+                #region Bindings
                 case BindingDto bindingDto:
                     bytable = UMI3DSerializer.Write(bindingDto.bindingId)
                         + UMI3DSerializer.Write(bindingDto.active)
@@ -853,6 +989,7 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DSerializer.Write(bindingDataDto.priority)
                         + UMI3DSerializer.Write(bindingDataDto.partialFit);
                     break;
+                #endregion
 
                 default:
                     if (typeof(T) == typeof(ResourceDto))
