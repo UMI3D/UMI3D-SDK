@@ -413,6 +413,56 @@ namespace EditMode_Tests
             Assert.IsTrue(readable);
             Assert.IsTrue(result.scale == scaleConditionDto.scale);
         }
+
+        #endregion
+        #region Multy Conditions
+        [Test]
+        public void ReadRangeCondition()
+        {
+            RangeConditionDto rangeConditionDto = new RangeConditionDto(
+                conditionA : new MagnitudeConditionDto(12),
+                conditionB : new ScaleConditionDto(Vector3.one)
+            );
+
+            collabSerializerModule.Write(rangeConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out RangeConditionDto result);
+            Assert.IsTrue(readable);
+            Assert.IsTrue((result.conditionA as MagnitudeConditionDto).magnitude
+                == (rangeConditionDto.conditionA as MagnitudeConditionDto).magnitude);
+            Assert.IsTrue((result.conditionB as ScaleConditionDto).scale
+                == (rangeConditionDto.conditionB as ScaleConditionDto).scale);
+        }
+
+        [Test]
+        public void ReadNotCondition()
+        {
+            NotConditionDto notConditionDto = new NotConditionDto(
+                conditions : GetCondditionsTestSet()
+            );
+
+            collabSerializerModule.Write(notConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out NotConditionDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue((result.conditions[0] as MagnitudeConditionDto).magnitude
+                == (notConditionDto.conditions[0] as MagnitudeConditionDto).magnitude);
+            Assert.IsTrue((result.conditions[1] as DirectionConditionDto).direction
+                == (notConditionDto.conditions[1] as DirectionConditionDto).direction);
+        }
+
+        private PoseConditionDto[] GetCondditionsTestSet()
+        {
+            return new PoseConditionDto[]{
+                new MagnitudeConditionDto(98),
+                new DirectionConditionDto(Vector3.one)
+            };
+        }
         #endregion
     }
 }

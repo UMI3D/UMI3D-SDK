@@ -193,9 +193,147 @@ namespace umi3d.common.collaboration
                             return false;
                         }
                     }
+
+                case true when typeof(T) == typeof(RangeConditionDto):
+                    {
+                        PoseConditionDto conditionA;
+                        PoseConditionDto conditionB;
+                        readable = UMI3DSerializer.TryRead(container, out conditionA);
+                        readable &= UMI3DSerializer.TryRead(container, out conditionB);
+
+                        if (readable)
+                        {
+                            RangeConditionDto rangeConditionDto = new RangeConditionDto(
+                                conditionA : conditionA,
+                                conditionB : conditionB
+                            );
+                            result = (T)Convert.ChangeType(rangeConditionDto, typeof(T));
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            return false;
+                        }
+                    }
+
+                case true when typeof(T) == typeof(NotConditionDto):
+                    {
+                        PoseConditionDto[] conditions;
+                        conditions = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
+
+                        if (conditions != null)
+                        {
+                            NotConditionDto notConditionDto = new NotConditionDto(
+                                conditions : conditions
+                            );
+                            result = (T)Convert.ChangeType(notConditionDto, typeof(T));
+                            readable = true;
+                            return true;
+                        }
+                        else
+                        {
+                            result = default(T);
+                            readable= false;
+                            return false;
+                        }
+                    }
+
                 case true when typeof(T) == typeof(PoseConditionDto):
                     {
+                        PoseConditionDto poseConditionDto = null;
 
+                        MagnitudeConditionDto magnitudeConditionDto;
+                        BoneRotationConditionDto boneRotationConditionDto;
+                        DirectionConditionDto directionConditionDto;
+                        UserScaleConditinoDto userScaleConditinoDto;
+                        ScaleConditionDto scaleConditionDto;
+
+                        RangeConditionDto rangeConditionDto;
+                        NotConditionDto notConditionDto;
+
+                        ByteContainer temp_container = new ByteContainer(container);
+                        readable = false;
+                        try
+                        {
+                            Read(container, out readable, out magnitudeConditionDto);
+                            result = (T)Convert.ChangeType(magnitudeConditionDto, typeof(T));
+                            poseConditionDto = magnitudeConditionDto;
+                        }
+                        catch
+                        {
+                            container = new ByteContainer(temp_container);
+                            try
+                            {
+                                Read(container, out readable, out boneRotationConditionDto);
+                                result = (T)Convert.ChangeType(boneRotationConditionDto, typeof(T));
+                                poseConditionDto = boneRotationConditionDto;
+                            }
+                            catch
+                            {
+                                container = new ByteContainer(temp_container);
+                                try
+                                {
+                                    Read(container, out readable, out directionConditionDto);
+                                    result = (T)Convert.ChangeType(directionConditionDto, typeof(T));
+                                    poseConditionDto = directionConditionDto;
+                                }
+                                catch
+                                {
+                                    container = new ByteContainer(temp_container);
+                                    try
+                                    {
+                                        Read(container, out readable, out userScaleConditinoDto);
+                                        result = (T)Convert.ChangeType(userScaleConditinoDto, typeof(T));
+                                        poseConditionDto = userScaleConditinoDto;
+                                    }
+                                    catch
+                                    {
+                                        container = new ByteContainer(temp_container);
+                                        try
+                                        {
+                                            Read(container, out readable, out scaleConditionDto);
+                                            result = (T)Convert.ChangeType(scaleConditionDto, typeof(T));
+                                            poseConditionDto = scaleConditionDto;
+                                        }
+                                        catch
+                                        {
+                                            container = new ByteContainer(temp_container);
+                                            try
+                                            {
+                                                Read(container, out readable, out rangeConditionDto);
+                                                result = (T)Convert.ChangeType(rangeConditionDto, typeof(T));
+                                                poseConditionDto = rangeConditionDto;
+                                            }
+                                            catch
+                                            {
+                                                container = new ByteContainer(temp_container);
+                                                try
+                                                {
+                                                    Read(container, out readable, out notConditionDto);
+                                                    result = (T)Convert.ChangeType(notConditionDto, typeof(T));
+                                                    poseConditionDto = notConditionDto;
+                                                }
+                                                catch
+                                                {
+                                                    result = default(T);
+                                                    return false;
+                                                }
+                                            }
+                                        }
+                                    }
+                                }
+                            }
+                        }
+
+                        if (!readable)
+                        {
+                            result = default(T);
+                            return false;
+                        }
+
+                        //result = (T)Convert.ChangeType(poseConditionDto, typeof(T));
+                        return true;
                     }
                 #endregion
                 #region Bindings
