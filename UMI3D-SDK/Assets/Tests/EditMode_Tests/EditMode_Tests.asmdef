@@ -9,7 +9,8 @@
         "UMI3D.CDK.Core",
         "UMI3D.CDK.UserCapture",
         "UMI3D.CDK.Collaboration",
-        "inetum.unityUtils"
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration"
     ],
     "includePlatforms": [
         "Editor"
