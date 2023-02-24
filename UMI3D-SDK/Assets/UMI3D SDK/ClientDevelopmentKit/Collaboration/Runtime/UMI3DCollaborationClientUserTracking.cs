@@ -27,7 +27,46 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
-        public new static UMI3DCollaborationClientUserTracking Instance => Instance as UMI3DCollaborationClientUserTracking;
+        /// <summary>
+        /// Get the current instance of <see cref="UMI3DCollaborationClientUserTracking"/> or return null is the instance is a <see cref="UMI3DClientUserTracking"/>.
+        /// </summary>
+        /// This masking property allows to get the currenlty instanciated <see cref="UMI3DClientUserTracking"/> object
+        /// and intancies a <see cref="UMI3DCollaborationClientUserTracking"/> if no one is found.
+        /// Masking is a workaround the fact that we are subclassing a singleton.
+        public new static UMI3DCollaborationClientUserTracking Instance
+        {
+            get
+            {
+                if (ApplicationIsQuitting)
+                    return null;
+                if (!Exists)
+                {
+                    instance = FindObjectOfType<UMI3DCollaborationClientUserTracking>();
+
+                    if (instance == null)
+                    {
+                        var g = GameObject.Find(typeof(UMI3DCollaborationClientUserTracking).Name);
+                        if (g)
+                        {
+                            instance = g.GetComponent<UMI3DCollaborationClientUserTracking>();
+                        }
+                        else
+                        {
+                            g = new GameObject
+                            {
+                                name = typeof(UMI3DCollaborationClientUserTracking).Name
+                            };
+                            instance = g.AddComponent<UMI3DCollaborationClientUserTracking>();
+                        }
+                    }
+                    return instance as UMI3DCollaborationClientUserTracking;
+                }
+                if (UMI3DClientUserTracking.Instance is UMI3DCollaborationClientUserTracking collabUserTracking)
+                    return collabUserTracking;
+                else
+                    throw new Umi3dException("UMI3DClientUserTracking instance is no UMI3DCollaborationClientUserTracking");
+            }
+        }
 
         /// <summary>
         /// Skeleton of the tracked user.
