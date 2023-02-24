@@ -32,11 +32,11 @@ namespace umi3d.common.userCapture
         {
             try
             {
-                var pose = new PoseDto()
-                {
-                    boneAnchor = BoneAnchor,
-                    bones = mappings.Select(m => m.GetPose()).ToArray()
-                };
+                var pose = new PoseDto(
+                    boneAnchor : BoneAnchor,
+                    bones : mappings.Select(m => m.GetPose()).ToArray()
+                );
+
                 return pose;
             }
             catch (Exception e)

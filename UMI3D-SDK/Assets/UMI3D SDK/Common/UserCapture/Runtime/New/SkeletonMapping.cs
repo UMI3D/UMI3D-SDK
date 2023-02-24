@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace umi3d.common.userCapture
 {
@@ -22,17 +23,20 @@ namespace umi3d.common.userCapture
     {
         public uint boneType { get; set; }
         public SkeletonMappingLink link {get; set;}
-        public BonePoseDto GetPose() { 
+        public BonePoseDto GetPose()
+        {
             var computed = link.Compute();
-            return new BonePoseDto() {
-                boneType = boneType, 
-                position = computed.position,
-                rotation = computed.rotation
-            };
+            Vector4 rotation = new Vector4(computed.rotation.x,
+                                            computed.rotation.y,
+                                            computed.rotation.z,
+                                            computed.rotation.w
+            );
+
+            return new BonePoseDto(
+                bone: boneType,
+                position: computed.position,
+                rotation: rotation
+            );
         }
     }
-
-
-
-
 }
