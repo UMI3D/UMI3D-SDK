@@ -614,7 +614,6 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseDto result);
             Assert.IsTrue(readable);
-
             for (int i = 0; i < poseDto.bones.Length; i++)
             {
                 Assert.IsTrue((result.bones[i]).bone == poseDto.bones[i].bone);
@@ -626,12 +625,75 @@ namespace EditMode_Tests
 
         private BonePoseDto[] GetTestBonePoseDtoSample()
         {
-            throw new NotImplementedException();
+            return new BonePoseDto[]
+            {
+                new BonePoseDto(1, Vector3.one, Vector4.one),
+                new BonePoseDto(15, Vector3.one, Vector4.one)
+            };
         }
+
+        [Test]
+        public void ReadPoseOverrider()
+        {
+            PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
+                pose : new PoseDto(
+                        bones: GetTestBonePoseDtoSample(),
+                        boneAnchor: 24
+                        ),
+                poseConditionDtos : GetCondditionsTestSet(),
+                duration : new DurationDto(24,222,13),
+                interpolationable : true,
+                composable : false
+            );;
+
+            collabSerializerModule.Write(poseOverriderDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseOverriderDto result);
+            Assert.IsTrue(readable);
+
+            PoseDto poseDto = result.pose;
+            for (int i = 0; i < poseDto.bones.Length; i++)
+            {
+                Assert.IsTrue((poseDto.bones[i]).bone == poseOverriderDto.pose.bones[i].bone);
+            }
+            Assert.IsTrue(((poseDto).boneAnchor == poseOverriderDto.pose.boneAnchor));
+
+            Assert.IsTrue((result.poseConditions[0] as UserScaleConditinoDto).scale
+                == (poseOverriderDto.poseConditions[0] as UserScaleConditinoDto).scale);
+            Assert.IsTrue((result.poseConditions[1] as DirectionConditionDto).direction
+                == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction);
+
+            Assert.IsTrue(poseOverriderDto.duration.duration == result.duration.duration);
+            Assert.IsTrue(poseOverriderDto.interpolationable == result.interpolationable);  
+            Assert.IsTrue(poseOverriderDto.composable == result.composable);
+        }
+
         #endregion
 
         #region Duration
+        [Test]
+        public void ReadDuration()
+        {
+            DurationDto duration = new DurationDto(
+                duration : 159,
+                min : 5,
+                max : 89486
+            );
 
+            collabSerializerModule.Write(duration, out Bytable data);
+
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out DurationDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue(duration.duration == result.duration);    
+            Assert.IsTrue(duration.max == result.max);
+            Assert.IsTrue(duration.min == result.min);
+        }
         #endregion
     }
 }

@@ -90,7 +90,90 @@ namespace umi3d.common.collaboration
                         readable = false;
                     }
                     return true;
+                case true when typeof(T) == typeof(DurationDto):
+                    {
+                        ulong duration;
+                        ulong min;
+                        ulong max;
+
+                        readable = UMI3DSerializer.TryRead(container, out duration);
+                        readable &= UMI3DSerializer.TryRead(container, out min);
+                        readable &= UMI3DSerializer.TryRead(container, out max);
+
+                        if(readable)
+                        {
+                            DurationDto durationDto= new DurationDto(
+                                duration : duration,
+                                min : min,
+                                max : max
+                            );
+
+                            result = (T)Convert.ChangeType(durationDto, typeof(DurationDto));
+                            return true;
+                        }
+
+                        result = default(T);
+                        return false;
+                    }
                 #region Pose
+                case true when typeof(T) == typeof(PoseDto):
+                    {
+                        BonePoseDto[] bones;
+                        uint boneAnchor;
+
+                        bones = UMI3DSerializer.ReadArray<BonePoseDto>(container);
+
+                        readable = UMI3DSerializer.TryRead(container, out boneAnchor) 
+                                        &&  bones != null;
+
+                        if (readable)
+                        {
+                            PoseDto poseDto = new PoseDto(
+                                bones : bones,
+                                boneAnchor : boneAnchor
+                            );
+
+                            result = (T)Convert.ChangeType(poseDto, typeof(PoseDto));
+                            return true;
+                        }
+
+                        result = default(T);
+                        return false;
+                    }
+                case true when typeof(T) == typeof(PoseOverriderDto):
+                    {
+                        PoseDto poseDto;
+                        PoseConditionDto[] poseConditionDtos;
+                        DurationDto durationDto;
+                        bool interpolationable;
+                        bool composable;
+
+                        Read(container, out readable, out poseDto);
+                        poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
+                        Read(container, out readable, out durationDto);
+                        readable &= container != null;
+                        readable &= UMI3DSerializer.TryRead(container, out interpolationable);
+                        readable &= UMI3DSerializer.TryRead(container, out composable);
+
+                        if (readable)
+                        {
+                            PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
+                                pose : poseDto,
+                                poseConditionDtos : poseConditionDtos,
+                                duration : durationDto,
+                                interpolationable : interpolationable,
+                                composable : composable
+                            );
+
+                            result = (T)Convert.ChangeType(poseOverriderDto, typeof(PoseOverriderDto));
+                            return true;
+                        }
+
+                        result = default(T);
+                        return false;
+                    }
+                #endregion
+                #region Bone Pose
                 case true when typeof(T) == typeof(BonePoseDto):
                     {
                         int index;
