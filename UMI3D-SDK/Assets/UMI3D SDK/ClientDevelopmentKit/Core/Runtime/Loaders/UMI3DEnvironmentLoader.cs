@@ -319,30 +319,6 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// Register an entity without a gameobject.
-        /// </summary>
-        /// <param name="id">unique id of the node.</param>
-        /// <param name="dto">dto of the node.</param>
-        /// <returns></returns>
-        public virtual UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null)
-        {
-            UMI3DEntityInstance node = null;
-            if (!Exists)
-                throw new Umi3dException("Cannot register entity. Loader does not exist.");
-
-            else if (entities.ContainsKey(id))
-                node = entities[id];
-
-            else
-            {
-                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = objectInstance, Delete = delete };
-                entities.Add(id, node);
-            }
-
-            return node;
-        }
-
-        /// <summary>
         /// Index of any 3D object loaded.
         /// </summary>
         private GlTFEnvironmentDto environment;
