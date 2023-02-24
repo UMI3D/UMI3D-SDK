@@ -347,9 +347,9 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out MagnitudeConditionDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(result.magnitude == magnitudeConditionDto.magnitude);
+            Assert.IsTrue((result as MagnitudeConditionDto).magnitude == magnitudeConditionDto.magnitude);
         }
         [Test]
         public void ReadBoneRotationCondition()
@@ -363,10 +363,10 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out BoneRotationConditionDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(result.boneId == boneRotationConditionDto.boneId);
-            Assert.IsTrue(result.rotation == boneRotationConditionDto.rotation);
+            Assert.IsTrue((result as BoneRotationConditionDto).boneId == boneRotationConditionDto.boneId);
+            Assert.IsTrue((result as BoneRotationConditionDto).rotation == boneRotationConditionDto.rotation);
         }
         [Test]
         public void ReadDirectionCondition()
@@ -379,9 +379,9 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out DirectionConditionDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(result.direction == directionConditionDto.direction);
+            Assert.IsTrue((result as DirectionConditionDto).direction == directionConditionDto.direction);
         }
         [Test]
         public void ReadUserScaleCondition()
@@ -394,9 +394,9 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out UserScaleConditinoDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(result.scale == userScaleConditinoDto.scale);
+            Assert.IsTrue((result as UserScaleConditinoDto).scale == userScaleConditinoDto.scale);
         }
         [Test]
         public void ReadScaleCondition()
@@ -409,9 +409,9 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out ScaleConditionDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(result.scale == scaleConditionDto.scale);
+            Assert.IsTrue((result as ScaleConditionDto).scale == scaleConditionDto.scale);
         }
 
         #endregion
@@ -428,11 +428,11 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out RangeConditionDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result.conditionA as MagnitudeConditionDto).magnitude
+            Assert.IsTrue(((result as RangeConditionDto).conditionA as MagnitudeConditionDto).magnitude
                 == (rangeConditionDto.conditionA as MagnitudeConditionDto).magnitude);
-            Assert.IsTrue((result.conditionB as ScaleConditionDto).scale
+            Assert.IsTrue(((result as RangeConditionDto).conditionB as ScaleConditionDto).scale
                 == (rangeConditionDto.conditionB as ScaleConditionDto).scale);
         }
 
@@ -447,19 +447,19 @@ namespace EditMode_Tests
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            collabSerializerModule.Read(byteContainer, out bool readable, out NotConditionDto result);
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue((result.conditions[0] as MagnitudeConditionDto).magnitude
-                == (notConditionDto.conditions[0] as MagnitudeConditionDto).magnitude);
-            Assert.IsTrue((result.conditions[1] as DirectionConditionDto).direction
+            Assert.IsTrue(((result as NotConditionDto).conditions[0] as UserScaleConditinoDto).scale
+                == (notConditionDto.conditions[0] as UserScaleConditinoDto).scale);
+            Assert.IsTrue(((result as NotConditionDto).conditions[1] as DirectionConditionDto).direction
                 == (notConditionDto.conditions[1] as DirectionConditionDto).direction);
         }
 
         private PoseConditionDto[] GetCondditionsTestSet()
         {
             return new PoseConditionDto[]{
-                new MagnitudeConditionDto(98),
+                new UserScaleConditinoDto(Vector3.one),
                 new DirectionConditionDto(Vector3.one)
             };
         }
