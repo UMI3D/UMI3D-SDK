@@ -27,8 +27,6 @@ namespace umi3d.edk.collaboration
     /// </summary>
     /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit
     /// which ones are allow ed to be used for each user.
-
-    [CreateAssetMenu(fileName = "UMI3DEmotesConfigTemplate", menuName = "UMI3D/Emotes Config")]
     public class UMI3DEmotesConfig : MonoBehaviour, UMI3DLoadableEntity
     {
         /// <summary>
