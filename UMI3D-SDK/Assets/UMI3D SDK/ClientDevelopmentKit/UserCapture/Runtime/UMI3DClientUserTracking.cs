@@ -132,36 +132,6 @@ namespace umi3d.cdk.userCapture
 
         public BoardedVehicleEvent boardedVehicleEvent = new BoardedVehicleEvent();
 
-        public class EmotesConfigEvent : UnityEvent<UMI3DEmotesConfigDto> { };
-        public class EmoteEvent : UnityEvent<UMI3DEmoteDto> { };
-
-        /// <summary>
-        /// Triggered when an EmoteConfig file have been loaded
-        /// </summary>
-        public EmotesConfigEvent EmotesLoadedEvent = new EmotesConfigEvent();
-        /// <summary>
-        /// Trigered when an emote changed on availability
-        /// </summary>
-        public EmoteEvent EmoteChangedEvent = new EmoteEvent();
-        /// <summary>
-        /// Trigered when an emote is played by the user
-        /// </summary>
-        public UnityEvent EmotePlayedSelfEvent = new UnityEvent();
-        /// <summary>
-        /// Trigered when an emote is finished to be played by the user
-        /// </summary>
-        public UnityEvent EmoteEndedSelfEvent = new UnityEvent();
-
-        /// <summary>
-        /// True when an emote is currently playing
-        /// </summary>
-        public bool IsEmotePlaying { get; protected set; } = false;
-
-        /// <summary>
-        /// Emote configuration on the server, with al available emotes for the user.
-        /// </summary>
-        protected UMI3DEmotesConfigDto emoteConfig;
-
 
         public class AvatarEvent : UnityEvent<ulong> { };
 
@@ -216,17 +186,6 @@ namespace umi3d.cdk.userCapture
             //UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitParentId);
             UMI3DNavigation.onEmbarkVehicleDelegate += UpdateParentId;
-            EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
-            EmotePlayedSelfEvent.AddListener(delegate
-            {
-                IgnoreBones = true;
-                IsEmotePlaying = true;
-            });
-            EmoteEndedSelfEvent.AddListener(delegate
-            {
-                IgnoreBones = false;
-                IsEmotePlaying = false;
-            });
         }
 
         private async void InitParentId()

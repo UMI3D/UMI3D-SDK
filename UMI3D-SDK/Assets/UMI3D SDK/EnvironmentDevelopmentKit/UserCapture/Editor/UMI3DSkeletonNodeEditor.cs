@@ -15,24 +15,20 @@ limitations under the License.
 */
 
 using umi3d.edk.editor;
-using umi3d.edk.userCapture;
 using UnityEditor;
-using UnityEngine;
 
-namespace UMI3D.EDK.UserCapture.editor
+namespace umi3d.edk.userCapture.editor
 {
     [CustomEditor(typeof(UMI3DSkeletonNode), true)]
     [CanEditMultipleObjects]
     public class UMI3DSkeletonNodeEditor : UMI3DModelEditor
     {
-        private SerializedProperty hasEmotes;
-        private SerializedProperty emoteConfig;
+        private SerializedProperty animationsStates;
 
         protected override void OnEnable()
         {
             base.OnEnable();
-            hasEmotes = serializedObject.FindProperty("hasEmotes");
-            emoteConfig = serializedObject.FindProperty("emoteConfig");
+            animationsStates = serializedObject.FindProperty("animationsStates");
         }
 
         public override void OnInspectorGUI()
@@ -41,9 +37,7 @@ namespace UMI3D.EDK.UserCapture.editor
             EditorGUI.BeginChangeCheck();
 
             serializedObject.Update();
-            EditorGUILayout.PropertyField(hasEmotes);
-            if (hasEmotes.boolValue)
-                EditorGUILayout.PropertyField(emoteConfig);
+            EditorGUILayout.PropertyField(animationsStates);
 
             serializedObject.ApplyModifiedProperties();
         }

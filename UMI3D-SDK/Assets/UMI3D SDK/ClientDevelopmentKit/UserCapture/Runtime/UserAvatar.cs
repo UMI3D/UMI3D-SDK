@@ -214,9 +214,6 @@ namespace umi3d.cdk.userCapture
                 foreach (UMI3DBodyPoseDto pose in dto.bodyPoses)
                     UMI3DEnvironmentLoader.RegisterEntityInstance(pose.id, pose, null).NotifyLoaded();
 
-            if (dto.emotesConfigDto != null)
-                UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.emotesConfigDto));
-
             if (activeUserBindings && userBindings != null)
             {
                 foreach (BoneBindingDto boneDto in userBindings)

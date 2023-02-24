@@ -326,6 +326,13 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
+                    case EmoteRequest emoteRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationServer.Collaboration.DispatchEmoteActivity(user, emoteRequest.emoteId, emoteRequest.shouldTrigger);
+                        });
+                        break;
+
                     default:
                         MainThreadManager.Run(() =>
                         {
@@ -375,9 +382,10 @@ namespace umi3d.edk.collaboration
                     case UMI3DOperationKeys.EmoteRequest:
                         MainThreadManager.Run(() =>
                         {
-                            var emoteToTriggerId = UMI3DSerializer.Read<ulong>(container);
-                            var trigger = UMI3DSerializer.Read<bool>(container);
-                            UMI3DEmbodimentManager.Instance.DispatchChangeEmoteReception(emoteToTriggerId, user, trigger);
+                            ulong emoteToTriggerId = UMI3DSerializer.Read<ulong>(container);
+                            bool trigger = UMI3DSerializer.Read<bool>(container);
+                            
+                            UMI3DCollaborationServer.Collaboration.DispatchEmoteActivity(user, emoteToTriggerId, trigger);
                         });
                         break;
 

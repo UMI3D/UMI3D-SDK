@@ -1,0 +1,113 @@
+﻿/*
+Copyright 2019 - 2023 Inetum
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+    http://www.apache.org/licenses/LICENSE-2.0
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
+using System.Threading.Tasks;
+using umi3d.common;
+using umi3d.common.collaboration;
+
+namespace umi3d.cdk.collaboration
+{
+    /// <summary>
+    /// Loader for <see cref="UMI3DEmoteDto"/>. Manages the dtos from the client-side.
+    /// </summary>
+    public class UMI3DEmoteLoader : AbstractLoader
+    {
+        private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
+        /// <inheritdoc/>
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DEmoteDto;
+        }
+
+        /// <inheritdoc/>
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            var dto = value.dto as UMI3DEmoteDto;
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+            UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+        }
+
+        /// <inheritdoc/>
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            if (value.entity.dto is not UMI3DEmoteDto dto)
+                return false;
+
+            switch (value.property.property)
+            {
+                case UMI3DPropertyKeys.ActiveEmote:
+                    dto.available = (bool)value.property.value;
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    break;
+
+                case UMI3DPropertyKeys.AnimationEmote:
+                    dto.animationId = (ulong)value.property.value;
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    break;
+
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            if (value.entity.dto is not UMI3DEmoteDto dto)
+                return false;
+
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.ActiveEmote:
+                    dto.available = UMI3DSerializer.Read<bool>(value.container);
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    break;
+
+                case UMI3DPropertyKeys.AnimationEmote:
+                    dto.animationId = UMI3DSerializer.Read<ulong>(value.container);
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    break;
+
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        /// <summary>
+        /// Load an emote
+        /// </summary>
+        /// <param name="value"></param>
+        /// <param name="propertyKey"></param>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
+        {
+            switch (data.propertyKey)
+            {
+                case UMI3DPropertyKeys.ActiveEmote:
+                case UMI3DPropertyKeys.AnimationEmote:
+                    data.result = UMI3DSerializer.Read<UMI3DEmoteDto>(data.container);
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(data.result as UMI3DEmoteDto);
+                    break;
+
+                default:
+                    return false;
+            }
+            return true;
+        }
+    }
+}

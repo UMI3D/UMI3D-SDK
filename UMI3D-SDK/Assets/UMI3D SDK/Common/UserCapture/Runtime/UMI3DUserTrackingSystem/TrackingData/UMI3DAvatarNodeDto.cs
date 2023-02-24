@@ -60,10 +60,5 @@ namespace umi3d.common.userCapture
         /// </summary>
         /// Note that this field is empty for other avatars than the target user's one.
         public List<UMI3DBodyPoseDto> bodyPoses;
-
-        /// <summary>
-        /// Emotes configuration to manage available emotes
-        /// </summary>
-        public UMI3DEmotesConfigDto emotesConfigDto;
     }
 }

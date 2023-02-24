@@ -179,8 +179,8 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(UMI3DEmotesConfigDto):
                     var conf = new UMI3DEmotesConfigDto();
                     result = default(T);
-                    readable = UMI3DSerializer.TryRead(container, out conf.allAvailableByDefault);
-                    readable &= UMI3DSerializer.TryRead(container, out conf.defaultStateName);
+                    readable = UMI3DSerializer.TryRead(container, out conf.id);
+                    readable &= UMI3DSerializer.TryRead(container, out conf.allAvailableByDefault);
 
                     if (readable)
                     {
@@ -206,7 +206,7 @@ namespace umi3d.common.collaboration
 
                     readable = UMI3DSerializer.TryRead(container, out e.id);
                     readable &= UMI3DSerializer.TryRead(container, out e.label);
-                    readable &= UMI3DSerializer.TryRead(container, out e.animation);
+                    readable &= UMI3DSerializer.TryRead(container, out e.animationId);
                     readable &= UMI3DSerializer.TryRead(container, out e.available);
                     readable &= UMI3DSerializer.TryRead(container, out e.iconResource);
 

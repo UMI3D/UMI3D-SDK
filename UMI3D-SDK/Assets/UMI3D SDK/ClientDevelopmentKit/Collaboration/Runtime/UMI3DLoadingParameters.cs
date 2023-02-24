@@ -19,12 +19,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.collaboration;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.volumes;
 using umi3d.common;
 using umi3d.common.interaction;
-using umi3d.common.userCapture;
 using umi3d.common.volume;
 using UnityEngine;
 

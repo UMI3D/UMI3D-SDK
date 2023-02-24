@@ -11,9 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-
-namespace umi3d.common.userCapture
+namespace umi3d.common.collaboration
 {
     /// <summary>
     /// Emote data, including a reference to the icon resource, packaged in a DTO.
@@ -41,7 +39,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Emote animation in the bundled animator
         /// </summary>
-        public UMI3DAbstractAnimationDto animation;
+        public ulong animationId;
     }
 }
 

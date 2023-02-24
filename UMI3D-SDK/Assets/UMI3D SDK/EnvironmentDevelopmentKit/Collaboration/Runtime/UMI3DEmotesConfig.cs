@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2022 Inetum
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,19 +17,19 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
-using umi3d.common.userCapture;
+using umi3d.common.collaboration;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Emote config file to send to users
     /// </summary>
-    /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit 
+    /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit
     /// which ones are allow ed to be used for each user.
 
     [CreateAssetMenu(fileName = "UMI3DEmotesConfigTemplate", menuName = "UMI3D/Emotes Config")]
-    public class UMI3DEmotesConfig : ScriptableObject, UMI3DLoadableEntity
+    public class UMI3DEmotesConfig : MonoBehaviour, UMI3DLoadableEntity
     {
         /// <summary>
         /// Entity id
@@ -37,16 +37,9 @@ namespace umi3d.edk.userCapture
         private ulong id;
 
         /// <summary>
-        /// Name of the default state in the avatar emote animator.
-        /// </summary>
-        /// The one that is played when the user is not doing anything special.
-        [Tooltip("Name of the default state in the avatar emote animator if one is used. The one that is played when the user is not doing anything special.")]
-        public string defaultStateName = "Idle";
-
-        /// <summary>
         /// Should the emotes be available by default to users ?
         /// </summary>
-        [Tooltip("Should the emotes be available by default to users? This setting will override all availaability settings in the emotes list.")]
+        [Tooltip("Should the emotes be available by default to users? This setting will override all availability settings in the emotes list.")]
         public bool allAvailableAtStartByDefault = false;
 
         /// <summary>
@@ -75,7 +68,7 @@ namespace umi3d.edk.userCapture
             var operation = new LoadEntity()
             {
                 entities = new List<UMI3DLoadableEntity>() { this },
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+                users = users ?? UMI3DServer.Instance.UserSetWhenHasJoined()
             };
 
             return operation;
@@ -97,17 +90,17 @@ namespace umi3d.edk.userCapture
         {
             return new UMI3DEmotesConfigDto()
             {
+                id = this.Id(),
                 emotes = this.IncludedEmotes.Select(x => (UMI3DEmoteDto)x.ToEntityDto(user)).ToList(),
-                allAvailableByDefault = this.allAvailableAtStartByDefault,
-                defaultStateName = this.defaultStateName
+                allAvailableByDefault = this.allAvailableAtStartByDefault
             };
         }
 
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            Bytable bytable = UMI3DSerializer.Write(allAvailableAtStartByDefault);
-            bytable += UMI3DSerializer.Write(defaultStateName);
+            Bytable bytable = UMI3DSerializer.Write(this.Id());
+            bytable += UMI3DSerializer.Write(allAvailableAtStartByDefault);
             UMI3DSerializer.Write(IncludedEmotes.Count);
             foreach (UMI3DEmote emote in IncludedEmotes)
             {

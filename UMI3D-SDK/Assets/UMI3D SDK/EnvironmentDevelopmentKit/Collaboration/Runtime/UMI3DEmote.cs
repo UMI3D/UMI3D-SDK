@@ -1,9 +1,12 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2023 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
+
     http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,10 +17,10 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
-using umi3d.common.userCapture;
+using umi3d.common.collaboration;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Emote data, including a reference to the icon resource
@@ -42,8 +45,22 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Emote animation
         /// </summary>
-        [Tooltip("Animation of the emote.")]
-        public UMI3DAbstractAnimation animation;
+        public UMI3DAsyncProperty<ulong> AnimationId
+        {
+            get
+            {
+                if (_animationId == null)
+                {
+                    if (id == default)
+                        Id();
+                    _animationId = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.AnimationEmote, 0L);
+                }
+                return _animationId;
+            }
+            private set => _animationId = value;
+        }
+
+        protected UMI3DAsyncProperty<ulong> _animationId;
 
         /// <summary>
         /// If the user can see and play the emote.
@@ -57,13 +74,13 @@ namespace umi3d.edk.userCapture
                     if (id == default)
                         Id();
                     _available = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.ActiveEmote, availableAtStart);
-
                 }
                 return _available;
             }
             private set => _available = value;
         }
-        public UMI3DAsyncProperty<bool> _available;
+
+        protected UMI3DAsyncProperty<bool> _available;
 
         /// <summary>
         /// True if the user can see and play the emote at the start.
@@ -104,21 +121,20 @@ namespace umi3d.edk.userCapture
         {
             return new UMI3DEmoteDto()
             {
-                label = this.label,
-                animation = this.animation.ToAnimationDto(user), // create a DTO
                 id = this.Id(),
+                label = this.label,
+                animationId = this.AnimationId.GetValue(user), // create a DTO
                 available = this.availableAtStart,
                 iconResource = this.iconResource.ToDto(),
             };
         }
-
 
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
             Bytable bytable = UMI3DSerializer.Write(id)
                             + UMI3DSerializer.Write(label)
-                            + UMI3DSerializer.Write(animation.ToEntityDto(user))
+                            + UMI3DSerializer.Write(AnimationId.GetValue(user))
                             + UMI3DSerializer.Write(availableAtStart)
                             + UMI3DSerializer.Write(iconResource.ToDto());
 
@@ -126,6 +142,7 @@ namespace umi3d.edk.userCapture
         }
 
         #region filter
+
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         /// <inheritdoc/>

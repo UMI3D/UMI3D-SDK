@@ -13,7 +13,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.collaboration
 {
     /// <summary>
     /// Emote configuration asset that describes available emotes for client usage
@@ -26,17 +26,12 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// List of available emotes dto
         /// </summary>
-        public List<UMI3DEmoteDto> emotes = new List<UMI3DEmoteDto>();
+        public List<UMI3DEmoteDto> emotes = new();
 
         /// <summary>
         /// Should the emotes be available by default to users ? When set to true, all emotes are available at start, no matter the configuration
         /// </summary>
         public bool allAvailableByDefault = true;
-
-        /// <summary>
-        /// Default animation state name in the normal avatar animator.
-        /// </summary>
-        public string defaultStateName;
     }
 }
 

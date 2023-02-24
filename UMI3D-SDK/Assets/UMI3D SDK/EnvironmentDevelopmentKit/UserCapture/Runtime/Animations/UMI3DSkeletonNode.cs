@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -26,12 +27,10 @@ namespace umi3d.edk.userCapture
     /// </summary>
     public class UMI3DSkeletonNode : UMI3DModel
     {
-        [Tooltip("Has this skeleton emotes attached on?")]
-        public bool hasEmotes = false;
+        [Tooltip("List of states names in the embedded animator.")]
+        public List<string> animationStates = new ();
 
-        [Tooltip("Emotes configuration scriptable object.")]
-        public UMI3DEmotesConfig emoteConfig;
-
+        /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DSkeletonNodeDto();
