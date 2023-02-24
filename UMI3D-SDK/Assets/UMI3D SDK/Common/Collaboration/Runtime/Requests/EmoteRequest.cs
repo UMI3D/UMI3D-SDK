@@ -14,12 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.collaboration
 {
     /// <summary>
     /// Request from a browser to trigger an emote for its user on user browsers.
     /// </summary>
-    public class EmoteRequest : AbstractOperationDto
+    public class EmoteRequest : AbstractBrowserRequestDto
     {
         /// <summary>
         /// UMI3D id of the emote to trigger/interrupt.
@@ -29,9 +29,19 @@ namespace umi3d.common.userCapture
         /// If true, the emote sould be triggered. Otherwise, it should be interrupted.
         /// </summary>
         public bool shouldTrigger = true;
-        /// <summary>
-        /// User id of the user planning to trigger an emote.
-        /// </summary>
-        public ulong sendingUserId;
+
+        /// <inheritdoc/>
+        protected override uint GetOperationId()
+        {
+            return UMI3DOperationKeys.EmoteRequest;
+        }
+
+        /// <inheritdoc/>
+        public override Bytable ToBytableArray(params object[] parameters)
+        {
+            return base.ToBytableArray(parameters)
+                     + UMI3DSerializer.Write(emoteId)
+                     + UMI3DSerializer.Write(shouldTrigger);
+        }
     }
 }

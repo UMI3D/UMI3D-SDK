@@ -61,12 +61,6 @@ namespace umi3d.edk.userCapture
         public EmbodimentBoneEvent UpdateEvent;
         public EmbodimentBoneEvent DeletionEvent;
 
-        /// <summary>
-        /// Emote configuration for the environment.
-        /// </summary>
-        [SerializeField, Tooltip("Emote configuration for the environment.")]
-        public UMI3DEmotesConfig emotesConfig;
-
         /// <inheritdoc/>
         protected override void Awake()
         {
@@ -227,28 +221,6 @@ namespace umi3d.edk.userCapture
 
             UMI3DAvatarNode userEmbd = embodimentInstances[user.Id()];
             userEmbd.userCameraPropertiesDto = UMI3DSerializer.Read<UserCameraPropertiesDto>(container);
-        }
-
-        /// <summary>
-        /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.
-        /// </summary>
-        /// <param name="emoteId">Emote to trigger UMI3D id.</param>
-        /// <param name="user">Sending emote user.</param>
-        /// <param name="trigger">True for triggering, false to interrupt.</param>
-        public void DispatchChangeEmoteReception(ulong emoteId, UMI3DUser user, bool trigger)
-        {
-            //? avoid the data channel filtering
-            var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
-            targetUsers.Remove(user);
-            var req = new EmoteDispatchRequest()
-            {
-                sendingUserId = user.Id(),
-                shouldTrigger = trigger,
-                emoteId = emoteId,
-                users = targetUsers
-            };
-
-            req.ToTransaction(true).Dispatch();
         }
 
         /// <summary>
@@ -584,9 +556,6 @@ namespace umi3d.edk.userCapture
             {
                 avatarNodeDto.handPoses = PreloadedHandPoses.Select(hp => hp.ToDto()).ToList();
                 avatarNodeDto.bodyPoses = PreloadedBodyPoses.Select(bp => bp.ToDto()).ToList();
-
-                if (emotesConfig != null)
-                    avatarNodeDto.emotesConfigDto = (UMI3DEmotesConfigDto)emotesConfig.ToEntityDto(user);
             }
         }
         #endregion

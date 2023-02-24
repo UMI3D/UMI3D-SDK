@@ -11,9 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-
-namespace umi3d.common.userCapture
+namespace umi3d.common.collaboration
 {
     /// <summary>
     /// Emote data, including a reference to the icon resource, packaged in a DTO.
@@ -29,11 +27,6 @@ namespace umi3d.common.userCapture
         public string label;
 
         /// <summary>
-        /// Emote state name on the Animator.
-        /// </summary>
-        public string stateName;
-
-        /// <summary>
         /// If the user can see and play the emote
         /// </summary>
         public bool available;
@@ -42,6 +35,11 @@ namespace umi3d.common.userCapture
         /// Icon ressource details
         /// </summary>
         public FileDto iconResource;
+
+        /// <summary>
+        /// Emote animation in the bundled animator
+        /// </summary>
+        public ulong animationId;
     }
 }
 

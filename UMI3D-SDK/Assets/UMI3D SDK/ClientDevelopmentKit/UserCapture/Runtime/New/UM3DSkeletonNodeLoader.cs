@@ -43,8 +43,6 @@ namespace umi3d.cdk.userCapture
 
             await base.ReadUMI3DExtension(data);
 
-            Debug.Log("Skeleton Node found");
-
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
 
             var go = nodeInstance.gameObject;
@@ -58,7 +56,7 @@ namespace umi3d.cdk.userCapture
                 if (go.TryGetComponent(out UMI3DClientUserTrackingBone bone))
                     skeletonMapper.BoneAnchor = bone.boneType;
                 else
-                    Debug.Log("No bone found");
+                    throw new Umi3dException("No bone found to attach skeleton.");
             }
 
             AnimatedSkeleton animationSkeleton = new(skeletonMapper);

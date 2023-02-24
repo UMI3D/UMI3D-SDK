@@ -14,12 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using umi3d.cdk.userCapture;
-using umi3d.common.userCapture;
+using umi3d.common.collaboration;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
@@ -28,6 +27,47 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationClientUserTracking : UMI3DClientUserTracking
     {
+        /// <summary>
+        /// Get the current instance of <see cref="UMI3DCollaborationClientUserTracking"/> or return null is the instance is a <see cref="UMI3DClientUserTracking"/>.
+        /// </summary>
+        /// This masking property allows to get the currenlty instanciated <see cref="UMI3DClientUserTracking"/> object
+        /// and intancies a <see cref="UMI3DCollaborationClientUserTracking"/> if no one is found.
+        /// Masking is a workaround the fact that we are subclassing a singleton.
+        public new static UMI3DCollaborationClientUserTracking Instance
+        {
+            get
+            {
+                if (ApplicationIsQuitting)
+                    return null;
+                if (!Exists)
+                {
+                    instance = FindObjectOfType<UMI3DCollaborationClientUserTracking>();
+
+                    if (instance == null)
+                    {
+                        var g = GameObject.Find(typeof(UMI3DCollaborationClientUserTracking).Name);
+                        if (g)
+                        {
+                            instance = g.GetComponent<UMI3DCollaborationClientUserTracking>();
+                        }
+                        else
+                        {
+                            g = new GameObject
+                            {
+                                name = typeof(UMI3DCollaborationClientUserTracking).Name
+                            };
+                            instance = g.AddComponent<UMI3DCollaborationClientUserTracking>();
+                        }
+                    }
+                    return instance as UMI3DCollaborationClientUserTracking;
+                }
+                if (UMI3DClientUserTracking.Instance is UMI3DCollaborationClientUserTracking collabUserTracking)
+                    return collabUserTracking;
+                else
+                    throw new Umi3dException("UMI3DClientUserTracking instance is no UMI3DCollaborationClientUserTracking");
+            }
+        }
+
         /// <summary>
         /// Skeleton of the tracked user.
         /// </summary>
@@ -44,6 +84,26 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(() => embodimentDict.Clear());
             UMI3DCollaborationClientServer.Instance.OnReconnect.AddListener(() => embodimentDict.Clear());
         }
+
+        public class EmotesConfigEvent : UnityEvent<UMI3DEmotesConfigDto> { };
+        public class EmoteEvent : UnityEvent<UMI3DEmoteDto> { };
+
+        /// <summary>
+        /// Triggered when an EmoteConfig file have been loaded
+        /// </summary>
+        public event Action<UMI3DEmotesConfigDto> EmotesLoadedEvent;
+        public void OnEmoteConfigLoaded(UMI3DEmotesConfigDto dto) => EmotesLoadedEvent?.Invoke(dto);
+
+        /// <summary>
+        /// Triggered when an emote changed on availability
+        /// </summary>
+        public event Action<UMI3DEmoteDto> EmoteUpdatedEvent;
+        public void OnEmoteUpdated(UMI3DEmoteDto dto) => EmoteUpdatedEvent?.Invoke(dto);
+
+        /// <summary>
+        /// Emote configuration on the server, with al available emotes for the user.
+        /// </summary>
+        protected UMI3DEmotesConfigDto emoteConfig;
 
         ///// <inheritdoc/>
         //protected override IEnumerator DispatchTracking()
@@ -77,107 +137,5 @@ namespace umi3d.cdk.collaboration
         //    base.DispatchCamera();
         //}
 
-        /// <summary>
-        /// Collection of emotes' coroutine related to playing for each user.
-        /// </summary>
-        private Dictionary<ulong, Coroutine> emoteCoroutineDict = new Dictionary<ulong, Coroutine>();
-
-        /// <summary>
-        /// Starts an emote on another user's avatar in the scene.
-        /// </summary>
-        /// <param name="emoteId">Emote to start UMI3D Id.</param>
-        /// <param name="userId">Id of the user to start the emote for.</param>
-        /// Don't use this for your own avatar's emotes.
-        public void PlayEmoteOnOtherAvatar(ulong emoteId, ulong userId)
-        {
-            var otherUserAvatar = embodimentDict[userId];
-            var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
-            var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).LastOrDefault();
-
-            if (emoteAnimator == null || emoteConfig == null)
-                return;
-            var emoteToPlay = emoteConfig.emotes.Find(x => x.id == emoteId);
-            if (emoteCoroutineDict.ContainsKey(userId)) //an Emote is playing, need to interrupt it
-            {
-                if (emoteCoroutineDict[userId] != null)
-                    StopCoroutine(emoteCoroutineDict[userId]);
-                emoteAnimator.Play(emoteConfig.defaultStateName, layer: 0);
-                emoteCoroutineDict[userId] = null;
-            }
-
-            var coroutine = StartCoroutine(PlayEmote(userId, emoteAnimator, emoteToPlay));
-            if (emoteCoroutineDict.ContainsKey(userId))
-                emoteCoroutineDict[userId] = coroutine;
-            else
-                emoteCoroutineDict.Add(userId, coroutine);
-        }
-
-        /// <summary>
-        /// Plays an emote on an animator.
-        /// </summary>
-        /// <param name="animator">Animator to play the emote on.</param>
-        /// <param name="emote">Emote to play.</param>
-        /// <returns></returns>
-        protected IEnumerator PlayEmote(ulong userId, Animator animator, UMI3DEmoteDto emote)
-        {
-            embodimentDict[userId].ForceDisablingBinding = true;
-            animator.enabled = true;
-            animator.Play(emote.stateName, layer: 0);
-            animator.Update(0);
-            yield return new WaitWhile(() =>
-            {
-                if (animator == null) return false;  // happens when a user leaves the scene when playing an emote
-                return animator.GetCurrentAnimatorStateInfo(0).normalizedTime < 1;
-            });
-            if (animator == null) // heppens when a user leaves the scene when playing an emote
-                yield break;
-            animator.Play(emoteConfig.defaultStateName, layer: 0);
-            animator.enabled = false;
-            animator.Update(0);
-            emoteCoroutineDict.Remove(userId);
-            embodimentDict[userId].ForceDisablingBinding = false;
-        }
-
-        /// <summary>
-        /// Stops an emote on another user's avatar in the scene.
-        /// </summary>
-        /// <param name="emoteId">Emote to stop UMI3D Id.</param>
-        /// <param name="userId">Id of the user to stop the emote for.</param>
-        /// Don't use this for your own avatar's emotes.
-        public void StopEmoteOnOtherAvatar(ulong emoteId, ulong userId)
-        {
-            if (emoteConfig == null) //no emote support in the scene
-                return;
-
-            if (emoteCoroutineDict.ContainsKey(userId)
-                && emoteCoroutineDict[userId] != null)
-            {
-                StopCoroutine(emoteCoroutineDict[userId]);
-                emoteCoroutineDict.Remove(userId);
-                embodimentDict[userId].ForceDisablingBinding = false;
-
-                if (embodimentDict.TryGetValue(userId, out UserAvatar otherUserAvatar))
-                {
-                    if (otherUserAvatar == null) //the embodiment system lost the avatar
-                        return;
-
-                    var animators = otherUserAvatar.GetComponentsInChildren<Animator>();
-                    if (animators == null) //no animator to desactive found on the avatar
-                        return;
-
-                    var emoteAnimator = animators.Where(animator => animator.runtimeAnimatorController != null).LastOrDefault();
-                    if (emoteAnimator == null) //no animator to desactive found on the avatar
-                        return;
-
-                    var emoteToStop = emoteConfig.emotes.Find(x => x.id == emoteId);
-                    if (emoteAnimator == null) //the emote to stop doesn't exist
-                        throw new Umi3dException("The emote to stop does not exist in emote configuration file.");
-
-
-                    emoteAnimator.enabled = false;
-                    emoteAnimator.Update(0);
-                }
-            }
-        }
     }
 }

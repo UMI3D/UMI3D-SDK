@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -35,6 +36,16 @@ namespace umi3d.cdk
 
         [SerializeField]
         protected Material baseMaterial;
+
+        public Coroutine AttachCoroutine(IEnumerator coroutine)
+        {
+            return StartCoroutine(coroutine);
+        }
+
+        public void DettachCoroutine(Coroutine coroutine)
+        {
+            StopCoroutine(coroutine);
+        }
 
         protected override void Awake()
         {

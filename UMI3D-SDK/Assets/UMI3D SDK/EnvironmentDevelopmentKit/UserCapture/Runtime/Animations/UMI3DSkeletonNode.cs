@@ -14,15 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+using System.Collections.Generic;
+using umi3d.common;
+using umi3d.common.userCapture;
+using UnityEngine;
+
+namespace umi3d.edk.userCapture
 {
     /// <summary>
-    /// DTO describing a subskeleton used for animation.
-    /// </summary>
-    /// A Skeleton node is a subskeleton with a Unity Animator
+    ///  A Skeleton node is a subskeleton with a Unity Animator
     /// that is packaged in a bundle. It is loaded the same way as a Mesh.
-    public class UMI3DSkeletonNodeDto : UMI3DMeshNodeDto
+    /// </summary>
+    public class UMI3DSkeletonNode : UMI3DModel
     {
+        [Tooltip("List of states names in the embedded animator.")]
+        public List<string> animationStates = new ();
 
+        /// <inheritdoc/>
+        protected override UMI3DNodeDto CreateDto()
+        {
+            return new UMI3DSkeletonNodeDto();
+        }
     }
 }

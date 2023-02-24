@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2022 Inetum
+Copyright 2019 - 2023 Inetum
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -12,44 +12,49 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.userCapture;
-using static umi3d.cdk.UMI3DResourcesManager;
+using umi3d.common.collaboration;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.collaboration
 {
     /// <summary>
     /// Loader for <see cref="UMI3DEmotesConfigDto"/>.
     /// </summary>
     public class UMI3DEmotesConfigLoader : AbstractLoader
     {
-        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
+
+        /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is UMI3DEmotesConfigDto;
         }
 
+        /// <inheritdoc/>
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmotesConfigDto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
-                UMI3DEnvironmentLoader.RegisterEntityInstance(emoteDto.id, emoteDto, null).NotifyLoaded();
-            UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(emoteDto.id, emoteDto, null).NotifyLoaded();
+
+            UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(dto);
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            var dto = value.entity.dto as UMI3DEmotesConfigDto;
-            if (dto == null) return false;
+            if (value.entity.dto is not UMI3DEmotesConfigDto dto)
+                return false;
+
             switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = value.property.value as List<UMI3DEmoteDto>;
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(dto);
                     break;
 
                 default:
@@ -58,15 +63,17 @@ namespace umi3d.cdk.userCapture
             return true;
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            var dto = value.entity.dto as UMI3DEmotesConfigDto;
-            if (dto == null) return false;
+            if (value.entity.dto is not UMI3DEmotesConfigDto dto)
+                return false;
+
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = UMI3DSerializer.Read<List<UMI3DEmoteDto>>(value.container);
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(dto);
                     break;
 
                 default:
@@ -75,18 +82,14 @@ namespace umi3d.cdk.userCapture
             return true;
         }
 
-        /// <summary>
-        /// Load an emote config
-        /// </summary>
-        /// <returns></returns>
-        public override async Task< bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
+        /// <inheritdoc/>
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     data.result = UMI3DSerializer.Read<UMI3DEmotesConfigDto>(data.container);
-
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(data.result as UMI3DEmotesConfigDto);
+                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(data.result as UMI3DEmotesConfigDto);
                     break;
 
                 default:
