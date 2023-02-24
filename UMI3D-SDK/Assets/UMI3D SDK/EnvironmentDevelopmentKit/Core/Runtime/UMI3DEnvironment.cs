@@ -338,7 +338,17 @@ namespace umi3d.edk
         /// Get entity by id.
         /// </summary>
         /// <param name="id">Entity to get id</param>
+        [Obsolete("Use GetEntityInstance(ulong) instead.")]
         public static E GetEntity<E>(ulong id) where E : class, UMI3DEntity
+        {
+            return Instance.GetEntityInstance<E>(id);
+        }
+
+        /// <summary>
+        /// Get entity by id.
+        /// </summary>
+        /// <param name="id">Entity to get id</param>
+        public E GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
         {
             if (Exists)
                 return Instance.entities[id] as E;
