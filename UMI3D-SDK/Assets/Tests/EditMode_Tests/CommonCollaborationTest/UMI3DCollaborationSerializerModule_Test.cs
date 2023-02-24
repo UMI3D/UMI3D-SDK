@@ -464,6 +464,175 @@ namespace EditMode_Tests
             };
         }
         #endregion
+
+        #region Bone Pose
+        [Test]
+        public void ReadBonePose()
+        {
+            BonePoseDto bonePoseDto = new BonePoseDto(
+                bone : 2,
+                position : Vector3.one,
+                rotation : Vector4.one
+            ) ;
+
+            collabSerializerModule.Write(bonePoseDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (bonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position
+                 == (bonePoseDto as BonePoseDto).position));
+            Assert.IsTrue(((result as BonePoseDto).rotation
+                == (bonePoseDto as BonePoseDto).rotation));
+        }
+
+        [Test]
+        public void ReadBonePose_AnchoredBonePose()
+        {
+            AnchorBonePoseDto anchorBonePoseDto = new AnchorBonePoseDto(
+                bone: 2,
+                position: Vector3.one,
+                rotation: Vector4.one,
+                otherBone : 17
+            );
+
+            collabSerializerModule.Write(anchorBonePoseDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (anchorBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position
+                 == (anchorBonePoseDto as BonePoseDto).position));
+            Assert.IsTrue(((result as BonePoseDto).rotation
+                == (anchorBonePoseDto as BonePoseDto).rotation));
+
+            Assert.IsTrue(((result as AnchorBonePoseDto).otherBone
+                == (anchorBonePoseDto as AnchorBonePoseDto).otherBone));
+        }
+
+        [Test]
+        public void ReadBonePose_NodePositionAnchoredBonePose()
+        {
+            NodePositionAnchoredBonePoseDto nodePositionAnchoredBonePoseDto = new NodePositionAnchoredBonePoseDto(
+                bone: 2,
+                position: Vector3.one,
+                rotation: Vector4.one,
+                node: 17
+            );
+
+            collabSerializerModule.Write(nodePositionAnchoredBonePoseDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (nodePositionAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position
+                 == (nodePositionAnchoredBonePoseDto as BonePoseDto).position));
+            Assert.IsTrue(((result as BonePoseDto).rotation
+                == (nodePositionAnchoredBonePoseDto as BonePoseDto).rotation));
+
+            Assert.IsTrue(((result as NodePositionAnchoredBonePoseDto).node
+                == (nodePositionAnchoredBonePoseDto as NodePositionAnchoredBonePoseDto).node));
+        }
+
+        [Test]
+        public void ReadBonePose_NodeRotationAnchoredBonePose()
+        {
+            NodeRotationAnchoredBonePoseDto nodeRotationAnchoredBonePoseDto = new NodeRotationAnchoredBonePoseDto(
+                bone: 2,
+                position: Vector3.one,
+                rotation: Vector4.one,
+                node: 17
+            );
+
+            collabSerializerModule.Write(nodeRotationAnchoredBonePoseDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (nodeRotationAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position
+                 == (nodeRotationAnchoredBonePoseDto as BonePoseDto).position));
+            Assert.IsTrue(((result as BonePoseDto).rotation
+                == (nodeRotationAnchoredBonePoseDto as BonePoseDto).rotation));
+
+            Assert.IsTrue(((result as NodeRotationAnchoredBonePoseDto).node
+                == (nodeRotationAnchoredBonePoseDto as NodeRotationAnchoredBonePoseDto).node));
+        }
+
+        [Test]
+        public void ReadBonePose_FloorAnchoredBonePoseDto()
+        {
+            FloorAnchoredBonePoseDto floorAnchoredBonePoseDto = new FloorAnchoredBonePoseDto(
+                bone: 2,
+                position: Vector3.one,
+                rotation: Vector4.one
+            );
+
+            collabSerializerModule.Write(floorAnchoredBonePoseDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
+            Assert.IsTrue(readable);
+
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (floorAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position
+                 == (floorAnchoredBonePoseDto as BonePoseDto).position));
+            Assert.IsTrue(((result as BonePoseDto).rotation
+                == (floorAnchoredBonePoseDto as BonePoseDto).rotation));
+        }
+        #endregion
+
+        #region Pose
+        [Test]
+        public void ReadPose()
+        {
+            PoseDto poseDto = new PoseDto(
+                bones: GetTestBonePoseDtoSample(),
+                boneAnchor : 24
+            );
+
+            collabSerializerModule.Write(poseDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            collabSerializerModule.Read(byteContainer, out bool readable, out PoseDto result);
+            Assert.IsTrue(readable);
+
+            for (int i = 0; i < poseDto.bones.Length; i++)
+            {
+                Assert.IsTrue((result.bones[i]).bone == poseDto.bones[i].bone);
+            }
+
+            Assert.IsTrue(((result as PoseDto).boneAnchor
+                == (poseDto as PoseDto).boneAnchor));
+        }
+
+        private BonePoseDto[] GetTestBonePoseDtoSample()
+        {
+            throw new NotImplementedException();
+        }
+        #endregion
+
+        #region Duration
+
+        #endregion
     }
 }
 
