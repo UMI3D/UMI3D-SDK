@@ -24,6 +24,7 @@ namespace inetum.unityUtils
     /// </summary>
     /// <typeparam name="T">A Type.</typeparam>
     /// <seealso cref="PersistentSingleBehaviour{T}"/>>
+    [DisallowMultipleComponent]
     public class SingleBehaviour<T> : MonoBehaviour where T : SingleBehaviour<T>
     {
 
