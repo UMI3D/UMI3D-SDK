@@ -538,8 +538,6 @@ namespace umi3d.edk.collaboration
             UMI3DEmote emote = UMI3DCollaborationServer.Collaboration.emotesConfigs[sendingUser.Id()]
                     .IncludedEmotes.Find(x => x.id == emoteId);
 
-            Debug.Log($"Request to {(trigger ? "start" : "stop")} emote {emote.label} received.");
-
             if (!emote.Available.GetValue(sendingUser))
             {
                 UMI3DLogger.LogWarning($"User {sendingUser.Id()} tried " +
@@ -555,8 +553,6 @@ namespace umi3d.edk.collaboration
             var op = animation.objectPlaying.SetValue(trigger);
             if(t.AddIfNotNull(op))
                 t.Dispatch();
-
-            Debug.Log($"Request to {(trigger ? "start" : "stop")} sent.");
         }
     }
 }
