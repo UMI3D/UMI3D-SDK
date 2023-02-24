@@ -49,23 +49,44 @@ namespace umi3d.cdk
         /// <see cref="LoadVideoPlayers()"/> must be call to really create the videoPlayers, otherwise they are instanciated directly.
         /// </summary>
         /// <param name="videoPlayer"></param>
+        [Obsolete("Use LoadVideoPlayer instead.")]
         public static void LoadVideo(UMI3DVideoPlayerDto videoPlayer)
+        {
+            UMI3DVideoPlayer player;
+#if UNITY_ANDROID
+            if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
+                videoPlayersToLoad.Enqueue(videoPlayer);
+            else
+                player = new UMI3DVideoPlayer(videoPlayer);
+#else
+            player = new UMI3DVideoPlayer(videoPlayer);
+#endif      
+            player?.Init();
+        }
+
+        /// <summary>
+        /// Asks to load a <see cref="UMI3DVideoPlayer"/> from a <see cref="UMI3DVideoPlayerDto"/>. 
+        /// If the platform is Android and if <see cref="UMI3DEnvironmentLoader"/> is loading an environement,
+        /// <see cref="LoadVideoPlayers()"/> must be call to really create the videoPlayers, otherwise they are instanciated directly.
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+        public static UMI3DVideoPlayer LoadVideoPlayer(UMI3DVideoPlayerDto videoPlayer)
         {
 #if UNITY_ANDROID
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
                 videoPlayersToLoad.Enqueue(videoPlayer);
             else
-                new UMI3DVideoPlayer(videoPlayer);
+                return new UMI3DVideoPlayer(videoPlayer);
 #else
-            new UMI3DVideoPlayer(videoPlayer);
+            return new UMI3DVideoPlayer(videoPlayer);
 #endif
         }
 
-        /// <summary>
-        /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
-        /// <param name="onFinish"></param>
-        /// </summary>
-        public static async Task LoadVideoPlayers()
+            /// <summary>
+            /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
+            /// <param name="onFinish"></param>
+            /// </summary>
+            public static async Task LoadVideoPlayers()
         {
             if (videoPlayersToLoad.Count > 0)
                 await LoadVideoPlayersCoroutine();
@@ -92,6 +113,7 @@ namespace umi3d.cdk
                 UMI3DVideoPlayerDto videoPlayer = videoPlayersToLoad.Dequeue();
 
                 var player = new UMI3DVideoPlayer(videoPlayer);
+                player.Init();
 
                 while (!player.isPrepared && !player.preparationFailed)
                     await UMI3DAsyncManager.Yield();

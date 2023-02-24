@@ -204,17 +204,42 @@ namespace umi3d.cdk
             throw new Umi3dException($"No loader for this data {value}");
         }
 
+        /// <summary>
+        /// Can this loader load this piece of <paramref name="data"/> ?
+        /// </summary>
+        /// <param name="data"></param>
+        /// <returns></returns>
         public abstract bool CanReadUMI3DExtension(ReadUMI3DExtensionData data);
 
+        /// <summary>
+        /// Load data from a received GLTF extension.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public abstract Task ReadUMI3DExtension(ReadUMI3DExtensionData value);
 
+        /// <summary>
+        /// Load data into a UMI3D property.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public virtual Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
         {
             return Task.FromResult(false);
         }
 
+        /// <summary>
+        /// Set a property value received from a <see cref="UMI3DDto"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value);
 
+        /// <summary>
+        /// Set a property value received from a <see cref="ByteContainer"/>.
+        /// </summary>
+        /// <param name="value"></param>
+        /// <returns></returns>
         public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value);
     }
 }

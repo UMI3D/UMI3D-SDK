@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -25,9 +25,9 @@ using UnityEngine;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Abstract class for all components that could be played.
+    /// Abstract class for all entities that could be played.
     /// </summary>
-    public abstract class UMI3DAbstractAnimation : AbstractLoader
+    public abstract class UMI3DAbstractAnimation : AbstractLoader, IEntity
     {
         /// <summary>
         /// Get an animation by id.
@@ -37,8 +37,13 @@ namespace umi3d.cdk
         [Obsolete("Use UMI3DEnvironmentLoader.Instance.GetEntity<UMI3DAbstractAnimation> instead.")]
         public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
 
+        /// <summary>
+        /// Is the animation currently playing?
+        /// </summary>
+        /// <returns></returns>
+        public abstract bool IsPlaying();
 
-
+        /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return false;
@@ -70,6 +75,7 @@ namespace umi3d.cdk
             throw new Umi3dException("This Method should not be called to load an AbstractAnimation.\nPlease use UMI3DAnimationLoader.ReadUMI3DProperty(<>) instead.");
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             switch (value.property.property)
@@ -116,14 +122,15 @@ namespace umi3d.cdk
             return true;
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationPlaying:
-                    bool old = dto.playing;
+                    bool oldPlayingState = dto.playing;
                     dto.playing = UMI3DSerializer.Read<bool>(value.container);
-                    if (old != dto.playing)
+                    if (oldPlayingState != dto.playing)
                     {
                         if (dto.playing)
                         {
@@ -167,19 +174,23 @@ namespace umi3d.cdk
         /// </summary>
         protected UMI3DAbstractAnimationDto dto { get; set; }
 
+        /// <summary>
+        /// Animation UMI3D id.
+        /// </summary>
         public ulong Id => dto.id;
 
         public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
         {
             this.dto = dto;
-            Init();
         }
 
+        /// <summary>
+        /// Initialize the animation.
+        /// </summary>
+        /// Used to start directly animations or to find out usefuls components.
         public virtual void Init()
         {
-            UMI3DEntityInstance node = UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, this);
-
-            #if !UNITY_EDITOR
+#if !UNITY_EDITOR
             if (dto.playing)
             {
                 if (dto.startTime == default)
@@ -187,8 +198,7 @@ namespace umi3d.cdk
                 else
                     UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
             }
-            UnityMainThreadDispatcher.Instance().Enqueue(node.NotifyLoaded);
-            #endif
+#endif
         }
 
         /// <summary>
@@ -229,10 +239,10 @@ namespace umi3d.cdk
         public abstract float GetProgress();
 
         /// <summary>
-        /// Set the current progress of the animation between 0 (start) and 1 (end).
+        /// Set the current progress of the animation by time in milliseconds.
         /// </summary>
         /// <returns></returns>
-        public abstract void SetProgress(long frame);
+        public abstract void SetProgress(long time);
 
         /// <summary>
         /// Play the animation.
@@ -251,14 +261,19 @@ namespace umi3d.cdk
         public abstract void Stop();
 
         /// <summary>
+        /// Triggered when an animation reaches its end.
+        /// </summary>
+        public event Action AnimationEnded;
+
+        /// <summary>
         /// Performed at the end of the animation.
         /// </summary>
         public virtual void OnEnd()
         {
             if (dto.looping)
-            {
                 Start();
-            }
+            else
+                AnimationEnded?.Invoke();
         }
     }
 }
