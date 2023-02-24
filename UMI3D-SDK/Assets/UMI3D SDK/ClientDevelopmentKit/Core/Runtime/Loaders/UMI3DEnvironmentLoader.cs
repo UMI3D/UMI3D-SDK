@@ -107,9 +107,9 @@ namespace umi3d.cdk
         public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id)
         {
             if (!Exists)
-                throw new Umi3dException("Do Not Exist");
+                throw new Umi3dException("EnvironmentLoader does not exist");
             if (Instance.entitywaited == null)
-                throw new Umi3dException("Do Not Exist");
+                throw new Umi3dException("Entity waited to be loaded does not exist");
 
             UMI3DEntityInstance node = GetEntity(id);
             if (node != null && node.IsLoaded)
@@ -288,21 +288,10 @@ namespace umi3d.cdk
         [Obsolete("Use Instance.RegisterEntity() instead")]
         public static UMI3DEntityInstance RegisterEntityInstance(ulong id, UMI3DDto dto, object Object, Action delete = null)
         {
-            UMI3DEntityInstance node = null;
             if (!Exists)
-            {
                 return null;
-            }
-            else if (Instance.entities.ContainsKey(id))
-            {
-                node = Instance.entities[id];
-            }
             else
-            {
-                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = Object, Delete = delete };
-                Instance.entities.Add(id, node);
-            }
-            return node;
+                return Instance.RegisterEntity(id, dto, Object, delete);
         }
 
         /// <summary>
