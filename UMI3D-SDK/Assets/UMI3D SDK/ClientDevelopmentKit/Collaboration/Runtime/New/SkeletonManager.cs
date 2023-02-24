@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -28,7 +29,21 @@ namespace umi3d.cdk.collaboration
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
         public Dictionary<ulong,ISkeleton> skeletons { get; protected set; }
 
-        PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
+        public PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
+
+        public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; }
+
+        public ISkeleton GetSkeletonById(ulong id)
+        {
+            if ((skeleton as ISkeleton).userId == id)
+            {
+                return skeleton;
+            }
+            else
+            {
+                return collaborativeSkeletons.FirstOrDefault(cs => (cs as ISkeleton).userId == id);
+            }
+        }
 
         /// <summary>
         /// If true the avatar tracking is sent.
@@ -49,7 +64,6 @@ namespace umi3d.cdk.collaboration
 
         public SkeletonManager() : base()
         {
-            UnityEngine.Debug.Log("<color=green>New</color>");
             SetTrackingSending(_sendTracking);
         }
 

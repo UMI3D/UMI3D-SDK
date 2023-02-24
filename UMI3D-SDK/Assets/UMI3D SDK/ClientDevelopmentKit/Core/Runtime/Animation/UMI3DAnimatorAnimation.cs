@@ -37,9 +37,7 @@ namespace umi3d.cdk
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
         [Obsolete("Use EnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>() instead.")]
-        public new static UMI3DAnimatorAnimation Get(ulong id)
-        { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
-
+        public static new UMI3DAnimatorAnimation Get(ulong id) => UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation;
         /// <summary>
         /// DTO local copy.
         /// </summary>

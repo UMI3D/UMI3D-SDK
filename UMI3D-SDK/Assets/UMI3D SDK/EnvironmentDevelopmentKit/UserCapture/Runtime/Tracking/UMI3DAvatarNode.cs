@@ -199,7 +199,7 @@ namespace umi3d.edk.userCapture
 
             foreach (UMI3DBinding item in bindings.GetValue(user))
             {
-                bindingDtoList.Add(item.ToDto(user));
+                //bindingDtoList.Add(item.ToDto(user));
             }
 
             avatarNodeDto.bindings = bindingDtoList;
