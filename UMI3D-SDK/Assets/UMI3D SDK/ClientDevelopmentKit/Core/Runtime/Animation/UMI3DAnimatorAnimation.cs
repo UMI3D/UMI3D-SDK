@@ -121,6 +121,24 @@ namespace umi3d.cdk
             return true;
         }
 
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            if (await base.SetUMI3DProperty(value)) return true;
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationNodeId:
+                    dto.nodeId = UMI3DSerializer.Read<uint>(value.container);
+                    break;
+                case UMI3DPropertyKeys.AnimationStateName:
+                    dto.stateName = UMI3DSerializer.Read<string>(value.container);
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
         /// <inheritdoc/>
         public override void Start(float atTime)
         {
