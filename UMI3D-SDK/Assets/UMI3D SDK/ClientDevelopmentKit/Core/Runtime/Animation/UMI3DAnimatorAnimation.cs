@@ -140,7 +140,24 @@ namespace umi3d.cdk
                     dto.stateName = (string)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:
-                    UMI3DLogger.LogWarning("Setting animator parameters not handled in dto mode", DebugScope.Animation);
+                    switch (value.property)
+                    {
+                        case SetEntityDictionaryAddPropertyDto setAddProperty:
+                            if (setAddProperty.key is string paramName && setAddProperty.value is UMI3DAnimatorParameterDto paramDto)
+                                ApplyParameter(paramName, paramDto);
+                            break;
+                        case SetEntityPropertyDto setEntity:
+                            if (setEntity.value is Dictionary<object, object> parametersDic)
+                            {
+                                foreach (var entry in parametersDic)
+                                {
+                                    ApplyParameter((string)entry.Key, (UMI3DAnimatorParameterDto)entry.Value);
+                                }
+                            }
+                            break;
+                        default:
+                            break;
+                    }
                     break;
                 default:
                     return false;
