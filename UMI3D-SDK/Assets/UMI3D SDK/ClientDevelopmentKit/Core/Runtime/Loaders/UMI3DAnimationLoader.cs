@@ -35,7 +35,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             UMI3DAbstractAnimation animationInstance = value.dto switch
             {
@@ -51,7 +51,8 @@ namespace umi3d.cdk
             {
                 UMI3DEnvironmentLoader.Instance.RegisterEntity(animationInstance.Id, value.dto, animationInstance).NotifyLoaded();
                 animationInstance.Init();
-            }    
+            }
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>

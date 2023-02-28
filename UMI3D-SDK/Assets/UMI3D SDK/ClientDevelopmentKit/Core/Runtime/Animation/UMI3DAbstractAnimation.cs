@@ -117,9 +117,9 @@ namespace umi3d.cdk
                     SetProgress(dto.pauseTime);
                     break;
                 default:
-                    return false;
+                    return await Task.FromResult(false);
             }
-            return true;
+            return await Task.FromResult(true);
         }
 
         /// <inheritdoc/>
@@ -164,9 +164,9 @@ namespace umi3d.cdk
                     SetProgress(dto.pauseTime);
                     break;
                 default:
-                    return false;
+                    return await Task.FromResult(false);
             }
-            return true;
+            return await Task.FromResult(true);
         }
 
         /// <summary>

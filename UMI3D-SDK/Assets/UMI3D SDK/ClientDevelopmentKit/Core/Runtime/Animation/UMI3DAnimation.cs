@@ -170,10 +170,10 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnimationChain:
                     return UpdateChain(value);
                 default:
-                    return false;
+                    return await Task.FromResult(false);
             }
 
-            return true;
+            return await Task.FromResult(true);
         }
 
         private static bool UpdateChain(ReadUMI3DPropertyData value)
