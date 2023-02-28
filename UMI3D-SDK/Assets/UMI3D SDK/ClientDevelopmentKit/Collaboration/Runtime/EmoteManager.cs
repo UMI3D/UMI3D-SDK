@@ -21,6 +21,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Manager that handles emotes
     /// </summary>
+    /// This manager is optionnal and should be added to a browser only if it plans to supports emotes.
     public class EmoteManager : inetum.unityUtils.SingleBehaviour<EmoteManager>
     {
         #region Fields
