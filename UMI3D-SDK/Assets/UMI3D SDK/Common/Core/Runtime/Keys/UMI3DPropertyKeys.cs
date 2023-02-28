@@ -236,6 +236,7 @@ namespace umi3d.common
 
         public const uint AnimationNodeId = 13401;
         public const uint AnimationStateName = 13402;
+        public const uint AnimationAnimatorParameters = 13403;
 
         #endregion
 
