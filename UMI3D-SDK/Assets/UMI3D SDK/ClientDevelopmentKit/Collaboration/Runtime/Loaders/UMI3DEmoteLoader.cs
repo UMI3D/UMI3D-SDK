@@ -32,18 +32,19 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <inheritdoc/>
-        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmoteDto;
             UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+            return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             if (value.entity.dto is not UMI3DEmoteDto dto)
-                return false;
+                return await Task.FromResult(false);
 
             switch (value.property.property)
             {
@@ -58,16 +59,16 @@ namespace umi3d.cdk.collaboration
                     break;
 
                 default:
-                    return false;
+                    return await Task.FromResult(false);
             }
-            return true;
+            return await Task.FromResult(true);
         }
 
         /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             if (value.entity.dto is not UMI3DEmoteDto dto)
-                return false;
+                return await Task.FromResult(false);
 
             switch (value.propertyKey)
             {
@@ -82,9 +83,9 @@ namespace umi3d.cdk.collaboration
                     break;
 
                 default:
-                    return false;
+                    return await Task.FromResult(false);
             }
-            return true;
+            return await Task.FromResult(true);
         }
 
         /// <summary>
@@ -105,9 +106,9 @@ namespace umi3d.cdk.collaboration
                     break;
 
                 default:
-                    return false;
+                    return await Task.FromResult(false);
             }
-            return true;
+            return await Task.FromResult(true);
         }
     }
 }
