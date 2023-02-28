@@ -23,25 +23,39 @@ namespace umi3d.cdk
     /// <summary>
     /// Handler to define the position in the scene and in the scene graph to load objects.
     /// </summary>
+    /// This handler is a place to nstantiate all the UMI3D services.
     public class UMI3DLoadingHandler : SingleBehaviour<UMI3DLoadingHandler>
     {
+        #region Loading
         /// <summary>
         /// Main loader reference.
         /// </summary>
         /// This handler create a new loader if no one is available.
         protected UMI3DEnvironmentLoader environmentLoaderService;
 
+        [Header("Loading")]
         [SerializeField]
         protected AbstractUMI3DLoadingParameters parameters;
 
-        [SerializeField]
+        [SerializeField, Tooltip("Material to use when material is unavailable or inexistent.")]
         protected Material baseMaterial;
+        #endregion Loading
 
+        /// <summary>
+        /// Call this method to attach a coroutine to the handler and start it.
+        /// </summary>
+        /// <param name="coroutine"></param>
+        /// <returns></returns>
         public Coroutine AttachCoroutine(IEnumerator coroutine)
         {
             return StartCoroutine(coroutine);
         }
 
+        /// <summary>
+        /// Call this method to remove a coroutine from the handler and stop it.
+        /// </summary>
+        /// <param name="coroutine"></param>
+        /// <returns></returns>
         public void DettachCoroutine(Coroutine coroutine)
         {
             StopCoroutine(coroutine);
@@ -51,6 +65,7 @@ namespace umi3d.cdk
         {
             base.Awake();
 
+            // LOADING SERVICE
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             environmentLoaderService.SetParameters(parameters);
             environmentLoaderService.SetBaseMaterial(baseMaterial);
