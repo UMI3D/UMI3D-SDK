@@ -52,6 +52,11 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public byte[] metadata => identityDto.metaData;
 
+        /// <summary>
+        /// Language used by user.
+        /// </summary>
+        public string language = string.Empty;
+
         private static ulong lastGivenUserId = 1;
 
         /// <summary>
@@ -188,6 +193,8 @@ namespace umi3d.edk.collaboration
                 audioFrequency = audioFrequency.GetValue(),
                 videoSourceId = videoPlayer?.Id() ?? 0,
                 login = string.IsNullOrEmpty(displayName) ? (string.IsNullOrEmpty(login) ? Id().ToString() : login) : displayName,
+
+                language = language,
 
                 microphoneStatus = microphoneStatus.GetValue(user),
                 avatarStatus = avatarStatus.GetValue(user),
