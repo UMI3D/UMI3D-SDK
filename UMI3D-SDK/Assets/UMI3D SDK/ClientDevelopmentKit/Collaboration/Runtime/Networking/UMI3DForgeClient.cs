@@ -405,7 +405,14 @@ namespace umi3d.cdk.collaboration
                     case UMI3DOperationKeys.Transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
+                            try
+                            {
+                                await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
+                            } catch (Exception ex)
+                            {
+                                UMI3DLogger.LogError("Error while performing transaction", scope);
+                                UMI3DLogger.LogException(ex, scope);
+                            }
 
                             if (UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;

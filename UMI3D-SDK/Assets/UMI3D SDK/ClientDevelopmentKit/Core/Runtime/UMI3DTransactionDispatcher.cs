@@ -182,7 +182,7 @@ namespace umi3d.cdk
                     {
                         ulong entityId = UMI3DSerializer.Read<ulong>(container);
                         uint propertyKey = UMI3DSerializer.Read<uint>(container);
-                        UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
+                        await UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
                     }
                     else if (!await Operation(operationId, container))
                         await UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operationId, container);
