@@ -54,7 +54,7 @@ namespace umi3d.cdk.collaboration
             if (areEmotesSupported)
             {
                 emoteService = EmoteManager.Instance;
-                emoteService.Initialize(defaultEmoteIcon);
+                emoteService.DefaultIcon = defaultEmoteIcon;
             }
 
             base.Awake();
