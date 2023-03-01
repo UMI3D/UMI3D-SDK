@@ -87,7 +87,7 @@ public class ISkeleton_Test
     [UnityTearDown]
     public void TearDown()
     {
-
+        SceneManager.UnloadSceneAsync("Tests/PlayMode_Tests/TestScenes/TESTSCENE_Bindings");
     }
 
     #region Bindings

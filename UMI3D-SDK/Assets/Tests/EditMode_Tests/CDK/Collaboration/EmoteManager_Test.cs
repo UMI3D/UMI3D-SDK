@@ -36,7 +36,6 @@ namespace EditMode_Tests
             environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
 
             emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object);
-            emoteManagerService.Initialize(null);
         }
 
         [TearDown]
@@ -48,6 +47,31 @@ namespace EditMode_Tests
             if (UMI3DEnvironmentLoader.Exists)
                 UMI3DEnvironmentLoader.Destroy();
         }
+
+        #region UpdateEmote
+
+        [Test]
+        public void Test_UpdateEmote_NotReceivedEmote()
+        {
+            // GIVEN
+            UMI3DEmoteDto emoteDto = new()
+            {
+                id = 0,
+                animationId = 0,
+                label = ""
+            };
+
+            bool wasEmoteUpdatedTriggered = false;
+            emoteManagerService.EmoteUpdated += delegate { wasEmoteUpdatedTriggered = true; };
+
+            // WHEN
+            emoteManagerService.UpdateEmote(emoteDto);
+
+            // THEN
+            Assert.IsFalse(wasEmoteUpdatedTriggered);
+        }
+
+        #endregion UpdateEmote
 
         #region PlayEmote
 

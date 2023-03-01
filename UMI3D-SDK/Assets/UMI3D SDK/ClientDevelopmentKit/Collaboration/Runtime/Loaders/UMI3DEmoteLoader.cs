@@ -25,6 +25,21 @@ namespace umi3d.cdk.collaboration
         private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
+        #region DependencyInjection
+        private EmoteManager emoteManagementService;
+
+        public UMI3DEmoteLoader()
+        {
+            emoteManagementService = EmoteManager.Instance;
+        }
+
+
+        public UMI3DEmoteLoader(EmoteManager emoteManager)
+        {
+            emoteManagementService = emoteManager;
+        }
+        #endregion DependencyInjection
+
         /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
@@ -36,7 +51,7 @@ namespace umi3d.cdk.collaboration
         {
             var dto = value.dto as UMI3DEmoteDto;
             UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
-            UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+            emoteManagementService.UpdateEmote(dto);
             return Task.CompletedTask;
         }
 
@@ -50,12 +65,12 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ActiveEmote:
                     dto.available = (bool)value.property.value;
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    emoteManagementService.UpdateEmote(dto);
                     break;
 
                 case UMI3DPropertyKeys.AnimationEmote:
                     dto.animationId = (ulong)value.property.value;
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    emoteManagementService.UpdateEmote(dto);
                     break;
 
                 default:
@@ -74,12 +89,12 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ActiveEmote:
                     dto.available = UMI3DSerializer.Read<bool>(value.container);
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    emoteManagementService.UpdateEmote(dto);
                     break;
 
                 case UMI3DPropertyKeys.AnimationEmote:
                     dto.animationId = UMI3DSerializer.Read<ulong>(value.container);
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(dto);
+                    emoteManagementService.UpdateEmote(dto);
                     break;
 
                 default:
@@ -102,7 +117,7 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.ActiveEmote:
                 case UMI3DPropertyKeys.AnimationEmote:
                     data.result = UMI3DSerializer.Read<UMI3DEmoteDto>(data.container);
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteUpdated(data.result as UMI3DEmoteDto);
+                    emoteManagementService.UpdateEmote(data.result as UMI3DEmoteDto);
                     break;
 
                 default:
