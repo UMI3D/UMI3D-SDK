@@ -784,6 +784,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
                     if (dto.skybox != null)
                     {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                         Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                     }
                     return true;
@@ -828,7 +829,12 @@ namespace umi3d.cdk
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
                     dto.skybox = UMI3DSerializer.Read<ResourceDto>(data.container);
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    if (dto.skybox != null)
+                    {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                        Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    }
+                    return true;
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
                     dto.skyboxRotation = UMI3DSerializer.Read<float>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
