@@ -18,6 +18,7 @@ limitations under the License.
 
 using umi3d.edk.interaction;
 using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -41,6 +42,11 @@ namespace umi3d.edk.editor
 
         private bool showInteractionDistance;
 
+        private GUIStyle interactionDistanceLabelStyle = new();
+        private readonly Color interactionDistanceLabelColor = new(0.5f, 0.5f, 1, 1);
+        private readonly Color interactionDistanceSphereColor = new(0.35f, 0.35f, 1f, 0.90f);
+        private readonly Color interactionDistanceHandlesColor = new(0.25f, 0.25f, 1, 1);
+
         /// <inheritdoc/>
         protected override void OnEnable()
         {
@@ -58,6 +64,8 @@ namespace umi3d.edk.editor
             HoverExitAnimation = serializedObject.FindProperty("HoverExitAnimation");
 
             showInteractionDistance = InteractionDistance.floatValue >= 0f;
+
+            interactionDistanceLabelStyle.normal.textColor = interactionDistanceLabelColor;
         }
 
         private static bool displayEvent = false;
@@ -102,6 +110,34 @@ namespace umi3d.edk.editor
                 }
             }
             serializedObject.ApplyModifiedProperties();
+        }
+
+        public override void OnSceneGUI()
+        {
+            base.OnSceneGUI();
+
+            if (showInteractionDistance)
+            {
+                var t = target as UMI3DInteractable;
+                Handles.color = interactionDistanceSphereColor;
+                var capPos = t.transform.position + t.DefaultInteractionDistance * Vector3.forward;
+                t.DefaultInteractionDistance = Handles.ScaleValueHandle(t.DefaultInteractionDistance,
+                                                                    capPos,
+                                                                    Quaternion.identity,
+                                                                    0.25f,
+                                                                    Handles.SphereHandleCap,
+                                                                    1f);
+
+                Handles.color = interactionDistanceHandlesColor;
+                Handles.DrawWireDisc(t.transform.position, Vector3.up, t.DefaultInteractionDistance);
+                Handles.DrawWireDisc(t.transform.position, Vector3.right, t.DefaultInteractionDistance);
+                Handles.DrawWireDisc(t.transform.position, Vector3.forward, t.DefaultInteractionDistance);
+                Handles.DrawDottedLine(t.transform.position, capPos, 5);
+
+                Handles.Label((t.transform.position + capPos) / 2,
+                              t.DefaultInteractionDistance.ToString("F2"),
+                              interactionDistanceLabelStyle);
+            }
         }
     }
 }
