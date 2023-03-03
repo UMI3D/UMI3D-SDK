@@ -85,26 +85,6 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnReconnect.AddListener(() => embodimentDict.Clear());
         }
 
-        public class EmotesConfigEvent : UnityEvent<UMI3DEmotesConfigDto> { };
-        public class EmoteEvent : UnityEvent<UMI3DEmoteDto> { };
-
-        /// <summary>
-        /// Triggered when an EmoteConfig file have been loaded
-        /// </summary>
-        public event Action<UMI3DEmotesConfigDto> EmotesLoadedEvent;
-        public void OnEmoteConfigLoaded(UMI3DEmotesConfigDto dto) => EmotesLoadedEvent?.Invoke(dto);
-
-        /// <summary>
-        /// Triggered when an emote changed on availability
-        /// </summary>
-        public event Action<UMI3DEmoteDto> EmoteUpdatedEvent;
-        public void OnEmoteUpdated(UMI3DEmoteDto dto) => EmoteUpdatedEvent?.Invoke(dto);
-
-        /// <summary>
-        /// Emote configuration on the server, with al available emotes for the user.
-        /// </summary>
-        protected UMI3DEmotesConfigDto emoteConfig;
-
         ///// <inheritdoc/>
         //protected override IEnumerator DispatchTracking()
         //{

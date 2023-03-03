@@ -26,6 +26,20 @@ namespace umi3d.cdk.collaboration
         private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
+        #region DependencyInjection
+        private EmoteManager emoteManagementService;
+
+        public UMI3DEmotesConfigLoader()
+        {
+            emoteManagementService = EmoteManager.Instance;
+        }
+
+        public UMI3DEmotesConfigLoader(EmoteManager emoteManager)
+        {
+            emoteManagementService = emoteManager;
+        }
+        #endregion DependencyInjection
+
         /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
@@ -41,7 +55,7 @@ namespace umi3d.cdk.collaboration
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
                 UMI3DEnvironmentLoader.Instance.RegisterEntity(emoteDto.id, emoteDto, null).NotifyLoaded();
 
-            UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(dto);
+            emoteManagementService.LoadEmoteConfig(dto);
             return Task.CompletedTask;
         }
 
@@ -55,7 +69,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = value.property.value as List<UMI3DEmoteDto>;
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(dto);
+                    emoteManagementService.LoadEmoteConfig(dto);
                     break;
 
                 default:
@@ -74,7 +88,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = UMI3DSerializer.Read<List<UMI3DEmoteDto>>(value.container);
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(dto);
+                    emoteManagementService.LoadEmoteConfig(dto);
                     break;
 
                 default:
@@ -90,7 +104,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     data.result = UMI3DSerializer.Read<UMI3DEmotesConfigDto>(data.container);
-                    UMI3DCollaborationClientUserTracking.Instance.OnEmoteConfigLoaded(data.result as UMI3DEmotesConfigDto);
+                    emoteManagementService.LoadEmoteConfig(data.result as UMI3DEmotesConfigDto);
                     break;
 
                 default:

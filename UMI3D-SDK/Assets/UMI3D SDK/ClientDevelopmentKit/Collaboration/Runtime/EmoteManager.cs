@@ -13,6 +13,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
 
@@ -25,6 +26,8 @@ namespace umi3d.cdk.collaboration
     public class EmoteManager : inetum.unityUtils.Singleton<EmoteManager>
     {
         #region Fields
+
+        private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration;
 
         #region Events
 
@@ -55,7 +58,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Available emotes from bundle
         /// </summary>
-        public List<Emote> Emotes = new();
+        public virtual List<Emote> Emotes { get; } = new();
 
         /// <summary>
         /// Last received Emote Configuration dto reference
@@ -65,7 +68,23 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Default icon used when no corresponding emote is found
         /// </summary>
-        public Sprite defaultIcon;
+        public Sprite DefaultIcon
+        {
+            get
+            {
+                if (_defaultIcon is null) //instantiate an empty texture if no default icon is set
+                {
+                    Texture2D emptyTexture = new Texture2D(30, 30);
+                    _defaultIcon = Sprite.Create(emptyTexture, new Rect(0.0f, 0.0f, emptyTexture.width, emptyTexture.height), new Vector2(0.5f, 0.5f), 100.0f);
+                }
+                return _defaultIcon;
+            }
+            set
+            {
+                _defaultIcon = value;
+            }
+        }
+        private Sprite _defaultIcon;
 
         /// <summary>
         /// True when a bundle with emotes has been loaded
@@ -101,21 +120,6 @@ namespace umi3d.cdk.collaboration
         }
         #endregion DependenciesInjection
 
-        /// <summary>
-        /// To call to initialize the manager.
-        /// </summary>
-        /// <param name="defaultIcon">Icon to display when no icon is set for an emote</param>
-        public virtual void Initialize(Sprite defaultIcon = null)
-        {
-            if (defaultIcon is null) //instantiate an empty texture if no default icon is set
-            {
-                Texture2D emptyTexture = new Texture2D(30, 30);
-                defaultIcon = Sprite.Create(emptyTexture, new Rect(0.0f, 0.0f, emptyTexture.width, emptyTexture.height),new Vector2(0.5f, 0.5f), 100.0f);
-            }
-            this.defaultIcon = defaultIcon;
-            UMI3DCollaborationClientUserTracking.Instance.EmotesLoadedEvent += ConfigEmotes;
-        }
-
         #region Emote Config
 
         /// <summary>
@@ -123,7 +127,7 @@ namespace umi3d.cdk.collaboration
         /// and try to get the animations.
         /// </summary>
         /// <param name="dto"></param>
-        private void ConfigEmotes(UMI3DEmotesConfigDto dto)
+        public virtual void LoadEmoteConfig(UMI3DEmotesConfigDto dto)
         {
             emoteConfigDto = dto;
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
@@ -145,7 +149,7 @@ namespace umi3d.cdk.collaboration
                     var emote = new Emote()
                     {
                         available = emoteConfigDto.allAvailableByDefault || emoteDtoInConfig.available,
-                        icon = defaultIcon,
+                        icon = DefaultIcon,
                         dto = emoteDtoInConfig
                     };
                     if (emoteDtoInConfig.iconResource is not null && emoteDtoInConfig.iconResource.metrics.size != 0)
@@ -154,7 +158,6 @@ namespace umi3d.cdk.collaboration
                 }
             }
             hasReceivedEmotes = true;
-            UMI3DCollaborationClientUserTracking.Instance.EmoteUpdatedEvent += UpdateEmote; // register for any future change in emotes
 
             EmotesLoaded?.Invoke(Emotes);
         }
@@ -163,10 +166,14 @@ namespace umi3d.cdk.collaboration
         /// Change the availability of an emote based on the received <see cref="UMI3DEmoteDto"/>
         /// </summary>
         /// <param name="dto"></param>
-        private void UpdateEmote(UMI3DEmoteDto dto)
+        public virtual void UpdateEmote(UMI3DEmoteDto dto)
         {
             if (!hasReceivedEmotes)
+            {
+                UMI3DLogger.LogWarning($"Trying to update the emote {dto.label} when no EmoteConfig was received", DEBUG_SCOPE);
                 return;
+            }
+                
             var emote = Emotes.Find(x => x.dto.id == dto.id);
             emote.available = dto.available;
             emote.dto = dto;
@@ -186,7 +193,7 @@ namespace umi3d.cdk.collaboration
             catch (Umi3dException e)
             {
                 // in that case, we use the default icon.
-                Debug.LogWarning($"Unable to load emote \"{emoteRefInConfig?.label}\" icon ressource.\n${e.Message}");
+                UMI3DLogger.LogWarning($"Unable to load emote \"{emoteRefInConfig?.label}\" icon ressource.\n${e.Message}", DEBUG_SCOPE);
             }
             return;
         }

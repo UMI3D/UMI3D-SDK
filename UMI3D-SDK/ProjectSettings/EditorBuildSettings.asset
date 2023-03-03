@@ -11,4 +11,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Tests/PlayMode_Tests/TestScenes/TESTSCENE_Bindings.unity
     guid: 28baf46180f581047a8552c736bbb5ab
+  - enabled: 1
+    path: Assets/Tests/PlayMode_Tests/TestScenes/TESTSCENE_Empty.unity
+    guid: 5e8cf43c8408df14fb8786a068d215a1
   m_configObjects: {}
