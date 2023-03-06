@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -47,7 +47,15 @@ namespace umi3d.cdk
 
         public UMI3DAudioPlayer(UMI3DAudioPlayerDto dto) : base(dto)
         {
-            InitPlayer(dto);
+        }
+
+        /// <inheritdoc/>
+        public override bool IsPlaying() => audioSource.isPlaying;
+
+        /// <inheritdoc/>
+        public override void Init()
+        {
+            InitPlayer(dto as UMI3DAudioPlayerDto);
         }
 
         private void InitPlayer(UMI3DAudioPlayerDto dto)

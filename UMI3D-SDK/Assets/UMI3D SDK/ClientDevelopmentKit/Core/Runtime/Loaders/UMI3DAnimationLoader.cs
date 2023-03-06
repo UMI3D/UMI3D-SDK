@@ -34,66 +34,60 @@ namespace umi3d.cdk
             return data.dto is UMI3DAbstractAnimationDto;
         }
 
-        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        /// <inheritdoc/>
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
-            switch (value.dto)
+            UMI3DAbstractAnimation animationInstance = value.dto switch
             {
-                case UMI3DAnimationDto animation:
-                    new UMI3DAnimation(animation);
-                    break;
-                case UMI3DAnimatorAnimationDto animatorAnimation:
-                    new UMI3DAnimatorAnimation(animatorAnimation);
-                    break;
-                case UMI3DNodeAnimationDto nodeAnimation:
-                    new UMI3DNodeAnimation(nodeAnimation);
-                    break;
-                case UMI3DVideoPlayerDto videoPlayer:
-                    UMI3DVideoPlayerLoader.LoadVideo(videoPlayer);
-                    break;
-                case UMI3DAudioPlayerDto audioPlayer:
-                    new UMI3DAudioPlayer(audioPlayer);
-                    break;
+                UMI3DAnimationDto anim         => new UMI3DAnimation(anim),
+                UMI3DAnimatorAnimationDto anim => new UMI3DAnimatorAnimation(anim),
+                UMI3DNodeAnimationDto anim     => new UMI3DNodeAnimation(anim),
+                UMI3DVideoPlayerDto anim       => UMI3DVideoPlayerLoader.LoadVideoPlayer(anim),
+                UMI3DAudioPlayerDto anim       => new UMI3DAudioPlayer(anim),
+                _ => null
+            };
+
+            if (animationInstance is not null)
+            {
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(animationInstance.Id, value.dto, animationInstance).NotifyLoaded();
+                animationInstance.Init();
             }
+            return Task.CompletedTask;
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            var anim = value.entity?.Object as UMI3DAbstractAnimation;
-            if (anim == null) return false;
+            if (value.entity?.Object is not UMI3DAbstractAnimation anim) return false;
             return await anim.SetUMI3DProperty(value);
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            var anim = value.entity?.Object as UMI3DAbstractAnimation;
-            if (anim == null) return false;
+            if (value.entity?.Object is not UMI3DAbstractAnimation anim) return false;
             return await anim.SetUMI3DProperty(value);
         }
 
+        /// <inheritdoc/>
         public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
         {
-            switch (value.propertyKey)
+            value.result = value.propertyKey switch
             {
-                case UMI3DPropertyKeys.AnimationPlaying:
-                    value.result = UMI3DSerializer.Read<bool>(value.container);
-                    break;
-                case UMI3DPropertyKeys.AnimationLooping:
-                    value.result = UMI3DSerializer.Read<bool>(value.container);
-                    break;
-                case UMI3DPropertyKeys.AnimationStartTime:
-                    value.result = UMI3DSerializer.Read<ulong>(value.container);
-                    break;
-                case UMI3DPropertyKeys.AnimationPauseFrame:
-                    value.result = UMI3DSerializer.Read<long>(value.container);
-                    break;
-                default:
-                    if (await UMI3DAnimation.ReadMyUMI3DProperty(value))
-                        return true;
-                    if (await UMI3DAudioPlayer.ReadMyUMI3DProperty(value))
-                        return true;
-                    return await UMI3DNodeAnimation.ReadMyUMI3DProperty(value);
-            }
-            return true;
+                UMI3DPropertyKeys.AnimationPlaying or
+                UMI3DPropertyKeys.AnimationLooping => UMI3DSerializer.Read<bool>(value.container),
+                UMI3DPropertyKeys.AnimationStartTime => UMI3DSerializer.Read<ulong>(value.container),
+                UMI3DPropertyKeys.AnimationPauseFrame => UMI3DSerializer.Read<long>(value.container),
+                _ => null
+            };
+            if (value.result is not null)
+                return true;
+
+            if (await UMI3DAnimation.ReadMyUMI3DProperty(value))
+                    return true;
+            if (await UMI3DAudioPlayer.ReadMyUMI3DProperty(value))
+                    return true;
+             return await UMI3DNodeAnimation.ReadMyUMI3DProperty(value);
         }
     }
 }

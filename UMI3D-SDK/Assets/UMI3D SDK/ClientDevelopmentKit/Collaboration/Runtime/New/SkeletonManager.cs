@@ -32,18 +32,30 @@ namespace umi3d.cdk.collaboration
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
         public Dictionary<ulong, ISkeleton> skeletons { get; protected set; }
 
+        public PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
+
+        public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; }
+
+        public ISkeleton GetSkeletonById(ulong id)
+        {
+            if ((skeleton as ISkeleton).userId == id)
+            {
+                return skeleton;
+            }
+            else
+            {
+                return collaborativeSkeletons.FirstOrDefault(cs => (cs as ISkeleton).userId == id);
+            }
+        }
+
         // passer en private ?
         public Dictionary<uint, float> PersonalBonesAsyncFPS { get; protected set; }
-
-        PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
 
         CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         public class SkeletonEvent : UnityEvent<ulong> { };
 
         public SkeletonEvent skeletonEvent = new SkeletonEvent();
-
-        //protected static Dictionary<ulong, CollaborativeSkeleton> CollaborativeSkeletons = new Dictionary<ulong, CollaborativeSkeleton>();
 
         /// <summary>
         /// If true the avatar tracking is sent.
@@ -64,7 +76,6 @@ namespace umi3d.cdk.collaboration
 
         public SkeletonManager() : base()
         {
-            UnityEngine.Debug.Log("<color=green>New</color>");
             SetTrackingSending(_sendTracking);
 
             UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(() => { skeletons.Clear(); InitSkeletons(); });
@@ -208,7 +219,6 @@ namespace umi3d.cdk.collaboration
                 else
                     await UMI3DAsyncManager.Yield();
             }
-
         }
 
         /// <summary>

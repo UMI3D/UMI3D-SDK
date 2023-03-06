@@ -47,7 +47,7 @@ namespace umi3d.edk
         /// Note that it should be updated when the content is updated.
         [SerializeField]
         [Tooltip("version of the library, it should be updated when the content is updated")]
-        public string version;
+        public string version = "0.0";
 
         /// <summary>
         /// Directories where a stored all the variants of the library.

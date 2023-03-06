@@ -19,12 +19,12 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.collaboration;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.volumes;
 using umi3d.common;
 using umi3d.common.interaction;
-using umi3d.common.userCapture;
 using umi3d.common.volume;
 using UnityEngine;
 
@@ -100,6 +100,7 @@ namespace umi3d.cdk
             .SetNext(new PreloadedSceneLoader())
             .SetNext(new UMI3DInteractableLoader())
             .SetNext(new UMI3DGlobalToolLoader())
+            .SetNext(new UM3DSkeletonNodeLoader())
             .SetNext(new UMI3DMeshNodeLoader())
             .SetNext(new UMI3DLineRendererLoader())
             .SetNext(new UMI3DSubMeshNodeLoader())

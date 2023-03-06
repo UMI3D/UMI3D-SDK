@@ -89,6 +89,8 @@ namespace umi3d.edk.collaboration
                     + UMI3DSerializer.Write<ulong>(user.videoPlayer?.Id() ?? 0)
                     + UMI3DSerializer.Write<uint>(user.networkPlayer?.NetworkId ?? 0)
 
+                    + UMI3DSerializer.Write(user.language)
+
                     + UMI3DSerializer.Write(user.microphoneStatus.GetValue())
                     + UMI3DSerializer.Write(user.avatarStatus.GetValue())
                     + UMI3DSerializer.Write(user.attentionRequired.GetValue())

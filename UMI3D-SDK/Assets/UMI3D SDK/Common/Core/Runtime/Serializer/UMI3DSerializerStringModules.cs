@@ -65,7 +65,7 @@ namespace umi3d.common
         {
             Func<byte[], int, int, (int, int)> f;
 
-            if (typeof(T) == typeof(string))
+            if (value is string || typeof(T) == typeof(string))
             {
                 if (value == null)
                 {

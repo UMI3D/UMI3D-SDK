@@ -93,7 +93,18 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
+        [Obsolete("Use Instance.SendRequest() instead.")]
         public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
+        {
+            Instance.SendRequest(dto, reliable);
+        }
+
+        /// <summary>
+        /// Send a browser request to the server.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
+        public virtual void SendRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
                 Instance._Send(dto, reliable);

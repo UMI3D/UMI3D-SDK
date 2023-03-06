@@ -66,8 +66,15 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
-            var connectionInformation = user.ToUserConnectionDto();
-            e.Response.WriteContent(connectionInformation.ToBson());
+            try
+            {
+                var connectionInformation = user.ToUserConnectionDto();
+                e.Response.WriteContent(connectionInformation.ToBson());
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
         }
 
         /// <summary>
@@ -364,7 +371,7 @@ namespace umi3d.edk.collaboration
             if (content == null)
             {
                 Return404(response);
-                UMI3DLogger.LogError(file,scope);
+                UMI3DLogger.LogError(file, scope);
                 return;
             }
             if (file.EndsWith(".html"))

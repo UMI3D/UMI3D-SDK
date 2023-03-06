@@ -108,5 +108,17 @@ namespace umi3d.edk.interaction
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
         }
+
+        /// <summary>
+        /// Creates <see cref="ConnectionFormDto"/> from this.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public ConnectionFormDto ToConnectionFormDto(UMI3DUser user)
+        {
+            ConnectionFormDto dto = new ConnectionFormDto();
+            dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).ToList();
+            return dto;
+        }
     }
 }

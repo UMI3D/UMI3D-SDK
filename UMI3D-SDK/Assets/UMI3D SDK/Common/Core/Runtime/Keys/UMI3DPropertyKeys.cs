@@ -200,6 +200,7 @@ namespace umi3d.common
 
         public const uint ChangeEmoteConfig = 11005;
         public const uint ActiveEmote = 11006;
+        public const uint AnimationEmote = 11007;
         #endregion
 
         #region notification
@@ -236,6 +237,7 @@ namespace umi3d.common
 
         public const uint AnimationNodeId = 13401;
         public const uint AnimationStateName = 13402;
+        public const uint AnimationAnimatorParameters = 13403;
 
         #endregion
 

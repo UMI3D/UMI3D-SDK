@@ -48,11 +48,11 @@ namespace umi3d.cdk.collaboration
                         videoSourceId = UMI3DSerializer.Read<ulong>(container),
                         networkId = UMI3DSerializer.Read<uint>(container),
 
+                        language = UMI3DSerializer.Read<string>(container),
+
                         microphoneStatus = UMI3DSerializer.Read<bool>(container),
                         avatarStatus = UMI3DSerializer.Read<bool>(container),
                         attentionRequired = UMI3DSerializer.Read<bool>(container),
-
-                        language = UMI3DSerializer.Read<string>(container),
 
                         audioServerUrl = UMI3DSerializer.Read<string>(container),
                         audioChannel = UMI3DSerializer.Read<string>(container),

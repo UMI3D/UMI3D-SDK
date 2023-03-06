@@ -18,21 +18,28 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
-    public class PoseDto {
-        public uint boneAnchor { get; set; }
+    //public class PoseDto {
+    //    public uint boneAnchor { get; set; }
 
-        public AbstractBonePoseDto[] bones { get; set; }
-    }
+    //    public BonePoseDto[] bones { get; set; }
+    //}
 
-    public abstract class AbstractBonePoseDto
-    {
-        public uint boneType { get; }
-    }
+    //public abstract class AbstractBonePoseDto
+    //{
+    //    public uint boneType { get; }
+    //}
 
-    public class BonePoseDto : AbstractBonePoseDto
-    {
-        public uint boneType { get; set; }
-        public SerializableVector3 position;
-        public SerializableVector4 rotation;
-    }
+    //public class BonePoseDto : AbstractBonePoseDto
+    //{
+    //    public BonePoseDto() { }   
+    //    public BonePoseDto(uint boneType, Vector3 position, Quaternion rotation) 
+    //    { 
+    //        this.boneType= boneType;
+    //        this.position= position;
+    //        this.rotation= rotation;
+    //    }
+    //    public uint boneType { get; set; }
+    //    public SerializableVector3 position;
+    //    public SerializableVector4 rotation;
+    //}
 }

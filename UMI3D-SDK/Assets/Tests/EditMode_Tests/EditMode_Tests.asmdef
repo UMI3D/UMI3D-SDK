@@ -1,0 +1,31 @@
+{
+    "name": "EditMode_Tests",
+    "rootNamespace": "",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "UMI3D.Common.Core",
+        "UMI3D.Common.UserCapture",
+        "UMI3D.CDK.Core",
+        "UMI3D.CDK.UserCapture",
+        "UMI3D.CDK.Collaboration",
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Moq.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

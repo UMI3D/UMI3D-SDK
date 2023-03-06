@@ -57,13 +57,18 @@ namespace inetum.unityUtils
             if (!fileName.EndsWith(".asset"))
                 fileName += ".asset";
 
+            string sep = "";
+
             if (string.IsNullOrEmpty(folder))
                 folder = "";
-            else if (!folder.EndsWith("/"))
-                folder += "/";
+            else
+            {
+                sep = "/";
+                if (folder.EndsWith("/"))
+                    folder = folder.Remove(folder.Length - 1);
+            }
 
-
-            this.path = "Assets/" + folder + fileName;
+            this.path = "Assets/" + folder + sep + fileName;
             this.folderPath = folder;
         }
 

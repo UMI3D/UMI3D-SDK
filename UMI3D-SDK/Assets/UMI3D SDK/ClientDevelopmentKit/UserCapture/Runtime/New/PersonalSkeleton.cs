@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -24,20 +25,46 @@ using UnityEngine.Assertions.Must;
 namespace umi3d.cdk.userCapture
 {
 
-    public class PersonalSkeleton : SingleBehaviour<PersonalSkeleton>, ISkeleton 
+    public class PersonalSkeleton : SingleBehaviour<PersonalSkeleton>, ISkeleton
     {
+        protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+        #region fields
+        #region interface Fields
+        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get => bones; set => bones = value; }
+        List<ISubSkeleton> ISkeleton.Skeletons { get => skeletons; set => skeletons = value; }
+        bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
+        ulong ISkeleton.userId { get => userId; set => userId = value; }
+        Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
+        QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
+        List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
+        List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
+        List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
+        Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
 
-        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+        #endregion
+        protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
+        public List<ISubSkeleton> skeletons = new List<ISubSkeleton>();
+        protected bool activeUserBindings;
+        protected ulong userId;
+        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
+        protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
+        protected List<ISkeleton.Bound> bounds = new List<ISkeleton.Bound>();
+        protected List<Transform> boundRigs = new List<Transform>();
+        protected List<BindingDto> userBindings = new List<BindingDto>();
+        protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ulong, ISkeleton.SavedTransform>();
 
-        public ISubSkeleton[] Skeletons { get; set; }
-
-        public Dictionary<uint, Transform> Bones { get; set; }
-
+        #endregion
         public TrackedSkeleton TrackedSkeleton;
 
         //public float skeletonHighOffset = 0;
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
+
+        public void Start()
+        {
+            skeletons = new List<ISubSkeleton>();
+            skeletons[0] = TrackedSkeleton;
+        }
 
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
             var frame = new UserTrackingFrameDto()
@@ -56,7 +83,7 @@ namespace umi3d.cdk.userCapture
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
-            foreach(var skeleton in Skeletons)
+            foreach(var skeleton in skeletons)
             {
                 var c = skeleton.GetCameraDto();
                 if(c != null)
@@ -65,7 +92,7 @@ namespace umi3d.cdk.userCapture
             return null;
         }
 
-        public virtual void UpdateFrame(UserTrackingFrameDto frame)
+        public void UpdateFrame(UserTrackingFrameDto frame)
         {
             UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
         }

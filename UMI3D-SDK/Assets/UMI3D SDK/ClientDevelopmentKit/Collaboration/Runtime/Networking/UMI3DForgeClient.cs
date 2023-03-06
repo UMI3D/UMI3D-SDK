@@ -406,7 +406,14 @@ namespace umi3d.cdk.collaboration
                     case UMI3DOperationKeys.Transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
+                            try
+                            {
+                                await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
+                            } catch (Exception ex)
+                            {
+                                UMI3DLogger.LogError("Error while performing transaction", scope);
+                                UMI3DLogger.LogException(ex, scope);
+                            }
 
                             if (UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
@@ -569,23 +576,6 @@ namespace umi3d.cdk.collaboration
                         {
                             StartCoroutine(UMI3DNavigation.Navigate(nav));
                             //UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
-                        });
-                    }
-                    break;
-                case UMI3DOperationKeys.EmoteRequest:
-                    {
-                        ulong emoteId = UMI3DSerializer.Read<ulong>(container);
-                        bool trigger = UMI3DSerializer.Read<bool>(container);
-                        ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
-                        MainThreadManager.Run(() =>
-                        {
-                            ///TODO
-                            ///
-
-                            //if (trigger)
-                            //    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
-                            //else
-                            //    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
                         });
                     }
                     break;

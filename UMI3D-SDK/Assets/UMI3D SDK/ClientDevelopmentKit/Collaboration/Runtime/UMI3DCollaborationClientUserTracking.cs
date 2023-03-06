@@ -14,12 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using System.Linq;
+using System;
 using umi3d.cdk.userCapture;
-using umi3d.common.userCapture;
+using umi3d.common.collaboration;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {

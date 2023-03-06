@@ -15,10 +15,7 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Runtime.Remoting.Messaging;
-using System.Threading;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -90,12 +87,6 @@ namespace umi3d.cdk
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
         public virtual async Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
         {
-            /*     
-                Usefull to find pathIfObjectInBundle in a bundle
-                UMI3DLogger.Log("asset count : "+((AssetBundle)o).GetAllAssetNames().Length,scope);
-                UMI3DLogger.Log("scene count : "+((AssetBundle)o).GetAllScenePaths().Length,scope);
-                UMI3DLogger.Log(((AssetBundle)o).GetAllAssetNames()[0],scope);
-            */
             if (pathIfObjectInBundle != null && pathIfObjectInBundle != "" && o is AssetBundle bundle)
             {
                 if (Array.Exists(bundle.GetAllAssetNames(), element => { return element == pathIfObjectInBundle; }))
@@ -126,10 +117,7 @@ namespace umi3d.cdk
                 {
                     if (Array.Exists(bundle.GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
                     {
-                        AsyncOperation scene = SceneManager.LoadSceneAsync((string)o, LoadSceneMode.Additive);
-                        while (!scene.isDone)
-                            await UMI3DAsyncManager.Yield();
-                        return null;
+                        return await LoadScene(pathIfObjectInBundle);
                     }
                     else
                     {
@@ -140,6 +128,42 @@ namespace umi3d.cdk
             }
 
             return (o);
+        }
+
+        /// <summary>
+        /// Loads scene from bundle.
+        /// </summary>
+        /// <param name="scenePath"></param>
+        /// <returns>(Empty object which contains every object of loaded scene; loaded scene, empty)</returns>
+        private async Task<(GameObject, Scene)> LoadScene(string scenePath)
+        {
+            var asyncLoading = SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive);
+
+            while (!asyncLoading.isDone)
+                await UMI3DAsyncManager.Yield();
+
+            var scene = SceneManager.GetSceneByPath(scenePath);
+
+            GameObject sceneObj = new GameObject(scenePath);
+
+            await UMI3DAsyncManager.Yield();
+
+            foreach (var obj in scene.GetRootGameObjects())
+            {
+                obj.transform.SetParent(sceneObj.transform);
+
+                foreach (var cam in obj.GetComponentsInChildren<Camera>())
+                {
+                    cam.gameObject.SetActive(false);
+                    UMI3DLogger.LogWarning($"{cam.transform.name} has a camera, so it is disabled", scope);
+                }
+            }
+
+            await UMI3DAsyncManager.Yield();
+
+            LightProbes.TetrahedralizeAsync();
+
+            return (sceneObj, scene);
         }
 
         /// <summary>
@@ -166,7 +190,7 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public void DeleteObject(object objectLoaded, string reason)
         {
-            if (objectLoaded != null) ((AssetBundle)objectLoaded).Unload(true);
+            if (objectLoaded != null) ((AssetBundle)objectLoaded).Unload(false);
         }
     }
 }

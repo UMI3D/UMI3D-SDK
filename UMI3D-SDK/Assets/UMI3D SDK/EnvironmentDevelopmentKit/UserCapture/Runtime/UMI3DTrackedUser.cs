@@ -14,9 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common.userCapture;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.UIElements;
+using inetum.unityUtils;
+using System;
+using UnityEngine.Events;
 
 namespace umi3d.edk.userCapture
 {
@@ -25,6 +30,18 @@ namespace umi3d.edk.userCapture
     /// </summary>
     public class UMI3DTrackedUser : UMI3DUser
     {
+
+        private bool activeAvatarBindings_ = true;
+
+        public UMI3DAsyncListProperty<UMI3DBinding> bindings { get { return _bindings; } protected set => _bindings = value; }
+        public UMI3DAsyncProperty<bool> activeBindings { get { return _activeBindings; } protected set => _activeBindings = value; }
+
+        public class OnActivationValueChanged : UnityEvent<ulong, bool> { };
+
+        public static OnActivationValueChanged onActivationValueChanged = new OnActivationValueChanged();
+        private UMI3DAsyncListProperty<UMI3DBinding> _bindings;
+        private UMI3DAsyncProperty<bool> _activeBindings;
+
         /// <summary>
         /// User's avatar
         /// </summary>
