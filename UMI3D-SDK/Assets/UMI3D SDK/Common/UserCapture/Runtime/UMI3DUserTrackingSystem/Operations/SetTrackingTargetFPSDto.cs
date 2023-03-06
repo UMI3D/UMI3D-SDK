@@ -28,6 +28,13 @@ namespace umi3d.common
         /// Number for tracked frames per second (FPS) sent to the environement
         /// </summary>
         /// Lower FPS leads to less load on the networking part but worse tracking of the user, while higher FPS will produce the opposite.
-        public int targetFPS;
+        public float targetFPS;
+    }
+
+    public class SetTrackingBoneTargetFPSDto : SetTrackingTargetFPSDto
+    {
+
+
+        public uint boneType;
     }
 }

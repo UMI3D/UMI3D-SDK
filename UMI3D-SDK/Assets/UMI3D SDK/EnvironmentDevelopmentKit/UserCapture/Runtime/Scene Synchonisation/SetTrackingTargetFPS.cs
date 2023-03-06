@@ -28,12 +28,17 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// New number of tracked frames per second.
         /// </summary>
-        public int targetFPS;
+        public float targetFPS;
+
+        public SetTrackingTargetFPS(float targetFPS)
+        {
+            this.targetFPS = targetFPS;
+        }
 
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DSerializer.Write(UMI3DOperationKeys.SetEntityProperty)
+            return UMI3DSerializer.Write(UMI3DOperationKeys.SetUTSTargetFPS)
                 + UMI3DSerializer.Write(targetFPS);
         }
 
@@ -45,6 +50,31 @@ namespace umi3d.edk.userCapture
                 targetFPS = this.targetFPS
             };
             return targetFPS;
+        }
+    }
+
+    public class SetTrackingBoneTargetFPS : SetTrackingTargetFPS
+    {
+        public uint boneType;
+
+        public SetTrackingBoneTargetFPS(float targetFPS, uint boneType) : base(targetFPS)
+        {
+            this.boneType = boneType;
+        }
+
+        public override Bytable ToBytable(UMI3DUser user)
+        {
+            return UMI3DSerializer.Write(UMI3DOperationKeys.SetUTSBoneTargetFPS)
+                + UMI3DSerializer.Write(targetFPS)
+                + UMI3DSerializer.Write(boneType);
+        }
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            SetTrackingBoneTargetFPSDto boneTargetFPS = (SetTrackingBoneTargetFPSDto)base.ToOperationDto(user);
+            boneTargetFPS.boneType= this.boneType;
+
+            return boneTargetFPS;
         }
     }
 }

@@ -191,10 +191,10 @@ namespace umi3d.edk.collaboration
             RelayDescription relay = DicoRelays[channel];
             RelayDescription.Strategy strategy;
 
-            if (to.Avatar.RelayRoom == null)
+            if (to.RelayRoom == null)
                 strategy = relay.OutsideVolume;
             else
-                strategy = to.Avatar.RelayRoom.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
+                strategy = to.RelayRoom.Equals(this) ? relay.InsideVolume : relay.OutsideVolume;
 
             if (strategy.sendData)
             {
@@ -238,12 +238,12 @@ namespace umi3d.edk.collaboration
                                 float dist = 0f;
                                 if (channel == DataChannelTypes.Tracking)
                                 {
-                                    UMI3DCollaborationUser userSender = UMI3DCollaborationServer.Collaboration.GetUser((sender as UMI3DAvatarNode).userId);
-                                    dist = Vector3.Distance(to.Avatar.objectPosition.GetValue(userSender), sender.objectPosition.GetValue(to));
+                                    //UMI3DCollaborationUser userSender = UMI3DCollaborationServer.Collaboration.GetUser((sender as UMI3DAvatarNode).userId);
+                                    dist = Vector3.Distance(to.CurrentTrackingFrame.position, sender.objectPosition.GetValue(to));
                                 }
                                 else
                                 {
-                                    dist = Vector3.Distance(to.Avatar.objectPosition.GetValue(), sender.objectPosition.GetValue(to));
+                                    dist = Vector3.Distance(to.CurrentTrackingFrame.position, sender.objectPosition.GetValue(to));
                                 }
 
                                 float coeff = 0f;

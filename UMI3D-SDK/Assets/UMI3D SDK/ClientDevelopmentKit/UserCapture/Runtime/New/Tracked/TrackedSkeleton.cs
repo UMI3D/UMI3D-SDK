@@ -63,6 +63,14 @@ namespace umi3d.cdk.userCapture
             };
         }
 
+        public UserTrackingBoneDto GetBone(uint boneType)
+        {
+            return new UserTrackingBoneDto()
+            {
+                bone = bones[boneType].ToDto()
+            };
+        }
+
         public void Update(UserTrackingFrameDto trackingFrame)
         {
             types.Clear();
@@ -77,8 +85,8 @@ namespace umi3d.cdk.userCapture
                 }
 
                 vc.isActif = true;
-                vc.position = trackingFrame.position;
-                vc.rotation = trackingFrame.rotation;
+                vc.position = bone.position; //trackingFrame.position; 
+                vc.rotation = bone.rotation; //trackingFrame.rotation;
 
                 types.Add(bone.boneType);
             }
@@ -87,6 +95,8 @@ namespace umi3d.cdk.userCapture
                 controllersToDestroy.Add(dc);
                 controllers.Remove(dc);
             }
+
+            
 
         }
 

@@ -27,11 +27,11 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Loader for <see cref="UMI3DAvatarNodeDto"/> in a collaborative context.
     /// </summary>
-    public class UMI3DCollabAvatarNodeLoader : UMI3DAvatarNodeLoader
-    {
-        public override UserAvatar GetOtherUserAvatar(ReadUMI3DExtensionData data)
-        {
-            return data.node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
-        }
-    }
+    //public class UMI3DCollabAvatarNodeLoader : UMI3DAvatarNodeLoader
+    //{
+    //    public override UserAvatar GetOtherUserAvatar(ReadUMI3DExtensionData data)
+    //    {
+    //        return data.node.GetOrAddComponent<UMI3DCollaborativeUserAvatar>();
+    //    }
+    //}
 }

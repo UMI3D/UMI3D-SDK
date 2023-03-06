@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,23 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
+using UnityEngine.UIElements;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.userCapture
 {
-    /// <summary>
-    /// DTO describing user configuration when joining an environment.
-    /// </summary>
-    public class JoinDto : UMI3DDto
+    public class UserTrackingBoneDto : AbstractBrowserRequestDto
     {
         /// <summary>
-        /// Bones tracked by the user tracking system.
+        /// User id of the tracked user 
         /// </summary>
-        public List<uint> trackedBonetypes;
+        public ulong userId;
 
-        /// <summary>
-        /// User size scale relative to the environment.
-        /// </summary>
-        public SerializableVector3 userSize;
+        public BoneDto bone;
+
+        protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingBone; }
+
+        public override Bytable ToBytableArray(params object[] parameters)
+        {
+            return base.ToBytableArray(parameters)
+                + UMI3DSerializer.Write(userId)
+                + UMI3DSerializer.Write(bone);
+        }
     }
 }

@@ -35,7 +35,9 @@ namespace umi3d.cdk.userCapture
 
         public void Destroy()
         {
-           GameObject.Destroy(gameObject);
+            GameObject.Destroy(gameObject);
         }
     }
+
+    // redondant avec TrackedSkeletonBoneController ?
 }

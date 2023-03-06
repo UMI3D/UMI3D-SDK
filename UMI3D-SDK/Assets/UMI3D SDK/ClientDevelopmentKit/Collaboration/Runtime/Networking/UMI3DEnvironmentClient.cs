@@ -547,7 +547,7 @@ namespace umi3d.cdk.collaboration
 
             var joinDto = new JoinDto()
             {
-                controller = PersonalSkeleton.Instance.TrackedSkeleton.controllers.Select(trackingBone => trackingBone.boneType).ToList(),
+                trackedBonetypes = PersonalSkeleton.Instance.TrackedSkeleton.controllers.Select(trackingBone => trackingBone.boneType).ToList(),
                 userSize = PersonalSkeleton.Instance.worldSize,
             };
             try

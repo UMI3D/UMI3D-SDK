@@ -58,7 +58,7 @@ namespace umi3d.cdk.userCapture
         }
     }
 
-    public class TrackedSkeletonBoneController : MonoBehaviour, IController
+    public class TrackedSkeletonBoneController : TrackedSkeletonBone, IController
     {
         public Vector3 position
         {
@@ -85,7 +85,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public uint boneType { get; set; }
+        public new uint boneType { get; set; }
         public bool isActif { get; set; }
 
         public void Destroy()

@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
-    public class CollaborativeSkeleton : ISkeleton
+    public class CollaborativeSkeleton : MonoBehaviour, ISkeleton
     {
 
         public UMI3DUser User;
@@ -36,5 +36,9 @@ namespace umi3d.cdk.collaboration
                     skeleton.Update(frame);
         }
 
+        public void SetSubSkeletons()
+        {
+            //set subSkeletons
+        }
     }
 }

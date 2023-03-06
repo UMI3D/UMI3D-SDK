@@ -42,7 +42,7 @@ namespace umi3d.cdk.collaboration
                     {
                         id = UMI3DSerializer.Read<ulong>(container),
                         status = (StatusType)UMI3DSerializer.Read<uint>(container),
-                        avatarId = UMI3DSerializer.Read<ulong>(container),
+                        //avatarId = UMI3DSerializer.Read<ulong>(container),
                         audioSourceId = UMI3DSerializer.Read<ulong>(container),
                         audioFrequency = UMI3DSerializer.Read<int>(container),
                         videoSourceId = UMI3DSerializer.Read<ulong>(container),

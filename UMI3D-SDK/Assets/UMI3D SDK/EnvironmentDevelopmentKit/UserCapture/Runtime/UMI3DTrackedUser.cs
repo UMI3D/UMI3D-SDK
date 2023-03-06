@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace umi3d.edk.userCapture
 {
@@ -26,25 +28,30 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// User's avatar
         /// </summary>
-        private UMI3DAvatarNode avatar;
 
-        /// <summary>
-        /// User's avatar
-        /// </summary>
-        public UMI3DAvatarNode Avatar
-        {
-            get => avatar;
-            set
-            {
-                if (avatar == value)
-                    return;
-                if (avatar != null)
-                    GameObject.Destroy(avatar.gameObject);
-                if (value != null)
-                    value.userId = Id();
-                avatar = value;
-                UMI3DServer.Instance.NotifyUserChanged(this);
-            }
-        }
+        public UserTrackingFrameDto CurrentTrackingFrame;
+
+
+        //To Delete
+        //private UMI3DAvatarNode avatar;
+
+        ///// <summary>
+        ///// User's avatar
+        ///// </summary>
+        //public UMI3DAvatarNode Avatar
+        //{
+        //    get => avatar;
+        //    set
+        //    {
+        //        if (avatar == value)
+        //            return;
+        //        if (avatar != null)
+        //            GameObject.Destroy(avatar.gameObject);
+        //        if (value != null)
+        //            value.userId = Id();
+        //        avatar = value;
+        //        UMI3DServer.Instance.NotifyUserChanged(this);
+        //    }
+        //}
     }
 }

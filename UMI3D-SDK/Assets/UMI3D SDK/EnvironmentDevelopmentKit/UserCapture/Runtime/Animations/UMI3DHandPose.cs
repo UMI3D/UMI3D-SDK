@@ -49,7 +49,7 @@ namespace umi3d.edk.userCapture
             hp.PhalanxRotations.AddRange(this.PhalanxRotations);
             hp.registered = false;
             hp.PoseId = hp.Id();
-            UMI3DEmbodimentManager.Instance.AddAnHandPoseRef(hp);
+            //UMI3DEmbodimentManager.Instance.AddAnHandPoseRef(hp);
             return hp;
         }
 
@@ -58,7 +58,7 @@ namespace umi3d.edk.userCapture
         /// </summary>
         public void UnRegistered()
         {
-            UMI3DEmbodimentManager.Instance.RemoveHandPose(this);
+            //UMI3DEmbodimentManager.Instance.RemoveHandPose(this);
         }
 
         /// <summary>

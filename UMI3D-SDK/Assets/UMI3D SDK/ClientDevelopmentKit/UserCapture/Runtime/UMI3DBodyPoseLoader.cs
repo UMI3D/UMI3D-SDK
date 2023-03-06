@@ -48,7 +48,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.ActiveBodyPose:
                     dto.IsActive = (bool)property.value;
-                    UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
                     break;
                 default:
                     return false;
@@ -91,7 +91,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.ActiveBodyPose:
                     dto.IsActive = UMI3DSerializer.Read<bool>(container);
-                    UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
                     break;
                 default:
                     return false;

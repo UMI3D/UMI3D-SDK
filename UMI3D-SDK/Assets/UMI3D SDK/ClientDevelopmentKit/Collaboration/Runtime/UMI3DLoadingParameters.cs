@@ -45,7 +45,6 @@ namespace umi3d.cdk
 
         public virtual UMI3DNodeLoader nodeLoader { get; } = new UMI3DNodeLoader();
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
-        public virtual UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DAvatarNodeLoader();
 
         public NotificationLoader notificationLoader;
 
@@ -106,7 +105,6 @@ namespace umi3d.cdk
             .SetNext(new UMI3DSubMeshNodeLoader())
             .SetNext(new UMI3DVolumeLoader())
             .SetNext(new UMI3DUINodeLoader())
-            .SetNext(avatarLoader)
             .SetNext(new UMI3DHandPoseLoader())
             .SetNext(new UMI3DEmotesConfigLoader())
             .SetNext(new UMI3DEmoteLoader())

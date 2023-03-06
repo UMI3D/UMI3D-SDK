@@ -210,7 +210,7 @@ namespace umi3d.edk.collaboration
 
             KeyValuePair<NetworkingPlayer, T>[] userFrameMap = null;
             RelayVolume relayVolume;
-            if (user is UMI3DCollaborationUser cUser && cUser?.Avatar?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.Avatar.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
+            if (user is UMI3DCollaborationUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
             {
                 var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationUser).ToList();
                 userFrameMap = framesPerPlayer.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
@@ -372,7 +372,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
             UMI3DCollaborationUser user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
-            float dist = Vector3.Distance(user1.Avatar.objectPosition.GetValue(user2), user2.Avatar.objectPosition.GetValue(user2));
+            float dist = Vector3.Distance(user1.CurrentTrackingFrame.position, user2.CurrentTrackingFrame.position);
             float coeff = 0f;
             if (dist > startProximityAt && dist < proximityCutout)
             {

@@ -414,7 +414,7 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(UserTrackingFrameDto):
                     uint idKey = 0;
                     ulong userId, parentId;
-                    float skeletonHighOffset, refreshFrequency;
+                    //float skeletonHighOffset, refreshFrequency;
                     SerializableVector3 position;
                     SerializableVector4 rotation;
 
@@ -422,10 +422,10 @@ namespace umi3d.common.collaboration
                         UMI3DSerializer.TryRead(container, out idKey)
                         && UMI3DSerializer.TryRead(container, out userId)
                         && UMI3DSerializer.TryRead(container, out parentId)
-                        && UMI3DSerializer.TryRead(container, out skeletonHighOffset)
+                        //&& UMI3DSerializer.TryRead(container, out skeletonHighOffset)
                         && UMI3DSerializer.TryRead(container, out position)
                         && UMI3DSerializer.TryRead(container, out rotation)
-                        && UMI3DSerializer.TryRead(container, out refreshFrequency)
+                        //&& UMI3DSerializer.TryRead(container, out refreshFrequency)
                         )
                     {
                         System.Collections.Generic.List<BoneDto> bones = UMI3DSerializer.ReadList<BoneDto>(container);
@@ -436,10 +436,10 @@ namespace umi3d.common.collaboration
                             {
                                 userId = userId,
                                 parentId = parentId,
-                                skeletonHighOffset = skeletonHighOffset,
+                                //skeletonHighOffset = skeletonHighOffset,
                                 position = position,
                                 rotation = rotation,
-                                refreshFrequency = refreshFrequency,
+                                //refreshFrequency = refreshFrequency,
                                 bones = bones
                             };
                             readable = true;
@@ -453,6 +453,30 @@ namespace umi3d.common.collaboration
                             readable = false;
                             return false;
                         }
+                    }
+                    result = default(T);
+                    readable = false;
+                    return false;
+                case true when typeof(T) == typeof(UserTrackingBoneDto):
+                    //uint idTrackingBone = 0;
+                    BoneDto boneDto;
+
+                    if (
+                        UMI3DSerializer.TryRead(container, out idKey)
+                        && UMI3DSerializer.TryRead(container, out userId)
+                        && UMI3DSerializer.TryRead(container, out boneDto)
+                        )
+                    {
+                        var trackingBone = new UserTrackingBoneDto
+                        {
+                            userId = userId,
+                            bone = boneDto
+                        };
+                        readable = true;
+                        result = (T)Convert.ChangeType(trackingBone, typeof(T));
+
+                        return true;
+  
                     }
                     result = default(T);
                     readable = false;

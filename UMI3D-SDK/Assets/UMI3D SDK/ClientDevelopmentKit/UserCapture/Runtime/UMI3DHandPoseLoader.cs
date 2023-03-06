@@ -48,7 +48,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.ActiveHandPose:
                     dto.IsActive = (bool)value.property.value;
-                    UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
                     break;
                 default:
                     return false;
@@ -64,7 +64,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.ActiveHandPose:
                     dto.IsActive = UMI3DSerializer.Read<bool>(value.container);
-                    UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
                     break;
                 default:
                     return false;

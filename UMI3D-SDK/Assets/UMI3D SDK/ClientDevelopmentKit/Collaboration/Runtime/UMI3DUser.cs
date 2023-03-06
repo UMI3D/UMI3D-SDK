@@ -68,11 +68,6 @@ namespace umi3d.cdk.collaboration
         public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
 
         /// <summary>
-        /// Virtual representation of the user in the media.
-        /// </summary>
-        public UserAvatar avatar => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar;
-
-        /// <summary>
         /// See <see cref="UserDto.microphoneStatus"/>.
         /// </summary>
         public bool microphoneStatus => dto.microphoneStatus;
@@ -163,7 +158,7 @@ namespace umi3d.cdk.collaboration
         public void Update(UserDto user)
         {
             bool statusUpdate = dto.status != user.status;
-            bool avatarUpdate = dto.avatarId != user.avatarId;
+            //bool avatarUpdate = dto.avatarId != user.avatarId;
             bool audioUpdate = dto.audioSourceId != user.audioSourceId;
             bool videoUpdate = dto.videoSourceId != user.videoSourceId;
             bool audioFrequencyUpdate = dto.audioFrequency != user.audioFrequency;
@@ -190,7 +185,7 @@ namespace umi3d.cdk.collaboration
             }
 
             if (statusUpdate) OnUserStatusUpdated.Invoke(this);
-            if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
+            //if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
             if (audioUpdate) OnUserAudioUpdated.Invoke(this);
             if (videoUpdate) OnUserVideoUpdated.Invoke(this);
             if (audioFrequencyUpdate) OnUserAudioFrequencyUpdated.Invoke(this);

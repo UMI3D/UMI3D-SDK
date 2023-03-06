@@ -61,7 +61,7 @@ namespace umi3d.edk.collaboration
                 case UserDto user:
                     bytable = UMI3DSerializer.Write<ulong>(user.id)
                     + UMI3DSerializer.Write<uint>((uint)user.status)
-                    + UMI3DSerializer.Write<ulong>(user.avatarId)
+                    //+ UMI3DSerializer.Write<ulong>(user.avatarId)
                     + UMI3DSerializer.Write<ulong>(user.audioSourceId)
                     + UMI3DSerializer.Write<int>(user.audioFrequency)
                     + UMI3DSerializer.Write<ulong>(user.videoSourceId)
@@ -83,7 +83,7 @@ namespace umi3d.edk.collaboration
                 case UMI3DCollaborationUser user:
                     bytable = UMI3DSerializer.Write<ulong>(user.Id())
                     + UMI3DSerializer.Write<uint>((uint)user.status)
-                    + UMI3DSerializer.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id())
+                    //+ UMI3DSerializer.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id())
                     + UMI3DSerializer.Write<ulong>(user.audioPlayer?.Id() ?? 0)
                     + UMI3DSerializer.Write<int>(user.audioFrequency.GetValue())
                     + UMI3DSerializer.Write<ulong>(user.videoPlayer?.Id() ?? 0)

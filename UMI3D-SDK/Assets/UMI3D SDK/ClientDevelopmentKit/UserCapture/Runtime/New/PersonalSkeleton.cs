@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
 
         public TrackedSkeleton TrackedSkeleton;
 
-        public float skeletonHighOffset = 0;
+        //public float skeletonHighOffset = 0;
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
@@ -44,7 +44,7 @@ namespace umi3d.cdk.userCapture
             {
                 position = transform.position,
                 rotation = transform.rotation,
-                skeletonHighOffset = skeletonHighOffset,
+                //skeletonHighOffset = skeletonHighOffset,
             };
 
             Debug.Log(Skeletons.Length);

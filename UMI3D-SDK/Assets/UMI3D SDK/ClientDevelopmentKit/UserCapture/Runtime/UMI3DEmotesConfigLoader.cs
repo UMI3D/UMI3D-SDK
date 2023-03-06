@@ -38,7 +38,7 @@ namespace umi3d.cdk.userCapture
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
                 UMI3DEnvironmentLoader.RegisterEntityInstance(emoteDto.id, emoteDto, null).NotifyLoaded();
-            UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+            //UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
@@ -49,7 +49,7 @@ namespace umi3d.cdk.userCapture
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = value.property.value as List<UMI3DEmoteDto>;
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
                     break;
 
                 default:
@@ -66,7 +66,7 @@ namespace umi3d.cdk.userCapture
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = UMI3DSerializer.Read<List<UMI3DEmoteDto>>(value.container);
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(dto);
                     break;
 
                 default:
@@ -86,7 +86,7 @@ namespace umi3d.cdk.userCapture
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     data.result = UMI3DSerializer.Read<UMI3DEmotesConfigDto>(data.container);
 
-                    UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(data.result as UMI3DEmotesConfigDto);
+                    //UMI3DClientUserTracking.Instance.EmotesLoadedEvent.Invoke(data.result as UMI3DEmotesConfigDto);
                     break;
 
                 default:

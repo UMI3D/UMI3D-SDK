@@ -468,16 +468,28 @@ namespace umi3d.cdk.collaboration
                     });
                     break;
                 case SetTrackingTargetFPSDto setTargetFPS:
+                    MainThreadManager.Run(() =>
+                    {
                         SkeletonManager.Instance.SetFPSTarget(setTargetFPS.targetFPS);
+                    });
                     break;
                 case SetStreamedBonesDto streamedBones:
+                    MainThreadManager.Run(() =>
+                    {
                         SkeletonManager.Instance.SetStreamedBones(streamedBones.streamedBones);
+                    }); 
                     break;
                 case SetSendingCameraPropertiesDto sendingCamera:
+                    MainThreadManager.Run(() =>
+                    {
                         SkeletonManager.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
+                    });
                     break;
                 case SetSendingTrackingDto sendingTracking:
+                    MainThreadManager.Run(() =>
+                    {
                         SkeletonManager.Instance.SetTrackingSending(sendingTracking.activeSending);
+                    });
                     break;
                 default:
                     return false;
@@ -556,7 +568,7 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             StartCoroutine(UMI3DNavigation.Navigate(nav));
-                            UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
+                            //UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
                         });
                     }
                     break;
@@ -567,10 +579,13 @@ namespace umi3d.cdk.collaboration
                         ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
                         MainThreadManager.Run(() =>
                         {
-                            if (trigger)
-                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
-                            else
-                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
+                            ///TODO
+                            ///
+
+                            //if (trigger)
+                            //    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
+                            //else
+                            //    (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
                         });
                     }
                     break;
@@ -609,8 +624,13 @@ namespace umi3d.cdk.collaboration
                     });
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
-                    int target = UMI3DSerializer.Read<int>(container);
+                    float target = UMI3DSerializer.Read<float>(container);
                     SkeletonManager.Instance.SetFPSTarget(target);
+                    break;
+                case UMI3DOperationKeys.SetUTSBoneTargetFPS:
+                    float FPStarget = UMI3DSerializer.Read<float>(container);
+                    uint boneId = UMI3DSerializer.Read<uint>(container);
+                    SkeletonManager.Instance.SetBoneFPSTarget(boneId, FPStarget);
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
                     List<uint> streamedBones = UMI3DSerializer.ReadList<uint>(container);

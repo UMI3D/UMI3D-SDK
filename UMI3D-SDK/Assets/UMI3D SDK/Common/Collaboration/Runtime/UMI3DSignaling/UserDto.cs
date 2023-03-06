@@ -37,7 +37,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// User's avatar UMI3D id.
         /// </summary>
-        public ulong avatarId;
+        //public ulong avatarId;
 
         /// <summary>
         /// Forge id of the user.
@@ -124,7 +124,7 @@ namespace umi3d.common.collaboration
         public UserDto(UserDto source)
         {
             this.status = source.status;
-            this.avatarId = source.avatarId;
+            //this.avatarId = source.avatarId;
             this.audioSourceId = source.audioSourceId;
             this.audioFrequency = source.audioFrequency;
             this.videoSourceId = source.videoSourceId;

@@ -1,5 +1,5 @@
-﻿/*
-Copyright 2019 - 2021 Inetum
+/*
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,23 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
+using System.Collections;
 using System.Collections.Generic;
+using UnityEngine;
 
-namespace umi3d.common.collaboration
+public class CollaborativeSkeletonsScene : SingleBehaviour<CollaborativeSkeletonsScene>
 {
-    /// <summary>
-    /// DTO describing user configuration when joining an environment.
-    /// </summary>
-    public class JoinDto : UMI3DDto
+    // Start is called before the first frame update
+    void Start()
     {
-        /// <summary>
-        /// Bones tracked by the user tracking system.
-        /// </summary>
-        public List<uint> trackedBonetypes;
+        
+    }
 
-        /// <summary>
-        /// User size scale relative to the environment.
-        /// </summary>
-        public SerializableVector3 userSize;
+    // Update is called once per frame
+    void Update()
+    {
+        
     }
 }

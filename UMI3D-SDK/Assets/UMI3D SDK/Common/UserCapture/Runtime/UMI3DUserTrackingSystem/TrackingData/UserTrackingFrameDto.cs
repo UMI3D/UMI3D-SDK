@@ -44,7 +44,7 @@ namespace umi3d.common.userCapture
         /// Current jump height of the avatar.
         /// </summary>
         /// Probably obsolete with the new navigation system.
-        public float skeletonHighOffset;
+        //public float skeletonHighOffset;
 
         /// <summary>
         /// Current position of the user.
@@ -59,7 +59,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Frequency in frame per second (FPS) at which the user tracking is sent to the server.
         /// </summary>
-        public float refreshFrequency;
+        //public float refreshFrequency;
 
         /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingFrame; }
@@ -70,10 +70,10 @@ namespace umi3d.common.userCapture
             return base.ToBytableArray(parameters)
                 + UMI3DSerializer.Write(userId)
                 + UMI3DSerializer.Write(parentId)
-                + UMI3DSerializer.Write(skeletonHighOffset)
+                //+ UMI3DSerializer.Write(skeletonHighOffset)
                 + UMI3DSerializer.Write(position)
                 + UMI3DSerializer.Write(rotation)
-                + UMI3DSerializer.Write(refreshFrequency)
+                //+ UMI3DSerializer.Write(refreshFrequency)
                 + UMI3DSerializer.WriteIBytableCollection(bones);
         }
     }

@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
         {
             var dto = value.dto as UMI3DEmoteDto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
-            UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
+            //UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
@@ -46,7 +46,7 @@ namespace umi3d.cdk.userCapture
             {
                 case UMI3DPropertyKeys.ActiveEmote:
                     dto.available = (bool)value.property.value;
-                    UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
                     break;
 
                 default:
@@ -63,7 +63,7 @@ namespace umi3d.cdk.userCapture
             {
                 case UMI3DPropertyKeys.ActiveEmote:
                     dto.available = UMI3DSerializer.Read<bool>(value.container);
-                    UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
+                    //UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(dto);
                     break;
 
                 default:
@@ -86,7 +86,7 @@ namespace umi3d.cdk.userCapture
                 case UMI3DPropertyKeys.ActiveEmote:
                     data.result = UMI3DSerializer.Read<UMI3DEmoteDto>(data.container);
 
-                    UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(data.result as UMI3DEmoteDto);
+                    //UMI3DClientUserTracking.Instance.EmoteChangedEvent.Invoke(data.result as UMI3DEmoteDto);
                     break;
 
                 default:
