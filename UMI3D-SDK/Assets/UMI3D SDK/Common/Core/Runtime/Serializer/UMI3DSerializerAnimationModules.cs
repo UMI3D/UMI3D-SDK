@@ -25,6 +25,7 @@ namespace umi3d.common
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
+
             switch (true)
             {
                 case true when typeof(T) == typeof(SerializableKeyframe):
@@ -50,6 +51,10 @@ namespace umi3d.common
                         result = default;
                         return false;
                     }
+                case true when typeof(T) == typeof(UMI3DAnimatorParameterDto):
+                    var parameterValue = UMI3DAnimatorParameterDto.FromByte(container);
+                    result = (T)Convert.ChangeType(parameterValue, typeof(T));
+                    return true;
             }
 
             result = default(T);

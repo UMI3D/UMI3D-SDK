@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-using System;
-using System.Collections.Generic;
-using umi3d.common;
 using UnityEditor;
 using UnityEngine;
 
 namespace umi3d.edk.editor
 {
-    [CustomEditor(typeof(UMI3DAnimatorAnimation))]
+    [CustomEditor(typeof(UMI3DAnimatorAnimation), true)]
+    [CanEditMultipleObjects]
     public class UMI3DAnimatorAnimationEditor : UMI3DAbstractAnimationEditor
     {
         private SerializedProperty node;
@@ -41,18 +38,29 @@ namespace umi3d.edk.editor
             EditorGUI.BeginChangeCheck();
 
             serializedObject.Update();
+            EditorGUILayout.PropertyField(node);
+            serializedObject.ApplyModifiedProperties();
 
+            EditorGUILayout.Space();
+
+            base.OnInspectorGUI();
+
+            EditorGUILayout.Space();
+            EditorGUI.BeginChangeCheck();
+            serializedObject.Update();
+            EditorGUILayout.PropertyField(stateName);
+            
+            EditorGUILayout.LabelField("Animator parameters should be changed via script (objectParameters field).");
+            GUI.enabled = false;
             EditorGUILayout.PropertyField(playing);
             EditorGUILayout.PropertyField(looping);
             EditorGUILayout.PropertyField(startTime);
             EditorGUILayout.PropertyField(pauseFrame);
-            EditorGUILayout.PropertyField(node);
-            EditorGUILayout.PropertyField(stateName);
+            GUI.enabled = true;
 
             serializedObject.ApplyModifiedProperties();
+
+            EditorGUILayout.Space();
         }
-
-
-
     }
 }

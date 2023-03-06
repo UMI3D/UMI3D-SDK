@@ -614,7 +614,7 @@ namespace umi3d.cdk
                         await UMI3DResourcesManager.LoadLibrary(library.libraryId);
                         break;
                     case AbstractEntityDto dto:
-                        await Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData( dto, null));
+                        await Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto, null));
                         break;
                     case GlTFMaterialDto matDto:
                         Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
@@ -696,6 +696,7 @@ namespace umi3d.cdk
                 if (entity is UMI3DNodeInstance)
                 {
                     var node = entity as UMI3DNodeInstance;
+                    node.ClearBeforeDestroy();
                     UnityEngine.Object.Destroy(node.gameObject);
                 }
                 Instance.entities[entityId].Delete?.Invoke();
@@ -869,6 +870,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
                     if (dto.skybox != null)
                     {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                         Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                     }
                     return true;
@@ -913,7 +915,12 @@ namespace umi3d.cdk
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
                     dto.skybox = UMI3DSerializer.Read<ResourceDto>(data.container);
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    if (dto.skybox != null)
+                    {
+                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                        Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    }
+                    return true;
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
                     dto.skyboxRotation = UMI3DSerializer.Read<float>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
@@ -994,7 +1001,7 @@ namespace umi3d.cdk
         /// <param name="node">Node on which the dto should be applied.</param>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static async Task<bool> SetEntity( ulong entityId, SetUMI3DPropertyContainerData data)
+        public static async Task<bool> SetEntity(ulong entityId, SetUMI3DPropertyContainerData data)
         {
             if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(data.propertyKey))
             {
@@ -1115,7 +1122,7 @@ namespace umi3d.cdk
                         value = extrapolator.GetRegressedValue().ToSerializable()
                     };
 
-                    SimulatedSetEntity(new SetUMI3DPropertyData( entityPropertyDto, node));
+                    SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
                 }
             }
         }
@@ -1187,7 +1194,7 @@ namespace umi3d.cdk
                     value = startValue.ToSerializable()
                 };
 
-                return await SetEntity(new SetUMI3DPropertyData( entityPropertyDto, node));
+                return await SetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
             }
             return false;
         }

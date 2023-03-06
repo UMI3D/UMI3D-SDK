@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -44,15 +45,23 @@ namespace umi3d.edk
         /// See <see cref="stateName"/>.
         /// </summary>
         private UMI3DAsyncProperty<string> _objectStateName;
+        /// <summary>
+        /// <see cref="objectParameters"/>.
+        /// </summary>
+        private UMI3DAsyncDictionnaryProperty<string, object> _objectParameters;
 
         /// <summary>
         /// See <see cref="node"/>.
         /// </summary>
-        public UMI3DAsyncProperty<UMI3DNode> ObjectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
+        public UMI3DAsyncProperty<UMI3DNode> objectNode { get { Register(); return _objectNode; } protected set => _objectNode = value; }
         /// <summary>
         /// See <see cref="stateName"/>.
         /// </summary>
-        public UMI3DAsyncProperty<string> ObjectStateName { get { Register(); return _objectStateName; } protected set => _objectStateName = value; }
+        public UMI3DAsyncProperty<string> objectStateName { get { Register(); return _objectStateName; } protected set => _objectStateName = value; }
+        /// <summary>
+        /// Property to change <see cref="Animator"/> parameters. Allowed values are float, integer, bool (value true for trigger parameter).
+        /// </summary>
+        public UMI3DAsyncDictionnaryProperty<string, object> objectParameters { get { Register(); return _objectParameters; } protected set => _objectParameters = value; }
 
         /// <inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
@@ -65,10 +74,17 @@ namespace umi3d.edk
         {
             var equality = new UMI3DAsyncPropertyEquality();
             base.InitDefinition(id);
-            ObjectNode = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNodeId, node, null, (o, u) => o.Equals(u));
-            ObjectStateName = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.AnimationStateName, stateName, null, (o, u) => o.Equals(u));
-            ObjectNode.OnValueChanged += (d) => node = d;
-            ObjectStateName.OnValueChanged += (d) => stateName = d;
+
+            objectNode = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNodeId, node, null, (o, u) => o.Equals(u));
+            objectStateName = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.AnimationStateName, stateName, null, (o, u) => o.Equals(u));
+            objectParameters = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.AnimationAnimatorParameters,
+                new Dictionary<string, object>(), null, (o, u) => new UMI3DAnimatorParameterDto(o), null, d =>
+                {
+                    return new Dictionary<string, object>(d);
+                });
+
+            objectNode.OnValueChanged += (d) => node = d;
+            objectStateName.OnValueChanged += (d) => stateName = d;
         }
 
         /// <inheritdoc/>
@@ -76,16 +92,18 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var Adto = dto as UMI3DAnimatorAnimationDto;
-            Adto.nodeId = ObjectNode.GetValue(user).Id();
-            Adto.stateName = ObjectStateName.GetValue(user);
+            Adto.nodeId = objectNode.GetValue(user).Id();
+            Adto.stateName = objectStateName.GetValue(user);
+            Adto.parameters = objectParameters.GetValue(user);
         }
 
         /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return base.ToBytesAux(user)
-                + UMI3DSerializer.Write(ObjectNode.GetValue(user).Id())
-                + UMI3DSerializer.Write(ObjectStateName.GetValue(user));
+                + UMI3DSerializer.Write(objectNode.GetValue(user).Id())
+                + UMI3DSerializer.Write(objectStateName.GetValue(user))
+                + UMI3DSerializer.Write(objectParameters.GetValue(user));
         }
     }
 }

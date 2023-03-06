@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     /// <summary>
@@ -31,5 +33,10 @@ namespace umi3d.common
         /// Animation state's name in the animator controller.
         /// </summary>
         public string stateName = "";
+
+        /// <summary>
+        /// Animator parameters.
+        /// </summary>
+        public Dictionary<string, object> parameters = new Dictionary<string, object>();
     }
 }
