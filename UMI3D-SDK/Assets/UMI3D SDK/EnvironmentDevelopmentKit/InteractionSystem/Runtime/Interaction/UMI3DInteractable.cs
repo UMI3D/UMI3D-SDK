@@ -57,7 +57,14 @@ namespace umi3d.edk.interaction
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Distance for a user to interact with this tool. If value < 0, no distance check")]
         protected float InteractionDistance = -1;
-
+        /// <summary>
+        /// Default value for the distance for a user to interact with this tool. If value < 0, no distance check.
+        /// </summary>
+        public float DefaultInteractionDistance
+        {
+            get { return InteractionDistance; }
+            set { InteractionDistance = value; }
+        }
         #endregion
 
         #region UMI3DLoadableEntity
