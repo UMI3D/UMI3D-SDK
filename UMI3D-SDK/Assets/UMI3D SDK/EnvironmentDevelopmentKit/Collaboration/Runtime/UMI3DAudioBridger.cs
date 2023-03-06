@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System.Collections;
+using umi3d.common.userCapture;
+using umi3d.edk.userCapture;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -57,35 +59,50 @@ namespace umi3d.edk.collaboration
 
         private IEnumerator SetAudioSource(UMI3DCollaborationUser user)
         {
-            yield return null;
+            while (user.CurrentTrackingFrame == null)
+                yield return new WaitForFixedUpdate();
 
-            ///TODO 
-            ///
+            Transaction tr = new Transaction() { reliable = true };
 
-            //var wait = new WaitForFixedUpdate();
-            //while (user.Avatar == null)
-            //    yield return wait;
-            //user.audioPlayer = user.Avatar.gameObject.GetComponent<UMI3DAudioPlayer>();
-            //if (user.audioPlayer == null)
-            //{
-            //    user.audioPlayer = user.Avatar.gameObject.AddComponent<UMI3DAudioPlayer>();
-            //    user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
-            //    user.audioPlayer.ObjectNode.SetValue(user.Avatar);
-            //    var tr = new Transaction() { reliable = true };
-            //    tr.AddIfNotNull(user.audioPlayer.GetLoadEntity());
-            //    UMI3DServer.Dispatch(tr);
-            //}
-            //if (user.audioPlayer.ObjectNode.GetValue() == null)
-            //{
-            //    SetEntityProperty op = user.audioPlayer.ObjectNode.SetValue(user.Avatar);
-            //    if (op != null)
-            //    {
-            //        var tr = new Transaction() { reliable = true };
-            //        tr.AddIfNotNull(op);
-            //        UMI3DServer.Dispatch(tr);
-            //    }
-            //}
-            //UMI3DServer.Instance.NotifyUserChanged(user);
+            // Look for audio source
+            UMI3DNode audioSourceNode;
+            if (user.audioPlayer == null) // create one if does not exist
+            {
+                GameObject go = new GameObject($"AudioSource_user_{user.Id()}");
+                audioSourceNode = go.AddComponent<UMI3DNode>();
+
+                user.audioPlayer = audioSourceNode.gameObject.AddComponent<UMI3DAudioPlayer>();
+                user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
+                user.audioPlayer.ObjectNode.SetValue(audioSourceNode);
+
+                tr.AddIfNotNull(audioSourceNode.GetLoadEntity());
+                tr.AddIfNotNull(user.audioPlayer.GetLoadEntity());
+            }
+            else
+            {
+                audioSourceNode = user.audioPlayer.ObjectNode.GetValue();
+                if (audioSourceNode == null)
+                {
+                    GameObject go = new GameObject($"AudioSource_user_{user.Id()}");
+                    audioSourceNode = go.AddComponent<UMI3DNode>();
+                    tr.AddIfNotNull(user.audioPlayer.ObjectNode.SetValue(audioSourceNode));
+                }    
+            }
+
+            // Binding
+            var binding = new UMI3DBinding()
+            {
+                syncPosition = true,
+                syncRotation = true,
+                boneType = BoneType.Head,
+                priotity = 100,
+                node = audioSourceNode
+            };
+
+            tr.AddIfNotNull(BindingManager.Instance.AddBinding(user, binding));
+            UMI3DServer.Dispatch(tr);
+            
+            UMI3DServer.Instance.NotifyUserChanged(user);
         }
 
         private IEnumerator SetSpacialBlend(UMI3DCollaborationUser user)
