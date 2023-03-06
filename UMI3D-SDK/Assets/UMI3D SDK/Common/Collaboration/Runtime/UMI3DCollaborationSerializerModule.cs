@@ -680,18 +680,38 @@ namespace umi3d.common.collaboration
 
                                 return true;
                             }
-                            else
-                            {
-                                result = default(T);
-                                readable = false;
-                                return false;
-                            }
                         }
                         result = default(T);
                         readable = false;
                         return false;
                     }
-                    
+                case true when typeof(T) == typeof(UserTrackingBoneDto):
+                    {
+                        uint idKey = 0;
+                        ulong userId;
+                        BoneDto boneDto;
+
+                        if (
+                            UMI3DSerializer.TryRead(container, out idKey)
+                            && UMI3DSerializer.TryRead(container, out userId)
+                            && UMI3DSerializer.TryRead(container, out boneDto)
+                            )
+                        {
+                            var trackingBone = new UserTrackingBoneDto
+                            {
+                                userId = userId,
+                                bone = boneDto
+                            };
+                            readable = true;
+                            result = (T)Convert.ChangeType(trackingBone, typeof(T));
+
+                            return true;
+
+                        }
+                        result = default(T);
+                        readable = false;
+                        return false;
+                    }
                 default:
                     result = default(T);
                     readable = false;

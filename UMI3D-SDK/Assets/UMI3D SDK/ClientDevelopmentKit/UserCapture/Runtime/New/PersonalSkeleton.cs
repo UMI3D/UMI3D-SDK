@@ -62,8 +62,10 @@ namespace umi3d.cdk.userCapture
 
         public void Start()
         {
-            skeletons = new List<ISubSkeleton>();
-            skeletons[0] = TrackedSkeleton;
+            skeletons = new List<ISubSkeleton>
+            {
+                TrackedSkeleton
+            };
         }
 
         public UserTrackingFrameDto GetFrame(TrackingOption option) {
@@ -74,8 +76,8 @@ namespace umi3d.cdk.userCapture
                 //skeletonHighOffset = skeletonHighOffset,
             };
 
-            Debug.Log(Skeletons.Length);
-            foreach (var skeleton in Skeletons)
+            Debug.Log(skeletons.Count);
+            foreach (var skeleton in skeletons)
                 skeleton.WriteTrackingFrame(frame, option);
 
             return frame;
@@ -95,13 +97,6 @@ namespace umi3d.cdk.userCapture
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
             UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
-        }
-
-
-        private void Start()
-        {
-            Skeletons = new ISubSkeleton[1];
-            Skeletons[0] = TrackedSkeleton;
         }
     }
 }

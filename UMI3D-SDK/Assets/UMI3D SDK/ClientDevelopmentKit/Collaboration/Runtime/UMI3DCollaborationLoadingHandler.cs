@@ -24,10 +24,6 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationLoadingHandler : UMI3DLoadingHandler
     {
-        #region UserTracking
-        private UMI3DCollaborationClientUserTracking userTrackingService;
-        #endregion UserTracking
-
         #region Emotes
         [Header("Emotes")]
         [SerializeField, Tooltip("Is the browser supporting emotes?")]
@@ -46,9 +42,6 @@ namespace umi3d.cdk.collaboration
         {
             // LOADING SERVICE
             environmentLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
-
-            // USER TRACKING SERVICE
-            userTrackingService = UMI3DCollaborationClientUserTracking.Instance;
 
             // EMOTES SERVICE
             if (areEmotesSupported)

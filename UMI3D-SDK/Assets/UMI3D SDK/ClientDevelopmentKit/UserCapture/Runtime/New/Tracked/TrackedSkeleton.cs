@@ -57,10 +57,9 @@ namespace umi3d.cdk.userCapture
 
         public PoseDto GetPose()
         {
-            return new PoseDto()
-            {
-                bones = bones.Select(kp => kp.Value).Select(tb => (AbstractBonePoseDto)tb.ToBonePose()).ToArray()
-            };
+            var dto = new PoseDto();
+            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBonePose()).ToArray());
+            return dto;
         }
 
         public UserTrackingBoneDto GetBone(uint boneType)
@@ -71,7 +70,7 @@ namespace umi3d.cdk.userCapture
             };
         }
 
-        public void Update(UserTrackingFrameDto trackingFrame)
+        public void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
             types.Clear();
             foreach (var bone in trackingFrame.bones)

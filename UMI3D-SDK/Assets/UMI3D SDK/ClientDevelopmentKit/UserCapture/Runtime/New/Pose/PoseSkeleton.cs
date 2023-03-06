@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture
             throw new System.NotImplementedException();
         }
 
-        public void Update(UserTrackingFrameDto trackingFrame)
+        public void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
             throw new System.NotImplementedException();
         }

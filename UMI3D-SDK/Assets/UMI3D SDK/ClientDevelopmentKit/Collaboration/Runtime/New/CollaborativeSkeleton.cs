@@ -58,7 +58,7 @@ namespace umi3d.cdk.collaboration
         {
             if (skeletons != null)
                 foreach (var skeleton in skeletons)
-                    skeleton.Update(frame);
+                    skeleton.UpdateFrame(frame);
         }
 
         public void SetSubSkeletons()

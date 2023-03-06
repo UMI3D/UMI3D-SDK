@@ -69,7 +69,7 @@ namespace umi3d.cdk.userCapture
         /// Activate / Deactivate animations accordingly to the <paramref name="trackingFrame"/>.
         /// </summary>
         /// <param name="trackingFrame"></param>
-        public virtual void Update(UserTrackingFrameDto trackingFrame)
+        public virtual void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
             var animations = from animId in Mapper.animations 
                              select (id: animId, UMI3DAnimation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId));

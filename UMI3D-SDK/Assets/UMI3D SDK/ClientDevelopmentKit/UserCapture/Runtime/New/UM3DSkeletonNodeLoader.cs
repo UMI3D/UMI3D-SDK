@@ -29,45 +29,45 @@ namespace umi3d.cdk.userCapture
     /// It is based upon the <see cref="UMI3DMeshNodeDto"/> as the animation ressources are packaged in a bundle just like in a model.
     public class UM3DSkeletonNodeLoader : UMI3DMeshNodeLoader
     {
-        /// <inheritdoc/>
-        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
-        {
-            return data.dto is UMI3DSkeletonNodeDto && base.CanReadUMI3DExtension(data);
-        }
+        ///// <inheritdoc/>
+        //public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        //{
+        //    return data.dto is UMI3DSkeletonNodeDto && base.CanReadUMI3DExtension(data);
+        //}
 
-        /// <inheritdoc/>
-        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
-        {
-            if (data.dto is not UMI3DSkeletonNodeDto nodeDto)
-                throw new Umi3dException("DTO should be an UM3DSkeletonNodeDto");
+        ///// <inheritdoc/>
+        //public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
+        //{
+        //    if (data.dto is not UMI3DSkeletonNodeDto nodeDto)
+        //        throw new Umi3dException("DTO should be an UM3DSkeletonNodeDto");
 
-            await base.ReadUMI3DExtension(data);
+        //    await base.ReadUMI3DExtension(data);
 
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
+        //    UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
 
-            var go = nodeInstance.gameObject;
+        //    var go = nodeInstance.gameObject;
 
-            var modelTracker = data.node.GetOrAddComponent<ModelTracker>();
+        //    var modelTracker = data.node.GetOrAddComponent<ModelTracker>();
 
-            SkeletonMapper skeletonMapper = go.GetComponentInChildren<SkeletonMapper>(); //? should it come with the bundle ??
-            if (skeletonMapper == null) //? hopefully not necessary because it would imply to rebind everything
-            {
-                skeletonMapper = go.AddComponent<SkeletonMapper>();
-                if (go.TryGetComponent(out UMI3DClientUserTrackingBone bone))
-                    skeletonMapper.BoneAnchor = bone.boneType;
-                else
-                    throw new Umi3dException("No bone found to attach skeleton.");
-            }
+        //    SkeletonMapper skeletonMapper = go.GetComponentInChildren<SkeletonMapper>(); //? should it come with the bundle ??
+        //    if (skeletonMapper == null) //? hopefully not necessary because it would imply to rebind everything
+        //    {
+        //        skeletonMapper = go.AddComponent<SkeletonMapper>();
+        //        if (go.TryGetComponent(out UMI3DClientUserTrackingBone bone))
+        //            skeletonMapper.BoneAnchor = bone.boneType;
+        //        else
+        //            throw new Umi3dException("No bone found to attach skeleton.");
+        //    }
 
-            AnimatedSkeleton animationSkeleton = new(skeletonMapper);
-            PersonalSkeleton.Instance.skeletons.Add(animationSkeleton);
+        //    AnimatedSkeleton animationSkeleton = new(skeletonMapper);
+        //    PersonalSkeleton.Instance.skeletons.Add(animationSkeleton);
 
 
-            foreach (var renderer in go.GetComponentsInChildren<Renderer>())
-                renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
+        //    foreach (var renderer in go.GetComponentsInChildren<Renderer>())
+        //        renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
 
-            //if (go.TryGetComponent(out Animator animator)) //! may delete that if already done in base class
-            //    modelTracker.animatorsToRebind.Add(animator);
-        }
+        //    //if (go.TryGetComponent(out Animator animator)) //! may delete that if already done in base class
+        //    //    modelTracker.animatorsToRebind.Add(animator);
+        //}
     }
 }

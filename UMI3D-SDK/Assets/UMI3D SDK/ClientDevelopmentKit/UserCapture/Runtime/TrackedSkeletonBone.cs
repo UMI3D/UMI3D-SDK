@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.userCapture;
 using UnityEngine;
+using UnityEngine.UIElements;
 
 namespace umi3d.cdk.userCapture
 {
@@ -49,12 +50,7 @@ namespace umi3d.cdk.userCapture
 
         public BonePoseDto ToBonePose()
         {
-            return boneType == BoneType.None ? null : new BonePoseDto()
-            {
-                boneType = boneType,
-                rotation = this.transform.localRotation,
-                position = this.transform.position
-            };
+            return boneType == BoneType.None ? null : new BonePoseDto(boneType, this.transform.position, new Vector4().FromQuaternion(this.transform.localRotation));
         }
     }
 

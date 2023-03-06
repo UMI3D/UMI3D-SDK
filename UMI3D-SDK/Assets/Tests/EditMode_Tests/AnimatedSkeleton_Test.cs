@@ -237,7 +237,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             }
 
             // WHEN
-            animatedSkeleton.Update(trackingFrame);
+            animatedSkeleton.UpdateFrame(trackingFrame);
 
             // THEN
             foreach (var anim in animationsDtosInMapper)
@@ -273,7 +273,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             }
 
             // WHEN
-            animatedSkeleton.Update(trackingFrame);
+            animatedSkeleton.UpdateFrame(trackingFrame);
 
             // THEN
             foreach (var anim in animationsDtosInMapper)
@@ -314,7 +314,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             }
 
             // WHEN
-            animatedSkeleton.Update(trackingFrame);
+            animatedSkeleton.UpdateFrame(trackingFrame);
 
             // THEN
             Assert.IsFalse(animationsDtosInMapper[1].playing);
