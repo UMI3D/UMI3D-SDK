@@ -5,7 +5,6 @@ using UnityEngine;
 
 namespace UnityEditor.TreeViewExamples
 {
-
 	[Serializable]
 	public class TreeElement
 	{

@@ -12,7 +12,7 @@
                 <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="loa_dropdown" />
             </ui:VisualElement>
             <ui:VisualElement name="CustomDrawerContainer">
-                <umi3d.edk.userCapture.UMI3DObjectField focusable="true" name="object_field" />
+                <inetum.unityUtils.CustomObjectField focusable="true" name="object_field" />
             </ui:VisualElement>
             <ui:VisualElement name="path_container">
                 <ui:TextField picking-mode="Ignore" label="Save Path" value="filler text" name="path" />
@@ -24,7 +24,7 @@
             </ui:VisualElement>
             <ui:VisualElement name="RootNamesRefContainer" style="flex-direction: column; flex-wrap: wrap; justify-content: space-between; flex-grow: 0;">
                 <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1">
-                    <ui:ListView focusable="true" name="lv_root_selected" class="BoneArea" />
+                    <ui:ListView focusable="true" name="lv_root_selected" class="BoneArea" style="min-height: 0; max-height: 4000px;" />
                 </ui:ScrollView>
                 <ui:VisualElement style="align-items: flex-end; flex-direction: row; justify-content: flex-end;">
                     <ui:Button text="Add" display-tooltip-when-elided="true" name="add_root" class="Buttons" />
@@ -54,7 +54,7 @@
             </ui:VisualElement>
             <ui:IMGUIContainer name="BoneHirarchy" class="BoneArea" style="flex-grow: 1;">
                 <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="height: 150px;">
-                    <ui:IMGUIContainer name="bone_container" class="BoneArea" style="flex-grow: 1; height: 100%;" />
+                    <ui:IMGUIContainer name="bone_container" class="BoneArea" style="flex-grow: 1; height: 100px; min-height: 100px;" />
                 </ui:ScrollView>
             </ui:IMGUIContainer>
         </ui:VisualElement>

@@ -26,16 +26,19 @@ using UnityEditor.IMGUI;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEditor.TreeViewExamples;
+using inetum.unityUtils;
+using umi3d.edk.userCapture;
 
-namespace umi3d.edk.userCapture
+namespace intetum.unityUtils
 {
+
     public class PoseSetterEditorWindow : EditorWindow
     {
         VisualElement root = null;
         TextField name = null;
         DropdownField loa_dropdown = null;
         TextField path = null;
-        UMI3DObjectField object_field = null;
+        CustomObjectField object_field = null;
 
         ListView lv_root_selected = null;
         Button add_root = null;
@@ -85,7 +88,7 @@ namespace umi3d.edk.userCapture
             name = root.Q<TextField>("name");
             loa_dropdown = root.Q<DropdownField>("loa_dropdown");
             path = root.Q<TextField>("path");
-            object_field = root.Q<UMI3DObjectField>("object_field");
+            object_field = root.Q<CustomObjectField>("object_field");
 
             lv_root_selected = root.Q<ListView>("lv_root_selected");
             add_root = root.Q<Button>("add_root");
@@ -108,7 +111,6 @@ namespace umi3d.edk.userCapture
 
         private void SetOnGUIContainer()
         {
-
             TreeViewState m_TreeViewState = new TreeViewState();
             BoneTreeView treeView = new BoneTreeView(null, m_TreeViewState);
 
@@ -152,29 +154,29 @@ namespace umi3d.edk.userCapture
 
         private void InitTextFields()
         {
-            
+
         }
 
         #endregion
 
         private void ReadHierachy(ChangeEvent<UnityEngine.Object> value)
         {
-            
+
         }
 
         private void AddAnEmptyRootToListView()
         {
-            
+
         }
 
-        private void RemoveLastRootFromListView() 
-        { 
-            
+        private void RemoveLastRootFromListView()
+        {
+
         }
 
         private void SaveToScriptableObjectAtPath()
         {
-            
+
         }
 
         #region change bone rotation
@@ -215,13 +217,25 @@ namespace umi3d.edk.userCapture
 
     class BoneTreeView : TreeView
     {
-        public BoneTreeView(TreeViewItem<TreeElement> elements, TreeViewState treeViewState)
+        public BoneTreeView(List<TreeViewItem<BoneTreeElement>> elements, TreeViewState treeViewState)
             : base(treeViewState)
         {
             Reload();
+            headerState = CreateDefaultMultiColumnHeaderState();
+
+            MultiColumnHeader multiColumnHeader = new MultiColumnHeader(headerState);
+            multiColumnHeader.ResizeToFit();
+            multiColumnHeader.SetSorting(0, true);
+
+            this.multiColumnHeader = multiColumnHeader;
+
+            this.elements = elements;
         }
 
-        public static MultiColumnHeaderState CreateDefaultMultiColumnHeaderState(float treeViewWidth)
+        List<TreeViewItem<BoneTreeElement>> elements = new List<TreeViewItem<BoneTreeElement>>();
+        private MultiColumnHeaderState headerState;
+
+        private MultiColumnHeaderState CreateDefaultMultiColumnHeaderState()
         {
             var columns = new[]
             {
@@ -231,34 +245,34 @@ namespace umi3d.edk.userCapture
                     headerTextAlignment = TextAlignment.Center,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 30,
+                    width = 150,
                     minWidth = 30,
-                    maxWidth = 60,
+                    maxWidth = 150,
                     autoResize = false,
                     allowToggleVisibility = true
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("IsSelectedAsRoot"),
+                    headerContent = new GUIContent("IsRoot"),
                     headerTextAlignment = TextAlignment.Center,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 30,
-                    minWidth = 30,
-                    maxWidth = 60,
-                    autoResize = false,
+                     width = 60,
+                    minWidth = 60,
+                    maxWidth = 120,
+                    autoResize = true,
                     allowToggleVisibility = true
                 },
                 new MultiColumnHeaderState.Column
                 {
-                    headerContent = new GUIContent("IsSelectedForModifications"),
+                    headerContent = new GUIContent("IsSelected"),
                     headerTextAlignment = TextAlignment.Center,
                     sortedAscending = true,
                     sortingArrowAlignment = TextAlignment.Right,
-                    width = 30,
-                    minWidth = 30,
-                    maxWidth = 60,
-                    autoResize = false,
+                    width = 60,
+                    minWidth = 60,
+                    maxWidth = 120,
+                    autoResize = true,
                     allowToggleVisibility = true
                 }
             };
@@ -270,49 +284,68 @@ namespace umi3d.edk.userCapture
 
         protected override TreeViewItem BuildRoot()
         {
+            BoneTreeElement boneTreeElement_1 = new BoneTreeElement(false, false);
+            BoneTreeElement boneTreeElement_2 = new BoneTreeElement(false, false);
+            BoneTreeElement boneTreeElement_3 = new BoneTreeElement(false, false);
 
-            var root = new TreeViewItem { id = 0, depth = -1, displayName = "Root" };
-            var animals = new TreeViewItem { id = 1, displayName = "Animals" };
-            var mammals = new TreeViewItem { id = 2, displayName = "Mammals" };
-            var tiger = new TreeViewItem { id = 3, displayName = "Tiger" };
-            var elephant = new TreeViewItem { id = 4, displayName = "Elephant" };
-            var okapi = new TreeViewItem { id = 5, displayName = "Okapi" };
-            var armadillo = new TreeViewItem { id = 6, displayName = "Armadillo" };
-            var reptiles = new TreeViewItem { id = 7, displayName = "Reptiles" };
-            var croco = new TreeViewItem { id = 8, displayName = "Crocodile" };
-            var lizard = new TreeViewItem { id = 9, displayName = "Lizard" };
+            var root = new TreeViewItem<BoneTreeElement>( 0,  -1,"Root", boneTreeElement_1);
+            var hips = new TreeViewItem<BoneTreeElement>(0, -1, "hips", boneTreeElement_2);
+            var arm = new TreeViewItem<BoneTreeElement>(0, -1, "arm", boneTreeElement_3);
 
-            root.AddChild(animals);
-            animals.AddChild(mammals);
-            animals.AddChild(reptiles);
-            mammals.AddChild(tiger);
-            mammals.AddChild(elephant);
-            mammals.AddChild(okapi);
-            mammals.AddChild(armadillo);
-            reptiles.AddChild(croco);
-            reptiles.AddChild(lizard);
-            reptiles.AddChild(croco);
-            reptiles.AddChild(lizard);
-            reptiles.AddChild(croco);
-            reptiles.AddChild(lizard);
-            reptiles.AddChild(croco);
-            reptiles.AddChild(croco);
-            reptiles.AddChild(lizard);
-            reptiles.AddChild(lizard);
+            root.AddChild(hips);
+            hips.AddChild(arm);
 
             SetupDepthsFromParentsAndChildren(root);
 
             return root;
         }
-    }
 
-    internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
-    {
-        public T data { get; set; }
 
-        public TreeViewItem(int id, int depth, string displayName, T data) : base(id, depth, displayName)
+        protected override void RowGUI(RowGUIArgs args)
         {
-            this.data = data;
+            TreeViewItem<BoneTreeElement> item = (TreeViewItem<BoneTreeElement>)args.item;
+
+            for (int i = 0; i < args.GetNumVisibleColumns(); ++i)
+            {
+                Rect cellRect = args.GetCellRect(i);
+                int col = args.GetColumn(i);
+
+                if (col == 0)
+                {
+                    EditorGUI.LabelField(cellRect, "     "+item.data.name, EditorStyles.boldLabel);
+                }
+                else if (col == 1)
+                {
+                    Rect toggleRect = new Rect(cellRect.center.x - 8f, cellRect.y, 16f, cellRect.height);
+                    bool newValue = EditorGUI.ToggleLeft(toggleRect, GUIContent.none, item.data.isRoot);
+                    if (newValue != item.data.isRoot)
+                    {
+                        item.data.isRoot = newValue;
+                        //event ? 
+                    }
+                }
+                else if (col == 2)
+                {
+                    Rect toggleRect = new Rect(cellRect.center.x - 8f, cellRect.y, 16f, cellRect.height);
+                    bool newValue = EditorGUI.ToggleLeft(toggleRect, GUIContent.none, item.data.isSelected);
+                    if (newValue != item.data.isSelected)
+                    {
+                        item.data.isSelected = newValue;
+                        //event ? 
+                    }
+                }
+            }
+        }
+
+        internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
+        {
+            public T data { get; set; }
+
+            public TreeViewItem(int id, int depth, string displayName, T data) : base(id, depth, displayName)
+            {
+                this.data = data;
+                this.data.name = displayName;
+            }
         }
     }
 }

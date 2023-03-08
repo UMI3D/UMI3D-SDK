@@ -5,11 +5,11 @@ using UnityEditor.UIElements;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace umi3d.edk.userCapture
+namespace inetum.unityUtils
 {
-    public class UMI3DObjectField : ObjectField
+    public class CustomObjectField : ObjectField
     {
-        public new class UxmlFactory : UxmlFactory<UMI3DObjectField, VisualElement.UxmlTraits> { }
+        public new class UxmlFactory : UxmlFactory<CustomObjectField, VisualElement.UxmlTraits> { }
 
         public void Init(Type type)
         {
