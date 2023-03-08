@@ -23,7 +23,7 @@ namespace umi3d.common.userCapture
         public abstract (Vector3 position, Quaternion rotation) Compute();
     }
 
-    public class GameNode : SkeletonMappingLink
+    public class GameNodeLink : SkeletonMappingLink
     {
         public Transform transform;
         public override (Vector3 position, Quaternion rotation) Compute()

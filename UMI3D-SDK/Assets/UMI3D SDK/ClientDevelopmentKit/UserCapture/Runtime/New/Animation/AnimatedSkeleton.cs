@@ -65,49 +65,19 @@ namespace umi3d.cdk.userCapture
             return Mapper.GetPose();
         }
 
+        ///TODO DELETE AFTER
+
         /// <summary>
         /// Activate / Deactivate animations accordingly to the <paramref name="trackingFrame"/>.
         /// </summary>
         /// <param name="trackingFrame"></param>
-        public virtual void UpdateFrame(UserTrackingFrameDto trackingFrame)
-        {
-            var animations = from animId in Mapper.animations 
-                             select (id: animId, UMI3DAnimation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId));
-
-            foreach (var anim in animations)
-            {
-                if (anim.UMI3DAnimation == null) // animation could not be found
-                {
-                    UMI3DLogger.LogWarning($"Trying to play/stop a unreferenced animation. ID : {anim.id}", debugScope);
-                    continue;
-                }
-                if (trackingFrame.animationsPlaying.Any(animId => animId == anim.id))
-                {
-                    if (!anim.UMI3DAnimation.IsPlaying())
-                        anim.UMI3DAnimation.Start();
-                }
-                else
-                {
-                    if (anim.UMI3DAnimation.IsPlaying())
-                        anim.UMI3DAnimation.Stop();
-                }
-            }
-        }
+        public virtual void UpdateFrame(UserTrackingFrameDto trackingFrame) {}
 
         /// <summary>
         /// Fill out <paramref name="trackingFrame"/> with currently playing animations.
         /// </summary>
         /// <param name="trackingFrame"></param>
         /// <param name="option"></param>
-        public virtual void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
-        {
-            var activeAnimations = from animId in Mapper.animations
-                                   select (id: animId, animation: UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(animId))
-                                   into anim
-                                   where anim.animation.IsPlaying()
-                                   select anim.id;
-
-            trackingFrame.animationsPlaying = activeAnimations.ToArray();
-        }
+        public virtual void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option) {}
     }
 }

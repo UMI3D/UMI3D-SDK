@@ -18,10 +18,16 @@ namespace umi3d.common.userCapture
         public BonePoseDto(uint bone, Vector3 position, Vector4 rotation)
         {
             this.bone = bone;
-            this.position = position;   
+            this.position = position;
             this.rotation = rotation;
         }
-        
+
+        public BonePoseDto(uint bone, Vector4 rotation)
+        {
+            this.bone = bone;
+            this.rotation = rotation;
+        }
+
         /// <summary>
         /// The current bone to update
         /// </summary>

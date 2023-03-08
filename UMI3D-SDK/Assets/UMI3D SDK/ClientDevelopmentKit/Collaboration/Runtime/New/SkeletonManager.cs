@@ -30,7 +30,7 @@ namespace umi3d.cdk.collaboration
     public class SkeletonManager : Singleton<SkeletonManager>
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
-        public Dictionary<ulong, ISkeleton> skeletons { get; protected set; }
+        public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new Dictionary<ulong, ISkeleton>();
 
         public PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
 

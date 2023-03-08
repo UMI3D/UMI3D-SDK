@@ -1110,7 +1110,7 @@ namespace umi3d.cdk
             {
                 foreach (ulong property in Instance.entityFilters[entityId].Keys)
                 {
-                    UMI3DEntityInstance node = GetEntity(entityId);
+                    UMI3DEntityInstance node = GetEntityInstance(entityId);
                     AbstractExtrapolator extrapolator = Instance.entityFilters[entityId][property];
 
                     extrapolator.UpdateRegressedValue();
@@ -1122,7 +1122,8 @@ namespace umi3d.cdk
                         value = extrapolator.GetRegressedValue().ToSerializable()
                     };
 
-                    SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
+                    //SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
+                    Task.FromResult(SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node)));
                 }
             }
         }

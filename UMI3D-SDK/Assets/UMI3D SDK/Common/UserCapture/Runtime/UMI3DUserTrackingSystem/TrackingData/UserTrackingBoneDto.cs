@@ -27,7 +27,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         public ulong userId;
 
-        public BoneDto bone;
+        public BonePoseDto bone;
 
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingBone; }
 

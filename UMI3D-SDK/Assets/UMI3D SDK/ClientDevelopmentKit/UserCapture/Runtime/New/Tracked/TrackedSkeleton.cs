@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -36,8 +37,8 @@ namespace umi3d.cdk.userCapture
 
         public void Start()
         {
-            trackedAnimator.IkCallback = HandleAnimatorIK;
-            animator = trackedAnimator.GetComponent<Animator>();
+            //trackedAnimator.IkCallback = HandleAnimatorIK;
+            //animator = trackedAnimator.GetComponent<Animator>();
 
             controllers = GetComponentsInChildren<IController>().ToList();
             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
@@ -58,7 +59,7 @@ namespace umi3d.cdk.userCapture
         public PoseDto GetPose()
         {
             var dto = new PoseDto();
-            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBonePose()).ToArray());
+            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBonePoseDto()).ToArray());
             return dto;
         }
 
@@ -66,7 +67,7 @@ namespace umi3d.cdk.userCapture
         {
             return new UserTrackingBoneDto()
             {
-                bone = bones[boneType].ToDto()
+                bone = bones[boneType].ToBonePoseDto()
             };
         }
 
@@ -75,7 +76,7 @@ namespace umi3d.cdk.userCapture
             types.Clear();
             foreach (var bone in trackingFrame.bones)
             {
-                DistantController vc = controllers.First(c => c.boneType == bone.boneType) as DistantController;
+                DistantController vc = controllers.First(c => c.boneType == bone.bone) as DistantController;
 
                 if (vc == null)
                 {
@@ -85,9 +86,9 @@ namespace umi3d.cdk.userCapture
 
                 vc.isActif = true;
                 vc.position = bone.position; //trackingFrame.position; 
-                vc.rotation = bone.rotation; //trackingFrame.rotation;
+                vc.rotation = bone.rotation.ToQuaternion(); //trackingFrame.rotation;
 
-                types.Add(bone.boneType);
+                types.Add(bone.bone);
             }
             foreach (var dc in controllers.Where(c => c is DistantController && !types.Contains(c.boneType)).ToList())
             {
@@ -95,7 +96,7 @@ namespace umi3d.cdk.userCapture
                 controllers.Remove(dc);
             }
 
-            
+
 
         }
 
@@ -104,12 +105,12 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public void Update()
         {
-            
+
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            trackingFrame.bones = bones.Select(kp => kp.Value).Select(tb => tb.ToDto()).Where(b => b != null).ToList();
+            trackingFrame.bones = bones.Select(kp => kp.Value).Select(tb => tb.ToBonePoseDto()).Where(b => b != null).ToList();
         }
 
 

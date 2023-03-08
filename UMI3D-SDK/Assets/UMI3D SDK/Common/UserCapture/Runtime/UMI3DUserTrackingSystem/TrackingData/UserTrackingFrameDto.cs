@@ -38,7 +38,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Bones information of the user
         /// </summary>
-        public List<BoneDto> bones;
+        public List<BonePoseDto> bones;
 
         /// <summary>
         /// Current jump height of the avatar.
@@ -56,7 +56,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         public SerializableVector4 rotation;
 
-        public ulong[] animationsPlaying;
+        //public ulong[] animationsPlaying;
 
         /// <summary>
         /// Frequency in frame per second (FPS) at which the user tracking is sent to the server.
@@ -76,7 +76,7 @@ namespace umi3d.common.userCapture
                 + UMI3DSerializer.Write(position)
                 + UMI3DSerializer.Write(rotation)
                 //+ UMI3DSerializer.Write(refreshFrequency)
-                + UMI3DSerializer.WriteIBytableCollection(bones);
+                + UMI3DSerializer.WriteCollection(bones);
         }
     }
 }

@@ -69,5 +69,10 @@ namespace inetum.unityUtils
         {
             return new Vector4(q.x, q.y, q.z, q.w);
         }
+
+        public static Quaternion ToQuaternion(this Vector4 v4)
+        {
+            return new Quaternion(v4.x, v4.y, v4.z, v4.w);
+        }
     }
 }
