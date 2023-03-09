@@ -205,17 +205,19 @@ namespace intetum.unityUtils
             AssetDatabase.CreateAsset(pose_So, path + $"/{name}.asset");
 
             List<UMI3DBonePose_so> bonsPoseSos = new();
-            bone_components.ForEach(bc =>
+            bone_components.Where(bc => bc.BoneType != 0)
+            .ForEach(bc =>
             {
                 Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
                 UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
+                bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
                 bonePose_So.name = name + $"_{bonePose_So.bone}";
                 //AssetDatabase.CreateAsset(bonePose_So, $"/{bonePose_So.name}.asset");
                 AssetDatabase.AddObjectToAsset(bonePose_So, pose_So);
                 AssetDatabase.SaveAssets();
                 EditorUtility.SetDirty(bonePose_So);    
 
-                bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
+
                 bonsPoseSos.Add(bonePose_So);
             });
 
