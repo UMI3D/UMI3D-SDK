@@ -255,6 +255,10 @@ namespace intetum.unityUtils
                 if (value)
                 {
                     selectedBone = boneComponent.transform;
+                    // //Dont uncomments appart if you like atomic holocaust !!!!
+                    //x_rot_slider.value = selectedBone.transform.eulerAngles.x;
+                    //y_rot_slider.value = selectedBone.transform.eulerAngles.y;
+                    //z_rot_slider.value = selectedBone.transform.eulerAngles.z;
                 }
             }
         }

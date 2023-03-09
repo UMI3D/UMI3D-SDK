@@ -63,9 +63,9 @@
             <ui:VisualElement name="TitleContainer">
                 <ui:Label text="Rotation Controls" display-tooltip-when-elided="true" />
             </ui:VisualElement>
-            <ui:Slider picking-mode="Ignore" label="x_rot" value="0" high-value="360" name="x_rot_slider" />
-            <ui:Slider picking-mode="Ignore" label="y_rot" value="0" high-value="360" name="y_rot_slider" />
-            <ui:Slider picking-mode="Ignore" label="z_rot" value="0" high-value="360" name="z_rot_slider" />
+            <ui:Slider picking-mode="Ignore" label="x_rot" value="0" high-value="180" name="x_rot_slider" low-value="-180" />
+            <ui:Slider picking-mode="Ignore" label="y_rot" value="0" high-value="180" name="y_rot_slider" low-value="-180" />
+            <ui:Slider picking-mode="Ignore" label="z_rot" value="0" high-value="180" name="z_rot_slider" low-value="-180" />
         </ui:VisualElement>
     </ui:VisualElement>
 </ui:UXML>
