@@ -31,6 +31,8 @@ using umi3d.edk.userCapture;
 using System.Linq;
 using System.IO;
 using System.Reflection;
+using static intetum.unityUtils.BoneTreeView;
+using static UnityEditor.Progress;
 
 namespace intetum.unityUtils
 {
@@ -56,6 +58,8 @@ namespace intetum.unityUtils
         Slider x_rot_slider = null;
         Slider y_rot_slider = null;
         Slider z_rot_slider = null;
+
+        BoneTreeView treeView = null;
 
         UMI3DPose_so currentPose = null;
         List<PoseSetterBoneComponent> bone_components = new List<PoseSetterBoneComponent>();
@@ -136,7 +140,7 @@ namespace intetum.unityUtils
         private void SetOnGUIContainer()
         {
             TreeViewState m_TreeViewState = new TreeViewState();
-            BoneTreeView treeView = new BoneTreeView(null, m_TreeViewState);
+            treeView = new BoneTreeView(m_TreeViewState);
 
             bone_container.onGUIHandler = () =>
             {
@@ -196,8 +200,23 @@ namespace intetum.unityUtils
                                                             .Where(bc => bc.BoneType != 0)
                                                             .ToList();
 
-            
-            // TODO -- update the IMGUI hierachy
+            List<TreeViewItem<BoneTreeElement>> treeViewItems = new List<TreeViewItem<BoneTreeElement>>();
+            bone_components.ForEach(bc =>
+            {
+                treeViewItems.Add(GetBoneTreeViewItem(bc));
+            });
+
+            treeView.UpdateTreeView(treeViewItems);
+        }
+
+        private TreeViewItem<BoneTreeElement> GetBoneTreeViewItem(PoseSetterBoneComponent bc)
+        {
+            BoneTreeElement boneTreeElement = new BoneTreeElement(bc.isRoot, false);
+            TreeViewItem<BoneTreeElement> boneTreeViewItem = new TreeViewItem<BoneTreeElement>((int)bc.BoneType, 1, bc.name, boneTreeElement);
+
+            boneTreeElement?.onIsRootChanged.AddListener((data) => { ChangeIsRoot(data.itemID, data.boolValue); });
+            boneTreeElement?.onIsSelectedChanged.AddListener((data) => { ChangeIsSelected(data.itemID, data.boolValue); });
+            return boneTreeViewItem;
         }
 
         private void ChangeActiveSO(ChangeEvent<UnityEngine.Object> value)
@@ -213,6 +232,30 @@ namespace intetum.unityUtils
         private void RemoveLastRootFromListView()
         {
 
+        }
+
+        private void ChangeIsRoot(int id, bool value)
+        {
+            PoseSetterBoneComponent boneComponent;
+            if (bone_components.Count != 0)
+            {
+                boneComponent = bone_components.Find(bc => bc.BoneType == id);
+                boneComponent.isRoot = value;
+            }
+        }
+
+        private void ChangeIsSelected(int id, bool value)
+        {
+            PoseSetterBoneComponent boneComponent;
+            if (bone_components.Count != 0)
+            {
+                boneComponent = bone_components.Find(bc => bc.BoneType == id);
+                boneComponent.isSelected = value;
+                if (value)
+                {
+                    selectedBone = boneComponent.transform;
+                }
+            }
         }
 
         #region Save & load
@@ -336,10 +379,11 @@ namespace intetum.unityUtils
 
     class BoneTreeView : TreeView
     {
-        public BoneTreeView(List<TreeViewItem<BoneTreeElement>> elements, TreeViewState treeViewState)
+        public BoneTreeView(TreeViewState treeViewState)
             : base(treeViewState)
-        {
+        {            
             Reload();
+
             headerState = CreateDefaultMultiColumnHeaderState();
 
             MultiColumnHeader multiColumnHeader = new MultiColumnHeader(headerState);
@@ -347,8 +391,12 @@ namespace intetum.unityUtils
             multiColumnHeader.SetSorting(0, true);
 
             this.multiColumnHeader = multiColumnHeader;
+        }
 
+        public void UpdateTreeView(List<TreeViewItem<BoneTreeElement>> elements)
+        {
             this.elements = elements;
+            Reload();
         }
 
         List<TreeViewItem<BoneTreeElement>> elements = new List<TreeViewItem<BoneTreeElement>>();
@@ -403,19 +451,17 @@ namespace intetum.unityUtils
 
         protected override TreeViewItem BuildRoot()
         {
-            BoneTreeElement boneTreeElement_1 = new BoneTreeElement(false, false);
-            BoneTreeElement boneTreeElement_2 = new BoneTreeElement(false, false);
-            BoneTreeElement boneTreeElement_3 = new BoneTreeElement(false, false);
+            TreeViewItem<BoneTreeElement> root = new TreeViewItem<BoneTreeElement>(0, -1, "Root", new BoneTreeElement(false, false));
+            TreeViewItem<BoneTreeElement> skeletonRoot = new TreeViewItem<BoneTreeElement>(0, 0, "Root", new BoneTreeElement(false, false));
 
-            var root = new TreeViewItem<BoneTreeElement>( 0,  -1,"Root", boneTreeElement_1);
-            var hips = new TreeViewItem<BoneTreeElement>(0, -1, "hips", boneTreeElement_2);
-            var arm = new TreeViewItem<BoneTreeElement>(0, -1, "arm", boneTreeElement_3);
+            root.AddChild(skeletonRoot);
 
-            root.AddChild(hips);
-            hips.AddChild(arm);
+            elements?.ForEach(e =>
+            {
+                skeletonRoot.AddChild(e);
+            });
 
             SetupDepthsFromParentsAndChildren(root);
-
             return root;
         }
 
@@ -440,7 +486,7 @@ namespace intetum.unityUtils
                     if (newValue != item.data.isRoot)
                     {
                         item.data.isRoot = newValue;
-                        //event ? 
+                        item.data.onIsRootChanged?.Invoke(new BoolChangeData { itemID = item.id, boolValue = newValue });
                     }
                 }
                 else if (col == 2)
@@ -450,10 +496,23 @@ namespace intetum.unityUtils
                     if (newValue != item.data.isSelected)
                     {
                         item.data.isSelected = newValue;
-                        //event ? 
+                        item.data.onIsSelectedChanged?.Invoke(new BoolChangeData { itemID = item.id, boolValue = newValue });
+                        ResetEveryOtherSelectedToFalse(item.id);
                     }
                 }
             }
+        }
+
+        private void ResetEveryOtherSelectedToFalse(int ignoreId)
+        {
+            elements.ForEach(e =>
+            {
+                if (e.data.isSelected && e.id != ignoreId)
+                {
+                    e.data.isSelected = false;
+                    e.data.onIsSelectedChanged?.Invoke(new BoolChangeData { itemID = e.id, boolValue = false });
+                }
+            });
         }
 
         internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
