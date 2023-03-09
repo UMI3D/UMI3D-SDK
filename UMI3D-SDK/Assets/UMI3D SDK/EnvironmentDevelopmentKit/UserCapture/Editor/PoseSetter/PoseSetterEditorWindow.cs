@@ -29,6 +29,8 @@ using UnityEditor.TreeViewExamples;
 using inetum.unityUtils;
 using umi3d.edk.userCapture;
 using System.Linq;
+using System.IO;
+using System.Reflection;
 
 namespace intetum.unityUtils
 {
@@ -86,6 +88,7 @@ namespace intetum.unityUtils
             SetOnGUIContainer();
             InitSliders();
             InitObjectField();
+            ReadConstEnum(typeof(BoneType));
         }
 
         private void GetAllRefs()
@@ -204,6 +207,7 @@ namespace intetum.unityUtils
             pose_So.name = name;
             AssetDatabase.CreateAsset(pose_So, path + $"/{name}.asset");
 
+            //Save each bones 
             List<UMI3DBonePose_so> bonsPoseSos = new();
             bone_components.Where(bc => bc.BoneType != 0)
             .ForEach(bc =>
@@ -211,22 +215,51 @@ namespace intetum.unityUtils
                 Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
                 UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
                 bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
-                bonePose_So.name = name + $"_{bonePose_So.bone}";
-                //AssetDatabase.CreateAsset(bonePose_So, $"/{bonePose_So.name}.asset");
+                bonePose_So.name = name + $"_{GetConstEnumField(bonePose_So.bone)}";
+
                 AssetDatabase.AddObjectToAsset(bonePose_So, pose_So);
                 AssetDatabase.SaveAssets();
                 EditorUtility.SetDirty(bonePose_So);    
 
-
                 bonsPoseSos.Add(bonePose_So);
             });
 
+            pose_So.Init(bonsPoseSos, 0);
             EditorUtility.SetDirty(pose_So);
         }
 
         private void LoadA_UMI3DPose_so()
         {
+            if (bone_components?.Count == 0)
+            {
+                Debug.Log($"<color=red> Well you should refer a rigious skeleton</color>");
+            }
+            else
+            {
+                name.value = currentPose.name;
+                string[] path = AssetDatabase.GetAssetPath(currentPose).Split("/");
+                string finalPath = "";
+                for (int i = 0; i < path.Length-1; i++)
+                {
+                    finalPath += path[i] + "/";
+                }
+                this.path.value = finalPath;
 
+                currentPose.BonePoses.ForEach(bp =>
+                {
+                    UpdateBoneComponent(bp);
+                });
+            }
+        }
+
+        private void UpdateBoneComponent(UMI3DBonePose_so bp)
+        {
+            PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bp.bone);
+            if (bone_component != null)
+            {
+                bone_component.transform.rotation = new Quaternion(bp.rotation.x, bp.rotation.y, bp.rotation.z, bp.rotation.w);
+                bone_component.transform.position = bp.position;
+            }
         }
 
         #region change bone rotation
@@ -261,6 +294,24 @@ namespace intetum.unityUtils
                 Quaternion quaternion = Quaternion.Euler(rotation);
                 selectedBone.rotation = quaternion;
             }
+        }
+        #endregion
+        #region utils
+        string[] constEnumFieldName = null;
+        private void ReadConstEnum(Type type)
+        {
+            System.Collections.Generic.IEnumerable<FieldInfo> val = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+                            .Where(fi => fi.IsLiteral && !fi.IsInitOnly);
+            constEnumFieldName = val.Select(fi => fi.Name).ToArray();
+        }
+
+        private string GetConstEnumField(uint id)
+        {
+            if (constEnumFieldName != null)
+            {
+                return constEnumFieldName[id];
+            }
+            return id.ToString();
         }
         #endregion
     }
