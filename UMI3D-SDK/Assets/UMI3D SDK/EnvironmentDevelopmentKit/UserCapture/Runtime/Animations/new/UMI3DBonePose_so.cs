@@ -36,6 +36,10 @@ namespace umi3d.edk.userCapture
             this.rotation = rotation;
         }
 
+        /// <summary>
+        /// Transforms the Scriptable Object to its DTO counterpart
+        /// </summary>
+        /// <returns></returns>
         public BonePoseDto ToDTO()
         {
             return new BonePoseDto(bone, position, rotation);

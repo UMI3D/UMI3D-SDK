@@ -196,8 +196,7 @@ namespace intetum.unityUtils
                                                             .Where(bc => bc.BoneType != 0)
                                                             .ToList();
 
-
-
+            
             // TODO -- update the IMGUI hierachy
         }
 

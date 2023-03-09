@@ -36,6 +36,10 @@ namespace umi3d.edk.userCapture
             this.boneAnchor = boneAnchor;
         }
 
+        /// <summary>
+        /// Transforms the Scriptable Object to its DTO counterpart
+        /// </summary>
+        /// <returns></returns>
         public PoseDto ToDTO()
         {
             List<BonePoseDto> bonePosesDtos = new List<BonePoseDto>();
