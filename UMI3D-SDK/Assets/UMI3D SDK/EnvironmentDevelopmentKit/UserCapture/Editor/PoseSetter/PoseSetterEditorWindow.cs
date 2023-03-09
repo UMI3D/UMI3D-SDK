@@ -39,6 +39,7 @@ namespace intetum.unityUtils
         DropdownField loa_dropdown = null;
         TextField path = null;
         CustomObjectField object_field = null;
+        CustomObjectField so_field = null;
 
         ListView lv_root_selected = null;
         Button add_root = null;
@@ -89,6 +90,7 @@ namespace intetum.unityUtils
             loa_dropdown = root.Q<DropdownField>("loa_dropdown");
             path = root.Q<TextField>("path");
             object_field = root.Q<CustomObjectField>("object_field");
+            so_field = root.Q<CustomObjectField>("so_field");
 
             lv_root_selected = root.Q<ListView>("lv_root_selected");
             add_root = root.Q<Button>("add_root");
@@ -107,6 +109,9 @@ namespace intetum.unityUtils
         {
             object_field.Init(typeof(GameObject));
             object_field.RegisterValueChangedCallback(value => { ReadHierachy(value); });
+
+            //so_field.Init()
+
         }
 
         private void SetOnGUIContainer()

@@ -12,7 +12,8 @@
                 <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="loa_dropdown" />
             </ui:VisualElement>
             <ui:VisualElement name="CustomDrawerContainer">
-                <inetum.unityUtils.CustomObjectField focusable="true" name="object_field" />
+                <inetum.unityUtils.CustomObjectField focusable="true" name="object_field" tooltip="skeleton to edit" />
+                <inetum.unityUtils.CustomObjectField focusable="true" name="so_field" tooltip="pose to edit" />
             </ui:VisualElement>
             <ui:VisualElement name="path_container">
                 <ui:TextField picking-mode="Ignore" label="Save Path" value="filler text" name="path" />

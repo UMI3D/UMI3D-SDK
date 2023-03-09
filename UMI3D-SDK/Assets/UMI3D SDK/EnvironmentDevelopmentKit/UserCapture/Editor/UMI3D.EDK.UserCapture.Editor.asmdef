@@ -4,7 +4,8 @@
     "references": [
         "UMI3D.Common.UserCapture",
         "UMI3D.EDK.UserCapture",
-        "UMI3D.EDK.Core.Editor"
+        "UMI3D.EDK.Core.Editor",
+        "inetum.unityUtils"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
