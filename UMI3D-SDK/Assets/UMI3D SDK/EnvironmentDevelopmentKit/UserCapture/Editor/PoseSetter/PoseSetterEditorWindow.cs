@@ -67,12 +67,12 @@ namespace intetum.unityUtils
         {
             PoseSetterEditorWindow wnd = GetWindow<PoseSetterEditorWindow>();
             wnd.titleContent = new GUIContent("PoseSetter");
-            wnd.minSize = new Vector2(1200, 720);
+            wnd.maxSize = new Vector2(350, 650);
         }
 
         PoseDto_writter poseDto_Writter = new PoseDto_writter();
 
-        #region Initialisation
+        #region Initialisation (Every thing that goes onEnable)
         /// <summary>
         /// Creates the UI using th UI_element framework
         /// </summary>
@@ -91,6 +91,9 @@ namespace intetum.unityUtils
             ReadConstEnum(typeof(BoneType));
         }
 
+        /// <summary>
+        /// Gets all the references to all the UI_elements in the UXML file
+        /// </summary>
         private void GetAllRefs()
         {
             root = rootVisualElement;
@@ -114,6 +117,10 @@ namespace intetum.unityUtils
             z_rot_slider = root.Q<Slider>("z_rot_slider");
         }
 
+        /// <summary>
+        /// Inits the obbjects fields to be able to filter the drag n dropped files 
+        /// Also it sets up the change value event to make sure that when de files are changed the tool updates
+        /// </summary>
         private void InitObjectField()
         {
             object_field.Init(typeof(GameObject));
@@ -121,9 +128,11 @@ namespace intetum.unityUtils
 
             so_field.Init(typeof(UMI3DPose_so));
             so_field.RegisterValueChangedCallback(value => { ChangeActiveSO(value); });
-
         }
 
+        /// <summary>
+        /// Sets up the IMGUI container, basically it only contains the Tree view
+        /// </summary>
         private void SetOnGUIContainer()
         {
             TreeViewState m_TreeViewState = new TreeViewState();
@@ -147,6 +156,9 @@ namespace intetum.unityUtils
             };
         }
 
+        /// <summary>
+        /// Binds All the buttons 
+        /// </summary>
         private void BindButtons()
         {
             add_root.clicked += () => AddAnEmptyRootToListView();
@@ -157,6 +169,9 @@ namespace intetum.unityUtils
 
         Transform selectedBone = null;
 
+        /// <summary>
+        /// Init the sliders initial values, and bind their on change events.
+        /// </summary>
         private void InitSliders()
         {
             x_rot_slider.value = 0;
@@ -177,7 +192,11 @@ namespace intetum.unityUtils
 
         private void ReadHierachy(ChangeEvent<UnityEngine.Object> value)
         {
-            bone_components = (value.newValue as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>().ToList();
+            bone_components = (value.newValue as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>()
+                                                            .Where(bc => bc.BoneType != 0)
+                                                            .ToList();
+
+
 
             // TODO -- update the IMGUI hierachy
         }
@@ -197,6 +216,7 @@ namespace intetum.unityUtils
 
         }
 
+        #region Save & load
         private void SaveToScriptableObjectAtPath()
         {
             string name = this.name.value;
@@ -209,8 +229,7 @@ namespace intetum.unityUtils
 
             //Save each bones 
             List<UMI3DBonePose_so> bonsPoseSos = new();
-            bone_components.Where(bc => bc.BoneType != 0)
-            .ForEach(bc =>
+            bone_components.ForEach(bc =>
             {
                 Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
                 UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
@@ -261,7 +280,7 @@ namespace intetum.unityUtils
                 bone_component.transform.position = bp.position;
             }
         }
-
+        #endregion
         #region change bone rotation
         private void ChangeZRotationOfSelectedBone(ChangeEvent<float> value)
         {
