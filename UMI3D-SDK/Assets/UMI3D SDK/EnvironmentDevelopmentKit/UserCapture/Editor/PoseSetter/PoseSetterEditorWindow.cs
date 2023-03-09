@@ -212,7 +212,8 @@ namespace intetum.unityUtils
         private TreeViewItem<BoneTreeElement> GetBoneTreeViewItem(PoseSetterBoneComponent bc)
         {
             BoneTreeElement boneTreeElement = new BoneTreeElement(bc.isRoot, false);
-            TreeViewItem<BoneTreeElement> boneTreeViewItem = new TreeViewItem<BoneTreeElement>((int)bc.BoneType, 1, bc.name, boneTreeElement);
+            string boneName = bc.name.Split(":")[1]; // this is a WIP line because the skeleton has "Mixamo:" every where as prefix
+            TreeViewItem<BoneTreeElement> boneTreeViewItem = new TreeViewItem<BoneTreeElement>((int)bc.BoneType, 1, boneName, boneTreeElement);
 
             boneTreeElement?.onIsRootChanged.AddListener((data) => { ChangeIsRoot(data.itemID, data.boolValue); });
             boneTreeElement?.onIsSelectedChanged.AddListener((data) => { ChangeIsSelected(data.itemID, data.boolValue); });
