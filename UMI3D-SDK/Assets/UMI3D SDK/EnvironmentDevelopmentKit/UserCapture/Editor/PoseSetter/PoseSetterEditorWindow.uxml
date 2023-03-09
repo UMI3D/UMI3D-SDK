@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UMI3D%20SDK/EnvironmentDevelopmentKit/UserCapture/Runtime/Animations/PoseSetter/poseSetterStyle.uss?fileID=7433441132597879392&amp;guid=35ee429adc26a6a499e423892732884f&amp;type=3#poseSetterStyle" />
+    <Style src="project://database/Assets/UMI3D%20SDK/EnvironmentDevelopmentKit/UserCapture/Editor/PoseSetter/poseSetterStyle.uss?fileID=7433441132597879392&amp;guid=35ee429adc26a6a499e423892732884f&amp;type=3#poseSetterStyle" />
     <ui:VisualElement name="MainContainer" style="flex-grow: 0;">
         <ui:VisualElement name="GlobalInformations" class="EditorParts">
             <ui:VisualElement name="TitleContainer">
@@ -39,7 +39,7 @@
             </ui:VisualElement>
             <ui:VisualElement style="flex-direction: row; flex-wrap: wrap;">
                 <ui:Button text="Save" display-tooltip-when-elided="true" name="save" class="Buttons" />
-                <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
+                <ui:Button text="load" display-tooltip-when-elided="true" name="load" class="Buttons" />
                 <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
                 <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
                 <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />

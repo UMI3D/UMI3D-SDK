@@ -28,6 +28,7 @@ using UnityEngine.UIElements;
 using UnityEditor.TreeViewExamples;
 using inetum.unityUtils;
 using umi3d.edk.userCapture;
+using System.Linq;
 
 namespace intetum.unityUtils
 {
@@ -45,6 +46,7 @@ namespace intetum.unityUtils
         Button add_root = null;
         Button remove_root = null;
         Button save = null;
+        Button load = null;
 
         TextField filter = null;
         IMGUIContainer bone_container = null;
@@ -52,6 +54,9 @@ namespace intetum.unityUtils
         Slider x_rot_slider = null;
         Slider y_rot_slider = null;
         Slider z_rot_slider = null;
+
+        UMI3DPose_so currentPose = null;
+        List<PoseSetterBoneComponent> bone_components = new List<PoseSetterBoneComponent>();
         /// <summary>
         /// Open the tool 
         /// </summary>
@@ -72,7 +77,7 @@ namespace intetum.unityUtils
         public void OnEnable()
         {
             VisualTreeAsset uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-                                        "Assets\\UMI3D SDK\\EnvironmentDevelopmentKit\\UserCapture\\Runtime\\Animations\\PoseSetter\\PoseSetterEditorWindow.uxml"
+                                    "Assets\\UMI3D SDK\\EnvironmentDevelopmentKit\\UserCapture\\Editor\\PoseSetter\\PoseSetterEditorWindow.uxml"
                                    );
             uxml.CloneTree(rootVisualElement);
             GetAllRefs();
@@ -96,6 +101,7 @@ namespace intetum.unityUtils
             add_root = root.Q<Button>("add_root");
             remove_root = root.Q<Button>("remove_root");
             save = root.Q<Button>("save");
+            load = root.Q<Button>("load");
 
             filter = root.Q<TextField>("filter");
             bone_container = root.Q<IMGUIContainer>("bone_container");
@@ -110,7 +116,8 @@ namespace intetum.unityUtils
             object_field.Init(typeof(GameObject));
             object_field.RegisterValueChangedCallback(value => { ReadHierachy(value); });
 
-            //so_field.Init()
+            so_field.Init(typeof(UMI3DPose_so));
+            so_field.RegisterValueChangedCallback(value => { ChangeActiveSO(value); });
 
         }
 
@@ -142,6 +149,7 @@ namespace intetum.unityUtils
             add_root.clicked += () => AddAnEmptyRootToListView();
             remove_root.clicked += () => RemoveLastRootFromListView();
             save.clicked += () => SaveToScriptableObjectAtPath();
+            load.clicked += () => LoadA_UMI3DPose_so();
         }
 
         Transform selectedBone = null;
@@ -166,7 +174,14 @@ namespace intetum.unityUtils
 
         private void ReadHierachy(ChangeEvent<UnityEngine.Object> value)
         {
+            bone_components = (value.newValue as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>().ToList();
 
+            // TODO -- update the IMGUI hierachy
+        }
+
+        private void ChangeActiveSO(ChangeEvent<UnityEngine.Object> value)
+        {
+            currentPose = value.newValue as UMI3DPose_so;
         }
 
         private void AddAnEmptyRootToListView()
@@ -180,6 +195,34 @@ namespace intetum.unityUtils
         }
 
         private void SaveToScriptableObjectAtPath()
+        {
+            string name = this.name.value;
+            string path = this.path.value;
+            if (path == "") path = "Assets/";
+
+            UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
+            pose_So.name = name;
+            AssetDatabase.CreateAsset(pose_So, path + $"/{name}.asset");
+
+            List<UMI3DBonePose_so> bonsPoseSos = new();
+            bone_components.ForEach(bc =>
+            {
+                Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
+                UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
+                bonePose_So.name = name + $"_{bonePose_So.bone}";
+                //AssetDatabase.CreateAsset(bonePose_So, $"/{bonePose_So.name}.asset");
+                AssetDatabase.AddObjectToAsset(bonePose_So, pose_So);
+                AssetDatabase.SaveAssets();
+                EditorUtility.SetDirty(bonePose_So);    
+
+                bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
+                bonsPoseSos.Add(bonePose_So);
+            });
+
+            EditorUtility.SetDirty(pose_So);
+        }
+
+        private void LoadA_UMI3DPose_so()
         {
 
         }

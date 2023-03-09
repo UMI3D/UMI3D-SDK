@@ -15,15 +15,21 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
+using inetum.unityUtils;
 using umi3d.common.userCapture;
-using UnityEditor;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
     public class PoseSetterBoneComponent : MonoBehaviour
     {
+        public bool isRoot;
+        public bool isSelected;
+        public bool isSavable = true;
 
+        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneType;
+
+        public uint BoneType { get => boneType; }
     }
 }
 #endif
