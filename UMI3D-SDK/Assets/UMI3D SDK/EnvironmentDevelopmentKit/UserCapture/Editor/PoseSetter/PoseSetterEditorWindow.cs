@@ -32,6 +32,7 @@ namespace intetum.unityUtils
 
     public class PoseSetterEditorWindow : EditorWindow
     {
+        // TODO --> Add a fonctionnality to spawn a new dummy in T pose when you need it :D
         #region Attributes
         #region UXML fron ref attributes <They are ordered like in the corresponding UXML (almost)>
 
@@ -235,6 +236,17 @@ namespace intetum.unityUtils
 
         }
 
+        private void UpdateRootListView()
+        {
+            //lv_root_selected.makeItem = () => new Label(bc.name.Split(":")[1]);
+            //lv_root_selected.Clear();
+            //bone_components.Where(bc => bc.isRoot == true)
+            //                .ForEach(bc =>
+            //                {
+                                
+            //                });
+        }
+
         private void ChangeIsRoot(BoolChangeData boolChangeData)
         {
             PoseSetterBoneComponent boneComponent;
@@ -242,7 +254,8 @@ namespace intetum.unityUtils
             {
                 boneComponent = bone_components.Find(bc => bc.BoneType == boolChangeData.itemID);
 
-                UpdateChildsSavebility(boneComponent, boolChangeData.boolValue);  
+                UpdateChildsSavebility(boneComponent, boolChangeData.boolValue);
+                UpdateRootListView();
             }
         }
 
