@@ -3,7 +3,7 @@
     <ui:VisualElement name="MainContainer" style="flex-grow: 0;">
         <ui:VisualElement name="GlobalInformations" class="EditorParts">
             <ui:VisualElement name="TitleContainer">
-                <ui:Label text="PoseSetterV0.1" display-tooltip-when-elided="true" name="title_version" />
+                <ui:Label text="PoseSetterV0.25" display-tooltip-when-elided="true" name="title_version" enable-rich-text="true" />
             </ui:VisualElement>
             <ui:VisualElement name="NameThePose">
                 <ui:TextField picking-mode="Ignore" label="Name" value="none" text="pose name" name="name" is-delayed="false" />

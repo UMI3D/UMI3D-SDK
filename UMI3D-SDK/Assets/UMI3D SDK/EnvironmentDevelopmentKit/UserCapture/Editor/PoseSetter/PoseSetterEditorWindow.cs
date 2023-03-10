@@ -32,9 +32,12 @@ namespace intetum.unityUtils
 
     public class PoseSetterEditorWindow : EditorWindow
     {
+        #region Attributes
+        #region UXML fron ref attributes <They are ordered like in the corresponding UXML (almost)>
+
         VisualElement root = null;
         TextField name = null;
-        DropdownField loa_dropdown = null;
+        DropdownField loa_dropdown = null; // TODO --> implement the LOA logic
         TextField path = null;
         CustomObjectField object_field = null;
         CustomObjectField so_field = null;
@@ -51,11 +54,14 @@ namespace intetum.unityUtils
         Slider x_rot_slider = null;
         Slider y_rot_slider = null;
         Slider z_rot_slider = null;
+        #endregion
 
         BoneTreeView treeView = null;
 
         UMI3DPose_so currentPose = null;
         List<PoseSetterBoneComponent> bone_components = new List<PoseSetterBoneComponent>();
+
+        #endregion
         /// <summary>
         /// Open the tool 
         /// </summary>
