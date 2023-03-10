@@ -15,24 +15,17 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
-using inetum.unityUtils.editor;
 using System;
 using System.Collections.Generic;
-using System.Runtime.Serialization.Configuration;
 using umi3d.common.userCapture;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
-using UnityEditor.IMGUI;
 using UnityEngine;
 using UnityEngine.UIElements;
-using UnityEditor.TreeViewExamples;
 using inetum.unityUtils;
 using umi3d.edk.userCapture;
 using System.Linq;
-using System.IO;
 using System.Reflection;
-using static intetum.unityUtils.BoneTreeView;
-using static UnityEditor.Progress;
 
 namespace intetum.unityUtils
 {
@@ -310,8 +303,16 @@ namespace intetum.unityUtils
 
 
         #region Save & load
+        /// <summary>
+        /// Saves a scriptable object at given path
+        /// --> if you got many root on your skeleton it wil generate a scriptable object per root
+        /// --> keep in mind that its normal that is you add a parent root you delete all the children root a
+        ///         and that when you add a children root it dosent touch the parent once, (this last feature has to be changed at somepoint)
+        /// </summary>
         private void SaveToScriptableObjectAtPath()
         {
+            // TODO -> add a way load batches of poses
+
             string name = this.name.value;
             string path = this.path.value;
             if (path == "") path = "Assets/";
@@ -320,6 +321,7 @@ namespace intetum.unityUtils
 
             roots.ForEach(r =>
             {
+                r.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
                 List<UMI3DBonePose_so> bonsPoseSos = new();
                 UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
                 pose_So.name = name;
@@ -349,6 +351,9 @@ namespace intetum.unityUtils
             });
         }
 
+        /// <summary>
+        /// Load one scriptable object and apply all bone pose to the current skeleton in scene view
+        /// </summary>
         private void LoadA_UMI3DPose_so()
         {
             if (bone_components?.Count == 0)
@@ -366,14 +371,35 @@ namespace intetum.unityUtils
                 }
                 this.path.value = finalPath;
 
+                ResetAllBones();
+
                 PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.BoneAnchor);
                 root_boneComponent.isRoot = true;
+                root_boneComponent.isSavable = false;
+                treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(true, root_boneComponent.BoneType);
 
                 currentPose.BonePoses.ForEach(bp =>
                 {
                     UpdateBoneComponent(bp);               
                 });
             }
+        }
+
+        private void ResetAllBones()
+        {
+            bone_components.ForEach(bc =>
+            {
+                if (bc.isRoot != false)
+                {
+                    bc.isRoot = false;
+                    treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(false, bc.BoneType);
+                }
+
+                if (bc.isSavable != false)
+                {
+                    bc.isSavable = false;
+                }
+            });
         }
 
         private void UpdateBoneComponent(UMI3DBonePose_so bp)
@@ -439,168 +465,6 @@ namespace intetum.unityUtils
             return id.ToString();
         }
         #endregion
-    }
-
-    class BoneTreeView : TreeView
-    {
-        public BoneTreeView(TreeViewState treeViewState)
-            : base(treeViewState)
-        {            
-            Reload();
-
-            headerState = CreateDefaultMultiColumnHeaderState();
-
-            MultiColumnHeader multiColumnHeader = new MultiColumnHeader(headerState);
-            multiColumnHeader.ResizeToFit();
-            multiColumnHeader.SetSorting(0, true);
-
-            this.multiColumnHeader = multiColumnHeader;
-        }
-
-        public void UpdateTreeView(List<TreeViewItem<BoneTreeElement>> elements)
-        {
-            this.elements = elements;
-            Reload();
-        }
-
-        List<TreeViewItem<BoneTreeElement>> elements = new List<TreeViewItem<BoneTreeElement>>();
-
-        /// <summary>
-        /// Method to update a is root toggle but without sending the event to the editor window
-        /// Use this method when you are making changes to the value outside of the tree view
-        /// </summary>
-        /// <param name="value">new vale of the bool</param>
-        /// <param name="id">bone id of the looked for boneElement</param>
-        public void UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(bool value, uint id)
-        {
-            elements.Find(e => e.id == id).data.isRoot = value;
-        }
-
-        private MultiColumnHeaderState headerState;
-
-        private MultiColumnHeaderState CreateDefaultMultiColumnHeaderState()
-        {
-            var columns = new[]
-            {
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("Bones"),
-                    headerTextAlignment = TextAlignment.Center,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Right,
-                    width = 150,
-                    minWidth = 30,
-                    maxWidth = 150,
-                    autoResize = false,
-                    allowToggleVisibility = true
-                },
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("IsRoot"),
-                    headerTextAlignment = TextAlignment.Center,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Right,
-                     width = 60,
-                    minWidth = 60,
-                    maxWidth = 120,
-                    autoResize = true,
-                    allowToggleVisibility = true
-                },
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("IsSelected"),
-                    headerTextAlignment = TextAlignment.Center,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Right,
-                    width = 60,
-                    minWidth = 60,
-                    maxWidth = 120,
-                    autoResize = true,
-                    allowToggleVisibility = true
-                }
-            };
-
-            var state = new MultiColumnHeaderState(columns);
-            return state;
-        }
-
-
-        protected override TreeViewItem BuildRoot()
-        {
-            TreeViewItem<BoneTreeElement> root = new TreeViewItem<BoneTreeElement>(0, -1, "Root", new BoneTreeElement(false, false));
-            TreeViewItem<BoneTreeElement> skeletonRoot = new TreeViewItem<BoneTreeElement>(0, 0, "Root", new BoneTreeElement(false, false));
-
-            root.AddChild(skeletonRoot);
-
-            elements?.ForEach(e =>
-            {
-                skeletonRoot.AddChild(e);
-            });
-
-            SetupDepthsFromParentsAndChildren(root);
-            return root;
-        }
-
-
-        protected override void RowGUI(RowGUIArgs args)
-        {
-            TreeViewItem<BoneTreeElement> item = (TreeViewItem<BoneTreeElement>)args.item;
-
-            for (int i = 0; i < args.GetNumVisibleColumns(); ++i)
-            {
-                Rect cellRect = args.GetCellRect(i);
-                int col = args.GetColumn(i);
-
-                if (col == 0)
-                {
-                    EditorGUI.LabelField(cellRect, "     "+item.data.name, EditorStyles.boldLabel);
-                }
-                else if (col == 1)
-                {
-                    Rect toggleRect = new Rect(cellRect.center.x - 8f, cellRect.y, 16f, cellRect.height);
-                    bool newValue = EditorGUI.ToggleLeft(toggleRect, GUIContent.none, item.data.isRoot);
-                    if (newValue != item.data.isRoot)
-                    {
-                        item.data.isRoot = newValue;
-                        item.data.onIsRootChanged?.Invoke(new BoolChangeData { boneTreeEleements = item.data, itemID = item.id, boolValue = newValue });
-                    }
-                }
-                else if (col == 2)
-                {
-                    Rect toggleRect = new Rect(cellRect.center.x - 8f, cellRect.y, 16f, cellRect.height);
-                    bool newValue = EditorGUI.ToggleLeft(toggleRect, GUIContent.none, item.data.isSelected);
-                    if (newValue != item.data.isSelected)
-                    {
-                        item.data.isSelected = newValue;
-                        item.data.onIsSelectedChanged?.Invoke(new BoolChangeData { boneTreeEleements = item.data, itemID = item.id, boolValue = newValue });
-                        ResetEveryOtherSelectedToFalse(item.id);
-                    }
-                }
-            }
-        }
-
-        private void ResetEveryOtherSelectedToFalse(int ignoreId)
-        {
-            elements.ForEach(e =>
-            {
-                if (e.data.isSelected && e.id != ignoreId)
-                {
-                    e.data.isSelected = false;
-                    e.data.onIsSelectedChanged?.Invoke(new BoolChangeData { itemID = e.id, boolValue = false });
-                }
-            });
-        }
-
-        internal class TreeViewItem<T> : TreeViewItem where T : TreeElement
-        {
-            public T data { get; set; }
-
-            public TreeViewItem(int id, int depth, string displayName, T data) : base(id, depth, displayName)
-            {
-                this.data = data;
-                this.data.name = displayName;
-            }
-        }
     }
 }
 #endif
