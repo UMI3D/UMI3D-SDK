@@ -23,9 +23,9 @@ namespace umi3d.edk.userCapture
 {
     public class PoseSetterBoneComponent : MonoBehaviour
     {
-        public bool isRoot;
-        public bool isSelected;
-        public bool isSavable = true;
+        [EditorReadOnly] public bool isRoot;
+        [EditorReadOnly] public bool isSelected;
+        [EditorReadOnly] public bool isSavable = true;
 
         [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneType;
 

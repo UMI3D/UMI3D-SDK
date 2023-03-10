@@ -215,8 +215,8 @@ namespace intetum.unityUtils
             string boneName = bc.name.Split(":")[1]; // this is a WIP line because the skeleton has "Mixamo:" every where as prefix
             TreeViewItem<BoneTreeElement> boneTreeViewItem = new TreeViewItem<BoneTreeElement>((int)bc.BoneType, 1, boneName, boneTreeElement);
 
-            boneTreeElement?.onIsRootChanged.AddListener((data) => { ChangeIsRoot(data.itemID, data.boolValue); });
-            boneTreeElement?.onIsSelectedChanged.AddListener((data) => { ChangeIsSelected(data.itemID, data.boolValue); });
+            boneTreeElement?.onIsRootChanged.AddListener((data) => { ChangeIsRoot(data); });
+            boneTreeElement?.onIsSelectedChanged.AddListener((data) => { ChangeIsSelected(data); });
             return boneTreeViewItem;
         }
 
@@ -235,24 +235,30 @@ namespace intetum.unityUtils
 
         }
 
-        private void ChangeIsRoot(int id, bool value)
+        private void ChangeIsRoot(BoolChangeData boolChangeData)
         {
             PoseSetterBoneComponent boneComponent;
             if (bone_components.Count != 0)
             {
-                boneComponent = bone_components.Find(bc => bc.BoneType == id);
-                boneComponent.isRoot = value;
+                boneComponent = bone_components.Find(bc => bc.BoneType == boolChangeData.itemID);
+
+                UpdateChildsSavebility(boneComponent, boolChangeData.boolValue);  
             }
         }
 
-        private void ChangeIsSelected(int id, bool value)
+        private void ChangeIsRootInEditorWindow(bool value, uint id)
+        {
+            treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(value, id);
+        }
+
+        private void ChangeIsSelected(BoolChangeData boolChangeData)
         {
             PoseSetterBoneComponent boneComponent;
             if (bone_components.Count != 0)
             {
-                boneComponent = bone_components.Find(bc => bc.BoneType == id);
-                boneComponent.isSelected = value;
-                if (value)
+                boneComponent = bone_components.Find(bc => bc.BoneType == boolChangeData.itemID);
+                boneComponent.isSelected = boolChangeData.boolValue;
+                if (boolChangeData.boolValue)
                 {
                     selectedBone = boneComponent.transform;
                     // //Dont uncomments appart if you like atomic holocaust !!!!
@@ -261,6 +267,32 @@ namespace intetum.unityUtils
                     //z_rot_slider.value = selectedBone.transform.eulerAngles.z;
                 }
             }
+        }
+
+        private void UpdateChildsSavebility(PoseSetterBoneComponent boneComponent, bool value)
+        {
+            // Cleans childs roots and update child savability
+            boneComponent.GetComponentsInChildren<PoseSetterBoneComponent>()
+                         .Where(bc => bc.BoneType != BoneType.None)
+                         .ForEach(bc =>
+                         {
+                             if (value == true)
+                             {
+                                 bc.isSavable = true;
+                                 if (bc.isRoot == true)
+                                 {
+                                     bc.isRoot = false;
+                                     ChangeIsRootInEditorWindow(false, bc.BoneType);
+                                 }
+                             }
+                             else
+                             {
+                                 bc.isSavable = false;
+                             }
+                         });
+
+            boneComponent.isSavable = false;
+            boneComponent.isRoot = value;
         }
 
         #region Save & load
@@ -405,6 +437,18 @@ namespace intetum.unityUtils
         }
 
         List<TreeViewItem<BoneTreeElement>> elements = new List<TreeViewItem<BoneTreeElement>>();
+
+        /// <summary>
+        /// Method to update a is root toggle but without sending the event to the editor window
+        /// Use this method when you are making changes to the value outside of the tree view
+        /// </summary>
+        /// <param name="value">new vale of the bool</param>
+        /// <param name="id">bone id of the looked for boneElement</param>
+        public void UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(bool value, uint id)
+        {
+            elements.Find(e => e.id == id).data.isRoot = value;
+        }
+
         private MultiColumnHeaderState headerState;
 
         private MultiColumnHeaderState CreateDefaultMultiColumnHeaderState()
@@ -491,7 +535,7 @@ namespace intetum.unityUtils
                     if (newValue != item.data.isRoot)
                     {
                         item.data.isRoot = newValue;
-                        item.data.onIsRootChanged?.Invoke(new BoolChangeData { itemID = item.id, boolValue = newValue });
+                        item.data.onIsRootChanged?.Invoke(new BoolChangeData { boneTreeEleements = item.data, itemID = item.id, boolValue = newValue });
                     }
                 }
                 else if (col == 2)
@@ -501,7 +545,7 @@ namespace intetum.unityUtils
                     if (newValue != item.data.isSelected)
                     {
                         item.data.isSelected = newValue;
-                        item.data.onIsSelectedChanged?.Invoke(new BoolChangeData { itemID = item.id, boolValue = newValue });
+                        item.data.onIsSelectedChanged?.Invoke(new BoolChangeData { boneTreeEleements = item.data, itemID = item.id, boolValue = newValue });
                         ResetEveryOtherSelectedToFalse(item.id);
                     }
                 }

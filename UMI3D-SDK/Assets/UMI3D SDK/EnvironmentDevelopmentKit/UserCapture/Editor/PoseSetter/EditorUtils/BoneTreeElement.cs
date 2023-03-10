@@ -26,6 +26,7 @@ namespace inetum.unityUtils
 
     public struct BoolChangeData
     {
+        public BoneTreeElement boneTreeEleements;
         public bool boolValue;
         public int itemID;
     }
