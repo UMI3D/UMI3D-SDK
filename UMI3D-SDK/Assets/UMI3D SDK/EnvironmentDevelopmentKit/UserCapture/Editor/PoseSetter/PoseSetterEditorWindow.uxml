@@ -3,7 +3,7 @@
     <ui:VisualElement name="MainContainer" style="flex-grow: 0;">
         <ui:VisualElement name="GlobalInformations" class="EditorParts">
             <ui:VisualElement name="TitleContainer">
-                <ui:Label text="PoseSetterV0.25" display-tooltip-when-elided="true" name="title_version" enable-rich-text="true" />
+                <ui:Label text="PoseSetterV0.25" display-tooltip-when-elided="true" name="title_version" enable-rich-text="true" class="Titles" />
             </ui:VisualElement>
             <ui:VisualElement name="NameThePose">
                 <ui:TextField picking-mode="Ignore" label="Name" value="none" text="pose name" name="name" is-delayed="false" />
@@ -21,26 +21,20 @@
         </ui:VisualElement>
         <ui:VisualElement name="RootSelection" class="EditorParts">
             <ui:VisualElement name="TitleContainer">
-                <ui:Label text="RootSelection" display-tooltip-when-elided="true" />
+                <ui:Label text="Root Currently Selected" display-tooltip-when-elided="true" class="Titles" />
             </ui:VisualElement>
             <ui:VisualElement name="RootNamesRefContainer" style="flex-direction: column; flex-wrap: wrap; justify-content: space-between; flex-grow: 0;">
-                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1">
-                    <ui:ListView focusable="true" name="lv_root_selected" class="BoneArea" style="min-height: 0; max-height: 4000px;" />
-                </ui:ScrollView>
-                <ui:VisualElement style="align-items: flex-end; flex-direction: row; justify-content: flex-end;">
-                    <ui:Button text="Add" display-tooltip-when-elided="true" name="add_root" class="Buttons" />
-                    <ui:Button text="Remove" display-tooltip-when-elided="true" name="remove_root" class="Buttons" />
-                </ui:VisualElement>
+                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="root_scroll_view" class="BoneArea" style="margin-bottom: 10px;" />
             </ui:VisualElement>
         </ui:VisualElement>
         <ui:VisualElement name="ControleButtons" class="EditorParts" style="flex-direction: column;">
             <ui:VisualElement name="TitleContainer">
-                <ui:Label text="Control buttons" display-tooltip-when-elided="true" />
+                <ui:Label text="Control buttons" display-tooltip-when-elided="true" class="Titles" />
             </ui:VisualElement>
             <ui:VisualElement style="flex-direction: row; flex-wrap: wrap;">
                 <ui:Button text="Save" display-tooltip-when-elided="true" name="save" class="Buttons" />
-                <ui:Button text="load" display-tooltip-when-elided="true" name="load" class="Buttons" />
-                <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
+                <ui:Button text="Load" display-tooltip-when-elided="true" name="load" class="Buttons" />
+                <ui:Button text="Clear Roots" display-tooltip-when-elided="true" name="clear_roots" class="Buttons" />
                 <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
                 <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
                 <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
@@ -48,7 +42,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="BoneList" class="EditorParts">
             <ui:VisualElement name="TitleContainer">
-                <ui:Label text="boneSelection" display-tooltip-when-elided="true" />
+                <ui:Label text="Bone Tree View" display-tooltip-when-elided="true" class="Titles" />
             </ui:VisualElement>
             <ui:VisualElement name="search_bar">
                 <ui:TextField picking-mode="Ignore" label="Filter by name" text="Type bone name" name="filter" />
@@ -61,7 +55,7 @@
         </ui:VisualElement>
         <ui:VisualElement name="AngleControls" class="EditorParts">
             <ui:VisualElement name="TitleContainer">
-                <ui:Label text="Rotation Controls" display-tooltip-when-elided="true" />
+                <ui:Label text="Rotation Controls" display-tooltip-when-elided="true" class="Titles" />
             </ui:VisualElement>
             <ui:Slider picking-mode="Ignore" label="x_rot" value="0" high-value="180" name="x_rot_slider" low-value="-180" />
             <ui:Slider picking-mode="Ignore" label="y_rot" value="0" high-value="180" name="y_rot_slider" low-value="-180" />

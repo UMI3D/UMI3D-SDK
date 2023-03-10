@@ -43,11 +43,10 @@ namespace intetum.unityUtils
         CustomObjectField object_field = null;
         CustomObjectField so_field = null;
 
-        ListView lv_root_selected = null;
-        Button add_root = null;
-        Button remove_root = null;
+        ScrollView root_scroll_view = null;
         Button save = null;
         Button load = null;
+        Button clear_roots = null;
 
         TextField filter = null;
         IMGUIContainer bone_container = null;
@@ -107,11 +106,10 @@ namespace intetum.unityUtils
             object_field = root.Q<CustomObjectField>("object_field");
             so_field = root.Q<CustomObjectField>("so_field");
 
-            lv_root_selected = root.Q<ListView>("lv_root_selected");
-            add_root = root.Q<Button>("add_root");
-            remove_root = root.Q<Button>("remove_root");
+            root_scroll_view = root.Q<ScrollView>("root_scroll_view");
             save = root.Q<Button>("save");
             load = root.Q<Button>("load");
+            clear_roots = root.Q<Button>("clear_roots");
 
             filter = root.Q<TextField>("filter");
             bone_container = root.Q<IMGUIContainer>("bone_container");
@@ -166,10 +164,9 @@ namespace intetum.unityUtils
         /// </summary>
         private void BindButtons()
         {
-            add_root.clicked += () => AddAnEmptyRootToListView();
-            remove_root.clicked += () => RemoveLastRootFromListView();
             save.clicked += () => SaveToScriptableObjectAtPath();
             load.clicked += () => LoadA_UMI3DPose_so();
+            clear_roots.clicked += () => { ResetAllBones();  UpdateRootListView(); };
         }
 
         Transform selectedBone = null;
@@ -208,6 +205,7 @@ namespace intetum.unityUtils
             });
 
             treeView.UpdateTreeView(treeViewItems);
+            UpdateRootListView();
         }
 
         private TreeViewItem<BoneTreeElement> GetBoneTreeViewItem(PoseSetterBoneComponent bc)
@@ -226,25 +224,14 @@ namespace intetum.unityUtils
             currentPose = value.newValue as UMI3DPose_so;
         }
 
-        private void AddAnEmptyRootToListView()
-        {
-
-        }
-
-        private void RemoveLastRootFromListView()
-        {
-
-        }
-
         private void UpdateRootListView()
         {
-            //lv_root_selected.makeItem = () => new Label(bc.name.Split(":")[1]);
-            //lv_root_selected.Clear();
-            //bone_components.Where(bc => bc.isRoot == true)
-            //                .ForEach(bc =>
-            //                {
-                                
-            //                });
+            root_scroll_view.Clear();
+            bone_components.Where(bc => bc.isRoot == true)
+                            .ForEach(bc =>
+                            {
+                                root_scroll_view.Add(new Label("      " + bc.name.Split(":")[1]));
+                            });
         }
 
         private void ChangeIsRoot(BoolChangeData boolChangeData)
@@ -401,6 +388,8 @@ namespace intetum.unityUtils
                 {
                     UpdateBoneComponent(bp);               
                 });
+
+                UpdateRootListView();
             }
         }
 
