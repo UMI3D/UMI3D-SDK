@@ -128,6 +128,7 @@ namespace intetum.unityUtils
         private void InitObjectField()
         {
             object_field.Init(typeof(GameObject));
+            // TODO ==> add a call back where you make sure to clean all the roots and the savable and the selected on the skeleton
             object_field.RegisterValueChangedCallback(value => { ReadHierachy(value); });
 
             so_field.Init(typeof(UMI3DPose_so));
@@ -295,7 +296,7 @@ namespace intetum.unityUtils
             // TODO -> fragment the parent == when a parent is a root, set it as a none root and then look for every child branches 
             //                                  that do not contain the current new root and set them as root.
             //                                      --> this would be a great way to make sur to never loose work and dont get confusing poses.
-            if (boneComponent.GetComponentsInParent<PoseSetterBoneComponent>().Where(bc => bc.isRoot != null).FirstOrDefault() != null)
+            if (boneComponent.GetComponentsInParent<PoseSetterBoneComponent>().Where(bc => bc.isRoot != null).FirstOrDefault() != boneComponent)
             {
                 boneComponent.isSavable = true;
             }
@@ -315,28 +316,37 @@ namespace intetum.unityUtils
             string path = this.path.value;
             if (path == "") path = "Assets/";
 
-            UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
-            pose_So.name = name;
-            AssetDatabase.CreateAsset(pose_So, path + $"/{name}.asset");
+            List<PoseSetterBoneComponent> roots = bone_components.Where(bc => bc.isRoot == true).ToList();
 
-            //Save each bones 
-            List<UMI3DBonePose_so> bonsPoseSos = new();
-            bone_components.ForEach(bc =>
+            roots.ForEach(r =>
             {
-                Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
-                UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
-                bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
-                bonePose_So.name = name + $"_{GetConstEnumField(bonePose_So.bone)}";
+                List<UMI3DBonePose_so> bonsPoseSos = new();
+                UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
+                pose_So.name = name;
+                AssetDatabase.CreateAsset(pose_So, path + $"/{name}_from_{GetConstEnumField(r.BoneType)}.asset");
 
-                AssetDatabase.AddObjectToAsset(bonePose_So, pose_So);
-                AssetDatabase.SaveAssets();
-                EditorUtility.SetDirty(bonePose_So);    
+                List<PoseSetterBoneComponent> boneToSave = r.GetComponentsInChildren<PoseSetterBoneComponent>()
+                                                             .Where(bc => bc.BoneType != BoneType.None)
+                                                             .ToList();
+                boneToSave.RemoveAt(0);
+                                                             
+                boneToSave.ForEach(bc =>
+                {
+                    Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
+                    UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
+                    bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
+                    bonePose_So.name = name + $"_{GetConstEnumField(bonePose_So.bone)}";
 
-                bonsPoseSos.Add(bonePose_So);
+                    AssetDatabase.AddObjectToAsset(bonePose_So, pose_So);
+                    AssetDatabase.SaveAssets();
+                    EditorUtility.SetDirty(bonePose_So);
+
+                    bonsPoseSos.Add(bonePose_So);
+                });
+
+                pose_So.Init(bonsPoseSos, r.BoneType);
+                EditorUtility.SetDirty(pose_So);
             });
-
-            pose_So.Init(bonsPoseSos, 0);
-            EditorUtility.SetDirty(pose_So);
         }
 
         private void LoadA_UMI3DPose_so()
@@ -356,9 +366,12 @@ namespace intetum.unityUtils
                 }
                 this.path.value = finalPath;
 
+                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.BoneAnchor);
+                root_boneComponent.isRoot = true;
+
                 currentPose.BonePoses.ForEach(bp =>
                 {
-                    UpdateBoneComponent(bp);
+                    UpdateBoneComponent(bp);               
                 });
             }
         }
@@ -370,6 +383,7 @@ namespace intetum.unityUtils
             {
                 bone_component.transform.rotation = new Quaternion(bp.rotation.x, bp.rotation.y, bp.rotation.z, bp.rotation.w);
                 bone_component.transform.position = bp.position;
+                bone_component.isSavable = true;
             }
         }
         #endregion
