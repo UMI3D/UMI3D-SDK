@@ -291,9 +291,22 @@ namespace intetum.unityUtils
                              }
                          });
 
-            boneComponent.isSavable = false;
+            // For now if there is a parent which is a root, it stays there and will be saved as one more pose containing everything else
+            // TODO -> fragment the parent == when a parent is a root, set it as a none root and then look for every child branches 
+            //                                  that do not contain the current new root and set them as root.
+            //                                      --> this would be a great way to make sur to never loose work and dont get confusing poses.
+            if (boneComponent.GetComponentsInParent<PoseSetterBoneComponent>().Where(bc => bc.isRoot != null).FirstOrDefault() != null)
+            {
+                boneComponent.isSavable = true;
+            }
+            else
+            {
+                boneComponent.isSavable = false;
+            }
+
             boneComponent.isRoot = value;
         }
+
 
         #region Save & load
         private void SaveToScriptableObjectAtPath()
