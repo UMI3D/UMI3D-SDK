@@ -19,82 +19,81 @@ namespace umi3d.cdk.utils.extrapolation
     /// <summary>
     /// Extrapolator that allows to predict futures values.
     /// </summary>
-    public abstract class AbstractExtrapolator
+    public interface IExtrapolator
     {
-        /// <summary>
-        /// Frequency of updates.
-        /// </summary>
-        public float updateFrequency;
-
-        /// <summary>
-        /// Last received received time in the browser clock.
-        /// </summary>
-        public float lastMessageTime = 0;
-
-        /// <summary>
-        /// Id of the entity that has an extrapolated property.
-        /// </summary>
-        public ulong entityId;
-
-        /// <summary>
-        /// Id of the extrapolated property.
-        /// </summary>
-        public ulong property;
-
         /// <summary>
         /// Is the extrapolator able to extrapolate ?
         /// </summary>
         /// It usually need two measures before being able to predict.
-        public abstract bool IsInited();
+        public bool IsInited { get; }
 
         /// <summary>
         /// Current value linearly regressed from the prediction.
         /// </summary>
         /// <returns></returns>
-        public abstract object GetRegressedValue();
+        public object ExtrapolatedValue { get; }
 
         /// <summary>
         /// Compute the current regressed state according to the last prediction made by the extrapolator.
         /// </summary>
         /// Call <see cref="GetRegressedValue"/> to get the updated value.
-        public abstract void UpdateRegressedValue();
+        public void ComputeExtrapolatedValue();
 
         /// <summary>
         /// Add a measure to the extrapolator. This will change the prediction made.
         /// </summary>
         /// <param name="measure"></param>
-        public abstract void AddMeasure(object measure);
+        public void AddMeasure(object measure);
     }
 
     /// <summary>
     /// Extrapolator that allows to predict futures values.
     /// </summary>
     /// <typeparam name="T"></typeparam>
-    public abstract class AbstractExtrapolator<T> : AbstractExtrapolator
+    public abstract class AbstractExtrapolator<T> : IExtrapolator
     {
+        /// <summary>
+        /// Frequency of updates.
+        /// </summary>
+        protected float updateFrequency;
+
+        /// <summary>
+        /// Last received measure time in the browser clock.
+        /// </summary>
+        protected float lastUpdateTime = 0;
+
         /// <summary>
         /// Current regressed value from the extrapolator.
         /// </summary>
-        /// Needs to ve updated each frame through
-        protected T regressed_value;
+        /// Needs to ve updated each frame through <see cref="ComputeExtrapolatedValue"/>.
+        protected T _extrapolatedValue;
 
         /// <summary>
         /// Get the current regressed value from the extrapolator.
-        /// Always call <see cref="UpdateRegressedValue"/> before calling this method during a same frame.
+        /// Always call <see cref="ComputeExtrapolatedValue"/> before calling this method during a same frame.
         /// </summary>
         /// <returns></returns>
-        public override object GetRegressedValue() => regressed_value;
+        public object ExtrapolatedValue => _extrapolatedValue;
 
         /// <summary>
-        /// Compute the current extrapolated state according to the last prediction made by the extrapolator.
+        /// Is the extrapolator able to extrapolate ?
         /// </summary>
+        /// It usually need two measures before being able to predict.
+        public abstract bool IsInited { get; }
+
+        /// <summary>
+        /// Predicts an extrapolated state at the current time.
+        /// Does not change the state of the extrapolator.
+        /// </summary>
+        /// Use this method only if you are adding measures
+        /// at the same time that you are making predictions.
         /// <returns></returns>
-        public abstract T ExtrapolateState();
+        public abstract T Extrapolate();
 
         /// <inheritdoc/>
-        public override void UpdateRegressedValue()
+        public void ComputeExtrapolatedValue()
         {
-            regressed_value = ExtrapolateState();
+            _extrapolatedValue = Extrapolate();
         }
 
         /// <summary>
@@ -108,7 +107,7 @@ namespace umi3d.cdk.utils.extrapolation
         /// </summary>
         /// Also automatically types the object according to <see cref="T"/>.
         /// <param name="measure"></param>
-        public override void AddMeasure(object measure)
+        public void AddMeasure(object measure)
         {
             AddMeasure((T)measure);
         }

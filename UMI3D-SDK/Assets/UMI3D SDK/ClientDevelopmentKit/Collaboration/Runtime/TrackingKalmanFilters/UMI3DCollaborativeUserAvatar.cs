@@ -70,18 +70,18 @@ namespace umi3d.cdk.collaboration
         private void LateUpdate()
         {
             if (nodePositionExtrapolator != null)
-                this.transform.localPosition = nodePositionExtrapolator.ExtrapolateState();
+                this.transform.localPosition = nodePositionExtrapolator.Extrapolate();
 
             if (nodeRotationExtrapolator != null)
-                this.transform.localRotation = nodeRotationExtrapolator.ExtrapolateState();
+                this.transform.localRotation = nodeRotationExtrapolator.Extrapolate();
 
             if (skeleton == null)
                 return;
 
             if (skeletonHeightExtrapolator != null)
             {
-                var e = skeletonHeightExtrapolator.ExtrapolateState();
-                skeleton.transform.localPosition = new Vector3(0, skeletonHeightExtrapolator.ExtrapolateState(), 0);
+                var e = skeletonHeightExtrapolator.Extrapolate();
+                skeleton.transform.localPosition = new Vector3(0, skeletonHeightExtrapolator.Extrapolate(), 0);
             }
 
             if (ForceDisablingBinding)
@@ -103,7 +103,7 @@ namespace umi3d.cdk.collaboration
                 {
                     boneTransform = viewpointObject;
                     if (boneRotationFilters[boneType] != null)
-                        boneTransform.parent.localRotation = boneRotationFilters[boneType].ExtrapolateState();
+                        boneTransform.parent.localRotation = boneRotationFilters[boneType].Extrapolate();
                 }
                 else
                 {
@@ -113,7 +113,7 @@ namespace umi3d.cdk.collaboration
                         boneTransform = userAnimator.GetBoneTransform(boneType.ConvertToBoneType().GetValueOrDefault());
 
                     if (boneRotationFilters[boneType] != null)
-                        boneTransform.localRotation = boneRotationFilters[boneType].ExtrapolateState();
+                        boneTransform.localRotation = boneRotationFilters[boneType].Extrapolate();
                 }
 
 

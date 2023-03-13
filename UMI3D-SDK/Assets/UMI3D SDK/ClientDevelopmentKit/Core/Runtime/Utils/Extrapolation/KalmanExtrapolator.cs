@@ -27,7 +27,7 @@ namespace umi3d.cdk.utils.extrapolation.kalman
         /// Is the kalman-filter based object able to make predictions?
         /// </summary>
         /// <returns></returns>
-        bool IsInited();
+        bool IsInited { get; }
 
         /// <summary>
         /// Add a measure to the kalman-filter based object and correct the prediction onto an estimation.
