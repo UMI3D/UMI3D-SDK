@@ -14,29 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
+    [System.Serializable]
     public class NodeBindingDto : SimpleBindingDto
     {
         public NodeBindingDto() { }
 
-        public NodeBindingDto(ulong objectID,
-                        bool syncRotation, bool syncScale, bool syncPosition,
-                        Vector3 offSetPosition, Vector4 offSetRotation, Vector3 offSetScale,
-                        int priority, bool partialFit) : base( syncRotation, syncScale, syncPosition,
-                                                                offSetPosition, offSetRotation, offSetScale,
-                                                                priority, partialFit)
+        public NodeBindingDto(ulong objectID, bool syncRotation, bool syncScale, bool syncPosition,
+                        SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale,
+                        int priority, bool partialFit) 
+            : base(syncRotation, syncScale, syncPosition, offSetPosition, offSetRotation, offSetScale, priority, partialFit)
         {
             this.objectId = objectID;
         }
 
-        public NodeBindingDto(SimpleBindingDto simpleBinding, uint objectID) : base (simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition,
-                                                                simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
-                                                                simpleBinding.priority, simpleBinding.partialFit)
+        public NodeBindingDto(SimpleBindingDto simpleBinding, uint objectID) 
+            : base (simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition, 
+                  simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
+                  simpleBinding.priority, simpleBinding.partialFit)
         {
             this.objectId = objectID;
         }

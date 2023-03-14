@@ -14,12 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace umi3d.common.userCapture
 {
+    [System.Serializable]
     public class SimpleBoneBindingDto : SimpleBindingDto
     {
         public SimpleBoneBindingDto() { }
@@ -39,18 +36,20 @@ namespace umi3d.common.userCapture
         /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
         public SimpleBoneBindingDto(ulong userId, uint boneType,
                         bool syncRotation, bool syncScale, bool syncPosition,
-                        Vector3 offSetPosition, Vector4 offSetRotation, Vector3 offSetScale,
-                        int priority, bool partialFit) : base( syncRotation, syncScale, syncPosition,
-                                                                offSetPosition, offSetRotation, offSetScale,
-                                                                priority, partialFit)
+                        SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale,
+                        int priority, bool partialFit) 
+            : base( syncRotation, syncScale, syncPosition,
+                    offSetPosition, offSetRotation, offSetScale,
+                    priority, partialFit)
         {
             this.userId = userId;  
             this.boneType = boneType;
         }
 
-        public SimpleBoneBindingDto(SimpleBindingDto simpleBinding, ulong userId, uint boneType) : base(simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition,
-                                                                simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
-                                                                simpleBinding.priority, simpleBinding.partialFit)
+        public SimpleBoneBindingDto(SimpleBindingDto simpleBinding, ulong userId, uint boneType) 
+            : base(simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition,
+                simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
+                simpleBinding.priority, simpleBinding.partialFit)
         { 
             this.userId = userId;
             this.boneType = boneType;
