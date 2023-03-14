@@ -294,7 +294,7 @@ namespace EditMode_Tests
         [Test]
         public void ReadBindingDTO_MultiBinding()
         {
-            MultyBindingDto multyBindingDto = new MultyBindingDto(
+            MultiBindingDto multyBindingDto = new MultiBindingDto(
                 priority: 10,
                 partialFit: true,
                 Bindings :  GetTestBindingsArray()         
@@ -317,7 +317,7 @@ namespace EditMode_Tests
             Assert.IsTrue(result.data.priority == bindingDto.data.priority);
             Assert.IsTrue(result.data.partialFit == bindingDto.data.partialFit);
 
-            MultyBindingDto multiRes = result.data as MultyBindingDto;
+            MultiBindingDto multiRes = result.data as MultiBindingDto;
             for (int i = 0; i < multiRes.Bindings.Length; i++)
             {
                 Assert.IsTrue(multiRes.Bindings[i].priority == multyBindingDto.Bindings[i].priority);

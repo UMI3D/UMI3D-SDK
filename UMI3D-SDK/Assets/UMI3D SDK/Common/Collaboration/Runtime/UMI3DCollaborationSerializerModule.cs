@@ -322,7 +322,7 @@ namespace umi3d.common.collaboration
                         if (readable)
                         {
                             SimpleBindingDto simpleBindingDto;
-                            MultyBindingDto multyBindingDto;
+                            MultiBindingDto multyBindingDto;
                             SimpleBoneBindingDto simpleBoneBindingDto;
                             NodeBindingDto nodeBindingDto;
                             RigBindingDataDto rigBindingDataDto;
@@ -1103,7 +1103,7 @@ namespace umi3d.common.collaboration
                         return false;
                     }
 
-                case true when typeof(T) == typeof(MultyBindingDto):
+                case true when typeof(T) == typeof(MultiBindingDto):
                     {
                         BindingDataDto bindingDataDto;
 
@@ -1114,7 +1114,7 @@ namespace umi3d.common.collaboration
 
                         if (readable)
                         {
-                            MultyBindingDto simpleBindingDto = new MultyBindingDto(
+                            MultiBindingDto simpleBindingDto = new MultiBindingDto(
                                 bindingDataDto: bindingDataDto,
                                 Bindings: bindings
                             );
@@ -1407,7 +1407,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(simpleBindingDto.offSetRotation)
                         + UMI3DSerializer.Write(simpleBindingDto.offSetScale);
                     break;
-                case MultyBindingDto multyBindingDto:
+                case MultiBindingDto multyBindingDto:
                     bytable = UMI3DSerializer.Write((int)2)
                         + UMI3DSerializer.Write(multyBindingDto.priority)
                         + UMI3DSerializer.Write(multyBindingDto.partialFit)
