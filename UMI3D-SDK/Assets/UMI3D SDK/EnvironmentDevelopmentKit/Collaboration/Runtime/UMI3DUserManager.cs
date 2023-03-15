@@ -299,7 +299,7 @@ namespace umi3d.edk.collaboration
             else
             {
                 user = new UMI3DCollaborationUser(LoginDto);
-
+                UMI3DEnvironment.Instance.RegisterEntity(user, user.Id());
                 UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
                 lock (users)
                 {
