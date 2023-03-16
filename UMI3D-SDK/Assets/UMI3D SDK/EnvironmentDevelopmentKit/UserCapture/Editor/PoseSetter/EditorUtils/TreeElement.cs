@@ -58,7 +58,6 @@ namespace UnityEditor.TreeViewExamples
 			m_Depth = depth;
 		}
 	}
-
 }
 
 

@@ -37,7 +37,11 @@ namespace inetum.unityUtils
 
             this.multiColumnHeader = multiColumnHeader;
         }
-
+        
+        /// <summary>
+        /// Change the treview hierachy with the new items
+        /// </summary>
+        /// <param name="elements"></param>
         public void UpdateTreeView(List<TreeViewItem<BoneTreeElement>> elements)
         {
             this.elements = elements;

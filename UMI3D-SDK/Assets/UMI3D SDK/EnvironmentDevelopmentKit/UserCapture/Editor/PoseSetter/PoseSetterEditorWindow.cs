@@ -86,7 +86,6 @@ namespace intetum.unityUtils
                                    );
             uxml.CloneTree(rootVisualElement);
             GetAllRefs();
-            InitTextFields();
             BindButtons();
             SetOnGUIContainer();
             InitSliders();
@@ -185,13 +184,12 @@ namespace intetum.unityUtils
             z_rot_slider.RegisterValueChangedCallback(value => { ChangeZRotationOfSelectedBone(value); });
         }
 
-        private void InitTextFields()
-        {
-
-        }
-
         #endregion
-
+        /// <summary>
+        /// This should be called each time you change the skeleton prefab
+        /// Reads all of the PoseSetterBineComponent which are not None Bones and add them in the treeView
+        /// </summary>
+        /// <param name="value"></param>
         private void ReadHierachy(ChangeEvent<UnityEngine.Object> value)
         {
             bone_components = (value.newValue as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>()
@@ -251,6 +249,10 @@ namespace intetum.unityUtils
             treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(value, id);
         }
 
+        /// <summary>
+        /// Change the isSelected parameter on both tree view and the used skeleton
+        /// </summary>
+        /// <param name="boolChangeData"></param>
         private void ChangeIsSelected(BoolChangeData boolChangeData)
         {
             PoseSetterBoneComponent boneComponent;
@@ -393,6 +395,9 @@ namespace intetum.unityUtils
             }
         }
 
+        /// <summary>
+        /// Set all bones isSavable & isRoot to false
+        /// </summary>
         private void ResetAllBones()
         {
             bone_components.ForEach(bc =>

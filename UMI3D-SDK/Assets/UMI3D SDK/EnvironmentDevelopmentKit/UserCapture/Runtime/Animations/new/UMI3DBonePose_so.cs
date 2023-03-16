@@ -20,9 +20,11 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Scriptable object to contains data for BonePoseDto
+    /// </summary>
     public class UMI3DBonePose_so : ScriptableObject
     {
-
         [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] public uint bone;
         public Vector3 position;
         public Vector4 rotation;

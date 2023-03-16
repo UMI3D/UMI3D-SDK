@@ -22,6 +22,9 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
+    /// <summary>
+    /// Scriptable object to contains data for PoseDto
+    /// </summary>
     public class UMI3DPose_so : ScriptableObject
     {
         [SerializeField] List<UMI3DBonePose_so> bonePoses = new List<UMI3DBonePose_so>();
