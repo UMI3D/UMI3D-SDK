@@ -105,13 +105,18 @@ namespace intetum.unityUtils
                                    );
             uxml.CloneTree(rootVisualElement);
             GetAllRefs();
+            BindUI();
+            ReadConstEnum(typeof(BoneType));
+        }
+
+        private void BindUI()
+        {
             BindButtons();
             SetOnGUIContainer();
             InitSliders();
             InitObjectField();
             InitConditionContainer();
             FillDropDownFields();
-            ReadConstEnum(typeof(BoneType));
         }
 
         /// <summary>

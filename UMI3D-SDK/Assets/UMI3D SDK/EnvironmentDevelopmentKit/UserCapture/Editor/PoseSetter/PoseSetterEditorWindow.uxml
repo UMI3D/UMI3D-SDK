@@ -52,6 +52,21 @@
                                 <ui:Toggle label="Is Composable" name="tg_isComposable" />
                                 <ui:Toggle label="Is Interpolable" name="tg_isInterpolationable" />
                             </ui:VisualElement>
+                            <ui:VisualElement>
+                                <ui:TextField picking-mode="Ignore" label="Duration" value="filler text" name="duration_field" text="1" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="ConditionsController" style="flex-direction: row;">
+                                <ui:Button text="Add Condition" display-tooltip-when-elided="true" name="add_condition" />
+                                <ui:Button text="Remove Condition" display-tooltip-when-elided="true" name="remove_condition" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="ConditionsContainer">
+                                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="background-color: rgba(96, 96, 96, 255); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; border-left-color: rgba(0, 0, 0, 255); border-right-color: rgba(0, 0, 0, 255); border-top-color: rgba(0, 0, 0, 255); border-bottom-color: rgba(0, 0, 0, 255); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px;">
+                                    <ui:VisualElement name="condition_field" class="ConditionField">
+                                        <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="conditionType_dropdown" />
+                                        <ui:VisualElement name="ConditionEditor" />
+                                    </ui:VisualElement>
+                                </ui:ScrollView>
+                            </ui:VisualElement>
                         </inetum.unityUtils.PoseConditionPanel>
                     </ui:VisualElement>
                 </ui:VisualElement>

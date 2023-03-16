@@ -15,11 +15,16 @@ namespace inetum.unityUtils
 
         Toggle tg_isInterpolationable;
         Toggle tg_isComposable;
+        TextField duration_field;
+
+        Button add_condition;
+        Button remove_condition;
 
         UMI3DPoseOveridder_so poseOveridder_So;
 
         public void Init()
         {
+            GetRef();
             BindUI();
             Hide();
         }
@@ -36,9 +41,24 @@ namespace inetum.unityUtils
             poseOveridder_So = null;
         }
 
+        private void GetRef()
+        {
+            tg_isInterpolationable = this.Q<Toggle>("tg_isInterpolationable");
+            tg_isComposable = this.Q<Toggle>("tg_isComposable");
+
+            duration_field = this.Q<TextField>("duration_field");
+            add_condition = this.Q<Button>("add_condition");
+            remove_condition = this.Q<Button>("remove_condition");
+        }
+
         private void BindUI()
         {
-            //throw new NotImplementedException();
+            SetUpToggles();
+        }
+
+        private void SetUpToggles()
+        {
+            //tg_isComposable.RegisterCallback(data => poseOveridder_So.)
         }
 
         private void Hide()
