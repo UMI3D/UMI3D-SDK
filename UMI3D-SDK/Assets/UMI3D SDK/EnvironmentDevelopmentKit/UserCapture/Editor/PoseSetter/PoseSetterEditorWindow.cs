@@ -26,6 +26,7 @@ using inetum.unityUtils;
 using umi3d.edk.userCapture;
 using System.Linq;
 using System.Reflection;
+using GLTF.Schema;
 
 namespace intetum.unityUtils
 {
@@ -36,6 +37,7 @@ namespace intetum.unityUtils
         #region Attributes
         #region UXML fron ref attributes <They are ordered like in the corresponding UXML (almost)>
 
+        //Main INfo
         VisualElement root = null;
         TextField name = null;
         DropdownField loa_dropdown = null; // TODO --> implement the LOA logic
@@ -43,11 +45,23 @@ namespace intetum.unityUtils
         CustomObjectField object_field = null;
         CustomObjectField so_field = null;
 
+        //ControlsButtons
+
+        DropdownField symetry_dropdown = null;
+
+        Button btn_from_left = null;
+        Button btn_from_right = null;
+
+        Toggle tg_enable_condtion = null;
+
         ScrollView root_scroll_view = null;
         Button save = null;
         Button load = null;
         Button clear_roots = null;
 
+        PoseConditionPanel conditionPanel = null;
+
+        //Bones
         TextField filter = null;
         IMGUIContainer bone_container = null;
 
@@ -56,9 +70,14 @@ namespace intetum.unityUtils
         Slider z_rot_slider = null;
         #endregion
 
+        public enum SymetryTarget { None, Hands, Arms, Legs, Feet}
+        public enum LoaEnum { None, LOA_0, LOA_1, LOA_2, LOA_3, LOA_4}
+        SymetryTarget symetryTarget = SymetryTarget.None;
+        LoaEnum loaEnum = LoaEnum.None;
         BoneTreeView treeView = null;
 
         UMI3DPose_so currentPose = null;
+        Transform selectedBone = null;
         List<PoseSetterBoneComponent> bone_components = new List<PoseSetterBoneComponent>();
 
         #endregion
@@ -90,6 +109,8 @@ namespace intetum.unityUtils
             SetOnGUIContainer();
             InitSliders();
             InitObjectField();
+            InitConditionContainer();
+            FillDropDownFields();
             ReadConstEnum(typeof(BoneType));
         }
 
@@ -105,10 +126,17 @@ namespace intetum.unityUtils
             object_field = root.Q<CustomObjectField>("object_field");
             so_field = root.Q<CustomObjectField>("so_field");
 
+            symetry_dropdown = root.Q<DropdownField>("symetry_dropdown");
+            btn_from_left = root.Q<Button>("btn_from_left");
+            btn_from_right = root.Q<Button>("btn_from_right");
+
             root_scroll_view = root.Q<ScrollView>("root_scroll_view");
             save = root.Q<Button>("save");
             load = root.Q<Button>("load");
             clear_roots = root.Q<Button>("clear_roots");
+
+            tg_enable_condtion = root.Q<Toggle>("tg_enable_condtion");
+            conditionPanel = root.Q<PoseConditionPanel>("condition_panel");
 
             filter = root.Q<TextField>("filter");
             bone_container = root.Q<IMGUIContainer>("bone_container");
@@ -168,7 +196,32 @@ namespace intetum.unityUtils
             clear_roots.clicked += () => { ResetAllBones();  UpdateRootListView(); };
         }
 
-        Transform selectedBone = null;
+        private void FillDropDownFields()
+        {
+            loa_dropdown.choices.RemoveAt(0);
+            Enum.GetNames(typeof(LoaEnum)).ForEach(name =>
+            {
+                loa_dropdown.choices.Add(name);
+            });
+            loa_dropdown.value = loa_dropdown.choices[0];
+
+            loa_dropdown.RegisterValueChangedCallback((data) =>
+            {
+                loaEnum = Enum.Parse<LoaEnum>(data.newValue);
+            });
+
+            symetry_dropdown.choices.RemoveAt(0);
+            Enum.GetNames(typeof(SymetryTarget)).ForEach(name =>
+            {
+                symetry_dropdown.choices.Add(name);
+            });
+            symetry_dropdown.value = symetry_dropdown.choices[0];
+
+            symetry_dropdown.RegisterValueChangedCallback((data) =>
+            {
+                symetryTarget = Enum.Parse<SymetryTarget>(data.newValue);
+            });
+        }
 
         /// <summary>
         /// Init the sliders initial values, and bind their on change events.
@@ -182,6 +235,22 @@ namespace intetum.unityUtils
             x_rot_slider.RegisterValueChangedCallback(value => { ChangeXRotationOfSelectedBone(value); });
             y_rot_slider.RegisterValueChangedCallback(value => { ChangeYRotationOfSelectedBone(value); });
             z_rot_slider.RegisterValueChangedCallback(value => { ChangeZRotationOfSelectedBone(value); });
+        }
+
+        private void InitConditionContainer()
+        {
+            conditionPanel.Init();
+            tg_enable_condtion.RegisterValueChangedCallback(b =>
+            {
+                if (b.newValue == true)
+                {
+                    conditionPanel.Enable();
+                }
+                else
+                {
+                    conditionPanel.Disable();
+                }
+            });
         }
 
         #endregion
