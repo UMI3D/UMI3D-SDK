@@ -55,6 +55,8 @@ namespace umi3d.cdk.userCapture
 
         #endregion
         public TrackedSkeleton TrackedSkeleton;
+        public PoseSkeleton PoseSkeleton;
+        public AnimatedSkeleton AnimatedSkeleton;
 
         //public float skeletonHighOffset = 0;
 
@@ -68,7 +70,8 @@ namespace umi3d.cdk.userCapture
             };
         }
 
-        public UserTrackingFrameDto GetFrame(TrackingOption option) {
+        public UserTrackingFrameDto GetFrame(TrackingOption option)
+        {
             var frame = new UserTrackingFrameDto()
             {
                 position = transform.position,
@@ -76,7 +79,6 @@ namespace umi3d.cdk.userCapture
                 //skeletonHighOffset = skeletonHighOffset,
             };
 
-            Debug.Log(skeletons.Count);
             foreach (var skeleton in skeletons)
                 skeleton.WriteTrackingFrame(frame, option);
 
@@ -85,10 +87,10 @@ namespace umi3d.cdk.userCapture
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
-            foreach(var skeleton in skeletons)
+            foreach (var skeleton in skeletons)
             {
                 var c = skeleton.GetCameraDto();
-                if(c != null)
+                if (c != null)
                     return c;
             }
             return null;

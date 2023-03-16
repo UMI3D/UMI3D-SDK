@@ -18,29 +18,34 @@ limitations under the License.
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
-    public class BindingDataDto : UMI3DDto
+    /// <summary>
+    /// In multi binding the priority state which binding should be match the most.
+    /// </summary>
+    public class MultiBindingDto : BindingDataDto
     {
-        public BindingDataDto() { }
+        public MultiBindingDto() { }
 
         /// <summary>
         /// 
         /// </summary>
+        /// <param name="Bindings">List Of all the simple bindings to apply</param>
         /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
         /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
-        public BindingDataDto(int priority, bool partialFit)
+        public MultiBindingDto(BindingDataDto[] Bindings, int priority, bool partialFit)
+            : base(priority, partialFit)
         {
-            this.priority = priority;
-            this.partialFit = partialFit;
+            this.Bindings = Bindings;
+        }
+
+        public MultiBindingDto(BindingDataDto[] Bindings, BindingDataDto bindingDataDto)
+            : base(bindingDataDto.priority, bindingDataDto.partialFit)
+        {
+            this.Bindings = Bindings;
         }
 
         /// <summary>
-        /// level of priority of this binding [impact the order in which it is applied]
+        /// List Of all the simple bindings to apply
         /// </summary>
-        public int priority { get; private set; }
-
-        /// <summary>
-        /// State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.
-        /// </summary>
-        public bool partialFit { get; private set; }
+        public BindingDataDto[] Bindings { get; private set; }
     }
 }

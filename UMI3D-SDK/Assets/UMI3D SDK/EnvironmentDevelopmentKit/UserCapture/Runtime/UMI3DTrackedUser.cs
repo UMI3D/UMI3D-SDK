@@ -48,6 +48,12 @@ namespace umi3d.edk.userCapture
 
         public UserTrackingFrameDto CurrentTrackingFrame;
 
+        public UMI3DTrackedUser(ulong id) : base()
+        {
+            base.userId = id;
+            bindings = new UMI3DAsyncListProperty<UMI3DBinding>(base.userId, UMI3DPropertyKeys.UserBindings, new());
+            activeBindings = new UMI3DAsyncProperty<bool>(base.userId, UMI3DPropertyKeys.ActiveBindings, new());
+        }   
 
         //To Delete
         //private UMI3DAvatarNode avatar;

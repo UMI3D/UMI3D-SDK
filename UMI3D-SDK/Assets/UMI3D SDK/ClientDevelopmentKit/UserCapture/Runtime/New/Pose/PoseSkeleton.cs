@@ -23,7 +23,7 @@ namespace umi3d.cdk.userCapture
     public class PoseSkeleton : ISubSkeleton
     {
         public PoseDto defaultPose => PoseManager.Instance.defaultPose;
-        public PoseDto[] defaultPoses => PoseManager.Instance.defaultPoses;
+        public PoseDto[] localPoses => PoseManager.Instance.localPoses;
         public PoseDto[] serverPoses;
 
         public PoseDto GetPose()

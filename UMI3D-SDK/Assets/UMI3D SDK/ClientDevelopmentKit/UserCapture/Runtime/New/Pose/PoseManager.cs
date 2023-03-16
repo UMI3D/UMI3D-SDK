@@ -22,7 +22,7 @@ namespace umi3d.cdk.userCapture
     public class PoseManager : SingleBehaviour<PoseManager>
     {
         public PoseDto defaultPose;
-        public PoseDto[] defaultPoses;
+        public PoseDto[] localPoses;
     }
 
 }
