@@ -89,14 +89,15 @@ namespace umi3d.cdk
         }
 
         #region DI
-        private UMI3DLoadingHandler coroutineService;
+
+        private UMI3DEnvironmentLoader coroutineService;
 
         public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
         {
-            coroutineService = UMI3DLoadingHandler.Instance;
+            coroutineService = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto, UMI3DLoadingHandler coroutineService) : base(dto)
+        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto, UMI3DEnvironmentLoader coroutineService) : base(dto)
         {
             this.coroutineService = coroutineService;
         }
@@ -181,7 +182,7 @@ namespace umi3d.cdk
 
             animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
             IsPaused = false;
-            trackingAnimationCoroutine ??= coroutineService.AttachCoroutine(TrackEnd());
+            trackingAnimationCoroutine ??= UMI3DEnvironmentLoader.StartCoroutine(TrackEnd());
         }
 
         /// <summary>
@@ -191,7 +192,7 @@ namespace umi3d.cdk
         {
             lastPauseTime = GetProgress() * Duration;
             IsPaused = true;
-            coroutineService.DettachCoroutine(trackingAnimationCoroutine);
+            UMI3DEnvironmentLoader.StopCoroutine(trackingAnimationCoroutine);
             trackingAnimationCoroutine = null;
             animator.Play(dto.stateName, layer: 0, normalizedTime: 1);
         }
