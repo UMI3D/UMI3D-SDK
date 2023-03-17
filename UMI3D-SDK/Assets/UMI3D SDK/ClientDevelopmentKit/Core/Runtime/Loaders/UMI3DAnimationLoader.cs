@@ -46,7 +46,7 @@ namespace umi3d.cdk
 
             if (animationInstance is not null)
             {
-                UMI3DEnvironmentLoader.Instance.RegisterEntity(animationInstance.Id, value.dto, animationInstance).NotifyLoaded();
+                UMI3DEnvironmentLoader.RegisterEntityInstance(animationInstance.Id, value.dto, animationInstance).NotifyLoaded();
                 animationInstance.Init();
             }
             return Task.CompletedTask;
