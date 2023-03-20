@@ -24,6 +24,7 @@ using System;
 using UnityEngine.Events;
 using System.Threading;
 using System.Threading.Tasks;
+using System.Linq;
 
 namespace umi3d.edk.userCapture
 {
@@ -60,8 +61,8 @@ namespace umi3d.edk.userCapture
             activeBindings = new UMI3DAsyncProperty<bool>(base.userId, UMI3DPropertyKeys.ActiveBindings, new());
         }
 
-        static object joinLock = new object();
-        public async Task JoinDtoReception( SerializableVector3 userSize, List<PoseDto> userPoses)
+        static object joinLock = new object()
+        public async Task JoinDtoReception( SerializableVector3 userSize, PoseDto[] userPoses)
         {
             lock (joinLock)
             {
@@ -73,7 +74,7 @@ namespace umi3d.edk.userCapture
                     this.userSize.SetValue(userSize);
             }
 
-            await PoseManager.Instance.InitNewUserPoses(this, userPoses);
+            await PoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);

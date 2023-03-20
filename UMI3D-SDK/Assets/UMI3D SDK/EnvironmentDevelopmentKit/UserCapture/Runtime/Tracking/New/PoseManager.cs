@@ -27,7 +27,7 @@ namespace umi3d.edk.userCapture
 
             // TODO 
             // Send all poses to this user 
-            // Send new Poses to new users
+            // Send new Poses to all users
         }
     }
 }

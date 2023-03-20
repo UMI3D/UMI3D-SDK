@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
 using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
@@ -23,6 +24,7 @@ namespace umi3d.cdk.userCapture
     {
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
-    }
 
+        Dictionary<ulong, List<PoseDto>> allPoses;
+    }
 }
