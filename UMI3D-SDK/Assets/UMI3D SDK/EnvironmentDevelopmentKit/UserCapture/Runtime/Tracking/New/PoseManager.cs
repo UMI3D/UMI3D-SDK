@@ -17,20 +17,36 @@ namespace umi3d.edk.userCapture
         /// </summary>
         static object joinLock = new object();
 
-        public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> allPoses;
+        bool posesInitialized = false;
 
+        private Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
+        public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> _objectAllPoses;
+        public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> objectAllPoses
+        {
+            get
+            {
+                Init();
+                return _objectAllPoses;
+            }
+        }
+
+        public void Init()
+        {
+            if (posesInitialized == false)
+            {
+                posesInitialized = true;
+                _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses, null, null);
+            }
+        }
         public async Task InitNewUserPoses(UMI3DUser user, List<PoseDto> userPoses)
         {
             Operation operation;
             lock (joinLock)
             {
-                operation = allPoses.Add(user.Id(), userPoses);
+                operation = objectAllPoses.Add(user.Id(), userPoses);
             }
 
             SendNewPosesToAllNewUsers(operation);
-
-            // TODO 
-            // Send all poses to this user 
         }
 
         private void SendNewPosesToAllNewUsers(Operation operation)

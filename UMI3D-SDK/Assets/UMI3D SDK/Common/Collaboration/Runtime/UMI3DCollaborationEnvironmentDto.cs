@@ -32,6 +32,6 @@ namespace umi3d.common.collaboration
         /// key : user Id 
         /// value : list of all the poses of this user
         /// </summary>
-        public Dictionary<ulong, List<PoseDto>> PosesCurrentlyInEnvironment;
+        public Dictionary<ulong, List<PoseDto>> allPoses;
     }
 }

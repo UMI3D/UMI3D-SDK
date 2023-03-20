@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -21,6 +22,7 @@ using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -84,7 +86,7 @@ namespace umi3d.cdk.collaboration
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
-            PoseManager.Instance.allPoses = dto.PosesCurrentlyInEnvironment;
+            PoseManager.Instance.allPoses = dto.allPoses;
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
@@ -153,7 +155,8 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(data.property.property, data.entity, data.property.value);
-
+                case UMI3DPropertyKeys.AllPoses:
+                    return AddPoses( data.property.value);
                 default:
                     return false;
             }
@@ -192,10 +195,17 @@ namespace umi3d.cdk.collaboration
                         string value = UMI3DSerializer.Read<string>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
+                case UMI3DPropertyKeys.AllPoses:
+                    {
+                        Dictionary<ulong, List<PoseDto>> allPoses =  UMI3DSerializer.ReadDictionary<ulong, List<PoseDto>>(data.container);
+                        return AddPoses( allPoses);
+                    }
+
                 default:
                     return false;
             }
         }
+
 
         /// <summary>
         /// Update Userlist
@@ -268,6 +278,16 @@ namespace umi3d.cdk.collaboration
 
             UMI3DUser user = GetUser(dto);
             return user?.UpdateUser(property, value) ?? false;
+        }
+
+        private bool AddPoses(object value)
+        {
+            if (value is Dictionary<ulong, List<PoseDto>> newPoses)
+            {
+                PoseManager.Instance.allPoses.Add(newPoses.Keys.First(), newPoses[0]);
+                return true;
+            }
+            return false;   
         }
 
         private void InsertUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
