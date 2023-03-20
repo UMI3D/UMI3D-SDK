@@ -156,7 +156,7 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(data.property.property, data.entity, data.property.value);
                 case UMI3DPropertyKeys.AllPoses:
-                    return AddPoses( data.property.value);
+                    return UpdateAllPoses( data.entity);
                 default:
                     return false;
             }
@@ -197,8 +197,7 @@ namespace umi3d.cdk.collaboration
                     }
                 case UMI3DPropertyKeys.AllPoses:
                     {
-                        Dictionary<ulong, List<PoseDto>> allPoses =  UMI3DSerializer.ReadDictionary<ulong, List<PoseDto>>(data.container);
-                        return AddPoses( allPoses);
+                        return UpdateAllPoses( data.entity);
                     }
 
                 default:
@@ -280,13 +279,23 @@ namespace umi3d.cdk.collaboration
             return user?.UpdateUser(property, value) ?? false;
         }
 
-        private bool AddPoses(object value)
+        private bool UpdateAllPoses( UMI3DEntityInstance entityInstance)
         {
-            if (value is Dictionary<ulong, List<PoseDto>> newPoses)
+            switch (entityInstance.dto)
             {
-                PoseManager.Instance.allPoses.Add(newPoses.Keys.First(), newPoses[0]);
-                return true;
+                case SetEntityDictionaryAddPropertyDto addPropertyDto:
+                    {
+                        PoseManager.Instance.allPoses.Add((ulong)addPropertyDto.key, (List<PoseDto>)addPropertyDto.value);
+                        return true;
+                    }
+
+                case SetEntityDictionaryRemovePropertyDto removePropertyDto:
+                    {
+                        PoseManager.Instance.allPoses.Remove((ulong)removePropertyDto.key);
+                        return true;                      
+                    }
             }
+
             return false;   
         }
 

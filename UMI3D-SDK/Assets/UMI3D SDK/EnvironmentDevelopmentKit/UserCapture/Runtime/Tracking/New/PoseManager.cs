@@ -9,15 +9,18 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    public class PoseManager : Singleton<PoseManager>
+    public class PoseManager : SingleBehaviour<PoseManager>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
         /// <summary>
         /// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, Dictionary{uint, bool})"/>.
         /// </summary>
         static object joinLock = new object();
+        static object logoutLock = new object();
 
         bool posesInitialized = false;
+
+        [SerializeField] List<PoseDto> allServerPoses = new List<PoseDto>();
 
         private Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
         public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> _objectAllPoses;
@@ -35,9 +38,13 @@ namespace umi3d.edk.userCapture
             if (posesInitialized == false)
             {
                 posesInitialized = true;
+                allPoses.Add(0, allServerPoses);
                 _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses, null, null);
             }
+
+            UMI3DServer.Instance.OnUserLeave.AddListener((u) => RemovePosesOnLeftUser(u));
         }
+
         public async Task InitNewUserPoses(UMI3DUser user, List<PoseDto> userPoses)
         {
             Operation operation;
@@ -46,10 +53,21 @@ namespace umi3d.edk.userCapture
                 operation = objectAllPoses.Add(user.Id(), userPoses);
             }
 
-            SendNewPosesToAllNewUsers(operation);
+            SendOperation(operation);
         }
 
-        private void SendNewPosesToAllNewUsers(Operation operation)
+        private void RemovePosesOnLeftUser(UMI3DUser user)
+        {
+            Operation operation;
+            lock (logoutLock)
+            {
+                operation = objectAllPoses.Remove(user.Id());
+            }
+
+            SendOperation(operation);
+        }
+
+        private void SendOperation(Operation operation)
         {
             Transaction transaction = new Transaction()
             {
