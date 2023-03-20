@@ -61,7 +61,7 @@ namespace umi3d.edk.userCapture
             activeBindings = new UMI3DAsyncProperty<bool>(base.userId, UMI3DPropertyKeys.ActiveBindings, new());
         }
 
-        static object joinLock = new object()
+        static object joinLock = new object();
         public async Task JoinDtoReception( SerializableVector3 userSize, PoseDto[] userPoses)
         {
             lock (joinLock)

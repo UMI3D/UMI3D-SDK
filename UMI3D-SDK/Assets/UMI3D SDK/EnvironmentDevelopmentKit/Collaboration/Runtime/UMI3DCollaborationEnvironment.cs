@@ -16,6 +16,8 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.userCapture;
+using System.Collections.Generic;
 
 namespace umi3d.edk.collaboration
 {
@@ -37,6 +39,16 @@ namespace umi3d.edk.collaboration
             if (_dto is UMI3DCollaborationEnvironmentDto dto)
             {
                 dto.userList = UMI3DCollaborationServer.Collaboration.ToDto(user);
+
+                dto.PosesCurrentlyInEnvironment = new Dictionary<ulong, List<common.userCapture.PoseDto>>
+                {
+                    { 0, PoseManager.Instance.allPoses.GetValue(0) }
+                };
+
+                dto.userList.ForEach(u =>
+                {
+                    dto.PosesCurrentlyInEnvironment.Add(u.id, PoseManager.Instance.allPoses.GetValue(u.id));
+                });
             }
         }
     }

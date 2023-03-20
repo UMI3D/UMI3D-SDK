@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
@@ -83,6 +84,7 @@ namespace umi3d.cdk.collaboration
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+            PoseManager.Instance.allPoses = dto.PosesCurrentlyInEnvironment;
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);

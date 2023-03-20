@@ -1,4 +1,5 @@
 using inetum.unityUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -20,14 +21,28 @@ namespace umi3d.edk.userCapture
 
         public async Task InitNewUserPoses(UMI3DUser user, List<PoseDto> userPoses)
         {
+            Operation operation;
             lock (joinLock)
             {
-                allPoses.Add(user.Id(), userPoses);
+                operation = allPoses.Add(user.Id(), userPoses);
             }
+
+            SendNewPosesToAllNewUsers(operation);
 
             // TODO 
             // Send all poses to this user 
-            // Send new Poses to all users
+        }
+
+        private void SendNewPosesToAllNewUsers(Operation operation)
+        {
+            Transaction transaction = new Transaction()
+            {
+                reliable = true
+            };
+
+            transaction.Add(operation);
+
+            transaction.Dispatch();
         }
     }
 }

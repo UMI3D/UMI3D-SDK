@@ -25,6 +25,6 @@ namespace umi3d.cdk.userCapture
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
 
-        Dictionary<ulong, List<PoseDto>> allPoses;
+        public Dictionary<ulong, List<PoseDto>> allPoses;
     }
 }
