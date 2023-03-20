@@ -20,7 +20,7 @@ using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
-    public class PoseSkeleton : ISubSkeleton
+    public class PoseSkeleton : ISubWritableSkeleton
     {
         public PoseDto defaultPose => PoseManager.Instance.defaultPose;
         public PoseDto[] localPoses => PoseManager.Instance.localPoses;

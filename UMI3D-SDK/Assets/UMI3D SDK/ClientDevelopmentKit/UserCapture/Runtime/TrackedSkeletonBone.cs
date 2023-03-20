@@ -41,7 +41,7 @@ namespace umi3d.cdk.userCapture
         /// <returns></returns>
         public BonePoseDto ToBonePoseDto()
         {
-            return boneType == BoneType.None ? null : new BonePoseDto(boneType, this.transform.position, new Vector4().FromQuaternion(this.transform.localRotation));
+            return boneType == BoneType.None ? null : new BonePoseDto(boneType, this.transform.position, new Vector4().FromQuaternion(this.transform.rotation));
         }
     }
 

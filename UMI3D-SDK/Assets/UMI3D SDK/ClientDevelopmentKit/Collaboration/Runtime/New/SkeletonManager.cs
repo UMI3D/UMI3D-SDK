@@ -48,9 +48,6 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        // passer en private ?
-        public Dictionary<uint, float> PersonalBonesAsyncFPS { get; protected set; }
-
         CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         public class SkeletonEvent : UnityEvent<ulong> { };
@@ -194,9 +191,9 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
 
-            while (Exists && sendTracking && PersonalBonesAsyncFPS.ContainsKey(boneType)) 
+            while (Exists && sendTracking && PersonalSkeleton.Instance.BonesAsyncFPS.ContainsKey(boneType)) 
             {
-                if (PersonalBonesAsyncFPS[boneType] > 0)
+                if (PersonalSkeleton.Instance.BonesAsyncFPS[boneType] > 0)
                 {
                     try
                     {
@@ -213,7 +210,7 @@ namespace umi3d.cdk.collaboration
                     }
                     catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
 
-                    await UMI3DAsyncManager.Delay((int)(1000f / PersonalBonesAsyncFPS[boneType]));
+                    await UMI3DAsyncManager.Delay((int)(1000f / PersonalSkeleton.Instance.BonesAsyncFPS[boneType]));
 
                 }
                 else
@@ -234,17 +231,17 @@ namespace umi3d.cdk.collaboration
         {
             if (newFPSTarget != targetTrackingFPS)
             {
-                PersonalBonesAsyncFPS[boneType] = newFPSTarget;
+                PersonalSkeleton.Instance.BonesAsyncFPS[boneType] = newFPSTarget;
                 SendAsyncBoneData(boneType);
             }
 
-            else if (PersonalBonesAsyncFPS.ContainsKey(boneType))
-                PersonalBonesAsyncFPS.Remove(boneType);
+            else if (PersonalSkeleton.Instance.BonesAsyncFPS.ContainsKey(boneType))
+                PersonalSkeleton.Instance.BonesAsyncFPS.Remove(boneType);
         }
 
         public void SyncBoneFPS(uint boneType)
         {
-            PersonalBonesAsyncFPS.Remove(boneType);
+            PersonalSkeleton.Instance.BonesAsyncFPS.Remove(boneType);
         }
 
         /// <summary>

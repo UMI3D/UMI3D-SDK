@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common.collaboration;
@@ -54,16 +55,20 @@ namespace umi3d.cdk.collaboration
 
         public UMI3DUser User;
 
+        public TrackedSkeleton TrackedSkeleton;
+
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (skeletons != null)
-                foreach (var skeleton in skeletons)
+                foreach (ISubWritableSkeleton skeleton in skeletons.OfType<ISubWritableSkeleton>())
                     skeleton.UpdateFrame(frame);
         }
 
         public void SetSubSkeletons()
         {
-            //set subSkeletons
+            skeletons.Add(TrackedSkeleton);
+            skeletons.Add(new PoseSkeleton());
+            skeletons.Add(new AnimatedSkeleton());
         }
     }
 }

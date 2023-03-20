@@ -673,7 +673,7 @@ namespace umi3d.common.collaboration
                                     position = position,
                                     rotation = rotation,
                                     //refreshFrequency = refreshFrequency,
-                                    bones = bones
+                                    trackedBones = bones
                                 };
                                 readable = true;
                                 result = (T)Convert.ChangeType(trackingFrame, typeof(T));

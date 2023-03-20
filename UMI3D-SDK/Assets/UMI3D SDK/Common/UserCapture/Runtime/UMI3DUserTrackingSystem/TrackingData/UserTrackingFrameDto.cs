@@ -38,7 +38,11 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Bones information of the user
         /// </summary>
-        public List<BonePoseDto> bones;
+        public List<BonePoseDto> trackedBones;
+
+        public List<int> playerServerPoses;
+
+        public List<int> playerUserPoses;
 
         /// <summary>
         /// Current jump height of the avatar.
@@ -76,7 +80,9 @@ namespace umi3d.common.userCapture
                 + UMI3DSerializer.Write(position)
                 + UMI3DSerializer.Write(rotation)
                 //+ UMI3DSerializer.Write(refreshFrequency)
-                + UMI3DSerializer.WriteCollection(bones);
+                + UMI3DSerializer.WriteCollection(trackedBones)
+                + UMI3DSerializer.WriteCollection(playerServerPoses)
+                + UMI3DSerializer.WriteCollection(playerUserPoses);
         }
     }
 }

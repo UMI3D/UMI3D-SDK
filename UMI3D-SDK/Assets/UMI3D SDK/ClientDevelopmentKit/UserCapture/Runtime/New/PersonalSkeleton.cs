@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -55,8 +56,10 @@ namespace umi3d.cdk.userCapture
 
         #endregion
         public TrackedSkeleton TrackedSkeleton;
-        public PoseSkeleton PoseSkeleton;
-        public AnimatedSkeleton AnimatedSkeleton;
+        //public PoseSkeleton PoseSkeleton;
+        //public AnimatedSkeleton AnimatedSkeleton;
+
+        public Dictionary<uint, float> BonesAsyncFPS { get; protected set; }
 
         //public float skeletonHighOffset = 0;
 
@@ -66,7 +69,7 @@ namespace umi3d.cdk.userCapture
         {
             skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton
+                TrackedSkeleton, new PoseSkeleton(), new AnimatedSkeleton()
             };
         }
 
@@ -79,7 +82,7 @@ namespace umi3d.cdk.userCapture
                 //skeletonHighOffset = skeletonHighOffset,
             };
 
-            foreach (var skeleton in skeletons)
+            foreach (ISubWritableSkeleton skeleton in skeletons.OfType<ISubWritableSkeleton>())
                 skeleton.WriteTrackingFrame(frame, option);
 
             return frame;
