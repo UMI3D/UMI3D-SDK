@@ -498,6 +498,9 @@ namespace umi3d.cdk.collaboration
                         SkeletonManager.Instance.SetTrackingSending(sendingTracking.activeSending);
                     });
                     break;
+                case PlayPoseDto playPoseDto:
+                    Debug.Log($"<color=green> userID :: {playPoseDto.userID} + index :: {playPoseDto.indexInList} </color>");
+                    break;
                 default:
                     return false;
             }
@@ -633,6 +636,11 @@ namespace umi3d.cdk.collaboration
                 case UMI3DOperationKeys.SetSendingTracking:
                     bool sendTracking = UMI3DSerializer.Read<bool>(container);
                     SkeletonManager.Instance.SetTrackingSending(sendTracking);
+                    break;
+                case UMI3DOperationKeys.PlayPoseRequest:
+                    ulong userId = UMI3DSerializer.Read<ulong>(container);
+                    int index = UMI3DSerializer.Read<int>(container);
+                    Debug.Log($"<color=green> userID :: {userId} + index :: {index} </color>");
                     break;
                 default:
                     return false;
