@@ -20,7 +20,7 @@ namespace umi3d.edk.userCapture
 
         bool posesInitialized = false;
 
-        [SerializeField] List<PoseDto> allServerPoses = new List<PoseDto>();
+        [SerializeField] List<UMI3DPose_so> allServerPoses = new List<UMI3DPose_so>();
 
         private Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
         public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> _objectAllPoses;
@@ -38,7 +38,13 @@ namespace umi3d.edk.userCapture
             if (posesInitialized == false)
             {
                 posesInitialized = true;
-                allPoses.Add(0, allServerPoses);
+                List<PoseDto> poses = new List<PoseDto>();
+                allServerPoses.ForEach(p =>
+                {
+                    poses.Add(p.ToDTO());
+                });
+                allPoses.Add(0, poses);
+
                 _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses, null, null);
             }
 

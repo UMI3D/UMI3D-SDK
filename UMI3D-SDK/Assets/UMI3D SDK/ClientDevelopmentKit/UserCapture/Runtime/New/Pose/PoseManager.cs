@@ -15,18 +15,29 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
     public class PoseManager : SingleBehaviour<PoseManager>
     {
+        List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
+
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
 
         public Dictionary<ulong, List<PoseDto>> allPoses;
+
+        private void Start()
+        {
+            localPoses = new PoseDto[clientPoses.Count];
+            clientPoses.ForEach(p =>
+            {
+                localPoses.Append(p.ToDTO());
+            });
+        }
 
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
         {

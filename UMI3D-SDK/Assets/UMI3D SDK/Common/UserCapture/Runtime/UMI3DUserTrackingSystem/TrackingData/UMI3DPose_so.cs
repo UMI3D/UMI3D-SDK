@@ -15,12 +15,10 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.common.userCapture;
 using UnityEngine;  
 
-namespace umi3d.edk.userCapture
+namespace umi3d.common.userCapture
 {
     /// <summary>
     /// Scriptable object to contains data for PoseDto
