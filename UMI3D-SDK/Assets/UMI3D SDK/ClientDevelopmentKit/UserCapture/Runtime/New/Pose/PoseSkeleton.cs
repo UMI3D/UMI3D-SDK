@@ -24,12 +24,14 @@ namespace umi3d.cdk.userCapture
     {
         public List<PoseDto> CurrentlyActivatedPoses = new List<PoseDto>();
 
-        public void SetPose(bool isOveriding)
+        public void SetPose(bool isOveriding, List<PoseDto> poseToAdd)
         {
             if (isOveriding)
             {
                 CurrentlyActivatedPoses.Clear();
             }
+
+            CurrentlyActivatedPoses.AddRange(poseToAdd);
         }
 
         public void StopPose(bool areAll = true, List<PoseDto> posesToStop = null)
@@ -57,7 +59,17 @@ namespace umi3d.cdk.userCapture
 
         public void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
-            throw new System.NotImplementedException();
+            List<PoseDto> posesFromTrackingFrame = new List<PoseDto>();
+
+            trackingFrame.playerUserPoses.ForEach(pup =>
+            {
+                posesFromTrackingFrame.Add(PoseManager.Instance.GetPose(trackingFrame.userId, pup));
+            });
+
+            trackingFrame.playerServerPoses.ForEach(psp =>
+            {
+                posesFromTrackingFrame.Add(PoseManager.Instance.GetPose(0, psp));
+            });
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)

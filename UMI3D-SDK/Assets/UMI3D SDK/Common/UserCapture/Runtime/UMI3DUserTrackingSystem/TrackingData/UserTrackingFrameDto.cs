@@ -63,6 +63,10 @@ namespace umi3d.common.userCapture
         /// </summary>
         //public float refreshFrequency;
 
+        public List<int> playerServerPoses;
+
+        public List<int> playerUserPoses;
+
         /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingFrame; }
 

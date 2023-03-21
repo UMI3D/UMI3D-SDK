@@ -146,12 +146,12 @@ namespace umi3d.cdk.collaboration
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
-            ISkeleton userAvatar;
+            ISkeleton skeleton;
 
-            if (!skeletons.TryGetValue(frame.userId, out userAvatar))
+            if (!skeletons.TryGetValue(frame.userId, out skeleton))
                 UMI3DLogger.LogWarning("User Avatar not found.", scope);
 
-            userAvatar.UpdateFrame(frame);
+            skeleton.UpdateFrame(frame);
         }
 
         public UserCameraPropertiesDto GetCameraProperty()
@@ -277,11 +277,20 @@ namespace umi3d.cdk.collaboration
                 SendTrackingLoop();
         }
 
-        internal void HandlePoseRequest(PlayPoseDto playPoseDto)
+        public void HandlePoseRequest(PlayPoseDto playPoseDto)
         {
             PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.poseKey, playPoseDto.indexInList);
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
-            //skeleton.
+            if (playPoseDto.stopPose)
+            {
+                (skeleton as PersonalSkeleton)?.PoseSkeleton.StopPose(false, new List<PoseDto> { poseDto});
+                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
+            }
+            else
+            {
+                (skeleton as PersonalSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
+                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
+            }
         }
     }
 }

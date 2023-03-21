@@ -8,7 +8,9 @@ namespace umi3d.common
     {
         public ulong userID;
         public ulong poseKey;
-        public int indexInList; 
+        public int indexInList;
+
+        public bool stopPose = false;
 
         public PlayPoseDto() : base() { }
     }
