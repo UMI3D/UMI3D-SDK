@@ -22,9 +22,33 @@ namespace umi3d.cdk.userCapture
 {
     public class PoseSkeleton : ISubSkeleton
     {
-        public PoseDto defaultPose => PoseManager.Instance.defaultPose;
-        public PoseDto[] localPoses => PoseManager.Instance.localPoses;
-        public PoseDto[] serverPoses;
+        public List<PoseDto> CurrentlyActivatedPoses = new List<PoseDto>();
+
+        public void SetPose(bool isOveriding)
+        {
+            if (isOveriding)
+            {
+                CurrentlyActivatedPoses.Clear();
+            }
+        }
+
+        public void StopPose(bool areAll = true, List<PoseDto> posesToStop = null)
+        {
+            if (areAll)
+            {
+                CurrentlyActivatedPoses.Clear();
+            }
+            else
+            {
+                if (posesToStop != null)
+                {
+                    posesToStop.ForEach(pts =>
+                    {
+                        CurrentlyActivatedPoses.Remove(pts);
+                    });
+                }
+            }
+        }
 
         public PoseDto GetPose()
         {
