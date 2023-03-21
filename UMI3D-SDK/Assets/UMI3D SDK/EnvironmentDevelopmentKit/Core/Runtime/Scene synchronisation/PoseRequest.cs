@@ -10,17 +10,19 @@ namespace umi3d.edk
     public class PoseRequest : Operation
     {
 
-        int index;
+        public ulong poseKey;
+        public int indexInList;
 
-        public PoseRequest(int index)
+        public PoseRequest(ulong poseKey ,int indexInList)
         {
-            this.index = index;
+            this.poseKey = poseKey;
+            this.indexInList = indexInList;
         }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(GetOperationKey())
-                + UMI3DSerializer.Write(index);
+                + UMI3DSerializer.Write(indexInList);
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
@@ -40,6 +42,6 @@ namespace umi3d.edk
         }
 
         protected virtual PlayPoseDto CreateDto() { return new PlayPoseDto(); }
-        protected virtual void WriteProperties(PlayPoseDto dto, ulong userID) { dto.userID = userID; dto.indexInList = index; }
+        protected virtual void WriteProperties(PlayPoseDto dto, ulong userID) { dto.userID = userID; dto.indexInList = indexInList; dto.poseKey = poseKey; }
     }
 }

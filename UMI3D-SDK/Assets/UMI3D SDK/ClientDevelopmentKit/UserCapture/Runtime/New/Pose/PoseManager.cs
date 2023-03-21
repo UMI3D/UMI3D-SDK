@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using umi3d.common.userCapture;
 
@@ -26,5 +27,16 @@ namespace umi3d.cdk.userCapture
         public PoseDto[] localPoses;
 
         public Dictionary<ulong, List<PoseDto>> allPoses;
+
+        public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
+        {
+            this.allPoses = allPoses;
+        }
+
+        public PoseDto GetPose(ulong key, int index)
+        {
+            List<PoseDto> poses = allPoses[key];
+            return poses?[index];
+        }
     }
 }

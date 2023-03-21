@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -274,6 +275,13 @@ namespace umi3d.cdk.collaboration
             this._sendTracking = activeSending;
             if (_sendTracking)
                 SendTrackingLoop();
+        }
+
+        internal void HandlePoseRequest(PlayPoseDto playPoseDto)
+        {
+            PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.poseKey, playPoseDto.indexInList);
+            skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
+            //skeleton.
         }
     }
 }

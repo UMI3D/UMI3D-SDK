@@ -499,7 +499,10 @@ namespace umi3d.cdk.collaboration
                     });
                     break;
                 case PlayPoseDto playPoseDto:
-                    Debug.Log($"<color=green> userID :: {playPoseDto.userID} + index :: {playPoseDto.indexInList} </color>");
+                    MainThreadManager.Run(() =>
+                    {
+                        SkeletonManager.Instance.HandlePoseRequest(playPoseDto);
+                    });
                     break;
                 default:
                     return false;
@@ -639,8 +642,12 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
                     ulong userId = UMI3DSerializer.Read<ulong>(container);
-                    int index = UMI3DSerializer.Read<int>(container);
-                    Debug.Log($"<color=green> userID :: {userId} + index :: {index} </color>");
+                    ulong poseKey = UMI3DSerializer.Read<ulong>(container);
+                    int indexInList = UMI3DSerializer.Read<int>(container);
+                    MainThreadManager.Run(() =>
+                    {
+                        SkeletonManager.Instance.HandlePoseRequest(new PlayPoseDto () { indexInList = indexInList, poseKey = poseKey, userID = userId});
+                    });
                     break;
                 default:
                     return false;
