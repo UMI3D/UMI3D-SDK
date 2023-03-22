@@ -68,7 +68,7 @@ namespace umi3d.cdk.collaboration
         {
             skeletons.Add(TrackedSkeleton);
             skeletons.Add(new PoseSkeleton());
-            skeletons.Add(new AnimatedSkeleton());
+            //skeletons.Add(new AnimatedSkeleton());
         }
     }
 }

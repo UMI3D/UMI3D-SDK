@@ -24,8 +24,7 @@ namespace umi3d.common.userCapture
     {
         const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
 
-        [ConstEnum(typeof(BoneType),typeof(uint))]
-        public uint BoneAnchor;
+        public BonePoseDto BoneAnchor;
         public SkeletonMapping[] mappings { get; set; }
         public virtual ulong[] animations { get; set; }
         public virtual PoseDto GetPose()

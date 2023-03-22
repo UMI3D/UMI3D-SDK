@@ -49,7 +49,7 @@ namespace umi3d.cdk.userCapture
         /// Always returns null for AnimatonSkeleton.
         public virtual UserCameraPropertiesDto GetCameraDto()
         {
-            return null; //! to implement only in TrackedAvatar
+            return null;
         }
 
         /// <summary>

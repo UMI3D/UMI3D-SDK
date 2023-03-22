@@ -67,7 +67,7 @@ namespace umi3d.cdk.userCapture
             for (int i = Skeletons.Count - 1; i > 0; i--)
             {
                 ISubSkeleton skeleton = Skeletons[i];
-                List<BonePoseDto> bones = new List<BonePoseDto>();
+                List<BoneDto> bones = new List<BoneDto>();
                 
                 try
                 {
@@ -81,22 +81,24 @@ namespace umi3d.cdk.userCapture
 
                 bones.ForEach(b =>
                 {
-                    if (b.rotation != null && b.position != null)
+                    if (b.rotation != null/* && b.position != null*/)
                     {
-                        Bones.TryGetValue(b.bone, out var pose);
+                        Bones.TryGetValue(b.boneType, out var pose);
                         if (pose != null)
                         {
-                            Bones[b.bone].s_Rotation = b.rotation;
-                            Bones[b.bone].s_Position = b.position;
+                            Bones[b.boneType].s_Rotation = b.rotation;
+                            //Bones[b.boneType].s_Position = b.position;
                         }
                         else
                         {
-                            Bones.TryAdd(b.bone, new s_Transform()
+                            Bones.TryAdd(b.boneType, new s_Transform()
                             {
-                                s_Position= b.position,
-                                s_Rotation= b.rotation
+                                //s_Position= b.position,
+                                s_Rotation = b.rotation
                             });
                         }
+
+                        // Compute s_Transform's positions step by step
                     }
                 });
             }

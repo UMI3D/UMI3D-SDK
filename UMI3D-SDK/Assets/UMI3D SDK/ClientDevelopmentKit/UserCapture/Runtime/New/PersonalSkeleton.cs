@@ -69,7 +69,7 @@ namespace umi3d.cdk.userCapture
         {
             skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton, new PoseSkeleton(), new AnimatedSkeleton()
+                TrackedSkeleton, new PoseSkeleton()//, new AnimatedSkeleton()
             };
         }
 
@@ -90,6 +90,7 @@ namespace umi3d.cdk.userCapture
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
+            //The first skeleton is the TrackedSkeleton
             foreach (var skeleton in skeletons)
             {
                 var c = skeleton.GetCameraDto();
@@ -101,7 +102,9 @@ namespace umi3d.cdk.userCapture
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
-            UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
+            if (skeletons != null)
+                foreach (ISubWritableSkeleton skeleton in skeletons.OfType<ISubWritableSkeleton>())
+                    skeleton.UpdateFrame(frame);
         }
     }
 }

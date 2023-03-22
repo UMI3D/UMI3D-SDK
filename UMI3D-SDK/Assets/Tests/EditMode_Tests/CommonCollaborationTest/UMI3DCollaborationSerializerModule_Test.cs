@@ -605,7 +605,7 @@ namespace EditMode_Tests
         {
             PoseDto poseDto = new PoseDto(
                 bones: GetTestBonePoseDtoSample(),
-                boneAnchor : 24
+                boneAnchor : new BonePoseDto() { bone = 24, position = Vector3.zero, rotation = Vector4.one }
             );
 
             collabSerializerModule.Write(poseDto, out Bytable data);
@@ -616,19 +616,19 @@ namespace EditMode_Tests
             Assert.IsTrue(readable);
             for (int i = 0; i < poseDto.bones.Length; i++)
             {
-                Assert.IsTrue((result.bones[i]).bone == poseDto.bones[i].bone);
+                Assert.IsTrue((result.bones[i]).boneType == poseDto.bones[i].boneType);
             }
 
             Assert.IsTrue(((result as PoseDto).boneAnchor
                 == (poseDto as PoseDto).boneAnchor));
         }
 
-        private BonePoseDto[] GetTestBonePoseDtoSample()
+        private BoneDto[] GetTestBonePoseDtoSample()
         {
-            return new BonePoseDto[]
+            return new BoneDto[]
             {
-                new BonePoseDto(1, Vector3.one, Vector4.one),
-                new BonePoseDto(15, Vector3.one, Vector4.one)
+                new BoneDto() {boneType = 1, rotation = Vector4.one },
+                new BoneDto() {boneType = 15, rotation = Vector4.one }
             };
         }
 
@@ -638,7 +638,7 @@ namespace EditMode_Tests
             PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
                 pose : new PoseDto(
                         bones: GetTestBonePoseDtoSample(),
-                        boneAnchor: 24
+                        boneAnchor: new BonePoseDto() { bone = 24, position = Vector3.zero, rotation = Vector4.one }
                         ),
                 poseConditionDtos : GetCondditionsTestSet(),
                 duration : new DurationDto(24,222,13),
@@ -656,7 +656,7 @@ namespace EditMode_Tests
             PoseDto poseDto = result.pose;
             for (int i = 0; i < poseDto.bones.Length; i++)
             {
-                Assert.IsTrue((poseDto.bones[i]).bone == poseOverriderDto.pose.bones[i].bone);
+                Assert.IsTrue((poseDto.bones[i]).boneType == poseOverriderDto.pose.bones[i].boneType);
             }
             Assert.IsTrue(((poseDto).boneAnchor == poseOverriderDto.pose.boneAnchor));
 

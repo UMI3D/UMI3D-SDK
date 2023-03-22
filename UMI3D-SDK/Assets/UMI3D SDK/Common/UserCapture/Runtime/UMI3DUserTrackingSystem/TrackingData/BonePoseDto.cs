@@ -31,14 +31,14 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The current bone to update
         /// </summary>
-        public uint bone { get; private set; }
+        public uint bone { get; set; }
         /// <summary>
         /// The position of the bone
         /// </summary>
-        public Vector3 position { get; private set; }
+        public Vector3 position { get; set; }
         /// <summary>
         /// The rotation of the bone
         /// </summary>
-        public Vector4 rotation { get; private set; }
+        public Vector4 rotation { get; set; }
     }
 }

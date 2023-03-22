@@ -173,6 +173,7 @@ namespace umi3d.cdk.collaboration
                         if (frame != null && UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
                             UMI3DClientServer.SendTracking(frame);
 
+                        //Camera properties are not sent
                         if (sendCameraProperties)
                             GetCameraProperty();
                     }

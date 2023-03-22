@@ -38,7 +38,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Bones information of the user
         /// </summary>
-        public List<BonePoseDto> trackedBones;
+        public List<ControllerDto> trackedBones;
 
         public List<int> playerServerPoses;
 

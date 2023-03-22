@@ -139,10 +139,10 @@ public class ISkeleton_Test
     public void Test_Compute_OneAnimatedSkeletonWithhBones()
     {
         Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
-        PoseDto poseDto= new PoseDto();
-        poseDto.SetBonePoseDtoArray(new BonePoseDto[]
+        PoseDto poseDto = new PoseDto();
+        poseDto.SetBonePoseDtoArray(new BoneDto[]
         {
-            new BonePoseDto(BoneType.CenterFeet, Vector3.zero, Vector4.one),
+            new BoneDto() {boneType = BoneType.CenterFeet, rotation = Vector4.one},
         });
 
         Mock<SkeletonMapper> mockSkeletonMapper = new Mock<SkeletonMapper>();
