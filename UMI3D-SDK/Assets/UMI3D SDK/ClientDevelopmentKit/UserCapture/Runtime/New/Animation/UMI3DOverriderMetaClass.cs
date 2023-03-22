@@ -18,26 +18,56 @@ namespace umi3d.cdk.userCapture
         bool isActive = false;
         public List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
 
-        public override UMI3DVersion.VersionCompatibility version => throw new System.NotImplementedException();
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
+        ulong overriderID;
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            throw new System.NotImplementedException();
+            return data.dto is UMI3DOverriderMetaClassDto;
         }
 
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
-            throw new System.NotImplementedException();
+            switch (value.dto)
+            {
+                case UMI3DOverriderMetaClassDto uMI3DOverriderMetaClassDto:
+
+                    break;
+            }
+
+            if (overidderMetaClassInstance is not null)
+            {
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(overidderMetaClassInstance.overriderID, value.dto, overidderMetaClassInstance).NotifyLoaded();
+                overidderMetaClassInstance.Init();
+            }
+            return Task.CompletedTask;
         }
 
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            throw new System.NotImplementedException();
+            switch (value.property.property)
+            {
+                case UMI3DPropertyKeys.ReceivePoseOverriders:
+
+                    break;
+            }
+
+            return Task.FromResult(true);
+
         }
 
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            throw new System.NotImplementedException();
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.ReceivePoseOverriders:
+
+                    break;
+            }
+
+            return Task.FromResult(true);
         }
 
         public void EnableCheck()

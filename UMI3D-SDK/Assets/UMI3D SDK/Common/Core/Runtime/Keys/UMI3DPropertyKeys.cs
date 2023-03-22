@@ -203,6 +203,7 @@ namespace umi3d.common
         public const uint AnimationEmote = 11007;
 
         public const uint AllPoses = 11008;
+        public const uint ReceivePoseOverriders = 11009;
         #endregion
 
         #region notification
