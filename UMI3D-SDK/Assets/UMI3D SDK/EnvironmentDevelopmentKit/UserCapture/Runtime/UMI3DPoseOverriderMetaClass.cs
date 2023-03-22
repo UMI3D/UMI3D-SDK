@@ -29,6 +29,9 @@ namespace umi3d.edk.userCapture
         [SerializeField] List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
 
         List<PoseOverriderDto> poseOverridersDtos = new List<PoseOverriderDto>();
+        UMI3DAsyncListProperty<PoseOverriderDto> poseOverriderDtoAsyncList;
+
+        ulong overriderID;
 
         public void Init()
         {
@@ -59,7 +62,17 @@ namespace umi3d.edk.userCapture
 
         public IEntity ToEntityDto(UMI3DUser user)
         {
-            throw new NotImplementedException();
+            return ToDto();
+        }
+
+        private UMI3DOverriderMetaClassDto ToDto()
+        {
+            UMI3DOverriderMetaClassDto uMI3DOverriderMetaClassDto = new UMI3DOverriderMetaClassDto()
+            {
+                poseOverriderDtos = poseOverridersDtos.ToArray(),
+            };
+
+            return uMI3DOverriderMetaClassDto;
         }
 
         public Bytable ToBytes(UMI3DUser user)
@@ -84,7 +97,22 @@ namespace umi3d.edk.userCapture
 
         public ulong Id()
         {
-            throw new NotImplementedException();
+            Register();
+            return overriderID;
+        }
+
+        /// <summary>
+        /// Check if the UMI3DPoseOverriderMetaClass has been registered to the Environnement and do it if not
+        /// </summary>
+        /// <returns>Return a LoadEntity</returns>
+        public virtual LoadEntity Register()
+        {
+            if (overriderID == 0 && UMI3DEnvironment.Exists)
+            {
+                overriderID = UMI3DEnvironment.Register(this);
+                InitDefinition(overriderID);
+            }
+            return GetLoadEntity();
         }
     }
 }
