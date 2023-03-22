@@ -1,11 +1,8 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.edk.userCapture;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace inetum.unityUtils
+namespace umi3d.common.userCapture
 {
     public class PoseConditionPanel : VisualElement
     {

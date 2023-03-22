@@ -17,7 +17,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using umi3d.common.userCapture;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -28,7 +27,7 @@ using System.Linq;
 using System.Reflection;
 using GLTF.Schema;
 
-namespace intetum.unityUtils
+namespace umi3d.common.userCapture
 {
 
     public class PoseSetterEditorWindow : EditorWindow
@@ -92,8 +91,6 @@ namespace intetum.unityUtils
             wnd.maxSize = new Vector2(350, 650);
         }
 
-        PoseDto_writter poseDto_Writter = new PoseDto_writter();
-
         #region Initialisation (Every thing that goes onEnable)
         /// <summary>
         /// Creates the UI using th UI_element framework
@@ -101,7 +98,7 @@ namespace intetum.unityUtils
         public void OnEnable()
         {
             VisualTreeAsset uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-                                    "Assets\\UMI3D SDK\\EnvironmentDevelopmentKit\\UserCapture\\Editor\\PoseSetter\\PoseSetterEditorWindow.uxml"
+                                    "Assets\\UMI3D SDK\\Common\\UserCapture\\Editor\\PoseSetter\\PoseSetterEditorWindow.uxml"
                                    );
             uxml.CloneTree(rootVisualElement);
             GetAllRefs();

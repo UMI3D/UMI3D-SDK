@@ -142,13 +142,13 @@ namespace umi3d.common.collaboration
                     }
                 case true when typeof(T) == typeof(PoseOverriderDto):
                     {
-                        PoseDto poseDto;
+                        int poseIndexinPoseManager;
                         PoseConditionDto[] poseConditionDtos;
                         DurationDto durationDto;
                         bool interpolationable;
                         bool composable;
 
-                        Read(container, out readable, out poseDto);
+                        Read(container, out readable, out poseIndexinPoseManager);
                         poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
                         Read(container, out readable, out durationDto);
                         readable &= container != null;
@@ -158,7 +158,7 @@ namespace umi3d.common.collaboration
                         if (readable)
                         {
                             PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
-                                pose: poseDto,
+                                poseIndexinPoseManager: poseIndexinPoseManager,
                                 poseConditionDtos: poseConditionDtos,
                                 duration: durationDto,
                                 interpolationable: interpolationable,
@@ -1306,7 +1306,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(poseDto.boneAnchor);
                     break;
                 case PoseOverriderDto poseOverriderDto:
-                    bytable = UMI3DSerializer.Write(poseOverriderDto.pose)
+                    bytable = UMI3DSerializer.Write(poseOverriderDto.poseIndexinPoseManager)
                         + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions)
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.interpolationable)

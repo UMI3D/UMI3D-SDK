@@ -39,10 +39,12 @@ namespace umi3d.edk.userCapture
             {
                 posesInitialized = true;
                 List<PoseDto> poses = new List<PoseDto>();
-                allServerPoses.ForEach(p =>
+                for (int i = 0; i < allServerPoses.Count; i++)
                 {
-                    poses.Add(p.ToDTO());
-                });
+                    allServerPoses[i].SendPoseIndexationEvent(i);
+                    poses.Add(allServerPoses[i].ToDTO());
+                }
+
                 allPoses.Add(0, poses);
 
                 _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses, null, null);

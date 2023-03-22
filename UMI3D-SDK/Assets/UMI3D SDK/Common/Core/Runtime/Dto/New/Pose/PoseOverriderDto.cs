@@ -29,16 +29,16 @@ namespace umi3d.common.userCapture
         /// <param name="duration"></param>
         /// <param name="interpolationable"></param>
         /// <param name="composable"></param>
-        public PoseOverriderDto(PoseDto pose, PoseConditionDto[] poseConditionDtos, DurationDto duration, bool interpolationable, bool composable)
+        public PoseOverriderDto(int poseIndexinPoseManager, PoseConditionDto[] poseConditionDtos, DurationDto duration, bool interpolationable, bool composable)
         {
-            this.pose = pose;
+            this.poseIndexinPoseManager = poseIndexinPoseManager;
             this.poseConditions = poseConditionDtos;
             this.duration = duration;
             this.interpolationable = interpolationable;
             this.composable = composable;
         }
 
-        public PoseDto pose { get; private set; }
+        public int poseIndexinPoseManager { get; private set; }
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>

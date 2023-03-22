@@ -635,11 +635,9 @@ namespace EditMode_Tests
         [Test]
         public void ReadPoseOverrider()
         {
+            int poseIndexinPoseManager = 12;
             PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
-                pose : new PoseDto(
-                        bones: GetTestBonePoseDtoSample(),
-                        boneAnchor: 24
-                        ),
+                poseIndexinPoseManager: poseIndexinPoseManager,
                 poseConditionDtos : GetCondditionsTestSet(),
                 duration : new DurationDto(24,222,13),
                 interpolationable : true,
@@ -653,12 +651,7 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseOverriderDto result);
             Assert.IsTrue(readable);
 
-            PoseDto poseDto = result.pose;
-            for (int i = 0; i < poseDto.bones.Length; i++)
-            {
-                Assert.IsTrue((poseDto.bones[i]).bone == poseOverriderDto.pose.bones[i].bone);
-            }
-            Assert.IsTrue(((poseDto).boneAnchor == poseOverriderDto.pose.boneAnchor));
+            Assert.IsTrue(poseIndexinPoseManager == result.poseIndexinPoseManager);
 
             Assert.IsTrue((result.poseConditions[0] as UserScaleConditinoDto).scale
                 == (poseOverriderDto.poseConditions[0] as UserScaleConditinoDto).scale);

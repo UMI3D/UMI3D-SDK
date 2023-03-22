@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using UnityEngine;  
 
@@ -31,10 +32,20 @@ namespace umi3d.common.userCapture
         public List<UMI3DBonePose_so> BonePoses { get => bonePoses; }
         public uint BoneAnchor { get => boneAnchor; }
 
+        /// <summary>
+        /// An event thats called when the PoseManager has played his Start() method
+        /// </summary>
+        public event Action<int> onPoseReferencedAndIndexSetted;
+
         public void Init(List<UMI3DBonePose_so> bonePoses, uint boneAnchor)
         {
             this.bonePoses = bonePoses;
             this.boneAnchor = boneAnchor;
+        }
+
+        public void SendPoseIndexationEvent(int i)
+        {
+            onPoseReferencedAndIndexSetted.Invoke(i);
         }
 
         /// <summary>

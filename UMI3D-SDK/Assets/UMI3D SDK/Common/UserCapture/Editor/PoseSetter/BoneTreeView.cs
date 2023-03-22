@@ -20,7 +20,7 @@ using UnityEditor.TreeViewExamples;
 using UnityEditor;
 using UnityEngine;
 
-namespace inetum.unityUtils
+namespace umi3d.common.userCapture
 {
     class BoneTreeView : TreeView
     {

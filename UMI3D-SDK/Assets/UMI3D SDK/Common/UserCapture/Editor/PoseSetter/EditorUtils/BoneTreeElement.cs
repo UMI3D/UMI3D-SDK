@@ -6,7 +6,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.UIElements;
 
-namespace inetum.unityUtils
+namespace umi3d.common.userCapture
 {
     public class BoneTreeElement : TreeElement
     {

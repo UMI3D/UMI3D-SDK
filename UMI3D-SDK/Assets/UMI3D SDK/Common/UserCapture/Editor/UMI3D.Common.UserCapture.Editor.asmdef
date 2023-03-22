@@ -1,0 +1,17 @@
+{
+    "name": "UMI3D.Common.UserCapture.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:608ff695b5b1d8f46a32962b70ec9792",
+        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
