@@ -16,6 +16,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace umi3d.common.userCapture
@@ -26,6 +27,14 @@ namespace umi3d.common.userCapture
         [SerializeField] List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
 
         List<PoseOverriderDto> poseOverridersDtos = new List<PoseOverriderDto>();
+
+        /// <summary>
+        /// When the condtions of a pose are satisfied,
+        /// returns the right pose overrider
+        /// </summary>
+        public event Action<PoseOverriderDto> onConditionValidated;
+
+        bool isActive = false;
 
         public void Init()
         {
@@ -39,6 +48,60 @@ namespace umi3d.common.userCapture
             });
         }
 
+        public void AddPoseOveriderDtos(List<PoseOverriderDto> poseOverriderDtos)
+        {
+            this.poseOverridersDtos.AddRange(poseOverriderDtos);
+        }
+
+        public void EnableCheck()
+        {
+            this.isActive = true;
+        }
+
+        public void DisableCheck()
+        {
+            this.isActive = false;
+        }
+
+        /// <summary>
+        /// return -1 if there is no pose playable,
+        /// overwise returns the index of the playable pose
+        /// </summary>
+        public IEnumerator CheckCondtionOfAllOverriders()
+        {
+            while (isActive)
+            {
+                poseOverridersDtos.ForEach(po =>
+                {
+                    if (CheckConditions(po.poseConditions))
+                    {
+                        onConditionValidated.Invoke(po);
+                    }
+                });
+
+                yield return new WaitForSeconds(0.2f);
+            }
+        }
+
+        private bool CheckConditions(PoseConditionDto[] poseConditions)
+        {
+            for (int i = 0; i < poseConditions.Length; i++)
+            {
+                if (!CheckCondition(poseConditions[i]))
+                {
+                    return false;
+                }
+            }
+
+            return true;
+        }
+
+        private bool CheckCondition(PoseConditionDto poseConditionDto)
+        {
+            // TODO -- LOGIC 
+
+            return false;
+        }
     }
 }
 
