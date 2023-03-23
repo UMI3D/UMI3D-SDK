@@ -61,6 +61,10 @@ namespace umi3d.edk.userCapture
             return GetLoadEntity();
         }
 
+        /// <summary>
+        /// Load the scriptable objects as dtos and inits the assync list 
+        /// </summary>
+        /// <param name="id"></param>
         public void InitDefinition(ulong id)
         {
             poseOverridersDtos.Clear();
@@ -75,11 +79,9 @@ namespace umi3d.edk.userCapture
             poseOverriderDtoAsyncList = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ReceivePoseOverriders, poseOverridersDtos);
         }
 
-        //public void AddPoseOveriderDtos(List<PoseOverriderDto> poseOverriderDtos)
-        //{
-        //    this.poseOverridersDtos.AddRange(poseOverriderDtos);
-        //}
-
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
@@ -90,6 +92,9 @@ namespace umi3d.edk.userCapture
             return operation;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
@@ -100,11 +105,21 @@ namespace umi3d.edk.userCapture
             return operation;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto(user);
         }
 
+        /// <summary>
+        /// Converts this to a DTO entity
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         private UMI3DPoseOverriderContainerDto ToDto(UMI3DUser user)
         {
             UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto = new UMI3DPoseOverriderContainerDto()
@@ -115,12 +130,20 @@ namespace umi3d.edk.userCapture
             return uMI3DOverriderMetaClassDto;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
         public Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DSerializer.Write(Id())
                 + UMI3DSerializer.WriteCollection(poseOverriderDtoAsyncList.GetValue(user));
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public ulong Id()
         {
             Register();

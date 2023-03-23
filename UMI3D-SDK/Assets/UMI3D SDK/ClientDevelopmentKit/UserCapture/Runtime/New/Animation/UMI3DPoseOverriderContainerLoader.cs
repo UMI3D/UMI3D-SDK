@@ -23,6 +23,10 @@ namespace umi3d.cdk.userCapture
 
         ulong overriderID;
 
+        /// <summary>
+        /// Init the IDs, inits the overriders, registers this entity to the environnement loader
+        /// </summary>
+        /// <param name="uMI3DOverriderMetaClassDto"></param>
         private void InitDefinition(UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto)
         {
             overriderID = uMI3DOverriderMetaClassDto.id;
@@ -30,11 +34,17 @@ namespace umi3d.cdk.userCapture
             UMI3DEnvironmentLoader.Instance.RegisterEntity(this.overriderID, uMI3DOverriderMetaClassDto, this).NotifyLoaded();
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is UMI3DPoseOverriderContainerDto;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             switch (value.dto)
@@ -47,6 +57,9 @@ namespace umi3d.cdk.userCapture
             return Task.CompletedTask;
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             switch (value.property.property)
@@ -60,6 +73,9 @@ namespace umi3d.cdk.userCapture
 
         }
 
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             switch (value.propertyKey)
@@ -74,22 +90,23 @@ namespace umi3d.cdk.userCapture
             return Task.FromResult(true);
         }
 
-        public void EnableCheck()
-        {
-            this.isActive = true;
-        }
-
+        #region CheckConditions
+        /// <summary>
+        /// Stops the check of fall the overriders 
+        /// </summary>
         public void DisableCheck()
         {
             this.isActive = false;
         }
 
         /// <summary>
+        /// Start to check all overriders
         /// return -1 if there is no pose playable,
         /// overwise returns the index of the playable pose
         /// </summary>
         public IEnumerator CheckCondtionOfAllOverriders()
         {
+            isActive = true;
             while (isActive)
             {
                 poseOverriderDtos.ForEach(po =>
@@ -123,5 +140,6 @@ namespace umi3d.cdk.userCapture
 
             return false;
         }
+        #endregion  
     }
 }
