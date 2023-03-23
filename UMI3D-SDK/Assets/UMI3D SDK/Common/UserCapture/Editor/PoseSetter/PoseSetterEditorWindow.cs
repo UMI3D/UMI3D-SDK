@@ -427,7 +427,22 @@ namespace umi3d.common.userCapture
 
                 pose_So.Init(bonsPoseSos, r.BoneType);
                 EditorUtility.SetDirty(pose_So);
+
+                SavePoseOverrider(pose_So, path);
             });
+        }
+
+        private void SavePoseOverrider(UMI3DPose_so pose_So, string path)
+        {
+            if (tg_enable_condtion.value == true)
+            {
+                UMI3DPoseOveridder_so poseOverrider = conditionPanel.GetPoseOveridder_So();
+                poseOverrider.pose = pose_So;
+                string name = poseOverrider.name = pose_So.name + "_overrider";
+                AssetDatabase.CreateAsset(poseOverrider, path + $"/{name}.asset");
+                AssetDatabase.SaveAssets();
+                EditorUtility.SetDirty(poseOverrider);
+            }
         }
 
         /// <summary>

@@ -14,37 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using UnityEditor.TreeViewExamples;
+using umi3d.common.userCapture;
+using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.Events;
 using UnityEngine.UIElements;
 
-namespace umi3d.common.userCapture
+namespace inetum.unityUtils
 {
-    public class BoneTreeElement : TreeElement
+    public class UintField_UI_Elements : IntegerField
     {
-        public UnityEvent<BoolChangeData> onIsRootChanged = new();
-        public UnityEvent<BoolChangeData> onIsSelectedChanged = new();
+        public class Uxmlfactory : UxmlFactory<UintField_UI_Elements, UintField_UI_Elements.UxmlTraits> { }
 
-
-        public BoneTreeElement(bool isRoot, bool isSeledcted) 
-        { 
-            this.isRoot = isRoot; 
-            this.isSelected = isSeledcted;  
+        public void Init()
+        {
+            this.RegisterValueChangedCallback(data =>
+            {
+                if (data != null)
+                {
+                    if (data.newValue < 0)
+                    {
+                        value = data.previousValue;
+                    }
+                }
+            });
         }
-
-        public bool isRoot = false;
-        public bool isSelected = false;
-    }
-
-    public struct BoolChangeData
-    {
-        public BoneTreeElement boneTreeEleements;
-        public bool boolValue;
-        public int itemID;
     }
 }
 

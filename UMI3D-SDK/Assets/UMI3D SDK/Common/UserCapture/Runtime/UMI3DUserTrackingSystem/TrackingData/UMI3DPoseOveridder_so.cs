@@ -10,15 +10,14 @@ namespace umi3d.common.userCapture
     [Serializable]
     public class UMI3DPoseOveridder_so : ScriptableObject
     {
-
-        public UMI3DPose_so pose { get; private set; }
+        public UMI3DPose_so pose;
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        public PoseConditionDto[] poseConditions { get; private set; }
-        public DurationDto duration { get; private set; }
-        public bool interpolationable { get; private set; }
-        public bool composable { get; private set; }
+        public PoseConditionDto[] poseConditions;
+        public DurationDto duration;
+        public bool interpolationable;
+        public bool composable;
 
         public PoseOverriderDto ToDto(int poseIndexinPoseManager)
         {

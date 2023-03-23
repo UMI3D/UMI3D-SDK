@@ -1,5 +1,5 @@
 <ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
-    <Style src="project://database/Assets/UMI3D%20SDK/EnvironmentDevelopmentKit/UserCapture/Editor/PoseSetter/poseSetterStyle.uss?fileID=7433441132597879392&amp;guid=35ee429adc26a6a499e423892732884f&amp;type=3#poseSetterStyle" />
+    <Style src="project://database/Assets/UMI3D%20SDK/Common/UserCapture/Editor/PoseSetter/poseSetterStyle.uss?fileID=7433441132597879392&amp;guid=35ee429adc26a6a499e423892732884f&amp;type=3#poseSetterStyle" />
     <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1">
         <ui:VisualElement name="MainContainer" style="flex-grow: 0;">
             <ui:VisualElement name="GlobalInformations" class="EditorParts">
@@ -47,27 +47,26 @@
                 <ui:VisualElement name="Conditions" class="SubEditorPart">
                     <ui:Toggle label="Is an overrider ?" name="tg_enable_condtion" />
                     <ui:VisualElement name="condition_settings">
-                        <inetum.unityUtils.PoseConditionPanel name="condition_panel" class="BoneArea">
+                        <umi3d.common.userCapture.PoseConditionPanel name="condition_panel" class="BoneArea">
                             <ui:VisualElement name="Toggles">
                                 <ui:Toggle label="Is Composable" name="tg_isComposable" />
                                 <ui:Toggle label="Is Interpolable" name="tg_isInterpolationable" />
                             </ui:VisualElement>
                             <ui:VisualElement>
-                                <ui:TextField picking-mode="Ignore" label="Duration" value="filler text" name="duration_field" text="1" />
+                                <inetum.unityUtils.UintField_UI_Elements name="duration" label="Duration" />
+                                <inetum.unityUtils.UintField_UI_Elements name="min_duration" label="Min" />
+                                <inetum.unityUtils.UintField_UI_Elements name="max_duration" label="Max" />
                             </ui:VisualElement>
                             <ui:VisualElement name="ConditionsController" style="flex-direction: row;">
                                 <ui:Button text="Add Condition" display-tooltip-when-elided="true" name="add_condition" />
                                 <ui:Button text="Remove Condition" display-tooltip-when-elided="true" name="remove_condition" />
                             </ui:VisualElement>
                             <ui:VisualElement name="ConditionsContainer">
-                                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="background-color: rgba(96, 96, 96, 255); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; border-left-color: rgba(0, 0, 0, 255); border-right-color: rgba(0, 0, 0, 255); border-top-color: rgba(0, 0, 0, 255); border-bottom-color: rgba(0, 0, 0, 255); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px;">
-                                    <ui:VisualElement name="condition_field" class="ConditionField">
-                                        <ui:DropdownField label="Dropdown" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="conditionType_dropdown" />
-                                        <ui:VisualElement name="ConditionEditor" />
-                                    </ui:VisualElement>
+                                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="background-color: rgb(96, 96, 96); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px;">
+                                    <ui:VisualElement name="condition_container" />
                                 </ui:ScrollView>
                             </ui:VisualElement>
-                        </inetum.unityUtils.PoseConditionPanel>
+                        </umi3d.common.userCapture.PoseConditionPanel>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
