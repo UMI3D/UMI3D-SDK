@@ -107,6 +107,7 @@ namespace umi3d.cdk
             .SetNext(new UMI3DVolumeLoader())
             .SetNext(new UMI3DUINodeLoader())
             //.SetNext(new UMI3DHandPoseLoader())
+            .SetNext(new UMI3DPoseOverriderContainerLoader())
             .SetNext(new UMI3DEmotesConfigLoader())
             .SetNext(new UMI3DEmoteLoader())
             .SetNext(notificationLoader.GetNotificationLoader())

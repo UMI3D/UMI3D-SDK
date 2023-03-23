@@ -25,7 +25,7 @@ using UnityEngine;
 namespace umi3d.edk.userCapture
 {
     [Serializable]
-    public class UMI3DPoseOverriderMetaClass : UMI3DLoadableEntity
+    public class UMI3DPoseOverriderContainer : UMI3DLoadableEntity
     {
         /// <summary>
         /// Scriptable objects to load
@@ -105,9 +105,9 @@ namespace umi3d.edk.userCapture
             return ToDto(user);
         }
 
-        private UMI3DOverriderMetaClassDto ToDto(UMI3DUser user)
+        private UMI3DPoseOverriderContainerDto ToDto(UMI3DUser user)
         {
-            UMI3DOverriderMetaClassDto uMI3DOverriderMetaClassDto = new UMI3DOverriderMetaClassDto()
+            UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto = new UMI3DPoseOverriderContainerDto()
             {
                 poseOverriderDtos = poseOverriderDtoAsyncList.GetValue(user).ToArray(),
             };
