@@ -23,6 +23,13 @@ namespace umi3d.cdk.userCapture
 
         ulong overriderID;
 
+        private void InitDefinition(UMI3DOverriderMetaClassDto uMI3DOverriderMetaClassDto)
+        {
+            overriderID = uMI3DOverriderMetaClassDto.id;
+            poseOverriderDtos.AddRange(uMI3DOverriderMetaClassDto.poseOverriderDtos);
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(this.overriderID, uMI3DOverriderMetaClassDto, this).NotifyLoaded();
+        }
+
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is UMI3DOverriderMetaClassDto;
@@ -33,15 +40,10 @@ namespace umi3d.cdk.userCapture
             switch (value.dto)
             {
                 case UMI3DOverriderMetaClassDto uMI3DOverriderMetaClassDto:
-
+                    InitDefinition(uMI3DOverriderMetaClassDto);
                     break;
             }
 
-            if (overidderMetaClassInstance is not null)
-            {
-                UMI3DEnvironmentLoader.Instance.RegisterEntity(overidderMetaClassInstance.overriderID, value.dto, overidderMetaClassInstance).NotifyLoaded();
-                overidderMetaClassInstance.Init();
-            }
             return Task.CompletedTask;
         }
 
@@ -50,7 +52,7 @@ namespace umi3d.cdk.userCapture
             switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ReceivePoseOverriders:
-
+                    InitDefinition(value.entity.dto as UMI3DOverriderMetaClassDto);
                     break;
             }
 
@@ -63,7 +65,9 @@ namespace umi3d.cdk.userCapture
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.ReceivePoseOverriders:
-
+                    ulong id = UMI3DSerializer.Read<ulong>(value.container);
+                    PoseOverriderDto[] dtos = UMI3DSerializer.ReadArray<PoseOverriderDto>(value.container);
+                    InitDefinition(new UMI3DOverriderMetaClassDto() { id = id, poseOverriderDtos = dtos });
                     break;
             }
 
