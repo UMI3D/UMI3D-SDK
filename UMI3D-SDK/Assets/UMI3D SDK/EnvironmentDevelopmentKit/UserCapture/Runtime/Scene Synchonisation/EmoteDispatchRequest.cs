@@ -13,9 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections.Generic;
-using umi3d.common;
+
 using umi3d.common.userCapture;
+using umi3d.common;
 
 namespace umi3d.edk.userCapture
 {
@@ -28,10 +28,12 @@ namespace umi3d.edk.userCapture
         /// UMI3D id of the emote to trigger/interrupt.
         /// </summary>
         public ulong emoteId;
+
         /// <summary>
         /// If true, the emote sould be triggered. Otherwise, it should be interrupted.
         /// </summary>
         public bool shouldTrigger;
+
         /// <summary>
         /// User id of the user planning to trigger an emote.
         /// </summary>
@@ -51,10 +53,12 @@ namespace umi3d.edk.userCapture
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            EmoteRequest dto = new EmoteRequest();
-            dto.emoteId = emoteId;
-            dto.shouldTrigger = shouldTrigger;
-            dto.sendingUserId = sendingUserId;
+            EmoteDispatchDto dto = new()
+            {
+                emoteId = emoteId,
+                shouldTrigger = shouldTrigger,
+                sendingUserId = sendingUserId
+            };
             return dto;
         }
     }

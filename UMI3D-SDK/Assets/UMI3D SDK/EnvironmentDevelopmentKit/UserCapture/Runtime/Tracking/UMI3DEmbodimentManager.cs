@@ -230,6 +230,11 @@ namespace umi3d.edk.userCapture
         }
 
         /// <summary>
+        /// Triggered when an emote trigger
+        /// </summary>
+        public event System.Action<(ulong emoteId, UMI3DUser user, bool trigger)> EmoteTriggered;
+
+        /// <summary>
         /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.
         /// </summary>
         /// <param name="emoteId">Emote to trigger UMI3D id.</param>
@@ -239,6 +244,7 @@ namespace umi3d.edk.userCapture
         {
             //? avoid the data channel filtering
             var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
+            EmoteTriggered?.Invoke((emoteId, user, trigger));
             targetUsers.Remove(user);
             var req = new EmoteDispatchRequest()
             {
