@@ -52,7 +52,9 @@ namespace umi3d.common.userCapture
             if (fieldActualConditionType == typeof(MagnitudeConditionDto))
             {
                 return new MagnitudeConditionDto(
-                    (temporaryChildren[0] as FloatField).value
+                    (temporaryChildren[0] as FloatField).value,
+                    (uint)(temporaryChildren[1] as IntegerField).value,
+                    (uint)(temporaryChildren[2] as IntegerField).value
                 );
             }
             else if (fieldActualConditionType == typeof(DirectionConditionDto))

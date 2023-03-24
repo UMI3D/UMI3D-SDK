@@ -340,7 +340,9 @@ namespace EditMode_Tests
         public void ReadMagnitudeCondition()
         {
             MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
-                magnitude: 1220
+                magnitude: 1220,
+                boneOrigine : 12,
+                targetObjectId : 24
             );
 
             collabSerializerModule.Write(magnitudeConditionDto, out Bytable data);
@@ -420,7 +422,7 @@ namespace EditMode_Tests
         public void ReadRangeCondition()
         {
             RangeConditionDto rangeConditionDto = new RangeConditionDto(
-                conditionA : new MagnitudeConditionDto(12),
+                conditionA : new MagnitudeConditionDto(12, 53, 15),
                 conditionB : new ScaleConditionDto(Vector3.one)
             );
 

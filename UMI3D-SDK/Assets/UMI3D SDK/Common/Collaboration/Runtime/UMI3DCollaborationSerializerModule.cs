@@ -851,12 +851,18 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(MagnitudeConditionDto):
                     {
                         float magnitude;
+                        uint boneOrigin;
+                        uint targetObjectID;
                         readable = UMI3DSerializer.TryRead(container, out magnitude);
+                        readable &= UMI3DSerializer.TryRead(container, out boneOrigin);
+                        readable &= UMI3DSerializer.TryRead(container, out targetObjectID);
 
                         if (readable)
                         {
                             MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
-                                magnitude: magnitude
+                                magnitude: magnitude,
+                                boneOrigine : boneOrigin,
+                                targetObjectId : targetObjectID 
                             );
                             result = (T)Convert.ChangeType(magnitudeConditionDto, typeof(T));
                             return true;
@@ -1321,7 +1327,9 @@ namespace umi3d.common.collaboration
                 #region PoseCondition Dto
                 case MagnitudeConditionDto magnitudeConditionDto:
                     bytable = UMI3DSerializer.Write((int)1)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.magnitude);
+                        + UMI3DSerializer.Write(magnitudeConditionDto.magnitude)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.boneOrigine)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.targetObjectId);
                     break;
                 case RangeConditionDto rangeConditionDto:
                     bytable = UMI3DSerializer.Write((int)2)

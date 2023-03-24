@@ -10,6 +10,7 @@ namespace umi3d.cdk.userCapture
 {
     public class UMI3DPoseOverriderContainerLoader : AbstractLoader, IEntity
     {
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction;
         /// <summary>
         /// When the condtions of a pose are satisfied,
         /// returns the right pose overrider
@@ -136,10 +137,64 @@ namespace umi3d.cdk.userCapture
 
         private bool CheckCondition(PoseConditionDto poseConditionDto)
         {
-            // TODO -- LOGIC 
+            switch (poseConditionDto)
+            {
+                case MagnitudeConditionDto magnitudeConditionDto:
+                    return HandleMagnitude(magnitudeConditionDto);
+                case BoneRotationConditionDto boneRotationConditionDto:
+                    return HandleBoneRotation(boneRotationConditionDto);
+                case DirectionConditionDto directionConditionDto:
+
+                    break;
+                case UserScaleConditinoDto userScaleConditinoDto:
+
+                    break;
+
+                case ScaleConditionDto scaleConditionDto:
+
+                    break;
+
+                case RangeConditionDto rangeConditionDto:
+                    
+                    break;
+
+                case NotConditionDto notConditionDto:
+
+                    break;
+            }
 
             return false;
         }
-        #endregion  
+
+        private bool HandleMagnitude(MagnitudeConditionDto magnitudeConditionDto)
+        {
+            UMI3DNodeInstance targetNodeInstance = UMI3DEnvironmentLoader.Instance
+                                                        .GetEntityInstance(magnitudeConditionDto.targetObjectId) 
+                                                        as UMI3DNodeInstance;
+            if (targetNodeInstance == null)
+            {
+                UMI3DLogger.LogError("you havent referenced the right entity ID in your magnitude DTO", scope);
+                return false;
+            }
+            Vector3 targetPosition = targetNodeInstance.transform.position;
+            Vector3 bonePosition = PersonalSkeleton.Instance.TrackedSkeleton.bones[magnitudeConditionDto.boneOrigine].transform.position;
+            float distance = Vector3.Distance(targetPosition, bonePosition);
+
+            if (distance < magnitudeConditionDto.magnitude) 
+            {
+                return true;
+            }
+
+            return false;
+        }
+
+        private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
+        {
+            //Qua
+
+            return false;
+        }
+
+        #endregion
     }
 }
