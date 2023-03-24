@@ -570,6 +570,7 @@ namespace umi3d.common.userCapture
             Transform[] origin_target = new Transform[2];
             origin_target = GetSymRoot(isFromLeft, symetryTarget);
 
+
         }
 
         private Transform[] GetSymRoot(bool isFromLeft, SymetryTarget symetryTarget)
