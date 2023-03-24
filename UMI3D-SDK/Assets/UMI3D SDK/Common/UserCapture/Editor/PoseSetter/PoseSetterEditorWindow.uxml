@@ -27,20 +27,16 @@
                 </ui:VisualElement>
                 <ui:VisualElement name="Symmetry" class="SubEditorPart" style="justify-content: space-around; align-items: stretch;">
                     <ui:DropdownField label="Symetry target" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="symetry_dropdown" />
-                    <ui:VisualElement style="flex-direction: row; justify-content: space-around; flex-grow: 0;">
-                        <ui:VisualElement>
-                            <ui:Button text="From Left" display-tooltip-when-elided="true" name="btn_from_left" tooltip="Symetry compared to LeftSide" class="Buttons" />
-                        </ui:VisualElement>
-                        <ui:VisualElement>
-                            <ui:Button text="From Right" display-tooltip-when-elided="true" name="btn_from_right" tooltip="Symetry compared to right side" class="Buttons" />
-                        </ui:VisualElement>
+                    <ui:VisualElement style="flex-direction: row; justify-content: flex-start; flex-grow: 0;">
+                        <ui:Button text="From Right" display-tooltip-when-elided="true" name="btn_from_right" tooltip="Symetry compared to right side" class="Buttons" />
+                        <ui:Button text="From Left" display-tooltip-when-elided="true" name="btn_from_left" tooltip="Symetry compared to LeftSide" class="Buttons" />
                     </ui:VisualElement>
                 </ui:VisualElement>
-                <ui:VisualElement name="BasicControls" class="SubEditorPart" style="flex-direction: row; flex-wrap: wrap;">
+                <ui:VisualElement name="BasicControls" class="SubEditorPart" style="flex-direction: row; flex-wrap: wrap; flex-grow: 0; align-items: flex-start;">
                     <ui:Button text="Save" display-tooltip-when-elided="true" name="save" class="Buttons" />
                     <ui:Button text="Load" display-tooltip-when-elided="true" name="load" class="Buttons" />
                     <ui:Button text="Clear Roots" display-tooltip-when-elided="true" name="clear_roots" class="Buttons" />
-                    <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
+                    <ui:Button text="ResetSkeleton" display-tooltip-when-elided="true" name="reset_skeleton" class="Buttons" />
                     <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
                     <ui:Button text="Button" display-tooltip-when-elided="true" class="Buttons" />
                 </ui:VisualElement>

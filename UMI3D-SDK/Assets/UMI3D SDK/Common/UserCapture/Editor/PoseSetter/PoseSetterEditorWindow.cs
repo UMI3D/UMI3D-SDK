@@ -57,6 +57,7 @@ namespace umi3d.common.userCapture
         Button save = null;
         Button load = null;
         Button clear_roots = null;
+        Button reset_skeleton = null;   
 
         PoseConditionPanel conditionPanel = null;
 
@@ -69,7 +70,7 @@ namespace umi3d.common.userCapture
         Slider z_rot_slider = null;
         #endregion
 
-        public enum SymetryTarget { None, Hands, Arms, Legs, Feet}
+        public enum SymetryTarget { None, Hands, Arms}
         public enum LoaEnum { None, LOA_0, LOA_1, LOA_2, LOA_3, LOA_4}
         SymetryTarget symetryTarget = SymetryTarget.None;
         LoaEnum loaEnum = LoaEnum.None;
@@ -136,6 +137,7 @@ namespace umi3d.common.userCapture
             save = root.Q<Button>("save");
             load = root.Q<Button>("load");
             clear_roots = root.Q<Button>("clear_roots");
+            reset_skeleton = root.Q<Button>("reset_skeleton");
 
             tg_enable_condtion = root.Q<Toggle>("tg_enable_condtion");
             conditionPanel = root.Q<PoseConditionPanel>("condition_panel");
@@ -196,6 +198,10 @@ namespace umi3d.common.userCapture
             save.clicked += () => SaveToScriptableObjectAtPath();
             load.clicked += () => LoadA_UMI3DPose_so();
             clear_roots.clicked += () => { ResetAllBones();  UpdateRootListView(); };
+            reset_skeleton.clicked += () => { ResetSkeleton(); };
+
+            btn_from_left.clicked += () => { ApllySymetry(true); };
+            btn_from_right.clicked += () => { ApllySymetry(false); };
         }
 
         private void FillDropDownFields()
@@ -400,7 +406,7 @@ namespace umi3d.common.userCapture
 
             roots.ForEach(r =>
             {
-                r.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
+                r.transform.localRotation = Quaternion.identity; // security to make sure that the positions and rotation are right
                 List<UMI3DBonePose_so> bonsPoseSos = new();
                 UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
                 pose_So.name = name;
@@ -413,9 +419,9 @@ namespace umi3d.common.userCapture
                                                              
                 boneToSave.ForEach(bc =>
                 {
-                    Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
+                    Vector4 rotation = new Vector4(bc.transform.localRotation.x, bc.transform.localRotation.y, bc.transform.localRotation.z, bc.transform.localRotation.w);
                     UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
-                    bonePose_So.Init(bc.BoneType, bc.transform.position, rotation);
+                    bonePose_So.Init(bc.BoneType, bc.transform.localPosition, rotation);
                     bonePose_So.name = name + $"_{GetConstEnumField(bonePose_So.bone)}";
 
                     AssetDatabase.AddObjectToAsset(bonePose_So, pose_So);
@@ -501,13 +507,22 @@ namespace umi3d.common.userCapture
             });
         }
 
+        private void ResetSkeleton()
+        {
+            ResetAllBones();
+            (object_field.value as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>()
+                                            .ForEach(bc => { 
+                                                bc.transform.localRotation = Quaternion.identity;
+                                            });
+        }
+
         private void UpdateBoneComponent(UMI3DBonePose_so bp)
         {
             PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bp.bone);
             if (bone_component != null)
             {
-                bone_component.transform.rotation = new Quaternion(bp.rotation.x, bp.rotation.y, bp.rotation.z, bp.rotation.w);
-                bone_component.transform.position = bp.position;
+                bone_component.transform.localRotation = new Quaternion(bp.rotation.x, bp.rotation.y, bp.rotation.z, bp.rotation.w);
+                bone_component.transform.localPosition = bp.position;
                 bone_component.isSavable = true;
             }
         }
@@ -517,10 +532,10 @@ namespace umi3d.common.userCapture
         {
             if (selectedBone != null)
             {
-                Vector3 rotation = selectedBone.rotation.eulerAngles;
+                Vector3 rotation = selectedBone.localRotation.eulerAngles;
                 rotation.x = value.newValue;
                 Quaternion quaternion = Quaternion.Euler(rotation);
-                selectedBone.rotation = quaternion;
+                selectedBone.localRotation = quaternion;
             }
         }
 
@@ -528,10 +543,10 @@ namespace umi3d.common.userCapture
         {
             if (selectedBone != null)
             {
-                Vector3 rotation = selectedBone.rotation.eulerAngles;
+                Vector3 rotation = selectedBone.localRotation.eulerAngles;
                 rotation.y = value.newValue;
                 Quaternion quaternion = Quaternion.Euler(rotation);
-                selectedBone.rotation = quaternion;
+                selectedBone.localRotation = quaternion;
             }
         }
 
@@ -539,12 +554,60 @@ namespace umi3d.common.userCapture
         {
             if (selectedBone != null)
             {
-                Vector3 rotation = selectedBone.rotation.eulerAngles;
+                Vector3 rotation = selectedBone.localRotation.eulerAngles;
                 rotation.z = value.newValue;
                 Quaternion quaternion = Quaternion.Euler(rotation);
-                selectedBone.rotation = quaternion;
+                selectedBone.localRotation = quaternion;
             }
         }
+        #endregion
+        #region Symetri
+        private void ApllySymetry(bool isFromLeft)
+        {
+            if (symetryTarget == SymetryTarget.None) return;
+            if (object_field.value == null) return;
+
+            Transform[] origin_target = new Transform[2];
+            origin_target = GetSymRoot(isFromLeft, symetryTarget);
+
+        }
+
+        private Transform[] GetSymRoot(bool isFromLeft, SymetryTarget symetryTarget)
+        {
+            Transform[] origin_target = new Transform[2];
+            switch (symetryTarget)
+            {
+                case SymetryTarget.Hands:
+                    if (isFromLeft)
+                    {
+                        origin_target[0] = bone_components.Find(bc => bc.BoneType == BoneType.LeftHand).transform;
+                        origin_target[1] = bone_components.Find(bc => bc.BoneType == BoneType.RightHand).transform;
+                    }
+                    else
+                    {
+                        origin_target[0] = bone_components.Find(bc => bc.BoneType == BoneType.RightHand).transform;
+                        origin_target[1] = bone_components.Find(bc => bc.BoneType == BoneType.LeftHand).transform;
+                    }
+                    break;
+                case SymetryTarget.Arms:
+                    if (isFromLeft)
+                    {
+                        origin_target[0] = bone_components.Find(bc => bc.BoneType == BoneType.LeftUpperArm).transform;
+                        origin_target[1] = bone_components.Find(bc => bc.BoneType == BoneType.RightUpperArm).transform;
+                    }
+                    else
+                    {
+                        origin_target[0] = bone_components.Find(bc => bc.BoneType == BoneType.RightUpperArm).transform;
+                        origin_target[1] = bone_components.Find(bc => bc.BoneType == BoneType.LeftUpperArm).transform;
+                    }
+                    break;
+            }
+
+            return origin_target;
+        }
+
+
+
         #endregion
         #region utils
         string[] constEnumFieldName = null;

@@ -12,3 +12,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1a60c7798ed26e442b7b2090ced9f656, type: 3}
   m_Name: hey_from_LeftHip_overrider
   m_EditorClassIdentifier: 
+  pose: {fileID: 0}
+  interpolationable: 0
+  composable: 0

@@ -115,7 +115,7 @@
     -unity-font-style: bold;
     font-size: 14px;
     -unity-text-align: middle-left;
-    color: rgba(219, 219, 219, 255);
+    color: rgb(219, 219, 219);
     white-space: normal;
 }
 
@@ -124,15 +124,15 @@
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
-    border-left-color: rgba(0, 0, 0, 255);
-    border-right-color: rgba(0, 0, 0, 255);
-    border-top-color: rgba(0, 0, 0, 255);
-    border-bottom-color: rgba(0, 0, 0, 255);
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     border-top-right-radius: 2px;
     border-bottom-right-radius: 2px;
-    background-color: rgba(101, 101, 101, 255);
+    background-color: rgb(101, 101, 101);
     margin-left: 2px;
     margin-right: 2px;
     margin-top: 2px;
@@ -144,15 +144,15 @@
 }
 
 .ConditionField {
-    background-color: rgba(65, 65, 65, 255);
+    background-color: rgb(65, 65, 65);
     border-left-width: 1px;
     border-right-width: 1px;
     border-top-width: 1px;
     border-bottom-width: 1px;
-    border-left-color: rgba(0, 0, 0, 255);
-    border-right-color: rgba(0, 0, 0, 255);
-    border-top-color: rgba(0, 0, 0, 255);
-    border-bottom-color: rgba(0, 0, 0, 255);
+    border-left-color: rgb(0, 0, 0);
+    border-right-color: rgb(0, 0, 0);
+    border-top-color: rgb(0, 0, 0);
+    border-bottom-color: rgb(0, 0, 0);
     border-top-left-radius: 2px;
     border-bottom-left-radius: 2px;
     border-top-right-radius: 2px;
@@ -165,4 +165,12 @@
     padding-right: 2px;
     padding-top: 2px;
     padding-bottom: 2px;
+}
+
+.radioButton {
+    max-width: 25%;
+    align-items: flex-start;
+    flex-direction: column;
+    flex-grow: 1;
+    justify-content: flex-start;
 }
