@@ -133,24 +133,28 @@ namespace umi3d.common.userCapture
                 if (property.PropertyType == typeof(SerializableVector3))
                 {
                     Vector3Field vector3Field = new Vector3Field();
+                    vector3Field.label = property.Name;
                     temporaryChildren.Add(vector3Field);
                     Add(vector3Field);
                 }
                 else if (property.PropertyType == typeof(SerializableVector4))
                 {
                     Vector4Field vector4Field = new Vector4Field();
+                    vector4Field.label = property.Name;
                     temporaryChildren.Add(vector4Field);
                     Add(vector4Field);
                 }
                 else if (property.PropertyType == typeof(uint) || property.PropertyType == typeof(int))
                 {
                     IntegerField integerField = new IntegerField();
+                    integerField.label = property.Name;
                     temporaryChildren.Add(integerField);
                     Add(integerField);
                 }
                 else if (property.PropertyType == typeof(float))
                 {
                     FloatField floatField = new FloatField();
+                    floatField.label = property.Name;
                     temporaryChildren.Add(floatField);
                     Add(floatField);
                 }

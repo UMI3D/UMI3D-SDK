@@ -151,9 +151,7 @@ namespace umi3d.cdk.userCapture
                     break;
 
                 case ScaleConditionDto scaleConditionDto:
-
-                    break;
-
+                    return HandleTargetScale(scaleConditionDto);
                 case RangeConditionDto rangeConditionDto:
                     
                     break;
@@ -190,7 +188,30 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
         {
-            //Qua
+            Quaternion boneRotation = PersonalSkeleton.Instance.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
+
+            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.ToQuaternion()) < boneRotationConditionDto.acceptanceRange) 
+            { 
+                return true;
+            }
+
+            return false;
+        }
+
+
+        private bool HandleTargetScale(ScaleConditionDto scaleConditionDto)
+        {
+            UMI3DNodeInstance targetNodeInstance = UMI3DEnvironmentLoader.Instance
+                                            .GetEntityInstance(scaleConditionDto.targetId)
+                                            as UMI3DNodeInstance;
+
+            Vector3 targetScale = targetNodeInstance.transform.localScale;
+            Vector3 wantedScale = scaleConditionDto.scale;
+
+            if (targetScale.sqrMagnitude <= wantedScale.sqrMagnitude)
+            {
+                return true;
+            }
 
             return false;
         }
