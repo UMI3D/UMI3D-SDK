@@ -15,17 +15,16 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Reflection;
+using umi3d.edk.userCapture;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.UIElements;
-using inetum.unityUtils;
-using umi3d.edk.userCapture;
-using System.Linq;
-using System.Reflection;
-using GLTF.Schema;
 
 namespace umi3d.common.userCapture
 {
@@ -105,6 +104,39 @@ namespace umi3d.common.userCapture
             GetAllRefs();
             BindUI();
             ReadConstEnum(typeof(BoneType));
+        }
+
+        UnityEngine.Object selected; 
+        public void OnSelectionChange()
+        {
+            if (CheckIfIsBoneComponent(Selection.activeObject));
+            {
+                selected = Selection.activeObject;
+                Tools.current = Tool.Rotate;      
+            }
+        }
+
+        private void OnInspectorUpdate()
+        {
+            if (Tools.current != Tool.Rotate)
+            {
+                if (CheckIfIsBoneComponent(selected))
+                {
+                    Tools.current = Tool.Rotate;
+                }
+            }
+        }
+
+        private bool CheckIfIsBoneComponent(UnityEngine.Object obj)
+        {
+            if (Selection.activeObject is GameObject go)
+            {
+                if (go.GetComponent<PoseSetterBoneComponent>() != null)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
 
         private void BindUI()
@@ -569,8 +601,17 @@ namespace umi3d.common.userCapture
 
             Transform[] origin_target = new Transform[2];
             origin_target = GetSymRoot(isFromLeft, symetryTarget);
+            PoseSetterBoneComponent[] originBC = origin_target[0].GetComponentsInChildren<PoseSetterBoneComponent>();
+            PoseSetterBoneComponent[] targetBC = origin_target[1].GetComponentsInChildren<PoseSetterBoneComponent>();
 
-
+            for(int i = 0; i < originBC.Length; i++)
+            {
+                Transform ot = originBC[i].transform;
+                targetBC[i].transform.localRotation = new Quaternion(ot.localRotation.x * -1.0f,
+                                            ot.localRotation.y,
+                                            ot.localRotation.z,
+                                            ot.localRotation.w * -1.0f);
+            }
         }
 
         private Transform[] GetSymRoot(bool isFromLeft, SymetryTarget symetryTarget)
