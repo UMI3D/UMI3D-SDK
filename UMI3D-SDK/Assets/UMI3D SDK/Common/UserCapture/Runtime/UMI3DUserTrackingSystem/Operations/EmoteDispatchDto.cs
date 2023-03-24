@@ -15,13 +15,9 @@ limitations under the License.
 */
 
 
-using System;
-using System.Collections.Generic;
 using umi3d.common;
-using UnityEditor;
-using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.commmon.userCapture
 {
     public class EmoteDispatchDto : AbstractOperationDto
     {
