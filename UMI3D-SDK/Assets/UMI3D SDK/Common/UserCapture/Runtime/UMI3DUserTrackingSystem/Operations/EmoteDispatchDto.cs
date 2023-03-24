@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,51 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
+using System;
+using System.Collections.Generic;
 using umi3d.common;
+using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    /// <summary>
-    /// <see cref="DispatchableRequest"/> to trigger or interrupt emotes on other avatars.
-    /// </summary>
-    public class EmoteDispatchRequest : Operation
+    public class EmoteDispatchDto : AbstractOperationDto
     {
         /// <summary>
         /// UMI3D id of the emote to trigger/interrupt.
         /// </summary>
         public ulong emoteId;
-
         /// <summary>
         /// If true, the emote sould be triggered. Otherwise, it should be interrupted.
         /// </summary>
         public bool shouldTrigger;
-
         /// <summary>
         /// User id of the user planning to trigger an emote.
         /// </summary>
         public ulong sendingUserId;
-
-        public EmoteDispatchRequest()
-        {
-        }
-
-        public override Bytable ToBytable(UMI3DUser user)
-        {
-            return (UMI3DSerializer.Write(UMI3DOperationKeys.EmoteRequest)
-                + UMI3DSerializer.Write(emoteId)
-                + UMI3DSerializer.Write(shouldTrigger)
-                + UMI3DSerializer.Write(sendingUserId));
-        }
-
-        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
-        {
-            EmoteDispatchDto dto = new()
-            {
-                emoteId = emoteId,
-                shouldTrigger = shouldTrigger,
-                sendingUserId = sendingUserId
-            };
-            return dto;
-        }
     }
 }
