@@ -19,7 +19,7 @@ namespace umi3d.common.userCapture
     /// <summary>
     /// Request from a browser to trigger an emote for its user on user browsers.
     /// </summary>
-    public class EmoteRequest : AbstractOperationDto
+    public class EmoteRequest : AbstractBrowserRequestDto
     {
         /// <summary>
         /// UMI3D id of the emote to trigger/interrupt.
@@ -33,5 +33,16 @@ namespace umi3d.common.userCapture
         /// User id of the user planning to trigger an emote.
         /// </summary>
         public ulong sendingUserId;
+        protected override uint GetOperationId()
+        {
+            return UMI3DOperationKeys.EmoteRequest;
+        }
+        public override Bytable ToBytableArray(params object[] parameters)
+        {
+            return base.ToBytableArray(parameters)
+            + UMI3DSerializer.Write(emoteId)
+            + UMI3DSerializer.Write(shouldTrigger)
+            + UMI3DSerializer.Write(sendingUserId);
+        }
     }
 }

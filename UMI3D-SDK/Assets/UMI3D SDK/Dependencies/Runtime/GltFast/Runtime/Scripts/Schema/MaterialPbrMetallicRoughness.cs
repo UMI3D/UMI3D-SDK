@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,6 +13,8 @@
 // limitations under the License.
 //
 
+using System;
+using Unity.Mathematics;
 using UnityEngine;
 
 namespace GLTFast.Schema {
@@ -31,14 +33,19 @@ namespace GLTFast.Schema {
         /// </summary>
         public float[] baseColorFactor = {1,1,1,1};
 
+        /// <summary>
+        /// Base color of the material in linear color space.
+        /// </summary>
         public Color baseColor {
-            get {
-                return new Color(
+            get =>
+                new Color(
                     baseColorFactor[0],
                     baseColorFactor[1],
                     baseColorFactor[2],
                     baseColorFactor[3]
                 );
+            set {
+                baseColorFactor = new[] { value.r, value.g, value.b, value.a };
             }
         }
 
@@ -78,5 +85,35 @@ namespace GLTFast.Schema {
         /// they are ignored.
         /// </summary>
         public TextureInfo metallicRoughnessTexture;
+
+        internal void GltfSerialize(JsonWriter writer) {
+            writer.AddObject();
+            if (baseColorFactor != null && (
+                math.abs(baseColorFactor[0] - 1f) > Constants.epsilon ||
+                math.abs(baseColorFactor[1] - 1f) > Constants.epsilon ||
+                math.abs(baseColorFactor[2] - 1f) > Constants.epsilon ||
+                math.abs(baseColorFactor[3] - 1f) > Constants.epsilon
+                ))
+            {
+                writer.AddArrayProperty("baseColorFactor", baseColorFactor);
+            }
+
+            if(metallicFactor < 1f) {
+                writer.AddProperty("metallicFactor", metallicFactor);
+            }
+            if(roughnessFactor < 1f) {
+                writer.AddProperty("roughnessFactor", roughnessFactor);
+            }
+            if(baseColorTexture!=null) {
+                writer.AddProperty("baseColorTexture");
+                baseColorTexture.GltfSerialize(writer);
+            }
+            if(metallicRoughnessTexture!=null) {
+                writer.AddProperty("metallicRoughnessTexture");
+                metallicRoughnessTexture.GltfSerialize(writer);
+            }
+                
+            writer.Close();
+        }
     }
 }

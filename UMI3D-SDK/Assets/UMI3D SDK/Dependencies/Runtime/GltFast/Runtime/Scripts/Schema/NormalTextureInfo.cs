@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,7 +13,13 @@
 // limitations under the License.
 //
 
-namespace GLTFast.Schema{ 
+using Unity.Mathematics;
+
+namespace GLTFast.Schema{
+    
+    /// <summary>
+    /// Normal map specific texture info
+    /// </summary>
     [System.Serializable]
     public class NormalTextureInfo : TextureInfo {
 
@@ -23,5 +29,14 @@ namespace GLTFast.Schema{
         /// This value is linear.
         /// </summary>
         public float scale = 1.0f;
+        
+        internal override void GltfSerialize(JsonWriter writer) {
+            writer.AddObject();
+            GltfSerializeTextureInfo(writer);
+            if (math.abs(scale - 1f) > Constants.epsilon) {
+                writer.AddProperty("scale", scale);
+            }
+            writer.Close();
+        }
     }
 }
