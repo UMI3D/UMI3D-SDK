@@ -33,6 +33,8 @@ namespace umi3d.cdk.userCapture
         Dictionary<uint, s_Transform> Bones { get; set; }
         List<ISubSkeleton> Skeletons { get; set; }
 
+        Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; set; }
+
         #region Data struture
         public class s_Transform
         {
@@ -46,15 +48,17 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Only Call once
         /// </summary>
-        public void Init() 
+        public void Init()
         {
-            if(Bones == null) Bones= new Dictionary<uint, s_Transform>();
-            if(Skeletons == null) Skeletons = new List<ISubSkeleton>();
-            if(savedTransforms == null) savedTransforms = new Dictionary<ulong, SavedTransform>();
-            if (bounds == null) bounds = new List<Bound>();
-            
-        }
+            UMI3DSkeletonHierarchy.SetSkeletonHierarchy.AddListener(() => this.SkeletonHierarchy = UMI3DSkeletonHierarchy.SkeletonHierarchy);
 
+            if (Bones == null) Bones = new Dictionary<uint, s_Transform>();
+            if (Skeletons == null) Skeletons = new List<ISubSkeleton>();
+            if (savedTransforms == null) savedTransforms = new Dictionary<ulong, SavedTransform>();
+            if (bounds == null) bounds = new List<Bound>();
+
+            //if (SkeletonHierarchy == null) SetSkeletonHierarchy();
+        }
 
         #region Compute current skeleton
         public ISkeleton Compute()
@@ -68,12 +72,12 @@ namespace umi3d.cdk.userCapture
             {
                 ISubSkeleton skeleton = Skeletons[i];
                 List<BoneDto> bones = new List<BoneDto>();
-                
+
                 try
                 {
                     bones = skeleton.GetPose().bones.ToList();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.Log($"<color=red> _{e} </color>");
                     return this;
@@ -221,7 +225,7 @@ namespace umi3d.cdk.userCapture
         {
             foreach (BindingDto dto in userBindings)
             {
-                if (savedTransforms.ContainsKey(dto.bindingId ))
+                if (savedTransforms.ContainsKey(dto.bindingId))
                     ResetObjectBindings(dto);
             }
 
@@ -422,7 +426,7 @@ namespace umi3d.cdk.userCapture
             {
                 if (entityInstance is UMI3DNodeInstance node)
                 {
-                    UMI3DEnvironmentLoader.StartCoroutine(WaitForRig(node, dto, bone));             
+                    UMI3DEnvironmentLoader.StartCoroutine(WaitForRig(node, dto, bone));
                 }
             }
             );
@@ -472,7 +476,7 @@ namespace umi3d.cdk.userCapture
                 {
                     yield return null;
                 }
-                
+
                 if (!boundRigs.Contains(obj))
                     boundRigs.Add(obj);
 
@@ -538,7 +542,7 @@ namespace umi3d.cdk.userCapture
 
         private void SaveTransform(BindingDto dto, Transform obj)
         {
-            if(dto == null || obj == null) return;
+            if (dto == null || obj == null) return;
 
             var savedTransform = new SavedTransform
             {
@@ -553,6 +557,39 @@ namespace umi3d.cdk.userCapture
         }
 
         #endregion
+        #endregion
+
+        #region Utils
+
+        //private void SetSkeletonHierarchy()
+        //{
+        //    SkeletonHierarchy = new Dictionary<uint, (uint, Vector3)>
+        //        {
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
+        //        };
+        //}
         #endregion
     }
 }

@@ -41,6 +41,7 @@ namespace umi3d.cdk.userCapture
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
@@ -53,7 +54,6 @@ namespace umi3d.cdk.userCapture
         protected List<Transform> boundRigs = new List<Transform>();
         protected List<BindingDto> userBindings = new List<BindingDto>();
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ulong, ISkeleton.SavedTransform>();
-
         #endregion
         public TrackedSkeleton TrackedSkeleton;
         //public PoseSkeleton PoseSkeleton;
@@ -64,6 +64,8 @@ namespace umi3d.cdk.userCapture
         //public float skeletonHighOffset = 0;
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
+
+
 
         public void Start()
         {

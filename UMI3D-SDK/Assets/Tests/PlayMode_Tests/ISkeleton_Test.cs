@@ -52,6 +52,7 @@ public class ISkeleton_Test
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => throw new NotImplementedException(); set => throw new NotImplementedException(); }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones;
