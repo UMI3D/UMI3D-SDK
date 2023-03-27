@@ -98,7 +98,9 @@ namespace umi3d.cdk.userCapture
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
-            UMI3DLogger.LogWarning("The personal ISkeleton should not receive frame", scope);
+            if (skeletons != null)
+                foreach (var skeleton in skeletons)
+                    skeleton.UpdateFrame(frame);
         }
     }
 }

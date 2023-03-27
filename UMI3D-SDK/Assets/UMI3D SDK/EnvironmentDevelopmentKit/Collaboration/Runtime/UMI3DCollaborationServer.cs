@@ -27,6 +27,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
 

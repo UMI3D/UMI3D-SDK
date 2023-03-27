@@ -22,6 +22,9 @@ using UnityEngine.UIElements;
 using inetum.unityUtils;
 using System;
 using UnityEngine.Events;
+using System.Threading;
+using System.Threading.Tasks;
+using System.Linq;
 
 namespace umi3d.edk.userCapture
 {
@@ -30,6 +33,7 @@ namespace umi3d.edk.userCapture
     /// </summary>
     public class UMI3DTrackedUser : UMI3DUser
     {
+        private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User; 
 
         private bool activeAvatarBindings_ = true;
 
@@ -48,12 +52,33 @@ namespace umi3d.edk.userCapture
 
         public UserTrackingFrameDto CurrentTrackingFrame;
 
+        UMI3DAsyncProperty<Vector3> userSize;
+
         public UMI3DTrackedUser(ulong id) : base()
         {
             base.userId = id;
             bindings = new UMI3DAsyncListProperty<UMI3DBinding>(base.userId, UMI3DPropertyKeys.UserBindings, new());
             activeBindings = new UMI3DAsyncProperty<bool>(base.userId, UMI3DPropertyKeys.ActiveBindings, new());
-        }   
+        }
+
+        static object joinLock = new object();
+        public async Task JoinDtoReception( SerializableVector3 userSize, PoseDto[] userPoses)
+        {
+            lock (joinLock)
+            {
+                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+
+                if (this.userSize.GetValue() == userSize)
+                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
+                else
+                    this.userSize.SetValue(userSize);
+            }
+
+            await PoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
+            await UMI3DAsyncManager.Yield();
+
+            UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
+        }
 
         //To Delete
         //private UMI3DAvatarNode avatar;

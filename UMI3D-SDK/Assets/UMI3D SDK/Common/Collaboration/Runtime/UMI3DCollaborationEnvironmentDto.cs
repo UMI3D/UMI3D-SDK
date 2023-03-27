@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using umi3d.common.userCapture;
 
 namespace umi3d.common.collaboration
 {
@@ -25,5 +26,12 @@ namespace umi3d.common.collaboration
         /// Users initialized through this list are added/deleted through transactions
         /// when they connect/disconnect.
         public List<UserDto> userList;
+
+        /// <summary>
+        /// A dictionary that contains all the poses already loaded in the environment
+        /// key : user Id 
+        /// value : list of all the poses of this user
+        /// </summary>
+        public Dictionary<ulong, List<PoseDto>> allPoses;
     }
 }

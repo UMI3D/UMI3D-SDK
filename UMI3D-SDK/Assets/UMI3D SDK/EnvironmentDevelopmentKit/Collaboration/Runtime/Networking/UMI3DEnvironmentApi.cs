@@ -474,12 +474,9 @@ namespace umi3d.edk.collaboration
                 {
                     try
                     {
-                        var join = dto as JoinDto;
+                        JoinDto join = dto as JoinDto;
+                        await user.JoinDtoReception(join.userSize, join.clientLocalPoses);
 
-                        ///TODO
-                        ///
-
-                        //await UMI3DEmbodimentManager.Instance.JoinDtoReception(user, join.userSize, join.trackedBonetypes);
                         e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
                         await UMI3DCollaborationServer.NotifyUserJoin(user);
                     }
