@@ -326,6 +326,13 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
+                    case EmoteRequest emoteRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DEmbodimentManager.Instance.DispatchChangeEmoteReception(emoteRequest.emoteId, user, emoteRequest.shouldTrigger);
+                        });
+                        break;
+
                     default:
                         MainThreadManager.Run(() =>
                         {

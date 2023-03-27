@@ -1,4 +1,4 @@
-// Copyright 2020 Andreas Atteneder
+// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -17,10 +17,22 @@ using UnityEngine;
 
 namespace GLTFast.Schema {
 
+    /// <summary>
+    /// This extension defines the specular-glossiness material model from
+    /// Physically-Based Rendering (PBR).
+    /// <seealso href="https://github.com/KhronosGroup/glTF/tree/main/extensions/2.0/Archived/KHR_materials_pbrSpecularGlossiness"/>
+    /// </summary>
     [System.Serializable]
     public class PbrSpecularGlossiness {
+        
+        /// <summary>
+        /// Diffuse color red, green, blue and alpha components in linear space.
+        /// </summary>
         public float[] diffuseFactor = { 1, 1, 1, 1 };
 
+        /// <summary>
+        /// Diffuse color in linear space.
+        /// </summary>
         public Color diffuseColor {
             get {
                 return new Color(
@@ -32,12 +44,19 @@ namespace GLTFast.Schema {
             }
         }
 
-
+        /// <summary>
+        /// Diffuse color texture info.
+        /// </summary>
         public TextureInfo diffuseTexture = null;
 
+        /// <summary>
+        /// Specular color red, green and blue components in linear space.
         /// </summary>
         public float[] specularFactor = { 1, 1, 1 };
 
+        /// <summary>
+        /// Specular color in linear space.
+        /// </summary>
         public Color specularColor {
             get {
                 return new Color(
@@ -48,11 +67,21 @@ namespace GLTFast.Schema {
             }
         }
 
-
+        /// <summary>
+        /// The glossiness or smoothness of the material.
         /// </summary>
         public float glossinessFactor = 1;
 
+        /// <summary>
+        /// The specular-glossiness texture.
+        /// </summary>
         public TextureInfo specularGlossinessTexture = null;
+        
+        internal void GltfSerialize(JsonWriter writer) {
+            writer.AddObject();
+            writer.Close();
+            throw new System.NotImplementedException($"GltfSerialize missing on {GetType()}");
+        }
     }
 }
 

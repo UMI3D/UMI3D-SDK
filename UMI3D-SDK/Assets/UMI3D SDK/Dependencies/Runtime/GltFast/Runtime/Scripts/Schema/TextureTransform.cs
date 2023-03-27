@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,6 +15,7 @@
 
 namespace GLTFast.Schema {
 
+    /// <inheritdoc cref="Extension.TextureTransform"/>
     [System.Serializable]
     public class TextureTransform {
 
@@ -36,6 +37,23 @@ namespace GLTFast.Schema {
         /// <summary>
         /// Overrides the textureInfo texCoord value if supplied, and if this extension is supported.
         /// </summary>
-        public int texCoord = 0;
+        public int texCoord = -1;
+
+        internal void GltfSerialize(JsonWriter writer) {
+            writer.AddObject();
+            if (offset != null) {
+                writer.AddArrayProperty("offset", offset);
+            }
+            if (scale != null) {
+                writer.AddArrayProperty("scale", scale);
+            }
+            if(rotation != 0) {
+                writer.AddProperty("rotation", rotation);
+            }
+            if(texCoord >= 0) {
+                writer.AddProperty("texCoord", texCoord);
+            }
+            writer.Close();
+        }
     }
 }

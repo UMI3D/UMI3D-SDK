@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,16 +13,29 @@
 // limitations under the License.
 //
 
+using UnityEngine.Rendering;
+using System.Threading.Tasks;
+
 namespace GLTFast {
     
     using Schema;
     
     abstract class PrimitiveCreateContextBase {
+        
+        public const MeshUpdateFlags defaultMeshUpdateFlags =
+            MeshUpdateFlags.DontNotifyMeshUsers
+            | MeshUpdateFlags.DontRecalculateBounds
+            | MeshUpdateFlags.DontResetBoneBounds
+            | MeshUpdateFlags.DontValidateIndices;
+        
         public int primtiveIndex;
         public int[] materials;
         public bool needsNormals;
         public bool needsTangents;
         public abstract bool IsCompleted {get;}
-        public abstract Primitive? CreatePrimitive();
+        
+        public MorphTargetsContext morphTargetsContext;
+        
+        public abstract Task<Primitive?> CreatePrimitive();
     }
 } 
