@@ -1,12 +1,9 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
-
+Copyright 2019 - 2023 Inetum
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -24,9 +21,13 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Animation played on an <see cref="Animator"/> component. The animation is typically inside a state
+    /// of the Mecanima Animator.
+    /// </summary>
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
-        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region Fields
@@ -36,13 +37,28 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
-        public static new UMI3DAnimatorAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation; }
+        [Obsolete("Use EnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>() instead.")]
+        public static new UMI3DAnimatorAnimation Get(ulong id) => UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation;
         /// <summary>
         /// DTO local copy.
         /// </summary>
-        protected new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; set => base.dto = value; }
+        public new UMI3DAnimatorAnimationDto dto { get => base.dto as UMI3DAnimatorAnimationDto; protected set => base.dto = value; }
 
+        /// <summary>
+        /// Is the animation started?
+        /// </summary>
+        /// In the started state, the animation could be at any state of progress except at 0.
         private bool started = false;
+
+        /// <summary>
+        /// Last pause time in ms.
+        /// </summary>
+        private float lastPauseTime = 0;
+
+        /// <summary>
+        /// Is the animation started but was paused in the meanwhile?
+        /// </summary>
+        public bool IsPaused { get; protected set; }
 
         /// <summary>
         /// Node which has <see cref="animator"/>
@@ -50,84 +66,185 @@ namespace umi3d.cdk
         private UMI3DNodeInstance node;
 
         /// <summary>
-        /// <see cref="node"/> animator.
+        /// Animator used for animation.
         /// </summary>
+        /// This animator could be shared by several <see cref="UMI3DAnimatorAnimation"/> as each animation
+        /// corresponds to a state of the animator.
         private Animator animator;
 
-        #endregion
+        #endregion Fields
 
-        #region Methods
-
-        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
+        /// <summary>
+        /// Length of the animation in ms.
+        /// </summary>
+        /// <returns></returns>
+        public float Duration
         {
-            SetNode(dto.nodeId);
-
-            foreach (var entry in dto.parameters)
+            get
             {
-                UMI3DAnimatorParameterDto param = new UMI3DAnimatorParameterDto(entry.Value);
-                ApplyParameter(entry.Key, param);
+                if (animator == null)
+                    return 0.0f;
+                return animator.GetCurrentAnimatorStateInfo(0).length * 1_000;
             }
         }
 
-        #region Animation
+        #region DI
+
+        private UMI3DEnvironmentLoader coroutineService;
+
+        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
+        {
+            coroutineService = UMI3DEnvironmentLoader.Instance;
+        }
+
+        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto, UMI3DEnvironmentLoader coroutineService) : base(dto)
+        {
+            this.coroutineService = coroutineService;
+        }
+        #endregion DI
+
+        /// <inheritdoc/>
+        public override bool IsPlaying() => started;
+
+        /// <inheritdoc/>
+        public override void Init()
+        {
+            base.Init();
+
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,
+                (n) =>
+                {
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    {
+                        SetNode(dto.nodeId);
+
+                        foreach (var entry in dto.parameters)
+                        {
+                            UMI3DAnimatorParameterDto param = new UMI3DAnimatorParameterDto(entry.Value);
+                            ApplyParameter(entry.Key, param);
+                        }
+
+                        animator = (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>();
+                    });
+                }
+            );
+        }
+
+        /// <inheritdoc/>
+        public override float GetProgress()
+        {
+            if (!started)
+                return 0;
+            if (IsPaused)
+                return lastPauseTime;
+
+            var progress = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
+            if (progress >= 1)
+                return 1;
+            else
+                return progress;
+        }
 
         /// <inheritdoc/>
         public override void Start()
         {
-            if (started) return;
-
-            if (animator != null)
-                animator.Play(dto.stateName);
+            Start(0);
         }
 
         /// <inheritdoc/>
         public override void Start(float atTime)
         {
-            UMI3DLogger.LogWarning("Imposisble for now to set a specific time for UMI3DAnimatorAnimation", DebugScope.Animation);
-            Start();
+            if (started) return;
+            Play(atTime);
+            started = true;
+        }
+
+        /// <summary>
+        /// Resume or start the animation.
+        /// </summary>
+        public void Play()
+        {
+            if (!started)
+                Start();
+            Play(IsPaused ? lastPauseTime : 0);
+        }
+
+        /// <summary>
+        /// Resume the animation at a precise time.
+        /// </summary>
+        /// <param name="atTime">Resume time in ms.</param>
+        public void Play(float atTime)
+        {
+            var nTime = atTime / Duration;
+
+            if (animator == null)
+                UMI3DLogger.LogError($"No animator on node {node}", DebugScope.CDK | DebugScope.Animation);
+
+            animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
+            IsPaused = false;
+            trackingAnimationCoroutine ??= UMI3DEnvironmentLoader.StartCoroutine(TrackEnd());
+        }
+
+        /// <summary>
+        /// Pause the animation, registering the current playing state.
+        /// </summary>
+        public void Pause()
+        {
+            lastPauseTime = GetProgress() * Duration;
+            IsPaused = true;
+            UMI3DEnvironmentLoader.StopCoroutine(trackingAnimationCoroutine);
+            trackingAnimationCoroutine = null;
+            animator.Play(dto.stateName, layer: 0, normalizedTime: 1);
         }
 
         /// <inheritdoc/>
         public override void Stop()
         {
+            IsPaused = false;
+            OnEnd();
         }
 
         /// <inheritdoc/>
         public override void OnEnd()
         {
             started = false;
+            if (trackingAnimationCoroutine != null)
+                trackingAnimationCoroutine = null;
             base.OnEnd();
         }
 
-        private bool LaunchAnimation(float waitFor)
-        {
-            return dto.playing && GetProgress() >= waitFor;
-        }
+        private Coroutine trackingAnimationCoroutine;
 
-        private IEnumerator WaitForProgress(float waitFor, Action action)
+        /// <summary>
+        /// Coroutine to track an animator animation end.
+        /// </summary>
+        /// This coroutine is useful since there is easy way to get 
+        /// the end of an animation (a State) in an Animator componoment through the Mecanim API. <br/>
+        /// Other way could involve an AnimationStateEvent to add on animation at design
+        /// <returns></returns>
+        private IEnumerator TrackEnd()
         {
-            yield return new WaitUntil(() => LaunchAnimation(waitFor));
-            action.Invoke();
-        }
+            while (GetProgress() < 1)
+                yield return null;
 
-        private IEnumerator Playing(Action action)
-        {
-            yield return null;
-            action.Invoke();
+            OnEnd();
         }
 
         /// <inheritdoc/>
-        public override float GetProgress()
+        public override void SetProgress(long time)
         {
-            return 0;
+            if (!started)
+                return;
+            if (IsPaused)
+                lastPauseTime = time;
+            else
+                Play(time);
         }
-
-        #endregion
 
         #region Setter
 
         /// <inheritdoc/>
-        public override async  Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             if (await base.SetUMI3DProperty(value)) return true;
             switch (value.property.property)
@@ -136,9 +253,11 @@ namespace umi3d.cdk
                     dto.nodeId = (ulong)(long)value.property.value;
                     SetNode(dto.nodeId);
                     break;
+
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = (string)value.property.value;
                     break;
+
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:
                     switch (value.property)
                     {
@@ -146,6 +265,7 @@ namespace umi3d.cdk
                             if (setAddProperty.key is string paramName && setAddProperty.value is UMI3DAnimatorParameterDto paramDto)
                                 ApplyParameter(paramName, paramDto);
                             break;
+
                         case SetEntityPropertyDto setEntity:
                             if (setEntity.value is Dictionary<object, object> parametersDic)
                             {
@@ -155,16 +275,19 @@ namespace umi3d.cdk
                                 }
                             }
                             break;
+
                         default:
                             break;
                     }
                     break;
+
                 default:
                     return false;
             }
 
             return true;
         }
+
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
@@ -175,9 +298,11 @@ namespace umi3d.cdk
                     dto.nodeId = UMI3DSerializer.Read<uint>(value.container);
                     SetNode(dto.nodeId);
                     break;
+
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = UMI3DSerializer.Read<string>(value.container);
                     break;
+
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:
                     string key;
                     UMI3DAnimatorParameterDto parameter;
@@ -189,6 +314,7 @@ namespace umi3d.cdk
                             parameter = UMI3DSerializer.Read<UMI3DAnimatorParameterDto>(value.container);
                             ApplyParameter(key, parameter);
                             break;
+
                         case UMI3DOperationKeys.SetEntityProperty:
                             var parameters = UMI3DSerializer.ReadDictionary<string, UMI3DAnimatorParameterDto>(value.container).Select(k => new KeyValuePair<string, object>(k.Key, k.Value));
                             foreach (var param in parameters)
@@ -196,12 +322,15 @@ namespace umi3d.cdk
                                 ApplyParameter(param.Key, param.Value as UMI3DAnimatorParameterDto);
                             }
                             break;
+
                         case UMI3DOperationKeys.SetEntityDictionnaryRemoveProperty:
                             break;
+
                         default:
                             break;
                     }
                     break;
+
                 default:
                     return false;
             }
@@ -218,11 +347,11 @@ namespace umi3d.cdk
         {
             if (animator == null) return;
 
-            UMI3DAnimatorParameyerType type = (UMI3DAnimatorParameyerType)parameterDto.type;
+            UMI3DAnimatorParameterType type = (UMI3DAnimatorParameterType)parameterDto.type;
 
             switch (type)
             {
-                case UMI3DAnimatorParameyerType.Bool:
+                case UMI3DAnimatorParameterType.Bool:
                     var val = (bool)parameterDto.value;
                     if (val)
                     {
@@ -230,12 +359,15 @@ namespace umi3d.cdk
                     }
                     animator.SetBool(name, val);
                     break;
-                case UMI3DAnimatorParameyerType.Float:
+
+                case UMI3DAnimatorParameterType.Float:
                     animator.SetFloat(name, (float)parameterDto.value);
                     break;
-                case UMI3DAnimatorParameyerType.Integer:
+
+                case UMI3DAnimatorParameterType.Integer:
                     animator.SetInteger(name, (int)parameterDto.value);
                     break;
+
                 default:
                     break;
             }
@@ -250,22 +382,14 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeId, (n) =>
             {
                 node = n as UMI3DNodeInstance;
-                if(node != null)
+                if (node is not null)
                     animator = node.gameObject.GetComponentInChildren<Animator>();
                 if (animator != null && dto.playing)
-                {
-                    animator.Play(dto.stateName);
-                }
+                    Start();
             });
         }
 
-        /// <inheritdoc/>
-        public override void SetProgress(long frame)
-        {
-        }
+        #endregion Setter
 
-        #endregion
-
-        #endregion
     }
 }

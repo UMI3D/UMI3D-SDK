@@ -1,12 +1,9 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
-
+Copyright 2019 - 2023 Inetum
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -44,6 +41,9 @@ namespace umi3d.cdk
         /// DTO local copy.
         /// </summary>
         protected new UMI3DNodeAnimationDto dto { get => base.dto as UMI3DNodeAnimationDto; set => base.dto = value; }
+
+        /// <inheritdoc/>
+        public override bool IsPlaying() => started;
 
         /// <summary>
         /// Operation to apply as an animation node.
@@ -83,7 +83,13 @@ namespace umi3d.cdk
 
         public UMI3DNodeAnimation(UMI3DNodeAnimationDto dto) : base(dto)
         {
+        }
+
+        /// <inheritdoc/>
+        public override void Init()
+        {
             operationChains = dto.animationChain?.Select(chain => new OperationChain(chain)).ToList() ?? new List<OperationChain>();
+            base.Init();
         }
 
         /// <inheritdoc/>
@@ -125,7 +131,7 @@ namespace umi3d.cdk
             base.OnEnd();
         }
 
-        private IEnumerator Playing(Action action)
+        private IEnumerator Playing(Action actionAfterPlaying)
         {
             var l = operationChains.OrderBy(c => c.startOnProgress).ToList();
             int i = 0;
@@ -145,13 +151,13 @@ namespace umi3d.cdk
                 yield return fixUpdate;
                 if (dto.playing) progress += Time.fixedDeltaTime;
             }
-            if(dto.playing)
+            if (dto.playing)
                 while (i < l.Count && l[i].startOnProgress <= dto.duration)
                 {
                     PerformChain(l[i]);
                     i++;
                 }
-            action.Invoke();
+            actionAfterPlaying.Invoke();
         }
 
         async void PerformChain(OperationChain chain)
@@ -201,7 +207,8 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value) { return Task.FromResult(false); }
+        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value)
+            => Task.FromResult(false);
 
         private bool UpdateChain(UMI3DNodeAnimationDto dto, SetEntityPropertyDto property)
         {
@@ -242,7 +249,7 @@ namespace umi3d.cdk
             progress = atTime / 1000;
             if (PlayingCoroutines != null)
                 UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
-            PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(() => { OnEnd(); }));
+            PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(actionAfterPlaying: OnEnd));
         }
 
         /// <inheritdoc/>

@@ -1,12 +1,9 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
-
+Copyright 2019 - 2023 Inetum
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,9 +28,9 @@ namespace umi3d.cdk
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
-        private readonly VideoPlayer videoPlayer;
-        private readonly Material mat;
-        private readonly RenderTexture renderTexture;
+        private VideoPlayer videoPlayer;
+        private Material mat;
+        private RenderTexture renderTexture;
 
         /// <summary>
         /// Get an <see cref="UMI3DVideoPlayer"/> by id.
@@ -54,12 +51,23 @@ namespace umi3d.cdk
         /// </summary>
         public bool preparationFailed { get; private set; } = false;
 
+        /// <inheritdoc/>
+        public override bool IsPlaying() => videoPlayer.isPlaying;
+
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
         {
+        }
+
+        /// <inheritdoc/>
+        public override void Init()
+        {
+            var dto = this.dto as UMI3DVideoPlayerDto;
+
             //init material
             renderTexture = new RenderTexture(1920, 1080, 16, RenderTextureFormat.RGB565);
             renderTexture.Create();
             renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
+
             mat = UMI3DEnvironmentLoader.GetEntity(dto.materialId).Object as Material;
             if (mat == null)
             {
@@ -74,6 +82,7 @@ namespace umi3d.cdk
             videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
 
+            // setup video player
             FileDto fileDto = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants);
             if (!UMI3DClientServer.Instance.AuthorizationInHeader)
                 videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
