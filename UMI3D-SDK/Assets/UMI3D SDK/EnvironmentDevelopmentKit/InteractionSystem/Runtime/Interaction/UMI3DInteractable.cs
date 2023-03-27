@@ -131,7 +131,7 @@ namespace umi3d.edk.interaction
                 direction = dto.direction;
             }
 
-            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId, id, hoveredObjectId, boneType)
+            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.position = position;
                 this.normal = normal;
@@ -274,12 +274,12 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user"></param>
         /// <param name="dto"></param>
-        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
         {
             Vector3 pos = UMI3DSerializer.Read<Vector3>(container);
             Vector3 norm = UMI3DSerializer.Read<Vector3>(container);
             Vector3 dir = UMI3DSerializer.Read<Vector3>(container);
-            onHovered?.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
+            onHovered?.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, pos, norm, dir));
         }
 
 
@@ -300,14 +300,14 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user"></param>
         /// <param name="dto"></param>
-        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
         {
             Vector3 pos = UMI3DSerializer.Read<Vector3>(container);
             Vector3 norm = UMI3DSerializer.Read<Vector3>(container);
             Vector3 dir = UMI3DSerializer.Read<Vector3>(container);
             bool state = UMI3DSerializer.Read<bool>(container);
-            if (state) onHoverEnter.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
-            else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, pos, norm, dir));
+            if (state) onHoverEnter.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, pos, norm, dir));
+            else onHoverExit.Invoke(new HoverEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, pos, norm, dir));
         }
 
         /// <inheritdoc/>

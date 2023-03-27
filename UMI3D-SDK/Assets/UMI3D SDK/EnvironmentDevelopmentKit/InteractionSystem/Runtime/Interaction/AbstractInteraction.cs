@@ -53,6 +53,14 @@ namespace umi3d.edk.interaction
             /// </summary>
             public uint boneType { get; private set; }
             /// <summary>
+            /// The global position of the bone use to performe the interaction.
+            /// </summary>
+            public SerializableVector3 bonePosition { get; private set; }
+            /// <summary>
+            /// The global rotation of the bone use to performe the interaction.
+            /// </summary>
+            public SerializableVector4 boneRotation { get; private set; }
+            /// <summary>
             /// The id of the currently hoverred object.
             /// It will be always null for an Interaction inside a Tool.
             /// For an Interaction inside an Interactable, it could be the Id of the Interactable associated object, or the Id of a sub-object if Interaction.notifyHoverPosition == true.
@@ -74,15 +82,19 @@ namespace umi3d.edk.interaction
                 hoveredId = dto.hoveredObjectId;
                 toolId = dto.toolId;
                 interactionId = dto.id;
+                bonePosition = dto.bonePosition;
+                boneRotation = dto.boneRotation;
             }
 
-            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType)
+            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation)
             {
                 this.user = user;
                 this.boneType = boneType;
                 this.hoveredId = hoveredObjectId;
                 this.toolId = toolId;
                 this.interactionId = id;
+                this.bonePosition = bonePosition;
+                this.boneRotation = boneRotation;
             }
         }
 
@@ -190,7 +202,7 @@ namespace umi3d.edk.interaction
         /// <param name="request">Interaction request</param>
         public abstract void OnUserInteraction(UMI3DUser user, InteractionRequestDto request);
 
-        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container);
+        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container);
 
         /// <summary>
         /// Convert interaction to Data Transfer Object for a given user. 
