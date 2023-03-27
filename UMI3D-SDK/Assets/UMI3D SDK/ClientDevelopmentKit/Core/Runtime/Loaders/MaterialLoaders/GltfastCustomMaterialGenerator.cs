@@ -53,7 +53,7 @@ namespace umi3d.cdk
             }
             else
             {
-                material.name = Path.GetFileNameWithoutExtension(url) + " " + gltfMaterial.name;
+                material.name = gltfMaterial.name;
             }
 
 
