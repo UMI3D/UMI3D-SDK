@@ -138,7 +138,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
@@ -161,7 +161,7 @@ namespace umi3d.edk.interaction
                             if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
                             {
 
-                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, toolId, interactionId, hoverredId, boneType, (value, fileId)));
+                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, (value, fileId)));
                             }
                             else
                             {
