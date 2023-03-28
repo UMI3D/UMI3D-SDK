@@ -51,6 +51,7 @@ namespace umi3d.cdk
         {
             UMI3DVideoPlayer player;
 #if UNITY_ANDROID
+            player = null;
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
                 videoPlayersToLoad.Enqueue(videoPlayer);
             else
@@ -74,6 +75,7 @@ namespace umi3d.cdk
                 videoPlayersToLoad.Enqueue(videoPlayer);
             else
                 return new UMI3DVideoPlayer(videoPlayer);
+            return null;
 #else
             return new UMI3DVideoPlayer(videoPlayer);
 #endif
@@ -110,6 +112,7 @@ namespace umi3d.cdk
                 UMI3DVideoPlayerDto videoPlayer = videoPlayersToLoad.Dequeue();
 
                 var player = new UMI3DVideoPlayer(videoPlayer);
+                UMI3DEnvironmentLoader.RegisterEntityInstance(player.Id, videoPlayer, player).NotifyLoaded();
                 player.Init();
 
                 while (!player.isPrepared && !player.preparationFailed)
