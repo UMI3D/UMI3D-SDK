@@ -44,7 +44,7 @@ namespace umi3d.edk.userCapture
         {
             List<BoneDto> boneDtos = new List<BoneDto>();
 
-
+            this.bonePoses
 
             bonePoses.ForEach(bp =>
             {
