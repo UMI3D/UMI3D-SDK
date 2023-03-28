@@ -25,15 +25,15 @@ namespace umi3d.edk.userCapture
     public class UMI3DPose_so : ScriptableObject
     {
         [SerializeField] List<UMI3DBonePose_so> bonePoses = new List<UMI3DBonePose_so>();
-        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneAnchor;
+        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneTypeAnchor;
 
         public List<UMI3DBonePose_so> BonePoses { get => bonePoses; }
-        public uint BoneAnchor { get => boneAnchor; }
+        public uint BoneAnchor { get => boneTypeAnchor; }
 
         public void Init(List<UMI3DBonePose_so> bonePoses, uint boneAnchor)
         {
             this.bonePoses = bonePoses;
-            this.boneAnchor = boneAnchor;
+            this.boneTypeAnchor = boneAnchor;
         }
 
         /// <summary>
@@ -44,13 +44,14 @@ namespace umi3d.edk.userCapture
         {
             List<BoneDto> boneDtos = new List<BoneDto>();
 
-            this.bonePoses
+            var boneAnchor = bonePoses.Find(b => b.bone == boneTypeAnchor);
 
             bonePoses.ForEach(bp =>
             {
-                boneDtos.Add(bp.ToDTO());
+                boneDtos.Add(new BoneDto() { boneType = bp.bone, rotation = bp.rotation });
             });
-            return new PoseDto(boneDtos.ToArray(), boneAnchor);
+
+            return new PoseDto(boneDtos.ToArray(), new BonePoseDto() { bone = boneAnchor.bone, position = boneAnchor.position, rotation = boneAnchor.rotation});
         }
     }
 }
