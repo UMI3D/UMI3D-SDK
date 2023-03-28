@@ -42,12 +42,15 @@ namespace umi3d.edk.userCapture
         /// <returns></returns>
         public PoseDto ToDTO()
         {
-            List<BonePoseDto> bonePosesDtos = new List<BonePoseDto>();
+            List<BoneDto> boneDtos = new List<BoneDto>();
+
+
+
             bonePoses.ForEach(bp =>
             {
-                bonePosesDtos.Add(bp.ToDTO());
+                boneDtos.Add(bp.ToDTO());
             });
-            return new PoseDto(bonePosesDtos.ToArray(), boneAnchor);
+            return new PoseDto(boneDtos.ToArray(), boneAnchor);
         }
     }
 }
