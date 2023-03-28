@@ -154,6 +154,30 @@ namespace umi3d.common
 
         public override bool Write<T>(T value, out Bytable bytable)
         {
+            if (value == null)
+            {
+                if (typeof(T) == typeof(SerializableVector2))
+                {
+                    value = (T)(object)new SerializableVector2();
+                }
+                else if (typeof(T) == typeof(SerializableVector3))
+                {
+                    value = (T)(object)new SerializableVector3();
+                }
+                else if (typeof(T) == typeof(SerializableVector4))
+                {
+                    value = (T)(object)new SerializableVector4();
+                }
+                else if (typeof(T) == typeof(SerializableColor))
+                {
+                    value = (T)(object)new SerializableColor();
+                }
+                else if (typeof(T) == typeof(SerializableMatrix4x4))
+                {
+                    value = (T)(object)new SerializableMatrix4x4();
+                }
+            }
+
             switch (value)
             {
                 case SerializableVector2 v2:
