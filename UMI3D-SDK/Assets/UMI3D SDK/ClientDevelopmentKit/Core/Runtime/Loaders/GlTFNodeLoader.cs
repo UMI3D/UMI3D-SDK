@@ -165,6 +165,43 @@ namespace umi3d.cdk
         /// <returns></returns>
         public async Task LoadNodes(IEnumerable<GlTFNodeDto> nodes, Progress progress)
         {
+#if UNITY_EDITOR
+            var tasks = nodes
+                .Select(n => CreateNode(n))
+                .Select(async node =>
+                {
+                    var dto = node.dto as GlTFNodeDto;
+                    progress.AddTotal();
+                    try
+                    {
+                        await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.extensions.umi3d, node.gameObject));
+
+                        ReadLightingExtensions(dto, node.gameObject);
+                        // Important: all nodes in the scene must be registred before to handle hierarchy. 
+                        // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
+                        node.transform.localPosition = dto.position;
+                        node.transform.localRotation = dto.rotation;
+                        node.transform.localScale = dto.scale;
+
+                        node.SendOnPoseUpdated();
+                        node.NotifyLoaded();
+
+                        progress.AddComplete();
+                    }
+                    catch (Exception e)
+                    {
+                        UMI3DLogger.LogException(e, scope);
+                        UMI3DLogger.LogError($"Failed to read Umi3d extension [{dto.name}]", scope);
+                        if (!await progress.AddFailed(e))
+                            throw;
+                    }
+                });
+
+            foreach (var task in tasks)
+            {
+                await task;
+            }
+#else
             await Task.WhenAll(
                 nodes
                 .Select(n => CreateNode(n))
@@ -196,6 +233,7 @@ namespace umi3d.cdk
                                 throw;
                         }
                     }));
+#endif
         }
 
         /// <summary>
