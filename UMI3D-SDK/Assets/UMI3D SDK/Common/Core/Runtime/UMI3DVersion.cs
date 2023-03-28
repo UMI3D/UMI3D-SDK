@@ -30,7 +30,7 @@ namespace umi3d
         public static string version => major + "." + minor + "." + status + "." + date;
         public static readonly string major = "2";
         public static readonly string minor = "6";
-        public static readonly string status = "b";
+        public static readonly string status = "p";
         public static readonly string date = "280323";
 
 
