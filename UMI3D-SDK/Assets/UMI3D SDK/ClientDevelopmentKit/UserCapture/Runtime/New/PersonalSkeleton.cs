@@ -60,12 +60,8 @@ namespace umi3d.cdk.userCapture
         protected Transform hipsAnchor;
         #endregion
         public TrackedSkeleton TrackedSkeleton;
-        //public PoseSkeleton PoseSkeleton;
-        //public AnimatedSkeleton AnimatedSkeleton;
 
         public Dictionary<uint, float> BonesAsyncFPS { get; protected set; }
-
-        //public float skeletonHighOffset = 0;
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
@@ -73,7 +69,7 @@ namespace umi3d.cdk.userCapture
         {
             skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton, new PoseSkeleton()//, new AnimatedSkeleton()
+                TrackedSkeleton, new PoseSkeleton()
             };
         }
 
@@ -83,7 +79,6 @@ namespace umi3d.cdk.userCapture
             {
                 position = transform.position,
                 rotation = transform.rotation,
-                //skeletonHighOffset = skeletonHighOffset,
             };
 
             foreach (ISubWritableSkeleton skeleton in skeletons.OfType<ISubWritableSkeleton>())
