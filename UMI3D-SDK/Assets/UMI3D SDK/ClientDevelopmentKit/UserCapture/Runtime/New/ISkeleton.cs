@@ -24,6 +24,7 @@ using umi3d.cdk.utils.extrapolation;
 using System.Threading.Tasks;
 using System.Collections;
 using umi3d.cdk;
+using inetum.unityUtils;
 
 namespace umi3d.cdk.userCapture
 {
@@ -85,29 +86,44 @@ namespace umi3d.cdk.userCapture
 
                 bones.ForEach(b =>
                 {
-                    if (b.rotation != null/* && b.position != null*/)
+                    if (b.rotation != null)
                     {
                         Bones.TryGetValue(b.boneType, out var pose);
                         if (pose != null)
                         {
                             Bones[b.boneType].s_Rotation = b.rotation;
-                            //Bones[b.boneType].s_Position = b.position;
                         }
                         else
                         {
                             Bones.TryAdd(b.boneType, new s_Transform()
                             {
-                                //s_Position= b.position,
                                 s_Rotation = b.rotation
                             });
                         }
-
-                        // Compute s_Transform's positions step by step
                     }
                 });
+
+            }
+
+            // Determiner la position du Hips
+
+            foreach (uint boneType in Bones.Keys)
+            {
+                ComputeBonePosition(boneType);
             }
 
             return this;
+        }
+
+        private void ComputeBonePosition(uint boneType)
+        {
+            if (Bones[boneType].s_Position == null && SkeletonHierarchy.TryGetValue(boneType, out var pose))
+            {
+                if (Bones[pose.Item1].s_Position == null)
+                    ComputeBonePosition(pose.Item1);
+
+                Bones[boneType].s_Position = Bones[pose.Item1].s_Position + Bones[pose.Item1].s_Rotation.ToQuaternion() * pose.Item2;
+            }
         }
 
         private bool CheckNulls()
@@ -557,39 +573,6 @@ namespace umi3d.cdk.userCapture
         }
 
         #endregion
-        #endregion
-
-        #region Utils
-
-        //private void SetSkeletonHierarchy()
-        //{
-        //    SkeletonHierarchy = new Dictionary<uint, (uint, Vector3)>
-        //        {
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //            { BoneType.Hips, (0, new Vector3(6.757011e-08f, 0.9979194f, 4.84474e-07f)) },
-        //        };
-        //}
         #endregion
     }
 }
