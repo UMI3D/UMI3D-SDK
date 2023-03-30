@@ -36,6 +36,8 @@ namespace umi3d.cdk.userCapture
 
         Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; set; }
 
+        protected Transform HipsAnchor { get; set; }
+        
         #region Data struture
         public class s_Transform
         {
@@ -105,7 +107,8 @@ namespace umi3d.cdk.userCapture
 
             }
 
-            // Determiner la position du Hips
+            //very naïve
+            Bones[BoneType.Hips].s_Position = HipsAnchor.position;
 
             foreach (uint boneType in Bones.Keys)
             {

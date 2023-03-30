@@ -46,6 +46,9 @@ public class ISkeleton_Test
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
         Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        
+        
+        Transform ISkeleton.HipsAnchor { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones;

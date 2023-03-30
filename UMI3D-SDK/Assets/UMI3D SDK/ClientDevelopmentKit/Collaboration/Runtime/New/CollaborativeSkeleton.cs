@@ -38,7 +38,8 @@ namespace umi3d.cdk.collaboration
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
-        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => skeletonHierarchy; set => skeletonHierarchy = value; }
+        Transform ISkeleton.HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
@@ -51,6 +52,8 @@ namespace umi3d.cdk.collaboration
         protected List<Transform> boundRigs = new List<Transform>();
         protected List<BindingDto> userBindings = new List<BindingDto>();
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ulong, ISkeleton.SavedTransform>();
+        protected Dictionary<uint, (uint, Vector3)> skeletonHierarchy = new Dictionary<uint, (uint, Vector3)>();
+        protected Transform hipsAnchor;
 
         #endregion
 
