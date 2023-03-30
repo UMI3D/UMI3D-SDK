@@ -24,6 +24,7 @@ using umi3d.cdk.utils.extrapolation;
 using System.Threading.Tasks;
 using System.Collections;
 using umi3d.cdk;
+using inetum.unityUtils;
 
 namespace umi3d.cdk.userCapture
 {
@@ -33,6 +34,10 @@ namespace umi3d.cdk.userCapture
         Dictionary<uint, s_Transform> Bones { get; set; }
         List<ISubSkeleton> Skeletons { get; set; }
 
+        Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; set; }
+
+        protected Transform HipsAnchor { get; set; }
+        
         #region Data struture
         public class s_Transform
         {
@@ -46,15 +51,17 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Only Call once
         /// </summary>
-        public void Init() 
+        public void Init()
         {
-            if(Bones == null) Bones= new Dictionary<uint, s_Transform>();
-            if(Skeletons == null) Skeletons = new List<ISubSkeleton>();
-            if(savedTransforms == null) savedTransforms = new Dictionary<ulong, SavedTransform>();
-            if (bounds == null) bounds = new List<Bound>();
-            
-        }
+            UMI3DSkeletonHierarchy.SetSkeletonHierarchy.AddListener(() => this.SkeletonHierarchy = UMI3DSkeletonHierarchy.SkeletonHierarchy);
 
+            if (Bones == null) Bones = new Dictionary<uint, s_Transform>();
+            if (Skeletons == null) Skeletons = new List<ISubSkeleton>();
+            if (savedTransforms == null) savedTransforms = new Dictionary<ulong, SavedTransform>();
+            if (bounds == null) bounds = new List<Bound>();
+
+            //if (SkeletonHierarchy == null) SetSkeletonHierarchy();
+        }
 
         #region Compute current skeleton
         public ISkeleton Compute()
@@ -68,12 +75,12 @@ namespace umi3d.cdk.userCapture
             {
                 ISubSkeleton skeleton = Skeletons[i];
                 List<BoneDto> bones = new List<BoneDto>();
-                
+
                 try
                 {
                     bones = skeleton.GetPose().bones.ToList();
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     Debug.Log($"<color=red> _{e} </color>");
                     return this;
@@ -81,29 +88,45 @@ namespace umi3d.cdk.userCapture
 
                 bones.ForEach(b =>
                 {
-                    if (b.rotation != null/* && b.position != null*/)
+                    if (b.rotation != null)
                     {
                         Bones.TryGetValue(b.boneType, out var pose);
                         if (pose != null)
                         {
                             Bones[b.boneType].s_Rotation = b.rotation;
-                            //Bones[b.boneType].s_Position = b.position;
                         }
                         else
                         {
                             Bones.TryAdd(b.boneType, new s_Transform()
                             {
-                                //s_Position= b.position,
                                 s_Rotation = b.rotation
                             });
                         }
-
-                        // Compute s_Transform's positions step by step
                     }
                 });
+
+            }
+
+            //very naïve
+            Bones[BoneType.Hips].s_Position = HipsAnchor.position;
+
+            foreach (uint boneType in Bones.Keys)
+            {
+                ComputeBonePosition(boneType);
             }
 
             return this;
+        }
+
+        private void ComputeBonePosition(uint boneType)
+        {
+            if (Bones[boneType].s_Position == null && SkeletonHierarchy.TryGetValue(boneType, out var pose))
+            {
+                if (Bones[pose.Item1].s_Position == null)
+                    ComputeBonePosition(pose.Item1);
+
+                Bones[boneType].s_Position = Bones[pose.Item1].s_Position + Bones[pose.Item1].s_Rotation.ToQuaternion() * pose.Item2;
+            }
         }
 
         private bool CheckNulls()
@@ -221,7 +244,7 @@ namespace umi3d.cdk.userCapture
         {
             foreach (BindingDto dto in userBindings)
             {
-                if (savedTransforms.ContainsKey(dto.bindingId ))
+                if (savedTransforms.ContainsKey(dto.bindingId))
                     ResetObjectBindings(dto);
             }
 
@@ -422,7 +445,7 @@ namespace umi3d.cdk.userCapture
             {
                 if (entityInstance is UMI3DNodeInstance node)
                 {
-                    UMI3DEnvironmentLoader.StartCoroutine(WaitForRig(node, dto, bone));             
+                    UMI3DEnvironmentLoader.StartCoroutine(WaitForRig(node, dto, bone));
                 }
             }
             );
@@ -472,7 +495,7 @@ namespace umi3d.cdk.userCapture
                 {
                     yield return null;
                 }
-                
+
                 if (!boundRigs.Contains(obj))
                     boundRigs.Add(obj);
 
@@ -538,7 +561,7 @@ namespace umi3d.cdk.userCapture
 
         private void SaveTransform(BindingDto dto, Transform obj)
         {
-            if(dto == null || obj == null) return;
+            if (dto == null || obj == null) return;
 
             var savedTransform = new SavedTransform
             {

@@ -41,6 +41,8 @@ namespace umi3d.cdk.userCapture
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => skeletonHierarchy; set => skeletonHierarchy = value; }
+        Transform ISkeleton.HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
@@ -53,15 +55,13 @@ namespace umi3d.cdk.userCapture
         protected List<Transform> boundRigs = new List<Transform>();
         protected List<BindingDto> userBindings = new List<BindingDto>();
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ulong, ISkeleton.SavedTransform>();
-
+        protected Dictionary<uint, (uint, Vector3)> skeletonHierarchy = new Dictionary<uint, (uint, Vector3)>();
+        [SerializeField]
+        protected Transform hipsAnchor;
         #endregion
         public TrackedSkeleton TrackedSkeleton;
-        //public PoseSkeleton PoseSkeleton;
-        //public AnimatedSkeleton AnimatedSkeleton;
 
         public Dictionary<uint, float> BonesAsyncFPS { get; protected set; }
-
-        //public float skeletonHighOffset = 0;
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
@@ -69,7 +69,7 @@ namespace umi3d.cdk.userCapture
         {
             skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton, new PoseSkeleton()//, new AnimatedSkeleton()
+                TrackedSkeleton, new PoseSkeleton()
             };
         }
 
@@ -79,7 +79,6 @@ namespace umi3d.cdk.userCapture
             {
                 position = transform.position,
                 rotation = transform.rotation,
-                //skeletonHighOffset = skeletonHighOffset,
             };
 
             foreach (ISubWritableSkeleton skeleton in skeletons.OfType<ISubWritableSkeleton>())
