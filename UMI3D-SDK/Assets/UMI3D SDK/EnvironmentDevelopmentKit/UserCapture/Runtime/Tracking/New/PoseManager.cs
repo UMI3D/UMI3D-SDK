@@ -42,7 +42,9 @@ namespace umi3d.edk.userCapture
                 for (int i = 0; i < allServerPoses.Count; i++)
                 {
                     allServerPoses[i].SendPoseIndexationEvent(i);
-                    poses.Add(allServerPoses[i].ToDTO());
+                    PoseDto poseDto = allServerPoses[i].ToDTO();
+                    poseDto.id = i;
+                    poses.Add(poseDto);
                 }
 
                 allPoses.Add(0, poses);

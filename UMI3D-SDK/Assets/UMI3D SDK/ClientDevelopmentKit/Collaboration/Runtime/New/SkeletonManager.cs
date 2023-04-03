@@ -286,8 +286,8 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                (skeleton as PersonalSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
-                (skeleton as CollaborativeSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
+                (skeleton as PersonalSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
+                (skeleton as CollaborativeSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
             }
         }
     }

@@ -33,10 +33,12 @@ namespace umi3d.cdk.userCapture
         private void Start()
         {
             localPoses = new PoseDto[clientPoses.Count];
-            clientPoses.ForEach(p =>
+            for (int i = 0; i< clientPoses.Count; i++)
             {
-                localPoses.Append(p.ToDTO());
-            });
+                PoseDto poseDto = clientPoses[i].ToDTO();
+                poseDto.id = i;
+                localPoses.Append(poseDto);
+            }
         }
 
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)

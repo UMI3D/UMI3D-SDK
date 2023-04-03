@@ -23,23 +23,32 @@ namespace umi3d.cdk.userCapture
 {
     public class PoseSkeleton : ISubWritableSkeleton
     {
-        public List<PoseDto> CurrentlyActivatedPoses = new List<PoseDto>();
+        public List<PoseDto> localCurrentlyActivatedPoses = new List<PoseDto>();
+        public List<PoseDto> serverCurrentlyActivatedPoses = new List<PoseDto>();
 
-        public void SetPose(bool isOveriding, List<PoseDto> poseToAdd)
+        public void SetPose(bool isOveriding, List<PoseDto> poseToAdd, bool isServerPose)
         {
             if (isOveriding)
             {
-                CurrentlyActivatedPoses.Clear();
+                serverCurrentlyActivatedPoses.Clear();
+                localCurrentlyActivatedPoses.Clear();
             }
 
-            CurrentlyActivatedPoses.AddRange(poseToAdd);
+            if (isServerPose)
+            {
+                serverCurrentlyActivatedPoses.AddRange(poseToAdd);
+            }
+            else
+            {
+                localCurrentlyActivatedPoses.AddRange(poseToAdd);
+            }
         }
 
-        public void StopPose(bool areAll = true, List<PoseDto> posesToStop = null)
+        public void StopPose(bool areAll = true, List<PoseDto> posesToStop = null, bool isServerPose = false)
         {
             if (areAll)
             {
-                CurrentlyActivatedPoses.Clear();
+                localCurrentlyActivatedPoses.Clear();
             }
             else
             {
@@ -47,7 +56,7 @@ namespace umi3d.cdk.userCapture
                 {
                     posesToStop.ForEach(pts =>
                     {
-                        CurrentlyActivatedPoses.Remove(pts);
+                        localCurrentlyActivatedPoses.Remove(pts);
                     });
                 }
             }
@@ -57,18 +66,34 @@ namespace umi3d.cdk.userCapture
         {
             PoseDto poseDto = new PoseDto();
 
-            for (int i = 0; i < CurrentlyActivatedPoses?.Count; i++)
+            for (int i = 0; i < localCurrentlyActivatedPoses?.Count; i++)
             {
-                for (int j = 0; j < CurrentlyActivatedPoses[i].bones?.Count; j++)
+                for (int j = 0; j < localCurrentlyActivatedPoses[i].bones?.Count; j++)
                 {
-                    int indexOf = poseDto.bones.IndexOf(CurrentlyActivatedPoses[i].bones[j]);
+                    int indexOf = poseDto.bones.IndexOf(localCurrentlyActivatedPoses[i].bones[j]);
                     if (indexOf != -1)
                     {
-                        poseDto.bones[indexOf] = CurrentlyActivatedPoses[i].bones[j];
+                        poseDto.bones[indexOf] = localCurrentlyActivatedPoses[i].bones[j];
                     }
                     else
                     {
-                        poseDto.bones.Add(CurrentlyActivatedPoses[i].bones[j]);
+                        poseDto.bones.Add(localCurrentlyActivatedPoses[i].bones[j]);
+                    }
+                }
+            }
+
+            for (int i = 0; i < serverCurrentlyActivatedPoses?.Count; i++)
+            {
+                for (int j = 0; j < serverCurrentlyActivatedPoses[i].bones?.Count; j++)
+                {
+                    int indexOf = poseDto.bones.IndexOf(serverCurrentlyActivatedPoses[i].bones[j]);
+                    if (indexOf != -1)
+                    {
+                        poseDto.bones[indexOf] = serverCurrentlyActivatedPoses[i].bones[j];
+                    }
+                    else
+                    {
+                        poseDto.bones.Add(serverCurrentlyActivatedPoses[i].bones[j]);
                     }
                 }
             }
