@@ -18,9 +18,9 @@ limitations under the License.
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
-    public class AnchorBonePoseDto : BonePoseDto
+    public class AnchoredBonePoseDto : BonePoseDto
     {
-        public AnchorBonePoseDto() { }
+        public AnchoredBonePoseDto() { }
 
         /// <summary>
         /// 
@@ -29,7 +29,7 @@ namespace umi3d.common.userCapture
         /// <param name="bone">The current bone to update</param>
         /// <param name="position">The position of the bone</param>
         /// <param name="rotation">The rotation of the bone</param>
-        public AnchorBonePoseDto(uint otherBone, uint bone, SerializableVector3 position, SerializableVector4 rotation) : base (bone, position, rotation) 
+        public AnchoredBonePoseDto(uint otherBone, uint bone, SerializableVector3 position, SerializableVector4 rotation) : base (bone, position, rotation) 
         { 
             this.otherBone = otherBone;
         }
@@ -39,9 +39,13 @@ namespace umi3d.common.userCapture
         /// </summary>
         /// <param name="otherBone">The anchor bone</param>
         /// <param name="bonePoseDto">The bone DTO corresponding to the current anchor bone pose dto you want to do</param>
-        public AnchorBonePoseDto(uint otherBone, BonePoseDto bonePoseDto) : base (bonePoseDto.bone, bonePoseDto.position, bonePoseDto.rotation)
+        public AnchoredBonePoseDto(uint otherBone, BonePoseDto bonePoseDto) : base (bonePoseDto.bone, bonePoseDto.position, bonePoseDto.rotation)
         {
             this.otherBone = otherBone;
+        }
+
+        public AnchoredBonePoseDto(BonePoseDto bonePoseDto) : base(bonePoseDto.bone, bonePoseDto.position, bonePoseDto.rotation)
+        {
         }
 
         /// <summary>

@@ -495,7 +495,7 @@ namespace EditMode_Tests
         [Test]
         public void ReadBonePose_AnchoredBonePose()
         {
-            AnchorBonePoseDto anchorBonePoseDto = new AnchorBonePoseDto(
+            AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto(
                 bone: 2,
                 position: Vector3.one,
                 rotation: Vector4.one,
@@ -516,8 +516,8 @@ namespace EditMode_Tests
             Assert.IsTrue(((result as BonePoseDto).rotation
                 == (anchorBonePoseDto as BonePoseDto).rotation));
 
-            Assert.IsTrue(((result as AnchorBonePoseDto).otherBone
-                == (anchorBonePoseDto as AnchorBonePoseDto).otherBone));
+            Assert.IsTrue(((result as AnchoredBonePoseDto).otherBone
+                == (anchorBonePoseDto as AnchoredBonePoseDto).otherBone));
         }
 
         [Test]

@@ -12,4 +12,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 6411971a4c5b6984e811cccee7a79ab2, type: 3}
   m_Name: pose_from_LeftHip
   m_EditorClassIdentifier: 
-  boneDtos: []
+  boneDtos:
+  - boneType: 9
+    rotation:
+      X: 0.89476144
+      Y: -0
+      Z: -0
+      W: 0.44654453
+  - boneType: 4
+    rotation:
+      X: 0.99936247
+      Y: -0
+      Z: -0
+      W: 0.035704225
+  - boneType: 8
+    rotation:
+      X: 0.99936247
+      Y: -0
+      Z: -0
+      W: 0.035704225

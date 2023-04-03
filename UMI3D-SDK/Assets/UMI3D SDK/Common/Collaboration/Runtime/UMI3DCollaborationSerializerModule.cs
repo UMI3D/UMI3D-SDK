@@ -182,7 +182,7 @@ namespace umi3d.common.collaboration
                         if (readable)
                         {
                             BonePoseDto bonePoseDto = null;
-                            AnchorBonePoseDto anchorBonePoseDto;
+                            AnchoredBonePoseDto anchorBonePoseDto;
                             NodePositionAnchoredBonePoseDto nodePositionAnchoredBonePoseDto;
                             NodeRotationAnchoredBonePoseDto nodeRotationAnchoredBonePoseDto;
                             FloorAnchoredBonePoseDto floorAnchoredBonePoseDto;
@@ -788,7 +788,7 @@ namespace umi3d.common.collaboration
                         return false;
                     }
 
-                case true when typeof(T) == typeof(AnchorBonePoseDto):
+                case true when typeof(T) == typeof(AnchoredBonePoseDto):
                     {
                         BonePoseDto bonePoseDto;
                         ReadPoseDto(container, out readable, out bonePoseDto);
@@ -798,12 +798,12 @@ namespace umi3d.common.collaboration
 
                         if (readable)
                         {
-                            AnchorBonePoseDto anchorBonePoseDto = new AnchorBonePoseDto(
+                            AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto(
                                 bonePoseDto: bonePoseDto,
                                 otherBone: otherBone
                             );
 
-                            result = (T)Convert.ChangeType(anchorBonePoseDto, typeof(AnchorBonePoseDto));
+                            result = (T)Convert.ChangeType(anchorBonePoseDto, typeof(AnchoredBonePoseDto));
                             return true;
                         }
 
@@ -1274,7 +1274,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(voice.channelName);
                     break;
                 #region Pose Dto
-                case AnchorBonePoseDto anchorBonePoseDto:
+                case AnchoredBonePoseDto anchorBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)1)
                         + UMI3DSerializer.Write(anchorBonePoseDto.bone)
                         + UMI3DSerializer.Write(anchorBonePoseDto.position)

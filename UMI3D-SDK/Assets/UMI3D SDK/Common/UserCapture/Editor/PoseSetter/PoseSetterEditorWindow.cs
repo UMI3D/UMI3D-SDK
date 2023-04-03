@@ -39,6 +39,7 @@ namespace umi3d.common.userCapture
         VisualElement root = null;
         TextField name = null;
         DropdownField loa_dropdown = null; // TODO --> implement the LOA logic
+        DropdownField anchor_dropdown = null;
         TextField path = null;
         CustomObjectField object_field = null;
         CustomObjectField so_field = null;
@@ -157,6 +158,7 @@ namespace umi3d.common.userCapture
             root = rootVisualElement;
             name = root.Q<TextField>("name");
             loa_dropdown = root.Q<DropdownField>("loa_dropdown");
+            anchor_dropdown = root.Q<DropdownField>("anchor_dropdown");
             path = root.Q<TextField>("path");
             object_field = root.Q<CustomObjectField>("object_field");
             so_field = root.Q<CustomObjectField>("so_field");
@@ -249,6 +251,13 @@ namespace umi3d.common.userCapture
             {
                 loaEnum = Enum.Parse<LoaEnum>(data.newValue);
             });
+
+            anchor_dropdown.choices.RemoveAt(0);
+            TypeCache.GetTypesDerivedFrom<BonePoseDto>().ForEach(type =>
+            {
+                anchor_dropdown.choices.Add(type.Name);
+            });
+            anchor_dropdown.value = anchor_dropdown.choices[0];
 
             symetry_dropdown.choices.RemoveAt(0);
             Enum.GetNames(typeof(SymetryTarget)).ForEach(name =>
@@ -449,7 +458,7 @@ namespace umi3d.common.userCapture
                                                              .ToList();
 
                 Vector4 rootRotation = new Vector4(r.transform.rotation.x, r.transform.rotation.y, r.transform.rotation.z, r.transform.rotation.w);
-                BonePoseDto bonePoseDto = new BonePoseDto(boneToSave[0].BoneType, r.transform.position, rootRotation);
+                BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, boneToSave[0], r); 
                 boneToSave.RemoveAt(0);
                                                              
                 boneToSave.ForEach(bc =>
@@ -470,6 +479,23 @@ namespace umi3d.common.userCapture
 
                 SavePoseOverrider(pose_So, path);
             });
+        }
+
+        private BonePoseDto CreateBonePoseDTOOfType(Vector4 rootRotation, PoseSetterBoneComponent poseSetterBoneComponent, PoseSetterBoneComponent r)
+        {
+            BonePoseDto bonePoseDto = new BonePoseDto(poseSetterBoneComponent.BoneType, r.transform.position, rootRotation);
+            string anchor = anchor_dropdown.value;
+            switch (anchor_dropdown.value)
+            {
+                case "AnchoredBonePoseDto":
+                    return new AnchoredBonePoseDto(bonePoseDto);
+                case "NodeAnchor":
+
+                    break;
+                case "FloorAnchoredBonePoseDto":
+                    return new FloorAnchoredBonePoseDto(bonePoseDto);
+            }
+            return bonePoseDto;
         }
 
         private void SavePoseOverrider(UMI3DPose_so pose_So, string path)
@@ -513,6 +539,7 @@ namespace umi3d.common.userCapture
                 treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(true, root_boneComponent.BoneType);
 
                 UpdateBoneComponent(currentPose.BonePoseDto);
+                anchor_dropdown.SetValueWithoutNotify(anchor_dropdown.choices.Find(c => c == currentPose.BonePoseDto.GetType().ToString().Split(".").Last()));
 
                 currentPose.BoneDtos.ForEach(bp =>
                 {

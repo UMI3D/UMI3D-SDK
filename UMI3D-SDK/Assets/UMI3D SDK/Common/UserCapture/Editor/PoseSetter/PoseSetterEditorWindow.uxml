@@ -12,6 +12,9 @@
                 <ui:VisualElement name="loa_setting">
                     <ui:DropdownField label="LOA" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="loa_dropdown" />
                 </ui:VisualElement>
+                <ui:VisualElement name="anchor_settings">
+                    <ui:DropdownField label="anchor type" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="anchor_dropdown" />
+                </ui:VisualElement>
                 <ui:VisualElement name="CustomDrawerContainer">
                     <inetum.unityUtils.CustomObjectField focusable="true" name="object_field" tooltip="skeleton to edit" />
                     <inetum.unityUtils.CustomObjectField focusable="true" name="so_field" tooltip="pose to edit" />
