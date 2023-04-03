@@ -49,7 +49,7 @@ namespace umi3d.cdk.userCapture
         /// Always returns null for AnimatonSkeleton.
         public virtual UserCameraPropertiesDto GetCameraDto()
         {
-            return null; //! to implement only in TrackedAvatar
+            return null;
         }
 
         /// <summary>
@@ -64,20 +64,5 @@ namespace umi3d.cdk.userCapture
                 return null;
             return Mapper.GetPose();
         }
-
-        ///TODO DELETE AFTER
-
-        /// <summary>
-        /// Activate / Deactivate animations accordingly to the <paramref name="trackingFrame"/>.
-        /// </summary>
-        /// <param name="trackingFrame"></param>
-        public virtual void UpdateFrame(UserTrackingFrameDto trackingFrame) {}
-
-        /// <summary>
-        /// Fill out <paramref name="trackingFrame"/> with currently playing animations.
-        /// </summary>
-        /// <param name="trackingFrame"></param>
-        /// <param name="option"></param>
-        public virtual void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option) {}
     }
 }

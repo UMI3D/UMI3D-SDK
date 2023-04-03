@@ -26,7 +26,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public class TrackedSkeleton : MonoBehaviour, ISubSkeleton
+    public class TrackedSkeleton : MonoBehaviour, ISubWritableSkeleton
     {
         public List<IController> controllers;
         List<IController> controllersToDestroy;
@@ -60,7 +60,7 @@ namespace umi3d.cdk.userCapture
         public PoseDto GetPose()
         {
             var dto = new PoseDto();
-            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBonePoseDto()).ToArray());
+            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBoneDto()).ToArray());
             return dto;
         }
 
@@ -68,16 +68,16 @@ namespace umi3d.cdk.userCapture
         {
             return new UserTrackingBoneDto()
             {
-                bone = bones[boneType].ToBonePoseDto()
+                bone = bones[boneType].ToControllerDto()
             };
         }
 
         public void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
             types.Clear();
-            foreach (var bone in trackingFrame.bones)
+            foreach (var bone in trackingFrame.trackedBones)
             {
-                DistantController vc = controllers.First(c => c.boneType == bone.bone) as DistantController;
+                DistantController vc = controllers.First(c => c.boneType == bone.boneType) as DistantController;
 
                 if (vc == null)
                 {
@@ -89,16 +89,13 @@ namespace umi3d.cdk.userCapture
                 vc.position = bone.position; //trackingFrame.position; 
                 vc.rotation = bone.rotation.ToQuaternion(); //trackingFrame.rotation;
 
-                types.Add(bone.bone);
+                types.Add(bone.boneType);
             }
             foreach (var dc in controllers.Where(c => c is DistantController && !types.Contains(c.boneType)).ToList())
             {
                 controllersToDestroy.Add(dc);
                 controllers.Remove(dc);
             }
-
-
-
         }
 
         /// <summary>
@@ -111,7 +108,11 @@ namespace umi3d.cdk.userCapture
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            trackingFrame.bones = bones.Select(kp => kp.Value).Select(tb => tb.ToBonePoseDto()).Where(b => b != null).ToList();
+            trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
+            foreach (var asyncBone in PersonalSkeleton.Instance.BonesAsyncFPS)
+            {
+                trackingFrame.trackedBones.Add(bones.First(b => b.Value.boneType.Equals(asyncBone.Key)).Value.ToControllerDto());
+            }
         }
 
 

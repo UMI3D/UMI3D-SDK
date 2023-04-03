@@ -118,10 +118,10 @@ namespace umi3d.common.collaboration
                 #region Pose
                 case true when typeof(T) == typeof(PoseDto):
                     {
-                        BonePoseDto[] bones;
-                        uint boneAnchor;
+                        BoneDto[] bones;
+                        BonePoseDto boneAnchor;
 
-                        bones = UMI3DSerializer.ReadArray<BonePoseDto>(container);
+                        bones = UMI3DSerializer.ReadArray<BoneDto>(container);
 
                         readable = UMI3DSerializer.TryRead(container, out boneAnchor)
                                         && bones != null;
@@ -661,7 +661,7 @@ namespace umi3d.common.collaboration
                             //&& UMI3DSerializer.TryRead(container, out refreshFrequency)
                             )
                         {
-                            System.Collections.Generic.List<BonePoseDto> bones = UMI3DSerializer.ReadList<BonePoseDto>(container);
+                            System.Collections.Generic.List<ControllerDto> bones = UMI3DSerializer.ReadList<ControllerDto>(container);
 
                             if (bones != default)
                             {
@@ -673,7 +673,7 @@ namespace umi3d.common.collaboration
                                     position = position,
                                     rotation = rotation,
                                     //refreshFrequency = refreshFrequency,
-                                    bones = bones
+                                    trackedBones = bones
                                 };
                                 readable = true;
                                 result = (T)Convert.ChangeType(trackingFrame, typeof(T));
@@ -689,7 +689,7 @@ namespace umi3d.common.collaboration
                     {
                         uint idKey = 0;
                         ulong userId;
-                        BonePoseDto boneDto;
+                        ControllerDto boneDto;
 
                         if (
                             UMI3DSerializer.TryRead(container, out idKey)

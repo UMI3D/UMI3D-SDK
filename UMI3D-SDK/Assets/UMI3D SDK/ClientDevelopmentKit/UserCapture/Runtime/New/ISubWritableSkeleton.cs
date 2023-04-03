@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,24 +15,23 @@ limitations under the License.
 */
 
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    /// <summary>
-    /// Behaviur of a piece of skeleton position to merge to have the whole skeleton position.
-    /// </summary>
-    public interface ISubSkeleton
+    public interface ISubWritableSkeleton : ISubSkeleton
     {
         /// <summary>
-        /// Get the skeleton pose based on the position of this subskeleton.
+        /// Update the position of this subskeleton according to the received <paramref name="trackingFrame"/>.
         /// </summary>
-        /// <returns></returns>
-        PoseDto GetPose();
+        /// <param name="trackingFrame"></param>
+        void UpdateFrame(UserTrackingFrameDto trackingFrame);
 
         /// <summary>
-        /// Get subskeleton camera parameters.
+        /// Fill out the <paramref name="trackingFrame"/> with data from the subskeleton.
         /// </summary>
-        /// <returns></returns>
-        UserCameraPropertiesDto GetCameraDto(); 
+        /// <param name="trackingFrame"></param>
+        /// <param name="option"></param>
+        void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option);
     }
 }

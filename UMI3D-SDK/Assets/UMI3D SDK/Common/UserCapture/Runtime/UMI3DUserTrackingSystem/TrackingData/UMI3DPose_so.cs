@@ -27,10 +27,10 @@ namespace umi3d.common.userCapture
     public class UMI3DPose_so : ScriptableObject
     {
         [SerializeField] List<UMI3DBonePose_so> bonePoses = new List<UMI3DBonePose_so>();
-        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneAnchor;
+        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneTypeAnchor;
 
         public List<UMI3DBonePose_so> BonePoses { get => bonePoses; }
-        public uint BoneAnchor { get => boneAnchor; }
+        public uint BoneAnchor { get => boneTypeAnchor; }
 
         /// <summary>
         /// An event thats called when the PoseManager has played his Start() method
@@ -40,7 +40,7 @@ namespace umi3d.common.userCapture
         public void Init(List<UMI3DBonePose_so> bonePoses, uint boneAnchor)
         {
             this.bonePoses = bonePoses;
-            this.boneAnchor = boneAnchor;
+            this.boneTypeAnchor = boneAnchor;
         }
 
         public void SendPoseIndexationEvent(int i)
@@ -54,12 +54,16 @@ namespace umi3d.common.userCapture
         /// <returns></returns>
         public PoseDto ToDTO()
         {
-            List<BonePoseDto> bonePosesDtos = new List<BonePoseDto>();
+            List<BoneDto> boneDtos = new List<BoneDto>();
+
+            var boneAnchor = bonePoses.Find(b => b.bone == boneTypeAnchor);
+
             bonePoses.ForEach(bp =>
             {
-                bonePosesDtos.Add(bp.ToDTO());
+                boneDtos.Add(new BoneDto() { boneType = bp.bone, rotation = bp.rotation });
             });
-            return new PoseDto(bonePosesDtos.ToArray(), boneAnchor);
+
+            return new PoseDto(boneDtos.ToArray(), new BonePoseDto() { bone = boneAnchor.bone, position = boneAnchor.position, rotation = boneAnchor.rotation});
         }
     }
 }

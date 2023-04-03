@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,7 +16,6 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
-    [System.Serializable]
     public class PoseDto : UMI3DDto
     {
         public PoseDto() { }
@@ -26,7 +25,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         /// <param name="bonePoseDtos">all the bone pose that are composing the current pose</param>
         /// <param name="boneAnchor"></param>
-        public PoseDto(BonePoseDto[] bones, uint boneAnchor)
+        public PoseDto(BoneDto[] bones, BonePoseDto boneAnchor)
         {
             this.bones = bones;
             this.boneAnchor = boneAnchor;
@@ -35,12 +34,12 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// all the bone pose that are composing the current pose
         /// </summary>
-        public BonePoseDto[] bones { get; private set; }
-        public void SetBonePoseDtoArray(BonePoseDto[] bones)
+        public BoneDto[] bones { get; private set; }
+        public void SetBonePoseDtoArray(BoneDto[] bones)
         {
             this.bones = bones;
         }
 
-        public uint boneAnchor { get; private set; }
+        public BonePoseDto boneAnchor { get; private set; }
     }
 }

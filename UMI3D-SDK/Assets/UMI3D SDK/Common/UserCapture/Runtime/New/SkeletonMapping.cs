@@ -23,7 +23,7 @@ namespace umi3d.common.userCapture
     {
         public uint boneType { get; set; }
         public SkeletonMappingLink link {get; set;}
-        public BonePoseDto GetPose()
+        public BoneDto GetPose()
         {
             var computed = link.Compute();
             Vector4 rotation = new Vector4(computed.rotation.x,
@@ -32,11 +32,11 @@ namespace umi3d.common.userCapture
                                             computed.rotation.w
             );
 
-            return new BonePoseDto(
-                bone: boneType,
-                position: computed.position,
-                rotation: rotation
-            );
+            return new BoneDto() {
+                boneType = boneType,
+                //position: computed.position,
+                rotation = rotation
+            };
         }
     }
 }

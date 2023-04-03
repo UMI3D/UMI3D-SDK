@@ -45,6 +45,10 @@ public class ISkeleton_Test
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
+        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        
+        
+        Transform ISkeleton.HipsAnchor { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones;
@@ -139,10 +143,10 @@ public class ISkeleton_Test
     public void Test_Compute_OneAnimatedSkeletonWithhBones()
     {
         Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
-        PoseDto poseDto= new PoseDto();
-        poseDto.SetBonePoseDtoArray(new BonePoseDto[]
+        PoseDto poseDto = new PoseDto();
+        poseDto.SetBonePoseDtoArray(new BoneDto[]
         {
-            new BonePoseDto(BoneType.CenterFeet, Vector3.zero, Vector4.one),
+            new BoneDto() {boneType = BoneType.CenterFeet, rotation = Vector4.one},
         });
 
         Mock<SkeletonMapper> mockSkeletonMapper = new Mock<SkeletonMapper>();

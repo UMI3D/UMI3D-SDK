@@ -15,27 +15,30 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
-using UnityEngine.UIElements;
 
 namespace umi3d.common.userCapture
 {
-    public class UserTrackingBoneDto : AbstractBrowserRequestDto
+    [Serializable]
+    public class ControllerDto : BoneDto, IBytable
     {
         /// <summary>
-        /// User id of the tracked user 
+        /// Position relative to the tracked node.
         /// </summary>
-        public ulong userId;
+        public SerializableVector3 position;
 
-        public ControllerDto bone;
-
-        protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingBone; }
-
-        public override Bytable ToBytableArray(params object[] parameters)
+        /// <inheritdoc/>
+        bool IBytable.IsCountable()
         {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(userId)
-                + UMI3DSerializer.Write(bone);
+            return true;
+        }
+
+        /// <inheritdoc/>
+        Bytable IBytable.ToBytableArray(params object[] parameters)
+        {
+            return
+                UMI3DSerializer.Write(boneType)
+                + UMI3DSerializer.Write(rotation ?? new SerializableVector4())
+                + UMI3DSerializer.Write(position ?? new SerializableVector3());
         }
     }
 }
