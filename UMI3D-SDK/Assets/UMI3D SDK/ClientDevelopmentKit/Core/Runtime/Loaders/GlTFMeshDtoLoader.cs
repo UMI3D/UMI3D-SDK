@@ -64,13 +64,22 @@ namespace umi3d.cdk
 
             if (authorization != null && authorization != "")
             {
-                var authorizationHeader = new HttpHeader
-                {
-                    key = common.UMI3DNetworkingKeys.Authorization,
-                    value = authorization
-                };
+                var headers = new HttpHeader[] { };
 
-                var headers = new HttpHeader[] { authorizationHeader };
+                if (!UMI3DClientServer.Instance.AuthorizationInHeader && url.StartsWith("http"))
+                {
+                    url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(url, authorization);
+                }
+                else
+                {
+                    var authorizationHeader = new HttpHeader
+                    {
+                        key = common.UMI3DNetworkingKeys.Authorization,
+                        value = authorization
+                    };
+                    headers = new HttpHeader[] { authorizationHeader };
+                }
+
                 var customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
 
                 MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(async () =>

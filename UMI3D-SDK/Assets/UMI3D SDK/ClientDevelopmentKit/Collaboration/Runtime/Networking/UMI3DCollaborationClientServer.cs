@@ -179,6 +179,7 @@ namespace umi3d.cdk.collaboration
                     {
                         Instance.OnRedirection.Invoke();
                         loadingEntities.Clear();
+                        UMI3DEnvironmentLoader.Clear();
 
                         UMI3DEnvironmentClient env = environmentClient;
                         environmentClient = null;
