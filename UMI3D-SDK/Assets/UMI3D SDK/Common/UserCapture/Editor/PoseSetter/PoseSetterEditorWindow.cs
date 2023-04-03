@@ -438,7 +438,7 @@ namespace umi3d.common.userCapture
 
             roots.ForEach(r =>
             {
-                r.transform.localRotation = Quaternion.identity; // security to make sure that the positions and rotation are right
+                r.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
                 List<UMI3DBonePose_so> bonsPoseSos = new();
                 UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
                 pose_So.name = name;
@@ -451,7 +451,7 @@ namespace umi3d.common.userCapture
                                                              
                 boneToSave.ForEach(bc =>
                 {
-                    Vector4 rotation = new Vector4(bc.transform.localRotation.x, bc.transform.localRotation.y, bc.transform.localRotation.z, bc.transform.localRotation.w);
+                    Vector4 rotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
                     UMI3DBonePose_so bonePose_So = (UMI3DBonePose_so)CreateInstance(typeof(UMI3DBonePose_so));
                     bonePose_So.Init(bc.BoneType, bc.transform.localPosition, rotation);
                     bonePose_So.name = name + $"_{GetConstEnumField(bonePose_So.bone)}";
@@ -544,7 +544,7 @@ namespace umi3d.common.userCapture
             ResetAllBones();
             (object_field.value as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>()
                                             .ForEach(bc => { 
-                                                bc.transform.localRotation = Quaternion.identity;
+                                                bc.transform.rotation = Quaternion.identity;
                                             });
         }
 
@@ -553,7 +553,7 @@ namespace umi3d.common.userCapture
             PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bp.bone);
             if (bone_component != null)
             {
-                bone_component.transform.localRotation = new Quaternion(bp.rotation.x, bp.rotation.y, bp.rotation.z, bp.rotation.w);
+                bone_component.transform.rotation = new Quaternion(bp.rotation.x, bp.rotation.y, bp.rotation.z, bp.rotation.w);
                 bone_component.transform.localPosition = bp.position;
                 bone_component.isSavable = true;
             }
@@ -564,10 +564,10 @@ namespace umi3d.common.userCapture
         {
             if (selectedBone != null)
             {
-                Vector3 rotation = selectedBone.localRotation.eulerAngles;
+                Vector3 rotation = selectedBone.rotation.eulerAngles;
                 rotation.x = value.newValue;
                 Quaternion quaternion = Quaternion.Euler(rotation);
-                selectedBone.localRotation = quaternion;
+                selectedBone.rotation = quaternion;
             }
         }
 
@@ -575,10 +575,10 @@ namespace umi3d.common.userCapture
         {
             if (selectedBone != null)
             {
-                Vector3 rotation = selectedBone.localRotation.eulerAngles;
+                Vector3 rotation = selectedBone.rotation.eulerAngles;
                 rotation.y = value.newValue;
                 Quaternion quaternion = Quaternion.Euler(rotation);
-                selectedBone.localRotation = quaternion;
+                selectedBone.rotation = quaternion;
             }
         }
 
@@ -586,10 +586,10 @@ namespace umi3d.common.userCapture
         {
             if (selectedBone != null)
             {
-                Vector3 rotation = selectedBone.localRotation.eulerAngles;
+                Vector3 rotation = selectedBone.rotation.eulerAngles;
                 rotation.z = value.newValue;
                 Quaternion quaternion = Quaternion.Euler(rotation);
-                selectedBone.localRotation = quaternion;
+                selectedBone.rotation = quaternion;
             }
         }
         #endregion
@@ -607,10 +607,10 @@ namespace umi3d.common.userCapture
             for(int i = 0; i < originBC.Length; i++)
             {
                 Transform ot = originBC[i].transform;
-                targetBC[i].transform.localRotation = new Quaternion(ot.localRotation.x * -1.0f,
-                                            ot.localRotation.y,
-                                            ot.localRotation.z,
-                                            ot.localRotation.w * -1.0f);
+                targetBC[i].transform.rotation = new Quaternion(ot.rotation.x * -1.0f,
+                                            ot.rotation.y,
+                                            ot.rotation.z,
+                                            ot.rotation.w * -1.0f);
             }
         }
 
