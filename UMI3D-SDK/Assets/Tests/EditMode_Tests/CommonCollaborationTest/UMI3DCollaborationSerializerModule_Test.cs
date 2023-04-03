@@ -521,16 +521,16 @@ namespace EditMode_Tests
         }
 
         [Test]
-        public void ReadBonePose_NodePositionAnchoredBonePose()
+        public void ReadBonePose_NodeAnchoredBonePose()
         {
-            NodePositionAnchoredBonePoseDto nodePositionAnchoredBonePoseDto = new NodePositionAnchoredBonePoseDto(
+            NodeAnchoredBonePoseDto nodeAnchoredBonePoseDto = new NodeAnchoredBonePoseDto(
                 bone: 2,
                 position: Vector3.one,
                 rotation: Vector4.one,
                 node: 17
             );
 
-            collabSerializerModule.Write(nodePositionAnchoredBonePoseDto, out Bytable data);
+            collabSerializerModule.Write(nodeAnchoredBonePoseDto, out Bytable data);
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
@@ -538,42 +538,14 @@ namespace EditMode_Tests
             Assert.IsTrue(readable);
 
             Assert.IsTrue(((result as BonePoseDto).bone
-                == (nodePositionAnchoredBonePoseDto as BonePoseDto).bone));
+                == (nodeAnchoredBonePoseDto as BonePoseDto).bone));
             Assert.IsTrue(((result as BonePoseDto).position
-                 == (nodePositionAnchoredBonePoseDto as BonePoseDto).position));
+                 == (nodeAnchoredBonePoseDto as BonePoseDto).position));
             Assert.IsTrue(((result as BonePoseDto).rotation
-                == (nodePositionAnchoredBonePoseDto as BonePoseDto).rotation));
+                == (nodeAnchoredBonePoseDto as BonePoseDto).rotation));
 
-            Assert.IsTrue(((result as NodePositionAnchoredBonePoseDto).node
-                == (nodePositionAnchoredBonePoseDto as NodePositionAnchoredBonePoseDto).node));
-        }
-
-        [Test]
-        public void ReadBonePose_NodeRotationAnchoredBonePose()
-        {
-            NodeRotationAnchoredBonePoseDto nodeRotationAnchoredBonePoseDto = new NodeRotationAnchoredBonePoseDto(
-                bone: 2,
-                position: Vector3.one,
-                rotation: Vector4.one,
-                node: 17
-            );
-
-            collabSerializerModule.Write(nodeRotationAnchoredBonePoseDto, out Bytable data);
-
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
-
-            collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
-            Assert.IsTrue(readable);
-
-            Assert.IsTrue(((result as BonePoseDto).bone
-                == (nodeRotationAnchoredBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).position
-                 == (nodeRotationAnchoredBonePoseDto as BonePoseDto).position));
-            Assert.IsTrue(((result as BonePoseDto).rotation
-                == (nodeRotationAnchoredBonePoseDto as BonePoseDto).rotation));
-
-            Assert.IsTrue(((result as NodeRotationAnchoredBonePoseDto).node
-                == (nodeRotationAnchoredBonePoseDto as NodeRotationAnchoredBonePoseDto).node));
+            Assert.IsTrue(((result as NodeAnchoredBonePoseDto).node
+                == (nodeAnchoredBonePoseDto as NodeAnchoredBonePoseDto).node));
         }
 
         [Test]
