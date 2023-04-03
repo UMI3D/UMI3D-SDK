@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
@@ -54,7 +55,25 @@ namespace umi3d.cdk.userCapture
 
         public PoseDto GetPose()
         {
-            throw new System.NotImplementedException();
+            PoseDto poseDto = new PoseDto();
+
+            for (int i = 0; i < CurrentlyActivatedPoses?.Count; i++)
+            {
+                for (int j = 0; j < CurrentlyActivatedPoses[i].bones?.Count; j++)
+                {
+                    int indexOf = poseDto.bones.IndexOf(CurrentlyActivatedPoses[i].bones[j]);
+                    if (indexOf != -1)
+                    {
+                        poseDto.bones[indexOf] = CurrentlyActivatedPoses[i].bones[j];
+                    }
+                    else
+                    {
+                        poseDto.bones.Add(CurrentlyActivatedPoses[i].bones[j]);
+                    }
+                }
+            }
+
+            return poseDto;
         }
 
         public void UpdateFrame(UserTrackingFrameDto trackingFrame)

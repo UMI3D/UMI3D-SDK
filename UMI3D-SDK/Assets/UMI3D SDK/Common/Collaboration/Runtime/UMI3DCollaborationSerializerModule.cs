@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Collections.Generic;
 using umi3d.common.interaction;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -119,11 +120,11 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(PoseDto):
                     {
                         int index_id;
-                        BoneDto[] bones;
+                        List<BoneDto> bones;
                         BonePoseDto boneAnchor;
 
                         readable = UMI3DSerializer.TryRead(container, out index_id);
-                        bones = UMI3DSerializer.ReadArray<BoneDto>(container);
+                        bones = UMI3DSerializer.ReadList<BoneDto>(container);
 
                         readable &= UMI3DSerializer.TryRead(container, out boneAnchor)
                                         && bones != null;

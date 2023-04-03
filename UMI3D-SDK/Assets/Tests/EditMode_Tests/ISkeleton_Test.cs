@@ -144,7 +144,7 @@ public class ISkeleton_Test
     {
         Mock<AnimatedSkeleton> mock = new Mock<AnimatedSkeleton>();
         PoseDto poseDto = new PoseDto();
-        poseDto.SetBonePoseDtoArray(new BoneDto[]
+        poseDto.SetBonePoseDtoArray(new List<BoneDto>
         {
             new BoneDto() {boneType = BoneType.CenterFeet, rotation = Vector4.one},
         });

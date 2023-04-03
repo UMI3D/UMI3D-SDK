@@ -588,7 +588,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseDto result);
             Assert.IsTrue(readable);
-            for (int i = 0; i < poseDto.bones.Length; i++)
+            for (int i = 0; i < poseDto.bones.Count; i++)
             {
                 Assert.IsTrue((result.bones[i]).boneType == poseDto.bones[i].boneType);
             }
@@ -597,9 +597,9 @@ namespace EditMode_Tests
                 == (poseDto as PoseDto).boneAnchor));
         }
 
-        private BoneDto[] GetTestBonePoseDtoSample()
+        private List<BoneDto> GetTestBonePoseDtoSample()
         {
-            return new BoneDto[]
+            return new List<BoneDto>
             {
                 new BoneDto() {boneType = 1, rotation = Vector4.one },
                 new BoneDto() {boneType = 15, rotation = Vector4.one }

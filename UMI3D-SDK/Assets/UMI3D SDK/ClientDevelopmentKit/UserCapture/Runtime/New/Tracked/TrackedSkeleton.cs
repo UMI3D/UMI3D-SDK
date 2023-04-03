@@ -60,7 +60,7 @@ namespace umi3d.cdk.userCapture
         public PoseDto GetPose()
         {
             var dto = new PoseDto();
-            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBoneDto()).ToArray());
+            dto?.SetBonePoseDtoArray(bones.Select(kp => kp.Value).Select(tb => tb.ToBoneDto()).ToList());
             return dto;
         }
 

@@ -54,7 +54,7 @@ namespace umi3d.common.userCapture
         /// <returns></returns>
         public PoseDto ToDTO()
         {
-            return new PoseDto(boneDtos.ToArray(), bonePoseDto);
+            return new PoseDto(boneDtos, bonePoseDto);
         }
     }
 }

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common.userCapture
 {
     public class PoseDto : UMI3DDto
@@ -25,7 +27,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         /// <param name="bonePoseDtos">all the bone pose that are composing the current pose</param>
         /// <param name="boneAnchor"></param>
-        public PoseDto(BoneDto[] bones, BonePoseDto boneAnchor)
+        public PoseDto(List<BoneDto> bones, BonePoseDto boneAnchor)
         {
             this.bones = bones;
             this.boneAnchor = boneAnchor;
@@ -34,8 +36,8 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// all the bone pose that are composing the current pose
         /// </summary>
-        public BoneDto[] bones { get; private set; }
-        public void SetBonePoseDtoArray(BoneDto[] bones)
+        public List<BoneDto> bones { get; private set; }
+        public void SetBonePoseDtoArray(List<BoneDto> bones)
         {
             this.bones = bones;
         }
