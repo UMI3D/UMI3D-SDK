@@ -61,6 +61,10 @@ namespace umi3d.cdk.userCapture
                 }
             }
         }
+        /// <summary>
+        ///last in has priority,,, server poses have priority
+        /// </summary>
+        /// <returns></returns>
 
         public PoseDto GetPose()
         {
@@ -118,7 +122,18 @@ namespace umi3d.cdk.userCapture
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            throw new System.NotImplementedException();
+            if (trackingFrame.playerUserPoses == null) trackingFrame.playerServerPoses = new();
+            if (trackingFrame.playerServerPoses == null) trackingFrame.playerServerPoses = new();
+
+            localCurrentlyActivatedPoses.ForEach((pose) =>
+            {
+                trackingFrame.playerUserPoses.Add(pose.id);
+            });
+
+            serverCurrentlyActivatedPoses.ForEach((pose) =>
+            {
+                trackingFrame.playerServerPoses.Add(pose.id);
+            });
         }
 
         public UserCameraPropertiesDto GetCameraDto()
