@@ -252,6 +252,14 @@ namespace umi3d.cdk.collaboration
                     dto.audioChannel = (string)value;
                     OnUserMicrophoneChannelUpdated.Invoke(this);
                     return true;
+
+                case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
+                    dto.onStartSpeakingAnimationId = (ulong)value;
+                    return true;
+
+                case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                    dto.onStopSpeakingAnimationId = (ulong)value;
+                    return true;
             }
             return false;
         }

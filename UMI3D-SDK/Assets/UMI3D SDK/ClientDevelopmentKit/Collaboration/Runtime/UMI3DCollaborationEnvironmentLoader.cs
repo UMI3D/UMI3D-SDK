@@ -132,6 +132,9 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(data.property.property, data.entity, data.property.value);
+                case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
+                case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                    return UpdateUser(data.property.property, data.entity, (ulong)(long)data.property.value);
 
                 default:
                     return false;
@@ -169,6 +172,12 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioChannel:
                     {
                         string value = UMI3DSerializer.Read<string>(data.container);
+                        return UpdateUser(data.propertyKey, data.entity, value);
+                    }
+                case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
+                case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                    {
+                        ulong value = UMI3DSerializer.Read<ulong>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
                 default:
