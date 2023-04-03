@@ -34,7 +34,7 @@ namespace umi3d.cdk.userCapture
             public uint Bonetype;
             [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Parent bone in the hierarchy.")]
             public uint BonetypeParent;
-            [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("The relative position of the current bone type.")]
+            [Tooltip("The relative position of the current bone type.")]
             public Vector3 RelativePosition;
 
             public BoneRelation(uint boneType, uint boneTypeParent, Vector3 relationPosition)
