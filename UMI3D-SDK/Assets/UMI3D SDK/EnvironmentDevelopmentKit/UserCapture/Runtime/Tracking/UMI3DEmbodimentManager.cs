@@ -246,6 +246,7 @@ namespace umi3d.edk.userCapture
             var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
             EmoteTriggered?.Invoke((emoteId, user, trigger));
             targetUsers.Remove(user);
+            return; //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
             var req = new EmoteDispatchRequest()
             {
                 sendingUserId = user.Id(),
