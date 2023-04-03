@@ -60,6 +60,7 @@ namespace umi3d.cdk.userCapture
         protected Transform hipsAnchor;
         #endregion
         public TrackedSkeleton TrackedSkeleton;
+        public PoseSkeleton poseSkeleton = new PoseSkeleton();
 
         public Dictionary<uint, float> BonesAsyncFPS { get; protected set; }
 
@@ -69,7 +70,7 @@ namespace umi3d.cdk.userCapture
         {
             skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton, new PoseSkeleton()
+                TrackedSkeleton, poseSkeleton
             };
         }
 

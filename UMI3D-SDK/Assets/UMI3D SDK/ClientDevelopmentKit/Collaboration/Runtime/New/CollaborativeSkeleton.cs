@@ -60,6 +60,7 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser User;
 
         public TrackedSkeleton TrackedSkeleton;
+        public PoseSkeleton poseSkeleton;
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
@@ -71,7 +72,7 @@ namespace umi3d.cdk.collaboration
         public void SetSubSkeletons()
         {
             skeletons.Add(TrackedSkeleton);
-            skeletons.Add(new PoseSkeleton());
+            skeletons.Add(poseSkeleton);
             //skeletons.Add(new AnimatedSkeleton());
         }
     }

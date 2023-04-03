@@ -281,13 +281,13 @@ namespace umi3d.cdk.collaboration
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
             if (playPoseDto.stopPose)
             {
-                (skeleton as PersonalSkeleton)?.PoseSkeleton.StopPose(false, new List<PoseDto> { poseDto});
-                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
+                (skeleton as PersonalSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto});
+                (skeleton as CollaborativeSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
             }
             else
             {
-                (skeleton as PersonalSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
-                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
+                (skeleton as PersonalSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
+                (skeleton as CollaborativeSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto });
             }
         }
     }
