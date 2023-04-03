@@ -26,10 +26,11 @@ namespace umi3d.common.userCapture
     /// </summary>
     public class UMI3DPose_so : ScriptableObject
     {
-        [SerializeField] List<BoneDto> bonePosesDto = new List<BoneDto>();
+        [SerializeField] List<BoneDto> boneDtos = new List<BoneDto>();
         [SerializeField] BonePoseDto bonePoseDto;
 
-        public List<BoneDto> BonePoses { get => bonePosesDto; }
+        public List<BoneDto> BoneDtos { get => boneDtos; }
+        public BonePoseDto BonePoseDto { get => bonePoseDto; }
 
         /// <summary>
         /// An event thats called when the PoseManager has played his Start() method
@@ -38,7 +39,7 @@ namespace umi3d.common.userCapture
 
         public void Init(List<BoneDto> bonePoses, BonePoseDto bonePoseDto)
         {
-            this.bonePosesDto = bonePoses;
+            this.boneDtos = bonePoses;
             this.bonePoseDto = bonePoseDto;
         }
 
@@ -53,7 +54,7 @@ namespace umi3d.common.userCapture
         /// <returns></returns>
         public PoseDto ToDTO()
         {
-            return new PoseDto(bonePosesDto.ToArray(), bonePoseDto);
+            return new PoseDto(boneDtos.ToArray(), bonePoseDto);
         }
     }
 }
