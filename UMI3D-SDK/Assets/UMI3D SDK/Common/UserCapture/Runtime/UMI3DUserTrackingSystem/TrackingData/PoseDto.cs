@@ -41,5 +41,7 @@ namespace umi3d.common.userCapture
         }
 
         public BonePoseDto boneAnchor { get; private set; }
+
+        public int id { get; set; }
     }
 }

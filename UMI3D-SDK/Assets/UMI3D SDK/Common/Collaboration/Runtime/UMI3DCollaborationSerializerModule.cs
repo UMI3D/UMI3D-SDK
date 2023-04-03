@@ -118,12 +118,14 @@ namespace umi3d.common.collaboration
                 #region Pose
                 case true when typeof(T) == typeof(PoseDto):
                     {
+                        int index_id;
                         BoneDto[] bones;
                         BonePoseDto boneAnchor;
 
+                        readable = UMI3DSerializer.TryRead(container, out index_id);
                         bones = UMI3DSerializer.ReadArray<BoneDto>(container);
 
-                        readable = UMI3DSerializer.TryRead(container, out boneAnchor)
+                        readable &= UMI3DSerializer.TryRead(container, out boneAnchor)
                                         && bones != null;
 
                         if (readable)
@@ -132,6 +134,7 @@ namespace umi3d.common.collaboration
                                 bones: bones,
                                 boneAnchor: boneAnchor
                             );
+                            poseDto.id = index_id;
 
                             result = (T)Convert.ChangeType(poseDto, typeof(PoseDto));
                             return true;
@@ -158,7 +161,7 @@ namespace umi3d.common.collaboration
                         if (readable)
                         {
                             PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
-                                pose: poseDto,
+                                poseIndexinPoseManager: poseDto.id,
                                 poseConditionDtos: poseConditionDtos,
                                 duration: durationDto,
                                 interpolationable: interpolationable,
@@ -182,7 +185,7 @@ namespace umi3d.common.collaboration
                         if (readable)
                         {
                             BonePoseDto bonePoseDto = null;
-                            AnchorBonePoseDto anchorBonePoseDto;
+                            AnchoredBonePoseDto anchorBonePoseDto;
                             NodeAnchoredBonePoseDto nodePositionAnchoredBonePoseDto;
                             FloorAnchoredBonePoseDto floorAnchoredBonePoseDto;
 
@@ -317,7 +320,7 @@ namespace umi3d.common.collaboration
                         if (readable)
                         {
                             SimpleBindingDto simpleBindingDto;
-                            MultyBindingDto multyBindingDto;
+                            MultiBindingDto multyBindingDto;
                             SimpleBoneBindingDto simpleBoneBindingDto;
                             NodeBindingDto nodeBindingDto;
                             RigBindingDataDto rigBindingDataDto;
@@ -760,30 +763,7 @@ namespace umi3d.common.collaboration
                         return false;
                     }
 
-                case true when typeof(T) == typeof(NodePositionAnchoredBonePoseDto):
-                    {
-                        BonePoseDto bonePoseDto;
-                        ReadPoseDto(container, out readable, out bonePoseDto);
-
-                        uint node;
-                        readable &= UMI3DSerializer.TryRead(container, out node);
-
-                        if (readable)
-                        {
-                            NodePositionAnchoredBonePoseDto nodePositionAnchoredBonePoseDto = new NodePositionAnchoredBonePoseDto(
-                                bonePoseDto: bonePoseDto,
-                                node: node
-                            );
-
-                            result = (T)Convert.ChangeType(nodePositionAnchoredBonePoseDto, typeof(NodePositionAnchoredBonePoseDto));
-                            return true;
-                        }
-
-                        result = default(T);
-                        return false;
-                    }
-
-                case true when typeof(T) == typeof(AnchorBonePoseDto):
+                case true when typeof(T) == typeof(AnchoredBonePoseDto):
                     {
                         BonePoseDto bonePoseDto;
                         ReadPoseDto(container, out readable, out bonePoseDto);
@@ -793,12 +773,12 @@ namespace umi3d.common.collaboration
 
                         if (readable)
                         {
-                            AnchorBonePoseDto anchorBonePoseDto = new AnchorBonePoseDto(
+                            AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto(
                                 bonePoseDto: bonePoseDto,
                                 otherBone: otherBone
                             );
 
-                            result = (T)Convert.ChangeType(anchorBonePoseDto, typeof(AnchorBonePoseDto));
+                            result = (T)Convert.ChangeType(anchorBonePoseDto, typeof(AnchoredBonePoseDto));
                             return true;
                         }
 
@@ -846,11 +826,17 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(MagnitudeConditionDto):
                     {
                         float magnitude;
+                        uint boneOrigin;
+                        uint targetObjectId;
                         readable = UMI3DSerializer.TryRead(container, out magnitude);
+                        readable &= UMI3DSerializer.TryRead(container, out boneOrigin);
+                        readable &= UMI3DSerializer.TryRead(container, out targetObjectId);
 
                         if (readable)
                         {
                             MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
+                                targetObjectId: targetObjectId,
+                                boneOrigine: boneOrigin,
                                 magnitude: magnitude
                             );
                             result = (T)Convert.ChangeType(magnitudeConditionDto, typeof(T));
@@ -1098,7 +1084,7 @@ namespace umi3d.common.collaboration
                         return false;
                     }
 
-                case true when typeof(T) == typeof(MultyBindingDto):
+                case true when typeof(T) == typeof(MultiBindingDto):
                     {
                         BindingDataDto bindingDataDto;
 
@@ -1109,7 +1095,7 @@ namespace umi3d.common.collaboration
 
                         if (readable)
                         {
-                            MultyBindingDto simpleBindingDto = new MultyBindingDto(
+                            MultiBindingDto simpleBindingDto = new MultiBindingDto(
                                 bindingDataDto: bindingDataDto,
                                 Bindings: bindings
                             );
@@ -1263,7 +1249,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(voice.channelName);
                     break;
                 #region Pose Dto
-                case AnchorBonePoseDto anchorBonePoseDto:
+                case AnchoredBonePoseDto anchorBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)1)
                         + UMI3DSerializer.Write(anchorBonePoseDto.bone)
                         + UMI3DSerializer.Write(anchorBonePoseDto.position)
@@ -1290,11 +1276,12 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(bonePoseDto.rotation);
                     break;
                 case PoseDto poseDto:
-                    bytable = UMI3DSerializer.WriteCollection(poseDto.bones)
+                    bytable = UMI3DSerializer.Write(poseDto.id)
+                        + UMI3DSerializer.WriteCollection(poseDto.bones)
                         + UMI3DSerializer.Write(poseDto.boneAnchor);
                     break;
                 case PoseOverriderDto poseOverriderDto:
-                    bytable = UMI3DSerializer.Write(poseOverriderDto.pose)
+                    bytable = UMI3DSerializer.Write(poseOverriderDto.poseIndexinPoseManager)
                         + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions)
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.interpolationable)
@@ -1309,7 +1296,9 @@ namespace umi3d.common.collaboration
                 #region PoseCondition Dto
                 case MagnitudeConditionDto magnitudeConditionDto:
                     bytable = UMI3DSerializer.Write((int)1)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.magnitude);
+                        + UMI3DSerializer.Write(magnitudeConditionDto.magnitude)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.boneOrigine)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.targetObjectId);
                     break;
                 case RangeConditionDto rangeConditionDto:
                     bytable = UMI3DSerializer.Write((int)2)
@@ -1395,7 +1384,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(simpleBindingDto.offSetRotation)
                         + UMI3DSerializer.Write(simpleBindingDto.offSetScale);
                     break;
-                case MultyBindingDto multyBindingDto:
+                case MultiBindingDto multyBindingDto:
                     bytable = UMI3DSerializer.Write((int)2)
                         + UMI3DSerializer.Write(multyBindingDto.priority)
                         + UMI3DSerializer.Write(multyBindingDto.partialFit)
