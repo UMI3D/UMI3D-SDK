@@ -37,6 +37,8 @@ namespace umi3d.common.userCapture
         /// </summary>
         public event Action<int> onPoseReferencedAndIndexSetted;
 
+        public int poseRef { get; private set; } 
+
         public void Init(List<BoneDto> bonePoses, BonePoseDto bonePoseDto)
         {
             this.boneDtos = bonePoses;
@@ -46,6 +48,7 @@ namespace umi3d.common.userCapture
         public void SendPoseIndexationEvent(int i)
         {
             onPoseReferencedAndIndexSetted.Invoke(i);
+            poseRef = i;
         }
 
         /// <summary>

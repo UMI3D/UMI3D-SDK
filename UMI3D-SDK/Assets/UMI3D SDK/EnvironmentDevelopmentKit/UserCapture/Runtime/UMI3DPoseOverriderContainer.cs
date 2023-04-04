@@ -30,7 +30,12 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Scriptable objects to load
         /// </summary>
-        [SerializeField] List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
+        private  List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
+
+        public UMI3DPoseOverriderContainer(List<UMI3DPoseOveridder_so> poseOveridder_Sos)
+        {
+            this.poseOverriders = poseOveridder_Sos;
+        }
 
         /// <summary>
         /// list of all the pose dto of this meta class
@@ -61,6 +66,7 @@ namespace umi3d.edk.userCapture
             return GetLoadEntity();
         }
 
+
         /// <summary>
         /// Load the scriptable objects as dtos and inits the assync list 
         /// </summary>
@@ -70,10 +76,17 @@ namespace umi3d.edk.userCapture
             poseOverridersDtos.Clear();
             poseOverriders.ForEach(po =>
             {
-                po.pose.onPoseReferencedAndIndexSetted += (indexInPoseManager) =>
+                if (po.pose.poseRef != 0)
                 {
-                    poseOverridersDtos.Add(po.ToDto(indexInPoseManager));
-                };
+                    poseOverridersDtos.Add(po.ToDto(po.pose.poseRef));
+                }
+                else
+                {
+                    po.pose.onPoseReferencedAndIndexSetted += (indexInPoseManager) =>
+                    {
+                        poseOverridersDtos.Add(po.ToDto(indexInPoseManager));
+                    };
+                }
             });
 
             poseOverriderDtoAsyncList = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ReceivePoseOverriders, poseOverridersDtos);

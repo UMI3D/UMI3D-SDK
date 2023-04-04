@@ -65,10 +65,10 @@ namespace umi3d.cdk.interaction
                             switch (value.property.property)
                             {
                                 case UMI3DPropertyKeys.EventTriggerAnimation:
-                                    dto.TriggerAnimationId = (ulong)value.property.value;
+                                    dto.TriggerPoseOverriderId = (ulong)value.property.value;
                                     break;
                                 case UMI3DPropertyKeys.EventReleaseAnimation:
-                                    dto.ReleaseAnimationId = (ulong)value.property.value;
+                                    dto.ReleasePoseOverriderId = (ulong)value.property.value;
                                     break;
                                 default:
                                     return false;
@@ -101,10 +101,10 @@ namespace umi3d.cdk.interaction
                         switch (value.propertyKey)
                         {
                             case UMI3DPropertyKeys.EventTriggerAnimation:
-                                dto.TriggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
+                                dto.TriggerPoseOverriderId = UMI3DSerializer.Read<ulong>(value.container);
                                 break;
                             case UMI3DPropertyKeys.EventReleaseAnimation:
-                                dto.TriggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
+                                dto.TriggerPoseOverriderId = UMI3DSerializer.Read<ulong>(value.container);
                                 break;
                             default:
                                 return false;
@@ -148,8 +148,8 @@ namespace umi3d.cdk.interaction
                     var Event = new EventDto();
                     ReadAbstractInteractionDto(Event, container);
                     Event.hold = UMI3DSerializer.Read<bool>(container);
-                    Event.TriggerAnimationId = UMI3DSerializer.Read<ulong>(container);
-                    Event.ReleaseAnimationId = UMI3DSerializer.Read<ulong>(container);
+                    Event.TriggerPoseOverriderId = UMI3DSerializer.Read<ulong>(container);
+                    Event.ReleasePoseOverriderId = UMI3DSerializer.Read<ulong>(container);
                     interaction = Event;
                     break;
                 case UMI3DInteractionKeys.Manipulation:

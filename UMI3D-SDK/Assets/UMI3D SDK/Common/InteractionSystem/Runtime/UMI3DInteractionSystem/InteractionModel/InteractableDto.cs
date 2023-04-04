@@ -50,12 +50,12 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Animation id of the animation triggered when the interactable starts being hovered.
         /// </summary>
-        public ulong HoverEnterAnimationId;
+        public ulong HoverEnterPoseOverriderId;
 
         /// <summary>
         /// Animation id of the animation triggered when the interactable stops being hovered.
         /// </summary>
-        public ulong HoverExitAnimationId;
+        public ulong HoverExitPoseOverriderId;
 
         public InteractableDto() : base() { }
     }

@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using umi3d.common.userCapture;
 using umi3d.edk.interaction;
+using umi3d.edk.userCapture;
 using UnityEngine;
 
 namespace umi3d.common.collaboration
@@ -12,77 +13,54 @@ namespace umi3d.common.collaboration
         [SerializeField] List<UMI3DPoseOveridder_so> hoverEnterOverriders;
         [SerializeField] List<UMI3DPoseOveridder_so> hoverExitOverriders;
         [SerializeField] List<UMI3DPoseOveridder_so> triggerOverriders;
-        [SerializeField] List<UMI3DPoseOveridder_so> realeaseOverriders;
+        [SerializeField] List<UMI3DPoseOveridder_so> releaseOverriders;
+
+        UMI3DPoseOverriderContainer hoverEnterContainer = null;
+        UMI3DPoseOverriderContainer hoverExitContainer = null;
+        UMI3DPoseOverriderContainer triggerContainer = null;
+        UMI3DPoseOverriderContainer releaseContainer = null;
 
         private void Awake()
         {
             SetUpUmi3dEvent();
-            SetUpUmi3dInteraction();
+            SetUpUmi3dInteractable();
         }
+
+        UMI3DEvent umi3dEvent = null;
+        UMI3DInteractable umi3dInteractable = null;
 
         private void SetUpUmi3dEvent()
         {
-            UMI3DEvent umi3dEvent = GetComponent<UMI3DEvent>();
-            if (umi3dEvent != null )
-            {
-                umi3dEvent.SetHoverEnterPose(GetHoverEnterPoseDtos());
-                umi3dEvent.SetHoverExitPose(GetHoverExitPoseDtos());
-                umi3dEvent.SetTriggerExitPose(GetTriggerPoseDtos());
-                umi3dEvent.SetReleaseExitPose(GetReleasePoseDtos());
-            }
+            umi3dEvent = GetComponent<UMI3DEvent>();
         }
 
-        private void SetUpUmi3dInteraction()
+        private void SetUpUmi3dInteractable()
         {
-            throw new NotImplementedException();
+            umi3dInteractable = GetComponent<UMI3DInteractable>();
         }
 
-        public List<PoseOverriderDto> GetHoverEnterPoseDtos()
+        public void InitPoseOverriderHoverEnterContainer()
         {
-            List<PoseOverriderDto> dtos = new();
-
-            for (int i = 0; i < hoverEnterOverriders.Count; i++)
-            {
-                dtos.Add(hoverEnterOverriders[i].ToDto(-1));
-            }
-
-            return dtos;
+            hoverEnterContainer = new UMI3DPoseOverriderContainer(hoverEnterOverriders);
+            umi3dInteractable.SetHoverEnterPose(hoverEnterContainer.Id());
         }
 
-        public List<PoseOverriderDto> GetHoverExitPoseDtos()
+        public void InitPoseOverriderHoverExitContainer()
         {
-            List<PoseOverriderDto> dtos = new();
-
-            for (int i = 0; i < hoverExitOverriders.Count; i++)
-            {
-                dtos.Add(hoverExitOverriders[i].ToDto(-1));
-            }
-
-            return dtos;
+            hoverExitContainer = new UMI3DPoseOverriderContainer(hoverExitOverriders);
+            umi3dInteractable.SetHoverExitPose(hoverExitContainer.Id());
         }
 
-        public List<PoseOverriderDto> GetTriggerPoseDtos()
+        public void InitPoseOverriderTriggerContainer()
         {
-            List<PoseOverriderDto> dtos = new();
-
-            for (int i = 0; i < triggerOverriders.Count; i++)
-            {
-                dtos.Add(triggerOverriders[i].ToDto(-1));
-            }
-
-            return dtos;
+            triggerContainer = new UMI3DPoseOverriderContainer(triggerOverriders);
+            umi3dEvent.SetTriggerExitPose(triggerContainer.Id());
         }
 
-        public List<PoseOverriderDto> GetReleasePoseDtos()
+        public void InitPoseOverriderReleaseContainer()
         {
-            List<PoseOverriderDto> dtos = new();
-
-            for (int i = 0; i < realeaseOverriders.Count; i++)
-            {
-                dtos.Add(realeaseOverriders[i].ToDto(-1));
-            }
-
-            return dtos;
+            releaseContainer = new UMI3DPoseOverriderContainer(releaseOverriders);
+            umi3dEvent.SetReleaseExitPose(releaseContainer.Id());
         }
     }
 }
