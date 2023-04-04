@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
     [System.Serializable]
     public class PoseOverriderDto
@@ -36,6 +36,11 @@ namespace umi3d.common.userCapture
             this.duration = duration;
             this.interpolationable = interpolationable;
             this.composable = composable;
+        }
+
+        public void SetPoseIndex(int poseIndex)
+        {
+            poseIndexinPoseManager = poseIndex;
         }
 
         public int poseIndexinPoseManager { get; private set; }

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -54,40 +56,60 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Animation triggered when the interaction is triggered.
         /// </summary>
-        [SerializeField, Tooltip("Client animation triggered when the interaction is triggerred by a user.")]
-        public UMI3DAbstractAnimation TriggerAnimation;
-        /// <summary>
-        /// Animation triggered when the interaction is released.
-        /// </summary>
-        [SerializeField, Tooltip("Client animation triggered when is released by a user.")]
-        public UMI3DAbstractAnimation ReleaseAnimation;
+        //[SerializeField, Tooltip("Client animation triggered when the interaction is triggerred by a user.")]
+        //public UMI3DAbstractAnimation TriggerAnimation;
+        ///// <summary>
+        ///// Animation triggered when the interaction is released.
+        ///// </summary>
+        //[SerializeField, Tooltip("Client animation triggered when is released by a user.")]
+        //public UMI3DAbstractAnimation ReleaseAnimation;
 
-        /// <summary>
-        /// Animation Asych property of the animatiuon triggered when the interaction is triggered
-        /// </summary>
-        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _triggerAnimation;
-        /// <summary>
-        /// Animation Asych property of the animatiuon triggered when the interaction is realeased
-        /// </summary>
-        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _releaseAnimation;
+        ///// <summary>
+        ///// Animation Asych property of the animatiuon triggered when the interaction is triggered
+        ///// </summary>
+        //private UMI3DAsyncProperty<UMI3DAbstractAnimation> _triggerAnimation;
+        ///// <summary>
+        ///// Animation Asych property of the animatiuon triggered when the interaction is realeased
+        ///// </summary>
+        //private UMI3DAsyncProperty<UMI3DAbstractAnimation> _releaseAnimation;
 
-        /// <summary>
-        /// Animation Asych Attribute of the animatiuon triggered when the interaction is triggered
-        /// </summary>
-        public UMI3DAsyncProperty<UMI3DAbstractAnimation> triggerAnimation { get { Register(); return _triggerAnimation; } set => _triggerAnimation = value; }
-        /// <summary>
-        /// Animation Asych Attribute of the animatiuon triggered when the interaction is realeased
-        /// </summary>
-        public UMI3DAsyncProperty<UMI3DAbstractAnimation> releaseAnimation { get { Register(); return _releaseAnimation; } set => _releaseAnimation = value; }
+        ///// <summary>
+        ///// Animation Asych Attribute of the animatiuon triggered when the interaction is triggered
+        ///// </summary>
+        //public UMI3DAsyncProperty<UMI3DAbstractAnimation> triggerAnimation { get { Register(); return _triggerAnimation; } set => _triggerAnimation = value; }
+        ///// <summary>
+        ///// Animation Asych Attribute of the animatiuon triggered when the interaction is realeased
+        ///// </summary>
+        //public UMI3DAsyncProperty<UMI3DAbstractAnimation> releaseAnimation { get { Register(); return _releaseAnimation; } set => _releaseAnimation = value; }
 
         #endregion
 
-        protected override void InitDefinition(ulong id)
-        {
-            base.InitDefinition(id);
+        //protected override void InitDefinition(ulong id)
+        //{
+        //    base.InitDefinition(id);
 
-            triggerAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventTriggerAnimation, TriggerAnimation, (v, u) => v?.Id());
-            releaseAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventReleaseAnimation, ReleaseAnimation, (v, u) => v?.Id());
+        //    triggerAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventTriggerAnimation, TriggerAnimation, (v, u) => v?.Id());
+        //    releaseAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventReleaseAnimation, ReleaseAnimation, (v, u) => v?.Id());
+        //}
+
+        public void SetHoverEnterPose(List<PoseOverriderDto> poseOverriderDtos)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetHoverExitPose(List<PoseOverriderDto> poseOverriderDtos)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetReleaseExitPose(List<PoseOverriderDto> poseOverriderDtos)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void SetTriggerExitPose(List<PoseOverriderDto> poseOverriderDtos)
+        {
+            throw new NotImplementedException();
         }
 
         /// <summary>
@@ -168,15 +190,15 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
-        {
-            base.WriteProperties(dto, user);
-            if (dto is EventDto _dto)
-            {
-                _dto.hold = Hold;
-                _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
-                _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
-            }
-        }
+        //protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
+        //{
+        //    base.WriteProperties(dto, user);
+        //    if (dto is EventDto _dto)
+        //    {
+        //        _dto.hold = Hold;
+        //        _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
+        //        _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
+        //    }
+        //}
     }
 }
