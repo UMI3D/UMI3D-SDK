@@ -107,16 +107,17 @@ namespace umi3d.cdk.userCapture
 
         public void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
-            List<PoseDto> posesFromTrackingFrame = new List<PoseDto>();
+            localCurrentlyActivatedPoses.Clear();
+            serverCurrentlyActivatedPoses.Clear();
 
             trackingFrame.playerUserPoses.ForEach(pup =>
             {
-                posesFromTrackingFrame.Add(PoseManager.Instance.GetPose(trackingFrame.userId, pup));
+                localCurrentlyActivatedPoses.Add(PoseManager.Instance.GetPose(trackingFrame.userId, pup));
             });
 
             trackingFrame.playerServerPoses.ForEach(psp =>
             {
-                posesFromTrackingFrame.Add(PoseManager.Instance.GetPose(0, psp));
+                serverCurrentlyActivatedPoses.Add(PoseManager.Instance.GetPose(0, psp));
             });
         }
 

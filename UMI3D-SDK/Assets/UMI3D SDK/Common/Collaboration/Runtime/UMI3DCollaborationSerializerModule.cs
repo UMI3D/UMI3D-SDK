@@ -152,11 +152,10 @@ namespace umi3d.common.collaboration
                         bool composable;
 
                         Read(container, out readable, out poseIndex);
-                        poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
                         Read(container, out readable, out durationDto);
-                        readable &= container != null;
                         readable &= UMI3DSerializer.TryRead(container, out interpolationable);
                         readable &= UMI3DSerializer.TryRead(container, out composable);
+                        poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
 
                         if (readable)
                         {
@@ -1282,10 +1281,10 @@ namespace umi3d.common.collaboration
                     break;
                 case PoseOverriderDto poseOverriderDto:
                     bytable = UMI3DSerializer.Write(poseOverriderDto.poseIndexinPoseManager)
-                        + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions)
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.interpolationable)
-                        + UMI3DSerializer.Write(poseOverriderDto.composable);
+                        + UMI3DSerializer.Write(poseOverriderDto.composable)
+                        + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions);
                     break;
                 case DurationDto durationDto:
                     bytable = UMI3DSerializer.Write(durationDto.duration)
