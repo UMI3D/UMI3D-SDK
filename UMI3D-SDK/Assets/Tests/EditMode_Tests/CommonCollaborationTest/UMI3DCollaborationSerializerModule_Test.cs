@@ -368,7 +368,10 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as BoneRotationConditionDto).boneId == boneRotationConditionDto.boneId);
-            Assert.IsTrue((result as BoneRotationConditionDto).rotation == boneRotationConditionDto.rotation);
+            Assert.IsTrue((result as BoneRotationConditionDto).rotation.X == boneRotationConditionDto.rotation.X);
+            Assert.IsTrue((result as BoneRotationConditionDto).rotation.Y == boneRotationConditionDto.rotation.Y);
+            Assert.IsTrue((result as BoneRotationConditionDto).rotation.Z == boneRotationConditionDto.rotation.Z);
+            Assert.IsTrue((result as BoneRotationConditionDto).rotation.W == boneRotationConditionDto.rotation.W);
         }
         [Test]
         public void ReadDirectionCondition()
@@ -383,7 +386,9 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as DirectionConditionDto).direction == directionConditionDto.direction);
+            Assert.IsTrue((result as DirectionConditionDto).direction.X == directionConditionDto.direction.X);
+            Assert.IsTrue((result as DirectionConditionDto).direction.Y == directionConditionDto.direction.Y);
+            Assert.IsTrue((result as DirectionConditionDto).direction.Z == directionConditionDto.direction.Z);
         }
         [Test]
         public void ReadUserScaleCondition()
@@ -398,7 +403,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as UserScaleConditinoDto).scale == userScaleConditinoDto.scale);
+            Assert.IsTrue((result as UserScaleConditinoDto).scale.X == userScaleConditinoDto.scale.X);
         }
         [Test]
         public void ReadScaleCondition()
@@ -413,7 +418,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as ScaleConditionDto).scale == scaleConditionDto.scale);
+            Assert.IsTrue((result as ScaleConditionDto).scale.X == scaleConditionDto.scale.X);
         }
 
         #endregion
@@ -434,8 +439,8 @@ namespace EditMode_Tests
             Assert.IsTrue(readable);
             Assert.IsTrue(((result as RangeConditionDto).conditionA as MagnitudeConditionDto).magnitude
                 == (rangeConditionDto.conditionA as MagnitudeConditionDto).magnitude);
-            Assert.IsTrue(((result as RangeConditionDto).conditionB as ScaleConditionDto).scale
-                == (rangeConditionDto.conditionB as ScaleConditionDto).scale);
+            Assert.IsTrue(((result as RangeConditionDto).conditionB as ScaleConditionDto).scale.X
+                == (rangeConditionDto.conditionB as ScaleConditionDto).scale.X);
         }
 
         [Test]
@@ -452,10 +457,10 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as NotConditionDto).conditions[0] as UserScaleConditinoDto).scale
-                == (notConditionDto.conditions[0] as UserScaleConditinoDto).scale);
-            Assert.IsTrue(((result as NotConditionDto).conditions[1] as DirectionConditionDto).direction
-                == (notConditionDto.conditions[1] as DirectionConditionDto).direction);
+            Assert.IsTrue(((result as NotConditionDto).conditions[0] as UserScaleConditinoDto).scale.X
+                == (notConditionDto.conditions[0] as UserScaleConditinoDto).scale.X);
+            Assert.IsTrue(((result as NotConditionDto).conditions[1] as DirectionConditionDto).direction.X
+                == (notConditionDto.conditions[1] as DirectionConditionDto).direction.X);
         }
 
         private PoseConditionDto[] GetCondditionsTestSet()
