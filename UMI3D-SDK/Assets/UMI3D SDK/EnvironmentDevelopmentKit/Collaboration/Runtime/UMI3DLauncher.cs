@@ -136,6 +136,9 @@ namespace umi3d.edk.collaboration
         [Tooltip("Should the server be launched when this component is started?")]
         public bool LaunchServerOnStart = false;
 
+        public bool test = false;
+        public string[] arguments;
+
         /// <summary>
         /// Called when param <see cref="nameParam"/> is found.
         /// </summary>
@@ -449,7 +452,19 @@ namespace umi3d.edk.collaboration
 
         protected virtual void Start()
         {
+#if UNITY_EDITOR
+            if (test)
+            {
+                _Start(arguments);
+                return;
+            }
+#endif
             string[] args = System.Environment.GetCommandLineArgs();
+            _Start(args);
+        }
+
+        protected virtual void _Start(string[] args)
+        {
             int length = args.Length;
             //Apply first config fileif it exists
             for (int i = 0; i < length; i++)
