@@ -169,7 +169,19 @@ namespace umi3d.edk
                         }
                         else
                         {
-                            child.gameObject.AddComponent<UMI3DNode>();
+                            if (child.gameObject.GetComponent<Canvas>() != null)
+                            {
+                                var canvas = child.gameObject.AddComponent<UICanvas>();
+                                canvas.Cascade();
+                            }
+                            else if (child.gameObject.GetComponent<RectTransform>() != null)
+                            {
+
+                            }
+                            else
+                            {
+                                child.gameObject.AddComponent<UMI3DNode>();
+                            }
                         }
                 }
                 else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
