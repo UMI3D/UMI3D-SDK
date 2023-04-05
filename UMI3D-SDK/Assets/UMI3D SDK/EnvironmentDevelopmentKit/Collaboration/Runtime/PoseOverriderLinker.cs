@@ -42,25 +42,25 @@ namespace umi3d.common.collaboration
         public void InitPoseOverriderHoverEnterContainer()
         {
             hoverEnterContainer = new UMI3DPoseOverriderContainer(hoverEnterOverriders);
-            umi3dInteractable.SetHoverEnterPose(hoverEnterContainer.Id());
+            //umi3dInteractable.SetHoverEnterPose(hoverEnterContainer.Id());
         }
 
         public void InitPoseOverriderHoverExitContainer()
         {
             hoverExitContainer = new UMI3DPoseOverriderContainer(hoverExitOverriders);
-            umi3dInteractable.SetHoverExitPose(hoverExitContainer.Id());
+            //umi3dInteractable.SetHoverExitPose(hoverExitContainer.Id());
         }
 
         public void InitPoseOverriderTriggerContainer()
         {
             triggerContainer = new UMI3DPoseOverriderContainer(triggerOverriders);
-            umi3dEvent.SetTriggerExitPose(triggerContainer.Id());
+            //umi3dEvent.SetTriggerExitPose(triggerContainer.Id());
         }
 
         public void InitPoseOverriderReleaseContainer()
         {
             releaseContainer = new UMI3DPoseOverriderContainer(releaseOverriders);
-            umi3dEvent.SetReleaseExitPose(releaseContainer.Id());
+            //umi3dEvent.SetReleaseExitPose(releaseContainer.Id());
         }
     }
 }

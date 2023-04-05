@@ -30,12 +30,12 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the animation to be triggered when the interaction is triggered.
         /// </summary>
-        public ulong TriggerPoseOverriderId;
+        public ulong TriggerAnimationId;
 
         /// <summary>
         /// Id of the animation to be triggered when the interaciton is released.
         /// </summary>
-        public ulong ReleasePoseOverriderId;
+        public ulong ReleaseAnimationId;
 
 
         public EventDto() : base() { }

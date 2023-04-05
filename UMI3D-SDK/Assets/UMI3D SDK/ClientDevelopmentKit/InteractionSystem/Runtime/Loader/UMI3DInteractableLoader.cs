@@ -76,10 +76,10 @@ namespace umi3d.cdk.interaction
                     dto.interactionDistance = (float)(double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.InteractableHoverEnterAnimation:
-                    dto.HoverEnterPoseOverriderId = (ulong)value.property.value;
+                    dto.HoverEnterAnimationId = (ulong)value.property.value;
                     break;
                 case UMI3DPropertyKeys.InteractableHoverExitAnimation:
-                    dto.HoverExitPoseOverriderId = (ulong)value.property.value;
+                    dto.HoverExitAnimationId = (ulong)value.property.value;
                     break;
                 default:
                     return false;

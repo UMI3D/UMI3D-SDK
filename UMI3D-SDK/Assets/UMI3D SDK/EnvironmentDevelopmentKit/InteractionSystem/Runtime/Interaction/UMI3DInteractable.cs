@@ -160,22 +160,13 @@ namespace umi3d.edk.interaction
         /// Triggered when the object is hovered by a user.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Triggered when the object is hovered by a user.")]
-        protected ulong HoverEnterPoseOverriderId;
+        protected UMI3DAbstractAnimation HoverEnterAnimation;
         /// <summary>
         /// Triggered when the object stops to be hovered by a user.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Triggered when the object stops to be hovered by a user.")]
-        protected ulong HoverExitPoseOverriderId;
+        protected UMI3DAbstractAnimation HoverExitAnimation;
 
-        public void SetHoverEnterPose(ulong poseOverriderDtosID)
-        {
-            HoverEnterPoseOverriderId = poseOverriderDtosID;
-        }
-        
-        public void SetHoverExitPose(ulong poseOverriderDtosID)
-        {
-            HoverExitPoseOverriderId = poseOverriderDtosID;
-        }
         #region Async Property 
 
         /// <summary>
@@ -191,8 +182,8 @@ namespace umi3d.edk.interaction
         /// Private field associated to property <see cref="interactionDistance"/>.
         /// </summary>
         private UMI3DAsyncProperty<float> _interactionDistance;
-        private UMI3DAsyncProperty<ulong> _hoverEnterPoseOverriderId;
-        private UMI3DAsyncProperty<ulong> _hoverExitPoseOverriderId;
+        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _hoverEnterAnimation;
+        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _hoverExitAnimation;
 
         /// <summary>
         /// True if the object is hovered by at least one bone
@@ -207,8 +198,8 @@ namespace umi3d.edk.interaction
         /// Property associated to <see cref="InteractionDistance"/>.
         /// </summary>
         public UMI3DAsyncProperty<float> interactionDistance { get { Register(); return _interactionDistance; } protected set => _interactionDistance = value; }
-        public UMI3DAsyncProperty<ulong> hoverEnterPoseOverriderId { get { Register(); return _hoverEnterPoseOverriderId; } set => _hoverEnterPoseOverriderId = value; }
-        public UMI3DAsyncProperty<ulong> hoverExitPoseOverriderId { get { Register(); return _hoverExitPoseOverriderId; } set => _hoverExitPoseOverriderId = value; }
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> hoverEnterAnimation { get { Register(); return _hoverEnterAnimation; } set => _hoverEnterAnimation = value; }
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> hoverExitAnimation { get { Register(); return _hoverExitAnimation; } set => _hoverExitAnimation = value; }
 
         #endregion
 
@@ -236,8 +227,8 @@ namespace umi3d.edk.interaction
             Idto.nodeId = objectNodeId.GetValue(user).Id();
             Idto.hasPriority = hasPriority.GetValue(user);
             Idto.interactionDistance = interactionDistance.GetValue(user);
-            Idto.HoverEnterPoseOverriderId = hoverEnterPoseOverriderId.GetValue(user);
-            Idto.HoverExitPoseOverriderId = hoverExitPoseOverriderId.GetValue(user);
+            Idto.HoverEnterAnimationId = hoverEnterAnimation.GetValue(user)?.Id() ?? 0;
+            Idto.HoverExitAnimationId = hoverExitAnimation.GetValue(user)?.Id() ?? 0;
         }
 
         /// <inheritdoc/>
@@ -256,8 +247,8 @@ namespace umi3d.edk.interaction
             interactionDistance = new UMI3DAsyncProperty<float>(toolId, UMI3DPropertyKeys.InteractableInteractionDistance, InteractionDistance);
             interactionDistance.OnValueChanged += (f) => InteractionDistance = f;
 
-            hoverEnterPoseOverriderId = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.InteractableHoverEnterAnimation, HoverEnterPoseOverriderId, null);
-            hoverExitPoseOverriderId = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.InteractableHoverExitAnimation, HoverExitPoseOverriderId, null);
+            hoverEnterAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.InteractableHoverEnterAnimation, HoverEnterAnimation, (v, u) => v?.Id());
+            hoverExitAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.InteractableHoverExitAnimation, HoverExitAnimation, (v, u) => v?.Id());
         }
 
         /// <summary>
