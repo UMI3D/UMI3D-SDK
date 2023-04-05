@@ -32,6 +32,8 @@ namespace umi3d.edk.interaction
     public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity, IBytable
     {
 
+        public event Action<ulong> onHasRegistered;
+
         /// <summary>
         /// Class for event rising on Interaction. 
         /// </summary>
@@ -136,6 +138,7 @@ namespace umi3d.edk.interaction
             {
                 interactionId = UMI3DEnvironment.Register(this);
                 InitDefinition(interactionId);
+                onHasRegistered?.Invoke(interactionId);
             }
         }
 

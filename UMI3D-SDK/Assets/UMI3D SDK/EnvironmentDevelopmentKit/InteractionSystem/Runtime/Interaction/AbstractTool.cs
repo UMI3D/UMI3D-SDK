@@ -30,6 +30,7 @@ namespace umi3d.edk.interaction
     /// </summary>
     public abstract class AbstractTool : MonoBehaviour, UMI3DMediaEntity
     {
+        public event Action<ulong> onHasRegistered;
         #region properties
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace umi3d.edk.interaction
             {
                 toolId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolId);
+                onHasRegistered?.Invoke(toolId);
             }
         }
 

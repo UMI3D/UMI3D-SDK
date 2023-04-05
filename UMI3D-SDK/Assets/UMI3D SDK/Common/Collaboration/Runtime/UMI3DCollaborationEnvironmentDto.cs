@@ -33,5 +33,12 @@ namespace umi3d.common.collaboration
         /// value : list of all the poses of this user
         /// </summary>
         public Dictionary<ulong, List<PoseDto>> allPoses;
+
+        /// <summary>
+        /// A dictionary that contains all the poses already loaded in the environment
+        /// key : user Id 
+        /// value : list of all the poses of this user
+        /// </summary>
+        public Dictionary<ulong, List<UMI3DPoseOverriderContainerDto>> allPoses;
     }
 }

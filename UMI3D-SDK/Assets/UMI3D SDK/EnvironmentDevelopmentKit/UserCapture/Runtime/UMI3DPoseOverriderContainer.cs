@@ -32,6 +32,17 @@ namespace umi3d.edk.userCapture
         /// </summary>
         private  List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
 
+        public ulong eventID {get; private set;}  
+        public void SetEventID(ulong eventID)
+        {
+            this.eventID = eventID;
+        }
+        public ulong interactableID { get; private set;}  
+        public void SetInteractableID(ulong interactableID)
+        {
+            this.interactableID = interactableID;
+        }
+
         public UMI3DPoseOverriderContainer(List<UMI3DPoseOveridder_so> poseOveridder_Sos)
         {
             this.poseOverriders = poseOveridder_Sos;

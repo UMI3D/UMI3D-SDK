@@ -204,6 +204,7 @@ namespace umi3d.common
 
         public const uint AllPoses = 11008;
         public const uint ReceivePoseOverriders = 11009;
+        public const uint AllPoseOverriderContainers = 11010;
         #endregion
 
         #region notification

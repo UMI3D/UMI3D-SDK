@@ -22,8 +22,19 @@ namespace umi3d.common.collaboration
 
         private void Awake()
         {
+            Init();
             SetUpUmi3dEvent();
             SetUpUmi3dInteractable();
+        }
+
+        private void Init()
+        {
+            hoverEnterContainer = new UMI3DPoseOverriderContainer(hoverEnterOverriders);
+            hoverExitContainer = new UMI3DPoseOverriderContainer(hoverExitOverriders);
+            triggerContainer = new UMI3DPoseOverriderContainer(triggerOverriders);
+            releaseContainer = new UMI3DPoseOverriderContainer(releaseOverriders);
+
+            //TODO - add to pose manager
         }
 
         UMI3DEvent umi3dEvent = null;
@@ -32,35 +43,31 @@ namespace umi3d.common.collaboration
         private void SetUpUmi3dEvent()
         {
             umi3dEvent = GetComponent<UMI3DEvent>();
+            umi3dEvent.onHasRegistered += (id) =>
+            {
+                UpdatePoseOverriderEventContainers(id);
+            };
         }
 
         private void SetUpUmi3dInteractable()
         {
             umi3dInteractable = GetComponent<UMI3DInteractable>();
+            umi3dInteractable.onHasRegistered += (id) =>
+            {
+                UpdatePoseOverriderInteractableContainers(id);
+            };
         }
 
-        public void InitPoseOverriderHoverEnterContainer()
+        private void UpdatePoseOverriderEventContainers(ulong id)
         {
-            hoverEnterContainer = new UMI3DPoseOverriderContainer(hoverEnterOverriders);
-            //umi3dInteractable.SetHoverEnterPose(hoverEnterContainer.Id());
+            triggerContainer.SetEventID(id);
+            releaseContainer.SetEventID(id);
         }
 
-        public void InitPoseOverriderHoverExitContainer()
+        private void UpdatePoseOverriderInteractableContainers(ulong id)
         {
-            hoverExitContainer = new UMI3DPoseOverriderContainer(hoverExitOverriders);
-            //umi3dInteractable.SetHoverExitPose(hoverExitContainer.Id());
-        }
-
-        public void InitPoseOverriderTriggerContainer()
-        {
-            triggerContainer = new UMI3DPoseOverriderContainer(triggerOverriders);
-            //umi3dEvent.SetTriggerExitPose(triggerContainer.Id());
-        }
-
-        public void InitPoseOverriderReleaseContainer()
-        {
-            releaseContainer = new UMI3DPoseOverriderContainer(releaseOverriders);
-            //umi3dEvent.SetReleaseExitPose(releaseContainer.Id());
+            hoverEnterContainer.SetEventID(id);
+            hoverExitContainer.SetEventID(id);
         }
     }
 }
