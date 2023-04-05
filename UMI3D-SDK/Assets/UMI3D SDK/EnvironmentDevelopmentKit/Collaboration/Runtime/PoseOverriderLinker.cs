@@ -33,8 +33,6 @@ namespace umi3d.common.collaboration
             hoverExitContainer = new UMI3DPoseOverriderContainer(hoverExitOverriders);
             triggerContainer = new UMI3DPoseOverriderContainer(triggerOverriders);
             releaseContainer = new UMI3DPoseOverriderContainer(releaseOverriders);
-
-            //TODO - add to pose manager
         }
 
         UMI3DEvent umi3dEvent = null;

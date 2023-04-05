@@ -30,17 +30,15 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Scriptable objects to load
         /// </summary>
-        private  List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
+        [SerializeField] private  List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
+
+        [SerializeField] private bool isStart;
+
 
         public ulong eventID {get; private set;}  
         public void SetEventID(ulong eventID)
         {
             this.eventID = eventID;
-        }
-        public ulong interactableID { get; private set;}  
-        public void SetInteractableID(ulong interactableID)
-        {
-            this.interactableID = interactableID;
         }
 
         public UMI3DPoseOverriderContainer(List<UMI3DPoseOveridder_so> poseOveridder_Sos)

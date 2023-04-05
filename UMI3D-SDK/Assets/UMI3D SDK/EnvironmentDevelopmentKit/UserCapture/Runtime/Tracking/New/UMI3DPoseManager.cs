@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    public class PoseManager : SingleBehaviour<PoseManager>
+    public class UMI3DPoseManager : SingleBehaviour<UMI3DPoseManager>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
         /// <summary>
@@ -33,9 +33,10 @@ namespace umi3d.edk.userCapture
             }
         }
 
-        private Dictionary<ulong, List<UMI3DPoseOverriderContainer>> allPoseOverrider = new Dictionary<ulong, List<UMI3DPoseOverriderContainer>>();
-        private UMI3DAsyncDictionnaryProperty<ulong, List<UMI3DPoseOverriderContainer>> _objectAllPoseOverrider;
-        public UMI3DAsyncDictionnaryProperty<ulong, List<UMI3DPoseOverriderContainer>> objectAllPoseOverrider
+
+        private List<UMI3DPoseOverriderContainer> allPoseOverriderContainer = new();
+        private UMI3DAsyncListProperty<UMI3DPoseOverriderContainer> _objectAllPoseOverrider;
+        public UMI3DAsyncListProperty<UMI3DPoseOverriderContainer> objectAllPoseOverrider
         {
             get
             {
@@ -61,7 +62,7 @@ namespace umi3d.edk.userCapture
                 allPoses.Add(0, poses);
 
                 _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses, null, null);
-                _objectAllPoseOverrider = new UMI3DAsyncDictionnaryProperty<ulong, List<UMI3DPoseOverriderContainer>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoseOverriderContainers, null, null);
+                _objectAllPoseOverrider = new UMI3DAsyncListProperty<UMI3DPoseOverriderContainer>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoseOverriderContainers, null, null);
             }
 
             UMI3DServer.Instance.OnUserLeave.AddListener((u) => RemovePosesOnLeftUser(u));

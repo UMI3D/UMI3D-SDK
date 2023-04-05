@@ -39,6 +39,6 @@ namespace umi3d.common.collaboration
         /// key : user Id 
         /// value : list of all the poses of this user
         /// </summary>
-        public Dictionary<ulong, List<UMI3DPoseOverriderContainerDto>> allPoses;
+        private List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
     }
 }

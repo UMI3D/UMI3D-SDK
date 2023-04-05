@@ -40,7 +40,7 @@ namespace umi3d.edk.collaboration
             {
                 dto.userList = UMI3DCollaborationServer.Collaboration.ToDto(user);
                 
-                dto.allPoses = PoseManager.Instance.objectAllPoses.GetValue(user);
+                dto.allPoses = UMI3DPoseManager.Instance.objectAllPoses.GetValue(user);
             }
         }
     }
