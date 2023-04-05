@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -57,30 +55,30 @@ namespace umi3d.edk.interaction
         /// Animation triggered when the interaction is triggered.
         /// </summary>
         [SerializeField, Tooltip("Client animation triggered when the interaction is triggerred by a user.")]
-        public ulong TriggerPoseOverriderContainerID;
+        public UMI3DAbstractAnimation TriggerAnimation;
         /// <summary>
         /// Animation triggered when the interaction is released.
         /// </summary>
         [SerializeField, Tooltip("Client animation triggered when is released by a user.")]
-        public ulong ReleasePoseOverriderContainerID;
+        public UMI3DAbstractAnimation ReleaseAnimation;
 
         /// <summary>
         /// Animation Asych property of the animatiuon triggered when the interaction is triggered
         /// </summary>
-        private UMI3DAsyncProperty<ulong> _triggerPoseOverriderContainerID;
+        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _triggerAnimation;
         /// <summary>
         /// Animation Asych property of the animatiuon triggered when the interaction is realeased
         /// </summary>
-        private UMI3DAsyncProperty<ulong> _releasePoseOverriderContainerId;
+        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _releaseAnimation;
 
         /// <summary>
         /// Animation Asych Attribute of the animatiuon triggered when the interaction is triggered
         /// </summary>
-        public UMI3DAsyncProperty<ulong> triggerPoseOverriderContainerId { get { Register(); return _triggerPoseOverriderContainerID; } set => _triggerPoseOverriderContainerID = value; }
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> triggerAnimation { get { Register(); return _triggerAnimation; } set => _triggerAnimation = value; }
         /// <summary>
         /// Animation Asych Attribute of the animatiuon triggered when the interaction is realeased
         /// </summary>
-        public UMI3DAsyncProperty<ulong> releasePoseOverriderContainerId { get { Register(); return _releasePoseOverriderContainerId; } set => _releasePoseOverriderContainerId = value; }
+        public UMI3DAsyncProperty<UMI3DAbstractAnimation> releaseAnimation { get { Register(); return _releaseAnimation; } set => _releaseAnimation = value; }
 
         #endregion
 
@@ -88,18 +86,8 @@ namespace umi3d.edk.interaction
         {
             base.InitDefinition(id);
 
-            triggerPoseOverriderContainerId = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.EventTriggerAnimation, TriggerPoseOverriderContainerID, null);
-            releasePoseOverriderContainerId = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.EventReleaseAnimation, ReleasePoseOverriderContainerID, null);
-        }
-
-        public void SetReleaseExitPose(ulong poseOverriderDtosID)
-        {
-            ReleasePoseOverriderContainerID = poseOverriderDtosID;  
-        }
-
-        public void SetTriggerExitPose(ulong poseOverriderDtosID)
-        {
-            TriggerPoseOverriderContainerID^= poseOverriderDtosID;
+            triggerAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventTriggerAnimation, TriggerAnimation, (v, u) => v?.Id());
+            releaseAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventReleaseAnimation, ReleaseAnimation, (v, u) => v?.Id());
         }
 
         /// <summary>
@@ -186,8 +174,8 @@ namespace umi3d.edk.interaction
             if (dto is EventDto _dto)
             {
                 _dto.hold = Hold;
-                _dto.TriggerPoseOverriderId = (ulong)triggerPoseOverriderContainerId.GetValue(user);
-                _dto.ReleasePoseOverriderId = (ulong)releasePoseOverriderContainerId.GetValue(user);
+                _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
+                _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
             }
         }
     }
