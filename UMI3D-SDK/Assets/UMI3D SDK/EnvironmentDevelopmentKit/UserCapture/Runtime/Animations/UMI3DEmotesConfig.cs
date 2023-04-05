@@ -95,6 +95,8 @@ namespace umi3d.edk.userCapture
         /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
+            foreach(var emote in IncludedEmotes)
+                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
             return new UMI3DEmotesConfigDto()
             {
                 emotes = this.IncludedEmotes.Select(x => (UMI3DEmoteDto)x.ToEntityDto(user)).ToList(),
@@ -111,6 +113,7 @@ namespace umi3d.edk.userCapture
             UMI3DSerializer.Write(IncludedEmotes.Count);
             foreach (UMI3DEmote emote in IncludedEmotes)
             {
+                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
                 bytable += emote.ToBytes(user);
             }
             return bytable;
