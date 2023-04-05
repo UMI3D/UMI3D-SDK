@@ -230,14 +230,22 @@ namespace umi3d.cdk.userCapture
             EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
             EmotePlayedSelfEvent.AddListener(delegate
             {
-                IgnoreBones = true;
                 IsEmotePlaying = true;
             });
             EmoteEndedSelfEvent.AddListener(delegate
             {
-                IgnoreBones = false;
                 IsEmotePlaying = false;
             });
+        }
+
+        public void DisableBoneTracking()
+        {
+            IgnoreBones = true;
+        }
+
+        public void ReenableBoneTracking()
+        {
+            IgnoreBones = true;
         }
 
         private async void InitParentId()
@@ -513,6 +521,34 @@ namespace umi3d.cdk.userCapture
             bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
 
             SetStreamedBones(bones);
+        }
+
+        public Animator UnpackEmoteAnimator(ulong userid)
+        {
+            var node = embodimentDict[userid];
+
+            var emoteNode = node.GetComponentsInChildren<Transform>().Where(n => n.name.Contains("EmoteAnimator")).FirstOrDefault();
+            var modelNode = node.GetComponentsInChildren<Transform>().Where(n => n.name.Contains("AvatarModel")).FirstOrDefault();
+
+            if (modelNode == null) // no model to animate
+                return null;
+
+            if (emoteNode == null) // old way to bind emote animator
+            {
+                var modelAnimator = modelNode.GetComponentInChildren<Animator>();
+                return modelAnimator;
+            }
+
+            var emoteBundleAnimator = emoteNode.GetComponentInChildren<Animator>();
+            emoteBundleAnimator.enabled = false;
+
+            var emoteAnimator = modelNode.gameObject.GetOrAddComponent<Animator>();
+            emoteAnimator.enabled = false;
+            emoteAnimator.avatar = emoteBundleAnimator.avatar;
+            emoteAnimator.runtimeAnimatorController = emoteBundleAnimator.runtimeAnimatorController;
+
+            Destroy(emoteNode.gameObject);
+            return emoteAnimator;
         }
     }
 }
