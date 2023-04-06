@@ -33,6 +33,7 @@ namespace umi3d.edk.userCapture
         [SerializeField] private  List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
 
         [SerializeField] private bool isStart;
+        public bool IsStart => isStart;
 
 
         public ulong eventID {get; private set;}  
