@@ -12,6 +12,11 @@ namespace umi3d.common.collaboration
     {
         public List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
 
+        private void Awake()
+        {
+            
+        }
+
         [Serializable]
         public class OverriderContainerField
         {

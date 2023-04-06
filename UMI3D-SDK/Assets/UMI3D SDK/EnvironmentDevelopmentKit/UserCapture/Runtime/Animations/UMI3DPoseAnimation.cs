@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using UnityEngine;
 
@@ -30,7 +31,7 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Animation associated with the pose.
         /// </summary>
-        protected UMI3DNodeAnimation nodeAnimation;
+        protected List<UMI3DNodeAnimation> nodeAnimations;
         /// <summary>
         /// Should the pose be active?
         /// </summary>
@@ -39,34 +40,38 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
-        [SerializeField, EditorReadOnly]
-        protected UMI3DPoseOverriderContainer poseOverriderContainer;
+        protected List<UMI3DPoseOverriderContainer> poseOverriderContainers;
 
-        public void Init(bool isStartpose, UMI3DPoseOverriderContainer poseOverriderContainer)
+        private void Awake()
+        {
+            
+        }
+
+        public void Init(bool isStartpose, List<UMI3DPoseOverriderContainer> poseOverriderContainer)
         {
             this.isStartPose = isStartpose;
-            this.poseOverriderContainer = poseOverriderContainer;
+            this.poseOverriderContainers = poseOverriderContainer;
         }
 
         /// <summary>
         /// Animation associated with the hand pose.
         /// </summary>
-        public UMI3DNodeAnimation NodeAnimation
+        public List<UMI3DNodeAnimation> NodeAnimations
         {
-            get => nodeAnimation; set
+            get => nodeAnimations; set
             {
-                nodeAnimation = value;
+                nodeAnimations = value;
                 Start();
             }
         }
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
-        public UMI3DPoseOverriderContainer PoseOverriderContainer
+        public List<UMI3DPoseOverriderContainer> PoseOverriderContainers
         {
-            get => poseOverriderContainer; set
+            get => poseOverriderContainers; set
             {
-                poseOverriderContainer = value;
+                poseOverriderContainers = value;
                 Start();
             }
         }
@@ -89,30 +94,34 @@ namespace umi3d.edk.userCapture
 
         public void SetUp()
         {
-            if (NodeAnimation == null)
-                NodeAnimation = GetComponent<UMI3DNodeAnimation>();
+            if (NodeAnimations == null)
+                NodeAnimations = GetComponents<UMI3DNodeAnimation>().ToList();
 
-            if (NodeAnimation != null && PoseOverriderContainer != null)
+            if (NodeAnimations != null && PoseOverriderContainers != null)
             {
-                var op = new List<UMI3DNodeAnimation.OperationChain>();
-
-                var operation = new SetEntityProperty()
+                for (int i =0; i < PoseOverriderContainers.Count; i++)
                 {
-                    users = UMI3DServer.Instance.UserSetWhenHasJoined(),
-                    entityId = PoseOverriderContainer.Id(),
-                    property = UMI3DPropertyKeys.ActivePoseOverrider,
-                    value = IsStartPose
-                };
 
-                op.Add(
-                    new UMI3DNodeAnimation.OperationChain()
+                    var op = new List<UMI3DNodeAnimation.OperationChain>();
+
+                    var operation = new SetEntityProperty()
                     {
-                        Operation = operation,
-                        progress = 0f
-                    });
+                        users = UMI3DServer.Instance.UserSetWhenHasJoined(),
+                        entityId = PoseOverriderContainers[i].Id(),
+                        property = UMI3DPropertyKeys.ActivePoseOverrider,
+                        value = IsStartPose
+                    };
 
-                NodeAnimation.ObjectAnimationChain.SetValue(op);
-            }
+                    op.Add(
+                        new UMI3DNodeAnimation.OperationChain()
+                        {
+                            Operation = operation,
+                            progress = 0f
+                        });
+
+                    NodeAnimations[i].ObjectAnimationChain.SetValue(op);
+                }
+            }       
         }
     }
 }
