@@ -25,12 +25,13 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
         /// </summary>
-        /// <param name="uMI3DOverriderMetaClassDto"></param>
-        private void InitDefinition(UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto)
+        /// <param name="poseOverriderContainerDto"></param>
+        private void InitDefinition(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
-            overriderID = uMI3DOverriderMetaClassDto.id;
-            poseOverriderDtos.AddRange(uMI3DOverriderMetaClassDto.poseOverriderDtos);
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(this.overriderID, uMI3DOverriderMetaClassDto, this).NotifyLoaded();
+            overriderID = poseOverriderContainerDto.id;
+            poseOverriderDtos.AddRange(poseOverriderContainerDto.poseOverriderDtos);
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(this.overriderID, poseOverriderContainerDto, this).NotifyLoaded();
+            StartPoseOverriderContainerUnit(poseOverriderContainerDto);
         }
 
         /// <summary>
@@ -87,6 +88,35 @@ namespace umi3d.cdk.userCapture
             }
 
             return Task.FromResult(true);
+        }
+
+
+        PoseOverriderContainerHandlerUnit poseOverriderContainerHandlerUnit = null;
+
+        private void StartPoseOverriderContainerUnit(UMI3DPoseOverriderContainerDto uMI3DPoseOverriderContainerDto)
+        {
+            StopPoseOverriderContainerUnit();
+
+            poseOverriderContainerHandlerUnit.SetPoseOverriderContainer(uMI3DPoseOverriderContainerDto);
+            poseOverriderContainerHandlerUnit.onConditionValidated += poseOverriderDto => ApplyPose(poseOverriderDto);
+
+            PoseManager.Instance.HandlePoseOverriderContainerHandlerUnitCheckCorroutine(poseOverriderContainerHandlerUnit.CheckCondtionOfAllOverriders());
+        }
+
+        private void StopPoseOverriderContainerUnit()
+        {
+            if (poseOverriderContainerHandlerUnit != null)
+            {
+                poseOverriderContainerHandlerUnit.DisableCheck();
+                poseOverriderContainerHandlerUnit.onConditionValidated -= poseOverriderDto => ApplyPose(poseOverriderDto);
+
+                PoseManager.Instance.DisablePoseOverriderContainerHandlerUnitCheckCorroutine();
+            }
+        }
+
+        private void ApplyPose(PoseOverriderDto poseOverriderDto)
+        {
+            PoseManager.Instance.ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(poseOverriderDto);
         }
     }
 }

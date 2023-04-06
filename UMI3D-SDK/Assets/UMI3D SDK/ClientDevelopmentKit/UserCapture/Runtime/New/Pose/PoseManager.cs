@@ -15,9 +15,12 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
@@ -50,6 +53,37 @@ namespace umi3d.cdk.userCapture
         {
             List<PoseDto> poses = allPoses[key];
             return poses?[index];
+        }
+
+        Coroutine poseOverriderContainerHandlerCoroutine = null;
+
+        internal void HandlePoseOverriderContainerHandlerUnitCheckCorroutine(IEnumerator enumerator)
+        {
+            poseOverriderContainerHandlerCoroutine = StartCoroutine(enumerator);
+        }
+
+        internal void DisablePoseOverriderContainerHandlerUnitCheckCorroutine()
+        {
+            if (poseOverriderContainerHandlerCoroutine != null)
+            {
+                StopCoroutine(poseOverriderContainerHandlerCoroutine);
+            }
+        }
+
+        internal void ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(PoseOverriderDto poseOverriderDto)
+        {
+            if (poseOverriderDto != null && allPoses != null)
+            {
+                foreach (PoseDto pose in allPoses[0])
+                {
+                    if (pose.id == poseOverriderDto.poseIndexinPoseManager)
+                    {
+
+                        PersonalSkeleton.Instance.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
+                        return;
+                    }
+                }
+            }
         }
     }
 }
