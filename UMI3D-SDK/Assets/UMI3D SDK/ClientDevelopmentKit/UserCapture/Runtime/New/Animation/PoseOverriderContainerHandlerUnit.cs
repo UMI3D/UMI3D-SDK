@@ -7,6 +7,9 @@ using System;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Pose overrider handler to calculate whether the pose can be played or not depending on the set of condition of a specific container 
+    /// </summary>
     public class PoseOverriderContainerHandlerUnit
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
