@@ -99,7 +99,7 @@ namespace umi3d.edk.userCapture
                 }
             });
 
-            poseOverriderDtoAsyncList = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ReceivePoseOverriders, poseOverridersDtos);
+            poseOverriderDtoAsyncList = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ActivePoseOverrider, poseOverridersDtos);
         }
 
         /// <summary>

@@ -65,7 +65,7 @@ namespace umi3d.cdk.userCapture
         {
             switch (value.property.property)
             {
-                case UMI3DPropertyKeys.ReceivePoseOverriders:
+                case UMI3DPropertyKeys.ActivePoseOverrider:
                     InitDefinition(value.entity.dto as UMI3DPoseOverriderContainerDto);
                     break;
             }
@@ -81,7 +81,7 @@ namespace umi3d.cdk.userCapture
         {
             switch (value.propertyKey)
             {
-                case UMI3DPropertyKeys.ReceivePoseOverriders:
+                case UMI3DPropertyKeys.ActivePoseOverrider:
                     ulong id = UMI3DSerializer.Read<ulong>(value.container);
                     PoseOverriderDto[] dtos = UMI3DSerializer.ReadArray<PoseOverriderDto>(value.container);
                     InitDefinition(new UMI3DPoseOverriderContainerDto() { id = id, poseOverriderDtos = dtos });
