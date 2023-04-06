@@ -44,15 +44,15 @@ namespace umi3d.cdk
         {
             var dto = entity.dto as UMI3DBodyPoseDto;
             if (dto == null) return false;
-            switch (property.property)
-            {
-                case UMI3DPropertyKeys.ActiveBodyPose:
-                    dto.IsActive = (bool)property.value;
-                    //UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
-                    break;
-                default:
-                    return false;
-            }
+            //switch (property.property)
+            //{
+            //    case UMI3DPropertyKeys.ActiveBodyPose:
+            //        dto.IsActive = (bool)property.value;
+            //        //UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
+            //        break;
+            //    default:
+            //        return false;
+            //}
             return true;
         }
 
@@ -65,15 +65,15 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
         {
-            switch (propertyKey)
-            {
-                case UMI3DPropertyKeys.ActiveBodyPose:
-                    value = UMI3DSerializer.Read<bool>(container);
-                    break;
+            //switch (propertyKey)
+            //{
+            //    case UMI3DPropertyKeys.ActiveBodyPose:
+            //        value = UMI3DSerializer.Read<bool>(container);
+            //        break;
 
-                default:
-                    return false;
-            }
+            //    default:
+            //        return false;
+            //}
             return true;
         }
 
@@ -87,15 +87,15 @@ namespace umi3d.cdk
         {
             var dto = entity.dto as UMI3DBodyPoseDto;
             if (dto == null) return false;
-            switch (propertyKey)
-            {
-                case UMI3DPropertyKeys.ActiveBodyPose:
-                    dto.IsActive = UMI3DSerializer.Read<bool>(container);
-                    //UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
-                    break;
-                default:
-                    return false;
-            }
+            //switch (propertyKey)
+            //{
+            //    case UMI3DPropertyKeys.ActiveBodyPose:
+            //        dto.IsActive = UMI3DSerializer.Read<bool>(container);
+            //        //UMI3DClientUserTracking.Instance.bodyPoseEvent.Invoke(dto);
+            //        break;
+            //    default:
+            //        return false;
+            //}
             return true;
         }
     }

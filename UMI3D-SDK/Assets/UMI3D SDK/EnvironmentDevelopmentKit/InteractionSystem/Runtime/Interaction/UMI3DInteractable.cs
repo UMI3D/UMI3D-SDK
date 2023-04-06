@@ -119,7 +119,7 @@ namespace umi3d.edk.interaction
 
             public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
-                position = dto.position;node animation
+                position = dto.position;
                 normal = dto.normal;
                 direction = dto.direction;
             }

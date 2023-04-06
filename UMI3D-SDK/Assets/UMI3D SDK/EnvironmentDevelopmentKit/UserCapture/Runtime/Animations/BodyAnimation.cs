@@ -60,10 +60,10 @@ namespace umi3d.edk.userCapture
 
                 var operation = new SetEntityProperty()
                 {
-                    users = UMI3DServer.Instance.UserSet(),
-                    entityId = BodyPose.Id(),
-                    property = UMI3DPropertyKeys.ActiveBodyPose,
-                    value = ActivePose
+                    //users = UMI3DServer.Instance.UserSet(),
+                    //entityId = BodyPose.Id(),
+                    //property = UMI3DPropertyKeys.ActiveBodyPose,
+                    //value = ActivePose
                 };
 
                 op.Add(

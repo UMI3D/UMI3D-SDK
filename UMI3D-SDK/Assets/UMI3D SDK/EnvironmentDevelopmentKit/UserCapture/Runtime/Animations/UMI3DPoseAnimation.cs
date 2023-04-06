@@ -28,25 +28,25 @@ namespace umi3d.edk.userCapture
     public class UMI3DPoseAnimation : MonoBehaviour
     {
         /// <summary>
-        /// Animation associated with the hand pose.
+        /// Animation associated with the pose.
         /// </summary>
-        [SerializeField, EditorReadOnly]
         protected UMI3DNodeAnimation nodeAnimation;
         /// <summary>
         /// Should the pose be active?
         /// </summary>
-        [SerializeField, EditorReadOnly]
-        protected bool activePose = false;
-        /// <summary>
-        /// Should the animation be triggered on hover/pointing?
-        /// </summary>*
-        [SerializeField, EditorReadOnly]
-        protected bool hoverPose = false;
+        protected bool isStartPose = false;
+
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
         [SerializeField, EditorReadOnly]
         protected UMI3DPoseOverriderContainer poseOverriderContainer;
+
+        public void Init(bool isStartpose, UMI3DPoseOverriderContainer poseOverriderContainer)
+        {
+            this.isStartPose = isStartpose;
+            this.poseOverriderContainer = poseOverriderContainer;
+        }
 
         /// <summary>
         /// Animation associated with the hand pose.
@@ -62,37 +62,25 @@ namespace umi3d.edk.userCapture
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
-        public UMI3DHandPose HandPose
+        public UMI3DPoseOverriderContainer PoseOverriderContainer
         {
-            get => handPose; set
+            get => poseOverriderContainer; set
             {
-                handPose = value;
+                poseOverriderContainer = value;
                 Start();
             }
         }
         /// <summary>
         /// Should the pose be active?
         /// </summary
-        public bool ActivePose
+        public bool IsStartPose
         {
-            get => activePose; set
+            get => isStartPose; set
             {
-                activePose = value;
+                isStartPose = value;
                 Start();
             }
         }
-        /// <summary>
-        /// Should the animation be triggered on hover/pointing?
-        /// </summary>
-        public bool HoverPose
-        {
-            get => hoverPose; set
-            {
-                hoverPose = value;
-                Start();
-            }
-        }
-
 
         private void Start()
         {
@@ -104,18 +92,16 @@ namespace umi3d.edk.userCapture
             if (NodeAnimation == null)
                 NodeAnimation = GetComponent<UMI3DNodeAnimation>();
 
-            if (NodeAnimation != null && HandPose != null)
+            if (NodeAnimation != null && PoseOverriderContainer != null)
             {
-                HandPose.HoverAnimation = HoverPose;
-
                 var op = new List<UMI3DNodeAnimation.OperationChain>();
 
                 var operation = new SetEntityProperty()
                 {
                     users = UMI3DServer.Instance.UserSetWhenHasJoined(),
-                    entityId = HandPose.Id(),
-                    property = UMI3DPropertyKeys.ActiveHandPose,
-                    value = ActivePose
+                    entityId = PoseOverriderContainer.Id(),
+                    property = UMI3DPropertyKeys.ActivePoseOverrider,
+                    value = IsStartPose
                 };
 
                 op.Add(

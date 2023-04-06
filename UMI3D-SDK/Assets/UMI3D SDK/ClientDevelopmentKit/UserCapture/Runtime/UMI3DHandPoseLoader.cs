@@ -44,15 +44,15 @@ namespace umi3d.cdk
         {
             var dto = value.entity.dto as UMI3DHandPoseDto;
             if (dto == null) return false;
-            switch (value.property.property)
-            {
-                case UMI3DPropertyKeys.ActiveHandPose:
-                    dto.IsActive = (bool)value.property.value;
-                    //UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
-                    break;
-                default:
-                    return false;
-            }
+            //switch (value.property.property)
+            //{
+            //    case UMI3DPropertyKeys.ActiveHandPose:
+            //        dto.IsActive = (bool)value.property.value;
+            //        //UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
+            //        break;
+            //    default:
+            //        return false;
+            //}
             return true;
         }
 
@@ -60,15 +60,15 @@ namespace umi3d.cdk
         {
             var dto = value.entity.dto as UMI3DHandPoseDto;
             if (dto == null) return false;
-            switch (value.propertyKey)
-            {
-                case UMI3DPropertyKeys.ActiveHandPose:
-                    dto.IsActive = UMI3DSerializer.Read<bool>(value.container);
-                    //UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
-                    break;
-                default:
-                    return false;
-            }
+            //switch (value.propertyKey)
+            //{
+            //    case UMI3DPropertyKeys.ActiveHandPose:
+            //        dto.IsActive = UMI3DSerializer.Read<bool>(value.container);
+            //        //UMI3DClientUserTracking.Instance.handPoseEvent.Invoke(dto);
+            //        break;
+            //    default:
+            //        return false;
+            //}
             return true;
         }
 
@@ -81,15 +81,15 @@ namespace umi3d.cdk
         /// <returns></returns>
         public  override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            switch (data.propertyKey)
-            {
-                case UMI3DPropertyKeys.ActiveHandPose:
-                    data.result = UMI3DSerializer.Read<bool>(data.container);
-                    break;
+            //switch (data.propertyKey)
+            //{
+            //    case UMI3DPropertyKeys.ActiveHandPose:
+            //        data.result = UMI3DSerializer.Read<bool>(data.container);
+            //        break;
 
-                default:
-                    return false;
-            }
+            //    default:
+            //        return false;
+            //}
             return true;
         }
     }

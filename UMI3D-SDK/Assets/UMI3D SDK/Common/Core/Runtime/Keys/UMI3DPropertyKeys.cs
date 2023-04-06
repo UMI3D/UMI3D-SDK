@@ -195,8 +195,7 @@ namespace umi3d.common
         public const uint UserBindings = 11001;
         public const uint ActiveBindings = 11002;
 
-        public const uint ActiveHandPose = 11003;
-        public const uint ActiveBodyPose = 11004;
+        public const uint ActivePoseOverrider = 11003;
 
         public const uint ChangeEmoteConfig = 11005;
         public const uint ActiveEmote = 11006;

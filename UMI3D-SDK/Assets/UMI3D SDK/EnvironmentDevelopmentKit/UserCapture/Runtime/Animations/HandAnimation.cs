@@ -112,10 +112,10 @@ namespace umi3d.edk.userCapture
 
                 var operation = new SetEntityProperty()
                 {
-                    users = UMI3DServer.Instance.UserSetWhenHasJoined(),
-                    entityId = HandPose.Id(),
-                    property = UMI3DPropertyKeys.ActiveHandPose,
-                    value = ActivePose
+                    //users = UMI3DServer.Instance.UserSetWhenHasJoined(),
+                    //entityId = HandPose.Id(),
+                    //property = UMI3DPropertyKeys.ActiveHandPose,
+                    //value = ActivePose
                 };
 
                 op.Add(
