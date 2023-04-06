@@ -101,5 +101,50 @@ namespace umi3d.edk.userCapture
 
             transaction.Dispatch();
         }
+
+        #region PoseAnimation
+        [HideInInspector]
+        public List<ulong> handPoseIds = new List<ulong>();
+
+        [EditorReadOnly]
+        public List<UMI3DHandPose> PreloadedHandPoses = new List<UMI3DHandPose>();
+
+        [HideInInspector]
+        public List<ulong> bodyPoseIds = new List<ulong>();
+
+        [EditorReadOnly]
+        public List<UMI3DBodyPose> PreloadedBodyPoses = new List<UMI3DBodyPose>();
+
+        #region Runtime referencing of handpose
+        /// <summary>
+        /// Add a new handpose at run time to subscribe
+        /// </summary>
+        /// <param name="Hp">A umi3D hand pose to add</param>
+        public void AddAnHandPoseRef(UMI3DHandPose Hp)
+        {
+            if (!PreloadedHandPoses.Contains(Hp))
+            {
+                PreloadedHandPoses.Add(Hp);
+                ReWriteHandPoseCollection();
+            }
+        }
+        /// <summary>
+        /// Remove An handpose at run time
+        /// </summary>
+        /// <param name="hp">A umi3D hand pose to remove</param>
+        public void RemoveHandPose(UMI3DHandPose hp)
+        {
+            PreloadedHandPoses.Remove(hp);
+            ReWriteHandPoseCollection();
+        }
+        /// <summary>
+        /// Rewrite the collection after modifiction of the handpose
+        /// </summary>
+        public void ReWriteHandPoseCollection()
+        {
+            handPoseIds.Clear();
+            handPoseIds.AddRange(PreloadedHandPoses.Select(hp => hp.Id()).ToList());
+        }
+        #endregion
     }
 }

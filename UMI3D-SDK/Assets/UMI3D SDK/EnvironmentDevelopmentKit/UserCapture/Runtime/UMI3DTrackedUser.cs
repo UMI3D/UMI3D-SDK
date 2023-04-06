@@ -74,7 +74,7 @@ namespace umi3d.edk.userCapture
                     this.userSize.SetValue(userSize);
             }
 
-            await PoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
+            await UMI3DPoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
