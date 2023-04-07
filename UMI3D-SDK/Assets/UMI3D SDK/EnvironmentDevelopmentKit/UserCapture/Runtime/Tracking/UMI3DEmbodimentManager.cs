@@ -67,6 +67,8 @@ namespace umi3d.edk.userCapture
         [SerializeField, Tooltip("Emote configuration for the environment.")]
         public UMI3DEmotesConfig emotesConfig;
 
+        public Dictionary<UMI3DUser, Dictionary<UMI3DEmote, bool>> activatedEmotes = new();
+
         /// <inheritdoc/>
         protected override void Awake()
         {
@@ -85,6 +87,12 @@ namespace umi3d.edk.userCapture
                 UMI3DServer.Instance.OnUserLeave.AddListener(DeleteEmbodiment);
                 WriteCollections();
             }
+
+            UMI3DServer.Instance.OnUserLeave.AddListener((user) =>
+            {
+                if (activatedEmotes.ContainsKey(user))
+                    activatedEmotes.Remove(user);
+            });
         }
 
         #region Tracking Data
@@ -242,11 +250,27 @@ namespace umi3d.edk.userCapture
         /// <param name="trigger">True for triggering, false to interrupt.</param>
         public void DispatchChangeEmoteReception(ulong emoteId, UMI3DUser user, bool trigger)
         {
+            var emote = emotesConfig.IncludedEmotes.Find(x => x.id == emoteId);
+            if (activatedEmotes[user][emote] == trigger) // an emote should be stopped to be started again
+                return;
+
+            if (!emote.Available.GetValue(user)) // user is not allowed to use the emote
+            {
+                UMI3DLogger.LogWarning($"User {user.Id()} tried to trigger emote {emoteId} but is not allowed to", DebugScope.EDK);
+                return;
+            }
+
+            bool isImmersiveDevice = embodimentTrackedBonetypes[user.Id()][BoneType.LeftHand];
+
+            if (isImmersiveDevice) // immersive device should not be able to trigger emotes as they are already moving
+                return;
+
             //? avoid the data channel filtering
             var targetUsers = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users());
-            EmoteTriggered?.Invoke((emoteId, user, trigger));
             targetUsers.Remove(user);
-            return; //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
+            activatedEmotes[user][emote] = trigger;
+            EmoteTriggered?.Invoke((emoteId, user, trigger));
+            
             var req = new EmoteDispatchRequest()
             {
                 sendingUserId = user.Id(),
@@ -593,7 +617,15 @@ namespace umi3d.edk.userCapture
                 avatarNodeDto.bodyPoses = PreloadedBodyPoses.Select(bp => bp.ToDto()).ToList();
 
                 if (emotesConfig != null)
+                {
                     avatarNodeDto.emotesConfigDto = (UMI3DEmotesConfigDto)emotesConfig.ToEntityDto(user);
+                    activatedEmotes[user] =  new();
+                    foreach (var emote in emotesConfig.IncludedEmotes)
+                    {
+                        activatedEmotes[user][emote] = false;
+                    }
+                }
+                    
             }
         }
         #endregion
