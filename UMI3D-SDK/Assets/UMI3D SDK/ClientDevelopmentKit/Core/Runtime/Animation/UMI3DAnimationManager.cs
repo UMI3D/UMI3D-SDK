@@ -47,17 +47,6 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Start();
         }
 
-
-        /// <summary>
-        /// Start playing an animation.
-        /// </summary>
-        /// <param name="id">Animation UMI3D id.</param>
-        public virtual void StartAnimation(ulong id)
-        {
-            (UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation).Start();
-        }
-
-
         /// <summary>
         /// Stop playing an animation.
         /// </summary>

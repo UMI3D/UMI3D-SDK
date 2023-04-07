@@ -259,11 +259,6 @@ namespace umi3d.cdk.collaboration
                      ActivateBindings(value);
                     return true;
 
-                default:
-                    return false;
-            }
-        }
-
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                     dto.onStartSpeakingAnimationId = (ulong)value;
                     return true;
@@ -271,6 +266,8 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
                     dto.onStopSpeakingAnimationId = (ulong)value;
                     return true;
+                default:
+                    return false;
             }
             return false;
         }

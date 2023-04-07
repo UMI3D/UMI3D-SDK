@@ -197,34 +197,6 @@ namespace umi3d.cdk
             animator.Play(dto.stateName, layer: 0, normalizedTime: 1);
         }
 
-        /// <summary>
-        /// Resume the animation at a precise time.
-        /// </summary>
-        /// <param name="atTime">Resume time in ms.</param>
-        public void Play(float atTime)
-        {
-            var nTime = atTime / Duration;
-
-            if (animator == null)
-                UMI3DLogger.LogError($"No animator on node {node}", DebugScope.CDK | DebugScope.Animation);
-
-            animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
-            IsPaused = false;
-            trackingAnimationCoroutine ??= UMI3DEnvironmentLoader.StartCoroutine(TrackEnd());
-        }
-
-        /// <summary>
-        /// Pause the animation, registering the current playing state.
-        /// </summary>
-        public void Pause()
-        {
-            lastPauseTime = GetProgress() * Duration;
-            IsPaused = true;
-            UMI3DEnvironmentLoader.StopCoroutine(trackingAnimationCoroutine);
-            trackingAnimationCoroutine = null;
-            animator.Play(dto.stateName, layer: 0, normalizedTime: 1);
-        }
-
         /// <inheritdoc/>
         public override void Stop()
         {

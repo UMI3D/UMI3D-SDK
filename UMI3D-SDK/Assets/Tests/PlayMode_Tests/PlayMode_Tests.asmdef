@@ -1,24 +1,20 @@
 {
-    "name": "glTFastEditorTests",
+    "name": "PlayMode_Tests",
     "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "UMI3D.CDK.Core",
-        "UMI3D.CDK.Collaboration",
-        "UMI3D.CDK.UserCapture",
-        "UMI3D.Common.UserCapture",
-        "inetum.unityUtils",
-        "UMI3D.Common.Collaboration",
         "UMI3D.Common.Core",
-        "glTFastSchema",
-        "Unity.Mathematics",
-        "glTFast.dots",
-        "glTFast.Export",
-        "glTFastEditor",
-        "glTFast"
+        "UMI3D.Common.UserCapture",
+        "UMI3D.CDK.Core",
+        "UMI3D.CDK.UserCapture",
+        "UMI3D.CDK.Collaboration",
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration"
     ],
-    "includePlatforms": [],
+    "includePlatforms": [
+        "Editor"
+    ],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
