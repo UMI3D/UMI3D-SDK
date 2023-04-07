@@ -151,8 +151,8 @@ namespace umi3d.common.collaboration
                         bool interpolationable;
                         bool composable;
 
-                        Read(container, out readable, out poseIndex);
-                        Read(container, out readable, out durationDto);
+                        readable = UMI3DSerializer.TryRead(container, out poseIndex);
+                        readable &= UMI3DSerializer.TryRead(container, out durationDto);
                         readable &= UMI3DSerializer.TryRead(container, out interpolationable);
                         readable &= UMI3DSerializer.TryRead(container, out composable);
                         poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
@@ -234,7 +234,7 @@ namespace umi3d.common.collaboration
                             MagnitudeConditionDto magnitudeConditionDto;
                             BoneRotationConditionDto boneRotationConditionDto;
                             DirectionConditionDto directionConditionDto;
-                            UserScaleConditinoDto userScaleConditinoDto;
+                            UserScaleConditionDto userScaleConditinoDto;
                             ScaleConditionDto scaleConditionDto;
 
                             RangeConditionDto rangeConditionDto;
@@ -885,14 +885,14 @@ namespace umi3d.common.collaboration
                         return false;
                     }
 
-                case true when typeof(T) == typeof(UserScaleConditinoDto):
+                case true when typeof(T) == typeof(UserScaleConditionDto):
                     {
                         Vector3 scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)
                         {
-                            UserScaleConditinoDto userScaleConditinoDto = new UserScaleConditinoDto(
+                            UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto(
                                 scale: scale
                             );
                             result = (T)Convert.ChangeType(userScaleConditinoDto, typeof(T));
@@ -1317,7 +1317,7 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DSerializer.Write((int)5)
                         + UMI3DSerializer.WriteCollection(notConditionDto.conditions);
                     break;
-                case UserScaleConditinoDto userScaleConditinoDto:
+                case UserScaleConditionDto userScaleConditinoDto:
                     bytable = UMI3DSerializer.Write((int)6)
                         + UMI3DSerializer.Write(userScaleConditinoDto.scale);
                     break;

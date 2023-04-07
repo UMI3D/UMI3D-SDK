@@ -70,15 +70,15 @@ namespace umi3d.common.userCapture
                     (temporaryChildren[1] as Vector4Field).value
                 );
             }
-            else if (fieldActualConditionType == typeof(UserScaleConditinoDto))
+            else if (fieldActualConditionType == typeof(UserScaleConditionDto))
             {
-                return new UserScaleConditinoDto(
+                return new UserScaleConditionDto(
                     (temporaryChildren[0] as Vector3Field).value
                 );
             }
             else if (fieldActualConditionType == typeof(ScaleConditionDto))
             {
-                return new UserScaleConditinoDto(
+                return new UserScaleConditionDto(
                     (temporaryChildren[0] as Vector3Field).value
                 );
             }

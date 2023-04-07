@@ -393,7 +393,7 @@ namespace EditMode_Tests
         [Test]
         public void ReadUserScaleCondition()
         {
-            UserScaleConditinoDto userScaleConditinoDto = new UserScaleConditinoDto(
+            UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto(
                 scale : Vector3.one
             );
 
@@ -403,7 +403,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as UserScaleConditinoDto).scale.X == userScaleConditinoDto.scale.X);
+            Assert.IsTrue((result as UserScaleConditionDto).scale.X == userScaleConditinoDto.scale.X);
         }
         [Test]
         public void ReadScaleCondition()
@@ -457,8 +457,8 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as NotConditionDto).conditions[0] as UserScaleConditinoDto).scale.X
-                == (notConditionDto.conditions[0] as UserScaleConditinoDto).scale.X);
+            Assert.IsTrue(((result as NotConditionDto).conditions[0] as UserScaleConditionDto).scale.X
+                == (notConditionDto.conditions[0] as UserScaleConditionDto).scale.X);
             Assert.IsTrue(((result as NotConditionDto).conditions[1] as DirectionConditionDto).direction.X
                 == (notConditionDto.conditions[1] as DirectionConditionDto).direction.X);
         }
@@ -466,7 +466,7 @@ namespace EditMode_Tests
         private PoseConditionDto[] GetCondditionsTestSet()
         {
             return new PoseConditionDto[]{
-                new UserScaleConditinoDto(Vector3.one),
+                new UserScaleConditionDto(Vector3.one),
                 new DirectionConditionDto(Vector3.one)
             };
         }
@@ -634,10 +634,10 @@ namespace EditMode_Tests
             int poseIndex = result.poseIndexinPoseManager;
 
             Assert.IsTrue(poseIndex == poseIndexinPoseManager);
-            Assert.IsTrue((result.poseConditions[0] as UserScaleConditinoDto).scale
-                == (poseOverriderDto.poseConditions[0] as UserScaleConditinoDto).scale);
-            Assert.IsTrue((result.poseConditions[1] as DirectionConditionDto).direction
-                == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction);
+            Assert.IsTrue((Vector3)(result.poseConditions[0] as UserScaleConditionDto).scale
+                == (Vector3)(poseOverriderDto.poseConditions[0] as UserScaleConditionDto).scale);
+            Assert.IsTrue((Vector3)(result.poseConditions[1] as DirectionConditionDto).direction
+                == (Vector3)(poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction);
 
             Assert.IsTrue(poseOverriderDto.duration.duration == result.duration.duration);
             Assert.IsTrue(poseOverriderDto.interpolationable == result.interpolationable);

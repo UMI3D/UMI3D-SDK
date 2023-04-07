@@ -16,11 +16,11 @@ limitations under the License.
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
-    public class UserScaleConditinoDto : PoseConditionDto
+    public class UserScaleConditionDto : PoseConditionDto
     {
-        public UserScaleConditinoDto() { }
+        public UserScaleConditionDto() { }
 
-        public UserScaleConditinoDto(SerializableVector3 scale)
+        public UserScaleConditionDto(SerializableVector3 scale)
         {
             this.scale = scale;
         }
