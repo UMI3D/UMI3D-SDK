@@ -56,7 +56,7 @@ namespace umi3d.edk.interaction
                 this.value = value;
             }
 
-            public ParameterEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, T value) : base(user, toolId, id, hoveredObjectId, boneType)
+            public ParameterEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, T value) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.value = value;
             }

@@ -157,6 +157,10 @@ namespace umi3d.cdk.collaboration
                     return UpdateUser(data.property.property, data.entity, data.property.value);
                 case UMI3DPropertyKeys.AllPoses:
                     return UpdateAllPoses( data.entity);
+                case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
+                case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                    return UpdateUser(data.property.property, data.entity, (ulong)(long)data.property.value);
+
                 default:
                     return false;
             }
@@ -200,6 +204,12 @@ namespace umi3d.cdk.collaboration
                         return UpdateAllPoses( data.entity);
                     }
 
+                case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
+                case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                    {
+                        ulong value = UMI3DSerializer.Read<ulong>(data.container);
+                        return UpdateUser(data.propertyKey, data.entity, value);
+                    }
                 default:
                     return false;
             }

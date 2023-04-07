@@ -40,6 +40,10 @@ namespace umi3d.edk.editor
         private SerializedProperty onRelease;
         private static bool displayEvent = false;
 
+        private GUIStyle toolNameStyle = new();
+        private Color toolNameColorActive = new Color(0.15f, 0.15f, 1f, 1f);
+        private Color toolNameColorInactive = Color.gray;
+
         protected virtual void OnEnable()
         {
             t = (AbstractTool)target;
@@ -49,7 +53,11 @@ namespace umi3d.edk.editor
             onProjection = _target.FindProperty("onProjection");
             onRelease = _target.FindProperty("onRelease");
             Active = _target.FindProperty("Active");
+            wasActive = Active.boolValue;
             ListDisplayer = new ListDisplayer<AbstractInteraction>();
+
+            toolNameStyle.contentOffset = new Vector2(5, 5);
+            toolNameStyle.contentOffset = new Vector2(5, 5);
         }
 
         protected virtual void _OnInspectorGUI()
@@ -86,6 +94,27 @@ namespace umi3d.edk.editor
             _target.Update();
             _OnInspectorGUI();
             _target.ApplyModifiedProperties();
+        }
+
+        private bool wasActive;
+
+        public virtual void OnSceneGUI()
+        {
+            var t = target as AbstractTool;
+            if (t.Active && !wasActive)
+            {
+                toolNameStyle.normal.textColor = toolNameColorActive;
+                wasActive = true;
+            }
+            else if (!t.Active && wasActive)
+            {
+                toolNameStyle.normal.textColor = toolNameColorInactive;
+                wasActive = false;
+            }
+
+            Handles.Label(t.transform.position,
+                              t.Display.name,
+                              toolNameStyle);
         }
     }
 }

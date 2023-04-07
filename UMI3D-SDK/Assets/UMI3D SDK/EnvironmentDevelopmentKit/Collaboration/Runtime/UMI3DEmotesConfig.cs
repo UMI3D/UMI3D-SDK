@@ -86,6 +86,8 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
+            foreach(var emote in IncludedEmotes)
+                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
             return new UMI3DEmotesConfigDto()
             {
                 id = this.Id(),
@@ -102,6 +104,7 @@ namespace umi3d.edk.collaboration
             UMI3DSerializer.Write(IncludedEmotes.Count);
             foreach (UMI3DEmote emote in IncludedEmotes)
             {
+                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
                 bytable += emote.ToBytes(user);
             }
             return bytable;

@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -13,12 +13,31 @@
 // limitations under the License.
 //
 
+using System.Threading.Tasks;
+
 namespace GLTFast {
 
+    /// <summary>
+    /// <seealso cref="IDeferAgent"/> that always decides to continue
+    /// processing
+    /// </summary>
     public class UninterruptedDeferAgent : IDeferAgent
     {
+        /// <inheritdoc />
         public bool ShouldDefer() {
             return false;
         }
+        
+        /// <inheritdoc />
+        public bool ShouldDefer( float duration ) {
+            return false;
+        }
+
+#pragma warning disable 1998
+        /// <inheritdoc />
+        public async Task BreakPoint() {}
+        /// <inheritdoc />
+        public async Task BreakPoint(float duration) {}
+#pragma warning restore 1998
     }
 }

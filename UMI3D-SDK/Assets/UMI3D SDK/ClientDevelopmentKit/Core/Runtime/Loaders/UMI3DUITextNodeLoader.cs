@@ -43,7 +43,15 @@ namespace umi3d.cdk
             text.color = dto.color;
             text.fontSize = dto.fontSize;
             text.fontStyle = dto.fontStyle.Convert();
-            text.font = Resources.GetBuiltinResource<Font>(dto.font + ".ttf");
+
+            var font = Resources.GetBuiltinResource<Font>(dto.font + ".ttf");
+            if (font != default && font != null)
+                text.font = font;
+            else
+            {
+                text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            }
+
             text.horizontalOverflow = dto.horizontalOverflow.Convert();
             text.verticalOverflow = dto.verticalOverflow.Convert();
             text.lineSpacing = dto.lineSpacing;

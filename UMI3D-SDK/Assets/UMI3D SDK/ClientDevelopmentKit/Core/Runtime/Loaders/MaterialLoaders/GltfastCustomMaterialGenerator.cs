@@ -24,21 +24,21 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public class GltfastCustomMaterialGenerator : DefaultMaterialGenerator
+    public class GltfastCustomMaterialGenerator : BuiltInMaterialGenerator
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading | DebugScope.Material;
 
         /// <inheritdoc/>
-        public override UnityEngine.Material GenerateMaterial(GLTFast.Schema.Material gltfMaterial, ref GLTFast.Schema.Texture[] textures, ref GLTFast.Schema.Image[] schemaImages, ref Dictionary<int, Texture2D>[] imageVariants, string url, int id)
+        public override UnityEngine.Material GenerateMaterial(GLTFast.Schema.Material gltfMaterial, IGltfReadable gltf, string url, int id)
         {
             UnityEngine.Material material;
 
-            if (gltfMaterial.extensions != null && gltfMaterial.extensions.KHR_materials_pbrSpecularGlossiness != null)
+            if (gltfMaterial?.extensions != null && gltfMaterial.extensions.KHR_materials_pbrSpecularGlossiness != null)
             {
                 material = GetPbrSpecularGlossinessMaterial(gltfMaterial.doubleSided);
             }
             else
-            if (gltfMaterial.extensions.KHR_materials_unlit != null)
+            if (gltfMaterial?.extensions?.KHR_materials_unlit != null)
             {
                 material = GetUnlitMaterial(gltfMaterial.doubleSided);
             }
@@ -53,7 +53,7 @@ namespace umi3d.cdk
             }
             else
             {
-                material.name = Path.GetFileNameWithoutExtension(url) + " " + gltfMaterial.name;
+                material.name = gltfMaterial.name;
             }
 
 
@@ -64,14 +64,14 @@ namespace umi3d.cdk
                 if (specGloss != null)
                 {
                     material.color = specGloss.diffuseColor.gamma;
-                    material.SetVector(StandardShaderHelper.specColorPropId, specGloss.specularColor);
-                    material.SetFloat(StandardShaderHelper.glossinessPropId, specGloss.glossinessFactor);
+                    material.SetVector(specColorPropId, specGloss.specularColor);
+                    material.SetFloat(glossinessPropId, specGloss.glossinessFactor);
 
-                    TrySetTexture(specGloss.diffuseTexture, material, StandardShaderHelper.mainTexPropId, ref textures, ref schemaImages, ref imageVariants);
+                    TrySetTexture(specGloss.diffuseTexture, material, gltf, mainTexPropId, -1, -1, -1);
 
-                    if (TrySetTexture(specGloss.specularGlossinessTexture, material, StandardShaderHelper.specGlossMapPropId, ref textures, ref schemaImages, ref imageVariants))
+                    if (TrySetTexture(specGloss.specularGlossinessTexture, material, gltf, mainTexPropId, -1, -1, -1))
                     {
-                        material.EnableKeyword(StandardShaderHelper.KW_SPEC_GLOSS_MAP);
+                        material.EnableKeyword(KW_SPEC_GLOSS_MAP);
                     }
                 }
             }
@@ -89,23 +89,23 @@ namespace umi3d.cdk
                 material.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, gltfMaterial.emissive);
             }
 
-            Texture2D emissiveTexture = TryGetTexture(gltfMaterial.emissiveTexture, ref textures, ref imageVariants);
-            Texture2D normalTexture = TryGetTexture(gltfMaterial.normalTexture, ref textures, ref imageVariants);
-            Texture2D occlusionTexture = TryGetTexture(gltfMaterial.occlusionTexture, ref textures, ref imageVariants);
-            Texture2D baseColorTexture = TryGetTexture(gltfMaterial.pbrMetallicRoughness.baseColorTexture, ref textures, ref imageVariants);
-            Texture2D metallicRoughnessTexture = TryGetTexture(gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture, ref textures, ref imageVariants);
+            Texture2D emissiveTexture = TryGetTexture(gltfMaterial.emissiveTexture, gltf);
+            Texture2D normalTexture = TryGetTexture(gltfMaterial.normalTexture, gltf);
+            Texture2D occlusionTexture = TryGetTexture(gltfMaterial.occlusionTexture, gltf);
+            Texture2D baseColorTexture = TryGetTexture(gltfMaterial.pbrMetallicRoughness.baseColorTexture, gltf);
+            Texture2D metallicRoughnessTexture = TryGetTexture(gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture, gltf);
 
-            ApplyTexture(material, gltfMaterial.normalTexture, MRTKShaderUtils.NormalMap, normalTexture, ref textures);
+            ApplyTexture(material, gltfMaterial.normalTexture, MRTKShaderUtils.NormalMap, normalTexture, gltf);
             material.ApplyShaderProperty(MRTKShaderUtils.BumpScale, gltfMaterial.normalTexture.scale);
 
             if (gltfMaterial.pbrMetallicRoughness != null)
             {
-                ApplyTexture(material, gltfMaterial.pbrMetallicRoughness.baseColorTexture, MRTKShaderUtils.MainTex, baseColorTexture, ref textures);
+                ApplyTexture(material, gltfMaterial.pbrMetallicRoughness.baseColorTexture, MRTKShaderUtils.MainTex, baseColorTexture, gltf);
 
                 if (emissiveTexture != null || occlusionTexture != null || metallicRoughnessTexture != null)
                 {
                     Texture2D chanelMap = TextureCombiner.CombineFromGltfStandard(metallicRoughnessTexture, occlusionTexture, emissiveTexture);
-                    ApplyTexture(material, gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture, MRTKShaderUtils.ChannelMap, chanelMap, ref textures);
+                    ApplyTexture(material, gltfMaterial.pbrMetallicRoughness.metallicRoughnessTexture, MRTKShaderUtils.ChannelMap, chanelMap, gltf);
                 }
             }
 
@@ -120,7 +120,7 @@ namespace umi3d.cdk
         /// <param name="property"></param>
         /// <param name="newValue"></param>
         /// <param name="textures"></param>
-        protected void ApplyTexture(UnityEngine.Material matToApply, TextureInfo mapInfo, MRTKShaderUtils.ShaderProperty<Texture2D> property, Texture2D newValue, ref GLTFast.Schema.Texture[] textures)
+        protected void ApplyTexture(UnityEngine.Material matToApply, TextureInfo mapInfo, MRTKShaderUtils.ShaderProperty<Texture2D> property, Texture2D newValue, IGltfReadable gltf)
         {
             if (newValue != null)
             {
@@ -130,9 +130,9 @@ namespace umi3d.cdk
                 if (propertyId > -1 && property == MRTKShaderUtils.MainTex)
                 {
                     bool isKtx = false;
-                    if (mapInfo.index < textures.Length && mapInfo.index > -1 && textures[mapInfo.index] != null)
-                        isKtx = textures[mapInfo.index].isKtx;
-                    TrySetTextureTransform(mapInfo, matToApply, propertyId, isKtx);
+                    if (mapInfo.index < gltf.textureCount && mapInfo.index > -1 && gltf.GetSourceTexture(mapInfo.index) != null)
+                        isKtx = gltf.GetSourceTexture(mapInfo.index).isKtx;
+                    TrySetTextureTransform(mapInfo, matToApply, propertyId, -1, -1, -1, isKtx);
                 }
             }
         }
@@ -141,7 +141,10 @@ namespace umi3d.cdk
         protected override void TrySetTextureTransform(
             GLTFast.Schema.TextureInfo textureInfo,
             UnityEngine.Material material,
-            int propertyId,
+            int texturePropertyId,
+            int scaleTransformPropertyId = -1,
+            int rotationPropertyId = -1,
+            int uvChannelPropertyId = -1,
             bool flipY = false
             )
         {
@@ -169,7 +172,7 @@ namespace umi3d.cdk
                 {
                     scale.x = tt.scale[0];
                     scale.y = tt.scale[1];
-                    material.SetTextureScale(propertyId, scale);
+                    material.SetTextureScale(texturePropertyId, scale);
                 }
                 if (tt.rotation != 0)
                 {
@@ -181,7 +184,7 @@ namespace umi3d.cdk
                     offset.x += scale.y * sin;
                 }
                 offset.y -= scale.y * cos;
-                material.SetTextureOffset(propertyId, offset);
+                material.SetTextureOffset(texturePropertyId, offset);
             }
 
             if (flipY)
@@ -190,48 +193,46 @@ namespace umi3d.cdk
                 scale.y = -scale.y;
             }
 
-            if (material.HasProperty(propertyId))
+            if (material.HasProperty(texturePropertyId))
             {
-                material.SetTextureOffset(propertyId, offset);
-                material.SetTextureScale(propertyId, scale);
+                material.SetTextureOffset(texturePropertyId, offset);
+                material.SetTextureScale(texturePropertyId, scale);
             }
             else
-                UMI3DLogger.LogWarning("Impossible to applay texture offset and scale because " + material.shader.name + " has no properpy with id : " + propertyId, scope);
+                UMI3DLogger.LogWarning("Impossible to applay texture offset and scale because " + material.shader.name + " has no properpy with id : " + texturePropertyId, scope);
         }
 
         /// <inheritdoc/>
-        public override UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided = false)
+        protected override UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided = false)
         {
             UnityEngine.Material res = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
             if (doubleSided)
             {
                 // Turn of back-face culling
-                res.SetFloat(StandardShaderHelper.cullModePropId, 0);
+                res.SetFloat(cullModePropId, 0);
             }
             return res;
         }
 
         private Texture2D TryGetTexture(TextureInfo textureInfo,
-            //UnityEngine.Material material,
-            //MrtkShader.MRTKShaderUtils.ShaderProperty<UnityEngine.Texture> shaderProperty,
-            ref GLTFast.Schema.Texture[] textures,
-            ref Dictionary<int, Texture2D>[] imageVariants
-            )
+           //UnityEngine.Material material,
+           //MrtkShader.MRTKShaderUtils.ShaderProperty<UnityEngine.Texture> shaderProperty,
+
+
+           //ref GLTFast.Schema.Texture[] textures,
+           //ref Dictionary<int, Texture2D>[] imageVariants
+           IGltfReadable gltf
+           )
         {
             if (textureInfo != null && textureInfo.index >= 0)
             {
                 int bcTextureIndex = textureInfo.index;
-                if (textures != null && textures.Length > bcTextureIndex)
+                if (gltf.textureCount > bcTextureIndex)
                 {
-                    GLTFast.Schema.Texture txt = textures[bcTextureIndex];
-                    int imageIndex = txt.GetImageIndex();
-
-                    if (imageVariants != null
-                        && imageIndex >= 0
-                        && imageVariants.Length > imageIndex
-                        && imageVariants[imageIndex] != null
-                        && imageVariants[imageIndex].TryGetValue(txt.sampler, out Texture2D img)
-                        )
+                    //UMI3DLogger.LogError($"Before GetImage()", scope);
+                    Texture2D img = gltf.GetImage(bcTextureIndex);
+                    //UMI3DLogger.LogError($"2 " + img.name, scope);
+                    if (img != null)
                     {
                         //            int propertyId = material.shader.FindPropertyIndex(shaderProperty.propertyName);
                         //             material.SetTexture(propertyId, img);
@@ -241,13 +242,14 @@ namespace umi3d.cdk
                     }
                     else
                     {
-                        UMI3DLogger.LogError($"Image #{imageIndex} not found", scope);
+                        UMI3DLogger.LogError($"Image not found", scope);
                     }
                 }
                 else
                 {
                     UMI3DLogger.LogError($"Texture #{bcTextureIndex} not found", scope);
                 }
+
             }
             return null;
 

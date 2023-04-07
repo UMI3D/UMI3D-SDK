@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -15,58 +15,80 @@
 
 #if DRACO_UNITY
 
+using System;
+using System.Threading.Tasks;
 using UnityEngine;
-using UnityEngine.Profiling;
-using Unity.Jobs;
 using Unity.Collections;
-using IntPtr = System.IntPtr;
+using Draco;
+using UnityEngine.Rendering;
 
 namespace GLTFast {
 
-    using Schema;
-
     class PrimitiveDracoCreateContext : PrimitiveCreateContextBase {
-        public JobHandle jobHandle;
-        public NativeArray<int> dracoResult;
-        public NativeArray<IntPtr> dracoPtr;
 
-        public override bool IsCompleted {
-            get {
-                return jobHandle.IsCompleted;
-            }  
+        DracoMeshLoader draco;
+        Task<Mesh> dracoTask;
+        Bounds? bounds;
+
+        public override bool IsCompleted => dracoTask!=null && dracoTask.IsCompleted;
+
+        public PrimitiveDracoCreateContext(Bounds? bounds) {
+            this.bounds = bounds;
         }
 
-        public override Primitive? CreatePrimitive() {
-            jobHandle.Complete();
-            int result = dracoResult[0];
-            IntPtr dracoMesh = dracoPtr[0];
+        public void StartDecode(NativeSlice<byte> data, int weightsAttributeId, int jointsAttributeId) {
+            draco = new DracoMeshLoader();
+            dracoTask = draco.ConvertDracoMeshToUnity(
+                data,
+                needsNormals,
+                needsTangents,
+                weightsAttributeId,
+                jointsAttributeId,
+                morphTargetsContext!=null
+                );
+        }
+        
+        public override async Task<Primitive?> CreatePrimitive() {
 
-            dracoResult.Dispose();
-            dracoPtr.Dispose();
+            var mesh = dracoTask.Result;
+            dracoTask.Dispose();
 
-            if (result <= 0) {
-                Debug.LogError ("Failed: Decoding error.");
+            if (mesh == null) {
                 return null;
             }
 
-            Profiler.BeginSample("DracoMeshLoader.CreateMesh");
-            bool hasTexcoords;
-            bool hasNormals;
-            var mesh = DracoMeshLoader.CreateMesh(dracoMesh, out hasNormals, out hasTexcoords);
-            Profiler.EndSample();
+            if (bounds.HasValue) {
+                mesh.bounds = bounds.Value;
+                
+                // Setting the submeshes' bounds to the overall bounds
+                // Calculating the actual sub-mesh bounds (by iterating the verts referenced
+                // by the sub-mesh indices) would be slow. Also, hardly any glTFs re-use
+                // the same vertex buffer across primitives of a node (which is the
+                // only way a mesh can have sub-meshes)
+                for (var i = 0; i < mesh.subMeshCount; i++) {
+                    var subMeshDescriptor = mesh.GetSubMesh(i);
+                    subMeshDescriptor.bounds = bounds.Value;
+                    mesh.SetSubMesh(i, subMeshDescriptor, MeshUpdateFlags.DontValidateIndices | MeshUpdateFlags.DontResetBoneBounds | MeshUpdateFlags.DontNotifyMeshUsers | MeshUpdateFlags.DontRecalculateBounds );
+                }
+            } else {
+                mesh.RecalculateBounds();
+            }
+            
+            if (morphTargetsContext != null) {
+                await morphTargetsContext.ApplyOnMeshAndDispose(mesh);
+            }
 
-            if(needsNormals && !hasNormals) {
-                Profiler.BeginSample("Draco.RecalculateNormals");
-                // TODO: Make optional. Only calculate if actually needed
-                mesh.RecalculateNormals();
-                Profiler.EndSample();
-            }
-            if(needsTangents && hasTexcoords) {
-                Profiler.BeginSample("Draco.RecalculateTangents");
-                // TODO: Make optional. Only calculate if actually needed
-                mesh.RecalculateTangents();
-                Profiler.EndSample();
-            }
+#if GLTFAST_KEEP_MESH_DATA
+            UnityEngine.Profiling.Profiler.BeginSample("UploadMeshData");
+            mesh.UploadMeshData(false);
+            UnityEngine.Profiling.Profiler.EndSample();
+#else
+            /// Don't upload explicitely. Unity takes care of upload on demand/deferred
+
+            // Profiler.BeginSample("UploadMeshData");
+            // mesh.UploadMeshData(true);
+            // Profiler.EndSample();
+#endif
 
             return new Primitive(mesh,materials);
         }

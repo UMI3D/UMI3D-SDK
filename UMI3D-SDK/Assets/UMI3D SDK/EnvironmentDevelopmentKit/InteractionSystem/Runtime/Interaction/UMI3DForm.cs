@@ -41,7 +41,7 @@ namespace umi3d.edk.interaction
             {
             }
 
-            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType) : base(user, toolId, id, hoveredObjectId, boneType)
+            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
             }
         }
@@ -96,13 +96,13 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
         {
             switch (interactionId)
             {
                 case UMI3DOperationKeys.FormAnswer:
                     UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, UMI3DOperationKeys.ParameterSettingRequest, container);
-                    onFormCompleted.Invoke(new FormEventContent(user, toolId, interactionId, hoverredId, boneType));
+                    onFormCompleted.Invoke(new FormEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

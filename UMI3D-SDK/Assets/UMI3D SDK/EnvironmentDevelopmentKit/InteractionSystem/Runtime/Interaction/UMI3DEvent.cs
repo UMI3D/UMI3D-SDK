@@ -125,22 +125,22 @@ namespace umi3d.edk.interaction
         /// <param name="hoverredId">The id of the currently hoverred object.</param>
         /// <param name="boneType">User's used bone</param>
         /// <param name="container">Byte container</param>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.EventTriggered:
-                    onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                    onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     break;
                 case UMI3DOperationKeys.EventStateChanged:
                     bool active = UMI3DSerializer.Read<bool>(container);
                     if (active)
                     {
-                        onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                        onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     }
                     else
                     {
-                        onRelease.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                        onRelease.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     }
                     break;
             }

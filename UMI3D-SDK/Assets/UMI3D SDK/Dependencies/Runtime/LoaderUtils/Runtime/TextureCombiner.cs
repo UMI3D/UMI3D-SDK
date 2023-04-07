@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -128,15 +129,23 @@ namespace MrtkShader
         {
             if (map == null)
                 return null;
-            Texture2D res = new Texture2D(map.width, map.height);
-            Color[] colors = map.GetPixels();
-            for (int i = 0; i < colors.Length; i++)
+            try
             {
-                colors[i] = Color.white - colors[i];
+                Texture2D res = new Texture2D(map.width, map.height);
+                Color[] colors = map.GetPixels();
+                for (int i = 0; i < colors.Length; i++)
+                {
+                    colors[i] = Color.white - colors[i];
+                }
+                res.SetPixels(colors);
+                //Destroy(map);
+                return res;
             }
-            res.SetPixels(colors);
-            //Destroy(map);
-            return res;
+            catch (Exception e)
+            {
+                Debug.LogWarning("Impossible to inverse roughness map, should be not readable" + e);
+                return map;
+            }
         }
 
         /// <summary>

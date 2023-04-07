@@ -1,0 +1,41 @@
+{
+<<<<<<<< HEAD:UMI3D-SDK/Assets/Tests/PlayMode_Tests/PlayMode_Tests.asmdef
+    "name": "PlayMode_Tests",
+    "rootNamespace": "",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "UMI3D.CDK.Core",
+        "UMI3D.CDK.Collaboration",
+        "UMI3D.CDK.UserCapture",
+        "UMI3D.Common.UserCapture",
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration",
+        "UMI3D.Common.Core"
+========
+    "name": "glTFastEditorTests",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "glTFast",
+        "glTFastSchema",
+        "Unity.Mathematics"
+    ],
+    "includePlatforms": [
+        "Editor"
+>>>>>>>> origin/2.6:UMI3D-SDK/Assets/UMI3D SDK/Dependencies/Runtime/GltFast/Tests/Editor/glTFastEditorTests.asmdef
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Moq.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

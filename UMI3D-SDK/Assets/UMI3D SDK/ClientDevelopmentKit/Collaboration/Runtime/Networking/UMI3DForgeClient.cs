@@ -504,6 +504,17 @@ namespace umi3d.cdk.collaboration
                         SkeletonManager.Instance.HandlePoseRequest(playPoseDto);
                     });
                     break;
+                case EmoteDispatchDto emoteDispatchDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        if (emoteDispatchDto.shouldTrigger)
+                            (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)
+                                ?.PlayEmoteOnOtherAvatar(emoteDispatchDto.emoteId, emoteDispatchDto.sendingUserId);
+                        else
+                            (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)
+                                ?.StopEmoteOnOtherAvatar(emoteDispatchDto.emoteId, emoteDispatchDto.sendingUserId);
+                    });
+                    break;
                 default:
                     return false;
             }

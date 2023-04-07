@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEngine;
+
 namespace umi3d.common.interaction
 {
     /// <summary>
@@ -44,6 +46,16 @@ namespace umi3d.common.interaction
         /// </summary>
         public uint boneType;
 
+        /// <summary>
+        /// The global position of the bone associated to the user's controller.
+        /// </summary>
+        public SerializableVector3 bonePosition = new();
+
+        /// <summary>
+        /// The global rotation of the bone associated to the user's controller.
+        /// </summary>
+        public SerializableVector4 boneRotation = new();
+
         /// <inheritdoc/>
         protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
 
@@ -54,7 +66,9 @@ namespace umi3d.common.interaction
                 + UMI3DSerializer.Write(toolId)
                 + UMI3DSerializer.Write(id)
                 + UMI3DSerializer.Write(hoveredObjectId)
-                + UMI3DSerializer.Write(boneType);
+                + UMI3DSerializer.Write(boneType)
+                + UMI3DSerializer.Write(bonePosition)
+                + UMI3DSerializer.Write(boneRotation);
         }
     }
 }

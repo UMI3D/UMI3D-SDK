@@ -58,29 +58,26 @@ namespace umi3d.cdk.utils.extrapolation
         /// <param name="time"></param>
         public void AddMeasure(T measure, float time)
         {
-            if (time < lastMessageTime)
+            if (time < lastUpdateTime)
                 return;
 
-            if (IsInited())
-                lastEstimation = ExtrapolateState();
+            if (IsInited)
+                lastEstimation = Extrapolate();
             else
                 lastEstimation = measure;
 
             secondLastMeasure = lastMeasure;
             lastMeasure = measure;
 
-            if (lastMessageTime > 0)
-                updateFrequency = 1 / (time - lastMessageTime);
+            if (lastUpdateTime > 0)
+                updateFrequency = 1 / (time - lastUpdateTime);
 
-            secondLastMessageTime = lastMessageTime;
-            lastMessageTime = time;
+            secondLastMessageTime = lastUpdateTime;
+            lastUpdateTime = time;
         }
 
         /// <inheritdoc/>
-        public override bool IsInited()
-        {
-            return (lastMessageTime != 0) && (secondLastMessageTime != 0);
-        }
+        public override bool IsInited => (lastUpdateTime != 0) && (secondLastMessageTime != 0);
     }
 
     /// <summary>
@@ -90,10 +87,10 @@ namespace umi3d.cdk.utils.extrapolation
     public class FloatLinearDelayedExtrapolator : AbstractLinearDelayedExtrapolator<float>
     {
         /// <inheritdoc/>
-        public override float ExtrapolateState()
+        public override float Extrapolate()
         {
-            var t = (Time.time - lastMessageTime) * updateFrequency;
-            if (t > 0 && IsInited())
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
+            if (t > 0 && IsInited)
                 return t < 1 ? lastEstimation + (lastMeasure - lastEstimation) * t : lastMeasure; //clamped lerp
             else
                 return lastEstimation;
@@ -107,10 +104,10 @@ namespace umi3d.cdk.utils.extrapolation
     public class Vector3LinearDelayedExtrapolator : AbstractLinearDelayedExtrapolator<Vector3>
     {
         /// <inheritdoc/>
-        public override Vector3 ExtrapolateState()
+        public override Vector3 Extrapolate()
         {
-            var t = (Time.time - lastMessageTime) * updateFrequency;
-            if (t > 0 && IsInited())
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
+            if (t > 0 && IsInited)
                 return Vector3.Lerp(lastEstimation, lastMeasure, t);
             else
                 return lastEstimation;
@@ -124,10 +121,10 @@ namespace umi3d.cdk.utils.extrapolation
     public class QuaternionLinearDelayedExtrapolator : AbstractLinearDelayedExtrapolator<Quaternion>
     {
         /// <inheritdoc/>
-        public override Quaternion ExtrapolateState()
+        public override Quaternion Extrapolate()
         {
-            var t = (Time.time - lastMessageTime) * updateFrequency;
-            if (t > 0 && IsInited())
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
+            if (t > 0 && IsInited)
                 return Quaternion.Lerp(lastEstimation, lastMeasure, t);
             else
                 return lastEstimation;

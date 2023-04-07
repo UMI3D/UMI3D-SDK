@@ -103,7 +103,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
@@ -113,7 +113,7 @@ namespace umi3d.edk.interaction
                     {
                         UMI3DSerializer.Read<bool>(container);
                         value = UMI3DSerializer.Read<string>(container);
-                        onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
+                        onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, value));
                     }
                     else
                     {

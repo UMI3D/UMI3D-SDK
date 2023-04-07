@@ -2,13 +2,10 @@ using System;
 using System.Collections;
 /*
 Copyright 2019 - 2023 Inetum
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -39,14 +36,14 @@ namespace umi3d.common
                     this.value = (int)((long)this.value % Int32.MaxValue);
                     break;
                 case int:
-                    type = (int) UMI3DAnimatorParameterType.Integer;
+                    type = (int)UMI3DAnimatorParameterType.Integer;
                     break;
                 case double:
                     this.value = (float)(double)this.value;
                     type = (int)UMI3DAnimatorParameterType.Float;
                     break;
                 case float:
-                    type = (int) UMI3DAnimatorParameterType.Float;
+                    type = (int)UMI3DAnimatorParameterType.Float;
                     break;
                 case bool:
                     type = (int)UMI3DAnimatorParameterType.Bool;
