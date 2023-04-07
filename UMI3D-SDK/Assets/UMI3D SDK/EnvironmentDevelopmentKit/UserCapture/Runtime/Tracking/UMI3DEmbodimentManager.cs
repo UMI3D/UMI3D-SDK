@@ -271,7 +271,6 @@ namespace umi3d.edk.userCapture
             activatedEmotes[user][emote] = trigger;
             EmoteTriggered?.Invoke((emoteId, user, trigger));
             
-            //return; //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
             var req = new EmoteDispatchRequest()
             {
                 sendingUserId = user.Id(),
