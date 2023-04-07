@@ -45,10 +45,10 @@ public class ISkeleton_Test
         List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
         List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
-        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
-        
-        
-        Transform ISkeleton.HipsAnchor { get => throw new System.NotImplementedException(); set => throw new System.NotImplementedException(); }
+        Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => skeletonHierarchy; set => skeletonHierarchy = value; }
+
+
+        Transform ISkeleton.HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
 
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones;
@@ -61,6 +61,9 @@ public class ISkeleton_Test
         protected List<Transform> boundRigs;
         protected List<BindingDto> userBindings;
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms;
+        protected Dictionary<uint, (uint, Vector3)> skeletonHierarchy = new Dictionary<uint, (uint, Vector3)>();
+        [SerializeField]
+        protected Transform hipsAnchor;
 
         #endregion
 
@@ -132,8 +135,9 @@ public class ISkeleton_Test
         iskeletton.Skeletons.AddRange(animatedSkeletons);
         //When
         ISkeleton results = iskeletton.Compute();
+
         //Then
-        Assert.IsTrue(results.Bones.Count == 0);
+        Assert.IsTrue(results.Bones.Count == 1);
     }
 
     /// <summary>

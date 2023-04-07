@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using System.Collections;
 using umi3d.cdk;
 using inetum.unityUtils;
+using UnityEngine.UIElements;
 
 namespace umi3d.cdk.userCapture
 {
@@ -71,9 +72,8 @@ namespace umi3d.cdk.userCapture
                 return this;
             }
 
-            for (int i = Skeletons.Count - 1; i > 0; i--)
+            foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>().Reverse())
             {
-                ISubSkeleton skeleton = Skeletons[i];
                 List<BoneDto> bones = new List<BoneDto>();
 
                 try
@@ -108,7 +108,8 @@ namespace umi3d.cdk.userCapture
             }
 
             //very naïve
-            Bones[BoneType.Hips].s_Position = HipsAnchor.position;
+            Bones.Add(BoneType.Hips, new s_Transform());
+            Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
 
             foreach (uint boneType in Bones.Keys)
             {
