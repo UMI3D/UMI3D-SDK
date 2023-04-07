@@ -97,6 +97,11 @@ namespace umi3d.cdk.userCapture
         {
             StopPoseOverriderContainerUnit();
 
+            if (poseOverriderContainerHandlerUnit == null)
+            {
+                poseOverriderContainerHandlerUnit = new PoseOverriderContainerHandlerUnit();
+            }
+
             poseOverriderContainerHandlerUnit.SetPoseOverriderContainer(uMI3DPoseOverriderContainerDto);
             poseOverriderContainerHandlerUnit.onConditionValidated += poseOverriderDto => ApplyPose(poseOverriderDto);
 

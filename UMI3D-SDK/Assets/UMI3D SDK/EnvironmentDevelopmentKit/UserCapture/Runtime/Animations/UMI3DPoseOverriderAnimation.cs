@@ -69,6 +69,8 @@ namespace umi3d.edk.userCapture
             {
                 nodeAnimation = (UMI3DNodeAnimation)gameObject.AddComponent(typeof(UMI3DNodeAnimation));
 
+                nodeAnimation.Register();
+
                 var op = new List<UMI3DNodeAnimation.OperationChain>();
 
                 var operation = new SetEntityProperty()

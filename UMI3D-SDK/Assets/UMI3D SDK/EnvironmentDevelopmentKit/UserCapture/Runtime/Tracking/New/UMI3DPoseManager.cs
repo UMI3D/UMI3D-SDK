@@ -34,16 +34,16 @@ namespace umi3d.edk.userCapture
         }
 
 
-        private List<UMI3DPoseOverriderContainer> allPoseOverriderContainer = new();
-        private UMI3DAsyncListProperty<UMI3DPoseOverriderContainer> _objectAllPoseOverrider;
-        public UMI3DAsyncListProperty<UMI3DPoseOverriderContainer> objectAllPoseOverrider
-        {
-            get
-            {
-                Init();
-                return _objectAllPoseOverrider;
-            }
-        }
+        //private List<UMI3DPoseOverriderContainer> allPoseOverriderContainer = new();
+        //private UMI3DAsyncListProperty<UMI3DPoseOverriderContainer> _objectAllPoseOverrider;
+        //public UMI3DAsyncListProperty<UMI3DPoseOverriderContainer> objectAllPoseOverrider
+        //{
+        //    get
+        //    {
+        //        Init();
+        //        return _objectAllPoseOverrider;
+        //    }
+        //}
 
         public void Init()
         {
@@ -62,7 +62,7 @@ namespace umi3d.edk.userCapture
                 allPoses.Add(0, poses);
 
                 _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses, null, null);
-                _objectAllPoseOverrider = new UMI3DAsyncListProperty<UMI3DPoseOverriderContainer>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoseOverriderContainers, null, null);
+                //_objectAllPoseOverrider = new UMI3DAsyncListProperty<UMI3DPoseOverriderContainer>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoseOverriderContainers, null, null);
             }
 
             UMI3DServer.Instance.OnUserLeave.AddListener((u) => RemovePosesOnLeftUser(u));
