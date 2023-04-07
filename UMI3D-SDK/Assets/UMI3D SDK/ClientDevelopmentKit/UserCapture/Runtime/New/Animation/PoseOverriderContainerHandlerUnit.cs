@@ -76,9 +76,6 @@ namespace umi3d.cdk.userCapture
                 case DirectionConditionDto directionConditionDto:
 
                     break;
-                case UserScaleConditinoDto userScaleConditinoDto:
-
-                    break;
 
                 case ScaleConditionDto scaleConditionDto:
                     return HandleTargetScale(scaleConditionDto);
