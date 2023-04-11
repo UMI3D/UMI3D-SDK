@@ -81,7 +81,21 @@ namespace umi3d.cdk
                     }
                     else if (o is (GameObject go, Scene scene))
                     {
+                        Debug.LogError("TODO : to improve scene bundle loading");
+
+                        var transforms = new List<GameObject>();
+                        for (int i = 0; i < go.transform.childCount; i++)
+                        {
+                            transforms.Add(go.transform.GetChild(i).gameObject);
+                        }
+
+
                         await CallbackAfterLoadingForMesh(go, meshDto, data.node.transform, offset, scene);
+
+                        foreach (var goo in transforms.ToArray())
+                        {
+                            GameObject.Destroy(goo);
+                        }
                     }
                 }
                 else
