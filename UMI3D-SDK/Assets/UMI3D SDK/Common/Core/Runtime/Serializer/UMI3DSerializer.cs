@@ -92,6 +92,11 @@ namespace umi3d.common
         public static bool TryRead<T>(ByteContainer container, out T result)
         {
             bool read;
+            if (container.length <= 0) { 
+                result = default(T);
+                return false; 
+            }
+
             foreach (UMI3DSerializerModule module in modules)
             {
                 if (module.Read<T>(container, out read, out result))
