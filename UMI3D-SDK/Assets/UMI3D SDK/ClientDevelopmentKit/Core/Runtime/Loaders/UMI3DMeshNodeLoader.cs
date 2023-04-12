@@ -81,7 +81,19 @@ namespace umi3d.cdk
                     }
                     else if (o is (GameObject go, Scene scene))
                     {
+                        /*Debug.LogError("TODO : to improve");
+                        var transforms = new List<GameObject>();
+                        for (int i = 0; i < go.transform.childCount; i++)
+                        {
+                            transforms.Add(go.transform.GetChild(i).gameObject);
+                        }*/
+
                         await CallbackAfterLoadingForMesh(go, meshDto, data.node.transform, offset, scene);
+
+                        /*foreach (var goo in transforms.ToArray())
+                        {
+                            GameObject.Destroy(goo);
+                        }*/
                     }
                 }
                 else
@@ -241,15 +253,12 @@ namespace umi3d.cdk
             GameObject instance = null;
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
 
+            instance = GameObject.Instantiate(root, parent, true);
+
             if (data is Scene scene)
             {
-                go.transform.SetParent(parent);
-                instance = go;
+                GameObject.Destroy(go);
                 nodeInstance.scene = scene;
-            }
-            else
-            {
-                instance = GameObject.Instantiate(root, parent, true);
             }
 
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
