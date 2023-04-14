@@ -61,7 +61,7 @@ namespace umi3d.cdk.interaction
         /// Contained tools.
         /// </summary>
         public List<ulong> interactionsId => abstractDto.interactions;
-        public List<Task<AbstractInteractionDto>> interactions => abstractDto.interactions.Select(UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded).Select(async node => (await node).dto as AbstractInteractionDto).ToList();
+        public List<Task<AbstractInteractionDto>> interactions => abstractDto.interactions.Select(inta => UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(inta,null)).Select(async node => (await node).dto as AbstractInteractionDto).ToList();
 
         public List<AbstractInteractionDto> interactionsLoaded => abstractDto.interactions.Select(UMI3DEnvironmentLoader.GetEntity).Select(node => node.dto as AbstractInteractionDto).ToList();
 

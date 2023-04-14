@@ -89,7 +89,7 @@ namespace umi3d.cdk
                 await Task.WhenAll(sceneDto.otherEntities.Select(
                     async entity =>
                     {
-                       await  UMI3DEnvironmentLoader.LoadEntity(entity);
+                       await  UMI3DEnvironmentLoader.LoadEntity(entity, data.tokens);
                     }));
             }
 

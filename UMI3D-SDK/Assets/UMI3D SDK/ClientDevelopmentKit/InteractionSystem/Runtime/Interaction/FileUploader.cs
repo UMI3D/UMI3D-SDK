@@ -98,7 +98,7 @@ namespace umi3d.cdk.interaction
         public static void CheckFormToUploadFile(FormDto form)
         {
             form.fields
-                .Select(async id => (await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id)).dto)
+                .Select(async id => (await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id,null)).dto)
                 .ForEach(async p =>
             {
                 var param = await p;

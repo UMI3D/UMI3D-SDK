@@ -429,9 +429,9 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public async Task<bool> PerformOperation(AbstractOperationDto operation)
+        public async Task<bool> PerformOperation(DtoContainer operation)
         {
-            switch (operation)
+            switch (operation.operation)
             {
                 case NavigateDto navigate:
                     MainThreadManager.Run(() =>

@@ -48,8 +48,7 @@ namespace umi3d.cdk
                 throw (new Umi3dException("nodeDto should not be null"));
             }
 
-
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId,data.tokens);
             LoadSubModel(e, data.node, nodeDto);
         }
 

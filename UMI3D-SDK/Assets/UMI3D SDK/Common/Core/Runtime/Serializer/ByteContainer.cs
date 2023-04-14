@@ -13,6 +13,8 @@ limitations under the License.
 
 using BeardedManStudios.Forge.Networking.Frame;
 using inetum.unityUtils;
+using System.Collections.Generic;
+using System.Threading;
 
 namespace umi3d.common
 {
@@ -38,11 +40,18 @@ namespace umi3d.common
         /// </summary>
         public int length;
 
+        public List<CancellationToken> tokens;
+
+        private ByteContainer()
+        {
+            tokens = new();
+        }
+
         public ByteContainer(Binary frame) : this(frame.TimeStep, frame.StreamData.byteArr)
         {
         }
 
-        public ByteContainer(ulong timeStep, byte[] bytes)
+        public ByteContainer(ulong timeStep, byte[] bytes) : this()
         {
             this.timeStep = timeStep;
             this.bytes = bytes;
@@ -50,7 +59,7 @@ namespace umi3d.common
             length = bytes.Length;
         }
 
-        public ByteContainer(ByteContainer container)
+        public ByteContainer(ByteContainer container) : this()
         {
 
             this.bytes = container.bytes;
@@ -65,4 +74,21 @@ namespace umi3d.common
             return $"{bytes.ToString<byte>()} [{position} : {length}]";
         }
     }
+
+    public class DtoContainer
+    {
+        public AbstractOperationDto operation;
+        public List<CancellationToken> tokens;
+
+        private DtoContainer()
+        {
+            tokens = new();
+        }
+
+        public DtoContainer(AbstractOperationDto operation) : this()
+        {
+            this.operation = operation;
+        }
+    }
+
 }

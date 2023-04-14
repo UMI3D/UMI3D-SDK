@@ -39,7 +39,7 @@ namespace umi3d.cdk.interaction
         {
             var dto = value.dto as InteractableDto;
 
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,value.tokens);
 
             if (e is UMI3DNodeInstance nodeI)
             {
