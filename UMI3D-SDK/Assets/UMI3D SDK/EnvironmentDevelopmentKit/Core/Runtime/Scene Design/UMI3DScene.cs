@@ -188,7 +188,6 @@ namespace umi3d.edk
 
                 //Add them to the glTF scene
                 scene.materials.AddRange(materials);
-                materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
 
                 //remember their ids
                 materialIds.AddRange(materials.Select(m => ((AbstractEntityDto)m.extensions.umi3d).id));
@@ -200,6 +199,8 @@ namespace umi3d.edk
                 //remember their ids
                 animationIds.AddRange(animations.Select(a => a.id));
             }
+
+            materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
         }
 
         /// <inheritdoc/>
