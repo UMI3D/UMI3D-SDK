@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using PlasticPipe.Tube;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
