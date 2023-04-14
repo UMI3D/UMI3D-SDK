@@ -145,6 +145,8 @@ namespace umi3d.edk
             {
                 if (child.parent == null) continue;
 
+                UMI3DAbstractNode asbtractNode = null;
+
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
                 {
                     if (!areSubobjectsAlreadyMarked)
@@ -159,6 +161,8 @@ namespace umi3d.edk
 
                             subModel.objectCastShadow.SetValue(this.castShadow);
                             subModel.objectReceiveShadow.SetValue(this.receiveShadow);
+
+                            asbtractNode = subModel;
                         }
                         else if (child.gameObject.GetComponent<ReflectionProbe>() != null)
                         {
@@ -166,6 +170,8 @@ namespace umi3d.edk
                             subModel.parentModel = this;
                             subModel.subModelHierachyIndexes = child.getIndexes();
                             subModel.subModelHierachyNames = child.getNames();
+
+                            asbtractNode = subModel;
                         }
                         else
                         {
@@ -173,6 +179,8 @@ namespace umi3d.edk
                             {
                                 var canvas = child.gameObject.AddComponent<UICanvas>();
                                 canvas.Cascade();
+
+                                asbtractNode = canvas;
                             }
                             else if (child.gameObject.GetComponent<RectTransform>() != null)
                             {
@@ -180,9 +188,14 @@ namespace umi3d.edk
                             }
                             else
                             {
-                                child.gameObject.AddComponent<UMI3DNode>();
+                                asbtractNode = child.gameObject.AddComponent<UMI3DNode>();
                             }
                         }
+
+                    if (!child.gameObject.activeSelf)
+                    {
+                        asbtractNode?.objectActive.SetValue(false);
+                    }
                 }
                 else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
                 {
