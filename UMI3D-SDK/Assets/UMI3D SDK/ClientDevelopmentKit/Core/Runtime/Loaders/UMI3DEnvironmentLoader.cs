@@ -26,7 +26,6 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
-using Unity.Plastic.Antlr3.Runtime;
 
 namespace umi3d.cdk
 {
