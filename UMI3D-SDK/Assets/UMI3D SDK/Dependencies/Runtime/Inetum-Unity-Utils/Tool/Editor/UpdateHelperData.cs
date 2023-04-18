@@ -16,11 +16,8 @@ limitations under the License.
 #if UNITY_EDITOR
 namespace inetum.unityUtils
 {
-
-    using inetum.unityUtils;
     using System;
     using System.Collections.Generic;
-    using System.IO;
     using System.Linq;
     using UnityEditor;
     using UnityEngine;
@@ -135,15 +132,15 @@ namespace inetum.unityUtils
             var pB = property.FindPropertyRelative("projectB");
             var f = property.FindPropertyRelative("folder");
 
-            string pAN = pA.FindPropertyRelative("projectName").stringValue;
-            string pBN = pB.FindPropertyRelative("projectName").stringValue;
-            string pAp = pA.FindPropertyRelative("sdkPath").stringValue;
-            string pBp = pB.FindPropertyRelative("sdkPath").stringValue;
+            string projectAName = pA.FindPropertyRelative("projectName").stringValue;
+            string projectBName = pB.FindPropertyRelative("projectName").stringValue;
+            string projectAPath = pA.FindPropertyRelative("sdkPath").stringValue;
+            string projectBPath = pB.FindPropertyRelative("sdkPath").stringValue;
             var expand = property.FindPropertyRelative("expand");
-            var source = property.FindPropertyRelative("sourceIsA").boolValue;
+            bool isAReferenceFolder = property.FindPropertyRelative("sourceIsA").boolValue;
 
             // Draw label
-            label.text = (!string.IsNullOrEmpty(pAN) || !string.IsNullOrEmpty(pBN)) ? pAN + " : " + pBN : "Select Projects";
+            label.text = (!string.IsNullOrEmpty(projectAName) || !string.IsNullOrEmpty(projectBName)) ? projectAName + " : " + projectBName : "Select Projects";
             if (expand.boolValue)
             {
                 var line = EditorGUIUtility.singleLineHeight;
@@ -165,9 +162,19 @@ namespace inetum.unityUtils
                 EditorGUI.PropertyField(rectPa, pA);
                 EditorGUI.PropertyField(rectPb, pB);
                 var folders = GetFolders(property);
-                if (GUI.Button(rectfolder, "Manage Folders")) SubUpdateHelper.Open(source, pAN, pBN, pAp, pBp, Callback(property), folders);
-                if (GUI.Button(rectPush, pAN + " -> " + pBN)) { Copy(source, pAp, pBp, folders, true); }
-                if (GUI.Button(rectPull, pAN + " <- " + pBN)) { Copy(source, pAp, pBp, folders, false); }
+                if (GUI.Button(rectfolder, "Manage Folders"))
+                    SubUpdateHelper.Open(isAReferenceFolder, projectAName, projectBName, projectAPath, projectBPath, Callback(property), folders);
+
+                if (GUI.Button(rectPush, projectAName + " -> " + projectBName))
+                {
+                    ConfirmWindow.Open(isAReferenceFolder, projectAName, projectBName, projectAPath, projectBPath, folders);
+                }
+                if (GUI.Button(rectPull, projectBName + " -> " + projectAName))
+                {
+                    ConfirmWindow.Open(!isAReferenceFolder, projectBName, projectAName, projectBPath, projectAPath, folders);
+                }
+
+
 
                 EditorGUI.indentLevel = indent;
             }
@@ -180,57 +187,6 @@ namespace inetum.unityUtils
 
             EditorGUI.EndProperty();
         }
-
-        void Copy(bool sourceIsA, string pathA, string pathB, List<string> folders, bool AtoB)
-        {
-            if (folders == null || folders.Count == 0)
-                return;
-            if (folders.Count == 1 && ((sourceIsA && folders[0] == pathA) || (!sourceIsA && folders[0] == pathB)))
-            {
-                if (AtoB)
-                    CopyFolder(pathA, pathB);
-                else
-                    CopyFolder(pathB, pathA);
-                return;
-            }
-
-            if (AtoB == sourceIsA)
-            {
-                if (Directory.Exists(AtoB ? pathB : pathA))
-                    Directory.Delete(AtoB ? pathB : pathA, true);
-                Directory.CreateDirectory(AtoB ? pathB : pathA);
-            }
-
-            folders
-                .Select(path => path.Substring((sourceIsA) ? pathA.Length : pathB.Length))
-                .Select(path =>
-                {
-                    if (AtoB) return (pathA + path, pathB + path);
-                    return (pathB + path, pathA + path);
-                })
-                .ForEach(c => CopyFolder(c.Item1, c.Item2));
-        }
-
-        void CopyFolder(string pathFrom, string pathTo)
-        {
-            if (Directory.Exists(pathTo))
-                Directory.Delete(pathTo, true);
-            Directory.CreateDirectory(pathTo);
-
-            //Now Create all of the directories
-            foreach (string dirPath in Directory.GetDirectories(pathFrom, "*", SearchOption.AllDirectories))
-            {
-                Directory.CreateDirectory(dirPath.Replace(pathFrom, pathTo));
-            }
-
-            //Copy all the files & Replaces any files with the same name
-            foreach (string newPath in Directory.GetFiles(pathFrom, "*.*", SearchOption.AllDirectories))
-            {
-                File.Copy(newPath, newPath.Replace(pathFrom, pathTo), true);
-            }
-
-        }
-
 
         Action<(bool, List<string>)> Callback(SerializedProperty property)
         {
