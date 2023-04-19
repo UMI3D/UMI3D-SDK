@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollaborationEnvironmentLoader : UMI3DEnvironmentLoader
     {
         public static new UMI3DCollaborationEnvironmentLoader Instance
-        { 
+        {
             get
             {
                 if (ApplicationIsQuitting)
@@ -44,13 +44,7 @@ namespace umi3d.cdk.collaboration
                     return collabEnvironmentLoader;
                 else
                     throw new Umi3dException("EnvironmentLoader instance is no UMI3DCollaborationEnvironmentLoader");
-            }    
-        }
-
-        public UMI3DCollaborationEnvironmentLoader() : base()
-        {
-            if (!SkeletonManager.Exists)
-                new SkeletonManager();
+            }
         }
 
         public List<UMI3DUser> UserList;

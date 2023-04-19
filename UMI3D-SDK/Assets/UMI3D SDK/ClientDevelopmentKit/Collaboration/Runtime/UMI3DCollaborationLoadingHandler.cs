@@ -50,6 +50,9 @@ namespace umi3d.cdk.collaboration
                 emoteService.DefaultIcon = defaultEmoteIcon;
             }
 
+            // SKELETON SERVICE
+            _ = SkeletonManager.Instance;
+
             base.Awake();
         }
     }
