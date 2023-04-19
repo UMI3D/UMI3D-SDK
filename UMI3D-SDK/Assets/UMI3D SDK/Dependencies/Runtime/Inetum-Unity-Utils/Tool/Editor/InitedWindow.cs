@@ -35,15 +35,10 @@ namespace inetum.unityUtils
             window.data = new ScriptableLoader<InitedWindowData>(filename);
 
             var type = typeof(T).FullName;
-            (bool canReload, bool showMessage, bool lastValue) memory = (true, true, true);
-            if (window.data.data.dontShowCantreloadMessage.ContainsKey(type))
-            {
-                memory = window.data.data.dontShowCantreloadMessage[type];
-            }
-            memory.lastValue = memory.showMessage;
+            var memory = window.data.data.FromNameOrNew(type, true, true, true, false);
+            memory.lastShowMessageValue = memory.showMessage;
             memory.canReload = canReload;
-            window.data.data.dontShowCantreloadMessage[type] = memory;
-
+            memory.waitForInit = false;
             window.Show();
         }
 
@@ -67,20 +62,23 @@ namespace inetum.unityUtils
         /// </summary>
         bool _Init()
         {
+            InitedWindowData.data memory = null;
             if (!inited || data == null)
             {
+
                 data = new ScriptableLoader<InitedWindowData>(filename);
                 var type = typeof(T).FullName;
-                if (data.data.dontShowCantreloadMessage.ContainsKey(type))
+
+                memory = data.data.FromName(type);
+
+                if (memory != null)
                 {
-                    if (!data.data.dontShowCantreloadMessage[type].canReload)
+                    if (!memory.canReload)
                     {
-                        if (data.data.dontShowCantreloadMessage[type].lastShowMessageValue)
+                        if (memory.lastShowMessageValue)
                         {
                             EditorGUILayout.LabelField("This window cannot be reloaded. This may be due to a recompilation of the scripts.");
-                            var memo = data.data.dontShowCantreloadMessage[type];
-                            memo.showMessage = !EditorGUILayout.Toggle(memo.showMessage, "don't show again");
-                            data.data.dontShowCantreloadMessage[type] = memo;
+                            memory.showMessage = !EditorGUILayout.Toggle(memory.showMessage, "don't show again");
                             if (GUILayout.Button("Close"))
                                 Close();
                         }
@@ -90,6 +88,11 @@ namespace inetum.unityUtils
                     }
                 }
                 Init();
+                if(memory != null && memory.waitForInit)
+                {
+                    memory.waitForInit = false;
+                    Reinit();
+                }
                 inited = true;
             }
             return true;
@@ -101,7 +104,9 @@ namespace inetum.unityUtils
         protected void OnGUI()
         {
             if (_Init())
+            {
                 Draw();
+            }
         }
 
         /// <summary>
@@ -109,11 +114,66 @@ namespace inetum.unityUtils
         /// </summary>
         protected abstract void Init();
 
+
+        /// <summary>
+        /// Called when the windows need to be inited or the editor recompiled and the SetWaitForReinit is true.
+        /// </summary>
+        protected virtual void Reinit() { }
+
         /// <summary>
         /// Draw the GUI of the window.
         /// This is called by OnGUI.
         /// </summary>
         protected abstract void Draw();
+
+        //[UnityEditor.Callbacks.DidReloadScripts]
+        //private static void OnScriptsReloaded()
+        //{
+
+        //}
+
+
+        /// <summary>
+        /// Ask to call the Reinit method when the windows is inited
+        /// </summary>
+        /// <param name="value"><see langword="true"/>by default; if false the callback will not be called</param>
+        public void SetWaitForReinit(bool value = true)
+        {
+            if (_Init())
+            {
+                var type = typeof(T).FullName;
+                Debug.Log(type);
+                data.data.Debug();
+                var memory = data.data.FromName(type);
+                if (memory != null)
+                {
+                    memory.waitForInit = value;
+                }
+                else
+                    Debug.LogError("SetWaitForReinit failed because memory not inited");
+            }
+            else
+                Debug.LogError("SetWaitForReinit failed because init failed");
+        }
+
+        /// <summary>
+        /// Get the value set for WaitForReinit.
+        /// </summary>
+        /// <returns></returns>
+        public bool GetWaitForReinit()
+        {
+            if (_Init())
+            {
+                var type = typeof(T).FullName;
+                var memory = data.data.FromName(type);
+                if (memory != null)
+                {
+                    return memory.waitForInit;
+                }
+            }
+            return false;
+        }
+
     }
 }
 #endif
