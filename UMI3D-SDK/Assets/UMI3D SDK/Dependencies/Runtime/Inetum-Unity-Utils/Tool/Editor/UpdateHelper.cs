@@ -21,6 +21,7 @@ namespace inetum.unityUtils
     using System.Collections.Generic;
     using System.IO;
     using System.Linq;
+    using System.Threading.Tasks;
     using UnityEditor;
     using UnityEngine;
 
@@ -226,7 +227,6 @@ namespace inetum.unityUtils
             sdkFolder.selected = IsSelected(null, path);
             Found(sdkFolder);
             sdkFolder.display = true;
-
         }
 
         void Found(folder folder)
@@ -283,7 +283,7 @@ namespace inetum.unityUtils
 
         DeletionData data;
 
-        public void Init(bool isAReferenceFolder, string name1, string name2, string path1, string path2, bool shouldDeletePermanent, List<string> folders)
+        public void Init(bool isAReferenceFolder, string name1, string name2, string path1, string path2, bool shouldDeletePermanent, bool AutoComplete, List<string> folders)
         {
             style.richText = true;
             style.normal.textColor = Color.white;
@@ -302,6 +302,7 @@ namespace inetum.unityUtils
             };
 
             this.shouldDeletePermanent = shouldDeletePermanent;
+            this.AutoComplete = AutoComplete;
 
             warningMessage = $"Are you sure your want to use the files from <b>{data.fromName}</b> replacing the one from <b>{data.toName}</b>?";
             inited = true;
@@ -329,33 +330,38 @@ namespace inetum.unityUtils
             shouldDeletePermanent = EditorGUILayout.ToggleLeft("Delete existing folders permanently", shouldDeletePermanent);
 
             EditorGUILayout.BeginHorizontal();
-            if (GUILayout.Button("Cancel"))
+
+            GUI.enabled = !AutoComplete;
+
+            if (GUILayout.Button("Cancel") && !AutoComplete)
             {
                 Close();
                 shouldDeletePermanent = false;
                 inited = false;
             }
 
-            if (GUILayout.Button("Yes"))
+            if (GUILayout.Button("Yes") && !AutoComplete)
             {
                 UpdateHelperCopier.Copy(data.isMovingFromInternal, data.fromPath, data.toPath, data.modifiedFolders, shouldDeletePermanent);
                 Close();
                 shouldDeletePermanent = false;
                 inited = false;
             }
+
+            GUI.enabled = true;
+
             EditorGUILayout.EndHorizontal();
         }
 
-        public static void Open(bool isMovingFromReferenceFolder, string name1, string name2, string path1, string path2,bool shouldDeletePermanent, bool AutoComplete, List<string> folders = null)
+        public async static void Open(bool isMovingFromReferenceFolder, string name1, string name2, string path1, string path2,bool shouldDeletePermanent, bool AutoComplete, List<string> folders = null)
         {
             // Get existing open window or if none, make a new one :
             var window = (ConfirmWindow)GetWindow(typeof(ConfirmWindow), false, "Confirm copy");
-            window.Init(isMovingFromReferenceFolder, name1, name2, path1, path2, shouldDeletePermanent, folders);
-            if(!AutoComplete)
-             window.Show();
-            else
+            window.Init(isMovingFromReferenceFolder, name1, name2, path1, path2, shouldDeletePermanent, AutoComplete, folders);
+            window.Show();
+            if (AutoComplete)
             {
-                window.Show();
+                await Task.Yield();
                 UpdateHelperCopier.Copy(window.data.isMovingFromInternal, window.data.fromPath, window.data.toPath, window.data.modifiedFolders, shouldDeletePermanent);
                 window.shouldDeletePermanent = false;
                 window.inited = false;
