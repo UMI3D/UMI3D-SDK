@@ -304,7 +304,7 @@ namespace inetum.unityUtils
             this.shouldDeletePermanent = shouldDeletePermanent;
             this.AutoComplete = AutoComplete;
 
-            warningMessage = $"Are you sure your want to use the files from <b>{data.fromName}</b> replacing the one from <b>{data.toName}</b>?";
+            warningMessage = $"Are you sure your want to use the files from <b>{data.fromName}</b> to replace the ones from <b>{data.toName}</b>?";
             inited = true;
         }
 
@@ -398,13 +398,16 @@ namespace inetum.unityUtils
                     Directory.Delete(path, true);
             else
                 SafeDelete(directoriesToDestroy, isMovingFromReferenceFolder);
-                
 
-            foreach (var c in movePathsInfos)
-                CopyFolder(isMovingFromReferenceFolder, c.originPath, c.targetPath, shouldPermanentDelete);
+
+            foreach (var (originPath, targetPath) in movePathsInfos)
+                CopyFolder(originPath, targetPath);
+
+            if (!isMovingFromReferenceFolder)
+                AssetDatabase.Refresh();
         }
 
-        public static void CopyFolder(bool isMovingFromReferenceFolder, string pathFrom, string pathTo, bool shouldPermanentDelete)
+        public static void CopyFolder(string pathFrom, string pathTo)
         {
             Directory.CreateDirectory(pathTo);
 
@@ -418,22 +421,6 @@ namespace inetum.unityUtils
             foreach (string newPath in Directory.GetFiles(pathFrom, "*.*", System.IO.SearchOption.AllDirectories))
             {
                 File.Copy(newPath, newPath.Replace(pathFrom, pathTo), true);
-            }
-
-        }
-
-        public static void SafeDelete(string path, bool isAssetExternal)
-        {
-            if (isAssetExternal) //in this case the pathTo is external to the project
-            {
-                string folderName = path[(path.LastIndexOf("/")+1)..];
-                System.IO.Directory.Move(path, $"Assets/__TMP_UPDATE_HELPER_SAVE_{folderName}"); // import in project to use API
-                AssetDatabase.Refresh();
-                AssetDatabase.MoveAssetToTrash($"Assets/__TMP_UPDATE_HELPER_SAVE_{folderName}");
-            }
-            else
-            { //in this case the pathTo is internal to the project
-                AssetDatabase.MoveAssetToTrash(path[path.IndexOf("Assets/")..]);
             }
         }
 
@@ -449,18 +436,17 @@ namespace inetum.unityUtils
                 var tmpPaths = paths.Select(path =>
                 {
                     string folderName = path[(path.LastIndexOf("/") + 1)..];
-                    string tmpPath = $"Assets/__TMP_UPDATE_HELPER_SAVE_{folderName}";
-                    Debug.Log(path+" "+tmpPath);
-                    System.IO.Directory.Move(path, tmpPath); // import in project to use API
-                    return tmpPath;
+                    string tmpPath = Path.Combine(Application.dataPath, @$"EXCLUDED/__TMP_UPDATE_HELPER_SAVE_{folderName}");
+                    Directory.Move(path, tmpPath); // import in project to use API
+                    return @$"Assets/EXCLUDED/__TMP_UPDATE_HELPER_SAVE_{folderName}";
                 }).ToArray();
-                
+
                 AssetDatabase.Refresh();
                 AssetDatabase.MoveAssetsToTrash(tmpPaths, new List<string>());
             }
             else
             { //in this case the pathTo is internal to the project
-                AssetDatabase.MoveAssetsToTrash(paths.Select(path=>path[path.IndexOf("Assets/")..]).ToArray(), new List<string>());
+                AssetDatabase.MoveAssetsToTrash(paths.Select(path => path[path.IndexOf("Assets/")..]).ToArray(), new List<string>());
             }
         }
     }
