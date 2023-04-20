@@ -17,6 +17,7 @@ limitations under the License.
 #if UNITY_EDITOR
 namespace inetum.unityUtils.editor
 {
+    using inetum.unityUtils;
     using System;
     using System.Collections.Generic;
     using System.IO;
@@ -24,6 +25,7 @@ namespace inetum.unityUtils.editor
     using System.Threading.Tasks;
     using UnityEditor;
     using UnityEngine;
+    using Path = Path;
 
     public class UpdateHelper : InitedWindow<UpdateHelper>
     {
