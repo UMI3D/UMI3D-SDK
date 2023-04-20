@@ -28,7 +28,9 @@ namespace inetum.unityUtils
     {
         //public List<ProjectData> projects = new List<ProjectData>();
         public ProjectLink[] projectsLink;
-        public bool DisplayConfirmationPopup = true;
+        [Tooltip("When set to true, The confirmation pop will be validated automaticaly")]
+        public bool AutoValidatePopup = false;
+        [Tooltip("When set to true, files in the destination folder will be send to the recycle bin")]
         public bool UseSafeMode = true;
     }
 
@@ -184,7 +186,7 @@ namespace inetum.unityUtils
                 if (GUI.Button(rectfolder, "Manage Folders"))
                     SubUpdateHelper.Open(isAReferenceFolder, projectAName, projectBName, projectAPath, projectBPath, Callback(property), folders);
 
-                DisplayPullAndPush(isAReferenceFolder, rectPush, rectPull, projectAName, projectBName, projectAPath, projectBPath, folders, !parent.UseSafeMode, !parent.DisplayConfirmationPopup);
+                DisplayPullAndPush(isAReferenceFolder, rectPush, rectPull, projectAName, projectBName, projectAPath, projectBPath, folders, !parent.UseSafeMode, parent.AutoValidatePopup);
 
                 EditorGUI.indentLevel = indent;
             }
