@@ -16,6 +16,7 @@ limitations under the License.
 #if UNITY_EDITOR
 namespace inetum.unityUtils
 {
+    using inetum.unityUtils.editor;
     using System;
     using System.Collections.Generic;
     using System.Linq;
@@ -27,6 +28,8 @@ namespace inetum.unityUtils
     {
         //public List<ProjectData> projects = new List<ProjectData>();
         public ProjectLink[] projectsLink;
+        public bool DisplayConfirmationPopup = true;
+        public bool UseSafeMode = true;
     }
 
     [Serializable]
@@ -34,6 +37,7 @@ namespace inetum.unityUtils
     {
         public string sdkPath;
         public string projectName;
+        public bool isSource;
     }
 
     [Serializable]
@@ -44,6 +48,13 @@ namespace inetum.unityUtils
         public ProjectData projectB;
         public List<string> folders;
         public bool sourceIsA;
+        public void SetSource(bool sourceIsA)
+        {
+            this.sourceIsA = sourceIsA;
+            projectA.isSource = sourceIsA;
+            projectB.isSource = !sourceIsA;
+        }
+
     }
 
     [CustomPropertyDrawer(typeof(ProjectData))]
@@ -80,6 +91,13 @@ namespace inetum.unityUtils
                 // Draw fields - pass GUIContent.none to each so they are drawn without labels
                 if (GUI.Button(browseRect, "Browse"))
                     Browse(property, property.FindPropertyRelative("sdkPath").stringValue);
+
+                var p = property.GetValue() as ProjectData;
+
+                position.x += 65;
+
+                if(p.isSource)
+                    position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive),new GUIContent("[Source]"));
 
                 // Set indent back to what it was
                 EditorGUI.indentLevel = indent;
@@ -124,6 +142,7 @@ namespace inetum.unityUtils
 
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
+            var parent = property.GetParent() as UpdateHelperData;
             // Using BeginProperty / EndProperty on the parent property means that
             // prefab override logic works on the entire property.
             EditorGUI.BeginProperty(position, label, property);
@@ -165,16 +184,7 @@ namespace inetum.unityUtils
                 if (GUI.Button(rectfolder, "Manage Folders"))
                     SubUpdateHelper.Open(isAReferenceFolder, projectAName, projectBName, projectAPath, projectBPath, Callback(property), folders);
 
-                if (GUI.Button(rectPush, projectAName + " -> " + projectBName))
-                {
-                    ConfirmWindow.Open(isAReferenceFolder, projectAName, projectBName, projectAPath, projectBPath, folders);
-                }
-                if (GUI.Button(rectPull, projectBName + " -> " + projectAName))
-                {
-                    ConfirmWindow.Open(!isAReferenceFolder, projectBName, projectAName, projectBPath, projectAPath, folders);
-                }
-
-
+                DisplayPullAndPush(isAReferenceFolder, rectPush, rectPull, projectAName, projectBName, projectAPath, projectBPath, folders, !parent.UseSafeMode, !parent.DisplayConfirmationPopup);
 
                 EditorGUI.indentLevel = indent;
             }
@@ -188,6 +198,20 @@ namespace inetum.unityUtils
             EditorGUI.EndProperty();
         }
 
+        void DisplayPullAndPush(bool isAReferenceFolder, Rect rectPush, Rect rectPull, string projectAName, string projectBName, string projectAPath, string projectBPath, List<string> folders, bool shouldDeletePermanent, bool AutoComplete)
+        {
+            //Source to Destination is always the first choice
+            if (GUI.Button(isAReferenceFolder ? rectPush : rectPull, projectAName + " -> " + projectBName))
+            {
+                ConfirmWindow.Open(isAReferenceFolder, projectAName, projectBName, projectAPath, projectBPath, shouldDeletePermanent, AutoComplete, folders);
+            }
+            if (GUI.Button((!isAReferenceFolder) ? rectPush : rectPull, projectBName + " -> " + projectAName))
+            {
+                ConfirmWindow.Open(!isAReferenceFolder, projectBName, projectAName, projectBPath, projectAPath, shouldDeletePermanent, AutoComplete, folders);
+            }
+        }
+
+
         Action<(bool, List<string>)> Callback(SerializedProperty property)
         {
             var obj = fieldInfo.GetValue(property.serializedObject.targetObject);
@@ -200,7 +224,7 @@ namespace inetum.unityUtils
 
             return c =>
             {
-                pl.sourceIsA = c.Item1;
+                pl.SetSource(c.Item1);
                 pl.folders = c.Item2;
             };
         }

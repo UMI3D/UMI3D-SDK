@@ -40,6 +40,14 @@ namespace inetum.unityUtils
         protected override void Init()
         {
             draw = new ScriptableLoader<UpdateHelperData>(fileName);
+            draw.data.projectsLink.ForEach(
+                l =>
+                {
+                    if (l?.projectA != null)
+                        l.projectA.isSource = l.sourceIsA;
+                    if (l?.projectB != null)
+                        l.projectB.isSource = !l.sourceIsA;
+                });
         }
 
         protected override void Draw()
@@ -256,6 +264,7 @@ namespace inetum.unityUtils
         string warningMessage;
 
         bool shouldDeletePermanent;
+        bool AutoComplete;
 
         GUIStyle style = new GUIStyle();
 
@@ -274,7 +283,7 @@ namespace inetum.unityUtils
 
         DeletionData data;
 
-        public void Init(bool isAReferenceFolder, string name1, string name2, string path1, string path2, List<string> folders)
+        public void Init(bool isAReferenceFolder, string name1, string name2, string path1, string path2, bool shouldDeletePermanent, List<string> folders)
         {
             style.richText = true;
             style.normal.textColor = Color.white;
@@ -292,6 +301,7 @@ namespace inetum.unityUtils
                 isMovingFromInternal = isAReferenceFolder
             };
 
+            this.shouldDeletePermanent = shouldDeletePermanent;
 
             warningMessage = $"Are you sure your want to use the files from <b>{data.fromName}</b> replacing the one from <b>{data.toName}</b>?";
             inited = true;
@@ -336,12 +346,21 @@ namespace inetum.unityUtils
             EditorGUILayout.EndHorizontal();
         }
 
-        public static void Open(bool isMovingFromReferenceFolder, string name1, string name2, string path1, string path2, List<string> folders = null)
+        public static void Open(bool isMovingFromReferenceFolder, string name1, string name2, string path1, string path2,bool shouldDeletePermanent, bool AutoComplete, List<string> folders = null)
         {
             // Get existing open window or if none, make a new one :
             var window = (ConfirmWindow)GetWindow(typeof(ConfirmWindow), false, "Confirm copy");
-            window.Init(isMovingFromReferenceFolder, name1, name2, path1, path2, folders);
-            window.Show();
+            window.Init(isMovingFromReferenceFolder, name1, name2, path1, path2, shouldDeletePermanent, folders);
+            if(!AutoComplete)
+             window.Show();
+            else
+            {
+                window.Show();
+                UpdateHelperCopier.Copy(window.data.isMovingFromInternal, window.data.fromPath, window.data.toPath, window.data.modifiedFolders, shouldDeletePermanent);
+                window.shouldDeletePermanent = false;
+                window.inited = false;
+                window.Close();
+            }
         }
     }
 
@@ -425,6 +444,7 @@ namespace inetum.unityUtils
                 {
                     string folderName = path[(path.LastIndexOf("/") + 1)..];
                     string tmpPath = $"Assets/__TMP_UPDATE_HELPER_SAVE_{folderName}";
+                    Debug.Log(path+" "+tmpPath);
                     System.IO.Directory.Move(path, tmpPath); // import in project to use API
                     return tmpPath;
                 }).ToArray();
