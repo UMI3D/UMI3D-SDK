@@ -17,97 +17,99 @@ limitations under the License.
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-
-public static class ClassDisplayer
+namespace inetum.unityUtils.editor
 {
-    public static void Display(object obj)
+    public static class ClassDisplayer
     {
-        if (obj == null) return;
-
-        FieldInfo[] fields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
-        foreach (FieldInfo field in fields)
+        public static void Display(object obj)
         {
-            object value = field.GetValue(obj);
-            if (value == obj) continue;
-            switch (value)
+            if (obj == null) return;
+
+            FieldInfo[] fields = obj.GetType().GetFields(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic);
+            foreach (FieldInfo field in fields)
             {
-                case UnityEngine.Object _Obj:
-                    field.SetValue(obj, EditorGUILayout.ObjectField(field.Name, _Obj, field.FieldType, true));
-                    break;
-                case Bounds v:
-                    field.SetValue(obj, EditorGUILayout.BoundsField(field.Name, v));
-                    break;
-                case BoundsInt v:
-                    field.SetValue(obj, EditorGUILayout.BoundsIntField(field.Name, v));
-                    break;
-                case Color v:
-                    field.SetValue(obj, EditorGUILayout.ColorField(field.Name, v));
-                    break;
-                case Color32 v:
-                    field.SetValue(obj, EditorGUILayout.ColorField(field.Name, v));
-                    break;
-                case AnimationCurve v:
-                    field.SetValue(obj, EditorGUILayout.CurveField(field.Name, v));
-                    break;
-                case double v:
-                    field.SetValue(obj, EditorGUILayout.DoubleField(field.Name, v));
-                    break;
-                case System.Enum v:
-                    field.SetValue(obj, EditorGUILayout.EnumFlagsField(field.Name, v));
-                    break;
-                case float v:
-                    field.SetValue(obj, EditorGUILayout.FloatField(field.Name, v));
-                    break;
-                case Gradient v:
-                    field.SetValue(obj, EditorGUILayout.GradientField(field.Name, v));
-                    break;
-                case int v:
-                    field.SetValue(obj, EditorGUILayout.IntField(field.Name, v));
-                    break;
-                case LayerMask v:
-                    field.SetValue(obj, EditorGUILayout.LayerField(field.Name, v));
-                    break;
-                case Rect v:
-                    field.SetValue(obj, EditorGUILayout.RectField(field.Name, v));
-                    break;
-                case RectInt v:
-                    field.SetValue(obj, EditorGUILayout.RectIntField(field.Name, v));
-                    break;
-                case string v:
-                    field.SetValue(obj, EditorGUILayout.TextField(field.Name, v));
-                    break;
-                case Vector2 v:
-                    field.SetValue(obj, EditorGUILayout.Vector2Field(field.Name, v));
-                    break;
-                case Vector2Int v:
-                    field.SetValue(obj, EditorGUILayout.Vector2IntField(field.Name, v));
-                    break;
-                case Vector3 v:
-                    field.SetValue(obj, EditorGUILayout.Vector3Field(field.Name, v));
-                    break;
-                case Vector3Int v:
-                    field.SetValue(obj, EditorGUILayout.Vector3IntField(field.Name, v));
-                    break;
-                case Vector4 v:
-                    field.SetValue(obj, EditorGUILayout.Vector4Field(field.Name, v));
-                    break;
-                case Quaternion v:
-                    field.SetValue(obj, Quaternion.Euler(EditorGUILayout.Vector3Field(field.Name, v.eulerAngles)));
-                    break;
-                default:
-                    if (value != null)
-                    {
-                        EditorGUI.indentLevel++;
-                        Display(value);
-                        EditorGUI.indentLevel--;
-                    }
-                    else
-                        EditorGUILayout.LabelField(field.Name, obj.ToString());
-                    break;
+                object value = field.GetValue(obj);
+                if (value == obj) continue;
+                switch (value)
+                {
+                    case UnityEngine.Object _Obj:
+                        field.SetValue(obj, EditorGUILayout.ObjectField(field.Name, _Obj, field.FieldType, true));
+                        break;
+                    case Bounds v:
+                        field.SetValue(obj, EditorGUILayout.BoundsField(field.Name, v));
+                        break;
+                    case BoundsInt v:
+                        field.SetValue(obj, EditorGUILayout.BoundsIntField(field.Name, v));
+                        break;
+                    case Color v:
+                        field.SetValue(obj, EditorGUILayout.ColorField(field.Name, v));
+                        break;
+                    case Color32 v:
+                        field.SetValue(obj, EditorGUILayout.ColorField(field.Name, v));
+                        break;
+                    case AnimationCurve v:
+                        field.SetValue(obj, EditorGUILayout.CurveField(field.Name, v));
+                        break;
+                    case double v:
+                        field.SetValue(obj, EditorGUILayout.DoubleField(field.Name, v));
+                        break;
+                    case System.Enum v:
+                        field.SetValue(obj, EditorGUILayout.EnumFlagsField(field.Name, v));
+                        break;
+                    case float v:
+                        field.SetValue(obj, EditorGUILayout.FloatField(field.Name, v));
+                        break;
+                    case Gradient v:
+                        field.SetValue(obj, EditorGUILayout.GradientField(field.Name, v));
+                        break;
+                    case int v:
+                        field.SetValue(obj, EditorGUILayout.IntField(field.Name, v));
+                        break;
+                    case LayerMask v:
+                        field.SetValue(obj, EditorGUILayout.LayerField(field.Name, v));
+                        break;
+                    case Rect v:
+                        field.SetValue(obj, EditorGUILayout.RectField(field.Name, v));
+                        break;
+                    case RectInt v:
+                        field.SetValue(obj, EditorGUILayout.RectIntField(field.Name, v));
+                        break;
+                    case string v:
+                        field.SetValue(obj, EditorGUILayout.TextField(field.Name, v));
+                        break;
+                    case Vector2 v:
+                        field.SetValue(obj, EditorGUILayout.Vector2Field(field.Name, v));
+                        break;
+                    case Vector2Int v:
+                        field.SetValue(obj, EditorGUILayout.Vector2IntField(field.Name, v));
+                        break;
+                    case Vector3 v:
+                        field.SetValue(obj, EditorGUILayout.Vector3Field(field.Name, v));
+                        break;
+                    case Vector3Int v:
+                        field.SetValue(obj, EditorGUILayout.Vector3IntField(field.Name, v));
+                        break;
+                    case Vector4 v:
+                        field.SetValue(obj, EditorGUILayout.Vector4Field(field.Name, v));
+                        break;
+                    case Quaternion v:
+                        field.SetValue(obj, Quaternion.Euler(EditorGUILayout.Vector3Field(field.Name, v.eulerAngles)));
+                        break;
+                    default:
+                        if (value != null)
+                        {
+                            EditorGUI.indentLevel++;
+                            Display(value);
+                            EditorGUI.indentLevel--;
+                        }
+                        else
+                            EditorGUILayout.LabelField(field.Name, obj.ToString());
+                        break;
+                }
             }
+
         }
 
     }
-
 }
 #endif

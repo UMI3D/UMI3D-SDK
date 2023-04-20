@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2022 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,122 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #if UNITY_EDITOR
-namespace inetum.unityUtils
+namespace inetum.unityUtils.editor
 {
-    using inetum.unityUtils.editor;
     using System;
     using System.Collections.Generic;
     using System.Linq;
     using UnityEditor;
     using UnityEngine;
-
-    //[CreateAssetMenu(fileName = "UpdateHelperData", menuName = "Build Helper/Build Helper Data", order = 1)]
-    public class UpdateHelperData : ScriptableObject
-    {
-        //public List<ProjectData> projects = new List<ProjectData>();
-        public ProjectLink[] projectsLink;
-        [Tooltip("When set to true, The confirmation pop will be validated automaticaly")]
-        public bool AutoValidatePopup = false;
-        [Tooltip("When set to true, files in the destination folder will be send to the recycle bin")]
-        public bool UseSafeMode = true;
-    }
-
-    [Serializable]
-    public class ProjectData
-    {
-        public string sdkPath;
-        public string projectName;
-        public bool isSource;
-    }
-
-    [Serializable]
-    public class ProjectLink
-    {
-        public bool expand;
-        public ProjectData projectA;
-        public ProjectData projectB;
-        public List<string> folders;
-        public bool sourceIsA;
-        public void SetSource(bool sourceIsA)
-        {
-            this.sourceIsA = sourceIsA;
-            projectA.isSource = sourceIsA;
-            projectB.isSource = !sourceIsA;
-        }
-
-    }
-
-    [CustomPropertyDrawer(typeof(ProjectData))]
-    public class ProjectDataEditor : PropertyDrawer
-    {
-
-        public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
-        {
-            // Using BeginProperty / EndProperty on the parent property means that
-            // prefab override logic works on the entire property.
-            EditorGUI.BeginProperty(position, label, property);
-
-            // Draw label
-            label.text = property.FindPropertyRelative("projectName").stringValue;
-
-            if (string.IsNullOrEmpty(label.text))
-            {
-                var browseRect = new Rect(position.x + 20, position.y, 125, position.height);
-                if (GUI.Button(browseRect, "Browse"))
-                    Browse(property);
-            }
-            else
-            {
-
-                position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive), label);
-
-                // Don't make child fields be indented
-                var indent = EditorGUI.indentLevel;
-                EditorGUI.indentLevel = 0;
-
-                // Calculate rects
-                var browseRect = new Rect(position.x, position.y, 60, position.height);
-
-                // Draw fields - pass GUIContent.none to each so they are drawn without labels
-                if (GUI.Button(browseRect, "Browse"))
-                    Browse(property, property.FindPropertyRelative("sdkPath").stringValue);
-
-                var p = property.GetValue() as ProjectData;
-
-                position.x += 65;
-
-                if(p.isSource)
-                    position = EditorGUI.PrefixLabel(position, GUIUtility.GetControlID(FocusType.Passive),new GUIContent("[Source]"));
-
-                // Set indent back to what it was
-                EditorGUI.indentLevel = indent;
-            }
-            EditorGUI.EndProperty();
-        }
-
-        void Browse(SerializedProperty property, string path = null)
-        {
-            if (string.IsNullOrEmpty(path))
-                path = Application.dataPath + "/../";
-            var res = EditorUtility.OpenFolderPanel("Sdk folder", path, "");
-
-            var s = res.Split(new char[] { '/', '\\' });
-
-            string projectName = null;
-            var tmp = "";
-            foreach (var folder in s)
-            {
-                if (folder == "Assets")
-                {
-                    projectName = tmp;
-                }
-                tmp = folder;
-            }
-            property.FindPropertyRelative("projectName").stringValue = projectName ?? path.Split('\\', '/').Last();
-            property.FindPropertyRelative("sdkPath").stringValue = res;
-        }
-
-    }
 
     [CustomPropertyDrawer(typeof(ProjectLink))]
     public class ProjectLinkEditor : PropertyDrawer
