@@ -433,12 +433,16 @@ namespace umi3d.cdk.collaboration
         {
             switch (operation.operation)
             {
-                case FrameRequestDto navigate:
-                    MainThreadManager.Run(() =>
+                case FrameRequestDto frame:
+                    bool waitforreparenting = true;
+                    MainThreadManager.Run(async () =>
                     {
-                        UMI3DNavigation.SetFrame(navigate);
+                        UMI3DNavigation.SetFrame(frame);
+                        await UMI3DAsyncManager.Yield();
+                        waitforreparenting = false;
                     });
-
+                    while(waitforreparenting)
+                        await UMI3DAsyncManager.Yield();
                     break;
                 case NavigateDto navigate:
                     MainThreadManager.Run(() =>
