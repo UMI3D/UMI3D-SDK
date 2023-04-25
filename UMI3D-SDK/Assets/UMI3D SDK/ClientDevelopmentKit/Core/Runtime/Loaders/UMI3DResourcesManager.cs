@@ -930,8 +930,6 @@ namespace umi3d.cdk
                     RemoveLibrary(lib);
                 }
 
-                UnityEngine.Debug.Log($"{assetLibrary.id} {assetLibrary.version} add");
-
                 UMI3DLocalAssetDirectory variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
 
                 var bytes = await UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), false);
@@ -956,7 +954,6 @@ namespace umi3d.cdk
                     SetData(data, directoryPath);
                 }
                 progress3.AddComplete();
-                UnityEngine.Debug.Log($"add end");
             }
             catch (Exception e)
             {
@@ -1070,15 +1067,10 @@ namespace umi3d.cdk
         private async Task DownloadFile(Library key, string directoryPath, string filePath, string url, string fileRelativePath, bool force = false)
         {
             Match matchUrl = ObjectData.rx.Match(url);
-            UnityEngine.Debug.Log($"find {url} {key.id} {key.version}");
             ObjectData objectData = force ? null : CacheCollection.Find((o) =>
             {
                 return o.MatchUrl(matchUrl, url, key);
             });
-
-            if (objectData != null)
-                foreach(var lib in objectData.libraryIds)
-                UnityEngine.Debug.Log($"<color=red>{lib.id} {lib.version} {lib == key}</color>");
 
             if (objectData != null)
             {

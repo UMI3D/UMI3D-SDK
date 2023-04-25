@@ -226,7 +226,7 @@ namespace umi3d.cdk.userCapture
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitParentId);
-            UMI3DNavigation.onEmbarkVehicleDelegate += UpdateParentId;
+            UMI3DNavigation.onUpdateFrameDelegate += UpdateParentId;
             EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
             EmotePlayedSelfEvent.AddListener(delegate
             {
@@ -255,10 +255,10 @@ namespace umi3d.cdk.userCapture
             avatarSceneId = parentId;
         }
 
-        private void UpdateParentId(ulong vehicleId)
+        private void UpdateParentId(ulong frameId)
         {
-            if (vehicleId != 0)
-                parentId = vehicleId;
+            if (frameId != 0)
+                parentId = frameId;
             else
                 Debug.LogError("Parent id not valid.");
         }
@@ -498,23 +498,23 @@ namespace umi3d.cdk.userCapture
         /// Make a user board in in a vehicle that supports boarded users.
         /// </summary>
         /// <param name="vehicleDto"></param>
-        public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
-        {
-            if (vehicleDto.BodyAnimationId != 0)
-            {
-                var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
-                if (anim != null)
-                {
-                    boardedVehicleEvent.Invoke(vehicleDto.VehicleId);
-                    anim.Start();
-                }
-            }
+        //public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
+        //{
+        //    if (vehicleDto.BodyAnimationId != 0)
+        //    {
+        //        var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
+        //        if (anim != null)
+        //        {
+        //            boardedVehicleEvent.Invoke(vehicleDto.VehicleId);
+        //            anim.Start();
+        //        }
+        //    }
 
-            var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+        //    var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
 
-            bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+        //    bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
 
-            SetStreamedBones(bones);
-        }
+        //    SetStreamedBones(bones);
+        //}
     }
 }
