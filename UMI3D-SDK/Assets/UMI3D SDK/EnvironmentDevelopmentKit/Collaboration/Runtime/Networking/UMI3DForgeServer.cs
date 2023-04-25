@@ -305,7 +305,7 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case common.VehicleConfirmation vConfirmation:
+                    case common.FrameConfirmationDto vConfirmation:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DEmbodimentManager.Instance.ConfirmEmbarkment(vConfirmation, user);
@@ -354,7 +354,7 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case UMI3DOperationKeys.VehicleConfirmation:
+                    case UMI3DOperationKeys.FrameConfirmation:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DEmbodimentManager.Instance.ConfirmEmbarkment(id, container, user);

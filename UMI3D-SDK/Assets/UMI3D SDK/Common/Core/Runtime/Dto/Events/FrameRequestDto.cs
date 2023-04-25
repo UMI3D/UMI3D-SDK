@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,22 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    /// <summary>
-    /// DTO for navigating with a vehicle.
-    /// </summary>
-    //[System.Serializable]
-    //public class VehicleDto : TeleportDto
-    //{
-    //    /// <summary>
-    //    /// Vehicle's UMI3D id.
-    //    /// </summary>
-    //    public ulong VehicleId = 0;
-
-    //    /// <summary>
-    //    /// Should the boarding in disable navigation ?
-    //    /// </summary>
-    //    public bool StopNavigation = false;
-
-    //    public VehicleDto() : base() { }
-    //}
+    public class FrameRequestDto : AbstractOperationDto
+    {
+        /// <summary>
+        /// Frame's UMI3D id.
+        /// </summary>
+        public ulong FrameId { get; set; } = 0;
+    }
 }
