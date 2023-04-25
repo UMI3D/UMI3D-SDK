@@ -22,9 +22,9 @@
 //namespace umi3d.edk.userCapture
 //{
 //    /// <summary>
-//    /// Specfic <see cref="VehicleRequest"/> received when a user board in a vehicle.
+//    /// Specfic <see cref="FrameRequest"/> received when a user board in a vehicle.
 //    /// </summary>
-//    public class BoardedVehicleRequest : VehicleRequest
+//    public class BoardedVehicleRequest : FrameRequest
 //    {
 //        /// <summary>
 //        /// Id of the body animation to apply when a user is boarded in.
