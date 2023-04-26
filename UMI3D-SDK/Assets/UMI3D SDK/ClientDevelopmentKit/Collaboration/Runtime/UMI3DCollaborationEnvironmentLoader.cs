@@ -47,12 +47,6 @@ namespace umi3d.cdk.collaboration
             }    
         }
 
-        public UMI3DCollaborationEnvironmentLoader() : base()
-        {
-            if (!SkeletonManager.Exists)
-                new SkeletonManager();
-        }
-
         public List<UMI3DUser> UserList;
         public static event Action OnUpdateUserList;
 

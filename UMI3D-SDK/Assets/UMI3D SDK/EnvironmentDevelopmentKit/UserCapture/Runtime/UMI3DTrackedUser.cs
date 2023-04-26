@@ -59,6 +59,7 @@ namespace umi3d.edk.userCapture
             base.userId = id;
             bindings = new UMI3DAsyncListProperty<UMI3DBinding>(base.userId, UMI3DPropertyKeys.UserBindings, new());
             activeBindings = new UMI3DAsyncProperty<bool>(base.userId, UMI3DPropertyKeys.ActiveBindings, new());
+            userSize = new UMI3DAsyncProperty<Vector3>(base.userId, UMI3DPropertyKeys.UserSize, new());
         }
 
         static object joinLock = new object();

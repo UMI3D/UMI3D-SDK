@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+#if UNITY_EDITOR
 using inetum.unityUtils;
 using System;
 using System.Collections;
@@ -34,7 +34,7 @@ namespace umi3d.common.userCapture
         List<VisualElement> temporaryChildren = new List<VisualElement>();
         TypeCache.TypeCollection typeCollection;
 
-        Type fieldActualConditionType = null;    
+        Type fieldActualConditionType = null;
 
         public ConditionField()
         {
@@ -119,7 +119,7 @@ namespace umi3d.common.userCapture
         private void HandleConditionTypeChange(string newValue)
         {
             fieldActualConditionType = null;
-            
+
             typeCollection.ForEach(type =>
             {
                 if (type.Name == newValue)
@@ -162,4 +162,5 @@ namespace umi3d.common.userCapture
         }
     }
 }
+#endif
 

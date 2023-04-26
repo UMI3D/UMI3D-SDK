@@ -72,6 +72,8 @@ namespace umi3d.cdk.userCapture
             {
                 TrackedSkeleton, poseSkeleton
             };
+
+            BonesAsyncFPS = new Dictionary<uint, float>();
         }
 
         public UserTrackingFrameDto GetFrame(TrackingOption option)

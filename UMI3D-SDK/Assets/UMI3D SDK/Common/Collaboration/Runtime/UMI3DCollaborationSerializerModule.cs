@@ -126,7 +126,7 @@ namespace umi3d.common.collaboration
                         readable = UMI3DSerializer.TryRead(container, out index_id);
                         bones = UMI3DSerializer.ReadList<BoneDto>(container);
 
-                        boneAnchor = UMI3DSerializer.Read<BonePoseDto>(container);
+                        UMI3DSerializer.TryRead<BonePoseDto>(container, out boneAnchor);
 
                         if (readable)
                         {
@@ -788,8 +788,8 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BonePoseDto):
                     {
                         uint bone;
-                        Vector3 position;
-                        Vector4 rotation;
+                        SerializableVector3 position;
+                        SerializableVector4 rotation;
 
                         readable = UMI3DSerializer.TryRead(container, out bone);
                         readable &= UMI3DSerializer.TryRead(container, out position);
@@ -849,7 +849,7 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BoneRotationConditionDto):
                     {
                         uint boneId;
-                        Vector4 rotation;
+                        SerializableVector4 rotation;
                         readable = UMI3DSerializer.TryRead(container, out boneId);
                         readable &= UMI3DSerializer.TryRead(container, out rotation);
 
@@ -869,7 +869,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(DirectionConditionDto):
                     {
-                        Vector3 direction;
+                        SerializableVector3 direction;
                         readable = UMI3DSerializer.TryRead(container, out direction);
 
                         if (readable)
@@ -887,7 +887,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(UserScaleConditionDto):
                     {
-                        Vector3 scale;
+                        SerializableVector3 scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)
@@ -905,7 +905,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(ScaleConditionDto):
                     {
-                        Vector3 scale;
+                        SerializableVector3 scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)
@@ -1251,28 +1251,28 @@ namespace umi3d.common.collaboration
                 case AnchoredBonePoseDto anchorBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)1)
                         + UMI3DSerializer.Write(anchorBonePoseDto.bone)
-                        + UMI3DSerializer.Write(anchorBonePoseDto.position)
-                        + UMI3DSerializer.Write(anchorBonePoseDto.rotation)
+                        + UMI3DSerializer.Write(anchorBonePoseDto.Position)
+                        + UMI3DSerializer.Write(anchorBonePoseDto.Rotation)
                         + UMI3DSerializer.Write(anchorBonePoseDto.otherBone);
                     break;
                 case NodeAnchoredBonePoseDto nodePositionAnchoredBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)2)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.bone)
-                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.position)
-                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.rotation)
+                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Position)
+                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Rotation)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.node);
                     break;
                 case FloorAnchoredBonePoseDto floorAnchoredBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)3)
                         + UMI3DSerializer.Write(floorAnchoredBonePoseDto.bone)
-                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.position)
-                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.rotation);
+                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Position)
+                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Rotation);
                     break;
                 case BonePoseDto bonePoseDto:
                     bytable = UMI3DSerializer.Write((int)0)
                         + UMI3DSerializer.Write(bonePoseDto.bone)
-                        + UMI3DSerializer.Write(bonePoseDto.position)
-                        + UMI3DSerializer.Write(bonePoseDto.rotation);
+                        + UMI3DSerializer.Write(bonePoseDto.Position)
+                        + UMI3DSerializer.Write(bonePoseDto.Rotation);
                     break;
                 case PoseDto poseDto:
                     bytable = UMI3DSerializer.Write(poseDto.id)

@@ -47,13 +47,16 @@ namespace umi3d.common.userCapture
         /// The current bone to update
         /// </summary>
         public uint bone { get; set; }
+
+        [SerializeField] SerializableVector3 position = new SerializableVector3();
+        [SerializeField] SerializableVector4 rotation = new SerializableVector4();
         /// <summary>
         /// The position of the bone
         /// </summary>
-        public Vector3 position { get; set; }
+        public SerializableVector3 Position { get => position; set => position = value; }
         /// <summary>
         /// The rotation of the bone
         /// </summary>
-        public Vector4 rotation { get; set; }
+        public SerializableVector4 Rotation { get => rotation; set => rotation = value; }
     }
 }

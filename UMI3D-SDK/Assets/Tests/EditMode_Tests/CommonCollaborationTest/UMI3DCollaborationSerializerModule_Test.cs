@@ -491,10 +491,10 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (bonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).position
-                 == (bonePoseDto as BonePoseDto).position));
-            Assert.IsTrue(((result as BonePoseDto).rotation
-                == (bonePoseDto as BonePoseDto).rotation));
+            Assert.IsTrue(((result as BonePoseDto).Position
+                 == (bonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Rotation
+                == (bonePoseDto as BonePoseDto).Rotation));
         }
 
         [Test]
@@ -516,10 +516,10 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (anchorBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).position
-                 == (anchorBonePoseDto as BonePoseDto).position));
-            Assert.IsTrue(((result as BonePoseDto).rotation
-                == (anchorBonePoseDto as BonePoseDto).rotation));
+            Assert.IsTrue(((result as BonePoseDto).Position
+                 == (anchorBonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Rotation
+                == (anchorBonePoseDto as BonePoseDto).Rotation));
 
             Assert.IsTrue(((result as AnchoredBonePoseDto).otherBone
                 == (anchorBonePoseDto as AnchoredBonePoseDto).otherBone));
@@ -544,10 +544,10 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (nodeAnchoredBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).position
-                 == (nodeAnchoredBonePoseDto as BonePoseDto).position));
-            Assert.IsTrue(((result as BonePoseDto).rotation
-                == (nodeAnchoredBonePoseDto as BonePoseDto).rotation));
+            Assert.IsTrue(((result as BonePoseDto).Position
+                 == (nodeAnchoredBonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Rotation
+                == (nodeAnchoredBonePoseDto as BonePoseDto).Rotation));
 
             Assert.IsTrue(((result as NodeAnchoredBonePoseDto).node
                 == (nodeAnchoredBonePoseDto as NodeAnchoredBonePoseDto).node));
@@ -571,10 +571,10 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (floorAnchoredBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).position
-                 == (floorAnchoredBonePoseDto as BonePoseDto).position));
-            Assert.IsTrue(((result as BonePoseDto).rotation
-                == (floorAnchoredBonePoseDto as BonePoseDto).rotation));
+            Assert.IsTrue(((result as BonePoseDto).Position
+                 == (floorAnchoredBonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Rotation
+                == (floorAnchoredBonePoseDto as BonePoseDto).Rotation));
         }
         #endregion
 
@@ -584,7 +584,7 @@ namespace EditMode_Tests
         {
             PoseDto poseDto = new PoseDto(
                 bones: GetTestBonePoseDtoSample(),
-                boneAnchor : new BonePoseDto() { bone = 24, position = Vector3.zero, rotation = Vector4.one }
+                boneAnchor : new BonePoseDto() { bone = 24, Position = Vector3.zero, Rotation = Vector4.one }
             );
 
             collabSerializerModule.Write(poseDto, out Bytable data);

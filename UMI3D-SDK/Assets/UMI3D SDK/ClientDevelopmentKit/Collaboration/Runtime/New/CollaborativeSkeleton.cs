@@ -60,17 +60,21 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser User;
 
         public TrackedSkeleton TrackedSkeleton;
-        public PoseSkeleton poseSkeleton;
+        public PoseSkeleton poseSkeleton = new PoseSkeleton();
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (skeletons != null)
                 foreach (ISubWritableSkeleton skeleton in skeletons.OfType<ISubWritableSkeleton>())
                     skeleton.UpdateFrame(frame);
+
+            this.transform.position = frame.position;
+            this.transform.rotation = frame.rotation;
         }
 
         public void SetSubSkeletons()
         {
+            TrackedSkeleton = Instantiate((UMI3DCollaborationEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
             skeletons.Add(TrackedSkeleton);
             skeletons.Add(poseSkeleton);
             //skeletons.Add(new AnimatedSkeleton());

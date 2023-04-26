@@ -27,7 +27,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// The local poses from the client
         /// </summary>
-        public PoseDto[] clientLocalPoses;
+        public List<PoseDto> clientLocalPoses;
 
         /// <summary>
         /// User size scale relative to the environment.

@@ -99,7 +99,7 @@ namespace umi3d.common.userCapture
         public void OnEnable()
         {
             VisualTreeAsset uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-                                    "Assets\\UMI3D SDK\\Common\\UserCapture\\Editor\\PoseSetter\\PoseSetterEditorWindow.uxml"
+                                    "Assets\\Dependencies\\UMI3D SDK\\Common\\UserCapture\\Editor\\PoseSetter\\PoseSetterEditorWindow.uxml"
                                    );
             uxml.CloneTree(rootVisualElement);
             GetAllRefs();
@@ -445,7 +445,7 @@ namespace umi3d.common.userCapture
 
             List<PoseSetterBoneComponent> roots = bone_components.Where(bc => bc.isRoot == true).ToList();
 
-            roots.ForEach(r =>
+            foreach (PoseSetterBoneComponent r in roots)
             {
                 r.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
                 List<BoneDto> bonsPoseSos = new();
@@ -457,16 +457,17 @@ namespace umi3d.common.userCapture
                                                              .Where(bc => bc.BoneType != BoneType.None)
                                                              .ToList();
 
-                Vector4 rootRotation = new Vector4(r.transform.rotation.x, r.transform.rotation.y, r.transform.rotation.z, r.transform.rotation.w);
-                BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, boneToSave[0], r); 
+                SerializableVector4 rootRotation = new SerializableVector4(r.transform.rotation.x, r.transform.rotation.y, r.transform.rotation.z, r.transform.rotation.w);
+                BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, boneToSave[0], r);
                 boneToSave.RemoveAt(0);
-                                                             
+
                 boneToSave.ForEach(bc =>
                 {
-                    Vector4 bonerotation = new Vector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
-                    BoneDto bonePose_So = new BoneDto() { 
+                    SerializableVector4 bonerotation = new SerializableVector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
+                    BoneDto bonePose_So = new BoneDto()
+                    {
                         boneType = bc.BoneType,
-                        rotation = bonerotation 
+                        rotation = bonerotation
                     };
 
                     AssetDatabase.SaveAssets();
@@ -476,9 +477,10 @@ namespace umi3d.common.userCapture
 
                 pose_So.Init(bonsPoseSos, bonePoseDto);
                 EditorUtility.SetDirty(pose_So);
+                AssetDatabase.SaveAssets();
 
                 SavePoseOverrider(pose_So, path);
-            });
+            }
         }
 
         private BonePoseDto CreateBonePoseDTOOfType(Vector4 rootRotation, PoseSetterBoneComponent poseSetterBoneComponent, PoseSetterBoneComponent r)
@@ -594,7 +596,7 @@ namespace umi3d.common.userCapture
             PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonePoseDto.bone);
             if (bone_component != null)
             {
-                bone_component.transform.rotation = bonePoseDto.rotation.ToQuaternion();
+                bone_component.transform.rotation = bonePoseDto.Rotation.ToQuaternion();
                 bone_component.isSavable = true;
             }
         }

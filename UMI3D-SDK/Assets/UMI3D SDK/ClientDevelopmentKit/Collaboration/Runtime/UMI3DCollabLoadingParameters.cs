@@ -14,6 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+using umi3d.cdk.interaction;
+using umi3d.cdk.userCapture;
+using umi3d.cdk.volumes;
+using umi3d.common;
+using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -24,6 +33,91 @@ namespace umi3d.cdk.collaboration
     [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Collab Loading Parameters")]
     public class UMI3DCollabLoadingParameters : UMI3DLoadingParameters
     {
-        //public override UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DCollabAvatarNodeLoader();
+        #region Collab User Capture
+        [Header("Collab User Capture")]
+        public bool CollaborationUserCaptureActivated;
+        public GameObject CollabTrackedSkeleton;
+
+        #endregion Collab User Capture
+
+        #region Emotes
+        [Header("Emotes")]
+        [SerializeField, Tooltip("Is the browser supporting emotes?")]
+        public bool areEmotesSupported;
+
+        /// <summary>
+        /// Icon displayed by default when no icon is defined for an emote.
+        /// </summary>
+        [SerializeField, Tooltip("Icon displayed by default when no icon is defined for an emote.")]
+        public Sprite defaultEmoteIcon;
+
+        #endregion Emotes
+
+        public override void Init()
+        {
+            (loader = new EntityGroupLoader())
+            .SetNext(new UMI3DInteractionLoader())
+            .SetNext(new UMI3DAnimationLoader())
+            .SetNext(new PreloadedSceneLoader())
+            .SetNext(new UMI3DInteractableLoader())
+            .SetNext(new UMI3DGlobalToolLoader())
+            .SetNext(new UMI3DMeshNodeLoader())
+            .SetNext(new UMI3DLineRendererLoader())
+            .SetNext(new UMI3DSubMeshNodeLoader())
+            .SetNext(new UMI3DVolumeLoader())
+            .SetNext(new UMI3DUINodeLoader())
+            .SetNext(new UMI3DPoseOverriderContainerLoader())
+            .SetNext(new UMI3DEmotesConfigLoader())
+            .SetNext(new UMI3DEmoteLoader())
+            .SetNext(notificationLoader.GetNotificationLoader())
+            .SetNext(new UMI3DNodeLoader())
+            .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
+            ;
+        }
+
+        /// <inheritdoc/>
+        public override Task UnknownOperationHandler(AbstractOperationDto operation)
+        {
+            switch (operation)
+            {
+                case SwitchToolDto switchTool:
+                    AbstractInteractionMapper.Instance.SwitchTools(switchTool.toolId, switchTool.replacedToolId, switchTool.releasable, 0, new interaction.RequestedByEnvironment());
+                    break;
+                case ProjectToolDto projection:
+                    AbstractInteractionMapper.Instance.SelectTool(projection.toolId, projection.releasable, 0, new interaction.RequestedByEnvironment());
+                    break;
+                case ReleaseToolDto release:
+                    AbstractInteractionMapper.Instance.ReleaseTool(release.toolId, new interaction.RequestedByEnvironment());
+                    break;
+            }
+            return Task.CompletedTask;
+        }
+
+        /// <inheritdoc/>
+        public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
+        {
+            ulong id;
+            bool releasable;
+
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.SwitchTool:
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    ulong oldid = UMI3DSerializer.Read<ulong>(container);
+                    releasable = UMI3DSerializer.Read<bool>(container);
+                    AbstractInteractionMapper.Instance.SwitchTools(id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
+                    break;
+                case UMI3DOperationKeys.ProjectTool:
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    releasable = UMI3DSerializer.Read<bool>(container);
+                    AbstractInteractionMapper.Instance.SelectTool(id, releasable, 0, new interaction.RequestedByEnvironment());
+                    break;
+                case UMI3DOperationKeys.ReleaseTool:
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    AbstractInteractionMapper.Instance.ReleaseTool(id, new interaction.RequestedByEnvironment());
+                    break;
+            }
+            return Task.CompletedTask;
+        }
     }
 }

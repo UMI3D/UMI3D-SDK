@@ -35,10 +35,7 @@ namespace umi3d.cdk
 
         [Header("Loading")]
         [SerializeField]
-        protected AbstractUMI3DLoadingParameters parameters;
-
-        [SerializeField, Tooltip("Material to use when material is unavailable or inexistent.")]
-        protected Material baseMaterial;
+        protected UMI3DLoadingParameters parameters;
         #endregion Loading
 
         /// <summary>
@@ -68,7 +65,7 @@ namespace umi3d.cdk
             // LOADING SERVICE
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             environmentLoaderService.SetParameters(parameters);
-            environmentLoaderService.SetBaseMaterial(baseMaterial);
+            environmentLoaderService.SetBaseMaterial(parameters.defaultMat);
         }
     }
 }

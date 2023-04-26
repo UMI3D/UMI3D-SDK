@@ -123,7 +123,7 @@ namespace umi3d.cdk.userCapture
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            if (trackingFrame.playerUserPoses == null) trackingFrame.playerServerPoses = new();
+            if (trackingFrame.playerUserPoses == null) trackingFrame.playerUserPoses = new();
             if (trackingFrame.playerServerPoses == null) trackingFrame.playerServerPoses = new();
 
             localCurrentlyActivatedPoses.ForEach((pose) =>

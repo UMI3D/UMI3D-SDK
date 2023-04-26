@@ -49,40 +49,4 @@ namespace umi3d.cdk.userCapture
             return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position, rotation = new Vector4().FromQuaternion(this.transform.rotation) };
         }
     }
-
-    public class TrackedSkeletonBoneController : TrackedSkeletonBone, IController
-    {
-        public Vector3 position
-        {
-            get
-            {
-                return this.transform.position;
-            }
-
-            set
-            {
-                this.transform.position = value;
-            }
-        }
-
-        public Quaternion rotation
-        {
-            get
-            {
-                return this.transform.localRotation;
-            }
-            set
-            {
-                this.transform.rotation = value;
-            }
-        }
-
-        public new uint boneType { get; set; }
-        public bool isActif { get; set; }
-
-        public void Destroy()
-        {
-            GameObject.Destroy(this.gameObject);
-        }
-    }
 }

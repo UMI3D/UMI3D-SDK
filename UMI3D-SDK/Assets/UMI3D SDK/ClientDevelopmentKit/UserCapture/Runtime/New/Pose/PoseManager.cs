@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture
 {
     public class PoseManager : SingleBehaviour<PoseManager>
     {
-        List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
+        [SerializeField] List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
 
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture
             {
                 PoseDto poseDto = clientPoses[i].ToDTO();
                 poseDto.id = i;
-                localPoses.Append(poseDto);
+                localPoses[i] = poseDto;
             }
         }
 

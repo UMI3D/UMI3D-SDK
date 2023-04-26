@@ -25,16 +25,7 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollaborationLoadingHandler : UMI3DLoadingHandler
     {
         #region Emotes
-        [Header("Emotes")]
-        [SerializeField, Tooltip("Is the browser supporting emotes?")]
-        public bool areEmotesSupported;
         private EmoteManager emoteService;
-
-        /// <summary>
-        /// Icon displayed by default when no icon is defined for an emote.
-        /// </summary>
-        [SerializeField, Tooltip("Icon displayed by default when no icon is defined for an emote.")]
-        private Sprite defaultEmoteIcon;
 
         #endregion Emotes
 
@@ -44,10 +35,10 @@ namespace umi3d.cdk.collaboration
             environmentLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
 
             // EMOTES SERVICE
-            if (areEmotesSupported)
+            if ((parameters as UMI3DCollabLoadingParameters).areEmotesSupported)
             {
                 emoteService = EmoteManager.Instance;
-                emoteService.DefaultIcon = defaultEmoteIcon;
+                emoteService.DefaultIcon = (parameters as UMI3DCollabLoadingParameters).defaultEmoteIcon;
             }
 
             base.Awake();
