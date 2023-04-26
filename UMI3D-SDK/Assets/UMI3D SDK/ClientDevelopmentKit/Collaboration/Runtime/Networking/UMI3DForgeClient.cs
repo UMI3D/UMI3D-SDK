@@ -530,16 +530,30 @@ namespace umi3d.cdk.collaboration
                 case UMI3DOperationKeys.FrameRequest:
                     {
                         ulong frameId = UMI3DSerializer.Read<ulong>(container);
+                        float scale = UMI3DSerializer.Read<float>(container);
 
                         var frame = new FrameRequestDto()
                         {
                             FrameId = frameId,
+                            scale = scale
                         };
 
-                        MainThreadManager.Run(() =>
+                        bool waitforreparenting = true;
+                        MainThreadManager.Run(async () =>
                         {
-                            UMI3DNavigation.SetFrame(frame);
+                            try
+                            {
+                                UMI3DNavigation.SetFrame(frame);
+                            }
+                            catch (Exception e)
+                            {
+                                UMI3DLogger.LogException(e, scope);
+                            }
+                            await UMI3DAsyncManager.Yield();
+                            waitforreparenting = false;
                         });
+                        while (waitforreparenting)
+                            await UMI3DAsyncManager.Yield();
                     }
                     break;
                 //case UMI3DOperationKeys.BoardedVehicleRequest:

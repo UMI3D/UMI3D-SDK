@@ -46,9 +46,9 @@ namespace umi3d.cdk
             currentNav.Activate();
         }
 
-
         public static void SetFrame(FrameRequestDto frameRequest)
         {
+            UnityEngine.Debug.LogError("Need to handle rescaling");
             if (Exists && Instance.currentNav != null)
             {
                 onUpdateFrameDelegate?.Invoke(frameRequest.FrameId);

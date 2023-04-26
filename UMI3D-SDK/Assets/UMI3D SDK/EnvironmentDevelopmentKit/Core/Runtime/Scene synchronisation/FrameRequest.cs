@@ -30,9 +30,27 @@ namespace umi3d.edk
         /// </summary>
         public ulong FrameId = 0;
 
+        /// <summary>
+        /// Scale of the user in the new referentiel. 
+        /// Not to be misunderstood with the height.
+        /// A user should be at full height with a scale of one.
+        /// </summary>
+        public float scale = 1;
+
         public FrameRequest(ulong FrameId = 0)
         {
             this.FrameId = FrameId;
+        }
+
+        public FrameRequest(ulong FrameId, float scale)
+        {
+            this.FrameId = FrameId;
+            this.scale = scale;
+        }
+
+        public FrameRequest(float scale)
+        {
+            this.scale = scale;
         }
 
         /// <inheritdoc/>
@@ -49,12 +67,13 @@ namespace umi3d.edk
         }
 
         protected virtual FrameRequestDto CreateDto() { return new FrameRequestDto(); }
-        protected virtual void WriteProperties(FrameRequestDto dto) { dto.FrameId = FrameId; }
+        protected virtual void WriteProperties(FrameRequestDto dto) { dto.FrameId = FrameId; dto.scale = scale; }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(GetOperationKey())
-                + UMI3DSerializer.Write(FrameId);
+                + UMI3DSerializer.Write(FrameId)
+                + UMI3DSerializer.Write(scale);
         }
     }
 }

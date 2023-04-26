@@ -22,5 +22,12 @@ namespace umi3d.common
         /// Frame's UMI3D id.
         /// </summary>
         public ulong FrameId { get; set; } = 0;
+
+        /// <summary>
+        /// Scale of the user in the new referentiel. 
+        /// Not to be misunderstood with the height.
+        /// A user should be at full height with a scale of one.
+        /// </summary>
+        public float scale { get; set; } = 1;
     }
 }
