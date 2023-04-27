@@ -250,15 +250,6 @@ namespace umi3d.cdk.collaboration
                     OnUserMicrophoneChannelUpdated.Invoke(this);
                     return true;
 
-                case UMI3DPropertyKeys.UserBindings:
-                    SetBindingProperty(value);
-
-                    return true;
-
-                case UMI3DPropertyKeys.ActiveBindings:
-                     ActivateBindings(value);
-                    return true;
-
                 default:
                     return false;
             }
@@ -297,56 +288,6 @@ namespace umi3d.cdk.collaboration
         public static void MuteAllAttention()
         {
             UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
-        }
-
-        private void SetBindingProperty(object value)
-        {
-            if(value is SetUMI3DPropertyData data)
-            {
-                if (SkeletonManager.Instance.GetSkeletonById(data.property.entityId) is ISkeleton skeleton)
-                {
-                    if (skeleton != null)
-                    {
-                        switch (data.property)
-                        {
-                            case SetEntityListAddPropertyDto add:
-                                skeleton.AddBinding(add.index, data.property.value as BindingDto);
-                                break;
-                            case SetEntityListRemovePropertyDto rem:
-                                skeleton.RemoveBinding(rem.index);
-                                break;
-                            case SetEntityListPropertyDto set:
-                                skeleton.UpdateBinding(set.index, data.property.value as BindingDto);
-                                break;
-                            default:
-                                skeleton.SetBindings(data.property.value as List<BindingDto>);
-                                break;
-                        }
-                    }
-                }
-            }
-            else
-            {
-                throw new System.Exception("Internal error");
-            }
-        }
-
-        private void ActivateBindings(object value)
-        {
-            if (value is SetUMI3DPropertyData data)
-            {
-                if (SkeletonManager.Instance.GetSkeletonById(data.property.entityId) is ISkeleton skeleton)
-                {
-                    if (skeleton != null)
-                    {
-                        skeleton.SetActiveBindings((bool)data.property.value);
-                    }
-                    else
-                    {
-                        throw new System.Exception("Internal error");
-                    }
-                }
-            }
         }
 
         public override string ToString()
