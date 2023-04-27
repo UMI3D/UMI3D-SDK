@@ -104,9 +104,11 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
 
-        public UMI3DCollaborationUser(RegisterIdentityDto identity) : base(lastGivenUserId++)
+        public UMI3DCollaborationUser(RegisterIdentityDto identity) : base()
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
+            this.userId = identity is not null ? identity.userId : Id();
+            lastGivenUserId = this.userId;
 
             audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
             microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);

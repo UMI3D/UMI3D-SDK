@@ -37,11 +37,6 @@ namespace umi3d.edk.userCapture
 
         UMI3DAsyncProperty<Vector3> userSize;
 
-        public UMI3DTrackedUser(ulong id) : base()
-        {
-            base.userId = id;
-        }
-
         static object joinLock = new object();
         public async Task JoinDtoReception( SerializableVector3 userSize, PoseDto[] userPoses)
         {
