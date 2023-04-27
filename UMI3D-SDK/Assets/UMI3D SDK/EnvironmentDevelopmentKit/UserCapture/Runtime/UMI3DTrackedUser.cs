@@ -34,32 +34,5 @@ namespace umi3d.edk.userCapture
         /// User's tracking current state description
         /// </summary>
         public UserTrackingFrameDto CurrentTrackingFrame;
-
-        UMI3DAsyncProperty<Vector3> userSize;
-
-        public UMI3DTrackedUser(ulong id) : base()
-        {
-            base.userId = id;
-            userSize = new UMI3DAsyncProperty<Vector3>(base.userId, UMI3DPropertyKeys.UserSize, new());
-        }
-
-        static object joinLock = new object();
-        public async Task JoinDtoReception( SerializableVector3 userSize, PoseDto[] userPoses)
-        {
-            lock (joinLock)
-            {
-                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
-
-                if (this.userSize.GetValue() == userSize)
-                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
-                else
-                    this.userSize.SetValue(userSize);
-            }
-
-            await UMI3DPoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
-            await UMI3DAsyncManager.Yield();
-
-            UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
-        }
     }
 }

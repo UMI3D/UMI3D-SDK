@@ -15,8 +15,11 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking;
+using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.userCapture;
 using umi3d.edk.userCapture;
 
 namespace umi3d.edk.collaboration
@@ -104,7 +107,9 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
 
-        public UMI3DCollaborationUser(RegisterIdentityDto identity) : base()
+        public UMI3DAsyncProperty<SerializableVector3> userSize;
+
+        public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
             this.userId = identity is not null ? identity.userId : Id();
@@ -123,6 +128,8 @@ namespace umi3d.edk.collaboration
 
             onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
             onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
+
+            userSize = new UMI3DAsyncProperty<SerializableVector3>(base.userId, UMI3DPropertyKeys.UserSize, new());
 
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
@@ -148,6 +155,26 @@ namespace umi3d.edk.collaboration
             };
             //RenewToken();
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
+        }
+
+        static object joinLock = new object();
+
+        public async Task JoinDtoReception(SerializableVector3 userSize, PoseDto[] userPoses)
+        {
+            lock (joinLock)
+            {
+                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+
+                if (this.userSize.GetValue() == userSize)
+                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
+                else
+                    this.userSize.SetValue(userSize);
+            }
+
+            await UMI3DPoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
+            await UMI3DAsyncManager.Yield();
+
+            UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
         }
 
         /// <summary>
