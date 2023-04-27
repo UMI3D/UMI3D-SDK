@@ -192,7 +192,7 @@ namespace umi3d.common
 
         #region UserTracking
         // 11000-11999
-        public const uint UserBindings = 11001;
+        public const uint Bindings = 11001;
         public const uint ActiveBindings = 11002;
 
         public const uint ActiveHandPose = 11003;
