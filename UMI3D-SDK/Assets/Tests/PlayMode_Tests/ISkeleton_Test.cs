@@ -42,27 +42,18 @@ public class ISkeleton_Test
     {
         #region fields
         #region interface Fields
-        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get => bones; set => bones = value; }
         List<ISubSkeleton> ISkeleton.Skeletons { get => skeletons; set => skeletons = value; }
-        bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
         ulong ISkeleton.userId { get => userId; set => userId = value; }
         Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
         QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
-        List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
-        List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
-        List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
 
         #endregion
-        protected Dictionary<uint, ISkeleton.s_Transform> bones;
+        public Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
         protected List<ISubSkeleton> skeletons;
-        protected bool activeUserBindings;
         protected ulong userId;
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
-        protected List<ISkeleton.Bound> bounds;
-        protected List<Transform> boundRigs;
-        protected List<BindingDto> userBindings;
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms;
 
         #endregion
@@ -102,9 +93,8 @@ public class ISkeleton_Test
         Type type = typeof(ISkeleton);
         if (type != null)
         {
-            BindingDto dto = null;
             Transform obj = null;
-            object[] parameters = new object[] { dto, obj };
+            object[] parameters = new object[] { null, obj };
             type.GetTypeInfo().GetDeclaredMethods("SaveTransform").ToList()[1].Invoke(fakeSkeleton, parameters);
 
             Assert.IsTrue(fakeSkeleton.SavedTransforms.Count == 0);
@@ -123,59 +113,10 @@ public class ISkeleton_Test
         Type type = typeof(ISkeleton);
         if (type != null)
         {
-            BindingDto dto = new BindingDto();
             Transform obj = (new GameObject()).transform;
-            object[] parameters = new object[] { dto, obj };
+            object[] parameters = new object[] { null, obj };
             type.GetTypeInfo().GetDeclaredMethods("SaveTransform").ToList()[1].Invoke(fakeSkeleton, parameters);
             Assert.IsTrue(fakeSkeleton.SavedTransforms.Count == 1);
-        }
-
-        yield return null;
-    }
-    #endregion
-
-    #region Add new bound
-    /// <summary>
-    /// Test that we dont add null bounds
-    /// </summary>
-    /// <returns></returns>
-    [UnityTest]
-    public IEnumerator TestAddBoundNull()
-    {
-        Type type = typeof(ISkeleton);
-        if (type != null)
-        {
-            BindingDto dto = null;
-            Transform obj = null;
-            UMI3DNodeInstance node = null;
-            object[] parameters = new object[] { dto, obj, node };
-            MethodInfo mi = type.GetTypeInfo().GetDeclaredMethods("AddANewBound").ToList()[0];
-            mi.Invoke(fakeSkeleton, parameters);
-            Assert.IsTrue(fakeSkeleton.Bounds.Count == 0);
-        }
-
-        yield return null;
-    }
-
-    /// <summary>
-    /// test that we add bounds when not null
-    /// </summary>
-    /// <returns></returns>
-    [UnityTest]
-    public IEnumerator TestAddBound()
-    {
-        Type type = typeof(ISkeleton);
-        if (type != null)
-        {
-            BindingDto dto = new BindingDto();
-            Transform obj = (new GameObject()).transform;
-            UMI3DNodeInstance node = new UMI3DNodeInstance(() => Debug.Log("t"));
-
-            object[] parameters = new object[] { dto, obj, node };
-            MethodInfo mi = type.GetTypeInfo().GetDeclaredMethods("AddANewBound").ToList()[0];
-            mi.Invoke(fakeSkeleton, parameters);
-
-            Assert.IsTrue(fakeSkeleton.Bounds.Count == 1);
         }
 
         yield return null;
