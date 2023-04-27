@@ -17,12 +17,13 @@ limitations under the License.
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
-    public class SimpleBoneBindingDto : SimpleBindingDto
+    public class BoneBindingDataDto : AbstractSimpleBindingDataDto
     {
-        public SimpleBoneBindingDto() { }
+        public BoneBindingDataDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="userId">The user to which the object i going to be binded ID</param>
         /// <param name="boneType">The bone to which the object is going to be binded</param>
@@ -34,23 +35,14 @@ namespace umi3d.common.userCapture
         /// <param name="offSetScale">offSet Scale of the binding</param>
         /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
         /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
-        public SimpleBoneBindingDto(ulong userId, uint boneType,
+        public BoneBindingDataDto(ulong userId, uint boneType,
                         bool syncRotation, bool syncScale, bool syncPosition,
-                        SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale,
-                        int priority, bool partialFit) 
-            : base( syncRotation, syncScale, syncPosition,
-                    offSetPosition, offSetRotation, offSetScale,
+                        SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale, SerializableVector3 anchorPosition,
+                        int priority, bool partialFit)
+            : base(syncRotation, syncScale, syncPosition,
+                    offSetPosition, offSetRotation, offSetScale, anchorPosition,
                     priority, partialFit)
         {
-            this.userId = userId;  
-            this.boneType = boneType;
-        }
-
-        public SimpleBoneBindingDto(SimpleBindingDto simpleBinding, ulong userId, uint boneType) 
-            : base(simpleBinding.syncRotation, simpleBinding.syncScale, simpleBinding.syncPosition,
-                simpleBinding.offSetPosition, simpleBinding.offSetRotation, simpleBinding.offSetScale,
-                simpleBinding.priority, simpleBinding.partialFit)
-        { 
             this.userId = userId;
             this.boneType = boneType;
         }
@@ -63,6 +55,6 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The bone to which the object is going to be binded
         /// </summary>
-        public uint boneType { get; private set; }  
-     }
+        public uint boneType { get; private set; }
+    }
 }

@@ -14,38 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
     [System.Serializable]
-    /// <summary>
-    /// In multi binding the priority state which binding should be match the most.
-    /// </summary>
-    public class MultiBindingDto : BindingDataDto
+    public class MultiBindingDataDto : AbstractBindingDataDto
     {
-        public MultiBindingDto() { }
+        public MultiBindingDataDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
-        /// <param name="Bindings">List Of all the simple bindings to apply</param>
+        /// <param name="bindings">List Of all the simple bindings to apply</param>
         /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
         /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
-        public MultiBindingDto(BindingDataDto[] Bindings, int priority, bool partialFit)
+        public MultiBindingDataDto(AbstractSimpleBindingDataDto[] bindings, int priority, bool partialFit)
             : base(priority, partialFit)
         {
-            this.Bindings = Bindings;
-        }
-
-        public MultiBindingDto(BindingDataDto[] Bindings, BindingDataDto bindingDataDto)
-            : base(bindingDataDto.priority, bindingDataDto.partialFit)
-        {
-            this.Bindings = Bindings;
+            this.Bindings = bindings;
         }
 
         /// <summary>
         /// List Of all the simple bindings to apply
         /// </summary>
-        public BindingDataDto[] Bindings { get; private set; }
+        public AbstractSimpleBindingDataDto[] Bindings { get; private set; }
     }
 }

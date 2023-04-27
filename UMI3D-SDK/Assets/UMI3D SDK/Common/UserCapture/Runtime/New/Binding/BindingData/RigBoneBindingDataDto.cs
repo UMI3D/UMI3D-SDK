@@ -14,16 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
-    public class RigBindingDataDto : SimpleBoneBindingDto
+    public class RigBoneBindingDataDto : BoneBindingDataDto
     {
-        public RigBindingDataDto() { }
+        public RigBoneBindingDataDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="rigName">Name of the rig</param>
         /// <param name="userId">The user to which the object i going to be binded ID</param>
@@ -36,27 +36,14 @@ namespace umi3d.common.userCapture
         /// <param name="offSetScale">offSet Scale of the binding</param>
         /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
         /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
-        public RigBindingDataDto(string rigName, ulong userId, uint boneType,
+        public RigBoneBindingDataDto(string rigName, ulong userId, uint boneType,
                 bool syncRotation, bool syncScale, bool syncPosition,
-                SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale,
-                int priority, bool partialFit) 
+                SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale, SerializableVector3 anchorPosition,
+                int priority, bool partialFit)
             : base(userId, boneType,
                    syncRotation, syncScale, syncPosition,
-                   offSetPosition, offSetRotation, offSetScale,
+                   offSetPosition, offSetRotation, offSetScale, anchorPosition,
                    priority, partialFit)
-        {
-            this.rigName= rigName;
-        }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="rigName">Name of the rig</param>
-        public RigBindingDataDto(string rigName, SimpleBoneBindingDto simpleBoneBindingDto) 
-            : base(simpleBoneBindingDto.userId, simpleBoneBindingDto.boneType,
-                simpleBoneBindingDto.syncRotation, simpleBoneBindingDto.syncScale, simpleBoneBindingDto.syncPosition,
-                simpleBoneBindingDto.offSetPosition, simpleBoneBindingDto.offSetRotation, simpleBoneBindingDto.offSetScale,
-                simpleBoneBindingDto.priority, simpleBoneBindingDto.partialFit)
         {
             this.rigName = rigName;
         }

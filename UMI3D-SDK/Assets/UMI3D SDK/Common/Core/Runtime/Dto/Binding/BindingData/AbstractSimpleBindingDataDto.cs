@@ -14,19 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
     [System.Serializable]
-    public class SimpleBindingDto : BindingDataDto
+    public abstract class AbstractSimpleBindingDataDto : AbstractBindingDataDto
     {
-        public SimpleBindingDto() { }
+        public AbstractSimpleBindingDataDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="syncRotation">Do we sync the Rotation of the binding with the rest of the system</param>
         /// <param name="syncScale">Do we sync the Scale of the binding with the rest of the system</param>
@@ -36,23 +33,10 @@ namespace umi3d.common.userCapture
         /// <param name="offSetScale">offSet Scale of the binding</param>
         /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
         /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
-        public SimpleBindingDto(bool syncRotation, bool syncScale, bool syncPosition,
-                                SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale,
-                                int priority, bool partialFit) 
+        public AbstractSimpleBindingDataDto(bool syncRotation, bool syncScale, bool syncPosition,
+                                SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale, SerializableVector3 anchorPosition,
+                                int priority, bool partialFit)
             : base(priority, partialFit)
-        {
-            this.syncRotation = syncRotation;
-            this.syncScale = syncScale;
-            this.syncPosition = syncPosition;
-            this.offSetPosition = offSetPosition;
-            this.offSetRotation = offSetRotation;          
-            this.offSetScale = offSetScale;   
-        }
-
-        public SimpleBindingDto(bool syncRotation, bool syncScale, bool syncPosition,
-                                SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale,
-                                BindingDataDto bindingDataDto) 
-            : base(bindingDataDto.priority, bindingDataDto.partialFit)
         {
             this.syncRotation = syncRotation;
             this.syncScale = syncScale;
@@ -60,6 +44,7 @@ namespace umi3d.common.userCapture
             this.offSetPosition = offSetPosition;
             this.offSetRotation = offSetRotation;
             this.offSetScale = offSetScale;
+            this.anchorPosition = anchorPosition;
         }
 
         /// <summary>
@@ -80,16 +65,21 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// offSet Position of the binding
         /// </summary>
-        public Vector3 offSetPosition { get; private set; }
+        public SerializableVector3 offSetPosition { get; private set; }
 
         /// <summary>
         /// offset rotation of the binding
         /// </summary>
-        public Vector4 offSetRotation { get; private set; }
+        public SerializableVector4 offSetRotation { get; private set; }
 
         /// <summary>
         /// offSet Scale of the binding
         /// </summary>
-        public Vector3 offSetScale { get; private set; }
+        public SerializableVector3 offSetScale { get; private set; }
+
+        /// <summary>
+        /// referencial position in which the binding is applied. Defined in parent referential.
+        /// </summary>
+        public SerializableVector3 anchorPosition { get; private set; }
     }
 }

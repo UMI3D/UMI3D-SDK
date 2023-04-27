@@ -14,38 +14,37 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
-namespace umi3d.common.userCapture
+namespace umi3d.common
 {
+    /// <summary>
+    /// Dto for an association linking together two objects in the 3D space
+    /// </summary>
     [System.Serializable]
-    public class BindingDto : UMI3DDto
+    public class BindingDto : AbstractOperationDto
     {
-        public BindingDto() { }
+        public BindingDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
-        /// <param name="objectId">An identifier defined by the designer.</param>
+        /// <param name="boundNodeId">An identifier defined by the designer.</param>
         /// <param name="active">Is it activated</param>
         /// <param name="data">A ref to the Dto containing all the information about the said binding or bindings</param>
-        public BindingDto(ulong objectId, bool active, BindingDataDto data)
+        public BindingDto(ulong boundNodeId, AbstractBindingDataDto data)
         {
-            this.bindingId = objectId;
-            this.active = active;
+            this.boundNodeId = boundNodeId;
             this.data = data;
         }
 
         /// <summary>
         /// An identifier defined by the designer.
         /// </summary>
-        public ulong bindingId { get; private set; }
-        /// <summary>
-        /// Is it activated
-        /// </summary>
-        public bool active { get; private set; }
+        public ulong boundNodeId { get; private set; }
+
         /// <summary>
         /// A ref to the Dto containing all the information about the said binding or bindings
         /// </summary>
-        public BindingDataDto data { get; private set; }
+        public AbstractBindingDataDto data { get; private set; }
     }
 }
