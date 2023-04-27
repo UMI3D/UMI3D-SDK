@@ -89,16 +89,16 @@ namespace umi3d.edk.collaboration
                 }
             }
 
-            // Binding
-            var binding = new BoneBinding(audioSourceNode.Id(), BoneType.Head, user.Id())
-            {
-                users = UMI3DServer.Instance.UserSet(),
-                syncPosition = true,
-                syncRotation = true,
-                priority = 100
-            };
+            // TODO: Repair bone Binding
+            //var binding = new BoneBinding(audioSourceNode.Id(), BoneType.Head, user.Id())
+            //{
+            //    users = UMI3DServer.Instance.UserSet(),
+            //    syncPosition = true,
+            //    syncRotation = true,
+            //    priority = 100
+            //};
 
-            tr.AddIfNotNull(BindingHelper.Instance.AddBinding(binding));
+            //tr.AddIfNotNull(BindingHelper.Instance.AddBinding(binding));
             UMI3DServer.Dispatch(tr);
 
             UMI3DServer.Instance.NotifyUserChanged(user);
