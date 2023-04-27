@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.userCapture;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -118,6 +119,7 @@ namespace umi3d.cdk.collaboration
             UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
             UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
             UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
+            UMI3DSerializer.AddModule(new UMI3DUserCaptureBindingSerializerModule());
             UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
             UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
         }

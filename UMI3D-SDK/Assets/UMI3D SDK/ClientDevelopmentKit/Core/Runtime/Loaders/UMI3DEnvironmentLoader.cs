@@ -234,6 +234,18 @@ namespace umi3d.cdk
         public static UMI3DNodeInstance GetNode(ulong id) { return id != 0 && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] as UMI3DNodeInstance : null; }
 
         /// <summary>
+        /// Get a node with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns>Node instance or null if node does not exist.</returns>
+        public UMI3DNodeInstance GetNodeInstance(ulong id)
+        {
+            if (GetEntityInstance(id) is not UMI3DNodeInstance node)
+                throw new Umi3dException($"Entity {id} is not an UMI3DNodeInstance.");
+            return node;
+        }
+
+        /// <summary>
         /// Get a node id with a collider.
         /// </summary>
         /// <param name="collider">collider.</param>

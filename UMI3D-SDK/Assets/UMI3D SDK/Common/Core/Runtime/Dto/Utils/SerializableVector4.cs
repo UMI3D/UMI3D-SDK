@@ -24,7 +24,7 @@ namespace umi3d.common
     /// </summary>
     /// The 4th component has a default value of 1, like in homogeneous coordinates systems.
     [Serializable]
-    public class SerializableVector4 : UMI3DDto
+    public class SerializableVector4 : UMI3DDto, IEquatable<SerializableVector4>
     {
         public float X;
         public float Y;
@@ -51,6 +51,11 @@ namespace umi3d.common
         public override string ToString()
         {
             return ((Vector4)this).ToString();
+        }
+
+        public bool Equals(SerializableVector4 other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
         }
 
         public static implicit operator SerializableVector4(Vector4 v)

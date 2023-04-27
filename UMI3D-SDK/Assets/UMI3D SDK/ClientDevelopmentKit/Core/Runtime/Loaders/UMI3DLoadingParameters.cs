@@ -89,6 +89,8 @@ namespace umi3d.cdk
 
         public List<AbstractUMI3DMaterialLoader> MaterialLoaders { get; } = new List<AbstractUMI3DMaterialLoader>() { new UMI3DExternalMaterialLoader(), new UMI3DPbrMaterialLoader(), new UMI3DOriginalMaterialLoader() };
 
+        protected IBindingManager bindingService;
+
         protected AbstractLoader loader;
         public virtual void Init()
         {
@@ -104,6 +106,8 @@ namespace umi3d.cdk
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
             ;
+
+            bindingService = BindingManager.Instance;
         }
 
         protected AbstractLoader GetLoader()
@@ -371,12 +375,49 @@ namespace umi3d.cdk
 
         public override Task UnknownOperationHandler(AbstractOperationDto operation)
         {
-            throw new NotImplementedException();
+            switch (operation)
+            {
+                case BindingDto binding:
+                    bindingService.AddBinding(binding);
+                    break;
+                case RemoveBindingDto removeBinding:
+                    bindingService.RemoveBinding(removeBinding);
+                    break;
+                case UpdateBindingsActivationDto updateBindingsActivation:
+                    bindingService.UpdateBindingsActivation(updateBindingsActivation);
+                    break;
+            }
+            return Task.CompletedTask;
         }
 
         public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
-            throw new NotImplementedException();
+            ulong id;
+            bool releasable;
+
+            switch (operationId)
+            {
+                case UMI3DOperationKeys.AddBinding:
+                    {
+                        var dto = UMI3DSerializer.Read<BindingDto>(container);
+                        bindingService.AddBinding(dto);
+                        break;
+                    }
+
+                case UMI3DOperationKeys.RemoveBinding:
+                    {
+                        var dto = UMI3DSerializer.Read<RemoveBindingDto>(container);
+                        bindingService.RemoveBinding(dto);
+                        break;
+                    }
+                case UMI3DOperationKeys.UpdateBindingsActivation:
+                    {
+                        var dto = UMI3DSerializer.Read<UpdateBindingsActivationDto>(container);
+                        bindingService.UpdateBindingsActivation(dto);
+                        break;
+                    }
+            }
+            return Task.CompletedTask;
         }
     }
 }

@@ -52,6 +52,10 @@ namespace umi3d.common
 
         public const uint MultiSetEntityProperty = 110;
 
+        public const uint UpdateBindingsActivation = 120;
+        public const uint AddBinding = 121;
+        public const uint RemoveBinding = 122;
+
 
         public const uint ProjectTool = 200;
         public const uint SwitchTool = 201;

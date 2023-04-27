@@ -73,6 +73,8 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
             ;
+
+            bindingService = CollaborativeSkeletonBindingManager.Instance;
         }
 
         /// <inheritdoc/>

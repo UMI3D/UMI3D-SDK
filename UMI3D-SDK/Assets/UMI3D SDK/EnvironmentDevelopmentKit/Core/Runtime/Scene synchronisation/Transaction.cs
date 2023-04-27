@@ -138,6 +138,9 @@ namespace umi3d.edk
                     {
                         case StartInterpolationProperty starti:
                         case StopInterpolationProperty stopi:
+                        case AbstractBinding:
+                        case RemoveBinding:
+                        case UpdateBindingsActivation:
                         case SetEntityDictionaryAddProperty a:
                         case SetEntityDictionaryRemoveProperty r:
                         case SetEntityListAddProperty al:

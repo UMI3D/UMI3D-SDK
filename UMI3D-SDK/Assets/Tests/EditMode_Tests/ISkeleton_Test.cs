@@ -35,15 +35,10 @@ public class ISkeleton_Test
     {
         #region fields
         #region interface Fields
-        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get => bones; set => bones = value; }
         List<ISubSkeleton> ISkeleton.Skeletons { get => skeletons; set => skeletons = value; }
-        bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
         ulong ISkeleton.userId { get => userId; set => userId = value; }
         Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
         QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
-        List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
-        List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
-        List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
         Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => skeletonHierarchy; set => skeletonHierarchy = value; }
 
@@ -51,15 +46,11 @@ public class ISkeleton_Test
         Transform ISkeleton.HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
 
         #endregion
-        protected Dictionary<uint, ISkeleton.s_Transform> bones;
+        public Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
         protected List<ISubSkeleton> skeletons;
-        protected bool activeUserBindings;
         protected ulong userId;
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
-        protected List<ISkeleton.Bound> bounds;
-        protected List<Transform> boundRigs;
-        protected List<BindingDto> userBindings;
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms;
         protected Dictionary<uint, (uint, Vector3)> skeletonHierarchy = new Dictionary<uint, (uint, Vector3)>();
         [SerializeField]
@@ -118,7 +109,7 @@ public class ISkeleton_Test
         ISkeleton results = iskeletton.Compute();
 
         //Then
-        Assert.IsTrue(results.Bones.Count == 0);  
+        Assert.IsTrue(results.Bones.Count == 0);
     }
 
     /// <summary>
@@ -131,7 +122,7 @@ public class ISkeleton_Test
         ISkeleton iskeletton = fakeSkeleton;
         animatedSkeletons.Add(new AnimatedSkeleton(new SkeletonMapper()));
         animatedSkeletons.Add(new AnimatedSkeleton(new SkeletonMapper()));
-     
+
         iskeletton.Skeletons.AddRange(animatedSkeletons);
         //When
         ISkeleton results = iskeletton.Compute();
@@ -170,79 +161,5 @@ public class ISkeleton_Test
         //Then
         Assert.IsTrue(results.Bones.Count == 1);
     }
-    #endregion
-    #region Bindings
-    #region Add/remove
-    #region public methods
-    /// <summary>
-    /// Test that adding null bindings will not break our user bindings system
-    /// </summary>
-    [Test]
-    public void TestAddNullBindingNullList()
-    {
-        fakeSkeleton.AddBinding(0, null);
-
-        Assert.IsTrue(fakeSkeleton.userBindings == null);
-    }
-
-    /// <summary>
-    /// Test that we can add a binding
-    /// </summary>
-    [Test]
-    public void TestAddBinding()
-    {
-        BindingDto dto = new BindingDto();
-        fakeSkeleton.AddBinding(0, dto);
-
-        Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
-    }
-    /// <summary>
-    ///     testc that we can add multiple bindings at once
-    /// </summary>
-    [Test]
-    public void TestAddMultipleSameBindings()
-    {
-        BindingDto dto = new BindingDto(1 , true, null);
-        fakeSkeleton.AddBinding(0, dto);
-        BindingDto dto2 = new BindingDto(1, true, null);
-        fakeSkeleton.AddBinding(0, dto2);
-
-        Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
-    }
-    /// <summary>
-    /// test taht we can add multiple different bindings at once
-    /// </summary>
-    [Test]
-    public void TestAddMultipleDifferentBindings()
-    {
-        BindingDto dto = new BindingDto(5648, true, null);
-        fakeSkeleton.AddBinding(0, dto);
-        BindingDto dto2 = new BindingDto(94856, true, null);
-        fakeSkeleton.AddBinding(1, dto2);
-
-        Assert.IsTrue(fakeSkeleton.userBindings.Count == 2);
-    }
-
-    /// <summary>
-    /// test that we can add a binding at a specific index 
-    /// </summary>
-    [Test]
-    public void TestRemoveBindingAtIndex()
-    {
-        BindingDto dto = new BindingDto(5648, true, null);
-        fakeSkeleton.AddBinding(0, dto);
-        BindingDto dto2 = new BindingDto(94856, true, null);
-        fakeSkeleton.AddBinding(1, dto2);
-
-        fakeSkeleton.RemoveBinding(0);
-
-        Assert.IsTrue(fakeSkeleton.userBindings.Contains(dto2));
-        Assert.IsTrue(fakeSkeleton.userBindings.Count == 1);
-    }
-    #endregion
-    #region private methods
-
-    #endregion
-    #endregion
     #endregion
 }

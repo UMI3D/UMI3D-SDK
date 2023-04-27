@@ -19,7 +19,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Cryptography;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -73,14 +72,33 @@ namespace umi3d.cdk.collaboration
 
         public TrackingOption option;
 
+        #region Dependency Injection
+
+        private UMI3DCollaborationClientServer collaborationClientServerService;
+        private UMI3DCollaborationEnvironmentLoader collaborativeLoaderService;
+
         public SkeletonManager() : base()
         {
-            SetTrackingSending(_sendTracking);
+            collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
+            collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
+            Init();
+        }
 
-            UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(() => { skeletons.Clear(); InitSkeletons(); });
-            UMI3DCollaborationClientServer.Instance.OnReconnect.AddListener(() => { skeletons.Clear(); InitSkeletons(); });
+        public SkeletonManager(UMI3DCollaborationClientServer collaborationClientServer, UMI3DCollaborationEnvironmentLoader collaborativeLoader) : base()
+        {
+            this.collaborationClientServerService = collaborationClientServer;
+            this.collaborativeLoaderService = collaborativeLoader;
+            Init();
+        }
 
-            UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += () => UpdateSkeletons(UMI3DCollaborationEnvironmentLoader.Instance.JoinnedUserList);
+        #endregion Dependency Injection
+
+        public void Init()
+        {
+            collaborationClientServerService.OnRedirection.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(_sendTracking); });
+            collaborationClientServerService.OnReconnect.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(_sendTracking); });
+
+            UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += () => UpdateSkeletons(collaborativeLoaderService.JoinnedUserList);
         }
 
         protected async void InitSkeletons()
@@ -134,7 +152,7 @@ namespace umi3d.cdk.collaboration
         {
             UnityEngine.Debug.Log("GetFrame");
             var frame = skeleton.GetFrame(option);
-            frame.userId = UMI3DCollaborationClientServer.Instance.GetUserId();
+            frame.userId = collaborationClientServerService.GetUserId();
             //frame.refreshFrequency = targetTrackingFPS;
             return frame;
         }
@@ -182,7 +200,7 @@ namespace umi3d.cdk.collaboration
                         if (sendCameraProperties)
                             GetCameraProperty();
                     }
-                    catch (System.Exception e){ UnityEngine.Debug.LogException(e); }
+                    catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
 
                     await UMI3DAsyncManager.Delay((int)(1000f / targetTrackingFPS));
                 }

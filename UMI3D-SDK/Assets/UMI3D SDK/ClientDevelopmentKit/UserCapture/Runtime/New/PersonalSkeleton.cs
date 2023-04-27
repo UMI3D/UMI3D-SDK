@@ -31,15 +31,12 @@ namespace umi3d.cdk.userCapture
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
         #region fields
         #region interface Fields
-        Dictionary<uint, ISkeleton.s_Transform> ISkeleton.Bones { get => bones; set => bones = value; }
+        public Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; }
+
         List<ISubSkeleton> ISkeleton.Skeletons { get => skeletons; set => skeletons = value; }
-        bool ISkeleton.activeUserBindings { get => activeUserBindings; set => activeUserBindings = value; }
         ulong ISkeleton.userId { get => userId; set => userId = value; }
         Vector3LinearDelayedExtrapolator ISkeleton.nodePositionExtrapolator { get => nodePositionExtrapolator; set => nodePositionExtrapolator = value; }
         QuaternionLinearDelayedExtrapolator ISkeleton.nodeRotationExtrapolator { get => nodeRotationExtrapolator; set => nodeRotationExtrapolator = value; }
-        List<ISkeleton.Bound> ISkeleton.bounds { get => bounds; set => bounds = value; }
-        List<Transform> ISkeleton.boundRigs { get => boundRigs; set => boundRigs = value; }
-        List<BindingDto> ISkeleton.userBindings { get => userBindings; set => userBindings = value; }
         Dictionary<ulong, ISkeleton.SavedTransform> ISkeleton.savedTransforms { get => savedTransforms; set => savedTransforms = value; }
         Dictionary<uint, (uint, Vector3)> ISkeleton.SkeletonHierarchy { get => skeletonHierarchy; set => skeletonHierarchy = value; }
         Transform ISkeleton.HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
@@ -47,13 +44,9 @@ namespace umi3d.cdk.userCapture
         #endregion
         protected Dictionary<uint, ISkeleton.s_Transform> bones = new Dictionary<uint, ISkeleton.s_Transform>();
         public List<ISubSkeleton> skeletons = new List<ISubSkeleton>();
-        protected bool activeUserBindings;
         protected ulong userId;
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
-        protected List<ISkeleton.Bound> bounds = new List<ISkeleton.Bound>();
-        protected List<Transform> boundRigs = new List<Transform>();
-        protected List<BindingDto> userBindings = new List<BindingDto>();
         protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms = new Dictionary<ulong, ISkeleton.SavedTransform>();
         protected Dictionary<uint, (uint, Vector3)> skeletonHierarchy = new Dictionary<uint, (uint, Vector3)>();
         [SerializeField]
