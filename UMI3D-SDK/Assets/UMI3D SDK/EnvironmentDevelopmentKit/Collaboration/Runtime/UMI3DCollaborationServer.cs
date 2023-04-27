@@ -28,6 +28,7 @@ using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
+using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -215,6 +216,7 @@ namespace umi3d.edk.collaboration
                     new UMI3DSerializerVectorModules(),
                     new UMI3DSerializerAnimationModules(),
                     new UMI3DSerializerShaderModules(),
+                    new UMI3DUserCaptureBindingSerializerModule(),
                     new UMI3DEnvironmentSerializerCollaborationModule(),
                     new common.collaboration.UMI3DCollaborationSerializerModule() };
             UMI3DSerializer.AddModule(collaborativeModule);
