@@ -434,6 +434,12 @@ namespace umi3d.cdk.collaboration
         {
             switch (operation.operation)
             {
+                case NavigationModeRequestDto navigationMode:
+                    MainThreadManager.Run(() =>
+                    {
+                        UnityEngine.Debug.Log("TODO : update Navigation mode");
+                    });
+                    break;
                 case FrameRequestDto frame:
                     bool waitforreparenting = true;
                     MainThreadManager.Run(async () =>
@@ -525,6 +531,15 @@ namespace umi3d.cdk.collaboration
         {
             switch (operationId)
             {
+                case UMI3DOperationKeys.FlyingNavigationMode:
+                case UMI3DOperationKeys.LayeredFlyingNavigationMode:
+                case UMI3DOperationKeys.FpsNavigationMode:
+                case UMI3DOperationKeys.LockedNavigationMode:
+                    MainThreadManager.Run(() =>
+                    {
+                        UnityEngine.Debug.Log("TODO : update Navigation mode");
+                    });
+                    break;
                 case UMI3DOperationKeys.NavigationRequest:
                     {
                         SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
