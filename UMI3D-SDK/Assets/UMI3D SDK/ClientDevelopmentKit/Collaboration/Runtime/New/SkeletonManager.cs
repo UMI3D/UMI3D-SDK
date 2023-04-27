@@ -150,7 +150,6 @@ namespace umi3d.cdk.collaboration
 
         public UserTrackingFrameDto GetFrame()
         {
-            UnityEngine.Debug.Log("GetFrame");
             var frame = skeleton.GetFrame(option);
             frame.userId = collaborationClientServerService.GetUserId();
             //frame.refreshFrequency = targetTrackingFPS;
@@ -180,7 +179,6 @@ namespace umi3d.cdk.collaboration
 
         private async void SendTrackingLoop()
         {
-            UnityEngine.Debug.Log("<color=green>Send loop</color>");
             if (sendTrackingLoopOnce)
                 return;
             sendTrackingLoopOnce = true;
@@ -188,7 +186,6 @@ namespace umi3d.cdk.collaboration
             {
                 if (targetTrackingFPS > 0)
                 {
-                    UnityEngine.Debug.Log("<color=green>Send</color>");
                     try
                     {
                         var frame = GetFrame();
