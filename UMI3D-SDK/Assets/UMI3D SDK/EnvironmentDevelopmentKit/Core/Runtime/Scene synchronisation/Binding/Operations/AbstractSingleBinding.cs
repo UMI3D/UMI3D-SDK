@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
+
 using UnityEngine;
 
 namespace umi3d.edk
@@ -59,5 +62,9 @@ namespace umi3d.edk
         /// Value is given in the parent object referential.
         /// </summary>
         public Vector3 anchor = Vector3.zero;
+
+        protected AbstractSingleBinding(ulong boundNodeId) : base(boundNodeId)
+        {
+        }
     }
 }

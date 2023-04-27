@@ -30,7 +30,11 @@ namespace umi3d.edk.userCapture
         /// </summary>
         public string rigName = "";
 
-        public RiggedBoneBinding() { }
+        public RiggedBoneBinding(ulong boundNodeId, uint boneType, ulong userId) : base(boundNodeId, boneType, userId)
+        {
+        }
+
+
 
         /// <inheritdoc/>
         public override BindingDto ToDto()

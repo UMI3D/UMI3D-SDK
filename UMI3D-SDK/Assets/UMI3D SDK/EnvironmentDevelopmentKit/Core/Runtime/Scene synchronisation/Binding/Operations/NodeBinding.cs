@@ -28,6 +28,11 @@ namespace umi3d.edk
         /// </summary>
         public ulong nodeId;
 
+        public NodeBinding(ulong boundNodeId, ulong nodeId) : base(boundNodeId)
+        {
+            this.nodeId = nodeId;
+        }
+
         /// <inheritdoc/>
         public override BindingDto ToDto()
         {

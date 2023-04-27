@@ -31,6 +31,10 @@ namespace umi3d.edk
         /// MultiBinding of MultiBinding is not fully supported.
         public List<AbstractSingleBinding> bindings = new();
 
+        public MultiBinding(ulong boundNodeId) : base(boundNodeId)
+        {
+        }
+
         public override BindingDto ToDto()
         {
             MultiBindingDataDto bindingDataDto;
@@ -47,6 +51,17 @@ namespace umi3d.edk
             );
 
             return bindingDto;
+        }
+
+        public override object Clone()
+        {
+            var binding = (MultiBinding)base.Clone();
+            binding.bindings = new List<AbstractSingleBinding>();
+            foreach (var bindingInMulti in this.bindings)
+            {
+                binding.bindings.Add((AbstractSingleBinding)bindingInMulti.Clone());
+            }
+            return binding;
         }
     }
 }

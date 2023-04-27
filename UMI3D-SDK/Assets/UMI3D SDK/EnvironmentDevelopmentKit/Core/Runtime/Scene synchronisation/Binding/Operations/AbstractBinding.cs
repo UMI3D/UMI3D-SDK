@@ -14,6 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
+
 using umi3d.common;
 
 namespace umi3d.edk
@@ -21,7 +24,7 @@ namespace umi3d.edk
     /// <summary>
     /// Operation binding a node and one or several objects.
     /// </summary>
-    public abstract class AbstractBinding : Operation
+    public abstract class AbstractBinding : Operation, ICloneable
     {
         /// <summary>
         /// Node that is bound to another object.
@@ -38,6 +41,11 @@ namespace umi3d.edk
         /// </summary>
         public int priority = 0;
 
+        public AbstractBinding(ulong boundNodeId)
+        {
+            this.boundNodeId = boundNodeId;
+        }
+
         /// <summary>
         /// Export the object as a DTO for serialization.
         /// </summary>
@@ -53,6 +61,13 @@ namespace umi3d.edk
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             return ToDto();
+        }
+
+        public virtual object Clone()
+        {
+            var binding = (AbstractBinding) MemberwiseClone();
+            binding.users = new HashSet<UMI3DUser>(this.users);
+            return binding;
         }
     }
 }
