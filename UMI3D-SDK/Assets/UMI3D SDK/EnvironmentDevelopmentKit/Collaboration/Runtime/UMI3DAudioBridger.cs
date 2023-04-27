@@ -86,22 +86,21 @@ namespace umi3d.edk.collaboration
                     GameObject go = new GameObject($"AudioSource_user_{user.Id()}");
                     audioSourceNode = go.AddComponent<UMI3DNode>();
                     tr.AddIfNotNull(user.audioPlayer.ObjectNode.SetValue(audioSourceNode));
-                }    
+                }
             }
 
             // Binding
-            var binding = new UMI3DBinding()
+            var binding = new BoneBinding(audioSourceNode.Id(), BoneType.Head, user.Id())
             {
+                users = UMI3DServer.Instance.UserSet(),
                 syncPosition = true,
                 syncRotation = true,
-                boneType = BoneType.Head,
-                priotity = 100,
-                node = audioSourceNode
+                priority = 100
             };
 
-            tr.AddIfNotNull(BindingManager.Instance.AddBinding(user, binding));
+            tr.AddIfNotNull(BindingHelper.Instance.AddBinding(binding));
             UMI3DServer.Dispatch(tr);
-            
+
             UMI3DServer.Instance.NotifyUserChanged(user);
         }
 
