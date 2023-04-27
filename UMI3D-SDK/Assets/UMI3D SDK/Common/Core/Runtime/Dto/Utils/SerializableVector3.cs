@@ -23,7 +23,7 @@ namespace umi3d.common
     /// Serializable implementation of a vector with 3 float coordinates.
     /// </summary>
     [Serializable]
-    public class SerializableVector3 : UMI3DDto
+    public class SerializableVector3 : UMI3DDto, IEquatable<SerializableVector3>
     {
         public float X;
         public float Y;
@@ -47,6 +47,11 @@ namespace umi3d.common
         public override string ToString()
         {
             return ((Vector3)this).ToString();
+        }
+
+        public bool Equals(SerializableVector3 other)
+        {
+            return X == other.X && Y == other.Y && Z == other.Z;
         }
 
         public static implicit operator SerializableVector3(Vector3 v)
