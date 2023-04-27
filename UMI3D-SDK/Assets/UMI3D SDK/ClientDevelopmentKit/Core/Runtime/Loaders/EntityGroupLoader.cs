@@ -60,7 +60,7 @@ namespace umi3d.cdk
                         {
                             SetEntityPropertyDto np = value.property.Copy();
                             np.entityId = e;
-                            await UMI3DEnvironmentLoader.SetEntity(np);
+                            await UMI3DEnvironmentLoader.SetEntity(np,value.tokens);
                         }
                         break;
                 }

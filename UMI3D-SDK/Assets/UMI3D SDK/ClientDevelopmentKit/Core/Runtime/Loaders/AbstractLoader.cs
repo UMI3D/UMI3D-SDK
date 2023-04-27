@@ -11,6 +11,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -21,15 +23,24 @@ namespace umi3d.cdk
     {
         public UMI3DDto dto;
         public GameObject node;
+        public List<CancellationToken> tokens;
 
-        public ReadUMI3DExtensionData(UMI3DDto dto) : this(dto, null)
+        public ReadUMI3DExtensionData(UMI3DDto dto) : this(dto, null, new())
         {
         }
 
-        public ReadUMI3DExtensionData(UMI3DDto dto, GameObject node)
+        public ReadUMI3DExtensionData(UMI3DDto dto, List<CancellationToken> tokens) : this(dto, null, tokens)
+        {
+        }
+
+        public ReadUMI3DExtensionData(UMI3DDto dto, GameObject node) : this(dto, node, new())
+        { }
+
+        public ReadUMI3DExtensionData(UMI3DDto dto, GameObject node, List<CancellationToken> tokens)
         {
             this.dto = dto;
             this.node = node;
+            this.tokens = tokens;
         }
 
         public override string ToString()
@@ -42,12 +53,18 @@ namespace umi3d.cdk
     {
         public UMI3DEntityInstance entity;
         public SetEntityPropertyDto property;
+        public List<CancellationToken> tokens;
 
-        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity)
+        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity) : this(property,entity,new())
+        { }
+
+        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity, List<CancellationToken> tokens)
         {
             this.entity = entity;
             this.property = property;
+            this.tokens = tokens;
         }
+
 
         public override string ToString()
         {
@@ -61,6 +78,7 @@ namespace umi3d.cdk
         public uint operationId;
         public uint propertyKey;
         public ByteContainer container;
+        public List<CancellationToken> tokens => container?.tokens;
 
         public SetUMI3DPropertyContainerData(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {

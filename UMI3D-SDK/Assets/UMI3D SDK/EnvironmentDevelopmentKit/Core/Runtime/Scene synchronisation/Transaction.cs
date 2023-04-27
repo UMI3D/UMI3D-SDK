@@ -332,7 +332,8 @@ namespace umi3d.edk
                             break;
 
                         default:
-                            throw new System.Exception($"Missing type {op.GetType()}");
+                            newOperations.Add(op);
+                            break;
                     }
                     lastOperation = op;
                 }

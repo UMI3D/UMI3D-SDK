@@ -309,7 +309,7 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case common.VehicleConfirmation vConfirmation:
+                    case common.FrameConfirmationDto vConfirmation:
                         MainThreadManager.Run(() =>
                         {
                             ///TODO
@@ -366,7 +366,7 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case UMI3DOperationKeys.VehicleConfirmation:
+                    case UMI3DOperationKeys.FrameConfirmation:
                         MainThreadManager.Run(() =>
                         {
                             ///TODO

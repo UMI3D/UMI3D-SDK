@@ -17,6 +17,7 @@ limitations under the License.
 #if UNITY_EDITOR
 
 using inetum.unityUtils;
+using inetum.unityUtils.editor;
 using System;
 using System.Collections.Generic;
 using System.IO;

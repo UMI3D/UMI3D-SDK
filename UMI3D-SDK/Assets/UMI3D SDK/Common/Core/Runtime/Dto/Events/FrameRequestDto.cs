@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#if UNITY_EDITOR
-
-namespace inetum.unityUtils
+namespace umi3d.common
 {
-
-    using System.Collections.Generic;
-    using UnityEngine;
-
-    public class InitedWindowData : ScriptableObject
+    public class FrameRequestDto : AbstractOperationDto
     {
-        public Dictionary<string, (bool canReload, bool showMessage, bool lastShowMessageValue)> dontShowCantreloadMessage = new Dictionary<string, (bool, bool, bool)>();
+        /// <summary>
+        /// Frame's UMI3D id.
+        /// </summary>
+        public ulong FrameId { get; set; } = 0;
 
+        /// <summary>
+        /// Scale of the user in the new referentiel. 
+        /// Not to be misunderstood with the height.
+        /// A user should be at full height with a scale of one.
+        /// </summary>
+        public float scale { get; set; } = 1;
     }
 }
-#endif

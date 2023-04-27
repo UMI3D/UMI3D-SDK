@@ -101,7 +101,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="operation">Operation to handle.</param>
         /// <param name="performed">Callback to call when the operation is performed (or won't be performed)</param>
-        public abstract Task UnknownOperationHandler(AbstractOperationDto operation);
+        public abstract Task UnknownOperationHandler(DtoContainer operation);
 
         /// <summary>
         /// Handle Operation not handled by default.

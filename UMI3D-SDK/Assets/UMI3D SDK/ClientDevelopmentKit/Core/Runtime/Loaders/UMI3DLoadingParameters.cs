@@ -373,9 +373,10 @@ namespace umi3d.cdk
             return true;
         }
 
-        public override Task UnknownOperationHandler(AbstractOperationDto operation)
+        /// <inheritdoc/>
+        public override Task UnknownOperationHandler(DtoContainer operation)
         {
-            switch (operation)
+            switch (operation.operation)
             {
                 case BindingDto binding:
                     bindingService.AddBinding(binding);

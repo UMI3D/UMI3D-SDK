@@ -1,7 +1,8 @@
 {
-    "name": "UMI3D.Common.Core.Editor",
+    "name": "inetum.unityUtils.editor",
+    "rootNamespace": "",
     "references": [
-        "GUID:6e34c4b4c3202a14eb95e0a784041765"
+        "inetum.unityUtils"
     ],
     "includePlatforms": [
         "Editor"

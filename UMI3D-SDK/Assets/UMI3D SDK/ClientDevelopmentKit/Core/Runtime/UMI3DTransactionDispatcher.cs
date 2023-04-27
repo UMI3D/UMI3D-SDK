@@ -15,9 +15,10 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
 using System.ComponentModel;
 using System.Linq;
+using System.Security.Claims;
+using System.Threading;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -25,13 +26,13 @@ using UnityEngine;
 namespace umi3d.cdk
 {
 
-    public class UMI3DTransactionDispatcher 
+    public class UMI3DTransactionDispatcher
     {
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        Func<AbstractOperationDto, Task<bool>> OperationDto;
-        Func<uint,ByteContainer, Task<bool>> Operation;
+        Func<DtoContainer, Task<bool>> OperationDto;
+        Func<uint, ByteContainer, Task<bool>> Operation;
 
         /// <summary>
         /// Unpack the transaction and apply the operations.
@@ -44,18 +45,31 @@ namespace umi3d.cdk
         {
             int _transaction = count++;
             int opCount = 0;
-            foreach (AbstractOperationDto operation in transaction.operations)
+            foreach (var operation in transaction.operations.Select(o => new DtoContainer(o)))
             {
                 bool performed = false;
                 var ErrorTime = Time.time + secondBeforeError;
                 int op = opCount++;
+                int cfail = 0;
+
+                CancellationTokenSource source = new CancellationTokenSource();
+                operation.tokens.Add(source.Token);
 
                 async void isOk()
                 {
                     while (!performed)
                     {
                         if (Time.time > ErrorTime)
+                        {
+                            cfail++;
+                            if (cfail >= 3)
+                            {
+                                UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec MARK AS failed !!!!!!.\n Transaction count {transaction}.\n Operation count {op}.\n Operation : {operation} ", scope);
+                                source.Cancel();
+                                return;
+                            }
                             UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec it might have failed.\n Transaction count {transaction}.\n Operation count {op}.\n Operation : {operation} ", scope);
+                        }
                         await UMI3DAsyncManager.Yield();
                     }
                 }
@@ -69,7 +83,7 @@ namespace umi3d.cdk
         static int count = 0;
         const int secondBeforeError = 300;
 
-        public UMI3DTransactionDispatcher(Func<AbstractOperationDto, Task<bool>> operationDto, Func<uint, ByteContainer, Task<bool>> operation)
+        public UMI3DTransactionDispatcher(Func<DtoContainer, Task<bool>> operationDto, Func<uint, ByteContainer, Task<bool>> operation)
         {
             OperationDto = operationDto;
             Operation = operation;
@@ -91,6 +105,10 @@ namespace umi3d.cdk
                 bool performed = false;
                 var ErrorTime = Time.time + secondBeforeError;
                 int op = opCount++;
+                int cfail = 0;
+
+                CancellationTokenSource source = new CancellationTokenSource();
+                container.tokens.Add(source.Token);
 
                 async void isOk()
                 {
@@ -98,6 +116,13 @@ namespace umi3d.cdk
                     {
                         if (Time.time > ErrorTime)
                         {
+                            cfail++;
+                            if (cfail >= 3)
+                            {
+                                UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec MARK AS failed !!!!!!.\n Transaction count {transaction}.\n Operation count {op}.\n Container : {container}\n SubContainer : {c}", scope);
+                                source.Cancel();
+                                return;
+                            }
                             UMI3DLogger.LogError($"Operation took more than {secondBeforeError} sec it might have failed.\n Transaction count {transaction}.\n Operation count {op}.\n Container : {container}\n SubContainer : {c}", scope);
                             await UMI3DAsyncManager.Delay(1000);
                         }
@@ -116,33 +141,33 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="operation">Operation to apply.</param>
         /// <param name="performed">Callback.</param>
-        public async Task PerformOperation(AbstractOperationDto operation)
+        public async Task PerformOperation(DtoContainer operation)
         {
-            switch (operation)
+            switch (operation.operation)
             {
                 case LoadEntityDto load:
                     await Task.WhenAll(load.entities.Select(async entity =>
                     {
-                        await UMI3DEnvironmentLoader.LoadEntity(entity);
+                        await UMI3DEnvironmentLoader.LoadEntity(entity, operation.tokens);
                     }));
                     break;
                 case DeleteEntityDto delete:
-                    await UMI3DEnvironmentLoader.DeleteEntity(delete.entityId);
+                    await UMI3DEnvironmentLoader.DeleteEntity(delete.entityId, operation.tokens);
                     break;
                 case SetEntityPropertyDto set:
-                    UMI3DEnvironmentLoader.SetEntity(set);
+                    await UMI3DEnvironmentLoader.SetEntity(set, operation.tokens);
                     break;
                 case MultiSetEntityPropertyDto multiSet:
-                    await UMI3DEnvironmentLoader.SetMultiEntity(multiSet);
+                    await UMI3DEnvironmentLoader.SetMultiEntity(multiSet, operation.tokens);
                     break;
                 case StartInterpolationPropertyDto interpolationStart:
-                    await UMI3DEnvironmentLoader.StartInterpolation(interpolationStart);
+                    await UMI3DEnvironmentLoader.StartInterpolation(interpolationStart, operation.tokens);
                     break;
                 case StopInterpolationPropertyDto interpolationStop:
-                    await UMI3DEnvironmentLoader.StopInterpolation(interpolationStop);
+                    await UMI3DEnvironmentLoader.StopInterpolation(interpolationStop, operation.tokens);
                     break;
                 default:
-                    if(!await OperationDto(operation))
+                    if (!await OperationDto(operation))
                         await UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operation);
                     break;
             }
@@ -154,8 +179,9 @@ namespace umi3d.cdk
         /// <param name="container">Operation to apply as a container.</param>
         /// <param name="performed">Callback.</param>
         public async Task PerformOperation(ByteContainer container)
-        { 
+        {
             uint operationId = UMI3DSerializer.Read<uint>(container);
+
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
@@ -164,7 +190,7 @@ namespace umi3d.cdk
                 case UMI3DOperationKeys.DeleteEntity:
                     {
                         ulong entityId = UMI3DSerializer.Read<ulong>(container);
-                        await UMI3DEnvironmentLoader.DeleteEntity(entityId);
+                        await UMI3DEnvironmentLoader.DeleteEntity(entityId, container.tokens);
                         break;
                     }
                 case UMI3DOperationKeys.MultiSetEntityProperty:

@@ -227,7 +227,7 @@ namespace umi3d.cdk
         /// </summary>
         public async void Destroy()
         {
-            await UMI3DEnvironmentLoader.DeleteEntity(dto.id);
+            await UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
         }
 
         /// <summary>

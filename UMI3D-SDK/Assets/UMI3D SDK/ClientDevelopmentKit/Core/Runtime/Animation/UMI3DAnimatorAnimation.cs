@@ -175,8 +175,8 @@ namespace umi3d.cdk
         /// <param name="atTime">Resume time in ms.</param>
         public void Play(float atTime)
         {
-            var nTime = atTime / Duration;
-
+            var nTime = dto.normalizedTime + atTime / Duration;
+            
             if (animator == null)
                 UMI3DLogger.LogError($"No animator on node {node}", DebugScope.CDK | DebugScope.Animation);
 
@@ -257,6 +257,10 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = (string)value.property.value;
                     break;
+                
+                case UMI3DPropertyKeys.AnimationAnimatorNormalizedTime:
+                    dto.normalizedTime = (float)value.property.value;
+                    break;
 
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:
                     switch (value.property)
@@ -301,6 +305,10 @@ namespace umi3d.cdk
 
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = UMI3DSerializer.Read<string>(value.container);
+                    break;
+
+                case UMI3DPropertyKeys.AnimationAnimatorNormalizedTime:
+                    dto.normalizedTime = UMI3DSerializer.Read<float>(value.container);
                     break;
 
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:

@@ -236,7 +236,30 @@ namespace umi3d.cdk.userCapture
     //            await UMI3DAsyncManager.Yield();
     //        }
 
-    //        var avatarScene = embodimentDict[UMI3DClientServer.Instance.GetUserId()].transform.parent;
+        protected virtual void Start()
+        {
+            streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+            sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
+            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitParentId);
+            UMI3DNavigation.onUpdateFrameDelegate += UpdateParentId;
+            EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
+            EmotePlayedSelfEvent.AddListener(delegate
+            {
+                //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
+                //IgnoreBones = true;
+                IsEmotePlaying = true;
+            });
+            EmoteEndedSelfEvent.AddListener(delegate
+            {
+                //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
+                //IgnoreBones = false;
+                IsEmotePlaying = false;
+            });
+        }
 
     //        parentId = UMI3DEnvironmentLoader.GetNodeID(avatarScene);
     //        avatarSceneId = parentId;
@@ -261,8 +284,13 @@ namespace umi3d.cdk.userCapture
     //    //        {
     //    //            BonesIterator();
 
-    //    //            if (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0 && LastFrameDto != null)
-    //    //                UMI3DClientServer.SendTracking(LastFrameDto);
+        private void UpdateParentId(ulong frameId)
+        {
+            if (frameId != 0)
+                parentId = frameId;
+            else
+                Debug.LogError("Parent id not valid.");
+        }
 
     //    //            if (sendCameraProperties)
     //    //                sendingCameraProperties.Invoke();
@@ -481,27 +509,27 @@ namespace umi3d.cdk.userCapture
     //    //    startingSendingTracking.Invoke();
     //    //}
 
-    //    /// <summary>
-    //    /// Make a user board in in a vehicle that supports boarded users.
-    //    /// </summary>
-    //    /// <param name="vehicleDto"></param>
-    //    public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
-    //    {
-    //        if (vehicleDto.BodyAnimationId != 0)
-    //        {
-    //            var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
-    //            if (anim != null)
-    //            {
-    //                boardedVehicleEvent.Invoke(vehicleDto.VehicleId);
-    //                anim.Start();
-    //            }
-    //        }
+        /// <summary>
+        /// Make a user board in in a vehicle that supports boarded users.
+        /// </summary>
+        /// <param name="vehicleDto"></param>
+        //public void EmbarkVehicle(BoardedVehicleDto vehicleDto)
+        //{
+        //    if (vehicleDto.BodyAnimationId != 0)
+        //    {
+        //        var anim = UMI3DNodeAnimation.Get(vehicleDto.BodyAnimationId);
+        //        if (anim != null)
+        //        {
+        //            boardedVehicleEvent.Invoke(vehicleDto.VehicleId);
+        //            anim.Start();
+        //        }
+        //    }
 
-    //        //var bones = TrackedSkeletonBone.instances.Keys.ToList();
+        //    var bones = UMI3DClientUserTrackingBone.instances.Keys.ToList();
 
-    //       // bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
+        //    bones.RemoveAll(item => vehicleDto.BonesToStream.Contains(item));
 
-    //        //SetStreamedBones(bones);
-    //    }
-    //}
+        //    SetStreamedBones(bones);
+        //}
+    }
 }

@@ -1,0 +1,22 @@
+{
+    "name": "UMI3D.Common.Collaboration.Editor",
+    "rootNamespace": "",
+    "references": [
+        "GUID:6e34c4b4c3202a14eb95e0a784041765",
+        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b",
+        "GUID:89213498fb676074da665aae640937e9",
+        "GUID:86623230113704741b2575414446f181",
+        "GUID:608ff695b5b1d8f46a32962b70ec9792"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

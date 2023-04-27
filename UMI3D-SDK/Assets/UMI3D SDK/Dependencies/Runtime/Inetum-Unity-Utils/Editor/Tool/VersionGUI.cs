@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 #if UNITY_EDITOR
-namespace inetum.unityUtils
+namespace inetum.unityUtils.editor
 {
     using System;
     using System.Globalization;
@@ -107,8 +107,6 @@ namespace inetum.unityUtils
             int i = 0;
             int j = 0;
 
-            Debug.Log(datas.Length);
-
             ComputeVersion = () => "";
 
             while (i < format.Length)
@@ -169,8 +167,7 @@ namespace inetum.unityUtils
                     case 'h':
                     case 'H':
                         string datePattern = GetDatePattern(format, ref i);
-                        Debug.Log(datePattern);
-                        Debug.Log(j);
+
                         if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(DateTime))
                             data.data.versions[j] = DateTime.Now.ToString(datePattern);
                         versions[j] = new VersionRegex(
@@ -271,13 +268,15 @@ namespace inetum.unityUtils
                 version.Reset(_old);
         }
 
-        public virtual void UpdateVersion()
+        public virtual bool UpdateVersion()
         {
             string text = File.ReadAllText(browserVersionPath);
+            string old = text;
             foreach (var version in versions)
                 text = version.Replace(text);
 
             File.WriteAllText(browserVersionPath, text);
+            return text == old;
         }
     }
 }

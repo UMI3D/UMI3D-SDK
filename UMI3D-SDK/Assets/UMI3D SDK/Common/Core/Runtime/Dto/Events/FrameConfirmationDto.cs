@@ -19,24 +19,24 @@ namespace umi3d.common
     /// <summary>
     /// DTO to confirm the onboarding in a vehicle.
     /// </summary>
-    public class VehicleConfirmation : AbstractBrowserRequestDto
+    public class FrameConfirmationDto : AbstractBrowserRequestDto
     {
         /// <summary>
-        /// User id of the user in the vehicle.
+        /// User id of the user in the Frame.
         /// </summary>
-        public ulong embarkedUserId;
+        public ulong userId;
 
         /// <inheritdoc/>
         protected override uint GetOperationId()
         {
-            return UMI3DOperationKeys.VehicleConfirmation;
+            return UMI3DOperationKeys.FrameConfirmation;
         }
 
         /// <inheritdoc/>
         public override Bytable ToBytableArray(params object[] parameters)
         {
             return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(embarkedUserId);
+                + UMI3DSerializer.Write(userId);
         }
     }
 };

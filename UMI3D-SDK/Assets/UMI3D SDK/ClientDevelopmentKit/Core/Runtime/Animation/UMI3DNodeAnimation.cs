@@ -166,7 +166,7 @@ namespace umi3d.cdk
             if (chain.IsByte)
                 await UMI3DClientServer.transactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
             else
-                await UMI3DClientServer.transactionDispatcher.PerformOperation(chain.operation);
+                await UMI3DClientServer.transactionDispatcher.PerformOperation(new DtoContainer(chain.operation));
         }
 
         /// <inheritdoc/>

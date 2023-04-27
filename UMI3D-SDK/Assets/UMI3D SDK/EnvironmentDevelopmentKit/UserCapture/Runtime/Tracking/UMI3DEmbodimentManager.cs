@@ -606,6 +606,10 @@ namespace umi3d.edk.userCapture
         //{
         //    StartCoroutine(_ConfirmeEmbarkment(user));
         //}
+        public void ConfirmEmbarkment(FrameConfirmationDto dto, UMI3DUser user)
+        {
+            StartCoroutine(_ConfirmeEmbarkment(user));
+        }
 
         //public void ConfirmEmbarkment(uint operationKey, ByteContainer container, UMI3DUser user)
         //{
@@ -637,62 +641,54 @@ namespace umi3d.edk.userCapture
         //    if (user == null)
         //        return;
 
-        //    setTransform = false;
+        Transaction UpdateFrameTransaction(UMI3DUser user, UMI3DAbstractNode vehicle = null)
+        {
+            setTransform = false;
 
-        //    VehicleRequest vr;
-
-        //    if (vehicle != null)
-        //    {
-        //        Embarkments[user.Id()] = (false, vehicle);
-
-        //        if (vehicle != EmbodimentsScene)
-        //            vr = new VehicleRequest(vehicle.Id());
-        //        else
-        //            vr = new VehicleRequest(EmbodimentsScene.Id());
-        //    }
-        //    else
-        //    {
-        //        Embarkments[user.Id()] = (false, EmbodimentsScene);
-
-        //        vr = new VehicleRequest(EmbodimentsScene.Id());
-        //    }
-
-        //    vr.users = new HashSet<UMI3DUser>() { user };
-
-        //    vr.ToTransaction(true).Dispatch();
-        //}
-
-        //public void VehicleEmbarkment(UMI3DUser user, ulong bodyAnimationId = 0, bool changeBonesToStream = false, List<uint> bonesToStream = null, UMI3DAbstractNode vehicle = null, bool stopNavigation = false, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion())
-        //{
-        //    if (user == null)
-        //        return;
-
-        //    BoardedVehicleRequest vr;
+            FrameRequest vr;
 
         //    if (vehicle != null)
         //    {
         //        Embarkments[user.Id()] = (false, vehicle);
 
-        //        if (vehicle != EmbodimentsScene)
-        //            vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, vehicle.Id(), stopNavigation, position, rotation);
-        //        else
-        //            vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation);
-        //    }
-        //    else
-        //    {
-        //        Embarkments[user.Id()] = (false, EmbodimentsScene);
+                if (vehicle != EmbodimentsScene)
+                    vr = new FrameRequest(vehicle.Id());
+                else
+                    vr = new FrameRequest(EmbodimentsScene.Id());
+            }
+            else
+            {
+                Embarkments[user.Id()] = (false, EmbodimentsScene);
 
-        //        vr = new BoardedVehicleRequest(bodyAnimationId, changeBonesToStream, bonesToStream, EmbodimentsScene.Id(), stopNavigation, position, rotation);
-        //    }
-
-        //    localPosition = position;
-        //    localRotation = rotation;
-        //    setTransform = true;
+                vr = new FrameRequest(EmbodimentsScene.Id());
+            }
 
         //    vr.users = new HashSet<UMI3DUser>() { user };
 
-        //    vr.ToTransaction(true).Dispatch();
-        //}
+            return vr.ToTransaction(true);
+        }
+
+
+        public void UpdateFrame(UMI3DUser user, UMI3DAbstractNode vehicle = null)
+        {
+            if (user == null)
+                return;
+            UpdateFrameTransaction(user,vehicle).Dispatch();
+        }
+
+        public void UpdateFrame(UMI3DUser user, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) => UpdateFrame(user, null, position, rotation);
+
+        public void UpdateFrame(UMI3DUser user, UMI3DAbstractNode vehicle, Vector3 position, Quaternion rotation = new Quaternion())
+        {
+            if (user == null)
+                return;
+            var transaction = UpdateFrameTransaction(user, vehicle);
+            TeleportRequest tp = new(position,rotation);
+            tp.users = new HashSet<UMI3DUser>() { user };
+            transaction.Add(tp);
+
+            transaction.Dispatch();
+        }
 
         //#endregion
     }

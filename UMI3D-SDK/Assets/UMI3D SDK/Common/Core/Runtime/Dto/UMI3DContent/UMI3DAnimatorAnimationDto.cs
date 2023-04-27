@@ -35,6 +35,11 @@ namespace umi3d.common
         public string stateName = "";
 
         /// <summary>
+        /// Animation normalized time at start. 
+        /// </summary>
+        public float normalizedTime = 0f;
+
+        /// <summary>
         /// Animator parameters.
         /// </summary>
         public Dictionary<string, object> parameters = new Dictionary<string, object>();

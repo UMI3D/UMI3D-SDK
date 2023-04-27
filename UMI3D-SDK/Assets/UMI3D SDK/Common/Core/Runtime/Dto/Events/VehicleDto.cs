@@ -19,19 +19,19 @@ namespace umi3d.common
     /// <summary>
     /// DTO for navigating with a vehicle.
     /// </summary>
-    [System.Serializable]
-    public class VehicleDto : TeleportDto
-    {
-        /// <summary>
-        /// Vehicle's UMI3D id.
-        /// </summary>
-        public ulong VehicleId = 0;
+    //[System.Serializable]
+    //public class VehicleDto : TeleportDto
+    //{
+    //    /// <summary>
+    //    /// Vehicle's UMI3D id.
+    //    /// </summary>
+    //    public ulong VehicleId = 0;
 
-        /// <summary>
-        /// Should the boarding in disable navigation ?
-        /// </summary>
-        public bool StopNavigation = false;
+    //    /// <summary>
+    //    /// Should the boarding in disable navigation ?
+    //    /// </summary>
+    //    public bool StopNavigation = false;
 
-        public VehicleDto() : base() { }
-    }
+    //    public VehicleDto() : base() { }
+    //}
 }

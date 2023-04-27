@@ -53,6 +53,33 @@ namespace inetum.unityUtils.editor
         }
 
         /// <summary>
+        /// Return the UnSerialized Class of this property using reflection.
+        /// based on https://answers.unity.com/questions/425012/get-the-instance-the-serializedproperty-belongs-to.html
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
+        public static object GetValue(this UnityEditor.SerializedProperty property)
+        {
+            string path = property.propertyPath.Replace(".Array.data[", "[");
+            object obj = property.serializedObject.targetObject;
+            string[] elements = path.Split('.');
+            foreach (string element in elements)
+            {
+                if (element.Contains("["))
+                {
+                    string elementName = element.Substring(0, element.IndexOf("["));
+                    int index = Convert.ToInt32(element.Substring(element.IndexOf("[")).Replace("[", "").Replace("]", ""));
+                    obj = GetValue(obj, elementName, index);
+                }
+                else
+                {
+                    obj = GetValue(obj, element);
+                }
+            }
+            return obj;
+        }
+
+        /// <summary>
         /// 
         /// 
         ///  based on https://answers.unity.com/questions/425012/get-the-instance-the-serializedproperty-belongs-to.html

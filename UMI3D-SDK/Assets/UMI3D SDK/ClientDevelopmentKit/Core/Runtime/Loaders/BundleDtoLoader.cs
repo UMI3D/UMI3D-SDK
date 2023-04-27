@@ -117,7 +117,9 @@ namespace umi3d.cdk
                 {
                     if (Array.Exists(bundle.GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
                     {
-                        return await LoadScene(pathIfObjectInBundle);
+                        var scene = await LoadScene(pathIfObjectInBundle);
+                        AbstractMeshDtoLoader.HideModelRecursively(scene.Item1);
+                        return scene;
                     }
                     else
                     {
