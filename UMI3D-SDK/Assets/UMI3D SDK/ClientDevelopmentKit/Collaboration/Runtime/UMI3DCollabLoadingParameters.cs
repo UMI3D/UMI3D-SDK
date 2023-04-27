@@ -25,5 +25,11 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollabLoadingParameters : UMI3DLoadingParameters
     {
         //public override UMI3DAvatarNodeLoader avatarLoader { get; } = new UMI3DCollabAvatarNodeLoader();
+
+        public override void Init()
+        {
+            base.Init();
+            bindingService = CollaborativeSkeletonBindingManager.Instance;
+        }
     }
 }
