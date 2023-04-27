@@ -604,20 +604,20 @@ namespace umi3d.cdk.collaboration
                 //        });
                 //    }
                 //    break;
-                case UMI3DOperationKeys.EmoteRequest:
-                    {
-                        ulong emoteId = UMI3DSerializer.Read<ulong>(container);
-                        bool trigger = UMI3DSerializer.Read<bool>(container);
-                        ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
-                        MainThreadManager.Run(() =>
-                        {
-                            if (trigger)
-                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
-                            else
-                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
-                        });
-                    }
-                    break;
+                //case UMI3DOperationKeys.EmoteRequest:
+                //    {
+                //        ulong emoteId = UMI3DSerializer.Read<ulong>(container);
+                //        bool trigger = UMI3DSerializer.Read<bool>(container);
+                //        ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
+                //        MainThreadManager.Run(() =>
+                //        {
+                //            if (trigger)
+                //                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
+                //            else
+                //                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
+                //        });
+                //    }
+                //    break;
                 case UMI3DOperationKeys.GetLocalInfoRequest:
                     string key = UMI3DSerializer.Read<string>(container);
                     MainThreadManager.Run(() =>

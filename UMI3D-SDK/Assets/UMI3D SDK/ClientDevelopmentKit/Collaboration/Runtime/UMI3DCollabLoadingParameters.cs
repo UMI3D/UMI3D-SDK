@@ -78,9 +78,9 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <inheritdoc/>
-        public override Task UnknownOperationHandler(AbstractOperationDto operation)
+        public override Task UnknownOperationHandler(DtoContainer operation)
         {
-            switch (operation)
+            switch (operation.operation)
             {
                 case SwitchToolDto switchTool:
                     AbstractInteractionMapper.Instance.SwitchTools(switchTool.toolId, switchTool.replacedToolId, switchTool.releasable, 0, new interaction.RequestedByEnvironment());

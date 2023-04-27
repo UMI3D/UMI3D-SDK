@@ -606,10 +606,10 @@ namespace umi3d.edk.userCapture
         //{
         //    StartCoroutine(_ConfirmeEmbarkment(user));
         //}
-        public void ConfirmEmbarkment(FrameConfirmationDto dto, UMI3DUser user)
-        {
-            StartCoroutine(_ConfirmeEmbarkment(user));
-        }
+        //public void ConfirmEmbarkment(FrameConfirmationDto dto, UMI3DUser user)
+        //{
+        //    StartCoroutine(_ConfirmeEmbarkment(user));
+        //}
 
         //public void ConfirmEmbarkment(uint operationKey, ByteContainer container, UMI3DUser user)
         //{
@@ -641,54 +641,54 @@ namespace umi3d.edk.userCapture
         //    if (user == null)
         //        return;
 
-        Transaction UpdateFrameTransaction(UMI3DUser user, UMI3DAbstractNode vehicle = null)
-        {
-            setTransform = false;
+        //Transaction UpdateFrameTransaction(UMI3DUser user, UMI3DAbstractNode vehicle = null)
+        //{
+        //    setTransform = false;
 
-            FrameRequest vr;
+        //    FrameRequest vr;
 
         //    if (vehicle != null)
         //    {
         //        Embarkments[user.Id()] = (false, vehicle);
 
-                if (vehicle != EmbodimentsScene)
-                    vr = new FrameRequest(vehicle.Id());
-                else
-                    vr = new FrameRequest(EmbodimentsScene.Id());
-            }
-            else
-            {
-                Embarkments[user.Id()] = (false, EmbodimentsScene);
+            //    if (vehicle != EmbodimentsScene)
+            //        vr = new FrameRequest(vehicle.Id());
+            //    else
+            //        vr = new FrameRequest(EmbodimentsScene.Id());
+            //}
+            //else
+            //{
+            //    Embarkments[user.Id()] = (false, EmbodimentsScene);
 
-                vr = new FrameRequest(EmbodimentsScene.Id());
-            }
+            //    vr = new FrameRequest(EmbodimentsScene.Id());
+            //}
 
         //    vr.users = new HashSet<UMI3DUser>() { user };
 
-            return vr.ToTransaction(true);
-        }
+        //    return vr.ToTransaction(true);
+        //}
 
 
-        public void UpdateFrame(UMI3DUser user, UMI3DAbstractNode vehicle = null)
-        {
-            if (user == null)
-                return;
-            UpdateFrameTransaction(user,vehicle).Dispatch();
-        }
+        //public void UpdateFrame(UMI3DUser user, UMI3DAbstractNode vehicle = null)
+        //{
+        //    if (user == null)
+        //        return;
+        //    UpdateFrameTransaction(user,vehicle).Dispatch();
+        //}
 
-        public void UpdateFrame(UMI3DUser user, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) => UpdateFrame(user, null, position, rotation);
+        //public void UpdateFrame(UMI3DUser user, Vector3 position = new Vector3(), Quaternion rotation = new Quaternion()) => UpdateFrame(user, null, position, rotation);
 
-        public void UpdateFrame(UMI3DUser user, UMI3DAbstractNode vehicle, Vector3 position, Quaternion rotation = new Quaternion())
-        {
-            if (user == null)
-                return;
-            var transaction = UpdateFrameTransaction(user, vehicle);
-            TeleportRequest tp = new(position,rotation);
-            tp.users = new HashSet<UMI3DUser>() { user };
-            transaction.Add(tp);
+        //public void UpdateFrame(UMI3DUser user, UMI3DAbstractNode vehicle, Vector3 position, Quaternion rotation = new Quaternion())
+        //{
+        //    if (user == null)
+        //        return;
+        //    var transaction = UpdateFrameTransaction(user, vehicle);
+        //    TeleportRequest tp = new(position,rotation);
+        //    tp.users = new HashSet<UMI3DUser>() { user };
+        //    transaction.Add(tp);
 
-            transaction.Dispatch();
-        }
+        //    transaction.Dispatch();
+        //}
 
         //#endregion
     }

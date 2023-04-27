@@ -236,30 +236,30 @@ namespace umi3d.cdk.userCapture
     //            await UMI3DAsyncManager.Yield();
     //        }
 
-        protected virtual void Start()
-        {
-            streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
-            sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
-            startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitParentId);
-            UMI3DNavigation.onUpdateFrameDelegate += UpdateParentId;
-            EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
-            EmotePlayedSelfEvent.AddListener(delegate
-            {
-                //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
-                //IgnoreBones = true;
-                IsEmotePlaying = true;
-            });
-            EmoteEndedSelfEvent.AddListener(delegate
-            {
-                //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
-                //IgnoreBones = false;
-                IsEmotePlaying = false;
-            });
-        }
+        //protected virtual void Start()
+        //{
+        //    streamedBonetypes = UMI3DClientUserTrackingBone.instances.Keys.ToList();
+        //    sendingCameraProperties.AddListener(() => StartCoroutine(DispatchCamera()));
+        //    startingSendingTracking.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+        //    UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => StartCoroutine(DispatchCamera()));
+        //    UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { if (sendTracking) StartCoroutine(DispatchTracking()); });
+        //    UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => trackingReception = true);
+        //    UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitParentId);
+        //    UMI3DNavigation.onUpdateFrameDelegate += UpdateParentId;
+        //    EmotesLoadedEvent.AddListener((UMI3DEmotesConfigDto dto) => { emoteConfig = dto; });
+        //    EmotePlayedSelfEvent.AddListener(delegate
+        //    {
+        //        //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
+        //        //IgnoreBones = true;
+        //        IsEmotePlaying = true;
+        //    });
+        //    EmoteEndedSelfEvent.AddListener(delegate
+        //    {
+        //        //todo: re-enable emote dispatch when emote animations are supported on VR and RPM
+        //        //IgnoreBones = false;
+        //        IsEmotePlaying = false;
+        //    });
+        //}
 
     //        parentId = UMI3DEnvironmentLoader.GetNodeID(avatarScene);
     //        avatarSceneId = parentId;
@@ -284,13 +284,13 @@ namespace umi3d.cdk.userCapture
     //    //        {
     //    //            BonesIterator();
 
-        private void UpdateParentId(ulong frameId)
-        {
-            if (frameId != 0)
-                parentId = frameId;
-            else
-                Debug.LogError("Parent id not valid.");
-        }
+        //private void UpdateParentId(ulong frameId)
+        //{
+        //    if (frameId != 0)
+        //        parentId = frameId;
+        //    else
+        //        Debug.LogError("Parent id not valid.");
+        //}
 
     //    //            if (sendCameraProperties)
     //    //                sendingCameraProperties.Invoke();
@@ -531,5 +531,5 @@ namespace umi3d.cdk.userCapture
 
         //    SetStreamedBones(bones);
         //}
-    }
+   // }
 }
