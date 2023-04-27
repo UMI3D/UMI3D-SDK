@@ -16,32 +16,29 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.userCapture;
-using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
     /// <summary>
     /// Operation binding a rig under a node to a user's skeleton bone.
     /// </summary>
-    public class RiggedBoneBinding : BoneBinding
+    public class RigBoneBinding : BoneBinding
     {
         /// <summary>
         /// Name of the rig to bind under the declared bound node.
         /// </summary>
         public string rigName = "";
 
-        public RiggedBoneBinding(ulong boundNodeId, uint boneType, ulong userId) : base(boundNodeId, boneType, userId)
+        public RigBoneBinding(ulong boundNodeId, uint boneType, ulong userId) : base(boundNodeId, boneType, userId)
         {
         }
-
-
 
         /// <inheritdoc/>
         public override BindingDto ToDto()
         {
             AbstractBindingDataDto bindingDataDto;
 
-            bindingDataDto = new RiggedBoneBindingDataDto(
+            bindingDataDto = new RigBoneBindingDataDto(
                 userId: userId,
                 boneType: boneType,
                 rigName: rigName,
@@ -59,7 +56,6 @@ namespace umi3d.edk.userCapture
                 syncRotation: syncRotation,
                 syncScale: syncScale
             );
-
 
             BindingDto bindingDto = new BindingDto(
                 boundNodeId: boundNodeId,

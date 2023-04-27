@@ -19,7 +19,7 @@ using umi3d.common;
 namespace umi3d.edk
 {
     /// <summary>
-    /// Environment representation of a binding, linking two objects.
+    /// Operation binding a node and another node.
     /// </summary>
     public class NodeBinding : AbstractSingleBinding
     {

@@ -16,7 +16,6 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.userCapture;
-using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
@@ -36,7 +35,7 @@ namespace umi3d.edk.userCapture
         public ulong userId;
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="boundNodeId"></param>
         /// <param name="boneType">one type of the anchor bone as referenced in <see cref="BoneType"/></param>
@@ -70,11 +69,10 @@ namespace umi3d.edk.userCapture
                 syncScale: syncScale
             );
 
-
             BindingDto bindingDto = new BindingDto(
                 boundNodeId: boundNodeId,
-                data : bindingDataDto
-            ) ;
+                data: bindingDataDto
+            );
 
             return bindingDto;
         }

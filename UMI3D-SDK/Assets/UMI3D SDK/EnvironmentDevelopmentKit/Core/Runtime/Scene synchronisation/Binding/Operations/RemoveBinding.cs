@@ -18,8 +18,14 @@ using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Operation to remove a binding from a node.
+    /// </summary>
     public class RemoveBinding : Operation
     {
+        /// <summary>
+        /// Id of the bound node.
+        /// </summary>
         public ulong boundNodeId;
 
         public RemoveBindingDto ToDto()

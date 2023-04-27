@@ -14,19 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using umi3d.common;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Operation the enable/disable the bindings computations
+    /// </summary>
     public class UpdateBindingsActivation : Operation
     {
         public UpdateBindingsActivation(bool areBindingsActivated)
         {
-            AreBindingsActivated = areBindingsActivated;
+            this.areBindingsActivated = areBindingsActivated;
         }
 
-        public bool AreBindingsActivated { get; private set; }
+        public bool areBindingsActivated;
 
         public override Bytable ToBytable(UMI3DUser user)
         {
@@ -36,7 +38,7 @@ namespace umi3d.edk
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            return new UpdateBindingsActivationDto() { areBindingsActivated = AreBindingsActivated };
+            return new UpdateBindingsActivationDto() { areBindingsActivated = areBindingsActivated };
         }
     }
 }

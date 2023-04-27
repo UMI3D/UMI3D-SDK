@@ -65,7 +65,7 @@ namespace umi3d.edk
 
         public virtual object Clone()
         {
-            var binding = (AbstractBinding) MemberwiseClone();
+            var binding = (AbstractBinding)MemberwiseClone();
             binding.users = new HashSet<UMI3DUser>(this.users);
             return binding;
         }
