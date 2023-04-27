@@ -36,6 +36,12 @@ namespace umi3d.edk
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller.")]
         private string stateName = "";
+        
+        /// <summary>
+        /// Animation normalized time at start. 
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Animation normalized time at start.")]
+        private float normalizedTime = 0f;
 
         /// <summary>
         /// See <see cref="node"/>.
@@ -45,6 +51,10 @@ namespace umi3d.edk
         /// See <see cref="stateName"/>.
         /// </summary>
         private UMI3DAsyncProperty<string> _objectStateName;
+        /// <summary>
+        /// See <see cref="normalizedTime"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<float> _objectNormalizedTime;
         /// <summary>
         /// <see cref="objectParameters"/>.
         /// </summary>
@@ -58,6 +68,10 @@ namespace umi3d.edk
         /// See <see cref="stateName"/>.
         /// </summary>
         public UMI3DAsyncProperty<string> objectStateName { get { Register(); return _objectStateName; } protected set => _objectStateName = value; }
+        /// <summary>
+        /// See <see cref="normalizedTime"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<float> objectNormalizedTime { get { Register(); return _objectNormalizedTime; } protected set => _objectNormalizedTime = value; }
         /// <summary>
         /// Property to change <see cref="Animator"/> parameters. Allowed values are float, integer, bool (value true for trigger parameter).
         /// </summary>
@@ -77,6 +91,7 @@ namespace umi3d.edk
 
             objectNode = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNodeId, node, null, (o, u) => o.Equals(u));
             objectStateName = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.AnimationStateName, stateName, null, (o, u) => o.Equals(u));
+            objectNormalizedTime = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationAnimatorNormalizedTime, normalizedTime, null, (o, u) => o.Equals(u));
             objectParameters = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.AnimationAnimatorParameters,
                 new Dictionary<string, object>(), null, (o, u) => new UMI3DAnimatorParameterDto(o), null, d =>
                 {
@@ -85,6 +100,7 @@ namespace umi3d.edk
 
             objectNode.OnValueChanged += (d) => node = d;
             objectStateName.OnValueChanged += (d) => stateName = d;
+            objectNormalizedTime.OnValueChanged += (d) => normalizedTime = d;
         }
 
         /// <inheritdoc/>
@@ -94,6 +110,7 @@ namespace umi3d.edk
             var Adto = dto as UMI3DAnimatorAnimationDto;
             Adto.nodeId = objectNode.GetValue(user).Id();
             Adto.stateName = objectStateName.GetValue(user);
+            Adto.normalizedTime = objectNormalizedTime.GetValue(user);
             Adto.parameters = objectParameters.GetValue(user);
         }
 
@@ -103,6 +120,7 @@ namespace umi3d.edk
             return base.ToBytesAux(user)
                 + UMI3DSerializer.Write(objectNode.GetValue(user).Id())
                 + UMI3DSerializer.Write(objectStateName.GetValue(user))
+                + UMI3DSerializer.Write(objectNormalizedTime.GetValue(user))
                 + UMI3DSerializer.Write(objectParameters.GetValue(user));
         }
     }
