@@ -39,14 +39,15 @@
 //        UMI3DSerializerShaderModules shaderModules = null;
 //        UMI3DSerializerAnimationModules animationModules = null;
 
-//        [OneTimeSetUp] public void InitSerializer()
+//        [OneTimeSetUp]
+//        public void InitSerializer()
 //        {
 //            collabSerializerModule = new umi3d.common.collaboration.UMI3DCollaborationSerializerModule();
 //            basicModules = new UMI3DSerializerBasicModules();
-//            vectorModules= new UMI3DSerializerVectorModules();
+//            vectorModules = new UMI3DSerializerVectorModules();
 //            stringModules = new UMI3DSerializerStringModules();
-//            shaderModules= new UMI3DSerializerShaderModules();
-//            animationModules= new UMI3DSerializerAnimationModules();
+//            shaderModules = new UMI3DSerializerShaderModules();
+//            animationModules = new UMI3DSerializerAnimationModules();
 
 //            UMI3DSerializer.AddModule(collabSerializerModule);
 //            UMI3DSerializer.AddModule(basicModules);
@@ -56,28 +57,30 @@
 //            UMI3DSerializer.AddModule(animationModules);
 //        }
 
-//        [TearDown] public void Teardown()
+//        [TearDown]
+//        public void Teardown()
 //        {
 
 //        }
 
 //        #region Bindings
-//        [Test] public void ReadBindingDTO_BindingDTOData()
+//        [Test]
+//        public void ReadBindingDTO_BindingDTOData()
 //        {
-//            BindingDataDto bindingDataDto = new BindingDataDto(
-//                priority : 10,
-//                partialFit : true
+//            BindingDto bindingDataDto = new BindingDto(
+//                priority: 10,
+//                partialFit: true
 //            );
 
 //            BindingDto bindingDto = new BindingDto(
-//                objectId : 123,
-//                active : true,
-//                data : bindingDataDto
+//                objectId: 123,
+//                active: true,
+//                data: bindingDataDto
 //            );
 
 //            collabSerializerModule.Write<BindingDto>(bindingDto, out Bytable data);
 
-//            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes()) ;
+//            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
 //            collabSerializerModule.Read(byteContainer, out bool readable, out BindingDto result);
 //            Assert.IsTrue(readable);
@@ -93,13 +96,13 @@
 //            SimpleBindingDto simpleBindingDto = new SimpleBindingDto(
 //                priority: 10,
 //                partialFit: true,
-//                syncRotation : true,
-//                syncPosition : true,
-//                syncScale : true,
-//                offSetPosition : Vector3.one,
-//                offSetRotation : Vector4.one,
-//                offSetScale : Vector3.left
-//            ) ;
+//                syncRotation: true,
+//                syncPosition: true,
+//                syncScale: true,
+//                offSetPosition: Vector3.one,
+//                offSetRotation: Vector4.one,
+//                offSetScale: Vector3.left
+//            );
 
 //            BindingDto bindingDto = new BindingDto(
 //                objectId: 123,
@@ -144,7 +147,7 @@
 //                offSetPosition: Vector3.one,
 //                offSetRotation: Vector4.one,
 //                offSetScale: Vector3.left,
-//                objectID : 1523
+//                objectID: 1523
 //            );
 
 //            BindingDto bindingDto = new BindingDto(
@@ -193,8 +196,8 @@
 //                offSetPosition: Vector3.one,
 //                offSetRotation: Vector4.one,
 //                offSetScale: Vector3.left,
-//                userId : 1,
-//                boneType : 15            
+//                userId: 1,
+//                boneType: 15
 //            );
 
 //            BindingDto bindingDto = new BindingDto(
@@ -247,7 +250,7 @@
 //                offSetScale: Vector3.left,
 //                userId: 1,
 //                boneType: 15,
-//                rigName : "Platipus"
+//                rigName: "Platipus"
 //            );
 
 //            BindingDto bindingDto = new BindingDto(
@@ -297,7 +300,7 @@
 //            MultiBindingDto multyBindingDto = new MultiBindingDto(
 //                priority: 10,
 //                partialFit: true,
-//                Bindings :  GetTestBindingsArray()         
+//                Bindings: GetTestBindingsArray()
 //            );
 
 //            BindingDto bindingDto = new BindingDto(
@@ -356,7 +359,7 @@
 //        {
 //            BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto(
 //                boneId: 8,
-//                rotation : Vector4.one
+//                rotation: Vector4.one
 //            );
 
 //            collabSerializerModule.Write(boneRotationConditionDto, out Bytable data);
@@ -372,7 +375,7 @@
 //        public void ReadDirectionCondition()
 //        {
 //            DirectionConditionDto directionConditionDto = new DirectionConditionDto(
-//                direction : Vector3.one
+//                direction: Vector3.one
 //            );
 
 //            collabSerializerModule.Write(directionConditionDto, out Bytable data);
@@ -387,7 +390,7 @@
 //        public void ReadUserScaleCondition()
 //        {
 //            UserScaleConditinoDto userScaleConditinoDto = new UserScaleConditinoDto(
-//                scale : Vector3.one
+//                scale: Vector3.one
 //            );
 
 //            collabSerializerModule.Write(userScaleConditinoDto, out Bytable data);
@@ -420,8 +423,8 @@
 //        public void ReadRangeCondition()
 //        {
 //            RangeConditionDto rangeConditionDto = new RangeConditionDto(
-//                conditionA : new MagnitudeConditionDto(12),
-//                conditionB : new ScaleConditionDto(Vector3.one)
+//                conditionA: new MagnitudeConditionDto(12),
+//                conditionB: new ScaleConditionDto(Vector3.one)
 //            );
 
 //            collabSerializerModule.Write(rangeConditionDto, out Bytable data);
@@ -440,7 +443,7 @@
 //        public void ReadNotCondition()
 //        {
 //            NotConditionDto notConditionDto = new NotConditionDto(
-//                conditions : GetCondditionsTestSet()
+//                conditions: GetCondditionsTestSet()
 //            );
 
 //            collabSerializerModule.Write(notConditionDto, out Bytable data);
@@ -470,10 +473,10 @@
 //        public void ReadBonePose()
 //        {
 //            BonePoseDto bonePoseDto = new BonePoseDto(
-//                bone : 2,
-//                position : Vector3.one,
-//                rotation : Vector4.one
-//            ) ;
+//                bone: 2,
+//                position: Vector3.one,
+//                rotation: Vector4.one
+//            );
 
 //            collabSerializerModule.Write(bonePoseDto, out Bytable data);
 
@@ -497,7 +500,7 @@
 //                bone: 2,
 //                position: Vector3.one,
 //                rotation: Vector4.one,
-//                otherBone : 17
+//                otherBone: 17
 //            );
 
 //            collabSerializerModule.Write(anchorBonePoseDto, out Bytable data);
@@ -605,7 +608,7 @@
 //        {
 //            PoseDto poseDto = new PoseDto(
 //                bones: GetTestBonePoseDtoSample(),
-//                boneAnchor : 24
+//                boneAnchor: 24
 //            );
 
 //            collabSerializerModule.Write(poseDto, out Bytable data);
@@ -636,15 +639,15 @@
 //        public void ReadPoseOverrider()
 //        {
 //            PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
-//                pose : new PoseDto(
+//                pose: new PoseDto(
 //                        bones: GetTestBonePoseDtoSample(),
 //                        boneAnchor: 24
 //                        ),
-//                poseConditionDtos : GetCondditionsTestSet(),
-//                duration : new DurationDto(24,222,13),
-//                interpolationable : true,
-//                composable : false
-//            );;
+//                poseConditionDtos: GetCondditionsTestSet(),
+//                duration: new DurationDto(24, 222, 13),
+//                interpolationable: true,
+//                composable: false
+//            ); ;
 
 //            collabSerializerModule.Write(poseOverriderDto, out Bytable data);
 
@@ -666,7 +669,7 @@
 //                == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction);
 
 //            Assert.IsTrue(poseOverriderDto.duration.duration == result.duration.duration);
-//            Assert.IsTrue(poseOverriderDto.interpolationable == result.interpolationable);  
+//            Assert.IsTrue(poseOverriderDto.interpolationable == result.interpolationable);
 //            Assert.IsTrue(poseOverriderDto.composable == result.composable);
 //        }
 
@@ -677,9 +680,9 @@
 //        public void ReadDuration()
 //        {
 //            DurationDto duration = new DurationDto(
-//                duration : 159,
-//                min : 5,
-//                max : 89486
+//                duration: 159,
+//                min: 5,
+//                max: 89486
 //            );
 
 //            collabSerializerModule.Write(duration, out Bytable data);
@@ -690,7 +693,7 @@
 //            collabSerializerModule.Read(byteContainer, out bool readable, out DurationDto result);
 //            Assert.IsTrue(readable);
 
-//            Assert.IsTrue(duration.duration == result.duration);    
+//            Assert.IsTrue(duration.duration == result.duration);
 //            Assert.IsTrue(duration.max == result.max);
 //            Assert.IsTrue(duration.min == result.min);
 //        }
