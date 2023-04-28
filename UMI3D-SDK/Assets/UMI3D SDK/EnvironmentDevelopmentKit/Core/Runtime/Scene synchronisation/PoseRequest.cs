@@ -1,7 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.UIElements;
 
