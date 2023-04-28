@@ -66,11 +66,10 @@ namespace umi3d.cdk.userCapture
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
                     InitDefinition(value.entity.dto as UMI3DPoseOverriderContainerDto);
-                    break;
+                    return Task.FromResult(true);
             }
 
-            return Task.FromResult(true);
-
+            return Task.FromResult(false);
         }
 
         /// <summary>
