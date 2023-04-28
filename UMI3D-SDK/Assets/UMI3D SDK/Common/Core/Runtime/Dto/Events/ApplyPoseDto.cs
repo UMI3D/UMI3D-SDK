@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace umi3d.common
 {
-    public class PlayPoseDto : AbstractOperationDto
+    public class ApplyPoseDto : AbstractOperationDto
     {
         public ulong userID;
         public ulong poseKey;
@@ -12,6 +12,6 @@ namespace umi3d.common
 
         public bool stopPose = false;
 
-        public PlayPoseDto() : base() { }
+        public ApplyPoseDto() : base() { }
     }
 }

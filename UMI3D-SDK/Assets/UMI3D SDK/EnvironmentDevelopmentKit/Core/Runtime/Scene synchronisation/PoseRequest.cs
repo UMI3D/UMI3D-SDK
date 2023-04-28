@@ -30,7 +30,7 @@ namespace umi3d.edk
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            PlayPoseDto dto = CreateDto();
+            ApplyPoseDto dto = CreateDto();
             WriteProperties(dto, user.Id());
             return dto;
         }
@@ -44,7 +44,7 @@ namespace umi3d.edk
             return UMI3DOperationKeys.PlayPoseRequest;
         }
 
-        protected virtual PlayPoseDto CreateDto() { return new PlayPoseDto(); }
-        protected virtual void WriteProperties(PlayPoseDto dto, ulong userID) { dto.userID = userID; dto.indexInList = indexInList; dto.poseKey = poseKey; dto.stopPose = stopPose; }
+        protected virtual ApplyPoseDto CreateDto() { return new ApplyPoseDto(); }
+        protected virtual void WriteProperties(ApplyPoseDto dto, ulong userID) { dto.userID = userID; dto.indexInList = indexInList; dto.poseKey = poseKey; dto.stopPose = stopPose; }
     }
 }

@@ -296,7 +296,7 @@ namespace umi3d.cdk.collaboration
                 SendTrackingLoop();
         }
 
-        public void HandlePoseRequest(PlayPoseDto playPoseDto)
+        public void HandlePoseRequest(ApplyPoseDto playPoseDto)
         {
             PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.poseKey, playPoseDto.indexInList);
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);

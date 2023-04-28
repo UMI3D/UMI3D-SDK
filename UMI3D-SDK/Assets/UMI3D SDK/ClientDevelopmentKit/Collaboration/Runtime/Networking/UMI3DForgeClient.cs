@@ -515,7 +515,7 @@ namespace umi3d.cdk.collaboration
                         CollaborativeSkeletonManager.Instance.SetTrackingSending(sendingTracking.activeSending);
                     });
                     break;
-                case PlayPoseDto playPoseDto:
+                case ApplyPoseDto playPoseDto:
                     MainThreadManager.Run(() =>
                     {
                         CollaborativeSkeletonManager.Instance.HandlePoseRequest(playPoseDto);
@@ -679,7 +679,7 @@ namespace umi3d.cdk.collaboration
                     ulong poseKey = UMI3DSerializer.Read<ulong>(container);
                     int indexInList = UMI3DSerializer.Read<int>(container);
                     bool stopPose = UMI3DSerializer.Read<bool>(container);
-                    PlayPoseDto playPoseDto = new PlayPoseDto
+                    ApplyPoseDto playPoseDto = new ApplyPoseDto
                     {
                         userID = userID,
                         poseKey = poseKey,
