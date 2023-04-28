@@ -28,8 +28,8 @@ namespace umi3d.common.userCapture
             this.max = max;
         }
 
-        public ulong duration { get; private set; }
-        public ulong? min { get; private set; } 
+        public ulong duration { get; set; }
+        public ulong? min { get; set; } 
         public ulong? max { get; private set;}
     }
 }

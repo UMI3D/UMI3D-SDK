@@ -51,6 +51,6 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The anchor bone
         /// </summary>
-        public uint otherBone { get; private set; }
+        public uint otherBone { get; set; }
     }
 }

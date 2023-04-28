@@ -26,7 +26,7 @@ namespace umi3d.common.userCapture
             this.scale = scale;
         }
 
-        public SerializableVector3 scale { get; private set; }  
+        public SerializableVector3 scale { get; set; }  
         public uint targetId { get; set; }
     }
 }

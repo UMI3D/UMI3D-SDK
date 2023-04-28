@@ -37,6 +37,6 @@ namespace umi3d.common
         /// <summary>
         /// List Of all the simple bindings to apply
         /// </summary>
-        public AbstractSimpleBindingDataDto[] Bindings { get; private set; }
+        public AbstractSimpleBindingDataDto[] Bindings { get; set; }
     }
 }

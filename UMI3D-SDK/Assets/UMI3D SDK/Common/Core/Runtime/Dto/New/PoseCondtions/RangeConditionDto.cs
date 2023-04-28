@@ -27,7 +27,7 @@ namespace umi3d.common.userCapture
             this.conditionB = conditionB;
         }
 
-        public PoseConditionDto conditionA { get; private set; }
-        public PoseConditionDto conditionB { get; private set; }
+        public PoseConditionDto conditionA { get; set; }
+        public PoseConditionDto conditionB { get; set; }
     }
 }

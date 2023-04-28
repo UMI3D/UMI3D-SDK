@@ -27,6 +27,6 @@ namespace umi3d.common.userCapture
             this.direction = direction;
         }
 
-        public SerializableVector3 direction { get; private set; }
+        public SerializableVector3 direction { get; set; }
     }
 }

@@ -18,6 +18,6 @@ namespace umi3d.common.userCapture
             this.node = node;
         }
 
-        public uint node { get; private set; }
+        public uint node { get; set; }
     }
 }

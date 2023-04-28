@@ -27,6 +27,6 @@ namespace umi3d.common.userCapture
         }
 
 
-        public PoseConditionDto[] conditions { get; private set; }
+        public PoseConditionDto[] conditions { get; set; }
     }
 }

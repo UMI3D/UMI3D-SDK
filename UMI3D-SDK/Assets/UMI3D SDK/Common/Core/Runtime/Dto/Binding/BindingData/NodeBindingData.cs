@@ -30,6 +30,6 @@ namespace umi3d.common
             this.nodeId = nodeId;
         }
 
-        public ulong nodeId { get; private set; }
+        public ulong nodeId { get; set; }
     }
 }

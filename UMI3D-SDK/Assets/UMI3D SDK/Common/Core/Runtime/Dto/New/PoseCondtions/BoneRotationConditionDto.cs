@@ -27,8 +27,8 @@ namespace umi3d.common.userCapture
             this.rotation = rotation;
         }
 
-        public uint boneId { get; private set; }
-        public SerializableVector4 rotation { get; private set; }
+        public uint boneId { get; set; }
+        public SerializableVector4 rotation { get; set; }
         public float acceptanceRange { get; set; }
     }
 }

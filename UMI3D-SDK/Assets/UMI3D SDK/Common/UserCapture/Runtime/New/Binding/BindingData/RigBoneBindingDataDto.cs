@@ -51,6 +51,6 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Name of the rig
         /// </summary>
-        public string rigName { get; private set; }
+        public string rigName { get; set; }
     }
 }

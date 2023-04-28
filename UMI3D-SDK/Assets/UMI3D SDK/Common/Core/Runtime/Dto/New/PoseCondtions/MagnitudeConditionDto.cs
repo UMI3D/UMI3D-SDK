@@ -28,7 +28,7 @@ namespace umi3d.common.userCapture
             this.targetObjectId = targetObjectId;
         }
 
-        public float magnitude { get; private set; }
+        public float magnitude { get; set; }
 
         public uint boneOrigine { get;  set; }
 
