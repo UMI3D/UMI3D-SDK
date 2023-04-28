@@ -74,9 +74,28 @@ namespace umi3d.common.collaboration
 
                     return true;
 
-                case true when typeof(T) == typeof(BoneDto):
+                case true when typeof(T) == typeof(ControllerDto):
                     uint type;
                     SerializableVector4 rot;
+                    SerializableVector3 pos;
+                    if (UMI3DSerializer.TryRead(container, out type)
+                        && UMI3DSerializer.TryRead(container, out rot)
+                        && UMI3DSerializer.TryRead(container, out pos))
+                    {
+                        var controller = new ControllerDto() { boneType = type, rotation = rot, position = pos };
+                        result = (T)Convert.ChangeType(controller, typeof(T));
+                        readable = true;
+                    }
+                    else
+                    {
+                        result = default(T);
+                        readable = false;
+                    }
+                    return true;
+
+                case true when typeof(T) == typeof(BoneDto):
+                    //uint type;
+                    //SerializableVector4 rot;
                     if (UMI3DSerializer.TryRead(container, out type)
                         && UMI3DSerializer.TryRead(container, out rot))
                     {
