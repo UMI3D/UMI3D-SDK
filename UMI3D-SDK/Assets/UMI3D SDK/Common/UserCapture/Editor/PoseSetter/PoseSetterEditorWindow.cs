@@ -18,6 +18,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Reflection;
 using umi3d.edk.userCapture;
@@ -98,9 +99,8 @@ namespace umi3d.common.userCapture
         /// </summary>
         public void OnEnable()
         {
-            VisualTreeAsset uxml = AssetDatabase.LoadAssetAtPath<VisualTreeAsset>(
-                                    "Assets\\Dependencies\\UMI3D SDK\\Common\\UserCapture\\Editor\\PoseSetter\\PoseSetterEditorWindow.uxml"
-                                   );
+            VisualTreeAsset uxml = Resources.Load<VisualTreeAsset>("PoseSetterEditorWindow");
+
             uxml.CloneTree(rootVisualElement);
             GetAllRefs();
             BindUI();
