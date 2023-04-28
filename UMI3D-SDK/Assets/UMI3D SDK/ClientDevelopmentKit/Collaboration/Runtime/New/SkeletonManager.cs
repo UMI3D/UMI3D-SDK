@@ -182,7 +182,7 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
             sendTrackingLoopOnce = true;
-            while (Exists && sendTracking && UMI3DCollaborationClientServer.Instance.status != StatusType.NONE)
+            while (Exists && sendTracking /*&& UMI3DCollaborationClientServer.Instance.status != StatusType.NONE*/)
             {
                 if (targetTrackingFPS > 0)
                 {
