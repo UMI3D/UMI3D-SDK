@@ -80,6 +80,7 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         public override Task UnknownOperationHandler(DtoContainer operation)
         {
+            base.UnknownOperationHandler(operation);
             switch (operation.operation)
             {
                 case SwitchToolDto switchTool:
@@ -98,6 +99,8 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
+            base.UnknownOperationHandler(operationId, container);
+
             ulong id;
             bool releasable;
 

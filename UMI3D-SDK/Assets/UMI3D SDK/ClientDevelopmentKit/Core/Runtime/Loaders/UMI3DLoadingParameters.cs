@@ -393,9 +393,6 @@ namespace umi3d.cdk
 
         public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
-            ulong id;
-            bool releasable;
-
             switch (operationId)
             {
                 case UMI3DOperationKeys.AddBinding:
