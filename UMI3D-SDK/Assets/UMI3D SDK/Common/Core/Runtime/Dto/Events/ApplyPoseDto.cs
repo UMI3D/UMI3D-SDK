@@ -6,12 +6,10 @@ namespace umi3d.common
 {
     public class ApplyPoseDto : AbstractOperationDto
     {
-        public ulong userID;
-        public ulong poseKey;
-        public int indexInList;
+        public ulong userID { get; set; }
+        public ulong poseKey { get; set; }
+        public int indexInList { get; set; }
 
-        public bool stopPose = false;
-
-        public ApplyPoseDto() : base() { }
+        public bool stopPose { get; set; } = false;
     }
 }

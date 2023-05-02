@@ -30,11 +30,12 @@ namespace umi3d.common
             AbstractSimpleBindingDataDto[] bindings = UMI3DSerializer.ReadArray<AbstractSimpleBindingDataDto>(container);
 
             result = readable ?
-                new MultiBindingDataDto(
-                    priority: priority,
-                    partialFit: partialFit,
-                    bindings: bindings
-                ) : default;
+                new MultiBindingDataDto() {
+                    priority = priority,
+                    partialFit = partialFit,
+                    Bindings = bindings
+                } 
+                : default;
 
             return readable;
         }

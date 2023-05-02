@@ -38,19 +38,20 @@ namespace umi3d.common.userCapture
             readable &= UMI3DSerializer.TryRead(container, out uint bonetype);
 
             result = readable ?
-                new BoneBindingDataDto(
-                    syncRotation: syncRotation,
-                    syncPosition: syncPosition,
-                    syncScale: syncScale,
-                    offSetPosition: offSetPosition,
-                    offSetRotation: offSetRotation,
-                    offSetScale: offSetScale,
-                    anchorPosition: anchorPosition,
-                    userId: userId,
-                    boneType: bonetype,
-                    partialFit: partialFit,
-                    priority: priority
-                )
+                new BoneBindingDataDto()
+                {
+                    syncRotation = syncRotation,
+                    syncPosition = syncPosition,
+                    syncScale = syncScale,
+                    offSetPosition = offSetPosition,
+                    offSetRotation = offSetRotation,
+                    offSetScale = offSetScale,
+                    anchorPosition = anchorPosition,
+                    userId = userId,
+                    boneType = bonetype,
+                    partialFit = partialFit,
+                    priority = priority
+                }
                 : default;
 
             return readable;

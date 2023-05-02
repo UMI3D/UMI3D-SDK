@@ -23,7 +23,7 @@ namespace umi3d.common
     /// Base class of all data tranfer objects used in exchanges between the server and clients using UMI3D.
     /// </summary>
     [Serializable]
-    public partial class UMI3DDto
+    public class UMI3DDto
     {
         public UMI3DDto()
         {

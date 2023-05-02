@@ -95,11 +95,11 @@ namespace umi3d.edk.collaboration
 
             try
             {
-                dto = UMI3DDto.FromBson(bytes) as RegisterIdentityDto;
+                dto = UMI3DDtoSerializer.FromBson(bytes) as RegisterIdentityDto;
             }
             catch
             {
-                dto = UMI3DDto.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
+                dto = UMI3DDtoSerializer.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
             }
 
             await UMI3DCollaborationServer.Instance.Register(dto);
@@ -750,7 +750,7 @@ namespace umi3d.edk.collaboration
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
             }
-            action.Invoke(UMI3DDto.FromBson(bytes));
+            action.Invoke(UMI3DDtoSerializer.FromBson(bytes));
         }
 
         private byte[] ReadObject(HttpListenerRequest request)

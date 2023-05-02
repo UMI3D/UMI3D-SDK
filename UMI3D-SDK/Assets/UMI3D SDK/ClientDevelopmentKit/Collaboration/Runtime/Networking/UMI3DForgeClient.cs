@@ -298,7 +298,7 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+            var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
             switch (dto)
             {
                 case TokenDto tokenDto:
@@ -375,7 +375,7 @@ namespace umi3d.cdk.collaboration
 
             if (useDto)
             {
-                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
 
                 switch (dto)
                 {
@@ -742,7 +742,7 @@ namespace umi3d.cdk.collaboration
         {
             if (useDto)
             {
-                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
+                if (UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
                 {
                     MainThreadManager.Run(() =>
                     {

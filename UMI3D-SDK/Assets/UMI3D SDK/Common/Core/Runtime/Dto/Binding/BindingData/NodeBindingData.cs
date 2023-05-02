@@ -19,17 +19,6 @@ namespace umi3d.common
     [System.Serializable]
     public class NodeBindingDataDto : AbstractSimpleBindingDataDto
     {
-        public NodeBindingDataDto()
-        { }
-
-        public NodeBindingDataDto(ulong nodeId, bool syncRotation, bool syncScale, bool syncPosition,
-                        SerializableVector3 offSetPosition, SerializableVector4 offSetRotation, SerializableVector3 offSetScale, SerializableVector3 anchorPosition,
-                        int priority, bool partialFit)
-            : base(syncRotation, syncScale, syncPosition, offSetPosition, offSetRotation, offSetScale, anchorPosition, priority, partialFit)
-        {
-            this.nodeId = nodeId;
-        }
-
         public ulong nodeId { get; set; }
     }
 }

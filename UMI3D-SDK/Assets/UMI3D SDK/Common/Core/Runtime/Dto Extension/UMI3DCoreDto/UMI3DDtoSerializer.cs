@@ -20,11 +20,50 @@ using System.IO;
 
 namespace umi3d.common
 {
-    /// <summary>
-    /// Base class of all data tranfer objects used in exchanges between the server and clients using UMI3D.
-    /// </summary>
-    public partial class UMI3DDto
+    public static class UMI3DDtoSerializer
     {
+        //
+        //  SERIALIZE
+        #region serialize
+
+
+        /// <summary>
+        /// Should be used to serialize UMI3D Data Transfer Object to BSON.
+        /// </summary>
+        /// <param name="dto">UMI3D Data Transfer Object to serialize.</param>
+        /// <param name="typeNameHandling">JSON handling parameter to include or not type information when serializing.</param>
+        /// <returns>A BSON corresponding to the DTO parameter.</returns>
+        public static byte[] ToBson(this UMI3DDto dto, TypeNameHandling typeNameHandling = TypeNameHandling.All)
+        {
+            var ms = new MemoryStream();
+            using (var writer = new BsonWriter(ms))
+            {
+                var serializer = new JsonSerializer
+                {
+                    TypeNameHandling = typeNameHandling
+                };
+                serializer.Serialize(writer, dto);
+            }
+            return ms.ToArray();
+        }
+
+        /// <summary>
+        /// Should be used to serialize UMI3D Data Transfer Object to JSON.
+        /// </summary>
+        /// <param name="dto">UMI3D Data Transfer Object to serialize.</param>
+        /// <param name="typeNameHandling">JSON handling parameter to include or not type information when serializing.</param>
+        /// <returns>A JSON corresponding to the DTO parameter</returns>
+        public static string ToJson(this UMI3DDto dto, TypeNameHandling typeNameHandling = TypeNameHandling.All)
+        {
+            return JsonConvert.SerializeObject(dto, Formatting.Indented, new JsonSerializerSettings
+            {
+                TypeNameHandling = typeNameHandling
+            });
+        }
+
+
+
+        #endregion
 
         //
         //      DESERIALIZE
@@ -98,7 +137,6 @@ namespace umi3d.common
             });
         }
         #endregion
-
     }
 
 }

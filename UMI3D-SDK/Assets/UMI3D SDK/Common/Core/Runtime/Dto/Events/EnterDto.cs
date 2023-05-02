@@ -25,16 +25,14 @@ namespace umi3d.common
         /// <summary>
         /// User spawn position.
         /// </summary>
-        public SerializableVector3 userPosition;
+        public SerializableVector3 userPosition { get; set; }
         /// <summary>
         /// User spawn rotation.
         /// </summary>
-        public SerializableVector4 userRotation;
+        public SerializableVector4 userRotation { get; set; }
         /// <summary>
         /// Has the dto alredy been used?
         /// </summary>
-        public bool usedDto;
-
-        public EnterDto() : base() { }
+        public bool usedDto { get; set; }
     }
 }

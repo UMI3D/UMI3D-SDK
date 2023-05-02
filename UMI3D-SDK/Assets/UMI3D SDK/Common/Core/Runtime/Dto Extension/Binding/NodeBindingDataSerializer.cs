@@ -40,22 +40,24 @@ namespace umi3d.common
             readable &= UMI3DSerializer.TryRead(container, out ulong nodeId);
 
             result = readable ?
-                new NodeBindingDataDto(
-                    priority: priority,
-                    partialFit: partialFit,
+                new NodeBindingDataDto()
+                {
+                    priority = priority,
+                    partialFit = partialFit,
 
-                    syncRotation: syncRotation,
-                    syncPosition: syncPosition,
-                    syncScale: syncScale,
+                    syncRotation = syncRotation,
+                    syncPosition = syncPosition,
+                    syncScale = syncScale,
 
-                    offSetPosition: offSetPosition,
-                    offSetRotation: offSetRotation,
-                    offSetScale: offSetScale,
+                    offSetPosition = offSetPosition,
+                    offSetRotation = offSetRotation,
+                    offSetScale = offSetScale,
 
-                    anchorPosition: anchorPosition,
+                    anchorPosition = anchorPosition,
 
-                    nodeId: nodeId
-                ) : default;
+                    nodeId = nodeId
+                }
+                : default;
 
             return readable;
         }

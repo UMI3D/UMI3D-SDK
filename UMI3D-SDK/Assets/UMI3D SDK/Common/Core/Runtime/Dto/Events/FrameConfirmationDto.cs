@@ -24,7 +24,7 @@ namespace umi3d.common
         /// <summary>
         /// User id of the user in the Frame.
         /// </summary>
-        public ulong userId;
+        public ulong userId { get; set; }
 
         /// <inheritdoc/>
         protected override uint GetOperationId()

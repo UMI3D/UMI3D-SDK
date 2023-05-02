@@ -29,9 +29,12 @@ namespace umi3d.common
             readable &= UMI3DSerializer.TryRead(container, out AbstractBindingDataDto bindingData);
 
             result = readable ?
-                new BindingDto(
-                    boundNodeId: bindingId,
-                    data: bindingData) : default;
+                new BindingDto() 
+                {
+                    boundNodeId = bindingId,
+                    data = bindingData
+                } 
+                : default;
 
             return readable;
         }

@@ -49,23 +49,24 @@ namespace EditMode_Tests
         [Test]
         public void WriteRead_Binding()
         {
-            NodeBindingDataDto bindingDataDto = new NodeBindingDataDto(
-                nodeId:         12,
-                syncPosition:   false,
-                syncRotation:   false,
-                syncScale:      false,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       10,
-                partialFit:     true
-            );
+            NodeBindingDataDto bindingDataDto = new NodeBindingDataDto() {
+                nodeId=         12,
+                syncPosition= false,
+                syncRotation= false,
+                syncScale= false,
+                offSetPosition= Vector3.zero,
+                offSetRotation= Quaternion.identity,
+                offSetScale= Vector3.one,
+                anchorPosition= Vector3.zero,
+                priority= 10,
+                partialFit= true
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: bindingDataDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = 123,
+                data = bindingDataDto
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -82,23 +83,25 @@ namespace EditMode_Tests
         [Test]
         public void WriteRead_SimpleBinding()
         {
-            NodeBindingDataDto bindingDataDto = new NodeBindingDataDto(
-                nodeId:         12,
-                syncPosition:   false,
-                syncRotation:   false,
-                syncScale:      false,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       10,
-                partialFit:     true
-            );
+            NodeBindingDataDto bindingDataDto = new NodeBindingDataDto()
+            {
+                nodeId = 12,
+                syncPosition = false,
+                syncRotation = false,
+                syncScale = false,
+                offSetPosition = Vector3.zero,
+                offSetRotation = Quaternion.identity,
+                offSetScale = Vector3.one,
+                anchorPosition = Vector3.zero,
+                priority = 10,
+                partialFit = true
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: bindingDataDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = 123,
+                data = bindingDataDto
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -126,23 +129,25 @@ namespace EditMode_Tests
         [Test]
         public void WriteRead_NodeBinding()
         {
-            NodeBindingDataDto bindingDataDto = new NodeBindingDataDto(
-                nodeId:         12,
-                syncPosition:   false,
-                syncRotation:   false,
-                syncScale:      false,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       10,
-                partialFit:     true
-            );
+            NodeBindingDataDto bindingDataDto = new NodeBindingDataDto()
+            {
+                nodeId = 12,
+                syncPosition = false,
+                syncRotation = false,
+                syncScale = false,
+                offSetPosition = Vector3.zero,
+                offSetRotation = Quaternion.identity,
+                offSetScale = Vector3.one,
+                anchorPosition = Vector3.zero,
+                priority = 10,
+                partialFit = true
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: bindingDataDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = 123,
+                data = bindingDataDto
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -177,16 +182,18 @@ namespace EditMode_Tests
         [Test]
         public virtual void WriteRead_MultiBinding()
         {
-            MultiBindingDataDto multiBindingDto = new MultiBindingDataDto(
-                priority: 10,
-                partialFit: true,
-                bindings: GetTestBindingsArray()
-            );
+            MultiBindingDataDto multiBindingDto = new MultiBindingDataDto()
+            {
+                priority = 10,
+                partialFit = true,
+                Bindings = GetTestBindingsArray()
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: multiBindingDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = 123,
+                data = multiBindingDto
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -210,18 +217,19 @@ namespace EditMode_Tests
         private AbstractSimpleBindingDataDto[] GetTestBindingsArray()
         {
             static AbstractSimpleBindingDataDto GetMockBindingData(ulong id)
-                => new NodeBindingDataDto(
-                nodeId:         id,
-                syncPosition:   false,
-                syncRotation:   false,
-                syncScale:      false,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       10,
-                partialFit:     true
-            );
+                => new NodeBindingDataDto()
+                {
+                    nodeId = id,
+                    syncPosition = false,
+                    syncRotation = false,
+                    syncScale = false,
+                    offSetPosition = Vector3.zero,
+                    offSetRotation = Quaternion.identity,
+                    offSetScale = Vector3.one,
+                    anchorPosition = Vector3.zero,
+                    priority = 10,
+                    partialFit = true
+                };
 
             return new AbstractSimpleBindingDataDto[] {
                 GetMockBindingData(3),

@@ -40,20 +40,21 @@ namespace umi3d.common.userCapture
             readable &= UMI3DSerializer.TryRead(container, out string rigName);
 
             result = readable ?
-                new RigBoneBindingDataDto(
-                    syncRotation: syncRotation,
-                    syncPosition: syncPosition,
-                    syncScale: syncScale,
-                    offSetPosition: offSetPosition,
-                    offSetRotation: offSetRotation,
-                    offSetScale: offSetScale,
-                    anchorPosition: anchorPosition,
-                    userId: userId,
-                    boneType: bonetype,
-                    partialFit: partialFit,
-                    priority: priority,
-                    rigName: rigName
-                ) : default;
+                new RigBoneBindingDataDto(){
+                    syncRotation= syncRotation,
+                    syncPosition= syncPosition,
+                    syncScale= syncScale,
+                    offSetPosition= offSetPosition,
+                    offSetRotation= offSetRotation,
+                    offSetScale= offSetScale,
+                    anchorPosition= anchorPosition,
+                    userId= userId,
+                    boneType= bonetype,
+                    partialFit= partialFit,
+                    priority= priority,
+                    rigName= rigName
+                } 
+                : default;
 
             return readable;
         }
