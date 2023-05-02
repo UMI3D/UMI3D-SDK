@@ -83,10 +83,10 @@ namespace umi3d.cdk.userCapture
                     ulong id = UMI3DSerializer.Read<ulong>(value.container);
                     PoseOverriderDto[] dtos = UMI3DSerializer.ReadArray<PoseOverriderDto>(value.container);
                     InitDefinition(new UMI3DPoseOverriderContainerDto() { id = id, poseOverriderDtos = dtos });
-                    break;
+                    return Task.FromResult(true);
             }
 
-            return Task.FromResult(true);
+            return Task.FromResult(false);
         }
 
 
