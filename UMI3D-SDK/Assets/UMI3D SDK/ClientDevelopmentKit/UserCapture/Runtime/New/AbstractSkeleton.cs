@@ -33,11 +33,11 @@ namespace umi3d.cdk.userCapture
     {
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
-        public Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
-        public List<ISubSkeleton> Skeletons { get; protected set; } = new();
-        public Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; protected set; } = new();
-        public Transform HipsAnchor { get => hipsAnchor; }
-        public ulong userId { get; protected set; }
+        public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
+        public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
+        public virtual Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; protected set; } = new();
+        public virtual Transform HipsAnchor { get => hipsAnchor; }
+        public virtual ulong userId { get; protected set; }
 
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator = new ();
 
@@ -57,7 +57,7 @@ namespace umi3d.cdk.userCapture
             UMI3DSkeletonHierarchy.SetSkeletonHierarchy.AddListener(() => this.SkeletonHierarchy = UMI3DSkeletonHierarchy.SkeletonHierarchy);
         }
 
-        public ISkeleton Compute()
+        public virtual ISkeleton Compute()
         {
             if (CheckNulls())
             {

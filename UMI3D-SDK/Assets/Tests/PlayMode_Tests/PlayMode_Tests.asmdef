@@ -12,9 +12,7 @@
         "inetum.unityUtils",
         "UMI3D.Common.Collaboration"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,

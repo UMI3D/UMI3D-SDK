@@ -23,7 +23,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace PlayMode_Tests
+namespace PlayMode_Tests.Collaboration.CDK
 {
     public class EmoteManager_Test
     {
@@ -33,6 +33,16 @@ namespace PlayMode_Tests
 
         private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
 
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            if (EmoteManager.Exists)
+                EmoteManager.Destroy();
+
+            if (UMI3DEnvironmentLoader.Exists)
+                UMI3DEnvironmentLoader.Destroy();
+        }
+
         [SetUp]
         public void SetUp()
         {
@@ -40,9 +50,7 @@ namespace PlayMode_Tests
             GameObject go = new GameObject("CollabServer");
             UnityEngine.Object.Instantiate(go);
 
-            UMI3DCollaborationClientServer clientServer = go.AddComponent<UMI3DCollaborationClientServer>();
-
-            Debug.Log(clientServer);
+            go.AddComponent<UMI3DCollaborationClientServer>();
 
             environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
 
