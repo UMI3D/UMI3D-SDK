@@ -83,7 +83,7 @@ namespace umi3d.cdk.userCapture
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
 
-                        skeletonManager.skeleton.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
+                        skeletonManager.personalSkeleton.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
                         return;
                     }
                 }

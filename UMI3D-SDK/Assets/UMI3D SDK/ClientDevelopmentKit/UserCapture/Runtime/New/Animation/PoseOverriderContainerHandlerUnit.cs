@@ -105,7 +105,7 @@ namespace umi3d.cdk.userCapture
                 return false;
             }
             Vector3 targetPosition = targetNodeInstance.transform.position;
-            Vector3 bonePosition = skeletonManager.skeleton.TrackedSkeleton.bones[magnitudeConditionDto.boneOrigine].transform.position;
+            Vector3 bonePosition = skeletonManager.personalSkeleton.TrackedSkeleton.bones[magnitudeConditionDto.boneOrigine].transform.position;
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
             if (distance < magnitudeConditionDto.magnitude)
@@ -118,7 +118,7 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
         {
-            Quaternion boneRotation = skeletonManager.skeleton.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
+            Quaternion boneRotation = skeletonManager.personalSkeleton.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
 
             if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.ToQuaternion()) < boneRotationConditionDto.acceptanceRange)
             {

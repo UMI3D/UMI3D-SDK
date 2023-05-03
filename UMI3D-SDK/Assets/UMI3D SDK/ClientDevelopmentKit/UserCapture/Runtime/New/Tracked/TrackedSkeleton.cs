@@ -113,7 +113,7 @@ namespace umi3d.cdk.userCapture
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
-            foreach (var asyncBone in skeletonManager.skeleton.BonesAsyncFPS)
+            foreach (var asyncBone in skeletonManager.personalSkeleton.BonesAsyncFPS)
             {
                 trackingFrame.trackedBones.Add(bones.First(b => b.Value.boneType.Equals(asyncBone.Key)).Value.ToControllerDto());
             }

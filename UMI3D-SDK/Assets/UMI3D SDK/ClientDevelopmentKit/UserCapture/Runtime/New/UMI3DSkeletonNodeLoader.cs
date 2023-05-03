@@ -68,7 +68,7 @@ namespace umi3d.cdk.userCapture
             }
 
             AnimatedSkeleton animationSkeleton = new(skeletonMapper);
-            personnalSkeletonService.skeleton.Skeletons.Add(animationSkeleton);
+            personnalSkeletonService.personalSkeleton.Skeletons.Add(animationSkeleton);
 
 
             foreach (var renderer in go.GetComponentsInChildren<Renderer>())

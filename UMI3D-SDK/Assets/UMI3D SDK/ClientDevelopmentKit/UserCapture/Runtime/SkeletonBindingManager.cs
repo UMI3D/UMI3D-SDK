@@ -73,12 +73,12 @@ namespace umi3d.cdk.userCapture
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), personnalSkeletonService.skeleton);
+                        return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), personnalSkeletonService.personalSkeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.skeleton);
+                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.personalSkeleton);
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {
