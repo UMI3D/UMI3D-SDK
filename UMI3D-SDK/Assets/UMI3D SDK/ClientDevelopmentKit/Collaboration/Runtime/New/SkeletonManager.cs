@@ -33,15 +33,15 @@ namespace umi3d.cdk.collaboration
 
         public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new Dictionary<ulong, ISkeleton>();
 
-        public PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
+        public PersonalSkeleton personalSkeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
 
         public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; }
 
         public ISkeleton GetSkeletonById(ulong id)
         {
-            if ((skeleton as ISkeleton).userId == id)
+            if ((personalSkeleton as ISkeleton).userId == id)
             {
-                return skeleton;
+                return personalSkeleton;
             }
             else
             {
@@ -108,7 +108,7 @@ namespace umi3d.cdk.collaboration
                 await UMI3DAsyncManager.Yield();
             }
 
-            skeletons[UMI3DClientServer.Instance.GetUserId()] = skeleton;
+            skeletons[UMI3DClientServer.Instance.GetUserId()] = personalSkeleton;
         }
 
         protected void UpdateSkeletons(List<UMI3DUser> usersList)
@@ -150,7 +150,7 @@ namespace umi3d.cdk.collaboration
 
         public UserTrackingFrameDto GetFrame()
         {
-            var frame = skeleton.GetFrame(option);
+            var frame = personalSkeleton.GetFrame(option);
             frame.userId = collaborationClientServerService.GetUserId();
             //frame.refreshFrequency = targetTrackingFPS;
             return frame;
@@ -167,14 +167,17 @@ namespace umi3d.cdk.collaboration
             ISkeleton skeleton;
 
             if (!skeletons.TryGetValue(frame.userId, out skeleton))
+            {
                 UMI3DLogger.LogWarning("User Avatar not found.", scope);
+                return;
+            }
 
             skeleton.UpdateFrame(frame);
         }
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
-            return skeleton.GetCameraProperty();
+            return personalSkeleton.GetCameraProperty();
         }
 
         private async void SendTrackingLoop()
@@ -212,7 +215,7 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
 
-            while (Exists && sendTracking && PersonalSkeleton.Instance.BonesAsyncFPS.ContainsKey(boneType)) 
+            while (Exists && sendTracking && PersonalSkeleton.Instance.BonesAsyncFPS.ContainsKey(boneType))
             {
                 if (PersonalSkeleton.Instance.BonesAsyncFPS[boneType] > 0)
                 {
@@ -300,7 +303,7 @@ namespace umi3d.cdk.collaboration
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
             if (playPoseDto.stopPose)
             {
-                (skeleton as PersonalSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto});
+                (skeleton as PersonalSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
                 (skeleton as CollaborativeSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
             }
             else
