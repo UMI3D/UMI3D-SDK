@@ -24,24 +24,10 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// UMI3D id of the emote to trigger/interrupt.
         /// </summary>
-        public ulong emoteId;
+        public ulong emoteId { get; set; }
         /// <summary>
         /// If true, the emote sould be triggered. Otherwise, it should be interrupted.
         /// </summary>
-        public bool shouldTrigger = true;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId()
-        {
-            return UMI3DOperationKeys.EmoteRequest;
-        }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                     + UMI3DSerializer.Write(emoteId)
-                     + UMI3DSerializer.Write(shouldTrigger);
-        }
+        public bool shouldTrigger { get; set; } = true;
     }
 }

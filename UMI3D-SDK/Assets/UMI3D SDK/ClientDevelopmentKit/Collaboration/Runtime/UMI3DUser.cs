@@ -267,35 +267,35 @@ namespace umi3d.cdk.collaboration
         {
             if (dto.microphoneStatus != microphoneStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus), true);
+                UMI3DClientServer.SendRequest(ConferenceRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus), true);
             }
         }
         public void SetAvatarStatus(bool avatarStatus)
         {
             if (dto.avatarStatus != avatarStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeAvatarStatusRequest(id, avatarStatus), true);
+                UMI3DClientServer.SendRequest(ConferenceRequest.GetChangeAvatarStatusRequest(id, avatarStatus), true);
             }
         }
         public void SetAttentionStatus(bool attentionStatus)
         {
             if (dto.attentionRequired != attentionStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeAttentionStatusRequest(id, attentionStatus), true);
+                UMI3DClientServer.SendRequest(ConferenceRequest.GetChangeAttentionStatusRequest(id, attentionStatus), true);
             }
         }
 
         public static void MuteAllMicrophone()
         {
-            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllMicrophoneRequest(), true);
+            UMI3DClientServer.SendRequest(ConferenceRequest.GetMuteAllMicrophoneRequest(), true);
         }
         public static void MuteAllAvatar()
         {
-            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAvatarRequest(), true);
+            UMI3DClientServer.SendRequest(ConferenceRequest.GetMuteAllAvatarRequest(), true);
         }
         public static void MuteAllAttention()
         {
-            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
+            UMI3DClientServer.SendRequest(ConferenceRequest.GetMuteAllAttentionRequest(), true);
         }
 
         public override string ToString()

@@ -25,7 +25,7 @@ namespace umi3d.edk
     /// UMI3D object that allows to change the material of an object.
     /// </summary>
     [Serializable]
-    public class MaterialOverrider : IBytable
+    public class MaterialOverrider
     {
         /// <summary>
         /// New material to apply to the object.
@@ -80,7 +80,7 @@ namespace umi3d.edk
         /// Use this field to replace all the materials.
         /// </summary>
         /// Used not to have to specify all the materials to replace.
-        private static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
+        public static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
 
         /// <inheritdoc/>
         public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
@@ -101,20 +101,6 @@ namespace umi3d.edk
                 overridedMaterialsId = overidedMaterials,
                 addMaterialIfNotExists = addMaterialIfNotExists
             };
-        }
-
-        /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
-        {
-            return UMI3DSerializer.Write(newMaterial.Id())
-                + UMI3DSerializer.Write(addMaterialIfNotExists)
-                + UMI3DSerializer.WriteCollection(overrideAllMaterial ? ANY_mat : overidedMaterials);
-        }
-
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return false;
         }
     }
 }

@@ -111,7 +111,7 @@ namespace EditMode_Tests
             };
 
             Mock<UMI3DClientServer> mockServer = new();
-            mockServer.Setup(x => x.SendRequest(req, true));
+            mockServer.Setup(x => x._SendRequest(req, true));
 
             UMI3DAbstractAnimationDto mockDto = new UMI3DAnimatorAnimationDto()
             {

@@ -327,7 +327,7 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case common.ConferenceBrowserRequest conferencedto:
+                    case common.ConferenceBrowserRequestDto conferencedto:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationServer.Collaboration.CollaborationRequest(user, conferencedto);

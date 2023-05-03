@@ -138,7 +138,7 @@ namespace umi3d.edk.userCapture
 
         protected void RegisterPose(AbstractEntityDto pose)
         {
-            if (pose.id != 0 || UMI3DEnvironment.GetEntity<UMI3DHandPose>(pose.id) == null)
+            if (pose.id != 0 || UMI3DEnvironment.GetEntityInstance<UMI3DHandPose>(pose.id) == null)
             {
                 pose.id = UMI3DEnvironment.Register(this);
                 SetId(pose.id);

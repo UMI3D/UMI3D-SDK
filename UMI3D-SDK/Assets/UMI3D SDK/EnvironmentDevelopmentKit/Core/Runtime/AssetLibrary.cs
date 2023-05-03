@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -69,11 +70,11 @@ namespace umi3d.edk
                 libraryId = id,
                 id = Id(),
                 version = version, 
-                variants = new List<UMI3DLocalAssetDirectory>()
+                variants = new List<UMI3DLocalAssetDirectoryDto>()
             };
             foreach (UMI3DLocalAssetDirectory variant in variants)
             {
-                dto.variants.Add(new UMI3DLocalAssetDirectory(variant));
+                dto.variants.Add(variant.ToDto());
             }
             dto.baseUrl = UMI3DServer.GetHttpUrl() + UMI3DNetworkingKeys.directory;
             return dto;
@@ -85,7 +86,7 @@ namespace umi3d.edk
             return UMI3DSerializer.Write(id)
                 + UMI3DSerializer.Write(Id())
                 + UMI3DSerializer.Write(version)
-                + UMI3DSerializer.WriteIBytableCollection(variants.Select(v => new UMI3DLocalAssetDirectory(v)));
+                + UMI3DSerializer.WriteCollection(variants.Select(v => v.ToDto()));
         }
 
         /// <inheritdoc/>
@@ -151,6 +152,60 @@ namespace umi3d.edk
             return ConnectionFilters.Remove(filter);
         }
         #endregion
+
+    }
+
+    /// <summary>
+    /// Serialized description of an asset directory, a local folder where variants of an assets are stored.
+    /// </summary>
+    [System.Serializable]
+    public class UMI3DLocalAssetDirectory
+    {
+        /// <summary>
+        /// Name of the directory.
+        /// </summary>
+        public string name = "new variant";
+
+        /// <summary>
+        /// Local path of the directory.
+        /// </summary>
+        public string path;
+        [SerializeField]
+        public AssetMetric metrics = new AssetMetric();
+        [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
+        public List<string> formats = new List<string>();
+
+        public UMI3DLocalAssetDirectoryDto ToDto()
+        {
+            return new UMI3DLocalAssetDirectoryDto() { 
+            name = name,
+            path = path,
+            metrics = metrics.ToDto(),
+            formats = formats,
+            };
+        }
+
+        public class AssetMetric
+        {
+            /// <summary>
+            /// Arbitrary level of resolution from low to higher resolution.
+            /// </summary>
+            public int resolution = 1;
+
+            /// <summary>
+            /// File size in Mb.
+            /// </summary>
+            public float size = 0f;
+
+            public AssetMetricDto ToDto()
+            {
+                return new AssetMetricDto()
+                {
+                    resolution = resolution,
+                    size = size,
+                };
+            }
+        }
 
     }
 }

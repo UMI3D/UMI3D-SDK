@@ -31,24 +31,11 @@ namespace umi3d.edk.userCapture
         public Vector3 HandLocalEulerRotation;
 
         [Serializable]
-        public class PhalanxRotations : IBytable
+        public class PhalanxRotations
         {
             [ConstEnum(typeof(BoneType), typeof(uint))]
             public string Phalanx;
             public Vector3 PhalanxEulerRotation;
-
-            /// <inheritdoc/>
-            public bool IsCountable()
-            {
-                return true;
-            }
-
-            /// <inheritdoc/>
-            public Bytable ToBytableArray(params object[] parameters)
-            {
-                return UMI3DSerializer.Write(Phalanx)
-                    + UMI3DSerializer.Write(PhalanxEulerRotation);
-            }
         }
 
         // set up with gizmos

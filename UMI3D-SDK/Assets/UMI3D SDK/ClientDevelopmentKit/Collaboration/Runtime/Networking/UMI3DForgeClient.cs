@@ -336,7 +336,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                SendBinaryData((int)DataChannelTypes.Data, dto.ToBytableArray().ToBytes(), reliable);
+                SendBinaryData((int)DataChannelTypes.Data, UMI3DSerializer.Write(dto).ToBytes(), reliable);
             }
         }
 
@@ -392,7 +392,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
+                            UMI3DLogger.Log($"type not catch {dto.GetType()}", scope);
                         });
                         break;
                 }
@@ -423,7 +423,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DLogger.Log($"Type not catch {TransactionId}", scope);
+                            UMI3DLogger.Log($"type not catch {TransactionId}", scope);
                         });
                         break;
                 }
@@ -734,7 +734,7 @@ namespace umi3d.cdk.collaboration
             if (useDto)
                 SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBson(), false);
             else
-                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBytableArray().ToBytes(), false);
+                SendBinaryData((int)DataChannelTypes.Tracking, UMI3DSerializer.Write(dto).ToBytes(), false);
         }
 
         /// <inheritdoc/>

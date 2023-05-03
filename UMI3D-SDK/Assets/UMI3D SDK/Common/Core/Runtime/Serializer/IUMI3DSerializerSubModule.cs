@@ -28,7 +28,7 @@ namespace umi3d.common
         /// <summary>
         /// Write the object as a <see cref="Bytable"/>.
         /// </summary>
-        /// <typeparam name="T">Type of the object to serialize.</typeparam>
+        /// <typeparam name="T">type of the object to serialize.</typeparam>
         /// <param name="dto">Object to serialize.</param>
         /// <param name="bytable">Object as a bytable.</param>
         public Bytable Write(T dto);
@@ -36,7 +36,7 @@ namespace umi3d.common
         /// <summary>
         /// Retrieve an object from a <see cref="Bytable"/>.
         /// </summary>
-        /// <typeparam name="T">Type of the object to deserialize.</typeparam>
+        /// <typeparam name="T">type of the object to deserialize.</typeparam>
         /// <param name="container">Byte container containing the object.</param>
         /// <param name="result">Deserialized object.</param>
         /// <returns>Has the content successfully been read?</returns>

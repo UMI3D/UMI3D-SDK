@@ -21,32 +21,19 @@ namespace umi3d.common.interaction
     /// </summary>
     public class HoveredDto : InteractionRequestDto
     {
-
         /// <summary>
         /// Hovered point position in the Interactable associated object's local frame.
         /// </summary>
-        public SerializableVector3 position;
+        public SerializableVector3 position { get; set; }
 
         /// <summary>
         /// Normal to the object's surface at the hovered point in the Interactable associated object's local frame.
         /// </summary>
-        public SerializableVector3 normal;
+        public SerializableVector3 normal { get; set; }
 
         /// <summary>
         /// The direction of the browser's selection tool in the Interactable associated object's local frame.
         /// </summary>
-        public SerializableVector3 direction;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.Hoverred; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(position)
-                + UMI3DSerializer.Write(normal)
-                + UMI3DSerializer.Write(direction);
-        }
+        public SerializableVector3 direction { get; set; }
     }
 }

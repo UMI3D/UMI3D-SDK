@@ -930,7 +930,7 @@ namespace umi3d.cdk
                     RemoveLibrary(lib);
                 }
 
-                UMI3DLocalAssetDirectory variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
+                UMI3DLocalAssetDirectoryDto variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
 
                 var bytes = await UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), false);
                 progress1.AddComplete();

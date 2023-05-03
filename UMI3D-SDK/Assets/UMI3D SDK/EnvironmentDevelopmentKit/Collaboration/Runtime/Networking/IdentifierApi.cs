@@ -51,7 +51,7 @@ namespace umi3d.edk.collaboration
             {
                 foreach (ParameterSettingRequestDto dto in param.answers)
                 {
-                    AbstractInteraction interaction = UMI3DEnvironment.GetEntity<AbstractInteraction>(dto.id);
+                    AbstractInteraction interaction = UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(dto.id);
                     if (interaction is LocalInfoParameter local)
                         local.ChageUserLocalInfo(user, dto.parameter as LocalInfoRequestParameterValue);
                 }

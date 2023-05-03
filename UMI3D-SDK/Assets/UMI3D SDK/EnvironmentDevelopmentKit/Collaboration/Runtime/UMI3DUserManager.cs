@@ -383,7 +383,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequest dto)
+        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequestDto dto)
         {
             var tr = new Transaction
             {
@@ -546,7 +546,7 @@ namespace umi3d.edk.collaboration
             }
 
             ulong animationId = emote.AnimationId.GetValue(sendingUser);
-            var animation = UMI3DEnvironment.Instance.GetEntityInstance<UMI3DAbstractAnimation>(animationId);
+            var animation = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAbstractAnimation>(animationId);
 
             var t = new Transaction() { reliable = true };
             var op = animation.objectPlaying.SetValue(trigger);

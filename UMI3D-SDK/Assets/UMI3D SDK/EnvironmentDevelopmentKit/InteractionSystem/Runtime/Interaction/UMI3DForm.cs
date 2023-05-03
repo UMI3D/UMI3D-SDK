@@ -78,7 +78,7 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DSerializer.WriteIBytableCollection(Fields);
+                + UMI3DSerializer.WriteCollection(Fields);
         }
 
         /// <inheritdoc/>

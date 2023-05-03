@@ -28,21 +28,21 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// User id of the tracked user 
         /// </summary>
-        public ulong userId;
+        public ulong userId { get; set; }
 
         /// <summary>
         /// Id of the parent.
         /// </summary>
-        public ulong parentId;
+        public ulong parentId { get; set; }
 
         /// <summary>
         /// Bones information of the user
         /// </summary>
-        public List<ControllerDto> trackedBones;
+        public List<ControllerDto> trackedBones { get; set; }
 
-        public List<int> playerServerPoses = new List<int>();
+        public List<int> playerServerPoses { get; set; } = new List<int>();
 
-        public List<int> playerUserPoses = new List<int>();
+        public List<int> playerUserPoses { get; set; } = new List<int>();
 
         /// <summary>
         /// Current jump height of the avatar.
@@ -53,34 +53,11 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Current position of the user.
         /// </summary>
-        public SerializableVector3 position;
+        public SerializableVector3 position { get; set; }
 
         /// <summary>
         /// Current rotation of the user as a quaternion.
         /// </summary>
-        public SerializableVector4 rotation;
-
-        //public ulong[] animationsPlaying;
-
-        /// <summary>
-        /// Frequency in frame per second (FPS) at which the user tracking is sent to the server.
-        /// </summary>
-        //public float refreshFrequency;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingFrame; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(userId)
-                + UMI3DSerializer.Write(parentId)
-                + UMI3DSerializer.Write(position)
-                + UMI3DSerializer.Write(rotation)
-                + UMI3DSerializer.WriteCollection(trackedBones)
-                + UMI3DSerializer.WriteCollection(playerServerPoses)
-                + UMI3DSerializer.WriteCollection(playerUserPoses);
-        }
+        public SerializableVector4 rotation { get; set; }
     }
 }

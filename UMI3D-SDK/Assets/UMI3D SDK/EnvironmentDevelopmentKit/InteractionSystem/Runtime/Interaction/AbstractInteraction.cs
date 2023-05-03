@@ -29,7 +29,7 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction. Base class for all interactions.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity, IBytable
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity
     {
 
         public event Action<ulong> onHasRegistered;
@@ -263,17 +263,11 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
+        public Bytable ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToBytes(null);
             return ToBytes(parameters[0] as UMI3DUser);
-        }
-
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return true;
         }
 
         public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)

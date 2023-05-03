@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
@@ -114,14 +115,16 @@ namespace umi3d.cdk.collaboration
         private void Start()
         {
             _ = UMI3DCollaborationEnvironmentLoader.Instance; // force right service instanciation
-            UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
-            UMI3DSerializer.AddModule(new UMI3DUserCaptureBindingSerializerModule());
-            UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
-            UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
+            UMI3DSerializer.AddModule(UMI3DSerializerModule.GetModules().ToList());
+
+            //UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
+            //UMI3DSerializer.AddModule(new UMI3DUserCaptureBindingSerializerModule());
+            //UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
+            //UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
         }
 
 

@@ -22,6 +22,11 @@ namespace umi3d.common
 {
     public class UMI3DSerializerAnimationModules : UMI3DSerializerModule
     {
+        public override bool IsCountable<T>()
+        {
+            return true;
+        }
+
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
@@ -52,7 +57,7 @@ namespace umi3d.common
                         return false;
                     }
                 case true when typeof(T) == typeof(UMI3DAnimatorParameterDto):
-                    var parameterValue = UMI3DAnimatorParameterDto.FromByte(container);
+                    var parameterValue = AnimatorParameterFromByte(container);
                     result = (T)Convert.ChangeType(parameterValue, typeof(T));
                     return true;
             }
@@ -62,7 +67,7 @@ namespace umi3d.common
             return false;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             Func<byte[], int, int, (int, int)> f;
 
@@ -82,9 +87,40 @@ namespace umi3d.common
                     bytable += UMI3DSerializer.Write(serializableFrame.intTangeant);
                     bytable += UMI3DSerializer.Write(serializableFrame.outTangeant);
                     return true;
+                case UMI3DAnimatorParameterDto animatorParameter:
+                    bytable = UMI3DSerializer.Write(animatorParameter.type)
+                            + UMI3DSerializer.Write(animatorParameter.value);
+                    return true;
             }
             bytable = null;
             return false;
+        }
+
+        /// <summary>
+        /// Reads Animator parameter value from bytes.
+        /// </summary>
+        /// <param name="container"></param>
+        /// <returns></returns>
+        static object AnimatorParameterFromByte(ByteContainer container)
+        {
+            UMI3DAnimatorParameterType type = (UMI3DAnimatorParameterType)UMI3DSerializer.Read<int>(container);
+
+            object value = null;
+
+            switch (type)
+            {
+                case UMI3DAnimatorParameterType.Bool:
+                    value = UMI3DSerializer.Read<bool>(container);
+                    break;
+                case UMI3DAnimatorParameterType.Float:
+                    value = UMI3DSerializer.Read<float>(container);
+                    break;
+                case UMI3DAnimatorParameterType.Integer:
+                    value = UMI3DSerializer.Read<int>(container);
+                    break;
+            }
+
+            return UMI3DAnimatorParameter.Create(value);
         }
     }
 }

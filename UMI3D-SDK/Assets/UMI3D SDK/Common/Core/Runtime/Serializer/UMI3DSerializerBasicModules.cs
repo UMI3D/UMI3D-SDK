@@ -20,8 +20,14 @@ using umi3d.common;
 
 namespace umi3d.common
 {
+    [UMI3DSerializerOrder(1000)]
     public class UMI3DSerializerBasicModules : UMI3DSerializerModule
     {
+        public override bool IsCountable<T>()
+        {
+            return true;
+        }
+
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
@@ -125,7 +131,7 @@ namespace umi3d.common
             return false;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             Func<byte[], int, int, (int, int)> f;
 

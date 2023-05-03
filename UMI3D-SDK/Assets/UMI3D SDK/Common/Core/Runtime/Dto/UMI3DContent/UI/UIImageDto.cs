@@ -33,7 +33,7 @@ namespace umi3d.common
         public ResourceDto sprite;
 
         /// <summary>
-        /// Type of way to display the image.
+        /// type of way to display the image.
         /// </summary>
         public ImageType type;
 

@@ -570,7 +570,7 @@ namespace umi3d.edk.collaboration
                         }
                         catch (Exception ex)
                         {
-                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] Type : {e.Item2?.GetType()} {ex}", scope);
+                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] type : {e.Item2?.GetType()} {ex}", scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
                     }).ToList(),
@@ -599,7 +599,7 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DUser user = GetUserFor(e.Request);
                 UMI3DLogger.Log($"Get Scene {user?.Id()}", scope);
-                UMI3DScene scene = UMI3DEnvironment.GetEntity<UMI3DScene>(id);
+                UMI3DScene scene = UMI3DEnvironment.GetEntityInstance<UMI3DScene>(id);
                 if (scene == null)
                 {
                     Return404(e.Response, "UMI3DScene is missing !");

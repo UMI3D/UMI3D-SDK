@@ -909,7 +909,7 @@ namespace umi3d.common.collaboration
 
 
         /// <inheritdoc/>
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
             {
@@ -1113,6 +1113,11 @@ namespace umi3d.common.collaboration
                     bytable = null;
                     return false;
             }
+            return true;
+        }
+
+        public override bool IsCountable<T>()
+        {
             return true;
         }
     }

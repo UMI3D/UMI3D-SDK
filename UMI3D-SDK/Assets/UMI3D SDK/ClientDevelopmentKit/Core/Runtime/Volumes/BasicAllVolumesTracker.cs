@@ -42,8 +42,8 @@ namespace umi3d.cdk.volumes
                 tracker = this.gameObject.AddComponent<VolumeTracker>();
                 tracker.detectionFrameRate = frameRate;
                 tracker.volumesToTrack = new List<AbstractVolumeCell>() { volume };
-                tracker.SubscribeToVolumeEntrance(vid => UMI3DClientServer.SendData(new VolumeUserTransitDto() { direction = true, volumeId = vid }, true));
-                tracker.SubscribeToVolumeExit(vid => UMI3DClientServer.SendData(new VolumeUserTransitDto() { direction = false, volumeId = vid }, true));
+                tracker.SubscribeToVolumeEntrance(vid => UMI3DClientServer.SendRequest(new VolumeUserTransitDto() { direction = true, volumeId = vid }, true));
+                tracker.SubscribeToVolumeExit(vid => UMI3DClientServer.SendRequest(new VolumeUserTransitDto() { direction = false, volumeId = vid }, true));
                 tracker.StartTracking();
             }
             else

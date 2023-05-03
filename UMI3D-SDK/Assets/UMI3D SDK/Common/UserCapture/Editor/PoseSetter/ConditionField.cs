@@ -42,7 +42,7 @@ namespace umi3d.common.userCapture
             AddToClassList("EditorParts");
 
             dropdownField = new DropdownField();
-            dropdownField.label = "Condition Type";
+            dropdownField.label = "Condition type";
             Add(dropdownField);
             SetUpDropDown();
         }

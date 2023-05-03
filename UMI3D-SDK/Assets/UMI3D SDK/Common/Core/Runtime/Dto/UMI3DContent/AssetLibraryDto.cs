@@ -51,6 +51,6 @@ namespace umi3d.common
         /// Directories where a stored all the variants of the library.
         /// </summary>
         /// A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.
-        public List<UMI3DLocalAssetDirectory> variants;
+        public List<UMI3DLocalAssetDirectoryDto> variants;
     }
 }

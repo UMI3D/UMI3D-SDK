@@ -168,7 +168,7 @@ namespace umi3d.cdk
             {
                 if ((!string.IsNullOrEmpty(item.Key)) && item.Value != null)
                 {
-                    //Type type = item.Value.GetType();
+                    //type type = item.Value.GetType();
                     switch (item.Value)
                     {
                         case float f:

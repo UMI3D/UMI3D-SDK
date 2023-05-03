@@ -27,48 +27,33 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the interactable or tool (in the case of an interaction related to hoverring).
         /// </summary>
-        public ulong toolId;
+        public ulong toolId { get; set; }
 
         /// <summary>
         /// Id of the interaction (in the case of an interaction related to hoverring).
         /// </summary>
-        public ulong id;
+        public ulong id { get; set; }
 
         /// <summary>
         /// The id of the currently hoverred object.
         /// It will be always null for an Interaction inside a Tool.
         /// For an Interaction inside an Interactable, it could be the Id of the Interactable associated object, or the Id of a sub-object if Interaction.notifyHoverPosition == true.
         /// </summary>
-        public ulong hoveredObjectId;
+        public ulong hoveredObjectId { get; set; }
 
         /// <summary>
         /// The type of bone associated to the user's controller.
         /// </summary>
-        public uint boneType;
+        public uint boneType { get; set; }
 
         /// <summary>
         /// The global position of the bone associated to the user's controller.
         /// </summary>
-        public SerializableVector3 bonePosition = new();
+        public SerializableVector3 bonePosition { get; set; } = new();
 
         /// <summary>
         /// The global rotation of the bone associated to the user's controller.
         /// </summary>
-        public SerializableVector4 boneRotation = new();
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.InteractionRequest; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(toolId)
-                + UMI3DSerializer.Write(id)
-                + UMI3DSerializer.Write(hoveredObjectId)
-                + UMI3DSerializer.Write(boneType)
-                + UMI3DSerializer.Write(bonePosition)
-                + UMI3DSerializer.Write(boneRotation);
-        }
+        public SerializableVector4 boneRotation { get; set; } = new();
     }
 }

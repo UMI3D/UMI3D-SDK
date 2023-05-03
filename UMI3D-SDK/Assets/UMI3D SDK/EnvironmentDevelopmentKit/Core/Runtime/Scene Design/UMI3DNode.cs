@@ -77,9 +77,9 @@ namespace umi3d.edk
         #region collider
 
         /// <summary>
-        /// Type of the collider generated in front end.
+        /// type of the collider generated in front end.
         /// </summary>
-        [SerializeField, EditorReadOnly, Tooltip("Type of the collider generated in front end.")]
+        [SerializeField, EditorReadOnly, Tooltip("type of the collider generated in front end.")]
         protected ColliderType colliderType = ColliderType.Mesh;
 
         /// <summary>

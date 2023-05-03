@@ -240,7 +240,7 @@ namespace umi3d.cdk.collaboration
                 shouldTrigger = true
             };
 
-            UMI3DClientServer.Instance.SendRequest(emoteRequest, true);
+            UMI3DClientServer.SendRequest(emoteRequest, true);
 
             // emote play mode
             playingEmote = emote;
@@ -283,7 +283,7 @@ namespace umi3d.cdk.collaboration
                     emoteId = playingEmote.dto.id,
                     shouldTrigger = false
                 };
-                UMI3DClientServer.Instance.SendRequest(emoteRequest, true);
+                UMI3DClientServer.SendRequest(emoteRequest, true);
 
                 EndPlayMode();
                 EmoteEnded?.Invoke(playingEmote);

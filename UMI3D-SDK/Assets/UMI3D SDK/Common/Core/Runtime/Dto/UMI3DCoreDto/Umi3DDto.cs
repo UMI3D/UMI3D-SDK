@@ -25,9 +25,6 @@ namespace umi3d.common
     [Serializable]
     public class UMI3DDto
     {
-        public UMI3DDto()
-        {
-        }
     }
 
 }

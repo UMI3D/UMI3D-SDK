@@ -204,7 +204,7 @@ namespace umi3d.edk
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
         /// <summary>
-        /// AsyncProperties of the ambient Type. See <see cref="RenderSettings.ambientMode"/>.
+        /// AsyncProperties of the ambient type. See <see cref="RenderSettings.ambientMode"/>.
         /// </summary>
         private AmbientMode mode => RenderSettings.ambientMode;
         /// <summary>
@@ -338,24 +338,23 @@ namespace umi3d.edk
         /// Get entity by id.
         /// </summary>
         /// <param name="id">Entity to get id</param>
-        [Obsolete("Use GetEntityInstance(ulong) instead.")]
-        public static E GetEntity<E>(ulong id) where E : class, UMI3DEntity
+        public static E GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
         {
-            return Instance.GetEntityInstance<E>(id);
+            if (Exists)
+                return Instance._GetEntityInstance<E>(id);
+            else if (QuittingManager.ApplicationIsQuitting)
+                return null;
+            else
+                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
 
         /// <summary>
         /// Get entity by id.
         /// </summary>
         /// <param name="id">Entity to get id</param>
-        public E GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
+        public E _GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
         {
-            if (Exists)
-                return Instance.entities[id] as E;
-            else if (QuittingManager.ApplicationIsQuitting)
-                return null;
-            else
-                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+            return entities[id] as E;
         }
 
         /// <summary>
@@ -370,11 +369,8 @@ namespace umi3d.edk
                     return (null, false, true);
                 else
                 {
-                    UMI3DEntity e = Instance.entities[id];
-                    if (e is E entity)
-                        return (entity, true, true);
-                    else
-                        return (null, true, true);
+                    var e = Instance.entities[id] as E;
+                    return (e, true, true);
                 }
             }
             else if (QuittingManager.ApplicationIsQuitting)

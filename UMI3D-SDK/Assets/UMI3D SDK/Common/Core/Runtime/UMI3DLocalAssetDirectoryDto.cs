@@ -1,9 +1,12 @@
 ﻿/*
 Copyright 2019 - 2021 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
+
     http://www.apache.org/licenses/LICENSE-2.0
+
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -11,25 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
+using System.Collections.Generic;
+using UnityEngine;
+
 namespace umi3d.common
 {
     /// <summary>
-    /// Object that could be converted to an array of bytes.
+    /// Serialized description of an asset directory, a local folder where variants of an assets are stored.
     /// </summary>
-    public interface IBytable
+    [System.Serializable]
+    public class UMI3DLocalAssetDirectoryDto
     {
         /// <summary>
-        /// Could the number of elements be deduced from a size parameter?
+        /// Name of the directory.
         /// </summary>
-        /// <returns></returns>
-        bool IsCountable();
+        public string name { get; set; } = "new variant";
 
         /// <summary>
-        /// Convert the parameters to an array of <see cref="Bytable"/>.
+        /// Local path of the directory.
         /// </summary>
-        /// This method is used in the bytes networking system.
-        /// <param name="parameters"></param>
-        /// <returns></returns>
-        Bytable ToBytableArray(params object[] parameters);
+        public string path { get; set; }
+        [SerializeField]
+        public AssetMetricDto metrics { get; set; } = new AssetMetricDto();
+        //[ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
+        public List<string> formats { get; set; } = new List<string>();
+        //todo fix ui
     }
 }

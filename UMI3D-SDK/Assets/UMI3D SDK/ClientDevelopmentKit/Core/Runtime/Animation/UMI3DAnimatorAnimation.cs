@@ -122,7 +122,7 @@ namespace umi3d.cdk
 
                         foreach (var entry in dto.parameters)
                         {
-                            UMI3DAnimatorParameterDto param = new UMI3DAnimatorParameterDto(entry.Value);
+                            UMI3DAnimatorParameterDto param = UMI3DAnimatorParameter.Create(entry.Value);
                             ApplyParameter(entry.Key, param);
                         }
 

@@ -81,7 +81,7 @@ namespace umi3d.common.userCapture
             return readable;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             if (bindingSerializers.ContainsKey(typeof(T)))
             {

@@ -25,7 +25,7 @@ namespace umi3d.common
     public class ColliderDto : UMI3DDto
     {
         /// <summary>
-        /// Type of the collider generated in front end.
+        /// type of the collider generated in front end.
         /// </summary>
         public ColliderType colliderType = ColliderType.Mesh;
 

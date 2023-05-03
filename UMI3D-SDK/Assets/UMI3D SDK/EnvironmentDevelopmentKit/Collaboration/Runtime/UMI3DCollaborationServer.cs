@@ -210,15 +210,17 @@ namespace umi3d.edk.collaboration
             mumbleManager = murmur.MumbleManager.Create(mumbleIp, mumbleHttpIp, guid);
 
             if (collaborativeModule == null)
-                collaborativeModule = new List<UMI3DSerializerModule>() {
-                    new UMI3DSerializerBasicModules(),
-                    new UMI3DSerializerStringModules(),
-                    new UMI3DSerializerVectorModules(),
-                    new UMI3DSerializerAnimationModules(),
-                    new UMI3DSerializerShaderModules(),
-                    new UMI3DUserCaptureBindingSerializerModule(),
-                    new UMI3DEnvironmentSerializerCollaborationModule(),
-                    new common.collaboration.UMI3DCollaborationSerializerModule() };
+                collaborativeModule = UMI3DSerializerModule.GetModules().ToList();
+
+            //new List<UMI3DSerializerModule>() {
+            //new UMI3DSerializerBasicModules(),
+            //new UMI3DSerializerStringModules(),
+            //new UMI3DSerializerVectorModules(),
+            //new UMI3DSerializerAnimationModules(),
+            //new UMI3DSerializerShaderModules(),
+            //new UMI3DUserCaptureBindingSerializerModule(),
+            //new UMI3DEnvironmentSerializerCollaborationModule(),
+            //new common.collaboration.UMI3DCollaborationSerializerModule() };
             UMI3DSerializer.AddModule(collaborativeModule);
 
             if (!useIp)

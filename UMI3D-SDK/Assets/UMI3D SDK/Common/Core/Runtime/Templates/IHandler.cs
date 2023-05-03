@@ -22,8 +22,8 @@ namespace umi3d.common
     /// Responsability chain pattern node. 
     /// The Handler should Handle the value if possible or ask its successor to handle it.
     /// </summary>
-    /// <typeparam name="T">Type to handle</typeparam>
-    /// <typeparam name="L">Type to return when handled</typeparam>
+    /// <typeparam name="T">type to handle</typeparam>
+    /// <typeparam name="L">type to return when handled</typeparam>
     public interface IHandler<T,L>
     {
         /// <summary>

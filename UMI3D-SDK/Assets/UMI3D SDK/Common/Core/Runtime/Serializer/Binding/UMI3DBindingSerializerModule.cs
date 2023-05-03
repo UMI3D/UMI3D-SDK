@@ -80,7 +80,7 @@ namespace umi3d.common
             return readable;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             if (bindingSerializers.ContainsKey(typeof(T)))
             {
@@ -112,6 +112,11 @@ namespace umi3d.common
                 bytable = default;
                 return false;
             }
+        }
+
+        public override bool IsCountable<T>()
+        {
+            return true;
         }
     }
 }

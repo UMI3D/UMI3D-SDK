@@ -23,6 +23,11 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DEnvironmentSerializerCollaborationModule : UMI3DSerializerModule
     {
+        public override bool IsCountable<T>()
+        {
+            return true;
+        }
+
         /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
@@ -54,7 +59,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <inheritdoc/>
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
             {

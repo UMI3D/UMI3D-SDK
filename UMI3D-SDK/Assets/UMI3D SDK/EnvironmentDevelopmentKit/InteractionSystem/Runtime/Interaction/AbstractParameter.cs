@@ -35,14 +35,14 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Event when an interaction is performed on a parameter.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        /// <typeparam name="T">type of the parameter value.</typeparam>
         [System.Serializable]
         public class ParameterEvent<T> : UnityEvent<ParameterEventContent<T>> { }
 
         /// <summary>
         /// Parameter interaction Event content.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        /// <typeparam name="T">type of the parameter value.</typeparam>
         [System.Serializable]
         public class ParameterEventContent<T> : InteractionEventContent
         {
