@@ -33,6 +33,8 @@ namespace umi3d.cdk.userCapture
 
         public Dictionary<ulong, List<PoseDto>> allPoses;
 
+        private ISkeletonManager skeletonManager;
+
         private void Start()
         {
             localPoses = new PoseDto[clientPoses.Count];
@@ -42,6 +44,8 @@ namespace umi3d.cdk.userCapture
                 poseDto.id = i;
                 localPoses[i] = poseDto;
             }
+
+            skeletonManager = UserCaptureSkeletonManager.Instance;
         }
 
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
@@ -79,7 +83,7 @@ namespace umi3d.cdk.userCapture
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
 
-                        PersonalSkeleton.Instance.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
+                        skeletonManager.skeleton.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
                         return;
                     }
                 }
