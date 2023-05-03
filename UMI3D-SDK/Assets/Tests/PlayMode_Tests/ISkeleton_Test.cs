@@ -57,7 +57,7 @@
 //        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator;
 //        protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator;
 //        protected Dictionary<ulong, ISkeleton.SavedTransform> savedTransforms;
-S
+
 //        #endregion
 
 //        public void UpdateFrame(UserTrackingFrameDto frame)
