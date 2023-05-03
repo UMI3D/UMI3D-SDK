@@ -548,7 +548,7 @@ namespace umi3d.cdk.collaboration
             var joinDto = new JoinDto()
             {
                 clientLocalPoses = PoseManager.Instance.localPoses.ToList(),
-                userSize = PersonalSkeleton.Instance.TrackedSkeleton.transform.lossyScale,
+                userSize = UserCaptureSkeletonManager.Instance.skeleton.TrackedSkeleton.transform.lossyScale,
             };
             try
             {
