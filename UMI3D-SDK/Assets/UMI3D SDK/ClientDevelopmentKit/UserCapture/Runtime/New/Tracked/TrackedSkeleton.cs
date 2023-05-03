@@ -36,6 +36,8 @@ namespace umi3d.cdk.userCapture
         public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
         List<uint> types = new List<uint>();
 
+        private ISkeletonManager skeletonManager;
+
         public void Start()
         {
             //trackedAnimator.IkCallback = HandleAnimatorIK;
@@ -45,6 +47,8 @@ namespace umi3d.cdk.userCapture
             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
+
+            skeletonManager = UserCaptureSkeletonManager.Instance;
         }
 
         public UserCameraPropertiesDto GetCameraDto()
@@ -109,7 +113,7 @@ namespace umi3d.cdk.userCapture
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
-            foreach (var asyncBone in PersonalSkeleton.Instance.BonesAsyncFPS)
+            foreach (var asyncBone in skeletonManager.skeleton.BonesAsyncFPS)
             {
                 trackingFrame.trackedBones.Add(bones.First(b => b.Value.boneType.Equals(asyncBone.Key)).Value.ToControllerDto());
             }

@@ -30,18 +30,19 @@ namespace umi3d.cdk.userCapture
 
         private readonly IBindingManager coreBindingService;
         private readonly UMI3DEnvironmentLoader environmentService;
-        private readonly ISkeleton personnalSkeletonService;
+        private readonly ISkeletonManager personnalSkeletonService;
 
         public SkeletonBindingManager() : base()
         {
             coreBindingService = BindingManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
-            personnalSkeletonService = PersonalSkeleton.Instance;
+            personnalSkeletonService = UserCaptureSkeletonManager.Instance;
         }
 
         public SkeletonBindingManager(IBindingManager coreBindingManager) : base()
         {
             this.coreBindingService = coreBindingManager;
+            environmentService = UMI3DEnvironmentLoader.Instance;
         }
 
         #endregion dependency injection
@@ -72,12 +73,12 @@ namespace umi3d.cdk.userCapture
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), personnalSkeletonService);
+                        return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), personnalSkeletonService.skeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService);
+                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.skeleton);
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {

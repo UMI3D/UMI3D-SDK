@@ -29,6 +29,14 @@ namespace umi3d.cdk.userCapture
     /// It is based upon the <see cref="UMI3DMeshNodeDto"/> as the animation ressources are packaged in a bundle just like in a model.
     public class UMI3DSkeletonNodeLoader : UMI3DMeshNodeLoader
     {
+        #region Dependency Injection
+        private readonly ISkeletonManager personnalSkeletonService;
+        public UMI3DSkeletonNodeLoader() : base()
+        {
+            personnalSkeletonService = UserCaptureSkeletonManager.Instance;
+        }
+        #endregion Dependency Injection
+
         /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
@@ -60,7 +68,7 @@ namespace umi3d.cdk.userCapture
             }
 
             AnimatedSkeleton animationSkeleton = new(skeletonMapper);
-            PersonalSkeleton.Instance.skeletons.Add(animationSkeleton);
+            personnalSkeletonService.skeleton.Skeletons.Add(animationSkeleton);
 
 
             foreach (var renderer in go.GetComponentsInChildren<Renderer>())

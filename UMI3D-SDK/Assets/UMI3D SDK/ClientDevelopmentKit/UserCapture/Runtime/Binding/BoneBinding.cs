@@ -51,7 +51,7 @@ namespace umi3d.cdk.userCapture
                 return;
             }
 
-            Compute((parentBone.s_Position, parentBone.s_Rotation.ToQuaternion(), Vector3.one));
+            Compute((parentBone.s_Position, parentBone.s_Rotation, Vector3.one));
             success = true;
         }
     }

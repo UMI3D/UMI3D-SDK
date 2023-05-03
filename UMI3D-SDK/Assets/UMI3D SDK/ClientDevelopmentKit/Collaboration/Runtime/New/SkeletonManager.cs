@@ -27,44 +27,36 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
-    public class SkeletonManager : Singleton<SkeletonManager>
+    public class SkeletonManager : Singleton<SkeletonManager>, ISkeletonManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
-        public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new Dictionary<ulong, ISkeleton>();
+        public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
 
-        public PersonalSkeleton skeleton => PersonalSkeleton.Exists ? PersonalSkeleton.Instance : null;
+        public PersonalSkeleton skeleton => personnalSkeletonManager.skeleton;
 
         public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; }
 
         public ISkeleton GetSkeletonById(ulong id)
         {
-            if ((skeleton as ISkeleton).userId == id)
+            if (skeleton.userId == id)
             {
                 return skeleton;
             }
             else
             {
-                return collaborativeSkeletons.FirstOrDefault(cs => (cs as ISkeleton).userId == id);
+                return collaborativeSkeletons.FirstOrDefault(cs => cs.userId == id);
             }
         }
 
         CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
-        public class SkeletonEvent : UnityEvent<ulong> { };
-
-        public SkeletonEvent skeletonEvent = new SkeletonEvent();
+        public event Action<ulong> skeletonEvent;
 
         /// <summary>
         /// If true the avatar tracking is sent.
         /// </summary>
-        public bool sendTracking => _sendTracking;
-
-        /// <summary>
-        /// If true the avatar tracking is sent.
-        /// </summary>
-        [Tooltip("If true the avatar tracking is sent.")]
-        protected bool _sendTracking = true;
+        public bool ShouldSendTracking { get; protected set; } = true;
 
         float targetTrackingFPS = 30f;
         bool sendCameraProperties = true;
@@ -76,11 +68,13 @@ namespace umi3d.cdk.collaboration
 
         private UMI3DCollaborationClientServer collaborationClientServerService;
         private UMI3DCollaborationEnvironmentLoader collaborativeLoaderService;
+        private readonly UserCaptureSkeletonManager personnalSkeletonManager;
 
         public SkeletonManager() : base()
         {
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
+            personnalSkeletonManager = UserCaptureSkeletonManager.Instance;
             Init();
         }
 
@@ -88,6 +82,7 @@ namespace umi3d.cdk.collaboration
         {
             this.collaborationClientServerService = collaborationClientServer;
             this.collaborativeLoaderService = collaborativeLoader;
+            personnalSkeletonManager = UserCaptureSkeletonManager.Instance;
             Init();
         }
 
@@ -95,19 +90,15 @@ namespace umi3d.cdk.collaboration
 
         public void Init()
         {
-            collaborationClientServerService.OnRedirection.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(_sendTracking); });
-            collaborationClientServerService.OnReconnect.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(_sendTracking); });
-
+            collaborationClientServerService.OnRedirection.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(ShouldSendTracking); });
+            collaborationClientServerService.OnReconnect.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(ShouldSendTracking); });
             UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += () => UpdateSkeletons(collaborativeLoaderService.JoinnedUserList);
+
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(InitSkeletons);
         }
 
-        protected async void InitSkeletons()
+        public void InitSkeletons()
         {
-            while (!UMI3DClientServer.Exists || UMI3DClientServer.Instance.GetUserId() == 0)
-            {
-                await UMI3DAsyncManager.Yield();
-            }
-
             skeletons[UMI3DClientServer.Instance.GetUserId()] = skeleton;
         }
 
@@ -120,9 +111,9 @@ namespace umi3d.cdk.collaboration
 
             foreach (var userId in deletedUsersId)
             {
-                if (skeletons.TryGetValue(userId, out var skeleton))
+                if (skeletons.TryGetValue(userId, out var skeleton) && skeleton is CollaborativeSkeleton collabSkeleton)
                 {
-                    GameObject.Destroy((skeleton as CollaborativeSkeleton).gameObject);
+                    UnityEngine.Object.Destroy(collabSkeleton.gameObject);
                     skeletons.Remove(userId);
                 }
             }
@@ -137,7 +128,7 @@ namespace umi3d.cdk.collaboration
                     cs.transform.parent = collabScene.transform;
                     cs.SetSubSkeletons();
                     cs.name = userId.ToString();
-                    skeletonEvent.Invoke(userId);
+                    skeletonEvent?.Invoke(userId);
                 }
             }
         }
@@ -182,7 +173,7 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
             sendTrackingLoopOnce = true;
-            while (Exists && sendTracking /*&& UMI3DCollaborationClientServer.Instance.status != StatusType.NONE*/)
+            while (Exists && ShouldSendTracking /*&& UMI3DCollaborationClientServer.Instance.status != StatusType.NONE*/)
             {
                 if (targetTrackingFPS > 0)
                 {
@@ -212,15 +203,15 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
 
-            while (Exists && sendTracking && PersonalSkeleton.Instance.BonesAsyncFPS.ContainsKey(boneType)) 
+            while (Exists && ShouldSendTracking && skeleton.BonesAsyncFPS.ContainsKey(boneType)) 
             {
-                if (PersonalSkeleton.Instance.BonesAsyncFPS[boneType] > 0)
+                if (skeleton.BonesAsyncFPS[boneType] > 0)
                 {
                     try
                     {
-                        if (PersonalSkeleton.Instance.TrackedSkeleton.bones.ContainsKey(boneType))
+                        if (skeleton.TrackedSkeleton.bones.ContainsKey(boneType))
                         {
-                            var boneData = PersonalSkeleton.Instance.TrackedSkeleton.GetBone(boneType);
+                            var boneData = skeleton.TrackedSkeleton.GetBone(boneType);
 
                             if (boneData != null)
                             {
@@ -231,7 +222,7 @@ namespace umi3d.cdk.collaboration
                     }
                     catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
 
-                    await UMI3DAsyncManager.Delay((int)(1000f / PersonalSkeleton.Instance.BonesAsyncFPS[boneType]));
+                    await UMI3DAsyncManager.Delay((int)(1000f / skeleton.BonesAsyncFPS[boneType]));
 
                 }
                 else
@@ -252,17 +243,17 @@ namespace umi3d.cdk.collaboration
         {
             if (newFPSTarget != targetTrackingFPS)
             {
-                PersonalSkeleton.Instance.BonesAsyncFPS[boneType] = newFPSTarget;
+                skeleton.BonesAsyncFPS[boneType] = newFPSTarget;
                 SendAsyncBoneData(boneType);
             }
 
-            else if (PersonalSkeleton.Instance.BonesAsyncFPS.ContainsKey(boneType))
-                PersonalSkeleton.Instance.BonesAsyncFPS.Remove(boneType);
+            else if (skeleton.BonesAsyncFPS.ContainsKey(boneType))
+                skeleton.BonesAsyncFPS.Remove(boneType);
         }
 
         public void SyncBoneFPS(uint boneType)
         {
-            PersonalSkeleton.Instance.BonesAsyncFPS.Remove(boneType);
+            skeleton.BonesAsyncFPS.Remove(boneType);
         }
 
         /// <summary>
@@ -284,13 +275,13 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Setter for <see cref="sendTracking"/>.
+        /// Setter for <see cref="ShouldSendTracking"/>.
         /// </summary>
         /// <param name="activeSending"></param>
         public void SetTrackingSending(bool activeSending)
         {
-            this._sendTracking = activeSending;
-            if (_sendTracking)
+            this.ShouldSendTracking = activeSending;
+            if (ShouldSendTracking)
                 SendTrackingLoop();
         }
 
