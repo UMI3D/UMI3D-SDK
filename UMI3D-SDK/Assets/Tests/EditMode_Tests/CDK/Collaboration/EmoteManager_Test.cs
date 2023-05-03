@@ -30,6 +30,16 @@ namespace EditMode_Tests
 
         private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
 
+        [OneTimeSetUp]
+        public void OneTimeSetup()
+        {
+            if (EmoteManager.Exists)
+                EmoteManager.Destroy();
+
+            if (UMI3DEnvironmentLoader.Exists)
+                UMI3DEnvironmentLoader.Destroy();
+        }
+
         [SetUp]
         public void SetUp()
         {
