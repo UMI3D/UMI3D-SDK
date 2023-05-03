@@ -18,6 +18,7 @@ using System;
 
 namespace umi3d.common
 {
+    [UMI3DSerializerOrder(1001)]
     public class UMI3DSerializerStringModules : UMI3DSerializerModule
     {
         public override bool IsCountable<T>()
