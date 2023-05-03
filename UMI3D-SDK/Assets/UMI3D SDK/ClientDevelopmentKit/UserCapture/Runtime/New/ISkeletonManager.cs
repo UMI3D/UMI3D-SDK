@@ -19,6 +19,6 @@ namespace umi3d.cdk.userCapture
 {
     public interface ISkeletonManager
     {
-        public PersonalSkeleton skeleton { get; }
+        public PersonalSkeleton personalSkeleton { get; }
     }
 }

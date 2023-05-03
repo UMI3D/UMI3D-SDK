@@ -14,14 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
+using umi3d.common;
 using inetum.unityUtils;
 
 namespace umi3d.cdk.userCapture
 {
-    public class UserCaptureSkeletonManager : Singleton<UserCaptureSkeletonManager>, ISkeletonManager 
+    public class PersonalSkeletonManager : Singleton<PersonalSkeletonManager>, ISkeletonManager
     {
-        public PersonalSkeleton skeleton
+        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+
+        public PersonalSkeleton personalSkeleton
         {
             get
             {
@@ -40,7 +42,7 @@ namespace umi3d.cdk.userCapture
         #region Dependency Injection
         private readonly UMI3DLoadingHandler loadingServiceAnchor;
 
-        public UserCaptureSkeletonManager()
+        public PersonalSkeletonManager()
         {
             Init();
             loadingServiceAnchor = UMI3DLoadingHandler.Instance;
@@ -51,7 +53,7 @@ namespace umi3d.cdk.userCapture
         {
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() =>
             {
-                skeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
+                personalSkeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
             });
         }
     }

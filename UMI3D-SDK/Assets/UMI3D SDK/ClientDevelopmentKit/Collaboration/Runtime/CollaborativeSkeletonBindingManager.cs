@@ -32,14 +32,14 @@ namespace umi3d.cdk.collaboration
         private readonly IBindingManager coreBindingService;
         private readonly IBindingManager userCaptureBindingService;
         private readonly UMI3DEnvironmentLoader environmentService;
-        private readonly SkeletonManager skeletonService;
+        private readonly CollaborativeSkeletonManager skeletonService;
 
         public CollaborativeSkeletonBindingManager() : base()
         {
             coreBindingService = BindingManager.Instance;
             userCaptureBindingService = SkeletonBindingManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
-            skeletonService = SkeletonManager.Instance;
+            skeletonService = CollaborativeSkeletonManager.Instance;
         }
 
         public CollaborativeSkeletonBindingManager(IBindingManager coreBindingManager, IBindingManager userCaptureBindingService) : base()

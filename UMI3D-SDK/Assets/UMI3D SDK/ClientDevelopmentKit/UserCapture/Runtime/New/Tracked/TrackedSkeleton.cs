@@ -48,7 +48,7 @@ namespace umi3d.cdk.userCapture
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
 
-            skeletonManager = UserCaptureSkeletonManager.Instance;
+            skeletonManager = PersonalSkeletonManager.Instance;
         }
 
         public UserCameraPropertiesDto GetCameraDto()

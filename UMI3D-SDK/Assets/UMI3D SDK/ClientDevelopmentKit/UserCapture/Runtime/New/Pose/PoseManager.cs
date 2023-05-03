@@ -45,7 +45,7 @@ namespace umi3d.cdk.userCapture
                 localPoses[i] = poseDto;
             }
 
-            skeletonManager = UserCaptureSkeletonManager.Instance;
+            skeletonManager = PersonalSkeletonManager.Instance;
         }
 
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)

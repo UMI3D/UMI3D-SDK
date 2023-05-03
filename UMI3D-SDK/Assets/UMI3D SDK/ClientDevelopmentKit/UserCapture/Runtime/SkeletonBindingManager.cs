@@ -36,7 +36,7 @@ namespace umi3d.cdk.userCapture
         {
             coreBindingService = BindingManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
-            personnalSkeletonService = UserCaptureSkeletonManager.Instance;
+            personnalSkeletonService = PersonalSkeletonManager.Instance;
         }
 
         public SkeletonBindingManager(IBindingManager coreBindingManager) : base()

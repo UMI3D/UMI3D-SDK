@@ -27,13 +27,13 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
-    public class SkeletonManager : Singleton<SkeletonManager>, ISkeletonManager
+    public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager
     {
-        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+        private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
         public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
 
-        public PersonalSkeleton personalSkeleton => personnalSkeletonManager.skeleton;
+        public PersonalSkeleton personalSkeleton => personnalSkeletonManager.personalSkeleton;
 
         public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; }
 
@@ -68,21 +68,21 @@ namespace umi3d.cdk.collaboration
 
         private UMI3DCollaborationClientServer collaborationClientServerService;
         private UMI3DCollaborationEnvironmentLoader collaborativeLoaderService;
-        private readonly UserCaptureSkeletonManager personnalSkeletonManager;
+        private readonly PersonalSkeletonManager personnalSkeletonManager;
 
-        public SkeletonManager() : base()
+        public CollaborativeSkeletonManager() : base()
         {
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
-            personnalSkeletonManager = UserCaptureSkeletonManager.Instance;
+            personnalSkeletonManager = PersonalSkeletonManager.Instance;
             Init();
         }
 
-        public SkeletonManager(UMI3DCollaborationClientServer collaborationClientServer, UMI3DCollaborationEnvironmentLoader collaborativeLoader) : base()
+        public CollaborativeSkeletonManager(UMI3DCollaborationClientServer collaborationClientServer, UMI3DCollaborationEnvironmentLoader collaborativeLoader) : base()
         {
             this.collaborationClientServerService = collaborationClientServer;
             this.collaborativeLoaderService = collaborativeLoader;
-            personnalSkeletonManager = UserCaptureSkeletonManager.Instance;
+            personnalSkeletonManager = PersonalSkeletonManager.Instance;
             Init();
         }
 
@@ -99,7 +99,7 @@ namespace umi3d.cdk.collaboration
 
         public void InitSkeletons()
         {
-            skeletons[UMI3DClientServer.Instance.GetUserId()] = skeleton;
+            skeletons[UMI3DClientServer.Instance.GetUserId()] = personalSkeleton;
         }
 
         protected void UpdateSkeletons(List<UMI3DUser> usersList)
@@ -208,13 +208,13 @@ namespace umi3d.cdk.collaboration
 
             while (Exists && ShouldSendTracking && personalSkeleton.BonesAsyncFPS.ContainsKey(boneType)) 
             {
-                if (skeleton.BonesAsyncFPS[boneType] > 0)
+                if (personalSkeleton.BonesAsyncFPS[boneType] > 0)
                 {
                     try
                     {
-                        if (skeleton.TrackedSkeleton.bones.ContainsKey(boneType))
+                        if (personalSkeleton.TrackedSkeleton.bones.ContainsKey(boneType))
                         {
-                            var boneData = skeleton.TrackedSkeleton.GetBone(boneType);
+                            var boneData = personalSkeleton.TrackedSkeleton.GetBone(boneType);
 
                             if (boneData != null)
                             {
@@ -225,7 +225,7 @@ namespace umi3d.cdk.collaboration
                     }
                     catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
 
-                    await UMI3DAsyncManager.Delay((int)(1000f / skeleton.BonesAsyncFPS[boneType]));
+                    await UMI3DAsyncManager.Delay((int)(1000f / personalSkeleton.BonesAsyncFPS[boneType]));
 
                 }
                 else
@@ -246,17 +246,17 @@ namespace umi3d.cdk.collaboration
         {
             if (newFPSTarget != targetTrackingFPS)
             {
-                skeleton.BonesAsyncFPS[boneType] = newFPSTarget;
+                personalSkeleton.BonesAsyncFPS[boneType] = newFPSTarget;
                 SendAsyncBoneData(boneType);
             }
 
-            else if (skeleton.BonesAsyncFPS.ContainsKey(boneType))
-                skeleton.BonesAsyncFPS.Remove(boneType);
+            else if (personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
+                personalSkeleton.BonesAsyncFPS.Remove(boneType);
         }
 
         public void SyncBoneFPS(uint boneType)
         {
-            skeleton.BonesAsyncFPS.Remove(boneType);
+            personalSkeleton.BonesAsyncFPS.Remove(boneType);
         }
 
         /// <summary>

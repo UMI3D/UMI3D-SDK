@@ -28,9 +28,6 @@ namespace umi3d.cdk.collaboration
     {
         public UMI3DUser User;
 
-        public TrackedSkeleton TrackedSkeleton;
-        public PoseSkeleton poseSkeleton = new PoseSkeleton();
-
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)

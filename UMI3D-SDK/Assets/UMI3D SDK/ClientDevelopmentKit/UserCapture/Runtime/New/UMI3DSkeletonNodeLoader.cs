@@ -33,7 +33,7 @@ namespace umi3d.cdk.userCapture
         private readonly ISkeletonManager personnalSkeletonService;
         public UMI3DSkeletonNodeLoader() : base()
         {
-            personnalSkeletonService = UserCaptureSkeletonManager.Instance;
+            personnalSkeletonService = PersonalSkeletonManager.Instance;
         }
         #endregion Dependency Injection
 
