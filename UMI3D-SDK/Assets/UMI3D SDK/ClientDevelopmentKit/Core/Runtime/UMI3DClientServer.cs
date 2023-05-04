@@ -88,6 +88,13 @@ namespace umi3d.cdk
             return await Task.FromResult(false);
         }
 
+
+        [Obsolete("See SendRequest")]
+        public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
+        {
+            SendRequest(dto, reliable);
+        }
+
         /// <summary>
         /// Send a browser request to the server.
         /// </summary>
