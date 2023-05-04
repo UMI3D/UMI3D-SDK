@@ -11,9 +11,11 @@ namespace umi3d.edk
 {
     public class UMI3DSerializerOperationModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return  typeof(T).IsAssignableFrom(typeof(Operation));
+            if( typeof(T).IsAssignableFrom(typeof(Operation)))
+                return false;
+            return null;
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

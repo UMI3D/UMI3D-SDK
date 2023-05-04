@@ -21,9 +21,11 @@ namespace umi3d.common
     [UMI3DSerializerOrder(1001)]
     public class UMI3DSerializerStringModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return typeof(T) != typeof(string);
+            if(typeof(T) == typeof(string))
+                return false;
+            return null;
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

@@ -11,9 +11,13 @@ namespace umi3d.common.collaboration
 {
     public class UMI3DSerializerEmoteModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(EmoteRequest) => true,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

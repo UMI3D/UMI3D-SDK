@@ -11,9 +11,11 @@ namespace umi3d.edk
 {
     public class UMI3DSerializerMaterialOverriderModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return typeof(T) != typeof(MaterialOverrider);
+            if (typeof(T) == typeof(MaterialOverrider))
+                return false;
+            return null;
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

@@ -44,7 +44,12 @@ namespace umi3d.common
         public abstract bool Read<T>(ByteContainer container, out bool readable, out T result);
 
 
-        public abstract bool IsCountable<T>();
+        /// <summary>
+        /// state is class if countable or not 
+        /// </summary>
+        /// <typeparam name="T">Type to test</typeparam>
+        /// <returns>True if countable, false if not, null if module doesn't know</returns>
+        public abstract bool? IsCountable<T>();
 
         /// <summary>
         /// 

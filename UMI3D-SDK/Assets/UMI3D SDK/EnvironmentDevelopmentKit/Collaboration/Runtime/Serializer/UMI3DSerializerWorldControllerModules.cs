@@ -1,4 +1,5 @@
 using umi3d.common;
+using umi3d.common.collaboration;
 using UnityEditor.VersionControl;
 
 
@@ -6,9 +7,13 @@ namespace umi3d.worldController
 {
     public class UMI3DSerializerWorldControllerModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(WorldControllerMessage) => true,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

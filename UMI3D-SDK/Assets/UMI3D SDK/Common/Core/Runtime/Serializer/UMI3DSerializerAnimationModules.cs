@@ -22,9 +22,17 @@ namespace umi3d.common
 {
     public class UMI3DSerializerAnimationModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(SerializableKeyframe) => true,
+                true when typeof(T) == typeof(SerializableAnimationCurve) => true,
+                true when typeof(T) == typeof(UMI3DAnimatorParameterDto) => true,
+                true when typeof(T) == typeof(Keyframe) => true,
+                true when typeof(T) == typeof(AnimationCurve) => true,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

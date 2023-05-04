@@ -26,7 +26,7 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public class UMI3DCollaborationSerializerModule : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
             return true;
         }

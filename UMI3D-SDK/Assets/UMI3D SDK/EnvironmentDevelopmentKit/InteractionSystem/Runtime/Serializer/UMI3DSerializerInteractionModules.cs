@@ -11,9 +11,15 @@ namespace umi3d.edk.interaction
 {
     public class UMI3DSerializerInteractionModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return  true;
+            return true switch
+            {
+                true when typeof(T) == typeof(AbstractInteraction) => true,
+                true when typeof(T) == typeof(UMI3DManipulation.DofGroup) => true,
+                true when typeof(T) == typeof(UMI3DManipulation.DofGroupOption) => true,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

@@ -1116,9 +1116,47 @@ namespace umi3d.common.collaboration
             return true;
         }
 
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(LocalInfoRequestParameterValue) => true,
+                true when typeof(T) == typeof(UserCameraPropertiesDto) => true,
+                true when typeof(T) == typeof(BooleanParameterDto) => true,
+                true when typeof(T) == typeof(EnumParameterDto<string>) => true,
+                true when typeof(T) == typeof(FloatParameterDto) => true,
+                true when typeof(T) == typeof(IntegerParameterDto) => true,
+                true when typeof(T) == typeof(StringParameterDto) => true,
+                true when typeof(T) == typeof(UploadFileParameterDto) => true,
+                true when typeof(T) == typeof(IntegerRangeParameterDto) => true,
+                true when typeof(T) == typeof(FloatRangeParameterDto) => true,
+                true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto) => true,
+                true when typeof(T) == typeof(ScalableTextureDto) => true,
+                true when typeof(T) == typeof(TextureDto) => true,
+                true when typeof(T) == typeof(ResourceDto) => true,
+                true when typeof(T) == typeof(FileDto) => true,
+                true when typeof(T) == typeof(RedirectionDto) => true,
+                true when typeof(T) == typeof(ForceLogoutDto) => true,
+                true when typeof(T) == typeof(MediaDto) => true,
+                true when typeof(T) == typeof(GateDto) => true,
+                true when typeof(T) == typeof(VoiceDto) => true,
+                true when typeof(T) == typeof(AnchoredBonePoseDto) => true,
+                true when typeof(T) == typeof(NodeAnchoredBonePoseDto) => true,
+                true when typeof(T) == typeof(FloorAnchoredBonePoseDto) => true,
+                true when typeof(T) == typeof(BonePoseDto) => true,
+                true when typeof(T) == typeof(PoseDto) => true,
+                true when typeof(T) == typeof(PoseOverriderDto) => true,
+                true when typeof(T) == typeof(DurationDto) => true,
+                true when typeof(T) == typeof(MagnitudeConditionDto) => true,
+                true when typeof(T) == typeof(RangeConditionDto) => true,
+                true when typeof(T) == typeof(BoneRotationConditionDto) => true,
+                true when typeof(T) == typeof(DirectionConditionDto) => true,
+                true when typeof(T) == typeof(NotConditionDto) => true,
+                true when typeof(T) == typeof(UserScaleConditionDto) => true,
+                true when typeof(T) == typeof(ScaleConditionDto) => true,
+                true when typeof(T) == typeof(ResourceDto) => true,
+                _ => null
+            };
         }
     }
 }

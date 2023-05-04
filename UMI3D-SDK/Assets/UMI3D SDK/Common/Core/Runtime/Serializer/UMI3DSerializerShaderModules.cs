@@ -23,9 +23,13 @@ namespace umi3d.common
 {
     public class UMI3DSerializerShaderModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            if (
+                typeof(T) == typeof(UMI3DShaderPropertyDto)
+                )
+                return true;
+            return null;
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

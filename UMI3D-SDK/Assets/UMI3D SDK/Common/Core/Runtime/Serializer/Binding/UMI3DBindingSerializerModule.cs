@@ -114,9 +114,14 @@ namespace umi3d.common
             }
         }
 
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            if (
+                typeof(T) == typeof(AbstractBindingDataDto)
+                || typeof(T) == typeof(AbstractSimpleBindingDataDto)
+                )
+                return true;
+            return null;
         }
     }
 }

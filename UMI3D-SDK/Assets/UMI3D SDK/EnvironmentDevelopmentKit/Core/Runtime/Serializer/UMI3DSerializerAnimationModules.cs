@@ -11,9 +11,14 @@ namespace umi3d.edk
 {
     public class UMI3DSerializerAnimationModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return typeof(T) != typeof(UMI3DNodeAnimation.OperationChain);
+            return true switch
+            {
+                true when typeof(T) == typeof(UMI3DAnimation.AnimationChain) => true,
+                true when typeof(T) == typeof(UMI3DNodeAnimation.OperationChain) => false,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

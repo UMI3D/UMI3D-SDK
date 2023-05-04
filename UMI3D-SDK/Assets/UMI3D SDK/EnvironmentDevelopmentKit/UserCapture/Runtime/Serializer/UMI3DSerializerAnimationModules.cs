@@ -11,9 +11,11 @@ namespace umi3d.edk.userCapture
 {
     public class UMI3DSerializerAnimationModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            if (typeof(T) == typeof(UMI3DHandAnimation.PhalanxRotations))
+                return true;
+            return null;
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

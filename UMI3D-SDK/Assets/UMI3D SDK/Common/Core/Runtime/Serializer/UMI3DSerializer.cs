@@ -386,10 +386,10 @@ namespace umi3d.common
         {
             foreach (UMI3DSerializerModule module in modules)
             {
-                if (!module.IsCountable<T>())
-                    return false;
+                var r = module.IsCountable<T>();
+                if(r.HasValue)
+                    return r.Value;
             }
-
             throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
 

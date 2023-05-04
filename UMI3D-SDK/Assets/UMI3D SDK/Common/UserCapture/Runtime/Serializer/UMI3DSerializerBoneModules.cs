@@ -2,6 +2,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.volume;
 using UnityEngine;
 using UnityEngine.UIElements;
 using UnityEngine.XR;
@@ -11,9 +12,14 @@ namespace umi3d.common.userCapture
 {
     public class UMI3DSerializerBoneModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(ControllerDto) => true,
+                true when typeof(T) == typeof(BoneDto) => true,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)

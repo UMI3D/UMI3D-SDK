@@ -23,9 +23,15 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DEnvironmentSerializerCollaborationModule : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(UserDto) => true,
+                true when typeof(T) == typeof(UMI3DCollaborationUser) => true,
+                true when typeof(T) == typeof(RegisterIdentityDto) => true,
+                _ => null,
+            };
         }
 
         /// <inheritdoc/>

@@ -22,9 +22,23 @@ namespace umi3d.common
     [UMI3DSerializerOrder(10)]
     public class UMI3DSerializerVectorModules : UMI3DSerializerModule
     {
-        public override bool IsCountable<T>()
+        public override bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(SerializableVector2) => true,
+                true when typeof(T) == typeof(Vector2) => true,
+                true when typeof(T) == typeof(SerializableVector3) => true,
+                true when typeof(T) == typeof(Vector3) => true,
+                true when typeof(T) == typeof(Quaternion) => true,
+                true when typeof(T) == typeof(SerializableColor) => true,
+                true when typeof(T) == typeof(Color) => true,
+                true when typeof(T) == typeof(SerializableVector4) => true,
+                true when typeof(T) == typeof(Vector4) => true,
+                true when typeof(T) == typeof(SerializableMatrix4x4) => true,
+                true when typeof(T) == typeof(Matrix4x4) => true,
+                _ => null,
+            };
         }
 
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
