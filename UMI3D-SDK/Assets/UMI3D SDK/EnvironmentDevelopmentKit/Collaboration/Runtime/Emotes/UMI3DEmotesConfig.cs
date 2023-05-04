@@ -46,7 +46,7 @@ namespace umi3d.edk.collaboration
         [Tooltip("List of included emotes.")]
         public List<UMI3DEmote> IncludedEmotes;
 
-        private void Awake()
+        private void Start()
         {
             id = default;
             registered = false;
