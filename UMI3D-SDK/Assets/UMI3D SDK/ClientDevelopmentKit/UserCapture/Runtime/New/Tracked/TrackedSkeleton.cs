@@ -28,7 +28,7 @@ namespace umi3d.cdk.userCapture
 {
     public class TrackedSkeleton : MonoBehaviour, ISubWritableSkeleton
     {
-        public List<IController> controllers;
+        public List<IController> controllers = new List<IController>();
         List<IController> controllersToDestroy;
         public Camera viewpoint;
         public TrackedAnimator trackedAnimator;
@@ -43,10 +43,15 @@ namespace umi3d.cdk.userCapture
             //trackedAnimator.IkCallback = HandleAnimatorIK;
             //animator = trackedAnimator.GetComponent<Animator>();
 
-            controllers = GetComponentsInChildren<IController>().ToList();
+            //controllers = GetComponentsInChildren<IController>().ToList();
+            //Debug.Log(GetComponentInChildren<TrackedSkeletonBoneController>().name + " || " + GetComponentInChildren<TrackedSkeletonBoneController>().boneType);
             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
+            {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
+                if (bone.GetType() == typeof(TrackedSkeletonBoneController))
+                    controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+            }
 
             skeletonManager = PersonalSkeletonManager.Instance;
         }
@@ -81,17 +86,24 @@ namespace umi3d.cdk.userCapture
             types.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
-                DistantController vc = controllers.First(c => c.boneType == bone.boneType) as DistantController;
+                controllers.Debug(c => c.GetType().ToString() + " " + c.boneType);
+                DistantController vc = controllers.Find(c => c.boneType == bone.boneType) as DistantController;
+
+                Debug.Log(vc == null);
 
                 if (vc == null)
                 {
                     vc = new DistantController();
+                    vc.boneType = bone.boneType;
+                    vc.isOverrider = bone.isOverrider;
                     controllers.Add(vc);
                 }
 
                 vc.isActif = true;
                 vc.position = bone.position; //trackingFrame.position; 
                 vc.rotation = bone.rotation.ToQuaternion(); //trackingFrame.rotation;
+
+                Debug.Log(controllers.Count + " // " + bone.boneType + " // " + controllers[0].boneType);
 
                 types.Add(bone.boneType);
             }
@@ -107,7 +119,7 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public void Update()
         {
-
+            //Debug.Log(GetComponentInChildren<TrackedSkeletonBoneController>().name + " || " + GetComponentInChildren<TrackedSkeletonBoneController>().boneType);
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)

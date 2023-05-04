@@ -51,12 +51,20 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public new uint boneType { get; set; }
         public bool isActif { get; set; }
+
+        uint IController.boneType => boneType;
 
         public void Destroy()
         {
             GameObject.Destroy(this.gameObject);
+        }
+
+        public override ControllerDto ToControllerDto()
+        {
+            var dto = base.ToControllerDto();
+            dto.isOverrider = true;
+            return dto;
         }
     }
 }

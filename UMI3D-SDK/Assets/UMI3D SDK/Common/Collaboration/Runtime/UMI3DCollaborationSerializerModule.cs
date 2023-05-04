@@ -78,11 +78,13 @@ namespace umi3d.common.collaboration
                     uint type;
                     SerializableVector4 rot;
                     SerializableVector3 pos;
+                    bool isOverrider;
                     if (UMI3DSerializer.TryRead(container, out type)
                         && UMI3DSerializer.TryRead(container, out rot)
-                        && UMI3DSerializer.TryRead(container, out pos))
+                        && UMI3DSerializer.TryRead(container, out pos)
+                        && UMI3DSerializer.TryRead(container, out isOverrider))
                     {
-                        var controller = new ControllerDto() { boneType = type, rotation = rot, position = pos };
+                        var controller = new ControllerDto() { boneType = type, rotation = rot, position = pos, isOverrider = isOverrider };
                         result = (T)Convert.ChangeType(controller, typeof(T));
                         readable = true;
                     }
