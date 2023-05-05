@@ -77,6 +77,8 @@ namespace umi3d.cdk
     /// </summary>
     public class BindingManager : Singleton<BindingManager>, IBindingManager
     {
+        protected const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
+
         #region dependency injection
 
         private readonly UMI3DLoadingHandler coroutineService;
@@ -123,6 +125,8 @@ namespace umi3d.cdk
         public void AddBinding(BindingDto dto)
         {
             AbstractBinding binding = Load(dto.data, dto.boundNodeId);
+            if (binding is null)
+                return;
             AddBinding(binding, dto.boundNodeId);
         }
 
@@ -142,6 +146,12 @@ namespace umi3d.cdk
                 case AbstractSimpleBindingDataDto simpleBindingDto:
                     {
                         UMI3DNodeInstance node = environmentService.GetNodeInstance(boundNodeId);
+                        if (node is null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+
                         return new NodeBinding(simpleBindingDto, node.transform);
                     }
                 case MultiBindingDataDto multiBindingDataDto:
@@ -149,9 +159,15 @@ namespace umi3d.cdk
                         UMI3DNodeInstance node = environmentService.GetNodeInstance(boundNodeId);
                         IEnumerable<(AbstractSimpleBinding binding, bool partialFit)> orderedBindingData = multiBindingDataDto.Bindings
                                                                                             .OrderByDescending(x => x.priority)
-                                                                                            .Select(x => (new NodeBinding(x, node.transform) as AbstractSimpleBinding,
-                                                                                                                                x.partialFit));
-
+                                                                                            .Select(x => (binding: new NodeBinding(x, node.transform) as AbstractSimpleBinding,
+                                                                                                                                partialFit: x.partialFit))
+                                                                                            .Where(x => x.binding is not null)
+                                                                                            .DefaultIfEmpty();
+                        if (orderedBindingData == default)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply or null.", DEBUG_SCOPE);
+                            return null;
+                        }
                         AbstractSimpleBinding[] orderedBindings = orderedBindingData.Select(x => x.binding).ToArray();
                         bool[] partialFits = orderedBindingData.Select(x => x.partialFit).ToArray();
 

@@ -15,17 +15,24 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.common;
 using umi3d.common.userCapture;
+
 using UnityEditor;
+
 using UnityEngine;
+using UnityEngine.Assertions.Must;
 
 namespace umi3d.cdk.userCapture
 {
     public class SkeletonBindingManager : Singleton<SkeletonBindingManager>, IBindingManager
     {
+        protected const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
+
         #region dependency injection
 
         private readonly IBindingManager coreBindingService;
@@ -59,6 +66,8 @@ namespace umi3d.cdk.userCapture
         public void AddBinding(BindingDto dto)
         {
             AbstractBinding binding = Load(dto.data, dto.boundNodeId);
+            if (binding is null)
+                return;
             coreBindingService.AddBinding(binding, dto.boundNodeId);
         }
 
@@ -73,11 +82,28 @@ namespace umi3d.cdk.userCapture
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
+                        if (!personnalSkeletonService.personalSkeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType}. Bone does not exist on skeleton.", DEBUG_SCOPE);
+                            return null;
+                        }
+                        Transform rig = boundNode.transform.Find(riggedBoneBinding.rigName);
+                        if (rig == null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType}. Rig does not exist on bound node.", DEBUG_SCOPE);
+                            return null;
+                        }
                         return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), personnalSkeletonService.personalSkeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
+                        if (!personnalSkeletonService.personalSkeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType}. Bone does not exist on skeleton", DEBUG_SCOPE);
+                            return null;
+                        }
+
                         return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.personalSkeleton);
                     }
                 case MultiBindingDataDto multiBindingDataDto:
@@ -85,7 +111,15 @@ namespace umi3d.cdk.userCapture
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
                         IEnumerable<(AbstractSimpleBinding binding, bool partialFit)> orderedBindingData = multiBindingDataDto.Bindings
                                                                     .OrderByDescending(x => x.priority)
-                                                                    .Select(x => (Load(x, boundNodeId) as AbstractSimpleBinding, x.partialFit));
+                                                                    .Select(x => (binding: Load(x, boundNodeId) as AbstractSimpleBinding, partialFit: x.partialFit))
+                                                                    .Where(x=>x.binding is not null)
+                                                                    .DefaultIfEmpty();
+
+                        if (orderedBindingData == default)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply or null.", DEBUG_SCOPE);
+                            return null;
+                        }
 
                         AbstractSimpleBinding[] orderedBindings = orderedBindingData.Select(x => x.binding).ToArray();
                         bool[] partialFits = orderedBindingData.Select(x => x.partialFit).ToArray();
