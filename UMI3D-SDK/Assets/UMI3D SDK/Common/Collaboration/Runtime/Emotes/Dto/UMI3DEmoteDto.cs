@@ -34,7 +34,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Icon ressource details
         /// </summary>
-        public FileDto iconResource { get; set; }
+        public ResourceDto iconResource { get; set; }
 
         /// <summary>
         /// Emote animation in the bundled animator

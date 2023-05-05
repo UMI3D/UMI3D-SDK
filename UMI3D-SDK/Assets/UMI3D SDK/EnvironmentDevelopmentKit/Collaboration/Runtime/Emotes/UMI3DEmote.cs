@@ -93,7 +93,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// It illustrates the emote to be displayed on the client side.
         [Header("Icon"), Tooltip("Icon illustrating the emote to be displayed on the client side.")]
-        public UMI3DResourceFile iconResource;
+        public UMI3DResource iconResource;
 
         /// <summary>
         /// True when the entity is registered into the environment
@@ -112,6 +112,10 @@ namespace umi3d.edk.collaboration
             }
             return id;
         }
+
+        #region UMI3DLoadableEntity
+
+        #region Serialization
 
         /// <summary>
         /// Export the <see cref="UMI3DEmote"/> to a <see cref="UMI3DEmoteDto"/> for transfer
@@ -141,29 +145,9 @@ namespace umi3d.edk.collaboration
             return bytable;
         }
 
-        #region filter
+        #endregion Serialization
 
-        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
-
-        /// <inheritdoc/>
-        public bool LoadOnConnection(UMI3DUser user)
-        {
-            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
-        }
-
-        /// <inheritdoc/>
-        public bool AddConnectionFilter(UMI3DUserFilter filter)
-        {
-            return ConnectionFilters.Add(filter);
-        }
-
-        /// <inheritdoc/>
-        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
-        {
-            return ConnectionFilters.Remove(filter);
-        }
-
-        #endregion filter
+        #region Loading
 
         /// <inheritdoc/>
         public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
@@ -187,5 +171,33 @@ namespace umi3d.edk.collaboration
             };
             return operation;
         }
+
+        #endregion Loading
+
+        #region Filters
+
+        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
+
+        /// <inheritdoc/>
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
+
+        /// <inheritdoc/>
+        public bool AddConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Add(filter);
+        }
+
+        /// <inheritdoc/>
+        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
+        {
+            return ConnectionFilters.Remove(filter);
+        }
+
+        #endregion Filters
+
+        #endregion UMI3DLoadableEntity
     }
 }

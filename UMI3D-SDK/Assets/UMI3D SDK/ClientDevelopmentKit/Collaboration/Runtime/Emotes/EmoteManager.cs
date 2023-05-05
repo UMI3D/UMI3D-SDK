@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2023 Inetum
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -80,16 +80,21 @@ namespace umi3d.cdk.collaboration
 
         #region Dependencies Injection
 
-        private UMI3DEnvironmentLoader environmentLoaderService;
+        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        private readonly UMI3DCollaborationClientServer collabClientServerService;
 
         public EmoteManager() : base()
         {
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            collabClientServerService = UMI3DCollaborationClientServer.Instance;
         }
 
-        public EmoteManager(UMI3DEnvironmentLoader environmentLoader) : base()
+        public EmoteManager(UMI3DEnvironmentLoader environmentLoader, 
+                            UMI3DCollaborationClientServer collabClientServerService) 
+                            : base()
         {
             environmentLoaderService = environmentLoader;
+            this.collabClientServerService = collabClientServerService;
         }
 
         #endregion Dependencies Injection
@@ -132,13 +137,13 @@ namespace umi3d.cdk.collaboration
 
             emoteConfigDto = dto;
 
-            if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
-                UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(LoadEmotes);
+            if (!environmentLoaderService.isEnvironmentLoaded)
+                environmentLoaderService.onEnvironmentLoaded.AddListener(LoadEmotes);
             else //sometimes the environment is already loaded when loading emotes
                 LoadEmotes();
 
-            UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(ResetEmoteSystem); //? most of this work (e.g. cleaning the animation, should be handled by the server.
-            UMI3DCollaborationClientServer.Instance.OnLeaving.AddListener(ResetEmoteSystem);
+            collabClientServerService.OnRedirection.AddListener(ResetEmoteSystem); //? most of this work (e.g. cleaning the animation, should be handled by the server.
+            collabClientServerService.OnLeaving.AddListener(ResetEmoteSystem);
         }
 
         /// <summary>
@@ -156,7 +161,9 @@ namespace umi3d.cdk.collaboration
                         icon = DefaultIcon,
                         dto = emoteDtoInConfig
                     };
-                    if (emoteDtoInConfig.iconResource is not null && emoteDtoInConfig.iconResource.metrics.size != 0)
+                    if (emoteDtoInConfig.iconResource is not null 
+                        && emoteDtoInConfig.iconResource.variants.Count > 0
+                        && emoteDtoInConfig.iconResource.variants[0].metrics.size != 0)
                         LoadFile(emoteDtoInConfig, emote);
                     Emotes.Add(emote);
                 }
@@ -188,9 +195,10 @@ namespace umi3d.cdk.collaboration
         {
             try
             {
-                IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(emoteRefInConfig.iconResource.extension);
+                var iconResourceFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(emoteRefInConfig.iconResource.variants);
+                IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(iconResourceFile.extension);
                 Texture2D texture = (Texture2D)await UMI3DResourcesManager.LoadFile(emoteConfigDto.id,
-                                                                                     emoteRefInConfig.iconResource,
+                                                                                     iconResourceFile,
                                                                                      loader);
                 emote.icon = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
             }
@@ -218,7 +226,7 @@ namespace umi3d.cdk.collaboration
             hasReceivedEmotes = false;
 
             environmentLoaderService.onEnvironmentLoaded.RemoveListener(LoadEmotes);
-            UMI3DCollaborationClientServer.Instance.OnRedirection.RemoveListener(ResetEmoteSystem);
+            collabClientServerService.OnRedirection.RemoveListener(ResetEmoteSystem);
         }
 
         #endregion Emote Changes
@@ -289,7 +297,6 @@ namespace umi3d.cdk.collaboration
 
                 collabClientServerService._SendRequest(emoteRequest, true);
                 EmoteEnded?.Invoke(playingEmote);
-                playingEmote = null;
             }
         }
 
