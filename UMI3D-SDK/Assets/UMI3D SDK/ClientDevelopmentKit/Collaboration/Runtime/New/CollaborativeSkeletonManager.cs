@@ -161,6 +161,7 @@ namespace umi3d.cdk.collaboration
             }
 
             skeleton.UpdateFrame(frame);
+            skeleton.Compute();
         }
 
         public UserCameraPropertiesDto GetCameraProperty()
@@ -173,7 +174,7 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
             sendTrackingLoopOnce = true;
-            while (Exists && ShouldSendTracking /*&& UMI3DCollaborationClientServer.Instance.status != StatusType.NONE*/)
+            while (Exists && ShouldSendTracking && UMI3DCollaborationClientServer.Instance.status != StatusType.NONE)
             {
                 if (targetTrackingFPS > 0)
                 {

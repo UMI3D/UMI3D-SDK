@@ -68,7 +68,7 @@ namespace umi3d.cdk.userCapture
 
         public PoseDto GetPose()
         {
-            PoseDto poseDto = new PoseDto();
+            PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
 
             for (int i = 0; i < localCurrentlyActivatedPoses?.Count; i++)
             {

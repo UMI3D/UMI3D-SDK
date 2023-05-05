@@ -57,28 +57,29 @@ namespace umi3d.cdk.userCapture
             UMI3DSkeletonHierarchy.SetSkeletonHierarchy.AddListener(() => this.SkeletonHierarchy = UMI3DSkeletonHierarchy.SkeletonHierarchy);
         }
 
-        public virtual ISkeleton Compute()
+        public ISkeleton Compute()
         {
             if (CheckNulls())
             {
                 return this;
             }
 
-            foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>().Reverse())
+            foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
             {
                 List<BoneDto> bones = new List<BoneDto>();
 
                 try
                 {
-                    bones = skeleton.GetPose().bones.ToList();
+                    bones = skeleton.GetPose().bones;
                 }
                 catch (Exception e)
                 {
+                    Debug.Log(skeleton.GetType().ToString());
                     Debug.Log($"<color=red> _{e} </color>");
                     return this;
                 }
 
-                bones.ForEach(b =>
+                foreach (var b in bones)
                 {
                     if (b.rotation != null)
                     {
@@ -95,13 +96,16 @@ namespace umi3d.cdk.userCapture
                             });
                         }
                     }
-                });
+                }
 
             }
 
             //very naïve
-            Bones.Add(BoneType.Hips, new ISkeleton.s_Transform());
-            Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            if (!Bones.ContainsKey(BoneType.Hips))
+            {
+                Bones.Add(BoneType.Hips, new ISkeleton.s_Transform());
+                Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            }
 
             foreach (uint boneType in Bones.Keys)
             {

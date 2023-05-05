@@ -40,12 +40,7 @@ namespace umi3d.cdk.userCapture
 
         public void Start()
         {
-            //trackedAnimator.IkCallback = HandleAnimatorIK;
-            //animator = trackedAnimator.GetComponent<Animator>();
-
-            //controllers = GetComponentsInChildren<IController>().ToList();
-            //Debug.Log(GetComponentInChildren<TrackedSkeletonBoneController>().name + " || " + GetComponentInChildren<TrackedSkeletonBoneController>().boneType);
-            foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
+             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
@@ -86,10 +81,7 @@ namespace umi3d.cdk.userCapture
             types.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
-                controllers.Debug(c => c.GetType().ToString() + " " + c.boneType);
                 DistantController vc = controllers.Find(c => c.boneType == bone.boneType) as DistantController;
-
-                Debug.Log(vc == null);
 
                 if (vc == null)
                 {
@@ -102,8 +94,6 @@ namespace umi3d.cdk.userCapture
                 vc.isActif = true;
                 vc.position = bone.position; //trackingFrame.position; 
                 vc.rotation = bone.rotation.ToQuaternion(); //trackingFrame.rotation;
-
-                Debug.Log(controllers.Count + " // " + bone.boneType + " // " + controllers[0].boneType);
 
                 types.Add(bone.boneType);
             }
@@ -118,9 +108,7 @@ namespace umi3d.cdk.userCapture
         /// Unity Update method, just here because Tthe other update method is generating an error.
         /// </summary>
         public void Update()
-        {
-            //Debug.Log(GetComponentInChildren<TrackedSkeletonBoneController>().name + " || " + GetComponentInChildren<TrackedSkeletonBoneController>().boneType);
-        }
+        { }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {

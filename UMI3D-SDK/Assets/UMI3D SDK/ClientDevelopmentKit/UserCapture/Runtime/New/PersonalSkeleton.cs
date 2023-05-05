@@ -68,5 +68,11 @@ namespace umi3d.cdk.userCapture
                 foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
                     skeleton.UpdateFrame(frame);
         }
+
+
+        public void FixedUpdate()
+        {
+            this.Compute();
+        }
     }
 }
