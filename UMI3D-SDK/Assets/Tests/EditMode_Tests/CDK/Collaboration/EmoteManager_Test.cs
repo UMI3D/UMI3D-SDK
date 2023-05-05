@@ -45,7 +45,7 @@ namespace EditMode_Tests
         {
             environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
 
-            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object);
+            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object, null); // monobehaviour are not called during edit mode tests
         }
 
         [TearDown]
