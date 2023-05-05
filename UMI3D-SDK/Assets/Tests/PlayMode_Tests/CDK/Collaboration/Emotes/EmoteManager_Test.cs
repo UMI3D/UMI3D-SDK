@@ -27,8 +27,6 @@ namespace PlayMode_Tests.Collaboration.CDK
 {
     public class EmoteManager_Test
     {
-        private const string TEST_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Empty";
-
         private EmoteManager emoteManagerService;
 
         private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
@@ -46,15 +44,16 @@ namespace PlayMode_Tests.Collaboration.CDK
         [SetUp]
         public void SetUp()
         {
-            SceneManager.LoadScene(TEST_SCENE_NAME);
+            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
             GameObject go = new GameObject("CollabServer");
             UnityEngine.Object.Instantiate(go);
 
-            go.AddComponent<UMI3DCollaborationClientServer>();
 
+            var collaborationClientServer = go.AddComponent<UMI3DCollaborationClientServer>();
             environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
 
-            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object);
+            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object,
+                                                    collaborationClientServer);
         }
 
         [TearDown]
@@ -70,7 +69,7 @@ namespace PlayMode_Tests.Collaboration.CDK
         [UnityTearDown]
         public void UnityTearDown()
         {
-            SceneManager.UnloadSceneAsync(TEST_SCENE_NAME);
+            SceneManager.UnloadSceneAsync(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
 
             if (UMI3DClientServer.Exists)
                 UMI3DClientServer.Destroy();
