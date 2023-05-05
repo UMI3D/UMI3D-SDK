@@ -25,7 +25,6 @@ using umi3d.common.userCapture;
 using UnityEditor;
 
 using UnityEngine;
-using UnityEngine.Assertions.Must;
 
 namespace umi3d.cdk.userCapture
 {
@@ -112,12 +111,11 @@ namespace umi3d.cdk.userCapture
                         IEnumerable<(AbstractSimpleBinding binding, bool partialFit)> orderedBindingData = multiBindingDataDto.Bindings
                                                                     .OrderByDescending(x => x.priority)
                                                                     .Select(x => (binding: Load(x, boundNodeId) as AbstractSimpleBinding, partialFit: x.partialFit))
-                                                                    .Where(x=>x.binding is not null)
-                                                                    .DefaultIfEmpty();
+                                                                    .Where(x => x.binding is not null);
 
-                        if (orderedBindingData == default)
+                        if (orderedBindingData.Count() == 0)
                         {
-                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply or null.", DEBUG_SCOPE);
+                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply.", DEBUG_SCOPE);
                             return null;
                         }
 

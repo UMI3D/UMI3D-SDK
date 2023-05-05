@@ -161,11 +161,11 @@ namespace umi3d.cdk
                                                                                             .OrderByDescending(x => x.priority)
                                                                                             .Select(x => (binding: new NodeBinding(x, node.transform) as AbstractSimpleBinding,
                                                                                                                                 partialFit: x.partialFit))
-                                                                                            .Where(x => x.binding is not null)
-                                                                                            .DefaultIfEmpty();
-                        if (orderedBindingData == default)
+                                                                                            .Where(x => x.binding is not null);
+
+                        if (orderedBindingData.Count() == 0)
                         {
-                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply or null.", DEBUG_SCOPE);
+                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply.", DEBUG_SCOPE);
                             return null;
                         }
                         AbstractSimpleBinding[] orderedBindings = orderedBindingData.Select(x => x.binding).ToArray();
