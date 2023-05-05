@@ -27,7 +27,7 @@ namespace umi3d.edk.collaboration
     /// </summary>
     /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit
     /// which ones are allow ed to be used for each user.
-    public class UMI3DEmotesConfig : MonoBehaviour, UMI3DLoadableEntity
+    public class UMI3DEmotesConfig : ScriptableObject, UMI3DLoadableEntity
     {
         /// <summary>
         /// Entity id
@@ -46,7 +46,35 @@ namespace umi3d.edk.collaboration
         [Tooltip("List of included emotes.")]
         public List<UMI3DEmote> IncludedEmotes;
 
-        private void Start()
+        #region Registration
+
+        /// <summary>
+        /// True when the entity is registered into the environment
+        /// </summary>
+        private bool registered = false;
+
+        private void Awake()
+        {
+            ResetUMI3DRegistration();
+        }
+
+        private void Reset()
+        {
+            ResetUMI3DRegistration();
+        }
+
+        /// <inheritdoc/>
+        public ulong Id()
+        {
+            if (!registered)
+            {
+                id = UMI3DEnvironment.Instance.RegisterEntity(this);
+                registered = true;
+            }
+            return id;
+        }
+
+        private void ResetUMI3DRegistration()
         {
             id = default;
             registered = false;
@@ -60,14 +88,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        /// <inheritdoc/>
-        public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
-        {
-            var operation = new LoadEntity()
-            {
-                entities = new List<UMI3DLoadableEntity>() { this },
-                users = users ?? UMI3DServer.Instance.UserSetWhenHasJoined()
-            };
+        #endregion Registration
 
             return operation;
         }
