@@ -27,7 +27,7 @@ namespace umi3d.cdk
         public NodeBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(dto, boundTransform)
         { }
 
-        protected NodeBindingDataDto NodeBindingDataDto => dto as NodeBindingDataDto;
+        protected NodeBindingDataDto NodeBindingDataDto => SimpleBindingData as NodeBindingDataDto;
 
         public override void Apply(out bool success)
         {

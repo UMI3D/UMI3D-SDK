@@ -171,7 +171,7 @@ namespace umi3d.cdk
                         AbstractSimpleBinding[] orderedBindings = orderedBindingData.Select(x => x.binding).ToArray();
                         bool[] partialFits = orderedBindingData.Select(x => x.partialFit).ToArray();
 
-                        return new MultiBinding(orderedBindings, partialFits, node.transform);
+                        return new MultiBinding(multiBindingDataDto, orderedBindings, partialFits, node.transform);
                     }
                 default:
                     return null;

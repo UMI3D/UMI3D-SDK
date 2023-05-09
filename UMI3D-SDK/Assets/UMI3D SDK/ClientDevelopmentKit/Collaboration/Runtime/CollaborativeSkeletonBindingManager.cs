@@ -94,7 +94,6 @@ namespace umi3d.cdk.collaboration
                             return null;
                         }
 
-                        return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), skeleton);
                         return new RigBoneBinding(riggedBoneBinding, rig, skeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
@@ -125,7 +124,7 @@ namespace umi3d.cdk.collaboration
 
                         AbstractSimpleBinding[] orderedBindings = orderedBindingData.Select(x => x.binding).ToArray();
                         bool[] partialFits = orderedBindingData.Select(x => x.partialFit).ToArray();
-                        return new MultiBinding(orderedBindings, partialFits, boundNode.transform);
+                        return new MultiBinding(multiBindingDataDto, orderedBindings, partialFits, boundNode.transform);
                     }
                 default:
                     return null;

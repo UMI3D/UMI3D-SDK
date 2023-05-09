@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture
             this.skeleton = skeleton;
         }
 
-        protected BoneBindingDataDto BoneBindingDataDto => dto as BoneBindingDataDto;
+        protected BoneBindingDataDto BoneBindingDataDto => SimpleBindingData as BoneBindingDataDto;
 
         protected ISkeleton skeleton;
 

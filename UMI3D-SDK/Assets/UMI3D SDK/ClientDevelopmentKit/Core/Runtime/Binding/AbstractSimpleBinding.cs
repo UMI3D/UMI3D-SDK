@@ -24,12 +24,10 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractSimpleBinding : AbstractBinding
     {
-        protected AbstractSimpleBindingDataDto dto;
+        protected AbstractSimpleBindingDataDto SimpleBindingData => data as AbstractSimpleBindingDataDto;
 
-        public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform)
+        public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
-            this.dto = dto;
-            this.boundTransform = boundTransform;
         }
 
         /// <summary>
@@ -38,22 +36,22 @@ namespace umi3d.cdk
         /// <param name="parentTransform"></param>
         protected virtual void Compute((Vector3 position, Quaternion rotation, Vector3 scale) parentTransform)
         {
-            if (dto.syncPosition && dto.syncRotation)
+            if (SimpleBindingData.syncPosition && SimpleBindingData.syncRotation)
             {
-                Quaternion rotation = parentTransform.rotation * dto.offSetRotation;
-                Vector3 position = parentTransform.position + dto.anchorPosition + rotation * ((Vector3)dto.offSetPosition - dto.anchorPosition);
+                Quaternion rotation = parentTransform.rotation * SimpleBindingData.offSetRotation;
+                Vector3 position = parentTransform.position + SimpleBindingData.anchorPosition + rotation * ((Vector3)SimpleBindingData.offSetPosition - SimpleBindingData.anchorPosition);
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
-            else if (dto.syncPosition)
+            else if (SimpleBindingData.syncPosition)
             {
-                boundTransform.position = parentTransform.position + dto.offSetPosition;
+                boundTransform.position = parentTransform.position + SimpleBindingData.offSetPosition;
             }
-            else if (dto.syncRotation)
+            else if (SimpleBindingData.syncRotation)
             {
-                boundTransform.rotation = parentTransform.rotation * dto.offSetRotation;
+                boundTransform.rotation = parentTransform.rotation * SimpleBindingData.offSetRotation;
             }
-            if (dto.syncScale)
-                boundTransform.localScale = parentTransform.scale + dto.offSetScale;
+            if (SimpleBindingData.syncScale)
+                boundTransform.localScale = parentTransform.scale + SimpleBindingData.offSetScale;
         }
     }
 }

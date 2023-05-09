@@ -34,6 +34,12 @@ namespace umi3d.cdk
         /// </summary>
         protected AbstractBindingDataDto data;
 
+        protected AbstractBinding(Transform boundTransform, AbstractBindingDataDto data)
+        {
+            this.boundTransform = boundTransform;
+            this.data = data;
+        }
+
         /// <summary>
         /// Apply the computations of the binding.
         /// </summary>
