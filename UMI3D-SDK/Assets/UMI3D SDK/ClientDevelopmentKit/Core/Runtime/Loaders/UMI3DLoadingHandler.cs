@@ -20,11 +20,24 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    public interface ICoroutineService
+    {
+        // <summary>
+        /// Call this method to attach a coroutine to the handler and start it.
+        /// </summary>
+        public Coroutine AttachCoroutine(IEnumerator coroutine);
+
+        /// <summary>
+        /// Call this method to remove a coroutine from the handler and stop it.
+        /// </summary>
+        public void DettachCoroutine(Coroutine coroutine);
+    }
+
     /// <summary>
     /// Handler to define the position in the scene and in the scene graph to load objects.
     /// </summary>
     /// This handler is a place to nstantiate all the UMI3D services.
-    public class UMI3DLoadingHandler : SingleBehaviour<UMI3DLoadingHandler>
+    public class UMI3DLoadingHandler : SingleBehaviour<UMI3DLoadingHandler>, ICoroutineService
     {
         #region Loading
         /// <summary>
@@ -66,6 +79,39 @@ namespace umi3d.cdk
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             environmentLoaderService.SetParameters(parameters);
             environmentLoaderService.SetBaseMaterial(parameters.defaultMat);
+        }
+    }
+
+    /// <summary>
+    /// Singleton that attach coroutines to the loading handler.
+    /// </summary>
+    /// Easily mock-able for edit mode unit tests.
+    public class CoroutineManager : Singleton<CoroutineManager>, ICoroutineService
+    {
+        #region Dependency Injection
+        private readonly UMI3DLoadingHandler loadingHandler;
+
+        public CoroutineManager() : base()
+        {
+            loadingHandler = UMI3DLoadingHandler.Instance;
+        }
+
+        public CoroutineManager(UMI3DLoadingHandler loadingHandler) : base()
+        {
+            this.loadingHandler = loadingHandler;
+        }
+        #endregion Dependency Injection
+
+        /// <inheritdoc/>
+        public virtual Coroutine AttachCoroutine(IEnumerator coroutine)
+        {
+            return loadingHandler.AttachCoroutine(coroutine);
+        }
+
+        /// <inheritdoc/>
+        public virtual void DettachCoroutine(Coroutine coroutine)
+        {
+            loadingHandler.DettachCoroutine(coroutine);
         }
     }
 }
