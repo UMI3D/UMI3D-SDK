@@ -108,21 +108,19 @@ namespace umi3d.cdk.userCapture
                 case MultiBindingDataDto multiBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        IEnumerable<(AbstractSimpleBinding binding, bool partialFit)> orderedBindingData = multiBindingDataDto.Bindings
+                        (AbstractSimpleBinding binding, bool partialFit)[] orderedBindingData = multiBindingDataDto.Bindings
                                                                     .OrderByDescending(x => x.priority)
                                                                     .Select(x => (binding: Load(x, boundNodeId) as AbstractSimpleBinding, partialFit: x.partialFit))
-                                                                    .Where(x => x.binding is not null);
+                                                                    .Where(x => x.binding is not null)
+                                                                    .ToArray();
 
-                        if (orderedBindingData.Count() == 0)
+                        if (orderedBindingData.Length == 0)
                         {
                             UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply.", DEBUG_SCOPE);
                             return null;
                         }
 
-                        AbstractSimpleBinding[] orderedBindings = orderedBindingData.Select(x => x.binding).ToArray();
-                        bool[] partialFits = orderedBindingData.Select(x => x.partialFit).ToArray();
-
-                        return new MultiBinding(multiBindingDataDto, orderedBindings, partialFits, boundNode.transform);
+                        return new MultiBinding(multiBindingDataDto, orderedBindingData, boundNode.transform);
                     }
                 default:
                     return null;
