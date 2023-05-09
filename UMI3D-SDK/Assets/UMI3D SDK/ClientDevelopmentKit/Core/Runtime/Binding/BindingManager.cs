@@ -81,37 +81,43 @@ namespace umi3d.cdk
 
         #region dependency injection
 
-        private readonly UMI3DLoadingHandler coroutineService;
+        private readonly ICoroutineService coroutineService;
         private readonly UMI3DEnvironmentLoader environmentService;
 
         public BindingManager() : base()
         {
-            coroutineService = UMI3DLoadingHandler.Instance;
+            coroutineService = CoroutineManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
+        }
+
+        public BindingManager(ICoroutineService coroutineService, UMI3DEnvironmentLoader environmentService)
+        {
+            this.coroutineService = coroutineService;
+            this.environmentService = environmentService;
         }
 
         #endregion dependency injection
 
-        public bool AreBindingsActivated { get; private set; } = true;
+        public virtual bool AreBindingsActivated { get; private set; } = true;
 
-        public Dictionary<ulong, AbstractBinding> Bindings { get; private set; } = new();
+        public virtual Dictionary<ulong, AbstractBinding> Bindings { get; private set; } = new();
 
         /// <summary>
         /// Execute every binding.
         /// </summary>
         private Coroutine bindingCoroutine;
 
-        public void DisableBindings()
+        public virtual void DisableBindings()
         {
             AreBindingsActivated = false;
         }
 
-        public void EnableBindings()
+        public virtual void EnableBindings()
         {
             AreBindingsActivated = true;
         }
 
-        public void UpdateBindingsActivation(UpdateBindingsActivationDto dto)
+        public virtual void UpdateBindingsActivation(UpdateBindingsActivationDto dto)
         {
             if (dto.areBindingsActivated == AreBindingsActivated)
                 return;
@@ -122,7 +128,7 @@ namespace umi3d.cdk
                 DisableBindings();
         }
 
-        public void AddBinding(BindingDto dto)
+        public virtual void AddBinding(BindingDto dto)
         {
             AbstractBinding binding = Load(dto.data, dto.boundNodeId);
             if (binding is null)
@@ -130,7 +136,7 @@ namespace umi3d.cdk
             AddBinding(binding, dto.boundNodeId);
         }
 
-        public void AddBinding(AbstractBinding binding, ulong boundNodeId)
+        public virtual void AddBinding(AbstractBinding binding, ulong boundNodeId)
         {
             if (binding is not null)
                 Bindings[boundNodeId] = binding;
@@ -139,7 +145,7 @@ namespace umi3d.cdk
                 bindingCoroutine = coroutineService.AttachCoroutine(BindingCoroutine());
         }
 
-        public AbstractBinding Load(AbstractBindingDataDto dto, ulong boundNodeId)
+        public virtual AbstractBinding Load(AbstractBindingDataDto dto, ulong boundNodeId)
         {
             switch (dto)
             {
@@ -196,13 +202,16 @@ namespace umi3d.cdk
             }
         }
 
-        public void RemoveBinding(RemoveBindingDto dto)
+        public virtual void RemoveBinding(RemoveBindingDto dto)
         {
             if (Bindings.ContainsKey(dto.boundNodeId))
             {
                 Bindings.Remove(dto.boundNodeId);
                 if (Bindings.Count == 0 && bindingCoroutine is not null)
-                    bindingCoroutine = coroutineService.AttachCoroutine(BindingCoroutine());
+                {
+                    coroutineService.DettachCoroutine(bindingCoroutine);
+                    bindingCoroutine = null;
+                }   
             }
         }
     }
