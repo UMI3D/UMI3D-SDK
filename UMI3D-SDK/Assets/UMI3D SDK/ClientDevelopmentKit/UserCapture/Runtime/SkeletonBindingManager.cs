@@ -87,12 +87,15 @@ namespace umi3d.cdk.userCapture
                             return null;
                         }
                         Transform rig = boundNode.transform.Find(riggedBoneBinding.rigName);
+                        Transform rig = boundNode.transform.GetComponentsInChildren<Transform>().Where(t => t.name == riggedBoneBinding.rigName).FirstOrDefault();
                         if (rig == null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType}. Rig does not exist on bound node.", DEBUG_SCOPE);
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType}. Rig \"{riggedBoneBinding.rigName}\" does not exist on bound node.", DEBUG_SCOPE);
                             return null;
                         }
                         return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), personnalSkeletonService.personalSkeleton);
+                        return new RigBoneBinding(riggedBoneBinding, rig, personnalSkeletonService.personalSkeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {

@@ -95,6 +95,7 @@ namespace umi3d.cdk.collaboration
                         }
 
                         return new RigBoneBinding(riggedBoneBinding, boundNode.transform.Find(riggedBoneBinding.rigName), skeleton);
+                        return new RigBoneBinding(riggedBoneBinding, rig, skeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
