@@ -40,11 +40,11 @@ namespace umi3d.common
         /// <summary>
         /// An identifier defined by the designer.
         /// </summary>
-        public ulong boundNodeId { get; private set; }
+        public ulong boundNodeId;
 
         /// <summary>
         /// A ref to the Dto containing all the information about the said binding or bindings
         /// </summary>
-        public AbstractBindingDataDto data { get; private set; }
+        public AbstractBindingDataDto data;
     }
 }
