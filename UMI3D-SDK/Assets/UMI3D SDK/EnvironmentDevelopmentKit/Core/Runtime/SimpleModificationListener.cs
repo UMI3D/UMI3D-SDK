@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -29,7 +30,7 @@ namespace umi3d.edk
     /// This class isn't meant to be used in production.
     /// </summary>
     [Obsolete("This class isn't meant to be used in production", false)]
-    public partial class SimpleModificationListener : MonoBehaviour
+    public partial class SimpleModificationListener : SingleBehaviour<SimpleModificationListener>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Editor;
 
