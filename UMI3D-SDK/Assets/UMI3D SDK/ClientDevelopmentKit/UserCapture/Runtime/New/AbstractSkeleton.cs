@@ -39,11 +39,11 @@ namespace umi3d.cdk.userCapture
         [SerializeField]
         protected UMI3DSkeletonHierarchy serializedSkeletonHierarchy;
         public virtual Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> SkeletonHierarchy => serializedSkeletonHierarchy.SkeletonHierarchy;
-        
+
         public virtual Transform HipsAnchor { get => hipsAnchor; }
         public virtual ulong userId { get; protected set; }
 
-        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator = new ();
+        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator = new();
 
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator = new();
 
@@ -97,11 +97,7 @@ namespace umi3d.cdk.userCapture
             }
 
             //very naïve
-            if (!Bones.ContainsKey(BoneType.Hips))
-            {
-                Bones.Add(BoneType.Hips, new ISkeleton.s_Transform());
-                Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
-            }
+            Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
 
             foreach (uint boneType in alreadyComputedBonesCache.Keys.ToArray())
                 alreadyComputedBonesCache[boneType] = false;
@@ -132,7 +128,7 @@ namespace umi3d.cdk.userCapture
                 }
                 else
                 {
-                    Bones[boneType].s_Position = pose.relativePosition;
+                    Bones[boneType].s_Position = Bones[BoneType.Hips].s_Position + pose.relativePosition;
                 }
                 alreadyComputedBonesCache[boneType] = true;
             }
