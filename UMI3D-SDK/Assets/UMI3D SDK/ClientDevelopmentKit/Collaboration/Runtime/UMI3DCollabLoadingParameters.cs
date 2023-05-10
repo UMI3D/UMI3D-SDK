@@ -37,6 +37,7 @@ namespace umi3d.cdk.collaboration
         [Header("Collab User Capture")]
         public bool CollaborationUserCaptureActivated;
         public GameObject CollabTrackedSkeleton;
+        public UMI3DSkeletonHierarchy SkeletonHierarchy;
 
         #endregion Collab User Capture
 

@@ -47,27 +47,33 @@ namespace umi3d.cdk.userCapture
 
         public List<BoneRelation> BoneRelations = new List<BoneRelation>();
 
-        public static Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; protected set; }
-
-        public static UnityEvent SetSkeletonHierarchy = new UnityEvent();
-
-        private void OnEnable()
-        {
-            ToSkeletonHierarchy();
+        public Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> SkeletonHierarchy
+        { 
+            get
+            {
+                _skeletonHierarchy ??= ToSkeletonHierarchyDict();
+                return _skeletonHierarchy;
+            }
+            
+            protected set
+            {
+                _skeletonHierarchy = value;
+            }
         }
 
-        protected void ToSkeletonHierarchy()
-        {
-            if (SkeletonHierarchy == null) { SkeletonHierarchy = new Dictionary<uint, (uint, Vector3)>(); }
+        [NonSerialized]
+        private Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> _skeletonHierarchy;
 
-            SkeletonHierarchy.Clear();
+        private Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> ToSkeletonHierarchyDict()
+        {
+            _skeletonHierarchy = new();
 
             foreach (var relation in BoneRelations)
             {
-                SkeletonHierarchy.Add(relation.Bonetype, (relation.BonetypeParent, relation.RelativePosition));
+                _skeletonHierarchy.Add(relation.Bonetype, (relation.BonetypeParent, relation.RelativePosition));
             }
 
-            SetSkeletonHierarchy.Invoke();
+            return _skeletonHierarchy;
         }
     }
 }

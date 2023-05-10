@@ -28,7 +28,7 @@ namespace umi3d.cdk.userCapture
 
         List<ISubSkeleton> Skeletons { get; }
 
-        Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; }
+        Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> SkeletonHierarchy { get; }
 
         Transform HipsAnchor { get; }
 

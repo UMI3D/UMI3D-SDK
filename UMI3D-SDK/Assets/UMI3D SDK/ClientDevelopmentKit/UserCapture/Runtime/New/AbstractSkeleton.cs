@@ -36,6 +36,11 @@ namespace umi3d.cdk.userCapture
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
         public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
         public virtual Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; protected set; } = new();
+
+        [SerializeField]
+        protected UMI3DSkeletonHierarchy serializedSkeletonHierarchy;
+        public virtual Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> SkeletonHierarchy => serializedSkeletonHierarchy.SkeletonHierarchy;
+        
         public virtual Transform HipsAnchor { get => hipsAnchor; }
         public virtual ulong userId { get; protected set; }
 
