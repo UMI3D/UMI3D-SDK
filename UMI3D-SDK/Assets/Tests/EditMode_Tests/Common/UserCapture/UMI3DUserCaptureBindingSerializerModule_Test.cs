@@ -21,6 +21,7 @@ using UnityEngine;
 
 namespace EditMode_Tests
 {
+    [TestFixture]
     public class UMI3DUserCaptureBindingSerializerModule_Test : UMI3DBindingSerializerModule_Test
     {
         [OneTimeSetUp]
@@ -47,20 +48,22 @@ namespace EditMode_Tests
         #region Bone bindings
 
         [Test]
-        public void WriteRead_BoneBinding()
+        [TestCase(159uL, true, true, true, 10, true)]
+        [TestCase(1982uL, false, false, false, 1, false)]
+        public void WriteRead_BoneBinding(ulong userId, bool syncPos, bool syncRot, bool syncScale, int prio, bool partial)
         {
             BoneBindingDataDto bindingDataDto = new BoneBindingDataDto(
-                boneType: BoneType.LeftEye,
-                userId: 159,
-                syncPosition: false,
-                syncRotation: false,
-                syncScale: false,
+                boneType:       BoneType.LeftEye,
+                userId:         userId,
+                syncPosition:   syncPos,
+                syncRotation:   syncRot,
+                syncScale:      syncScale,
                 offSetPosition: Vector3.zero,
                 offSetRotation: Quaternion.identity,
-                offSetScale: Vector3.one,
+                offSetScale:    Vector3.one,
                 anchorPosition: Vector3.zero,
-                priority: 10,
-                partialFit: true
+                priority:       prio,
+                partialFit:     partial
             );
 
             BindingDto bindingDto = new BindingDto(
@@ -77,45 +80,47 @@ namespace EditMode_Tests
             Assert.IsTrue(readable, "Object deserialization failed.");
             Assert.AreEqual(bindingDto.boundNodeId, result.boundNodeId);
 
-            Assert.AreEqual(bindingDto.data.priority, result.data.priority);
+            Assert.AreEqual(bindingDto.data.priority,   result.data.priority);
             Assert.AreEqual(bindingDto.data.partialFit, result.data.partialFit);
 
             var simpleBindingDataDto = bindingDto.data as AbstractSimpleBindingDataDto;
             var resultSimpleBindingDataDto = result.data as AbstractSimpleBindingDataDto;
-            Assert.AreEqual(simpleBindingDataDto.syncPosition, resultSimpleBindingDataDto.syncPosition);
-            Assert.AreEqual(simpleBindingDataDto.syncRotation, resultSimpleBindingDataDto.syncRotation);
-            Assert.AreEqual(simpleBindingDataDto.syncScale, resultSimpleBindingDataDto.syncScale);
-            Assert.AreEqual(simpleBindingDataDto.offSetPosition, resultSimpleBindingDataDto.offSetPosition);
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation, resultSimpleBindingDataDto.offSetRotation);
-            Assert.AreEqual(simpleBindingDataDto.offSetScale, resultSimpleBindingDataDto.offSetScale);
+            Assert.AreEqual(simpleBindingDataDto.syncPosition,      resultSimpleBindingDataDto.syncPosition);
+            Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
+            Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
+            Assert.AreEqual(simpleBindingDataDto.offSetPosition,    resultSimpleBindingDataDto.offSetPosition);
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
+            Assert.AreEqual(simpleBindingDataDto.offSetScale,       resultSimpleBindingDataDto.offSetScale);
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
             var resultBoneBindingDataDto = result.data as BoneBindingDataDto;
-            Assert.AreEqual(boneBindingDataDto.boneType, resultBoneBindingDataDto.boneType);
-            Assert.AreEqual(boneBindingDataDto.userId, resultBoneBindingDataDto.userId);
+            Assert.AreEqual(boneBindingDataDto.boneType,    resultBoneBindingDataDto.boneType);
+            Assert.AreEqual(boneBindingDataDto.userId,      resultBoneBindingDataDto.userId);
         }
 
         [Test]
-        public void WriteRead_RiggedBoneBinding()
+        [TestCase(159uL, "Rig1", true, true, true, 10, true)]
+        [TestCase(1982uL, "Rig2", false, false, false, 1, false)]
+        public void WriteRead_RiggedBoneBinding(ulong userId, string rigName, bool syncPos, bool syncRot, bool syncScale, int prio, bool partial)
         {
             RigBoneBindingDataDto bindingDataDto = new RigBoneBindingDataDto(
-                boneType: BoneType.LeftEye,
-                userId: 159,
-                rigName: "Rig",
-                syncPosition: false,
-                syncRotation: false,
-                syncScale: false,
+                boneType:       BoneType.LeftEye,
+                userId:         userId,
+                rigName:        rigName,
+                syncPosition:   syncPos,
+                syncRotation:   syncRot,
+                syncScale:      syncScale,
                 offSetPosition: Vector3.zero,
                 offSetRotation: Quaternion.identity,
-                offSetScale: Vector3.one,
+                offSetScale:    Vector3.one,
                 anchorPosition: Vector3.zero,
-                priority: 10,
-                partialFit: true
+                priority:       prio,
+                partialFit:     partial
             );
 
             BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: bindingDataDto
+                boundNodeId:    123,
+                data:           bindingDataDto
             );
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
@@ -125,28 +130,28 @@ namespace EditMode_Tests
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
             Assert.IsTrue(readable, "Object deserialization failed.");
-            Assert.AreEqual(bindingDto.boundNodeId, result.boundNodeId);
+            Assert.AreEqual(bindingDto.boundNodeId,     result.boundNodeId);
 
-            Assert.AreEqual(bindingDto.data.priority, result.data.priority);
+            Assert.AreEqual(bindingDto.data.priority,   result.data.priority);
             Assert.AreEqual(bindingDto.data.partialFit, result.data.partialFit);
 
             var simpleBindingDataDto = bindingDto.data as AbstractSimpleBindingDataDto;
             var resultSimpleBindingDataDto = result.data as AbstractSimpleBindingDataDto;
-            Assert.AreEqual(simpleBindingDataDto.syncPosition, resultSimpleBindingDataDto.syncPosition);
-            Assert.AreEqual(simpleBindingDataDto.syncRotation, resultSimpleBindingDataDto.syncRotation);
-            Assert.AreEqual(simpleBindingDataDto.syncScale, resultSimpleBindingDataDto.syncScale);
-            Assert.AreEqual(simpleBindingDataDto.offSetPosition, resultSimpleBindingDataDto.offSetPosition);
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation, resultSimpleBindingDataDto.offSetRotation);
-            Assert.AreEqual(simpleBindingDataDto.offSetScale, resultSimpleBindingDataDto.offSetScale);
+            Assert.AreEqual(simpleBindingDataDto.syncPosition,      resultSimpleBindingDataDto.syncPosition);
+            Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
+            Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
+            Assert.AreEqual(simpleBindingDataDto.offSetPosition,    resultSimpleBindingDataDto.offSetPosition);
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
+            Assert.AreEqual(simpleBindingDataDto.offSetScale,       resultSimpleBindingDataDto.offSetScale);
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
             var resultBoneBindingDataDto = result.data as BoneBindingDataDto;
-            Assert.AreEqual(boneBindingDataDto.boneType, resultBoneBindingDataDto.boneType);
-            Assert.AreEqual(boneBindingDataDto.userId, resultBoneBindingDataDto.userId);
+            Assert.AreEqual(boneBindingDataDto.boneType,    resultBoneBindingDataDto.boneType);
+            Assert.AreEqual(boneBindingDataDto.userId,      resultBoneBindingDataDto.userId);
 
             var rigBindingDataDto = bindingDto.data as RigBoneBindingDataDto;
             var resultRigBindingDataDto = result.data as RigBoneBindingDataDto;
-            Assert.AreEqual(rigBindingDataDto.rigName, resultRigBindingDataDto.rigName);
+            Assert.AreEqual(rigBindingDataDto.rigName,      resultRigBindingDataDto.rigName);
         }
 
         #endregion Bone bindings
@@ -157,9 +162,9 @@ namespace EditMode_Tests
         public override void WriteRead_MultiBinding()
         {
             MultiBindingDataDto multiBindingDto = new MultiBindingDataDto(
-                priority: 10,
+                priority:   10,
                 partialFit: true,
-                bindings: GetTestBindingsArray()
+                bindings:   GetTestBindingsArray()
             );
 
             BindingDto bindingDto = new BindingDto(
@@ -190,16 +195,16 @@ namespace EditMode_Tests
         {
             static AbstractSimpleBindingDataDto GetMockBindingData(ulong id)
                 => new NodeBindingDataDto(
-                nodeId: id,
-                syncPosition: false,
-                syncRotation: false,
-                syncScale: false,
+                nodeId:         id,
+                syncPosition:   false,
+                syncRotation:   false,
+                syncScale:      false,
                 offSetPosition: Vector3.zero,
                 offSetRotation: Quaternion.identity,
-                offSetScale: Vector3.one,
+                offSetScale:    Vector3.one,
                 anchorPosition: Vector3.zero,
-                priority: 10,
-                partialFit: true
+                priority:       10,
+                partialFit:     true
             );
 
             return new AbstractSimpleBindingDataDto[] {
