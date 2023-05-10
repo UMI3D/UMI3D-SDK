@@ -33,22 +33,21 @@ namespace umi3d.cdk.collaboration
         #region dependency injection
 
         private readonly IBindingManager coreBindingService;
-        private readonly IBindingManager userCaptureBindingService;
         private readonly UMI3DEnvironmentLoader environmentService;
-        private readonly CollaborativeSkeletonManager skeletonService;
+        private readonly ICollaborativeSkeletonsManager skeletonService;
 
         public CollaborativeSkeletonBindingManager() : base()
         {
             coreBindingService = BindingManager.Instance;
-            userCaptureBindingService = SkeletonBindingManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
             skeletonService = CollaborativeSkeletonManager.Instance;
         }
 
-        public CollaborativeSkeletonBindingManager(IBindingManager coreBindingManager, IBindingManager userCaptureBindingService) : base()
+        public CollaborativeSkeletonBindingManager(IBindingManager coreBindingManager, ICollaborativeSkeletonsManager skeletonManager) : base()
         {
             this.coreBindingService = coreBindingManager;
-            this.userCaptureBindingService = userCaptureBindingService;
+            this.skeletonService = skeletonManager;
+            environmentService = UMI3DEnvironmentLoader.Instance;
         }
 
         #endregion dependency injection

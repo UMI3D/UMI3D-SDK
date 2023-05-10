@@ -27,7 +27,17 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
-    public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager
+    public interface ICollaborativeSkeletonsManager
+    {
+        Dictionary<ulong, ISkeleton> skeletons { get; }
+
+        CollaborativeSkeletonsScene collabScene { get; }
+
+        ISkeleton GetSkeletonById(ulong id);
+    }
+
+
+    public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager, ICollaborativeSkeletonsManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
@@ -49,7 +59,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
+        public CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         public event Action<ulong> skeletonEvent;
 
@@ -156,7 +166,7 @@ namespace umi3d.cdk.collaboration
 
             if (!skeletons.TryGetValue(frame.userId, out skeleton))
             {
-                UMI3DLogger.LogWarning("User Avatar not found.", scope);
+                UMI3DLogger.LogWarning("User skeleton not found.", scope);
                 return;
             }
 
