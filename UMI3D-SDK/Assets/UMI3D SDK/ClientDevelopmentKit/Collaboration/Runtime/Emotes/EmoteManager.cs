@@ -240,7 +240,10 @@ namespace umi3d.cdk.collaboration
         public virtual void PlayEmote(Emote emote)
         {
             if (!emote.available)
-                UMI3DLogger.LogError($"Could not play emote {emote.Label} as it is not available for this user", DEBUG_SCOPE);
+            {
+                UMI3DLogger.LogWarning($"Could not play emote {emote.Label} as it is not available for this user", DEBUG_SCOPE);
+                return;
+            }
 
             EmoteStarted?.Invoke(emote);
 

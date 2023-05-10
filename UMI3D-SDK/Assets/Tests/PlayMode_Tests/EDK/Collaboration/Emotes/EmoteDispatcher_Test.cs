@@ -21,7 +21,7 @@ using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace PlayMode_Tests.Collaboration.EDK
+namespace PlayMode_Tests.Collaboration.Emotes.EDK
 {
     public class EmoteDispatcher_Test
     {

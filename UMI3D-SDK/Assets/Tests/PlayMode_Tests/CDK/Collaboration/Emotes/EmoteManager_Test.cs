@@ -16,14 +16,17 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Text.RegularExpressions;
 using umi3d.cdk;
 using umi3d.cdk.collaboration;
+using umi3d.common;
 using umi3d.common.collaboration;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace PlayMode_Tests.Collaboration.CDK
+namespace PlayMode_Tests.Collaboration.Emotes.CDK
 {
     public class EmoteManager_Test
     {
@@ -177,5 +180,133 @@ namespace PlayMode_Tests.Collaboration.CDK
         }
 
         #endregion LoadEmoteConfig
+
+        #region PlayEmote
+
+        [Test]
+        public void PlayEmote_Available()
+        {
+            // GIVEN
+            bool wasEmoteStartedInvoked = false;
+            emoteManagerService.EmoteStarted += delegate { wasEmoteStartedInvoked = true; };
+
+            Emote emote = new Emote()
+            {
+                icon = null,
+                available = true,
+                dto = new UMI3DEmoteDto()
+                {
+                    id = 1005uL,
+                    label = "TestEmote",
+                    animationId = 2
+                }
+            };
+
+            EmoteRequestDto req = new EmoteRequestDto()
+            {
+                emoteId = emote.dto.id,
+                shouldTrigger = true
+            };
+
+            Mock<UMI3DCollaborationClientServer> mockServer = new();
+            mockServer.Setup(x => x._SendRequest(req, true));
+
+            UMI3DAbstractAnimationDto mockDto = new UMI3DAnimatorAnimationDto()
+            {
+                nodeId = 3
+            };
+            Mock<UMI3DAbstractAnimation> mockAnimation = new(mockDto);
+
+            environmentLoaderServiceMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(emote.AnimationId)).Returns(mockAnimation.Object);
+
+            // WHEN
+            emoteManagerService.PlayEmote(emote);
+
+            // THEN
+            Assert.IsTrue(wasEmoteStartedInvoked);
+            Assert.IsTrue(emoteManagerService.IsPlaying);
+        }
+
+        [Test]
+        public void PlayEmote_Unavailable()
+        {
+            // GIVEN
+            bool wasEmoteStartedInvoked = false;
+            emoteManagerService.EmoteStarted += delegate { wasEmoteStartedInvoked = true; };
+
+            Emote emote = new Emote()
+            {
+                icon = null,
+                available = false,
+                dto = new UMI3DEmoteDto()
+                {
+                    id = 1005uL,
+                    label = "TestEmote",
+                    animationId = 0
+                }
+            };
+
+            // WHEN
+            emoteManagerService.PlayEmote(emote);
+            
+            // THEN
+            Assert.IsFalse(wasEmoteStartedInvoked);
+            Assert.IsFalse(emoteManagerService.IsPlaying);
+        }
+
+        #endregion PlayEmote
+
+        #region StopEmote
+
+        [Test]
+        public void StopEmote_NoEmotePlaying()
+        {
+            // GIVEN
+            bool wasEmoteStoppedInvoked = false;
+            emoteManagerService.EmoteStarted += delegate { wasEmoteStoppedInvoked = true; };
+
+            // WHEN
+            emoteManagerService.StopEmote();
+
+            // THEN
+            Assert.IsFalse(wasEmoteStoppedInvoked);
+            Assert.IsFalse(emoteManagerService.IsPlaying);
+        }
+
+        [Test]
+        public void StopEmote_EmotePlaying()
+        {
+            // GIVEN
+            bool wasEmoteStoppedInvoked = false;
+            emoteManagerService.EmoteEnded += (emote) => { wasEmoteStoppedInvoked = true; };
+
+            Emote playingEmote = new Emote()
+            {
+                icon = null,
+                available = true,
+                dto = new UMI3DEmoteDto()
+                {
+                    id = 1,
+                    label = "TestEmote",
+                    animationId = 2
+                }
+            };
+            Mock<Emote> mockEmote = new Mock<Emote>(playingEmote);
+
+            UMI3DAnimatorAnimationDto mockDto = new UMI3DAnimatorAnimationDto();
+            Mock<UMI3DAbstractAnimation> mockAnimation = new(mockDto);
+
+            environmentLoaderServiceMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId)).Returns(mockAnimation.Object);
+
+            // WHEN
+            emoteManagerService.PlayEmote(playingEmote);
+            emoteManagerService.StopEmote();
+
+            // THEN
+            Assert.IsTrue(wasEmoteStoppedInvoked);
+            Assert.IsFalse(emoteManagerService.IsPlaying);
+        }
+
+        #endregion StopEmote
     }
 }
