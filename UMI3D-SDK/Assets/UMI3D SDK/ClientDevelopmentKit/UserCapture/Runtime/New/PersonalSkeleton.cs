@@ -28,7 +28,7 @@ namespace umi3d.cdk.userCapture
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
-        public void Start()
+        protected void Start()
         {
             Skeletons = new List<ISubSkeleton>
             {
@@ -72,6 +72,7 @@ namespace umi3d.cdk.userCapture
 
         public void FixedUpdate()
         {
+            // TODO: Delay this computation after the form
             this.Compute();
         }
     }
