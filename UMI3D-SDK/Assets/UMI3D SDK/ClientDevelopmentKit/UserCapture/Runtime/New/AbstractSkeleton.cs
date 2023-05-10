@@ -35,7 +35,6 @@ namespace umi3d.cdk.userCapture
 
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
         public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
-        public virtual Dictionary<uint, (uint, Vector3)> SkeletonHierarchy { get; protected set; } = new();
 
         [SerializeField]
         protected UMI3DSkeletonHierarchy serializedSkeletonHierarchy;
@@ -54,17 +53,10 @@ namespace umi3d.cdk.userCapture
         [SerializeField]
         protected Transform hipsAnchor;
 
-        /// <summary>
-        /// Only Call once
-        /// </summary>
-        public void Init()
-        {
-            UMI3DSkeletonHierarchy.SetSkeletonHierarchy.AddListener(() => this.SkeletonHierarchy = UMI3DSkeletonHierarchy.SkeletonHierarchy);
-        }
 
         public ISkeleton Compute()
         {
-            if (CheckNulls())
+            if (Skeletons == null || Skeletons.Count == 0)
             {
                 return this;
             }
@@ -86,10 +78,9 @@ namespace umi3d.cdk.userCapture
 
                 foreach (var b in bones)
                 {
-                    if (b.rotation != null)
                     {
                         Bones.TryGetValue(b.boneType, out var pose);
-                        if (pose != null)
+                        if (pose is not null)
                         {
                             Bones[b.boneType].s_Rotation = b.rotation;
                         }
@@ -112,34 +103,39 @@ namespace umi3d.cdk.userCapture
                 Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
             }
 
+            foreach (uint boneType in alreadyComputedBonesCache.Keys.ToArray())
+                alreadyComputedBonesCache[boneType] = false;
+
             foreach (uint boneType in Bones.Keys)
             {
-                ComputeBonePosition(boneType);
+                if (!alreadyComputedBonesCache.ContainsKey(boneType))
+                    alreadyComputedBonesCache[boneType] = false;
+
+                if (!alreadyComputedBonesCache[boneType])
+                    ComputeBonePosition(boneType);
             }
 
             return this;
         }
 
+        private Dictionary<uint, bool> alreadyComputedBonesCache = new();
+
         private void ComputeBonePosition(uint boneType)
         {
-            if (Bones[boneType].s_Position == null && SkeletonHierarchy.TryGetValue(boneType, out var pose))
+            if (!alreadyComputedBonesCache[boneType] && SkeletonHierarchy.TryGetValue(boneType, out var pose))
             {
-                if (Bones[pose.Item1].s_Position == null)
-                    ComputeBonePosition(pose.Item1);
-
-                Bones[boneType].s_Position = Bones[pose.Item1].s_Position + Bones[pose.Item1].s_Rotation * pose.Item2;
+                if (pose.boneTypeParent != BoneType.None)
+                {
+                    if (!alreadyComputedBonesCache[pose.boneTypeParent])
+                        ComputeBonePosition(pose.boneTypeParent);
+                    Bones[boneType].s_Position = Bones[pose.boneTypeParent].s_Position + Bones[pose.boneTypeParent].s_Rotation * pose.relativePosition;
+                }
+                else
+                {
+                    Bones[boneType].s_Position = pose.relativePosition;
+                }
+                alreadyComputedBonesCache[boneType] = true;
             }
-        }
-
-
-        private bool CheckNulls()
-        {
-            if (Skeletons == null || Skeletons.Count == 0)
-            {
-                return true;
-            }
-
-            return false;
         }
 
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
