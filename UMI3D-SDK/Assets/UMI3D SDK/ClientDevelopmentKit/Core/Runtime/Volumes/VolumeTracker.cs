@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -46,13 +47,9 @@ namespace umi3d.cdk.volumes
         private readonly List<UnityAction<ulong>> callbacksOnExit = new List<UnityAction<ulong>>();
 
         /// <summary>
-        /// Was the user in a volume during last frame?
+        /// All volumes where user is currently in.
         /// </summary>
-        private bool wasInsideOneVolumeLastFrame = false;
-        /// <summary>
-        /// UMI3D id of the last volume the user was detected in.
-        /// </summary>
-        private ulong? lastVolumeId;
+        private HashSet<ulong> volumesUserInside = new();
 
         protected virtual void Awake()
         {
@@ -66,7 +63,6 @@ namespace umi3d.cdk.volumes
         {
             if (trackingRoutine == null)
             {
-                wasInsideOneVolumeLastFrame = volumesToTrack.Exists(v => v.IsInside(this.transform.position, Space.World));
                 trackingRoutine = StartCoroutine(Track());
             }
         }
@@ -96,17 +92,27 @@ namespace umi3d.cdk.volumes
         {
             while (true)
             {
-                AbstractVolumeCell cell = volumesToTrack.Find(v => v.IsInside(this.transform.position, Space.World));
-                bool inside = cell != null;
-                if (inside && !wasInsideOneVolumeLastFrame)
-                    foreach (UnityAction<ulong> callback in callbacksOnEnter)
-                        callback.Invoke(cell.Id());
-                else if (!inside && wasInsideOneVolumeLastFrame)
-                    foreach (UnityAction<ulong> callback in callbacksOnExit)
-                        callback.Invoke(lastVolumeId.Value);
+                var cellIds = volumesToTrack.Where(v => v.IsInside(this.transform.position, Space.World)).Select(v => v.Id());
 
-                wasInsideOneVolumeLastFrame = inside;
-                lastVolumeId = cell?.Id();
+                foreach (ulong cellId in cellIds)
+                {
+                    if (!volumesUserInside.Contains(cellId))
+                    {
+                        volumesUserInside.Add(cellId);
+                        foreach (UnityAction<ulong> callback in callbacksOnEnter)
+                            callback.Invoke(cellId);
+                    }
+                }
+
+                var oldVolumeIds = volumesUserInside.Where(v => !cellIds.Contains(v)).ToArray();
+
+                foreach (var cellId in oldVolumeIds)
+                {
+                    foreach (UnityAction<ulong> callback in callbacksOnExit)
+                        callback.Invoke(cellId);
+
+                    volumesUserInside.Remove(cellId);
+                }
 
                 yield return new WaitForSeconds(1f / detectionFrameRate);
             }
