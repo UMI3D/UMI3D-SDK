@@ -34,7 +34,7 @@ namespace umi3d.cdk.collaboration
         }
 
 
-        public UMI3DEmoteLoader(EmoteManager emoteManager)
+        public UMI3DEmoteLoader(IEmoteService emoteManager)
         {
             emoteManagementService = emoteManager;
         }

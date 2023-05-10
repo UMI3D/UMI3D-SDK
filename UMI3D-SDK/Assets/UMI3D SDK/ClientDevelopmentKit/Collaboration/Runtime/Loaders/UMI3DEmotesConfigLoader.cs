@@ -34,7 +34,7 @@ namespace umi3d.cdk.collaboration
             emoteManagementService = EmoteManager.Instance;
         }
 
-        public UMI3DEmotesConfigLoader(EmoteManager emoteManager)
+        public UMI3DEmotesConfigLoader(IEmoteService emoteManager)
         {
             emoteManagementService = emoteManager;
         }
