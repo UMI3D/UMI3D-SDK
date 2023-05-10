@@ -14,10 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.common;
 using umi3d.common.collaboration;
+
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -30,11 +33,6 @@ namespace umi3d.edk.collaboration
     [CreateAssetMenu(fileName = "EmotesConfig", menuName = "UMI3D/Collaboration/Emotes Config")]
     public class UMI3DEmotesConfig : ScriptableObject, UMI3DLoadableEntity
     {
-        /// <summary>
-        /// Entity id
-        /// </summary>
-        private ulong id;
-
         /// <summary>
         /// Should the emotes be available by default to users ?
         /// </summary>
@@ -50,19 +48,16 @@ namespace umi3d.edk.collaboration
         #region Registration
 
         /// <summary>
+        /// Entity id
+        /// </summary>
+        [NonSerialized]
+        private ulong id;
+
+        /// <summary>
         /// True when the entity is registered into the environment
         /// </summary>
+        [NonSerialized]
         private bool registered = false;
-
-        private void Awake()
-        {
-            ResetUMI3DRegistration();
-        }
-
-        private void Reset()
-        {
-            ResetUMI3DRegistration();
-        }
 
         /// <inheritdoc/>
         public ulong Id()
@@ -75,38 +70,11 @@ namespace umi3d.edk.collaboration
             return id;
         }
 
-        private void ResetUMI3DRegistration()
-        {
-            id = default;
-            registered = false;
-            if (IncludedEmotes?.Count > 0)
-            {
-                foreach (UMI3DEmote emote in IncludedEmotes)
-                {
-                    emote.id = default;
-                    emote.registered = false;
-                }
-            }
-        }
-
         #endregion Registration
 
         #region UMI3DLoadableEntity
 
         #region Serialization
-
-        /// <inheritdoc/>
-        public IEntity ToEntityDto(UMI3DUser user)
-        {
-            foreach (var emote in IncludedEmotes)
-                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
-            return new UMI3DEmotesConfigDto()
-            {
-                id = this.Id(),
-                emotes = this.IncludedEmotes.Select(x => (UMI3DEmoteDto)x.ToEntityDto(user)).ToList(),
-                allAvailableByDefault = this.allAvailableAtStartByDefault
-            };
-        }
 
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
@@ -122,21 +90,21 @@ namespace umi3d.edk.collaboration
             return bytable;
         }
 
+        /// <inheritdoc/>
+        public IEntity ToEntityDto(UMI3DUser user)
+        {
+            foreach (var emote in IncludedEmotes)
+                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
+            return new UMI3DEmotesConfigDto()
+            {
+                id = this.Id(),
+                emotes = this.IncludedEmotes.Select(x => (UMI3DEmoteDto)x.ToEntityDto(user)).ToList(),
+                allAvailableByDefault = this.allAvailableAtStartByDefault
+            };
+        }
         #endregion Serialization
 
         #region Loading
-
-        /// <inheritdoc/>
-        public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
-        {
-            var operation = new LoadEntity()
-            {
-                entities = new List<UMI3DLoadableEntity>() { this },
-                users = users ?? UMI3DServer.Instance.UserSetWhenHasJoined()
-            };
-
-            return operation;
-        }
 
         /// <inheritdoc/>
         public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
@@ -149,6 +117,17 @@ namespace umi3d.edk.collaboration
             return operation;
         }
 
+        /// <inheritdoc/>
+        public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new LoadEntity()
+            {
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users ?? UMI3DServer.Instance.UserSetWhenHasJoined()
+            };
+
+            return operation;
+        }
         #endregion Loading
 
         #region Filters
@@ -156,17 +135,16 @@ namespace umi3d.edk.collaboration
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         /// <inheritdoc/>
-        public bool LoadOnConnection(UMI3DUser user)
-        {
-            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
-        }
-
-        /// <inheritdoc/>
         public bool AddConnectionFilter(UMI3DUserFilter filter)
         {
             return ConnectionFilters.Add(filter);
         }
 
+        /// <inheritdoc/>
+        public bool LoadOnConnection(UMI3DUser user)
+        {
+            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
+        }
         /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {
