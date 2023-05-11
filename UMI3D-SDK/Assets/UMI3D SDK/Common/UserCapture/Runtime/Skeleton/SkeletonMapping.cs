@@ -23,6 +23,13 @@ namespace umi3d.common.userCapture
     {
         public uint boneType { get; set; }
         public SkeletonMappingLink link {get; set;}
+
+        public SkeletonMapping(uint boneType, SkeletonMappingLink link)
+        {
+            this.boneType = boneType;
+            this.link = link;
+        }
+
         public BoneDto GetPose()
         {
             var computed = link.Compute();

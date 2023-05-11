@@ -26,6 +26,12 @@ namespace umi3d.common.userCapture
     public class GameNodeLink : SkeletonMappingLink
     {
         public Transform transform;
+
+        public GameNodeLink(Transform transform)
+        {
+            this.transform = transform;
+        }
+
         public override (Vector3 position, Quaternion rotation) Compute()
         {
             return (transform.position, transform.rotation);
@@ -41,6 +47,11 @@ namespace umi3d.common.userCapture
         public bool isRotationOffsetLocal;
 
         public SkeletonMappingLink node;
+
+        public OffsetLink(SkeletonMappingLink node)
+        {
+            this.node = node;
+        }
 
         public override (Vector3 position, Quaternion rotation) Compute()
         {
@@ -59,6 +70,12 @@ namespace umi3d.common.userCapture
         public SkeletonMappingLink nodeB;
         [Range(0,1)]
         public float factor;
+
+        public LerpLink(SkeletonMappingLink nodeA, SkeletonMappingLink nodeB)
+        {
+            this.nodeA = nodeA;
+            this.nodeB = nodeB;
+        }
 
         public override (Vector3 position, Quaternion rotation) Compute()
         {
@@ -87,6 +104,10 @@ namespace umi3d.common.userCapture
         /// </summary>
         public bool isTangeantBLocal;
 
+        public BezierLerpLink(SkeletonMappingLink nodeA, SkeletonMappingLink nodeB) : base(nodeA, nodeB)
+        {
+        }
+
         //B(f) = (1-t)^3 A + 3(1-t)^2 t AT + 3(1-t) t^2 BT + t^3 B
         public override (Vector3 position, Quaternion rotation) Compute()
         {
@@ -110,6 +131,13 @@ namespace umi3d.common.userCapture
         public float distance;
         public Vector3 direction;
         public bool isLocal;
+
+        public LineDistanceConstraint(SkeletonMappingLink node, float distance, Vector3 direction)
+        {
+            this.node = node;
+            this.distance = distance;
+            this.direction = direction;
+        }
 
         public override (Vector3 position, Quaternion rotation) Compute()
         {
