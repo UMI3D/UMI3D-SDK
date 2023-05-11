@@ -116,10 +116,10 @@ namespace umi3d.edk
     public abstract class FlyingNavigationModeRequest : NavigationModeRequest
     {
 
-        public speedDto walking { get; set; }
-        public speedDto crouching { get; set; }
-        public speedDto running { get; set; }
-        public speedDto runningCrouching { get; set; }
+        public SpeedDto walking { get; set; }
+        public SpeedDto crouching { get; set; }
+        public SpeedDto running { get; set; }
+        public SpeedDto runningCrouching { get; set; }
 
         public FlyingNavigationModeRequest() : base()
         {

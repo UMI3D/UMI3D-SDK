@@ -19,43 +19,5 @@ namespace umi3d.common
 
     public abstract class NavigationModeRequestDto : AbstractOperationDto
     {
-        public NavigationModeRequestDto() : base() { }
-    }
-
-    public class LockedModeRequestDto : NavigationModeRequestDto
-    {
-        public LockedModeRequestDto() : base() { }
-    }
-
-    public class FPSModeRequestDto : FlyingModeRequestDto
-    {
-        public float jumpHeigth { get; set; }
-        public float fishingRoadMaxDistance { get; set; }
-
-        public FPSModeRequestDto() : base() { }
-    }
-
-    public class FlyingModeRequestDto : NavigationModeRequestDto
-    {
-        public speedDto walking { get; set; }
-        public speedDto crouching { get; set; }
-        public speedDto running { get; set; }
-        public speedDto runningCrouching { get; set; }
-
-        public FlyingModeRequestDto() : base() { }
-    }
-
-    public class FlyingLayeredModeRequestDto : FlyingModeRequestDto
-    {
-        public float upDownSpeed { get; set; }
-
-        public FlyingLayeredModeRequestDto() : base() { }
-    }
-
-    public class speedDto
-    {
-        public float forwardSpeed { get; set; }
-        public float backwardSpeed { get; set; }
-        public float sideSpeed { get; set; }
     }
 }

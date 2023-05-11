@@ -25,20 +25,20 @@ namespace umi3d.common.collaboration
         /// </summary>
         /// Users initialized through this list are added/deleted through transactions
         /// when they connect/disconnect.
-        public List<UserDto> userList;
+        public List<UserDto> userList { get; set; }
 
         /// <summary>
         /// A dictionary that contains all the poses already loaded in the environment
         /// key : user Id 
         /// value : list of all the poses of this user
         /// </summary>
-        public Dictionary<ulong, List<PoseDto>> allPoses;
+        public Dictionary<ulong, List<PoseDto>> allPoses { get; set; }
 
         /// <summary>
         /// A dictionary that contains all the poses already loaded in the environment
         /// key : user Id 
         /// value : list of all the poses of this user
         /// </summary>
-        private List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
+        public List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer { get; set; } = new();
     }
 }

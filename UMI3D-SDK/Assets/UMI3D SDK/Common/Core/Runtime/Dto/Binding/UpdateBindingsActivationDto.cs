@@ -24,6 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// Global stettings for bindings activation on a browser.
         /// </summary>
-        public bool areBindingsActivated;
+        public bool areBindingsActivated { get; set; }
     }
 }

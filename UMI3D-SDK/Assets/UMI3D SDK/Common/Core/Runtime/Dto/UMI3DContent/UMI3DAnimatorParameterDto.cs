@@ -1,4 +1,3 @@
-using System;
 using System.Collections;
 /*
 Copyright 2019 - 2023 Inetum
@@ -24,39 +23,5 @@ namespace umi3d.common
         public int type { get; set; }
 
         public object value { get; set; }
-    }
-
-    public static class UMI3DAnimatorParameter
-    {
-        public static UMI3DAnimatorParameterDto Create(object value)
-        {
-            var dto = new UMI3DAnimatorParameterDto();
-            dto.value = value;
-
-            switch (value)
-            {
-                case long:
-                    dto.type = (int)UMI3DAnimatorParameterType.Integer;
-                    dto.value = (int)((long)dto.value % Int32.MaxValue);
-                    break;
-                case int:
-                    dto.type = (int)UMI3DAnimatorParameterType.Integer;
-                    break;
-                case double:
-                    dto.value = (float)(double)dto.value;
-                    dto.type = (int)UMI3DAnimatorParameterType.Float;
-                    break;
-                case float:
-                    dto.type = (int)UMI3DAnimatorParameterType.Float;
-                    break;
-                case bool:
-                    dto.type = (int)UMI3DAnimatorParameterType.Bool;
-                    break;
-                default:
-                    UMI3DLogger.LogError("Animator parameter type not supported " + value.GetType(), DebugScope.Animation);
-                    break;
-            }
-            return dto;
-        }
     }
 }

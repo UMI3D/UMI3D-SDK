@@ -28,12 +28,12 @@ namespace umi3d.common
         /// <summary>
         /// Total duration of the animations.
         /// </summary>
-        public float duration = 10f;
+        public float duration { get; set; } = 10f;
 
         /// <summary>
         /// Animations to be played.
         /// </summary>
-        public List<AnimationChainDto> animationChain = null;
+        public List<AnimationChainDto> animationChain { get; set; } = null;
 
         /// <summary>
         /// DTO describing a piece of animation to play.
@@ -44,11 +44,11 @@ namespace umi3d.common
             /// <summary>
             /// Id of the animation.
             /// </summary>
-            public ulong animationId = 0;
+            public ulong animationId { get; set; } = 0;
             /// <summary>
             /// Time in second after which this animation will start.
             /// </summary>
-            public float startOnProgress = -1f;
+            public float startOnProgress { get; set; } = -1f;
         }
     }
 }

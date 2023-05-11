@@ -29,8 +29,6 @@ namespace umi3d.common
         /// File variants representing a same resource.
         /// </summary>
         /// Variants are used to load a file instead of another for optimization purposes.
-        public List<FileDto> variants = new List<FileDto>();
-
-        public ResourceDto() : base() { }
+        public List<FileDto> variants { get; set; } = new List<FileDto>();
     }
 }

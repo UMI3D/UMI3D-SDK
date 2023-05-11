@@ -25,22 +25,22 @@ namespace umi3d.common
         /// <summary>
         /// Is the animation running?
         /// </summary>
-        public bool playing = false;
+        public bool playing { get; set; } = false;
 
         /// <summary>
         /// Should the animation restart from its beginning at its end?
         /// </summary>
-        public bool looping = false;
+        public bool looping { get; set; } = false;
 
         /// <summary>
         /// Time since start in miliseconds, represented in server time since its start.
         /// </summary>
-        public ulong startTime;
+        public ulong startTime { get; set; }
 
         /// <summary>
         /// Time of last pause in miliseconds, represented in server time since its start.
         /// </summary>
-        public long pauseTime;
+        public long pauseTime { get; set; }
 
     }
 }

@@ -25,21 +25,21 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// URL of the vocal server.
         /// </summary>
-        public string url;
+        public string url { get; set; }
 
         /// <summary>
         /// Login credential to connect to the vocal server.
         /// </summary>
-        public string login;
+        public string login { get; set; }
 
         /// <summary>
         /// Password credential to connect to the vocal server.
         /// </summary>
-        public string password;
+        public string password { get; set; }
 
         /// <summary>
         /// Name of the channel to join in the server.
         /// </summary>
-        public string channelName;
+        public string channelName { get; set; }
     }
 }

@@ -18,6 +18,6 @@ namespace umi3d.common
 {
     public class GlTFMaterialExtensions : AbstractGlTFExtensions<IMaterialDto>
     {
-        public KHR_texture_transform KHR_texture_transform = new KHR_texture_transform();
+        public KHR_texture_transform KHR_texture_transform { get; set; } = new KHR_texture_transform();
     }
 }

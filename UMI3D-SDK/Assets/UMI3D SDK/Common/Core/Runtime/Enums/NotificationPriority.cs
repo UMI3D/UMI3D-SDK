@@ -17,21 +17,7 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// DTO for navigating with a vehicle.
+    /// Priority level of a notification.
     /// </summary>
-    //[System.Serializable]
-    //public class VehicleDto : TeleportDto
-    //{
-    //    /// <summary>
-    //    /// Vehicle's UMI3D id.
-    //    /// </summary>
-    //    public ulong VehicleId = 0;
-
-    //    /// <summary>
-    //    /// Should the boarding in disable navigation ?
-    //    /// </summary>
-    //    public bool StopNavigation = false;
-
-    //    public VehicleDto() : base() { }
-    //}
+    public enum NotificationPriority { Low, Medium, High }
 }

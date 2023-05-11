@@ -24,16 +24,16 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Forge ID of the sending browser.
         /// </summary>
-        public uint senderId;
+        public uint senderId { get; set; }
 
         /// <summary>
         /// Length of the message in bytes.
         /// </summary>
-        public int length;
+        public int length { get; set; }
 
         /// <summary>
         /// Message as a byte array.
         /// </summary>
-        public byte[] data;
+        public byte[] data { get; set; }
     }
 }

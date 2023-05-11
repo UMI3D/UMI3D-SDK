@@ -24,11 +24,11 @@ namespace umi3d.common.volume
         /// <summary>
         /// Radius of the cylinder.
         /// </summary>
-        public float radius;
+        public float radius { get; set; }
 
         /// <summary>
         /// Height of the cylinder, along the Y-axis.
         /// </summary>
-        public float height;
+        public float height { get; set; }
     }
 }

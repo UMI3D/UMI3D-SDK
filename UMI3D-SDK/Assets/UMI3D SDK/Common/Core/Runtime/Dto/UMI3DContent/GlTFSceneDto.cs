@@ -27,9 +27,9 @@ namespace umi3d.common
         /// <summary>
         /// Name describing the scene.
         /// </summary>
-        public string name;
-        public List<GlTFNodeDto> nodes = new List<GlTFNodeDto>();
-        public List<GlTFMaterialDto> materials = new List<GlTFMaterialDto>();
-        public GlTFSceneExtensions extensions = new GlTFSceneExtensions();
+        public string name { get; set; }
+        public List<GlTFNodeDto> nodes { get; set; } = new List<GlTFNodeDto>();
+        public List<GlTFMaterialDto> materials { get; set; } = new List<GlTFMaterialDto>();
+        public GlTFSceneExtensions extensions { get; set; } = new GlTFSceneExtensions();
     }
 }

@@ -496,27 +496,50 @@ namespace umi3d.common.collaboration
                     result = (T)Convert.ChangeType(resource, typeof(T));
                     return true;
                 case true when typeof(T) == typeof(FileDto):
-                    var file = new FileDto
                     {
-                        metrics = new AssetMetricDto()
-                    };
-                    readable = UMI3DSerializer.TryRead<string>(container, out file.url)
-                               && UMI3DSerializer.TryRead<string>(container, out file.format)
-                               && UMI3DSerializer.TryRead<string>(container, out file.extension)
-                               && UMI3DSerializer.TryRead<int>(container, out file.metrics.resolution)
-                               && UMI3DSerializer.TryRead<float>(container, out file.metrics.size)
-                               && UMI3DSerializer.TryRead<string>(container, out file.pathIfInBundle)
-                               && UMI3DSerializer.TryRead<string>(container, out file.libraryKey);
-                    if (readable)
-                    {
-                        result = (T)Convert.ChangeType(file, typeof(T));
-                    }
-                    else
-                    {
-                        result = default(T);
-                    }
+                        string url = null;
+                        string pathIfInBundle = null;
+                        string libraryKey = null;
+                        string format = null;
+                        string extension = null;
+                        string authorization = null;
+                        int resolution = 0;
+                        float size = 0;
 
-                    return true;
+                        readable = UMI3DSerializer.TryRead<string>(container, out url)
+                                   && UMI3DSerializer.TryRead<string>(container, out format)
+                                   && UMI3DSerializer.TryRead<string>(container, out extension)
+                                   && UMI3DSerializer.TryRead<int>(container, out resolution)
+                                   && UMI3DSerializer.TryRead<float>(container, out size)
+                                   && UMI3DSerializer.TryRead<string>(container, out pathIfInBundle)
+                                   && UMI3DSerializer.TryRead<string>(container, out libraryKey);
+                        if (readable)
+                        {
+                            var file = new FileDto
+                            {
+                                url = url,
+                                pathIfInBundle = pathIfInBundle,
+                                libraryKey = libraryKey,
+                                format = format,
+                                extension = extension,
+                                authorization = authorization,
+                                metrics = new AssetMetricDto()
+                                {
+                                    resolution = resolution,
+                                    size = size
+                                }
+                            };
+
+                            result = (T)Convert.ChangeType(file, typeof(T));
+
+                        }
+                        else
+                        {
+                            result = default(T);
+                        }
+
+                        return true;
+                    }
                 case true when typeof(T) == typeof(RedirectionDto):
                     MediaDto media;
                     GateDto gate;
@@ -581,30 +604,32 @@ namespace umi3d.common.collaboration
                     readable = false;
                     return false;
                 case true when typeof(T) == typeof(MediaDto):
-                    string name, versionMajor, versionMinor, versionStatus, versionDate, url;
-                    ResourceDto icon2D, icon3D;
-                    if (
-                        UMI3DSerializer.TryRead(container, out name)
-                        && UMI3DSerializer.TryRead(container, out icon2D)
-                        && UMI3DSerializer.TryRead(container, out icon3D)
-                        && UMI3DSerializer.TryRead(container, out url)
-                        )
                     {
-                        var _media = new MediaDto
+                        string name, url;
+                        ResourceDto icon2D, icon3D;
+                        if (
+                            UMI3DSerializer.TryRead(container, out name)
+                            && UMI3DSerializer.TryRead(container, out icon2D)
+                            && UMI3DSerializer.TryRead(container, out icon3D)
+                            && UMI3DSerializer.TryRead(container, out url)
+                            )
                         {
-                            name = name,
-                            icon2D = icon2D,
-                            icon3D = icon3D,
-                            url = url
-                        };
-                        readable = true;
-                        result = (T)Convert.ChangeType(_media, typeof(T));
+                            var _media = new MediaDto
+                            {
+                                name = name,
+                                icon2D = icon2D,
+                                icon3D = icon3D,
+                                url = url
+                            };
+                            readable = true;
+                            result = (T)Convert.ChangeType(_media, typeof(T));
 
-                        return true;
+                            return true;
+                        }
+                        result = default(T);
+                        readable = false;
+                        return false;
                     }
-                    result = default(T);
-                    readable = false;
-                    return false;
                 case true when typeof(T) == typeof(UserTrackingFrameDto):
                     {
                         uint idKey = 0;
