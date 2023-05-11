@@ -27,6 +27,6 @@ namespace umi3d.common
     [Serializable]
     public abstract class AbstractGlTFExtensions<UMI3D_EXT>
     {
-        public UMI3D_EXT umi3d;
+        public UMI3D_EXT umi3d { get; set; }
     }
 }
