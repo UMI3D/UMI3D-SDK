@@ -24,7 +24,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Emote label that is displayed to users.
         /// </summary>
-        public string label { get; set; }
+        public string label { get; set; } = "";
 
         /// <summary>
         /// If the user can see and play the emote
