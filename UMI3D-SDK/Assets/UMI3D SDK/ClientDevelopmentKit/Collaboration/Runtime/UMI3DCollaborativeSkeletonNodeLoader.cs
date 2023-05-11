@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration
             if (skeleton is not null)
                 skeleton.Skeletons.Add(subskeleton);
             else
-                UMI3DLogger.LogWarning($"Skeleton from skeleton node not found.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Skeleton of user {userId} not found. Cannot attach skeleton node.", DEBUG_SCOPE);
         }
     }
 }
