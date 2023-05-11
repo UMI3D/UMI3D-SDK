@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace umi3d.common.userCapture
@@ -268,6 +270,20 @@ namespace umi3d.common.userCapture
                 default:
                     return null;
             }
+        }
+    }
+
+    public static class BoneTypeHelper
+    {
+        public static Dictionary<uint, string> GetBoneNames()
+        {
+            var keyValues = typeof(BoneType).GetFields().Select(f => (f.Name, boneType: (uint)f.GetRawConstantValue()));
+            Dictionary<uint, string> boneNames = new();
+            foreach (var keyValue in keyValues)
+            {
+                boneNames.Add(keyValue.boneType, keyValue.Name);
+            }
+            return boneNames;
         }
     }
 }
