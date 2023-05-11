@@ -73,8 +73,11 @@ namespace umi3d.cdk.userCapture
 
             var modelTracker = go.GetOrAddComponent<ModelTracker>();
 
-            if (!go.TryGetComponent(out Animator animator)) //! may delete that if already done in base class
+            Animator animator = go.GetComponentInChildren<Animator>();
+            if (animator == null)
                 return;
+
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
             modelTracker.animatorsToRebind.Add(animator);
 
@@ -119,24 +122,73 @@ namespace umi3d.cdk.userCapture
 
             // map animator bones to umi3d ones
             List<SkeletonMapping> mappings = new();
-            var umi3dBones = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.BoneRelations
-                            .Select(x => x.Bonetype)
+            var boneUnityMapping = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.BoneRelations
+                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConverter.ConvertToBoneType(x.Bonetype)))
+                            .Where(x => x.unityBoneContainer.HasValue)
+                            .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
                             .ToArray();
-            foreach (var bone in umi3dBones)
+
+            if (boneUnityMapping.All(x => x.transform == null))
             {
-                var unityBone = BoneTypeConverter.ConvertToBoneType(bone);
-                if (!unityBone.HasValue)
-                    continue;
-                Transform boneTransform = animator.GetBoneTransform(unityBone.Value);
-
-                var newMapping = new SkeletonMapping(bone, new GameNodeLink(boneTransform));
-
-                mappings.Add(newMapping);
+                boneUnityMapping = GenerateHierarchy(animator.transform);
+                animator.Rebind();
             }
+
+            foreach (var bone in boneUnityMapping)
+                mappings.Add(new SkeletonMapping(bone.umi3dBoneType, new GameNodeLink(bone.transform)));
 
             return skeletonMapper;
         }
 
+        /// <summary>
+        /// Create a hierarchy of transform according to the UMI3DHierarchy in the parameters.
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        protected (uint umi3dBoneType, Transform boneTransform)[] GenerateHierarchy(Transform root)
+        {
+            var copiedHierarchy = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.SkeletonHierarchy;
+
+            Dictionary<uint, bool> hasBeenCreated = new();
+            foreach (var bone in copiedHierarchy.Keys)
+                hasBeenCreated[bone] = false;
+
+            Dictionary<uint, Transform> hierarchy = new();
+
+            var boneNames = BoneTypeHelper.GetBoneNames();
+
+            foreach (uint bone in copiedHierarchy.Keys)
+            {
+                if (!hasBeenCreated[bone])
+                    CreateNode(bone);
+            }
+
+            void CreateNode(uint bone)
+            {
+                var go = new GameObject(boneNames[bone]);
+                hierarchy[bone] = go.transform;
+                if (bone != BoneType.Hips) // root
+                {
+                    if (!hasBeenCreated[copiedHierarchy[bone].boneTypeParent])
+                        CreateNode(copiedHierarchy[bone].boneTypeParent);
+                    go.transform.SetParent(hierarchy[copiedHierarchy[bone].boneTypeParent]);
+                }
+                else
+                {
+                    go.transform.SetParent(root);
+                }
+                go.transform.localPosition = copiedHierarchy[bone].relativePosition;
+                hasBeenCreated[bone] = true;
+            }
+
+            return hierarchy.Select(x => (umi3dBoneType: x.Key, boneTransform: x.Value)).ToArray();
+        }
+
+        /// <summary>
+        /// Attach an animated subskeleton to a skeleton
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="subskeleton"></param>
         protected virtual void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
         {
             personnalSkeletonService.personalSkeleton.Skeletons.Add(subskeleton);
