@@ -419,15 +419,13 @@ namespace umi3d.edk.collaboration
 
         #region avatar
 
-        protected class AvatarFrameEvent : UnityEvent<UserTrackingFrameDto, ulong> { };
-
-        protected static AvatarFrameEvent avatarFrameEvent = new AvatarFrameEvent();
+        public static event Action<UserTrackingFrameDto, ulong> avatarFrameEvent;
 
         public static void RequestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
         {
             // do something with reason
 
-            avatarFrameEvent.AddListener(action);
+            avatarFrameEvent += (frame, userId) => action.Invoke(frame, userId);
         }
 
         /// <inheritdoc/>
@@ -469,7 +467,7 @@ namespace umi3d.edk.collaboration
             if (trackingFrame == null)
                 return;
 
-            avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
+            avatarFrameEvent?.Invoke(trackingFrame, server.Time.Timestep);
 
             user.CurrentTrackingFrame = trackingFrame;
 
