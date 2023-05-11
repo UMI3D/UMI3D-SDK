@@ -27,6 +27,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Token to update.
         /// </summary>
-        public string token = null;
+        public string token { get; set; } = null;
     }
 }

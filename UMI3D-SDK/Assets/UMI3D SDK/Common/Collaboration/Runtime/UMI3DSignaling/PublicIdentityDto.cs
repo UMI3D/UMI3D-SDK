@@ -26,16 +26,16 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// 
         /// </summary>
-        public ulong userId = 0;
+        public ulong userId { get; set; } = 0;
 
         /// <summary>
         /// Public login attributed to the user.
         /// </summary>
-        public string login = null;
+        public string login { get; set; } = null;
 
         /// <summary>
         /// Public name attributed to the user and that should be displayed on browsers.
         /// </summary>
-        public string displayName = null;
+        public string displayName { get; set; } = null;
     }
 }

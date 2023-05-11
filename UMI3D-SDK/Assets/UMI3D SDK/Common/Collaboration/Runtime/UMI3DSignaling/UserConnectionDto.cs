@@ -29,26 +29,12 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Connection form as a set of parameters.
         /// </summary>
-        public ConnectionFormDto parameters;
-        public bool librariesUpdated = false;
+        public ConnectionFormDto parameters { get; set; }
+        public bool librariesUpdated { get; set; } = false;
 
         /// <summary>
         /// Password to use to connect to the vocal server.
         /// </summary>
-        public string audioPassword;
-
-        public UserConnectionDto() : base()
-        {
-        }
-
-        public UserConnectionDto(UserDto user) : base(user)
-        {
-            if (user is UserConnectionDto _user)
-            {
-                this.audioPassword = _user.audioPassword;
-                parameters = _user.parameters;
-                librariesUpdated = _user.librariesUpdated;
-            }
-        }
+        public string audioPassword { get; set; }
     }
 }

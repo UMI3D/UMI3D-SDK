@@ -149,8 +149,32 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            var ucDto = new UserConnectionAnswerDto(ToUserDto(this))
+
+            var source = ToUserDto(this);
+            var ucDto = new UserConnectionAnswerDto()
             {
+                id = source.id,
+                login = source.login,
+                status = source.status,
+
+                audioSourceId = source.audioSourceId,
+                audioFrequency = source.audioFrequency,
+                videoSourceId = source.videoSourceId,
+                networkId = source.networkId,
+
+                microphoneStatus = source.microphoneStatus,
+                avatarStatus = source.avatarStatus,
+                attentionRequired = source.attentionRequired,
+
+                audioChannel = source.audioChannel,
+                audioServerUrl = source.audioServerUrl,
+                audioLogin = source.audioLogin,
+                audioUseMumble = source.audioUseMumble,
+
+                onStartSpeakingAnimationId = source.onStartSpeakingAnimationId,
+                onStopSpeakingAnimationId = source.onStopSpeakingAnimationId,
+                language = source.language,
+
                 librariesUpdated = !UMI3DEnvironment.UseLibrary()
             };
             //RenewToken();
@@ -203,8 +227,31 @@ namespace umi3d.edk.collaboration
 
         public virtual UserConnectionDto ToUserConnectionDto()
         {
-            var connectionInformation = new UserConnectionDto(ToUserDto(this))
+            var source = ToUserDto(this);
+            var connectionInformation = new UserConnectionDto()
             {
+                id = source.id,
+                login = source.login,
+                status = source.status,
+
+                audioSourceId = source.audioSourceId,
+                audioFrequency = source.audioFrequency,
+                videoSourceId = source.videoSourceId,
+                networkId = source.networkId,
+
+                microphoneStatus = source.microphoneStatus,
+                avatarStatus = source.avatarStatus,
+                attentionRequired = source.attentionRequired,
+
+                audioChannel = source.audioChannel,
+                audioServerUrl = source.audioServerUrl,
+                audioLogin = source.audioLogin,
+                audioUseMumble = source.audioUseMumble,
+
+                onStartSpeakingAnimationId = source.onStartSpeakingAnimationId,
+                onStopSpeakingAnimationId = source.onStopSpeakingAnimationId,
+                language = source.language,
+
                 audioPassword = audioPassword.GetValue(),
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),

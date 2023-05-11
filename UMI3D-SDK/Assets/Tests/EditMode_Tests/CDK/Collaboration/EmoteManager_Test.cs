@@ -104,7 +104,7 @@ namespace EditMode_Tests
                 }
             };
 
-            EmoteRequest req = new EmoteRequest()
+            EmoteRequestDto req = new EmoteRequestDto()
             {
                 emoteId = emote.dto.id,
                 shouldTrigger = true

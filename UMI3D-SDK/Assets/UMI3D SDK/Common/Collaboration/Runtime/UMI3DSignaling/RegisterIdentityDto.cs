@@ -28,6 +28,6 @@ namespace umi3d.common.collaboration
         /// Customizable data as a byte array. 
         /// </summary>
         /// The server should know how to parse them.
-        public byte[] metaData;
+        public byte[] metaData { get; set; }
     }
 }

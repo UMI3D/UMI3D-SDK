@@ -334,7 +334,7 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case EmoteRequest emoteRequest:
+                    case EmoteRequestDto emoteRequest:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationServer.Collaboration.DispatchEmoteActivity(user, emoteRequest.emoteId, emoteRequest.shouldTrigger);

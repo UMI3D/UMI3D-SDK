@@ -178,8 +178,32 @@ namespace umi3d.cdk.collaboration
             public void Set(UserConnectionDto dto)
             {
                 FormAnswerDto param = this.answerDto.parameters;
-                this.answerDto = new UserConnectionAnswerDto(dto)
+                this.answerDto = new UserConnectionAnswerDto()
                 {
+                    id = dto.id,
+                    login = dto.login,
+                    status = dto.status,
+
+                    audioSourceId = dto.audioSourceId,
+                    audioFrequency = dto.audioFrequency,
+                    videoSourceId = dto.videoSourceId,
+                    networkId = dto.networkId,
+
+                    microphoneStatus = dto.microphoneStatus,
+                    avatarStatus = dto.avatarStatus,
+                    attentionRequired = dto.attentionRequired,
+
+                    audioChannel = dto.audioChannel,
+                    audioServerUrl = dto.audioServerUrl,
+                    audioLogin = dto.audioLogin,
+                    audioUseMumble = dto.audioUseMumble,
+
+                    onStartSpeakingAnimationId = dto.onStartSpeakingAnimationId,
+                    onStopSpeakingAnimationId = dto.onStopSpeakingAnimationId,
+                    language = dto.language,
+
+                    librariesUpdated = dto.librariesUpdated,
+
                     parameters = param
                 };
                 this.formdto = dto.parameters;

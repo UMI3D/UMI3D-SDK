@@ -48,62 +48,62 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// UMI3D id of the audio source where the user's voice comes from.
         /// </summary>
-        public ulong audioSourceId;
+        public ulong audioSourceId { get; set; }
 
         /// <summary>
         /// Voice recording frequency.
         /// </summary>
-        public int audioFrequency;
+        public int audioFrequency { get; set; }
 
         /// <summary>
         /// To stream video. Not used at the moment.
         /// </summary>
-        public ulong videoSourceId;
+        public ulong videoSourceId { get; set; }
         #endregion audio
 
         /// <summary>
         /// Name of the user to display.
         /// </summary>
-        public string login;
+        public string login { get; set; }
 
         /// <summary>
         /// Is the user's microphone activated?
         /// </summary>
-        public bool microphoneStatus;
+        public bool microphoneStatus { get; set; }
 
         /// <summary>
         /// Has the user an avatar?
         /// </summary>
-        public bool avatarStatus;
+        public bool avatarStatus { get; set; }
 
         /// <summary>
         /// Is the user indicating they require special attention?
         /// </summary>
         /// It is the equivalent of a "raise your end" feature in videochat.
-        public bool attentionRequired;
+        public bool attentionRequired { get; set; }
 
         #region audioNetworking
 
         /// <summary>
         /// Name of the channel the user belongs to, on the audio server.
         /// </summary>
-        public string audioChannel;
+        public string audioChannel { get; set; }
 
         /// <summary>
         /// URL of the audio server the user belongs to.
         /// </summary>
-        public string audioServerUrl;
+        public string audioServerUrl { get; set; }
 
         /// <summary>
         /// Login of the user to connect to the audio server.
         /// </summary>
-        public string audioLogin;
+        public string audioLogin { get; set; }
 
         /// <summary>
         /// Is the audio server a Murmur server?
         /// </summary>
         /// A Murmur server is used by Mumble clients.
-        public bool audioUseMumble;
+        public bool audioUseMumble { get; set; }
 
         #endregion audioNetworking
 
@@ -112,36 +112,13 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// UMI3D id of the <see cref="UMI3DAnimationDto"/> to play when the user starts to talk.
         /// </summary>
-        public ulong onStartSpeakingAnimationId;
+        public ulong onStartSpeakingAnimationId { get; set; }
 
         /// <summary>
         /// UMI3D id of the <see cref="UMI3DAnimationDto"/> to play when the user stops to talk.
         /// </summary>
-        public ulong onStopSpeakingAnimationId;
+        public ulong onStopSpeakingAnimationId { get; set; }
 
         #endregion audioAnimation 
-
-        public UserDto(UserDto source)
-        {
-            this.status = source.status;
-            //this.avatarId = source.avatarId;
-            this.audioSourceId = source.audioSourceId;
-            this.audioFrequency = source.audioFrequency;
-            this.videoSourceId = source.videoSourceId;
-            this.networkId = source.networkId;
-            this.id = source.id;
-            this.login = source.login;
-
-            this.microphoneStatus = source.microphoneStatus;
-            this.avatarStatus = source.avatarStatus;
-            this.attentionRequired = source.attentionRequired;
-
-            this.audioChannel = source.audioChannel;
-            this.audioServerUrl = source.audioServerUrl;
-            this.audioLogin = source.audioLogin;
-            this.audioUseMumble = source.audioUseMumble;
-        }
-
-        public UserDto() { }
     }
 }

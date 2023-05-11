@@ -27,11 +27,11 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// The local poses from the client
         /// </summary>
-        public List<PoseDto> clientLocalPoses;
+        public List<PoseDto> clientLocalPoses { get; set; }
 
         /// <summary>
         /// User size scale relative to the environment.
         /// </summary>
-        public SerializableVector3 userSize;
+        public SerializableVector3 userSize { get; set; }
     }
 }

@@ -29,6 +29,7 @@ namespace umi3d.common.collaboration
         /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
+            ulong id;
             switch (true)
             {
                 case true when typeof(T) == typeof(UserCameraPropertiesDto):
@@ -305,7 +306,7 @@ namespace umi3d.common.collaboration
                 #endregion
 
                 case true when typeof(T) == typeof(UMI3DHandPoseDto):
-                    ulong id;
+
                     string Name;
                     bool IsActive;
                     bool HoverPose;
@@ -346,13 +347,21 @@ namespace umi3d.common.collaboration
                     }
                     return true;
                 case true when typeof(T) == typeof(UMI3DEmotesConfigDto):
-                    var conf = new UMI3DEmotesConfigDto();
+                    bool allAvailableByDefault;
                     result = default(T);
-                    readable = UMI3DSerializer.TryRead(container, out conf.id);
-                    readable &= UMI3DSerializer.TryRead(container, out conf.allAvailableByDefault);
+
+                    readable = UMI3DSerializer.TryRead(container, out id);
+                    readable &= UMI3DSerializer.TryRead(container, out allAvailableByDefault);
 
                     if (readable)
                     {
+
+                        var conf = new UMI3DEmotesConfigDto()
+                        {
+                            allAvailableByDefault = allAvailableByDefault,
+                            id = id
+                        };
+
                         readable = UMI3DSerializer.TryRead(container, out int nbEmotes);
                         if (readable)
                         {
@@ -370,19 +379,36 @@ namespace umi3d.common.collaboration
                     return true;
 
                 case true when typeof(T) == typeof(UMI3DEmoteDto):
-                    var e = new UMI3DEmoteDto();
-                    result = default(T);
+                    {
 
-                    readable = UMI3DSerializer.TryRead(container, out e.id);
-                    readable &= UMI3DSerializer.TryRead(container, out e.label);
-                    readable &= UMI3DSerializer.TryRead(container, out e.animationId);
-                    readable &= UMI3DSerializer.TryRead(container, out e.available);
-                    readable &= UMI3DSerializer.TryRead(container, out e.iconResource);
+                        result = default(T);
 
-                    if (!readable)
-                        return false;
-                    result = (T)Convert.ChangeType(e, typeof(T));
-                    return true;
+                        ulong animationId;
+                        string label;
+                        bool available;
+                        FileDto iconResource;
+
+                        readable = UMI3DSerializer.TryRead(container, out id);
+                        readable &= UMI3DSerializer.TryRead(container, out label);
+                        readable &= UMI3DSerializer.TryRead(container, out animationId);
+                        readable &= UMI3DSerializer.TryRead(container, out available);
+                        readable &= UMI3DSerializer.TryRead(container, out iconResource);
+
+                        if (!readable)
+                            return false;
+
+                        var e = new UMI3DEmoteDto()
+                        {
+                            id = id,
+                            label = label,
+                            animationId = animationId,
+                            available = available,
+                            iconResource = iconResource
+                        };
+
+                        result = (T)Convert.ChangeType(e, typeof(T));
+                        return true;
+                    }
                 case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
                     var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
                     readable = UMI3DSerializer.TryRead<ulong>(container, out mat.newMaterialId);

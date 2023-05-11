@@ -26,12 +26,12 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// List of available emotes dto
         /// </summary>
-        public List<UMI3DEmoteDto> emotes = new();
+        public List<UMI3DEmoteDto> emotes { get; set; } = new();
 
         /// <summary>
         /// Should the emotes be available by default to users ? When set to true, all emotes are available at start, no matter the configuration
         /// </summary>
-        public bool allAvailableByDefault = true;
+        public bool allAvailableByDefault { get; set; } = true;
     }
 }
 

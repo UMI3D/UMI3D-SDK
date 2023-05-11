@@ -19,7 +19,7 @@ namespace umi3d.common.collaboration
     /// <summary>
     /// Request from a browser to trigger an emote for its user on user browsers.
     /// </summary>
-    public class EmoteRequest : AbstractBrowserRequestDto
+    public class EmoteRequestDto : AbstractBrowserRequestDto
     {
         /// <summary>
         /// UMI3D id of the emote to trigger/interrupt.

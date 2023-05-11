@@ -15,7 +15,7 @@ namespace umi3d.common.collaboration
         {
             return true switch
             {
-                true when typeof(T) == typeof(EmoteRequest) => true,
+                true when typeof(T) == typeof(EmoteRequestDto) => true,
                 _ => null,
             };
         }
@@ -37,7 +37,7 @@ namespace umi3d.common.collaboration
         {
             switch (value)
             {
-                case EmoteRequest v:
+                case EmoteRequestDto v:
                     bytable = UMI3DSerializer.Write(UMI3DOperationKeys.EmoteRequest)
                         + UMI3DSerializer.Write(v.emoteId)
                         + UMI3DSerializer.Write(v.shouldTrigger);

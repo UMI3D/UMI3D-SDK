@@ -29,21 +29,8 @@ namespace umi3d.common.collaboration
         /// Answers to the connection form.
         /// </summary>
         /// Not null if the received <see cref="UserConnectionDto"/> contained a form.
-        public FormAnswerDto parameters;
+        public FormAnswerDto parameters { get; set; }
 
-        public bool librariesUpdated = false;
-
-        public UserConnectionAnswerDto() : base()
-        {
-        }
-
-        public UserConnectionAnswerDto(UserDto user) : base(user)
-        {
-        }
-
-        public UserConnectionAnswerDto(UserConnectionDto user) : base(user)
-        {
-            librariesUpdated = user.librariesUpdated;
-        }
+        public bool librariesUpdated { get; set; } = false;
     }
 }

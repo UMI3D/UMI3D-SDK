@@ -25,6 +25,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Attributed user status.
         /// </summary>
-        public StatusType status;
+        public StatusType status { get; set; }
     }
 }

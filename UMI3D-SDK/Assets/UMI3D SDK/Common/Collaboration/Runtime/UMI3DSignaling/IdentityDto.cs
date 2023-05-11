@@ -26,9 +26,21 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Local token of the user.
         /// </summary>
-        public string localToken;
-        public string headerToken;
-        public string key;
+        public string localToken { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string headerToken { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string key { get; set; }
+
+        /// <summary>
+        /// id of the user;
+        /// </summary>
         public string guid;
     }
 }

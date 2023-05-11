@@ -27,16 +27,16 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Global token of the user.
         /// </summary>
-        public string GlobalToken;
+        public string GlobalToken { get; set; }
 
         /// <summary>
         /// 
         /// </summary>
-        public EnvironmentConnectionDto connectionDto;
+        public EnvironmentConnectionDto connectionDto { get; set; }
 
         /// <summary>
         /// Libraries possessed by the user.
         /// </summary>
-        public List<LibrariesDto> libraries;
+        public List<LibrariesDto> libraries { get; set; }
     }
 }

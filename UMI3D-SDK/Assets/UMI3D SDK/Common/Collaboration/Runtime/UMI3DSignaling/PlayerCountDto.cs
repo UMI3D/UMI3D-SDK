@@ -24,11 +24,11 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Connected player count
         /// </summary>
-        public int count;
+        public int count { get; set; }
 
         /// <summary>
         /// Last change date with format "MM:dd:yyyy:HH:mm:ss";
         /// </summary>
-        public string lastUpdate;
+        public string lastUpdate { get; set; }
     }
 }
