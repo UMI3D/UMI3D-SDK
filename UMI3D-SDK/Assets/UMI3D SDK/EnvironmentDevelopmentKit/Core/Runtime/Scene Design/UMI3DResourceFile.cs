@@ -33,7 +33,7 @@ namespace umi3d.edk
         public string extension;
         public bool isInBundle = false;
         public string pathIfInBundle = "";
-        public AssetMetricDto metrics;
+        public AssetMetric metrics = new AssetMetric();
 
         public bool isInLibrary = false;
         public AssetLibrary libraryKey = null;
@@ -46,7 +46,7 @@ namespace umi3d.edk
                 url = GetUrl(),
                 format = format,
                 extension = extension,
-                metrics = metrics,
+                metrics = metrics.ToDto(),
                 pathIfInBundle = isInBundle ? pathIfInBundle : null,
                 libraryKey = isInLibrary ? libraryKey?.idVersion : null
             };

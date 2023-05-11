@@ -29,7 +29,8 @@ namespace umi3d.common
         public float Y;
         public float Z;
 
-        public static SerializableVector3 one = new SerializableVector3() { X = 1, Y = 1, Z = 1 };
+        public static SerializableVector3 one { get => new SerializableVector3() { X = 1, Y = 1, Z = 1 }; }
+        public static SerializableVector3 zero { get => new SerializableVector3() { X = 0, Y = 0, Z = 0 }; }
 
         public SerializableVector3() : base()
         {

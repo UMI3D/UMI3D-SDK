@@ -28,8 +28,8 @@ namespace umi3d.common
         public float X;
         public float Y;
 
-        public static readonly SerializableVector2 one = new SerializableVector2() { X = 1, Y = 1 };
-        public static readonly SerializableVector2 zero = new SerializableVector2() { X = 0, Y = 0 };
+        public static SerializableVector2 one { get => new SerializableVector2() { X = 1, Y = 1 }; } 
+        public static SerializableVector2 zero { get => new SerializableVector2() { X = 0, Y = 0 }; }
 
         public SerializableVector2() : base()
         {
