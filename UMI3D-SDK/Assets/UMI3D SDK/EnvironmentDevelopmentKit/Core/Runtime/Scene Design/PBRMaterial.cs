@@ -89,7 +89,7 @@ namespace umi3d.edk
                 name = name,
                 pbrMetallicRoughness = new PBRMaterialDto()
                 {
-                    baseColorFactor = baseColorFactor,
+                    baseColorFactor = baseColorFactor.Dto(),
                     metallicFactor = metallicFactor,
                     roughnessFactor = roughnessFactor,
 

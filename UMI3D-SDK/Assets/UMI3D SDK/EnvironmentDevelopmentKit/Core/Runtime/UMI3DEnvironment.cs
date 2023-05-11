@@ -123,9 +123,9 @@ namespace umi3d.edk
             dto.LibrariesId = globalLibraries.Select(l => l.idVersion).ToList();
             dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
             dto.ambientType = (AmbientType)objectAmbientType.GetValue(user);
-            dto.skyColor = objectSkyColor.GetValue(user);
-            dto.horizontalColor = objectHorizonColor.GetValue(user);
-            dto.groundColor = objectGroundColor.GetValue(user);
+            dto.skyColor = objectSkyColor.GetValue(user).Dto();
+            dto.horizontalColor = objectHorizonColor.GetValue(user).Dto();
+            dto.groundColor = objectGroundColor.GetValue(user).Dto();
             dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
             dto.skyboxType = skyboxType;
             dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
@@ -185,9 +185,9 @@ namespace umi3d.edk
 
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (int)(AmbientType)mode);
-            objectSkyColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, skyColor, (c, u) => (ColorDto)c);
-            objectHorizonColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientHorizontalColor, horizontalColor, (c, u) => (ColorDto)c);
-            objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientGroundColor, groundColor, (c, u) => (ColorDto)c);
+            objectSkyColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, skyColor, (c, u) => c.Dto());
+            objectHorizonColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientHorizontalColor, horizontalColor, (c, u) => c.Dto());
+            objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientGroundColor, groundColor, (c, u) => c.Dto());
             objectAmbientIntensity = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientIntensity, ambientIntensity);
             objectAmbientSkyboxImage = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AmbientSkyboxImage, skyboxImage, (r, u) => r.ToDto());
             objectSkyboxRotation = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientSkyboxRotation, skyboxRotation);

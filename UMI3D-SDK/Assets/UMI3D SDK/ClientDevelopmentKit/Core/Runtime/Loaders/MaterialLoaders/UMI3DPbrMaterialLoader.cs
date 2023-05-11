@@ -41,7 +41,7 @@ namespace umi3d.cdk
             {
                 void SetMaterial(Material newMat)
                 {
-                    newMat.color = (Color)dto.pbrMetallicRoughness.baseColorFactor;
+                    newMat.color = dto.pbrMetallicRoughness.baseColorFactor.Struct();
                     if (newMat.color.a < 1 || dto.alphaMode == "BLEND")
                     {
                         newMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);

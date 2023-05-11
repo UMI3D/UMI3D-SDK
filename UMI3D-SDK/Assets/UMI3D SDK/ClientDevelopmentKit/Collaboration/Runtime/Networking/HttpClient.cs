@@ -170,7 +170,7 @@ namespace umi3d.cdk.collaboration
                     case Color col:
                         return new ColorParameterDto
                         {
-                            value = col
+                            value = col.Dto()
                         };
                     case Vector4 v4:
                         return new Vector4ParameterDto

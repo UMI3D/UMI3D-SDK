@@ -55,7 +55,7 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            (dto as ColorParameterDto).value = value;
+            (dto as ColorParameterDto).value = value.Dto();
         }
 
         /// <inheritdoc/>
@@ -79,7 +79,7 @@ namespace umi3d.edk.interaction
                 case ParameterSettingRequestDto settingRequestDto:
                     if (settingRequestDto.parameter is ColorParameterDto parameter)
                     {
-                        value = parameter.value;
+                        value = parameter.value.Struct();
                         onChange.Invoke(new ParameterEventContent<Color>(user, settingRequestDto, value));
                     }
                     else

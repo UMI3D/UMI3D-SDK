@@ -39,7 +39,7 @@ namespace umi3d.common.utils.serialization
                 case Vector3 v:
                     return (Vector3Dto)v;
                 case Color c:
-                    return (ColorDto)c;
+                    return c.Dto();
                 case Matrix4x4 m:
                     return (Matrix4x4Dto)m;
                 default:
@@ -63,7 +63,7 @@ namespace umi3d.common.utils.serialization
                 case Vector3Dto v:
                     return (Vector3)v;
                 case ColorDto c:
-                    return (Color)c;
+                    return c.Struct();
                 case Matrix4x4Dto m:
                     return (Matrix4x4)m;
                 default:

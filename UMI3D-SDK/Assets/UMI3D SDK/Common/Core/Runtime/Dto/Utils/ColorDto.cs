@@ -28,55 +28,21 @@ namespace umi3d.common
         /// <summary>
         /// Red color channel. Value between 0 and 1.
         /// </summary>
-        public float R;
+        public float R { get; set; }
 
         /// <summary>
         /// Green color channel. Value between 0 and 1.
         /// </summary>
-        public float G;
+        public float G { get; set; }
 
         /// <summary>
         /// Blue color channel. Value between 0 and 1.
         /// </summary>
-        public float B;
+        public float B { get; set; }
 
         /// <summary>
         /// Alpha opacity channel. Value between 0 and 1.
         /// </summary>
-        public float A;
-
-        public ColorDto() : base()
-        {
-            R = 0;
-            G = 0;
-            B = 0;
-            A = 0;
-        }
-
-        public ColorDto(float r, float g, float b, float a) : base()
-        {
-            R = r;
-            G = g;
-            B = b;
-            A = a;
-        }
-
-        /// <inheritdoc/>
-        public override string ToString()
-        {
-            return ((Color)this).ToString();
-        }
-
-        public static implicit operator ColorDto(Color c)
-        {
-            if (c == null) return default;
-            return new ColorDto(c.r, c.g, c.b, c.a);
-        }
-
-        public static implicit operator Color(ColorDto c)
-        {
-            if (c == null) return default;
-            return new Color(c.R, c.G, c.B, c.A);
-        }
+        public float A { get; set; }
     }
 }

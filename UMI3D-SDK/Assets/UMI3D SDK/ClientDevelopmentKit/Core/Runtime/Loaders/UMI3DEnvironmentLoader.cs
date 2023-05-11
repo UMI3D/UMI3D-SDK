@@ -786,9 +786,9 @@ namespace umi3d.cdk
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
                     await Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, node));
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
-                RenderSettings.ambientSkyColor = extension.skyColor;
-                RenderSettings.ambientEquatorColor = extension.horizontalColor;
-                RenderSettings.ambientGroundColor = extension.groundColor;
+                RenderSettings.ambientSkyColor = extension.skyColor.Struct();
+                RenderSettings.ambientEquatorColor = extension.horizontalColor.Struct();
+                RenderSettings.ambientGroundColor = extension.groundColor.Struct();
                 RenderSettings.ambientIntensity = extension.ambientIntensity;
                 if (extension.skybox != null)
                 {
@@ -871,13 +871,13 @@ namespace umi3d.cdk
                     RenderSettings.ambientMode = (AmbientMode)data.property.value;
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = (ColorDto)data.property.value;
+                    RenderSettings.ambientSkyColor = ((ColorDto)data.property.value).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = (ColorDto)data.property.value;
+                    RenderSettings.ambientEquatorColor = ((ColorDto)data.property.value).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = (ColorDto)data.property.value;
+                    RenderSettings.ambientGroundColor = ((ColorDto)data.property.value).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = (float)data.property.value;
@@ -917,13 +917,13 @@ namespace umi3d.cdk
                     RenderSettings.ambientMode = (AmbientMode)UMI3DSerializer.Read<int>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<ColorDto>(data.container);
+                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<ColorDto>(data.container);
+                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<ColorDto>(data.container);
+                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = UMI3DSerializer.Read<float>(data.container);

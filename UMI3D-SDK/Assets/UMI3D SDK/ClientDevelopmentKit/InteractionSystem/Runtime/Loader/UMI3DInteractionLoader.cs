@@ -180,7 +180,7 @@ namespace umi3d.cdk.interaction
                 case UMI3DInteractionKeys.ColorParameter:
                     var Color = new ColorParameterDto();
                     ReadAbstractParameterDto(Color, container);
-                    Color.value = UMI3DSerializer.Read<Color>(container);
+                    Color.value = UMI3DSerializer.Read<ColorDto>(container);
                     interaction = Color;
                     break;
                 case UMI3DInteractionKeys.Vector2Parameter:

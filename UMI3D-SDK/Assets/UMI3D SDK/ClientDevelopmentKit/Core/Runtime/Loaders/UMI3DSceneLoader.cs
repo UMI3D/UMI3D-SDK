@@ -275,13 +275,13 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    materialToModify.color = (ColorDto)property.value;
+                    materialToModify.color = ((ColorDto)property.value).Struct();
                     glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = (ColorDto)property.value;
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (ColorDto)property.value);
-                    glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)(Color)(ColorDto)property.value;
+                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ((ColorDto)property.value).Struct());
+                    glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)((ColorDto)property.value).Struct();
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
@@ -478,7 +478,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = bc;
+                    glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = bc.Dto();
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:

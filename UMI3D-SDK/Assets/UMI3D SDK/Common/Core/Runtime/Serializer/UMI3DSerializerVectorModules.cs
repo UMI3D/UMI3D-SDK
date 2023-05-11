@@ -98,22 +98,29 @@ namespace umi3d.common
                 case true when typeof(T) == typeof(ColorDto):
                     if (container.length >= 4 * sizeof(float))
                     {
-                        UMI3DSerializer.TryRead(container, out float x);
-                        UMI3DSerializer.TryRead(container, out float y);
-                        UMI3DSerializer.TryRead(container, out float z);
-                        UMI3DSerializer.TryRead(container, out float w);
-                        result = (T)Convert.ChangeType(new ColorDto(x, y, z, w), typeof(T));
+                        UMI3DSerializer.TryRead(container, out float r);
+                        UMI3DSerializer.TryRead(container, out float g);
+                        UMI3DSerializer.TryRead(container, out float b);
+                        UMI3DSerializer.TryRead(container, out float a);
+                        result = (T)Convert.ChangeType(
+                            new ColorDto()
+                            {
+                                R = r,
+                                G = g,
+                                B = b,
+                                A = a
+                            }, typeof(T));
                         return true;
                     }
                     break;
                 case true when typeof(T) == typeof(Color):
                     if (container.length >= 4 * sizeof(float))
                     {
-                        UMI3DSerializer.TryRead(container, out float x);
-                        UMI3DSerializer.TryRead(container, out float y);
-                        UMI3DSerializer.TryRead(container, out float z);
-                        UMI3DSerializer.TryRead(container, out float w);
-                        result = (T)Convert.ChangeType(new Color(x, y, z, w), typeof(T));
+                        UMI3DSerializer.TryRead(container, out float r);
+                        UMI3DSerializer.TryRead(container, out float g);
+                        UMI3DSerializer.TryRead(container, out float b);
+                        UMI3DSerializer.TryRead(container, out float a);
+                        result = (T)Convert.ChangeType(new Color(r, g, b, a), typeof(T));
                         return true;
                     }
                     break;

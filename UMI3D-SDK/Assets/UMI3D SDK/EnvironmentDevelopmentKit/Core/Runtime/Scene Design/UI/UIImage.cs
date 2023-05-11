@@ -85,7 +85,7 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var rectDto = dto as UIImageDto;
-            rectDto.color = Color.GetValue(user);
+            rectDto.color = Color.GetValue(user).Dto();
             rectDto.type = ImageType.GetValue(user).Convert();
             if (sprite != null)
                 rectDto.sprite = Sprite.GetValue().ToDto();

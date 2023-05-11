@@ -27,12 +27,12 @@ namespace umi3d.common
         /// <summary>
         /// Color of the line first point.
         /// </summary>
-        public ColorDto startColor = Color.white;
+        public ColorDto startColor = Color.white.Dto();
 
         /// <summary>
         /// Color of the line last point.
         /// </summary>
-        public ColorDto endColor = Color.white;
+        public ColorDto endColor = Color.white.Dto();
 
         /// <summary>
         /// If true, a line will be draw between the first and the last point.

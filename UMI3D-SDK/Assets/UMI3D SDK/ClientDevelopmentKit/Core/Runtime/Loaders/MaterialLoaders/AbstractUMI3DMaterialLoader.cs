@@ -199,7 +199,7 @@ namespace umi3d.cdk
                             newMat.SetColor(item.Key, c);
                             break;
                         case ColorDto c:
-                            newMat.SetColor(item.Key, c);
+                            newMat.SetColor(item.Key, c.Struct());
                             break;
                         case int i:
                             newMat.SetInt(item.Key, i);

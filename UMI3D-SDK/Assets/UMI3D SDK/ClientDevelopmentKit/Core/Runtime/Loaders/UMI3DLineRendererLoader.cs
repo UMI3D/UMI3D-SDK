@@ -75,8 +75,8 @@ namespace umi3d.cdk
             await base.ReadUMI3DExtension(data);
 
             line = GetOrCreateLine(data.node);
-            line.startColor = lineDto.startColor;
-            line.endColor = lineDto.endColor;
+            line.startColor = lineDto.startColor.Struct();
+            line.endColor = lineDto.endColor.Struct();
             line.loop = lineDto.loop;
             line.useWorldSpace = lineDto.useWorldSpace;
             line.endWidth = lineDto.endWidth;
@@ -105,8 +105,8 @@ namespace umi3d.cdk
                 switch (data.property.property)
                 {
                     case UMI3DPropertyKeys.LineEndColor:
-                        extension.endColor = (Color)data.property.value;
-                        line.endColor = extension.endColor;
+                        extension.endColor = (ColorDto)data.property.value;
+                        line.endColor = extension.endColor.Struct();
                         break;
                     case UMI3DPropertyKeys.LineEndWidth:
                         extension.endWidth = (float)data.property.value;
@@ -141,8 +141,8 @@ namespace umi3d.cdk
                         }
                         break;
                     case UMI3DPropertyKeys.LineStartColor:
-                        extension.startColor = (Color)data.property.value;
-                        line.startColor = extension.startColor;
+                        extension.startColor = (ColorDto)data.property.value;
+                        line.startColor = extension.startColor.Struct();
                         break;
                     case UMI3DPropertyKeys.LineStartWidth:
                         extension.startWidth = (float)data.property.value;
@@ -185,7 +185,7 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.LineEndColor:
                     extension.endColor = UMI3DSerializer.Read<ColorDto>(data.container);
-                    line.endColor = extension.endColor;
+                    line.endColor = extension.endColor.Struct();
                     break;
                 case UMI3DPropertyKeys.LineEndWidth:
                     extension.endWidth = UMI3DSerializer.Read<float>(data.container);
@@ -225,7 +225,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.LineStartColor:
                     extension.startColor = UMI3DSerializer.Read<ColorDto>(data.container);
-                    line.startColor = extension.startColor;
+                    line.startColor = extension.startColor.Struct();
                     break;
                 case UMI3DPropertyKeys.LineStartWidth:
                     extension.startWidth = UMI3DSerializer.Read<float>(data.container);
