@@ -136,13 +136,7 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            Bytable bytable = UMI3DSerializer.Write(id)
-                            + UMI3DSerializer.Write(label)
-                            + UMI3DSerializer.Write(AnimationId.GetValue(user))
-                            + UMI3DSerializer.Write(availableAtStart)
-                            + UMI3DSerializer.Write(iconResource.ToDto());
-
-            return bytable;
+            return UMI3DSerializer.Write(ToEntityDto(user));
         }
 
         #endregion Serialization

@@ -77,20 +77,6 @@ namespace umi3d.edk.collaboration
         #region Serialization
 
         /// <inheritdoc/>
-        public Bytable ToBytes(UMI3DUser user)
-        {
-            Bytable bytable = UMI3DSerializer.Write(this.Id());
-            bytable += UMI3DSerializer.Write(allAvailableAtStartByDefault);
-            UMI3DSerializer.Write(IncludedEmotes.Count);
-            foreach (UMI3DEmote emote in IncludedEmotes)
-            {
-                emote.Available.SetValue(user, emote.availableAtStart || allAvailableAtStartByDefault);
-                bytable += emote.ToBytes(user);
-            }
-            return bytable;
-        }
-
-        /// <inheritdoc/>
         public IEntity ToEntityDto(UMI3DUser user)
         {
             foreach (var emote in IncludedEmotes)
@@ -102,6 +88,13 @@ namespace umi3d.edk.collaboration
                 allAvailableByDefault = this.allAvailableAtStartByDefault
             };
         }
+
+        /// <inheritdoc/>
+        public Bytable ToBytes(UMI3DUser user)
+        {
+            return UMI3DSerializer.Write(ToEntityDto(user));
+        }
+
         #endregion Serialization
 
         #region Loading
