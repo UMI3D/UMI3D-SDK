@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
@@ -29,12 +30,22 @@ namespace umi3d.cdk.userCapture
     /// It is based upon the <see cref="UMI3DMeshNodeDto"/> as the animation ressources are packaged in a bundle just like in a model.
     public class UMI3DSkeletonNodeLoader : UMI3DMeshNodeLoader
     {
+        private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
+
         #region Dependency Injection
-        private readonly ISkeletonManager personnalSkeletonService;
+
+        protected readonly ISkeletonManager personnalSkeletonService;
+
         public UMI3DSkeletonNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
         }
+
+        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService) : base()
+        {
+            this.personnalSkeletonService = personnalSkeletonService;
+        }
+
         #endregion Dependency Injection
 
         /// <inheritdoc/>
@@ -46,36 +57,89 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            if (data.dto is not UMI3DSkeletonNodeDto nodeDto)
-                throw new Umi3dException("DTO should be an UM3DSkeletonNodeDto");
+            if (data.dto is not UMI3DSkeletonNodeDto)
+                UMI3DLogger.LogError("DTO should be an UM3DSkeletonNodeDto", DEBUG_SCOPE);
 
             await base.ReadUMI3DExtension(data);
 
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(nodeDto.id);
+            Load(data.dto as UMI3DSkeletonNodeDto);
+        }
+
+        public void Load(UMI3DSkeletonNodeDto skeletonNodeDto)
+        {
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);
 
             var go = nodeInstance.gameObject;
 
-            var modelTracker = data.node.GetOrAddComponent<ModelTracker>();
+            var modelTracker = go.GetOrAddComponent<ModelTracker>();
 
-            SkeletonMapper skeletonMapper = go.GetComponentInChildren<SkeletonMapper>(); //? should it come with the bundle ??
-            if (skeletonMapper == null) //? hopefully not necessary because it would imply to rebind everything
+            if (!go.TryGetComponent(out Animator animator)) //! may delete that if already done in base class
+                return;
+
+            modelTracker.animatorsToRebind.Add(animator);
+
+            if (go.TryGetComponent(out SkeletonMapper skeletonMapper))
             {
-                skeletonMapper = go.AddComponent<SkeletonMapper>();
                 if (go.TryGetComponent(out TrackedSkeletonBone bone))
                     skeletonMapper.BoneAnchor = new BonePoseDto() { bone = bone.boneType, Position = bone.transform.position.Dto(), Rotation = bone.transform.rotation.Dto() };
                 else
-                    throw new Umi3dException("No bone found to attach skeleton.");
+                {
+                    UMI3DLogger.LogWarning($"No bone found to attach skeleton.", DEBUG_SCOPE);
+                    return;
+                }
+            }
+            else
+            { // if null, we assume that the hiearchy is the same than the UMI3D standard one
+                skeletonMapper = AutoMapAnimatorSkeleton(animator, skeletonNodeDto);
             }
 
-            AnimatedSkeleton animationSkeleton = new(skeletonMapper);
-            personnalSkeletonService.personalSkeleton.Skeletons.Add(animationSkeleton);
+            // create subSkeletonand add it to a skeleton
+            AnimatedSkeleton animationSubskeleton = new(skeletonMapper);
+            AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
 
-
+            // hide the model if it has any renderers
             foreach (var renderer in go.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
+        }
 
-            //if (go.TryGetComponent(out Animator animator)) //! may delete that if already done in base class
-            //    modelTracker.animatorsToRebind.Add(animator);
+        /// <summary>
+        /// Map a skeleton from its animator structure
+        /// </summary>
+        /// <param name="animator"></param>
+        /// <param name="skeletonNodeDto"></param>
+        /// <returns></returns>
+        protected SkeletonMapper AutoMapAnimatorSkeleton(Animator animator, UMI3DSkeletonNodeDto skeletonNodeDto)
+        {
+            SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
+
+            // umi3d default anchor is hips
+            skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = animator.rootPosition, Rotation = animator.rootRotation };
+
+            skeletonMapper.animations = skeletonNodeDto.relatedAnimationsId;
+
+            // map animator bones to umi3d ones
+            List<SkeletonMapping> mappings = new();
+            var umi3dBones = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.BoneRelations
+                            .Select(x => x.Bonetype)
+                            .ToArray();
+            foreach (var bone in umi3dBones)
+            {
+                var unityBone = BoneTypeConverter.ConvertToBoneType(bone);
+                if (!unityBone.HasValue)
+                    continue;
+                Transform boneTransform = animator.GetBoneTransform(unityBone.Value);
+
+                var newMapping = new SkeletonMapping(bone, new GameNodeLink(boneTransform));
+
+                mappings.Add(newMapping);
+            }
+
+            return skeletonMapper;
+        }
+
+        protected virtual void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
+        {
+            personnalSkeletonService.personalSkeleton.Skeletons.Add(subskeleton);
         }
     }
 }

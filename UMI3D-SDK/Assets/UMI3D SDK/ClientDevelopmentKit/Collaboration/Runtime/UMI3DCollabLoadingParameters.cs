@@ -31,13 +31,12 @@ namespace umi3d.cdk.collaboration
     /// Loading helper in a collaboration context.
     /// </summary>
     [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Collab Loading Parameters")]
-    public class UMI3DCollabLoadingParameters : UMI3DLoadingParameters
+    public class UMI3DCollabLoadingParameters : UMI3DUserCaptureLoadingParameters
     {
         #region Collab User Capture
         [Header("Collab User Capture")]
         public bool CollaborationUserCaptureActivated;
         public GameObject CollabTrackedSkeleton;
-        public UMI3DSkeletonHierarchy SkeletonHierarchy;
 
         #endregion Collab User Capture
 
@@ -70,6 +69,7 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DPoseOverriderContainerLoader())
             .SetNext(new UMI3DEmotesConfigLoader())
             .SetNext(new UMI3DEmoteLoader())
+            .SetNext(new UMI3DCollaborativeSkeletonNodeLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
