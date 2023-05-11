@@ -45,7 +45,7 @@ namespace umi3d.cdk.collaboration
 
         public PersonalSkeleton personalSkeleton => personnalSkeletonManager.personalSkeleton;
 
-        public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; }
+        public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; } = new();
 
         public ISkeleton GetSkeletonById(ulong id)
         {
