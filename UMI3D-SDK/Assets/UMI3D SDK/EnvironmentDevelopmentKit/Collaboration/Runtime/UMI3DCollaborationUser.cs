@@ -107,7 +107,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
 
-        public UMI3DAsyncProperty<SerializableVector3> userSize;
+        public UMI3DAsyncProperty<Vector3Dto> userSize;
 
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
@@ -129,7 +129,7 @@ namespace umi3d.edk.collaboration
             onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
             onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
 
-            userSize = new UMI3DAsyncProperty<SerializableVector3>(base.userId, UMI3DPropertyKeys.UserSize, new());
+            userSize = new UMI3DAsyncProperty<Vector3Dto>(base.userId, UMI3DPropertyKeys.UserSize, new());
 
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
@@ -183,7 +183,7 @@ namespace umi3d.edk.collaboration
 
         static object joinLock = new object();
 
-        public async Task JoinDtoReception(SerializableVector3 userSize, PoseDto[] userPoses)
+        public async Task JoinDtoReception(Vector3Dto userSize, PoseDto[] userPoses)
         {
             lock (joinLock)
             {

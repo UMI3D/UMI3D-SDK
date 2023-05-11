@@ -174,7 +174,7 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = (SerializableAnimationCurve)value.property.value;
+                    var curve = (AnimationCurveDto)value.property.value;
                     if (curve.keys.Count > 0)
                         audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
                     ADto.volumeAttenuationCurve = curve;
@@ -250,7 +250,7 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = UMI3DSerializer.Read<SerializableAnimationCurve>(value.container);
+                    var curve = UMI3DSerializer.Read<AnimationCurveDto>(value.container);
                     if (curve.keys.Count > 0)
                         audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
 

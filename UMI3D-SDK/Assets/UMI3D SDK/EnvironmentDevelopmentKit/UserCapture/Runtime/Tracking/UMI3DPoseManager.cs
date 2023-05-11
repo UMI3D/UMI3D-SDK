@@ -13,7 +13,7 @@ namespace umi3d.edk.userCapture
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
         /// <summary>
-        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, Dictionary{uint, bool})"/>.
+        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, Vector3Dto, Dictionary{uint, bool})"/>.
         /// </summary>
         static object joinLock = new object();
         static object logoutLock = new object();

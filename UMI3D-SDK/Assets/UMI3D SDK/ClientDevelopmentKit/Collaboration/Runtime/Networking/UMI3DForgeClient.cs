@@ -542,7 +542,7 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.NavigationRequest:
                     {
-                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
                         var nav = new NavigateDto() { position = pos };
                         MainThreadManager.Run(() =>
                         {
@@ -552,8 +552,8 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.TeleportationRequest:
                     {
-                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
                         var nav = new TeleportDto() { position = pos, rotation = rot };
                         MainThreadManager.Run(() =>
                         {
@@ -593,8 +593,8 @@ namespace umi3d.cdk.collaboration
                     break;
                 //case UMI3DOperationKeys.BoardedVehicleRequest:
                 //    {
-                //        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                //        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                //        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                //        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
                 //        ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
                 //        bool stopNavigation = UMI3DSerializer.Read<bool>(container);
                 //        ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);

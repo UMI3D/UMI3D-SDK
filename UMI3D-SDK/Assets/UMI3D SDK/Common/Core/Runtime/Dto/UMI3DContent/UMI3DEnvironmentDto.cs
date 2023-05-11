@@ -42,17 +42,17 @@ namespace umi3d.common
         /// <summary>
         /// Default color of the sky.
         /// </summary>
-        public SerializableColor skyColor;
+        public ColorDto skyColor;
 
         /// <summary>
         /// Default color
         /// </summary>
-        public SerializableColor horizontalColor;
+        public ColorDto horizontalColor;
 
         /// <summary>
         /// Default color of the ground.
         /// </summary>
-        public SerializableColor groundColor;
+        public ColorDto groundColor;
 
         /// <summary>
         /// Default intensity of the ambient light.

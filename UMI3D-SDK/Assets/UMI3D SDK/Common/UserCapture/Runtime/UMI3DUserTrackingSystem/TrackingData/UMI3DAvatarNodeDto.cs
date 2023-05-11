@@ -37,7 +37,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The user's size
         /// </summary>
-        public SerializableVector3 userSize;
+        public Vector3Dto userSize;
 
         /// <summary>
         /// A bool to enable or disable bindings

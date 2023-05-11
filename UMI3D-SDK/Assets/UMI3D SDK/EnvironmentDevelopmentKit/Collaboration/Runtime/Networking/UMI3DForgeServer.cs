@@ -459,8 +459,8 @@ namespace umi3d.edk.collaboration
                     trackingFrame.userId = UMI3DSerializer.Read<ulong>(container);
                     trackingFrame.parentId = UMI3DSerializer.Read<ulong>(container);
                     //trackingFrame.skeletonHighOffset = UMI3DSerializer.Read<float>(container);
-                    trackingFrame.position = UMI3DSerializer.Read<SerializableVector3>(container);
-                    trackingFrame.rotation = UMI3DSerializer.Read<SerializableVector4>(container);
+                    trackingFrame.position = UMI3DSerializer.Read<Vector3Dto>(container);
+                    trackingFrame.rotation = UMI3DSerializer.Read<Vector4Dto>(container);
                     //trackingFrame.refreshFrequency = UMI3DSerializer.Read<float>(container);
                     trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.ControllerDto>(container);
                 }

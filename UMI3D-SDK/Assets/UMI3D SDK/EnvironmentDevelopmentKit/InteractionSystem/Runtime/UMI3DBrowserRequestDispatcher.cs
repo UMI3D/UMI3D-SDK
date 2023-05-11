@@ -74,8 +74,8 @@ namespace umi3d.edk.interaction
             ulong toolId = UMI3DSerializer.Read<ulong>(container);
             ulong interactionId, hoverredId;
             uint bonetype;
-            SerializableVector3 bonePosition;
-            SerializableVector4 boneRotation;
+            Vector3Dto bonePosition;
+            Vector4Dto boneRotation;
             switch (operationKey)
             {
                 case UMI3DOperationKeys.Transaction:
@@ -96,16 +96,16 @@ namespace umi3d.edk.interaction
                     interactionId = UMI3DSerializer.Read<ulong>(container);
                     hoverredId = UMI3DSerializer.Read<ulong>(container);
                     bonetype = UMI3DSerializer.Read<uint>(container);
-                    bonePosition = UMI3DSerializer.Read<SerializableVector3>(container);
-                    boneRotation = UMI3DSerializer.Read<SerializableVector4>(container);
+                    bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
+                    boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
                     UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.HoverStateChanged(user, toolId, interactionId, hoverredId, bonetype, bonePosition, boneRotation, container);
                     break;
                 case UMI3DOperationKeys.Hoverred:
                     interactionId = UMI3DSerializer.Read<ulong>(container);
                     hoverredId = UMI3DSerializer.Read<ulong>(container);
                     bonetype = UMI3DSerializer.Read<uint>(container);
-                    bonePosition = UMI3DSerializer.Read<SerializableVector3>(container);
-                    boneRotation = UMI3DSerializer.Read<SerializableVector4>(container);
+                    bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
+                    boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
                     UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.Hovered(user, toolId, interactionId, hoverredId, bonetype, bonePosition, boneRotation, container);
                     break;
                 default:
@@ -114,8 +114,8 @@ namespace umi3d.edk.interaction
                         interactionId = UMI3DSerializer.Read<ulong>(container);
                         hoverredId = UMI3DSerializer.Read<ulong>(container);
                         bonetype = UMI3DSerializer.Read<uint>(container);
-                        bonePosition = UMI3DSerializer.Read<SerializableVector3>(container);
-                        boneRotation = UMI3DSerializer.Read<SerializableVector4>(container);
+                        bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
+                        boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
                         UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoverredId, bonetype, bonePosition, boneRotation, container);
                         break;
                     }

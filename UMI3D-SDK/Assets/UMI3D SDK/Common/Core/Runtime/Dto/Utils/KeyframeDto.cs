@@ -24,53 +24,53 @@ namespace umi3d.common
     /// Serializable implementation of a keyframe.
     /// </summary>
     [Serializable]
-    public class SerializableKeyframe : UMI3DDto
+    public class KeyframeDto : UMI3DDto
     {
         /// <summary>
         /// (time; value);
         /// </summary>
-        public SerializableVector2 point;
+        public Vector2Dto point;
 
         /// <summary>
         /// (slope; weight);
         /// </summary>
-        public SerializableVector2 intTangeant;
+        public Vector2Dto intTangeant;
 
         /// <summary>
         /// (slope; weight);
         /// </summary>
-        public SerializableVector2 outTangeant;
+        public Vector2Dto outTangeant;
 
-        public SerializableKeyframe() : base()
+        public KeyframeDto() : base()
         {
-            point = new SerializableVector2(0, 0);
+            point = new Vector2Dto(0, 0);
 
-            intTangeant = new SerializableVector2(0, 0);
+            intTangeant = new Vector2Dto(0, 0);
 
-            outTangeant = new SerializableVector2(0, 0);
+            outTangeant = new Vector2Dto(0, 0);
         }
 
-        public SerializableKeyframe(float time, float value) : this(time, value, 0, 0, 0, 0)
+        public KeyframeDto(float time, float value) : this(time, value, 0, 0, 0, 0)
         {
 
         }
 
-        public SerializableKeyframe(float time, float value, float inTangeant, float outTangeant, float intWeight, float outWeight) : base()
+        public KeyframeDto(float time, float value, float inTangeant, float outTangeant, float intWeight, float outWeight) : base()
         {
-            this.point = new SerializableVector2(time, value);
+            this.point = new Vector2Dto(time, value);
 
-            this.intTangeant = new SerializableVector2(inTangeant, intWeight);
+            this.intTangeant = new Vector2Dto(inTangeant, intWeight);
 
-            this.outTangeant = new SerializableVector2(outTangeant, outWeight);
+            this.outTangeant = new Vector2Dto(outTangeant, outWeight);
         }
 
-        public SerializableKeyframe(Keyframe frame) : base()
+        public KeyframeDto(Keyframe frame) : base()
         {
-            point = new SerializableVector2(frame.time, frame.value);
+            point = new Vector2Dto(frame.time, frame.value);
 
-            intTangeant = new SerializableVector2(frame.inTangent, frame.inWeight);
+            intTangeant = new Vector2Dto(frame.inTangent, frame.inWeight);
 
-            outTangeant = new SerializableVector2(frame.outTangent, frame.outWeight);
+            outTangeant = new Vector2Dto(frame.outTangent, frame.outWeight);
         }
 
         /// <inheritdoc/>
@@ -79,12 +79,12 @@ namespace umi3d.common
             return $"Keyframe : time : {point.X} s, value = {point.Y}, inTangeant ({intTangeant.X}, {intTangeant.Y}), outTangeant ({outTangeant.X}, {outTangeant.Y}).";
         }
 
-        public static implicit operator SerializableKeyframe(Keyframe frame)
+        public static implicit operator KeyframeDto(Keyframe frame)
         {
-            return new SerializableKeyframe(frame);
+            return new KeyframeDto(frame);
         }
 
-        public static implicit operator Keyframe(SerializableKeyframe frame)
+        public static implicit operator Keyframe(KeyframeDto frame)
         {
             if (frame == null) return default;
             return new Keyframe

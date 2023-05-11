@@ -50,7 +50,7 @@ namespace umi3d.common
         /// <summary>
         /// Volume attenuation curve used if <see cref="volumeAttenuationMode"/> is set to <see cref="AudioSourceCurveMode.Custom"/>.
         /// </summary>
-        public SerializableAnimationCurve volumeAttenuationCurve = new SerializableAnimationCurve();
+        public AnimationCurveDto volumeAttenuationCurve = new AnimationCurveDto();
 
         /// <summary>
         /// Volume value between 0 and 1.

@@ -871,13 +871,13 @@ namespace umi3d.cdk
                     RenderSettings.ambientMode = (AmbientMode)data.property.value;
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = (SerializableColor)data.property.value;
+                    RenderSettings.ambientSkyColor = (ColorDto)data.property.value;
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = (SerializableColor)data.property.value;
+                    RenderSettings.ambientEquatorColor = (ColorDto)data.property.value;
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = (SerializableColor)data.property.value;
+                    RenderSettings.ambientGroundColor = (ColorDto)data.property.value;
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = (float)data.property.value;
@@ -917,13 +917,13 @@ namespace umi3d.cdk
                     RenderSettings.ambientMode = (AmbientMode)UMI3DSerializer.Read<int>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<ColorDto>(data.container);
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<ColorDto>(data.container);
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<ColorDto>(data.container);
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = UMI3DSerializer.Read<float>(data.container);

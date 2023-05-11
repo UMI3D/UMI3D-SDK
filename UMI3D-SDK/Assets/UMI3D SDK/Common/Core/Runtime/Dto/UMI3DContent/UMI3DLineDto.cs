@@ -27,12 +27,12 @@ namespace umi3d.common
         /// <summary>
         /// Color of the line first point.
         /// </summary>
-        public SerializableColor startColor = Color.white;
+        public ColorDto startColor = Color.white;
 
         /// <summary>
         /// Color of the line last point.
         /// </summary>
-        public SerializableColor endColor = Color.white;
+        public ColorDto endColor = Color.white;
 
         /// <summary>
         /// If true, a line will be draw between the first and the last point.
@@ -57,6 +57,6 @@ namespace umi3d.common
         /// <summary>
         /// The positions of points on the line
         /// </summary>
-        public List<SerializableVector3> positions = new List<SerializableVector3>();
+        public List<Vector3Dto> positions = new List<Vector3Dto>();
     }
 }

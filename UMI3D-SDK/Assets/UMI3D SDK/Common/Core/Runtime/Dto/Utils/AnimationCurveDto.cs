@@ -25,35 +25,35 @@ namespace umi3d.common
     /// Serializable implementation of an animationCurve.
     /// </summary>
     [Serializable]
-    public class SerializableAnimationCurve : UMI3DDto
+    public class AnimationCurveDto : UMI3DDto
     {
         /// <summary>
         /// Animation keys.
         /// </summary>
-        public List<SerializableKeyframe> keys;
+        public List<KeyframeDto> keys;
 
-        public SerializableAnimationCurve() : base()
+        public AnimationCurveDto() : base()
         {
-            this.keys = new List<SerializableKeyframe>();
+            this.keys = new List<KeyframeDto>();
         }
 
-        public SerializableAnimationCurve(AnimationCurve curve) : base()
+        public AnimationCurveDto(AnimationCurve curve) : base()
         {
-            this.keys = new List<SerializableKeyframe>();
+            this.keys = new List<KeyframeDto>();
 
             foreach (var key in curve.keys)
             {
-                this.keys.Add(new SerializableKeyframe(key));
+                this.keys.Add(new KeyframeDto(key));
             }
         }
 
-        public SerializableAnimationCurve(List<SerializableKeyframe> keys) : base()
+        public AnimationCurveDto(List<KeyframeDto> keys) : base()
         {
-            this.keys = new List<SerializableKeyframe>();
+            this.keys = new List<KeyframeDto>();
 
             foreach (var key in keys)
             {
-                this.keys.Add(new SerializableKeyframe(key));
+                this.keys.Add(new KeyframeDto(key));
             }
         }
 
@@ -68,14 +68,14 @@ namespace umi3d.common
             return res;
         }
 
-        public static implicit operator SerializableAnimationCurve(AnimationCurve c)
+        public static implicit operator AnimationCurveDto(AnimationCurve c)
         {
             if (c == null) return default;
-            return new SerializableAnimationCurve(c);
+            return new AnimationCurveDto(c);
         }
 
 
-        public static implicit operator AnimationCurve(SerializableAnimationCurve c)
+        public static implicit operator AnimationCurve(AnimationCurveDto c)
         {
             if (c == null || c.keys.Count == 0) return new AnimationCurve();
 

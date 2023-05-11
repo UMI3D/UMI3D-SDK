@@ -26,7 +26,7 @@ namespace umi3d.common
         /// Base color of the material, define the diffuse albedo for non-metals, and the specular color for metals.
         /// </summary>
         /// Default is white.
-        public SerializableColor baseColorFactor { get; set; }
+        public ColorDto baseColorFactor { get; set; }
 
         /// <summary>
         /// Metallic behaviour of the surface. 

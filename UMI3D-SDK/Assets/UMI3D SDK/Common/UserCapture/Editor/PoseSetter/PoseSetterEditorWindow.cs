@@ -457,13 +457,13 @@ namespace umi3d.common.userCapture
                                                              .Where(bc => bc.BoneType != BoneType.None)
                                                              .ToList();
 
-                SerializableVector4 rootRotation = new SerializableVector4(r.transform.rotation.x, r.transform.rotation.y, r.transform.rotation.z, r.transform.rotation.w);
+                Vector4Dto rootRotation = new Vector4Dto(r.transform.rotation.x, r.transform.rotation.y, r.transform.rotation.z, r.transform.rotation.w);
                 BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, boneToSave[0], r);
                 boneToSave.RemoveAt(0);
 
                 boneToSave.ForEach(bc =>
                 {
-                    SerializableVector4 bonerotation = new SerializableVector4(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
+                    Vector4Dto bonerotation = new Vector4Dto(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
                     BoneDto bonePose_So = new BoneDto()
                     {
                         boneType = bc.BoneType,

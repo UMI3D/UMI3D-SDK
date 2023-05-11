@@ -21,14 +21,14 @@ namespace umi3d.common.userCapture
     {
         public BoneRotationConditionDto() { }
 
-        public BoneRotationConditionDto(uint boneId, SerializableVector4 rotation)
+        public BoneRotationConditionDto(uint boneId, Vector4Dto rotation)
         {
             this.boneId = boneId;
             this.rotation = rotation;
         }
 
         public uint boneId { get; set; }
-        public SerializableVector4 rotation { get; set; }
+        public Vector4Dto rotation { get; set; }
         public float acceptanceRange { get; set; }
     }
 }

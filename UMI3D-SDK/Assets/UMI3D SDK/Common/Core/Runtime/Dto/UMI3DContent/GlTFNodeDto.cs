@@ -33,18 +33,18 @@ namespace umi3d.common
         /// Position of the node on the 3 axes.
         /// </summary>
         /// The position is given in a left-hand coordinate system, just like Unity does.
-        public SerializableVector3 position { get; set; }
+        public Vector3Dto position { get; set; }
 
         /// <summary>
         /// Rotation of the node as a quaternion.
         /// </summary>
-        public SerializableVector4 rotation { get; set; }
+        public Vector4Dto rotation { get; set; }
 
         /// <summary>
         /// Scale of the node.
         /// </summary>
         /// The scale is given in a left-hand coordinate system, just like Unity does.
-        public SerializableVector3 scale { get; set; }
+        public Vector3Dto scale { get; set; }
 
         /// <summary>
         /// List of the node's children UMI3D id.

@@ -40,12 +40,12 @@ namespace umi3d.common.userCapture
             {
                 case ControllerDto c:
                     bytable = UMI3DSerializer.Write(c.boneType)
-                            + UMI3DSerializer.Write(c.rotation ?? new SerializableVector4())
-                            + UMI3DSerializer.Write(c.position ?? new SerializableVector3());
+                            + UMI3DSerializer.Write(c.rotation ?? new Vector4Dto())
+                            + UMI3DSerializer.Write(c.position ?? new Vector3Dto());
                     return true;
                 case BoneDto c:
                     bytable = UMI3DSerializer.Write(c.boneType)
-                            + UMI3DSerializer.Write(c.rotation ?? new SerializableVector4());
+                            + UMI3DSerializer.Write(c.rotation ?? new Vector4Dto());
                     return true;
             }
             bytable = null;

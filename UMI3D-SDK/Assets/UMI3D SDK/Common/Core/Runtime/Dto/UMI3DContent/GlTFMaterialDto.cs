@@ -32,6 +32,6 @@ namespace umi3d.common
         public GlTFMaterialExtensions extensions { get; set; } = null;
 
 
-        public SerializableVector3 emissiveFactor { get; set; }
+        public Vector3Dto emissiveFactor { get; set; }
     }
 }

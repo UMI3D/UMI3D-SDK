@@ -109,20 +109,20 @@ namespace umi3d.common
                 case int b:
                     result.type = UMI3DShaderPropertyType.Int;
                     break;
-                case SerializableVector2 v:
+                case Vector2Dto v:
                 case Vector2 b:
                     result.type = UMI3DShaderPropertyType.Vector2;
                     break;
-                case SerializableVector3 v:
+                case Vector3Dto v:
                 case Vector3 b:
                     result.type = UMI3DShaderPropertyType.Vector3;
                     break;
                 case Quaternion q:
-                case SerializableVector4 v:
+                case Vector4Dto v:
                 case Vector4 b:
                     result.type = UMI3DShaderPropertyType.Vector4;
                     break;
-                case SerializableColor c:
+                case ColorDto c:
                 case Color b:
                     result.type = UMI3DShaderPropertyType.Color;
                     break;

@@ -88,7 +88,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextColor:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.color = dto.color = (SerializableColor)property.value;
+                        text.color = dto.color = (ColorDto)property.value;
                     }
                     break;
                 case UMI3DPropertyKeys.TextFont:
@@ -183,7 +183,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextColor:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
+                        text.color = dto.color = UMI3DSerializer.Read<ColorDto>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.TextFont:

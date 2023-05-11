@@ -22,11 +22,11 @@ namespace umi3d.common.userCapture
     {
         public DirectionConditionDto() { }
 
-        public DirectionConditionDto(SerializableVector3 direction)
+        public DirectionConditionDto(Vector3Dto direction)
         {
             this.direction = direction;
         }
 
-        public SerializableVector3 direction { get; set; }
+        public Vector3Dto direction { get; set; }
     }
 }

@@ -51,8 +51,8 @@ namespace umi3d.common.interaction
             {
                 case ManipulationRequestDto c:
                     bytable = WriteInteraction(c, UMI3DOperationKeys.ManipulationRequest, parameters)
-                            + UMI3DSerializer.Write(c.translation ?? new SerializableVector3())
-                            + UMI3DSerializer.Write(c.rotation ?? new SerializableVector4());
+                            + UMI3DSerializer.Write(c.translation ?? new Vector3Dto())
+                            + UMI3DSerializer.Write(c.rotation ?? new Vector4Dto());
                     return true;
                 case LinkOpened c:
                     bytable = WriteInteraction(c, UMI3DOperationKeys.LinkOpened, parameters)

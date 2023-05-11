@@ -25,6 +25,6 @@ namespace umi3d.common
         /// <summary>
         /// Camera projection matrix that describes the mapping of a pinhole camera.
         /// </summary>
-        public SerializableMatrix4x4 projectionMatrix { get; set; }
+        public Matrix4x4Dto projectionMatrix { get; set; }
     }
 }

@@ -27,7 +27,7 @@ namespace umi3d.edk
         /// <summary>
         /// Rotation of th user as a quaternion;
         /// </summary>
-        public SerializableVector4 rotation;
+        public Vector4Dto rotation;
 
         public TeleportRequest(Vector3 position, Quaternion rotation) : base(position)
         {
@@ -43,7 +43,7 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            if (rotation == null) rotation = new SerializableVector4();
+            if (rotation == null) rotation = new Vector4Dto();
             return base.ToBytable(user)
                 + UMI3DSerializer.Write(rotation);
         }

@@ -34,6 +34,6 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Rotation of the bone in world space
         /// </summary>
-        public SerializableVector4 rotation { get; set; }
+        public Vector4Dto rotation { get; set; }
     }
 }

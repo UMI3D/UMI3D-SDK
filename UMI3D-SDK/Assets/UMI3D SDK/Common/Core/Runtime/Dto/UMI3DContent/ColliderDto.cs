@@ -37,7 +37,7 @@ namespace umi3d.common
         /// <summary>
         /// Center of the collider for box, sphere and capsule collider
         /// </summary>
-        public SerializableVector3 colliderCenter { get; set; }
+        public Vector3Dto colliderCenter { get; set; }
 
         /// <summary>
         /// The radius for sphere and capsule collider
@@ -47,7 +47,7 @@ namespace umi3d.common
         /// <summary>
         /// The box scale for boxCollider
         /// </summary>
-        public SerializableVector3 colliderBoxSize { get; set; } = SerializableVector3.one;
+        public Vector3Dto colliderBoxSize { get; set; } = Vector3Dto.one;
 
         /// <summary>
         /// The height of le collider for capsule collider

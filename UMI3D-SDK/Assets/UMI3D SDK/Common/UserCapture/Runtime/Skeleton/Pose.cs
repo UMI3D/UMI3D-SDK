@@ -39,7 +39,7 @@ namespace umi3d.common.userCapture
     //        this.rotation= rotation;
     //    }
     //    public uint boneType { get; set; }
-    //    public SerializableVector3 position;
-    //    public SerializableVector4 rotation;
+    //    public Vector3Dto position;
+    //    public Vector4Dto rotation;
     //}
 }

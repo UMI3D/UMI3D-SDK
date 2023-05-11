@@ -167,7 +167,7 @@ namespace umi3d.edk.userCapture
                 + UMI3DSerializer.Write(AllowOverriding)
                 + UMI3DSerializer.Write(BodyPosition)
                 + UMI3DSerializer.Write(BodyEulerRotation)
-                //+ UMI3DSerializer.Write(JointRotations.ToDictionary(x => x.jointId, x => (SerializableVector3)x.JointEulerRotation));
+                //+ UMI3DSerializer.Write(JointRotations.ToDictionary(x => x.jointId, x => (Vector3Dto)x.JointEulerRotation));
                 + UMI3DSerializer.Write(TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3, Vector3>(x.relativePosition, x.relativeRotation)));
         }
 
@@ -183,8 +183,8 @@ namespace umi3d.edk.userCapture
                 AllowOverriding = AllowOverriding,
                 BodyPosition = BodyPosition,
                 BodyEulerRotation = BodyEulerRotation,
-                //JointRotations = JointRotations.ToDictionary(x => x.jointId, x => (SerializableVector3)x.JointEulerRotation)
-                TargetTransforms = TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<SerializableVector3, SerializableVector3>(x.relativePosition, x.relativeRotation))
+                //JointRotations = JointRotations.ToDictionary(x => x.jointId, x => (Vector3Dto)x.JointEulerRotation)
+                TargetTransforms = TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3Dto, Vector3Dto>(x.relativePosition, x.relativeRotation))
             };
         }
 

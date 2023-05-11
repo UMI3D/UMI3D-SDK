@@ -24,16 +24,16 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Hovered point position in the Interactable associated object's local frame.
         /// </summary>
-        public SerializableVector3 position { get; set; }
+        public Vector3Dto position { get; set; }
 
         /// <summary>
         /// Normal to the object's surface at the hovered point in the Interactable associated object's local frame.
         /// </summary>
-        public SerializableVector3 normal { get; set; }
+        public Vector3Dto normal { get; set; }
 
         /// <summary>
         /// The direction of the browser's selection tool in the Interactable associated object's local frame.
         /// </summary>
-        public SerializableVector3 direction { get; set; }
+        public Vector3Dto direction { get; set; }
     }
 }

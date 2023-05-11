@@ -23,21 +23,21 @@ namespace umi3d.common
     /// Serializable implementation of a vector with 2 float coordinates.
     /// </summary>
     [Serializable]
-    public class SerializableVector2 : UMI3DDto
+    public class Vector2Dto : UMI3DDto
     {
         public float X;
         public float Y;
 
-        public static SerializableVector2 one { get => new SerializableVector2() { X = 1, Y = 1 }; } 
-        public static SerializableVector2 zero { get => new SerializableVector2() { X = 0, Y = 0 }; }
+        public static Vector2Dto one { get => new Vector2Dto() { X = 1, Y = 1 }; } 
+        public static Vector2Dto zero { get => new Vector2Dto() { X = 0, Y = 0 }; }
 
-        public SerializableVector2() : base()
+        public Vector2Dto() : base()
         {
             X = 0;
             Y = 0;
         }
 
-        public SerializableVector2(float x, float y) : base()
+        public Vector2Dto(float x, float y) : base()
         {
             X = x;
             Y = y;
@@ -49,13 +49,13 @@ namespace umi3d.common
             return ((Vector2)this).ToString();
         }
 
-        public static implicit operator SerializableVector2(Vector2 v)
+        public static implicit operator Vector2Dto(Vector2 v)
         {
             if (v == null) return default;
-            return new SerializableVector2(v.x, v.y);
+            return new Vector2Dto(v.x, v.y);
         }
 
-        public static implicit operator Vector2(SerializableVector2 v)
+        public static implicit operator Vector2(Vector2Dto v)
         {
             if (v == null) return default;
             return new Vector2(v.X, v.Y);

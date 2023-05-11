@@ -32,6 +32,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// User size scale relative to the environment.
         /// </summary>
-        public SerializableVector3 userSize { get; set; }
+        public Vector3Dto userSize { get; set; }
     }
 }

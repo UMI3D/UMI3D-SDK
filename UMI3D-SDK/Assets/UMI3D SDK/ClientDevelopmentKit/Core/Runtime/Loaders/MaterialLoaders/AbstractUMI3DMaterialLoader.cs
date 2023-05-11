@@ -180,25 +180,25 @@ namespace umi3d.cdk
                         case Vector4 v:
                             newMat.SetVector(item.Key, v);
                             break;
-                        case SerializableVector4 v:
+                        case Vector4Dto v:
                             newMat.SetVector(item.Key, v);
                             break;
                         case Vector3 v:
                             newMat.SetVector(item.Key, new Vector4(v.x, v.y, v.z));
                             break;
-                        case SerializableVector3 v:
+                        case Vector3Dto v:
                             newMat.SetVector(item.Key, new Vector4(v.X, v.Y, v.Z));
                             break;
                         case Vector2 v:
                             newMat.SetVector(item.Key, new Vector4(v.x, v.y));
                             break;
-                        case SerializableVector2 v:
+                        case Vector2Dto v:
                             newMat.SetVector(item.Key, new Vector4(v.X, v.Y));
                             break;
                         case Color c:
                             newMat.SetColor(item.Key, c);
                             break;
-                        case SerializableColor c:
+                        case ColorDto c:
                             newMat.SetColor(item.Key, c);
                             break;
                         case int i:

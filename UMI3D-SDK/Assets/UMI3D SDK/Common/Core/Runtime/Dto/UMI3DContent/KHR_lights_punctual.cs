@@ -25,7 +25,7 @@ namespace umi3d.common
     [System.Serializable]
     public class KHR_lights_punctual
     {
-        public SerializableColor color { get; set; } = Color.white;
+        public ColorDto color { get; set; } = Color.white;
         public string name { get; set; }
         public float intensity { get; set; } = 1f;
         public float range { get; set; } = 2f;

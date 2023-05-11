@@ -130,14 +130,14 @@ namespace umi3d.common.userCapture
 
             fieldActualConditionType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic).ForEach(property =>
             {
-                if (property.PropertyType == typeof(SerializableVector3))
+                if (property.PropertyType == typeof(Vector3Dto))
                 {
                     Vector3Field vector3Field = new Vector3Field();
                     vector3Field.label = property.Name;
                     temporaryChildren.Add(vector3Field);
                     Add(vector3Field);
                 }
-                else if (property.PropertyType == typeof(SerializableVector4))
+                else if (property.PropertyType == typeof(Vector4Dto))
                 {
                     Vector4Field vector4Field = new Vector4Field();
                     vector4Field.label = property.Name;

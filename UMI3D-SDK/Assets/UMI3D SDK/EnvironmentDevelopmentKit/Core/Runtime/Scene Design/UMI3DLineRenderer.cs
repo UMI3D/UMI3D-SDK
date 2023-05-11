@@ -69,13 +69,13 @@ namespace umi3d.edk
         /// Color of the line.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Color of the start of the line.")]
-        protected SerializableColor startColor = Color.white;
+        protected ColorDto startColor = Color.white;
 
         /// <summary>
         /// Color of the line.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Color of the end of the line.")]
-        protected SerializableColor endColor = Color.white;
+        protected ColorDto endColor = Color.white;
 
         /// <summary>
         /// Line width on last point

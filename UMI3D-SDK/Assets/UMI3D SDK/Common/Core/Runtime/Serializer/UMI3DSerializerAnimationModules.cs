@@ -26,8 +26,8 @@ namespace umi3d.common
         {
             return true switch
             {
-                true when typeof(T) == typeof(SerializableKeyframe) => true,
-                true when typeof(T) == typeof(SerializableAnimationCurve) => true,
+                true when typeof(T) == typeof(KeyframeDto) => true,
+                true when typeof(T) == typeof(AnimationCurveDto) => true,
                 true when typeof(T) == typeof(UMI3DAnimatorParameterDto) => true,
                 true when typeof(T) == typeof(Keyframe) => true,
                 true when typeof(T) == typeof(AnimationCurve) => true,
@@ -41,22 +41,22 @@ namespace umi3d.common
 
             switch (true)
             {
-                case true when typeof(T) == typeof(SerializableKeyframe):
+                case true when typeof(T) == typeof(KeyframeDto):
                     if (container.length >= 3 * 2 * sizeof(float))
                     {
                         UMI3DSerializer.TryRead(container, out Vector2 v0);
                         UMI3DSerializer.TryRead(container, out Vector2 v1);
                         UMI3DSerializer.TryRead(container, out Vector2 v2);
 
-                        result = (T)Convert.ChangeType(new SerializableKeyframe(v0.x, v0.y, v1.x, v2.x, v1.y, v2.y), typeof(T));
+                        result = (T)Convert.ChangeType(new KeyframeDto(v0.x, v0.y, v1.x, v2.x, v1.y, v2.y), typeof(T));
                         return true;
                     }
                     break;
-                case true when typeof(T) == typeof(SerializableAnimationCurve):
-                    List<SerializableKeyframe> keys = UMI3DSerializer.ReadList<SerializableKeyframe>(container);
+                case true when typeof(T) == typeof(AnimationCurveDto):
+                    List<KeyframeDto> keys = UMI3DSerializer.ReadList<KeyframeDto>(container);
                     if (keys != null)
                     {
-                        result = (T)Convert.ChangeType(new SerializableAnimationCurve(keys), typeof(T));
+                        result = (T)Convert.ChangeType(new AnimationCurveDto(keys), typeof(T));
                         return true;
                     }
                     else
@@ -82,15 +82,15 @@ namespace umi3d.common
             switch (value)
             {
                 case AnimationCurve animationCurve:
-                    bytable = UMI3DSerializer.Write((SerializableAnimationCurve)animationCurve);
+                    bytable = UMI3DSerializer.Write((AnimationCurveDto)animationCurve);
                     return true;
-                case SerializableAnimationCurve serializableAnimationCurve:
+                case AnimationCurveDto serializableAnimationCurve:
                     bytable = UMI3DSerializer.WriteCollection(serializableAnimationCurve.keys);
                     return true;
                 case Keyframe keyframe:
-                    bytable = UMI3DSerializer.Write((SerializableKeyframe)keyframe);
+                    bytable = UMI3DSerializer.Write((KeyframeDto)keyframe);
                     return true;
-                case SerializableKeyframe serializableFrame:
+                case KeyframeDto serializableFrame:
                     bytable = UMI3DSerializer.Write(serializableFrame.point);
                     bytable += UMI3DSerializer.Write(serializableFrame.intTangeant);
                     bytable += UMI3DSerializer.Write(serializableFrame.outTangeant);

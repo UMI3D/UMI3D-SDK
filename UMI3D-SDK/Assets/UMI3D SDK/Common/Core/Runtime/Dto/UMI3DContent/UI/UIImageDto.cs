@@ -25,7 +25,7 @@ namespace umi3d.common
         /// <summary>
         /// Tint color.
         /// </summary>
-        public SerializableColor color { get; set; }
+        public ColorDto color { get; set; }
 
         /// <summary>
         /// Sprite (2D graphic object constructed from a bitmap image) ressource file.

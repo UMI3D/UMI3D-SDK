@@ -31,11 +31,11 @@ namespace umi3d.common
             readable &= UMI3DSerializer.TryRead(container, out bool syncScale);
             readable &= UMI3DSerializer.TryRead(container, out bool syncPosition);
 
-            readable &= UMI3DSerializer.TryRead(container, out SerializableVector3 offSetPosition);
-            readable &= UMI3DSerializer.TryRead(container, out SerializableVector4 offSetRotation);
-            readable &= UMI3DSerializer.TryRead(container, out SerializableVector3 offSetScale);
+            readable &= UMI3DSerializer.TryRead(container, out Vector3Dto offSetPosition);
+            readable &= UMI3DSerializer.TryRead(container, out Vector4Dto offSetRotation);
+            readable &= UMI3DSerializer.TryRead(container, out Vector3Dto offSetScale);
 
-            readable &= UMI3DSerializer.TryRead(container, out SerializableVector3 anchorPosition);
+            readable &= UMI3DSerializer.TryRead(container, out Vector3Dto anchorPosition);
 
             readable &= UMI3DSerializer.TryRead(container, out ulong nodeId);
 

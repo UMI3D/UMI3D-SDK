@@ -48,26 +48,26 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Relative position of the right hand pose reference point to the object.
         /// </summary>
-        public SerializableVector3 RightHandPosition;
+        public Vector3Dto RightHandPosition;
         /// <summary>
         /// Relative rotation of the right hand pose reference point to the object.
         /// </summary>
         /// Rotation is expressed using Euler's coordinates.
-        public SerializableVector3 RightHandEulerRotation;
+        public Vector3Dto RightHandEulerRotation;
 
         /// <summary>
         /// Relative position of the left hand pose reference point to the object.
         /// </summary>
-        public SerializableVector3 LeftHandPosition;
+        public Vector3Dto LeftHandPosition;
         /// <summary>
         /// Relative rotation of the left hand pose reference point to the object.
         /// </summary>
         /// Rotation is expressed using Euler's coordinates.
-        public SerializableVector3 LeftHandEulerRotation;
+        public Vector3Dto LeftHandEulerRotation;
 
         /// <summary>
         /// Relative rotations of the phalanxes for the hand pose.
         /// </summary>
-        public Dictionary<uint, SerializableVector3> PhalanxRotations = new Dictionary<uint, SerializableVector3>();
+        public Dictionary<uint, Vector3Dto> PhalanxRotations = new Dictionary<uint, Vector3Dto>();
     }
 }

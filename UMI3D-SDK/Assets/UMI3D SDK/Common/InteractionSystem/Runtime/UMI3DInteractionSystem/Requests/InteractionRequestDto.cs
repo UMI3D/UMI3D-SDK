@@ -49,11 +49,11 @@ namespace umi3d.common.interaction
         /// <summary>
         /// The global position of the bone associated to the user's controller.
         /// </summary>
-        public SerializableVector3 bonePosition { get; set; } = new();
+        public Vector3Dto bonePosition { get; set; } = new();
 
         /// <summary>
         /// The global rotation of the bone associated to the user's controller.
         /// </summary>
-        public SerializableVector4 boneRotation { get; set; } = new();
+        public Vector4Dto boneRotation { get; set; } = new();
     }
 }

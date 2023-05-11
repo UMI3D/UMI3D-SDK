@@ -182,7 +182,7 @@ namespace umi3d.edk.userCapture
                 + UMI3DSerializer.Write(RightHandEulerRotation)
                 + UMI3DSerializer.Write(LeftHandPosition)
                 + UMI3DSerializer.Write(LeftHandEulerRotation)
-                + UMI3DSerializer.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation));
+                + UMI3DSerializer.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (Vector3Dto)x.PhalanxEulerRotation));
         }
 
         /// <inheritdoc/>
@@ -199,7 +199,7 @@ namespace umi3d.edk.userCapture
                 RightHandEulerRotation = RightHandEulerRotation,
                 LeftHandPosition = LeftHandPosition,
                 LeftHandEulerRotation = LeftHandEulerRotation,
-                PhalanxRotations = PhalanxRotations.ToDictionary(x => (uint)x.phalanxId, x => (SerializableVector3)x.PhalanxEulerRotation)
+                PhalanxRotations = PhalanxRotations.ToDictionary(x => (uint)x.phalanxId, x => (Vector3Dto)x.PhalanxEulerRotation)
             };
         }
 

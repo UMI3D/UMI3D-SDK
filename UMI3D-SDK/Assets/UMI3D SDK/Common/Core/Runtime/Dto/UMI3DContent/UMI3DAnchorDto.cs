@@ -25,16 +25,16 @@ namespace umi3d.common
         /// <summary>
         /// Anchor's offset relatively to the parent position.
         /// </summary>
-        public SerializableVector3 positionOffset { get; set; } = null;
+        public Vector3Dto positionOffset { get; set; } = null;
 
         /// <summary>
         /// Anchor's offset relatively to the parent rotation.
         /// </summary>
-        public SerializableVector4 rotationOffset { get; set; } = null;
+        public Vector4Dto rotationOffset { get; set; } = null;
 
         /// <summary>
         /// Anchor's offset relatively to the parent scale.
         /// </summary>
-        public SerializableVector3 scaleOffset { get; set; } = null;
+        public Vector3Dto scaleOffset { get; set; } = null;
     }
 }

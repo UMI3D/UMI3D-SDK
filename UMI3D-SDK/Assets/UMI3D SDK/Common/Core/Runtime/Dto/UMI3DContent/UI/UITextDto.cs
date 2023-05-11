@@ -36,7 +36,7 @@ namespace umi3d.common
         /// <summary>
         /// Text main color.
         /// </summary>
-        public SerializableColor color { get; set; }
+        public ColorDto color { get; set; }
 
         /// <summary>
         /// Name of the font used.

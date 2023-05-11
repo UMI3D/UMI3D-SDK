@@ -41,7 +41,7 @@ namespace umi3d.edk.interaction
                 rotation = dto.rotation;
             }
 
-            public ManipulationEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, Vector3 translation, Quaternion rotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public ManipulationEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, Vector3 translation, Quaternion rotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.translation = translation;
                 this.rotation = rotation;
@@ -119,7 +119,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {

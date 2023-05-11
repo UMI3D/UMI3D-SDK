@@ -24,14 +24,14 @@ namespace umi3d.common
     /// </summary>
     /// The 4th component has a default value of 1, like in homogeneous coordinates systems.
     [Serializable]
-    public class SerializableVector4 : UMI3DDto, IEquatable<SerializableVector4>
+    public class Vector4Dto : UMI3DDto, IEquatable<Vector4Dto>
     {
         public float X;
         public float Y;
         public float Z;
         public float W;
 
-        public SerializableVector4() : base()
+        public Vector4Dto() : base()
         {
             X = 0;
             Y = 0;
@@ -39,7 +39,7 @@ namespace umi3d.common
             W = 1;
         }
 
-        public SerializableVector4(float x, float y, float z, float w) : base()
+        public Vector4Dto(float x, float y, float z, float w) : base()
         {
             X = x;
             Y = y;
@@ -53,30 +53,30 @@ namespace umi3d.common
             return ((Vector4)this).ToString();
         }
 
-        public bool Equals(SerializableVector4 other)
+        public bool Equals(Vector4Dto other)
         {
             return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
         }
 
-        public static implicit operator SerializableVector4(Vector4 v)
+        public static implicit operator Vector4Dto(Vector4 v)
         {
             if (v == null) return default;
-            return new SerializableVector4(v.x, v.y, v.z, v.w);
+            return new Vector4Dto(v.x, v.y, v.z, v.w);
         }
 
-        public static implicit operator Vector4(SerializableVector4 v)
+        public static implicit operator Vector4(Vector4Dto v)
         {
             if (v == null) return default;
             return new Vector4(v.X, v.Y, v.Z, v.W);
         }
 
-        public static implicit operator SerializableVector4(Quaternion v)
+        public static implicit operator Vector4Dto(Quaternion v)
         {
             if (v == null) return default;
-            return new SerializableVector4(v.x, v.y, v.z, v.w);
+            return new Vector4Dto(v.x, v.y, v.z, v.w);
         }
 
-        public static implicit operator Quaternion(SerializableVector4 v)
+        public static implicit operator Quaternion(Vector4Dto v)
         {
             if (v == null) return default;
             return new Quaternion(v.X, v.Y, v.Z, v.W);

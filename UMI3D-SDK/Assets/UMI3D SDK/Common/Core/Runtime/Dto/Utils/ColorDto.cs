@@ -23,7 +23,7 @@ namespace umi3d.common
     /// Serializable implementation of a color using RGBA channels with float values.
     /// </summary>
     [Serializable]
-    public class SerializableColor : UMI3DDto
+    public class ColorDto : UMI3DDto
     {
         /// <summary>
         /// Red color channel. Value between 0 and 1.
@@ -45,7 +45,7 @@ namespace umi3d.common
         /// </summary>
         public float A;
 
-        public SerializableColor() : base()
+        public ColorDto() : base()
         {
             R = 0;
             G = 0;
@@ -53,7 +53,7 @@ namespace umi3d.common
             A = 0;
         }
 
-        public SerializableColor(float r, float g, float b, float a) : base()
+        public ColorDto(float r, float g, float b, float a) : base()
         {
             R = r;
             G = g;
@@ -67,13 +67,13 @@ namespace umi3d.common
             return ((Color)this).ToString();
         }
 
-        public static implicit operator SerializableColor(Color c)
+        public static implicit operator ColorDto(Color c)
         {
             if (c == null) return default;
-            return new SerializableColor(c.r, c.g, c.b, c.a);
+            return new ColorDto(c.r, c.g, c.b, c.a);
         }
 
-        public static implicit operator Color(SerializableColor c)
+        public static implicit operator Color(ColorDto c)
         {
             if (c == null) return default;
             return new Color(c.R, c.G, c.B, c.A);

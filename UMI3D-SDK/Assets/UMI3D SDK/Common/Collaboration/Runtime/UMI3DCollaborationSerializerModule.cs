@@ -39,7 +39,7 @@ namespace umi3d.common.collaboration
                         var usercam = new UserCameraPropertiesDto
                         {
                             scale = UMI3DSerializer.Read<float>(container),
-                            projectionMatrix = UMI3DSerializer.Read<SerializableMatrix4x4>(container),
+                            projectionMatrix = UMI3DSerializer.Read<Matrix4x4Dto>(container),
                             boneType = UMI3DSerializer.Read<uint>(container)
                         };
                         result = (T)Convert.ChangeType(usercam, typeof(T));
@@ -77,8 +77,8 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(ControllerDto):
                     uint type;
-                    SerializableVector4 rot;
-                    SerializableVector3 pos;
+                    Vector4Dto rot;
+                    Vector3Dto pos;
                     bool isOverrider;
                     if (UMI3DSerializer.TryRead(container, out type)
                         && UMI3DSerializer.TryRead(container, out rot)
@@ -98,7 +98,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(BoneDto):
                     //uint type;
-                    //SerializableVector4 rot;
+                    //Vector4Dto rot;
                     if (UMI3DSerializer.TryRead(container, out type)
                         && UMI3DSerializer.TryRead(container, out rot))
                     {
@@ -311,10 +311,10 @@ namespace umi3d.common.collaboration
                     bool IsActive;
                     bool HoverPose;
                     bool isRelativeToNode;
-                    SerializableVector3 RightHandPosition;
-                    SerializableVector3 RightHandEulerRotation;
-                    SerializableVector3 LeftHandPosition;
-                    SerializableVector3 LeftHandEulerRotation;
+                    Vector3Dto RightHandPosition;
+                    Vector3Dto RightHandEulerRotation;
+                    Vector3Dto LeftHandPosition;
+                    Vector3Dto LeftHandEulerRotation;
                     if (UMI3DSerializer.TryRead(container, out id)
                         && UMI3DSerializer.TryRead(container, out Name)
                         && UMI3DSerializer.TryRead(container, out IsActive)
@@ -635,8 +635,8 @@ namespace umi3d.common.collaboration
                         uint idKey = 0;
                         ulong userId, parentId;
                         //float skeletonHighOffset, refreshFrequency;
-                        SerializableVector3 position;
-                        SerializableVector4 rotation;
+                        Vector3Dto position;
+                        Vector4Dto rotation;
 
                         if (
                             UMI3DSerializer.TryRead(container, out idKey)
@@ -778,8 +778,8 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BonePoseDto):
                     {
                         uint bone;
-                        SerializableVector3 position;
-                        SerializableVector4 rotation;
+                        Vector3Dto position;
+                        Vector4Dto rotation;
 
                         readable = UMI3DSerializer.TryRead(container, out bone);
                         readable &= UMI3DSerializer.TryRead(container, out position);
@@ -839,7 +839,7 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BoneRotationConditionDto):
                     {
                         uint boneId;
-                        SerializableVector4 rotation;
+                        Vector4Dto rotation;
                         readable = UMI3DSerializer.TryRead(container, out boneId);
                         readable &= UMI3DSerializer.TryRead(container, out rotation);
 
@@ -859,7 +859,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(DirectionConditionDto):
                     {
-                        SerializableVector3 direction;
+                        Vector3Dto direction;
                         readable = UMI3DSerializer.TryRead(container, out direction);
 
                         if (readable)
@@ -877,7 +877,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(UserScaleConditionDto):
                     {
-                        SerializableVector3 scale;
+                        Vector3Dto scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)
@@ -895,7 +895,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(ScaleConditionDto):
                     {
-                        SerializableVector3 scale;
+                        Vector3Dto scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)

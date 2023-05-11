@@ -23,17 +23,17 @@ namespace umi3d.common
     /// Serializable implementation of a 4x4 float matrix.
     /// </summary>
     [Serializable]
-    public class SerializableMatrix4x4 : UMI3DDto
+    public class Matrix4x4Dto : UMI3DDto
     {
-        public SerializableMatrix4x4() : base()
+        public Matrix4x4Dto() : base()
         {
-            c0 = new SerializableVector4();
-            c1 = new SerializableVector4();
-            c2 = new SerializableVector4();
-            c3 = new SerializableVector4();
+            c0 = new Vector4Dto();
+            c1 = new Vector4Dto();
+            c2 = new Vector4Dto();
+            c3 = new Vector4Dto();
         }
 
-        public SerializableMatrix4x4(SerializableVector4 c0, SerializableVector4 c1, SerializableVector4 c2, SerializableVector4 c3) : base()
+        public Matrix4x4Dto(Vector4Dto c0, Vector4Dto c1, Vector4Dto c2, Vector4Dto c3) : base()
         {
             this.c0 = c0;
             this.c1 = c1;
@@ -44,19 +44,19 @@ namespace umi3d.common
         /// <summary>
         /// 1st column.
         /// </summary>
-        public SerializableVector4 c0;
+        public Vector4Dto c0;
         /// <summary>
         /// 2nd column.
         /// </summary>
-        public SerializableVector4 c1;
+        public Vector4Dto c1;
         /// <summary>
         /// 3rd column.
         /// </summary>
-        public SerializableVector4 c2;
+        public Vector4Dto c2;
         /// <summary>
         /// 4th column.
         /// </summary>
-        public SerializableVector4 c3;
+        public Vector4Dto c3;
 
         public float this[int i]
         {
@@ -96,16 +96,16 @@ namespace umi3d.common
             }
         }
 
-        public static implicit operator SerializableMatrix4x4(Matrix4x4 m)
+        public static implicit operator Matrix4x4Dto(Matrix4x4 m)
         {
             if (m == null) return default;
-            var M = new SerializableMatrix4x4();
+            var M = new Matrix4x4Dto();
             for (int i = 0; i < 16; i++)
                 M[i] = m[i];
             return M;
         }
 
-        public static implicit operator Matrix4x4(SerializableMatrix4x4 m)
+        public static implicit operator Matrix4x4(Matrix4x4Dto m)
         {
             if (m == null) return default;
             var M = new Matrix4x4();

@@ -37,21 +37,21 @@ namespace umi3d.common
         /// <summary>
         /// offSet Position of the binding
         /// </summary>
-        public SerializableVector3 offSetPosition { get; set; }
+        public Vector3Dto offSetPosition { get; set; }
 
         /// <summary>
         /// offset rotation of the binding
         /// </summary>
-        public SerializableVector4 offSetRotation { get; set; }
+        public Vector4Dto offSetRotation { get; set; }
 
         /// <summary>
         /// offSet Scale of the binding
         /// </summary>
-        public SerializableVector3 offSetScale { get; set; }
+        public Vector3Dto offSetScale { get; set; }
 
         /// <summary>
         /// referencial position in which the binding is applied. Defined in parent referential.
         /// </summary>
-        public SerializableVector3 anchorPosition { get; set; }
+        public Vector3Dto anchorPosition { get; set; }
     }
 }

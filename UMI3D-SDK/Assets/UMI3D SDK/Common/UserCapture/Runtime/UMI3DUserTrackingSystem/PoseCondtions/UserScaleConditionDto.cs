@@ -20,11 +20,11 @@ namespace umi3d.common.userCapture
     {
         public UserScaleConditionDto() { }
 
-        public UserScaleConditionDto(SerializableVector3 scale)
+        public UserScaleConditionDto(Vector3Dto scale)
         {
             this.scale = scale;
         }
 
-        public SerializableVector3 scale;
+        public Vector3Dto scale;
     }
 }

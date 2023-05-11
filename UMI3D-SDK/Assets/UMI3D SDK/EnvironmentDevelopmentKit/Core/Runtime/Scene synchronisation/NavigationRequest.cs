@@ -27,7 +27,7 @@ namespace umi3d.edk
         /// <summary>
         /// New positon of the user.
         /// </summary>
-        public SerializableVector3 position;
+        public Vector3Dto position;
 
         public NavigationRequest(Vector3 position)
         {
@@ -58,7 +58,7 @@ namespace umi3d.edk
 
         public override Bytable ToBytable(UMI3DUser user)
         {
-            if (position == null) position = new SerializableVector3();
+            if (position == null) position = new Vector3Dto();
             return UMI3DSerializer.Write(GetOperationKey())
                 + UMI3DSerializer.Write(position);
         }

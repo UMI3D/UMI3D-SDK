@@ -81,7 +81,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = (SerializableColor)property.value;
+                        image.color = dto.color = (ColorDto)property.value;
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
@@ -133,7 +133,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
+                        image.color = dto.color = UMI3DSerializer.Read<ColorDto>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:

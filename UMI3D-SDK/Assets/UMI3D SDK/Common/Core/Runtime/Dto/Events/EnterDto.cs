@@ -25,11 +25,11 @@ namespace umi3d.common
         /// <summary>
         /// User spawn position.
         /// </summary>
-        public SerializableVector3 userPosition { get; set; }
+        public Vector3Dto userPosition { get; set; }
         /// <summary>
         /// User spawn rotation.
         /// </summary>
-        public SerializableVector4 userRotation { get; set; }
+        public Vector4Dto userRotation { get; set; }
         /// <summary>
         /// Has the dto alredy been used?
         /// </summary>

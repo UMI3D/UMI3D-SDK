@@ -120,7 +120,7 @@ namespace umi3d.cdk
                         switch (data.property)
                         {
                             case SetEntityListAddPropertyDto addProperty:
-                                extension.positions.Insert(addProperty.index, (SerializableVector3)addProperty.value);
+                                extension.positions.Insert(addProperty.index, (Vector3Dto)addProperty.value);
                                 line.positionCount++;
                                 line.SetPositions(extension.positions.ConvertAll<Vector3>(v => v).ToArray());
                                 break;
@@ -134,7 +134,7 @@ namespace umi3d.cdk
                                 line.SetPosition(innerListProperty.index, (Vector3)innerListProperty.value);
                                 break;
                             case SetEntityPropertyDto setList:
-                                extension.positions = (List<SerializableVector3>)setList.value;
+                                extension.positions = (List<Vector3Dto>)setList.value;
                                 line.positionCount = extension.positions.Count();
                                 line.SetPositions(extension.positions.ConvertAll<Vector3>(v => v).ToArray());
                                 break;
@@ -184,7 +184,7 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.LineEndColor:
-                    extension.endColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    extension.endColor = UMI3DSerializer.Read<ColorDto>(data.container);
                     line.endColor = extension.endColor;
                     break;
                 case UMI3DPropertyKeys.LineEndWidth:
@@ -201,7 +201,7 @@ namespace umi3d.cdk
                     {
                         case UMI3DOperationKeys.SetEntityListAddProperty:
                             index = UMI3DSerializer.Read<int>(data.container);
-                            extension.positions.Insert(index, UMI3DSerializer.Read<SerializableVector3>(data.container));
+                            extension.positions.Insert(index, UMI3DSerializer.Read<Vector3Dto>(data.container));
                             line.positionCount++;
                             line.SetPositions(extension.positions.ConvertAll<Vector3>(v => v).ToArray());
                             break;
@@ -213,18 +213,18 @@ namespace umi3d.cdk
                             break;
                         case UMI3DOperationKeys.SetEntityListProperty:
                             index = UMI3DSerializer.Read<int>(data.container);
-                            extension.positions[index] = UMI3DSerializer.Read<SerializableVector3>(data.container);
+                            extension.positions[index] = UMI3DSerializer.Read<Vector3Dto>(data.container);
                             line.SetPositions(extension.positions.ConvertAll<Vector3>(v => v).ToArray());
                             break;
                         case UMI3DOperationKeys.SetEntityProperty:
-                            extension.positions = UMI3DSerializer.ReadList<SerializableVector3>(data.container);
+                            extension.positions = UMI3DSerializer.ReadList<Vector3Dto>(data.container);
                             line.positionCount = extension.positions.Count();
                             line.SetPositions(extension.positions.ConvertAll<Vector3>(v => v).ToArray());
                             break;
                     }
                     break;
                 case UMI3DPropertyKeys.LineStartColor:
-                    extension.startColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    extension.startColor = UMI3DSerializer.Read<ColorDto>(data.container);
                     line.startColor = extension.startColor;
                     break;
                 case UMI3DPropertyKeys.LineStartWidth:

@@ -53,11 +53,11 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Current position of the user.
         /// </summary>
-        public SerializableVector3 position { get; set; }
+        public Vector3Dto position { get; set; }
 
         /// <summary>
         /// Current rotation of the user as a quaternion.
         /// </summary>
-        public SerializableVector4 rotation { get; set; }
+        public Vector4Dto rotation { get; set; }
     }
 }

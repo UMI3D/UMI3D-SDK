@@ -25,8 +25,8 @@ namespace umi3d.common
     [System.Serializable]
     public class KHR_texture_transform
     {
-        public SerializableVector2 scale { get; set; } = SerializableVector2.one;
-        public SerializableVector2 offset { get; set; } = SerializableVector2.zero;
+        public Vector2Dto scale { get; set; } = Vector2Dto.one;
+        public Vector2Dto offset { get; set; } = Vector2Dto.zero;
         public float rotation { get; set; } = 0f;
     }
 }

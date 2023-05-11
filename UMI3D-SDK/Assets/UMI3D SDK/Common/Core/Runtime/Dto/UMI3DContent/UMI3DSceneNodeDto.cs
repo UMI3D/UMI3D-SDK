@@ -27,17 +27,17 @@ namespace umi3d.common
         /// <summary>
         /// Scene reference point's position.
         /// </summary>
-        public SerializableVector3 position;
+        public Vector3Dto position;
 
         /// <summary>
         /// Scene reference rotation.
         /// </summary>
-        public SerializableVector4 rotation;
+        public Vector4Dto rotation;
 
         /// <summary>
         /// Scene reference scale.
         /// </summary>
-        public SerializableVector3 scale;
+        public Vector3Dto scale;
 
         /// <summary>
         /// Animations packeaged with the scene.
