@@ -44,5 +44,11 @@ namespace umi3d.common
         /// Alpha opacity channel. Value between 0 and 1.
         /// </summary>
         public float A { get; set; }
+
+        public override string ToString()
+        {
+            return $"{base.ToString()}[{R},{G},{B},{A}]";
+        }
+
     }
 }

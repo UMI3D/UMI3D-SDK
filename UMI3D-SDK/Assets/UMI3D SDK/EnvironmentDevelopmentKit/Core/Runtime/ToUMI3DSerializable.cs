@@ -25,7 +25,7 @@ namespace umi3d.edk
     public static class ToUMI3DSerializable
     {
         public static ColorDto ToSerializableColor(Color color, UMI3DUser user) { return color.Dto(); }
-        public static Vector2Dto ToSerializableVector2(Vector2 vector, UMI3DUser user) { return vector; }
+        public static Vector2Dto ToSerializableVector2(Vector2 vector, UMI3DUser user) { return vector.Dto(); }
         public static Vector3Dto ToSerializableVector3(Vector3 vector, UMI3DUser user) { return vector; }
         public static Vector4Dto ToSerializableVector4(Vector4 vector, UMI3DUser user) { return vector; }
         public static Vector4Dto ToSerializableVector4(Quaternion quaternion, UMI3DUser user) { return quaternion; }

@@ -80,8 +80,8 @@ namespace umi3d.edk
             var extensions = new GlTFMaterialExtensions() { umi3d = textures.ToDto() };
             ((UMI3DMaterialDto)extensions.umi3d).shaderProperties = shaderProperties;
             ((UMI3DMaterialDto)extensions.umi3d).id = GetId();
-            extensions.KHR_texture_transform.offset = tilingOffset;
-            extensions.KHR_texture_transform.scale = tilingScale;
+            extensions.KHR_texture_transform.offset = tilingOffset.Dto();
+            extensions.KHR_texture_transform.scale = tilingScale.Dto();
             return new GlTFMaterialDto()
             {
                 alphaMode = alphaMode.ToString(),

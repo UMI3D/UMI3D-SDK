@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace inetum.unityUtils
 {

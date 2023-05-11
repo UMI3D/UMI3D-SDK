@@ -119,7 +119,7 @@ namespace umi3d.cdk
                     newMat.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, ext.normalTexture.scale);
 
                     ReadAdditionalShaderProperties(ext.id, ext.shaderProperties, newMat);
-                    ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
+                    ApplyTiling(KhrTT.offset.Struct(), KhrTT.scale.Struct(), newMat);
 
                     callback.Invoke(newMat);
                 }

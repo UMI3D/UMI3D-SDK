@@ -136,14 +136,14 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var rectDto = dto as UIRectDto;
-            rectDto.anchoredPosition = AnchoredPosition.GetValue(user);
+            rectDto.anchoredPosition = AnchoredPosition.GetValue(user).Dto();
             rectDto.anchoredPosition3D = AnchoredPosition3D.GetValue(user);
-            rectDto.anchorMax = AnchorMax.GetValue(user);
-            rectDto.anchorMin = AnchorMin.GetValue(user);
-            rectDto.offsetMax = OffsetMax.GetValue(user);
-            rectDto.offsetMin = OffsetMin.GetValue(user);
-            rectDto.pivot = Pivot.GetValue(user);
-            rectDto.sizeDelta = SizeDelta.GetValue(user);
+            rectDto.anchorMax = AnchorMax.GetValue(user).Dto();
+            rectDto.anchorMin = AnchorMin.GetValue(user).Dto();
+            rectDto.offsetMax = OffsetMax.GetValue(user).Dto();
+            rectDto.offsetMin = OffsetMin.GetValue(user).Dto();
+            rectDto.pivot = Pivot.GetValue(user).Dto();
+            rectDto.sizeDelta = SizeDelta.GetValue(user).Dto();
             rectDto.rectMask = RectMask.GetValue(user);
         }
 

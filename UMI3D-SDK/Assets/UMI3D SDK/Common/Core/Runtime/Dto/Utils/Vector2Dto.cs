@@ -31,34 +31,9 @@ namespace umi3d.common
         public static Vector2Dto one { get => new Vector2Dto() { X = 1, Y = 1 }; } 
         public static Vector2Dto zero { get => new Vector2Dto() { X = 0, Y = 0 }; }
 
-        public Vector2Dto() : base()
-        {
-            X = 0;
-            Y = 0;
-        }
-
-        public Vector2Dto(float x, float y) : base()
-        {
-            X = x;
-            Y = y;
-        }
-
-        /// <inheritdoc/>
         public override string ToString()
         {
-            return ((Vector2)this).ToString();
-        }
-
-        public static implicit operator Vector2Dto(Vector2 v)
-        {
-            if (v == null) return default;
-            return new Vector2Dto(v.x, v.y);
-        }
-
-        public static implicit operator Vector2(Vector2Dto v)
-        {
-            if (v == null) return default;
-            return new Vector2(v.X, v.Y);
+            return $"{base.ToString()}[{X},{Y}]";
         }
 
         public float this[int i]

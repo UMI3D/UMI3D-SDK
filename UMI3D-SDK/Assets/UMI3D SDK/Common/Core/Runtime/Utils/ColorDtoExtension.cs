@@ -37,3 +37,18 @@ public static class ColorDtoExtension
         return new Color(c.R, c.G, c.B, c.A);
     }
 }
+
+public static class Vector2DtoExtension
+{
+    public static Vector2Dto Dto(this Vector2 v)
+    {
+        if (v == null) return default;
+        return new Vector2Dto() {  X = v.x, Y = v.y };
+    }
+
+    public static Vector2 Struct(this Vector2Dto v)
+    {
+        if (v == null) return default;
+        return new Vector2(v.X, v.Y);
+    }
+}

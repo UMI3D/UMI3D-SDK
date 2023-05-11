@@ -43,11 +43,11 @@ namespace umi3d.common
 
         public KeyframeDto() : base()
         {
-            point = new Vector2Dto(0, 0);
+            point = new Vector2Dto();
 
-            intTangeant = new Vector2Dto(0, 0);
+            intTangeant = new Vector2Dto();
 
-            outTangeant = new Vector2Dto(0, 0);
+            outTangeant = new Vector2Dto();
         }
 
         public KeyframeDto(float time, float value) : this(time, value, 0, 0, 0, 0)
@@ -57,20 +57,20 @@ namespace umi3d.common
 
         public KeyframeDto(float time, float value, float inTangeant, float outTangeant, float intWeight, float outWeight) : base()
         {
-            this.point = new Vector2Dto(time, value);
+            this.point = new Vector2Dto() { X = time, Y = value };
 
-            this.intTangeant = new Vector2Dto(inTangeant, intWeight);
+            this.intTangeant = new Vector2Dto() { X = inTangeant, Y = intWeight };
 
-            this.outTangeant = new Vector2Dto(outTangeant, outWeight);
+            this.outTangeant = new Vector2Dto() { X = outTangeant, Y = outWeight };
         }
 
         public KeyframeDto(Keyframe frame) : base()
         {
-            point = new Vector2Dto(frame.time, frame.value);
+            point = new Vector2Dto() { X = frame.time, Y = frame.value };
 
-            intTangeant = new Vector2Dto(frame.inTangent, frame.inWeight);
+            intTangeant = new Vector2Dto() { X = frame.inTangent, Y = frame.inWeight };
 
-            outTangeant = new Vector2Dto(frame.outTangent, frame.outWeight);
+            outTangeant = new Vector2Dto() { X = frame.outTangent, Y = frame.outWeight};
         }
 
         /// <inheritdoc/>

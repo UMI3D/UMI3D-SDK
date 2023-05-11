@@ -51,7 +51,7 @@ namespace umi3d.common
                     {
                         UMI3DSerializer.TryRead(container, out float x);
                         UMI3DSerializer.TryRead(container, out float y);
-                        result = (T)Convert.ChangeType(new Vector2Dto(x, y), typeof(T));
+                        result = (T)Convert.ChangeType(new Vector2Dto() { X = x, Y = y }, typeof(T));
                         return true;
                     }
                     break;

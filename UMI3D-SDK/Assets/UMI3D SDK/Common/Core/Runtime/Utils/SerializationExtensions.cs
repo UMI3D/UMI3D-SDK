@@ -35,7 +35,7 @@ namespace umi3d.common.utils.serialization
                 case Quaternion q:
                     return (Vector4Dto)q;
                 case Vector2 v:
-                    return (Vector2Dto)v;
+                    return v.Dto();
                 case Vector3 v:
                     return (Vector3Dto)v;
                 case Color c:
@@ -59,7 +59,7 @@ namespace umi3d.common.utils.serialization
                 case Vector4Dto q:
                     return (Quaternion)q;
                 case Vector2Dto v:
-                    return (Vector2)v;
+                    return v.Struct();
                 case Vector3Dto v:
                     return (Vector3)v;
                 case ColorDto c:

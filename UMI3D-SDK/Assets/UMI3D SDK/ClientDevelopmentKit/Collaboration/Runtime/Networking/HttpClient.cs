@@ -185,7 +185,7 @@ namespace umi3d.cdk.collaboration
                     case Vector2 v2:
                         return new Vector2ParameterDto
                         {
-                            value = v2
+                            value = v2.Dto()
                         };
                 }
                 UnityEngine.Debug.LogError($"Missing case. {obj}");

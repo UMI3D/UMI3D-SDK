@@ -289,19 +289,19 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
-                    Vector2 offset = (Vector2Dto)property.value;
+                    Vector2 offset = ((Vector2Dto)property.value).Struct();
                     foreach (string textureName in materialToModify.GetTexturePropertyNames())
                     {
                         materialToModify.SetTextureOffset(textureName, offset);
                     }
-                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset;
+                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset.Dto();
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
                     var scale = (Vector2Dto)property.value;
                     foreach (string textureName in materialToModify.GetTexturePropertyNames())
                     {
-                        materialToModify.SetTextureScale(textureName, scale);
+                        materialToModify.SetTextureScale(textureName, scale.Struct());
                     }
                     glTFMaterialDto.extensions.KHR_texture_transform.scale = scale;
                     break;
@@ -530,7 +530,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset;
+                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset.Dto();
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
@@ -557,7 +557,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale;
+                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale.Dto();
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
