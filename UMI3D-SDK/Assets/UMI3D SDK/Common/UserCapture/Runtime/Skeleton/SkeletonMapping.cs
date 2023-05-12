@@ -13,12 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace umi3d.common.userCapture
 {
-    [SerializeField]
+    [System.Serializable]
     public class SkeletonMapping
     {
         public uint boneType { get; set; }
@@ -26,16 +26,10 @@ namespace umi3d.common.userCapture
 
         public SkeletonMapping(uint boneType, SkeletonMappingLink link)
         {
-            this.boneType = boneType;
-            this.link = link;
         }
 
         public BoneDto GetPose()
         {
-            var computed = link.Compute();
-            Vector4 rotation = new Vector4(computed.rotation.x,
-                                            computed.rotation.y,
-                                            computed.rotation.z,
                                             computed.rotation.w
             );
 
