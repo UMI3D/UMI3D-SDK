@@ -21,23 +21,28 @@ namespace umi3d.common.userCapture
     [System.Serializable]
     public class SkeletonMapping
     {
-        public uint boneType { get; set; }
-        public SkeletonMappingLink link {get; set;}
+        [inetum.unityUtils.ConstEnum(typeof(BoneType), typeof(uint))]
+        public uint BoneType;
+        public SkeletonMappingLink Link;
 
         public SkeletonMapping(uint boneType, SkeletonMappingLink link)
         {
+            this.BoneType = boneType;
+            this.Link = link;
         }
 
         public BoneDto GetPose()
         {
-                                            computed.rotation.w
+            var computed = Link.Compute();
+            Quaternion rotation = new Quaternion(computed.rotation.x,
+                                                computed.rotation.y,
+                                                computed.rotation.z,
+                                                computed.rotation.w
             );
 
             return new BoneDto() {
                 boneType = boneType,
-                //position: computed.position,
                 rotation = rotation.Dto()
-            };
         }
     }
 }
