@@ -18,11 +18,12 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.cdk.userCapture
 namespace umi3d.common.userCapture
 {
     [CreateAssetMenu(fileName = "UMI3DSkeletonHierarchy", menuName = "UMI3D/UMI3D Skeleton Hierarchy")]
@@ -75,6 +76,53 @@ namespace umi3d.common.userCapture
             }
 
             return _skeletonHierarchy;
+        }
+    }
+
+    public static class UMI3DSkeletonHirearchyExtensions
+    {
+        /// <summary>
+        /// Create a hierarchy of transform according to the UMI3DHierarchy in the parameters.
+        /// </summary>
+        /// <param name="root"></param>
+        /// <returns></returns>
+        public static (uint umi3dBoneType, Transform boneTransform)[] Generate(this UMI3DSkeletonHierarchy hierarchyToCopy, Transform root)
+        {
+            var copiedHierarchy = hierarchyToCopy.SkeletonHierarchy;
+
+            Dictionary<uint, bool> hasBeenCreated = new();
+            foreach (var bone in copiedHierarchy.Keys)
+                hasBeenCreated[bone] = false;
+
+            Dictionary<uint, Transform> hierarchy = new();
+
+            var boneNames = BoneTypeHelper.GetBoneNames();
+
+            foreach (uint bone in copiedHierarchy.Keys)
+            {
+                if (!hasBeenCreated[bone])
+                    CreateNode(bone);
+            }
+
+            void CreateNode(uint bone)
+            {
+                var go = new GameObject(boneNames[bone]);
+                hierarchy[bone] = go.transform;
+                if (bone != BoneType.Hips) // root
+                {
+                    if (!hasBeenCreated[copiedHierarchy[bone].boneTypeParent])
+                        CreateNode(copiedHierarchy[bone].boneTypeParent);
+                    go.transform.SetParent(hierarchy[copiedHierarchy[bone].boneTypeParent]);
+                }
+                else
+                {
+                    go.transform.SetParent(root);
+                }
+                go.transform.localPosition = copiedHierarchy[bone].relativePosition;
+                hasBeenCreated[bone] = true;
+            }
+
+            return hierarchy.Select(x => (umi3dBoneType: x.Key, boneTransform: x.Value)).ToArray();
         }
     }
 }
