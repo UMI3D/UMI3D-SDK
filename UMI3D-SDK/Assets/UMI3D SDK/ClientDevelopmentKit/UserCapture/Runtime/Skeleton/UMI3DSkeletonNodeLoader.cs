@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -71,30 +73,46 @@ namespace umi3d.cdk.userCapture
 
             var go = nodeInstance.gameObject;
 
-            var modelTracker = go.GetOrAddComponent<ModelTracker>();
-
+            // a skeleton node should contain an animator
             Animator animator = go.GetComponentInChildren<Animator>();
             if (animator == null)
                 return;
 
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
 
-            modelTracker.animatorsToRebind.Add(animator);
-
-            if (go.TryGetComponent(out SkeletonMapper skeletonMapper))
+            // if the designer added a skeleton mapper, uses its links
+            if (animator.gameObject.TryGetComponent(out SkeletonMapper skeletonMapper))
             {
-                if (go.TryGetComponent(out TrackedSkeletonBone bone))
-                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = bone.boneType, Position = bone.transform.position.Dto(), Rotation = bone.transform.rotation.Dto() };
+                skeletonMapper.Mappings = skeletonMapper.GetComponentsInChildren<SkeletonMappingLinkMarker>()
+                                                            .Select(x => x.ToSkeletonMapping())
+                                                            .ToArray();
+                if (skeletonMapper.Mappings.Length > 0)
+                {
+                    var root = skeletonMapper.Mappings.FirstOrDefault(x => x.BoneType == BoneType.Hips)?.Link.Compute();
+                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto()};
+                }
                 else
                 {
-                    UMI3DLogger.LogWarning($"No bone found to attach skeleton.", DEBUG_SCOPE);
+                    UMI3DLogger.LogWarning($"SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but no mapping could be retrieved.", DEBUG_SCOPE);
                     return;
                 }
             }
-            else
-            { // if null, we assume that the hiearchy is the same than the UMI3D standard one
+            else if (animator.avatar.isHuman)// if null, we try to adapt the unity avatar (rigs) by ourselves assuming it is close to the UMI3D standard one
+            { 
                 skeletonMapper = AutoMapAnimatorSkeleton(animator, skeletonNodeDto);
             }
+
+            if (skeletonMapper == null) // failed infinding/adding skeletonMapper
+            {
+                UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed", DEBUG_SCOPE);
+                return;
+            }
+  
+            var modelTracker = go.GetOrAddComponent<ModelTracker>();
+            modelTracker.animatorsToRebind.Add(animator);
+
+            // include animations ids
+            skeletonMapper.Animations = skeletonNodeDto.relatedAnimationsId;
 
             // create subSkeletonand add it to a skeleton
             AnimatedSkeleton animationSubskeleton = new(skeletonMapper);
@@ -116,72 +134,108 @@ namespace umi3d.cdk.userCapture
             SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
 
             // umi3d default anchor is hips
-            skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = animator.rootPosition, Rotation = animator.rootRotation };
+            skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = animator.rootPosition.Dto(), Rotation = animator.rootRotation.Dto() };
 
-            skeletonMapper.animations = skeletonNodeDto.relatedAnimationsId;
+            // map animator unity bones to umi3d ones
+            var boneUnityMapping = FindBonesTransform(animator);
 
-            // map animator bones to umi3d ones
-            List<SkeletonMapping> mappings = new();
-            var boneUnityMapping = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.BoneRelations
-                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConverter.ConvertToBoneType(x.Bonetype)))
-                            .Where(x => x.unityBoneContainer.HasValue)
-                            .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
-                            .ToArray();
-
+            // if no bone can be mapped, then extract from animator
             if (boneUnityMapping.All(x => x.transform == null))
             {
-                boneUnityMapping = GenerateHierarchy(animator.transform);
+                ExtractRigsFromAnimator(animator);
                 animator.Rebind();
+                boneUnityMapping = FindBonesTransform(animator);
+
+                // if still no bones can be retrieved, the avatar mask in the animator cannot be adapted
+                if (boneUnityMapping.All(x => x.transform == null))
+                {
+                    UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and attempt to auto-extract from animator failed", DEBUG_SCOPE);
+                    return null;
+                }
             }
 
-            foreach (var bone in boneUnityMapping)
-                mappings.Add(new SkeletonMapping(bone.umi3dBoneType, new GameNodeLink(bone.transform)));
+            // create link for each rig. May be improved with distance analysis for more complex links
+            skeletonMapper.Mappings = boneUnityMapping.Select(b=> new SkeletonMapping(b.umi3dBoneType, new GameNodeLink(b.transform))).ToArray();
 
             return skeletonMapper;
         }
 
         /// <summary>
-        /// Create a hierarchy of transform according to the UMI3DHierarchy in the parameters.
+        /// Look for bones contained in an animator and their associated transform.
         /// </summary>
-        /// <param name="root"></param>
+        /// <param name="animator"></param>
         /// <returns></returns>
-        protected (uint umi3dBoneType, Transform boneTransform)[] GenerateHierarchy(Transform root)
+        protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
-            var copiedHierarchy = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.SkeletonHierarchy;
+            return (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.BoneRelations
+                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConverter.ConvertToBoneType(x.Bonetype)))
+                            .Where(x => x.unityBoneContainer.HasValue)
+                            .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
+                            .ToArray();
+        }
 
-            Dictionary<uint, bool> hasBeenCreated = new();
-            foreach (var bone in copiedHierarchy.Keys)
-                hasBeenCreated[bone] = false;
+        /// <summary>
+        /// Create a gameobject as a child for each bone declared in the animator.
+        /// </summary>
+        /// This implies a flat hierarchy.
+        /// <param name="animator"></param>
+        protected void ExtractRigsFromAnimator(Animator animator)
+        {
+            var newHierachy = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.Generate(animator.transform);
 
-            Dictionary<uint, Transform> hierarchy = new();
+            var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x=>x);
 
-            var boneNames = BoneTypeHelper.GetBoneNames();
-
-            foreach (uint bone in copiedHierarchy.Keys)
+            static string RemoveWhiteSpaces(string s)
             {
-                if (!hasBeenCreated[bone])
-                    CreateNode(bone);
+                return string.Concat(s.Where(c => !char.IsWhiteSpace(c)));
             }
 
-            void CreateNode(uint bone)
-            {
-                var go = new GameObject(boneNames[bone]);
-                hierarchy[bone] = go.transform;
-                if (bone != BoneType.Hips) // root
-                {
-                    if (!hasBeenCreated[copiedHierarchy[bone].boneTypeParent])
-                        CreateNode(copiedHierarchy[bone].boneTypeParent);
-                    go.transform.SetParent(hierarchy[copiedHierarchy[bone].boneTypeParent]);
-                }
-                else
-                {
-                    go.transform.SetParent(root);
-                }
-                go.transform.localPosition = copiedHierarchy[bone].relativePosition;
-                hasBeenCreated[bone] = true;
-            }
+            // unity name -> mecanim name / rigname
+            var humanBoneRigRelations = animator.avatar.humanDescription.human.ToDictionary(x => RemoveWhiteSpaces(x.humanName).ToLower(), x=> x.boneName);
 
-            return hierarchy.Select(x => (umi3dBoneType: x.Key, boneTransform: x.Value)).ToArray();
+            // rig name in animator -> local transform infos
+            var boneInfoInAnimator = animator.avatar.humanDescription.skeleton.ToDictionary(x => x.name, x => (x.position, x.rotation, x.scale));
+
+            var root = newHierachy.First(x => x.umi3dBoneType == BoneType.Hips).boneTransform;
+
+            Compute(root);
+
+            void Compute(Transform node)
+            {
+                var (umi3dBoneType, boneTransform) = quickAccessHierarchy[node.name];
+
+                var unityBoneName = BoneTypeConverter.ConvertToBoneType(umi3dBoneType).ToString();
+                var rigNameInAnimator = humanBoneRigRelations[unityBoneName.ToLower()];
+
+                if (boneInfoInAnimator.ContainsKey(rigNameInAnimator))
+                {
+                    var (position, rotation, scale) = boneInfoInAnimator[rigNameInAnimator];
+
+                    boneTransform.name = rigNameInAnimator;
+                    boneTransform.localPosition = position;
+                    boneTransform.localRotation = rotation;
+                    boneTransform.localScale = scale;
+
+                    for (int i = 0; i < node.childCount; i++)
+                    {
+                        Compute(node.GetChild(i));
+                    }
+                }
+                else // case that occurs if the bone is not found in hierarchy
+                {
+                    var liftedNodes = new List<Transform>();
+                    for (int i = 0; i < node.childCount; i++)
+                    {
+                        liftedNodes.Add(node.GetChild(i));
+                    }
+                    foreach (var liftedNode in liftedNodes)
+                    {
+                        node.SetParent(node.transform.parent);
+                        Compute(liftedNode);
+                    }
+                    UnityEngine.Object.Destroy(node.gameObject);
+                }
+            }
         }
 
         /// <summary>
