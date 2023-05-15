@@ -23,7 +23,7 @@ using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
 
-namespace EditMode_Tests // TODO: Complete and lowercase the namespace
+namespace EditMode_Tests.UserCapture
 {
     public class AnimatedSkeleton_Test
     {
