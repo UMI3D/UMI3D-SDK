@@ -40,9 +40,11 @@ namespace umi3d.common.userCapture
                                                 computed.rotation.w
             );
 
-            return new BoneDto() {
-                boneType = boneType,
+            return new BoneDto()
+            {
+                boneType = BoneType,
                 rotation = rotation.Dto()
+            };
         }
     }
 }
