@@ -80,7 +80,7 @@ namespace umi3d.cdk
             var sceneDto = data.dto as UMI3DSceneNodeDto;
             if (sceneDto == null) return;
             data.node.transform.localPosition = sceneDto.position.Struct();
-            data.node.transform.localRotation = sceneDto.rotation;
+            data.node.transform.localRotation = sceneDto.rotation.Quaternion();
             data.node.transform.localScale = sceneDto.scale.Struct();
             await Task.WhenAll(sceneDto.LibrariesId.Select(async libraryId => await UMI3DResourcesManager.LoadLibrary(libraryId, sceneDto.id)));
 
@@ -126,7 +126,7 @@ namespace umi3d.cdk
                     dto.rotation = (Vector4Dto)data.property.value;
                     if (node.updatePose)
                     {
-                        node.transform.localRotation = dto.rotation;
+                        node.transform.localRotation = dto.rotation.Quaternion();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -175,7 +175,7 @@ namespace umi3d.cdk
                     dto.rotation = UMI3DSerializer.Read<Vector4Dto>(data.container); ;
                     if (node.updatePose)
                     {
-                        node.transform.localRotation = dto.rotation;
+                        node.transform.localRotation = dto.rotation.Quaternion();
                         node.SendOnPoseUpdated();
                     }
                     break;

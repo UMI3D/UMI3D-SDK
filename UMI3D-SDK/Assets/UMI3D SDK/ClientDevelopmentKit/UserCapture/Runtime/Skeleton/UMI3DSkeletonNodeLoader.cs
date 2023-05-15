@@ -62,7 +62,7 @@ namespace umi3d.cdk.userCapture
             {
                 skeletonMapper = go.AddComponent<SkeletonMapper>();
                 if (go.TryGetComponent(out TrackedSkeletonBone bone))
-                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = bone.boneType, Position = bone.transform.position.Dto(), Rotation = new Vector4().FromQuaternion(bone.transform.rotation) };
+                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = bone.boneType, Position = bone.transform.position.Dto(), Rotation = bone.transform.rotation.Dto() };
                 else
                     throw new Umi3dException("No bone found to attach skeleton.");
             }

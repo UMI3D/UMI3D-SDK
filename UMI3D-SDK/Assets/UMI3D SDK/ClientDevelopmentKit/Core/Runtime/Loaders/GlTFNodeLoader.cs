@@ -76,7 +76,7 @@ namespace umi3d.cdk
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = (Vector4Dto)value.property.value;
+                    node.transform.localRotation = (dto.rotation = (Vector4Dto)value.property.value).Quaternion();
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
@@ -110,7 +110,7 @@ namespace umi3d.cdk
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = (dto.rotation = UMI3DSerializer.Read<Vector4Dto>(value.container));
+                    node.transform.localRotation = (dto.rotation = UMI3DSerializer.Read<Vector4Dto>(value.container)).Quaternion();
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
@@ -180,7 +180,7 @@ namespace umi3d.cdk
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
                         // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
                         node.transform.localPosition = dto.position.Struct();
-                        node.transform.localRotation = dto.rotation;
+                        node.transform.localRotation = dto.rotation.Quaternion();
                         node.transform.localScale = dto.scale.Struct();
 
                         node.SendOnPoseUpdated();

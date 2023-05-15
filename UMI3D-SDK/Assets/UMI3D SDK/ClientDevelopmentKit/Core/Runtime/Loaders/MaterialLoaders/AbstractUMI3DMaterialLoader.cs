@@ -181,7 +181,7 @@ namespace umi3d.cdk
                             newMat.SetVector(item.Key, v);
                             break;
                         case Vector4Dto v:
-                            newMat.SetVector(item.Key, v);
+                            newMat.SetVector(item.Key, v.Struct());
                             break;
                         case Vector3 v:
                             newMat.SetVector(item.Key, new Vector4(v.x, v.y, v.z));

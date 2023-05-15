@@ -55,7 +55,7 @@ namespace EditMode_Tests
                 syncRotation= false,
                 syncScale= false,
                 offSetPosition= Vector3.zero.Dto(),
-                offSetRotation= Quaternion.identity,
+                offSetRotation= Quaternion.identity.Dto(),
                 offSetScale= Vector3.one.Dto(),
                 anchorPosition= Vector3.zero.Dto(),
                 priority= 10,
@@ -90,7 +90,7 @@ namespace EditMode_Tests
                 syncRotation = false,
                 syncScale = false,
                 offSetPosition = Vector3.zero.Dto(),
-                offSetRotation = Quaternion.identity,
+                offSetRotation = Quaternion.identity.Dto(),
                 offSetScale = Vector3.one.Dto(),
                 anchorPosition = Vector3.zero.Dto(),
                 priority = 10,
@@ -122,7 +122,7 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
             Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation.Struct(),    resultSimpleBindingDataDto.offSetRotation.Struct());
             Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
         }
 
@@ -136,7 +136,7 @@ namespace EditMode_Tests
                 syncRotation = false,
                 syncScale = false,
                 offSetPosition = Vector3.zero.Dto(),
-                offSetRotation = Quaternion.identity,
+                offSetRotation = Quaternion.identity.Dto(),
                 offSetScale = Vector3.one.Dto(),
                 anchorPosition = Vector3.zero.Dto(),
                 priority = 10,
@@ -167,7 +167,7 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
             Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation.Struct(),    resultSimpleBindingDataDto.offSetRotation.Struct());
             Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var nodeBindingDataDto = bindingDto.data as NodeBindingDataDto;
@@ -224,7 +224,7 @@ namespace EditMode_Tests
                     syncRotation = false,
                     syncScale = false,
                     offSetPosition = Vector3.zero.Dto(),
-                    offSetRotation = Quaternion.identity,
+                    offSetRotation = Quaternion.identity.Dto(),
                     offSetScale = Vector3.one.Dto(),
                     anchorPosition = Vector3.zero.Dto(),
                     priority = 10,

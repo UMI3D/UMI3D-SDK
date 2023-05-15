@@ -24,8 +24,8 @@ namespace umi3d.common
     [Serializable]
     public class Vector2Dto : UMI3DDto
     {
-        public float X;
-        public float Y;
+        public float X { get; set; }
+        public float Y { get; set; }
 
         public static Vector2Dto one { get => new Vector2Dto() { X = 1, Y = 1 }; } 
         public static Vector2Dto zero { get => new Vector2Dto() { X = 0, Y = 0 }; }

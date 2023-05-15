@@ -57,7 +57,7 @@ namespace umi3d.edk.userCapture
                 boneType = boneType,
 
                 offSetPosition = offsetPosition.Dto(),
-                offSetRotation = offsetRotation,
+                offSetRotation = offsetRotation.Dto(),
                 offSetScale = offsetScale.Dto(),
 
                 anchorPosition = anchor.Dto(),

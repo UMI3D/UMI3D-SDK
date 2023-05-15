@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration
                     skeleton.UpdateFrame(frame);
 
             this.transform.position = frame.position.Struct();
-            this.transform.rotation = frame.rotation;
+            this.transform.rotation = frame.rotation.Quaternion();
         }
 
         public void SetSubSkeletons()

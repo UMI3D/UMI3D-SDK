@@ -76,7 +76,7 @@ namespace umi3d.cdk.interaction
                 position = position.Dto(),
                 direction = direction.Dto(),
                 bonePosition = bonePosition.Dto(),
-                boneRotation = boneRotation
+                boneRotation = boneRotation.Dto()
             };
             UMI3DClientServer.SendRequest(hoverDto, true);
         }
@@ -96,7 +96,7 @@ namespace umi3d.cdk.interaction
                 position = position.Dto(),
                 direction = direction.Dto(),
                 bonePosition = bonePosition.Dto(),
-                boneRotation = boneRotation
+                boneRotation = boneRotation.Dto()
             };
             UMI3DClientServer.SendRequest(hoverDto, true);
         }
@@ -119,7 +119,7 @@ namespace umi3d.cdk.interaction
                     position = position.Dto(),
                     direction = direction.Dto(),
                     bonePosition = bonePosition.Dto(),
-                    boneRotation = boneRotation
+                    boneRotation = boneRotation.Dto()
                 };
                 UMI3DClientServer.SendRequest(hoverDto, false);
             }

@@ -269,7 +269,7 @@ namespace umi3d.edk
                 name = nodeName,
                 position = objectPosition.GetValue(user).Dto(),
                 scale = objectScale.GetValue(user).Dto(),
-                rotation = objectRotation.GetValue(user)
+                rotation = objectRotation.GetValue(user).Dto()
             };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
             dto.extensions.KHR_lights_punctual = objectLight.GetValue(user)?.ToDto(user);

@@ -38,10 +38,11 @@ namespace umi3d.edk
         {
             AbstractBindingDataDto bindingDataDto;
 
-            bindingDataDto = new NodeBindingDataDto {
+            bindingDataDto = new NodeBindingDataDto
+            {
                 nodeId= nodeId,
                 offSetPosition= offsetPosition.Dto(),
-                offSetRotation= offsetRotation,
+                offSetRotation= offsetRotation.Dto(),
                 offSetScale= offsetScale.Dto(),
                 partialFit= partialFit,
                 priority= priority,

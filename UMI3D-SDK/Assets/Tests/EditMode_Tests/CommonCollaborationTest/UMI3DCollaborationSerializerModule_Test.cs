@@ -74,7 +74,7 @@ namespace EditMode_Tests
         {
             BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto(
                 boneId: 8,
-                rotation : Vector4.one
+                rotation : Vector4Dto.one
             );
 
             collabSerializerModule.Write(boneRotationConditionDto, out Bytable data);
@@ -195,7 +195,7 @@ namespace EditMode_Tests
             BonePoseDto bonePoseDto = new BonePoseDto(
                 bone : 2,
                 position : Vector3Dto.one,
-                rotation : Vector4.one
+                rotation : Vector4Dto.one
             ) ;
 
             collabSerializerModule.Write(bonePoseDto, out Bytable data);
@@ -209,8 +209,8 @@ namespace EditMode_Tests
                 == (bonePoseDto as BonePoseDto).bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (bonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((Vector4)(result as BonePoseDto).Rotation
-                == (Vector4)(bonePoseDto as BonePoseDto).Rotation));
+            Assert.IsTrue((result as BonePoseDto).Rotation.Struct()
+                == (bonePoseDto as BonePoseDto).Rotation.Struct());
         }
 
         [Test]
@@ -219,7 +219,7 @@ namespace EditMode_Tests
             AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto(
                 bone: 2,
                 position: Vector3Dto.one,
-                rotation: Vector4.one,
+                rotation: Vector4Dto.one,
                 otherBone : 17
             );
 
@@ -234,8 +234,8 @@ namespace EditMode_Tests
                 == (anchorBonePoseDto as BonePoseDto).bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (anchorBonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((result as BonePoseDto).Rotation
-                == (anchorBonePoseDto as BonePoseDto).Rotation));
+            Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
+                == (anchorBonePoseDto as BonePoseDto).Rotation.Struct()));
 
             Assert.IsTrue(((result as AnchoredBonePoseDto).otherBone
                 == (anchorBonePoseDto as AnchoredBonePoseDto).otherBone));
@@ -247,7 +247,7 @@ namespace EditMode_Tests
             NodeAnchoredBonePoseDto nodeAnchoredBonePoseDto = new NodeAnchoredBonePoseDto(
                 bone: 2,
                 position: Vector3Dto.one,
-                rotation: Vector4.one,
+                rotation: Vector4Dto.one,
                 node: 17
             );
 
@@ -262,8 +262,8 @@ namespace EditMode_Tests
                 == (nodeAnchoredBonePoseDto as BonePoseDto).bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (nodeAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((result as BonePoseDto).Rotation
-                == (nodeAnchoredBonePoseDto as BonePoseDto).Rotation));
+            Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
+                == (nodeAnchoredBonePoseDto as BonePoseDto).Rotation.Struct()));
 
             Assert.IsTrue(((result as NodeAnchoredBonePoseDto).node
                 == (nodeAnchoredBonePoseDto as NodeAnchoredBonePoseDto).node));
@@ -275,7 +275,7 @@ namespace EditMode_Tests
             FloorAnchoredBonePoseDto floorAnchoredBonePoseDto = new FloorAnchoredBonePoseDto(
                 bone: 2,
                 position: Vector3Dto.one,
-                rotation: Vector4.one
+                rotation: Vector4Dto.one
             );
 
             collabSerializerModule.Write(floorAnchoredBonePoseDto, out Bytable data);
@@ -289,8 +289,8 @@ namespace EditMode_Tests
                 == (floorAnchoredBonePoseDto as BonePoseDto).bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (floorAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((result as BonePoseDto).Rotation
-                == (floorAnchoredBonePoseDto as BonePoseDto).Rotation));
+            Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
+                == (floorAnchoredBonePoseDto as BonePoseDto).Rotation.Struct()));
         }
         #endregion
 
@@ -300,7 +300,7 @@ namespace EditMode_Tests
         {
             PoseDto poseDto = new PoseDto(
                 bones: GetTestBonePoseDtoSample(),
-                boneAnchor : new BonePoseDto() { bone = 24, Position = Vector3Dto.zero, Rotation = Vector4.one }
+                boneAnchor : new BonePoseDto() { bone = 24, Position = Vector3Dto.zero, Rotation = Vector4Dto.one }
             );
 
             collabSerializerModule.Write(poseDto, out Bytable data);
@@ -322,8 +322,8 @@ namespace EditMode_Tests
         {
             return new List<BoneDto>
             {
-                new BoneDto() {boneType = 1, rotation = Vector4.one },
-                new BoneDto() {boneType = 15, rotation = Vector4.one }
+                new BoneDto() {boneType = 1, rotation = Vector4Dto.one },
+                new BoneDto() {boneType = 15, rotation = Vector4Dto.one }
             };
         }
 

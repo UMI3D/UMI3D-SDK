@@ -457,13 +457,13 @@ namespace umi3d.common.userCapture
                                                              .Where(bc => bc.BoneType != BoneType.None)
                                                              .ToList();
 
-                Vector4Dto rootRotation = new Vector4Dto(r.transform.rotation.x, r.transform.rotation.y, r.transform.rotation.z, r.transform.rotation.w);
+                Vector4Dto rootRotation = r.transform.rotation.Dto();
                 BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, boneToSave[0], r);
                 boneToSave.RemoveAt(0);
 
                 boneToSave.ForEach(bc =>
                 {
-                    Vector4Dto bonerotation = new Vector4Dto(bc.transform.rotation.x, bc.transform.rotation.y, bc.transform.rotation.z, bc.transform.rotation.w);
+                    Vector4Dto bonerotation = bc.transform.rotation.Dto();
                     BoneDto bonePose_So = new BoneDto()
                     {
                         boneType = bc.BoneType,
@@ -483,7 +483,7 @@ namespace umi3d.common.userCapture
             }
         }
 
-        private BonePoseDto CreateBonePoseDTOOfType(Vector4 rootRotation, PoseSetterBoneComponent poseSetterBoneComponent, PoseSetterBoneComponent r)
+        private BonePoseDto CreateBonePoseDTOOfType(Vector4Dto rootRotation, PoseSetterBoneComponent poseSetterBoneComponent, PoseSetterBoneComponent r)
         {
             BonePoseDto bonePoseDto = new BonePoseDto(poseSetterBoneComponent.BoneType, r.transform.position.Dto(), rootRotation);
             string anchor = anchor_dropdown.value;
@@ -586,7 +586,7 @@ namespace umi3d.common.userCapture
             PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonedto.boneType);
             if (bone_component != null)
             {
-                bone_component.transform.rotation = bonedto.rotation.ToQuaternion();
+                bone_component.transform.rotation = bonedto.rotation.Quaternion();
                 bone_component.isSavable = true;
             }
         }
@@ -596,7 +596,7 @@ namespace umi3d.common.userCapture
             PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonePoseDto.bone);
             if (bone_component != null)
             {
-                bone_component.transform.rotation = bonePoseDto.Rotation.ToQuaternion();
+                bone_component.transform.rotation = bonePoseDto.Rotation.Quaternion();
                 bone_component.isSavable = true;
             }
         }

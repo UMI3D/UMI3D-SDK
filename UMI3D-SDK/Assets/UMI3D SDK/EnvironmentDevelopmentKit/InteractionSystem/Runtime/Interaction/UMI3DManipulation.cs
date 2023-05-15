@@ -38,7 +38,7 @@ namespace umi3d.edk.interaction
             public ManipulationEventContent(UMI3DUser user, ManipulationRequestDto dto) : base(user, dto)
             {
                 translation = dto.translation.Struct();
-                rotation = dto.rotation;
+                rotation = dto.rotation.Quaternion();
             }
 
             public ManipulationEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, Vector3 translation, Quaternion rotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)

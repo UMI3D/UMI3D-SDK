@@ -41,7 +41,7 @@ namespace umi3d.cdk.userCapture
             var frame = new UserTrackingFrameDto()
             {
                 position = transform.position.Dto(),
-                rotation = transform.rotation,
+                rotation = transform.rotation.Dto(),
             };
 
             foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())

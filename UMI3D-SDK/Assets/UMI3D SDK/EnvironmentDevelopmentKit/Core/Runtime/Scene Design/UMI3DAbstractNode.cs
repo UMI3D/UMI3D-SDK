@@ -245,7 +245,7 @@ namespace umi3d.edk
                 if (a != null)
                 {
                     UMI3DAnchor.PositionOffset = a.positionOffset.Struct();
-                    UMI3DAnchor.RotationOffset = a.rotationOffset;
+                    UMI3DAnchor.RotationOffset = a.rotationOffset.Quaternion();
                     UMI3DAnchor.ScaleOffset = a.scaleOffset.Struct();
                 }
             };

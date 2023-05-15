@@ -67,3 +67,30 @@ public static class Vector3DtoExtension
         return new Vector3(v.X, v.Y, v.Z);
     }
 }
+
+public static class Vector4DtoExtension
+{
+    public static Vector4Dto Dto(this Vector4 v)
+    {
+        if (v == null) return default;
+        return new Vector4Dto() { X = v.x, Y = v.y, Z = v.z, W = v.w };
+    }
+
+    public static Vector4 Struct(this Vector4Dto v)
+    {
+        if (v == null) return default;
+        return new Vector4(v.X, v.Y, v.Z,v.W);
+    }
+
+    public static Vector4Dto Dto(this Quaternion q)
+    {
+        if (q == null) return default;
+        return new Vector4Dto() { X = q.x, Y = q.y, Z = q.z, W = q.w };
+    }
+
+    public static Quaternion Quaternion(this Vector4Dto v4)
+    {
+        if (v4 == null) return default;
+        return new Quaternion(v4.X, v4.Y, v4.Z, v4.W);
+    }
+}

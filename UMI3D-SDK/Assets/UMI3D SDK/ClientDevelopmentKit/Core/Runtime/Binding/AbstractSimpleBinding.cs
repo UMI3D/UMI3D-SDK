@@ -38,7 +38,7 @@ namespace umi3d.cdk
         {
             if (SimpleBindingData.syncPosition && SimpleBindingData.syncRotation)
             {
-                Quaternion rotation = parentTransform.rotation * SimpleBindingData.offSetRotation;
+                Quaternion rotation = parentTransform.rotation * SimpleBindingData.offSetRotation.Quaternion();
                 Vector3 position = parentTransform.position + SimpleBindingData.anchorPosition.Struct() + rotation * (SimpleBindingData.offSetPosition.Struct() - SimpleBindingData.anchorPosition.Struct());
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
@@ -48,7 +48,7 @@ namespace umi3d.cdk
             }
             else if (SimpleBindingData.syncRotation)
             {
-                boundTransform.rotation = parentTransform.rotation * SimpleBindingData.offSetRotation;
+                boundTransform.rotation = parentTransform.rotation * SimpleBindingData.offSetRotation.Quaternion();
             }
             if (SimpleBindingData.syncScale)
                 boundTransform.localScale = parentTransform.scale + SimpleBindingData.offSetScale.Struct();

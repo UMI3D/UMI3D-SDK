@@ -53,14 +53,14 @@ namespace EditMode_Tests
         public void WriteRead_BoneBinding(ulong userId, bool syncPos, bool syncRot, bool syncScale, int prio, bool partial)
         {
             BoneBindingDataDto bindingDataDto = new BoneBindingDataDto()
-            { 
+            {
                 boneType = BoneType.LeftEye,
                 userId = userId,
                 syncPosition = syncPos,
                 syncRotation = syncRot,
                 syncScale = syncScale,
                 offSetPosition = Vector3.zero.Dto(),
-                offSetRotation = Quaternion.identity,
+                offSetRotation = Quaternion.identity.Dto(),
                 offSetScale = Vector3.one.Dto(),
                 anchorPosition = Vector3.zero.Dto(),
                 priority = prio,
@@ -91,7 +91,7 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
             Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation.Struct(), resultSimpleBindingDataDto.offSetRotation.Struct());
             Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
@@ -114,7 +114,7 @@ namespace EditMode_Tests
                 syncRotation = syncRot,
                 syncScale = syncScale,
                 offSetPosition = Vector3.zero.Dto(),
-                offSetRotation = Quaternion.identity,
+                offSetRotation = Quaternion.identity.Dto(),
                 offSetScale = Vector3.one.Dto(),
                 anchorPosition = Vector3.zero.Dto(),
                 priority = prio,
@@ -144,7 +144,7 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
             Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation.Struct(), resultSimpleBindingDataDto.offSetRotation.Struct());
             Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
@@ -206,7 +206,7 @@ namespace EditMode_Tests
                     syncRotation = false,
                     syncScale = false,
                     offSetPosition = Vector3.zero.Dto(),
-                    offSetRotation = Quaternion.identity,
+                    offSetRotation = Quaternion.identity.Dto(),
                     offSetScale = Vector3.one.Dto(),
                     anchorPosition = Vector3.zero.Dto(),
                     priority = 10,

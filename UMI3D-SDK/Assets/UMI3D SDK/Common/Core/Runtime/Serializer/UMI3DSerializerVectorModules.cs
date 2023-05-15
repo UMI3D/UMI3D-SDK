@@ -131,7 +131,7 @@ namespace umi3d.common
                         UMI3DSerializer.TryRead(container, out float y);
                         UMI3DSerializer.TryRead(container, out float z);
                         UMI3DSerializer.TryRead(container, out float w);
-                        result = (T)Convert.ChangeType(new Vector4Dto(x, y, z, w), typeof(T));
+                        result = (T)Convert.ChangeType(new Vector4Dto() { X = x, Y = y, Z = z, W = w }, typeof(T));
                         return true;
                     }
                     break;
@@ -150,10 +150,10 @@ namespace umi3d.common
                     if (container.length >= 4 * 4 * sizeof(float))
                     {
 
-                        UMI3DSerializer.TryRead(container, out Vector4 c0);
-                        UMI3DSerializer.TryRead(container, out Vector4 c1);
-                        UMI3DSerializer.TryRead(container, out Vector4 c2);
-                        UMI3DSerializer.TryRead(container, out Vector4 c3);
+                        UMI3DSerializer.TryRead(container, out Vector4Dto c0);
+                        UMI3DSerializer.TryRead(container, out Vector4Dto c1);
+                        UMI3DSerializer.TryRead(container, out Vector4Dto c2);
+                        UMI3DSerializer.TryRead(container, out Vector4Dto c3);
 
                         result = (T)Convert.ChangeType(new Matrix4x4Dto(c0, c1, c2, c3), typeof(T));
                         return true;

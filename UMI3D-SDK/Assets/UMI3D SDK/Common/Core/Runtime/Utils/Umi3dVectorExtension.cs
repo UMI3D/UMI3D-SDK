@@ -47,22 +47,12 @@ namespace umi3d.common
 
         public static Vector4Dto Unscaled(this Vector4Dto v4, Vector4Dto scale)
         {
-            return (Vector4Dto)((Vector4)v4).Unscaled(scale);
+            return ((v4.Struct()).Unscaled(scale.Struct())).Dto();
         }
 
         public static Vector4Dto Scaled(this Vector4Dto v4, Vector4Dto scale)
         {
-            return (Vector4Dto)((Vector4)v4).Scaled(scale);
-        }
-
-        public static Vector4Dto FromQuaternion(this Vector4Dto v4, Quaternion q)
-        {
-            return (Vector4Dto)((Vector4)v4).FromQuaternion(q);
-        }
-
-        public static Vector4Dto ToQuaternion(this Vector4Dto v4)
-        {
-            return (Vector4Dto)((Vector4)v4).ToQuaternion();
+            return ((v4.Struct()).Scaled(scale.Struct()).Dto());
         }
     }
 }

@@ -24,62 +24,20 @@ namespace umi3d.common
     /// </summary>
     /// The 4th component has a default value of 1, like in homogeneous coordinates systems.
     [Serializable]
-    public class Vector4Dto : UMI3DDto, IEquatable<Vector4Dto>
+    public class Vector4Dto : UMI3DDto
     {
-        public float X;
-        public float Y;
-        public float Z;
-        public float W;
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
+        public float W { get; set; } = 1;
 
-        public Vector4Dto() : base()
-        {
-            X = 0;
-            Y = 0;
-            Z = 0;
-            W = 1;
-        }
-
-        public Vector4Dto(float x, float y, float z, float w) : base()
-        {
-            X = x;
-            Y = y;
-            Z = z;
-            W = w;
-        }
+        public static Vector4Dto one { get => new Vector4Dto() { X = 1, Y = 1, Z = 1, W = 1 }; }
+        public static Vector4Dto zero { get => new Vector4Dto() { X = 0, Y = 0, Z = 0, W = 0 }; }
 
         /// <inheritdoc/>
         public override string ToString()
         {
-            return ((Vector4)this).ToString();
-        }
-
-        public bool Equals(Vector4Dto other)
-        {
-            return X == other.X && Y == other.Y && Z == other.Z && W == other.W;
-        }
-
-        public static implicit operator Vector4Dto(Vector4 v)
-        {
-            if (v == null) return default;
-            return new Vector4Dto(v.x, v.y, v.z, v.w);
-        }
-
-        public static implicit operator Vector4(Vector4Dto v)
-        {
-            if (v == null) return default;
-            return new Vector4(v.X, v.Y, v.Z, v.W);
-        }
-
-        public static implicit operator Vector4Dto(Quaternion v)
-        {
-            if (v == null) return default;
-            return new Vector4Dto(v.x, v.y, v.z, v.w);
-        }
-
-        public static implicit operator Quaternion(Vector4Dto v)
-        {
-            if (v == null) return default;
-            return new Quaternion(v.X, v.Y, v.Z, v.W);
+            return $"{base.ToString()}[{X},{Y},{Z},{W}]";
         }
 
         public float this[int i]

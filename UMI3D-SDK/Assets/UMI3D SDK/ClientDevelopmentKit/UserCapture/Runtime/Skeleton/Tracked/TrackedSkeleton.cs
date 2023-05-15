@@ -93,7 +93,7 @@ namespace umi3d.cdk.userCapture
 
                 vc.isActif = true;
                 vc.position = bone.position.Struct();
-                vc.rotation = bone.rotation.ToQuaternion();
+                vc.rotation = bone.rotation.Quaternion();
 
                 types.Add(bone.boneType);
             }

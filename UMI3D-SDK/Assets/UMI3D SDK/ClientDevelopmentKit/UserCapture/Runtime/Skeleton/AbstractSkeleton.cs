@@ -82,13 +82,13 @@ namespace umi3d.cdk.userCapture
                         Bones.TryGetValue(b.boneType, out var pose);
                         if (pose is not null)
                         {
-                            Bones[b.boneType].s_Rotation = b.rotation;
+                            Bones[b.boneType].s_Rotation = b.rotation.Quaternion();
                         }
                         else
                         {
                             Bones.TryAdd(b.boneType, new ISkeleton.s_Transform()
                             {
-                                s_Rotation = b.rotation
+                                s_Rotation = b.rotation.Quaternion()
                             });
                         }
                     }

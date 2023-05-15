@@ -30,14 +30,14 @@ namespace umi3d.common.userCapture
         /// <param name="bone">The current bone to update</param>
         /// <param name="position">The position of the bone</param>
         /// <param name="rotation">The rotation of the bone</param>
-        public BonePoseDto(uint bone, Vector3Dto position, Vector4 rotation)
+        public BonePoseDto(uint bone, Vector3Dto position, Vector4Dto rotation)
         {
             this.bone = bone;
             this.position = position;
             this.rotation = rotation;
         }
 
-        public BonePoseDto(uint bone, Vector4 rotation)
+        public BonePoseDto(uint bone, Vector4Dto rotation)
         {
             this.bone = bone;
             this.rotation = rotation;

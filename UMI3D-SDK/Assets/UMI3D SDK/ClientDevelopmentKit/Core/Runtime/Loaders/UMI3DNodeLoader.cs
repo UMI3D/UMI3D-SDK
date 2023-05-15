@@ -199,7 +199,7 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
@@ -214,7 +214,7 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
@@ -426,7 +426,7 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
@@ -441,7 +441,7 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 

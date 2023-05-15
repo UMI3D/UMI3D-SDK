@@ -67,7 +67,7 @@ namespace umi3d.common.userCapture
             {
                 return new BoneRotationConditionDto(
                     (uint)(temporaryChildren[0] as IntegerField).value,
-                    (temporaryChildren[1] as Vector4Field).value
+                    (temporaryChildren[1] as Vector4Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(UserScaleConditionDto))

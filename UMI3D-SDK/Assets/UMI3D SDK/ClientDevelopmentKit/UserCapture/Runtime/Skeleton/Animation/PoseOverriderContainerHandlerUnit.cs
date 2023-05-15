@@ -120,7 +120,7 @@ namespace umi3d.cdk.userCapture
         {
             Quaternion boneRotation = skeletonManager.personalSkeleton.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
 
-            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.ToQuaternion()) < boneRotationConditionDto.acceptanceRange)
+            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.Quaternion()) < boneRotationConditionDto.acceptanceRange)
             {
                 return true;
             }

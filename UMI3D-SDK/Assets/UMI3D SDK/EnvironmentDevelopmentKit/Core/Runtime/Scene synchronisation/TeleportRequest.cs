@@ -31,7 +31,7 @@ namespace umi3d.edk
 
         public TeleportRequest(Vector3 position, Quaternion rotation) : base(position)
         {
-            this.rotation = rotation;
+            this.rotation = rotation.Dto();
         }
 
         /// <inheritdoc/>

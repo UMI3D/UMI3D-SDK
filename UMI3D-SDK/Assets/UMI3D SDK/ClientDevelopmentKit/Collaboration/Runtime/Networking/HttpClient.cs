@@ -175,7 +175,7 @@ namespace umi3d.cdk.collaboration
                     case Vector4 v4:
                         return new Vector4ParameterDto
                         {
-                            value = v4
+                            value = v4.Dto()
                         };
                     case Vector3 v3:
                         return new Vector3ParameterDto

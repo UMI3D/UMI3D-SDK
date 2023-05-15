@@ -8,7 +8,7 @@ namespace umi3d.common.userCapture
     {
         public NodeAnchoredBonePoseDto() { }
 
-        public NodeAnchoredBonePoseDto(uint node, uint bone, Vector3Dto position, Vector4 rotation) : base(bone, position, rotation)
+        public NodeAnchoredBonePoseDto(uint node, uint bone, Vector3Dto position, Vector4Dto rotation) : base(bone, position, rotation)
         {
             this.node = node;
         }

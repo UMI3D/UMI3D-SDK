@@ -24,9 +24,9 @@ namespace umi3d.common
     [Serializable]
     public class Vector3Dto : UMI3DDto
     {
-        public float X;
-        public float Y;
-        public float Z;
+        public float X { get; set; }
+        public float Y { get; set; }
+        public float Z { get; set; }
 
         public static Vector3Dto one { get => new Vector3Dto() { X = 1, Y = 1, Z = 1 }; }
         public static Vector3Dto zero { get => new Vector3Dto() { X = 0, Y = 0, Z = 0 }; }

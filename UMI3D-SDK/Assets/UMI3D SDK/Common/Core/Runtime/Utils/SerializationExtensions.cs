@@ -33,7 +33,7 @@ namespace umi3d.common.utils.serialization
             switch (o)
             {
                 case Quaternion q:
-                    return (Vector4Dto)q;
+                    return q.Dto();
                 case Vector2 v:
                     return v.Dto();
                 case Vector3 v:
@@ -57,7 +57,7 @@ namespace umi3d.common.utils.serialization
             switch (o)
             {
                 case Vector4Dto q:
-                    return (Quaternion)q;
+                    return q.Quaternion();
                 case Vector2Dto v:
                     return v.Struct();
                 case Vector3Dto v:

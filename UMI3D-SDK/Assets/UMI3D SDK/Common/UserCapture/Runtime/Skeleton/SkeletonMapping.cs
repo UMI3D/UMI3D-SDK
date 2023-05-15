@@ -35,7 +35,7 @@ namespace umi3d.common.userCapture
             return new BoneDto() {
                 boneType = boneType,
                 //position: computed.position,
-                rotation = rotation
+                rotation = rotation.Dto()
             };
         }
     }

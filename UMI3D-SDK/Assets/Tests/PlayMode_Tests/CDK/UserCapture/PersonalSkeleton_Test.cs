@@ -104,7 +104,7 @@ namespace PlayMode_Tests.UserCapture.CDK
             PoseDto poseDto = new PoseDto();
             poseDto.SetBonePoseDtoArray(new List<BoneDto>
             {
-            new BoneDto() {boneType = BoneType.CenterFeet, rotation = Vector4.one},
+            new BoneDto() {boneType = BoneType.CenterFeet, rotation = Vector4.one.Dto()},
             });
 
             Mock<SkeletonMapper> mockSkeletonMapper = new Mock<SkeletonMapper>();

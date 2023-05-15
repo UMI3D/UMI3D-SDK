@@ -107,7 +107,7 @@ namespace umi3d.edk
             if (nodeDto == null) return;
             nodeDto.position = objectPosition.GetValue(user).Dto();
             nodeDto.scale = objectScale.GetValue(user).Dto();
-            nodeDto.rotation = objectRotation.GetValue(user);
+            nodeDto.rotation = objectRotation.GetValue(user).Dto();
             nodeDto.LibrariesId = libraries.Select(l => { return l.idVersion; }).ToList();
             nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e => e.ToEntityDto(user)).ToList();
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
