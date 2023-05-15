@@ -44,11 +44,11 @@ namespace umi3d.common
                 case true when typeof(T) == typeof(KeyframeDto):
                     if (container.length >= 3 * 2 * sizeof(float))
                     {
-                        UMI3DSerializer.TryRead(container, out Vector2 v0);
-                        UMI3DSerializer.TryRead(container, out Vector2 v1);
-                        UMI3DSerializer.TryRead(container, out Vector2 v2);
+                        UMI3DSerializer.TryRead(container, out Vector2Dto v0);
+                        UMI3DSerializer.TryRead(container, out Vector2Dto v1);
+                        UMI3DSerializer.TryRead(container, out Vector2Dto v2);
 
-                        result = (T)Convert.ChangeType(new KeyframeDto(v0.x, v0.y, v1.x, v2.x, v1.y, v2.y), typeof(T));
+                        result = (T)Convert.ChangeType(new KeyframeDto() { point = v0, intTangeant = v1, outTangeant = v2 }, typeof(T));
                         return true;
                     }
                     break;
@@ -88,7 +88,7 @@ namespace umi3d.common
                     bytable = UMI3DSerializer.WriteCollection(serializableAnimationCurve.keys);
                     return true;
                 case Keyframe keyframe:
-                    bytable = UMI3DSerializer.Write((KeyframeDto)keyframe);
+                    bytable = UMI3DSerializer.Write(keyframe.Dto());
                     return true;
                 case KeyframeDto serializableFrame:
                     bytable = UMI3DSerializer.Write(serializableFrame.point);

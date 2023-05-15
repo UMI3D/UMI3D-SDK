@@ -43,7 +43,7 @@ namespace umi3d.common
 
             foreach (var key in curve.keys)
             {
-                this.keys.Add(new KeyframeDto(key));
+                this.keys.Add(key.Dto());
             }
         }
 
@@ -53,7 +53,7 @@ namespace umi3d.common
 
             foreach (var key in keys)
             {
-                this.keys.Add(new KeyframeDto(key));
+                this.keys.Add(key);
             }
         }
 
@@ -81,7 +81,7 @@ namespace umi3d.common
 
             List<Keyframe> keys = new List<Keyframe>();
             foreach (var k in c.keys)
-                keys.Add((Keyframe)k);
+                keys.Add(k.Struct());
 
             return new AnimationCurve(keys.ToArray());
         }

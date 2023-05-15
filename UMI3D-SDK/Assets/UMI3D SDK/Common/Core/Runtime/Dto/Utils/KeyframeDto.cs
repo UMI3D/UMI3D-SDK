@@ -29,73 +29,22 @@ namespace umi3d.common
         /// <summary>
         /// (time; value);
         /// </summary>
-        public Vector2Dto point;
+        public Vector2Dto point { get; set; } = new Vector2Dto();
 
         /// <summary>
         /// (slope; weight);
         /// </summary>
-        public Vector2Dto intTangeant;
+        public Vector2Dto intTangeant { get; set; } = new Vector2Dto();
 
         /// <summary>
         /// (slope; weight);
         /// </summary>
-        public Vector2Dto outTangeant;
-
-        public KeyframeDto() : base()
-        {
-            point = new Vector2Dto();
-
-            intTangeant = new Vector2Dto();
-
-            outTangeant = new Vector2Dto();
-        }
-
-        public KeyframeDto(float time, float value) : this(time, value, 0, 0, 0, 0)
-        {
-
-        }
-
-        public KeyframeDto(float time, float value, float inTangeant, float outTangeant, float intWeight, float outWeight) : base()
-        {
-            this.point = new Vector2Dto() { X = time, Y = value };
-
-            this.intTangeant = new Vector2Dto() { X = inTangeant, Y = intWeight };
-
-            this.outTangeant = new Vector2Dto() { X = outTangeant, Y = outWeight };
-        }
-
-        public KeyframeDto(Keyframe frame) : base()
-        {
-            point = new Vector2Dto() { X = frame.time, Y = frame.value };
-
-            intTangeant = new Vector2Dto() { X = frame.inTangent, Y = frame.inWeight };
-
-            outTangeant = new Vector2Dto() { X = frame.outTangent, Y = frame.outWeight};
-        }
+        public Vector2Dto outTangeant { get; set; } = new Vector2Dto();
 
         /// <inheritdoc/>
         public override string ToString()
         {
             return $"Keyframe : time : {point.X} s, value = {point.Y}, inTangeant ({intTangeant.X}, {intTangeant.Y}), outTangeant ({outTangeant.X}, {outTangeant.Y}).";
-        }
-
-        public static implicit operator KeyframeDto(Keyframe frame)
-        {
-            return new KeyframeDto(frame);
-        }
-
-        public static implicit operator Keyframe(KeyframeDto frame)
-        {
-            if (frame == null) return default;
-            return new Keyframe
-            {
-                time = frame.point.X,
-                value = frame.point.Y,
-                inTangent = frame.intTangeant.X,
-                inWeight = frame.intTangeant.Y,
-                outTangent = frame.outTangeant.X,
-                outWeight = frame.outTangeant.Y
-            };
         }
     }
 }

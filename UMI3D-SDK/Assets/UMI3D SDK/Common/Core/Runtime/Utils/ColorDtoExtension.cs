@@ -115,3 +115,49 @@ public static class Matrix4x4DtoExtension
         return M;
     }
 }
+
+public static class KeyframeDtoExtension
+{
+    public static KeyframeDto Dto(this Keyframe frame)
+    {
+        return new KeyframeDto()
+        {
+            point = new Vector2Dto() { X = frame.time, Y = frame.value },
+            intTangeant = new Vector2Dto() { X = frame.inTangent, Y = frame.inWeight },
+            outTangeant = new Vector2Dto() { X = frame.outTangent, Y = frame.outWeight },
+        };
+    }
+
+    public static Keyframe Struct(this KeyframeDto frame)
+    {
+        if (frame == null) return default;
+        return new Keyframe
+        {
+            time = frame.point.X,
+            value = frame.point.Y,
+            inTangent = frame.intTangeant.X,
+            inWeight = frame.intTangeant.Y,
+            outTangent = frame.outTangeant.X,
+            outWeight = frame.outTangeant.Y
+        };
+    }
+}
+
+/*        public static implicit operator KeyframeDto(Keyframe frame)
+        {
+            return new KeyframeDto(frame);
+        }
+
+        public static implicit operator Keyframe(KeyframeDto frame)
+        {
+            if (frame == null) return default;
+            return new Keyframe
+            {
+                time = frame.point.X,
+                value = frame.point.Y,
+                inTangent = frame.intTangeant.X,
+                inWeight = frame.intTangeant.Y,
+                outTangent = frame.outTangeant.X,
+                outWeight = frame.outTangeant.Y
+            };
+        }*/
