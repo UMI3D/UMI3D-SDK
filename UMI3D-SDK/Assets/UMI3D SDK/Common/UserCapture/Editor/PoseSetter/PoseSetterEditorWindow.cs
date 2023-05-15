@@ -485,7 +485,7 @@ namespace umi3d.common.userCapture
 
         private BonePoseDto CreateBonePoseDTOOfType(Vector4 rootRotation, PoseSetterBoneComponent poseSetterBoneComponent, PoseSetterBoneComponent r)
         {
-            BonePoseDto bonePoseDto = new BonePoseDto(poseSetterBoneComponent.BoneType, r.transform.position, rootRotation);
+            BonePoseDto bonePoseDto = new BonePoseDto(poseSetterBoneComponent.BoneType, r.transform.position.Dto(), rootRotation);
             string anchor = anchor_dropdown.value;
             switch (anchor_dropdown.value)
             {

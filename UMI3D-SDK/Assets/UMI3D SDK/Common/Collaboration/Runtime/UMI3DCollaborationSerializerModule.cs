@@ -1206,6 +1206,8 @@ namespace umi3d.common.collaboration
                 true when typeof(T) == typeof(UserScaleConditionDto) => true,
                 true when typeof(T) == typeof(ScaleConditionDto) => true,
                 true when typeof(T) == typeof(ResourceDto) => true,
+                true when typeof(T) == typeof(PoseConditionDto) => true,
+                true when typeof(T) == typeof(UserTrackingBoneDto) => true,
                 _ => null
             };
         }

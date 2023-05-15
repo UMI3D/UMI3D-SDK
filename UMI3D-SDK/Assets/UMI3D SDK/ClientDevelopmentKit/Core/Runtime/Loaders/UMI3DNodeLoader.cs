@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.utils.serialization;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -241,15 +242,15 @@ namespace umi3d.cdk
                         {
                             if (c is BoxCollider)
                             {
-                                (c as BoxCollider).center = (Vector3Dto)data.property.value;
+                                (c as BoxCollider).center = ((Vector3Dto)data.property.value).Struct();
                             }
                             else if (c is SphereCollider)
                             {
-                                (c as SphereCollider).center = (Vector3Dto)data.property.value;
+                                (c as SphereCollider).center = ((Vector3Dto)data.property.value).Struct();
                             }
                             else if (c is CapsuleCollider)
                             {
-                                (c as CapsuleCollider).center = (Vector3Dto)data.property.value;
+                                (c as CapsuleCollider).center = ((Vector3Dto)data.property.value).Struct();
                             }
                         }
                     }
@@ -278,7 +279,7 @@ namespace umi3d.cdk
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is BoxCollider)
                         {
-                            (c as BoxCollider).size = (Vector3Dto)data.property.value;
+                            (c as BoxCollider).size = ((Vector3Dto)data.property.value).Struct();
                         }
                     }
                     break;
@@ -468,15 +469,15 @@ namespace umi3d.cdk
                         {
                             if (c is BoxCollider)
                             {
-                                (c as BoxCollider).center = dto.colliderDto.colliderCenter;
+                                (c as BoxCollider).center = dto.colliderDto.colliderCenter.Struct();
                             }
                             else if (c is SphereCollider)
                             {
-                                (c as SphereCollider).center = dto.colliderDto.colliderCenter;
+                                (c as SphereCollider).center = dto.colliderDto.colliderCenter.Struct();
                             }
                             else if (c is CapsuleCollider)
                             {
-                                (c as CapsuleCollider).center = dto.colliderDto.colliderCenter;
+                                (c as CapsuleCollider).center = dto.colliderDto.colliderCenter.Struct();
                             }
                         }
                     }
@@ -505,7 +506,7 @@ namespace umi3d.cdk
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is BoxCollider)
                         {
-                            (c as BoxCollider).size = dto.colliderDto.colliderBoxSize;
+                            (c as BoxCollider).size = dto.colliderDto.colliderBoxSize.Struct();
                         }
                     }
                     break;
@@ -702,8 +703,8 @@ namespace umi3d.cdk
                     break;
                 case ColliderType.Box:
                     BoxCollider bc = go.AddComponent<BoxCollider>();
-                    bc.center = dto.colliderCenter;
-                    bc.size = dto.colliderBoxSize;
+                    bc.center = dto.colliderCenter.Struct();
+                    bc.size = dto.colliderBoxSize.Struct();
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(bc);
                     else
@@ -711,7 +712,7 @@ namespace umi3d.cdk
                     break;
                 case ColliderType.Sphere:
                     SphereCollider sc = go.AddComponent<SphereCollider>();
-                    sc.center = dto.colliderCenter;
+                    sc.center = dto.colliderCenter.Struct();
                     sc.radius = dto.colliderRadius;
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(sc);
@@ -720,7 +721,7 @@ namespace umi3d.cdk
                     break;
                 case ColliderType.Capsule:
                     CapsuleCollider cc = go.AddComponent<CapsuleCollider>();
-                    cc.center = dto.colliderCenter;
+                    cc.center = dto.colliderCenter.Struct();
                     cc.radius = dto.colliderRadius;
                     cc.height = dto.colliderHeight;
                     cc.direction = (int)dto.colliderDirection;

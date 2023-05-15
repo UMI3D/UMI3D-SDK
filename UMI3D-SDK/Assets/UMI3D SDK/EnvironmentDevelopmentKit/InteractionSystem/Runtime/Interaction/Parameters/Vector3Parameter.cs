@@ -55,7 +55,7 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            (dto as Vector3ParameterDto).value = value;
+            (dto as Vector3ParameterDto).value = value.Dto();
         }
 
         /// <inheritdoc/>
@@ -79,7 +79,7 @@ namespace umi3d.edk.interaction
                 case ParameterSettingRequestDto settingRequestDto:
                     if (settingRequestDto.parameter is Vector3ParameterDto parameter)
                     {
-                        value = parameter.value;
+                        value = parameter.value.Struct();
                         onChange.Invoke(new ParameterEventContent<Vector3>(user, settingRequestDto, value));
                     }
                     else

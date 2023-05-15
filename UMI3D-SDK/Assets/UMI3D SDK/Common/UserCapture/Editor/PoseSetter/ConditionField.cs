@@ -60,7 +60,7 @@ namespace umi3d.common.userCapture
             else if (fieldActualConditionType == typeof(DirectionConditionDto))
             {
                 return new DirectionConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value
+                    (temporaryChildren[0] as Vector3Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(BoneRotationConditionDto))
@@ -73,13 +73,13 @@ namespace umi3d.common.userCapture
             else if (fieldActualConditionType == typeof(UserScaleConditionDto))
             {
                 return new UserScaleConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value
+                    (temporaryChildren[0] as Vector3Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(ScaleConditionDto))
             {
                 return new UserScaleConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value
+                    (temporaryChildren[0] as Vector3Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(RangeConditionDto))

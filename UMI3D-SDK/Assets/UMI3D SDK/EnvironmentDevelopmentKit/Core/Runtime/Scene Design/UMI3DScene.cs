@@ -105,8 +105,8 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             var nodeDto = dto as UMI3DSceneNodeDto;
             if (nodeDto == null) return;
-            nodeDto.position = objectPosition.GetValue(user);
-            nodeDto.scale = objectScale.GetValue(user);
+            nodeDto.position = objectPosition.GetValue(user).Dto();
+            nodeDto.scale = objectScale.GetValue(user).Dto();
             nodeDto.rotation = objectRotation.GetValue(user);
             nodeDto.LibrariesId = libraries.Select(l => { return l.idVersion; }).ToList();
             nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e => e.ToEntityDto(user)).ToList();

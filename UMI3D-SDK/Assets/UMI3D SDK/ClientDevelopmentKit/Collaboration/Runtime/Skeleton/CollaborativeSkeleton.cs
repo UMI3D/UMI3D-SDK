@@ -34,7 +34,7 @@ namespace umi3d.cdk.collaboration
                 foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
                     skeleton.UpdateFrame(frame);
 
-            this.transform.position = frame.position;
+            this.transform.position = frame.position.Struct();
             this.transform.rotation = frame.rotation;
         }
 

@@ -126,9 +126,9 @@ namespace umi3d.edk.interaction
 
             public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
-                position = dto.position;
-                normal = dto.normal;
-                direction = dto.direction;
+                position = dto.position.Struct();
+                normal = dto.normal.Struct();
+                direction = dto.direction.Struct();
             }
 
             public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)

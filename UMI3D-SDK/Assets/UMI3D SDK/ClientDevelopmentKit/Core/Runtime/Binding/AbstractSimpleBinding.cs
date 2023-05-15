@@ -39,19 +39,19 @@ namespace umi3d.cdk
             if (SimpleBindingData.syncPosition && SimpleBindingData.syncRotation)
             {
                 Quaternion rotation = parentTransform.rotation * SimpleBindingData.offSetRotation;
-                Vector3 position = parentTransform.position + SimpleBindingData.anchorPosition + rotation * ((Vector3)SimpleBindingData.offSetPosition - SimpleBindingData.anchorPosition);
+                Vector3 position = parentTransform.position + SimpleBindingData.anchorPosition.Struct() + rotation * (SimpleBindingData.offSetPosition.Struct() - SimpleBindingData.anchorPosition.Struct());
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
             else if (SimpleBindingData.syncPosition)
             {
-                boundTransform.position = parentTransform.position + SimpleBindingData.offSetPosition;
+                boundTransform.position = parentTransform.position + SimpleBindingData.offSetPosition.Struct();
             }
             else if (SimpleBindingData.syncRotation)
             {
                 boundTransform.rotation = parentTransform.rotation * SimpleBindingData.offSetRotation;
             }
             if (SimpleBindingData.syncScale)
-                boundTransform.localScale = parentTransform.scale + SimpleBindingData.offSetScale;
+                boundTransform.localScale = parentTransform.scale + SimpleBindingData.offSetScale.Struct();
         }
     }
 }

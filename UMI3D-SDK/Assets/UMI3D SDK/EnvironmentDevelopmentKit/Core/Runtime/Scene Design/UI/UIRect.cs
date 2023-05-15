@@ -137,7 +137,7 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             var rectDto = dto as UIRectDto;
             rectDto.anchoredPosition = AnchoredPosition.GetValue(user).Dto();
-            rectDto.anchoredPosition3D = AnchoredPosition3D.GetValue(user);
+            rectDto.anchoredPosition3D = AnchoredPosition3D.GetValue(user).Dto();
             rectDto.anchorMax = AnchorMax.GetValue(user).Dto();
             rectDto.anchorMin = AnchorMin.GetValue(user).Dto();
             rectDto.offsetMax = OffsetMax.GetValue(user).Dto();

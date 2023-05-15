@@ -181,10 +181,10 @@ namespace umi3d.edk.userCapture
                 IsActive = IsActive,
                 IsRelativeToNode = isRelativeToNode,
                 AllowOverriding = AllowOverriding,
-                BodyPosition = BodyPosition,
-                BodyEulerRotation = BodyEulerRotation,
+                BodyPosition = BodyPosition.Dto(),
+                BodyEulerRotation = BodyEulerRotation.Dto(),
                 //JointRotations = JointRotations.ToDictionary(x => x.jointId, x => (Vector3Dto)x.JointEulerRotation)
-                TargetTransforms = TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3Dto, Vector3Dto>(x.relativePosition, x.relativeRotation))
+                TargetTransforms = TargetTransforms.ToDictionary(x => x.jointId, x => new KeyValuePair<Vector3Dto, Vector3Dto>(x.relativePosition.Dto(), x.relativeRotation.Dto()))
             };
         }
 

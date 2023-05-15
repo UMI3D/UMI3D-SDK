@@ -56,11 +56,11 @@ namespace umi3d.edk.userCapture
                 userId = userId,
                 boneType = boneType,
 
-                offSetPosition = offsetPosition,
+                offSetPosition = offsetPosition.Dto(),
                 offSetRotation = offsetRotation,
-                offSetScale = offsetScale,
+                offSetScale = offsetScale.Dto(),
 
-                anchorPosition = anchor,
+                anchorPosition = anchor.Dto(),
 
                 partialFit = partialFit,
                 priority = priority,

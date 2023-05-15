@@ -241,7 +241,14 @@ namespace umi3d.edk
             objectImmersiveOnly.OnValueChanged += (bool b) => immersiveOnly = b;
 
             objectAnchor = new UMI3DAsyncProperty<UMI3DAnchorDto>(objectId, UMI3DPropertyKeys.Anchor, UMI3DAnchor?.ToDto());
-            objectAnchor.OnValueChanged += (UMI3DAnchorDto a) => { UMI3DAnchor.PositionOffset = a?.positionOffset; UMI3DAnchor.RotationOffset = a?.rotationOffset; UMI3DAnchor.ScaleOffset = a?.scaleOffset; };
+            objectAnchor.OnValueChanged += (UMI3DAnchorDto a) => {
+                if (a != null)
+                {
+                    UMI3DAnchor.PositionOffset = a.positionOffset.Struct();
+                    UMI3DAnchor.RotationOffset = a.rotationOffset;
+                    UMI3DAnchor.ScaleOffset = a.scaleOffset.Struct();
+                }
+            };
 
             inited = true;
         }

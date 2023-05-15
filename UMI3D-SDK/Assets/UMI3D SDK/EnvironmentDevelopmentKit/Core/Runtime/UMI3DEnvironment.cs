@@ -147,7 +147,7 @@ namespace umi3d.edk
         /// </summary>
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user), usedDto = Instance.useDto };
+            return new EnterDto() { userPosition = objectStartPosition.GetValue(user).Dto(), userRotation = objectStartOrientation.GetValue(user), usedDto = Instance.useDto };
         }
 
         /// <summary>

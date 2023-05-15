@@ -63,7 +63,7 @@ namespace umi3d.cdk
             RectTransform transform = data.node.GetOrAddComponent<RectTransform>();
             var rect = data.dto as UIRectDto;
             transform.anchoredPosition = rect.anchoredPosition.Struct();
-            transform.anchoredPosition3D = rect.anchoredPosition3D;
+            transform.anchoredPosition3D = rect.anchoredPosition3D.Struct();
             transform.anchorMax = rect.anchorMax.Struct();
             transform.anchorMin = rect.anchorMin.Struct();
             transform.offsetMax = rect.offsetMax.Struct();
@@ -91,7 +91,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnchoredPosition3D:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition3D = dto.anchoredPosition3D = (Vector3Dto)data.property.value;
+                        transform.anchoredPosition3D = (dto.anchoredPosition3D = (Vector3Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMax:
@@ -177,7 +177,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnchoredPosition3D:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition3D = dto.anchoredPosition3D = UMI3DSerializer.Read<Vector3Dto>(data.container);
+                        transform.anchoredPosition3D = (dto.anchoredPosition3D = UMI3DSerializer.Read<Vector3Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMax:

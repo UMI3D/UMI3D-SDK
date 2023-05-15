@@ -94,7 +94,7 @@ namespace umi3d.edk
                     roughnessFactor = roughnessFactor,
 
                 },
-                emissiveFactor = (Vector3)(Vector4)emissive,
+                emissiveFactor = ((Vector3)(Vector4)emissive).Dto(),
                 extensions = extensions
             };
         }

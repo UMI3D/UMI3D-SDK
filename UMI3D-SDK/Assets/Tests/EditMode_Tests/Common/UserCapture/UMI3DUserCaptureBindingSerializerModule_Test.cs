@@ -59,10 +59,10 @@ namespace EditMode_Tests
                 syncPosition = syncPos,
                 syncRotation = syncRot,
                 syncScale = syncScale,
-                offSetPosition = Vector3.zero,
+                offSetPosition = Vector3.zero.Dto(),
                 offSetRotation = Quaternion.identity,
-                offSetScale = Vector3.one,
-                anchorPosition = Vector3.zero,
+                offSetScale = Vector3.one.Dto(),
+                anchorPosition = Vector3.zero.Dto(),
                 priority = prio,
                 partialFit = partial
             };
@@ -90,9 +90,9 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncPosition,      resultSimpleBindingDataDto.syncPosition);
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
-            Assert.AreEqual(simpleBindingDataDto.offSetPosition,    resultSimpleBindingDataDto.offSetPosition);
+            Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
             Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
-            Assert.AreEqual(simpleBindingDataDto.offSetScale,       resultSimpleBindingDataDto.offSetScale);
+            Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
             var resultBoneBindingDataDto = result.data as BoneBindingDataDto;
@@ -113,10 +113,10 @@ namespace EditMode_Tests
                 syncPosition = syncPos,
                 syncRotation = syncRot,
                 syncScale = syncScale,
-                offSetPosition = Vector3.zero,
+                offSetPosition = Vector3.zero.Dto(),
                 offSetRotation = Quaternion.identity,
-                offSetScale = Vector3.one,
-                anchorPosition = Vector3.zero,
+                offSetScale = Vector3.one.Dto(),
+                anchorPosition = Vector3.zero.Dto(),
                 priority = prio,
                 partialFit = partial
             };
@@ -143,9 +143,9 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncPosition,      resultSimpleBindingDataDto.syncPosition);
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
-            Assert.AreEqual(simpleBindingDataDto.offSetPosition,    resultSimpleBindingDataDto.offSetPosition);
+            Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
             Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
-            Assert.AreEqual(simpleBindingDataDto.offSetScale,       resultSimpleBindingDataDto.offSetScale);
+            Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
             var resultBoneBindingDataDto = result.data as BoneBindingDataDto;
@@ -205,10 +205,10 @@ namespace EditMode_Tests
                     syncPosition = false,
                     syncRotation = false,
                     syncScale = false,
-                    offSetPosition = Vector3.zero,
+                    offSetPosition = Vector3.zero.Dto(),
                     offSetRotation = Quaternion.identity,
-                    offSetScale = Vector3.one,
-                    anchorPosition = Vector3.zero,
+                    offSetScale = Vector3.one.Dto(),
+                    anchorPosition = Vector3.zero.Dto(),
                     priority = 10,
                     partialFit = true
                 };

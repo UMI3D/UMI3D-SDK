@@ -182,7 +182,7 @@ namespace umi3d.edk.userCapture
                 + UMI3DSerializer.Write(RightHandEulerRotation)
                 + UMI3DSerializer.Write(LeftHandPosition)
                 + UMI3DSerializer.Write(LeftHandEulerRotation)
-                + UMI3DSerializer.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => (Vector3Dto)x.PhalanxEulerRotation));
+                + UMI3DSerializer.Write(PhalanxRotations.ToDictionary(x => x.phalanxId, x => x.PhalanxEulerRotation.Dto()));
         }
 
         /// <inheritdoc/>
@@ -195,11 +195,11 @@ namespace umi3d.edk.userCapture
                 IsActive = IsActive,
                 HoverPose = HoverAnimation,
                 isRelativeToNode = isRelativeToNode,
-                RightHandPosition = RightHandPosition,
-                RightHandEulerRotation = RightHandEulerRotation,
-                LeftHandPosition = LeftHandPosition,
-                LeftHandEulerRotation = LeftHandEulerRotation,
-                PhalanxRotations = PhalanxRotations.ToDictionary(x => (uint)x.phalanxId, x => (Vector3Dto)x.PhalanxEulerRotation)
+                RightHandPosition = RightHandPosition.Dto(),
+                RightHandEulerRotation = RightHandEulerRotation.Dto(),
+                LeftHandPosition = LeftHandPosition.Dto(),
+                LeftHandEulerRotation = LeftHandEulerRotation.Dto(),
+                PhalanxRotations = PhalanxRotations.ToDictionary(x => (uint)x.phalanxId, x => x.PhalanxEulerRotation.Dto())
             };
         }
 

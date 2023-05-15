@@ -33,32 +33,22 @@ namespace EditMode_Tests
     public class UMI3DCollaborationSerializerModule_Test
     {
         umi3d.common.collaboration.UMI3DCollaborationSerializerModule collabSerializerModule = null;
-        UMI3DSerializerBasicModules basicModules = null;
-        UMI3DSerializerVectorModules vectorModules = null;
-        UMI3DSerializerStringModules stringModules = null;
-        UMI3DSerializerShaderModules shaderModules = null;
-        UMI3DSerializerAnimationModules animationModules = null;
+        protected List<UMI3DSerializerModule> serializationModules = new();
 
-        [OneTimeSetUp] public void InitSerializer()
+        [OneTimeSetUp]
+        public virtual void InitSerializer()
         {
             collabSerializerModule = new umi3d.common.collaboration.UMI3DCollaborationSerializerModule();
-            basicModules = new UMI3DSerializerBasicModules();
-            vectorModules= new UMI3DSerializerVectorModules();
-            stringModules = new UMI3DSerializerStringModules();
-            shaderModules= new UMI3DSerializerShaderModules();
-            animationModules= new UMI3DSerializerAnimationModules();
+            serializationModules = UMI3DSerializerModule.GetModules().ToList();
 
-            UMI3DSerializer.AddModule(collabSerializerModule);
-            UMI3DSerializer.AddModule(basicModules);
-            UMI3DSerializer.AddModule(vectorModules);
-            UMI3DSerializer.AddModule(stringModules);
-            UMI3DSerializer.AddModule(shaderModules);
-            UMI3DSerializer.AddModule(animationModules);
+            UMI3DSerializer.AddModule(serializationModules);
         }
 
-        [TearDown] public void Teardown()
+        [OneTimeTearDown]
+        public virtual void Teardown()
         {
-
+            UMI3DSerializer.RemoveModule(serializationModules);
+            serializationModules.Clear();
         }
 
         #region Pose Conditions
@@ -103,7 +93,7 @@ namespace EditMode_Tests
         public void ReadDirectionCondition()
         {
             DirectionConditionDto directionConditionDto = new DirectionConditionDto(
-                direction : Vector3.one
+                direction : Vector3.one.Dto()
             );
 
             collabSerializerModule.Write(directionConditionDto, out Bytable data);
@@ -120,7 +110,7 @@ namespace EditMode_Tests
         public void ReadUserScaleCondition()
         {
             UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto(
-                scale : Vector3.one
+                scale : Vector3.one.Dto()
             );
 
             collabSerializerModule.Write(userScaleConditinoDto, out Bytable data);
@@ -135,7 +125,7 @@ namespace EditMode_Tests
         public void ReadScaleCondition()
         {
             ScaleConditionDto scaleConditionDto = new ScaleConditionDto(
-                scale: Vector3.one
+                scale: Vector3.one.Dto()
             );
 
             collabSerializerModule.Write(scaleConditionDto, out Bytable data);
@@ -154,7 +144,7 @@ namespace EditMode_Tests
         {
             RangeConditionDto rangeConditionDto = new RangeConditionDto(
                 conditionA : new MagnitudeConditionDto(12, 53, 15),
-                conditionB : new ScaleConditionDto(Vector3.one)
+                conditionB : new ScaleConditionDto(Vector3Dto.one)
             );
 
             collabSerializerModule.Write(rangeConditionDto, out Bytable data);
@@ -192,8 +182,8 @@ namespace EditMode_Tests
         private PoseConditionDto[] GetCondditionsTestSet()
         {
             return new PoseConditionDto[]{
-                new UserScaleConditionDto(Vector3.one),
-                new DirectionConditionDto(Vector3.one)
+                new UserScaleConditionDto(Vector3Dto.one),
+                new DirectionConditionDto(Vector3Dto.one)
             };
         }
         #endregion
@@ -204,7 +194,7 @@ namespace EditMode_Tests
         {
             BonePoseDto bonePoseDto = new BonePoseDto(
                 bone : 2,
-                position : Vector3.one,
+                position : Vector3Dto.one,
                 rotation : Vector4.one
             ) ;
 
@@ -217,10 +207,10 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (bonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).Position
-                 == (bonePoseDto as BonePoseDto).Position));
-            Assert.IsTrue(((result as BonePoseDto).Rotation
-                == (bonePoseDto as BonePoseDto).Rotation));
+            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
+                 == (bonePoseDto as BonePoseDto).Position.Struct()));
+            Assert.IsTrue(((Vector4)(result as BonePoseDto).Rotation
+                == (Vector4)(bonePoseDto as BonePoseDto).Rotation));
         }
 
         [Test]
@@ -228,7 +218,7 @@ namespace EditMode_Tests
         {
             AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto(
                 bone: 2,
-                position: Vector3.one,
+                position: Vector3Dto.one,
                 rotation: Vector4.one,
                 otherBone : 17
             );
@@ -242,8 +232,8 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (anchorBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).Position
-                 == (anchorBonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
+                 == (anchorBonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue(((result as BonePoseDto).Rotation
                 == (anchorBonePoseDto as BonePoseDto).Rotation));
 
@@ -256,7 +246,7 @@ namespace EditMode_Tests
         {
             NodeAnchoredBonePoseDto nodeAnchoredBonePoseDto = new NodeAnchoredBonePoseDto(
                 bone: 2,
-                position: Vector3.one,
+                position: Vector3Dto.one,
                 rotation: Vector4.one,
                 node: 17
             );
@@ -270,8 +260,8 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (nodeAnchoredBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).Position
-                 == (nodeAnchoredBonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
+                 == (nodeAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue(((result as BonePoseDto).Rotation
                 == (nodeAnchoredBonePoseDto as BonePoseDto).Rotation));
 
@@ -284,7 +274,7 @@ namespace EditMode_Tests
         {
             FloorAnchoredBonePoseDto floorAnchoredBonePoseDto = new FloorAnchoredBonePoseDto(
                 bone: 2,
-                position: Vector3.one,
+                position: Vector3Dto.one,
                 rotation: Vector4.one
             );
 
@@ -297,8 +287,8 @@ namespace EditMode_Tests
 
             Assert.IsTrue(((result as BonePoseDto).bone
                 == (floorAnchoredBonePoseDto as BonePoseDto).bone));
-            Assert.IsTrue(((result as BonePoseDto).Position
-                 == (floorAnchoredBonePoseDto as BonePoseDto).Position));
+            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
+                 == (floorAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue(((result as BonePoseDto).Rotation
                 == (floorAnchoredBonePoseDto as BonePoseDto).Rotation));
         }
@@ -310,7 +300,7 @@ namespace EditMode_Tests
         {
             PoseDto poseDto = new PoseDto(
                 bones: GetTestBonePoseDtoSample(),
-                boneAnchor : new BonePoseDto() { bone = 24, Position = Vector3.zero, Rotation = Vector4.one }
+                boneAnchor : new BonePoseDto() { bone = 24, Position = Vector3Dto.zero, Rotation = Vector4.one }
             );
 
             collabSerializerModule.Write(poseDto, out Bytable data);
@@ -360,10 +350,10 @@ namespace EditMode_Tests
             int poseIndex = result.poseIndexinPoseManager;
 
             Assert.IsTrue(poseIndex == poseIndexinPoseManager);
-            Assert.IsTrue((Vector3)(result.poseConditions[0] as UserScaleConditionDto).scale
-                == (Vector3)(poseOverriderDto.poseConditions[0] as UserScaleConditionDto).scale);
-            Assert.IsTrue((Vector3)(result.poseConditions[1] as DirectionConditionDto).direction
-                == (Vector3)(poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction);
+            Assert.IsTrue((result.poseConditions[0] as UserScaleConditionDto).scale.Struct()
+                == (poseOverriderDto.poseConditions[0] as UserScaleConditionDto).scale.Struct());
+            Assert.IsTrue((result.poseConditions[1] as DirectionConditionDto).direction.Struct()
+                == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction.Struct());
 
             Assert.IsTrue(poseOverriderDto.duration.duration == result.duration.duration);
             Assert.IsTrue(poseOverriderDto.interpolationable == result.interpolationable);

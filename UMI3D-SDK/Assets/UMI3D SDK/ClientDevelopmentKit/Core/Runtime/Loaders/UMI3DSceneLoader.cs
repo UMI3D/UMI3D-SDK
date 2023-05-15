@@ -79,9 +79,9 @@ namespace umi3d.cdk
             await base.ReadUMI3DExtension(data);
             var sceneDto = data.dto as UMI3DSceneNodeDto;
             if (sceneDto == null) return;
-            data.node.transform.localPosition = sceneDto.position;
+            data.node.transform.localPosition = sceneDto.position.Struct();
             data.node.transform.localRotation = sceneDto.rotation;
-            data.node.transform.localScale = sceneDto.scale;
+            data.node.transform.localScale = sceneDto.scale.Struct();
             await Task.WhenAll(sceneDto.LibrariesId.Select(async libraryId => await UMI3DResourcesManager.LoadLibrary(libraryId, sceneDto.id)));
 
             if (sceneDto.otherEntities != null)
@@ -118,7 +118,7 @@ namespace umi3d.cdk
                     dto.position = (Vector3Dto)data.property.value;
                     if (node.updatePose)
                     {
-                        node.transform.localPosition = dto.position;
+                        node.transform.localPosition = dto.position.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -134,7 +134,7 @@ namespace umi3d.cdk
                     dto.scale = (Vector3Dto)data.property.value;
                     if (node.updatePose)
                     {
-                        node.transform.localScale = dto.scale;
+                        node.transform.localScale = dto.scale.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -167,7 +167,7 @@ namespace umi3d.cdk
                     dto.position = UMI3DSerializer.Read<Vector3Dto>(data.container); ;
                     if (node.updatePose)
                     {
-                        node.transform.localPosition = dto.position;
+                        node.transform.localPosition = dto.position.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -183,7 +183,7 @@ namespace umi3d.cdk
                     dto.scale = UMI3DSerializer.Read<Vector3Dto>(data.container); ;
                     if (node.updatePose)
                     {
-                        node.transform.localScale = dto.scale;
+                        node.transform.localScale = dto.scale.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -281,7 +281,7 @@ namespace umi3d.cdk
 
                 case UMI3DPropertyKeys.EmissiveFactor:
                     materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ((ColorDto)property.value).Struct());
-                    glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)((ColorDto)property.value).Struct();
+                    glTFMaterialDto.emissiveFactor = ((Vector3)(Vector4)((ColorDto)property.value).Struct()).Dto();
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
@@ -499,7 +499,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)ef;
+                    glTFMaterialDto.emissiveFactor = ((Vector3)(Vector4)ef).Dto();
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:

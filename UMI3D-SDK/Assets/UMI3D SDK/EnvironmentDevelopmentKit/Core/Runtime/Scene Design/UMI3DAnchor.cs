@@ -44,9 +44,9 @@ namespace umi3d.edk
         {
             return new UMI3DAnchorDto()
             {
-                positionOffset = PositionOffset,
+                positionOffset = PositionOffset.Dto(),
                 rotationOffset = RotationOffset,
-                scaleOffset = ScaleOffset
+                scaleOffset = ScaleOffset.Dto()
             };
         }
     }

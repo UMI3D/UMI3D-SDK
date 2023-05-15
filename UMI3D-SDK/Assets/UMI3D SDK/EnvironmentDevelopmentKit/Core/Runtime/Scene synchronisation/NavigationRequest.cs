@@ -31,7 +31,7 @@ namespace umi3d.edk
 
         public NavigationRequest(Vector3 position)
         {
-            this.position = position;
+            this.position = position.Dto();
 
         }
 

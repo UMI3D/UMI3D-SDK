@@ -52,3 +52,18 @@ public static class Vector2DtoExtension
         return new Vector2(v.X, v.Y);
     }
 }
+
+public static class Vector3DtoExtension
+{
+    public static Vector3Dto Dto(this Vector3 v)
+    {
+        if (v == null) return default;
+        return new Vector3Dto() { X = v.x, Y = v.y, Z = v.z };
+    }
+
+    public static Vector3 Struct(this Vector3Dto v)
+    {
+        if (v == null) return default;
+        return new Vector3(v.X, v.Y, v.Z);
+    }
+}

@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using UnityEngine;
 
 namespace umi3d.common
 {
@@ -23,7 +22,7 @@ namespace umi3d.common
     /// Serializable implementation of a vector with 3 float coordinates.
     /// </summary>
     [Serializable]
-    public class Vector3Dto : UMI3DDto, IEquatable<Vector3Dto>
+    public class Vector3Dto : UMI3DDto
     {
         public float X;
         public float Y;
@@ -32,41 +31,10 @@ namespace umi3d.common
         public static Vector3Dto one { get => new Vector3Dto() { X = 1, Y = 1, Z = 1 }; }
         public static Vector3Dto zero { get => new Vector3Dto() { X = 0, Y = 0, Z = 0 }; }
 
-        public Vector3Dto() : base()
-        {
-            X = 0;
-            Y = 0;
-            Z = 0;
-        }
-
-        public Vector3Dto(float x, float y, float z) : base()
-        {
-            X = x;
-            Y = y;
-            Z = z;
-        }
-
         /// <inheritdoc/>
         public override string ToString()
         {
-            return ((Vector3)this).ToString();
-        }
-
-        public bool Equals(Vector3Dto other)
-        {
-            return X == other.X && Y == other.Y && Z == other.Z;
-        }
-
-        public static implicit operator Vector3Dto(Vector3 v)
-        {
-            if (v == null) return default;
-            return new Vector3Dto(v.x, v.y, v.z);
-        }
-
-        public static implicit operator Vector3(Vector3Dto v)
-        {
-            if (v == null) return default;
-            return new Vector3(v.X, v.Y, v.Z);
+            return $"{base.ToString()}[{X},{Y},{Z}]";
         }
 
         public float this[int i]

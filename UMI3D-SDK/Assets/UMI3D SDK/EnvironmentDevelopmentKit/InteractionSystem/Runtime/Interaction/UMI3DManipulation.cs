@@ -37,7 +37,7 @@ namespace umi3d.edk.interaction
 
             public ManipulationEventContent(UMI3DUser user, ManipulationRequestDto dto) : base(user, dto)
             {
-                translation = dto.translation;
+                translation = dto.translation.Struct();
                 rotation = dto.rotation;
             }
 

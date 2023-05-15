@@ -72,7 +72,7 @@ namespace umi3d.cdk
             switch (value.property.property)
             {
                 case UMI3DPropertyKeys.Position:
-                    node.transform.localPosition = dto.position = (Vector3Dto)value.property.value;
+                    node.transform.localPosition = (dto.position = (Vector3Dto)value.property.value).Struct();
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
@@ -80,7 +80,7 @@ namespace umi3d.cdk
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    node.transform.localScale = dto.scale = (Vector3Dto)value.property.value;
+                    node.transform.localScale = (dto.scale = (Vector3Dto)value.property.value).Struct();
                     node.SendOnPoseUpdated();
                     break;
                 default:
@@ -106,15 +106,15 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = node.transform.localPosition = UMI3DSerializer.Read<Vector3Dto>(value.container);
+                    node.transform.localPosition = (dto.position =  UMI3DSerializer.Read<Vector3Dto>(value.container)).Struct();
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    node.transform.localRotation = dto.rotation = UMI3DSerializer.Read<Vector4Dto>(value.container);
+                    node.transform.localRotation = (dto.rotation = UMI3DSerializer.Read<Vector4Dto>(value.container));
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = node.transform.localScale = UMI3DSerializer.Read<Vector3>(value.container);
+                     node.transform.localScale = (dto.scale = UMI3DSerializer.Read<Vector3Dto>(value.container)).Struct();
                     node.SendOnPoseUpdated();
                     break;
                 default:
@@ -179,9 +179,9 @@ namespace umi3d.cdk
                         ReadLightingExtensions(dto, node.gameObject);
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
                         // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
-                        node.transform.localPosition = dto.position;
+                        node.transform.localPosition = dto.position.Struct();
                         node.transform.localRotation = dto.rotation;
-                        node.transform.localScale = dto.scale;
+                        node.transform.localScale = dto.scale.Struct();
 
                         node.SendOnPoseUpdated();
                         node.NotifyLoaded();

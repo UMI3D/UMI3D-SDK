@@ -46,7 +46,7 @@ namespace umi3d.cdk.userCapture
 
         public virtual ControllerDto ToControllerDto()
         {
-            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position, rotation = new Vector4().FromQuaternion(this.transform.rotation), isOverrider = false};
+            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position.Dto(), rotation = new Vector4().FromQuaternion(this.transform.rotation), isOverrider = false};
         }
     }
 }

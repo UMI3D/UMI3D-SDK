@@ -70,7 +70,7 @@ namespace umi3d.common
                         UMI3DSerializer.TryRead(container, out float x);
                         UMI3DSerializer.TryRead(container, out float y);
                         UMI3DSerializer.TryRead(container, out float z);
-                        result = (T)Convert.ChangeType(new Vector3Dto(x, y, z), typeof(T));
+                        result = (T)Convert.ChangeType(new Vector3Dto() { X = x, Y = y, Z = z }, typeof(T));
                         return true;
                     }
                     break;

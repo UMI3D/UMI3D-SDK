@@ -37,7 +37,7 @@ namespace umi3d.common.utils.serialization
                 case Vector2 v:
                     return v.Dto();
                 case Vector3 v:
-                    return (Vector3Dto)v;
+                    return v.Dto();
                 case Color c:
                     return c.Dto();
                 case Matrix4x4 m:
@@ -61,7 +61,7 @@ namespace umi3d.common.utils.serialization
                 case Vector2Dto v:
                     return v.Struct();
                 case Vector3Dto v:
-                    return (Vector3)v;
+                    return v.Struct();
                 case ColorDto c:
                     return c.Struct();
                 case Matrix4x4Dto m:

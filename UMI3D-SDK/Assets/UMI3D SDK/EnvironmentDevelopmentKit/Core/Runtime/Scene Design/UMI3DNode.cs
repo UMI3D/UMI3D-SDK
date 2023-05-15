@@ -267,8 +267,8 @@ namespace umi3d.edk
             var dto = new GlTFNodeDto
             {
                 name = nodeName,
-                position = objectPosition.GetValue(user),
-                scale = objectScale.GetValue(user),
+                position = objectPosition.GetValue(user).Dto(),
+                scale = objectScale.GetValue(user).Dto(),
                 rotation = objectRotation.GetValue(user)
             };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
@@ -405,15 +405,15 @@ namespace umi3d.edk
             switch (colliderType)
             {
                 case ColliderType.Box:
-                    res.colliderCenter = colliderCenter;
-                    res.colliderBoxSize = colliderBoxSize;
+                    res.colliderCenter = colliderCenter.Dto();
+                    res.colliderBoxSize = colliderBoxSize.Dto();
                     break;
                 case ColliderType.Sphere:
-                    res.colliderCenter = colliderCenter;
+                    res.colliderCenter = colliderCenter.Dto();
                     res.colliderRadius = colliderRadius;
                     break;
                 case ColliderType.Capsule:
-                    res.colliderCenter = colliderCenter;
+                    res.colliderCenter = colliderCenter.Dto();
                     res.colliderDirection = colliderDirection;
                     res.colliderHeight = colliderHeight;
                     res.colliderRadius = colliderRadius;

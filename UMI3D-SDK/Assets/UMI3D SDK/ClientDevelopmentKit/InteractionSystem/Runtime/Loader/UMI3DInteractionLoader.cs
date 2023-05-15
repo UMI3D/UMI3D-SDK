@@ -192,7 +192,7 @@ namespace umi3d.cdk.interaction
                 case UMI3DInteractionKeys.Vector3Parameter:
                     var Vector3 = new Vector3ParameterDto();
                     ReadAbstractParameterDto(Vector3, container);
-                    Vector3.value = UMI3DSerializer.Read<Vector3>(container);
+                    Vector3.value = UMI3DSerializer.Read<Vector3Dto>(container);
                     interaction = Vector3;
                     break;
                 case UMI3DInteractionKeys.Vector4Parameter:

@@ -136,7 +136,7 @@ namespace umi3d.cdk.userCapture
                                             as UMI3DNodeInstance;
 
             Vector3 targetScale = targetNodeInstance.transform.localScale;
-            Vector3 wantedScale = scaleConditionDto.scale;
+            Vector3 wantedScale = scaleConditionDto.scale.Struct();
 
             if (targetScale.sqrMagnitude <= wantedScale.sqrMagnitude)
             {

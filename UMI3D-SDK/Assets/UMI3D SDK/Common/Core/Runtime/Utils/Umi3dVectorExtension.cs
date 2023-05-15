@@ -37,12 +37,12 @@ namespace umi3d.common
 
         public static Vector3Dto Unscaled(this Vector3Dto v3, Vector3Dto scale)
         {
-            return (Vector3Dto)((Vector3)v3).Unscaled(scale);
+            return (v3.Struct()).Unscaled(scale.Struct()).Dto();
         }
 
         public static Vector3Dto Scaled(this Vector3Dto v3, Vector3Dto scale)
         {
-            return (Vector3Dto)((Vector3)v3).Scaled(scale);
+            return (v3.Struct()).Scaled(scale.Struct()).Dto();
         }
 
         public static Vector4Dto Unscaled(this Vector4Dto v4, Vector4Dto scale)

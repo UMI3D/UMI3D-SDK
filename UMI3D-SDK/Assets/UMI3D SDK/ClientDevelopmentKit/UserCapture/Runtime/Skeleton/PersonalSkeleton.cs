@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture
         {
             var frame = new UserTrackingFrameDto()
             {
-                position = transform.position,
+                position = transform.position.Dto(),
                 rotation = transform.rotation,
             };
 
