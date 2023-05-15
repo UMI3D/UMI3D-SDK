@@ -29,6 +29,6 @@ namespace umi3d.edk
         public static Vector3Dto ToSerializableVector3(Vector3 vector, UMI3DUser user) { return vector.Dto(); }
         public static Vector4Dto ToSerializableVector4(Vector4 vector, UMI3DUser user) { return vector.Dto(); }
         public static Vector4Dto ToSerializableVector4(Quaternion quaternion, UMI3DUser user) { return quaternion.Dto(); }
-        public static Matrix4x4Dto ToSerializableMatrix4x4(Matrix4x4 matrix, UMI3DUser user) { return matrix; }
+        public static Matrix4x4Dto ToSerializableMatrix4x4(Matrix4x4 matrix, UMI3DUser user) { return matrix.Dto(); }
     }
 }

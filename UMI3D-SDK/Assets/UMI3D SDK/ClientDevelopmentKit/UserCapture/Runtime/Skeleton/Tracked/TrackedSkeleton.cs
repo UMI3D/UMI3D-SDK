@@ -56,7 +56,7 @@ namespace umi3d.cdk.userCapture
             return new UserCameraPropertiesDto()
             {
                 scale = 1f,
-                projectionMatrix = viewpoint.projectionMatrix,
+                projectionMatrix = viewpoint.projectionMatrix.Dto(),
                 boneType = BoneType.Viewpoint,
             };
         }

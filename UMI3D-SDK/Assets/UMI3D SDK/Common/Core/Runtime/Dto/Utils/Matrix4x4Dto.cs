@@ -25,38 +25,22 @@ namespace umi3d.common
     [Serializable]
     public class Matrix4x4Dto : UMI3DDto
     {
-        public Matrix4x4Dto() : base()
-        {
-            c0 = new Vector4Dto();
-            c1 = new Vector4Dto();
-            c2 = new Vector4Dto();
-            c3 = new Vector4Dto();
-        }
-
-        public Matrix4x4Dto(Vector4Dto c0, Vector4Dto c1, Vector4Dto c2, Vector4Dto c3) : base()
-        {
-            this.c0 = c0;
-            this.c1 = c1;
-            this.c2 = c2;
-            this.c3 = c3;
-        }
-
         /// <summary>
         /// 1st column.
         /// </summary>
-        public Vector4Dto c0;
+        public Vector4Dto c0 { get; set; } = new Vector4Dto();
         /// <summary>
         /// 2nd column.
         /// </summary>
-        public Vector4Dto c1;
+        public Vector4Dto c1 { get; set; } = new Vector4Dto();
         /// <summary>
         /// 3rd column.
         /// </summary>
-        public Vector4Dto c2;
+        public Vector4Dto c2 { get; set; } = new Vector4Dto();
         /// <summary>
         /// 4th column.
         /// </summary>
-        public Vector4Dto c3;
+        public Vector4Dto c3 { get; set; } = new Vector4Dto();
 
         public float this[int i]
         {
@@ -94,24 +78,6 @@ namespace umi3d.common
                     throw new ArgumentOutOfRangeException("ensure that 0 < r:" + r.ToString() + " < 4 and 0 < c:" + c.ToString() + " < 4");
                 }
             }
-        }
-
-        public static implicit operator Matrix4x4Dto(Matrix4x4 m)
-        {
-            if (m == null) return default;
-            var M = new Matrix4x4Dto();
-            for (int i = 0; i < 16; i++)
-                M[i] = m[i];
-            return M;
-        }
-
-        public static implicit operator Matrix4x4(Matrix4x4Dto m)
-        {
-            if (m == null) return default;
-            var M = new Matrix4x4();
-            for (int i = 0; i < 16; i++)
-                M[i] = m[i];
-            return M;
         }
     }
 }

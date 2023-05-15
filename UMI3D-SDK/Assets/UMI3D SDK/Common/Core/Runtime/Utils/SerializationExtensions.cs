@@ -41,7 +41,7 @@ namespace umi3d.common.utils.serialization
                 case Color c:
                     return c.Dto();
                 case Matrix4x4 m:
-                    return (Matrix4x4Dto)m;
+                    return m.Dto();
                 default:
                     return o;
             }
@@ -65,7 +65,7 @@ namespace umi3d.common.utils.serialization
                 case ColorDto c:
                     return c.Struct();
                 case Matrix4x4Dto m:
-                    return (Matrix4x4)m;
+                    return m.Struct();
                 default:
                     return o;
             }

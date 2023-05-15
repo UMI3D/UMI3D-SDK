@@ -94,3 +94,24 @@ public static class Vector4DtoExtension
         return new Quaternion(v4.X, v4.Y, v4.Z, v4.W);
     }
 }
+
+public static class Matrix4x4DtoExtension
+{
+    public static Matrix4x4Dto Dto(this Matrix4x4 m)
+    {
+        if (m == null) return default;
+        var M = new Matrix4x4Dto();
+        for (int i = 0; i < 16; i++)
+            M[i] = m[i];
+        return M;
+    }
+
+    public static Matrix4x4 Struct(this Matrix4x4Dto m)
+    {
+        if (m == null) return default;
+        var M = new Matrix4x4();
+        for (int i = 0; i < 16; i++)
+            M[i] = m[i];
+        return M;
+    }
+}

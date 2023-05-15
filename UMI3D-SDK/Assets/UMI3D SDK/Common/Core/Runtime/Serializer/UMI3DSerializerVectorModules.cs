@@ -155,7 +155,7 @@ namespace umi3d.common
                         UMI3DSerializer.TryRead(container, out Vector4Dto c2);
                         UMI3DSerializer.TryRead(container, out Vector4Dto c3);
 
-                        result = (T)Convert.ChangeType(new Matrix4x4Dto(c0, c1, c2, c3), typeof(T));
+                        result = (T)Convert.ChangeType(new Matrix4x4Dto() { c0 = c0, c1 = c1, c2 = c2, c3 = c3 }, typeof(T));
                         return true;
                     }
                     break;
@@ -262,7 +262,7 @@ namespace umi3d.common
                     bytable += UMI3DSerializer.Write(v4.c3);
                     return true;
                 case Matrix4x4 v4:
-                    bytable = UMI3DSerializer.Write((Matrix4x4Dto)v4);
+                    bytable = UMI3DSerializer.Write(v4.Dto());
                     return true;
             }
             bytable = null;
