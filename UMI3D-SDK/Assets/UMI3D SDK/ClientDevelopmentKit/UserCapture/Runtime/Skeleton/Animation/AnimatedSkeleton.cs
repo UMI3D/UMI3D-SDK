@@ -22,16 +22,16 @@ namespace umi3d.cdk.userCapture
 {
     public class AnimatedSkeleton : ISubSkeleton
     {
-        private const DebugScope debugScope = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
+        private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
 
         /// <summary>
         /// Reference to the skeleton mapper that computes related links into a pose.
         /// </summary>
         public SkeletonMapper Mapper { get; protected set; }
 
-        private UMI3DEnvironmentLoader environmentLoader;
+        #region Dependency Injection
 
-        public AnimatedSkeleton() { }
+        private readonly UMI3DEnvironmentLoader environmentLoader;
 
         public AnimatedSkeleton(SkeletonMapper mapper)
         {
@@ -44,6 +44,8 @@ namespace umi3d.cdk.userCapture
             Mapper = mapper;
             this.environmentLoader = environmentLoader;
         }
+
+        #endregion Dependency Injection
 
         ///<inheritdoc/>
         /// Always returns null for AnimatonSkeleton.
@@ -59,7 +61,7 @@ namespace umi3d.cdk.userCapture
         public virtual PoseDto GetPose()
         {
             if (!Mapper.Animations
-                .Select(id => UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>(id))
+                .Select(id => environmentLoader.GetEntityObject<UMI3DAnimatorAnimation>(id))
                 .Any(a => a?.IsPlaying() ?? false))
                 return null;
             return Mapper.GetPose();
