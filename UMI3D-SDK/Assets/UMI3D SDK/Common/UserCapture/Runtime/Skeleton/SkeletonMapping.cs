@@ -23,9 +23,9 @@ namespace umi3d.common.userCapture
     {
         [inetum.unityUtils.ConstEnum(typeof(BoneType), typeof(uint))]
         public uint BoneType;
-        public SkeletonMappingLink Link;
+        public ISkeletonMappingLink Link;
 
-        public SkeletonMapping(uint boneType, SkeletonMappingLink link)
+        public SkeletonMapping(uint boneType, ISkeletonMappingLink link)
         {
             this.BoneType = boneType;
             this.Link = link;
