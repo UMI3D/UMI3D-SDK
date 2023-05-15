@@ -23,6 +23,7 @@ using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.userCapture
+namespace umi3d.common.userCapture
 {
     [CreateAssetMenu(fileName = "UMI3DSkeletonHierarchy", menuName = "UMI3D/UMI3D Skeleton Hierarchy")]
     public class UMI3DSkeletonHierarchy : ScriptableObject
