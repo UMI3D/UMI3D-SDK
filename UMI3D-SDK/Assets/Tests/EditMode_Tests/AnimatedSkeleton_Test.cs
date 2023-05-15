@@ -71,7 +71,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
         {
             // GIVEN
             var targetPose = new PoseDto();
-            mockSkeletonMapper.Setup(x => x.animations).Returns(new ulong[] { });
+            mockSkeletonMapper.Setup(x => x.Animations).Returns(new ulong[] { });
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -103,7 +103,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.animations).Returns(animationsDtos.Keys.ToArray());
+            mockSkeletonMapper.Setup(x => x.Animations).Returns(animationsDtos.Keys.ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -127,7 +127,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             mockAnimation.Setup(x => x.IsPlaying()).Returns(true);
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.animations).Returns(new ulong[] { animId });
+            mockSkeletonMapper.Setup(x => x.Animations).Returns(new ulong[] { animId });
 
             environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(animId)).Returns(mockAnimation.Object);
 
@@ -162,7 +162,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.animations).Returns(animationsDtos.Keys.ToArray());
+            mockSkeletonMapper.Setup(x => x.Animations).Returns(animationsDtos.Keys.ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -195,7 +195,7 @@ namespace EditMode_Tests // TODO: Complete and lowercase the namespace
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.animations).Returns(animationsDtos.Keys.ToArray());
+            mockSkeletonMapper.Setup(x => x.Animations).Returns(animationsDtos.Keys.ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();

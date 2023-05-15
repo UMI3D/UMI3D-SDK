@@ -25,15 +25,15 @@ namespace umi3d.common.userCapture
         const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
 
         public BonePoseDto BoneAnchor;
-        public SkeletonMapping[] mappings { get; set; }
-        public virtual ulong[] animations { get; set; }
+        public SkeletonMapping[] Mappings;
+        public virtual ulong[] Animations { get; set; }
         public virtual PoseDto GetPose()
         {
             try
             {
                 var pose = new PoseDto(
                     boneAnchor : BoneAnchor,
-                    bones : mappings.Select(m => m.GetPose()).ToList()
+                    bones : Mappings.Select(m => m.GetPose()).ToList()
                 );
 
                 return pose;
