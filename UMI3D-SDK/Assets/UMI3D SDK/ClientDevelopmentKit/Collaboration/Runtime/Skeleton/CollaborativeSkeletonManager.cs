@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration
 
         CollaborativeSkeletonsScene collabScene { get; }
 
-        ISkeleton GetSkeletonById(ulong id);
+        ISkeleton GetSkeletonById(ulong userId);
     }
 
 
@@ -44,20 +44,6 @@ namespace umi3d.cdk.collaboration
         public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
 
         public PersonalSkeleton personalSkeleton => personnalSkeletonManager.personalSkeleton;
-
-        public List<CollaborativeSkeleton> collaborativeSkeletons { get; protected set; } = new();
-
-        public ISkeleton GetSkeletonById(ulong id)
-        {
-            if (personalSkeleton.userId == id)
-            {
-                return personalSkeleton;
-            }
-            else
-            {
-                return collaborativeSkeletons.FirstOrDefault(cs => cs.userId == id);
-            }
-        }
 
         public CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
@@ -106,7 +92,7 @@ namespace umi3d.cdk.collaboration
 
         public void InitSkeletons()
         {
-            skeletons[UMI3DClientServer.Instance.GetUserId()] = personalSkeleton;
+            skeletons[collaborationClientServerService.GetUserId()] = personalSkeleton;
         }
 
         protected void UpdateSkeletons(List<UMI3DUser> usersList)
@@ -146,6 +132,18 @@ namespace umi3d.cdk.collaboration
             return cs as CollaborativeSkeleton;
         }
 
+        public List<CollaborativeSkeleton> GetCollaborativeSkeletons()
+        {
+            return skeletons.Values.Where(x => x is CollaborativeSkeleton).Select(x => x as CollaborativeSkeleton).ToList();
+        }
+
+        public ISkeleton GetSkeletonById(ulong userId)
+        {
+            if (skeletons.ContainsKey(userId))
+                return skeletons[userId];
+            return null;
+        }
+
         public UserTrackingFrameDto GetFrame()
         {
             var frame = personalSkeleton.GetFrame(option);
@@ -162,11 +160,9 @@ namespace umi3d.cdk.collaboration
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
-            ISkeleton skeleton;
-
-            if (!skeletons.TryGetValue(frame.userId, out skeleton))
+            if (!skeletons.TryGetValue(frame.userId, out ISkeleton skeleton))
             {
-                UMI3DLogger.LogWarning("User skeleton not found.", scope);
+                UMI3DLogger.LogWarning($"Skeleton of used {frame.userId} not found. Cannot apply skeleton frame update.", scope);
                 return;
             }
 
