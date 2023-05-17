@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 using System.Collections;
+
 using umi3d.common.userCapture;
 using umi3d.edk.userCapture;
+
 using UnityEngine;
 
 namespace umi3d.edk.collaboration
@@ -43,6 +45,7 @@ namespace umi3d.edk.collaboration
         private void Start()
         {
             UMI3DCollaborationServer.Instance.OnUserJoin.AddListener(newUser);
+            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(x => RemoveAudioSource(x as UMI3DCollaborationUser));
         }
 
         private void newUser(UMI3DUser _user)
@@ -85,20 +88,19 @@ namespace umi3d.edk.collaboration
                 {
                     GameObject go = new GameObject($"AudioSource_user_{user.Id()}");
                     audioSourceNode = go.AddComponent<UMI3DNode>();
+                    go.transform.SetParent(this.transform);
                     tr.AddIfNotNull(user.audioPlayer.ObjectNode.SetValue(audioSourceNode));
                 }
             }
 
-            // TODO: Repair bone Binding
-            //var binding = new BoneBinding(audioSourceNode.Id(), BoneType.Head, user.Id())
-            //{
-            //    users = UMI3DServer.Instance.UserSet(),
-            //    syncPosition = true,
-            //    syncRotation = true,
-            //    priority = 100
-            //};
+            var binding = new BoneBinding(audioSourceNode.Id(), BoneType.Head, user.Id())
+            {
+                syncPosition = true,
+                syncRotation = true,
+                priority = 100
+            };
 
-            //tr.AddIfNotNull(BindingHelper.Instance.AddBinding(binding));
+            tr.AddIfNotNull(BindingHelper.Instance.AddBinding(binding));
             UMI3DServer.Dispatch(tr);
 
             UMI3DServer.Instance.NotifyUserChanged(user);
@@ -130,6 +132,17 @@ namespace umi3d.edk.collaboration
                     UMI3DServer.Dispatch(tr);
                 }
             }
+        }
+
+        private void RemoveAudioSource(UMI3DCollaborationUser user)
+        {
+            if (user is null)
+                return;
+            Transaction t = new() { reliable = true };
+            var audioSource = user.audioPlayer.ObjectNode.GetValue();
+            t.AddIfNotNull(BindingHelper.Instance.RemoveAllBindings(audioSource.Id()));
+            t.AddIfNotNull(audioSource.GetDeleteEntity());
+            UnityEngine.Object.Destroy(audioSource.gameObject);
         }
     }
 }
