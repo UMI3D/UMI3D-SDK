@@ -165,7 +165,7 @@ namespace umi3d.cdk.userCapture
                         LookAt(controller);
                         break;
                     default:
-                        SetControl(controller, BoneToHumanBodyBones(controller.boneType));
+                        SetControl(controller, BoneTypeConverter.ConvertToBoneType(controller.boneType).Value);
                         break;
                 }
             }
@@ -207,134 +207,12 @@ namespace umi3d.cdk.userCapture
                         LookAt(controller);
                         break;
                     default:
-                        SetControl(controller, BoneToHumanBodyBones(controller.boneType));
+                        SetControl(controller, BoneTypeConverter.ConvertToBoneType(controller.boneType).Value);
                         break;
                 }
                 controller.Destroy();
             }
             controllersToDestroy.Clear();
-        }
-
-        private HumanBodyBones BoneToHumanBodyBones(uint boneType)
-        {
-            switch (boneType)
-            {
-                case BoneType.Hips:
-                    return HumanBodyBones.Hips;
-                case BoneType.LeftHip:
-                    return HumanBodyBones.LeftUpperLeg;
-                case BoneType.RightHip:
-                    return HumanBodyBones.RightUpperLeg;
-                case BoneType.LeftKnee:
-                    return HumanBodyBones.LeftLowerLeg;
-                case BoneType.RightKnee:
-                    return HumanBodyBones.RightLowerLeg;
-                case BoneType.LeftAnkle:
-                    return HumanBodyBones.LeftFoot;
-                case BoneType.RightAnkle:
-                    return HumanBodyBones.RightFoot;
-                case BoneType.Spine:
-                    return HumanBodyBones.Spine;
-                case BoneType.Chest:
-                    return HumanBodyBones.Chest;
-                case BoneType.UpperChest:
-                    return HumanBodyBones.UpperChest;
-                case BoneType.Neck:
-                    return HumanBodyBones.Neck;
-                case BoneType.Head:
-                    return HumanBodyBones.Head;
-                case BoneType.LeftShoulder:
-                    return HumanBodyBones.LeftShoulder;
-                case BoneType.RightShoulder:
-                    return HumanBodyBones.RightShoulder;
-                case BoneType.LeftUpperArm:
-                    return HumanBodyBones.LeftUpperArm;
-                case BoneType.RightUpperArm:
-                    return HumanBodyBones.RightUpperArm;
-                case BoneType.LeftForearm:
-                    return HumanBodyBones.LeftLowerArm;
-                case BoneType.RightForearm:
-                    return HumanBodyBones.RightLowerArm;
-                case BoneType.LeftHand:
-                    return HumanBodyBones.LeftHand;
-                case BoneType.RightHand:
-                    return HumanBodyBones.RightHand;
-                case BoneType.LeftToeBase:
-                    return HumanBodyBones.LeftToes;
-                case BoneType.RightToeBase:
-                    return HumanBodyBones.RightToes;
-                case BoneType.LeftEye:
-                    return HumanBodyBones.LeftEye;
-                case BoneType.RightEye:
-                    return HumanBodyBones.RightEye;
-                case BoneType.Jaw:
-                    return HumanBodyBones.Jaw;
-                case BoneType.LeftThumbProximal:
-                    return HumanBodyBones.LeftThumbProximal;
-                case BoneType.LeftThumbIntermediate:
-                    return HumanBodyBones.LeftThumbIntermediate;
-                case BoneType.LeftThumbDistal:
-                    return HumanBodyBones.LeftThumbDistal;
-                case BoneType.LeftIndexProximal:
-                    return HumanBodyBones.LeftIndexProximal;
-                case BoneType.LeftIndexIntermediate:
-                    return HumanBodyBones.LeftIndexIntermediate;
-                case BoneType.LeftIndexDistal:
-                    return HumanBodyBones.LeftIndexDistal;
-                case BoneType.LeftMiddleProximal:
-                    return HumanBodyBones.LeftMiddleProximal;
-                case BoneType.LeftMiddleIntermediate:
-                    return HumanBodyBones.LeftMiddleIntermediate;
-                case BoneType.LeftMiddleDistal:
-                    return HumanBodyBones.LeftMiddleDistal;
-                case BoneType.LeftRingProximal:
-                    return HumanBodyBones.LeftRingProximal;
-                case BoneType.LeftRingIntermediate:
-                    return HumanBodyBones.LeftRingIntermediate;
-                case BoneType.LeftRingDistal:
-                    return HumanBodyBones.LeftRingDistal;
-                case BoneType.LeftLittleProximal:
-                    return HumanBodyBones.LeftLittleProximal;
-                case BoneType.LeftLittleIntermediate:
-                    return HumanBodyBones.LeftLittleIntermediate;
-                case BoneType.LeftLittleDistal:
-                    return HumanBodyBones.LeftLittleDistal;
-                case BoneType.RightThumbProximal:
-                    return HumanBodyBones.RightThumbProximal;
-                case BoneType.RightThumbIntermediate:
-                    return HumanBodyBones.RightThumbIntermediate;
-                case BoneType.RightThumbDistal:
-                    return HumanBodyBones.RightThumbDistal;
-                case BoneType.RightIndexProximal:
-                    return HumanBodyBones.RightIndexProximal;
-                case BoneType.RightIndexIntermediate:
-                    return HumanBodyBones.RightIndexIntermediate;
-                case BoneType.RightIndexDistal:
-                    return HumanBodyBones.RightIndexDistal;
-                case BoneType.RightMiddleProximal:
-                    return HumanBodyBones.RightMiddleProximal;
-                case BoneType.RightMiddleIntermediate:
-                    return HumanBodyBones.RightMiddleIntermediate;
-                case BoneType.RightMiddleDistal:
-                    return HumanBodyBones.RightMiddleDistal;
-                case BoneType.RightRingProximal:
-                    return HumanBodyBones.RightRingProximal;
-                case BoneType.RightRingIntermediate:
-                    return HumanBodyBones.RightRingIntermediate;
-                case BoneType.RightRingDistal:
-                    return HumanBodyBones.RightRingDistal;
-                case BoneType.RightLittleProximal:
-                    return HumanBodyBones.RightLittleProximal;
-                case BoneType.RightLittleIntermediate:
-                    return HumanBodyBones.RightLittleIntermediate;
-                case BoneType.RightLittleDistal:
-                    return HumanBodyBones.RightLittleDistal;
-                case BoneType.LastBone:
-                    return HumanBodyBones.LastBone;
-            }
-
-
-            return HumanBodyBones.Hips;
         }
 
         private void SetControl(IController controller, HumanBodyBones goal)
