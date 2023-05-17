@@ -409,15 +409,20 @@ namespace umi3d.common.collaboration
                         result = (T)Convert.ChangeType(e, typeof(T));
                         return true;
                     }
-                case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
-                    var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
-                    readable = UMI3DSerializer.TryRead<ulong>(container, out mat.newMaterialId);
+                case true when typeof(T) == typeof(MaterialOverrideDto):
+                    
+                    
+                    readable = UMI3DSerializer.TryRead<ulong>(container, out id);
                     if (readable)
                     {
-                        readable = UMI3DSerializer.TryRead<bool>(container, out mat.addMaterialIfNotExists);
+                        readable = UMI3DSerializer.TryRead<bool>(container, out bool addMaterialIfNotExists);
                         if (readable)
                         {
+                            var mat = new MaterialOverrideDto();
                             mat.overridedMaterialsId = UMI3DSerializer.ReadList<string>(container);
+                            mat.newMaterialId = id;
+                            mat.addMaterialIfNotExists = addMaterialIfNotExists;
+
                             result = (T)Convert.ChangeType(mat, typeof(T));
                         }
                         else
@@ -1021,7 +1026,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(param.max)
                         + UMI3DSerializer.Write(param.increment);
                     break;
-                case UMI3DRenderedNodeDto.MaterialOverrideDto material:
+                case MaterialOverrideDto material:
                     bytable = UMI3DSerializer.Write(material.newMaterialId)
                         + UMI3DSerializer.Write(material.addMaterialIfNotExists)
                         + UMI3DSerializer.WriteCollection(material.overridedMaterialsId);
@@ -1181,7 +1186,7 @@ namespace umi3d.common.collaboration
                 true when typeof(T) == typeof(UploadFileParameterDto) => true,
                 true when typeof(T) == typeof(IntegerRangeParameterDto) => true,
                 true when typeof(T) == typeof(FloatRangeParameterDto) => true,
-                true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto) => true,
+                true when typeof(T) == typeof(MaterialOverrideDto) => true,
                 true when typeof(T) == typeof(ScalableTextureDto) => true,
                 true when typeof(T) == typeof(TextureDto) => true,
                 true when typeof(T) == typeof(ResourceDto) => true,

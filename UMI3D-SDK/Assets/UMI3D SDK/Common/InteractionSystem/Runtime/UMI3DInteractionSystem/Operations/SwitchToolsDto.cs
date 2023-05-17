@@ -25,6 +25,6 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the tool to be replaced.
         /// </summary>
-        public ulong replacedToolId;
+        public ulong replacedToolId { get; set; }
     }
 }

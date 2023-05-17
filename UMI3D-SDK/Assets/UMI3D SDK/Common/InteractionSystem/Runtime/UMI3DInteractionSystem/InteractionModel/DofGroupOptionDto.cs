@@ -18,27 +18,20 @@ using System.Collections.Generic;
 
 namespace umi3d.common.interaction
 {
-    /// <summary>
-    /// DTO describing a connection form.
-    /// </summary>
     [System.Serializable]
-    public class ConnectionFormDto : AbstractInteractionDto
+    public class DofGroupOptionDto : UMI3DDto
     {
         /// <summary>
-        /// Fields of the form that are themselves DTOs as <see cref="AbstractParameterDto"/>.
+        /// Name of the degree of freedom group option
         /// </summary>
-        public List<AbstractParameterDto> fields { get; set; } = new List<AbstractParameterDto>();
-
+        public string name { get; set; }
         /// <summary>
-        /// Globaltoken previously used in the media the client want to connect to.
+        /// List of all separations
         /// </summary>
-        public string globalToken { get; set; }
+        public List<DofGroupDto> separations { get; set; } = new List<DofGroupDto>();
 
-        /// <summary>
-        /// array that can be use to store data.
-        /// </summary>
-        public byte[] metadata { get; set; }
-
-        public ConnectionFormDto() : base() { }
+        public DofGroupOptionDto() : base()
+        {
+        }
     }
 }

@@ -26,8 +26,8 @@ namespace umi3d.common
     [Serializable]
     public class BoneObjectPair : UMI3DDto
     {
-        public string boneId;
-        public string objectId;
+        public string boneId { get; set; }
+        public string objectId { get; set; }
     }
 
     [Obsolete]
@@ -37,12 +37,7 @@ namespace umi3d.common
         /// <summary>
         /// Contain a list of BoneType and Id association.
         /// </summary>
-        public List<BoneObjectPair> ObjectPairList;
-
-        public BonePairDictionary()
-        {
-            ObjectPairList = new List<BoneObjectPair>();
-        }
+        public List<BoneObjectPair> ObjectPairList { get; set; }
 
         /// <summary>
         /// Return the length of the ObjectPairList.

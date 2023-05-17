@@ -14,31 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-
 namespace umi3d.common.interaction
 {
-    /// <summary>
-    /// DTO describing a connection form.
-    /// </summary>
     [System.Serializable]
-    public class ConnectionFormDto : AbstractInteractionDto
+    public class DofGroupDto : UMI3DDto
     {
         /// <summary>
-        /// Fields of the form that are themselves DTOs as <see cref="AbstractParameterDto"/>.
+        /// name of the degree of freedom group
         /// </summary>
-        public List<AbstractParameterDto> fields { get; set; } = new List<AbstractParameterDto>();
-
+        public string name { get; set; }
         /// <summary>
-        /// Globaltoken previously used in the media the client want to connect to.
+        /// degree of freedom combination used by this group
         /// </summary>
-        public string globalToken { get; set; }
+        public DofGroupEnum dofs { get; set; }
 
-        /// <summary>
-        /// array that can be use to store data.
-        /// </summary>
-        public byte[] metadata { get; set; }
-
-        public ConnectionFormDto() : base() { }
+        public DofGroupDto() : base()
+        {
+        }
     }
 }

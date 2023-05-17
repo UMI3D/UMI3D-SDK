@@ -25,27 +25,27 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Name of the interaction
         /// </summary>
-        public string name = null;
+        public string name { get; set; }  = null;
 
         /// <summary>
         /// Description of the interaction
         /// </summary>
-        public string description = null;
+        public string description { get; set; } = null;
 
         /// <summary>
         /// 2D Icon that can be used to display the interaction
         /// </summary>
-        public ResourceDto icon2D;
+        public ResourceDto icon2D { get; set; }
 
         /// <summary>
         /// 3D Icon that can be used to display the interaction
         /// </summary>
-        public ResourceDto icon3D;
+        public ResourceDto icon3D { get; set; }
 
         /// <summary>
         /// Id of the ui to link to this interaction if any. 
         /// Default is 0;
         /// </summary>
-        public ulong uiLinkId; 
+        public ulong uiLinkId { get; set; }
     }
 }

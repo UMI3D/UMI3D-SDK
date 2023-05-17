@@ -83,11 +83,11 @@ namespace umi3d.edk
         public static readonly List<string> ANY_mat = new List<string>() { "ANY_mat" };
 
         /// <inheritdoc/>
-        public UMI3DRenderedNodeDto.MaterialOverrideDto ToDto()
+        public MaterialOverrideDto ToDto()
         {
             if (overrideAllMaterial)
             {
-                return new UMI3DRenderedNodeDto.MaterialOverrideDto()
+                return new MaterialOverrideDto()
                 {
                     newMaterialId = newMaterial.Id(),
                     overridedMaterialsId = ANY_mat,
@@ -95,7 +95,7 @@ namespace umi3d.edk
                 };
             }
 
-            return new UMI3DRenderedNodeDto.MaterialOverrideDto()
+            return new MaterialOverrideDto()
             {
                 newMaterialId = newMaterial.Id(),
                 overridedMaterialsId = overidedMaterials,

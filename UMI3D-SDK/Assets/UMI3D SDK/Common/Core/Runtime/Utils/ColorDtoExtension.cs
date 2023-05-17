@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -143,21 +144,27 @@ public static class KeyframeDtoExtension
     }
 }
 
-/*        public static implicit operator KeyframeDto(Keyframe frame)
+public static class AnimationCurveDtoExtension
+{
+    public static AnimationCurveDto Dto(this AnimationCurve curve)
+    {
+        if (curve == null) return default;
+        var c = new AnimationCurveDto();
+        foreach (var key in curve.keys)
         {
-            return new KeyframeDto(frame);
+            c.keys.Add(key.Dto());
         }
+        return c;
+    }
 
-        public static implicit operator Keyframe(KeyframeDto frame)
-        {
-            if (frame == null) return default;
-            return new Keyframe
-            {
-                time = frame.point.X,
-                value = frame.point.Y,
-                inTangent = frame.intTangeant.X,
-                inWeight = frame.intTangeant.Y,
-                outTangent = frame.outTangeant.X,
-                outWeight = frame.outTangeant.Y
-            };
-        }*/
+    public static AnimationCurve Struct(this AnimationCurveDto curve)
+    {
+        if (curve == null || curve.keys.Count == 0) return new AnimationCurve();
+
+        List<Keyframe> keys = new List<Keyframe>();
+        foreach (var k in curve.keys)
+            keys.Add(k.Struct());
+
+        return new AnimationCurve(keys.ToArray());
+    }
+}

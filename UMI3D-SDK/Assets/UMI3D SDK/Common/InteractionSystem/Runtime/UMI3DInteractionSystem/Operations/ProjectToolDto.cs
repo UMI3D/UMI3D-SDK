@@ -24,12 +24,12 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the tool to project.
         /// </summary>
-        public ulong toolId;
+        public ulong toolId { get; set; }
 
         /// <summary>
         /// Can the client choose to release the tool.
         /// if false, the only way of releasing it is through a ReleaseToolDto.
         /// </summary>
-        public bool releasable;
+        public bool releasable { get; set; }
     }
 }

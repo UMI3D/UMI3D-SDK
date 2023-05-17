@@ -9,11 +9,11 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The id of the entity
         /// </summary>
-        public ulong id;
+        public ulong id { get; set; }
 
         /// <summary>
         /// All the pose ovveriders of the linked container
         /// </summary>
-        public PoseOverriderDto[] poseOverriderDtos;
+        public PoseOverriderDto[] poseOverriderDtos { get; set; }
     }
 }

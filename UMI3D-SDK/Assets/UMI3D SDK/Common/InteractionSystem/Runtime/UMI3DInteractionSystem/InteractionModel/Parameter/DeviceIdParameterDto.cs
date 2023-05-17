@@ -18,8 +18,8 @@ namespace umi3d.common.interaction
 {
     public class DeviceIdParameterDto : AbstractParameterDto
     {
-        public string deviceId;
-        public string purpose;
+        public string deviceId { get; set; }
+        public string purpose { get; set; }
 
         public override object GetValue()
         {

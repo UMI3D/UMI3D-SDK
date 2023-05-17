@@ -14,20 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 
 namespace umi3d.common
 {
     /// <summary>
-    /// Operation DTO to ask a browser to load an entity
+    /// Should some material be averrided
     /// </summary>
-    [Serializable]
-    public class LoadEntityDto : AbstractOperationDto
+    [System.Serializable]
+    public class MaterialOverrideDto : UMI3DDto
     {
-        /// <summary>
-        /// Entities to load.
-        /// </summary>
-        public List<IEntity> entities { get; set; }
+        public List<string> overridedMaterialsId { get; set; } // List of names of mat or "ANY_mat" or "DEFAULT_mat"
+        public ulong newMaterialId { get; set; }  // name of the umi3d entity (the id of the mat)
+        public bool addMaterialIfNotExists { get; set; }
     }
+
 }

@@ -28,6 +28,6 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Only these extensions could be upload by the client. Enpty list = allow all, the extensions contain a dot (".obj" for exemple)
         /// </summary>
-        public List<string> authorizedExtensions = new List<string>();
+        public List<string> authorizedExtensions { get; set; } = new List<string>();
     }
 }

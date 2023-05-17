@@ -56,7 +56,7 @@ namespace umi3d.common
                     List<KeyframeDto> keys = UMI3DSerializer.ReadList<KeyframeDto>(container);
                     if (keys != null)
                     {
-                        result = (T)Convert.ChangeType(new AnimationCurveDto(keys), typeof(T));
+                        result = (T)Convert.ChangeType(new AnimationCurveDto() { keys = keys}, typeof(T));
                         return true;
                     }
                     else
@@ -82,7 +82,7 @@ namespace umi3d.common
             switch (value)
             {
                 case AnimationCurve animationCurve:
-                    bytable = UMI3DSerializer.Write((AnimationCurveDto)animationCurve);
+                    bytable = UMI3DSerializer.Write(animationCurve.Dto());
                     return true;
                 case AnimationCurveDto serializableAnimationCurve:
                     bytable = UMI3DSerializer.WriteCollection(serializableAnimationCurve.keys);

@@ -27,58 +27,13 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the gameobject describing the space in which the manipulation is applied.
         /// </summary>
-        public ulong frameOfReference;
+        public ulong frameOfReference { get; set; }
 
         /// <summary>
         /// List of different description of the manipulation.
         /// </summary>
-        public List<DofGroupOptionDto> dofSeparationOptions = new List<DofGroupOptionDto>();
+        public List<DofGroupOptionDto> dofSeparationOptions { get; set; } = new List<DofGroupOptionDto>();
 
         public ManipulationDto() : base() { }
-    }
-
-    /// <summary>
-    /// degrees of freedom combination
-    /// </summary>
-    public enum DofGroupEnum
-    {
-        ALL,
-        X, Y, Z, XY, XZ, YZ, XYZ,
-        RX, RY, RZ, RX_RY, RX_RZ, RY_RZ, RX_RY_RZ,
-        X_RX, Y_RY, Z_RZ
-    }
-
-    [System.Serializable]
-    public class DofGroupDto : UMI3DDto
-    {
-        /// <summary>
-        /// name of the degree of freedom group
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// degree of freedom combination used by this group
-        /// </summary>
-        public DofGroupEnum dofs;
-
-        public DofGroupDto() : base()
-        {
-        }
-    }
-
-    [System.Serializable]
-    public class DofGroupOptionDto : UMI3DDto
-    {
-        /// <summary>
-        /// Name of the degree of freedom group option
-        /// </summary>
-        public string name;
-        /// <summary>
-        /// List of all separations
-        /// </summary>
-        public List<DofGroupDto> separations = new List<DofGroupDto>();
-
-        public DofGroupOptionDto() : base()
-        {
-        }
     }
 }

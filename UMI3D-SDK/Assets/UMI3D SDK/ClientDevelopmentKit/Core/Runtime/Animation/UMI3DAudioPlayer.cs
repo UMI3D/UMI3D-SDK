@@ -75,7 +75,7 @@ namespace umi3d.cdk
             SetVolumeAttenuationMode(dto.volumeAttenuationMode);
 
             if (dto.volumeAttenuationCurve.keys.Count > 0)
-                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve);
+                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve.Struct());
 
             if (dto.audioResource == null || dto.audioResource.variants == null || dto.audioResource.variants.Count < 1)
             {
@@ -176,7 +176,7 @@ namespace umi3d.cdk
 
                     var curve = (AnimationCurveDto)value.property.value;
                     if (curve.keys.Count > 0)
-                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
                     ADto.volumeAttenuationCurve = curve;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
@@ -252,7 +252,7 @@ namespace umi3d.cdk
 
                     var curve = UMI3DSerializer.Read<AnimationCurveDto>(value.container);
                     if (curve.keys.Count > 0)
-                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
 
                     ADto.volumeAttenuationCurve = curve;
                     break;

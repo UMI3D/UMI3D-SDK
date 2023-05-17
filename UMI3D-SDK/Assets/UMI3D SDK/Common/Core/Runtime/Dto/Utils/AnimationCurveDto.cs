@@ -16,8 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
-using UnityEngine;
 
 namespace umi3d.common
 {
@@ -30,32 +28,7 @@ namespace umi3d.common
         /// <summary>
         /// Animation keys.
         /// </summary>
-        public List<KeyframeDto> keys;
-
-        public AnimationCurveDto() : base()
-        {
-            this.keys = new List<KeyframeDto>();
-        }
-
-        public AnimationCurveDto(AnimationCurve curve) : base()
-        {
-            this.keys = new List<KeyframeDto>();
-
-            foreach (var key in curve.keys)
-            {
-                this.keys.Add(key.Dto());
-            }
-        }
-
-        public AnimationCurveDto(List<KeyframeDto> keys) : base()
-        {
-            this.keys = new List<KeyframeDto>();
-
-            foreach (var key in keys)
-            {
-                this.keys.Add(key);
-            }
-        }
+        public List<KeyframeDto> keys { get; set; } = new List<KeyframeDto>();
 
         /// <inheritdoc/>
         public override string ToString()
@@ -66,24 +39,6 @@ namespace umi3d.common
                 res += i + " -> " + keys[i].ToString() + " \n";
             }
             return res;
-        }
-
-        public static implicit operator AnimationCurveDto(AnimationCurve c)
-        {
-            if (c == null) return default;
-            return new AnimationCurveDto(c);
-        }
-
-
-        public static implicit operator AnimationCurve(AnimationCurveDto c)
-        {
-            if (c == null || c.keys.Count == 0) return new AnimationCurve();
-
-            List<Keyframe> keys = new List<Keyframe>();
-            foreach (var k in c.keys)
-                keys.Add(k.Struct());
-
-            return new AnimationCurve(keys.ToArray());
         }
     }
 }

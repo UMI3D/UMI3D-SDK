@@ -14,20 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-
-namespace umi3d.common
+namespace umi3d.common.interaction
 {
     /// <summary>
-    /// Operation DTO to ask a browser to load an entity
+    /// degrees of freedom combination
     /// </summary>
-    [Serializable]
-    public class LoadEntityDto : AbstractOperationDto
+    public enum DofGroupEnum
     {
-        /// <summary>
-        /// Entities to load.
-        /// </summary>
-        public List<IEntity> entities { get; set; }
+        ALL,
+        X, Y, Z, XY, XZ, YZ, XYZ,
+        RX, RY, RZ, RX_RY, RX_RZ, RY_RZ, RX_RY_RZ,
+        X_RX, Y_RY, Z_RZ
     }
 }

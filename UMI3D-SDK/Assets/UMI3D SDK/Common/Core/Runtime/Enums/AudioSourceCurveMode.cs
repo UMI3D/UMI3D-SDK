@@ -14,20 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-
 namespace umi3d.common
 {
-    /// <summary>
-    /// Operation DTO to ask a browser to load an entity
-    /// </summary>
-    [Serializable]
-    public class LoadEntityDto : AbstractOperationDto
+    public enum AudioSourceCurveMode
     {
-        /// <summary>
-        /// Entities to load.
-        /// </summary>
-        public List<IEntity> entities { get; set; }
+        Logarithmic,
+        Linear,
+        Custom
     }
 }

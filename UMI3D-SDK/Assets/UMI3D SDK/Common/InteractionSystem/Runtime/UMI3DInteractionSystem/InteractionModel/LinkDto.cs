@@ -24,7 +24,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// URL of the link.
         /// </summary>
-        public string url;
+        public string url { get; set; }
 
         public LinkDto() : base()
         {

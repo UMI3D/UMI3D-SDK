@@ -25,6 +25,6 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Id of the tool to release.
         /// </summary>
-        public ulong toolId;
+        public ulong toolId { get; set; }
     }
 }

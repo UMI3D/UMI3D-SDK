@@ -23,7 +23,7 @@ namespace umi3d.common.interaction
     /// <typeparam name="T">Enum type</typeparam>
     public class EnumParameterDto<T> : AbstractParameterDto<T>
     {
-        public List<T> possibleValues = null;
+        public List<T> possibleValues { get; set; } = null;
 
         public EnumParameterDto() : base() { }
     }
