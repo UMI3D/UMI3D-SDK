@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Linq;
+
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -47,7 +49,17 @@ namespace umi3d.cdk.collaboration
         {
             var skeleton = collaborativeSkeletonsmanager.GetSkeletonById(userId);
             if (skeleton is not null)
-                skeleton.Skeletons.Add(subskeleton);
+            {
+                var animatedSkeletons = skeleton.Skeletons
+                                        .Where(x => x is AnimatedSkeleton)
+                                        .Cast<AnimatedSkeleton>()
+                                        .Append(subskeleton)
+                                        .OrderByDescending(x => x.priority).ToList();
+
+                skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
+                skeleton.Skeletons.AddRange(animatedSkeletons);
+            }
+                
             else
                 UMI3DLogger.LogWarning($"Skeleton of user {userId} not found. Cannot attach skeleton node.", DEBUG_SCOPE);
         }

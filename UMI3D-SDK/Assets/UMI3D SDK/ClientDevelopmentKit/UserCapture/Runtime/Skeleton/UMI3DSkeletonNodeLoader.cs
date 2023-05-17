@@ -116,6 +116,7 @@ namespace umi3d.cdk.userCapture
 
             // create subSkeletonand add it to a skeleton
             AnimatedSkeleton animationSubskeleton = new(skeletonMapper);
+            animationSubskeleton.priority = skeletonNodeDto.priority;
             AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
 
             // hide the model if it has any renderers
@@ -245,7 +246,14 @@ namespace umi3d.cdk.userCapture
         /// <param name="subskeleton"></param>
         protected virtual void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
         {
-            personnalSkeletonService.personalSkeleton.Skeletons.Add(subskeleton);
+            var animatedSkeletons = personnalSkeletonService.personalSkeleton.Skeletons
+                                        .Where(x => x is AnimatedSkeleton)
+                                        .Cast<AnimatedSkeleton>()
+                                        .Append(subskeleton)
+                                        .OrderByDescending(x => x.priority).ToList();
+
+            personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x=>x is AnimatedSkeleton);
+            personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
         }
     }
 }

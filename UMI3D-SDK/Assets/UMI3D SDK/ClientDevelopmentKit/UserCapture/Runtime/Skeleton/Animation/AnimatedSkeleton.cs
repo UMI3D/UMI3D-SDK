@@ -29,6 +29,11 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public SkeletonMapper Mapper { get; protected set; }
 
+        /// <summary>
+        /// Priority level of the animated skeleton.
+        /// </summary>
+        public uint priority;
+
         #region Dependency Injection
 
         private readonly UMI3DEnvironmentLoader environmentLoader;

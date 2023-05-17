@@ -29,6 +29,11 @@ namespace umi3d.common.userCapture
         public ulong userId;
 
         /// <summary>
+        /// Level of priority of the skeleton animation.
+        /// </summary>
+        public uint priority;
+
+        /// <summary>
         /// UMI3D animations ids supported by the bundled animator.
         /// </summary>
         public ulong[] relatedAnimationsId;

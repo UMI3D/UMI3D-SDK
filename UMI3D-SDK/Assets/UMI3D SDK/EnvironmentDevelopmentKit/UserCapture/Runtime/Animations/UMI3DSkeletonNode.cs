@@ -29,13 +29,15 @@ namespace umi3d.edk.userCapture
     public class UMI3DSkeletonNode : UMI3DModel
     {
         [Tooltip("List of states names in the embedded animator.")]
-        public List<string> animationStates = new ();
+        public List<string> animationStates = new();
 
         [EditorReadOnly]
         public ulong userId;
 
         [EditorReadOnly]
         public ulong[] relatedAnimationIds;
+
+        public uint priority;
 
         /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
@@ -49,12 +51,14 @@ namespace umi3d.edk.userCapture
             var skeletonNodeDto = dto as UMI3DSkeletonNodeDto;
             skeletonNodeDto.userId = userId;
             skeletonNodeDto.relatedAnimationsId = relatedAnimationIds;
+            skeletonNodeDto.priority = priority;
         }
 
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
                     + UMI3DSerializer.Write(userId)
+                    + UMI3DSerializer.Write(priority)
                     + UMI3DSerializer.WriteCollection(relatedAnimationIds);
         }
     }
