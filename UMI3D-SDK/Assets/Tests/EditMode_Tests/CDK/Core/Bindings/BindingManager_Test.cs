@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using Moq;
 using NUnit.Framework;
 using System.Collections;
@@ -42,6 +43,9 @@ namespace EditMode_Tests.Core.CDK
 
             if (UMI3DEnvironmentLoader.Exists)
                 UMI3DEnvironmentLoader.Destroy();
+
+            if (CoroutineManager.Exists)
+                CoroutineManager.Destroy();
         }
 
         [SetUp]
@@ -123,7 +127,7 @@ namespace EditMode_Tests.Core.CDK
             var bindingDto = new BindingDto() { boundNodeId = 1005, data = new NodeBindingDataDto() };
 
             var initialSize = bindingManager.Bindings.Count;
-            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            mockCoroutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
             mockBindingManager.Setup(x => x.Load(It.IsAny<AbstractBindingDataDto>(), It.IsAny<ulong>()))
                               .Returns(() => new NodeBinding(null, null));
 
@@ -131,7 +135,7 @@ namespace EditMode_Tests.Core.CDK
             bindingManager.AddBinding(bindingDto);
 
             // THEN
-            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>()), Times.Never());
+            mockCoroutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
             Assert.AreEqual(initialSize + 1, bindingManager.Bindings.Count);
         }
 
@@ -147,7 +151,7 @@ namespace EditMode_Tests.Core.CDK
             // GIVEN
             var bindingDto = new BindingDto() { boundNodeId = 1005, data = new NodeBindingDataDto() };
             var initialSize = bindingManager.Bindings.Count;
-            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            mockCoroutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
             mockBindingManager.Setup(x => x.Load(It.IsAny<AbstractBindingDataDto>(), It.IsAny<ulong>()))
                               .Returns(() => new NodeBinding(null, null));
 
@@ -155,7 +159,7 @@ namespace EditMode_Tests.Core.CDK
             bindingManager.AddBinding(bindingDto);
 
             // THEN
-            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>()), Times.Once());
+            mockCoroutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Once());
             Assert.AreEqual(initialSize + 1, bindingManager.Bindings.Count);
         }
 

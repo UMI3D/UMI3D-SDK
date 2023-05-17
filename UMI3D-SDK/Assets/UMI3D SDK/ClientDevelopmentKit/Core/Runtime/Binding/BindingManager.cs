@@ -81,18 +81,18 @@ namespace umi3d.cdk
 
         #region dependency injection
 
-        private readonly ICoroutineService coroutineService;
+        private readonly ILateRoutineService routineService;
         private readonly UMI3DEnvironmentLoader environmentService;
 
         public BindingManager() : base()
         {
-            coroutineService = CoroutineManager.Instance;
+            routineService = CoroutineManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
         }
 
-        public BindingManager(ICoroutineService coroutineService, UMI3DEnvironmentLoader environmentService)
+        public BindingManager(ILateRoutineService coroutineService, UMI3DEnvironmentLoader environmentService)
         {
-            this.coroutineService = coroutineService;
+            this.routineService = coroutineService;
             this.environmentService = environmentService;
         }
 
@@ -105,7 +105,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Execute every binding.
         /// </summary>
-        private Coroutine bindingCoroutine;
+        private IEnumerator bindingRoutine;
 
         public virtual void DisableBindings()
         {
@@ -141,8 +141,8 @@ namespace umi3d.cdk
             if (binding is not null)
                 Bindings[boundNodeId] = binding;
 
-            if (Bindings.Count > 0 && AreBindingsActivated && bindingCoroutine is null)
-                bindingCoroutine = coroutineService.AttachCoroutine(BindingCoroutine());
+            if (Bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
+                bindingRoutine = routineService.AttachLateRoutine(BindingRoutine());
         }
 
         public virtual AbstractBinding Load(AbstractBindingDataDto dto, ulong boundNodeId)
@@ -187,7 +187,7 @@ namespace umi3d.cdk
         /// Coroutine that executes each binding in no particular order.
         /// </summary>
         /// <returns></returns>
-        private IEnumerator BindingCoroutine()
+        private IEnumerator BindingRoutine()
         {
             while (AreBindingsActivated)
             {
@@ -206,10 +206,10 @@ namespace umi3d.cdk
             if (Bindings.ContainsKey(dto.boundNodeId))
             {
                 Bindings.Remove(dto.boundNodeId);
-                if (Bindings.Count == 0 && bindingCoroutine is not null)
+                if (Bindings.Count == 0 && bindingRoutine is not null)
                 {
-                    coroutineService.DettachCoroutine(bindingCoroutine);
-                    bindingCoroutine = null;
+                    routineService.DettachLateRoutine(bindingRoutine);
+                    bindingRoutine = null;
                 }   
             }
         }
