@@ -123,9 +123,9 @@ namespace umi3d.edk
             dto.LibrariesId = globalLibraries.Select(l => l.idVersion).ToList();
             dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
             dto.ambientType = (AmbientType)objectAmbientType.GetValue(user);
-            dto.skyColor = objectSkyColor.GetValue(user);
-            dto.horizontalColor = objectHorizonColor.GetValue(user);
-            dto.groundColor = objectGroundColor.GetValue(user);
+            dto.skyColor = objectSkyColor.GetValue(user).Dto();
+            dto.horizontalColor = objectHorizonColor.GetValue(user).Dto();
+            dto.groundColor = objectGroundColor.GetValue(user).Dto();
             dto.ambientIntensity = objectAmbientIntensity.GetValue(user);
             dto.skyboxType = skyboxType;
             dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
@@ -147,7 +147,7 @@ namespace umi3d.edk
         /// </summary>
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto() { userPosition = objectStartPosition.GetValue(user), userRotation = objectStartOrientation.GetValue(user), usedDto = Instance.useDto };
+            return new EnterDto() { userPosition = objectStartPosition.GetValue(user).Dto(), userRotation = objectStartOrientation.GetValue(user).Dto(), usedDto = Instance.useDto };
         }
 
         /// <summary>
@@ -185,9 +185,9 @@ namespace umi3d.edk
 
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (int)(AmbientType)mode);
-            objectSkyColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, skyColor, (c, u) => (SerializableColor)c);
-            objectHorizonColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientHorizontalColor, horizontalColor, (c, u) => (SerializableColor)c);
-            objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientGroundColor, groundColor, (c, u) => (SerializableColor)c);
+            objectSkyColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientSkyColor, skyColor, (c, u) => c.Dto());
+            objectHorizonColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientHorizontalColor, horizontalColor, (c, u) => c.Dto());
+            objectGroundColor = new UMI3DAsyncProperty<Color>(id, UMI3DPropertyKeys.AmbientGroundColor, groundColor, (c, u) => c.Dto());
             objectAmbientIntensity = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientIntensity, ambientIntensity);
             objectAmbientSkyboxImage = new UMI3DAsyncProperty<UMI3DResource>(id, UMI3DPropertyKeys.AmbientSkyboxImage, skyboxImage, (r, u) => r.ToDto());
             objectSkyboxRotation = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AmbientSkyboxRotation, skyboxRotation);
@@ -204,7 +204,7 @@ namespace umi3d.edk
         public UMI3DAsyncListProperty<UMI3DResource> objectPreloadedScenes;
 
         /// <summary>
-        /// AsyncProperties of the ambient Type. See <see cref="RenderSettings.ambientMode"/>.
+        /// AsyncProperties of the ambient type. See <see cref="RenderSettings.ambientMode"/>.
         /// </summary>
         private AmbientMode mode => RenderSettings.ambientMode;
         /// <summary>
@@ -338,24 +338,23 @@ namespace umi3d.edk
         /// Get entity by id.
         /// </summary>
         /// <param name="id">Entity to get id</param>
-        [Obsolete("Use GetEntityInstance(ulong) instead.")]
-        public static E GetEntity<E>(ulong id) where E : class, UMI3DEntity
+        public static E GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
         {
-            return Instance.GetEntityInstance<E>(id);
+            if (Exists)
+                return Instance._GetEntityInstance<E>(id);
+            else if (QuittingManager.ApplicationIsQuitting)
+                return null;
+            else
+                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
         }
 
         /// <summary>
         /// Get entity by id.
         /// </summary>
         /// <param name="id">Entity to get id</param>
-        public E GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
+        public E _GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity
         {
-            if (Exists)
-                return Instance.entities[id] as E;
-            else if (QuittingManager.ApplicationIsQuitting)
-                return null;
-            else
-                throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
+            return entities[id] as E;
         }
 
         /// <summary>
@@ -370,11 +369,8 @@ namespace umi3d.edk
                     return (null, false, true);
                 else
                 {
-                    UMI3DEntity e = Instance.entities[id];
-                    if (e is E entity)
-                        return (entity, true, true);
-                    else
-                        return (null, true, true);
+                    var e = Instance.entities[id] as E;
+                    return (e, true, true);
                 }
             }
             else if (QuittingManager.ApplicationIsQuitting)

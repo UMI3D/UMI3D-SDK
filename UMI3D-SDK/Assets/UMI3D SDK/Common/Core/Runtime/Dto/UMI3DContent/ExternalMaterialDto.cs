@@ -27,7 +27,7 @@ namespace umi3d.common
         /// <summary>
         /// Ressource associated with the material.
         /// </summary>
-        public ResourceDto resource;
+        public ResourceDto resource { get; set; }
 
         /// <summary>
         /// Key-value collection of the shaders properties to set.

@@ -37,11 +37,11 @@ namespace umi3d.edk.interaction
 
             public ManipulationEventContent(UMI3DUser user, ManipulationRequestDto dto) : base(user, dto)
             {
-                translation = dto.translation;
-                rotation = dto.rotation;
+                translation = dto.translation.Struct();
+                rotation = dto.rotation.Quaternion();
             }
 
-            public ManipulationEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, Vector3 translation, Quaternion rotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public ManipulationEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, Vector3 translation, Quaternion rotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.translation = translation;
                 this.rotation = rotation;
@@ -100,7 +100,7 @@ namespace umi3d.edk.interaction
         {
             return base.ToBytes(user)
                 + UMI3DSerializer.Write(frameOfReference.Id())
-                + UMI3DSerializer.WriteIBytableCollection(dofSeparationOptions);
+                + UMI3DSerializer.WriteCollection(dofSeparationOptions);
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
@@ -137,7 +137,7 @@ namespace umi3d.edk.interaction
         /// Degree of freedom group.
         /// </summary>
         [System.Serializable]
-        public class DofGroup : IBytable
+        public class DofGroup
         {
             /// <summary>
             /// Name of the group.
@@ -147,19 +147,6 @@ namespace umi3d.edk.interaction
             /// Degree of freedom combination in <see cref="DofGroupEnum"/>.
             /// </summary>
             public DofGroupEnum dofs;
-
-            /// <inheritdoc/>
-            public bool IsCountable()
-            {
-                return true;
-            }
-
-            /// <inheritdoc/>
-            public Bytable ToBytableArray(params object[] parameters)
-            {
-                return UMI3DSerializer.Write(name)
-                    + UMI3DSerializer.Write((int)dofs);
-            }
 
             /// <summary>
             /// Convert to dto for a given user.
@@ -181,7 +168,7 @@ namespace umi3d.edk.interaction
         /// List of DofGroup.
         /// </summary>
         [System.Serializable]
-        public class DofGroupOption : IBytable
+        public class DofGroupOption
         {
             /// <summary>
             /// Name of the group.
@@ -193,13 +180,6 @@ namespace umi3d.edk.interaction
             public bool IsCountable()
             {
                 return true;
-            }
-
-            /// <inheritdoc/>
-            public Bytable ToBytableArray(params object[] parameters)
-            {
-                return UMI3DSerializer.Write(name)
-                    + UMI3DSerializer.WriteIBytableCollection(separations);
             }
 
             /// <summary>

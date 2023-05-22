@@ -27,6 +27,6 @@ namespace umi3d.common
         /// <summary>
         /// UMI3D Id of the entity to delete.
         /// </summary>
-        public ulong entityId;
+        public ulong entityId { get; set; }
     }
 }

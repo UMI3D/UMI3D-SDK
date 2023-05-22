@@ -38,14 +38,14 @@ namespace umi3d.common.userCapture
             this.composable = composable;
         }
 
-        public int poseIndexinPoseManager { get; private set; }
+        public int poseIndexinPoseManager { get; set; }
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        public PoseConditionDto[] poseConditions { get; private set; }
-        public DurationDto duration { get; private set; }
-        public bool interpolationable { get; private set; }
-        public bool composable { get; private set; }
+        public PoseConditionDto[] poseConditions { get; set; }
+        public DurationDto duration { get; set; }
+        public bool interpolationable { get; set; }
+        public bool composable { get; set; }
     }
 }
 

@@ -107,7 +107,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
 
-        public UMI3DAsyncProperty<SerializableVector3> userSize;
+        public UMI3DAsyncProperty<Vector3Dto> userSize;
 
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
@@ -129,7 +129,7 @@ namespace umi3d.edk.collaboration
             onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
             onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
 
-            userSize = new UMI3DAsyncProperty<SerializableVector3>(base.userId, UMI3DPropertyKeys.UserSize, new());
+            userSize = new UMI3DAsyncProperty<Vector3Dto>(base.userId, UMI3DPropertyKeys.UserSize, new());
 
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
@@ -149,8 +149,32 @@ namespace umi3d.edk.collaboration
         public void InitConnection(UMI3DForgeServer connection)
         {
             this.forgeServer = connection;
-            var ucDto = new UserConnectionAnswerDto(ToUserDto(this))
+
+            var source = ToUserDto(this);
+            var ucDto = new UserConnectionAnswerDto()
             {
+                id = source.id,
+                login = source.login,
+                status = source.status,
+
+                audioSourceId = source.audioSourceId,
+                audioFrequency = source.audioFrequency,
+                videoSourceId = source.videoSourceId,
+                networkId = source.networkId,
+
+                microphoneStatus = source.microphoneStatus,
+                avatarStatus = source.avatarStatus,
+                attentionRequired = source.attentionRequired,
+
+                audioChannel = source.audioChannel,
+                audioServerUrl = source.audioServerUrl,
+                audioLogin = source.audioLogin,
+                audioUseMumble = source.audioUseMumble,
+
+                onStartSpeakingAnimationId = source.onStartSpeakingAnimationId,
+                onStopSpeakingAnimationId = source.onStopSpeakingAnimationId,
+                language = source.language,
+
                 librariesUpdated = !UMI3DEnvironment.UseLibrary()
             };
             //RenewToken();
@@ -159,7 +183,7 @@ namespace umi3d.edk.collaboration
 
         static object joinLock = new object();
 
-        public async Task JoinDtoReception(SerializableVector3 userSize, PoseDto[] userPoses)
+        public async Task JoinDtoReception(Vector3Dto userSize, PoseDto[] userPoses)
         {
             lock (joinLock)
             {
@@ -203,8 +227,31 @@ namespace umi3d.edk.collaboration
 
         public virtual UserConnectionDto ToUserConnectionDto()
         {
-            var connectionInformation = new UserConnectionDto(ToUserDto(this))
+            var source = ToUserDto(this);
+            var connectionInformation = new UserConnectionDto()
             {
+                id = source.id,
+                login = source.login,
+                status = source.status,
+
+                audioSourceId = source.audioSourceId,
+                audioFrequency = source.audioFrequency,
+                videoSourceId = source.videoSourceId,
+                networkId = source.networkId,
+
+                microphoneStatus = source.microphoneStatus,
+                avatarStatus = source.avatarStatus,
+                attentionRequired = source.attentionRequired,
+
+                audioChannel = source.audioChannel,
+                audioServerUrl = source.audioServerUrl,
+                audioLogin = source.audioLogin,
+                audioUseMumble = source.audioUseMumble,
+
+                onStartSpeakingAnimationId = source.onStartSpeakingAnimationId,
+                onStopSpeakingAnimationId = source.onStopSpeakingAnimationId,
+                language = source.language,
+
                 audioPassword = audioPassword.GetValue(),
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),

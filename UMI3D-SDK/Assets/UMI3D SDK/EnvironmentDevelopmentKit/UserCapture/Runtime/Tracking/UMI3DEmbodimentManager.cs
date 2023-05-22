@@ -98,11 +98,11 @@ namespace umi3d.edk.userCapture
         //}
 
         ///// <summary>
-        ///// Lock for  <see cref="JoinDtoReception(UMI3DUser, SerializableVector3, Dictionary{uint, bool})"/>.
+        ///// Lock for  <see cref="JoinDtoReception(UMI3DUser, Vector3Dto, Dictionary{uint, bool})"/>.
         ///// </summary>
         //static object joinLock = new object();
 
-        //public async Task JoinDtoReception(UMI3DUser user, SerializableVector3 userSize, Dictionary<uint, bool> trackedBonetypes)
+        //public async Task JoinDtoReception(UMI3DUser user, Vector3Dto userSize, Dictionary<uint, bool> trackedBonetypes)
         //{
         //    if (ActivateEmbodiments && user is UMI3DTrackedUser trackedUser)
         //    {

@@ -26,7 +26,7 @@ namespace umi3d.edk
     public class UMI3DNodeAnimation : UMI3DAbstractAnimation
     {
         [Serializable]
-        public class OperationChain : IBytable
+        public class OperationChain
         {
             public Operation Operation;
 
@@ -48,17 +48,11 @@ namespace umi3d.edk
             }
 
             /// <inheritdoc/>
-            Bytable IBytable.ToBytableArray(params object[] parameters)
+            public Bytable ToBytableArray(params object[] parameters)
             {
                 if (parameters.Length < 1)
                     return ToBytes(null);
                 return ToBytes(parameters[0] as UMI3DUser);
-            }
-
-            /// <inheritdoc/>
-            bool IBytable.IsCountable()
-            {
-                return false;
             }
         }
 
@@ -105,7 +99,7 @@ namespace umi3d.edk
         /// <inheritdoc/>
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
-            return UMI3DSerializer.WriteIBytableCollection(animationChain, user)
+            return UMI3DSerializer.WriteCollection(animationChain, user)
                 + UMI3DSerializer.Write(objectDuration.GetValue(user));
         }
     }

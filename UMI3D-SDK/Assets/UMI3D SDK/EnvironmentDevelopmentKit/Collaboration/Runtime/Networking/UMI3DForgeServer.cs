@@ -262,7 +262,7 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+            var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (dto is StatusDto sts)
             {
@@ -293,7 +293,7 @@ namespace umi3d.edk.collaboration
 
             if (UMI3DEnvironment.Instance.useDto)
             {
-                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
 
                 switch (dto)
                 {
@@ -327,14 +327,14 @@ namespace umi3d.edk.collaboration
                         });
                         break;
 
-                    case common.ConferenceBrowserRequest conferencedto:
+                    case common.ConferenceBrowserRequestDto conferencedto:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationServer.Collaboration.CollaborationRequest(user, conferencedto);
                         });
                         break;
 
-                    case EmoteRequest emoteRequest:
+                    case EmoteRequestDto emoteRequest:
                         MainThreadManager.Run(() =>
                         {
                             UMI3DCollaborationServer.Collaboration.DispatchEmoteActivity(user, emoteRequest.emoteId, emoteRequest.shouldTrigger);
@@ -441,7 +441,7 @@ namespace umi3d.edk.collaboration
 
             if (UMI3DEnvironment.Instance.useDto)
             {
-                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
 
                 if (dto is UserTrackingFrameDto readFrame)
                 {
@@ -459,8 +459,8 @@ namespace umi3d.edk.collaboration
                     trackingFrame.userId = UMI3DSerializer.Read<ulong>(container);
                     trackingFrame.parentId = UMI3DSerializer.Read<ulong>(container);
                     //trackingFrame.skeletonHighOffset = UMI3DSerializer.Read<float>(container);
-                    trackingFrame.position = UMI3DSerializer.Read<SerializableVector3>(container);
-                    trackingFrame.rotation = UMI3DSerializer.Read<SerializableVector4>(container);
+                    trackingFrame.position = UMI3DSerializer.Read<Vector3Dto>(container);
+                    trackingFrame.rotation = UMI3DSerializer.Read<Vector4Dto>(container);
                     //trackingFrame.refreshFrequency = UMI3DSerializer.Read<float>(container);
                     trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.ControllerDto>(container);
                 }

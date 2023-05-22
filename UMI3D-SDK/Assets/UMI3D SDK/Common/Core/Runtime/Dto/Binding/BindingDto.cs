@@ -22,29 +22,14 @@ namespace umi3d.common
     [System.Serializable]
     public class BindingDto : AbstractOperationDto
     {
-        public BindingDto()
-        { }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="boundNodeId">An identifier defined by the designer.</param>
-        /// <param name="active">Is it activated</param>
-        /// <param name="data">A ref to the Dto containing all the information about the said binding or bindings</param>
-        public BindingDto(ulong boundNodeId, AbstractBindingDataDto data)
-        {
-            this.boundNodeId = boundNodeId;
-            this.data = data;
-        }
-
         /// <summary>
         /// An identifier defined by the designer.
         /// </summary>
-        public ulong boundNodeId;
+        public ulong boundNodeId { get; set; }
 
         /// <summary>
         /// A ref to the Dto containing all the information about the said binding or bindings
         /// </summary>
-        public AbstractBindingDataDto data;
+        public AbstractBindingDataDto data { get; set; }
     }
 }

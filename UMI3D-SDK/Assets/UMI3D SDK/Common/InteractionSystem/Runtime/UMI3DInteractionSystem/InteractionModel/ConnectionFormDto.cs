@@ -27,17 +27,17 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Fields of the form that are themselves DTOs as <see cref="AbstractParameterDto"/>.
         /// </summary>
-        public List<AbstractParameterDto> fields = new List<AbstractParameterDto>();
+        public List<AbstractParameterDto> fields { get; set; } = new List<AbstractParameterDto>();
 
         /// <summary>
         /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
-        public string globalToken;
+        public string globalToken { get; set; }
 
         /// <summary>
         /// array that can be use to store data.
         /// </summary>
-        public byte[] metadata;
+        public byte[] metadata { get; set; }
 
         public ConnectionFormDto() : base() { }
     }

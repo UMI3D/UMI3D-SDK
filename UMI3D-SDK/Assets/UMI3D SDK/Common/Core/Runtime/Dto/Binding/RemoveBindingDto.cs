@@ -24,6 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// Id of the node to unbound.
         /// </summary>
-        public ulong boundNodeId;
+        public ulong boundNodeId { get; set; }
     }
 }

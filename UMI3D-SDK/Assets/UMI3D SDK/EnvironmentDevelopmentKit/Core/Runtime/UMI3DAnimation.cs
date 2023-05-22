@@ -34,7 +34,7 @@ namespace umi3d.edk
         /// </summary>
         /// Animations in animation chain could be played simultaneously ou one after another by setting up the <see cref="Progress"/> field.
         [Serializable]
-        public class AnimationChain : IBytable
+        public class AnimationChain
         {
             /// <summary>
             /// Animation in the animation chain.
@@ -46,33 +46,15 @@ namespace umi3d.edk
             public float Progress;
 
             /// <inheritdoc/>
-            public Bytable ToBytableArray(params object[] parameters)
-            {
-                return ToByte(null);
-            }
-
-            /// <inheritdoc/>
             public Bytable ToByte(UMI3DUser user)
             {
                 return UMI3DSerializer.Write(Animation.Id())
                     + UMI3DSerializer.Write(Progress);
             }
 
-            public UMI3DAnimationDto.AnimationChainDto Todto(UMI3DUser user)
+            public AnimationChainDto Todto(UMI3DUser user)
             {
-                return new UMI3DAnimationDto.AnimationChainDto() { animationId = Animation.Id(), startOnProgress = Progress };
-            }
-
-            /// <inheritdoc/>
-            bool IBytable.IsCountable()
-            {
-                return true;
-            }
-
-            /// <inheritdoc/>
-            Bytable IBytable.ToBytableArray(params object[] parameters)
-            {
-                return ToByte(null);
+                return new AnimationChainDto() { animationId = Animation.Id(), startOnProgress = Progress };
             }
         }
 
@@ -136,7 +118,7 @@ namespace umi3d.edk
         protected override Bytable ToBytesAux(UMI3DUser user)
         {
             return base.ToBytesAux(user)
-                + UMI3DSerializer.WriteIBytableCollection(ObjectAnimationChain.GetValue(user))
+                + UMI3DSerializer.WriteCollection(ObjectAnimationChain.GetValue(user))
                 + UMI3DSerializer.Write(ObjectDuration.GetValue(user));
         }
     }

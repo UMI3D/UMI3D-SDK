@@ -272,7 +272,7 @@ namespace umi3d.edk.interaction
                 + UMI3DSerializer.Write(Display.description)
                 + Display.icon2D?.ToByte()
                 + Display.icon3D?.ToByte()
-                + UMI3DSerializer.WriteIBytableCollection(objectInteractions.GetValue(user).Where(i => i != null), user)
+                + UMI3DSerializer.WriteCollection(objectInteractions.GetValue(user).Where(i => i != null), user)
                 + UMI3DSerializer.Write(objectActive.GetValue(user));
         }
 

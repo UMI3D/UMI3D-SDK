@@ -52,24 +52,26 @@ namespace EditMode_Tests
         [TestCase(1982uL, false, false, false, 1, false)]
         public void WriteRead_BoneBinding(ulong userId, bool syncPos, bool syncRot, bool syncScale, int prio, bool partial)
         {
-            BoneBindingDataDto bindingDataDto = new BoneBindingDataDto(
-                boneType:       BoneType.LeftEye,
-                userId:         userId,
-                syncPosition:   syncPos,
-                syncRotation:   syncRot,
-                syncScale:      syncScale,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       prio,
-                partialFit:     partial
-            );
+            BoneBindingDataDto bindingDataDto = new BoneBindingDataDto()
+            {
+                boneType = BoneType.LeftEye,
+                userId = userId,
+                syncPosition = syncPos,
+                syncRotation = syncRot,
+                syncScale = syncScale,
+                offSetPosition = Vector3.zero.Dto(),
+                offSetRotation = Quaternion.identity.Dto(),
+                offSetScale = Vector3.one.Dto(),
+                anchorPosition = Vector3.zero.Dto(),
+                priority = prio,
+                partialFit = partial
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: bindingDataDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = 123,
+                data = bindingDataDto
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -88,9 +90,9 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncPosition,      resultSimpleBindingDataDto.syncPosition);
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
-            Assert.AreEqual(simpleBindingDataDto.offSetPosition,    resultSimpleBindingDataDto.offSetPosition);
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
-            Assert.AreEqual(simpleBindingDataDto.offSetScale,       resultSimpleBindingDataDto.offSetScale);
+            Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation.Struct(), resultSimpleBindingDataDto.offSetRotation.Struct());
+            Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
             var resultBoneBindingDataDto = result.data as BoneBindingDataDto;
@@ -103,25 +105,26 @@ namespace EditMode_Tests
         [TestCase(1982uL, "Rig2", false, false, false, 1, false)]
         public void WriteRead_RiggedBoneBinding(ulong userId, string rigName, bool syncPos, bool syncRot, bool syncScale, int prio, bool partial)
         {
-            RigBoneBindingDataDto bindingDataDto = new RigBoneBindingDataDto(
-                boneType:       BoneType.LeftEye,
-                userId:         userId,
-                rigName:        rigName,
-                syncPosition:   syncPos,
-                syncRotation:   syncRot,
-                syncScale:      syncScale,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       prio,
-                partialFit:     partial
-            );
+            RigBoneBindingDataDto bindingDataDto = new RigBoneBindingDataDto()
+            {
+                boneType = BoneType.LeftEye,
+                userId = userId,
+                rigName = rigName,
+                syncPosition = syncPos,
+                syncRotation = syncRot,
+                syncScale = syncScale,
+                offSetPosition = Vector3.zero.Dto(),
+                offSetRotation = Quaternion.identity.Dto(),
+                offSetScale = Vector3.one.Dto(),
+                anchorPosition = Vector3.zero.Dto(),
+                priority = prio,
+                partialFit = partial
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId:    123,
-                data:           bindingDataDto
-            );
+            BindingDto bindingDto = new BindingDto() { 
+                boundNodeId = 123, 
+                data = bindingDataDto 
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -140,9 +143,9 @@ namespace EditMode_Tests
             Assert.AreEqual(simpleBindingDataDto.syncPosition,      resultSimpleBindingDataDto.syncPosition);
             Assert.AreEqual(simpleBindingDataDto.syncRotation,      resultSimpleBindingDataDto.syncRotation);
             Assert.AreEqual(simpleBindingDataDto.syncScale,         resultSimpleBindingDataDto.syncScale);
-            Assert.AreEqual(simpleBindingDataDto.offSetPosition,    resultSimpleBindingDataDto.offSetPosition);
-            Assert.AreEqual(simpleBindingDataDto.offSetRotation,    resultSimpleBindingDataDto.offSetRotation);
-            Assert.AreEqual(simpleBindingDataDto.offSetScale,       resultSimpleBindingDataDto.offSetScale);
+            Assert.AreEqual(simpleBindingDataDto.offSetPosition.Struct(),    resultSimpleBindingDataDto.offSetPosition.Struct());
+            Assert.AreEqual(simpleBindingDataDto.offSetRotation.Struct(), resultSimpleBindingDataDto.offSetRotation.Struct());
+            Assert.AreEqual(simpleBindingDataDto.offSetScale.Struct(),       resultSimpleBindingDataDto.offSetScale.Struct());
 
             var boneBindingDataDto = bindingDto.data as BoneBindingDataDto;
             var resultBoneBindingDataDto = result.data as BoneBindingDataDto;
@@ -161,16 +164,18 @@ namespace EditMode_Tests
         [Test]
         public override void WriteRead_MultiBinding()
         {
-            MultiBindingDataDto multiBindingDto = new MultiBindingDataDto(
-                priority:   10,
-                partialFit: true,
-                bindings:   GetTestBindingsArray()
-            );
+            MultiBindingDataDto multiBindingDto = new MultiBindingDataDto()
+            {
+                priority = 10,
+                partialFit = true,
+                Bindings = GetTestBindingsArray()
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: 123,
-                data: multiBindingDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = 123,
+                data = multiBindingDto
+            };
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
@@ -194,18 +199,19 @@ namespace EditMode_Tests
         private AbstractSimpleBindingDataDto[] GetTestBindingsArray()
         {
             static AbstractSimpleBindingDataDto GetMockBindingData(ulong id)
-                => new NodeBindingDataDto(
-                nodeId:         id,
-                syncPosition:   false,
-                syncRotation:   false,
-                syncScale:      false,
-                offSetPosition: Vector3.zero,
-                offSetRotation: Quaternion.identity,
-                offSetScale:    Vector3.one,
-                anchorPosition: Vector3.zero,
-                priority:       10,
-                partialFit:     true
-            );
+                => new NodeBindingDataDto()
+                {
+                    nodeId = id,
+                    syncPosition = false,
+                    syncRotation = false,
+                    syncScale = false,
+                    offSetPosition = Vector3.zero.Dto(),
+                    offSetRotation = Quaternion.identity.Dto(),
+                    offSetScale = Vector3.one.Dto(),
+                    anchorPosition = Vector3.zero.Dto(),
+                    priority = 10,
+                    partialFit = true
+                };
 
             return new AbstractSimpleBindingDataDto[] {
                 GetMockBindingData(3),

@@ -25,17 +25,17 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Should the environment be notified of the event rising edge only (false) or both rising edge and falling edge (true).
         /// </summary>
-        public bool hold = false;
+        public bool hold { get; set; } = false;
 
         /// <summary>
         /// Id of the animation to be triggered when the interaction is triggered.
         /// </summary>
-        public ulong TriggerAnimationId;
+        public ulong TriggerAnimationId { get; set; }
 
         /// <summary>
         /// Id of the animation to be triggered when the interaciton is released.
         /// </summary>
-        public ulong ReleaseAnimationId;
+        public ulong ReleaseAnimationId { get; set; }
 
 
         public EventDto() : base() { }

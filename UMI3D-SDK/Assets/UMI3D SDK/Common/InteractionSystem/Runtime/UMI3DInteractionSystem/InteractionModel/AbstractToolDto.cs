@@ -27,29 +27,29 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Name of the interaction
         /// </summary>
-        public string name = null;
+        public string name { get; set; } = null;
 
         /// <summary>
         /// Description of the interaction
         /// </summary>
-        public string description = null;
+        public string description { get; set; } = null;
 
         /// <summary>
         /// Is tool active ?
         /// </summary>
-        public bool active = true;
+        public bool active { get; set; } = true;
 
         /// <summary>
         /// Path or url to a 2D icon 
         /// </summary>
-        public ResourceDto icon2D = null;
+        public ResourceDto icon2D { get; set; } = null;
 
         /// <summary>
         /// Path or url to a 3D icon 
         /// </summary>
-        public ResourceDto icon3D = null;
+        public ResourceDto icon3D { get; set; } = null;
 
-        public List<ulong> interactions = new List<ulong>();
+        public List<ulong> interactions { get; set; } = new List<ulong>();
 
         public AbstractToolDto() : base() { }
     }

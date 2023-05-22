@@ -25,38 +25,38 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Is the hover position tracked ?
         /// </summary>
-        public bool notifyHoverPosition = false;
+        public bool notifyHoverPosition { get; set; } = false;
 
         /// <summary>
         /// Defines if the sub-objects hoverring should be notified.
         /// </summary>
-        public bool notifySubObject = false;
+        public bool notifySubObject { get; set; } = false;
 
         /// <summary>
         /// Node id.
         /// </summary>
-        public ulong nodeId;
+        public ulong nodeId { get; set; }
 
         /// <summary>
         /// Defines if this interactable has priority on browsers over other interactables with hasPriority false.
         /// </summary>
-        public bool hasPriority = false;
+        public bool hasPriority { get; set; } = false;
 
         /// <summary>
         /// Distance for a user to interact with this tool. If value < 0, no distance check
         /// </summary>
-        public float interactionDistance = -1;
+        public float interactionDistance { get; set; } = -1;
 
 
         /// <summary>
         /// Animation id of the animation triggered when the interactable starts being hovered.
         /// </summary>
-        public ulong HoverEnterAnimationId;
+        public ulong HoverEnterAnimationId { get; set; }
 
         /// <summary>
         /// Animation id of the animation triggered when the interactable stops being hovered.
         /// </summary>
-        public ulong HoverExitAnimationId;
+        public ulong HoverExitAnimationId { get; set; }
 
         public InteractableDto() : base() { }
     }

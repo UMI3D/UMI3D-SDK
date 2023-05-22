@@ -77,9 +77,9 @@ namespace umi3d.edk
         #region collider
 
         /// <summary>
-        /// Type of the collider generated in front end.
+        /// type of the collider generated in front end.
         /// </summary>
-        [SerializeField, EditorReadOnly, Tooltip("Type of the collider generated in front end.")]
+        [SerializeField, EditorReadOnly, Tooltip("type of the collider generated in front end.")]
         protected ColliderType colliderType = ColliderType.Mesh;
 
         /// <summary>
@@ -267,9 +267,9 @@ namespace umi3d.edk
             var dto = new GlTFNodeDto
             {
                 name = nodeName,
-                position = objectPosition.GetValue(user),
-                scale = objectScale.GetValue(user),
-                rotation = objectRotation.GetValue(user)
+                position = objectPosition.GetValue(user).Dto(),
+                scale = objectScale.GetValue(user).Dto(),
+                rotation = objectRotation.GetValue(user).Dto()
             };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
             dto.extensions.KHR_lights_punctual = objectLight.GetValue(user)?.ToDto(user);
@@ -405,15 +405,15 @@ namespace umi3d.edk
             switch (colliderType)
             {
                 case ColliderType.Box:
-                    res.colliderCenter = colliderCenter;
-                    res.colliderBoxSize = colliderBoxSize;
+                    res.colliderCenter = colliderCenter.Dto();
+                    res.colliderBoxSize = colliderBoxSize.Dto();
                     break;
                 case ColliderType.Sphere:
-                    res.colliderCenter = colliderCenter;
+                    res.colliderCenter = colliderCenter.Dto();
                     res.colliderRadius = colliderRadius;
                     break;
                 case ColliderType.Capsule:
-                    res.colliderCenter = colliderCenter;
+                    res.colliderCenter = colliderCenter.Dto();
                     res.colliderDirection = colliderDirection;
                     res.colliderHeight = colliderHeight;
                     res.colliderRadius = colliderRadius;

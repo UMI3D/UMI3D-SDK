@@ -28,29 +28,16 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Scale of the camera.
         /// </summary>
-        public float scale;
+        public float scale { get; set; }
 
         /// <summary>
         /// The projection matrix of the user's camera.
         /// </summary>
-        public SerializableMatrix4x4 projectionMatrix;
+        public Matrix4x4Dto projectionMatrix { get; set; }
 
         /// <summary>
         /// The bone corresponding to the camera's position
         /// </summary>
-        public uint boneType;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.UserCameraProperties; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(scale)
-                + UMI3DSerializer.Write(projectionMatrix)
-                + UMI3DSerializer.Write(boneType);
-
-        }
+        public uint boneType { get; set; }
     }
 }

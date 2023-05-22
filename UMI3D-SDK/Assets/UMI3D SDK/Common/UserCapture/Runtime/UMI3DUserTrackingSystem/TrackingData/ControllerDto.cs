@@ -19,29 +19,12 @@ using System;
 namespace umi3d.common.userCapture
 {
     [Serializable]
-    public class ControllerDto : BoneDto, IBytable
+    public class ControllerDto : BoneDto
     {
         /// <summary>
         /// Position relative to the tracked node.
         /// </summary>
-        public SerializableVector3 position;
-
-        public bool isOverrider;
-
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return true;
-        }
-
-        /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
-        {
-            return
-                UMI3DSerializer.Write(boneType)
-                + UMI3DSerializer.Write(rotation ?? new SerializableVector4())
-                + UMI3DSerializer.Write(position ?? new SerializableVector3())
-                + UMI3DSerializer.Write(isOverrider);
-        }
+        public Vector3Dto position { get; set; }
+        public bool isOverrider { get; set; }
     }
 }

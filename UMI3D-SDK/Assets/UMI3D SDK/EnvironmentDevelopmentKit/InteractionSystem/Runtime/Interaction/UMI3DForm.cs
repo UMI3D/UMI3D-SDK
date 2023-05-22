@@ -41,7 +41,7 @@ namespace umi3d.edk.interaction
             {
             }
 
-            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
             }
         }
@@ -78,7 +78,7 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DSerializer.WriteIBytableCollection(Fields);
+                + UMI3DSerializer.WriteCollection(Fields);
         }
 
         /// <inheritdoc/>
@@ -96,7 +96,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (interactionId)
             {

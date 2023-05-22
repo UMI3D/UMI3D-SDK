@@ -25,17 +25,8 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// User id of the tracked user 
         /// </summary>
-        public ulong userId;
+        public ulong userId { get; set; }
 
-        public ControllerDto bone;
-
-        protected override uint GetOperationId() { return UMI3DOperationKeys.UserTrackingBone; }
-
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(userId)
-                + UMI3DSerializer.Write(bone);
-        }
+        public ControllerDto bone { get; set; }
     }
 }

@@ -40,7 +40,7 @@ namespace umi3d.cdk
             Text text = node.GetOrAddComponent<Text>();
             text.alignment = dto.alignment.Convert();
             text.alignByGeometry = dto.alignByGeometry;
-            text.color = dto.color;
+            text.color = dto.color.Struct();
             text.fontSize = dto.fontSize;
             text.fontStyle = dto.fontStyle.Convert();
 
@@ -88,7 +88,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextColor:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.color = dto.color = (SerializableColor)property.value;
+                        text.color = (dto.color = (ColorDto)property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.TextFont:
@@ -183,7 +183,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextColor:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
+                        text.color = (dto.color = UMI3DSerializer.Read<ColorDto>(container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.TextFont:

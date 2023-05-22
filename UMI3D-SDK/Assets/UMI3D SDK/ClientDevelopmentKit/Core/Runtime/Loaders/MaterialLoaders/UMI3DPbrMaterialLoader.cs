@@ -41,7 +41,7 @@ namespace umi3d.cdk
             {
                 void SetMaterial(Material newMat)
                 {
-                    newMat.color = (Color)dto.pbrMetallicRoughness.baseColorFactor;
+                    newMat.color = dto.pbrMetallicRoughness.baseColorFactor.Struct();
                     if (newMat.color.a < 1 || dto.alphaMode == "BLEND")
                     {
                         newMat.SetInt("_SrcBlend", (int)UnityEngine.Rendering.BlendMode.One);
@@ -56,7 +56,7 @@ namespace umi3d.cdk
 #endif
                     }
                     //Should have a material with emissive to true and an emissive color not to black in Resource folder to work (Unity requirement).
-                    newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)(Vector3)dto.emissiveFactor);
+                    newMat.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (Vector4)dto.emissiveFactor.Struct());
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - dto.pbrMetallicRoughness.roughnessFactor);
 
@@ -119,7 +119,7 @@ namespace umi3d.cdk
                     newMat.ApplyShaderProperty(MRTKShaderUtils.NormalMapScale, ext.normalTexture.scale);
 
                     ReadAdditionalShaderProperties(ext.id, ext.shaderProperties, newMat);
-                    ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
+                    ApplyTiling(KhrTT.offset.Struct(), KhrTT.scale.Struct(), newMat);
 
                     callback.Invoke(newMat);
                 }

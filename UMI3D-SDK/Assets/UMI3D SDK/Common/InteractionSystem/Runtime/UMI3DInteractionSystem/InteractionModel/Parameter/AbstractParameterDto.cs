@@ -26,7 +26,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Parameter value.
         /// </summary>
-        public V value;
+        public V value { get; set; }
 
         /// <inheritdoc/>
         public override object GetValue()
@@ -46,18 +46,18 @@ namespace umi3d.common.interaction
         /// <summary>
         /// State if a parameter is private or not. For password or other.  
         /// </summary>
-        public bool privateParameter;
+        public bool privateParameter { get; set; }
 
         /// <summary>
         /// State if a parameter is a displayer.
         /// If set to true the value will not be editable.
         /// </summary>
-        public bool isDisplayer;
+        public bool isDisplayer { get; set; }
 
         /// <summary>
         /// Mark a field with a tag to enable autocompletion 
         /// </summary>
-        public string tag;
+        public string tag { get; set; }
 
         /// <summary>
         /// Retrieve the parameter value.

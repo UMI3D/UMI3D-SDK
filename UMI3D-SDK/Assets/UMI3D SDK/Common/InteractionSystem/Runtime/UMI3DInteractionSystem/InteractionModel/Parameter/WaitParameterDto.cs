@@ -18,7 +18,7 @@ namespace umi3d.common.interaction
 {
     public class WaitParameterDto : AbstractParameterDto
     {
-        public float waitTimeSecond;
+        public float waitTimeSecond { get; set; }
 
         public override object GetValue()
         {

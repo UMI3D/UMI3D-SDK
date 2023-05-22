@@ -239,11 +239,11 @@ namespace umi3d.edk.collaboration
                                 if (channel == DataChannelTypes.Tracking)
                                 {
                                     //UMI3DCollaborationUser userSender = UMI3DCollaborationServer.Collaboration.GetUser((sender as UMI3DAvatarNode).userId);
-                                    dist = Vector3.Distance(to.CurrentTrackingFrame.position, sender.objectPosition.GetValue(to));
+                                    dist = Vector3.Distance(to.CurrentTrackingFrame.position.Struct(), sender.objectPosition.GetValue(to));
                                 }
                                 else
                                 {
-                                    dist = Vector3.Distance(to.CurrentTrackingFrame.position, sender.objectPosition.GetValue(to));
+                                    dist = Vector3.Distance(to.CurrentTrackingFrame.position.Struct(), sender.objectPosition.GetValue(to));
                                 }
 
                                 float coeff = 0f;

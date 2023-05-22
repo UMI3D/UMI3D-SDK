@@ -298,7 +298,7 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+            var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
             switch (dto)
             {
                 case TokenDto tokenDto:
@@ -336,7 +336,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                SendBinaryData((int)DataChannelTypes.Data, dto.ToBytableArray().ToBytes(), reliable);
+                SendBinaryData((int)DataChannelTypes.Data, UMI3DSerializer.Write(dto).ToBytes(), reliable);
             }
         }
 
@@ -375,7 +375,7 @@ namespace umi3d.cdk.collaboration
 
             if (useDto)
             {
-                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
 
                 switch (dto)
                 {
@@ -392,7 +392,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
+                            UMI3DLogger.Log($"type not catch {dto.GetType()}", scope);
                         });
                         break;
                 }
@@ -423,7 +423,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DLogger.Log($"Type not catch {TransactionId}", scope);
+                            UMI3DLogger.Log($"type not catch {TransactionId}", scope);
                         });
                         break;
                 }
@@ -434,6 +434,12 @@ namespace umi3d.cdk.collaboration
         {
             switch (operation.operation)
             {
+                case NavigationModeRequestDto navigationMode:
+                    MainThreadManager.Run(() =>
+                    {
+                        UnityEngine.Debug.Log("TODO : update Navigation mode");
+                    });
+                    break;
                 case FrameRequestDto frame:
                     bool waitforreparenting = true;
                     MainThreadManager.Run(async () =>
@@ -509,7 +515,7 @@ namespace umi3d.cdk.collaboration
                         CollaborativeSkeletonManager.Instance.SetTrackingSending(sendingTracking.activeSending);
                     });
                     break;
-                case PlayPoseDto playPoseDto:
+                case ApplyPoseDto playPoseDto:
                     MainThreadManager.Run(() =>
                     {
                         CollaborativeSkeletonManager.Instance.HandlePoseRequest(playPoseDto);
@@ -525,9 +531,18 @@ namespace umi3d.cdk.collaboration
         {
             switch (operationId)
             {
+                case UMI3DOperationKeys.FlyingNavigationMode:
+                case UMI3DOperationKeys.LayeredFlyingNavigationMode:
+                case UMI3DOperationKeys.FpsNavigationMode:
+                case UMI3DOperationKeys.LockedNavigationMode:
+                    MainThreadManager.Run(() =>
+                    {
+                        UnityEngine.Debug.Log("TODO : update Navigation mode");
+                    });
+                    break;
                 case UMI3DOperationKeys.NavigationRequest:
                     {
-                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
                         var nav = new NavigateDto() { position = pos };
                         MainThreadManager.Run(() =>
                         {
@@ -537,8 +552,8 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.TeleportationRequest:
                     {
-                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
                         var nav = new TeleportDto() { position = pos, rotation = rot };
                         MainThreadManager.Run(() =>
                         {
@@ -578,8 +593,8 @@ namespace umi3d.cdk.collaboration
                     break;
                 //case UMI3DOperationKeys.BoardedVehicleRequest:
                 //    {
-                //        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                //        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                //        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                //        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
                 //        ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
                 //        bool stopNavigation = UMI3DSerializer.Read<bool>(container);
                 //        ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);
@@ -664,7 +679,7 @@ namespace umi3d.cdk.collaboration
                     ulong poseKey = UMI3DSerializer.Read<ulong>(container);
                     int indexInList = UMI3DSerializer.Read<int>(container);
                     bool stopPose = UMI3DSerializer.Read<bool>(container);
-                    PlayPoseDto playPoseDto = new PlayPoseDto
+                    ApplyPoseDto playPoseDto = new ApplyPoseDto
                     {
                         userID = userID,
                         poseKey = poseKey,
@@ -719,7 +734,7 @@ namespace umi3d.cdk.collaboration
             if (useDto)
                 SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBson(), false);
             else
-                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBytableArray().ToBytes(), false);
+                SendBinaryData((int)DataChannelTypes.Tracking, UMI3DSerializer.Write(dto).ToBytes(), false);
         }
 
         /// <inheritdoc/>
@@ -727,7 +742,7 @@ namespace umi3d.cdk.collaboration
         {
             if (useDto)
             {
-                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
+                if (UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
                 {
                     MainThreadManager.Run(() =>
                     {

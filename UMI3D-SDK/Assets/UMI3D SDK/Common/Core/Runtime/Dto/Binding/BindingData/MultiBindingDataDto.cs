@@ -19,24 +19,9 @@ namespace umi3d.common
     [System.Serializable]
     public class MultiBindingDataDto : AbstractBindingDataDto
     {
-        public MultiBindingDataDto()
-        { }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="bindings">List Of all the simple bindings to apply</param>
-        /// <param name="priority">level of priority of this binding [impact the order in which it is applied]</param>
-        /// <param name="partialFit"> State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.</param>
-        public MultiBindingDataDto(AbstractSimpleBindingDataDto[] bindings, int priority, bool partialFit)
-            : base(priority, partialFit)
-        {
-            this.Bindings = bindings;
-        }
-
         /// <summary>
         /// List Of all the simple bindings to apply
         /// </summary>
-        public AbstractSimpleBindingDataDto[] Bindings { get; private set; }
+        public AbstractSimpleBindingDataDto[] Bindings { get; set; }
     }
 }

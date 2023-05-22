@@ -155,10 +155,10 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary)
+        public override UMI3DLocalAssetDirectoryDto ChooseVariant(AssetLibraryDto assetLibrary)
         {
-            UMI3DLocalAssetDirectory res = null;
-            foreach (UMI3DLocalAssetDirectory assetDir in assetLibrary.variants)
+            UMI3DLocalAssetDirectoryDto res = null;
+            foreach (var assetDir in assetLibrary.variants)
             {
                 bool ok = res == null;
                 if (!ok && !assetDir.formats.Any(f => !supportedformats.Contains(f)))

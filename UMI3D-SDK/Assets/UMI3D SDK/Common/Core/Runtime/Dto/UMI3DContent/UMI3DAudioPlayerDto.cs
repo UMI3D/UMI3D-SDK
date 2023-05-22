@@ -24,49 +24,42 @@ namespace umi3d.common
         /// <summary>
         /// Ressource containing the audio.
         /// </summary>
-        public ResourceDto audioResource;
+        public ResourceDto audioResource { get; set; }
 
         /// <summary>
         /// Node where to diffuse the audio from.
         /// </summary>
-        public ulong nodeID;
+        public ulong nodeID { get; set; }
 
         /// <summary>
         /// Spacial Blend value.
         /// 0:not spacialized. 1:Spacialized on the node.
         /// </summary>
-        public float spatialBlend = 0f;
+        public float spatialBlend { get; set; } = 0f;
 
         /// <summary>
         /// Defines which curve model is used to perform a volume attenuation.
         /// </summary>
-        public AudioSourceCurveMode volumeAttenuationMode = AudioSourceCurveMode.Logarithmic;
+        public AudioSourceCurveMode volumeAttenuationMode { get; set; } = AudioSourceCurveMode.Logarithmic;
 
         /// <summary>
         /// Max distance used to perform volume attenuation.
         /// </summary>
-        public float volumeMaxDistance = 500f;
+        public float volumeMaxDistance { get; set; } = 500f;
 
         /// <summary>
         /// Volume attenuation curve used if <see cref="volumeAttenuationMode"/> is set to <see cref="AudioSourceCurveMode.Custom"/>.
         /// </summary>
-        public SerializableAnimationCurve volumeAttenuationCurve = new SerializableAnimationCurve();
+        public AnimationCurveDto volumeAttenuationCurve { get; set; } = new AnimationCurveDto();
 
         /// <summary>
         /// Volume value between 0 and 1.
         /// </summary>
-        public float volume = 1f;
+        public float volume { get; set; } = 1f;
 
         /// <summary>
         /// Value of pitch change induced by a slowdown or speed up effect of the audio ressource. Value 1 is normal speed.
         /// </summary>
-        public float pitch = 1f;
-    }
-
-    public enum AudioSourceCurveMode
-    {
-        Logarithmic,
-        Linear,
-        Custom
+        public float pitch { get; set; } = 1f;
     }
 }

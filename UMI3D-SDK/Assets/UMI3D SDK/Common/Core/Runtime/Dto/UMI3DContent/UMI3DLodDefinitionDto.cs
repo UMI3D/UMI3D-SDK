@@ -27,14 +27,14 @@ namespace umi3d.common
         /// <summary>
         /// Nodes to display or not according to the current level of detail.
         /// </summary>
-        public List<ulong> nodes;
+        public List<ulong> nodes { get; set; }
 
 
-        public float screenSize;
+        public float screenSize { get; set; }
 
         /// <summary>
         /// Value between 0 and 1 that define the transition zone size.
         /// </summary>
-        public float fadeTransition;
+        public float fadeTransition { get; set; }
     }
 }

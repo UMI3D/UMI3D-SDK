@@ -366,7 +366,7 @@ namespace umi3d.edk
         {
             Operation operation = RemoveAllBindings(binding.boundNodeId, users);
 
-            var node = UMI3DEnvironment.Instance.GetEntityInstance<UMI3DAbstractNode>(binding.boundNodeId);
+            var node = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAbstractNode>(binding.boundNodeId);
             node.transform.SetParent(newparent.transform, true);
 
             foreach (UMI3DUser user in operation.users)

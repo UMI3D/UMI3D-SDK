@@ -372,7 +372,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
             UMI3DCollaborationUser user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
-            float dist = Vector3.Distance(user1.CurrentTrackingFrame.position, user2.CurrentTrackingFrame.position);
+            float dist = Vector3.Distance(user1.CurrentTrackingFrame.position.Struct(), user2.CurrentTrackingFrame.position.Struct());
             float coeff = 0f;
             if (dist > startProximityAt && dist < proximityCutout)
             {

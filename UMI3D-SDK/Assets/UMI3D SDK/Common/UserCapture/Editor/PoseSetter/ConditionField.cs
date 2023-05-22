@@ -42,7 +42,7 @@ namespace umi3d.common.userCapture
             AddToClassList("EditorParts");
 
             dropdownField = new DropdownField();
-            dropdownField.label = "Condition Type";
+            dropdownField.label = "Condition type";
             Add(dropdownField);
             SetUpDropDown();
         }
@@ -60,26 +60,26 @@ namespace umi3d.common.userCapture
             else if (fieldActualConditionType == typeof(DirectionConditionDto))
             {
                 return new DirectionConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value
+                    (temporaryChildren[0] as Vector3Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(BoneRotationConditionDto))
             {
                 return new BoneRotationConditionDto(
                     (uint)(temporaryChildren[0] as IntegerField).value,
-                    (temporaryChildren[1] as Vector4Field).value
+                    (temporaryChildren[1] as Vector4Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(UserScaleConditionDto))
             {
                 return new UserScaleConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value
+                    (temporaryChildren[0] as Vector3Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(ScaleConditionDto))
             {
                 return new UserScaleConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value
+                    (temporaryChildren[0] as Vector3Field).value.Dto()
                 );
             }
             else if (fieldActualConditionType == typeof(RangeConditionDto))
@@ -130,14 +130,14 @@ namespace umi3d.common.userCapture
 
             fieldActualConditionType.GetProperties(BindingFlags.Public | BindingFlags.Instance | BindingFlags.NonPublic).ForEach(property =>
             {
-                if (property.PropertyType == typeof(SerializableVector3))
+                if (property.PropertyType == typeof(Vector3Dto))
                 {
                     Vector3Field vector3Field = new Vector3Field();
                     vector3Field.label = property.Name;
                     temporaryChildren.Add(vector3Field);
                     Add(vector3Field);
                 }
-                else if (property.PropertyType == typeof(SerializableVector4))
+                else if (property.PropertyType == typeof(Vector4Dto))
                 {
                     Vector4Field vector4Field = new Vector4Field();
                     vector4Field.label = property.Name;

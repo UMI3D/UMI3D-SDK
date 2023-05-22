@@ -131,7 +131,7 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(objectReceiveShadow.GetValue(user))
                 + UMI3DSerializer.Write(objectCastShadow.GetValue(user))
                 + UMI3DSerializer.Write(objectActive.GetValue(user))
-                + UMI3DSerializer.WriteIBytableCollection(objectMaterialOverriders.GetValue(user));
+                + UMI3DSerializer.WriteCollection(objectMaterialOverriders.GetValue(user));
         }
     }
 }

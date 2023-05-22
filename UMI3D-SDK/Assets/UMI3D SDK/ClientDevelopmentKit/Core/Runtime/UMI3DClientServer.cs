@@ -88,15 +88,11 @@ namespace umi3d.cdk
             return await Task.FromResult(false);
         }
 
-        /// <summary>
-        /// Send a browser request to the server.
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
-        [Obsolete("Use Instance.SendRequest() instead.")]
+
+        [Obsolete("See SendRequest")]
         public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
         {
-            Instance.SendRequest(dto, reliable);
+            SendRequest(dto, reliable);
         }
 
         /// <summary>
@@ -104,10 +100,21 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
-        public virtual void SendRequest(AbstractBrowserRequestDto dto, bool reliable)
+        public static void SendRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
-                Instance._Send(dto, reliable);
+                Instance._SendRequest(dto, reliable);
+        }
+
+        /// <summary>
+        /// Send a browser request to the server.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
+        /// <seealso cref="SendRequest"/>
+        public virtual void _SendRequest(AbstractBrowserRequestDto dto, bool reliable)
+        {
+            _Send(dto, reliable);
         }
 
         protected virtual void _Send(AbstractBrowserRequestDto dto, bool reliable) { }

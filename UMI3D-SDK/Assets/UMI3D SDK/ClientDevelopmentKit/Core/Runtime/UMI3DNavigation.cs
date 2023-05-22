@@ -60,7 +60,7 @@ namespace umi3d.cdk
                     userId = UMI3DClientServer.Instance.GetUserId()
                 };
 
-                UMI3DClientServer.SendData(fConfirmation, true);
+                UMI3DClientServer.SendRequest(fConfirmation, true);
             }
         }
 

@@ -71,6 +71,11 @@ namespace umi3d.common
         public const uint FrameConfirmation = 307;
         public const uint SetUTSBoneTargetFPS = 308;
 
+        public const uint FpsNavigationMode = 400;
+        public const uint FlyingNavigationMode = 401;
+        public const uint LayeredFlyingNavigationMode = 402;
+        public const uint LockedNavigationMode = 403;
+
         public const uint InteractionRequest = 10001;
         public const uint EventStateChanged = 10002;
         public const uint EventTriggered = 10003;

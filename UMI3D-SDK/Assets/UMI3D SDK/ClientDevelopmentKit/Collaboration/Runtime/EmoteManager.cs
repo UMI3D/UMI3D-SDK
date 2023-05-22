@@ -234,13 +234,13 @@ namespace umi3d.cdk.collaboration
             EmoteStarted?.Invoke(emote);
 
             // send the emote triggerring text to other browsers through the server
-            var emoteRequest = new EmoteRequest()
+            var emoteRequest = new EmoteRequestDto()
             {
                 emoteId = emote.dto.id,
                 shouldTrigger = true
             };
 
-            UMI3DClientServer.Instance.SendRequest(emoteRequest, true);
+            UMI3DClientServer.SendRequest(emoteRequest, true);
 
             // emote play mode
             playingEmote = emote;
@@ -278,12 +278,12 @@ namespace umi3d.cdk.collaboration
             if (IsPlaying)
             {
                 // send the emote interruption text to other browsers through the server
-                var emoteRequest = new EmoteRequest()
+                var emoteRequest = new EmoteRequestDto()
                 {
                     emoteId = playingEmote.dto.id,
                     shouldTrigger = false
                 };
-                UMI3DClientServer.Instance.SendRequest(emoteRequest, true);
+                UMI3DClientServer.SendRequest(emoteRequest, true);
 
                 EndPlayMode();
                 EmoteEnded?.Invoke(playingEmote);

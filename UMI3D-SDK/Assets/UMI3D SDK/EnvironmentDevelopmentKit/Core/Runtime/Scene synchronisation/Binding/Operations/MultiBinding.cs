@@ -39,16 +39,17 @@ namespace umi3d.edk
         {
             MultiBindingDataDto bindingDataDto;
 
-            bindingDataDto = new MultiBindingDataDto(
-                bindings: bindings.Select(x => x.ToDto().data as AbstractSimpleBindingDataDto).ToArray(),
-                priority: priority,
-                partialFit: partialFit
-            );
+            bindingDataDto = new MultiBindingDataDto() {
+                Bindings= bindings.Select(x => x.ToDto().data as AbstractSimpleBindingDataDto).ToArray(),
+                priority= priority,
+                partialFit= partialFit
+            };
 
-            var bindingDto = new BindingDto(
-                boundNodeId: boundNodeId,
-                data: bindingDataDto
-            );
+            var bindingDto = new BindingDto()
+            {
+                boundNodeId = boundNodeId,
+                data = bindingDataDto
+            };
 
             return bindingDto;
         }

@@ -23,6 +23,17 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DEnvironmentSerializerCollaborationModule : UMI3DSerializerModule
     {
+        public override bool? IsCountable<T>()
+        {
+            return true switch
+            {
+                true when typeof(T) == typeof(UserDto) => true,
+                true when typeof(T) == typeof(UMI3DCollaborationUser) => true,
+                true when typeof(T) == typeof(RegisterIdentityDto) => true,
+                _ => null,
+            };
+        }
+
         /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
@@ -54,7 +65,7 @@ namespace umi3d.edk.collaboration
         }
 
         /// <inheritdoc/>
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
             {

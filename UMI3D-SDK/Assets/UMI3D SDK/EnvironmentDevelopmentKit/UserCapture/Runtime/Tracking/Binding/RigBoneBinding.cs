@@ -38,29 +38,31 @@ namespace umi3d.edk.userCapture
         {
             AbstractBindingDataDto bindingDataDto;
 
-            bindingDataDto = new RigBoneBindingDataDto(
-                userId: userId,
-                boneType: boneType,
-                rigName: rigName,
+            bindingDataDto = new RigBoneBindingDataDto()
+            {
+                userId = userId,
+                boneType = boneType,
+                rigName = rigName,
 
-                offSetPosition: offsetPosition,
-                offSetRotation: offsetRotation,
-                offSetScale: offsetScale,
+                offSetPosition = offsetPosition.Dto(),
+                offSetRotation = offsetRotation.Dto(),
+                offSetScale = offsetScale.Dto(),
 
-                anchorPosition: anchor,
+                anchorPosition = anchor.Dto(),
 
-                partialFit: partialFit,
-                priority: priority,
+                partialFit = partialFit,
+                priority = priority,
 
-                syncPosition: syncPosition,
-                syncRotation: syncRotation,
-                syncScale: syncScale
-            );
+                syncPosition = syncPosition,
+                syncRotation = syncRotation,
+                syncScale = syncScale
+            };
 
-            BindingDto bindingDto = new BindingDto(
-                boundNodeId: boundNodeId,
-                data: bindingDataDto
-            );
+            BindingDto bindingDto = new BindingDto()
+            {
+                boundNodeId = boundNodeId,
+                data = bindingDataDto
+            };
 
             return bindingDto;
         }

@@ -29,6 +29,7 @@ namespace umi3d.common.collaboration
         /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
+            ulong id;
             switch (true)
             {
                 case true when typeof(T) == typeof(UserCameraPropertiesDto):
@@ -38,7 +39,7 @@ namespace umi3d.common.collaboration
                         var usercam = new UserCameraPropertiesDto
                         {
                             scale = UMI3DSerializer.Read<float>(container),
-                            projectionMatrix = UMI3DSerializer.Read<SerializableMatrix4x4>(container),
+                            projectionMatrix = UMI3DSerializer.Read<Matrix4x4Dto>(container),
                             boneType = UMI3DSerializer.Read<uint>(container)
                         };
                         result = (T)Convert.ChangeType(usercam, typeof(T));
@@ -76,8 +77,8 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(ControllerDto):
                     uint type;
-                    SerializableVector4 rot;
-                    SerializableVector3 pos;
+                    Vector4Dto rot;
+                    Vector3Dto pos;
                     bool isOverrider;
                     if (UMI3DSerializer.TryRead(container, out type)
                         && UMI3DSerializer.TryRead(container, out rot)
@@ -97,7 +98,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(BoneDto):
                     //uint type;
-                    //SerializableVector4 rot;
+                    //Vector4Dto rot;
                     if (UMI3DSerializer.TryRead(container, out type)
                         && UMI3DSerializer.TryRead(container, out rot))
                     {
@@ -305,15 +306,15 @@ namespace umi3d.common.collaboration
                 #endregion
 
                 case true when typeof(T) == typeof(UMI3DHandPoseDto):
-                    ulong id;
+
                     string Name;
                     bool IsActive;
                     bool HoverPose;
                     bool isRelativeToNode;
-                    SerializableVector3 RightHandPosition;
-                    SerializableVector3 RightHandEulerRotation;
-                    SerializableVector3 LeftHandPosition;
-                    SerializableVector3 LeftHandEulerRotation;
+                    Vector3Dto RightHandPosition;
+                    Vector3Dto RightHandEulerRotation;
+                    Vector3Dto LeftHandPosition;
+                    Vector3Dto LeftHandEulerRotation;
                     if (UMI3DSerializer.TryRead(container, out id)
                         && UMI3DSerializer.TryRead(container, out Name)
                         && UMI3DSerializer.TryRead(container, out IsActive)
@@ -346,13 +347,21 @@ namespace umi3d.common.collaboration
                     }
                     return true;
                 case true when typeof(T) == typeof(UMI3DEmotesConfigDto):
-                    var conf = new UMI3DEmotesConfigDto();
+                    bool allAvailableByDefault;
                     result = default(T);
-                    readable = UMI3DSerializer.TryRead(container, out conf.id);
-                    readable &= UMI3DSerializer.TryRead(container, out conf.allAvailableByDefault);
+
+                    readable = UMI3DSerializer.TryRead(container, out id);
+                    readable &= UMI3DSerializer.TryRead(container, out allAvailableByDefault);
 
                     if (readable)
                     {
+
+                        var conf = new UMI3DEmotesConfigDto()
+                        {
+                            allAvailableByDefault = allAvailableByDefault,
+                            id = id
+                        };
+
                         readable = UMI3DSerializer.TryRead(container, out int nbEmotes);
                         if (readable)
                         {
@@ -370,28 +379,50 @@ namespace umi3d.common.collaboration
                     return true;
 
                 case true when typeof(T) == typeof(UMI3DEmoteDto):
-                    var e = new UMI3DEmoteDto();
-                    result = default(T);
+                    {
 
-                    readable = UMI3DSerializer.TryRead(container, out e.id);
-                    readable &= UMI3DSerializer.TryRead(container, out e.label);
-                    readable &= UMI3DSerializer.TryRead(container, out e.animationId);
-                    readable &= UMI3DSerializer.TryRead(container, out e.available);
-                    readable &= UMI3DSerializer.TryRead(container, out e.iconResource);
+                        result = default(T);
 
-                    if (!readable)
-                        return false;
-                    result = (T)Convert.ChangeType(e, typeof(T));
-                    return true;
-                case true when typeof(T) == typeof(UMI3DRenderedNodeDto.MaterialOverrideDto):
-                    var mat = new UMI3DRenderedNodeDto.MaterialOverrideDto();
-                    readable = UMI3DSerializer.TryRead<ulong>(container, out mat.newMaterialId);
+                        ulong animationId;
+                        string label;
+                        bool available;
+                        FileDto iconResource;
+
+                        readable = UMI3DSerializer.TryRead(container, out id);
+                        readable &= UMI3DSerializer.TryRead(container, out label);
+                        readable &= UMI3DSerializer.TryRead(container, out animationId);
+                        readable &= UMI3DSerializer.TryRead(container, out available);
+                        readable &= UMI3DSerializer.TryRead(container, out iconResource);
+
+                        if (!readable)
+                            return false;
+
+                        var e = new UMI3DEmoteDto()
+                        {
+                            id = id,
+                            label = label,
+                            animationId = animationId,
+                            available = available,
+                            iconResource = iconResource
+                        };
+
+                        result = (T)Convert.ChangeType(e, typeof(T));
+                        return true;
+                    }
+                case true when typeof(T) == typeof(MaterialOverrideDto):
+                    
+                    
+                    readable = UMI3DSerializer.TryRead<ulong>(container, out id);
                     if (readable)
                     {
-                        readable = UMI3DSerializer.TryRead<bool>(container, out mat.addMaterialIfNotExists);
+                        readable = UMI3DSerializer.TryRead<bool>(container, out bool addMaterialIfNotExists);
                         if (readable)
                         {
+                            var mat = new MaterialOverrideDto();
                             mat.overridedMaterialsId = UMI3DSerializer.ReadList<string>(container);
+                            mat.newMaterialId = id;
+                            mat.addMaterialIfNotExists = addMaterialIfNotExists;
+
                             result = (T)Convert.ChangeType(mat, typeof(T));
                         }
                         else
@@ -470,27 +501,50 @@ namespace umi3d.common.collaboration
                     result = (T)Convert.ChangeType(resource, typeof(T));
                     return true;
                 case true when typeof(T) == typeof(FileDto):
-                    var file = new FileDto
                     {
-                        metrics = new AssetMetricDto()
-                    };
-                    readable = UMI3DSerializer.TryRead<string>(container, out file.url)
-                               && UMI3DSerializer.TryRead<string>(container, out file.format)
-                               && UMI3DSerializer.TryRead<string>(container, out file.extension)
-                               && UMI3DSerializer.TryRead<int>(container, out file.metrics.resolution)
-                               && UMI3DSerializer.TryRead<float>(container, out file.metrics.size)
-                               && UMI3DSerializer.TryRead<string>(container, out file.pathIfInBundle)
-                               && UMI3DSerializer.TryRead<string>(container, out file.libraryKey);
-                    if (readable)
-                    {
-                        result = (T)Convert.ChangeType(file, typeof(T));
-                    }
-                    else
-                    {
-                        result = default(T);
-                    }
+                        string url = null;
+                        string pathIfInBundle = null;
+                        string libraryKey = null;
+                        string format = null;
+                        string extension = null;
+                        string authorization = null;
+                        int resolution = 0;
+                        float size = 0;
 
-                    return true;
+                        readable = UMI3DSerializer.TryRead<string>(container, out url)
+                                   && UMI3DSerializer.TryRead<string>(container, out format)
+                                   && UMI3DSerializer.TryRead<string>(container, out extension)
+                                   && UMI3DSerializer.TryRead<int>(container, out resolution)
+                                   && UMI3DSerializer.TryRead<float>(container, out size)
+                                   && UMI3DSerializer.TryRead<string>(container, out pathIfInBundle)
+                                   && UMI3DSerializer.TryRead<string>(container, out libraryKey);
+                        if (readable)
+                        {
+                            var file = new FileDto
+                            {
+                                url = url,
+                                pathIfInBundle = pathIfInBundle,
+                                libraryKey = libraryKey,
+                                format = format,
+                                extension = extension,
+                                authorization = authorization,
+                                metrics = new AssetMetricDto()
+                                {
+                                    resolution = resolution,
+                                    size = size
+                                }
+                            };
+
+                            result = (T)Convert.ChangeType(file, typeof(T));
+
+                        }
+                        else
+                        {
+                            result = default(T);
+                        }
+
+                        return true;
+                    }
                 case true when typeof(T) == typeof(RedirectionDto):
                     MediaDto media;
                     GateDto gate;
@@ -555,37 +609,39 @@ namespace umi3d.common.collaboration
                     readable = false;
                     return false;
                 case true when typeof(T) == typeof(MediaDto):
-                    string name, versionMajor, versionMinor, versionStatus, versionDate, url;
-                    ResourceDto icon2D, icon3D;
-                    if (
-                        UMI3DSerializer.TryRead(container, out name)
-                        && UMI3DSerializer.TryRead(container, out icon2D)
-                        && UMI3DSerializer.TryRead(container, out icon3D)
-                        && UMI3DSerializer.TryRead(container, out url)
-                        )
                     {
-                        var _media = new MediaDto
+                        string name, url;
+                        ResourceDto icon2D, icon3D;
+                        if (
+                            UMI3DSerializer.TryRead(container, out name)
+                            && UMI3DSerializer.TryRead(container, out icon2D)
+                            && UMI3DSerializer.TryRead(container, out icon3D)
+                            && UMI3DSerializer.TryRead(container, out url)
+                            )
                         {
-                            name = name,
-                            icon2D = icon2D,
-                            icon3D = icon3D,
-                            url = url
-                        };
-                        readable = true;
-                        result = (T)Convert.ChangeType(_media, typeof(T));
+                            var _media = new MediaDto
+                            {
+                                name = name,
+                                icon2D = icon2D,
+                                icon3D = icon3D,
+                                url = url
+                            };
+                            readable = true;
+                            result = (T)Convert.ChangeType(_media, typeof(T));
 
-                        return true;
+                            return true;
+                        }
+                        result = default(T);
+                        readable = false;
+                        return false;
                     }
-                    result = default(T);
-                    readable = false;
-                    return false;
                 case true when typeof(T) == typeof(UserTrackingFrameDto):
                     {
                         uint idKey = 0;
                         ulong userId, parentId;
                         //float skeletonHighOffset, refreshFrequency;
-                        SerializableVector3 position;
-                        SerializableVector4 rotation;
+                        Vector3Dto position;
+                        Vector4Dto rotation;
 
                         if (
                             UMI3DSerializer.TryRead(container, out idKey)
@@ -727,8 +783,8 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BonePoseDto):
                     {
                         uint bone;
-                        SerializableVector3 position;
-                        SerializableVector4 rotation;
+                        Vector3Dto position;
+                        Vector4Dto rotation;
 
                         readable = UMI3DSerializer.TryRead(container, out bone);
                         readable &= UMI3DSerializer.TryRead(container, out position);
@@ -788,7 +844,7 @@ namespace umi3d.common.collaboration
                 case true when typeof(T) == typeof(BoneRotationConditionDto):
                     {
                         uint boneId;
-                        SerializableVector4 rotation;
+                        Vector4Dto rotation;
                         readable = UMI3DSerializer.TryRead(container, out boneId);
                         readable &= UMI3DSerializer.TryRead(container, out rotation);
 
@@ -808,7 +864,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(DirectionConditionDto):
                     {
-                        SerializableVector3 direction;
+                        Vector3Dto direction;
                         readable = UMI3DSerializer.TryRead(container, out direction);
 
                         if (readable)
@@ -826,7 +882,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(UserScaleConditionDto):
                     {
-                        SerializableVector3 scale;
+                        Vector3Dto scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)
@@ -844,7 +900,7 @@ namespace umi3d.common.collaboration
 
                 case true when typeof(T) == typeof(ScaleConditionDto):
                     {
-                        SerializableVector3 scale;
+                        Vector3Dto scale;
                         readable = UMI3DSerializer.TryRead(container, out scale);
 
                         if (readable)
@@ -909,7 +965,7 @@ namespace umi3d.common.collaboration
 
 
         /// <inheritdoc/>
-        public override bool Write<T>(T value, out Bytable bytable)
+        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
             {
@@ -970,7 +1026,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(param.max)
                         + UMI3DSerializer.Write(param.increment);
                     break;
-                case UMI3DRenderedNodeDto.MaterialOverrideDto material:
+                case MaterialOverrideDto material:
                     bytable = UMI3DSerializer.Write(material.newMaterialId)
                         + UMI3DSerializer.Write(material.addMaterialIfNotExists)
                         + UMI3DSerializer.WriteCollection(material.overridedMaterialsId);
@@ -1114,6 +1170,51 @@ namespace umi3d.common.collaboration
                     return false;
             }
             return true;
+        }
+
+        public override bool? IsCountable<T>()
+        {
+            return true switch
+            {
+                true when typeof(T) == typeof(LocalInfoRequestParameterValue) => true,
+                true when typeof(T) == typeof(UserCameraPropertiesDto) => true,
+                true when typeof(T) == typeof(BooleanParameterDto) => true,
+                true when typeof(T) == typeof(EnumParameterDto<string>) => true,
+                true when typeof(T) == typeof(FloatParameterDto) => true,
+                true when typeof(T) == typeof(IntegerParameterDto) => true,
+                true when typeof(T) == typeof(StringParameterDto) => true,
+                true when typeof(T) == typeof(UploadFileParameterDto) => true,
+                true when typeof(T) == typeof(IntegerRangeParameterDto) => true,
+                true when typeof(T) == typeof(FloatRangeParameterDto) => true,
+                true when typeof(T) == typeof(MaterialOverrideDto) => true,
+                true when typeof(T) == typeof(ScalableTextureDto) => true,
+                true when typeof(T) == typeof(TextureDto) => true,
+                true when typeof(T) == typeof(ResourceDto) => true,
+                true when typeof(T) == typeof(FileDto) => true,
+                true when typeof(T) == typeof(RedirectionDto) => true,
+                true when typeof(T) == typeof(ForceLogoutDto) => true,
+                true when typeof(T) == typeof(MediaDto) => true,
+                true when typeof(T) == typeof(GateDto) => true,
+                true when typeof(T) == typeof(VoiceDto) => true,
+                true when typeof(T) == typeof(AnchoredBonePoseDto) => true,
+                true when typeof(T) == typeof(NodeAnchoredBonePoseDto) => true,
+                true when typeof(T) == typeof(FloorAnchoredBonePoseDto) => true,
+                true when typeof(T) == typeof(BonePoseDto) => true,
+                true when typeof(T) == typeof(PoseDto) => true,
+                true when typeof(T) == typeof(PoseOverriderDto) => true,
+                true when typeof(T) == typeof(DurationDto) => true,
+                true when typeof(T) == typeof(MagnitudeConditionDto) => true,
+                true when typeof(T) == typeof(RangeConditionDto) => true,
+                true when typeof(T) == typeof(BoneRotationConditionDto) => true,
+                true when typeof(T) == typeof(DirectionConditionDto) => true,
+                true when typeof(T) == typeof(NotConditionDto) => true,
+                true when typeof(T) == typeof(UserScaleConditionDto) => true,
+                true when typeof(T) == typeof(ScaleConditionDto) => true,
+                true when typeof(T) == typeof(ResourceDto) => true,
+                true when typeof(T) == typeof(PoseConditionDto) => true,
+                true when typeof(T) == typeof(UserTrackingBoneDto) => true,
+                _ => null
+            };
         }
     }
 }

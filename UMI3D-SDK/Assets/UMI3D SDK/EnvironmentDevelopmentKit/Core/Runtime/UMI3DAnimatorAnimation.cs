@@ -93,7 +93,7 @@ namespace umi3d.edk
             objectStateName = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.AnimationStateName, stateName, null, (o, u) => o.Equals(u));
             objectNormalizedTime = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationAnimatorNormalizedTime, normalizedTime, null, (o, u) => o.Equals(u));
             objectParameters = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.AnimationAnimatorParameters,
-                new Dictionary<string, object>(), null, (o, u) => new UMI3DAnimatorParameterDto(o), null, d =>
+                new Dictionary<string, object>(), null, (o, u) => UMI3DAnimatorParameter.Create(o), null, d =>
                 {
                     return new Dictionary<string, object>(d);
                 });

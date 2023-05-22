@@ -124,7 +124,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             throw new System.NotImplementedException();
             //change user access authorization isn't supported after connexion.

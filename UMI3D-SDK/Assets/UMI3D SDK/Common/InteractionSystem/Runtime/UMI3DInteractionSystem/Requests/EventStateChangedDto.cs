@@ -24,16 +24,6 @@ namespace umi3d.common.interaction
         /// <summary>
         /// The requested state.
         /// </summary>
-        public bool active;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.EventStateChanged; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(active);
-        }
+        public bool active { get; set; }
     }
 }

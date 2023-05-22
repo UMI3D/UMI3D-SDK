@@ -97,7 +97,7 @@ namespace umi3d.edk
         /// <param name="mat"></param>
         protected void RegisterMaterial(AbstractEntityDto mat)
         {
-            if (mat.id != 0 || UMI3DEnvironment.GetEntity<MaterialSO>(mat.id) == null)
+            if (mat.id != 0 || UMI3DEnvironment.GetEntityInstance<MaterialSO>(mat.id) == null)
             {
                 mat.id = UMI3DEnvironment.Register(this);
                 SetId(mat.id);

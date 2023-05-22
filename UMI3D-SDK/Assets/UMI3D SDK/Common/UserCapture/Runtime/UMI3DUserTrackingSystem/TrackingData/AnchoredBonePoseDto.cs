@@ -29,7 +29,7 @@ namespace umi3d.common.userCapture
         /// <param name="bone">The current bone to update</param>
         /// <param name="position">The position of the bone</param>
         /// <param name="rotation">The rotation of the bone</param>
-        public AnchoredBonePoseDto(uint otherBone, uint bone, SerializableVector3 position, SerializableVector4 rotation) : base (bone, position, rotation) 
+        public AnchoredBonePoseDto(uint otherBone, uint bone, Vector3Dto position, Vector4Dto rotation) : base (bone, position, rotation) 
         { 
             this.otherBone = otherBone;
         }
@@ -51,6 +51,6 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The anchor bone
         /// </summary>
-        public uint otherBone { get; private set; }
+        public uint otherBone { get; set; }
     }
 }

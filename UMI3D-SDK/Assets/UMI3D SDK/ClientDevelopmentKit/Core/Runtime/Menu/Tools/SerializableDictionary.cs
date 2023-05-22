@@ -23,8 +23,8 @@ namespace umi3d.cdk.menu.view
     /// <summary>
     /// Serializable implementation of a enumerable collection of key-value pairs.
     /// </summary>
-    /// <typeparam name="TKey">Type of the keys.</typeparam>
-    /// <typeparam name="TValue">Type of the values.</typeparam>
+    /// <typeparam name="TKey">type of the keys.</typeparam>
+    /// <typeparam name="TValue">type of the values.</typeparam>
     [System.Serializable]
     public class SerializableDictionary<TKey, TValue> : IEnumerable<KeyValuePair<TKey, TValue>>
     {

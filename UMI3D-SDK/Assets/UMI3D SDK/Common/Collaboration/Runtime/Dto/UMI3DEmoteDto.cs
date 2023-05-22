@@ -24,22 +24,22 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Emote label that is displayed to users.
         /// </summary>
-        public string label;
+        public string label { get; set; }
 
         /// <summary>
         /// If the user can see and play the emote
         /// </summary>
-        public bool available;
+        public bool available { get; set; }
 
         /// <summary>
         /// Icon ressource details
         /// </summary>
-        public FileDto iconResource;
+        public FileDto iconResource { get; set; }
 
         /// <summary>
         /// Emote animation in the bundled animator
         /// </summary>
-        public ulong animationId;
+        public ulong animationId { get; set; }
     }
 }
 

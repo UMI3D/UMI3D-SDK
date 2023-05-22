@@ -22,29 +22,8 @@ namespace umi3d.common
     /// Abstract DTO to represent any message sent by a UMI3D Browser.
     /// </summary>
     [Serializable]
-    public abstract class AbstractBrowserRequestDto : UMI3DDto, IBytable
+    public abstract class AbstractBrowserRequestDto : UMI3DDto
     {
-        /// <summary>
-        /// Defines if the message have to be reliable. A reliable message will be more expensive but always be delivered.
-        /// </summary>
-        protected bool reliable = true;
-
-        /// <summary>
-        /// Retrieve the UMI3D operation ID assccoiated to the request.
-        /// </summary>
-        /// <returns></returns>
-        protected abstract uint GetOperationId();
-
-        /// <inheritdoc/>
-        public virtual Bytable ToBytableArray(params object[] parameters)
-        {
-            return UMI3DSerializer.Write(GetOperationId());
-        }
-
-        /// <inheritdoc/>
-        public bool IsCountable()
-        {
-            return true;
-        }
+        
     }
 }

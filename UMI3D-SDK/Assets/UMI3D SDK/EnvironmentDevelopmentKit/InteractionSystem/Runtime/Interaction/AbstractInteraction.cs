@@ -29,7 +29,7 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction. Base class for all interactions.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity, IBytable
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity
     {
 
         public event Action<ulong> onHasRegistered;
@@ -57,11 +57,11 @@ namespace umi3d.edk.interaction
             /// <summary>
             /// The global position of the bone use to performe the interaction.
             /// </summary>
-            public SerializableVector3 bonePosition { get; private set; }
+            public Vector3Dto bonePosition { get; private set; }
             /// <summary>
             /// The global rotation of the bone use to performe the interaction.
             /// </summary>
-            public SerializableVector4 boneRotation { get; private set; }
+            public Vector4Dto boneRotation { get; private set; }
             /// <summary>
             /// The id of the currently hoverred object.
             /// It will be always null for an Interaction inside a Tool.
@@ -88,7 +88,7 @@ namespace umi3d.edk.interaction
                 boneRotation = dto.boneRotation;
             }
 
-            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation)
+            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation)
             {
                 this.user = user;
                 this.boneType = boneType;
@@ -205,7 +205,7 @@ namespace umi3d.edk.interaction
         /// <param name="request">Interaction request</param>
         public abstract void OnUserInteraction(UMI3DUser user, InteractionRequestDto request);
 
-        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container);
+        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container);
 
         /// <summary>
         /// Convert interaction to Data Transfer Object for a given user. 
@@ -263,17 +263,11 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
+        public Bytable ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToBytes(null);
             return ToBytes(parameters[0] as UMI3DUser);
-        }
-
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return true;
         }
 
         public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)

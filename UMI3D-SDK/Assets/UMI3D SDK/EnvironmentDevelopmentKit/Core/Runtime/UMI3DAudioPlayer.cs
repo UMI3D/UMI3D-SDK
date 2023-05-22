@@ -208,7 +208,7 @@ namespace umi3d.edk
             Adto.spatialBlend = ObjectSpacialBlend.GetValue(user);
             Adto.volumeAttenuationMode = ObjectVolumeAttenuationMode.GetValue(user);
             Adto.volumeMaxDistance = ObjectVolumeMaxDistance.GetValue(user);
-            Adto.volumeAttenuationCurve = ObjectVolumeCustomCurve.GetValue(user);
+            Adto.volumeAttenuationCurve = ObjectVolumeCustomCurve.GetValue(user).Dto();
         }
 
         /// <inheritdoc/>

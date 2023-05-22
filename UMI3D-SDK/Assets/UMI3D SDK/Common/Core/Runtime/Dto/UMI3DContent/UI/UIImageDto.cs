@@ -25,18 +25,16 @@ namespace umi3d.common
         /// <summary>
         /// Tint color.
         /// </summary>
-        public SerializableColor color;
+        public ColorDto color { get; set; }
 
         /// <summary>
         /// Sprite (2D graphic object constructed from a bitmap image) ressource file.
         /// </summary>
-        public ResourceDto sprite;
+        public ResourceDto sprite { get; set; }
 
         /// <summary>
-        /// Type of way to display the image.
+        /// type of way to display the image.
         /// </summary>
-        public ImageType type;
-
-        public UIImageDto() : base() { }
+        public ImageType type { get; set; }
     }
 }

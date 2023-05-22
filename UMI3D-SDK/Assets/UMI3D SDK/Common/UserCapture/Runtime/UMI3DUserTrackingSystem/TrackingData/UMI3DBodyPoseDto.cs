@@ -43,15 +43,15 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// Relative position of the body pose reference point to the object.
         /// </summary>
-        public SerializableVector3 BodyPosition;
+        public Vector3Dto BodyPosition;
         /// <summary>
         /// Relative rotation of the body pose reference point to the object.
         /// </summary>
         /// Rotation is expressed using Euler's coordinates.
-        public SerializableVector3 BodyEulerRotation;
+        public Vector3Dto BodyEulerRotation;
 
-        //public Dictionary<uint, SerializableVector3> JointRotations = new Dictionary<uint, SerializableVector3>();
+        //public Dictionary<uint, Vector3Dto> JointRotations = new Dictionary<uint, Vector3Dto>();
 
-        public Dictionary<uint, KeyValuePair<SerializableVector3, SerializableVector3>> TargetTransforms = new Dictionary<uint, KeyValuePair<SerializableVector3, SerializableVector3>>();
+        public Dictionary<uint, KeyValuePair<Vector3Dto, Vector3Dto>> TargetTransforms = new Dictionary<uint, KeyValuePair<Vector3Dto, Vector3Dto>>();
     }
 }

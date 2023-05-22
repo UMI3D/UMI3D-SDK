@@ -25,40 +25,38 @@ namespace umi3d.common
         /// <summary>
         /// Relative path of the file in the data folder.
         /// </summary>
-        public string url;
+        public string url { get; set; }
 
         /// <summary>
         /// relative sub-path if the file is packaged in an Asset Bundle.
         /// </summary>
         /// For Unity, see <see cref="UnityEngine.AssetBundle"/>.
-        public string pathIfInBundle;
+        public string pathIfInBundle { get; set; }
 
         /// <summary>
         /// Unique name of the library if the assets belongs to an asset library and its version.
         /// format is <id>:<version>
         /// </summary>
-        public string libraryKey;
+        public string libraryKey { get; set; }
 
         /// <summary>
         /// Format used to write the file.
         /// </summary>
-        public string format;
+        public string format { get; set; }
 
         /// <summary>
         /// Extension of the file.
         /// </summary>
-        public string extension;
+        public string extension { get; set; }
 
         /// <summary>
         /// Metrics measuring this asset.
         /// </summary>
-        public AssetMetricDto metrics;
+        public AssetMetricDto metrics { get; set; }
 
         /// <summary>
         /// Authorization header for HTTP authentification scheme.
         /// </summary>
-        public string authorization;
-
-        public FileDto() : base() { }
+        public string authorization { get; set; }
     }
 }

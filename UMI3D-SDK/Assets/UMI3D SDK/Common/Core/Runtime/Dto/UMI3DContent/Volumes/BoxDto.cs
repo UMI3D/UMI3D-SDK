@@ -24,11 +24,11 @@ namespace umi3d.common.volume
         /// <summary>
         /// Box center position.
         /// </summary>
-        public SerializableVector3 center;
+        public Vector3Dto center { get; set; }
 
         /// <summary>
         /// Scale of the box.
         /// </summary>
-        public SerializableVector3 size;
+        public Vector3Dto size { get; set; }
     }
 }

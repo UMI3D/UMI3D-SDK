@@ -21,6 +21,6 @@ namespace umi3d.common
     /// </summary>
     public class GlTFNodeExtensions : AbstractGlTFExtensions<UMI3DNodeDto>
     {
-        public KHR_lights_punctual KHR_lights_punctual;
+        public KHR_lights_punctual KHR_lights_punctual { get; set; }
     }
 }

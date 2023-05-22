@@ -120,7 +120,7 @@ namespace umi3d.cdk.interaction
                             id = ParameterDto.id,
                             hoveredObjectId = 0
                         };
-                        UMI3DClientServer.SendData(req, true);
+                        UMI3DClientServer.SendRequest(req, true);
                     }
                 }
             });

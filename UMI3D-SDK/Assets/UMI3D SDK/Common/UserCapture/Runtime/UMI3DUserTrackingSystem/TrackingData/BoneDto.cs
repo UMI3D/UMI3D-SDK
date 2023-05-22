@@ -24,30 +24,16 @@ namespace umi3d.common.userCapture
     /// A bone is a part of the skeleton associated to a user. It represents a part of the human body. 
     /// They are defined like a tree with rotations relation from children to parents bone.
     [Serializable]
-    public class BoneDto : UMI3DDto, IBytable
+    public class BoneDto : UMI3DDto
     {
         /// <summary>
         /// Defines the type of the bone.
         /// </summary>
-        public uint boneType;
+        public uint boneType { get; set; }
 
         /// <summary>
         /// Rotation of the bone in world space
         /// </summary>
-        public SerializableVector4 rotation;
-
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return true;
-        }
-
-        /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
-        {
-            return
-                UMI3DSerializer.Write(boneType)
-                + UMI3DSerializer.Write(rotation ?? new SerializableVector4());
-        }
+        public Vector4Dto rotation { get; set; }
     }
 }

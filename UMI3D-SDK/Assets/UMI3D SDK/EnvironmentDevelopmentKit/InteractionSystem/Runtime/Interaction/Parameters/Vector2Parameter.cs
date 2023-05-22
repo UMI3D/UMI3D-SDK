@@ -55,7 +55,7 @@ namespace umi3d.edk.interaction
         protected override void WriteProperties(AbstractInteractionDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            (dto as Vector2ParameterDto).value = value;
+            (dto as Vector2ParameterDto).value = value.Dto();
         }
 
         /// <inheritdoc/>
@@ -79,7 +79,7 @@ namespace umi3d.edk.interaction
                 case ParameterSettingRequestDto settingRequestDto:
                     if (settingRequestDto.parameter is Vector2ParameterDto parameter)
                     {
-                        value = parameter.value;
+                        value = parameter.value.Struct();
                         onChange.Invoke(new ParameterEventContent<Vector2>(user, settingRequestDto, value));
                     }
                     else
@@ -94,7 +94,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {

@@ -24,6 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// The new value for the property.
         /// </summary>
-        public object stopValue;
+        public object stopValue { get; set; }
     }
 }
