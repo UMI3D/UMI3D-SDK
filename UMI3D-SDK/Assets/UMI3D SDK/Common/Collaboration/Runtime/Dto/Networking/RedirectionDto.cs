@@ -24,11 +24,11 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// MediaDto of the media to connect to.
         /// </summary>
-        public MediaDto media;
+        public MediaDto media { get; set; }
 
         /// <summary>
         /// Gate data to help the new media where to redirect the user.
         /// </summary>
-        public GateDto gate;
+        public GateDto gate { get; set; }
     }
 }

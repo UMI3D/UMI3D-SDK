@@ -69,7 +69,7 @@ namespace umi3d.cdk.collaboration
                     result = (T)(object)user;
                     readable = true;
                     return true;
-                case true when typeof(T) == typeof(UMI3DAnimationDto.AnimationChainDto):
+                case true when typeof(T) == typeof(AnimationChainDto):
                     {
                         if (container.length < sizeof(ulong) + sizeof(float))
                         {
@@ -77,7 +77,7 @@ namespace umi3d.cdk.collaboration
                             readable = false;
                             return true;
                         }
-                        var value = new UMI3DAnimationDto.AnimationChainDto()
+                        var value = new AnimationChainDto()
                         {
                             animationId = UMI3DSerializer.Read<ulong>(container),
                             startOnProgress = UMI3DSerializer.Read<float>(container),

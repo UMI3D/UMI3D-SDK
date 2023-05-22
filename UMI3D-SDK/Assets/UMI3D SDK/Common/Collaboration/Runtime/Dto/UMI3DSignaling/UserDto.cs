@@ -27,12 +27,12 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// String that state the langue of a user.
         /// </summary>
-        public string language;
+        public string language { get; set; }
 
         /// <summary>
         /// Current attributed status of the user.
         /// </summary>
-        public StatusType status;
+        public StatusType status { get; set; }
 
         /// <summary>
         /// User's avatar UMI3D id.
@@ -42,7 +42,7 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Forge id of the user.
         /// </summary>
-        public uint networkId;
+        public uint networkId { get; set; }
 
         #region audio
         /// <summary>

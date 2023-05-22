@@ -24,28 +24,28 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// String that state the langue of a user.
         /// </summary>
-        public string language;
+        public string language { get; set; }
 
         /// <summary>
         /// Globaltoken previously used in the media the client want to connect to.
         /// </summary>
-        public string globalToken;
+        public string globalToken { get; set; }
 
         /// <summary>
         /// metaData previously used in the media the client want to connect to.
         /// </summary>
-        public byte[] metadata;
+        public byte[] metadata { get; set; }
 
         /// <summary>
         /// Gate data to help the environment where to redirect the user.
         /// </summary>
-        public GateDto gate;
+        public GateDto gate { get; set; }
 
         /// <summary>
         /// Is the client only wanting to download a library rather than connecting right now?
         /// </summary>
         /// If false : the client to connect normaly. <br/>
         /// If true : the client ask only for the library it will need in a later connection.
-        public bool libraryPreloading;
+        public bool libraryPreloading { get; set; }
     }
 }

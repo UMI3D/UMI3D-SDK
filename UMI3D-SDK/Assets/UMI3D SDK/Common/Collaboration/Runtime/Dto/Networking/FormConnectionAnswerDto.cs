@@ -25,6 +25,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Global token, as a set of form answers, previously used in the media the client want to connect to.
         /// </summary>
-        public FormAnswerDto formAnswerDto;
+        public FormAnswerDto formAnswerDto { get; set; }
     }
 }

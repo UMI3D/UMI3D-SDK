@@ -52,9 +52,9 @@ namespace umi3d.edk
                     + UMI3DSerializer.Write(Progress);
             }
 
-            public UMI3DAnimationDto.AnimationChainDto Todto(UMI3DUser user)
+            public AnimationChainDto Todto(UMI3DUser user)
             {
-                return new UMI3DAnimationDto.AnimationChainDto() { animationId = Animation.Id(), startOnProgress = Progress };
+                return new AnimationChainDto() { animationId = Animation.Id(), startOnProgress = Progress };
             }
         }
 

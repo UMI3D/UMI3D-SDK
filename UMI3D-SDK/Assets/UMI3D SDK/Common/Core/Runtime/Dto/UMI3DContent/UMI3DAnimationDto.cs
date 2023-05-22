@@ -39,16 +39,6 @@ namespace umi3d.common
         /// DTO describing a piece of animation to play.
         /// </summary>
         /// Animations in animation chain could be played simultaneously ou one after another by setting up the <see cref="startOnProgress"/> field.
-        public class AnimationChainDto
-        {
-            /// <summary>
-            /// Id of the animation.
-            /// </summary>
-            public ulong animationId { get; set; } = 0;
-            /// <summary>
-            /// Time in second after which this animation will start.
-            /// </summary>
-            public float startOnProgress { get; set; } = -1f;
-        }
+
     }
 }

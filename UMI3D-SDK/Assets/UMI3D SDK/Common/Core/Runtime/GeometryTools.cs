@@ -23,7 +23,7 @@ namespace umi3d.common.volume
     /// <summary>
     /// Contains several useful functions for geometry computing.
     /// </summary>
-    public abstract class GeometryTools
+    public static class GeometryTools
     {
         /// <summary>
         /// For logging purpose.

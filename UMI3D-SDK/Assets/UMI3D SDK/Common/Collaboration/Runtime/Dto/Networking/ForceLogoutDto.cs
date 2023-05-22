@@ -29,6 +29,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Reason for forcing user logout.
         /// </summary>
-        public string reason;
+        public string reason { get; set; }
     }
 }

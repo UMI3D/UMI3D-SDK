@@ -13,34 +13,18 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
-    /// <summary>
-    /// DTO describing an identity, a set of identifying info of the user.
-    /// </summary>
-    [Serializable]
-    public class IdentityDto : PublicIdentityDto
+    public class AnimationChainDto
     {
         /// <summary>
-        /// Local token of the user.
+        /// Id of the animation.
         /// </summary>
-        public string localToken { get; set; }
-
+        public ulong animationId { get; set; } = 0;
         /// <summary>
-        /// 
+        /// Time in second after which this animation will start.
         /// </summary>
-        public string headerToken { get; set; }
-
-        /// <summary>
-        /// 
-        /// </summary>
-        public string key { get; set; }
-
-        /// <summary>
-        /// id of the user;
-        /// </summary>
-        public string guid { get; set; }
+        public float startOnProgress { get; set; } = -1f;
     }
 }

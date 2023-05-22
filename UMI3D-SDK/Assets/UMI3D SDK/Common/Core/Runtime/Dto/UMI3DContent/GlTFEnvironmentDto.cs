@@ -27,16 +27,5 @@ namespace umi3d.common
         public List<GlTFSceneDto> scenes { get; set; } = new List<GlTFSceneDto>();
 
         public GlTFEnvironmentExtensions extensions { get; set; } = new GlTFEnvironmentExtensions();
-
-        public bool ShouldSerializescenes()
-        {
-            return scenes.Count > 0;
-        }
-
-        public int scene = -1;
-        public bool ShouldSerializescene()
-        {
-            return ShouldSerializescenes() && scene >= 0 && scene < scenes.Count;
-        }
     }
 }

@@ -25,12 +25,12 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Id of the gate.
         /// </summary>
-        public string gateId;
+        public string gateId { get; set; }
 
         /// <summary>
         /// Data a server can give to an other server for experience quality.
         /// </summary>
         /// The receiving server should be able to parse this customized data.
-        public byte[] metaData;
+        public byte[] metaData { get; set; }
     }
 }
