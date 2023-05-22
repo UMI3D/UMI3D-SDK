@@ -17,7 +17,7 @@ limitations under the License.
 
 using umi3d.common;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.collaboration
 {
     public class EmoteDispatchDto : AbstractOperationDto
     {
