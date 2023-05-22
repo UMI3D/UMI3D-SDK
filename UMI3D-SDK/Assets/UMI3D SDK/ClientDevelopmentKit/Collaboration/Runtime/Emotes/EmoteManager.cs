@@ -23,40 +23,14 @@ namespace umi3d.cdk.collaboration
     /// Manager that handles emotes
     /// </summary>
     /// This manager is optionnal and should be added to a browser only if it plans to supports emotes.
-    public class EmoteManager : inetum.unityUtils.Singleton<EmoteManager>
+    public class EmoteManager : inetum.unityUtils.Singleton<EmoteManager>, IEmoteService
     {
         #region Fields
 
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration;
 
-        #region Events
-
         /// <summary>
-        /// Triggered when emotes are loaded and made available.
-        /// </summary>
-        public event Action<List<Emote>> EmotesLoaded;
-
-        /// <summary>
-        /// Triggered when an emote is modified.
-        /// </summary>
-        public event Action<Emote> EmoteUpdated;
-
-        /// <summary>
-        /// Triggered when an emote is played by the user.
-        /// </summary>
-        public event Action<Emote> EmoteStarted;
-
-        /// <summary>
-        /// Triggered when an emote is finished to be played by the user.
-        /// </summary>
-        public event Action<Emote> EmoteEnded;
-
-        #endregion Events
-
-        #region EmotesConfigManagement
-
-        /// <summary>
-        /// Available emotes from bundle
+        /// Emotes attributed to the user
         /// </summary>
         public virtual List<Emote> Emotes { get; } = new();
 
@@ -84,6 +58,7 @@ namespace umi3d.cdk.collaboration
                 _defaultIcon = value;
             }
         }
+
         private Sprite _defaultIcon;
 
         /// <summary>
@@ -101,11 +76,9 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public bool IsPlaying => playingEmote is not null;
 
-        #endregion EmotesConfigManagement
-
         #endregion Fields
 
-        #region DependenciesInjection
+        #region Dependencies Injection
 
         private UMI3DEnvironmentLoader environmentLoaderService;
 
@@ -118,23 +91,54 @@ namespace umi3d.cdk.collaboration
         {
             environmentLoaderService = environmentLoader;
         }
-        #endregion DependenciesInjection
 
-        #region Emote Config
+        #endregion Dependencies Injection
+
+        #region Events
+
+        /// <summary>
+        /// Triggered when emotes are loaded and made available.
+        /// </summary>
+        public event Action<List<Emote>> EmotesLoaded;
+
+        /// <summary>
+        /// Triggered when an emote is modified.
+        /// </summary>
+        public event Action<Emote> EmoteUpdated;
+
+        /// <summary>
+        /// Triggered when an emote is played by the user.
+        /// </summary>
+        public event Action<Emote> EmoteStarted;
+
+        /// <summary>
+        /// Triggered when an emote is finished to be played by the user.
+        /// </summary>
+        public event Action<Emote> EmoteEnded;
+
+        #endregion Events
+
+        #region Emote Changes
 
         /// <summary>
         /// Load and configure emotes from an <see cref="UMI3DEmotesConfigDto"/>
         /// and try to get the animations.
         /// </summary>
         /// <param name="dto"></param>
-        public virtual void LoadEmoteConfig(UMI3DEmotesConfigDto dto)
+        public virtual void UpdateEmoteConfig(UMI3DEmotesConfigDto dto)
         {
+            if (emoteConfigDto is not null)
+                ResetEmoteSystem();
+
             emoteConfigDto = dto;
+
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
                 UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(LoadEmotes);
             else //sometimes the environment is already loaded when loading emotes
                 LoadEmotes();
+
             UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(ResetEmoteSystem); //? most of this work (e.g. cleaning the animation, should be handled by the server.
+            UMI3DCollaborationClientServer.Instance.OnLeaving.AddListener(ResetEmoteSystem);
         }
 
         /// <summary>
@@ -173,7 +177,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.LogWarning($"Trying to update the emote {dto.label} when no EmoteConfig was received", DEBUG_SCOPE);
                 return;
             }
-                
+
             var emote = Emotes.Find(x => x.dto.id == dto.id);
             emote.available = dto.available;
             emote.dto = dto;
@@ -185,7 +189,7 @@ namespace umi3d.cdk.collaboration
             try
             {
                 IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(emoteRefInConfig.iconResource.extension);
-                Texture2D texture = (Texture2D) await UMI3DResourcesManager.LoadFile(emoteConfigDto.id,
+                Texture2D texture = (Texture2D)await UMI3DResourcesManager.LoadFile(emoteConfigDto.id,
                                                                                      emoteRefInConfig.iconResource,
                                                                                      loader);
                 emote.icon = Sprite.Create(texture, new Rect(0.0f, 0.0f, texture.width, texture.height), new Vector2(0.5f, 0.5f), 100.0f);
@@ -217,7 +221,7 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnRedirection.RemoveListener(ResetEmoteSystem);
         }
 
-        #endregion Emote Config
+        #endregion Emote Changes
 
         #region Emote Playing
 
@@ -225,11 +229,10 @@ namespace umi3d.cdk.collaboration
         /// Play the emote
         /// </summary>
         /// <param name="emote"></param>
-        /// <returns></returns>
         public virtual void PlayEmote(Emote emote)
         {
             if (!emote.available)
-                throw new Umi3dException($"Could not play emote {emote.Label} as it is not available for this user");
+                UMI3DLogger.LogError($"Could not play emote {emote.Label} as it is not available for this user", DEBUG_SCOPE);
 
             EmoteStarted?.Invoke(emote);
 
@@ -240,7 +243,7 @@ namespace umi3d.cdk.collaboration
                 shouldTrigger = true
             };
 
-            UMI3DClientServer.SendRequest(emoteRequest, true);
+            collabClientServerService._SendRequest(emoteRequest, true);
 
             // emote play mode
             playingEmote = emote;
@@ -283,9 +286,8 @@ namespace umi3d.cdk.collaboration
                     emoteId = playingEmote.dto.id,
                     shouldTrigger = false
                 };
-                UMI3DClientServer.SendRequest(emoteRequest, true);
 
-                EndPlayMode();
+                collabClientServerService._SendRequest(emoteRequest, true);
                 EmoteEnded?.Invoke(playingEmote);
                 playingEmote = null;
             }
@@ -296,7 +298,11 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// Exist to listen to events that require an Emote.
         /// <param name="emote">Not used parameter</param>
-        private void StopEmote(Emote emote) => StopEmote();
+        public virtual void StopEmote(Emote emote)
+        {
+            if (emote == playingEmote)
+                StopEmote();
+        }
 
         #endregion Emote Playing
     }

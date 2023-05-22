@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region DependencyInjection
-        private EmoteManager emoteManagementService;
+        private IEmoteService emoteManagementService;
 
         public UMI3DEmotesConfigLoader()
         {
@@ -55,7 +55,7 @@ namespace umi3d.cdk.collaboration
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
                 UMI3DEnvironmentLoader.Instance.RegisterEntity(emoteDto.id, emoteDto, null).NotifyLoaded();
 
-            emoteManagementService.LoadEmoteConfig(dto);
+            emoteManagementService.UpdateEmoteConfig(dto);
             return Task.CompletedTask;
         }
 
@@ -69,7 +69,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = value.property.value as List<UMI3DEmoteDto>;
-                    emoteManagementService.LoadEmoteConfig(dto);
+                    emoteManagementService.UpdateEmoteConfig(dto);
                     break;
 
                 default:
@@ -88,7 +88,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     dto.emotes = UMI3DSerializer.Read<List<UMI3DEmoteDto>>(value.container);
-                    emoteManagementService.LoadEmoteConfig(dto);
+                    emoteManagementService.UpdateEmoteConfig(dto);
                     break;
 
                 default:
@@ -104,7 +104,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.ChangeEmoteConfig:
                     data.result = UMI3DSerializer.Read<UMI3DEmotesConfigDto>(data.container);
-                    emoteManagementService.LoadEmoteConfig(data.result as UMI3DEmotesConfigDto);
+                    emoteManagementService.UpdateEmoteConfig(data.result as UMI3DEmotesConfigDto);
                     break;
 
                 default:

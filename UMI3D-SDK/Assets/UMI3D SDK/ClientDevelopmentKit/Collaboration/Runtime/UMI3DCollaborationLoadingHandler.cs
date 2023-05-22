@@ -25,7 +25,7 @@ namespace umi3d.cdk.collaboration
     public class UMI3DCollaborationLoadingHandler : UMI3DLoadingHandler
     {
         #region Emotes
-        private EmoteManager emoteService;
+        private IEmoteService emoteService;
 
         #endregion Emotes
 

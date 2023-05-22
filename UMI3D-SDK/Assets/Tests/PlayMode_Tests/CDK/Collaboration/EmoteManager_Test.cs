@@ -97,7 +97,7 @@ namespace PlayMode_Tests.Collaboration.CDK
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
             // WHEN
-            emoteManagerService.LoadEmoteConfig(dto);
+            emoteManagerService.UpdateEmoteConfig(dto);
             environmentLoaderServiceMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
@@ -132,7 +132,7 @@ namespace PlayMode_Tests.Collaboration.CDK
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
             // WHEN
-            emoteManagerService.LoadEmoteConfig(dto);
+            emoteManagerService.UpdateEmoteConfig(dto);
             environmentLoaderServiceMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
@@ -167,7 +167,7 @@ namespace PlayMode_Tests.Collaboration.CDK
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
             // WHEN
-            emoteManagerService.LoadEmoteConfig(dto);
+            emoteManagerService.UpdateEmoteConfig(dto);
             environmentLoaderServiceMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN

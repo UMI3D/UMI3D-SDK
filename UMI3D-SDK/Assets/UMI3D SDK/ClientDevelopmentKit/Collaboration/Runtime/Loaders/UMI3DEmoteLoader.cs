@@ -26,7 +26,7 @@ namespace umi3d.cdk.collaboration
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region DependencyInjection
-        private EmoteManager emoteManagementService;
+        private IEmoteService emoteManagementService;
 
         public UMI3DEmoteLoader()
         {
