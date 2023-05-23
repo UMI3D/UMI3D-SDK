@@ -382,7 +382,7 @@ namespace umi3d.cdk
                 for (int i = 0; i < renderer.sharedMaterials.Length; i++)
                 {
                     OldMaterialContainer oldMats = renderer.gameObject.GetOrAddComponent<OldMaterialContainer>();
-                    if (filter(renderer.sharedMaterials[i].name) || (oldMats != null && oldMats.oldMats[i] != null && filter(oldMats.oldMats[i].name)))
+                    if (filter(renderer.sharedMaterials[i].name) || (oldMats != null && oldMats.oldMats.Length > i && oldMats.oldMats[i] != null && filter(oldMats.oldMats[i].name)))
                     {
                         if (oldMats.oldMats[i] == null)
                             oldMats.oldMats[i] = renderer.sharedMaterials[i];

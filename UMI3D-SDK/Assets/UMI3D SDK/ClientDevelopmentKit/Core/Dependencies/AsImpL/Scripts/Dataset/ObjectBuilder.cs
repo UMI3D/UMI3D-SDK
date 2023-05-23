@@ -687,7 +687,7 @@ namespace AsImpL
             else
                 newMaterial = new Material(baseMaterial);
             //Material newMaterial = MaterialFactory.Create(ShaderSelector.Select(md, useUnlit, mode)); // "Standard (Specular setup)"
-            //newMaterial.name = md.materialName;
+            newMaterial.name = md.materialName;
 
             float shinLog = Mathf.Log(md.shininess, 2);
             // get the metallic value from the shininess
