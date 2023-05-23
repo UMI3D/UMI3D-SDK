@@ -26,7 +26,7 @@ namespace EditMode_Tests.Collaboration.Emotes.Common
     {
         protected List<UMI3DSerializerModule> dependenciesSerializationModules = new();
 
-        protected UMI3DEmoteSerializer emotesSerializerModule = new();
+        protected UMI3DEmoteSerializerModule emotesSerializerModule = new();
 
         #region Test SetUp
 
