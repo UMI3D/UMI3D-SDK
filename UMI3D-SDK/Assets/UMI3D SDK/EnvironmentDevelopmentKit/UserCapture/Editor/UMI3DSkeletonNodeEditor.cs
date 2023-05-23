@@ -28,7 +28,7 @@ namespace umi3d.edk.userCapture.editor
         protected override void OnEnable()
         {
             base.OnEnable();
-            animationsStates = serializedObject.FindProperty("animationsStates");
+            animationsStates = serializedObject.FindProperty("animationStates");
         }
 
         public override void OnInspectorGUI()
