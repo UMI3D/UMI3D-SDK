@@ -410,7 +410,10 @@ namespace umi3d.common
 
             if (value.Count() > 0)
             {
-                if (!IsCountable<T>() || value.Any(e => !IsCountable(e))) return ListToIndexesBytable(value, parameters);
+                if (typeof(T) == typeof(DictionaryEntryBytable) && value.Cast<DictionaryEntryBytable>().Any(e => !e.IsCountable()))
+                    return ListToIndexesBytable(value, parameters);
+                else if (!IsCountable<T>() || value.Any(e => !IsCountable(e)))
+                    return ListToIndexesBytable(value, parameters);
             }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
             foreach (T v in value)
@@ -459,6 +462,34 @@ namespace umi3d.common
             public Bytable ToBytableArray(params object[] parameters)
             {
                 return Write(key, parameters) + Write(value, parameters);
+            }
+        }
+
+        private class DictionaryEntryBytableSerializerModule : UMI3DSerializerModule
+        {
+            public override bool? IsCountable<T>()
+            {
+                return null; // not possible to knwo without looking at the value
+            }
+
+            public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+            {
+                readable = false;
+                result = default;
+                return false;
+            }
+
+            public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
+            {
+                if (value is not DictionaryEntryBytable dictionaryEntryBytable)
+                {
+                    bytable = default;
+                    return false;
+                }
+
+                bytable = dictionaryEntryBytable.ToBytableArray(parameters);
+
+                return true;
             }
         }
 
