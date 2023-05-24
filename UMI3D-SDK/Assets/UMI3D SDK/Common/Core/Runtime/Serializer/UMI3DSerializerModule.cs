@@ -11,12 +11,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json.Bson;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
-using inetum.unityUtils;
 
 namespace umi3d.common
 {
@@ -86,50 +84,19 @@ namespace umi3d.common
 
     }
 
-
-
-    ///// <summary>
-    ///// Helper class to serialize objects.
-    ///// </summary>
-    ///// Typically used to serialize objects that are not defined in the UMI3D core.
-    //public abstract class UMI3DSerializerModule : IUMI3DSerializerModule
-    //{
-    //    /// <summary>
-    //    /// Write the object as a <see cref="Bytable"/>.
-    //    /// </summary>
-    //    /// <typeparam name="T">argumentType of the object to serialize.</typeparam>
-    //    /// <param name="value">Object to serialize.</param>
-    //    /// <param name="bytable">Object as a bytable.</param>
-    //    /// <returns></returns>
-    //    public abstract bool Write<T>(T value, out Bytable bytable, params object[] parameters);
-
-    //    /// <summary>
-    //    /// Retrieve an object from a <see cref="Bytable"/>.
-    //    /// </summary>
-    //    /// <typeparam name="T">argumentType of the object to deserialize.</typeparam>
-    //    /// <param name="container">Byte container containing the object.</param>
-    //    /// <param name="readable">has the containr successfully been read?</param>
-    //    /// <param name="result">Deserialized object.</param>
-    //    /// <returns></returns>
-    //    public abstract bool Read<T>(ByteContainer container, out bool readable, out T result);
-
-
-    //    /// <summary>
-    //    /// state is class if countable or not 
-    //    /// </summary>
-    //    /// <typeparam name="T">Type to test</typeparam>
-    //    /// <returns>True if countable, false if not, null if module doesn'argumentType know</returns>
-    //    public abstract bool? IsCountable<T>();
-
-    //}
     public static class UMI3DSerializerModuleUtils
     {
         /// <summary>
-        /// 
+        /// Return a collection of all UMI3DSerializerModule and UMI3DSerializerModule/<C/>
         /// </summary>
-        /// <param name="assembly"></param>
+        /// <param name="assembly">Assembly to restrict the cherch. All assembly of the current domain if null</param>
         /// <returns></returns>
-        public static IEnumerable<Type> GetModulesType(Assembly assembly = null)
+        public static IEnumerable<UMI3DSerializerModule> GetModules(Assembly assembly = null)
+        {
+            return GetModulesType(assembly).SelectMany(Instanciate);
+        }
+
+        static IEnumerable<Type> GetModulesType(Assembly assembly = null)
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => assembly == null || a == assembly)
@@ -140,12 +107,17 @@ namespace umi3d.common
                     var attributes = type.GetCustomAttributes(typeof(UMI3DSerializerOrderAttribute), true);
                     if (type.GetCustomAttributes(typeof(UMI3DSerializerOrderAttribute), true).Length > 0)
                     {
-                        return attributes.Select(a => a as UMI3DSerializerOrderAttribute).First().order;
+                        return attributes.Select(a => a as UMI3DSerializerOrderAttribute).First().priotity;
                     }
                     return -1;
                 });
         }
 
+        /// <summary>
+        /// State if the The type is a serializer.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         static bool IsValidType(this Type type)
         {
             return !type.GetTypeInfo().IsAbstract
@@ -159,6 +131,11 @@ namespace umi3d.common
                )));
         }
 
+        /// <summary>
+        /// Look if the Serializer have the ignore attribut.
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
         static bool IsIgnoreAttribute(this Type type)
         {
             var a = type.GetCustomAttributes(typeof(UMI3DSerializerIgnoreAttribute), false);
@@ -169,17 +146,13 @@ namespace umi3d.common
             return false;
         }
 
-        public static IEnumerable<UMI3DSerializerModule> GetModules(Assembly assembly = null)
+        /// <summary>
+        /// Instanciate class if its inherit the UMI3DSerializerModule interface and put it in a container foreach UMI3DSerializerModule/</> interface its inheriting 
+        /// </summary>
+        /// <param name="type"></param>
+        /// <returns></returns>
+        static IEnumerable<UMI3DSerializerModule> Instanciate(Type type)
         {
-
-
-
-            return GetModulesType(assembly).SelectMany(Create);
-        }
-
-        static IEnumerable<UMI3DSerializerModule> Create(Type type)
-        {
-            //**/UnityEngine.Debug.Log(type);
             var l = type.GetInterfaces()
                 .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(UMI3DSerializerModule<>))
                 .Select(i => new UMI3DSerializerContainer(type,i, i.GetGenericArguments().First())).Cast<UMI3DSerializerModule>().ToList();
@@ -187,14 +160,13 @@ namespace umi3d.common
             if (type.GetInterfaces().Contains(typeof(UMI3DSerializerModule)))
                 l.Add(Activator.CreateInstance(type) as UMI3DSerializerModule);
 
-            //UnityEngine.Debug.Log(type +" " + type.GetInterfaces().ToString(t => (t == typeof(UMI3DSerializerModule)).ToString()) +" "+ type.GetInterfaces().Contains(typeof(UMI3DSerializerModule)) +" => " + l.ToString<UMI3DSerializerModule>());
             return l;
 
         }
     }
 
     [UMI3DSerializerIgnore]
-    public class UMI3DSerializerContainer : UMI3DSerializerModule
+    class UMI3DSerializerContainer : UMI3DSerializerModule
     {
         public Type type;
         public object module;
@@ -205,7 +177,6 @@ namespace umi3d.common
         public UMI3DSerializerContainer(Type type, Type interfaceType, Type argumentType)
         {
             this.type = argumentType;
-            //UnityEngine.Debug.Log(type + " " + interfaceType + " " + interfaceType.GetMethods().ToString<MethodInfo>());
             module = Activator.CreateInstance(type);
             methodIsCountable = GetImplementedMethod(type, interfaceType.GetMethod("IsCountable"));
             methodRead = GetImplementedMethod(type, interfaceType.GetMethod("Read"));
@@ -222,7 +193,6 @@ namespace umi3d.common
             if (index < 0) return null;
 
             return map.TargetMethods[index];
-
         }
 
         public bool? IsCountable<T>()
@@ -263,28 +233,37 @@ namespace umi3d.common
         }
     }
 
+    /// <summary>
+    /// Attribute to specify a test priority.
+    /// Without this attribute the priotity is set to -1.
+    /// Serializer will be called in reverse order sort by priority.
+    /// </summary>
     public class UMI3DSerializerOrderAttribute : Attribute
     {
-        public int order;
+        public readonly int priotity;
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="order"></param>
-        public UMI3DSerializerOrderAttribute(int order = 0)
+        /// <param name="priotity">Priority of the serializer. 0 by default</param>
+        public UMI3DSerializerOrderAttribute(int priotity = 0)
         {
-            this.order = order;
+            this.priotity = priotity;
         }
     }
 
+    /// <summary>
+    /// Serilizer with this attribute will not be called.
+    /// The presence of the attribute is checked on the class itself and not its inheritance.
+    /// </summary>
     public class UMI3DSerializerIgnoreAttribute : Attribute
     {
-        public bool ignore;
+        public readonly bool ignore;
 
         /// <summary>
-        /// 
+        /// Constructor
         /// </summary>
-        /// <param name="order"></param>
+        /// <param name="ignore">Should the Serializer should be ignored. True by default.</param>
         public UMI3DSerializerIgnoreAttribute(bool ignore = true)
         {
             this.ignore = ignore;
