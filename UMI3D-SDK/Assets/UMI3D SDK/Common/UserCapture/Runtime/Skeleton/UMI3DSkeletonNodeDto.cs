@@ -23,6 +23,19 @@ namespace umi3d.common.userCapture
     /// that is packaged in a bundle. It is loaded the same way as a Mesh.
     public class UMI3DSkeletonNodeDto : UMI3DMeshNodeDto
     {
+        /// <summary>
+        /// User that will use this skeleton.
+        /// </summary>
+        public ulong userId;
 
+        /// <summary>
+        /// Level of priority of the skeleton animation.
+        /// </summary>
+        public uint priority;
+
+        /// <summary>
+        /// UMI3D animations ids supported by the bundled animator.
+        /// </summary>
+        public ulong[] relatedAnimationsId;
     }
 }

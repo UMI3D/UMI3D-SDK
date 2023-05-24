@@ -123,6 +123,7 @@ namespace umi3d.cdk.collaboration
             //UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
             //UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
             //UMI3DSerializer.AddModule(new UMI3DUserCaptureBindingSerializerModule());
+            //UMI3DSerializer.AddModule(new UMI3DEmotesSerializerModule());
             //UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
             //UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
         }

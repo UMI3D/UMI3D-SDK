@@ -58,11 +58,6 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Emote configuration for the environment for each user.
-        /// </summary>
-        public Dictionary<ulong, UMI3DEmotesConfig> emotesConfigs = new();
-
-        /// <summary>
         /// get all userDto collection
         /// </summary>
         /// <returns></returns>
@@ -524,34 +519,6 @@ namespace umi3d.edk.collaboration
             return notif;
         }
 
-        /// <summary>
-        /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.
-        /// </summary>
-        /// <param name="emoteId">Emote to trigger UMI3D id.</param>
-        /// <param name="sendingUser">Sending emote user.</param>
-        /// <param name="trigger">True for triggering, false to interrupt.</param>
-        public void DispatchEmoteActivity(UMI3DUser sendingUser, ulong emoteId, bool trigger)
-        {
-            //? avoid the data channel filtering
 
-            UMI3DEmote emote = UMI3DCollaborationServer.Collaboration.emotesConfigs[sendingUser.Id()]
-                    .IncludedEmotes.Find(x => x.id == emoteId);
-
-            if (!emote.Available.GetValue(sendingUser))
-            {
-                UMI3DLogger.LogWarning($"User {sendingUser.Id()} tried " +
-                    $"to {(trigger ? "start" : "stop")} the emote {emote.label} but it is not available for them.", 
-                    DebugScope.EDK | DebugScope.Animation | DebugScope.Networking);
-                return;
-            }
-
-            ulong animationId = emote.AnimationId.GetValue(sendingUser);
-            var animation = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAbstractAnimation>(animationId);
-
-            var t = new Transaction() { reliable = true };
-            var op = animation.objectPlaying.SetValue(trigger);
-            if(t.AddIfNotNull(op))
-                t.Dispatch();
-        }
     }
 }

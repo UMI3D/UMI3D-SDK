@@ -53,60 +53,25 @@ namespace umi3d.cdk.userCapture
         [SerializeField]
         protected Transform hipsAnchor;
 
-
         public ISkeleton Compute()
         {
             if (Skeletons == null || Skeletons.Count == 0)
-            {
                 return this;
-            }
 
-            foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
-            {
-                List<BoneDto> bones = new List<BoneDto>();
+            RetrieveBonesRotation(serializedSkeletonHierarchy);
 
-                try
-                {
-                    bones = skeleton.GetPose().bones;
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(skeleton.GetType().ToString());
-                    Debug.Log($"<color=red> _{e} </color>");
-                    return this;
-                }
-
-                foreach (var b in bones)
-                {
-                    {
-                        Bones.TryGetValue(b.boneType, out var pose);
-                        if (pose is not null)
-                        {
-                            Bones[b.boneType].s_Rotation = b.rotation.Quaternion();
-                        }
-                        else
-                        {
-                            Bones.TryAdd(b.boneType, new ISkeleton.s_Transform()
-                            {
-                                s_Rotation = b.rotation.Quaternion()
-                            });
-                        }
-                    }
-                }
-
-            }
-
-            //very naïve
-            Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
-
-            foreach (uint boneType in alreadyComputedBonesCache.Keys.ToArray())
+            foreach (uint boneType in Bones.Keys.ToArray()) // ToArray is here to allow dictionnary edition while enumerating
                 alreadyComputedBonesCache[boneType] = false;
 
+            //very naive
+            Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            alreadyComputedBonesCache[BoneType.Hips] = true;
+
+
+            //? we should also compute rotations
+            // better use normal recusive computations then.
             foreach (uint boneType in Bones.Keys)
             {
-                if (!alreadyComputedBonesCache.ContainsKey(boneType))
-                    alreadyComputedBonesCache[boneType] = false;
-
                 if (!alreadyComputedBonesCache[boneType])
                     ComputeBonePosition(boneType);
             }
@@ -114,23 +79,75 @@ namespace umi3d.cdk.userCapture
             return this;
         }
 
+        /// <summary>
+        /// Cache for bottom-up recursive <see cref="ComputeBonePosition(uint)"/> method.
+        /// Speeding up computations.
+        /// </summary>
         private Dictionary<uint, bool> alreadyComputedBonesCache = new();
 
+        /// <summary>
+        /// Compute the final position of each bone, and their parents recursively if not already computed
+        /// </summary>
+        /// <param name="boneType"></param>
         private void ComputeBonePosition(uint boneType)
         {
-            if (!alreadyComputedBonesCache[boneType] && SkeletonHierarchy.TryGetValue(boneType, out var pose))
+            if (!alreadyComputedBonesCache[boneType]
+                && SkeletonHierarchy.TryGetValue(boneType, out var boneRelation)
+                && boneRelation.boneTypeParent != BoneType.None)
             {
-                if (pose.boneTypeParent != BoneType.None)
-                {
-                    if (!alreadyComputedBonesCache[pose.boneTypeParent])
-                        ComputeBonePosition(pose.boneTypeParent);
-                    Bones[boneType].s_Position = Bones[pose.boneTypeParent].s_Position + Bones[pose.boneTypeParent].s_Rotation * pose.relativePosition;
-                }
-                else
-                {
-                    Bones[boneType].s_Position = Bones[BoneType.Hips].s_Position + pose.relativePosition;
-                }
+                if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
+                    ComputeBonePosition(boneRelation.boneTypeParent);
+                Bones[boneType].s_Position = Bones[boneRelation.boneTypeParent].s_Position + Bones[boneRelation.boneTypeParent].s_Rotation * boneRelation.relativePosition;
+                Bones[boneType].s_Rotation = Bones[BoneType.Hips].s_Rotation * Bones[boneType].s_Rotation; // all global bones rotations should be turned the same way as the anchor
                 alreadyComputedBonesCache[boneType] = true;
+            }
+        }
+
+        /// <summary>
+        /// Get all final bone rotation, based on subskeletons. Lastest subskeleton has lowest priority.
+        /// </summary>
+        /// <param name="hierarchy"></param>
+        private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
+        {
+            // consider all bones we should have according to the hierarchy, and set all values to identity
+            foreach (var bone in hierarchy.SkeletonHierarchy.Keys)
+            {
+                if (Bones.ContainsKey(bone))
+                    Bones[bone].s_Rotation = Quaternion.identity;
+                else
+                    Bones[bone] = new ISkeleton.s_Transform();
+            }
+                
+            // for each subskeleton, in descending order (lastest has lowest priority),
+            // get the relative orientation of all available bones
+            for (int i = Skeletons.Count - 1; 0 <= i; i--)
+            {
+                var skeleton = Skeletons[i];
+
+                List<BoneDto> bones;
+
+                try
+                {
+                    bones = skeleton.GetPose()?.bones;
+                }
+                catch (Exception e)
+                {
+                    Debug.Log(skeleton.GetType().Name.ToString());
+                    UMI3DLogger.LogException(e, scope);
+                    return;
+                }
+
+                if (bones is null) //if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
+                    continue;
+
+                foreach (var b in bones)
+                {
+                    // if a bone rotation has already been registered, erase it
+                    if (Bones.ContainsKey(b.boneType))
+                        Bones[b.boneType].s_Rotation = b.rotation.Quaternion();
+                    else
+                        Bones.Add(b.boneType, new ISkeleton.s_Transform() { s_Rotation = b.rotation.Quaternion() });
+                }
             }
         }
 

@@ -219,8 +219,10 @@ namespace umi3d.edk.collaboration
             //new UMI3DSerializerAnimationModules(),
             //new UMI3DSerializerShaderModules(),
             //new UMI3DUserCaptureBindingSerializerModule(),
+            //new UMI3DEmotesSerializerModule(),
             //new UMI3DEnvironmentSerializerCollaborationModule(),
             //new common.collaboration.UMI3DCollaborationSerializerModule() };
+            
             UMI3DSerializer.AddModule(collaborativeModule);
 
             if (!useIp)

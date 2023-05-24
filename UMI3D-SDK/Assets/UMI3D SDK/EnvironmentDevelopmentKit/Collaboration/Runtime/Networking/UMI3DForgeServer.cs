@@ -337,7 +337,7 @@ namespace umi3d.edk.collaboration
                     case EmoteRequestDto emoteRequest:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DCollaborationServer.Collaboration.DispatchEmoteActivity(user, emoteRequest.emoteId, emoteRequest.shouldTrigger);
+                            EmoteDispatcher.Instance.DispatchEmoteTrigger(user, emoteRequest.emoteId, emoteRequest.shouldTrigger);
                         });
                         break;
 
@@ -401,7 +401,7 @@ namespace umi3d.edk.collaboration
                             ulong emoteToTriggerId = UMI3DSerializer.Read<ulong>(container);
                             bool trigger = UMI3DSerializer.Read<bool>(container);
                             
-                            UMI3DCollaborationServer.Collaboration.DispatchEmoteActivity(user, emoteToTriggerId, trigger);
+                            EmoteDispatcher.Instance.DispatchEmoteTrigger(user, emoteToTriggerId, trigger);
                         });
                         break;
 
@@ -419,15 +419,13 @@ namespace umi3d.edk.collaboration
 
         #region avatar
 
-        protected class AvatarFrameEvent : UnityEvent<UserTrackingFrameDto, ulong> { };
-
-        protected static AvatarFrameEvent avatarFrameEvent = new AvatarFrameEvent();
+        public static event Action<UserTrackingFrameDto, ulong> avatarFrameEvent;
 
         public static void RequestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
         {
             // do something with reason
 
-            avatarFrameEvent.AddListener(action);
+            avatarFrameEvent += (frame, userId) => action.Invoke(frame, userId);
         }
 
         /// <inheritdoc/>
@@ -469,7 +467,7 @@ namespace umi3d.edk.collaboration
             if (trackingFrame == null)
                 return;
 
-            avatarFrameEvent.Invoke(trackingFrame, server.Time.Timestep);
+            avatarFrameEvent?.Invoke(trackingFrame, server.Time.Timestep);
 
             user.CurrentTrackingFrame = trackingFrame;
 

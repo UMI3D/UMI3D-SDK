@@ -70,9 +70,9 @@ namespace umi3d.cdk.userCapture
         }
 
 
-        public void FixedUpdate()
+        public void LateUpdate()
         {
-            // TODO: Delay this computation after the form
+            // TODO: Delay this computation to start after the form
             this.Compute();
         }
     }

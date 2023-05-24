@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -28,12 +29,37 @@ namespace umi3d.edk.userCapture
     public class UMI3DSkeletonNode : UMI3DModel
     {
         [Tooltip("List of states names in the embedded animator.")]
-        public List<string> animationStates = new ();
+        public List<string> animationStates = new();
+
+        [EditorReadOnly]
+        public ulong userId;
+
+        [EditorReadOnly]
+        public ulong[] relatedAnimationIds;
+
+        public uint priority;
 
         /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
             return new UMI3DSkeletonNodeDto();
+        }
+
+        protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
+        {
+            base.WriteProperties(dto, user);
+            var skeletonNodeDto = dto as UMI3DSkeletonNodeDto;
+            skeletonNodeDto.userId = userId;
+            skeletonNodeDto.relatedAnimationsId = relatedAnimationIds;
+            skeletonNodeDto.priority = priority;
+        }
+
+        public override Bytable ToBytes(UMI3DUser user)
+        {
+            return base.ToBytes(user)
+                    + UMI3DSerializer.Write(userId)
+                    + UMI3DSerializer.Write(priority)
+                    + UMI3DSerializer.WriteCollection(relatedAnimationIds);
         }
     }
 }
