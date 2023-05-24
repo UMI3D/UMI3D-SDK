@@ -468,19 +468,19 @@ namespace umi3d.common
 
         private class DictionaryEntryBytableSerializerModule : UMI3DSerializerModule
         {
-            public override bool? IsCountable<T>()
+            public bool? IsCountable<T>()
             {
                 return null; // not possible to knwo without looking at the value
             }
 
-            public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+            public bool Read<T>(ByteContainer container, out bool readable, out T result)
             {
                 readable = false;
                 result = default;
                 return false;
             }
 
-            public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
+            public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
             {
                 if (value is not DictionaryEntryBytable dictionaryEntryBytable)
                 {
