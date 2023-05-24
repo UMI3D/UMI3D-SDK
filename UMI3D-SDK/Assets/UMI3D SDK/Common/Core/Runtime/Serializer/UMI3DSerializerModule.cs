@@ -151,7 +151,7 @@ namespace umi3d.common
         /// </summary>
         /// <param name="type"></param>
         /// <returns></returns>
-        static IEnumerable<UMI3DSerializerModule> Instanciate(Type type)
+        public static IEnumerable<UMI3DSerializerModule> Instanciate(Type type)
         {
             var l = type.GetInterfaces()
                 .Where(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(UMI3DSerializerModule<>))
