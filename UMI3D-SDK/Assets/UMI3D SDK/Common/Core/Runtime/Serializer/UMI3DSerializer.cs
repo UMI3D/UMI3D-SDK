@@ -57,7 +57,8 @@ namespace umi3d.common
         public static void AddModule(List<UMI3DSerializerModule> moduleList)
         {
             foreach (UMI3DSerializerModule module in moduleList)
-                modules.Add(module);
+                if(module != null)
+                    modules.Add(module);
         }
 
         /// <summary>
@@ -425,7 +426,7 @@ namespace umi3d.common
         /// <returns></returns>
         static Bytable WriteCollectionIDictionary(IDictionary value, params object[] parameters)
         {
-            if (value.Count > 0 && value.Entries().Any(e => !IsCountable(e)))
+            if (value.Count > 0 && value.Entries().Any(e => !IsCountable(e.Key) || !IsCountable(e.Value)))
             {
                 return WriteCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)), parameters);
             }

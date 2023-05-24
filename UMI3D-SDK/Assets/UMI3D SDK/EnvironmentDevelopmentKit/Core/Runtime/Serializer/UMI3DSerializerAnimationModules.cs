@@ -11,7 +11,7 @@ namespace umi3d.edk
 {
     public class UMI3DSerializerAnimationModules : UMI3DSerializerModule
     {
-        public override bool? IsCountable<T>()
+        public bool? IsCountable<T>()
         {
             return true switch
             {
@@ -21,7 +21,7 @@ namespace umi3d.edk
             };
         }
 
-        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+        public bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
             switch (true)
@@ -34,7 +34,7 @@ namespace umi3d.edk
             return false;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
+        public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
             {

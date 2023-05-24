@@ -29,7 +29,7 @@ namespace EditMode_Tests
         [OneTimeSetUp]
         public virtual void InitSerializer()
         {
-            serializationModules = UMI3DSerializerModule.GetModules().ToList();
+            serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
 
             UMI3DSerializer.AddModule(serializationModules);
         }
@@ -40,27 +40,6 @@ namespace EditMode_Tests
             UMI3DSerializer.RemoveModule(serializationModules);
             serializationModules.Clear();
         }
-
-        //public void WriteRead_T<T>(T value)
-        //{
-        //    (bool readable, T result) = WriteRead(value);
-        //    Assert.IsTrue(readable, "Object deserialization failed.");
-        //    Assert.AreEqual(value, result, $"values does not match {value} => {result}");
-        //}
-
-        //public void WriteRead_T<T>(T value, T expected)
-        //{
-        //    (bool readable, T result) = WriteRead(value);
-        //    Assert.IsTrue(readable, "Object deserialization failed.");
-        //    Assert.AreEqual(expected, result, $"values does not match {value} => {result} != {expected}");
-        //}
-
-        //(bool readable, T result) WriteRead<T>(List<T> value)
-        //{
-        //    var bytable = UMI3DSerializer.Write(value);
-        //    bool readable = UMI3DSerializer.TryRead<T>(new ByteContainer(0, bytable.ToBytes()), out T result);
-        //    return (readable, result);
-        //}
 
         public void WriteRead_T<T>(List<T> value, bool expectedIsCountable)
         {

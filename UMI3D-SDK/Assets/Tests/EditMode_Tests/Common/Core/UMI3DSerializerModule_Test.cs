@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using NUnit.Framework;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -29,8 +30,7 @@ namespace EditMode_Tests
         [OneTimeSetUp]
         public virtual void InitSerializer()
         {
-            serializationModules = UMI3DSerializerModule.GetModules().ToList();
-
+            serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
             UMI3DSerializer.AddModule(serializationModules);
         }
 
@@ -61,6 +61,133 @@ namespace EditMode_Tests
             Assert.IsTrue(readable, "Object deserialization failed.");
             Assert.AreEqual(expected, result, $"values does not match {value} => {result} != {expected}");
         }
+
+        #region test SerializerModule
+        [Test]
+        public void WriteReadTest()
+        {
+            WriteRead_T(new TestToSerialize() { hello = 42, world = 0.59f });
+            WriteRead_T(new TestToSerialize2() { hello = "this is the end", world = 320 });
+            WriteRead_T(new TestToSerialize3() { hello = 1452, world = 1515 });
+        }
+
+        class TestToSerialize : IEquatable<TestToSerialize>
+        {
+            public int hello { get; set; }
+            public float world { get; set; }
+
+            public bool Equals(TestToSerialize other)
+            {
+                return hello == other.hello && world == other.world;
+            }
+        }
+
+        class TestToSerialize2 : IEquatable<TestToSerialize2>
+        {
+            public string hello { get; set; }
+            public ulong world { get; set; }
+
+            public bool Equals(TestToSerialize2 other)
+            {
+                return hello == other.hello && world == other.world;
+            }
+        }
+
+        class TestToSerialize3 : IEquatable<TestToSerialize3>
+        {
+            public long hello { get; set; }
+            public ushort world { get; set; }
+
+            public bool Equals(TestToSerialize3 other)
+            {
+                return hello == other.hello && world == other.world;
+            }
+        }
+
+        class TestToSerializeSerializer : UMI3DSerializerModule<TestToSerialize2>, UMI3DSerializerModule<TestToSerialize>, UMI3DSerializerModule
+        {
+            bool UMI3DSerializerModule<TestToSerialize2>.IsCountable()
+            {
+                return true;
+            }
+
+            bool UMI3DSerializerModule<TestToSerialize>.IsCountable()
+            {
+                return true;
+            }
+
+            bool? UMI3DSerializerModule.IsCountable<T>()
+            {
+                return typeof(T) == typeof(TestToSerialize3) ? true : null;
+            }
+
+            bool UMI3DSerializerModule<TestToSerialize2>.Read(ByteContainer container, out bool readable, out TestToSerialize2 result)
+            {
+                if(UMI3DSerializer.TryRead(container,out string hello)
+                    && UMI3DSerializer.TryRead(container, out ulong world))
+                {
+                    readable = true;
+                    result = new TestToSerialize2() { hello = hello, world = world };
+                    return true;
+                }
+                readable = false;
+                result = null;
+                return false;
+            }
+
+            bool UMI3DSerializerModule<TestToSerialize>.Read(ByteContainer container, out bool readable, out TestToSerialize result)
+            {
+                if (UMI3DSerializer.TryRead(container, out int hello)
+                    && UMI3DSerializer.TryRead(container, out float world))
+                {
+                    readable = true;
+                    result = new TestToSerialize() { hello = hello, world = world };
+                    return true;
+                }
+                readable = false;
+                result = null;
+                return false;
+            }
+
+            bool UMI3DSerializerModule.Read<T>(ByteContainer container, out bool readable, out T result)
+            {
+                if (typeof(T) == typeof(TestToSerialize3)
+                   && UMI3DSerializer.TryRead(container, out long hello)
+                   && UMI3DSerializer.TryRead(container, out ushort world))
+                {
+                    readable = true;
+                    result = (T)(object)new TestToSerialize3() { hello = hello, world = world };
+                    return true;
+                }
+                readable = false;
+                result = default;
+                return false;
+            }
+
+            bool UMI3DSerializerModule<TestToSerialize2>.Write(TestToSerialize2 value, out Bytable bytable, params object[] parameters)
+            {
+                bytable = UMI3DSerializer.Write(value.hello) + UMI3DSerializer.Write(value.world);
+                return true;
+            }
+
+            bool UMI3DSerializerModule<TestToSerialize>.Write(TestToSerialize value, out Bytable bytable, params object[] parameters)
+            {
+                bytable = UMI3DSerializer.Write(value.hello) + UMI3DSerializer.Write(value.world);
+                return true;
+            }
+
+            bool UMI3DSerializerModule.Write<T>(T value, out Bytable bytable, params object[] parameters)
+            {
+                if (value is TestToSerialize3 test)
+                {
+                    bytable = UMI3DSerializer.Write(test.hello) + UMI3DSerializer.Write(test.world);
+                    return true;
+                }
+                bytable = default;
+                return false;
+            }
+        }
+        #endregion
 
         [TestCase('\0')]
         [TestCase('\uFFFF')]

@@ -210,7 +210,7 @@ namespace umi3d.edk.collaboration
             mumbleManager = murmur.MumbleManager.Create(mumbleIp, mumbleHttpIp, guid);
 
             if (collaborativeModule == null)
-                collaborativeModule = UMI3DSerializerModule.GetModules().ToList();
+                collaborativeModule = UMI3DSerializerModuleUtils.GetModules().ToList();
 
             //new List<UMI3DSerializerModule>() {
             //new UMI3DSerializerBasicModules(),

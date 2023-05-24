@@ -44,7 +44,7 @@ namespace umi3d.common
             return bindingSerializers[typeof(T)] as IUMI3DSerializerSubModule<T>;
         }
 
-        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+        public virtual bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
             if (bindingSerializers.ContainsKey(typeof(T)))
@@ -80,7 +80,7 @@ namespace umi3d.common
             return readable;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
+        public virtual bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             if (bindingSerializers.ContainsKey(typeof(T)))
             {
@@ -114,7 +114,7 @@ namespace umi3d.common
             }
         }
 
-        public override bool? IsCountable<T>()
+        public virtual bool? IsCountable<T>()
         {
             if (
                 typeof(T) == typeof(AbstractBindingDataDto)

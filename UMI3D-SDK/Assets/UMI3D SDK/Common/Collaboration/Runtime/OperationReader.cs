@@ -134,7 +134,7 @@ namespace umi3d.common
 
         public void Read<T>()
         {
-            UMI3DSerializer.AddModule(UMI3DSerializerModule.GetModules().ToList());
+            UMI3DSerializer.AddModule(UMI3DSerializerModuleUtils.GetModules().ToList());
             //UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
             //UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
             //UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());

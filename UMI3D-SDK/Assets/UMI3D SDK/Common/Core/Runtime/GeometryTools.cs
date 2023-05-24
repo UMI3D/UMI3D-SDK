@@ -660,7 +660,7 @@ namespace umi3d.common.volume
             if (points.Count < 3)
                 throw new System.Exception("Not enough points (min is 3)");
 
-            //ear clipping method
+            //ear clipping methodIsCountable
             var triangles = new List<int>();
             var buffer = new List<Vector3>(points);
 

@@ -39,7 +39,7 @@ namespace EditMode_Tests
         public virtual void InitSerializer()
         {
             collabSerializerModule = new umi3d.common.collaboration.UMI3DCollaborationSerializerModule();
-            serializationModules = UMI3DSerializerModule.GetModules().ToList();
+            serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
 
             UMI3DSerializer.AddModule(serializationModules);
         }
