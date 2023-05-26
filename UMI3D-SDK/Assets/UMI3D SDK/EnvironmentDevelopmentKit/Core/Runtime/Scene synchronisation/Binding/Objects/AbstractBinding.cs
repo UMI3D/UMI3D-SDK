@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+using System;
+using umi3d.edk.core;
+
+namespace umi3d.edk
 {
     /// <summary>
-    /// Dto for an association linking together two objects in the 3D space
+    /// Operation binding a node and one or several objects.
     /// </summary>
-    [System.Serializable]
-    public class BindingDto : AbstractEntityDto, IEntity
+    public abstract class AbstractBinding : AbstractLoadableEntity
     {
         /// <summary>
-        /// An identifier defined by the designer.
+        /// Node that is bound to another object.
         /// </summary>
-        public ulong boundNodeId { get; set; }
+        public ulong boundNodeId;
 
         /// <summary>
-        /// A ref to the Dto containing all the information about the said binding or bindings
+        /// Could the binding allow to be partially applied?
         /// </summary>
-        public AbstractBindingDataDto data { get; set; }
+        public bool partialFit = true;
+
+        /// <summary>
+        /// Priority to apply the binding.
+        /// </summary>
+        public int priority = 0;
+
+        public AbstractBinding(ulong boundNodeId) : base()
+        {
+            this.boundNodeId = boundNodeId;
+        }
     }
 }

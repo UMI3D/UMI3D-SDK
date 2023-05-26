@@ -24,7 +24,6 @@ namespace umi3d.common
         protected readonly Dictionary<Type, IUMI3DSerializerSubModule> bindingSerializers = new()
         {
             { typeof(BindingDto),           new BindingSerializer()},
-            { typeof(RemoveBindingDto),     new RemoveBindingSerializer()},
             { typeof(MultiBindingDataDto),  new MultiBindingDataSerializer()},
             { typeof(NodeBindingDataDto),   new NodeBindingDataSerializer()}
         };
@@ -116,12 +115,7 @@ namespace umi3d.common
 
         public virtual bool? IsCountable<T>()
         {
-            if (
-                typeof(T) == typeof(AbstractBindingDataDto)
-                || typeof(T) == typeof(AbstractSimpleBindingDataDto)
-                )
-                return true;
-            return null;
+            return false;
         }
     }
 }

@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
@@ -70,12 +67,11 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DPoseOverriderContainerLoader())
             .SetNext(new UMI3DEmotesConfigLoader())
             .SetNext(new UMI3DEmoteLoader())
+            .SetNext(new UMI3DCollaborationBindingLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
             ;
-
-            bindingService = CollaborativeSkeletonBindingManager.Instance;
         }
 
         /// <inheritdoc/>

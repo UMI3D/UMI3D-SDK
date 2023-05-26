@@ -17,65 +17,14 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Handle binding operations and computations.
-    /// </summary>
-    public interface IBindingManager
-    {
-        /// <summary>
-        /// Are bindings computed for this client?
-        /// </summary>
-        public bool AreBindingsActivated { get; }
-
-        /// <summary>
-        /// Currently computed bindings per UMI3D node id.
-        /// </summary>
-        public Dictionary<ulong, AbstractBinding> Bindings { get; }
-
-        /// <summary>
-        /// Load and add a new binding operation.
-        /// </summary>
-        /// <param name="dto"></param>
-        public void AddBinding(BindingDto dto);
-
-        /// <summary>
-        /// Add a binding that already has been loaded.
-        /// </summary>
-        /// <param name="binding"></param>
-        /// <param name="boundNodeId"></param>
-        public void AddBinding(AbstractBinding binding, ulong boundNodeId);
-
-        /// <summary>
-        /// Remove a binding to compute.
-        /// </summary>
-        /// <param name="dto"></param>
-        public void RemoveBinding(RemoveBindingDto dto);
-
-        /// <summary>
-        /// Load a binding et prepare it for computing.
-        /// </summary>
-        /// <param name="dto"></param>
-        /// <param name="boundNodeId"></param>
-        /// <returns></returns>
-        public AbstractBinding Load(AbstractBindingDataDto dto, ulong boundNodeId);
-
-        /// <summary>
-        /// Enable/disable bindings computation for this client.
-        /// </summary>
-        /// <param name="dto"></param>
-        public void UpdateBindingsActivation(UpdateBindingsActivationDto dto);
-    }
-
-    /// <summary>
     /// Core binding manager. Handles binding operations and computations.
     /// </summary>
-    public class BindingManager : Singleton<BindingManager>, IBindingManager
+    public class BindingManager : Singleton<BindingManager>, IBindingBrowserService
     {
         protected const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
 
@@ -117,70 +66,27 @@ namespace umi3d.cdk
             AreBindingsActivated = true;
         }
 
-        public virtual void UpdateBindingsActivation(UpdateBindingsActivationDto dto)
+        public virtual void UpdateBindingsActivation(bool shouldEnable)
         {
-            if (dto.areBindingsActivated == AreBindingsActivated)
+            if (shouldEnable == AreBindingsActivated)
                 return;
 
-            if (dto.areBindingsActivated)
+            if (shouldEnable)
                 EnableBindings();
             else
                 DisableBindings();
         }
 
-        public virtual void AddBinding(BindingDto dto)
+        public virtual void AddBinding(ulong boundNodeId, AbstractBinding binding)
         {
-            AbstractBinding binding = Load(dto.data, dto.boundNodeId);
             if (binding is null)
                 return;
-            AddBinding(binding, dto.boundNodeId);
-        }
 
-        public virtual void AddBinding(AbstractBinding binding, ulong boundNodeId)
-        {
             if (binding is not null)
                 Bindings[boundNodeId] = binding;
 
             if (Bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
                 bindingRoutine = routineService.AttachLateRoutine(BindingRoutine());
-        }
-
-        public virtual AbstractBinding Load(AbstractBindingDataDto dto, ulong boundNodeId)
-        {
-            switch (dto)
-            {
-                case AbstractSimpleBindingDataDto simpleBindingDto:
-                    {
-                        UMI3DNodeInstance node = environmentService.GetNodeInstance(boundNodeId);
-                        if (node is null)
-                        {
-                            UMI3DLogger.LogWarning($"Impossible to bind on node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
-                            return null;
-                        }
-
-                        return new NodeBinding(simpleBindingDto, node.transform);
-                    }
-                case MultiBindingDataDto multiBindingDataDto:
-                    {
-                        UMI3DNodeInstance node = environmentService.GetNodeInstance(boundNodeId);
-                        (AbstractSimpleBinding binding, bool partialFit)[] orderedBindingData = multiBindingDataDto.Bindings
-                                                                                            .OrderByDescending(x => x.priority)
-                                                                                            .Select(x => (binding: new NodeBinding(x, node.transform) as AbstractSimpleBinding,
-                                                                                                                                partialFit: x.partialFit))
-                                                                                            .Where(x => x.binding is not null)
-                                                                                            .ToArray();
-
-                        if (orderedBindingData.Length == 0)
-                        {
-                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply.", DEBUG_SCOPE);
-                            return null;
-                        }
-
-                        return new MultiBinding(multiBindingDataDto, orderedBindingData, node.transform);
-                    }
-                default:
-                    return null;
-            }
         }
 
         /// <summary>
@@ -201,16 +107,16 @@ namespace umi3d.cdk
             }
         }
 
-        public virtual void RemoveBinding(RemoveBindingDto dto)
+        public virtual void RemoveBinding(ulong boundNodeId)
         {
-            if (Bindings.ContainsKey(dto.boundNodeId))
+            if (Bindings.ContainsKey(boundNodeId))
             {
-                Bindings.Remove(dto.boundNodeId);
+                Bindings.Remove(boundNodeId);
                 if (Bindings.Count == 0 && bindingRoutine is not null)
                 {
                     routineService.DettachLateRoutine(bindingRoutine);
                     bindingRoutine = null;
-                }   
+                }
             }
         }
     }

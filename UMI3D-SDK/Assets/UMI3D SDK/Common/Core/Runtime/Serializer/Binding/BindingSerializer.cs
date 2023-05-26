@@ -26,12 +26,14 @@ namespace umi3d.common
             bool readable = true;
 
             readable &= UMI3DSerializer.TryRead(container, out ulong bindingId);
+            readable &= UMI3DSerializer.TryRead(container, out ulong boundNodeId);
             readable &= UMI3DSerializer.TryRead(container, out AbstractBindingDataDto bindingData);
 
             result = readable ?
                 new BindingDto() 
                 {
-                    boundNodeId = bindingId,
+                    id = bindingId,
+                    boundNodeId = boundNodeId,
                     data = bindingData
                 } 
                 : default;
@@ -41,7 +43,8 @@ namespace umi3d.common
 
         public Bytable Write(BindingDto dto)
         {
-            return UMI3DSerializer.Write(dto.boundNodeId)
+            return UMI3DSerializer.Write(dto.id)
+                    + UMI3DSerializer.Write(dto.boundNodeId)
                     + UMI3DSerializer.Write(dto.data);
         }
     }

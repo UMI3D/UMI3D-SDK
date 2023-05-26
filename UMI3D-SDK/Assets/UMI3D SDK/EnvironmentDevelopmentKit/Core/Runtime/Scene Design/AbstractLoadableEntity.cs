@@ -22,8 +22,6 @@ namespace umi3d.edk.core
 {
     public abstract class AbstractLoadableEntity : UMI3DLoadableEntity
     {
-        private const DebugScope DEBUG_SCOPE = DebugScope.EDK | DebugScope.Core | DebugScope.Loading;
-
         /// <summary>
         /// UMI3D id.
         /// </summary>
@@ -55,18 +53,11 @@ namespace umi3d.edk.core
         public virtual ulong Id()
         {
             if (!registered)
-                Register();
-
-            return id;
-        }
-
-        protected virtual void Register()
-        {
-            if (!registered)
             {
                 id = umi3dEnvironmentService.RegisterEntity(this);
                 registered = true;
             }
+            return id;
         }
 
         #region Serialization
@@ -90,8 +81,6 @@ namespace umi3d.edk.core
         /// <inheritdoc/>
         public virtual LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
-            Register();
-
             var operation = new LoadEntity()
             {
                 entities = new List<UMI3DLoadableEntity>() { this },
@@ -104,12 +93,9 @@ namespace umi3d.edk.core
         /// <inheritdoc/>
         public virtual DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
-            if (id == default)
-                UMI3DLogger.LogError("Trying to delete an unregistered entity", DEBUG_SCOPE);
-
             var operation = new DeleteEntity()
             {
-                entityId = id,
+                entityId = Id(),
                 users = users != null ? new HashSet<UMI3DUser>(users) : umi3dServerService.UserSet()
             };
             return operation;

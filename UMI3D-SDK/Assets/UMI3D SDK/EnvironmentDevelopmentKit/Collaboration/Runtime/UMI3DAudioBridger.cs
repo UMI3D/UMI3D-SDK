@@ -100,7 +100,7 @@ namespace umi3d.edk.collaboration
                 priority = 100
             };
 
-            tr.AddIfNotNull(BindingHelper.Instance.AddBinding(binding));
+            tr.AddIfNotNull(BindingManager.Instance.AddBinding(binding));
             UMI3DServer.Dispatch(tr);
 
             UMI3DServer.Instance.NotifyUserChanged(user);
@@ -140,7 +140,7 @@ namespace umi3d.edk.collaboration
                 return;
             Transaction t = new() { reliable = true };
             var audioSource = user.audioPlayer.ObjectNode.GetValue();
-            t.AddIfNotNull(BindingHelper.Instance.RemoveAllBindings(audioSource.Id()));
+            t.AddIfNotNull(BindingManager.Instance.RemoveAllBindings(audioSource.Id()));
             t.AddIfNotNull(audioSource.GetDeleteEntity());
             UnityEngine.Object.Destroy(audioSource.gameObject);
         }
