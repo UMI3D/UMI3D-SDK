@@ -14,7 +14,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        public PoseConditionDto[] poseConditions;
+        [SerializeReference] public PoseConditionDto[] poseConditions;
         public DurationDto duration;
         public bool interpolationable;
         public bool composable;

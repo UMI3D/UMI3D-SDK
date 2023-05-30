@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,7 +37,7 @@ namespace umi3d.edk.userCapture
         public bool IsStart => isStart;
 
 
-        public ulong eventID {get; private set;}  
+        public ulong eventID {get; set;}  
         public void SetEventID(ulong eventID)
         {
             this.eventID = eventID;
@@ -83,20 +84,27 @@ namespace umi3d.edk.userCapture
         /// <param name="id"></param>
         public void InitDefinition(ulong id)
         {
+            if (poseOverridersDtos == null) poseOverridersDtos = new List<PoseOverriderDto>();
             poseOverridersDtos.Clear();
             poseOverriders.ForEach(po =>
             {
-                if (po.pose.poseRef != 0)
+                PoseOverriderDto poDto = po.ToDto(po.pose.poseRef);
+                poDto.poseConditions.ForEach(pc =>
                 {
-                    poseOverridersDtos.Add(po.ToDto(po.pose.poseRef));
-                }
-                else
-                {
-                    po.pose.onPoseReferencedAndIndexSetted += (indexInPoseManager) =>
+                    switch (pc)
                     {
-                        poseOverridersDtos.Add(po.ToDto(indexInPoseManager));
-                    };
-                }
+                        case MagnitudeConditionDto magnitudeConditionDto:
+                            magnitudeConditionDto.targetObjectId = (uint)eventID;
+                            break;
+                    }
+                });
+                poseOverridersDtos.Add(poDto);
+
+                po.pose.onPoseReferencedAndIndexSetted += (pose, indexInPoseManager) =>
+                {
+                    InitDefinition(id);
+                    UMI3DPoseManager.Instance.UpdateAlPoseOverriders(ToDto());
+                };
             });
 
             poseOverriderDtoAsyncList = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ActivePoseOverrider, poseOverridersDtos);
@@ -151,6 +159,15 @@ namespace umi3d.edk.userCapture
             };
 
             return uMI3DOverriderMetaClassDto;
+        }
+
+        public UMI3DPoseOverriderContainerDto ToDto()
+        {
+            return new UMI3DPoseOverriderContainerDto()
+            {
+                id = Id(),
+                poseOverriderDtos = poseOverridersDtos.ToArray()
+            };
         }
 
         /// <summary>

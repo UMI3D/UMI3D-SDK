@@ -2,13 +2,14 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.edk;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
 using UnityEngine;
 
 namespace umi3d.common.collaboration
 {
-    public class PoseOverriderLinkerHub : SingleBehaviour<PoseOverriderLinkerHub>
+    public class PoseOverriderLinkerHub : UMI3DPoseManager
     {
         public List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
 
@@ -22,11 +23,15 @@ namespace umi3d.common.collaboration
         {
             for (int i = 0; i < allPoseOverriders.Count; i++)
             {
+                allPoseOverriders[i].PoseOverriderContainer.Id();
                 if (allPoseOverriders[i].uMI3DEvent.GetComponent<UMI3DPoseOverriderAnimation>() == null)
                 {
                     allPoseOverriders[i].uMI3DEvent.gameObject.AddComponent<UMI3DPoseOverriderAnimation>()
                                                     .Init(allPoseOverriders[i].PoseOverriderContainer);
                 }
+
+                allPoseOverriderContainer.Add(allPoseOverriders[i].PoseOverriderContainer.ToDto());
+                allPoseOverriders[i].SetNode();
             }
         }
 
@@ -38,6 +43,11 @@ namespace umi3d.common.collaboration
 
             public UMI3DPoseOverriderContainer PoseOverriderContainer { get => poseOverriderContainer; }
             public UMI3DEvent uMI3DEvent { get => _uMI3DEvent;  }
+
+            public void SetNode()
+            {
+                PoseOverriderContainer.eventID = uMI3DEvent.GetComponent<UMI3DModel>().Id();
+            }
         }
     }
 }

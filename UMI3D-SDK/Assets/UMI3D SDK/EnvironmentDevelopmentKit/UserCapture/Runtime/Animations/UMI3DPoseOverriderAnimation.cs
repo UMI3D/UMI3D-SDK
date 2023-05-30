@@ -67,7 +67,7 @@ namespace umi3d.edk.userCapture
         {
             if (NodeAnimation == null && PoseOverriderContainer != null)
             {
-                nodeAnimation = (UMI3DNodeAnimation)gameObject.AddComponent(typeof(UMI3DNodeAnimation));
+                nodeAnimation = (gameObject.AddComponent(typeof(UMI3DNodeAnimation)) as UMI3DNodeAnimation);
 
                 nodeAnimation.Register();
 

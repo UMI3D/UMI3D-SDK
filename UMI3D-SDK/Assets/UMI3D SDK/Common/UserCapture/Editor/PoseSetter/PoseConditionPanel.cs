@@ -74,10 +74,11 @@ namespace umi3d.common.userCapture
             poseOveridder_So.interpolationable = tg_isInterpolationable.value;
             poseOveridder_So.poseConditions = new PoseConditionDto[condition_fields.Count];
 
-            condition_fields.ForEach(cf =>
+
+            for (int i = 0; i < condition_fields.Count; i++)
             {
-                poseOveridder_So.poseConditions.Append(cf.GetPoseConditionDto());
-            });
+                poseOveridder_So.poseConditions[i] = condition_fields[i].GetPoseConditionDto();
+            }
 
             return poseOveridder_So;
         }

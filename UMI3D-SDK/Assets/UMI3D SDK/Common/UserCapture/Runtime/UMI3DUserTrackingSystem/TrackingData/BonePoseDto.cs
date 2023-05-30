@@ -32,21 +32,22 @@ namespace umi3d.common.userCapture
         /// <param name="rotation">The rotation of the bone</param>
         public BonePoseDto(uint bone, Vector3Dto position, Vector4Dto rotation)
         {
-            this.bone = bone;
+            this.Bone = bone;
             this.position = position;
             this.rotation = rotation;
         }
 
         public BonePoseDto(uint bone, Vector4Dto rotation)
         {
-            this.bone = bone;
+            this.Bone = bone;
             this.rotation = rotation;
         }
 
+        [SerializeField] private uint bone;
         /// <summary>
         /// The current bone to update
         /// </summary>
-        public uint bone { get; set; }
+        public uint Bone { get => bone; set => bone = value; }
 
         [SerializeField] Vector3Dto position = new Vector3Dto();
         [SerializeField] Vector4Dto rotation = new Vector4Dto();

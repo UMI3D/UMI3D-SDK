@@ -62,9 +62,11 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
+            Debug.Log("property :: " + value.property.property);
             switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
+
                     InitDefinition(value.entity.dto as UMI3DPoseOverriderContainerDto);
                     return Task.FromResult(true);
             }
@@ -77,6 +79,7 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
+            Debug.Log("property :: " + value.propertyKey);
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
@@ -94,6 +97,7 @@ namespace umi3d.cdk.userCapture
 
         private void StartPoseOverriderContainerUnit(UMI3DPoseOverriderContainerDto uMI3DPoseOverriderContainerDto)
         {
+            Debug.Log("Start overrider container");
             StopPoseOverriderContainerUnit();
 
             if (poseOverriderContainerHandlerUnit == null)
@@ -104,17 +108,18 @@ namespace umi3d.cdk.userCapture
             poseOverriderContainerHandlerUnit.SetPoseOverriderContainer(uMI3DPoseOverriderContainerDto);
             poseOverriderContainerHandlerUnit.onConditionValidated += poseOverriderDto => ApplyPose(poseOverriderDto);
 
-            PoseManager.Instance.HandlePoseOverriderContainerHandlerUnitCheckCorroutine(poseOverriderContainerHandlerUnit.CheckCondtionOfAllOverriders());
+            //PoseManager.Instance.HandlePoseOverriderContainerHandlerUnitCheckCorroutine(poseOverriderContainerHandlerUnit.CheckCondtionOfAllOverriders());
         }
 
         private void StopPoseOverriderContainerUnit()
         {
+            Debug.Log("Stop overrider container");
             if (poseOverriderContainerHandlerUnit != null)
             {
                 poseOverriderContainerHandlerUnit.DisableCheck();
                 poseOverriderContainerHandlerUnit.onConditionValidated -= poseOverriderDto => ApplyPose(poseOverriderDto);
 
-                PoseManager.Instance.DisablePoseOverriderContainerHandlerUnitCheckCorroutine();
+                //PoseManager.Instance.DisablePoseOverriderContainerHandlerUnitCheckCorroutine();
             }
         }
 

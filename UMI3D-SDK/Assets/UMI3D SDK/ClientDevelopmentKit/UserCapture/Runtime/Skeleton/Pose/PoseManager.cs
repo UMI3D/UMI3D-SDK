@@ -27,6 +27,8 @@ namespace umi3d.cdk.userCapture
     public class PoseManager : SingleBehaviour<PoseManager>
     {
         [SerializeField] List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
+        [SerializeField] List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
+
 
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
@@ -57,6 +59,23 @@ namespace umi3d.cdk.userCapture
         {
             List<PoseDto> poses = allPoses[key];
             return poses?[index];
+        }
+
+
+        public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
+        {
+            poseOverriderContainerDtos = allPoseOverriderContainer;
+
+            for (int i = 0; i < allPoseOverriderContainer.Count; i++)
+            {
+                PoseOverriderContainerHandlerUnit handlerUnit = new PoseOverriderContainerHandlerUnit();
+                handlerUnit.SetPoseOverriderContainer(allPoseOverriderContainer[i]);
+                handlerUnit.CheckCondtionOfAllOverriders();
+                handlerUnit.onConditionValidated += (pose) =>
+                {
+                    ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(pose);
+                };
+            }
         }
 
         Coroutine poseOverriderContainerHandlerCoroutine = null;

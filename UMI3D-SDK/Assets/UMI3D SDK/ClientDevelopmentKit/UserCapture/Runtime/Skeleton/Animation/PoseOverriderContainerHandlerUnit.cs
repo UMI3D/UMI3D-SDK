@@ -1,9 +1,10 @@
 using System.Collections;
-using System.Collections.Generic;
 using umi3d.common.userCapture;
 using umi3d.common;
 using UnityEngine;
 using System;
+using System.Threading;
+using inetum.unityUtils;
 
 namespace umi3d.cdk.userCapture
 {
@@ -14,14 +15,16 @@ namespace umi3d.cdk.userCapture
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
-        private readonly ISkeletonManager skeletonManager;
+        private ISkeletonManager skeletonManager;
 
         bool isActive = false;
         UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
 
         public event Action<PoseOverriderDto> onConditionValidated;
 
-        public void SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto) 
+        CancellationTokenSource cancellationTokenSource;
+
+        public void SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
             this.poseOverriderContainerDto = poseOverriderContainerDto;
         }
@@ -38,22 +41,32 @@ namespace umi3d.cdk.userCapture
         /// return -1 if there is no pose playable,
         /// overwise returns the index of the playable pose
         /// </summary>
-        public IEnumerator CheckCondtionOfAllOverriders()
+        public void CheckCondtionOfAllOverriders()
         {
-            isActive = true;
+            if (!isActive)
+            {
+                skeletonManager = PersonalSkeletonManager.Instance as ISkeletonManager;
+                isActive = true;
+                PoseManager.StartCoroutine(LaunchCheck());
+            }
+        }
+
+        private IEnumerator LaunchCheck()
+        {
             while (isActive)
             {
-                foreach (var poseOverrider in poseOverriderContainerDto.poseOverriderDtos)
+                yield return new WaitForSeconds(0.2f);
+                foreach (PoseOverriderDto poseOverrider in poseOverriderContainerDto.poseOverriderDtos)
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
                         onConditionValidated.Invoke(poseOverrider);
                     }
                 }
-
-                yield return new WaitForSeconds(0.2f);
             }
         }
+
+
 
         private bool CheckConditions(PoseConditionDto[] poseConditions)
         {
@@ -96,15 +109,19 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleMagnitude(MagnitudeConditionDto magnitudeConditionDto)
         {
-            UMI3DNodeInstance targetNodeInstance = UMI3DEnvironmentLoader.Instance
-                                                        .GetEntityInstance(magnitudeConditionDto.targetObjectId)
-                                                        as UMI3DNodeInstance;
+            UMI3DNodeInstance targetNodeInstance = null;
+
+            targetNodeInstance = UMI3DEnvironmentLoader.Instance.GetNodeInstance(magnitudeConditionDto.targetObjectId);
+
             if (targetNodeInstance == null)
             {
                 UMI3DLogger.LogError("you havent referenced the right entity ID in your magnitude DTO", scope);
                 return false;
             }
+
             Vector3 targetPosition = targetNodeInstance.transform.position;
+
+
             Vector3 bonePosition = skeletonManager.personalSkeleton.TrackedSkeleton.bones[magnitudeConditionDto.boneOrigine].transform.position;
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
@@ -120,7 +137,7 @@ namespace umi3d.cdk.userCapture
         {
             Quaternion boneRotation = skeletonManager.personalSkeleton.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
 
-            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.Quaternion()) < boneRotationConditionDto.acceptanceRange)
+            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.ToQuaternion()) < boneRotationConditionDto.acceptanceRange)
             {
                 return true;
             }
@@ -136,7 +153,7 @@ namespace umi3d.cdk.userCapture
                                             as UMI3DNodeInstance;
 
             Vector3 targetScale = targetNodeInstance.transform.localScale;
-            Vector3 wantedScale = scaleConditionDto.scale.Struct();
+            Vector3 wantedScale = scaleConditionDto.scale;
 
             if (targetScale.sqrMagnitude <= wantedScale.sqrMagnitude)
             {

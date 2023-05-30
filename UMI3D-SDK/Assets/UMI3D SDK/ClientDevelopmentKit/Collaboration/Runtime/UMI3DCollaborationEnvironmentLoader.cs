@@ -81,6 +81,7 @@ namespace umi3d.cdk.collaboration
             if (dto == null) return;
             UserList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
             PoseManager.Instance.SetPoses(dto.allPoses);
+            onEnvironmentLoaded.AddListener(() => PoseManager.Instance.SetPosesOverriders(dto.allPoseOverriderContainer));
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);

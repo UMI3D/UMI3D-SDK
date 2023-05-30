@@ -1017,27 +1017,27 @@ namespace umi3d.common.collaboration
                 #region Pose Dto
                 case AnchoredBonePoseDto anchorBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)1)
-                        + UMI3DSerializer.Write(anchorBonePoseDto.bone)
+                        + UMI3DSerializer.Write(anchorBonePoseDto.Bone)
                         + UMI3DSerializer.Write(anchorBonePoseDto.Position)
                         + UMI3DSerializer.Write(anchorBonePoseDto.Rotation)
                         + UMI3DSerializer.Write(anchorBonePoseDto.otherBone);
                     break;
                 case NodeAnchoredBonePoseDto nodePositionAnchoredBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)2)
-                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.bone)
+                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Bone)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Position)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Rotation)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.node);
                     break;
                 case FloorAnchoredBonePoseDto floorAnchoredBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)3)
-                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.bone)
+                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Bone)
                         + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Position)
                         + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Rotation);
                     break;
                 case BonePoseDto bonePoseDto:
                     bytable = UMI3DSerializer.Write((int)0)
-                        + UMI3DSerializer.Write(bonePoseDto.bone)
+                        + UMI3DSerializer.Write(bonePoseDto.Bone)
                         + UMI3DSerializer.Write(bonePoseDto.Position)
                         + UMI3DSerializer.Write(bonePoseDto.Rotation);
                     break;

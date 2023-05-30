@@ -148,6 +148,11 @@ namespace umi3d.edk
         public List<ulong> animationIds = new List<ulong>();
 
         /// <summary>
+        /// UMI3D ids of <see cref="UMI3DAbstractAnimation"/> that are required for the scene.
+        /// </summary>
+        [HideInInspector]
+        public List<ulong> poseOverriderContainerIds = new List<ulong>();
+        /// <summary>
         /// <see cref="MaterialSO"/> that are required for the scene.
         /// </summary>
         [EditorReadOnly, Tooltip("Materials required for the scene.")]
@@ -170,6 +175,7 @@ namespace umi3d.edk
             //Clear materials lists
             materialIds.Clear();
             animationIds.Clear();
+            poseOverriderContainerIds.Clear();
 
             materialIds.AddRange(PreloadedMaterials.Select(m => ((AbstractEntityDto)m.ToDto().extensions.umi3d).id));
             materialSOs.AddRange(PreloadedMaterials);
