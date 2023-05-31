@@ -109,11 +109,13 @@ namespace inetum.unityUtils
         {
             if (action == null)
                 throw new Exception("action should not be null");
-            using (IEnumerator<A> it = source.GetEnumerator())
-                while (it.MoveNext())
-                {
-                    action.Invoke(it.Current);
-                }
+            if(source != null)
+                using (IEnumerator<A> it = source.GetEnumerator())
+                    if(it != null)
+                        while (it.MoveNext())
+                        {
+                            action.Invoke(it.Current);
+                        }
         }
 
         /// <summary>
