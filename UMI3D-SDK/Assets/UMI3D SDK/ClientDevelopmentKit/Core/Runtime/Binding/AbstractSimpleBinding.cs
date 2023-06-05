@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -24,7 +25,45 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractSimpleBinding : AbstractBinding
     {
+        #region DTO access
         protected AbstractSimpleBindingDataDto SimpleBindingData => data as AbstractSimpleBindingDataDto;
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.syncPosition"/>.
+        /// </summary>
+        public bool SyncPosition => SimpleBindingData.syncPosition;
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.syncRotation"/>.
+        /// </summary>
+        public bool SyncRotation => SimpleBindingData.syncRotation;
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.syncScale"/>.
+        /// </summary>
+        public bool SyncScale => SimpleBindingData.syncScale;
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.offSetPosition"/>.
+        /// </summary>
+        public Vector3 OffSetPosition => SimpleBindingData.offSetPosition.Struct();
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.offSetRotation"/>.
+        /// </summary>
+        public Quaternion OffSetRotation => SimpleBindingData.offSetRotation.Quaternion();
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.offSetScale"/>.
+        /// </summary>
+        public Vector3 OffSetScale => SimpleBindingData.offSetRotation.Struct();
+
+        /// <summary>
+        /// See <see cref="AbstractSimpleBindingDataDto.anchorPosition"/>.
+        /// </summary>
+        public Vector3 AnchorPosition => SimpleBindingData.anchorPosition.Struct();
+
+        #endregion DTO Access
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
@@ -36,22 +75,22 @@ namespace umi3d.cdk
         /// <param name="parentTransform"></param>
         protected virtual void Compute((Vector3 position, Quaternion rotation, Vector3 scale) parentTransform)
         {
-            if (SimpleBindingData.syncPosition && SimpleBindingData.syncRotation)
+            if (SyncPosition && SyncRotation)
             {
-                Quaternion rotation = parentTransform.rotation * SimpleBindingData.offSetRotation.Quaternion();
-                Vector3 position = parentTransform.position + SimpleBindingData.anchorPosition.Struct() + rotation * (SimpleBindingData.offSetPosition.Struct() - SimpleBindingData.anchorPosition.Struct());
+                Quaternion rotation = parentTransform.rotation * OffSetRotation;
+                Vector3 position = parentTransform.position + AnchorPosition + rotation * (OffSetPosition - AnchorPosition);
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
-            else if (SimpleBindingData.syncPosition)
+            else if (SyncPosition)
             {
-                boundTransform.position = parentTransform.position + SimpleBindingData.offSetPosition.Struct();
+                boundTransform.position = parentTransform.position + OffSetPosition;
             }
-            else if (SimpleBindingData.syncRotation)
+            else if (SyncRotation)
             {
-                boundTransform.rotation = parentTransform.rotation * SimpleBindingData.offSetRotation.Quaternion();
+                boundTransform.rotation = parentTransform.rotation * OffSetRotation;
             }
-            if (SimpleBindingData.syncScale)
-                boundTransform.localScale = parentTransform.scale + SimpleBindingData.offSetScale.Struct();
+            if (SyncScale)
+                boundTransform.localScale = parentTransform.scale + OffSetScale;
         }
     }
 }
