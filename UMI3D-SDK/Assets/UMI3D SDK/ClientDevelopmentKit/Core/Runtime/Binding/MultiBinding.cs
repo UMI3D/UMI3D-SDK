@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -23,6 +24,8 @@ namespace umi3d.cdk
     public class MultiBinding : AbstractBinding
     {
         protected (AbstractSimpleBinding binding, bool partialFit)[] orderedBindings;
+
+        public List<AbstractSimpleBinding> Bindings => orderedBindings.Select(x=>x.binding).ToList();
 
         public MultiBinding(MultiBindingDataDto data, AbstractSimpleBinding[] orderedBindings, bool[] partialFits, Transform boundTransform) : base(boundTransform, data)
         {

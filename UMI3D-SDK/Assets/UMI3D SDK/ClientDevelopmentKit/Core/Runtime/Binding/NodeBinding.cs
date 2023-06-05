@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -28,6 +29,15 @@ namespace umi3d.cdk
         { }
 
         protected NodeBindingDataDto NodeBindingDataDto => SimpleBindingData as NodeBindingDataDto;
+
+        #region DTO Access
+
+        /// <summary>
+        /// See <see cref="NodeBindingDataDto.nodeId"/>.
+        /// </summary>
+        public ulong ParentNodeId => NodeBindingDataDto.nodeId;
+
+        #endregion DTO Access
 
         public override void Apply(out bool success)
         {
