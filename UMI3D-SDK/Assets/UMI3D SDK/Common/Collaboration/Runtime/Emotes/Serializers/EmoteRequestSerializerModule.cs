@@ -21,24 +21,21 @@ namespace umi3d.common.collaboration
         public bool Read(ByteContainer container, out bool readable, out EmoteRequestDto result)
         {
             readable = true;
+            result = default;
 
             readable &= UMI3DSerializer.TryRead(container, out ulong emoteId);
             readable &= UMI3DSerializer.TryRead(container, out bool shouldTrigger);
 
-            var request = new EmoteRequestDto()
+            if (readable)
             {
-                emoteId = emoteId,
-                shouldTrigger = shouldTrigger
-            };
-
-            if (!readable)
-            {
+                var request = new EmoteRequestDto()
+                {
+                    emoteId = emoteId,
+                    shouldTrigger = shouldTrigger
+                };
                 readable = false;
-                result = default;
-                return readable;
+                result = request;
             }
-
-            result = readable ? request : default;
 
             return readable;
         }
