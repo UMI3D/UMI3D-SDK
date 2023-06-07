@@ -33,7 +33,6 @@ namespace umi3d.common.collaboration
                     emoteId = emoteId,
                     shouldTrigger = shouldTrigger
                 };
-                readable = false;
                 result = request;
             }
 
