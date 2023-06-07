@@ -26,20 +26,22 @@ namespace umi3d.common.collaboration
         public bool Read(ByteContainer container, out bool readable, out UMI3DEmotesConfigDto result)
         {
             readable = true;
-
-            UMI3DEmotesConfigDto conf = new();
+            result = default;
 
             readable &= UMI3DSerializer.TryRead(container, out ulong id);
             readable &= UMI3DSerializer.TryRead(container, out bool allAvailableByDefault);
 
             if (readable)
             {
-                conf.emotes = UMI3DSerializer.ReadList<UMI3DEmoteDto>(container);
-                conf.id = id;
-                conf.allAvailableByDefault = allAvailableByDefault;
+                UMI3DEmotesConfigDto conf = new()
+                {
+                    emotes = UMI3DSerializer.ReadList<UMI3DEmoteDto>(container),
+                    id = id,
+                    allAvailableByDefault = allAvailableByDefault
+                };
+                result = conf;
             }
 
-            result = readable ? conf : default;
             return readable;
         }
 

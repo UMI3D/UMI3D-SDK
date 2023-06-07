@@ -26,8 +26,7 @@ namespace umi3d.common.collaboration
         public bool Read(ByteContainer container, out bool readable, out UMI3DEmoteDto result)
         {
             readable = true;
-
-            UMI3DEmoteDto e = new();
+            result = default;
 
             readable &= UMI3DSerializer.TryRead(container, out ulong id);
             readable &= UMI3DSerializer.TryRead(container, out string label);
@@ -37,14 +36,16 @@ namespace umi3d.common.collaboration
 
             if (readable)
             {
-                e.id = id;
-                e.label = label;
-                e.animationId = animationId;
-                e.available = available;
-                e.iconResource = iconResource;
+                UMI3DEmoteDto e = new()
+                {
+                    id = id,
+                    label = label,
+                    animationId = animationId,
+                    available = available,
+                    iconResource = iconResource
+                };
+                result = e;
             }
-
-            result = readable ? e : default;
 
             return readable;
         }
