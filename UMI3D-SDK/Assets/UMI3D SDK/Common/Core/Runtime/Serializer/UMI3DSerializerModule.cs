@@ -222,7 +222,7 @@ namespace umi3d.common
         {
 
             bytable = default;
-            if (type.IsAssignableFrom(typeof(T)))
+            if (type.IsAssignableFrom(value.GetType()))
             {
                 object[] p = new object[] { value, null, parameters };
                 var res = (bool)methodWrite.Invoke(module, p);
