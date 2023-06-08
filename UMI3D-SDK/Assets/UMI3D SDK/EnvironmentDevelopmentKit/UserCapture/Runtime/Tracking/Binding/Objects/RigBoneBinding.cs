@@ -29,7 +29,7 @@ namespace umi3d.edk.userCapture
         /// </summary>
         public string rigName = "";
 
-        public RigBoneBinding(ulong boundNodeId, ulong userId, uint boneType, string rigName) : base(boundNodeId, userId, boneType)
+        public RigBoneBinding(ulong boundNodeId, string rigName, ulong userId, uint boneType) : base(boundNodeId, userId, boneType)
         {
             this.rigName = rigName;
         }

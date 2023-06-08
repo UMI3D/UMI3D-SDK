@@ -27,12 +27,12 @@ namespace EditMode_Tests.Core.Bindings.EDK
         #region ToEntityDto
 
         [Test]
-        [TestCase(1005uL, 10058uL, BoneType.Chest, "myRig")]
-        [TestCase(10153uL,  10058uL, BoneType.Hips, "")]
-        public void ToEntityDto(ulong boundNodeId, ulong userId, uint boneType, string rigName)
+        [TestCase(1005uL, "myRig", 10058uL, BoneType.Chest)]
+        [TestCase(10153uL, "",  10058uL, BoneType.Hips)]
+        public void ToEntityDto(ulong boundNodeId, string rigName, ulong userId, uint boneType)
         {
             // GIVEN
-            Mock<RigBoneBinding> rigboneBindingMock = new(boundNodeId, userId, boneType, rigName);
+            Mock<RigBoneBinding> rigboneBindingMock = new(boundNodeId, rigName, userId, boneType);
             rigboneBindingMock.CallBase = true;
             rigboneBindingMock.Setup(m => m.Id()).Returns(10036uL);
             var rigboneBinding = rigboneBindingMock.Object;
