@@ -44,7 +44,7 @@ namespace umi3d.cdk
         /// Remove a binding to compute.
         /// </summary>
         /// <param name="dto"></param>
-        public void RemoveBinding(ulong bindingId);
+        public void RemoveBinding(ulong boundNodeid);
 
         /// <summary>
         /// Enable/disable bindings computation for this client.

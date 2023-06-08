@@ -118,6 +118,10 @@ namespace umi3d.cdk
                     bindingRoutine = null;
                 }
             }
+            else
+            {
+                UMI3DLogger.LogWarning($"Cannot remove bindings on node {boundNodeId}. Node has no binding.", DEBUG_SCOPE);
+            }
         }
     }
 }

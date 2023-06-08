@@ -54,14 +54,14 @@ namespace umi3d.cdk
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as BindingDto;
-            void onDelete() { Debug.Log("Delete binding");  bindingManagementService.RemoveBinding(dto.id); }
-
+            
             await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.boundNodeId, null);
 
             AbstractBinding binding = LoadData(dto.boundNodeId, dto.data);
 
             bindingManagementService.AddBinding(dto.boundNodeId, binding);
 
+            void onDelete() { bindingManagementService.RemoveBinding(dto.boundNodeId); }
             environmentLoaderService.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
         }
 
