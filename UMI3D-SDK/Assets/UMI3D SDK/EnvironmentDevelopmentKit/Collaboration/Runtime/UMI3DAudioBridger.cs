@@ -93,7 +93,7 @@ namespace umi3d.edk.collaboration
                 }
             }
 
-            var binding = new BoneBinding(audioSourceNode.Id(), BoneType.Head, user.Id())
+            var binding = new BoneBinding(audioSourceNode.Id(), user.Id(), BoneType.Head)
             {
                 syncPosition = true,
                 syncRotation = true,

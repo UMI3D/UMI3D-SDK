@@ -38,9 +38,9 @@ namespace umi3d.edk.userCapture
         ///
         /// </summary>
         /// <param name="boundNodeId"></param>
-        /// <param name="boneType">one type of the anchor bone as referenced in <see cref="BoneType"/></param>
         /// <param name="userId">User owning the bone.</param>
-        public BoneBinding(ulong boundNodeId, uint boneType, ulong userId) : base(boundNodeId)
+        /// <param name="boneType">one type of the anchor bone as referenced in <see cref="BoneType"/></param>
+        public BoneBinding(ulong boundNodeId, ulong userId, uint boneType) : base(boundNodeId)
         {
             this.boneType = boneType;
             this.userId = userId;
