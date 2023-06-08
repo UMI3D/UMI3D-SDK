@@ -41,14 +41,32 @@ namespace umi3d.edk
         public BindingManager() : base()
         {
             umi3dServerService = UMI3DServer.Instance;
+            Init();
         }
 
         public BindingManager(UMI3DServer umi3dServerService, UMI3DEnvironment umi3dEnvironmentService) : base()
         {
             this.umi3dServerService = umi3dServerService;
+            Init();
         }
 
         #endregion DI
+
+        public void Init()
+        {
+            umi3dServerService.OnUserJoin.AddListener(DispatchBindings);
+        }
+
+        public void DispatchBindings(UMI3DUser user)
+        {
+            if (bindings.GetValue().Count > 0)
+            {
+                Transaction t = new() { reliable = true };
+                foreach (var (_, binding) in bindings.GetValue())
+                    t.AddIfNotNull(binding.GetLoadEntity());
+                t.Dispatch();
+            }
+        }
 
         public bool AreBindingsEnabled(UMI3DUser user = null)
         {
