@@ -50,12 +50,12 @@ namespace umi3d.edk
 
         #endregion DI
 
-        public bool AreBindingsEnabled(UMI3DUser user)
+        public bool AreBindingsEnabled(UMI3DUser user = null)
         {
             return areBindingsEnabled.GetValue(user);
         }
 
-        public Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user)
+        public Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null)
         {
             return bindings.GetValue(user);
         }
@@ -67,8 +67,11 @@ namespace umi3d.edk
             return areBindingsEnabled.SetValue(user, activated);
         }
 
-        public Operation UpdateBindingActivation(bool activated, IEnumerable<UMI3DUser> users)
+        public Operation UpdateBindingActivation(bool activated, IEnumerable<UMI3DUser> users = null)
         {
+            if (users is null)
+                return areBindingsEnabled.SetValue(activated);
+
             List<Operation> ops = new();
             foreach (var user in users)
                 ops.Add(areBindingsEnabled.SetValue(user, activated));

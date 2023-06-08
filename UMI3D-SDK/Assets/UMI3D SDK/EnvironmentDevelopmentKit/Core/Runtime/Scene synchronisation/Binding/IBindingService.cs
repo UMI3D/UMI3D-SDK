@@ -25,14 +25,14 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        bool AreBindingsEnabled(UMI3DUser user);
+        bool AreBindingsEnabled(UMI3DUser user = null);
 
         /// <summary>
         /// Get current bindings by node for a user.
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user);
+        Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null);
 
         /// <summary>
         /// Add a new Binding.
