@@ -29,9 +29,9 @@ namespace umi3d.edk
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.EDK | DebugScope.Core;
 
-        public UMI3DAsyncDictionnaryProperty<ulong, AbstractBinding> bindings = new(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.Bindings, new());
+        public readonly UMI3DAsyncDictionnaryProperty<ulong, AbstractBinding> bindings = new(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.Bindings, new());
 
-        public UMI3DAsyncProperty<bool> areBindingsEnabled = new(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.ActiveBindings, true);
+        public readonly UMI3DAsyncProperty<bool> areBindingsEnabled = new(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.ActiveBindings, true);
 
         #region DI
 
