@@ -111,6 +111,7 @@ namespace umi3d.cdk
             .SetNext(new UMI3DEmotesConfigLoader())
             .SetNext(new UMI3DEmoteLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
+            .SetNext(new WebViewLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
             ;
