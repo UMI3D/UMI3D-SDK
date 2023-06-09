@@ -213,7 +213,7 @@ namespace umi3d.cdk
             
             if (trackingAnimationCoroutine != null)
             {
-                UMI3DEnvironmentLoader.StopCoroutine(trackingAnimationCoroutine);
+                coroutineService.DettachCoroutine(trackingAnimationCoroutine);
                 trackingAnimationCoroutine = null;
             }
                 
