@@ -138,7 +138,7 @@ namespace umi3d.cdk
             if (!started)
                 return 0;
             if (IsPaused)
-                return lastPauseTime;
+                return lastPauseTime/Duration;
 
             var progress = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             if (progress >= 1)
