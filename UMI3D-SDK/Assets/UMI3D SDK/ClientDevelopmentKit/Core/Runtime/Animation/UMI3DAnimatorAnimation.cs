@@ -210,8 +210,13 @@ namespace umi3d.cdk
         public override void OnEnd()
         {
             started = false;
+            
             if (trackingAnimationCoroutine != null)
+            {
+                UMI3DEnvironmentLoader.StopCoroutine(trackingAnimationCoroutine);
                 trackingAnimationCoroutine = null;
+            }
+                
             base.OnEnd();
         }
 
