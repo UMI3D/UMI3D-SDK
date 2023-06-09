@@ -164,7 +164,7 @@ namespace umi3d.cdk.collaboration
                     if (emoteDtoInConfig.iconResource is not null 
                         && emoteDtoInConfig.iconResource.variants.Count > 0
                         && emoteDtoInConfig.iconResource.variants[0].metrics.size != 0)
-                        LoadFile(emoteDtoInConfig, emote);
+                        LoadIcon(emoteDtoInConfig, emote);
                     Emotes.Add(emote);
                 }
             }
@@ -191,7 +191,7 @@ namespace umi3d.cdk.collaboration
             EmoteUpdated?.Invoke(emote);
         }
 
-        private async void LoadFile(UMI3DEmoteDto emoteRefInConfig, Emote emote)
+        private async void LoadIcon(UMI3DEmoteDto emoteRefInConfig, Emote emote)
         {
             try
             {
