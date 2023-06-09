@@ -91,13 +91,13 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="activated">the activation value</param>
         /// <returns>The associated operation. Is null if no operation is required.</returns>
-        Operation UpdateBindingActivation(bool activated, IEnumerable<UMI3DUser> users = null);
+        Operation SetBindingsActivation(bool activated, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Set the activation of Bindings for one user.
         /// </summary>
         /// <param name="activated">the activation value</param>
         /// <returns>The associated operation. Is null if no operation is required.</returns>
-        Operation UpdateBindingActivation(bool activated, UMI3DUser user);
+        Operation SetBindingsActivation(bool activated, UMI3DUser user);
     }
 }
