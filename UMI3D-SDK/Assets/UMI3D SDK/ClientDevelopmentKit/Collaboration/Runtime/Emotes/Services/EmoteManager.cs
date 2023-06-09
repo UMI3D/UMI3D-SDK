@@ -72,6 +72,11 @@ namespace umi3d.cdk.collaboration
         private Emote playingEmote;
 
         /// <summary>
+        /// Animaton of the currently played emote
+        /// </summary>
+        private UMI3DAbstractAnimation playingEmoteAnimation;
+
+        /// <summary>
         /// Is the EmoteManager currently playing an emote?
         /// </summary>
         public bool IsPlaying => playingEmote is not null;
@@ -89,8 +94,8 @@ namespace umi3d.cdk.collaboration
             collabClientServerService = UMI3DCollaborationClientServer.Instance;
         }
 
-        public EmoteManager(UMI3DEnvironmentLoader environmentLoader, 
-                            UMI3DCollaborationClientServer collabClientServerService) 
+        public EmoteManager(UMI3DEnvironmentLoader environmentLoader,
+                            UMI3DCollaborationClientServer collabClientServerService)
                             : base()
         {
             environmentLoaderService = environmentLoader;
@@ -161,7 +166,7 @@ namespace umi3d.cdk.collaboration
                         icon = DefaultIcon,
                         dto = emoteDtoInConfig
                     };
-                    if (emoteDtoInConfig.iconResource is not null 
+                    if (emoteDtoInConfig.iconResource is not null
                         && emoteDtoInConfig.iconResource.variants.Count > 0
                         && emoteDtoInConfig.iconResource.variants[0].metrics.size != 0)
                         LoadIcon(emoteDtoInConfig, emote);
@@ -245,6 +250,17 @@ namespace umi3d.cdk.collaboration
                 return;
             }
 
+            if (IsPlaying)
+            {
+                if (emote == playingEmote) // spam is not allowed
+                    return;
+                else
+                    StopEmote();
+            }
+
+            // emote play mode
+            StartPlayMode(emote);
+
             EmoteStarted?.Invoke(emote);
 
             // send the emote triggerring text to other browsers through the server
@@ -255,32 +271,20 @@ namespace umi3d.cdk.collaboration
             };
 
             collabClientServerService._SendRequest(emoteRequest, true);
+        }
 
-            // emote play mode
+        private void StartPlayMode(Emote emote)
+        {
             playingEmote = emote;
-            StartPlayMode();
+            playingEmoteAnimation = environmentLoaderService.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
+            playingEmoteAnimation.AnimationEnded += StopEmote;
         }
 
-        /// <summary>
-        /// Start emote play mode and listen to events to stop emote.
-        /// </summary>
-        private void StartPlayMode()
+        private void StopPlayMode()
         {
-            var animation = environmentLoaderService.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
-
-            EmoteStarted += StopEmote; //used if another emote is played in the meanwhile //! now managed by the server
-            animation.AnimationEnded += StopEmote;
-        }
-
-        /// <summary>
-        /// End emote play mode and remove listeners for end of emote.
-        /// </summary>
-        private void EndPlayMode()
-        {
-            var animation = environmentLoaderService.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
-
-            EmoteStarted -= StopEmote;
-            animation.AnimationEnded -= StopEmote;
+            playingEmoteAnimation.AnimationEnded -= StopEmote;
+            playingEmoteAnimation = null;
+            playingEmote = null;
         }
 
         /// <summary>
@@ -299,19 +303,11 @@ namespace umi3d.cdk.collaboration
                 };
 
                 collabClientServerService._SendRequest(emoteRequest, true);
-                EmoteEnded?.Invoke(playingEmote);
-            }
-        }
 
-        /// <summary>
-        /// Call <see cref="StopEmote"/>.
-        /// </summary>
-        /// Exist to listen to events that require an Emote.
-        /// <param name="emote">Not used parameter</param>
-        public virtual void StopEmote(Emote emote)
-        {
-            if (emote == playingEmote)
-                StopEmote();
+                EmoteEnded?.Invoke(playingEmote);
+
+                StopPlayMode();
+            }
         }
 
         #endregion Emote Playing
