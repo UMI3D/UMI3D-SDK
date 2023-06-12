@@ -31,21 +31,22 @@ namespace umi3d.cdk.userCapture
 
         #region DependencyInjection
 
-        private readonly IBindingBrowserService bindingManagementService;
         private readonly UMI3DEnvironmentLoader environmentService;
         private readonly ISkeletonManager personnalSkeletonService;
 
-        public UMI3DUserCaptureBindingLoader()
+        public UMI3DUserCaptureBindingLoader() : base()
         {
-            bindingManagementService = BindingManager.Instance;
             environmentService = UMI3DEnvironmentLoader.Instance;
             personnalSkeletonService = PersonalSkeletonManager.Instance;
         }
 
-        public UMI3DUserCaptureBindingLoader(IBindingBrowserService emoteManager)
+        public UMI3DUserCaptureBindingLoader(IBindingBrowserService bindingManager, 
+                                            UMI3DEnvironmentLoader environmentService, 
+                                            ISkeletonManager personnalSkeletonService)
+                                            : base(bindingManager, environmentService)
         {
-            bindingManagementService = emoteManager;
-            environmentService = UMI3DEnvironmentLoader.Instance;
+            this.environmentService = environmentService;
+            this.personnalSkeletonService = personnalSkeletonService;
         }
 
         #endregion DependencyInjection
