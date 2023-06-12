@@ -98,7 +98,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public async void ReadUMI3DExtension_NodeBinding()
+        public virtual async void ReadUMI3DExtension_NodeBinding()
         {
             // GIVEN
             var dto = new BindingDto()

@@ -28,8 +28,6 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
 {
     public class UserCaptureBindingLoader_Test : BindingLoader_Test
     {
-        protected UMI3DUserCaptureBindingLoader UserCaptureBindingLoader => bindingLoader as UMI3DUserCaptureBindingLoader;
-
         protected Mock<ISkeletonManager> skeletonServiceMock;
 
         #region Test SetUp
@@ -107,7 +105,7 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
         }
 
         [Test]
-        public async void ReadUMI3DExtension_BoneBinding()
+        public virtual async void ReadUMI3DExtension_BoneBinding()
         {
             // GIVEN
             uint targetBoneType = BoneType.Chest;
