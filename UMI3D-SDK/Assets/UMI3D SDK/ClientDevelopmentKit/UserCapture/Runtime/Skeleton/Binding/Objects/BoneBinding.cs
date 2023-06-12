@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public class BoneBinding : AbstractSimpleBinding
     {
-        public BoneBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform, ISkeleton skeleton) : base(dto, boundTransform)
+        public BoneBinding(BoneBindingDataDto dto, Transform boundTransform, ISkeleton skeleton) : base(dto, boundTransform)
         {
             this.skeleton = skeleton;
         }

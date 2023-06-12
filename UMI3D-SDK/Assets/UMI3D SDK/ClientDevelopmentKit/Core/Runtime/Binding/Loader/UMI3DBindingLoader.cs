@@ -113,7 +113,7 @@ namespace umi3d.cdk
                                                                                                 if (x is not NodeBindingDataDto nodeBindingDataDto)
                                                                                                     return new(null, false);
                                                                                                 UMI3DNodeInstance parentNode = environmentLoaderService.GetNodeInstance(nodeBindingDataDto.nodeId);
-                                                                                                return (binding: new NodeBinding(x, node.transform, parentNode) as AbstractSimpleBinding, x.partialFit);
+                                                                                                return (binding: new NodeBinding(nodeBindingDataDto, node.transform, parentNode) as AbstractSimpleBinding, x.partialFit);
                                                                                             })
                                                                                             .Where(x => x.binding is not null)
                                                                                             .ToArray();

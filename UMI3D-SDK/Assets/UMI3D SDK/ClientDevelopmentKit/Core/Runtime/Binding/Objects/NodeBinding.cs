@@ -27,7 +27,7 @@ namespace umi3d.cdk
     {
         protected UMI3DNodeInstance parentNode;
 
-        public NodeBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform, UMI3DNodeInstance parentNode) : base(dto, boundTransform)
+        public NodeBinding(NodeBindingDataDto dto, Transform boundTransform, UMI3DNodeInstance parentNode) : base(dto, boundTransform)
         {
             this.parentNode = parentNode;
         }
