@@ -104,5 +104,179 @@ namespace PlayMode_Tests.Core.Bindings.EDK
         }
 
         #endregion SetBindingsActivation
+
+        #region AddBinding
+
+        [Test]
+        public void AddBinding()
+        {
+            // GIVEN
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            var binding = new NodeBinding(10005uL, 10008uL);
+
+            // WHEN
+            var resultOperation = bindingManager.AddBinding(binding);
+
+            // THEN
+            Assert.GreaterOrEqual(resultOperation.Count, 1);
+            Assert.AreEqual(initialCount + 1, bindingManager.bindings.GetValue().Count);
+        }
+
+        [Test]
+        public void AddBinding_Upgrade()
+        {
+            // GIVEN
+            ulong boundNodeId = 10005uL;
+            var firstBinding = new NodeBinding(boundNodeId, 10008uL);
+            var secondBinding = new NodeBinding(boundNodeId, 10009uL);
+            bindingManager.AddBinding(firstBinding);
+
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.AddBinding(secondBinding);
+
+            // THEN
+            Assert.GreaterOrEqual(resultOperation.Count, 1);
+            Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+            Assert.IsAssignableFrom(typeof(MultiBinding), bindingManager.bindings[boundNodeId]);
+        }
+
+        [Test]
+        public void AddBinding_Null()
+        {
+            // GIVEN
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.AddBinding(null);
+
+            // THEN
+            Assert.IsNull(resultOperation);
+            Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+        }
+
+        #endregion
+
+        #region RemoveBinding
+
+        [Test]
+        public void RemoveBinding()
+        {
+            // GIVEN
+            var binding = new NodeBinding(10005uL, 10008uL);
+            bindingManager.AddBinding(binding);
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.RemoveBinding(binding);
+
+            // THEN
+            Assert.GreaterOrEqual(resultOperation.Count, 1);
+            Assert.AreEqual(initialCount - 1, bindingManager.bindings.GetValue().Count);
+        }
+
+        [Test]
+        public void RemoveBinding_Downgrade()
+        {
+            // GIVEN
+            ulong boundNodeId = 10005uL;
+            var firstBinding = new NodeBinding(boundNodeId, 10008uL);
+            var secondBinding = new NodeBinding(boundNodeId, 10009uL);
+            var binding = new MultiBinding(boundNodeId)
+            {
+                bindings = new() { firstBinding, secondBinding }
+            };
+            bindingManager.AddBinding(binding);
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.RemoveBinding(secondBinding);
+
+            // THEN
+            Assert.GreaterOrEqual(resultOperation.Count, 1);
+            Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+            Assert.IsAssignableFrom(typeof(NodeBinding), bindingManager.bindings[boundNodeId]);
+        }
+
+        [Test]
+        public void RemoveBinding_Null()
+        {
+            // GIVEN
+            var binding = new NodeBinding(10005uL, 10008uL);
+            bindingManager.AddBinding(binding);
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.RemoveBinding(null);
+
+            // THEN
+            Assert.IsNull(resultOperation);
+            Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+        }
+
+
+        #endregion
+
+        #region RemoveAllBindings
+
+        [Test]
+        public void RemoveAllBindings()
+        {
+            // GIVEN
+            ulong boundNodeId = 10005uL;
+            var binding = new NodeBinding(boundNodeId, 10008uL);
+            bindingManager.AddBinding(binding);
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.RemoveAllBindings(boundNodeId);
+
+            // THEN
+            Assert.GreaterOrEqual(resultOperation.Count, 1);
+            Assert.AreEqual(initialCount - 1, bindingManager.bindings.GetValue().Count);
+        }
+
+        [Test]
+        public void RemoveAllBindings_Multibinding()
+        {
+            // GIVEN
+            ulong boundNodeId = 10005uL;
+            var firstBinding = new NodeBinding(boundNodeId, 10008uL);
+            var secondBinding = new NodeBinding(boundNodeId, 10009uL);
+            var binding = new MultiBinding(boundNodeId)
+            {
+                bindings = new() { firstBinding, secondBinding }
+            };
+            bindingManager.AddBinding(binding);
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.RemoveAllBindings(boundNodeId);
+
+            // THEN
+            Assert.GreaterOrEqual(resultOperation.Count, 1);
+            Assert.AreEqual(initialCount - 1, bindingManager.bindings.GetValue().Count);
+        }
+
+        [Test]
+        public void RemoveAllBindings_InvalidKey()
+        {
+            // GIVEN
+            ulong boundNodeId = 10005uL;
+            var binding = new NodeBinding(boundNodeId, 10008uL);
+            bindingManager.AddBinding(binding);
+            int initialCount = bindingManager.bindings.GetValue().Count;
+
+            // WHEN
+            var resultOperation = bindingManager.RemoveAllBindings(boundNodeId+5);
+
+            // THEN
+            Assert.IsNull(resultOperation);
+            Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+        }
+
+        #endregion
     }
 }
