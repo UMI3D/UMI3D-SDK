@@ -98,23 +98,27 @@ namespace EditMode_Tests.Core.Bindings.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public async void ReadUMI3DExtension()
+        public async void ReadUMI3DExtension_NodeBinding()
         {
             // GIVEN
             var dto = new BindingDto()
             {
                 id = 1005uL,
                 boundNodeId = 1008uL,
-                data = new NodeBindingDataDto()
+                data = new NodeBindingDataDto() { nodeId = 1008uL }
             };
 
             var extensionData = new ReadUMI3DExtensionData(dto);
 
-            var entityFake = new UMI3DEntityInstance(() => { });
+            var entityFake = new UMI3DEntityInstance(() => { }); 
+            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+
+            nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
+
             environmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
             environmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(new UMI3DNodeInstance(() => { }));
-           
+            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
            
             // WHEN
@@ -122,7 +126,39 @@ namespace EditMode_Tests.Core.Bindings.CDK
 
             // THEN
             environmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.id, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+        }
+
+        [Test]
+        public virtual async void ReadUMI3DExtension_MultiBinding()
+        {
+            // GIVEN
+            var dto = new BindingDto()
+            {
+                id = 1005uL,
+                boundNodeId = 1008uL,
+                data = new MultiBindingDataDto() { Bindings = new AbstractSimpleBindingDataDto[] { new NodeBindingDataDto() { nodeId = 1008uL } } }
+            };
+
+            var extensionData = new ReadUMI3DExtensionData(dto);
+
+            var entityFake = new UMI3DEntityInstance(() => { });
+            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+
+            nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
+
+            environmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+
+            bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+
+            // WHEN
+            await bindingLoader.ReadUMI3DExtension(extensionData);
+
+            // THEN
+            environmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
         #endregion ReadUMI3DExtension
