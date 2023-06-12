@@ -30,21 +30,22 @@ namespace umi3d.cdk.collaboration
 
         #region DependencyInjection
 
-        private readonly IBindingBrowserService bindingManagementService;
         private readonly UMI3DEnvironmentLoader environmentService;
         private readonly ICollaborativeSkeletonsManager skeletonService;
 
-        public UMI3DCollaborationBindingLoader()
+        public UMI3DCollaborationBindingLoader(): base()
         {
-            bindingManagementService = BindingManager.Instance;
-            environmentService = UMI3DEnvironmentLoader.Instance;
+            environmentService = UMI3DCollaborationEnvironmentLoader.Instance;
             skeletonService = CollaborativeSkeletonManager.Instance;
         }
 
-        public UMI3DCollaborationBindingLoader(IBindingBrowserService emoteManager)
+        public UMI3DCollaborationBindingLoader(IBindingBrowserService bindingManager,
+                                                UMI3DCollaborationEnvironmentLoader environmentLoader, 
+                                                ICollaborativeSkeletonsManager skeletonService) :
+                                                base(bindingManager, environmentLoader)
         {
-            bindingManagementService = emoteManager;
-            environmentService = UMI3DEnvironmentLoader.Instance;
+            this.environmentService = environmentLoader;
+            this.skeletonService = skeletonService;
         }
 
         #endregion DependencyInjection
