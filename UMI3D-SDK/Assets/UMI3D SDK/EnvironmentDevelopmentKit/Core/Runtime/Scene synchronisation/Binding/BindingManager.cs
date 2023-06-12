@@ -111,9 +111,6 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public virtual List<Operation> AddBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
         {
-            if (binding is null)
-                return null;
-
             return AddOrUpgradeBinding(binding, users);
         }
 
@@ -136,6 +133,12 @@ namespace umi3d.edk
         /// <returns></returns>
         private List<Operation> AddOrUpgradeBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
         {
+            if (binding is null)
+            {
+                UMI3DLogger.LogWarning($"Impossible to add binding. Binding is null.", DEBUG_SCOPE);
+                return null;
+            }
+
             List<Operation> operations = new();
 
             if (!bindings.isAsync) // all users have same value
@@ -257,6 +260,12 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public virtual List<Operation> RemoveOrDowngradeBinding(AbstractBinding bindingToRemove, IEnumerable<UMI3DUser> users = null)
         {
+            if (bindingToRemove is null)
+            {
+                UMI3DLogger.LogWarning($"Impossible to remove binding. Binding is null.", DEBUG_SCOPE);
+                return null;
+            }
+
             List<Operation> operations = new();
 
             if (!bindings.isAsync) // all users have same value
@@ -269,9 +278,16 @@ namespace umi3d.edk
 
                     if (bindingOnNode.Id() == bindingToRemove.Id()) // those are the same binding
                     {
-                        foreach (UMI3DUser user in users)
-                            bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
-                        operations.Add(bindingToRemove.GetDeleteEntity(targetUsers)); 
+                        if (users is null) // target is all users
+                        {
+                            bindings.Remove(bindingToRemove.boundNodeId);
+                        }
+                        else // target is a fraction of all the users
+                        {
+                            foreach (UMI3DUser user in users)
+                                bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
+                        }
+                        operations.Add(bindingToRemove.GetDeleteEntity(targetUsers));
                     }
                     else if (bindingOnNode is MultiBinding existingMultiBinding // the binding is inside a multibinding
                             && bindingToRemove is AbstractSingleBinding singleBindingToRemove
@@ -282,8 +298,15 @@ namespace umi3d.edk
                         var newBinding = DowngradeBinding(existingMultiBinding, singleBindingToRemove);
 
                         operations.Add(existingMultiBinding.GetLoadEntity(targetUsers)); // a binding remains on node
-                        foreach (UMI3DUser user in users)
-                            bindings.SetValue(user, newBinding.boundNodeId, newBinding);
+                        if (targetUsers is null) // target is all users
+                        {
+                            bindings.SetValue(newBinding.boundNodeId, newBinding);
+                        }
+                        else // target is a fraction of all the users
+                        {
+                            foreach (UMI3DUser user in users)
+                                bindings.SetValue(user, newBinding.boundNodeId, newBinding);
+                        }
                     }
                     else
                     {
@@ -330,7 +353,7 @@ namespace umi3d.edk
                                        operations.Add(newBinding.GetLoadEntity(userGroup.ToHashSet())); // a binding remains on node
 
                                        foreach (UMI3DUser user in userGroup)
-                                            bindings.SetValue(user, newBinding.boundNodeId, newBinding); // no binding left on node
+                                           bindings.SetValue(user, newBinding.boundNodeId, newBinding); // no binding left on node
                                    });
                     }
                 }
