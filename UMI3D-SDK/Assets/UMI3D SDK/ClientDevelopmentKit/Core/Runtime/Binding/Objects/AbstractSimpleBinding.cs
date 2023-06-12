@@ -90,7 +90,7 @@ namespace umi3d.cdk
                 boundTransform.rotation = parentTransform.rotation * OffSetRotation;
             }
             if (SyncScale)
-                boundTransform.localScale = parentTransform.scale + OffSetScale;
+                boundTransform.localScale = Vector3.Scale(parentTransform.scale, OffSetScale);
         }
     }
 }

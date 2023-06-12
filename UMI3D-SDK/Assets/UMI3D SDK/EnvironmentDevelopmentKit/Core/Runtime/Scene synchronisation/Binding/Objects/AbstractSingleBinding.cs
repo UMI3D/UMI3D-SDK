@@ -52,7 +52,7 @@ namespace umi3d.edk
         /// <summary>
         /// Offset between the parent scale and the bound object target scale.
         /// </summary>
-        public Vector3 offsetScale = Vector3.zero;
+        public Vector3 offsetScale = Vector3.one;
 
         /// <summary>
         /// Anchor for rotation when position and rotation synchronisation are active. <br/>
