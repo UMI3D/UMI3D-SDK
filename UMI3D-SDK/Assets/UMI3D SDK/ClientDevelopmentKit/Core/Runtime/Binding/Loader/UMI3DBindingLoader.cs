@@ -38,10 +38,10 @@ namespace umi3d.cdk
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DBindingLoader(IBindingBrowserService emoteManager)
+        public UMI3DBindingLoader(IBindingBrowserService bindingManager, UMI3DEnvironmentLoader environmentLoaderService)
         {
-            bindingManagementService = emoteManager;
-            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            bindingManagementService = bindingManager;
+            this.environmentLoaderService = environmentLoaderService;
         }
 
         #endregion DependencyInjection
@@ -55,7 +55,7 @@ namespace umi3d.cdk
         {
             var dto = value.dto as BindingDto;
             
-            await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.boundNodeId, null);
+            await environmentLoaderService.WaitUntilEntityLoaded(dto.boundNodeId, null);
 
             AbstractBinding binding = LoadData(dto.boundNodeId, dto.data);
 
