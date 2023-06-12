@@ -41,11 +41,11 @@ namespace umi3d.cdk.collaboration
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
-        public Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
+        public virtual Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
 
-        public PersonalSkeleton personalSkeleton => personnalSkeletonManager.personalSkeleton;
+        public virtual PersonalSkeleton personalSkeleton => personnalSkeletonManager.personalSkeleton;
 
-        public CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
+        public virtual CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         public event Action<ulong> skeletonEvent;
 
