@@ -93,7 +93,21 @@ namespace umi3d.cdk
             if (!Exists) return;
             if (Instance.entitywaited == null) return;
 
-            UMI3DEntityInstance node = GetEntity(id);
+            Instance.WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
+        }
+
+        /// <summary>
+        /// Call a callback when an entity is registerd.
+        /// The entity might not be totaly loaded when the callback is called.
+        /// all property of UMI3DEntityInstance and UMI3DNodeInstance are set.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entityLoaded"></param>
+        /// <param name="entityFailedToLoad"></para
+        public virtual void WaitUntilEntityLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
+        {
+            if (Instance.entitywaited == null) return;
+            UMI3DEntityInstance node = TryGetEntityInstance(id);
             if (node != null && node.IsLoaded)
             {
                 entityLoaded?.Invoke(node);
@@ -105,16 +119,27 @@ namespace umi3d.cdk
                 else
                     Instance.entitywaited[id] = new List<(Action<UMI3DEntityInstance>, Action)>() { (entityLoaded, entityFailedToLoad) };
             }
+
+            return;
         }
 
         public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id, List<CancellationToken> tokens)
         {
             if (!Exists)
                 throw new Umi3dException("EnvironmentLoader does not exist");
+
             if (Instance.entitywaited == null)
                 throw new Umi3dException("Entity waited to be loaded does not exist");
 
-            UMI3DEntityInstance node = GetEntity(id);
+            return await Instance.WaitUntilEntityLoaded(id, tokens);
+        }
+
+        public virtual async Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong id, List<CancellationToken> tokens)
+        {
+            if (entitywaited == null)
+                throw new Umi3dException("Entity waited to be loaded does not exist");
+
+            UMI3DEntityInstance node = TryGetEntityInstance(id);
             if (node != null && node.IsLoaded)
             {
                 return (node);
@@ -126,7 +151,7 @@ namespace umi3d.cdk
             Action<UMI3DEntityInstance> entityLoaded = (e) => { loaded = e; finished = true; };
             Action entityFailedToLoad = () => { error = true; finished = true; };
 
-            WaitForAnEntityToBeLoaded(id, entityLoaded, entityFailedToLoad);
+            WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
 
             while (!finished)
                 await UMI3DAsyncManager.Yield(tokens);
@@ -207,10 +232,27 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual UMI3DEntityInstance GetEntityInstance(ulong id)
         {
-            if (id == 0 || !Exists || !Instance.entities.ContainsKey(id))
-                throw new Umi3dException($"Entity {id} does not exist.");
-            else if (Instance.entities[id] != null)
-                return Instance.entities[id];
+            if (id == 0 || !entities.ContainsKey(id))
+                throw new ArgumentException(message: $"Entity {id} does not exist.");
+            else if (entities[id] != null)
+                return entities[id];
+            else
+                throw new Umi3dException($"Entity {id} is referenced but is null.");
+        }
+
+        /// <summary>
+        /// Get an entity with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns></returns>
+        public virtual UMI3DEntityInstance TryGetEntityInstance(ulong id)
+        {
+            if (id == 0)
+                throw new ArgumentException(message: $"Entity {id} does not exist.");
+            else if (!entities.ContainsKey(id))
+                return null;
+            else if (entities[id] != null)
+                return entities[id];
             else
                 throw new Umi3dException($"Entity {id} is referenced but is null.");
         }
@@ -241,7 +283,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns>Node instance or null if node does not exist.</returns>
-        public UMI3DNodeInstance GetNodeInstance(ulong id)
+        public virtual UMI3DNodeInstance GetNodeInstance(ulong id)
         {
             if (GetEntityInstance(id) is not UMI3DNodeInstance node)
                 throw new Umi3dException($"Entity {id} is not an UMI3DNodeInstance.");
