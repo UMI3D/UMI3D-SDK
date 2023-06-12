@@ -50,7 +50,7 @@ namespace umi3d.cdk.userCapture
 
         #endregion DependencyInjection
 
-        public override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {

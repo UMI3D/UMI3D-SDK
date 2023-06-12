@@ -81,7 +81,7 @@ namespace umi3d.cdk
             return Task.FromResult(true);
         }
 
-        public virtual AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected virtual AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {

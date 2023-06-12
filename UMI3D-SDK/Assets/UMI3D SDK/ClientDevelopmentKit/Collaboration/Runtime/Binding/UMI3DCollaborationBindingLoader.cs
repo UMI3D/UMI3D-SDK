@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration
 
         #endregion DependencyInjection
 
-        public override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
