@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using umi3d.common;
+using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -25,8 +26,16 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public class RigBoneBinding : BoneBinding
     {
-        public RigBoneBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform, ISkeleton skeleton) : base(dto, boundTransform, skeleton)
+        public RigBoneBinding(RigBoneBindingDataDto dto, Transform rigBoundTransform, ISkeleton skeleton) : base(dto, rigBoundTransform, skeleton)
         { }
+
+        #region DTO Access
+
+        protected RigBoneBindingDataDto RigBoneBindingDataDto => SimpleBindingData as RigBoneBindingDataDto;
+
+        public string RigName => RigBoneBindingDataDto.rigName;
+
+        #endregion DTO Access
 
         public override void Apply(out bool success)
         {
