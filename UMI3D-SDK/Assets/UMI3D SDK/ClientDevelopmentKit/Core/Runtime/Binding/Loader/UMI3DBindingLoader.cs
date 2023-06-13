@@ -105,26 +105,20 @@ namespace umi3d.cdk
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentLoaderService.GetNodeInstance(boundNodeId);
-                        (AbstractSimpleBinding binding, bool partialFit)[] orderedBindingData = multiBindingDataDto.Bindings
-                                                                                            .OrderByDescending(x => x.priority)
-                                                                                            .Select(x =>
-                                                                                            {
-                                                                                                if (x is not NodeBindingDataDto nodeBindingDataDto)
-                                                                                                    return new(null, false);
-                                                                                                UMI3DNodeInstance parentNode = environmentLoaderService.GetNodeInstance(nodeBindingDataDto.nodeId);
-                                                                                                return (binding: new NodeBinding(nodeBindingDataDto, node.transform, parentNode) as AbstractSimpleBinding, x.partialFit);
-                                                                                            })
-                                                                                            .Where(x => x.binding is not null)
-                                                                                            .ToArray();
+                        UMI3DNodeInstance boundNode = environmentLoaderService.GetNodeInstance(boundNodeId);
+                        AbstractSimpleBinding[] bindings = multiBindingDataDto.Bindings
+                                                                    .Select(x => LoadData(boundNodeId, x) as AbstractSimpleBinding)
+                                                                    .Where(x => x is not null)
+                                                                    .OrderByDescending(x => x.Priority)
+                                                                    .ToArray();
 
-                        if (orderedBindingData.Length == 0)
+                        if (bindings.Length == 0)
                         {
                             UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply.", DEBUG_SCOPE);
                             return null;
                         }
 
-                        return new MultiBinding(multiBindingDataDto, orderedBindingData, node.transform);
+                        return new MultiBinding(multiBindingDataDto, bindings, boundNode.transform, isOrdered: true);
                     }
                 default:
                     return null;

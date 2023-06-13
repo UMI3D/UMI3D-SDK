@@ -54,7 +54,8 @@ namespace umi3d.cdk.collaboration
         {
             switch (dto)
             {
-                case NodeBindingDataDto:
+                case NodeBindingDataDto 
+                    or MultiBindingDataDto:
                     {
                         return base.LoadData(boundNodeId, dto);
                     }
@@ -86,23 +87,6 @@ namespace umi3d.cdk.collaboration
                             return null;
                         }
                         return new BoneBinding(boneBindingDataDto, boundNode.transform, skeleton);
-                    }
-                case MultiBindingDataDto multiBindingDataDto:
-                    {
-                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        (AbstractSimpleBinding binding, bool partialFit)[] orderedBindingData = multiBindingDataDto.Bindings
-                                                                    .OrderByDescending(x => x.priority)
-                                                                    .Select(x => (binding: LoadData(boundNodeId, x) as AbstractSimpleBinding, x.partialFit))
-                                                                    .Where(x => x.binding is not null)
-                                                                    .ToArray();
-
-                        if (orderedBindingData.Length == 0)
-                        {
-                            UMI3DLogger.LogWarning($"Impossible to multi-bind. All bindings are impossible to apply.", DEBUG_SCOPE);
-                            return null;
-                        }
-
-                        return new MultiBinding(multiBindingDataDto, orderedBindingData, boundNode.transform);
                     }
                 default:
                     return null;
