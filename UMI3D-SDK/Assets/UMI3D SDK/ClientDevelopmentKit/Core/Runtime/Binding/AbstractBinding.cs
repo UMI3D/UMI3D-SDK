@@ -34,6 +34,16 @@ namespace umi3d.cdk
         /// </summary>
         protected AbstractBindingDataDto data;
 
+        #region DTO Access
+
+        public bool IsPartiallyFit => data.partialFit;
+
+        public int Priority => data.priority;
+
+        public Transform BoundTransform => boundTransform;
+
+        #endregion DTO Access
+
         protected AbstractBinding(Transform boundTransform, AbstractBindingDataDto data)
         {
             this.boundTransform = boundTransform;

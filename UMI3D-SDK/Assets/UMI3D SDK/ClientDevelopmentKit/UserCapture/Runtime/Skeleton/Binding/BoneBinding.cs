@@ -31,7 +31,15 @@ namespace umi3d.cdk.userCapture
             this.skeleton = skeleton;
         }
 
+        #region DTO Access
+
         protected BoneBindingDataDto BoneBindingDataDto => SimpleBindingData as BoneBindingDataDto;
+
+        public ulong UserId => BoneBindingDataDto.userId;
+
+        public uint BoneType => BoneBindingDataDto.boneType;
+
+        #endregion DTO Access
 
         protected ISkeleton skeleton;
 
@@ -43,10 +51,10 @@ namespace umi3d.cdk.userCapture
                 return;
             }
 
-            var parentBone = skeleton.Bones[BoneBindingDataDto.boneType];
+            var parentBone = skeleton.Bones[BoneType];
             if (parentBone is null)
             {
-                UMI3DLogger.LogError($"Bone transform from bone {BoneBindingDataDto.boneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
                 success = false;
                 return;
             }

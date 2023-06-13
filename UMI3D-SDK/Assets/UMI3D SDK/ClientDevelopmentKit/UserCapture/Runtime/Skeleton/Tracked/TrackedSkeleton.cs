@@ -29,7 +29,7 @@ namespace umi3d.cdk.userCapture
     public class TrackedSkeleton : MonoBehaviour, ISubWritableSkeleton
     {
         public List<IController> controllers = new List<IController>();
-        List<IController> controllersToDestroy;
+        List<IController> controllersToDestroy = new();
         public Camera viewpoint;
         public TrackedAnimator trackedAnimator;
         Animator animator;
