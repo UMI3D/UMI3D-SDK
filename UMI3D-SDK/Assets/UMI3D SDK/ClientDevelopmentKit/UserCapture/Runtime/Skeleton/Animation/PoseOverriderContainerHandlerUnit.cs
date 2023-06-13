@@ -137,7 +137,7 @@ namespace umi3d.cdk.userCapture
         {
             Quaternion boneRotation = skeletonManager.personalSkeleton.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
 
-            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.ToQuaternion()) < boneRotationConditionDto.acceptanceRange)
+            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.Quaternion()) < boneRotationConditionDto.acceptanceRange)
             {
                 return true;
             }
@@ -153,7 +153,7 @@ namespace umi3d.cdk.userCapture
                                             as UMI3DNodeInstance;
 
             Vector3 targetScale = targetNodeInstance.transform.localScale;
-            Vector3 wantedScale = scaleConditionDto.scale;
+            Vector3 wantedScale = scaleConditionDto.scale.Struct();
 
             if (targetScale.sqrMagnitude <= wantedScale.sqrMagnitude)
             {

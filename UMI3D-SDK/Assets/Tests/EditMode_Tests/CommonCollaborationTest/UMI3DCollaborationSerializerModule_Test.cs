@@ -205,8 +205,8 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as BonePoseDto).bone
-                == (bonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).Bone
+                == (bonePoseDto as BonePoseDto).Bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (bonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue((result as BonePoseDto).Rotation.Struct()
@@ -230,8 +230,8 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as BonePoseDto).bone
-                == (anchorBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).Bone
+                == (anchorBonePoseDto as BonePoseDto).Bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (anchorBonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
@@ -258,8 +258,8 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as BonePoseDto).bone
-                == (nodeAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).Bone
+                == (nodeAnchoredBonePoseDto as BonePoseDto).Bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (nodeAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
@@ -285,8 +285,8 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as BonePoseDto).bone
-                == (floorAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).Bone
+                == (floorAnchoredBonePoseDto as BonePoseDto).Bone));
             Assert.IsTrue(((result as BonePoseDto).Position.Struct()
                  == (floorAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
             Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
@@ -300,7 +300,7 @@ namespace EditMode_Tests
         {
             PoseDto poseDto = new PoseDto(
                 bones: GetTestBonePoseDtoSample(),
-                boneAnchor : new BonePoseDto() { bone = 24, Position = Vector3Dto.zero, Rotation = Vector4Dto.one }
+                boneAnchor : new BonePoseDto() { Bone = 24, Position = Vector3Dto.zero, Rotation = Vector4Dto.one }
             );
 
             collabSerializerModule.Write(poseDto, out Bytable data);
@@ -314,8 +314,8 @@ namespace EditMode_Tests
                 Assert.IsTrue((result.bones[i]).boneType == poseDto.bones[i].boneType);
             }
 
-            Assert.IsTrue(((result as PoseDto).boneAnchor.bone
-                == (poseDto as PoseDto).boneAnchor.bone));
+            Assert.IsTrue(((result as PoseDto).boneAnchor.Bone
+                == (poseDto as PoseDto).boneAnchor.Bone));
         }
 
         private List<BoneDto> GetTestBonePoseDtoSample()

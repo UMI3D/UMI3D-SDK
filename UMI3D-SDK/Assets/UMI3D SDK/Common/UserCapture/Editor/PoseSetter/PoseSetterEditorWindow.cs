@@ -483,9 +483,9 @@ namespace umi3d.common.userCapture
             }
         }
 
-        private BonePoseDto CreateBonePoseDTOOfType(Vector4 rootRotation, PoseSetterBoneComponent r)
+        private BonePoseDto CreateBonePoseDTOOfType(Vector4Dto rootRotation, PoseSetterBoneComponent r)
         {
-            BonePoseDto bonePoseDto = new BonePoseDto(r.BoneType, r.transform.position, rootRotation);
+            BonePoseDto bonePoseDto = new BonePoseDto(r.BoneType, r.transform.position.Dto(), rootRotation);
             string anchor = anchor_dropdown.value;
             switch (anchor_dropdown.value)
             {

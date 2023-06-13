@@ -89,7 +89,7 @@ namespace umi3d.cdk.userCapture
                 if (skeletonMapper.Mappings.Length > 0)
                 {
                     var root = skeletonMapper.Mappings.FirstOrDefault(x => x.BoneType == BoneType.Hips)?.Link.Compute();
-                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto()};
+                    skeletonMapper.BoneAnchor = new BonePoseDto() { Bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto()};
                 }
                 else
                 {
@@ -135,7 +135,7 @@ namespace umi3d.cdk.userCapture
             SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
 
             // umi3d default anchor is hips
-            skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = animator.rootPosition.Dto(), Rotation = animator.rootRotation.Dto() };
+            skeletonMapper.BoneAnchor = new BonePoseDto() { Bone = BoneType.Hips, Position = animator.rootPosition.Dto(), Rotation = animator.rootRotation.Dto() };
 
             // map animator unity bones to umi3d ones
             var boneUnityMapping = FindBonesTransform(animator);
