@@ -46,7 +46,8 @@ namespace umi3d.common.collaboration
 
             public void SetNode()
             {
-                PoseOverriderContainer.eventID = uMI3DEvent.GetComponent<UMI3DModel>().Id();
+                //PoseOverriderContainer.eventID = uMI3DEvent.GetComponent<UMI3DModel>().Id();
+                PoseOverriderContainer.eventID = uMI3DEvent.Id();
             }
         }
     }

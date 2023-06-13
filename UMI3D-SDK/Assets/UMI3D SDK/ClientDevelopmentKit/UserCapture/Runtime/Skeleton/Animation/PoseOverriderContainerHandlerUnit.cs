@@ -5,6 +5,8 @@ using UnityEngine;
 using System;
 using System.Threading;
 using inetum.unityUtils;
+using System.Collections.Generic;
+using System.Linq;
 
 namespace umi3d.cdk.userCapture
 {
@@ -20,13 +22,23 @@ namespace umi3d.cdk.userCapture
         bool isActive = false;
         UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
 
-        public event Action<PoseOverriderDto> onConditionValidated;
+        public event EventHandler<PoseOverriderDto> OnConditionValidated;
 
-        CancellationTokenSource cancellationTokenSource;
+        List<PoseOverriderDto> nonEnvirnmentalPoseOverriders= new List<PoseOverriderDto>();
+        List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
 
         public void SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
             this.poseOverriderContainerDto = poseOverriderContainerDto;
+            nonEnvirnmentalPoseOverriders = poseOverriderContainerDto.poseOverriderDtos.Where(pod =>
+            {
+                if (pod.isRelease ||pod.isTrigger|| pod.isHoverEnter||pod.isHoverExit)
+                {
+                    return true;
+                }
+                envirnmentalPoseOverriders.Add(pod);
+                return false;
+            }).ToList();
         }
         /// <summary>
         /// Stops the check of fall the overriders 
@@ -34,6 +46,62 @@ namespace umi3d.cdk.userCapture
         public void DisableCheck()
         {
             this.isActive = false;
+        }
+
+        public void OnHoverEnter()
+        {
+            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
+            {
+                if (poseOverrider.isHoverEnter)
+                {
+                    if (CheckConditions(poseOverrider.poseConditions))
+                    {
+                        OnConditionValidated.Invoke(this, poseOverrider);
+                    }
+                }
+            }
+        }
+
+        public void OnHoverExit()
+        {
+            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
+            {
+                if (poseOverrider.isHoverExit)
+                {
+                    if (CheckConditions(poseOverrider.poseConditions))
+                    {
+                        OnConditionValidated.Invoke(this, poseOverrider);
+                    }
+                }
+            }
+        }
+
+        public void OnTrigger()
+        {
+            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
+            {
+                if (poseOverrider.isTrigger)
+                {
+                    if (CheckConditions(poseOverrider.poseConditions))
+                    {
+                        OnConditionValidated.Invoke(this, poseOverrider);
+                    }
+                }
+            }
+        }
+
+        public void OnRelease()
+        {
+            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
+            {
+                if (poseOverrider.isRelease)
+                {
+                    if (CheckConditions(poseOverrider.poseConditions))
+                    {
+                        OnConditionValidated.Invoke(this, poseOverrider);
+                    }
+                }
+            }
         }
 
         /// <summary>
@@ -56,11 +124,11 @@ namespace umi3d.cdk.userCapture
             while (isActive)
             {
                 yield return new WaitForSeconds(0.2f);
-                foreach (PoseOverriderDto poseOverrider in poseOverriderContainerDto.poseOverriderDtos)
+                foreach (PoseOverriderDto poseOverrider in envirnmentalPoseOverriders)
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
-                        onConditionValidated.Invoke(poseOverrider);
+                        OnConditionValidated.Invoke(this, poseOverrider);
                     }
                 }
             }

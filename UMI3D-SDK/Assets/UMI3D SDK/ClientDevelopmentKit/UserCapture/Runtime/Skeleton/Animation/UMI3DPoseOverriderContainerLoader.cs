@@ -106,7 +106,7 @@ namespace umi3d.cdk.userCapture
             }
 
             poseOverriderContainerHandlerUnit.SetPoseOverriderContainer(uMI3DPoseOverriderContainerDto);
-            poseOverriderContainerHandlerUnit.onConditionValidated += poseOverriderDto => ApplyPose(poseOverriderDto);
+            poseOverriderContainerHandlerUnit.OnConditionValidated += (unit,poseOverriderDto) => ApplyPose(poseOverriderDto);
 
             //PoseManager.Instance.HandlePoseOverriderContainerHandlerUnitCheckCorroutine(poseOverriderContainerHandlerUnit.CheckCondtionOfAllOverriders());
         }
@@ -117,7 +117,7 @@ namespace umi3d.cdk.userCapture
             if (poseOverriderContainerHandlerUnit != null)
             {
                 poseOverriderContainerHandlerUnit.DisableCheck();
-                poseOverriderContainerHandlerUnit.onConditionValidated -= poseOverriderDto => ApplyPose(poseOverriderDto);
+                poseOverriderContainerHandlerUnit.OnConditionValidated -= (unit,poseOverriderDto) => ApplyPose(poseOverriderDto);
 
                 //PoseManager.Instance.DisablePoseOverriderContainerHandlerUnitCheckCorroutine();
             }

@@ -18,10 +18,14 @@ namespace umi3d.common.userCapture
         public DurationDto duration;
         public bool interpolationable;
         public bool composable;
+        public bool isHoverEnter;
+        public bool isHoverExit;
+        public bool isRelease;
+        public bool isTrigger; 
 
         public PoseOverriderDto ToDto(int poseIndexinPoseManager)
         {
-            PoseOverriderDto dto = new PoseOverriderDto(poseIndexinPoseManager, poseConditions, duration, interpolationable, composable);
+            PoseOverriderDto dto = new PoseOverriderDto(poseIndexinPoseManager, poseConditions, duration, interpolationable, composable, isHoverEnter, isHoverExit, isRelease, isTrigger);
             return dto;
         }
     }

@@ -27,6 +27,7 @@ using umi3d.common.userCapture;
 using UnityEngine;
 using System;
 using UnityEditor;
+using inetum.unityUtils;
 
 namespace EditMode_Tests
 {
@@ -337,8 +338,12 @@ namespace EditMode_Tests
                 poseConditionDtos: GetCondditionsTestSet(),
                 duration: new DurationDto(24, 222, 13),
                 interpolationable: true,
-                composable: false
-            ); ;
+                composable: false,
+                isHoverEnter: false,
+                isHoverExit: true,
+                isTrigger: true,
+                isRelease: false
+            ); 
 
             collabSerializerModule.Write(poseOverriderDto, out Bytable data);
 

@@ -71,7 +71,7 @@ namespace umi3d.cdk.userCapture
                 PoseOverriderContainerHandlerUnit handlerUnit = new PoseOverriderContainerHandlerUnit();
                 handlerUnit.SetPoseOverriderContainer(allPoseOverriderContainer[i]);
                 handlerUnit.CheckCondtionOfAllOverriders();
-                handlerUnit.onConditionValidated += (pose) =>
+                handlerUnit.OnConditionValidated += (unit, pose) =>
                 {
                     ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(pose);
                 };

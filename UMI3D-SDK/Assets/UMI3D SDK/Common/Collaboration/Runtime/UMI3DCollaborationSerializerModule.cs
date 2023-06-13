@@ -171,12 +171,20 @@ namespace umi3d.common.collaboration
                         DurationDto durationDto;
                         bool interpolationable;
                         bool composable;
+                        bool isHoverEnter;
+                        bool isHoverExit;
+                        bool isTrigger;
+                        bool isRelease;
 
                         readable = UMI3DSerializer.TryRead(container, out poseIndex);
                         readable &= UMI3DSerializer.TryRead(container, out durationDto);
                         readable &= UMI3DSerializer.TryRead(container, out interpolationable);
                         readable &= UMI3DSerializer.TryRead(container, out composable);
                         poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
+                        readable &= UMI3DSerializer.TryRead(container, out isHoverEnter);
+                        readable &= UMI3DSerializer.TryRead(container, out isHoverExit);
+                        readable &= UMI3DSerializer.TryRead(container, out isTrigger);
+                        readable &= UMI3DSerializer.TryRead(container, out isRelease);
 
                         if (readable)
                         {
@@ -185,7 +193,11 @@ namespace umi3d.common.collaboration
                                 poseConditionDtos: poseConditionDtos,
                                 duration: durationDto,
                                 interpolationable: interpolationable,
-                                composable: composable
+                                composable: composable,
+                                isHoverEnter : isHoverEnter,
+                                isHoverExit : isHoverExit,
+                                isTrigger : isTrigger,
+                                isRelease : isRelease
                             );
 
                             result = (T)Convert.ChangeType(poseOverriderDto, typeof(PoseOverriderDto));
@@ -1051,7 +1063,12 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.interpolationable)
                         + UMI3DSerializer.Write(poseOverriderDto.composable)
-                        + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions);
+                        + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions)
+                        + UMI3DSerializer.Write(poseOverriderDto.isHoverEnter)
+                        + UMI3DSerializer.Write(poseOverriderDto.isHoverExit)
+                        + UMI3DSerializer.Write(poseOverriderDto.isTrigger)
+                        + UMI3DSerializer.Write(poseOverriderDto.isRelease);
+
                     break;
                 case DurationDto durationDto:
                     bytable = UMI3DSerializer.Write(durationDto.duration)
