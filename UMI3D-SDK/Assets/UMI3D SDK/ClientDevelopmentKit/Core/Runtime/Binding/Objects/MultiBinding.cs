@@ -55,6 +55,9 @@ namespace umi3d.cdk
                 if (!success)
                     break;
 
+                if (!orderedBindings[i].IsPartiallyFit)
+                    break;
+
                 if (i < orderedBindings.Length - 1 && !orderedBindings[i + 1].IsPartiallyFit)
                     break; // continue only if next binding allo to be partially applied
             }
