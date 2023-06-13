@@ -33,7 +33,6 @@ namespace umi3d.edk.userCapture
             }
         }
 
-
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
 
         public void UpdateAlPoseOverriders(UMI3DPoseOverriderContainerDto allPoseOverriderContainer)

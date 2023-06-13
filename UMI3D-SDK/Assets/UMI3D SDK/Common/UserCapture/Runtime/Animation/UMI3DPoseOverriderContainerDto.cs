@@ -11,6 +11,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         public ulong id { get; set; }
 
+        public ulong relatedEventId { get; set; }
         /// <summary>
         /// All the pose ovveriders of the linked container
         /// </summary>

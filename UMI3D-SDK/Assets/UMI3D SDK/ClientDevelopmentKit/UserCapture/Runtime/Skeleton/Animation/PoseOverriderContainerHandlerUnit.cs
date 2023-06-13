@@ -48,6 +48,9 @@ namespace umi3d.cdk.userCapture
             this.isActive = false;
         }
 
+        /// <summary>
+        /// Activated if the Hover Enter is triggered
+        /// </summary>
         public void OnHoverEnter()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
@@ -62,6 +65,9 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <summary>
+        /// Activated if the Hover Exit is triggered
+        /// </summary>
         public void OnHoverExit()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
@@ -76,6 +82,9 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <summary>
+        /// Activated if the Trigger is triggered
+        /// </summary>
         public void OnTrigger()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
@@ -90,6 +99,9 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <summary>
+        /// Activated if the Release Enter is triggered
+        /// </summary>
         public void OnRelease()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
@@ -133,7 +145,6 @@ namespace umi3d.cdk.userCapture
                 }
             }
         }
-
 
 
         private bool CheckConditions(PoseConditionDto[] poseConditions)

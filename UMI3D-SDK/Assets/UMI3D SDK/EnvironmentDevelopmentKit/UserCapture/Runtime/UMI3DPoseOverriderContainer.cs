@@ -156,6 +156,7 @@ namespace umi3d.edk.userCapture
             UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto = new UMI3DPoseOverriderContainerDto()
             {
                 poseOverriderDtos = poseOverriderDtoAsyncList.GetValue(user).ToArray(),
+                relatedEventId = eventID
             };
 
             return uMI3DOverriderMetaClassDto;
@@ -166,7 +167,8 @@ namespace umi3d.edk.userCapture
             return new UMI3DPoseOverriderContainerDto()
             {
                 id = Id(),
-                poseOverriderDtos = poseOverridersDtos.ToArray()
+                poseOverriderDtos = poseOverridersDtos.ToArray(),
+                relatedEventId = eventID
             };
         }
 

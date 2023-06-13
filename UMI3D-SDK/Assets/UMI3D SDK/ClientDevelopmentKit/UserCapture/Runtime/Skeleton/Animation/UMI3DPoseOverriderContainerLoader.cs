@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture
             overriderID = poseOverriderContainerDto.id;
             poseOverriderDtos.AddRange(poseOverriderContainerDto.poseOverriderDtos);
             UMI3DEnvironmentLoader.Instance.RegisterEntity(this.overriderID, poseOverriderContainerDto, this).NotifyLoaded();
-            StartPoseOverriderContainerUnit(poseOverriderContainerDto);
+            StartNewPoseOverriderContainerUnit(poseOverriderContainerDto);
         }
 
         /// <summary>
@@ -49,8 +49,8 @@ namespace umi3d.cdk.userCapture
         {
             switch (value.dto)
             {
-                case UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto:
-                    InitDefinition(uMI3DOverriderMetaClassDto);
+                case UMI3DPoseOverriderContainerDto overriderContainerDto:
+                    InitDefinition(overriderContainerDto);
                     break;
             }
 
@@ -93,39 +93,14 @@ namespace umi3d.cdk.userCapture
         }
 
 
-        PoseOverriderContainerHandlerUnit poseOverriderContainerHandlerUnit = null;
-
-        private void StartPoseOverriderContainerUnit(UMI3DPoseOverriderContainerDto uMI3DPoseOverriderContainerDto)
+        private void StartNewPoseOverriderContainerUnit(UMI3DPoseOverriderContainerDto uMI3DPoseOverriderContainerDto)
         {
-            Debug.Log("Start overrider container");
-            StopPoseOverriderContainerUnit();
-
-            if (poseOverriderContainerHandlerUnit == null)
-            {
-                poseOverriderContainerHandlerUnit = new PoseOverriderContainerHandlerUnit();
-            }
-
-            poseOverriderContainerHandlerUnit.SetPoseOverriderContainer(uMI3DPoseOverriderContainerDto);
-            poseOverriderContainerHandlerUnit.OnConditionValidated += (unit,poseOverriderDto) => ApplyPose(poseOverriderDto);
-
-            //PoseManager.Instance.HandlePoseOverriderContainerHandlerUnitCheckCorroutine(poseOverriderContainerHandlerUnit.CheckCondtionOfAllOverriders());
+            PoseManager.Instance.SubscribeNewPoseHandlerUnit(uMI3DPoseOverriderContainerDto);
         }
 
-        private void StopPoseOverriderContainerUnit()
+        private void StopPoseOverriderContainerUnit(UMI3DPoseOverriderContainerDto uMI3DPoseOverriderContainerDto)
         {
-            Debug.Log("Stop overrider container");
-            if (poseOverriderContainerHandlerUnit != null)
-            {
-                poseOverriderContainerHandlerUnit.DisableCheck();
-                poseOverriderContainerHandlerUnit.OnConditionValidated -= (unit,poseOverriderDto) => ApplyPose(poseOverriderDto);
-
-                //PoseManager.Instance.DisablePoseOverriderContainerHandlerUnitCheckCorroutine();
-            }
-        }
-
-        private void ApplyPose(PoseOverriderDto poseOverriderDto)
-        {
-            PoseManager.Instance.ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(poseOverriderDto);
+            PoseManager.Instance.UnSubscribePoseHandlerUnit(uMI3DPoseOverriderContainerDto);
         }
     }
 }

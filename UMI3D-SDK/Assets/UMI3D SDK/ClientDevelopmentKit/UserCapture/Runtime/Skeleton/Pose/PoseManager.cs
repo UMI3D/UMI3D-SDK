@@ -29,11 +29,12 @@ namespace umi3d.cdk.userCapture
         [SerializeField] List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
         [SerializeField] List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
 
-
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
 
         public Dictionary<ulong, List<PoseDto>> allPoses;
+        public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>(); 
+
 
         private ISkeletonManager skeletonManager;
 
@@ -61,7 +62,10 @@ namespace umi3d.cdk.userCapture
             return poses?[index];
         }
 
-
+        /// <summary>
+        /// Inits all the pose overrider containers
+        /// </summary>
+        /// <param name="allPoseOverriderContainer"></param>
         public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
         {
             poseOverriderContainerDtos = allPoseOverriderContainer;
@@ -75,25 +79,82 @@ namespace umi3d.cdk.userCapture
                 {
                     ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(pose);
                 };
+                allPoseHandlerUnits.Add(allPoseOverriderContainer[i].relatedEventId, handlerUnit);
             }
         }
 
-        Coroutine poseOverriderContainerHandlerCoroutine = null;
-
-        internal void HandlePoseOverriderContainerHandlerUnitCheckCorroutine(IEnumerator enumerator)
+        /// <summary>
+        /// Allows to add a pose handler unit at runtime
+        /// </summary>
+        /// <param name="overrider"></param>
+        /// <param name="unit"></param>
+        public void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
-            poseOverriderContainerHandlerCoroutine = StartCoroutine(enumerator);
+            PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit();
+            unit.SetPoseOverriderContainer(overrider);
+            unit.OnConditionValidated += (unit, poseOverriderDto) => ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(poseOverriderDto);
+            allPoseHandlerUnits.Add(overrider.relatedEventId, unit);
         }
 
-        internal void DisablePoseOverriderContainerHandlerUnitCheckCorroutine()
+        /// <summary>
+        /// Allows to remove a pose handler unit at runtime
+        /// </summary>
+        /// <param name="overrider"></param>
+        public void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
-            if (poseOverriderContainerHandlerCoroutine != null)
+            if (allPoseHandlerUnits.TryGetValue(overrider.relatedEventId, out PoseOverriderContainerHandlerUnit unit))
             {
-                StopCoroutine(poseOverriderContainerHandlerCoroutine);
+                unit.OnConditionValidated -= (unit, poseOverriderDto) => ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(poseOverriderDto);
+                unit.DisableCheck();
+                allPoseHandlerUnits.Remove(overrider.relatedEventId);
             }
         }
 
-        internal void ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(PoseOverriderDto poseOverriderDto)
+        /// <summary>
+        /// Activated if the Hover Enter is triggered
+        /// </summary>
+        public void OnHoverEnter(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnHoverEnter();
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Hover Exit is triggered
+        /// </summary>
+        public void OnHoverExit(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnHoverExit();
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Trigger is triggered
+        /// </summary>
+        public void OnTrigger(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnTrigger();
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Release Enter is triggered
+        /// </summary>
+        public void OnRelease(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnRelease();
+            }
+        }
+
+        public void ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(PoseOverriderDto poseOverriderDto)
         {
             if (poseOverriderDto != null && allPoses != null)
             {
