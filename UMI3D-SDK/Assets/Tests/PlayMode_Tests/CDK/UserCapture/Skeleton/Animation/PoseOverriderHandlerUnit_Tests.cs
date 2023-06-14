@@ -3,6 +3,8 @@ using NUnit.Framework;
 using PlayMode_Tests;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.cdk;
+using umi3d.cdk.collaboration;
 using umi3d.cdk.userCapture;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -10,10 +12,15 @@ using UnityEngine.SceneManagement;
 
 public class PoseOverriderHandlerUnit_Tests
 {
-    private List<AnimatedSkeleton> animatedSkeletons = new();
-    private PersonalSkeleton personalSkeleton;
 
-    private GameObject root;
+
+    private PoseOverriderContainerHandlerUnit unit = null;
+
+    private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
+
+    private Mock<UMI3DCollaborationClientServer> collaborationClientServerMock;
+
+    private Mock<TrackedSkeleton> personalSkeletonMock;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
@@ -24,30 +31,116 @@ public class PoseOverriderHandlerUnit_Tests
     [SetUp]
     public void SetUp()
     {
-        root = new GameObject();
-        animatedSkeletons = new();
-        personalSkeleton = root.AddComponent<PersonalSkeleton>();
+        unit = new PoseOverriderContainerHandlerUnit();
+
+        environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
+        collaborationClientServerMock = new Mock<UMI3DCollaborationClientServer>();
+        personalSkeletonMock = new Mock<TrackedSkeleton>();
     }
 
     [TearDown]
     public void TearDown()
     {
-        UnityEngine.Object.Destroy(root);
+        unit = null;
+
+        if (UMI3DEnvironmentLoader.Exists)
+            UMI3DEnvironmentLoader.Destroy();
+
     }
 
     /// <summary>
     /// test that we can handle an empty list of sub skeleton i the compute méthod
     /// </summary>
     [Test]
-    public void Compute_EmptyList()
+    public void TestPoseOverriderSorting()
     {
         //Given
-        
+        UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
 
         //When
-
+        unit.SetPoseOverriderContainer(container);
 
         //Then
-
+        Assert.IsTrue(unit.GetEnvironmentalPoseOverriders().Count == 1);
+        Assert.IsTrue(unit.GetNonEnvironmentalPoseOverriders().Count == 2);
     }
+
+    [Test]
+    public void TestOnTrigger_FalseCondtion()
+    {
+        //Given
+        UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
+
+        personalSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(0,0,0));
+        UMI3DNodeInstance i = new UMI3DNodeInstance(() => Debug.Log("loaded"));
+        i.gameObject = new GameObject("hey");
+        environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(100012)).Returns(i);
+        environmentLoaderServiceMock.Setup(x => x.GetEntityInstance(100012)).Returns(i);
+
+        //When
+        unit.SetPoseOverriderContainer(container);
+        unit.OnConditionValidated += (u, po) =>
+        {
+            Assert.IsNotNull(po);
+        };
+        unit.OnTrigger();
+    }
+
+    #region HelperMethod
+    private UMI3DPoseOverriderContainerDto GenerateASimplePoseContainer()
+    {
+        UMI3DPoseOverriderContainerDto container = new UMI3DPoseOverriderContainerDto()
+        {
+            poseOverriderDtos = new List<PoseOverriderDto>()
+            {
+                new PoseOverriderDto()
+                {
+                    poseIndexinPoseManager = 0,
+                    isHoverEnter = true,
+                    poseConditions = new List<PoseConditionDto>()
+                    {
+                        new MagnitudeConditionDto()
+                        {
+                            magnitude = 1,
+                            boneOrigine = 13,
+                            targetObjectId = 100012
+                        }
+                    }.ToArray()
+                },
+                new PoseOverriderDto()
+                {
+                    poseIndexinPoseManager = 0,
+                    isTrigger = true,
+                    poseConditions = new List<PoseConditionDto>()
+                    {
+                        new MagnitudeConditionDto()
+                        {
+                            magnitude = 1,
+                            boneOrigine = 13,
+                            targetObjectId = 100012
+                        }
+                    }.ToArray()
+                },
+                new PoseOverriderDto()
+                {
+                    poseIndexinPoseManager = 0,
+                    poseConditions = new List<PoseConditionDto>()
+                    {
+                        new MagnitudeConditionDto()
+                        {
+                            magnitude = 1,
+                            boneOrigine = 13,
+                            targetObjectId = 100012
+                        }
+                    }.ToArray()
+                },
+
+
+            }.ToArray(),
+        };
+
+        return container;  
+    }
+
+    #endregion
 }

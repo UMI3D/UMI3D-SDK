@@ -26,5 +26,6 @@ namespace PlayMode_Tests
     public static class PlayModeTestHelper
     {
         public const string EMPTY_TEST_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Empty";
+        public const string EMPTY_BINDING_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Bindings";
     }
 }

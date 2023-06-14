@@ -241,7 +241,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns>Node instance or null if node does not exist.</returns>
-        public UMI3DNodeInstance GetNodeInstance(ulong id)
+        public virtual UMI3DNodeInstance GetNodeInstance(ulong id)
         {
             if (GetEntityInstance(id) is not UMI3DNodeInstance node)
                 throw new Umi3dException($"Entity {id} is not an UMI3DNodeInstance.");

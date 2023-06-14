@@ -27,6 +27,20 @@ namespace umi3d.cdk.userCapture
         List<PoseOverriderDto> nonEnvirnmentalPoseOverriders= new List<PoseOverriderDto>();
         List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
 
+        public List<PoseOverriderDto> GetEnvironmentalPoseOverriders()
+        {
+            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
+            poseOverriderDtos.AddRange(envirnmentalPoseOverriders);
+            return poseOverriderDtos;
+        }
+
+        public List<PoseOverriderDto> GetNonEnvironmentalPoseOverriders()
+        {
+            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
+            poseOverriderDtos.AddRange(nonEnvirnmentalPoseOverriders);
+            return poseOverriderDtos;
+        }
+
         public void SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
             this.poseOverriderContainerDto = poseOverriderContainerDto;
@@ -51,7 +65,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Activated if the Hover Enter is triggered
         /// </summary>
-        public void OnHoverEnter()
+        public bool OnHoverEnter()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
             {
@@ -60,15 +74,17 @@ namespace umi3d.cdk.userCapture
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
                         OnConditionValidated.Invoke(this, poseOverrider);
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         /// <summary>
         /// Activated if the Hover Exit is triggered
         /// </summary>
-        public void OnHoverExit()
+        public bool OnHoverExit()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
             {
@@ -77,15 +93,17 @@ namespace umi3d.cdk.userCapture
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
                         OnConditionValidated.Invoke(this, poseOverrider);
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         /// <summary>
         /// Activated if the Trigger is triggered
         /// </summary>
-        public void OnTrigger()
+        public bool OnTrigger()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
             {
@@ -94,15 +112,17 @@ namespace umi3d.cdk.userCapture
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
                         OnConditionValidated.Invoke(this, poseOverrider);
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         /// <summary>
         /// Activated if the Release Enter is triggered
         /// </summary>
-        public void OnRelease()
+        public bool OnRelease()
         {
             foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
             {
@@ -111,9 +131,11 @@ namespace umi3d.cdk.userCapture
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
                         OnConditionValidated.Invoke(this, poseOverrider);
+                        return true;
                     }
                 }
             }
+            return false;
         }
 
         /// <summary>
@@ -201,7 +223,7 @@ namespace umi3d.cdk.userCapture
             Vector3 targetPosition = targetNodeInstance.transform.position;
 
 
-            Vector3 bonePosition = skeletonManager.personalSkeleton.TrackedSkeleton.bones[magnitudeConditionDto.boneOrigine].transform.position;
+            Vector3 bonePosition = skeletonManager.personalSkeleton.TrackedSkeleton.GetBonePosition(magnitudeConditionDto.boneOrigine);
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
             if (distance < magnitudeConditionDto.magnitude)
@@ -214,7 +236,7 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
         {
-            Quaternion boneRotation = skeletonManager.personalSkeleton.TrackedSkeleton.bones[boneRotationConditionDto.boneId].transform.rotation;
+            Quaternion boneRotation = skeletonManager.personalSkeleton.TrackedSkeleton.GetBoneRotation(boneRotationConditionDto.boneId);
 
             if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.Quaternion()) < boneRotationConditionDto.acceptanceRange)
             {
