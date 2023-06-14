@@ -71,7 +71,7 @@ public class PoseOverriderHandlerUnit_Tests
         //Given
         UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
 
-        TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(0,0,0));
+        TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(15,15,0));
         UMI3DNodeInstance i = new UMI3DNodeInstance(() => Debug.Log("loaded"));
         i.gameObject = new GameObject("hey");
         environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(i);
@@ -79,11 +79,8 @@ public class PoseOverriderHandlerUnit_Tests
 
         //When
         unit.SetPoseOverriderContainer(container);
-        unit.OnConditionValidated += (u, po) =>
-        {
-            Assert.IsNotNull(po);
-        };
-        unit.OnTrigger();
+
+        Assert.IsFalse(unit.OnTrigger());
     }
 
     #region HelperMethod

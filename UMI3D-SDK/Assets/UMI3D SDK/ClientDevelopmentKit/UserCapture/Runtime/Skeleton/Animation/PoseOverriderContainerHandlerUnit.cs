@@ -87,7 +87,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
-                        OnConditionValidated.Invoke(this, poseOverrider);
+                        OnConditionValidated?.Invoke(this, poseOverrider);
                         return true;
                     }
                 }
@@ -106,7 +106,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
-                        OnConditionValidated.Invoke(this, poseOverrider);
+                        OnConditionValidated?.Invoke(this, poseOverrider);
                         return true;
                     }
                 }
@@ -125,7 +125,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
-                        OnConditionValidated.Invoke(this, poseOverrider);
+                        OnConditionValidated?.Invoke(this, poseOverrider);
                         return true;
                     }
                 }
@@ -144,7 +144,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
-                        OnConditionValidated.Invoke(this, poseOverrider);
+                        OnConditionValidated?.Invoke(this, poseOverrider);
                         return true;
                     }
                 }
@@ -175,7 +175,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
-                        OnConditionValidated.Invoke(this, poseOverrider);
+                        OnConditionValidated?.Invoke(this, poseOverrider);
                     }
                 }
             }
