@@ -37,9 +37,9 @@ namespace umi3d.cdk
         #region DTO Access
 
         /// <summary>
-        /// See <see cref="NodeBindingDataDto.nodeId"/>.
+        /// See <see cref="NodeBindingDataDto.parentNodeId"/>.
         /// </summary>
-        public ulong ParentNodeId => NodeBindingDataDto.nodeId;
+        public ulong ParentNodeId => NodeBindingDataDto.parentNodeId;
 
         #endregion DTO Access
 
@@ -49,7 +49,7 @@ namespace umi3d.cdk
             if (boundTransform is null || parentNode is null || parentNode.transform == null)
             {
                 if (parentNode is null || parentNode.transform == null)
-                    UMI3DLogger.LogError($"Node {NodeBindingDataDto.nodeId} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                    UMI3DLogger.LogError($"Node {NodeBindingDataDto.parentNodeId} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
                 success = false;
                 return;
             }

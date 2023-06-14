@@ -83,7 +83,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                 {
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1008uL,
+                        parentNodeId = 1008uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -120,7 +120,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                 {
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1008uL,
+                        parentNodeId = 1008uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -128,7 +128,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                     },
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1009uL,
+                        parentNodeId = 1009uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -136,7 +136,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                     },
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1010uL,
+                        parentNodeId = 1010uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -180,7 +180,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                 {
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1008uL,
+                        parentNodeId = 1008uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -188,7 +188,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                     },
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1009uL,
+                        parentNodeId = 1009uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -196,7 +196,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                     },
                     new NodeBindingDataDto()
                     {
-                        nodeId = 1010uL,
+                        parentNodeId = 1010uL,
                         syncPosition = true,
                         offSetPosition = Vector3.zero.Dto(),
                         partialFit = false,
@@ -257,7 +257,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             {
                 var bindingDataDto = new NodeBindingDataDto()
                 {
-                    nodeId = v.id,
+                    parentNodeId = v.id,
                     syncPosition = true,
                     offSetPosition = Vector3.zero.Dto(),
                     partialFit = v.partialFit,
@@ -303,7 +303,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             
             for (int j = 0; j < callBackCache.Count; j++)
             {
-                Assert.AreEqual(orderedtestValues[0].id, callBackCache[0].nodeId, $"Order of binding application is not right. Problem at {j}");
+                Assert.AreEqual(orderedtestValues[0].id, callBackCache[0].parentNodeId, $"Order of binding application is not right. Problem at {j}");
             }
         }
 

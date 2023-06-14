@@ -202,7 +202,7 @@ namespace EditMode_Tests.UserCapture.Bindings.Common
             static AbstractSimpleBindingDataDto GetMockBindingData(ulong id)
                 => new NodeBindingDataDto()
                 {
-                    nodeId = id,
+                    parentNodeId = id,
                     syncPosition = false,
                     syncRotation = false,
                     syncScale = false,

@@ -105,7 +105,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
             {
                 id = 1005uL,
                 boundNodeId = 1008uL,
-                data = new NodeBindingDataDto() { nodeId = 1008uL }
+                data = new NodeBindingDataDto() { parentNodeId = 1008uL }
             };
 
             var extensionData = new ReadUMI3DExtensionData(dto);
@@ -137,7 +137,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
             {
                 id = 1005uL,
                 boundNodeId = 1008uL,
-                data = new MultiBindingDataDto() { Bindings = new AbstractSimpleBindingDataDto[] { new NodeBindingDataDto() { nodeId = 1008uL } } }
+                data = new MultiBindingDataDto() { Bindings = new AbstractSimpleBindingDataDto[] { new NodeBindingDataDto() { parentNodeId = 1008uL } } }
             };
 
             var extensionData = new ReadUMI3DExtensionData(dto);

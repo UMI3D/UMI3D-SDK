@@ -26,11 +26,11 @@ namespace umi3d.edk
         /// <summary>
         /// Node to which the object is attached upon.
         /// </summary>
-        public ulong nodeId;
+        public ulong parentNodeId;
 
-        public NodeBinding(ulong boundNodeId, ulong nodeId) : base(boundNodeId)
+        public NodeBinding(ulong boundNodeId, ulong parentNodeId) : base(boundNodeId)
         {
-            this.nodeId = nodeId;
+            this.parentNodeId = parentNodeId;
         }
 
         /// <inheritdoc/>
@@ -40,7 +40,7 @@ namespace umi3d.edk
 
             bindingDataDto = new NodeBindingDataDto
             {
-                nodeId = nodeId,
+                parentNodeId = parentNodeId,
                 offSetPosition = offsetPosition.Dto(),
                 offSetRotation = offsetRotation.Dto(),
                 offSetScale = offsetScale.Dto(),

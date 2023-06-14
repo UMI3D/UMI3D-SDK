@@ -56,7 +56,7 @@ namespace umi3d.common
 
                     anchorPosition = anchorPosition,
 
-                    nodeId = nodeId
+                    parentNodeId = nodeId
                 }
                 : default;
 
@@ -79,7 +79,7 @@ namespace umi3d.common
 
                         + UMI3DSerializer.Write(nodeBindingDto.anchorPosition)
 
-                        + UMI3DSerializer.Write(nodeBindingDto.nodeId);
+                        + UMI3DSerializer.Write(nodeBindingDto.parentNodeId);
         }
     }
 }

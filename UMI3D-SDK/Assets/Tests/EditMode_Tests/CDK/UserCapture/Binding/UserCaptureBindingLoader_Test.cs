@@ -74,7 +74,7 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
             {
                 id = 1005uL,
                 boundNodeId = 1008uL,
-                data = new MultiBindingDataDto() { Bindings = new AbstractSimpleBindingDataDto[] { new NodeBindingDataDto() { nodeId = 1008uL }, 
+                data = new MultiBindingDataDto() { Bindings = new AbstractSimpleBindingDataDto[] { new NodeBindingDataDto() { parentNodeId = 1008uL }, 
                                                                                                    new BoneBindingDataDto() { userId = 2005uL, boneType = targetBoneType } } }
             };
 

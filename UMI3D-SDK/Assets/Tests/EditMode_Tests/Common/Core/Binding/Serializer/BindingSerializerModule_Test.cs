@@ -50,7 +50,7 @@ namespace EditMode_Tests.Core.Bindings.Common
         public void WriteRead_Binding()
         {
             NodeBindingDataDto bindingDataDto = new NodeBindingDataDto() {
-                nodeId=         12,
+                parentNodeId=         12,
                 syncPosition= false,
                 syncRotation= false,
                 syncScale= false,
@@ -85,7 +85,7 @@ namespace EditMode_Tests.Core.Bindings.Common
         {
             NodeBindingDataDto bindingDataDto = new NodeBindingDataDto()
             {
-                nodeId = 12,
+                parentNodeId = 12,
                 syncPosition = false,
                 syncRotation = false,
                 syncScale = false,
@@ -131,7 +131,7 @@ namespace EditMode_Tests.Core.Bindings.Common
         {
             NodeBindingDataDto bindingDataDto = new NodeBindingDataDto()
             {
-                nodeId = 12,
+                parentNodeId = 12,
                 syncPosition = false,
                 syncRotation = false,
                 syncScale = false,
@@ -172,7 +172,7 @@ namespace EditMode_Tests.Core.Bindings.Common
 
             var nodeBindingDataDto = bindingDto.data as NodeBindingDataDto;
             var resultNodeBindingDataDto = result.data as NodeBindingDataDto;
-            Assert.AreEqual(nodeBindingDataDto.nodeId, resultNodeBindingDataDto.nodeId);
+            Assert.AreEqual(nodeBindingDataDto.parentNodeId, resultNodeBindingDataDto.parentNodeId);
         }
 
         #endregion Simple Bindings
@@ -219,7 +219,7 @@ namespace EditMode_Tests.Core.Bindings.Common
             static AbstractSimpleBindingDataDto GetMockBindingData(ulong id)
                 => new NodeBindingDataDto()
                 {
-                    nodeId = id,
+                    parentNodeId = id,
                     syncPosition = false,
                     syncRotation = false,
                     syncScale = false,

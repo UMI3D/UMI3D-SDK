@@ -25,6 +25,6 @@ namespace umi3d.common
         /// <summary>
         /// UMI3D ID of the parent node.
         /// </summary>
-        public ulong nodeId { get; set; }
+        public ulong parentNodeId { get; set; }
     }
 }

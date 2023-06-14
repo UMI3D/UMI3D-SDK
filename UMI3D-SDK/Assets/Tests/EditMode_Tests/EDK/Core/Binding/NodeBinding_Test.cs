@@ -55,7 +55,7 @@ namespace EditMode_Tests.Core.Bindings.EDK
             Assert.IsTrue(nodeBinding.offsetScale    == resultSimpleBindingDataDto.offSetScale.Struct());
 
             var resultNodeBindingDataDto = resultDto.data as NodeBindingDataDto;
-            Assert.AreEqual(nodeBinding.nodeId,         resultNodeBindingDataDto.nodeId);
+            Assert.AreEqual(nodeBinding.parentNodeId,         resultNodeBindingDataDto.parentNodeId);
         }
 
         #endregion ToEntityDto

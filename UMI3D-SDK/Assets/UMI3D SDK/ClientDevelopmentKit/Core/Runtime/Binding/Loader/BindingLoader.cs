@@ -107,10 +107,10 @@ namespace umi3d.cdk
                             return null;
                         }
 
-                        UMI3DNodeInstance parentNode = environmentLoaderService.GetNodeInstance(nodeBindingDataDto.nodeId);
+                        UMI3DNodeInstance parentNode = environmentLoaderService.GetNodeInstance(nodeBindingDataDto.parentNodeId);
                         if (parentNode is null)
                         {
-                            UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.nodeId}. Parent node does not exist.", DEBUG_SCOPE);
+                            UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.parentNodeId}. Parent node does not exist.", DEBUG_SCOPE);
                             return null;
                         }
 

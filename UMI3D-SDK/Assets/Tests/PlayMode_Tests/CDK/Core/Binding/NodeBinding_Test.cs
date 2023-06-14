@@ -76,7 +76,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             // GIVEN
             var dto = new NodeBindingDataDto()
             {
-                nodeId = 1008uL,
+                parentNodeId = 1008uL,
                 syncPosition = true,
                 offSetPosition = offSetPosition.Dto()
             };
@@ -106,7 +106,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             // GIVEN
             var dto = new NodeBindingDataDto()
             {
-                nodeId = 1008uL,
+                parentNodeId = 1008uL,
                 syncPosition = true,
                 offSetPosition = offSetPosition.Dto()
             };
@@ -151,7 +151,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
 
             var dto = new NodeBindingDataDto()
             {
-                nodeId = 1008uL,
+                parentNodeId = 1008uL,
                 syncRotation = true,
                 offSetRotation = offsetRotation.Dto()
             };
@@ -183,7 +183,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
 
             var dto = new NodeBindingDataDto()
             {
-                nodeId = 1008uL,
+                parentNodeId = 1008uL,
                 syncRotation = true,
                 offSetRotation = offsetRotation.Dto()
             };
@@ -229,7 +229,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             // GIVEN
             var dto = new NodeBindingDataDto()
             {
-                nodeId = 1008uL,
+                parentNodeId = 1008uL,
                 syncScale = true,
                 offSetScale = offSetScale.Dto()
             };
@@ -260,7 +260,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             // GIVEN
             var dto = new NodeBindingDataDto()
             {
-                nodeId = 1008uL,
+                parentNodeId = 1008uL,
                 syncScale = true,
                 offSetPosition = offSetScale.Dto()
             };
