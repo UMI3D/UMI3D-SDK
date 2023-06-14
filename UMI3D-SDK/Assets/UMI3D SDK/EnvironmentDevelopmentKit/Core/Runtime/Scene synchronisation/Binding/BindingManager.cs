@@ -149,10 +149,11 @@ namespace umi3d.edk
                 {
                     var existingBinding = bindings.GetValue(binding.boundNodeId);
 
-                    // value is found
-                    UMI3DLogger.LogWarning($"Overwritting binding on node {binding.boundNodeId} " +
-                                                 $"for all users." +
-                                                 $"{(existingBinding is not MultiBinding ? "Upgraded to multibinding." : "")}", DebugScope.EDK | DebugScope.Core);
+                    if (existingBinding.Id() == binding.Id()) // same binding is already applied
+                    {
+                        UMI3DLogger.LogWarning($"Binding (id:{binding.Id()}, node:{binding.boundNodeId}) is already applied for all users.", DebugScope.EDK | DebugScope.Core);
+                        return null;
+                    }
 
                     operations.Add(existingBinding.GetDeleteEntity(targetUsers));
 
@@ -181,18 +182,18 @@ namespace umi3d.edk
 
                 var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(binding.boundNodeId)).ToList();
 
-                if (usersWithValues.Count > 0)
-                {
-                    UMI3DLogger.LogWarning($"Overwritting binding on node {binding.boundNodeId} for {usersWithValues.Count} users. " +
-                                                $"Some bindings are upgraded to multibinding.", DEBUG_SCOPE);
-                }
-
                 usersWithValues
                     .GroupBy(u => bindings.GetValue(binding.boundNodeId, u))
                     .ForEach(userGroup =>
                     {
                         HashSet<UMI3DUser> targetUsers = userGroup.ToHashSet();
                         var existingBinding = userGroup.Key;
+
+                        if (existingBinding == binding) // same binding is already applied
+                        {
+                            UMI3DLogger.LogWarning($"Binding (id:{binding.Id()}, node:{binding.boundNodeId}) is already applied for set of users.", DebugScope.EDK | DebugScope.Core);
+                            return;
+                        }
 
                         operations.Add(existingBinding.GetDeleteEntity(targetUsers));
 
@@ -297,7 +298,7 @@ namespace umi3d.edk
 
                         var newBinding = DowngradeBinding(existingMultiBinding, singleBindingToRemove);
 
-                        operations.Add(existingMultiBinding.GetLoadEntity(targetUsers)); // a binding remains on node
+                        operations.Add(newBinding.GetLoadEntity(targetUsers)); // a binding remains on node
                         if (targetUsers is null) // target is all users
                         {
                             bindings.SetValue(newBinding.boundNodeId, newBinding);
