@@ -37,7 +37,8 @@ namespace umi3d.edk.userCapture
         public bool IsStart => isStart;
 
 
-        public ulong eventID {get; set;}  
+        public ulong eventID { get; set; }
+        public ulong nodeID { get; set; }
         public void SetEventID(ulong eventID)
         {
             this.eventID = eventID;
@@ -94,7 +95,7 @@ namespace umi3d.edk.userCapture
                     switch (pc)
                     {
                         case MagnitudeConditionDto magnitudeConditionDto:
-                            magnitudeConditionDto.targetObjectId = (uint)eventID;
+                            magnitudeConditionDto.targetObjectId = (uint)nodeID;
                             break;
                     }
                 });
@@ -156,7 +157,7 @@ namespace umi3d.edk.userCapture
             UMI3DPoseOverriderContainerDto uMI3DOverriderMetaClassDto = new UMI3DPoseOverriderContainerDto()
             {
                 poseOverriderDtos = poseOverriderDtoAsyncList.GetValue(user).ToArray(),
-                relatedEventId = eventID
+                relatedNodeId = nodeID
             };
 
             return uMI3DOverriderMetaClassDto;
@@ -168,7 +169,7 @@ namespace umi3d.edk.userCapture
             {
                 id = Id(),
                 poseOverriderDtos = poseOverridersDtos.ToArray(),
-                relatedEventId = eventID
+                relatedNodeId = nodeID
             };
         }
 

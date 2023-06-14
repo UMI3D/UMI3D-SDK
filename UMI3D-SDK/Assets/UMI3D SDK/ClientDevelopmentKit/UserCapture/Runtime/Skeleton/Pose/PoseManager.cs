@@ -79,7 +79,7 @@ namespace umi3d.cdk.userCapture
                 {
                     ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(pose);
                 };
-                allPoseHandlerUnits.Add(allPoseOverriderContainer[i].relatedEventId, handlerUnit);
+                allPoseHandlerUnits.Add(allPoseOverriderContainer[i].relatedNodeId, handlerUnit);
             }
         }
 
@@ -93,7 +93,7 @@ namespace umi3d.cdk.userCapture
             PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit();
             unit.SetPoseOverriderContainer(overrider);
             unit.OnConditionValidated += (unit, poseOverriderDto) => ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(poseOverriderDto);
-            allPoseHandlerUnits.Add(overrider.relatedEventId, unit);
+            allPoseHandlerUnits.Add(overrider.relatedNodeId, unit);
         }
 
         /// <summary>
@@ -102,11 +102,11 @@ namespace umi3d.cdk.userCapture
         /// <param name="overrider"></param>
         public void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
-            if (allPoseHandlerUnits.TryGetValue(overrider.relatedEventId, out PoseOverriderContainerHandlerUnit unit))
+            if (allPoseHandlerUnits.TryGetValue(overrider.relatedNodeId, out PoseOverriderContainerHandlerUnit unit))
             {
                 unit.OnConditionValidated -= (unit, poseOverriderDto) => ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(poseOverriderDto);
                 unit.DisableCheck();
-                allPoseHandlerUnits.Remove(overrider.relatedEventId);
+                allPoseHandlerUnits.Remove(overrider.relatedNodeId);
             }
         }
 
