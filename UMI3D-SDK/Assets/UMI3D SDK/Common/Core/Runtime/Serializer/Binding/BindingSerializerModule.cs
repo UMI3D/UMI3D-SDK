@@ -22,7 +22,7 @@ namespace umi3d.common
     /// <summary>
     /// Serializer for <see cref="BindingDto"/>, <see cref="MultiBindingDataDto"/> and <see cref="NodeBindingDataDto"/>.
     /// </summary>
-    public class UMI3DBindingSerializerModule : UMI3DSerializerModule
+    public class BindingSerializerModule : UMI3DSerializerModule
     {
         protected readonly Dictionary<Type, IUMI3DSerializerSubModule> bindingSerializers = new()
         {

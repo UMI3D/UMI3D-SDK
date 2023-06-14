@@ -67,7 +67,7 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DPoseOverriderContainerLoader())
             .SetNext(new UMI3DEmotesConfigLoader())
             .SetNext(new UMI3DEmoteLoader())
-            .SetNext(new UMI3DCollaborationBindingLoader())
+            .SetNext(new CollaborationBindingLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)

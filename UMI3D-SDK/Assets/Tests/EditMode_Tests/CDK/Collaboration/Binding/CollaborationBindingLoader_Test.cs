@@ -50,7 +50,7 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
             collabEnvironmentLoaderServiceMock = new();
             environmentLoaderServiceMock = new();
             collaborativeSkeletonManager = new();
-            bindingLoader = new UMI3DCollaborationBindingLoader(bindingManagementServiceMock.Object, collabEnvironmentLoaderServiceMock.Object, collaborativeSkeletonManager.Object);
+            bindingLoader = new CollaborationBindingLoader(bindingManagementServiceMock.Object, collabEnvironmentLoaderServiceMock.Object, collaborativeSkeletonManager.Object);
         }
 
         [TearDown]

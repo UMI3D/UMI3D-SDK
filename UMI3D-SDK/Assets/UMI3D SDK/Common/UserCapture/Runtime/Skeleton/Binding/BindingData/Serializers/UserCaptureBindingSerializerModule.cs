@@ -20,9 +20,9 @@ namespace umi3d.common.userCapture
     /// Serializer for <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.
     /// Also redefine <see cref="MultiBindingDataDto"/> serialization that use that latter DTOs.
     /// </summary>
-    public class UMI3DUserCaptureBindingSerializerModule : UMI3DBindingSerializerModule
+    public class UserCaptureBindingSerializerModule : BindingSerializerModule
     {
-        public UMI3DUserCaptureBindingSerializerModule() : base()
+        public UserCaptureBindingSerializerModule() : base()
         {
             bindingSerializers.Add(typeof(BoneBindingDataDto), new BoneBindingSerializer());
             bindingSerializers.Add(typeof(RigBoneBindingDataDto), new RigBoneBindingSerializer());

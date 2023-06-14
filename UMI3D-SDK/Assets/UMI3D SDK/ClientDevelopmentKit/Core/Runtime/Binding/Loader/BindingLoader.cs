@@ -23,7 +23,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for bindings.
     /// </summary>
-    public class UMI3DBindingLoader : AbstractLoader
+    public class BindingLoader : AbstractLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
@@ -35,13 +35,13 @@ namespace umi3d.cdk
         private readonly IBindingBrowserService bindingManagementService;
         private readonly UMI3DEnvironmentLoader environmentLoaderService;
 
-        public UMI3DBindingLoader()
+        public BindingLoader()
         {
             bindingManagementService = BindingManager.Instance;
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DBindingLoader(IBindingBrowserService bindingManager, UMI3DEnvironmentLoader environmentLoaderService)
+        public BindingLoader(IBindingBrowserService bindingManager, UMI3DEnvironmentLoader environmentLoaderService)
         {
             bindingManagementService = bindingManager;
             this.environmentLoaderService = environmentLoaderService;

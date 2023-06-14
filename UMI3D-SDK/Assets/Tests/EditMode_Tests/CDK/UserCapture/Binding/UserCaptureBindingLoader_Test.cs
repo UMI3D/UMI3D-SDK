@@ -45,7 +45,7 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
             bindingManagementServiceMock = new();
             environmentLoaderServiceMock = new();
             skeletonServiceMock = new();
-            bindingLoader = new UMI3DUserCaptureBindingLoader(bindingManagementServiceMock.Object, environmentLoaderServiceMock.Object, skeletonServiceMock.Object);
+            bindingLoader = new UserCaptureBindingLoader(bindingManagementServiceMock.Object, environmentLoaderServiceMock.Object, skeletonServiceMock.Object);
         }
 
         [TearDown]

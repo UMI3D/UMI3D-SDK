@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace EditMode_Tests.Core.Bindings.Common
 {
-    public class UMI3DBindingSerializerModule_Test
+    public class BindingSerializerModule_Test
     {
         protected List<UMI3DSerializerModule> serializationModules = new();
 
@@ -33,7 +33,7 @@ namespace EditMode_Tests.Core.Bindings.Common
                  new UMI3DSerializerBasicModules(),
                  new UMI3DSerializerVectorModules(),
                  new UMI3DSerializerStringModules(),
-                 new UMI3DBindingSerializerModule()
+                 new BindingSerializerModule()
             };
 
             UMI3DSerializer.AddModule(serializationModules);

@@ -16,39 +16,38 @@ limitations under the License.
 
 using System.Linq;
 
-using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
 
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Loader for bindings and bone bindings on other users' skeleton.
+    /// Loader for bone bindings, i.e. <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.
     /// </summary>
-    public class UMI3DCollaborationBindingLoader : UMI3DBindingLoader
+    public class UserCaptureBindingLoader : BindingLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
 
         #region DependencyInjection
 
         private readonly UMI3DEnvironmentLoader environmentService;
-        private readonly ICollaborativeSkeletonsManager skeletonService;
+        private readonly ISkeletonManager personnalSkeletonService;
 
-        public UMI3DCollaborationBindingLoader() : base()
+        public UserCaptureBindingLoader() : base()
         {
-            environmentService = UMI3DCollaborationEnvironmentLoader.Instance;
-            skeletonService = CollaborativeSkeletonManager.Instance;
+            environmentService = UMI3DEnvironmentLoader.Instance;
+            personnalSkeletonService = PersonalSkeletonManager.Instance;
         }
 
-        public UMI3DCollaborationBindingLoader(IBindingBrowserService bindingManager,
-                                                UMI3DCollaborationEnvironmentLoader environmentLoader,
-                                                ICollaborativeSkeletonsManager skeletonService) :
-                                                base(bindingManager, environmentLoader)
+        public UserCaptureBindingLoader(IBindingBrowserService bindingManager,
+                                            UMI3DEnvironmentLoader environmentService,
+                                            ISkeletonManager personnalSkeletonService)
+                                            : base(bindingManager, environmentService)
         {
-            this.environmentService = environmentLoader;
-            this.skeletonService = skeletonService;
+            this.environmentService = environmentService;
+            this.personnalSkeletonService = personnalSkeletonService;
         }
 
         #endregion DependencyInjection
@@ -59,15 +58,14 @@ namespace umi3d.cdk.collaboration
             switch (dto)
             {
                 case NodeBindingDataDto
-                    or MultiBindingDataDto:
+                     or MultiBindingDataDto:
                     {
                         return base.LoadData(boundNodeId, dto);
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        var skeleton = skeletonService.skeletons[riggedBoneBinding.userId];
-                        if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
+                        if (!personnalSkeletonService.personalSkeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
                             return null;
@@ -78,19 +76,18 @@ namespace umi3d.cdk.collaboration
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Rig \"{riggedBoneBinding.rigName}\" does not exist on bound node.", DEBUG_SCOPE);
                             return null;
                         }
-
-                        return new RigBoneBinding(riggedBoneBinding, rig, skeleton);
+                        return new RigBoneBinding(riggedBoneBinding, rig, personnalSkeletonService.personalSkeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        var skeleton = skeletonService.skeletons[boneBindingDataDto.userId];
-                        if (!skeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
+                        if (!personnalSkeletonService.personalSkeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {
-                            UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton", DEBUG_SCOPE);
                             return null;
                         }
-                        return new BoneBinding(boneBindingDataDto, boundNode.transform, skeleton);
+
+                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.personalSkeleton);
                     }
                 default:
                     return null;

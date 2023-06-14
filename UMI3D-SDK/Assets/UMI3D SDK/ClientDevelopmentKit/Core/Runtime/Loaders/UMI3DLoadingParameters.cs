@@ -102,7 +102,7 @@ namespace umi3d.cdk
             .SetNext(new UMI3DSubMeshNodeLoader())
             .SetNext(new UMI3DVolumeLoader())
             .SetNext(new UMI3DUINodeLoader())
-            .SetNext(new UMI3DBindingLoader())
+            .SetNext(new BindingLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)

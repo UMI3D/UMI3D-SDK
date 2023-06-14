@@ -25,7 +25,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
 {
     public class BindingLoader_Test
     {
-        protected UMI3DBindingLoader bindingLoader;
+        protected BindingLoader bindingLoader;
 
         protected Mock<IBindingBrowserService> bindingManagementServiceMock;
         protected Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
@@ -43,7 +43,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
         {
             bindingManagementServiceMock = new();
             environmentLoaderServiceMock = new();
-            bindingLoader = new UMI3DBindingLoader(bindingManagementServiceMock.Object, environmentLoaderServiceMock.Object);
+            bindingLoader = new BindingLoader(bindingManagementServiceMock.Object, environmentLoaderServiceMock.Object);
         }
 
         [TearDown]

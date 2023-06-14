@@ -23,7 +23,7 @@ using UnityEngine;
 namespace EditMode_Tests.UserCapture.Bindings.Common
 {
     [TestFixture]
-    public class UMI3DUserCaptureBindingSerializerModule_Test : UMI3DBindingSerializerModule_Test
+    public class UserCaptureBindingSerializerModule_Test : BindingSerializerModule_Test
     {
         [OneTimeSetUp]
         public override void InitSerializer()
@@ -33,7 +33,7 @@ namespace EditMode_Tests.UserCapture.Bindings.Common
                  new UMI3DSerializerBasicModules(),
                  new UMI3DSerializerVectorModules(),
                  new UMI3DSerializerStringModules(),
-                 new UMI3DUserCaptureBindingSerializerModule()
+                 new UserCaptureBindingSerializerModule()
             };
 
             UMI3DSerializer.AddModule(serializationModules);
