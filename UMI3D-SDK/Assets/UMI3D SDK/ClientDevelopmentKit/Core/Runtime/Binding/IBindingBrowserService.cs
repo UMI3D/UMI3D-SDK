@@ -19,7 +19,7 @@ using System.Collections.Generic;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Handle binding operations and computations.
+    /// Handle binding management and computations.
     /// </summary>
     public interface IBindingBrowserService
     {

@@ -19,12 +19,13 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
 
-using UnityEditor;
-
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Loader for bone bindings, i.e. <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.
+    /// </summary>
     public class UMI3DUserCaptureBindingLoader : UMI3DBindingLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
@@ -40,8 +41,8 @@ namespace umi3d.cdk.userCapture
             personnalSkeletonService = PersonalSkeletonManager.Instance;
         }
 
-        public UMI3DUserCaptureBindingLoader(IBindingBrowserService bindingManager, 
-                                            UMI3DEnvironmentLoader environmentService, 
+        public UMI3DUserCaptureBindingLoader(IBindingBrowserService bindingManager,
+                                            UMI3DEnvironmentLoader environmentService,
                                             ISkeletonManager personnalSkeletonService)
                                             : base(bindingManager, environmentService)
         {
@@ -51,6 +52,7 @@ namespace umi3d.cdk.userCapture
 
         #endregion DependencyInjection
 
+        /// <inheritdoc/>
         protected override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)

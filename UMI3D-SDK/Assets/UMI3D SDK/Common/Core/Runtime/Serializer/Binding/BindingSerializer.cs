@@ -21,6 +21,7 @@ namespace umi3d.common
     /// </summary>
     public class BindingSerializer : IUMI3DSerializerSubModule<BindingDto>
     {
+        /// <inheritdoc/>
         public bool Read(ByteContainer container, out BindingDto result)
         {
             bool readable = true;
@@ -30,17 +31,18 @@ namespace umi3d.common
             readable &= UMI3DSerializer.TryRead(container, out AbstractBindingDataDto bindingData);
 
             result = readable ?
-                new BindingDto() 
+                new BindingDto()
                 {
                     id = bindingId,
                     boundNodeId = boundNodeId,
                     data = bindingData
-                } 
+                }
                 : default;
 
             return readable;
         }
 
+        /// <inheritdoc/>
         public Bytable Write(BindingDto dto)
         {
             return UMI3DSerializer.Write(dto.id)

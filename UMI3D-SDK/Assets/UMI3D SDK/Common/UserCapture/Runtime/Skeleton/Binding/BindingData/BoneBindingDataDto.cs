@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Bone binding data dto, required to load a bone binding.
+    /// </summary>
     [System.Serializable]
     public class BoneBindingDataDto : AbstractSimpleBindingDataDto
     {

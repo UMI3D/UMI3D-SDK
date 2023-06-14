@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Multibinding data, required to bind a same node to various parents.
+    /// </summary>
     [System.Serializable]
     public class MultiBindingDataDto : AbstractBindingDataDto
     {

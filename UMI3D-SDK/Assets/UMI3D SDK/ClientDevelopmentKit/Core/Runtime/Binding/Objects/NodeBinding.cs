@@ -43,6 +43,7 @@ namespace umi3d.cdk
 
         #endregion DTO Access
 
+        /// <inheritdoc/>
         public override void Apply(out bool success)
         {
             if (boundTransform is null || parentNode is null || parentNode.transform == null)

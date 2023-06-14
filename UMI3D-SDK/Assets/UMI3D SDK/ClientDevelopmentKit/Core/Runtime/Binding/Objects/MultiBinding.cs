@@ -21,6 +21,9 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Client support for multi-binding, several bindings on same bound node.
+    /// </summary>
     public class MultiBinding : AbstractBinding
     {
         protected AbstractSimpleBinding[] orderedBindings;
@@ -41,6 +44,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public override void Apply(out bool success)
         {
             if (boundTransform is null) // node is destroyed

@@ -19,6 +19,9 @@ using System.Collections.Generic;
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Serializer for <see cref="BindingDto"/>, <see cref="MultiBindingDataDto"/> and <see cref="NodeBindingDataDto"/>.
+    /// </summary>
     public class UMI3DBindingSerializerModule : UMI3DSerializerModule
     {
         protected readonly Dictionary<Type, IUMI3DSerializerSubModule> bindingSerializers = new()
@@ -38,11 +41,17 @@ namespace umi3d.common
             public const int NODE_BINDING_INDEX = 1;
         }
 
+        /// <summary>
+        /// Get correcy serializer in submodules
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
         protected IUMI3DSerializerSubModule<T> GetSerializer<T>()
         {
             return bindingSerializers[typeof(T)] as IUMI3DSerializerSubModule<T>;
         }
 
+        /// <inheritdoc/>
         public virtual bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
@@ -79,6 +88,7 @@ namespace umi3d.common
             return readable;
         }
 
+        /// <inheritdoc/>
         public virtual bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             if (bindingSerializers.ContainsKey(typeof(T)))
@@ -113,9 +123,10 @@ namespace umi3d.common
             }
         }
 
+        /// <inheritdoc/>
         public virtual bool? IsCountable<T>()
         {
-            return false;
+            return false; //binding could be multibinding that are not countable
         }
     }
 }

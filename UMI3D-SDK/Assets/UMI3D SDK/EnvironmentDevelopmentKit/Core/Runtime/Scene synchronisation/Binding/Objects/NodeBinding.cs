@@ -40,22 +40,23 @@ namespace umi3d.edk
 
             bindingDataDto = new NodeBindingDataDto
             {
-                nodeId= nodeId,
-                offSetPosition= offsetPosition.Dto(),
-                offSetRotation= offsetRotation.Dto(),
-                offSetScale= offsetScale.Dto(),
-                partialFit= partialFit,
-                priority= priority,
-                syncPosition= syncPosition,
-                syncRotation= syncRotation,
-                syncScale= syncScale,
-                anchorPosition= anchor.Dto()
+                nodeId = nodeId,
+                offSetPosition = offsetPosition.Dto(),
+                offSetRotation = offsetRotation.Dto(),
+                offSetScale = offsetScale.Dto(),
+                partialFit = partialFit,
+                priority = priority,
+                syncPosition = syncPosition,
+                syncRotation = syncRotation,
+                syncScale = syncScale,
+                anchorPosition = anchor.Dto()
             };
 
-            var bindingDto = new BindingDto{
+            var bindingDto = new BindingDto
+            {
                 id = Id(),
-                boundNodeId= base.boundNodeId,
-                data= bindingDataDto
+                boundNodeId = base.boundNodeId,
+                data = bindingDataDto
             };
 
             return bindingDto;

@@ -36,10 +36,19 @@ namespace umi3d.cdk
 
         #region DTO Access
 
+        /// <summary>
+        /// See <see cref="AbstractBindingDataDto.partialFit"/>.
+        /// </summary>
         public bool IsPartiallyFit => data.partialFit;
 
+        /// <summary>
+        /// See <see cref="AbstractBindingDataDto.priority"/>.
+        /// </summary>
         public int Priority => data.priority;
 
+        /// <summary>
+        /// Transform of the bound node.
+        /// </summary>
         public Transform BoundTransform => boundTransform;
 
         #endregion DTO Access

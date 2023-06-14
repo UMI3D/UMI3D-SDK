@@ -21,6 +21,7 @@ namespace umi3d.common
     /// </summary>
     public class NodeBindingDataSerializer : IUMI3DSerializerSubModule<NodeBindingDataDto>
     {
+        /// <inheritdoc/>
         public virtual bool Read(ByteContainer container, out NodeBindingDataDto result)
         {
             bool readable = true;
@@ -62,6 +63,7 @@ namespace umi3d.common
             return readable;
         }
 
+        /// <inheritdoc/>
         public virtual Bytable Write(NodeBindingDataDto nodeBindingDto)
         {
             return UMI3DSerializer.Write(nodeBindingDto.priority)

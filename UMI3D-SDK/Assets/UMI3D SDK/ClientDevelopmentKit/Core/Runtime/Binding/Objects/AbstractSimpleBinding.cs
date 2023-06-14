@@ -26,6 +26,7 @@ namespace umi3d.cdk
     public abstract class AbstractSimpleBinding : AbstractBinding
     {
         #region DTO access
+
         protected AbstractSimpleBindingDataDto SimpleBindingData => data as AbstractSimpleBindingDataDto;
 
         /// <summary>
@@ -63,7 +64,7 @@ namespace umi3d.cdk
         /// </summary>
         public Vector3 AnchorPosition => SimpleBindingData.anchorPosition.Struct();
 
-        #endregion DTO Access
+        #endregion DTO access
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {

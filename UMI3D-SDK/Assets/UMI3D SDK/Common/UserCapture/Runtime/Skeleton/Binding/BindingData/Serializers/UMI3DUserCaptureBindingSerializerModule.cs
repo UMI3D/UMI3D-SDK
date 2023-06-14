@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Serializer for <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.
+    /// Also redefine <see cref="MultiBindingDataDto"/> serialization that use that latter DTOs.
+    /// </summary>
     public class UMI3DUserCaptureBindingSerializerModule : UMI3DBindingSerializerModule
     {
         public UMI3DUserCaptureBindingSerializerModule() : base()
@@ -24,12 +28,16 @@ namespace umi3d.common.userCapture
             bindingSerializers.Add(typeof(RigBoneBindingDataDto), new RigBoneBindingSerializer());
         }
 
+        /// <summary>
+        /// Indices used to resolve the inheritance when serializing/deserializing.
+        /// </summary>
         protected static class UserCaptureBindingSerializationIndices
         {
             public const int BONE_BINDING_INDEX = 2;
             public const int RIGGED_BONE_BINDING_INDEX = 3;
         }
 
+        /// <inheritdoc/>
         public override bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
@@ -81,6 +89,7 @@ namespace umi3d.common.userCapture
             return readable;
         }
 
+        /// <inheritdoc/>
         public override bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             if (bindingSerializers.ContainsKey(typeof(T)))

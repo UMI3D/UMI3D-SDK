@@ -16,8 +16,12 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Serializer for <see cref="RigBoneBindingDataDto"/>.
+    /// </summary>
     public class RigBoneBindingSerializer : IUMI3DSerializerSubModule<RigBoneBindingDataDto>
     {
+        /// <inheritdoc/>
         public bool Read(ByteContainer container, out RigBoneBindingDataDto result)
         {
             bool readable = true;
@@ -40,25 +44,27 @@ namespace umi3d.common.userCapture
             readable &= UMI3DSerializer.TryRead(container, out string rigName);
 
             result = readable ?
-                new RigBoneBindingDataDto(){
-                    syncRotation= syncRotation,
-                    syncPosition= syncPosition,
-                    syncScale= syncScale,
-                    offSetPosition= offSetPosition,
-                    offSetRotation= offSetRotation,
-                    offSetScale= offSetScale,
-                    anchorPosition= anchorPosition,
-                    userId= userId,
-                    boneType= bonetype,
-                    partialFit= partialFit,
-                    priority= priority,
-                    rigName= rigName
-                } 
+                new RigBoneBindingDataDto()
+                {
+                    syncRotation = syncRotation,
+                    syncPosition = syncPosition,
+                    syncScale = syncScale,
+                    offSetPosition = offSetPosition,
+                    offSetRotation = offSetRotation,
+                    offSetScale = offSetScale,
+                    anchorPosition = anchorPosition,
+                    userId = userId,
+                    boneType = bonetype,
+                    partialFit = partialFit,
+                    priority = priority,
+                    rigName = rigName
+                }
                 : default;
 
             return readable;
         }
 
+        /// <inheritdoc/>
         public Bytable Write(RigBoneBindingDataDto rigBindingDataDto)
         {
             return UMI3DSerializer.Write(rigBindingDataDto.priority)

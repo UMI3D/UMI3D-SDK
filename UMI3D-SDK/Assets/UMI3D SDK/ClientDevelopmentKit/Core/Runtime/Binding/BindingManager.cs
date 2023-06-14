@@ -22,7 +22,7 @@ using umi3d.common;
 namespace umi3d.cdk
 {
     /// <summary>
-    /// Core binding manager. Handles binding operations and computations.
+    /// Core binding manager. Handles binding lifecycles and computations.
     /// </summary>
     public class BindingManager : Singleton<BindingManager>, IBindingBrowserService
     {
@@ -47,8 +47,10 @@ namespace umi3d.cdk
 
         #endregion dependency injection
 
+        /// <inheritdoc/>
         public virtual bool AreBindingsActivated { get; private set; } = true;
 
+        /// <inheritdoc/>
         public virtual Dictionary<ulong, AbstractBinding> Bindings { get; private set; } = new();
 
         /// <summary>
@@ -56,16 +58,19 @@ namespace umi3d.cdk
         /// </summary>
         private IEnumerator bindingRoutine;
 
+        /// <inheritdoc/>
         public virtual void DisableBindings()
         {
             AreBindingsActivated = false;
         }
 
+        /// <inheritdoc/>
         public virtual void EnableBindings()
         {
             AreBindingsActivated = true;
         }
 
+        /// <inheritdoc/>
         public virtual void UpdateBindingsActivation(bool shouldEnable)
         {
             if (shouldEnable == AreBindingsActivated)
@@ -77,6 +82,7 @@ namespace umi3d.cdk
                 DisableBindings();
         }
 
+        /// <inheritdoc/>
         public virtual void AddBinding(ulong boundNodeId, AbstractBinding binding)
         {
             if (binding is null)
@@ -107,6 +113,7 @@ namespace umi3d.cdk
             }
         }
 
+        /// <inheritdoc/>
         public virtual void RemoveBinding(ulong boundNodeId)
         {
             if (Bindings.ContainsKey(boundNodeId))

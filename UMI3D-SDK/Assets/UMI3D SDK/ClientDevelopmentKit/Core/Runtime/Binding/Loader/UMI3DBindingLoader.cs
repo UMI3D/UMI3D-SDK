@@ -17,14 +17,17 @@ limitations under the License.
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Loader for bindings.
+    /// </summary>
     public class UMI3DBindingLoader : AbstractLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        /// <inheritdoc/>
         public override UMI3DVersion.VersionCompatibility version => new("2.6", "*");
 
         #region DependencyInjection
@@ -46,15 +49,17 @@ namespace umi3d.cdk
 
         #endregion DependencyInjection
 
+        /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is BindingDto;
         }
 
+        /// <inheritdoc/>
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as BindingDto;
-            
+
             await environmentLoaderService.WaitUntilEntityLoaded(dto.boundNodeId, null);
 
             AbstractBinding binding = LoadData(dto.boundNodeId, dto.data);
@@ -65,6 +70,7 @@ namespace umi3d.cdk
             environmentLoaderService.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
         }
 
+        /// <inheritdoc/>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             if (value.entity.dto is not BindingDto) //nothing to set on a binding, it shoud be deleted and added again
@@ -73,6 +79,7 @@ namespace umi3d.cdk
             return Task.FromResult(true);
         }
 
+        /// <inheritdoc/>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             if (value.entity.dto is not BindingDto) //nothing to set on a binding, it shoud be deleted and added again
@@ -81,6 +88,12 @@ namespace umi3d.cdk
             return Task.FromResult(true);
         }
 
+        /// <summary>
+        /// Load the right binding based on the binding data.
+        /// </summary>
+        /// <param name="boundNodeId"></param>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         protected virtual AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)

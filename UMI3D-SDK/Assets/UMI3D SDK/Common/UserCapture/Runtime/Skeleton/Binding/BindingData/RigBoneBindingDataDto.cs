@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Rig-Bone binding data, required to load a binding between a bone and a model rig.
+    /// </summary>
     [System.Serializable]
     public class RigBoneBindingDataDto : BoneBindingDataDto
     {

@@ -74,11 +74,13 @@ namespace umi3d.edk
             }
         }
 
+        /// <inheritdoc/>
         public virtual bool AreBindingsEnabled(UMI3DUser user = null)
         {
             return areBindingsEnabled.GetValue(user);
         }
 
+        /// <inheritdoc/>
         public virtual Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null)
         {
             return bindings.GetValue(user);
@@ -145,21 +147,23 @@ namespace umi3d.edk
             {
                 HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
 
-                if (bindings.GetValue().ContainsKey(binding.boundNodeId))
+                if (bindings.GetValue().ContainsKey(binding.boundNodeId)) //if a binding is already added on that node, upgrade binding
                 {
                     var existingBinding = bindings.GetValue(binding.boundNodeId);
 
-                    if (existingBinding.Id() == binding.Id()) // same binding is already applied
+                    // check if same binding is already applied as it is not allowed
+                    if (existingBinding.Id() == binding.Id())
                     {
                         UMI3DLogger.LogWarning($"Binding (id:{binding.Id()}, node:{binding.boundNodeId}) is already applied for all users.", DebugScope.EDK | DebugScope.Core);
                         return null;
                     }
 
+                    // replace existing binding by a new upgraded one
                     operations.Add(existingBinding.GetDeleteEntity(targetUsers));
 
                     var multiBindingResult = UpgradeBinding(existingBinding, binding);
 
-                    if (users is not null)
+                    if (users is not null) // need to set value for some users only
                     {
                         foreach (UMI3DUser user in targetUsers)
                             bindings.SetValue(user, binding.boundNodeId, multiBindingResult);
@@ -168,9 +172,9 @@ namespace umi3d.edk
                     {
                         bindings.SetValue(binding.boundNodeId, multiBindingResult);
                     }
-                    operations.Add(multiBindingResult.GetLoadEntity(targetUsers)); // own binding for a user
+                    operations.Add(multiBindingResult.GetLoadEntity(targetUsers));
                 }
-                else
+                else //users should receive the added binding
                 {
                     bindings.Add(binding.boundNodeId, binding);
                     operations.Add(binding.GetLoadEntity(targetUsers));
@@ -182,6 +186,7 @@ namespace umi3d.edk
 
                 var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(binding.boundNodeId)).ToList();
 
+                // for each group of users that has the same binding on the node, update existing binding
                 usersWithValues
                     .GroupBy(u => bindings.GetValue(binding.boundNodeId, u))
                     .ForEach(userGroup =>
@@ -204,6 +209,7 @@ namespace umi3d.edk
                         operations.Add(multiBindingResult.GetLoadEntity(targetUsers)); // own binding for a user
                     });
 
+                // users with no binding receive the added binding
                 users.Except(usersWithValues).ForEach(user =>
                 {
                     bindings.Add(user, binding.boundNodeId, binding);
@@ -214,6 +220,12 @@ namespace umi3d.edk
             return operations;
         }
 
+        /// <summary>
+        /// Merge two <see cref="AbstractBinding"/> into a <see cref="MultiBinding"/>.
+        /// </summary>
+        /// <param name="existingBinding"></param>
+        /// <param name="newBinding"></param>
+        /// <returns></returns>
         protected virtual MultiBinding UpgradeBinding(AbstractBinding existingBinding, AbstractBinding newBinding)
         {
             var multiBindingResult = new MultiBinding(existingBinding.boundNodeId);

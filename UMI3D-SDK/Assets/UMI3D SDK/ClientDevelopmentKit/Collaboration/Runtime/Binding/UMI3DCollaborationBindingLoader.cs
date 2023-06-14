@@ -24,6 +24,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Loader for bindings and bone bindings on other users' skeleton.
+    /// </summary>
     public class UMI3DCollaborationBindingLoader : UMI3DBindingLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
@@ -33,14 +36,14 @@ namespace umi3d.cdk.collaboration
         private readonly UMI3DEnvironmentLoader environmentService;
         private readonly ICollaborativeSkeletonsManager skeletonService;
 
-        public UMI3DCollaborationBindingLoader(): base()
+        public UMI3DCollaborationBindingLoader() : base()
         {
             environmentService = UMI3DCollaborationEnvironmentLoader.Instance;
             skeletonService = CollaborativeSkeletonManager.Instance;
         }
 
         public UMI3DCollaborationBindingLoader(IBindingBrowserService bindingManager,
-                                                UMI3DCollaborationEnvironmentLoader environmentLoader, 
+                                                UMI3DCollaborationEnvironmentLoader environmentLoader,
                                                 ICollaborativeSkeletonsManager skeletonService) :
                                                 base(bindingManager, environmentLoader)
         {
@@ -50,11 +53,12 @@ namespace umi3d.cdk.collaboration
 
         #endregion DependencyInjection
 
+        /// <inheritdoc/>
         protected override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
-                case NodeBindingDataDto 
+                case NodeBindingDataDto
                     or MultiBindingDataDto:
                     {
                         return base.LoadData(boundNodeId, dto);

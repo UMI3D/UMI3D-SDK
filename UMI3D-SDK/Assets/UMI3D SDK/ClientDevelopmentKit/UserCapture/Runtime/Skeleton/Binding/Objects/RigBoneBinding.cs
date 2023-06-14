@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -22,7 +21,7 @@ using UnityEngine;
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Client support for binding on rigs.
+    /// Client support for binding between a bone and a rig.
     /// </summary>
     public class RigBoneBinding : BoneBinding
     {
@@ -33,10 +32,14 @@ namespace umi3d.cdk.userCapture
 
         protected RigBoneBindingDataDto RigBoneBindingDataDto => SimpleBindingData as RigBoneBindingDataDto;
 
+        /// <summary>
+        /// See <see cref="RigBoneBindingDataDto.rigName"/>.
+        /// </summary>
         public string RigName => RigBoneBindingDataDto.rigName;
 
         #endregion DTO Access
 
+        /// <inheritdoc/>
         public override void Apply(out bool success)
         {
             if (boundTransform is null) // node is destroyed

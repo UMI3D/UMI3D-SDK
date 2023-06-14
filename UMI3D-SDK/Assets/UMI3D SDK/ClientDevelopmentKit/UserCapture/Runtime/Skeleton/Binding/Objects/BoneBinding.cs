@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -35,14 +34,24 @@ namespace umi3d.cdk.userCapture
 
         protected BoneBindingDataDto BoneBindingDataDto => SimpleBindingData as BoneBindingDataDto;
 
+        /// <summary>
+        /// See <see cref="BoneBindingDataDto.userId"/>.
+        /// </summary>
         public ulong UserId => BoneBindingDataDto.userId;
 
+        /// <summary>
+        /// See <see cref="BoneBindingDataDto.boneType"/>.
+        /// </summary>
         public uint BoneType => BoneBindingDataDto.boneType;
 
         #endregion DTO Access
 
+        /// <summary>
+        /// Skeleton on which the binding is applied.
+        /// </summary>
         protected ISkeleton skeleton;
 
+        /// <inheritdoc/>
         public override void Apply(out bool success)
         {
             if (boundTransform is null) // node is destroyed
