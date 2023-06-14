@@ -20,7 +20,7 @@ public class PoseOverriderHandlerUnit_Tests
 
     private Mock<UMI3DCollaborationClientServer> collaborationClientServerMock;
 
-    private Mock<TrackedSkeleton> personalSkeletonMock;
+    private Mock<TrackedSkeleton> TrackedSkeletonMock;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
@@ -31,11 +31,11 @@ public class PoseOverriderHandlerUnit_Tests
     [SetUp]
     public void SetUp()
     {
-        unit = new PoseOverriderContainerHandlerUnit();
-
         environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
         collaborationClientServerMock = new Mock<UMI3DCollaborationClientServer>();
-        personalSkeletonMock = new Mock<TrackedSkeleton>();
+        TrackedSkeletonMock = new Mock<TrackedSkeleton>();
+
+        unit = new PoseOverriderContainerHandlerUnit(environmentLoaderServiceMock.Object, TrackedSkeletonMock.Object);
     }
 
     [TearDown]
@@ -71,11 +71,11 @@ public class PoseOverriderHandlerUnit_Tests
         //Given
         UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
 
-        personalSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(0,0,0));
+        TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(0,0,0));
         UMI3DNodeInstance i = new UMI3DNodeInstance(() => Debug.Log("loaded"));
         i.gameObject = new GameObject("hey");
-        environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(100012)).Returns(i);
-        environmentLoaderServiceMock.Setup(x => x.GetEntityInstance(100012)).Returns(i);
+        environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(i);
+        environmentLoaderServiceMock.Setup(x => x.GetEntityInstance(It.IsAny<ulong>())).Returns(i);
 
         //When
         unit.SetPoseOverriderContainer(container);
