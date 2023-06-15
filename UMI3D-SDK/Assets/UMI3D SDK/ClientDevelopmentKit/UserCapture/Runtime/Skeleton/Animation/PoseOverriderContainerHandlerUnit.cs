@@ -55,8 +55,10 @@ namespace umi3d.cdk.userCapture
             return poseOverriderDtos;
         }
 
-        public void SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
+        public bool SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
+            if (poseOverriderContainerDto == null) return false;
+
             this.poseOverriderContainerDto = poseOverriderContainerDto;
             nonEnvirnmentalPoseOverriders = poseOverriderContainerDto.poseOverriderDtos.Where(pod =>
             {
@@ -67,6 +69,8 @@ namespace umi3d.cdk.userCapture
                 envirnmentalPoseOverriders.Add(pod);
                 return false;
             }).ToList();
+
+            return true;
         }
         /// <summary>
         /// Stops the check of fall the overriders 
