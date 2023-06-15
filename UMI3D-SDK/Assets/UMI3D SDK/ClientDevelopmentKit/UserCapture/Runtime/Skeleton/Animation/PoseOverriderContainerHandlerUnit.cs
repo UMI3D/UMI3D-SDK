@@ -220,7 +220,7 @@ namespace umi3d.cdk.userCapture
             if (!isActive)
             {
                 isActive = true;
-                PoseManager.StartCoroutine(LaunchCheck());
+                UMI3DResourcesManager.StartCoroutine(LaunchCheck());
             }
         }
 

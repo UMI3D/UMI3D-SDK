@@ -41,11 +41,13 @@ namespace umi3d.cdk.userCapture
         public PoseManager()
         {
             skeletonManager = PersonalSkeletonManager.Instance;
+            InitLocalPoses();
         }
 
         public PoseManager(ISkeletonManager skeletonManager)
         {
             this.skeletonManager = skeletonManager;
+            InitLocalPoses();
         }
 
         private void InitLocalPoses()
@@ -82,8 +84,6 @@ namespace umi3d.cdk.userCapture
         /// <param name="allPoseOverriderContainer"></param>
         public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
         {
-            InitLocalPoses();
-
             poseOverriderContainerDtos = allPoseOverriderContainer;
 
             for (int i = 0; i < allPoseOverriderContainer.Count; i++)
