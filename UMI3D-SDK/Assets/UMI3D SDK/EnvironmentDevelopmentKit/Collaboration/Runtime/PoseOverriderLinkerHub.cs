@@ -30,8 +30,8 @@ namespace umi3d.common.collaboration
                                                     .Init(allPoseOverriders[i].PoseOverriderContainer);
                 }
 
-                allPoseOverriderContainer.Add(allPoseOverriders[i].PoseOverriderContainer.ToDto());
                 allPoseOverriders[i].SetNode();
+                allPoseOverriderContainer.Add(allPoseOverriders[i].PoseOverriderContainer.ToDto());
             }
         }
 

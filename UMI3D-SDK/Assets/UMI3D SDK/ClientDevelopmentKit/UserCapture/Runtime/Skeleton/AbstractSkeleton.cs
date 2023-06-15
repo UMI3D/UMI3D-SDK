@@ -48,7 +48,12 @@ namespace umi3d.cdk.userCapture
         protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator = new();
 
         public TrackedSkeleton TrackedSkeleton;
-        public PoseSkeleton poseSkeleton = new PoseSkeleton();
+        public PoseSkeleton poseSkeleton = null;
+
+        private void Awake()
+        {
+            poseSkeleton = new PoseSkeleton();
+        }
 
         [SerializeField]
         protected Transform hipsAnchor;

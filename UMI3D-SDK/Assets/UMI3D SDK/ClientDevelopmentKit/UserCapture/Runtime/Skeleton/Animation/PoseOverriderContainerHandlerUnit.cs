@@ -221,21 +221,14 @@ namespace umi3d.cdk.userCapture
                     }
                 }
 
-                try
+                for (int i = 0; i < nonEnvironmentalActivatedPoseOverriders.Count; i++)
                 {
-                    foreach (PoseOverriderDto poseOverrider in nonEnvironmentalActivatedPoseOverriders)
+                    if (!CheckConditions(nonEnvironmentalActivatedPoseOverriders[i].poseConditions))
                     {
-                        if (!CheckConditions(poseOverrider.poseConditions))
-                        {
-                            OnConditionDesactivated?.Invoke(this, poseOverrider);
-                            nonEnvironmentalActivatedPoseOverriders.Remove(poseOverrider);
-                        }
+                        OnConditionDesactivated?.Invoke(this, nonEnvironmentalActivatedPoseOverriders[i]);
+                        nonEnvironmentalActivatedPoseOverriders.Remove(nonEnvironmentalActivatedPoseOverriders[i]);
                     }
                 }
-                catch (Exception ex)
-                {
-                    Debug.LogError(ex);
-                }     
             }
         }
 
@@ -295,6 +288,8 @@ namespace umi3d.cdk.userCapture
 
 
             Vector3 bonePosition = (trackedSkeletonService as TrackedSkeleton).GetBonePosition(magnitudeConditionDto.boneOrigine);
+            if (bonePosition == Vector3.zero) return false;
+
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
             if (distance < magnitudeConditionDto.magnitude)
@@ -308,6 +303,7 @@ namespace umi3d.cdk.userCapture
         private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
         {
             Quaternion boneRotation = (trackedSkeletonService as TrackedSkeleton).GetBoneRotation(boneRotationConditionDto.boneId);
+            if (boneRotation == Quaternion.identity) return false;
 
             if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.Quaternion()) < boneRotationConditionDto.acceptanceRange)
             {
