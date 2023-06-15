@@ -221,14 +221,21 @@ namespace umi3d.cdk.userCapture
                     }
                 }
 
-                foreach (PoseOverriderDto poseOverrider in nonEnvironmentalActivatedPoseOverriders)
+                try
                 {
-                    if (!CheckConditions(poseOverrider.poseConditions))
+                    foreach (PoseOverriderDto poseOverrider in nonEnvironmentalActivatedPoseOverriders)
                     {
-                        OnConditionDesactivated?.Invoke(this, poseOverrider);
-                        nonEnvironmentalActivatedPoseOverriders.Remove(poseOverrider);
+                        if (!CheckConditions(poseOverrider.poseConditions))
+                        {
+                            OnConditionDesactivated?.Invoke(this, poseOverrider);
+                            nonEnvironmentalActivatedPoseOverriders.Remove(poseOverrider);
+                        }
                     }
-                }          
+                }
+                catch (Exception ex)
+                {
+                    Debug.LogError(ex);
+                }     
             }
         }
 
