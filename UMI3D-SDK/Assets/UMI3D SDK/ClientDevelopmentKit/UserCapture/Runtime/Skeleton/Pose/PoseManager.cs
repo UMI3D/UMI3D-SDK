@@ -24,9 +24,8 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public class PoseManager : SingleBehaviour<PoseManager>
+    public class PoseManager : Singleton<PoseManager>
     {
-        [SerializeField] List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
         [SerializeField] List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
 
         public PoseDto defaultPose;
@@ -35,20 +34,35 @@ namespace umi3d.cdk.userCapture
         public Dictionary<ulong, List<PoseDto>> allPoses;
         public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>(); 
 
+        private readonly ISkeletonManager skeletonManager;
 
-        private ISkeletonManager skeletonManager;
+        bool isInit = false;
 
-        private void Start()
+        public PoseManager()
         {
-            localPoses = new PoseDto[clientPoses.Count];
-            for (int i = 0; i< clientPoses.Count; i++)
-            {
-                PoseDto poseDto = clientPoses[i].ToDTO();
-                poseDto.id = i;
-                localPoses[i] = poseDto;
-            }
-
             skeletonManager = PersonalSkeletonManager.Instance;
+        }
+
+        public PoseManager(ISkeletonManager skeletonManager)
+        {
+            this.skeletonManager = skeletonManager;
+        }
+
+        private void InitLocalPoses()
+        {
+            if (isInit == false)
+            {
+                isInit= true;
+
+                List<UMI3DPose_so> clientPoses = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).clientPoses;
+                localPoses = new PoseDto[clientPoses.Count];
+                for (int i = 0; i < clientPoses.Count; i++)
+                {
+                    PoseDto poseDto = clientPoses[i].ToDTO();
+                    poseDto.id = i;
+                    localPoses[i] = poseDto;
+                }
+            }
         }
 
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
@@ -68,6 +82,8 @@ namespace umi3d.cdk.userCapture
         /// <param name="allPoseOverriderContainer"></param>
         public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
         {
+            InitLocalPoses();
+
             poseOverriderContainerDtos = allPoseOverriderContainer;
 
             for (int i = 0; i < allPoseOverriderContainer.Count; i++)

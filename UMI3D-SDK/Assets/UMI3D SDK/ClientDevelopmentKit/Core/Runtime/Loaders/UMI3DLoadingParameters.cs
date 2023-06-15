@@ -92,6 +92,8 @@ namespace umi3d.cdk
         protected IBindingManager bindingService;
 
         protected AbstractLoader loader;
+
+
         public virtual void Init()
         {
             (loader = new EntityGroupLoader())
