@@ -57,11 +57,13 @@ namespace umi3d.cdk.userCapture
 
         private readonly UMI3DLoadingHandler loadingServiceAnchor;
         private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        private readonly ILateRoutineService lateRoutineService;
 
         public PersonalSkeletonManager()
         {
             loadingServiceAnchor = UMI3DLoadingHandler.Instance;
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            lateRoutineService = CoroutineManager.Instance;
             Init();
         }
 
@@ -69,6 +71,7 @@ namespace umi3d.cdk.userCapture
         {
             this.loadingServiceAnchor = loadingServiceAnchor;
             this.environmentLoaderService = environmentLoaderService;
+            this.lateRoutineService = lateRoutineService;
             Init();
         }
 
@@ -83,9 +86,16 @@ namespace umi3d.cdk.userCapture
         {
             personalSkeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
             personalSkeleton.SkeletonHierarchy = StandardHierarchy;
+            lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }
 
+        private IEnumerator ComputeCoroutine()
+        {
+            while (personalSkeleton != null)
             {
+                personalSkeleton.Compute();
+                yield return null;
+            }
         }
     }
 }

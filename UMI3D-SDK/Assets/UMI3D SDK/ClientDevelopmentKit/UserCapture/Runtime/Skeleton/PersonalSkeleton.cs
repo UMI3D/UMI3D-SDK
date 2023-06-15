@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common.userCapture;
 using UnityEngine;
@@ -67,11 +66,6 @@ namespace umi3d.cdk.userCapture
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)
-
-        public void LateUpdate()
-        {
-            // TODO: Delay this computation to start after the form
-            this.Compute();
             {
                 foreach (ISubSkeleton skeleton in Skeletons)
                 {
