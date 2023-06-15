@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common;
 using inetum.unityUtils;
+using System.Collections;
+using umi3d.common;
+using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
@@ -29,7 +31,7 @@ namespace umi3d.cdk.userCapture
             {
                 if (_skeleton == null)
                 {
-                    _skeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
+                    InitPersonalSkeleton();
                     return _skeleton;
                 }
                 else
@@ -37,24 +39,53 @@ namespace umi3d.cdk.userCapture
             }
             protected set => _skeleton = value;
         }
+
+        public UMI3DSkeletonHierarchy StandardHierarchy
+        {
+            get
+            {
+                _standardHierarchy ??= new UMI3DSkeletonHierarchy((environmentLoaderService.LoadingParameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
+                return _standardHierarchy;
+            }
+        }
+        private UMI3DSkeletonHierarchy _standardHierarchy;
+
+
         private PersonalSkeleton _skeleton;
 
         #region Dependency Injection
+
         private readonly UMI3DLoadingHandler loadingServiceAnchor;
+        private readonly UMI3DEnvironmentLoader environmentLoaderService;
 
         public PersonalSkeletonManager()
         {
-            Init();
             loadingServiceAnchor = UMI3DLoadingHandler.Instance;
+            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            Init();
         }
+
+        public PersonalSkeletonManager(UMI3DLoadingHandler loadingServiceAnchor, UMI3DEnvironmentLoader environmentLoaderService, ILateRoutineService lateRoutineService)
+        {
+            this.loadingServiceAnchor = loadingServiceAnchor;
+            this.environmentLoaderService = environmentLoaderService;
+            Init();
+        }
+
         #endregion Dependency Injection
 
         protected virtual void Init()
         {
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() =>
+            environmentLoaderService.onEnvironmentLoaded.AddListener(InitPersonalSkeleton);
+        }
+
+        private void InitPersonalSkeleton()
+        {
+            personalSkeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
+            personalSkeleton.SkeletonHierarchy = StandardHierarchy;
+        }
+
             {
-                personalSkeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
-            });
         }
     }
 }

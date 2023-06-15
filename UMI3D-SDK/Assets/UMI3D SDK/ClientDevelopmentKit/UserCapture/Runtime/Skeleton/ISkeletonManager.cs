@@ -15,10 +15,14 @@ limitations under the License.
 */
 
 
+using umi3d.common.userCapture;
+
 namespace umi3d.cdk.userCapture
 {
     public interface ISkeletonManager
     {
         public PersonalSkeleton personalSkeleton { get; }
+
+        public UMI3DSkeletonHierarchy StandardHierarchy { get; }
     }
 }

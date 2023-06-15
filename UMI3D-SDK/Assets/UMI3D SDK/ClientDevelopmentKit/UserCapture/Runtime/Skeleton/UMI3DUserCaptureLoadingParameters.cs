@@ -23,6 +23,6 @@ namespace umi3d.cdk.userCapture
     public class UMI3DUserCaptureLoadingParameters : UMI3DLoadingParameters
     {
         [Header("User Capture")]
-        public UMI3DSkeletonHierarchy SkeletonHierarchy;
+        public UMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition;
     }
 }

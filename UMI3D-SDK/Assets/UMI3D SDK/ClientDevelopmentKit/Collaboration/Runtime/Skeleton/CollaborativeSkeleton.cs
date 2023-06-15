@@ -14,12 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
 using umi3d.cdk.userCapture;
-using umi3d.cdk.utils.extrapolation;
-using umi3d.common.collaboration;
 using umi3d.common.userCapture;
-using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
@@ -44,8 +40,7 @@ namespace umi3d.cdk.collaboration
 
         public void SetSubSkeletons()
         {
-            serializedSkeletonHierarchy = (UMI3DCollaborationEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).SkeletonHierarchy;
-            TrackedSkeleton = Instantiate((UMI3DCollaborationEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
+            TrackedSkeleton = Instantiate((UMI3DEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
             Skeletons.Add(TrackedSkeleton);
             Skeletons.Add(poseSkeleton);
             //skeletons.Add(new AnimatedSkeleton());
