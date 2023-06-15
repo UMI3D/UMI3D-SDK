@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common.collaboration;
@@ -31,8 +30,13 @@ namespace umi3d.cdk.collaboration
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)
-                foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
-                    skeleton.UpdateFrame(frame);
+            {
+                foreach (ISubSkeleton skeleton in Skeletons)
+                {
+                    if (skeleton is ISubWritableSkeleton writableSubskeleton)
+                        writableSubskeleton.UpdateFrame(frame);
+                }
+            }
 
             this.transform.position = frame.position.Struct();
             this.transform.rotation = frame.rotation.Quaternion();

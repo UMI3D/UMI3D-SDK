@@ -16,7 +16,6 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -44,8 +43,11 @@ namespace umi3d.cdk.userCapture
                 rotation = transform.rotation.Dto(),
             };
 
-            foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
-                skeleton.WriteTrackingFrame(frame, option);
+            foreach (ISubSkeleton skeleton in Skeletons)
+            {
+                if (skeleton is ISubWritableSkeleton writableSkeleton)
+                    writableSkeleton.WriteTrackingFrame(frame, option);
+            }
 
             return frame;
         }
@@ -65,15 +67,18 @@ namespace umi3d.cdk.userCapture
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)
-                foreach (ISubWritableSkeleton skeleton in Skeletons.OfType<ISubWritableSkeleton>())
-                    skeleton.UpdateFrame(frame);
-        }
-
 
         public void LateUpdate()
         {
             // TODO: Delay this computation to start after the form
             this.Compute();
+            {
+                foreach (ISubSkeleton skeleton in Skeletons)
+                {
+                    if (skeleton is ISubWritableSkeleton writableSkeleton)
+                        writableSkeleton.UpdateFrame(frame);
+                }
+            }
         }
     }
 }
