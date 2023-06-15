@@ -54,10 +54,20 @@ namespace umi3d.cdk.userCapture
             {
                 if (posesToStop != null)
                 {
-                    posesToStop.ForEach(pts =>
+                    if (isServerPose)
                     {
-                        localCurrentlyActivatedPoses.Remove(pts);
-                    });
+                        posesToStop.ForEach(pts =>
+                        {
+                            serverCurrentlyActivatedPoses.Remove(pts);
+                        });
+                    }
+                    else
+                    {
+                        posesToStop.ForEach(pts =>
+                        {
+                            localCurrentlyActivatedPoses.Remove(pts);
+                        });
+                    }
                 }
             }
         }

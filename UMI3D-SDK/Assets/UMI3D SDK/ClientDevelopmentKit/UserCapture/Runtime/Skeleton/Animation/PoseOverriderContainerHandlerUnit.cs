@@ -37,9 +37,13 @@ namespace umi3d.cdk.userCapture
         UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
 
         public event EventHandler<PoseOverriderDto> OnConditionValidated;
+        public event EventHandler<PoseOverriderDto> OnConditionDesactivated;
 
         List<PoseOverriderDto> nonEnvirnmentalPoseOverriders= new List<PoseOverriderDto>();
         List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
+
+        List<PoseOverriderDto> environmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
+        List<PoseOverriderDto> nonEnvironmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
 
         public List<PoseOverriderDto> GetEnvironmentalPoseOverriders()
         {
@@ -52,6 +56,20 @@ namespace umi3d.cdk.userCapture
         {
             List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
             poseOverriderDtos.AddRange(nonEnvirnmentalPoseOverriders);
+            return poseOverriderDtos;
+        }
+
+        public List<PoseOverriderDto> GetEnvironmentalActivatedPoseOverriders()
+        {
+            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
+            poseOverriderDtos.AddRange(environmentalActivatedPoseOverriders);
+            return poseOverriderDtos;
+        }
+
+        public List<PoseOverriderDto> GetNonEnvironmentalActivatedPoseOverriders()
+        {
+            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
+            poseOverriderDtos.AddRange(nonEnvironmentalActivatedPoseOverriders);
             return poseOverriderDtos;
         }
 
@@ -91,7 +109,10 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
+                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+
                         OnConditionValidated?.Invoke(this, poseOverrider);
+                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
                         return true;
                     }
                 }
@@ -110,7 +131,10 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
+                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+
                         OnConditionValidated?.Invoke(this, poseOverrider);
+                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
                         return true;
                     }
                 }
@@ -129,7 +153,10 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
+                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+
                         OnConditionValidated?.Invoke(this, poseOverrider);
+                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
                         return true;
                     }
                 }
@@ -148,7 +175,10 @@ namespace umi3d.cdk.userCapture
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
+                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+
                         OnConditionValidated?.Invoke(this, poseOverrider);
+                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
                         return true;
                     }
                 }
@@ -174,14 +204,31 @@ namespace umi3d.cdk.userCapture
         {
             while (isActive)
             {
-                yield return new WaitForSeconds(0.2f);
+                yield return new WaitForSeconds(0.1f);
                 foreach (PoseOverriderDto poseOverrider in envirnmentalPoseOverriders)
                 {
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
+                        if (environmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+
                         OnConditionValidated?.Invoke(this, poseOverrider);
+                        environmentalActivatedPoseOverriders.Add(poseOverrider);
+                    } 
+                    else if (environmentalActivatedPoseOverriders.Contains(poseOverrider))
+                    {
+                        OnConditionDesactivated?.Invoke(this, poseOverrider);
+                        environmentalActivatedPoseOverriders.Remove(poseOverrider);
                     }
                 }
+
+                foreach (PoseOverriderDto poseOverrider in nonEnvironmentalActivatedPoseOverriders)
+                {
+                    if (!CheckConditions(poseOverrider.poseConditions))
+                    {
+                        OnConditionDesactivated?.Invoke(this, poseOverrider);
+                        nonEnvironmentalActivatedPoseOverriders.Remove(poseOverrider);
+                    }
+                }          
             }
         }
 
