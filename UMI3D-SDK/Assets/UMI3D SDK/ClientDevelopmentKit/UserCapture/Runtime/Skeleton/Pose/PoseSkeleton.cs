@@ -23,11 +23,38 @@ namespace umi3d.cdk.userCapture
 {
     public class PoseSkeleton : ISubWritableSkeleton
     {
-        public List<PoseDto> localCurrentlyActivatedPoses = new List<PoseDto>();
-        public List<PoseDto> serverCurrentlyActivatedPoses = new List<PoseDto>();
+        private readonly PoseManager poseManagerService;
+
+        public PoseSkeleton()
+        {
+            poseManagerService = PoseManager.Instance;
+        }
+
+        public PoseSkeleton(PoseManager poseManager)
+        {
+            this.poseManagerService = poseManager;
+        }
+
+        private List<PoseDto> localCurrentlyActivatedPoses = new List<PoseDto>();
+        private List<PoseDto> serverCurrentlyActivatedPoses = new List<PoseDto>();
+
+        public List<PoseDto> GetLocalPoses()
+        {
+            List<PoseDto> poses = new List<PoseDto>();
+            poses.AddRange(localCurrentlyActivatedPoses);
+            return poses;
+        }
+
+        public List<PoseDto> GetServerPoses()
+        {
+            List<PoseDto> poses = new List<PoseDto>();
+            poses.AddRange(serverCurrentlyActivatedPoses);
+            return poses;
+        }
 
         public void SetPose(bool isOveriding, List<PoseDto> poseToAdd, bool isServerPose)
         {
+            if (poseToAdd == null) return;
             if (isOveriding)
             {
                 serverCurrentlyActivatedPoses.Clear();
@@ -49,6 +76,7 @@ namespace umi3d.cdk.userCapture
             if (areAll)
             {
                 localCurrentlyActivatedPoses.Clear();
+                serverCurrentlyActivatedPoses.Clear();
             }
             else
             {
@@ -122,12 +150,12 @@ namespace umi3d.cdk.userCapture
 
             trackingFrame.playerUserPoses.ForEach(pup =>
             {
-                localCurrentlyActivatedPoses.Add(PoseManager.Instance.GetPose(trackingFrame.userId, pup));
+                localCurrentlyActivatedPoses.Add(poseManagerService.GetPose(trackingFrame.userId, pup));
             });
 
             trackingFrame.playerServerPoses.ForEach(psp =>
             {
-                serverCurrentlyActivatedPoses.Add(PoseManager.Instance.GetPose(0, psp));
+                serverCurrentlyActivatedPoses.Add(poseManagerService.GetPose(0, psp));
             });
         }
 
@@ -152,5 +180,4 @@ namespace umi3d.cdk.userCapture
             return null;
         }
     }
-
 }
