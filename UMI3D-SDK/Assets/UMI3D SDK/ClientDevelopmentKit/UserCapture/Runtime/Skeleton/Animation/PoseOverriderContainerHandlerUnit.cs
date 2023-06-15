@@ -19,10 +19,11 @@ namespace umi3d.cdk.userCapture
         private readonly ISubWritableSkeleton trackedSkeletonService;
         private readonly ISkeletonManager personnalSkeletonService;
 
-        public PoseOverriderContainerHandlerUnit() 
+        public PoseOverriderContainerHandlerUnit(UMI3DPoseOverriderContainerDto overriderContainer) 
         {
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSkeleton;
+            SetPoseOverriderContainer(overriderContainer);
         }
 
         public PoseOverriderContainerHandlerUnit(UMI3DEnvironmentLoader environmentLoaderService, ISubWritableSkeleton trackedSkeletonService)
@@ -45,6 +46,10 @@ namespace umi3d.cdk.userCapture
         List<PoseOverriderDto> environmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
         List<PoseOverriderDto> nonEnvironmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
 
+        /// <summary>
+        /// return a copy of the environmental overriders
+        /// </summary>
+        /// <returns></returns>
         public List<PoseOverriderDto> GetEnvironmentalPoseOverriders()
         {
             List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
@@ -52,6 +57,10 @@ namespace umi3d.cdk.userCapture
             return poseOverriderDtos;
         }
 
+        /// <summary>
+        /// returns a copy of the non environmental overriders
+        /// </summary>
+        /// <returns></returns>
         public List<PoseOverriderDto> GetNonEnvironmentalPoseOverriders()
         {
             List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
@@ -59,6 +68,11 @@ namespace umi3d.cdk.userCapture
             return poseOverriderDtos;
         }
 
+
+        /// <summary>
+        /// returns a copy of the activated environmental overriders
+        /// </summary>
+        /// <returns></returns>
         public List<PoseOverriderDto> GetEnvironmentalActivatedPoseOverriders()
         {
             List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
@@ -66,6 +80,11 @@ namespace umi3d.cdk.userCapture
             return poseOverriderDtos;
         }
 
+
+        /// <summary>
+        /// returns a copy of the activated non environmental overriders
+        /// </summary>
+        /// <returns></returns>
         public List<PoseOverriderDto> GetNonEnvironmentalActivatedPoseOverriders()
         {
             List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
@@ -73,6 +92,11 @@ namespace umi3d.cdk.userCapture
             return poseOverriderDtos;
         }
 
+        /// <summary>
+        /// Set the 
+        /// </summary>
+        /// <param name="poseOverriderContainerDto"></param>
+        /// <returns></returns>
         public bool SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
             if (poseOverriderContainerDto == null) return false;
@@ -205,19 +229,19 @@ namespace umi3d.cdk.userCapture
             while (isActive)
             {
                 yield return new WaitForSeconds(0.1f);
-                foreach (PoseOverriderDto poseOverrider in envirnmentalPoseOverriders)
+                for (int i = 0; i < envirnmentalPoseOverriders.Count; i++)
                 {
-                    if (CheckConditions(poseOverrider.poseConditions))
+                    if (CheckConditions(envirnmentalPoseOverriders[i].poseConditions))
                     {
-                        if (environmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+                        if (environmentalActivatedPoseOverriders.Contains(envirnmentalPoseOverriders[i])) continue;
 
-                        OnConditionValidated?.Invoke(this, poseOverrider);
-                        environmentalActivatedPoseOverriders.Add(poseOverrider);
+                        OnConditionValidated?.Invoke(this, envirnmentalPoseOverriders[i]);
+                        environmentalActivatedPoseOverriders.Add(envirnmentalPoseOverriders[i]);
                     } 
-                    else if (environmentalActivatedPoseOverriders.Contains(poseOverrider))
+                    else if (environmentalActivatedPoseOverriders.Contains(envirnmentalPoseOverriders[i]))
                     {
-                        OnConditionDesactivated?.Invoke(this, poseOverrider);
-                        environmentalActivatedPoseOverriders.Remove(poseOverrider);
+                        OnConditionDesactivated?.Invoke(this, envirnmentalPoseOverriders[i]);
+                        environmentalActivatedPoseOverriders.Remove(envirnmentalPoseOverriders[i]);
                     }
                 }
 

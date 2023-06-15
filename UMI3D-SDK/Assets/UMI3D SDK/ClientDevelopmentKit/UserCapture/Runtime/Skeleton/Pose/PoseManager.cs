@@ -72,8 +72,7 @@ namespace umi3d.cdk.userCapture
 
             for (int i = 0; i < allPoseOverriderContainer.Count; i++)
             {
-                PoseOverriderContainerHandlerUnit handlerUnit = new PoseOverriderContainerHandlerUnit();
-                handlerUnit.SetPoseOverriderContainer(allPoseOverriderContainer[i]);
+                PoseOverriderContainerHandlerUnit handlerUnit = new PoseOverriderContainerHandlerUnit(allPoseOverriderContainer[i]);
                 handlerUnit.CheckCondtionOfAllOverriders();
                 handlerUnit.OnConditionValidated += (unit, pose) =>
                 {
@@ -94,8 +93,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="unit"></param>
         public void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
-            PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit();
-            unit.SetPoseOverriderContainer(overrider);
+            PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit(overrider);
             unit.OnConditionValidated += (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
             unit.OnConditionDesactivated += (unit, poseOverriderDto) => StopTargetPose(poseOverriderDto);
             allPoseHandlerUnits.Add(overrider.relatedNodeId, unit);
@@ -159,7 +157,11 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public void SetTargetPose(PoseOverriderDto poseOverriderDto)
+        /// <summary>
+        /// Sets the related pose to the overrider Dto, in the poseSkeleton
+        /// </summary>
+        /// <param name="poseOverriderDto"></param>
+        public void SetTargetPose(PoseOverriderDto poseOverriderDto, bool isSeverPose = true)
         {
             if (poseOverriderDto != null && allPoses != null)
             {
@@ -167,14 +169,18 @@ namespace umi3d.cdk.userCapture
                 {
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
-                        skeletonManager.personalSkeleton.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
+                        skeletonManager.personalSkeleton.poseSkeleton.SetPose(poseOverriderDto.composable, new List<PoseDto>() { pose }, isSeverPose);
                         return;
                     }
                 }
             }
         }
 
-        public void StopTargetPose(PoseOverriderDto poseOverriderDto)
+        /// <summary>
+        /// Stops the related pose to the overriderDto, in the poseSkeleton
+        /// </summary>
+        /// <param name="poseOverriderDto"></param>
+        public void StopTargetPose(PoseOverriderDto poseOverriderDto, bool isServerPose = true)
         {
             if (poseOverriderDto != null && allPoses != null)
             {
@@ -182,11 +188,20 @@ namespace umi3d.cdk.userCapture
                 {
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
-                        skeletonManager.personalSkeleton.poseSkeleton.StopPose(false, new List<PoseDto>() { pose }, true);
+                        skeletonManager.personalSkeleton.poseSkeleton.StopPose(new List<PoseDto>() { pose }, isServerPose);
                         return;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Stops all poses
+        /// </summary>
+        /// <param name="poseOverriderDto"></param>
+        public void StopAllPoses()
+        {
+            skeletonManager.personalSkeleton.poseSkeleton.StopAllPoses();
         }
     }
 }

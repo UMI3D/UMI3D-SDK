@@ -64,7 +64,7 @@ public class PoseSkeletonTest
 
         poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
         poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
-        poseSkeleton.StopPose(true);
+        poseSkeleton.StopAllPoses();
 
         Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 0);
         Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 0);
@@ -78,7 +78,7 @@ public class PoseSkeletonTest
 
         poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
         poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
-        poseSkeleton.StopPose(false, new List<PoseDto>() { pose_01}, false);
+        poseSkeleton.StopPose(new List<PoseDto>() { pose_01}, false);
 
         Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 1);
         Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 2);
