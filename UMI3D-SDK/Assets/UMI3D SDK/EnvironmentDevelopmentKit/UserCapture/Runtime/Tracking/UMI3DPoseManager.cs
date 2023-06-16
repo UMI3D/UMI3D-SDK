@@ -9,7 +9,7 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture
 {
-    public class UMI3DPoseManager : SingleBehaviour<UMI3DPoseManager>
+    public class UMI3DPoseManager : Singleton<UMI3DPoseManager>
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
         /// <summary>
@@ -18,22 +18,30 @@ namespace umi3d.edk.userCapture
         static object joinLock = new object();
         static object logoutLock = new object();
 
-        bool posesInitialized = false;
+        private readonly IPoseContainer poseContainerService;
 
-        [SerializeField] List<UMI3DPose_so> allServerPoses = new List<UMI3DPose_so>();
+        public UMI3DPoseManager()
+        {
+            this.poseContainerService = UMI3DPoseContainer.Instance;
+            Init();
+        }
+
+        public UMI3DPoseManager(IPoseContainer poseContainer)
+        {
+            this.poseContainerService = poseContainer;
+            Init();
+        }
+
+        bool posesInitialized = false;
 
         public Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
         private UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> _objectAllPoses;
-        public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> objectAllPoses
-        {
-            get
-            {
-                Init();
-                return _objectAllPoses;
-            }
-        }
+        public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> objectAllPoses;
 
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
+
+        private UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto> _objectAllPoseOverrider;
+        public UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto> objectAllPoseOverrider;
 
         public void UpdateAlPoseOverriders(UMI3DPoseOverriderContainerDto allPoseOverriderContainer)
         {
@@ -44,24 +52,10 @@ namespace umi3d.edk.userCapture
         {
             return allPoseOverriderContainer;
         }
-        private UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto> _objectAllPoseOverrider;
-        public UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto> objectAllPoseOverrider
-        {
-            get
-            {
-                Init();
-                return _objectAllPoseOverrider;
-            }
-        }
-
-
-        private void Awake()
-        {
-            Init();
-        }
 
         public void Init()
         {
+            List<UMI3DPose_so> allServerPoses = poseContainerService.GetAllServerPoses();
             if (posesInitialized == false)
             {
                 posesInitialized = true;
