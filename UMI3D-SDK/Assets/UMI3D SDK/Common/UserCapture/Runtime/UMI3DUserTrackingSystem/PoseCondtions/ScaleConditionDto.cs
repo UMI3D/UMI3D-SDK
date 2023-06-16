@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
+using UnityEngine;
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
@@ -23,10 +23,13 @@ namespace umi3d.common.userCapture
 
         public ScaleConditionDto(Vector3Dto scale)
         {
-            this.scale = scale;
+            this.Scale = scale;
         }
 
-        public Vector3Dto scale { get; set; }  
-        public uint targetId { get; set; }
+        [SerializeField] private Vector3Dto scale;
+        public Vector3Dto Scale { get => scale; set => scale = value; }
+
+        [SerializeField] private uint targetId;
+        public uint TargetId { get => targetId; set => targetId = value; }
     }
 }

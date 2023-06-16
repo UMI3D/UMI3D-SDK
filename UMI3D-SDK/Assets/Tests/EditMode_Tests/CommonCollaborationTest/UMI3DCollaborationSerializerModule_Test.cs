@@ -68,7 +68,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as MagnitudeConditionDto).magnitude == magnitudeConditionDto.magnitude);
+            Assert.IsTrue((result as MagnitudeConditionDto).Magnitude == magnitudeConditionDto.Magnitude);
         }
         [Test]
         public void ReadBoneRotationCondition()
@@ -84,11 +84,11 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as BoneRotationConditionDto).boneId == boneRotationConditionDto.boneId);
-            Assert.IsTrue((result as BoneRotationConditionDto).rotation.X == boneRotationConditionDto.rotation.X);
-            Assert.IsTrue((result as BoneRotationConditionDto).rotation.Y == boneRotationConditionDto.rotation.Y);
-            Assert.IsTrue((result as BoneRotationConditionDto).rotation.Z == boneRotationConditionDto.rotation.Z);
-            Assert.IsTrue((result as BoneRotationConditionDto).rotation.W == boneRotationConditionDto.rotation.W);
+            Assert.IsTrue((result as BoneRotationConditionDto).BoneId == boneRotationConditionDto.BoneId);
+            Assert.IsTrue((result as BoneRotationConditionDto).Rotation.X == boneRotationConditionDto.Rotation.X);
+            Assert.IsTrue((result as BoneRotationConditionDto).Rotation.Y == boneRotationConditionDto.Rotation.Y);
+            Assert.IsTrue((result as BoneRotationConditionDto).Rotation.Z == boneRotationConditionDto.Rotation.Z);
+            Assert.IsTrue((result as BoneRotationConditionDto).Rotation.W == boneRotationConditionDto.Rotation.W);
         }
         [Test]
         public void ReadDirectionCondition()
@@ -103,9 +103,9 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as DirectionConditionDto).direction.X == directionConditionDto.direction.X);
-            Assert.IsTrue((result as DirectionConditionDto).direction.Y == directionConditionDto.direction.Y);
-            Assert.IsTrue((result as DirectionConditionDto).direction.Z == directionConditionDto.direction.Z);
+            Assert.IsTrue((result as DirectionConditionDto).Direction.X == directionConditionDto.Direction.X);
+            Assert.IsTrue((result as DirectionConditionDto).Direction.Y == directionConditionDto.Direction.Y);
+            Assert.IsTrue((result as DirectionConditionDto).Direction.Z == directionConditionDto.Direction.Z);
         }
         [Test]
         public void ReadUserScaleCondition()
@@ -120,7 +120,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as UserScaleConditionDto).scale.X == userScaleConditinoDto.scale.X);
+            Assert.IsTrue((result as UserScaleConditionDto).Scale.X == userScaleConditinoDto.Scale.X);
         }
         [Test]
         public void ReadScaleCondition()
@@ -135,7 +135,7 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue((result as ScaleConditionDto).scale.X == scaleConditionDto.scale.X);
+            Assert.IsTrue((result as ScaleConditionDto).Scale.X == scaleConditionDto.Scale.X);
         }
 
         #endregion
@@ -154,10 +154,10 @@ namespace EditMode_Tests
 
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(((result as RangeConditionDto).conditionA as MagnitudeConditionDto).magnitude
-                == (rangeConditionDto.conditionA as MagnitudeConditionDto).magnitude);
-            Assert.IsTrue(((result as RangeConditionDto).conditionB as ScaleConditionDto).scale.X
-                == (rangeConditionDto.conditionB as ScaleConditionDto).scale.X);
+            Assert.IsTrue(((result as RangeConditionDto).ConditionA as MagnitudeConditionDto).Magnitude
+                == (rangeConditionDto.ConditionA as MagnitudeConditionDto).Magnitude);
+            Assert.IsTrue(((result as RangeConditionDto).ConditionB as ScaleConditionDto).Scale.X
+                == (rangeConditionDto.ConditionB as ScaleConditionDto).Scale.X);
         }
 
         [Test]
@@ -174,10 +174,10 @@ namespace EditMode_Tests
             collabSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as NotConditionDto).conditions[0] as UserScaleConditionDto).scale.X
-                == (notConditionDto.conditions[0] as UserScaleConditionDto).scale.X);
-            Assert.IsTrue(((result as NotConditionDto).conditions[1] as DirectionConditionDto).direction.X
-                == (notConditionDto.conditions[1] as DirectionConditionDto).direction.X);
+            Assert.IsTrue(((result as NotConditionDto).Conditions[0] as UserScaleConditionDto).Scale.X
+                == (notConditionDto.Conditions[0] as UserScaleConditionDto).Scale.X);
+            Assert.IsTrue(((result as NotConditionDto).Conditions[1] as DirectionConditionDto).Direction.X
+                == (notConditionDto.Conditions[1] as DirectionConditionDto).Direction.X);
         }
 
         private PoseConditionDto[] GetCondditionsTestSet()
@@ -355,10 +355,10 @@ namespace EditMode_Tests
             int poseIndex = result.poseIndexinPoseManager;
 
             Assert.IsTrue(poseIndex == poseIndexinPoseManager);
-            Assert.IsTrue((result.poseConditions[0] as UserScaleConditionDto).scale.Struct()
-                == (poseOverriderDto.poseConditions[0] as UserScaleConditionDto).scale.Struct());
-            Assert.IsTrue((result.poseConditions[1] as DirectionConditionDto).direction.Struct()
-                == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).direction.Struct());
+            Assert.IsTrue((result.poseConditions[0] as UserScaleConditionDto).Scale.Struct()
+                == (poseOverriderDto.poseConditions[0] as UserScaleConditionDto).Scale.Struct());
+            Assert.IsTrue((result.poseConditions[1] as DirectionConditionDto).Direction.Struct()
+                == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).Direction.Struct());
 
             Assert.IsTrue(poseOverriderDto.duration.duration == result.duration.duration);
             Assert.IsTrue(poseOverriderDto.interpolationable == result.interpolationable);

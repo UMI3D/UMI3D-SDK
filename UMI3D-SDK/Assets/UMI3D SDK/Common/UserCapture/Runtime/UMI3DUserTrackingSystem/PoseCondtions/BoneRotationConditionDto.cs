@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
@@ -23,12 +24,17 @@ namespace umi3d.common.userCapture
 
         public BoneRotationConditionDto(uint boneId, Vector4Dto rotation)
         {
-            this.boneId = boneId;
-            this.rotation = rotation;
+            this.BoneId = boneId;
+            this.Rotation = rotation;
         }
 
-        public uint boneId { get; set; }
-        public Vector4Dto rotation { get; set; }
-        public float acceptanceRange { get; set; }
+        [SerializeField] private uint boneId;
+        public uint BoneId { get => boneId; set => boneId = value; }
+
+        [SerializeField] private Vector4Dto rotation;
+        public Vector4Dto Rotation { get => rotation; set => rotation = value; }
+
+        [SerializeField] private float acceptanceRange;
+        public float AcceptanceRange { get => AcceptanceRange; set => AcceptanceRange = value; }
     }
 }

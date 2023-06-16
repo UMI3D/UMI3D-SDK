@@ -132,9 +132,9 @@ public class PoseOverriderHandlerUnit_Tests
                     {
                         new MagnitudeConditionDto()
                         {
-                            magnitude = 1,
-                            boneOrigine = 13,
-                            targetObjectId = 100012
+                            Magnitude = 1,
+                            BoneOrigine = 13,
+                            TargetObjectId = 100012
                         }
                     }.ToArray()
                 },
@@ -146,9 +146,9 @@ public class PoseOverriderHandlerUnit_Tests
                     {
                         new MagnitudeConditionDto()
                         {
-                            magnitude = 1,
-                            boneOrigine = 13,
-                            targetObjectId = 100012
+                            Magnitude = 1,
+                            BoneOrigine = 13,
+                            TargetObjectId = 100012
                         }
                     }.ToArray()
                 },
@@ -159,9 +159,9 @@ public class PoseOverriderHandlerUnit_Tests
                     {
                         new MagnitudeConditionDto()
                         {
-                            magnitude = 1,
-                            boneOrigine = 13,
-                            targetObjectId = 100012
+                            Magnitude = 1,
+                            BoneOrigine = 13,
+                            TargetObjectId = 100012
                         }
                     }.ToArray()
                 },

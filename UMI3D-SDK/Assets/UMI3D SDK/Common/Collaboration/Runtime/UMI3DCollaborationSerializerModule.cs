@@ -1079,35 +1079,35 @@ namespace umi3d.common.collaboration
                 #region PoseCondition Dto
                 case MagnitudeConditionDto magnitudeConditionDto:
                     bytable = UMI3DSerializer.Write((int)1)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.magnitude)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.boneOrigine)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.targetObjectId);
+                        + UMI3DSerializer.Write(magnitudeConditionDto.Magnitude)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.BoneOrigine)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.TargetObjectId);
                     break;
                 case RangeConditionDto rangeConditionDto:
                     bytable = UMI3DSerializer.Write((int)2)
-                        + UMI3DSerializer.Write(rangeConditionDto.conditionA)
-                        + UMI3DSerializer.Write(rangeConditionDto.conditionB);
+                        + UMI3DSerializer.Write(rangeConditionDto.ConditionA)
+                        + UMI3DSerializer.Write(rangeConditionDto.ConditionB);
                     break;
                 case BoneRotationConditionDto boneRotationConditionDto:
                     bytable = UMI3DSerializer.Write((int)3)
-                        + UMI3DSerializer.Write(boneRotationConditionDto.boneId)
-                        + UMI3DSerializer.Write(boneRotationConditionDto.rotation);
+                        + UMI3DSerializer.Write(boneRotationConditionDto.BoneId)
+                        + UMI3DSerializer.Write(boneRotationConditionDto.Rotation);
                     break;
                 case DirectionConditionDto directionConditionDto:
                     bytable = UMI3DSerializer.Write((int)4)
-                        + UMI3DSerializer.Write(directionConditionDto.direction);
+                        + UMI3DSerializer.Write(directionConditionDto.Direction);
                     break;
                 case NotConditionDto notConditionDto:
                     bytable = UMI3DSerializer.Write((int)5)
-                        + UMI3DSerializer.WriteCollection(notConditionDto.conditions);
+                        + UMI3DSerializer.WriteCollection(notConditionDto.Conditions);
                     break;
                 case UserScaleConditionDto userScaleConditinoDto:
                     bytable = UMI3DSerializer.Write((int)6)
-                        + UMI3DSerializer.Write(userScaleConditinoDto.scale);
+                        + UMI3DSerializer.Write(userScaleConditinoDto.Scale);
                     break;
                 case ScaleConditionDto scaleConditionDto:
                     bytable = UMI3DSerializer.Write((int)7)
-                        + UMI3DSerializer.Write(scaleConditionDto.scale);
+                        + UMI3DSerializer.Write(scaleConditionDto.Scale);
                     break;
                 #endregion
 

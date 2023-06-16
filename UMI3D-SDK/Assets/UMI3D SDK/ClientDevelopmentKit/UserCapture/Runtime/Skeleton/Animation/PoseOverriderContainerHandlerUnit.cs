@@ -300,7 +300,7 @@ namespace umi3d.cdk.userCapture
         {
             UMI3DNodeInstance targetNodeInstance = null;
 
-            targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.targetObjectId);
+            targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.TargetObjectId);
 
             if (targetNodeInstance == null)
             {
@@ -311,12 +311,12 @@ namespace umi3d.cdk.userCapture
             Vector3 targetPosition = targetNodeInstance.transform.position;
 
 
-            Vector3 bonePosition = (trackedSkeletonService as TrackedSkeleton).GetBonePosition(magnitudeConditionDto.boneOrigine);
+            Vector3 bonePosition = (trackedSkeletonService as TrackedSkeleton).GetBonePosition(magnitudeConditionDto.BoneOrigine);
             if (bonePosition == Vector3.zero) return false;
 
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
-            if (distance < magnitudeConditionDto.magnitude)
+            if (distance < magnitudeConditionDto.Magnitude)
             {
                 return true;
             }
@@ -326,10 +326,10 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
         {
-            Quaternion boneRotation = (trackedSkeletonService as TrackedSkeleton).GetBoneRotation(boneRotationConditionDto.boneId);
+            Quaternion boneRotation = (trackedSkeletonService as TrackedSkeleton).GetBoneRotation(boneRotationConditionDto.BoneId);
             if (boneRotation == Quaternion.identity) return false;
 
-            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.rotation.Quaternion()) < boneRotationConditionDto.acceptanceRange)
+            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.AcceptanceRange)
             {
                 return true;
             }
@@ -341,11 +341,11 @@ namespace umi3d.cdk.userCapture
         private bool HandleTargetScale(ScaleConditionDto scaleConditionDto)
         {
             UMI3DNodeInstance targetNodeInstance = UMI3DEnvironmentLoader.Instance
-                                            .GetEntityInstance(scaleConditionDto.targetId)
+                                            .GetEntityInstance(scaleConditionDto.TargetId)
                                             as UMI3DNodeInstance;
 
             Vector3 targetScale = targetNodeInstance.transform.localScale;
-            Vector3 wantedScale = scaleConditionDto.scale.Struct();
+            Vector3 wantedScale = scaleConditionDto.Scale.Struct();
 
             if (targetScale.sqrMagnitude <= wantedScale.sqrMagnitude)
             {

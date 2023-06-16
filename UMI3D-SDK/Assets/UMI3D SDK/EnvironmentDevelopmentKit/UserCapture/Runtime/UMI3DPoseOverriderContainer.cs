@@ -95,7 +95,7 @@ namespace umi3d.edk.userCapture
                     switch (pc)
                     {
                         case MagnitudeConditionDto magnitudeConditionDto:
-                            magnitudeConditionDto.targetObjectId = (uint)nodeID;
+                            magnitudeConditionDto.TargetObjectId = (uint)nodeID;
                             break;
                     }
                 });

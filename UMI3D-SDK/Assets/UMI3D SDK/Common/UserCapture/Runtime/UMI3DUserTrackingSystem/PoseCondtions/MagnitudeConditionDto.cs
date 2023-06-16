@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
@@ -23,16 +24,19 @@ namespace umi3d.common.userCapture
 
         public MagnitudeConditionDto(float magnitude, uint boneOrigine, uint targetObjectId)
         {
-            this.magnitude = magnitude;
-            this.boneOrigine = boneOrigine;
-            this.targetObjectId = targetObjectId;
+            this.Magnitude = magnitude;
+            this.BoneOrigine = boneOrigine;
+            this.TargetObjectId = targetObjectId;
         }
 
-        public float magnitude { get; set; }
+        [SerializeField] private float magnitude;
+        public float Magnitude { get => magnitude; set => magnitude = value; }
 
-        public uint boneOrigine { get;  set; }
+        [SerializeField] private uint boneOrigin;
+        public uint BoneOrigine { get => boneOrigin;  set => boneOrigin = value; }
 
-        public uint targetObjectId { get; set; }
+        [SerializeField] private uint targetObjectId;
+        public uint TargetObjectId { get => targetObjectId; set => targetObjectId = value; }
     }
 }
 
