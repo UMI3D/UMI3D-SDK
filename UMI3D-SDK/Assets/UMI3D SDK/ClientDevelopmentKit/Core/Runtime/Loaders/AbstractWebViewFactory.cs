@@ -15,8 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System.Collections.Generic;
-using UnityEngine;
+using System.Threading.Tasks;
 
 namespace umi3d.cdk
 {
@@ -25,21 +24,7 @@ namespace umi3d.cdk
     /// </summary>
     public abstract class AbstractWebViewFactory : SingleBehaviour<AbstractWebViewFactory>
     {
-        Queue<AbstractUMI3DWebView> webViews = new Queue<AbstractUMI3DWebView>();
-        
-        public AbstractUMI3DWebView GetWebView()
-        {
-            if (webViews.Count > 0)
-            {
-                return webViews.Dequeue();
-            }
-            else
-            {
-                return CreateWebView();
-            }
-        }
-
-        protected abstract AbstractUMI3DWebView CreateWebView();
+        public abstract Task<AbstractUMI3DWebView> CreateWebView();
     }
 
 }

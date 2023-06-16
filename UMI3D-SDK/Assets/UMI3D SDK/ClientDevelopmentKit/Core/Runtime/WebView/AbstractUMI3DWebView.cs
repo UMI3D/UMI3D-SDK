@@ -31,7 +31,7 @@ namespace umi3d.cdk
         public bool canInteract
         {
             get => canInteract;
-            protected set
+            set
             {
                 if (_canInteract != value)
                 {
@@ -48,7 +48,7 @@ namespace umi3d.cdk
         public string url
         {
             get => _url;
-            protected set
+            set
             {
                 if (_url != value)
                 {
@@ -67,7 +67,7 @@ namespace umi3d.cdk
         public bool syncView
         {
             get => syncView;
-            protected set
+            set
             {
                 if (_syncView != value)
                 {
@@ -79,12 +79,12 @@ namespace umi3d.cdk
 
         private Vector2 _size;
         /// <summary>
-        /// Webview size
+        /// Webview size.
         /// </summary>
         public Vector2 size
         {
             get => _size;
-            protected set
+            set
             {
                 if (_size != value)
                 {
@@ -101,7 +101,7 @@ namespace umi3d.cdk
         public Vector2 textureSize
         {
             get => _textureSize;
-            protected set
+            set
             {
                 if (_textureSize != value)
                 {

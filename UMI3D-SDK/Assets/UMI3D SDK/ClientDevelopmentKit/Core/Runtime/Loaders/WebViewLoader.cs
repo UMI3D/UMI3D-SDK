@@ -16,7 +16,6 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.cdk
 {
@@ -29,7 +28,7 @@ namespace umi3d.cdk
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            return data?.dto is UMI3DWebViewDto;
+            return data?.dto is UMI3DWebViewDto && base.CanReadUMI3DExtension(data);
         }
 
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
@@ -38,24 +37,50 @@ namespace umi3d.cdk
 
             if (AbstractWebViewFactory.Exists)
             {
-                AbstractUMI3DWebView webView = AbstractWebViewFactory.Instance.GetWebView();
+                AbstractUMI3DWebView webView = await AbstractWebViewFactory.Instance.CreateWebView();
                 webView.Init(data.dto as UMI3DWebViewDto);
+                webView.transform.SetParent(data.node.transform);
+                webView.transform.localPosition = UnityEngine.Vector3.zero;
+                webView.transform.localRotation = UnityEngine.Quaternion.identity;
             } else
             {
                 UMI3DLogger.LogError("Impossible to load WebView, not implemented on this browser", scope);
             }
         }
 
-        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            if (await base.SetUMI3DProperty(value))
-                return true;
-
-            var node = value.entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null) return false;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DWebViewDto;
+            if (dto == null) return false;
 
-            switch (value.property.property)
+            AbstractUMI3DWebView webView = node.gameObject.GetComponentInChildren<AbstractUMI3DWebView>();
+            if (webView == null)
             {
+                UMI3DLogger.Log("Webview should not be null on " + node.transform.name, scope);
+                return false;
+            }
+
+            switch (data.property.property)
+            {
+                case UMI3DPropertyKeys.WebViewCanInteract:
+                    webView.canInteract = dto.canInteract = (bool)data.property.value;
+                    break;
+                case UMI3DPropertyKeys.WebViewSize:
+                    webView.size = dto.size = (SerializableVector2)data.property.value;
+                    break;
+                case UMI3DPropertyKeys.WebViewTextureSize:
+                    webView.textureSize = dto.textureSize = (SerializableVector2)data.property.value;
+                    break;
+                case UMI3DPropertyKeys.WebViewUrl:
+                    webView.url = dto.url = (string)data.property.value;
+                    break;
+                case UMI3DPropertyKeys.WebViewSyncView:
+                    webView.syncView = dto.syncView = (bool)data.property.value;
+                    break;
+                default:
+                    return false;
             }
 
             return true;
@@ -63,14 +88,37 @@ namespace umi3d.cdk
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            if (await base.SetUMI3DProperty(data))
-                return true;
-
             var node = data.entity as UMI3DNodeInstance;
             if (node == null) return false;
+            var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DWebViewDto;
+            if (dto == null) return false;
+
+            AbstractUMI3DWebView webView = node.gameObject.GetComponentInChildren<AbstractUMI3DWebView>();
+            if (webView == null)
+            {
+                UMI3DLogger.Log("Webview should not be null on " + node.transform.name, scope);
+                return false;
+            }
 
             switch (data.propertyKey)
             {
+                case UMI3DPropertyKeys.WebViewCanInteract:
+                    webView.canInteract = dto.canInteract = UMI3DSerializer.Read<bool>(data.container);
+                    break;
+                case UMI3DPropertyKeys.WebViewSize:
+                    webView.size = dto.size = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                    break;
+                case UMI3DPropertyKeys.WebViewTextureSize:
+                    webView.textureSize = dto.textureSize = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                    break;
+                case UMI3DPropertyKeys.WebViewUrl:
+                    webView.url = dto.url = UMI3DSerializer.Read<string>(data.container);
+                    break;
+                case UMI3DPropertyKeys.WebViewSyncView:
+                    webView.syncView = dto.syncView = UMI3DSerializer.Read<bool>(data.container);
+                    break;
+                default:
+                    return false;
             }
 
             return true;

@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using System.Linq;
+using log4net.Util;
 using umi3d.common;
 using UnityEngine;
 
@@ -34,11 +33,13 @@ namespace umi3d.edk
         [SerializeField, Tooltip("Can users interact with the webview ?")]
         private bool canInteract = true;
 
+
         /// <summary>
-        /// Webview dimensions.
+        /// Webview size.
         /// </summary>
-        [SerializeField, Tooltip("Webview texture dimensions")]
-        private Vector2 size = new Vector2(1.778f, 1);
+        [SerializeField, Tooltip("Webview size")]
+        private Vector2 size = new Vector2(1.280f, .720f);
+
 
         /// <summary>
         /// Webview texture dimensions.
@@ -109,15 +110,15 @@ namespace umi3d.edk
         {
             base.InitDefinition(id);
 
-            objectCanInteract = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanInteract, canInteract);
+            objectCanInteract = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanInteract, canInteract);         
             objectSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewSize, size, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
             objectSyncView = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewSyncView, syncView);
 
             objectCanInteract.OnValueChanged += (b) => canInteract = b;
-            objectSize.OnValueChanged += (s) => size = s;
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
+            objectSize.OnValueChanged += (s) => size = s;
             objectUrl.OnValueChanged += (u) => url = u;
             objectSyncView.OnValueChanged += (b) => syncView = b;
         }
@@ -182,7 +183,7 @@ namespace umi3d.edk
 
             Gizmos.color = new Color(236 / 255f, 229 / 255f, 199 / 255f, .7f);
             Gizmos.matrix = transform.localToWorldMatrix;
-            Gizmos.DrawCube(transform.position, new Vector3(transform.lossyScale.x * size.x, transform.lossyScale.y * size.y, 0.001f));
+            Gizmos.DrawCube(Vector3.zero, new Vector3(size.x, size.y, 0.001f));
 
 #if UNITY_EDITOR
 
