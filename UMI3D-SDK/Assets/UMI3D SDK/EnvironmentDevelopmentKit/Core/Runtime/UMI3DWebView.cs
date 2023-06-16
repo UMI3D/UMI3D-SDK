@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using log4net.Util;
 using umi3d.common;
 using UnityEngine;
 
