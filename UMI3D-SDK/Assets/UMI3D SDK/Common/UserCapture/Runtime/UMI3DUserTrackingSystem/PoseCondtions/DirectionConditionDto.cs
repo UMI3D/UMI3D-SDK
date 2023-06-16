@@ -14,8 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
@@ -28,7 +26,7 @@ namespace umi3d.common.userCapture
             this.Direction = direction;
         }
 
-        [SerializeField] private Vector3Dto direction;
+        private Vector3Dto direction;
         public Vector3Dto Direction { get => direction; set => direction = value; }
     }
 }

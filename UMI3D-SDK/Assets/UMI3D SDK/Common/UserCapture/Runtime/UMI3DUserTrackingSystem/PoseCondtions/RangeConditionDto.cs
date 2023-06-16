@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
@@ -28,10 +27,10 @@ namespace umi3d.common.userCapture
             this.ConditionB = conditionB;
         }
 
-        [SerializeField] private PoseConditionDto conditionA;
+        private PoseConditionDto conditionA;
         public PoseConditionDto ConditionA { get => conditionA; set => conditionA = value; }
 
-        [SerializeField] private PoseConditionDto conditionB;
+        private PoseConditionDto conditionB;
         public PoseConditionDto ConditionB { get => conditionB; set => conditionB = value; }
     }
 }

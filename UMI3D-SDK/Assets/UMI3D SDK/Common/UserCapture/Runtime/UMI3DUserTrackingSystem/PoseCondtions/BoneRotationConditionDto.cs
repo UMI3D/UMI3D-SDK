@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
-
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
@@ -28,13 +26,13 @@ namespace umi3d.common.userCapture
             this.Rotation = rotation;
         }
 
-        [SerializeField] private uint boneId;
+        private uint boneId;
         public uint BoneId { get => boneId; set => boneId = value; }
 
-        [SerializeField] private Vector4Dto rotation;
+        private Vector4Dto rotation;
         public Vector4Dto Rotation { get => rotation; set => rotation = value; }
 
-        [SerializeField] private float acceptanceRange;
-        public float AcceptanceRange { get => AcceptanceRange; set => AcceptanceRange = value; }
+        private float acceptanceRange;
+        public float AcceptanceRange { get => acceptanceRange; set => acceptanceRange = value; }
     }
 }

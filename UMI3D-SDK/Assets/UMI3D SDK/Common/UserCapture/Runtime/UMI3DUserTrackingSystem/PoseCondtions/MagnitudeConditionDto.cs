@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
@@ -29,13 +28,13 @@ namespace umi3d.common.userCapture
             this.TargetObjectId = targetObjectId;
         }
 
-        [SerializeField] private float magnitude;
+        private float magnitude;
         public float Magnitude { get => magnitude; set => magnitude = value; }
 
-        [SerializeField] private uint boneOrigin;
+        private uint boneOrigin;
         public uint BoneOrigine { get => boneOrigin;  set => boneOrigin = value; }
 
-        [SerializeField] private uint targetObjectId;
+        private uint targetObjectId;
         public uint TargetObjectId { get => targetObjectId; set => targetObjectId = value; }
     }
 }
