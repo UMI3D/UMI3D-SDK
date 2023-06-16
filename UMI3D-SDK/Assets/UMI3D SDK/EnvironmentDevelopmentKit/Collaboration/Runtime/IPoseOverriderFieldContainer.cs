@@ -14,23 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections;
 using System.Collections.Generic;
-using umi3d.edk.interaction;
-using umi3d.edk;
 using UnityEngine;
-using umi3d.edk.userCapture;
 
 namespace umi3d.common.collaboration
 {
-    public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
+    public interface IPoseOverriderFieldContainer
     {
-        [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
-        public List<OverriderContainerField> GetAllPoseOverriders()
-        {
-            return allPoseOverriders;
-        }
+        public List<OverriderContainerField> GetAllPoseOverriders();
     }
 }
-
