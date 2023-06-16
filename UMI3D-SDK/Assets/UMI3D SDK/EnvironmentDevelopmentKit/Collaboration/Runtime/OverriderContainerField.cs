@@ -18,19 +18,24 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.edk.interaction;
+using umi3d.edk.userCapture;
 using umi3d.edk;
 using UnityEngine;
-using umi3d.edk.userCapture;
 
 namespace umi3d.common.collaboration
 {
-    public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
+    [Serializable]
+    public class OverriderContainerField
     {
-        [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
-        public List<OverriderContainerField> GetAllPoseOverriders()
+        [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
+        public UMI3DPoseOverriderContainer PoseOverriderContainer { get => poseOverriderContainer; }
+
+        [SerializeField] UMI3DEvent _uMI3DEvent;
+        public UMI3DEvent uMI3DEvent { get => _uMI3DEvent; }
+
+        public void SetNode()
         {
-            return allPoseOverriders;
+            PoseOverriderContainer.SetNodeId(uMI3DEvent.GetComponent<UMI3DModel>().Id());
         }
     }
 }
-
