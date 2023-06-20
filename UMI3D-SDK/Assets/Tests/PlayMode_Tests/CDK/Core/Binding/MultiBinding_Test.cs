@@ -251,7 +251,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
         public void Apply([ValueSource("values")] (ulong id, int priority, bool partialFit)[] testValue)
         {
             // GIVEN
-            Stack<AbstractSimpleBindingDataDto> bindingDataDtos = new();
+            Queue<AbstractSimpleBindingDataDto> bindingDataDtos = new();
             int i = 0;
             foreach (var v in testValue)
             {
@@ -263,7 +263,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                     partialFit = v.partialFit,
                     priority = v.priority
                 };
-                bindingDataDtos.Push(bindingDataDto);
+                bindingDataDtos.Enqueue(bindingDataDto);
                 i++;
             }
 
@@ -271,7 +271,7 @@ namespace PlayMode_Tests.Core.Bindings.CDK
 
             var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
 
-            Stack<NodeBinding> bindings = new();
+            Queue<NodeBinding> bindings = new();
             List<NodeBindingDataDto> callBackCache = new();
 
             foreach (var bindingDataDto in dto.Bindings.OrderByDescending(x=>x.priority))
@@ -281,8 +281,9 @@ namespace PlayMode_Tests.Core.Bindings.CDK
                 bindingMock
                     .Setup(x => x.Apply(out successLocal))
                     .Callback(() => callBackCache.Add(bindingDataDto as NodeBindingDataDto));
+                bindingMock.Setup(x => x.IsPartiallyFit).Returns(bindingDataDto.partialFit);
 
-                bindings.Push(bindingMock.Object);
+                bindings.Enqueue(bindingMock.Object);
             }
 
             MultiBinding binding = new(dto, bindings.ToArray(), go.transform, isOrdered: false);
@@ -293,7 +294,6 @@ namespace PlayMode_Tests.Core.Bindings.CDK
             // THEN
             Assert.IsTrue(success);
 
-            
             var orderedtestValues = testValue.OrderByDescending(x => x.priority).ToArray();
             int numberOfValueToApply = orderedtestValues.TakeWhile(x => x.partialFit).Count();
             if (numberOfValueToApply == 0) //when first binding cannot be applied totally, it is the only one applied

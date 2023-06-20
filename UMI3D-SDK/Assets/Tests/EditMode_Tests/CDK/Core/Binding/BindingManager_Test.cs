@@ -19,6 +19,7 @@ using Moq;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk;
 using umi3d.common;
 using UnityEngine;
@@ -117,7 +118,8 @@ namespace EditMode_Tests.Core.Bindings.CDK
             mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
 
             // GIVEN
-            var binding = new NodeBinding(null, null, null);
+            var nodeBindingDto = new NodeBindingDataDto() { parentNodeId = 1005uL, priority = 10 };
+            var binding = new NodeBinding(nodeBindingDto, null, null);
 
             var initialSize = bindingManager.Bindings.Count;
             mockCoroutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
@@ -139,7 +141,8 @@ namespace EditMode_Tests.Core.Bindings.CDK
             mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
 
             // GIVEN
-            var binding = new NodeBinding(null, null, null);
+            var nodeBindingDto = new NodeBindingDataDto() { parentNodeId = 1005uL, priority = 10 };
+            var binding = new NodeBinding(nodeBindingDto, null, null);
             var initialSize = bindingManager.Bindings.Count;
             mockCoroutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
 
@@ -201,5 +204,58 @@ namespace EditMode_Tests.Core.Bindings.CDK
         }
 
         #endregion RemoveBinding
+
+        #region BindingRoutine
+
+        private static (ulong id, int priority, bool partialFit)[][] values = new (ulong id, int priority, bool partialFit)[][]
+        {
+                new (ulong id, int priority, bool partialFit)[] { (1008uL, 10, true), (1009uL, 5, true), (1010uL, 1, true)  },
+                new (ulong id, int priority, bool partialFit)[] { (1008uL, 10, true), (1009uL, 5, true), (1010uL, 1, false) },
+                new (ulong id, int priority, bool partialFit)[] { (1008uL, 1, true),  (1009uL, 1, true), (1010uL, 1, true)  },
+                new (ulong id, int priority, bool partialFit)[] { (1008uL, 1, true),  (1009uL, 1, true), (1010uL, 1, false) },
+                new (ulong id, int priority, bool partialFit)[] { (1008uL, 1, true), (1009uL, 5, true), (1010uL, 10, true)  },
+                new (ulong id, int priority, bool partialFit)[] { (1008uL, 1, true), (1009uL, 5, true), (1010uL, 10, false) },
+        };
+
+        [Test]
+        public void BindingRoutine([ValueSource("values")] (ulong id, int priority, bool partialFit)[] testValue)
+        {
+            // GIVEN
+            Queue<ulong> executionTracker = new();
+            mockBindingManager.CallBase = false;
+            mockBindingManager.Setup(x => x.Bindings).CallBase();
+            mockBindingManager.Setup(x => x.BindingApplicationRoutine()).CallBase();
+            mockBindingManager.Setup(x => x.AreBindingsActivated).Returns(true);
+            mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
+
+            Queue<Mock<NodeBinding>> mockNodeBindings = new Queue<Mock<NodeBinding>>();
+            foreach (var v in testValue)
+            {
+                var mockNodeBinding = new Mock<NodeBinding>(null, null, null);
+                mockNodeBinding.Setup(x=> x.ParentNodeId).Returns(v.id);
+                mockNodeBinding.Setup(x=> x.Priority).Returns(v.priority);
+                mockNodeBinding.Setup(x=> x.IsPartiallyFit).Returns(v.partialFit);
+                
+                bool success = true;
+                mockNodeBinding.Setup(x => x.Apply(out success)).Callback(() => { executionTracker.Enqueue(v.id); success = true; });
+                mockNodeBindings.Enqueue(mockNodeBinding);
+                bindingManager.AddBinding(v.id, mockNodeBinding.Object);
+            }
+
+            // WHEN
+            bindingManager.BindingApplicationRoutine().MoveNext();
+
+            // THEN
+            var orderedtestValues = testValue.OrderByDescending(x => x.priority).ToArray();
+
+            Assert.AreEqual(orderedtestValues.Length, executionTracker.Count, "Not all bindings were applied.");
+            var callbackCache = executionTracker.ToArray();
+            for (int j = 0; j < orderedtestValues.Length; j++)
+            {
+                Assert.AreEqual(orderedtestValues[0].id, callbackCache[0], $"Order of binding application is not right. Problem at {j}");
+            }
+        }
+
+        #endregion
     }
 }
