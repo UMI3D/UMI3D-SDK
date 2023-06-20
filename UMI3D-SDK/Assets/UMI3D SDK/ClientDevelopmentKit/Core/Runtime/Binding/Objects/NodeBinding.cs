@@ -39,7 +39,7 @@ namespace umi3d.cdk
         /// <summary>
         /// See <see cref="NodeBindingDataDto.parentNodeId"/>.
         /// </summary>
-        public ulong ParentNodeId => NodeBindingDataDto.parentNodeId;
+        public virtual ulong ParentNodeId => NodeBindingDataDto.parentNodeId;
 
         #endregion DTO Access
 
