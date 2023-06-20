@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 
 namespace umi3d.cdk
@@ -52,6 +53,8 @@ namespace umi3d.cdk
 
         /// <inheritdoc/>
         public virtual Dictionary<ulong, AbstractBinding> Bindings { get; private set; } = new();
+
+        protected AbstractBinding[] bindingExecutionQueue = new AbstractBinding[0];
 
         /// <summary>
         /// Execute every binding.
@@ -89,28 +92,42 @@ namespace umi3d.cdk
                 return;
 
             if (binding is not null)
+            {
                 Bindings[boundNodeId] = binding;
+                ReorderQueue();
+            }
 
             if (Bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
-                bindingRoutine = routineService.AttachLateRoutine(BindingRoutine());
+                bindingRoutine = routineService.AttachLateRoutine(BindingApplicationRoutine());
         }
 
         /// <summary>
-        /// Coroutine that executes each binding in no particular order.
+        /// Coroutine that executes each binding in descending priority order.
         /// </summary>
         /// <returns></returns>
-        private IEnumerator BindingRoutine()
+        public virtual IEnumerator BindingApplicationRoutine()
         {
             while (AreBindingsActivated)
             {
-                foreach (var binding in Bindings)
+                if (Bindings.Count != bindingExecutionQueue.Length)
+                    ReorderQueue();
+
+                foreach (var binding in bindingExecutionQueue)
                 {
-                    binding.Value.Apply(out bool success);
+                    binding.Apply(out bool success);
                     if (!success)
-                        yield break;
+                        break;
                 }
                 yield return null;
             }
+        }
+
+        private void ReorderQueue()
+        {
+            if (Bindings.Values.Count > 0)
+                bindingExecutionQueue = Bindings.Values.OrderByDescending(x => x.Priority).ToArray();
+            else
+                bindingExecutionQueue = new AbstractBinding[0];
         }
 
         /// <inheritdoc/>
@@ -119,6 +136,8 @@ namespace umi3d.cdk
             if (Bindings.ContainsKey(boundNodeId))
             {
                 Bindings.Remove(boundNodeId);
+                ReorderQueue();
+
                 if (Bindings.Count == 0 && bindingRoutine is not null)
                 {
                     routineService.DettachLateRoutine(bindingRoutine);
