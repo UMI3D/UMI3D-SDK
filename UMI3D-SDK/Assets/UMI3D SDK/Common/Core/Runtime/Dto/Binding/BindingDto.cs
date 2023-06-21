@@ -17,10 +17,10 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Dto for an association linking together two objects in the 3D space
+    /// DTO for a binding, an association linking together two objects in the 3D space.
     /// </summary>
     [System.Serializable]
-    public class BindingDto : AbstractOperationDto
+    public class BindingDto : AbstractEntityDto, IEntity
     {
         /// <summary>
         /// An identifier defined by the designer.

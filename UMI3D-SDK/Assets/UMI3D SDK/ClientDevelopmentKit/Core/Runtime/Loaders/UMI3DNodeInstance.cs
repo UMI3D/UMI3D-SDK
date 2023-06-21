@@ -29,7 +29,7 @@ namespace umi3d.cdk
     public class UMI3DNodeInstance : UMI3DEntityInstance
     {
         public GameObject gameObject;
-        public Transform transform => gameObject.transform;
+        public virtual Transform transform => gameObject.transform;
 
         private bool isPartOfNavmesh = false;
 

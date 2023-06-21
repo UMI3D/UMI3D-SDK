@@ -16,8 +16,12 @@ limitations under the License.
 
 namespace umi3d.common.userCapture
 {
+    /// <summary>
+    /// Serializer for <see cref="BoneBindingDataDto"/>.
+    /// </summary>
     public class BoneBindingSerializer : IUMI3DSerializerSubModule<BoneBindingDataDto>
     {
+        /// <inheritdoc/>
         public bool Read(ByteContainer container, out BoneBindingDataDto result)
         {
             bool readable = true;
@@ -57,6 +61,7 @@ namespace umi3d.common.userCapture
             return readable;
         }
 
+        /// <inheritdoc/>
         public Bytable Write(BoneBindingDataDto simpleBoneBindingDto)
         {
             return UMI3DSerializer.Write(simpleBoneBindingDto.priority)
