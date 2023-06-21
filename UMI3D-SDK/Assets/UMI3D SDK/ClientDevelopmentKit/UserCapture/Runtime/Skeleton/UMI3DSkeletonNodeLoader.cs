@@ -37,18 +37,18 @@ namespace umi3d.cdk.userCapture
         #region Dependency Injection
 
         protected readonly ISkeletonManager personnalSkeletonService;
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        protected readonly UMI3DEnvironmentLoader environmentLoader;
 
         public UMI3DSkeletonNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
-            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentLoader = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoaderService) : base()
+        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoader) : base()
         {
             this.personnalSkeletonService = personnalSkeletonService;
-            this.environmentLoaderService = environmentLoaderService;
+            this.environmentLoader = environmentLoader;
         }
 
         #endregion Dependency Injection
@@ -67,10 +67,10 @@ namespace umi3d.cdk.userCapture
 
             await base.ReadUMI3DExtension(data);
 
-            Load(data.dto as UMI3DSkeletonNodeDto);
+            await Load(data.dto as UMI3DSkeletonNodeDto);
         }
 
-        public void Load(UMI3DSkeletonNodeDto skeletonNodeDto)
+        public async Task Load(UMI3DSkeletonNodeDto skeletonNodeDto)
         {
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);
 
@@ -114,12 +114,14 @@ namespace umi3d.cdk.userCapture
             var modelTracker = go.GetOrAddComponent<ModelTracker>();
             modelTracker.animatorsToRebind.Add(animator);
 
-            // include animations ids
-            skeletonMapper.Animations = skeletonNodeDto.relatedAnimationsId;
-
+            Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
             // create subSkeletonand add it to a skeleton
-            AnimatedSkeleton animationSubskeleton = new(skeletonMapper);
-            animationSubskeleton.priority = skeletonNodeDto.priority;
+            foreach (var id in skeletonNodeDto.relatedAnimationsId)
+            {
+                await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, null);
+                animations.Enqueue(environmentLoader.GetEntityObject<UMI3DAnimatorAnimation>(id));
+            }
+            AnimatedSkeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority);
             AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
 
             // hide the model if it has any renderers
@@ -187,7 +189,7 @@ namespace umi3d.cdk.userCapture
         {
             var newHierachy = personnalSkeletonService.personalSkeleton.SkeletonHierarchy.Generate(animator.transform);
 
-            var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x=>x);
+            var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x => x);
 
             static string RemoveWhiteSpaces(string s)
             {
@@ -195,7 +197,7 @@ namespace umi3d.cdk.userCapture
             }
 
             // unity name -> mecanim name / rigname
-            var humanBoneRigRelations = animator.avatar.humanDescription.human.ToDictionary(x => RemoveWhiteSpaces(x.humanName).ToLower(), x=> x.boneName);
+            var humanBoneRigRelations = animator.avatar.humanDescription.human.ToDictionary(x => RemoveWhiteSpaces(x.humanName).ToLower(), x => x.boneName);
 
             // rig name in animator -> local transform infos
             var boneInfoInAnimator = animator.avatar.humanDescription.skeleton.ToDictionary(x => x.name, x => (x.position, x.rotation, x.scale));
@@ -253,7 +255,7 @@ namespace umi3d.cdk.userCapture
                                         .Where(x => x is AnimatedSkeleton)
                                         .Cast<AnimatedSkeleton>()
                                         .Append(subskeleton)
-                                        .OrderByDescending(x => x.priority).ToList();
+                                        .OrderByDescending(x => x.Priority).ToList();
 
             personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x=>x is AnimatedSkeleton);
             personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);

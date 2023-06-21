@@ -27,8 +27,6 @@ namespace EditMode_Tests.UserCapture
 {
     public class AnimatedSkeleton_Test
     {
-        private AnimatedSkeleton animatedSkeleton;
-
         private Mock<SkeletonMapper> mockSkeletonMapper;
         private Mock<UMI3DEnvironmentLoader> environmentLoaderService;
 
@@ -38,7 +36,6 @@ namespace EditMode_Tests.UserCapture
             mockSkeletonMapper = new Mock<SkeletonMapper>();
             
             environmentLoaderService = new Mock<UMI3DEnvironmentLoader>();
-            animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, environmentLoaderService.Object);
         }
 
         [TearDown]
@@ -54,6 +51,7 @@ namespace EditMode_Tests.UserCapture
         public void Test_GetCameraDto()
         {
             // GIVEN
+            var animatedSkeleton = new AnimatedSkeleton(null, null);
 
             // WHEN
             var cameraDto = animatedSkeleton.GetCameraDto();
@@ -70,8 +68,7 @@ namespace EditMode_Tests.UserCapture
         public void Test_GetPose_NoAnimation()
         {
             // GIVEN
-            var targetPose = new PoseDto();
-            mockSkeletonMapper.Setup(x => x.Animations).Returns(new ulong[] { });
+            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0]);
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -103,7 +100,8 @@ namespace EditMode_Tests.UserCapture
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.Animations).Returns(animationsDtos.Keys.ToArray());
+
+            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -127,9 +125,10 @@ namespace EditMode_Tests.UserCapture
             mockAnimation.Setup(x => x.IsPlaying()).Returns(true);
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.Animations).Returns(new ulong[] { animId });
 
             environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(animId)).Returns(mockAnimation.Object);
+
+            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, new UMI3DAnimatorAnimation[] { mockAnimation.Object });
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -162,7 +161,8 @@ namespace EditMode_Tests.UserCapture
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.Animations).Returns(animationsDtos.Keys.ToArray());
+            
+            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x=>x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -195,7 +195,8 @@ namespace EditMode_Tests.UserCapture
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            mockSkeletonMapper.Setup(x => x.Animations).Returns(animationsDtos.Keys.ToArray());
+            
+            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
