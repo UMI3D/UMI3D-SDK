@@ -17,7 +17,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
@@ -34,11 +33,10 @@ namespace umi3d.cdk.userCapture
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
+
         public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
 
-        [SerializeField]
-        protected UMI3DSkeletonHierarchy serializedSkeletonHierarchy;
-        public virtual Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> SkeletonHierarchy => serializedSkeletonHierarchy.SkeletonHierarchy;
+        public UMI3DSkeletonHierarchy SkeletonHierarchy { get; set; }
 
         public virtual Transform HipsAnchor { get => hipsAnchor; }
         public virtual ulong userId { get; protected set; }
@@ -58,17 +56,18 @@ namespace umi3d.cdk.userCapture
             if (Skeletons == null || Skeletons.Count == 0)
                 return this;
 
-            RetrieveBonesRotation(serializedSkeletonHierarchy);
+            RetrieveBonesRotation(SkeletonHierarchy);
 
-            foreach (uint boneType in Bones.Keys.ToArray()) // ToArray is here to allow dictionnary edition while enumerating
+            if (!Bones.ContainsKey(BoneType.Hips))
+                return this;
+
+            foreach (uint boneType in SkeletonHierarchy.HierarchyDict.Keys)
                 alreadyComputedBonesCache[boneType] = false;
 
             //very naive
             Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
-
-            //? we should also compute rotations
             // better use normal recusive computations then.
             foreach (uint boneType in Bones.Keys)
             {
@@ -92,11 +91,12 @@ namespace umi3d.cdk.userCapture
         private void ComputeBonePosition(uint boneType)
         {
             if (!alreadyComputedBonesCache[boneType]
-                && SkeletonHierarchy.TryGetValue(boneType, out var boneRelation)
+                && SkeletonHierarchy.HierarchyDict.TryGetValue(boneType, out var boneRelation)
                 && boneRelation.boneTypeParent != BoneType.None)
             {
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
                     ComputeBonePosition(boneRelation.boneTypeParent);
+
                 Bones[boneType].s_Position = Bones[boneRelation.boneTypeParent].s_Position + Bones[boneRelation.boneTypeParent].s_Rotation * boneRelation.relativePosition;
                 Bones[boneType].s_Rotation = Bones[BoneType.Hips].s_Rotation * Bones[boneType].s_Rotation; // all global bones rotations should be turned the same way as the anchor
                 alreadyComputedBonesCache[boneType] = true;
@@ -110,7 +110,7 @@ namespace umi3d.cdk.userCapture
         private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
         {
             // consider all bones we should have according to the hierarchy, and set all values to identity
-            foreach (var bone in hierarchy.SkeletonHierarchy.Keys)
+            foreach (var bone in hierarchy.HierarchyDict.Keys)
             {
                 if (Bones.ContainsKey(bone))
                     Bones[bone].s_Rotation = Quaternion.identity;
@@ -132,7 +132,7 @@ namespace umi3d.cdk.userCapture
                 }
                 catch (Exception e)
                 {
-                    Debug.Log(skeleton.GetType().Name.ToString());
+                    Debug.Log(skeleton?.GetType()?.Name.ToString());
                     UMI3DLogger.LogException(e, scope);
                     return;
                 }

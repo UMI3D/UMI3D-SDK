@@ -14,15 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using NUnit.Framework;
+using PlayMode_Tests.UserCapture.Skeletons.CDK;
+using umi3d.cdk.collaboration;
 
-using umi3d.common.userCapture;
-
-namespace umi3d.cdk.userCapture
+namespace PlayMode_Tests.Collaboration.Skeletons.CDK
 {
-    public interface ISkeletonManager
+    public class CollaborativeSkeleton_Test : AbstractSkeleton_Test
     {
-        public PersonalSkeleton personalSkeleton { get; }
+        [SetUp]
+        public override void SetUp()
+        {
+            base.SetUp();
 
-        public UMI3DSkeletonHierarchy StandardHierarchy { get; }
+            abstractSkeleton = skeletonGo.AddComponent<CollaborativeSkeleton>();
+            abstractSkeleton.SkeletonHierarchy = new(null);
+        }
     }
 }

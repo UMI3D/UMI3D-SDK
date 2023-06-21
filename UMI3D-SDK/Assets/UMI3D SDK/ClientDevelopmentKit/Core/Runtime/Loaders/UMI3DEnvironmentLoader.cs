@@ -540,6 +540,7 @@ namespace umi3d.cdk
 
         private AbstractUMI3DLoadingParameters parameters = null;
         public static AbstractUMI3DLoadingParameters Parameters => Exists ? Instance.parameters : null;
+        public virtual AbstractUMI3DLoadingParameters LoadingParameters => parameters;
 
         internal void SetParameters(AbstractUMI3DLoadingParameters parameters)
         {

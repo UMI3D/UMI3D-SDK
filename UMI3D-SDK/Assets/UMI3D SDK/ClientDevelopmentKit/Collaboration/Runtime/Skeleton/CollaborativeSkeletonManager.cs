@@ -54,6 +54,16 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public bool ShouldSendTracking { get; protected set; } = true;
 
+        public UMI3DSkeletonHierarchy StandardHierarchy
+        {
+            get
+            {
+                _standardHierarchy ??= new UMI3DSkeletonHierarchy((collaborativeLoaderService.LoadingParameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
+                return _standardHierarchy;
+            }
+        }
+        private UMI3DSkeletonHierarchy _standardHierarchy;
+
         float targetTrackingFPS = 30f;
         bool sendCameraProperties = true;
         bool sendTrackingLoopOnce = false;

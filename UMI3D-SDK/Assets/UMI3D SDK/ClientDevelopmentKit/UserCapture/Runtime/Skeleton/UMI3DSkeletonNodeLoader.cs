@@ -37,15 +37,18 @@ namespace umi3d.cdk.userCapture
         #region Dependency Injection
 
         protected readonly ISkeletonManager personnalSkeletonService;
+        private readonly UMI3DEnvironmentLoader environmentLoaderService;
 
         public UMI3DSkeletonNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
+            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService) : base()
+        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoaderService) : base()
         {
             this.personnalSkeletonService = personnalSkeletonService;
+            this.environmentLoaderService = environmentLoaderService;
         }
 
         #endregion Dependency Injection
@@ -168,7 +171,7 @@ namespace umi3d.cdk.userCapture
         /// <returns></returns>
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
-            return (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.BoneRelations
+            return (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
                             .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConverter.ConvertToBoneType(x.Bonetype)))
                             .Where(x => x.unityBoneContainer.HasValue)
                             .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
@@ -182,7 +185,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="animator"></param>
         protected void ExtractRigsFromAnimator(Animator animator)
         {
-            var newHierachy = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchy.Generate(animator.transform);
+            var newHierachy = personnalSkeletonService.personalSkeleton.SkeletonHierarchy.Generate(animator.transform);
 
             var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x=>x);
 

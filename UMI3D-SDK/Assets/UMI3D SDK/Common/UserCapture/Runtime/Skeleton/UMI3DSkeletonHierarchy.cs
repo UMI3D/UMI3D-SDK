@@ -1,5 +1,5 @@
-/*
-Copyright 2019 - 2021 Inetum
+﻿/*
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,91 +14,59 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-
-using umi3d.common.userCapture;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace umi3d.common.userCapture
 {
-    [CreateAssetMenu(fileName = "UMI3DSkeletonHierarchy", menuName = "UMI3D/UMI3D Skeleton Hierarchy")]
-    public class UMI3DSkeletonHierarchy : ScriptableObject
+    public class UMI3DSkeletonHierarchy
     {
-        [Serializable]
-        public class BoneRelation
+        public UMI3DSkeletonHierarchy(UMI3DSkeletonHierarchyDefinition definition)
         {
-            [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
-            public uint Bonetype;
-            [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Parent bone in the hierarchy.")]
-            public uint BonetypeParent;
-            [Tooltip("The relative position of the current bone type.")]
-            public Vector3 RelativePosition;
-
-            public BoneRelation(uint boneType, uint boneTypeParent, Vector3 relationPosition)
+            if (definition is null)
             {
-                this.Bonetype = boneType;
-                this.BonetypeParent = boneTypeParent;
-                this.RelativePosition = relationPosition;
+                _hierarchy.Add(BoneType.Hips, new() { boneTypeParent = BoneType.None, relativePosition = Vector3.zero });
+                return;
+            }
+
+            foreach (var relation in definition.BoneRelations)
+            {
+                _hierarchy.Add(relation.Bonetype, new UMI3DSkeletonHierarchyNode { boneTypeParent = relation.BonetypeParent, relativePosition = relation.RelativePosition });
             }
         }
 
-        public List<BoneRelation> BoneRelations = new List<BoneRelation>();
-
-        public Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> SkeletonHierarchy
-        { 
-            get
-            {
-                _skeletonHierarchy ??= ToSkeletonHierarchyDict();
-                return _skeletonHierarchy;
-            }
-            
-            protected set
-            {
-                _skeletonHierarchy = value;
-            }
-        }
-
-        [NonSerialized]
-        private Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> _skeletonHierarchy;
-
-        private Dictionary<uint, (uint boneTypeParent, Vector3 relativePosition)> ToSkeletonHierarchyDict()
+        public struct UMI3DSkeletonHierarchyNode
         {
-            _skeletonHierarchy = new();
+            public uint boneTypeParent;
 
-            foreach (var relation in BoneRelations)
+            public Vector3 relativePosition;
+
+            public static implicit operator (uint boneTypeParent, Vector3 relativePosition)(UMI3DSkeletonHierarchyNode node)
             {
-                _skeletonHierarchy.Add(relation.Bonetype, (relation.BonetypeParent, relation.RelativePosition));
+                return (node.boneTypeParent, node.relativePosition);
             }
-
-            return _skeletonHierarchy;
         }
-    }
 
-    public static class UMI3DSkeletonHirearchyExtensions
-    {
+        private readonly Dictionary<uint, UMI3DSkeletonHierarchyNode> _hierarchy = new();
+        public Dictionary<uint, UMI3DSkeletonHierarchyNode> HierarchyDict => _hierarchy;
+
         /// <summary>
-        /// Create a hierarchy of transform according to the UMI3DHierarchy in the parameters.
+        /// Create a hierarchy of transform according to the UMI3DHierarchy.
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        public static (uint umi3dBoneType, Transform boneTransform)[] Generate(this UMI3DSkeletonHierarchy hierarchyToCopy, Transform root)
+        public virtual (uint umi3dBoneType, Transform boneTransform)[] Generate(Transform root)
         {
-            var copiedHierarchy = hierarchyToCopy.SkeletonHierarchy;
-
             Dictionary<uint, bool> hasBeenCreated = new();
-            foreach (var bone in copiedHierarchy.Keys)
+            foreach (var bone in HierarchyDict.Keys)
                 hasBeenCreated[bone] = false;
 
             Dictionary<uint, Transform> hierarchy = new();
 
             var boneNames = BoneTypeHelper.GetBoneNames();
 
-            foreach (uint bone in copiedHierarchy.Keys)
+            foreach (uint bone in HierarchyDict.Keys)
             {
                 if (!hasBeenCreated[bone])
                     CreateNode(bone);
@@ -110,15 +78,15 @@ namespace umi3d.common.userCapture
                 hierarchy[bone] = go.transform;
                 if (bone != BoneType.Hips) // root
                 {
-                    if (!hasBeenCreated[copiedHierarchy[bone].boneTypeParent])
-                        CreateNode(copiedHierarchy[bone].boneTypeParent);
-                    go.transform.SetParent(hierarchy[copiedHierarchy[bone].boneTypeParent]);
+                    if (!hasBeenCreated[HierarchyDict[bone].boneTypeParent])
+                        CreateNode(HierarchyDict[bone].boneTypeParent);
+                    go.transform.SetParent(hierarchy[HierarchyDict[bone].boneTypeParent]);
                 }
                 else
                 {
                     go.transform.SetParent(root);
                 }
-                go.transform.localPosition = copiedHierarchy[bone].relativePosition;
+                go.transform.localPosition = HierarchyDict[bone].relativePosition;
                 hasBeenCreated[bone] = true;
             }
 
