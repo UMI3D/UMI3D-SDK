@@ -61,7 +61,7 @@ namespace umi3d.cdk.userCapture
             if (!Bones.ContainsKey(BoneType.Hips))
                 return this;
 
-            foreach (uint boneType in SkeletonHierarchy.HierarchyDict.Keys)
+            foreach (uint boneType in Bones.Keys)
                 alreadyComputedBonesCache[boneType] = false;
 
             //very naive
