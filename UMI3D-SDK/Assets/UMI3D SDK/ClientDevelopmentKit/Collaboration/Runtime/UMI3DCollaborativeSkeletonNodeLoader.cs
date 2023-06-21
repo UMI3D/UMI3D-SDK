@@ -80,6 +80,9 @@ namespace umi3d.cdk.collaboration
 
                     collaborationClientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
                 }
+
+                if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                    subskeleton.StartParameterSelfUpdate(skeleton);
             }
                 
             else
