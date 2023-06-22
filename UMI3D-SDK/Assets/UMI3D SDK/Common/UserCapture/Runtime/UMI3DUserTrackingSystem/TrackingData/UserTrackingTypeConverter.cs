@@ -275,15 +275,24 @@ namespace umi3d.common.userCapture
 
     public static class BoneTypeHelper
     {
+        private readonly static Dictionary<uint, string> BoneNames = new();
+
         public static Dictionary<uint, string> GetBoneNames()
         {
+            if (BoneNames.Count > 0)
+                return BoneNames;
+
             var keyValues = typeof(BoneType).GetFields().Select(f => (f.Name, boneType: (uint)f.GetRawConstantValue()));
-            Dictionary<uint, string> boneNames = new();
             foreach (var keyValue in keyValues)
             {
-                boneNames.Add(keyValue.boneType, keyValue.Name);
+                BoneNames.Add(keyValue.boneType, keyValue.Name);
             }
-            return boneNames;
+            return BoneNames;
         }
+
+        public static string GetBoneName(uint bone)
+        {
+            return GetBoneNames().ContainsKey(bone) ? BoneNames[bone] : "Custom bone";
+        }   
     }
 }

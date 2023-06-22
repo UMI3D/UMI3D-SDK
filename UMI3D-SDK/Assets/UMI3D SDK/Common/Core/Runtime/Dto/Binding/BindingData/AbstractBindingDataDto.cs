@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Abstract binding data.
+    /// </summary>
     [System.Serializable]
     public abstract class AbstractBindingDataDto : UMI3DDto
     {

@@ -62,13 +62,6 @@ namespace umi3d.cdk.collaboration
         public void PlayEmote(Emote emote);
 
         /// <summary>
-        /// Stop the emote if it is the currently playing one.
-        /// </summary>
-        /// <param name="emote"></param>
-        /// <returns></returns>
-        public void StopEmote(Emote emote);
-
-        /// <summary>
         /// Stop the currently playing emote.
         /// </summary>
         /// <param name="emote"></param>

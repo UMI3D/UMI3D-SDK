@@ -29,18 +29,26 @@ namespace umi3d.cdk.collaboration
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration;
 
+        private bool isRegisteredForPersonalSkeletonCleanup;
+
         #region Dependency Injection
 
         private readonly ICollaborativeSkeletonsManager collaborativeSkeletonsmanager;
+        private readonly UMI3DCollaborationClientServer collaborationClientServer;
+
+        
 
         public UMI3DCollaborativeSkeletonNodeLoader()
         {
             this.collaborativeSkeletonsmanager = CollaborativeSkeletonManager.Instance;
+            this.collaborationClientServer = UMI3DCollaborationClientServer.Instance;
         }
 
-        public UMI3DCollaborativeSkeletonNodeLoader(ICollaborativeSkeletonsManager collaborativeSkeletonsmanager)
+        public UMI3DCollaborativeSkeletonNodeLoader(ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
+                                                    UMI3DCollaborationClientServer collaborationClientServer)
         {
             this.collaborativeSkeletonsmanager = collaborativeSkeletonsmanager;
+            this.collaborationClientServer = collaborationClientServer;
         }
 
         #endregion Dependency Injection
@@ -58,6 +66,20 @@ namespace umi3d.cdk.collaboration
 
                 skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
                 skeleton.Skeletons.AddRange(animatedSkeletons);
+
+                if (userId == collaborationClientServer.GetUserId() && !isRegisteredForPersonalSkeletonCleanup)
+                {
+                    isRegisteredForPersonalSkeletonCleanup = true;
+
+                    void RemoveSkeletons()
+                    {
+                        skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
+                        collaborationClientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
+                        isRegisteredForPersonalSkeletonCleanup = false;
+                    }
+
+                    collaborationClientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
+                }
             }
                 
             else
