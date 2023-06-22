@@ -21,8 +21,8 @@ namespace umi3d.common.userCapture
     {
         public FloorAnchoredBonePoseDto() { }
 
-        public FloorAnchoredBonePoseDto(BonePoseDto bonePoseDto) 
-            : base(bonePoseDto.bone, bonePoseDto.Position, bonePoseDto.Rotation)
+        public FloorAnchoredBonePoseDto(BonePoseDto bonePoseDto)
+            : base(bonePoseDto.Bone, bonePoseDto.Position, bonePoseDto.Rotation)
         {
 
         }

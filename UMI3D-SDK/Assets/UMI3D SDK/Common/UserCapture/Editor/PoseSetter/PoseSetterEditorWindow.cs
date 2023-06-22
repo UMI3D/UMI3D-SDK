@@ -458,7 +458,7 @@ namespace umi3d.common.userCapture
                                                              .ToList();
 
                 Vector4Dto rootRotation = r.transform.rotation.Dto();
-                BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, boneToSave[0], r);
+                BonePoseDto bonePoseDto = CreateBonePoseDTOOfType(rootRotation, r);
                 boneToSave.RemoveAt(0);
 
                 boneToSave.ForEach(bc =>
@@ -483,9 +483,9 @@ namespace umi3d.common.userCapture
             }
         }
 
-        private BonePoseDto CreateBonePoseDTOOfType(Vector4Dto rootRotation, PoseSetterBoneComponent poseSetterBoneComponent, PoseSetterBoneComponent r)
+        private BonePoseDto CreateBonePoseDTOOfType(Vector4Dto rootRotation, PoseSetterBoneComponent r)
         {
-            BonePoseDto bonePoseDto = new BonePoseDto(poseSetterBoneComponent.BoneType, r.transform.position.Dto(), rootRotation);
+            BonePoseDto bonePoseDto = new BonePoseDto(r.BoneType, r.transform.position.Dto(), rootRotation);
             string anchor = anchor_dropdown.value;
             switch (anchor_dropdown.value)
             {
@@ -535,7 +535,7 @@ namespace umi3d.common.userCapture
 
                 ResetAllBones();
 
-                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.BonePoseDto.bone);
+                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.BonePoseDto.Bone);
                 root_boneComponent.isRoot = true;
                 root_boneComponent.isSavable = false;
                 treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(true, root_boneComponent.BoneType);
@@ -593,7 +593,7 @@ namespace umi3d.common.userCapture
 
         private void UpdateBoneComponent(BonePoseDto bonePoseDto)
         {
-            PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonePoseDto.bone);
+            PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonePoseDto.Bone);
             if (bone_component != null)
             {
                 bone_component.transform.rotation = bonePoseDto.Rotation.Quaternion();

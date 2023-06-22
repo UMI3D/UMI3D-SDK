@@ -39,12 +39,12 @@ namespace umi3d.common.userCapture
         /// </summary>
         /// <param name="otherBone">The anchor bone</param>
         /// <param name="bonePoseDto">The bone DTO corresponding to the current anchor bone pose dto you want to do</param>
-        public AnchoredBonePoseDto(uint otherBone, BonePoseDto bonePoseDto) : base (bonePoseDto.bone, bonePoseDto.Position, bonePoseDto.Rotation)
+        public AnchoredBonePoseDto(uint otherBone, BonePoseDto bonePoseDto) : base(bonePoseDto.Bone, bonePoseDto.Position, bonePoseDto.Rotation)
         {
             this.otherBone = otherBone;
         }
 
-        public AnchoredBonePoseDto(BonePoseDto bonePoseDto) : base(bonePoseDto.bone, bonePoseDto.Position, bonePoseDto.Rotation)
+        public AnchoredBonePoseDto(BonePoseDto bonePoseDto) : base(bonePoseDto.Bone, bonePoseDto.Position, bonePoseDto.Rotation)
         {
         }
 

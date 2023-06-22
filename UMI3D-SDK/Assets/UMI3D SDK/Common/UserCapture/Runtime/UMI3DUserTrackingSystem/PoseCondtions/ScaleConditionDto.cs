@@ -23,10 +23,13 @@ namespace umi3d.common.userCapture
 
         public ScaleConditionDto(Vector3Dto scale)
         {
-            this.scale = scale;
+            this.Scale = scale;
         }
 
-        public Vector3Dto scale { get; set; }  
-        public uint targetId { get; set; }
+        private Vector3Dto scale;
+        public Vector3Dto Scale { get => scale; set => scale = value; }
+
+        private uint targetId;
+        public uint TargetId { get => targetId; set => targetId = value; }
     }
 }

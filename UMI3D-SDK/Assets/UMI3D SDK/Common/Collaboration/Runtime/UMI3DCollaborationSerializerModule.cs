@@ -171,12 +171,20 @@ namespace umi3d.common.collaboration
                         DurationDto durationDto;
                         bool interpolationable;
                         bool composable;
+                        bool isHoverEnter;
+                        bool isHoverExit;
+                        bool isTrigger;
+                        bool isRelease;
 
                         readable = UMI3DSerializer.TryRead(container, out poseIndex);
                         readable &= UMI3DSerializer.TryRead(container, out durationDto);
                         readable &= UMI3DSerializer.TryRead(container, out interpolationable);
                         readable &= UMI3DSerializer.TryRead(container, out composable);
                         poseConditionDtos = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
+                        readable &= UMI3DSerializer.TryRead(container, out isHoverEnter);
+                        readable &= UMI3DSerializer.TryRead(container, out isHoverExit);
+                        readable &= UMI3DSerializer.TryRead(container, out isTrigger);
+                        readable &= UMI3DSerializer.TryRead(container, out isRelease);
 
                         if (readable)
                         {
@@ -185,7 +193,11 @@ namespace umi3d.common.collaboration
                                 poseConditionDtos: poseConditionDtos,
                                 duration: durationDto,
                                 interpolationable: interpolationable,
-                                composable: composable
+                                composable: composable,
+                                isHoverEnter : isHoverEnter,
+                                isHoverExit : isHoverExit,
+                                isTrigger : isTrigger,
+                                isRelease : isRelease
                             );
 
                             result = (T)Convert.ChangeType(poseOverriderDto, typeof(PoseOverriderDto));
@@ -1017,27 +1029,27 @@ namespace umi3d.common.collaboration
                 #region Pose Dto
                 case AnchoredBonePoseDto anchorBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)1)
-                        + UMI3DSerializer.Write(anchorBonePoseDto.bone)
+                        + UMI3DSerializer.Write(anchorBonePoseDto.Bone)
                         + UMI3DSerializer.Write(anchorBonePoseDto.Position)
                         + UMI3DSerializer.Write(anchorBonePoseDto.Rotation)
                         + UMI3DSerializer.Write(anchorBonePoseDto.otherBone);
                     break;
                 case NodeAnchoredBonePoseDto nodePositionAnchoredBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)2)
-                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.bone)
+                        + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Bone)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Position)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.Rotation)
                         + UMI3DSerializer.Write(nodePositionAnchoredBonePoseDto.node);
                     break;
                 case FloorAnchoredBonePoseDto floorAnchoredBonePoseDto:
                     bytable = UMI3DSerializer.Write((int)3)
-                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.bone)
+                        + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Bone)
                         + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Position)
                         + UMI3DSerializer.Write(floorAnchoredBonePoseDto.Rotation);
                     break;
                 case BonePoseDto bonePoseDto:
                     bytable = UMI3DSerializer.Write((int)0)
-                        + UMI3DSerializer.Write(bonePoseDto.bone)
+                        + UMI3DSerializer.Write(bonePoseDto.Bone)
                         + UMI3DSerializer.Write(bonePoseDto.Position)
                         + UMI3DSerializer.Write(bonePoseDto.Rotation);
                     break;
@@ -1051,7 +1063,12 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.interpolationable)
                         + UMI3DSerializer.Write(poseOverriderDto.composable)
-                        + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions);
+                        + UMI3DSerializer.WriteCollection(poseOverriderDto.poseConditions)
+                        + UMI3DSerializer.Write(poseOverriderDto.isHoverEnter)
+                        + UMI3DSerializer.Write(poseOverriderDto.isHoverExit)
+                        + UMI3DSerializer.Write(poseOverriderDto.isTrigger)
+                        + UMI3DSerializer.Write(poseOverriderDto.isRelease);
+
                     break;
                 case DurationDto durationDto:
                     bytable = UMI3DSerializer.Write(durationDto.duration)
@@ -1062,35 +1079,35 @@ namespace umi3d.common.collaboration
                 #region PoseCondition Dto
                 case MagnitudeConditionDto magnitudeConditionDto:
                     bytable = UMI3DSerializer.Write((int)1)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.magnitude)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.boneOrigine)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.targetObjectId);
+                        + UMI3DSerializer.Write(magnitudeConditionDto.Magnitude)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.BoneOrigine)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.TargetObjectId);
                     break;
                 case RangeConditionDto rangeConditionDto:
                     bytable = UMI3DSerializer.Write((int)2)
-                        + UMI3DSerializer.Write(rangeConditionDto.conditionA)
-                        + UMI3DSerializer.Write(rangeConditionDto.conditionB);
+                        + UMI3DSerializer.Write(rangeConditionDto.ConditionA)
+                        + UMI3DSerializer.Write(rangeConditionDto.ConditionB);
                     break;
                 case BoneRotationConditionDto boneRotationConditionDto:
                     bytable = UMI3DSerializer.Write((int)3)
-                        + UMI3DSerializer.Write(boneRotationConditionDto.boneId)
-                        + UMI3DSerializer.Write(boneRotationConditionDto.rotation);
+                        + UMI3DSerializer.Write(boneRotationConditionDto.BoneId)
+                        + UMI3DSerializer.Write(boneRotationConditionDto.Rotation);
                     break;
                 case DirectionConditionDto directionConditionDto:
                     bytable = UMI3DSerializer.Write((int)4)
-                        + UMI3DSerializer.Write(directionConditionDto.direction);
+                        + UMI3DSerializer.Write(directionConditionDto.Direction);
                     break;
                 case NotConditionDto notConditionDto:
                     bytable = UMI3DSerializer.Write((int)5)
-                        + UMI3DSerializer.WriteCollection(notConditionDto.conditions);
+                        + UMI3DSerializer.WriteCollection(notConditionDto.Conditions);
                     break;
                 case UserScaleConditionDto userScaleConditinoDto:
                     bytable = UMI3DSerializer.Write((int)6)
-                        + UMI3DSerializer.Write(userScaleConditinoDto.scale);
+                        + UMI3DSerializer.Write(userScaleConditinoDto.Scale);
                     break;
                 case ScaleConditionDto scaleConditionDto:
                     bytable = UMI3DSerializer.Write((int)7)
-                        + UMI3DSerializer.Write(scaleConditionDto.scale);
+                        + UMI3DSerializer.Write(scaleConditionDto.Scale);
                     break;
                 #endregion
 

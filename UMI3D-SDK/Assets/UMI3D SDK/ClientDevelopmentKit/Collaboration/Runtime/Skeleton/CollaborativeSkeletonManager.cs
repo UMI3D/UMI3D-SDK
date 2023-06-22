@@ -308,8 +308,8 @@ namespace umi3d.cdk.collaboration
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
             if (playPoseDto.stopPose)
             {
-                (skeleton as PersonalSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
-                (skeleton as CollaborativeSkeleton)?.poseSkeleton.StopPose(false, new List<PoseDto> { poseDto });
+                (skeleton as PersonalSkeleton)?.poseSkeleton.StopPose(new List<PoseDto> { poseDto });
+                (skeleton as CollaborativeSkeleton)?.poseSkeleton.StopPose(new List<PoseDto> { poseDto });
             }
             else
             {

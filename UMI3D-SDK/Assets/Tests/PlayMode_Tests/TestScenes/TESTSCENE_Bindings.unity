@@ -132,7 +132,6 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 251918861}
-  - component: {fileID: 251918863}
   - component: {fileID: 251918862}
   m_Layer: 0
   m_Name: PoseManager
@@ -165,28 +164,10 @@ MonoBehaviour:
   m_GameObject: {fileID: 251918859}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 7f9de025ff19e6d40a287645ed054f70, type: 3}
+  m_Script: {fileID: 11500000, guid: f436de9c97e96274189e3cbdb1b1e7d6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  allPoseOverriders:
-  - poseOverriderContainer:
-      poseOverriders:
-      - {fileID: 0}
-      isStart: 0
-    _uMI3DEvent: {fileID: 0}
---- !u!114 &251918863
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 251918859}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: afe67b5d4662b424fa5947047089a5a7, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  allServerPoses: []
+  clientPoses: []
 --- !u!1 &679409573
 GameObject:
   m_ObjectHideFlags: 0
@@ -667,6 +648,11 @@ PrefabInstance:
         type: 3}
       propertyPath: m_Name
       value: SkeletonForPoseSetter
+      objectReference: {fileID: 0}
+    - target: {fileID: 1446335021924109844, guid: 5e257a4d7d7e5d141963efc9ab296f0a,
+        type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 1479998058136623067, guid: 5e257a4d7d7e5d141963efc9ab296f0a,
         type: 3}

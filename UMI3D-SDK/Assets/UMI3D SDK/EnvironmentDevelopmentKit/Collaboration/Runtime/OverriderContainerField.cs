@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,18 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 using System;
+using System.Collections;
 using System.Collections.Generic;
-using umi3d.common;
-using UnityEditor;
+using umi3d.edk.interaction;
+using umi3d.edk.userCapture;
+using umi3d.edk;
 using UnityEngine;
 
-namespace PlayMode_Tests
+namespace umi3d.common.collaboration
 {
-    public static class PlayModeTestHelper
+    [Serializable]
+    public class OverriderContainerField
     {
-        public const string EMPTY_TEST_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Empty";
-        public const string EMPTY_BINDING_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Bindings";
+        [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
+        public UMI3DPoseOverriderContainer PoseOverriderContainer { get => poseOverriderContainer; }
+
+        [SerializeField] UMI3DEvent _uMI3DEvent;
+        public UMI3DEvent uMI3DEvent { get => _uMI3DEvent; }
+
+        public void SetNode()
+        {
+            PoseOverriderContainer.SetNodeId(uMI3DEvent.GetComponent<UMI3DModel>().Id());
+        }
     }
 }

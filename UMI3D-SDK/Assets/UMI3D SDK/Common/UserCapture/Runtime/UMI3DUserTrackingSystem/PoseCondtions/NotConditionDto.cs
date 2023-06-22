@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
@@ -23,10 +22,10 @@ namespace umi3d.common.userCapture
 
         public NotConditionDto(PoseConditionDto[] conditions)
         {
-            this.conditions = conditions;
+            this.Conditions = conditions;
         }
 
-
-        public PoseConditionDto[] conditions { get; set; }
+        PoseConditionDto[] conditions;
+        public PoseConditionDto[] Conditions { get => conditions; set => conditions = value; }
     }
 }

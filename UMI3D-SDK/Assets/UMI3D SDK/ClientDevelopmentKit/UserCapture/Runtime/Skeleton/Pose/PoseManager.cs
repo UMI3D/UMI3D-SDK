@@ -24,28 +24,47 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public class PoseManager : SingleBehaviour<PoseManager>
+    public class PoseManager : Singleton<PoseManager>
     {
-        [SerializeField] List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
+        [SerializeField] List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
 
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
 
         public Dictionary<ulong, List<PoseDto>> allPoses;
+        public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>(); 
 
-        private ISkeletonManager skeletonManager;
+        private readonly ISkeletonManager skeletonManager;
 
-        private void Start()
+        bool isInit = false;
+
+        public PoseManager()
         {
-            localPoses = new PoseDto[clientPoses.Count];
-            for (int i = 0; i< clientPoses.Count; i++)
-            {
-                PoseDto poseDto = clientPoses[i].ToDTO();
-                poseDto.id = i;
-                localPoses[i] = poseDto;
-            }
-
             skeletonManager = PersonalSkeletonManager.Instance;
+            InitLocalPoses();
+        }
+
+        public PoseManager(ISkeletonManager skeletonManager)
+        {
+            this.skeletonManager = skeletonManager;
+            InitLocalPoses();
+        }
+
+        private void InitLocalPoses()
+        {
+            if (isInit == false)
+            {
+                isInit= true;
+
+                List<UMI3DPose_so> clientPoses = (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).clientPoses;
+                localPoses = new PoseDto[clientPoses.Count];
+                for (int i = 0; i < clientPoses.Count; i++)
+                {
+                    PoseDto poseDto = clientPoses[i].ToDTO();
+                    poseDto.id = i;
+                    localPoses[i] = poseDto;
+                }
+            }
         }
 
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
@@ -59,22 +78,106 @@ namespace umi3d.cdk.userCapture
             return poses?[index];
         }
 
-        Coroutine poseOverriderContainerHandlerCoroutine = null;
-
-        internal void HandlePoseOverriderContainerHandlerUnitCheckCorroutine(IEnumerator enumerator)
+        /// <summary>
+        /// Inits all the pose overrider containers
+        /// </summary>
+        /// <param name="allPoseOverriderContainer"></param>
+        public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
         {
-            poseOverriderContainerHandlerCoroutine = StartCoroutine(enumerator);
-        }
+            poseOverriderContainerDtos = allPoseOverriderContainer;
 
-        internal void DisablePoseOverriderContainerHandlerUnitCheckCorroutine()
-        {
-            if (poseOverriderContainerHandlerCoroutine != null)
+            for (int i = 0; i < allPoseOverriderContainer.Count; i++)
             {
-                StopCoroutine(poseOverriderContainerHandlerCoroutine);
+                PoseOverriderContainerHandlerUnit handlerUnit = new PoseOverriderContainerHandlerUnit(allPoseOverriderContainer[i]);
+                handlerUnit.CheckCondtionOfAllOverriders();
+                handlerUnit.OnConditionValidated += (unit, pose) =>
+                {
+                    SetTargetPose(pose);
+                };
+                handlerUnit.OnConditionDesactivated += (unit, pose) =>
+                {
+                    StopTargetPose(pose);
+                };
+                allPoseHandlerUnits.Add(allPoseOverriderContainer[i].relatedNodeId, handlerUnit);
             }
         }
 
-        internal void ApplyTargetPoseToPersonalSkeleton_PoseSkeleton(PoseOverriderDto poseOverriderDto)
+        /// <summary>
+        /// Allows to add a pose handler unit at runtime
+        /// </summary>
+        /// <param name="overrider"></param>
+        /// <param name="unit"></param>
+        public void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
+        {
+            PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit(overrider);
+            unit.OnConditionValidated += (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
+            unit.OnConditionDesactivated += (unit, poseOverriderDto) => StopTargetPose(poseOverriderDto);
+            allPoseHandlerUnits.Add(overrider.relatedNodeId, unit);
+        }
+
+        /// <summary>
+        /// Allows to remove a pose handler unit at runtime
+        /// </summary>
+        /// <param name="overrider"></param>
+        public void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
+        {
+            if (allPoseHandlerUnits.TryGetValue(overrider.relatedNodeId, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnConditionValidated -= (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
+                unit.DisableCheck();
+                allPoseHandlerUnits.Remove(overrider.relatedNodeId);
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Hover Enter is triggered
+        /// </summary>
+        public void OnHoverEnter(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnHoverEnter();
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Hover Exit is triggered
+        /// </summary>
+        public void OnHoverExit(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnHoverExit();
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Trigger is triggered
+        /// </summary>
+        public void OnTrigger(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnTrigger();
+            }
+        }
+
+        /// <summary>
+        /// Activated if the Release Enter is triggered
+        /// </summary>
+        public void OnRelease(ulong id)
+        {
+            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            {
+                unit.OnRelease();
+            }
+        }
+
+        /// <summary>
+        /// Sets the related pose to the overrider Dto, in the poseSkeleton
+        /// </summary>
+        /// <param name="poseOverriderDto"></param>
+        public void SetTargetPose(PoseOverriderDto poseOverriderDto, bool isSeverPose = true)
         {
             if (poseOverriderDto != null && allPoses != null)
             {
@@ -82,12 +185,39 @@ namespace umi3d.cdk.userCapture
                 {
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
-
-                        skeletonManager.personalSkeleton.poseSkeleton.SetPose(true, new List<PoseDto>() { pose }, true);
+                        skeletonManager.personalSkeleton.poseSkeleton.SetPose(poseOverriderDto.composable, new List<PoseDto>() { pose }, isSeverPose);
                         return;
                     }
                 }
             }
+        }
+
+        /// <summary>
+        /// Stops the related pose to the overriderDto, in the poseSkeleton
+        /// </summary>
+        /// <param name="poseOverriderDto"></param>
+        public void StopTargetPose(PoseOverriderDto poseOverriderDto, bool isServerPose = true)
+        {
+            if (poseOverriderDto != null && allPoses != null)
+            {
+                foreach (PoseDto pose in allPoses[0])
+                {
+                    if (pose.id == poseOverriderDto.poseIndexinPoseManager)
+                    {
+                        skeletonManager.personalSkeleton.poseSkeleton.StopPose(new List<PoseDto>() { pose }, isServerPose);
+                        return;
+                    }
+                }
+            }
+        }
+
+        /// <summary>
+        /// Stops all poses
+        /// </summary>
+        /// <param name="poseOverriderDto"></param>
+        public void StopAllPoses()
+        {
+            skeletonManager.personalSkeleton.poseSkeleton.StopAllPoses();
         }
     }
 }

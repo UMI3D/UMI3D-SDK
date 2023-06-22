@@ -29,13 +29,18 @@ namespace umi3d.common.userCapture
         /// <param name="duration"></param>
         /// <param name="interpolationable"></param>
         /// <param name="composable"></param>
-        public PoseOverriderDto(int poseIndexinPoseManager, PoseConditionDto[] poseConditionDtos, DurationDto duration, bool interpolationable, bool composable)
+        public PoseOverriderDto(int poseIndexinPoseManager, PoseConditionDto[] poseConditionDtos, DurationDto duration,
+            bool interpolationable, bool composable, bool isHoverEnter, bool isHoverExit, bool isRelease, bool isTrigger)
         {
             this.poseIndexinPoseManager = poseIndexinPoseManager;
             this.poseConditions = poseConditionDtos;
             this.duration = duration;
             this.interpolationable = interpolationable;
             this.composable = composable;
+            this.isHoverEnter = isHoverEnter;
+            this.isHoverExit = isHoverExit;
+            this.isRelease = isRelease;
+            this.isTrigger = isTrigger;
         }
 
         public int poseIndexinPoseManager { get; set; }
@@ -46,6 +51,10 @@ namespace umi3d.common.userCapture
         public DurationDto duration { get; set; }
         public bool interpolationable { get; set; }
         public bool composable { get; set; }
+        public bool isHoverEnter { get; set; }
+        public bool isHoverExit { get; set;}
+        public bool isRelease { get; set; } 
+        public bool isTrigger { get; set; }
     }
 }
 

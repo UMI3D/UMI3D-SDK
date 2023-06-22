@@ -24,6 +24,7 @@ namespace umi3d.common.userCapture
     /// <summary>
     /// Scriptable object to contains data for PoseDto
     /// </summary>
+    [Serializable]
     public class UMI3DPose_so : ScriptableObject
     {
         [SerializeField] List<BoneDto> boneDtos = new List<BoneDto>();
@@ -35,7 +36,7 @@ namespace umi3d.common.userCapture
         /// <summary>
         /// An event thats called when the PoseManager has played his Start() method
         /// </summary>
-        public event Action<int> onPoseReferencedAndIndexSetted;
+        public event Action<UMI3DPose_so, int> onPoseReferencedAndIndexSetted;
 
         public int poseRef { get; private set; } 
 
@@ -47,8 +48,8 @@ namespace umi3d.common.userCapture
 
         public void SendPoseIndexationEvent(int i)
         {
-            onPoseReferencedAndIndexSetted.Invoke(i);
             poseRef = i;
+            onPoseReferencedAndIndexSetted?.Invoke(this, i);
         }
 
         /// <summary>

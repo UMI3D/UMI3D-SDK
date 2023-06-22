@@ -14,19 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+using inetum.unityUtils;
+using System;
+using System.Collections;
+using System.Collections.Generic;
+using umi3d.common.userCapture;
+using umi3d.edk;
+using UnityEngine;
+
+namespace umi3d.edk.userCapture
 {
-    [System.Serializable]
-    public class UserScaleConditionDto : PoseConditionDto
+    public class UMI3DPoseContainer : SingleBehaviour<UMI3DPoseContainer>, IPoseContainer
     {
-        public UserScaleConditionDto() { }
-
-        public UserScaleConditionDto(Vector3Dto scale)
-        {
-            this.Scale = scale;
-        }
-
-        private Vector3Dto scale;
-        public Vector3Dto Scale { get => scale; set => scale = value; }
+        [SerializeField] List<UMI3DPose_so> allServerPoses = new List<UMI3DPose_so>();
+        public List<UMI3DPose_so> GetAllServerPoses() { return allServerPoses; }
     }
 }

@@ -14,19 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+using System.Collections;
+using System.Collections.Generic;
+using UnityEngine;
+
+namespace umi3d.common.collaboration
 {
-    [System.Serializable]
-    public class UserScaleConditionDto : PoseConditionDto
+    public interface IPoseOverriderFieldContainer
     {
-        public UserScaleConditionDto() { }
-
-        public UserScaleConditionDto(Vector3Dto scale)
-        {
-            this.Scale = scale;
-        }
-
-        private Vector3Dto scale;
-        public Vector3Dto Scale { get => scale; set => scale = value; }
+        public List<OverriderContainerField> GetAllPoseOverriders();
     }
 }

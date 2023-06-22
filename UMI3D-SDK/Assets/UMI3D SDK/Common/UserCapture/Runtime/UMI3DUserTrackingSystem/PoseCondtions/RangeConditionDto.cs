@@ -23,11 +23,14 @@ namespace umi3d.common.userCapture
 
         public RangeConditionDto(PoseConditionDto conditionA, PoseConditionDto conditionB)
         {
-            this.conditionA = conditionA;
-            this.conditionB = conditionB;
+            this.ConditionA = conditionA;
+            this.ConditionB = conditionB;
         }
 
-        public PoseConditionDto conditionA { get; set; }
-        public PoseConditionDto conditionB { get; set; }
+        private PoseConditionDto conditionA;
+        public PoseConditionDto ConditionA { get => conditionA; set => conditionA = value; }
+
+        private PoseConditionDto conditionB;
+        public PoseConditionDto ConditionB { get => conditionB; set => conditionB = value; }
     }
 }

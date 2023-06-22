@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
@@ -24,9 +23,10 @@ namespace umi3d.common.userCapture
 
         public DirectionConditionDto(Vector3Dto direction)
         {
-            this.direction = direction;
+            this.Direction = direction;
         }
 
-        public Vector3Dto direction { get; set; }
+        private Vector3Dto direction;
+        public Vector3Dto Direction { get => direction; set => direction = value; }
     }
 }

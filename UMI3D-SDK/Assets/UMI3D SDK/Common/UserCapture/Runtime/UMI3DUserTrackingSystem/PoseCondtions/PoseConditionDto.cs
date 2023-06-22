@@ -17,7 +17,7 @@ limitations under the License.
 namespace umi3d.common.userCapture
 {
     [System.Serializable]
-    public abstract class PoseConditionDto : UMI3DDto
+    public class PoseConditionDto : UMI3DDto
     {
         public PoseConditionDto() { }
     }

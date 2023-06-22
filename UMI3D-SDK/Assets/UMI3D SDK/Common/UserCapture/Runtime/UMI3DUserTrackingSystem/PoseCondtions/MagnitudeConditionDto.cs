@@ -23,16 +23,19 @@ namespace umi3d.common.userCapture
 
         public MagnitudeConditionDto(float magnitude, uint boneOrigine, uint targetObjectId)
         {
-            this.magnitude = magnitude;
-            this.boneOrigine = boneOrigine;
-            this.targetObjectId = targetObjectId;
+            this.Magnitude = magnitude;
+            this.BoneOrigine = boneOrigine;
+            this.TargetObjectId = targetObjectId;
         }
 
-        public float magnitude { get; set; }
+        private float magnitude;
+        public float Magnitude { get => magnitude; set => magnitude = value; }
 
-        public uint boneOrigine { get;  set; }
+        private uint boneOrigin;
+        public uint BoneOrigine { get => boneOrigin;  set => boneOrigin = value; }
 
-        public uint targetObjectId { get; set; }
+        private uint targetObjectId;
+        public uint TargetObjectId { get => targetObjectId; set => targetObjectId = value; }
     }
 }
 
