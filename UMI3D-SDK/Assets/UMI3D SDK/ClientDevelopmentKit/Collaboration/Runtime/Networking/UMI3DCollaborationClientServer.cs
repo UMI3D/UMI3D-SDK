@@ -56,9 +56,6 @@ namespace umi3d.cdk.collaboration
 
         public static Func<MultiProgress> EnvironmentProgress = null;
 
-        public UnityEvent OnLeaving = new UnityEvent();
-        public UnityEvent OnLeavingEnvironment = new UnityEvent();
-
         public UnityEvent OnNewToken = new UnityEvent();
         public UnityEvent OnConnectionLost = new UnityEvent();
         public UnityEvent OnRedirectionStarted = new UnityEvent();

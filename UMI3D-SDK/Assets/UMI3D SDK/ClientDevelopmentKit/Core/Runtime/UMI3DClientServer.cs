@@ -18,6 +18,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -31,6 +32,9 @@ namespace umi3d.cdk
         /// Environment connected to.
         /// </summary>
         protected MediaDto _media;
+
+        public UnityEvent OnLeaving = new UnityEvent();
+        public UnityEvent OnLeavingEnvironment = new UnityEvent();
 
         protected UMI3DTransactionDispatcher _transactionDispatcher;
         public static UMI3DTransactionDispatcher transactionDispatcher

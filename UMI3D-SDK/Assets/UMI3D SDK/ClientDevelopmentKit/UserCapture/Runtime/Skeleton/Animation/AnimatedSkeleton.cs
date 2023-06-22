@@ -107,7 +107,10 @@ namespace umi3d.cdk.userCapture
                 throw new System.ArgumentNullException("Skeleton to auto update is not defined.");
 
             if (SelfUpdatedAnimatorParameters.Length > 0)
+            {
                 updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
+                UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (updateParameterRoutine is not null) coroutineService.DettachCoroutine(updateParameterRoutine); });
+            } 
         }
 
         /// <summary>
