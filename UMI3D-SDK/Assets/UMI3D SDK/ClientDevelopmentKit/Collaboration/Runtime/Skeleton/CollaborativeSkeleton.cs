@@ -43,7 +43,6 @@ namespace umi3d.cdk.collaboration
             TrackedSkeleton = Instantiate((UMI3DEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
             Skeletons.Add(TrackedSkeleton);
             Skeletons.Add(poseSkeleton);
-            //skeletons.Add(new AnimatedSkeleton());
         }
     }
 }

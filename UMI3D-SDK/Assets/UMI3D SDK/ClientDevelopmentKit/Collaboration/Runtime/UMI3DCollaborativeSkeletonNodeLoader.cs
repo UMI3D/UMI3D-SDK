@@ -62,7 +62,7 @@ namespace umi3d.cdk.collaboration
                                         .Where(x => x is AnimatedSkeleton)
                                         .Cast<AnimatedSkeleton>()
                                         .Append(subskeleton)
-                                        .OrderByDescending(x => x.priority).ToList();
+                                        .OrderByDescending(x => x.Priority).ToList();
 
                 skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
                 skeleton.Skeletons.AddRange(animatedSkeletons);
@@ -80,6 +80,9 @@ namespace umi3d.cdk.collaboration
 
                     collaborationClientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
                 }
+
+                if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                    subskeleton.StartParameterSelfUpdate(skeleton);
             }
                 
             else

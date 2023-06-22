@@ -28,16 +28,34 @@ namespace umi3d.edk.userCapture
     /// </summary>
     public class UMI3DSkeletonNode : UMI3DModel
     {
+        /// <summary>
+        /// List of states names in the embedded animator.
+        /// </summary>
         [Tooltip("List of states names in the embedded animator.")]
         public List<string> animationStates = new();
 
+        /// <summary>
+        /// ID of the user owning this node. Their skeleton is the one affected by this node.
+        /// </summary>
         [EditorReadOnly]
         public ulong userId;
 
+        /// <summary>
+        /// Collection of ID of UMI3D animations associated with this node.
+        /// </summary>
         [EditorReadOnly]
         public ulong[] relatedAnimationIds;
 
+        /// <summary>
+        /// Priority for application of skeleton animation.
+        /// </summary>
         public uint priority;
+
+        /// <summary>
+        /// List of parameters that are updated by the browsers themselves based on skeleton movement.
+        /// </summary>
+        /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
+        public uint[] animatorSelfTrackedParameters;
 
         /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
@@ -50,8 +68,9 @@ namespace umi3d.edk.userCapture
             base.WriteProperties(dto, user);
             var skeletonNodeDto = dto as UMI3DSkeletonNodeDto;
             skeletonNodeDto.userId = userId;
-            skeletonNodeDto.relatedAnimationsId = relatedAnimationIds;
+            skeletonNodeDto.relatedAnimationsId = relatedAnimationIds ?? new ulong[0];
             skeletonNodeDto.priority = priority;
+            skeletonNodeDto.animatorSelfTrackedParameters = animatorSelfTrackedParameters ?? new uint[0];
         }
 
         public override Bytable ToBytes(UMI3DUser user)
@@ -59,7 +78,8 @@ namespace umi3d.edk.userCapture
             return base.ToBytes(user)
                     + UMI3DSerializer.Write(userId)
                     + UMI3DSerializer.Write(priority)
-                    + UMI3DSerializer.WriteCollection(relatedAnimationIds);
+                    + UMI3DSerializer.WriteCollection(relatedAnimationIds)
+                    + UMI3DSerializer.WriteCollection(animatorSelfTrackedParameters);
         }
     }
 }

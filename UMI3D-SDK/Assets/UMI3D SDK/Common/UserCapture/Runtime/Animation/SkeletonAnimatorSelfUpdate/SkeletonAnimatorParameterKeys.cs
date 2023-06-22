@@ -17,31 +17,34 @@ limitations under the License.
 namespace umi3d.common.userCapture
 {
     /// <summary>
-    /// DTO describing a subskeleton used for animation.
+    /// Keys used to request browsers to compute themselves the animator parameters for a skeleton.
     /// </summary>
-    /// A Skeleton node is a subskeleton with a Unity Animator
-    /// that is packaged in a bundle. It is loaded the same way as a Mesh.
-    public class UMI3DSkeletonNodeDto : UMI3DMeshNodeDto
+    /// It ensure smooth animations on clients.
+    public enum SkeletonAnimatorParameterKeys : uint
     {
         /// <summary>
-        /// User that will use this skeleton.
+        /// Magnitude of the speed on all axes.
         /// </summary>
-        public ulong userId;
+        SPEED,
 
         /// <summary>
-        /// Level of priority of the skeleton animation.
+        /// Magnitude of the speed on the X axis.
         /// </summary>
-        public uint priority;
+        SPEED_X,
 
         /// <summary>
-        /// UMI3D animations ids supported by the bundled animator.
+        /// Magnitude of the speed on the Y axis.
         /// </summary>
-        public ulong[] relatedAnimationsId;
+        SPEED_Y,
 
         /// <summary>
-        /// List of parameters that are updated by the browsers themselves based on skeleton movement.
+        /// Magnitude of the speed on the Z axis.
         /// </summary>
-        /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public uint[] animatorSelfTrackedParameters;
+        SPEED_Z,
+
+        /// <summary>
+        /// Magnitude of the speed on the XY plane.
+        /// </summary>
+        SPEED_X_Y
     }
 }
