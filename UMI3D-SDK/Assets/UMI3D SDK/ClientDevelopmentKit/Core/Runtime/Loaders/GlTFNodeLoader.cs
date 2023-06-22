@@ -216,9 +216,9 @@ namespace umi3d.cdk
                             ReadLightingExtensions(dto, node.gameObject);
                             // Important: all nodes in the scene must be registred before to handle hierarchy. 
                             // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
-                            node.transform.localPosition = dto.position;
-                            node.transform.localRotation = dto.rotation;
-                            node.transform.localScale = dto.scale;
+                            node.transform.localPosition = dto.position.Struct();
+                            node.transform.localRotation = dto.rotation.Quaternion();
+                            node.transform.localScale = dto.scale.Struct();
 
                             node.SendOnPoseUpdated();
                             node.NotifyLoaded();
