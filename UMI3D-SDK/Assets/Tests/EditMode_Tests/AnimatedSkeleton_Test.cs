@@ -14,14 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using Moq;
 using NUnit.Framework;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.userCapture;
+using UnityEngine;
 
 namespace EditMode_Tests.UserCapture
 {
@@ -34,7 +38,7 @@ namespace EditMode_Tests.UserCapture
         public void SetUp()
         {
             mockSkeletonMapper = new Mock<SkeletonMapper>();
-            
+
             environmentLoaderService = new Mock<UMI3DEnvironmentLoader>();
         }
 
@@ -161,8 +165,8 @@ namespace EditMode_Tests.UserCapture
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            
-            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x=>x.Object).ToArray());
+
+            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -195,7 +199,7 @@ namespace EditMode_Tests.UserCapture
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
-            
+
             var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
@@ -207,5 +211,77 @@ namespace EditMode_Tests.UserCapture
         }
 
         #endregion GetPose
+
+        #region StartParameterSelfUpdate
+
+        [Test]
+        public void StartParameterSelfUpdate_Null()
+        {
+            // GIVEN
+            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0]);
+
+            // WHEN
+            Action action = () => animatedSkeleton.StartParameterSelfUpdate(null);
+
+            // THEN
+            Assert.Throws<ArgumentNullException>(() => action());
+        }
+
+        [Test]
+        public void StartParameterSelfUpdate_NoParameter()
+        {
+            // GIVEN
+            var mockSkeleton = new Mock<ISkeleton>();
+            var mockCoroutineService = new Mock<ICoroutineService>();
+            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0], 0, new uint[0], mockCoroutineService.Object);
+
+            // WHEN
+            animatedSkeleton.StartParameterSelfUpdate(mockSkeleton.Object);
+
+            // THEN
+            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>()), Times.Never());
+        }
+
+        [Test]
+        [TestCase(new uint[] { 1u })]
+        [TestCase(new uint[] { 1u, 2u, 36u })]
+        public void StartParameterSelfUpdate_Parameters(uint[] parameters)
+        {
+            // GIVEN
+            var mockSkeleton = new Mock<ISkeleton>();
+            var mockCoroutineService = new Mock<ICoroutineService>();
+            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0], 0, parameters, mockCoroutineService.Object);
+
+            // WHEN
+            animatedSkeleton.StartParameterSelfUpdate(mockSkeleton.Object);
+
+            // THEN
+            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>()), Times.Once());
+        }
+
+        #endregion StartParameterSelfUpdate
+
+        #region StopParameterSelfUpdate
+
+        [Test]
+        public void StopParameterSelfUpdate_NotStarted()
+        {
+            // GIVEN
+            var mockSkeleton = new Mock<ISkeleton>();
+            var mockCoroutineService = new Mock<ICoroutineService>();
+            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            mockCoroutineService.Setup(x => x.DettachCoroutine(It.IsAny<Coroutine>()));
+            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0], 0, new uint[0], mockCoroutineService.Object);
+
+            // WHEN
+            animatedSkeleton.StopParameterSelfUpdate();
+
+            // THEN
+            mockCoroutineService.Verify(x => x.DettachCoroutine(It.IsAny<Coroutine>()), Times.Never());
+        }
+
+        #endregion StopParameterSelfUpdate
     }
 }
