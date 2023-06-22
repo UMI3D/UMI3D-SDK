@@ -15,8 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-
-using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -37,18 +36,18 @@ namespace umi3d.cdk.userCapture
         #region Dependency Injection
 
         protected readonly ISkeletonManager personnalSkeletonService;
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        protected readonly UMI3DEnvironmentLoader environmentLoader;
 
         public UMI3DSkeletonNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
-            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentLoader = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoaderService) : base()
+        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoader) : base()
         {
             this.personnalSkeletonService = personnalSkeletonService;
-            this.environmentLoaderService = environmentLoaderService;
+            this.environmentLoader = environmentLoader;
         }
 
         #endregion Dependency Injection
@@ -67,10 +66,10 @@ namespace umi3d.cdk.userCapture
 
             await base.ReadUMI3DExtension(data);
 
-            Load(data.dto as UMI3DSkeletonNodeDto);
+            await Load(data.dto as UMI3DSkeletonNodeDto);
         }
 
-        public void Load(UMI3DSkeletonNodeDto skeletonNodeDto)
+        public async Task Load(UMI3DSkeletonNodeDto skeletonNodeDto)
         {
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);
 
@@ -92,7 +91,7 @@ namespace umi3d.cdk.userCapture
                 if (skeletonMapper.Mappings.Length > 0)
                 {
                     var root = skeletonMapper.Mappings.FirstOrDefault(x => x.BoneType == BoneType.Hips)?.Link.Compute();
-                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto()};
+                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto() };
                 }
                 else
                 {
@@ -101,7 +100,7 @@ namespace umi3d.cdk.userCapture
                 }
             }
             else if (animator.avatar.isHuman)// if null, we try to adapt the unity avatar (rigs) by ourselves assuming it is close to the UMI3D standard one
-            { 
+            {
                 skeletonMapper = AutoMapAnimatorSkeleton(animator, skeletonNodeDto);
             }
 
@@ -110,22 +109,26 @@ namespace umi3d.cdk.userCapture
                 UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed", DEBUG_SCOPE);
                 return;
             }
-  
+
             var modelTracker = go.GetOrAddComponent<ModelTracker>();
             modelTracker.animatorsToRebind.Add(animator);
 
-            // include animations ids
-            skeletonMapper.Animations = skeletonNodeDto.relatedAnimationsId;
-
+            Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
             // create subSkeletonand add it to a skeleton
-            AnimatedSkeleton animationSubskeleton = new(skeletonMapper);
-            animationSubskeleton.priority = skeletonNodeDto.priority;
+            foreach (var id in skeletonNodeDto.relatedAnimationsId)
+            {
+                await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, null);
+                animations.Enqueue(environmentLoader.GetEntityObject<UMI3DAnimatorAnimation>(id));
+            }
+            AnimatedSkeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
             AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
 
             // hide the model if it has any renderers
             foreach (var renderer in go.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
         }
+
+
 
         /// <summary>
         /// Map a skeleton from its animator structure
@@ -159,7 +162,7 @@ namespace umi3d.cdk.userCapture
             }
 
             // create link for each rig. May be improved with distance analysis for more complex links
-            skeletonMapper.Mappings = boneUnityMapping.Select(b=> new SkeletonMapping(b.umi3dBoneType, new GameNodeLink(b.transform))).ToArray();
+            skeletonMapper.Mappings = boneUnityMapping.Select(b => new SkeletonMapping(b.umi3dBoneType, new GameNodeLink(b.transform))).ToArray();
 
             return skeletonMapper;
         }
@@ -187,7 +190,7 @@ namespace umi3d.cdk.userCapture
         {
             var newHierachy = personnalSkeletonService.personalSkeleton.SkeletonHierarchy.Generate(animator.transform);
 
-            var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x=>x);
+            var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x => x);
 
             static string RemoveWhiteSpaces(string s)
             {
@@ -195,7 +198,7 @@ namespace umi3d.cdk.userCapture
             }
 
             // unity name -> mecanim name / rigname
-            var humanBoneRigRelations = animator.avatar.humanDescription.human.ToDictionary(x => RemoveWhiteSpaces(x.humanName).ToLower(), x=> x.boneName);
+            var humanBoneRigRelations = animator.avatar.humanDescription.human.ToDictionary(x => RemoveWhiteSpaces(x.humanName).ToLower(), x => x.boneName);
 
             // rig name in animator -> local transform infos
             var boneInfoInAnimator = animator.avatar.humanDescription.skeleton.ToDictionary(x => x.name, x => (x.position, x.rotation, x.scale));
@@ -249,14 +252,18 @@ namespace umi3d.cdk.userCapture
         /// <param name="subskeleton"></param>
         protected virtual void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
         {
-            var animatedSkeletons = personnalSkeletonService.personalSkeleton.Skeletons
+            var skeleton = personnalSkeletonService.personalSkeleton;
+            var animatedSkeletons = skeleton.Skeletons
                                         .Where(x => x is AnimatedSkeleton)
                                         .Cast<AnimatedSkeleton>()
                                         .Append(subskeleton)
-                                        .OrderByDescending(x => x.priority).ToList();
+                                        .OrderByDescending(x => x.Priority).ToList();
 
-            personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x=>x is AnimatedSkeleton);
+            personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
             personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
+
+            if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                subskeleton.StartParameterSelfUpdate(skeleton);
         }
     }
 }

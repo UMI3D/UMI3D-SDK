@@ -26,7 +26,7 @@ namespace umi3d.common.userCapture
 
         public BonePoseDto BoneAnchor;
         public SkeletonMapping[] Mappings;
-        public virtual ulong[] Animations { get; set; }
+
         public virtual PoseDto GetPose()
         {
             try

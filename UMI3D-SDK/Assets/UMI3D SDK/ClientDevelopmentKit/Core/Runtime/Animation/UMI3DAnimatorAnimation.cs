@@ -358,7 +358,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="name"></param>
         /// <param name="parameterDto"></param>
-        private void ApplyParameter(string name, UMI3DAnimatorParameterDto parameterDto)
+        public void ApplyParameter(string name, UMI3DAnimatorParameterDto parameterDto)
         {
             if (animator == null) return;
 
