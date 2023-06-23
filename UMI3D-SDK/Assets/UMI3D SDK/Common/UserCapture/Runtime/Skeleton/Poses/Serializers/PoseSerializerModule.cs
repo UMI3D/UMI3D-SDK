@@ -52,14 +52,10 @@ namespace umi3d.common.userCapture
             {
                 case true when typeof(T) == typeof(PoseDto):
                     {
-                        int index_id;
-                        List<BoneDto> bones;
-                        BonePoseDto boneAnchor;
+                        readable = UMI3DSerializer.TryRead(container, out int id);
+                        var bones = UMI3DSerializer.ReadList<BoneDto>(container);
 
-                        readable = UMI3DSerializer.TryRead(container, out index_id);
-                        bones = UMI3DSerializer.ReadList<BoneDto>(container);
-
-                        UMI3DSerializer.TryRead<BonePoseDto>(container, out boneAnchor);
+                        readable &= UMI3DSerializer.TryRead(container, out BonePoseDto boneAnchor);
 
                         if (readable)
                         {
@@ -67,7 +63,7 @@ namespace umi3d.common.userCapture
                                 bones: bones,
                                 boneAnchor: boneAnchor
                             );
-                            poseDto.id = index_id;
+                            poseDto.id = id;
 
                             result = (T)Convert.ChangeType(poseDto, typeof(PoseDto));
                             return true;

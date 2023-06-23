@@ -40,6 +40,7 @@ public class PoseOverriderHandlerUnit_Tests
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
+        ClearSingletons();
         SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
     }
 
@@ -58,10 +59,22 @@ public class PoseOverriderHandlerUnit_Tests
     {
         unit = null;
 
+        ClearSingletons();
+    }
+
+    private void ClearSingletons()
+    {
         if (UMI3DEnvironmentLoader.Exists)
             UMI3DEnvironmentLoader.Destroy();
 
+        if (UMI3DCollaborationClientServer.Exists)
+            UMI3DCollaborationClientServer.Destroy();
+
+        if (UMI3DLoadingHandler.Exists)
+            Object.Destroy(UMI3DLoadingHandler.Instance);
     }
+
+
     [Test]
     public void TestNullData()
     {
