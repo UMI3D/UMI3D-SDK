@@ -176,7 +176,7 @@ namespace umi3d.cdk.userCapture
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
             return (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
-                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConverter.ConvertToBoneType(x.Bonetype)))
+                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(x.Bonetype)))
                             .Where(x => x.unityBoneContainer.HasValue)
                             .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
                             .ToArray();
@@ -212,7 +212,7 @@ namespace umi3d.cdk.userCapture
             {
                 var (umi3dBoneType, boneTransform) = quickAccessHierarchy[node.name];
 
-                var unityBoneName = BoneTypeConverter.ConvertToBoneType(umi3dBoneType).ToString();
+                var unityBoneName = BoneTypeConvertingExtensions.ConvertToBoneType(umi3dBoneType).ToString();
                 var rigNameInAnimator = humanBoneRigRelations[unityBoneName.ToLower()];
 
                 if (boneInfoInAnimator.ContainsKey(rigNameInAnimator))

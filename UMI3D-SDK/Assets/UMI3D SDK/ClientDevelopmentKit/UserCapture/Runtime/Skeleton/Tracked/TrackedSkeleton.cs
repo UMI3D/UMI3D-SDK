@@ -179,7 +179,7 @@ namespace umi3d.cdk.userCapture
                         LookAt(controller);
                         break;
                     default:
-                        SetControl(controller, BoneTypeConverter.ConvertToBoneType(controller.boneType).Value);
+                        SetControl(controller, BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType).Value);
                         break;
                 }
             }
@@ -221,7 +221,7 @@ namespace umi3d.cdk.userCapture
                         LookAt(controller);
                         break;
                     default:
-                        SetControl(controller, BoneTypeConverter.ConvertToBoneType(controller.boneType).Value);
+                        SetControl(controller, BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType).Value);
                         break;
                 }
                 controller.Destroy();

@@ -23,7 +23,7 @@ namespace umi3d.common.userCapture
     /// <summary>
     /// Helper class to convert bonetypes from/to the UMI3D standard
     /// </summary>
-    public static class BoneTypeConverter
+    public static class BoneTypeConvertingExtensions
     {
         /// <summary>
         /// Convert Unity's Bonetypes to UMI3D Bonetypes
@@ -271,28 +271,5 @@ namespace umi3d.common.userCapture
                     return null;
             }
         }
-    }
-
-    public static class BoneTypeHelper
-    {
-        private readonly static Dictionary<uint, string> BoneNames = new();
-
-        public static Dictionary<uint, string> GetBoneNames()
-        {
-            if (BoneNames.Count > 0)
-                return BoneNames;
-
-            var keyValues = typeof(BoneType).GetFields().Select(f => (f.Name, boneType: (uint)f.GetRawConstantValue()));
-            foreach (var keyValue in keyValues)
-            {
-                BoneNames.Add(keyValue.boneType, keyValue.Name);
-            }
-            return BoneNames;
-        }
-
-        public static string GetBoneName(uint bone)
-        {
-            return GetBoneNames().ContainsKey(bone) ? BoneNames[bone] : "Custom bone";
-        }   
     }
 }
