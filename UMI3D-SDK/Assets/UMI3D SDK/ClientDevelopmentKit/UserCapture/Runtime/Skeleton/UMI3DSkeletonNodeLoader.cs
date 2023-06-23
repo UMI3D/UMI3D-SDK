@@ -92,7 +92,7 @@ namespace umi3d.cdk.userCapture
                 {
                     var root = skeletonMapper.Mappings.FirstOrDefault(x => x.BoneType == BoneType.Hips)?.Link.Compute();
 
-                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto() };
+                    skeletonMapper.BoneAnchor = new BonePoseDto() { Bone = BoneType.Hips, Position = root?.position.Dto(), Rotation = root?.rotation.Dto() };
                 }
                 else
                 {
