@@ -27,7 +27,7 @@ using umi3d.common;
 using umi3d.common.userCapture;
 using UnityEngine;
 
-namespace EditMode_Tests.UserCapture
+namespace EditMode_Tests.UserCapture.Animation.CDK
 {
     public class AnimatedSkeleton_Test
     {
