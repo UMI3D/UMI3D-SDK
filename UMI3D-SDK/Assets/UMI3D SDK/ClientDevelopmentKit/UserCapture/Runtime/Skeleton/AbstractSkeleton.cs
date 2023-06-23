@@ -48,7 +48,7 @@ namespace umi3d.cdk.userCapture
         public TrackedSkeleton TrackedSkeleton;
         public PoseSkeleton poseSkeleton = null;
 
-        private void Awake()
+        protected virtual void Start()
         {
             poseSkeleton = new PoseSkeleton();
         }

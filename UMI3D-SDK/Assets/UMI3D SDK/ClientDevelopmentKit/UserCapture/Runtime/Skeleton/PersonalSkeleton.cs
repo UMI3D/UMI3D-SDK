@@ -26,8 +26,9 @@ namespace umi3d.cdk.userCapture
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
-        protected void Start()
+        protected override void Start()
         {
+            base.Start();
             Skeletons = new List<ISubSkeleton>
             {
                 TrackedSkeleton, poseSkeleton
