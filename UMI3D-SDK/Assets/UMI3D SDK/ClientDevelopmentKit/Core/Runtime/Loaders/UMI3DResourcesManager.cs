@@ -400,6 +400,8 @@ namespace umi3d.cdk
         private Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>> libraries;
         public static List<DataFile> Libraries => Exists ? Instance.libraries.Values.Select(k => k.Key).ToList() : new List<DataFile>();
 
+        private Dictionary<string, SubmodelDataCollection> NsubModelsCache;
+
         #endregion
         #region setup
 
@@ -408,6 +410,7 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         protected override void Awake()
         {
+            NsubModelsCache = new();
             base.Awake();
             ClearCache();
             deserializer = new ThreadDeserializer();
@@ -452,7 +455,7 @@ namespace umi3d.cdk
 
         public void ClearCache(List<Library> exceptLibraries = null)
         {
-            var NsubModelsCache = new Dictionary<string, SubmodelDataCollection>();
+            NsubModelsCache.Clear();
 
             if (subModelsCache == null)
                 subModelsCache = new Dictionary<string, SubmodelDataCollection>();
@@ -496,6 +499,9 @@ namespace umi3d.cdk
             {
                 item.Destroy();
             }
+            NsubModelsCache.Clear();
+
+            Resources.UnloadUnusedAssets();
 
             StopAllCoroutines();
             libraries = new Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>>();
