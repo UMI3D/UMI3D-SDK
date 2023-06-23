@@ -30,7 +30,7 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
 {
     public class CollaborationBindingLoader_Test : UserCaptureBindingLoader_Test
     {
-        protected Mock<CollaborativeSkeletonManager> collaborativeSkeletonManager;
+        protected Mock<ICollaborativeSkeletonsManager> collaborativeSkeletonManager;
         protected Mock<UMI3DCollaborationEnvironmentLoader> collabEnvironmentLoaderServiceMock;
 
         #region Test SetUp
