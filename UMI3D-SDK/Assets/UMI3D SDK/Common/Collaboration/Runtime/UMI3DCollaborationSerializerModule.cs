@@ -32,25 +32,6 @@ namespace umi3d.common.collaboration
             ulong id;
             switch (true)
             {
-                case true when typeof(T) == typeof(UserCameraPropertiesDto):
-                    readable = container.length >= (17 * sizeof(float)) + sizeof(uint);
-                    if (readable)
-                    {
-                        var usercam = new UserCameraPropertiesDto
-                        {
-                            scale = UMI3DSerializer.Read<float>(container),
-                            projectionMatrix = UMI3DSerializer.Read<Matrix4x4Dto>(container),
-                            boneType = UMI3DSerializer.Read<uint>(container)
-                        };
-                        result = (T)Convert.ChangeType(usercam, typeof(T));
-                    }
-                    else
-                    {
-                        result = default(T);
-                    }
-
-                    return true;
-
                 case true when typeof(T) == typeof(VoiceDto):
                     if (UMI3DSerializer.TryRead(container, out string voiceUrl) &&
                         UMI3DSerializer.TryRead(container, out string login) &&
@@ -75,43 +56,6 @@ namespace umi3d.common.collaboration
 
                     return true;
 
-                case true when typeof(T) == typeof(ControllerDto):
-                    uint type;
-                    Vector4Dto rot;
-                    Vector3Dto pos;
-                    bool isOverrider;
-                    if (UMI3DSerializer.TryRead(container, out type)
-                        && UMI3DSerializer.TryRead(container, out rot)
-                        && UMI3DSerializer.TryRead(container, out pos)
-                        && UMI3DSerializer.TryRead(container, out isOverrider))
-                    {
-                        var controller = new ControllerDto() { boneType = type, rotation = rot, position = pos, isOverrider = isOverrider };
-                        result = (T)Convert.ChangeType(controller, typeof(T));
-                        readable = true;
-                    }
-                    else
-                    {
-                        result = default(T);
-                        readable = false;
-                    }
-                    return true;
-
-                case true when typeof(T) == typeof(BoneDto):
-                    //uint type;
-                    //Vector4Dto rot;
-                    if (UMI3DSerializer.TryRead(container, out type)
-                        && UMI3DSerializer.TryRead(container, out rot))
-                    {
-                        var bone = new BoneDto() { boneType = type, rotation = rot };
-                        result = (T)Convert.ChangeType(bone, typeof(T));
-                        readable = true;
-                    }
-                    else
-                    {
-                        result = default(T);
-                        readable = false;
-                    }
-                    return true;
                 case true when typeof(T) == typeof(DurationDto):
                     {
                         ulong duration;
@@ -582,75 +526,6 @@ namespace umi3d.common.collaboration
                         readable = false;
                         return false;
                     }
-                case true when typeof(T) == typeof(UserTrackingFrameDto):
-                    {
-                        uint idKey = 0;
-                        ulong userId, parentId;
-                        //float skeletonHighOffset, refreshFrequency;
-                        Vector3Dto position;
-                        Vector4Dto rotation;
-
-                        if (
-                            UMI3DSerializer.TryRead(container, out idKey)
-                            && UMI3DSerializer.TryRead(container, out userId)
-                            && UMI3DSerializer.TryRead(container, out parentId)
-                            //&& UMI3DSerializer.TryRead(container, out skeletonHighOffset)
-                            && UMI3DSerializer.TryRead(container, out position)
-                            && UMI3DSerializer.TryRead(container, out rotation)
-                            //&& UMI3DSerializer.TryRead(container, out refreshFrequency)
-                            )
-                        {
-                            System.Collections.Generic.List<ControllerDto> bones = UMI3DSerializer.ReadList<ControllerDto>(container);
-
-                            if (bones != default)
-                            {
-                                var trackingFrame = new UserTrackingFrameDto
-                                {
-                                    userId = userId,
-                                    parentId = parentId,
-                                    //skeletonHighOffset = skeletonHighOffset,
-                                    position = position,
-                                    rotation = rotation,
-                                    //refreshFrequency = refreshFrequency,
-                                    trackedBones = bones
-                                };
-                                readable = true;
-                                result = (T)Convert.ChangeType(trackingFrame, typeof(T));
-
-                                return true;
-                            }
-                        }
-                        result = default(T);
-                        readable = false;
-                        return false;
-                    }
-                case true when typeof(T) == typeof(UserTrackingBoneDto):
-                    {
-                        uint idKey = 0;
-                        ulong userId;
-                        ControllerDto boneDto;
-
-                        if (
-                            UMI3DSerializer.TryRead(container, out idKey)
-                            && UMI3DSerializer.TryRead(container, out userId)
-                            && UMI3DSerializer.TryRead(container, out boneDto)
-                            )
-                        {
-                            var trackingBone = new UserTrackingBoneDto
-                            {
-                                userId = userId,
-                                bone = boneDto
-                            };
-                            readable = true;
-                            result = (T)Convert.ChangeType(trackingBone, typeof(T));
-
-                            return true;
-
-                        }
-                        result = default(T);
-                        readable = false;
-                        return false;
-                    }
 
                 default:
                     result = default(T);
@@ -920,11 +795,6 @@ namespace umi3d.common.collaboration
                     bytable = UMI3DSerializer.Write(localInfovalue.read)
                         + UMI3DSerializer.Write(localInfovalue.write);
                     break;
-                case UserCameraPropertiesDto camera:
-                    bytable = UMI3DSerializer.Write(camera.scale)
-                        + UMI3DSerializer.Write(camera.projectionMatrix)
-                        + UMI3DSerializer.Write(camera.boneType);
-                    break;
                 case EnumParameterDto<string> param:
                     bytable = UMI3DSerializer.Write(UMI3DParameterKeys.Enum)
                         + UMI3DSerializer.Write(param.privateParameter)
@@ -1129,7 +999,6 @@ namespace umi3d.common.collaboration
             return true switch
             {
                 true when typeof(T) == typeof(LocalInfoRequestParameterValue) => true,
-                true when typeof(T) == typeof(UserCameraPropertiesDto) => true,
                 true when typeof(T) == typeof(BooleanParameterDto) => true,
                 true when typeof(T) == typeof(EnumParameterDto<string>) => true,
                 true when typeof(T) == typeof(FloatParameterDto) => true,
@@ -1164,7 +1033,6 @@ namespace umi3d.common.collaboration
                 true when typeof(T) == typeof(ScaleConditionDto) => true,
                 true when typeof(T) == typeof(ResourceDto) => true,
                 true when typeof(T) == typeof(PoseConditionDto) => true,
-                true when typeof(T) == typeof(UserTrackingBoneDto) => true,
                 _ => null
             };
         }

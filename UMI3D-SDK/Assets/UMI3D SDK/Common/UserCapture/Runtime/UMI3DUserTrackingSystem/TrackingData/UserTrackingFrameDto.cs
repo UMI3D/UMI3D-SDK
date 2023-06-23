@@ -45,12 +45,6 @@ namespace umi3d.common.userCapture
         public List<int> playerUserPoses { get; set; } = new List<int>();
 
         /// <summary>
-        /// Current jump height of the avatar.
-        /// </summary>
-        /// Probably obsolete with the new navigation system.
-        //public float skeletonHighOffset;
-
-        /// <summary>
         /// Current position of the user.
         /// </summary>
         public Vector3Dto position { get; set; }
