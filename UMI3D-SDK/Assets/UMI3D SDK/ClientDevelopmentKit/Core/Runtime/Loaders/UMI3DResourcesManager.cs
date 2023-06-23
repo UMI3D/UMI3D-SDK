@@ -492,12 +492,10 @@ namespace umi3d.cdk
             else
                 CacheCollection = new List<ObjectData>();
 
-            foreach (var item in subModelsCache.Values)
+            foreach (var item in NsubModelsCache.Values)
             {
                 item.Destroy();
             }
-
-            subModelsCache = NsubModelsCache;
 
             StopAllCoroutines();
             libraries = new Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>>();
