@@ -62,7 +62,6 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            Debug.Log("property :: " + value.property.property);
             switch (value.property.property)
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
@@ -79,7 +78,6 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            Debug.Log("property :: " + value.propertyKey);
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
