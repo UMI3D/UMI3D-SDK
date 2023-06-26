@@ -52,8 +52,7 @@ namespace umi3d.common.userCapture
         {
             if (value is UserCameraPropertiesDto c)
             {
-                bytable = UMI3DSerializer.Write(UMI3DOperationKeys.UserCameraProperties)
-                        + UMI3DSerializer.Write(c.scale)
+                bytable = UMI3DSerializer.Write(c.scale)
                         + UMI3DSerializer.Write(c.projectionMatrix)
                         + UMI3DSerializer.Write(c.boneType);
                 return true;
