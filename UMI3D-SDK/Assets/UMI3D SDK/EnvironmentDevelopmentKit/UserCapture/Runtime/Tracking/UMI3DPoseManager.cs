@@ -27,22 +27,15 @@ namespace umi3d.edk.userCapture
 {
     public class UMI3DPoseManager : Singleton<UMI3DPoseManager>
     {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.UserCapture | DebugScope.User;
-        /// <summary>
-        /// Lock for  <see cref="JoinDtoReception(UMI3DUser, Vector3Dto, Dictionary{uint, bool})"/>.
-        /// </summary>
-        static object joinLock = new object();
-        static object logoutLock = new object();
-
         private readonly IPoseContainer poseContainerService;
 
-        public UMI3DPoseManager()
+        public UMI3DPoseManager() : base()
         {
             this.poseContainerService = UMI3DPoseContainer.Instance;
             Init();
         }
 
-        public UMI3DPoseManager(IPoseContainer poseContainer)
+        public UMI3DPoseManager(IPoseContainer poseContainer) : base()
         {
             this.poseContainerService = poseContainer;
             Init();
@@ -51,13 +44,7 @@ namespace umi3d.edk.userCapture
         bool posesInitialized = false;
 
         public Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
-        private UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> _objectAllPoses;
-        public UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>> objectAllPoses;
-
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
-
-        private UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto> _objectAllPoseOverrider;
-        public UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto> objectAllPoseOverrider;
 
         public void UpdateAlPoseOverriders(UMI3DPoseOverriderContainerDto allPoseOverriderContainer)
         {
@@ -85,46 +72,12 @@ namespace umi3d.edk.userCapture
                 }
 
                 allPoses.Add(0, poses);
-
-                _objectAllPoses = new UMI3DAsyncDictionnaryProperty<ulong, List<PoseDto>>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoses, allPoses);
-                _objectAllPoseOverrider = new UMI3DAsyncListProperty<UMI3DPoseOverriderContainerDto>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.AllPoseOverriderContainers, null, null);
             }
-
-            UMI3DServer.Instance.OnUserLeave.AddListener((u) => RemovePosesOnLeftUser(u));
         }
 
-        public async Task InitNewUserPoses(UMI3DUser user, List<PoseDto> userPoses)
+        public void InitNewUserPoses(ulong userId, List<PoseDto> poseDtos)
         {
-            Operation operation;
-            lock (joinLock)
-            {
-                operation = objectAllPoses.Add(user.Id(), userPoses);
-            }
-
-            SendOperation(operation);
-        }
-
-        private void RemovePosesOnLeftUser(UMI3DUser user)
-        {
-            Operation operation;
-            lock (logoutLock)
-            {
-                operation = objectAllPoses.Remove(user.Id());
-            }
-
-            SendOperation(operation);
-        }
-
-        private void SendOperation(Operation operation)
-        {
-            Transaction transaction = new Transaction()
-            {
-                reliable = true
-            };
-
-            transaction.Add(operation);
-
-            transaction.Dispatch();
+            allPoses.Add(userId, poseDtos);
         }
     }
 }

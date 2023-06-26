@@ -195,7 +195,7 @@ namespace umi3d.edk.collaboration
                     this.userSize.SetValue(userSize);
             }
 
-            await UMI3DPoseManager.Instance.InitNewUserPoses(this, userPoses.ToList());
+            UMI3DPoseManager.Instance.InitNewUserPoses(userId, userPoses.ToList());
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
