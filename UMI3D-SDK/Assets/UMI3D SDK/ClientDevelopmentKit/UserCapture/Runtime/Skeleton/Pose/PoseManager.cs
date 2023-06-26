@@ -124,7 +124,7 @@ namespace umi3d.cdk.userCapture
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
             {
-                unit.OnHoverEnter();
+                unit.CheckHoverEnterConditions();
             }
         }
 
@@ -133,7 +133,7 @@ namespace umi3d.cdk.userCapture
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
             {
-                unit.OnHoverExit();
+                unit.CheckHoverExitConditions();
             }
         }
 
@@ -142,7 +142,7 @@ namespace umi3d.cdk.userCapture
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
             {
-                unit.OnTrigger();
+                unit.CheckTriggerConditions();
             }
         }
 
@@ -151,7 +151,7 @@ namespace umi3d.cdk.userCapture
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
             {
-                unit.OnRelease();
+                unit.CheckReleaseConditions();
             }
         }
 

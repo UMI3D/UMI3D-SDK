@@ -90,7 +90,7 @@ public class PoseOverriderHandlerUnit_Tests
         //When
         Assert.IsFalse(unit.SetPoseOverriderContainer(container));
 
-        Assert.IsFalse(unit.OnTrigger());
+        Assert.IsFalse(unit.CheckTriggerConditions());
     }
 
     /// <summary>
@@ -125,13 +125,13 @@ public class PoseOverriderHandlerUnit_Tests
         //When
         unit.SetPoseOverriderContainer(container);
 
-        Assert.IsFalse(unit.OnTrigger());
+        Assert.IsFalse(unit.CheckTriggerConditions());
     }
 
     [Test]
     public void TestOnTrigger_TrueCondtion()
     {
-        //Given
+        // Given
         UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
 
         TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(0, 0, 0));
