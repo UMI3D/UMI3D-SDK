@@ -53,12 +53,5 @@ namespace umi3d.common.userCapture
         /// List of availables hand poses for the avatar.
         /// </summary>
         /// Note that this field is empty for other avatars than the target user's one.
-        public List<UMI3DHandPoseDto> handPoses;
-
-        /// <summary>
-        /// List of availables body poses for the avatar.
-        /// </summary>
-        /// Note that this field is empty for other avatars than the target user's one.
-        public List<UMI3DBodyPoseDto> bodyPoses;
     }
 }
