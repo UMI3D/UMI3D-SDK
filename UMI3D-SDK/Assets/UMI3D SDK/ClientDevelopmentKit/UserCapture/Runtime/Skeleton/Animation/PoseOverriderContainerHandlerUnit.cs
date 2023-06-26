@@ -236,7 +236,7 @@ namespace umi3d.cdk.userCapture
             if (!isActive)
             {
                 isActive = true;
-                UMI3DResourcesManager.StartCoroutine(LaunchCheck());
+                CoroutineManager.Instance.AttachCoroutine(LaunchCheck());
             }
         }
 
