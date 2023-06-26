@@ -18,6 +18,7 @@ using System;
 
 namespace umi3d.common.userCapture
 {
+    [UMI3DSerializerOrder(10)]
     public class ControllerSerializer : UMI3DSerializerModule
     {
         public bool? IsCountable<T>()
