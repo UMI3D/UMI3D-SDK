@@ -15,14 +15,16 @@ limitations under the License.
 */
 
 using System.Linq;
-
-using umi3d.cdk.userCapture;
+using umi3d.cdk.binding;
+using umi3d.cdk.userCapture.binding;
 using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.binding
 {
     /// <summary>
     /// Loader for bindings and bone bindings on other users' skeleton.

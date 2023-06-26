@@ -14,16 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using EditMode_Tests.UserCapture.Bindings.CDK;
+using EditMode_Tests.UserCapture.Binding.CDK;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.cdk;
+using umi3d.cdk.binding;
 using umi3d.cdk.collaboration;
+using umi3d.cdk.collaboration.binding;
 using umi3d.cdk.userCapture;
 using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 
 
 namespace EditMode_Tests.Collaboration.Binding.CDK

@@ -15,13 +15,15 @@ limitations under the License.
 */
 
 using System.Linq;
-
+using umi3d.cdk.binding;
 using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.binding
 {
     /// <summary>
     /// Loader for bone bindings, i.e. <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.

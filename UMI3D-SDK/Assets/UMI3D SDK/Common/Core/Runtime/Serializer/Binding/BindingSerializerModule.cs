@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 
-namespace umi3d.common
+namespace umi3d.common.binding
 {
     /// <summary>
     /// Serializer for <see cref="BindingDto"/>, <see cref="MultiBindingDataDto"/> and <see cref="NodeBindingDataDto"/>.

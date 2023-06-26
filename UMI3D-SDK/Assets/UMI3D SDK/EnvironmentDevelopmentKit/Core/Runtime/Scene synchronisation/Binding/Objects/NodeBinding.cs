@@ -15,8 +15,9 @@ limitations under the License.
 */
 
 using umi3d.common;
+using umi3d.common.binding;
 
-namespace umi3d.edk
+namespace umi3d.edk.binding
 {
     /// <summary>
     /// Operation binding a node and another node.

@@ -18,13 +18,15 @@ using Moq;
 using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.cdk.userCapture.binding;
 using umi3d.cdk.userCapture;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace PlayMode_Tests.UserCapture.Bindings.CDK
+namespace PlayMode_Tests.UserCapture.Binding.CDK
 {
     public class BoneBinding_Test
     {

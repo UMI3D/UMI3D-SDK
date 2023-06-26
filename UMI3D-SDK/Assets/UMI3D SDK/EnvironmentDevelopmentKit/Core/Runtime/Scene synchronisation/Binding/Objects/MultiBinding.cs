@@ -17,8 +17,9 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
+using umi3d.common.binding;
 
-namespace umi3d.edk
+namespace umi3d.edk.binding
 {
     /// <summary>
     /// Operation binding a node and several objects.

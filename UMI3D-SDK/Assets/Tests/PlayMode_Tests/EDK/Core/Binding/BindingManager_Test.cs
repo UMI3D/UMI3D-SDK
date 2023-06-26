@@ -18,12 +18,13 @@ using Moq;
 using NUnit.Framework;
 using System;
 using umi3d.edk;
+using umi3d.edk.binding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
 
-namespace PlayMode_Tests.Core.Bindings.EDK
+namespace PlayMode_Tests.Core.Binding.EDK
 {
     public class BindingManager_Test
     {
