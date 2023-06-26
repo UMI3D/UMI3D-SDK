@@ -40,7 +40,6 @@ namespace umi3d.common.userCapture
                 true when typeof(T) == typeof(PoseDto) => true,
                 true when typeof(T) == typeof(PoseOverriderDto) => true,
                 true when typeof(T) == typeof(DurationDto) => true,
-                true when typeof(T) == typeof(UMI3DHandPoseDto) => true,
 
                 _ => null
             };
@@ -143,37 +142,6 @@ namespace umi3d.common.userCapture
                                 result = (T)(object)bonePoseDto;
                                 return true;
                             }
-                        }
-                        break;
-                    }
-
-                case true when typeof(T) == typeof(UMI3DHandPoseDto):
-                    {
-                        if (UMI3DSerializer.TryRead(container, out ulong id)
-                            && UMI3DSerializer.TryRead(container, out string Name)
-                            && UMI3DSerializer.TryRead(container, out bool IsActive)
-                            && UMI3DSerializer.TryRead(container, out bool HoverPose)
-                            && UMI3DSerializer.TryRead(container, out bool isRelativeToNode)
-                            && UMI3DSerializer.TryRead(container, out Vector3Dto RightHandPosition)
-                            && UMI3DSerializer.TryRead(container, out Vector3Dto RightHandEulerRotation)
-                            && UMI3DSerializer.TryRead(container, out Vector3Dto LeftHandPosition)
-                            && UMI3DSerializer.TryRead(container, out Vector3Dto LeftHandEulerRotation))
-                        {
-                            var HandPose = new UMI3DHandPoseDto()
-                            {
-                                id = id,
-                                Name = Name,
-                                IsActive = IsActive,
-                                HoverPose = HoverPose,
-                                isRelativeToNode = isRelativeToNode,
-                                RightHandPosition = RightHandPosition,
-                                RightHandEulerRotation = RightHandEulerRotation,
-                                LeftHandPosition = LeftHandPosition,
-                                LeftHandEulerRotation = LeftHandEulerRotation
-                            };
-                            result = (T)Convert.ChangeType(HandPose, typeof(UMI3DHandPoseDto));
-                            readable = true;
-                            return true;
                         }
                         break;
                     }
