@@ -16,31 +16,26 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.cdk.collaboration;
 using umi3d.cdk.userCapture;
-using umi3d.cdk;
 using umi3d.common.userCapture;
-using UnityEngine;
-using UnityEngine.SceneManagement;
 
-public class PoseSkeletonTest
+public class PoseSkeleton_Test
 {
     private PoseSkeleton poseSkeleton = null;
 
-    private Mock<PoseManager> poseManagerServiceMock;
+    private Mock<IPoseManager> poseManagerServiceMock;
 
     [OneTimeSetUp]
     public void OneTimeSetUp()
     {
-
+        ClearSingletons();
     }
 
     [SetUp]
     public void SetUp()
     {
-        poseManagerServiceMock = new Mock<PoseManager>();
+        poseManagerServiceMock = new Mock<IPoseManager>();
 
         poseSkeleton = new PoseSkeleton(poseManagerServiceMock.Object);
     }
@@ -48,32 +43,43 @@ public class PoseSkeletonTest
     [TearDown]
     public void TearDown()
     {
-        poseSkeleton = null;
+        ClearSingletons();
     }
 
+    private void ClearSingletons()
+    {
+        if (PoseManager.Exists)
+            PoseManager.Destroy();
+    }
+
+    #region SetPose
+
     [Test]
-    public void TestSetPose_null()
+    public void SetPose_Null()
     {
         poseSkeleton.SetPose(true, null, true);
     }
 
     [Test]
-    public void TestSetServerPose()
+    public void SetPose_Server()
     {
-        poseSkeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto()}, true);
+        poseSkeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, true);
         Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 2);
     }
 
     [Test]
-    public void TestSetClientPose()
+    public void SetPose_Client()
     {
         poseSkeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, false);
         Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 2);
     }
 
+    #endregion SetPose
+
+    #region StopAllPoses
 
     [Test]
-    public void TestStopAllPose()
+    public void StopAllPoses_All()
     {
         PoseDto pose_01 = new PoseDto();
         PoseDto pose_02 = new PoseDto();
@@ -87,18 +93,20 @@ public class PoseSkeletonTest
     }
 
     [Test]
-    public void TestStopASpecificPose()
+    public void StopAllPoses_Specific()
     {
         PoseDto pose_01 = new PoseDto();
         PoseDto pose_02 = new PoseDto();
 
         poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
         poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
-        poseSkeleton.StopPose(new List<PoseDto>() { pose_01}, false);
+        poseSkeleton.StopPose(new List<PoseDto>() { pose_01 }, false);
 
         Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 1);
         Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 2);
         Assert.IsFalse(poseSkeleton.GetLocalPoses().Contains(pose_01));
         Assert.IsTrue(poseSkeleton.GetLocalPoses()[0] == pose_02);
     }
+
+    #endregion StopAllPoses
 }

@@ -14,24 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
 using umi3d.common.userCapture;
 
 namespace umi3d.cdk.userCapture
 {
     public class PoseSkeleton : ISubWritableSkeleton
     {
-        private readonly PoseManager poseManagerService;
+        private readonly IPoseManager poseManagerService;
 
         public PoseSkeleton()
         {
             poseManagerService = PoseManager.Instance;
         }
 
-        public PoseSkeleton(PoseManager poseManager)
+        public PoseSkeleton(IPoseManager poseManager)
         {
             this.poseManagerService = poseManager;
         }
@@ -112,6 +109,7 @@ namespace umi3d.cdk.userCapture
             localCurrentlyActivatedPoses.Clear();
             serverCurrentlyActivatedPoses.Clear();
         }
+
         /// <summary>
         ///last in has priority,,, server poses have priority
         /// </summary>

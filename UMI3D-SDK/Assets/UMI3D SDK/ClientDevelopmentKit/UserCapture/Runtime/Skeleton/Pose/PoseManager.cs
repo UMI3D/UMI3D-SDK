@@ -15,29 +15,26 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    public class PoseManager : Singleton<PoseManager>
+    public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
-        [SerializeField] List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
+        [SerializeField] private List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
 
         public PoseDto defaultPose;
         public PoseDto[] localPoses;
 
         public Dictionary<ulong, List<PoseDto>> allPoses;
-        public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>(); 
+        public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>();
 
         private readonly ISkeletonManager skeletonManager;
         private readonly UMI3DEnvironmentLoader environmentLoader;
 
-        bool isInit = false;
+        private bool isInit = false;
 
         public PoseManager()
         {
@@ -57,7 +54,7 @@ namespace umi3d.cdk.userCapture
         {
             if (isInit == false)
             {
-                isInit= true;
+                isInit = true;
 
                 List<UMI3DPose_so> clientPoses = (environmentLoader.LoadingParameters as UMI3DUserCaptureLoadingParameters).clientPoses;
                 localPoses = new PoseDto[clientPoses.Count];
@@ -81,10 +78,7 @@ namespace umi3d.cdk.userCapture
             return poses?[index];
         }
 
-        /// <summary>
-        /// Inits all the pose overrider containers
-        /// </summary>
-        /// <param name="allPoseOverriderContainer"></param>
+        /// <inheritdoc/>
         public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
         {
             poseOverriderContainerDtos = allPoseOverriderContainer;
@@ -105,11 +99,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Allows to add a pose handler unit at runtime
-        /// </summary>
-        /// <param name="overrider"></param>
-        /// <param name="unit"></param>
+        /// <inheritdoc/>
         public void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
             PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit(overrider);
@@ -118,10 +108,7 @@ namespace umi3d.cdk.userCapture
             allPoseHandlerUnits.Add(overrider.relatedNodeId, unit);
         }
 
-        /// <summary>
-        /// Allows to remove a pose handler unit at runtime
-        /// </summary>
-        /// <param name="overrider"></param>
+        /// <inheritdoc/>
         public void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
             if (allPoseHandlerUnits.TryGetValue(overrider.relatedNodeId, out PoseOverriderContainerHandlerUnit unit))
@@ -132,9 +119,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Activated if the Hover Enter is triggered
-        /// </summary>
+        /// <inheritdoc/>
         public void OnHoverEnter(ulong id)
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
@@ -143,9 +128,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Activated if the Hover Exit is triggered
-        /// </summary>
+        /// <inheritdoc/>
         public void OnHoverExit(ulong id)
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
@@ -154,9 +137,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Activated if the Trigger is triggered
-        /// </summary>
+        /// <inheritdoc/>
         public void OnTrigger(ulong id)
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
@@ -165,9 +146,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Activated if the Release Enter is triggered
-        /// </summary>
+        /// <inheritdoc/>
         public void OnRelease(ulong id)
         {
             if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
@@ -176,10 +155,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Sets the related pose to the overrider Dto, in the poseSkeleton
-        /// </summary>
-        /// <param name="poseOverriderDto"></param>
+        /// <inheritdoc/>
         public void SetTargetPose(PoseOverriderDto poseOverriderDto, bool isSeverPose = true)
         {
             if (poseOverriderDto != null && allPoses != null)
@@ -195,10 +171,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Stops the related pose to the overriderDto, in the poseSkeleton
-        /// </summary>
-        /// <param name="poseOverriderDto"></param>
+        /// <inheritdoc/>
         public void StopTargetPose(PoseOverriderDto poseOverriderDto, bool isServerPose = true)
         {
             if (poseOverriderDto != null && allPoses != null)
@@ -214,10 +187,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Stops all poses
-        /// </summary>
-        /// <param name="poseOverriderDto"></param>
+        /// <inheritdoc/>
         public void StopAllPoses()
         {
             skeletonManager.personalSkeleton.poseSkeleton.StopAllPoses();
