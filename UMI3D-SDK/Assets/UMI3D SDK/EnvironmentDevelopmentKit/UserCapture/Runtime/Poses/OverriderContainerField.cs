@@ -17,20 +17,24 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using umi3d.edk.interaction;
+using umi3d.edk.userCapture;
 using umi3d.edk;
 using UnityEngine;
-using umi3d.edk.userCapture;
 
 namespace umi3d.common.collaboration
 {
-    public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
+    [Serializable]
+    public class OverriderContainerField
     {
-        [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
-        public List<OverriderContainerField> GetAllPoseOverriders()
+        [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
+        public UMI3DPoseOverriderContainer PoseOverriderContainer { get => poseOverriderContainer; }
+
+        [SerializeField] UMI3DModel _uMI3DModel;
+        public UMI3DModel uMI3DModel { get => _uMI3DModel; }
+
+        public void SetNode()
         {
-            return allPoseOverriders;
+            PoseOverriderContainer.SetNodeId(uMI3DModel.Id());
         }
     }
 }
-

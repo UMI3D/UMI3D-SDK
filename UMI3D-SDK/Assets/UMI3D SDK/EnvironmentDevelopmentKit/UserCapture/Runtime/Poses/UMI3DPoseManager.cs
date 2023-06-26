@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.collaboration;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -28,16 +29,19 @@ namespace umi3d.edk.userCapture
     public class UMI3DPoseManager : Singleton<UMI3DPoseManager>
     {
         private readonly IPoseContainer poseContainerService;
+        private readonly IPoseOverriderFieldContainer poseOverriderContainerService;
 
         public UMI3DPoseManager() : base()
         {
             this.poseContainerService = UMI3DPoseContainer.Instance;
+            this.poseOverriderContainerService = UMI3DPoseOverrideFieldContainer.Instance as IPoseOverriderFieldContainer;
             Init();
         }
 
-        public UMI3DPoseManager(IPoseContainer poseContainer) : base()
+        public UMI3DPoseManager(IPoseContainer poseContainer, IPoseOverriderFieldContainer poseOverriderFieldContainer) : base()
         {
             this.poseContainerService = poseContainer;
+            this.poseOverriderContainerService = poseOverriderFieldContainer;
             Init();
         }
 
@@ -72,6 +76,24 @@ namespace umi3d.edk.userCapture
                 }
 
                 allPoses.Add(0, poses);
+                InitEachPoseAnimationWithPoseOverriderContainer();
+            }
+        }
+
+        private void InitEachPoseAnimationWithPoseOverriderContainer()
+        {
+            List<OverriderContainerField> overriderContainerFields = poseOverriderContainerService.GetAllPoseOverriders();
+            for (int i = 0; i < overriderContainerFields.Count; i++)
+            {
+                overriderContainerFields[i].PoseOverriderContainer.Id();
+                if (overriderContainerFields[i].uMI3DModel.GetComponent<UMI3DPoseOverriderAnimation>() == null)
+                {
+                    overriderContainerFields[i].uMI3DModel.gameObject.AddComponent<UMI3DPoseOverriderAnimation>()
+                                                    .Init(overriderContainerFields[i].PoseOverriderContainer);
+                }
+
+                overriderContainerFields[i].SetNode();
+                allPoseOverriderContainer.Add(overriderContainerFields[i].PoseOverriderContainer.ToDto());
             }
         }
 

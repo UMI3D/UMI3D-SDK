@@ -14,28 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.edk.interaction;
-using umi3d.edk.userCapture;
-using umi3d.edk;
 using UnityEngine;
+using umi3d.edk.userCapture;
 
 namespace umi3d.common.collaboration
 {
-    [Serializable]
-    public class OverriderContainerField
+    public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
     {
-        [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
-        public UMI3DPoseOverriderContainer PoseOverriderContainer { get => poseOverriderContainer; }
-
-        [SerializeField] UMI3DEvent _uMI3DEvent;
-        public UMI3DEvent uMI3DEvent { get => _uMI3DEvent; }
-
-        public void SetNode()
+        [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
+        public List<OverriderContainerField> GetAllPoseOverriders()
         {
-            PoseOverriderContainer.SetNodeId(uMI3DEvent.GetComponent<UMI3DModel>().Id());
+            return allPoseOverriders;
         }
     }
 }
+
