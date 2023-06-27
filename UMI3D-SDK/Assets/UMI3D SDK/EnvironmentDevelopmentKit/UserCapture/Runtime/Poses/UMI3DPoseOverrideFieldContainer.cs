@@ -22,6 +22,12 @@ namespace umi3d.common.collaboration
 {
     public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
     {
+        private void Start()
+        {
+            _ = UMI3DPoseManager.Instance;
+        }
+
+
         [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
         public List<OverriderContainerField> GetAllPoseOverriders()
         {

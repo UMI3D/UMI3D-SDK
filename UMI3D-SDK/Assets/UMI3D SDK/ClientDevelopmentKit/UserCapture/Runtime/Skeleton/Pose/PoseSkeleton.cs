@@ -117,12 +117,11 @@ namespace umi3d.cdk.userCapture
         public PoseDto GetPose()
         {
             PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
-
             for (int i = 0; i < localCurrentlyActivatedPoses?.Count; i++)
             {
                 for (int j = 0; j < localCurrentlyActivatedPoses[i].bones?.Count; j++)
                 {
-                    int indexOf = poseDto.bones.IndexOf(localCurrentlyActivatedPoses[i].bones[j]);
+                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == localCurrentlyActivatedPoses[i].bones[j].boneType);
                     if (indexOf != -1)
                     {
                         poseDto.bones[indexOf] = localCurrentlyActivatedPoses[i].bones[j];
@@ -138,7 +137,7 @@ namespace umi3d.cdk.userCapture
             {
                 for (int j = 0; j < serverCurrentlyActivatedPoses[i].bones?.Count; j++)
                 {
-                    int indexOf = poseDto.bones.IndexOf(serverCurrentlyActivatedPoses[i].bones[j]);
+                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == serverCurrentlyActivatedPoses[i].bones[j].boneType);
                     if (indexOf != -1)
                     {
                         poseDto.bones[indexOf] = serverCurrentlyActivatedPoses[i].bones[j];
