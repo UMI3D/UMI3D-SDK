@@ -97,7 +97,7 @@ namespace umi3d.cdk.collaboration
         public void Init()
         {
             UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += () => UpdateSkeletons(collaborativeLoaderService.JoinnedUserList);
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { skeletons.Clear(); InitSkeletons(); SetTrackingSending(ShouldSendTracking); });
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); SetTrackingSending(ShouldSendTracking); });
             UMI3DCollaborationClientServer.Instance.OnLeavingEnvironment.AddListener(() => { skeletons.Clear(); });
             UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(() => { skeletons.Clear(); });
         }
