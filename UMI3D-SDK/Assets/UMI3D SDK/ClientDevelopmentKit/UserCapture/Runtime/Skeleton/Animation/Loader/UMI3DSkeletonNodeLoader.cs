@@ -15,15 +15,15 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.animation;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.animation
 {
     /// <summary>
     /// Loader called to load <see cref="UMI3DSkeletonNodeDto"/>.
@@ -128,8 +128,6 @@ namespace umi3d.cdk.userCapture
             foreach (var renderer in go.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
         }
-
-
 
         /// <summary>
         /// Map a skeleton from its animator structure

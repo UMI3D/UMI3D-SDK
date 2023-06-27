@@ -17,10 +17,10 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.userCapture;
+using umi3d.common.userCapture.animation;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.animation
 {
     /// <summary>
     ///  A Skeleton node is a subskeleton with a Unity Animator

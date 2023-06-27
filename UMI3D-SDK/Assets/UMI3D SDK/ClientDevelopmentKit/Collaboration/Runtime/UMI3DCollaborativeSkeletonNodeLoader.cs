@@ -15,12 +15,10 @@ limitations under the License.
 */
 
 using System.Linq;
-
-using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.animation;
 using umi3d.common;
-using umi3d.common.userCapture;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.animation
 {
     /// <summary>
     /// Loader for <see cref="UMI3DSkeletonNodeDto"/> in a collaborative context.
@@ -35,8 +33,6 @@ namespace umi3d.cdk.collaboration
 
         private readonly ICollaborativeSkeletonsManager collaborativeSkeletonsmanager;
         private readonly UMI3DCollaborationClientServer collaborationClientServer;
-
-        
 
         public UMI3DCollaborativeSkeletonNodeLoader()
         {
@@ -84,7 +80,6 @@ namespace umi3d.cdk.collaboration
                 if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
                     subskeleton.StartParameterSelfUpdate(skeleton);
             }
-                
             else
                 UMI3DLogger.LogWarning($"Skeleton of user {userId} not found. Cannot attach skeleton node.", DEBUG_SCOPE);
         }

@@ -17,7 +17,7 @@ limitations under the License.
 using umi3d.edk.editor;
 using UnityEditor;
 
-namespace umi3d.edk.userCapture.editor
+namespace umi3d.edk.userCapture.animation.editor
 {
     [CustomEditor(typeof(UMI3DSkeletonNode), true)]
     [CanEditMultipleObjects]

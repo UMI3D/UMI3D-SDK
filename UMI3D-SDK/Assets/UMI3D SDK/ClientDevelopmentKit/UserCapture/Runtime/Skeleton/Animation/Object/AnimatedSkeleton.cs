@@ -18,9 +18,10 @@ using inetum.unityUtils;
 using System.Collections;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.animation;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.animation
 {
     /// <summary>
     /// Subskeleton that is the target if a skeleton animation, using an Animator.
@@ -110,7 +111,7 @@ namespace umi3d.cdk.userCapture
             {
                 updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
                 UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (updateParameterRoutine is not null) coroutineService.DettachCoroutine(updateParameterRoutine); });
-            } 
+            }
         }
 
         /// <summary>
