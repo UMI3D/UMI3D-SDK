@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// User's registered id
         /// </summary>
-        public ulong userId { get; }
+        public ulong UserId { get; }
 
         #region Data struture
 

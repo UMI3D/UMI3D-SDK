@@ -21,8 +21,6 @@ namespace umi3d.cdk.collaboration
 {
     public class CollaborativeSkeleton : AbstractSkeleton
     {
-        public UMI3DUser User;
-
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)
@@ -41,8 +39,9 @@ namespace umi3d.cdk.collaboration
         public void SetSubSkeletons()
         {
             TrackedSkeleton = Instantiate((UMI3DEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
+            PoseSkeleton = new PoseSkeleton();
             Skeletons.Add(TrackedSkeleton);
-            Skeletons.Add(poseSkeleton);
+            base.Skeletons.Add(userCapture.PoseSkeleton);
         }
     }
 }

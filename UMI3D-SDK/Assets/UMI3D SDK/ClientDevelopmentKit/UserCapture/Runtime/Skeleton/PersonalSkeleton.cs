@@ -28,10 +28,10 @@ namespace umi3d.cdk.userCapture
 
         protected override void Start()
         {
-            base.Start();
+            PoseSkeleton = new PoseSkeleton();
             Skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton, poseSkeleton
+                TrackedSkeleton, PoseSkeleton
             };
         }
 

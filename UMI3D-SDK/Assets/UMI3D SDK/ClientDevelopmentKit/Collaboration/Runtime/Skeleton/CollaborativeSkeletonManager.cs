@@ -105,11 +105,13 @@ namespace umi3d.cdk.collaboration
         public void InitSkeletons()
         {
             skeletons[collaborationClientServerService.GetUserId()] = personalSkeleton;
+            personalSkeleton.UserId = UMI3DClientServer.Instance.GetUserId();
         }
 
         protected void UpdateSkeletons(List<UMI3DUser> usersList)
         {
             List<ulong> idList = usersList.Select(u => u.id).ToList();
+            idList.Remove(UMI3DClientServer.Instance.GetUserId());
 
             var joinnedUsersId = idList.Except(skeletons.Keys).ToList();
             var deletedUsersId = skeletons.Keys.Except(idList).ToList();
@@ -127,15 +129,23 @@ namespace umi3d.cdk.collaboration
             {
                 if (userId != UMI3DClientServer.Instance.GetUserId())
                 {
-                    GameObject go = new GameObject();
-                    CollaborativeSkeleton cs = go.AddComponent<CollaborativeSkeleton>();
-                    skeletons[userId] = cs;
-                    cs.transform.parent = collabScene.transform;
-                    cs.SetSubSkeletons();
-                    cs.name = userId.ToString();
+                    skeletons[userId] = CreateSkeleton(userId, collabScene.transform, StandardHierarchy);
                     skeletonEvent?.Invoke(userId);
                 }
             }
+        }
+
+        public virtual CollaborativeSkeleton CreateSkeleton(ulong userId, Transform parent, UMI3DSkeletonHierarchy skeletonHierarchy)
+        {
+            GameObject go = new GameObject();
+            CollaborativeSkeleton cs = go.AddComponent<CollaborativeSkeleton>();
+            cs.UserId = userId;
+            cs.transform.parent = parent.transform;
+            cs.name = userId.ToString();
+            cs.SkeletonHierarchy = skeletonHierarchy;
+            cs.SetSubSkeletons();
+
+            return cs;
         }
 
         public CollaborativeSkeleton GetCollaborativeSkeleton(ulong userId)
@@ -310,13 +320,13 @@ namespace umi3d.cdk.collaboration
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
             if (playPoseDto.stopPose)
             {
-                (skeleton as PersonalSkeleton)?.poseSkeleton.StopPose(new List<PoseDto> { poseDto });
-                (skeleton as CollaborativeSkeleton)?.poseSkeleton.StopPose(new List<PoseDto> { poseDto });
+                (skeleton as PersonalSkeleton)?.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });
+                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });
             }
             else
             {
-                (skeleton as PersonalSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
-                (skeleton as CollaborativeSkeleton)?.poseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
+                (skeleton as PersonalSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
+                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
             }
         }
     }

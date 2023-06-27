@@ -164,7 +164,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
-                        skeletonManager.personalSkeleton.poseSkeleton.SetPose(poseOverriderDto.composable, new List<PoseDto>() { pose }, isSeverPose);
+                        skeletonManager.personalSkeleton.PoseSkeleton.SetPose(poseOverriderDto.composable, new List<PoseDto>() { pose }, isSeverPose);
                         return;
                     }
                 }
@@ -180,7 +180,7 @@ namespace umi3d.cdk.userCapture
                 {
                     if (pose.id == poseOverriderDto.poseIndexinPoseManager)
                     {
-                        skeletonManager.personalSkeleton.poseSkeleton.StopPose(new List<PoseDto>() { pose }, isServerPose);
+                        skeletonManager.personalSkeleton.PoseSkeleton.StopPose(new List<PoseDto>() { pose }, isServerPose);
                         return;
                     }
                 }
@@ -190,7 +190,7 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public void StopAllPoses()
         {
-            skeletonManager.personalSkeleton.poseSkeleton.StopAllPoses();
+            skeletonManager.personalSkeleton.PoseSkeleton.StopAllPoses();
         }
     }
 }

@@ -121,12 +121,6 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        /// <summary>
-        /// Unity Update method, just here because Tthe other update method is generating an error.
-        /// </summary>
-        public void Update()
-        { }
-
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
