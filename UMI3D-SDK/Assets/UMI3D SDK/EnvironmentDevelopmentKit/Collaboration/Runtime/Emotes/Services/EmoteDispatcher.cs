@@ -18,7 +18,7 @@ using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk.collaboration.emotes
 {
     /// <summary>
     /// Dispatch emote requests by trigerring the right animation
@@ -60,7 +60,7 @@ namespace umi3d.edk.collaboration
             this.umi3dEnvironmentService = umi3dEnvironmentService;
         }
 
-        #endregion environmentLoaderService
+        #endregion Dependency Injection
 
         /// <summary>
         /// Emote configuration for the environment for each user. Key is user id.

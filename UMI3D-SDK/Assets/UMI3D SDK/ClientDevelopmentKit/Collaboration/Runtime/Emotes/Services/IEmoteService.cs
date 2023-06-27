@@ -16,10 +16,10 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.emotes
 {
     public interface IEmoteService
     {

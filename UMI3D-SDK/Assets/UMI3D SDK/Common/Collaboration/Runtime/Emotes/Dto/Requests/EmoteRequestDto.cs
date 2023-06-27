@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.emotes
 {
     /// <summary>
     /// Request from a browser to trigger an emote for its user on user browsers.
@@ -25,6 +25,7 @@ namespace umi3d.common.collaboration
         /// UMI3D id of the emote to trigger/interrupt.
         /// </summary>
         public ulong emoteId { get; set; }
+
         /// <summary>
         /// If true, the emote sould be triggered. Otherwise, it should be interrupted.
         /// </summary>

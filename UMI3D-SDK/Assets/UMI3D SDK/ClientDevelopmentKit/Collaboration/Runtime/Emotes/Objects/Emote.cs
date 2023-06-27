@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.emotes
 {
     /// <summary>
     /// Describes an emote from the client side

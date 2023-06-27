@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 
 namespace EditMode_Tests.Collaboration.Emotes.Common
 {

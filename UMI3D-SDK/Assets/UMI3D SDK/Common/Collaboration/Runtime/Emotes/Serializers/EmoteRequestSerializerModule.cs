@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+
+namespace umi3d.common.collaboration.emotes
 {
     public class EmoteRequestSerializerModule : UMI3DSerializerModule<EmoteRequestDto>
     {

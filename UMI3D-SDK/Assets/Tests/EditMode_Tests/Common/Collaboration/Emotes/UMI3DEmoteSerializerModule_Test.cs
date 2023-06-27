@@ -16,9 +16,9 @@ limitations under the License.
 
 using NUnit.Framework;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 
 namespace EditMode_Tests.Collaboration.Emotes.Common
 {
@@ -40,9 +40,8 @@ namespace EditMode_Tests.Collaboration.Emotes.Common
                  new UMI3DSerializerStringModules(),
                  new UMI3DCollaborationSerializerModule()
             };
-            
-            UMI3DSerializer.AddModule(dependenciesSerializationModules);
 
+            UMI3DSerializer.AddModule(dependenciesSerializationModules);
         }
 
         [OneTimeTearDown]

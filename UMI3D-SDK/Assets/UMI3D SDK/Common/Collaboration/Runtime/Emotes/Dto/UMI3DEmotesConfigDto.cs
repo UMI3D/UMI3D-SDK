@@ -13,12 +13,12 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.emotes
 {
     /// <summary>
     /// Emote configuration asset that describes available emotes for client usage
     /// </summary>
-    /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit 
+    /// The emote configuration is used asynchronously to describe all the available emotes in an environment and explicit
     /// which ones are allow ed to be used for each user.
     [System.Serializable]
     public class UMI3DEmotesConfigDto : AbstractEntityDto, IEntity
@@ -34,4 +34,3 @@ namespace umi3d.common.collaboration
         public bool allAvailableByDefault { get; set; } = true;
     }
 }
-

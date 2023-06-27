@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.emotes
 {
     /// <summary>
     /// Serializer module for <see cref="UMI3DEmotesConfigDto"/>.
