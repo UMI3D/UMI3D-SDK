@@ -14,9 +14,9 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.emotes
 {
     /// <summary>
     /// Loader for <see cref="UMI3DEmotesConfigDto"/>.
@@ -27,6 +27,7 @@ namespace umi3d.cdk.collaboration
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region DependencyInjection
+
         private IEmoteService emoteManagementService;
 
         public UMI3DEmotesConfigLoader()
@@ -38,6 +39,7 @@ namespace umi3d.cdk.collaboration
         {
             emoteManagementService = emoteManager;
         }
+
         #endregion DependencyInjection
 
         /// <inheritdoc/>

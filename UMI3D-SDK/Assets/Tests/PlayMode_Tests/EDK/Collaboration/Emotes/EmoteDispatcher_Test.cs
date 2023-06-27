@@ -16,7 +16,7 @@ limitations under the License.
 
 using NUnit.Framework;
 using umi3d.edk;
-using umi3d.edk.collaboration;
+using umi3d.edk.collaboration.emotes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;

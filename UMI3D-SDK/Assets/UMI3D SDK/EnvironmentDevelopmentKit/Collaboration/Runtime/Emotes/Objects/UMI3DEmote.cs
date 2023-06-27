@@ -17,10 +17,10 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 using UnityEngine;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk.collaboration.emotes
 {
     /// <summary>
     /// Emote data, including a reference to the icon resource

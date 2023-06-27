@@ -16,11 +16,10 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using System;
 using umi3d.cdk;
 using umi3d.cdk.collaboration;
-using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.cdk.collaboration.emotes;
+using umi3d.common.collaboration.emotes;
 
 namespace EditMode_Tests.Collaboration.Emotes.CDK
 {
@@ -90,7 +89,5 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         }
 
         #endregion UpdateEmote
-
-
     }
 }

@@ -16,12 +16,11 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Text.RegularExpressions;
 using umi3d.cdk;
 using umi3d.cdk.collaboration;
+using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
@@ -50,7 +49,6 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
             SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
             GameObject go = new GameObject("CollabServer");
             UnityEngine.Object.Instantiate(go);
-
 
             var collaborationClientServer = go.AddComponent<UMI3DCollaborationClientServer>();
             environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
@@ -248,7 +246,7 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
 
             // WHEN
             emoteManagerService.PlayEmote(emote);
-            
+
             // THEN
             Assert.IsFalse(wasEmoteStartedInvoked);
             Assert.IsFalse(emoteManagerService.IsPlaying);
