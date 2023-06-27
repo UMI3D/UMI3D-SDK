@@ -39,7 +39,7 @@ namespace umi3d.cdk.userCapture
         public UMI3DSkeletonHierarchy SkeletonHierarchy { get; set; }
 
         public virtual Transform HipsAnchor { get => hipsAnchor; }
-        public virtual ulong UserId { get; protected set; }
+        public virtual ulong UserId { get; set; }
 
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator = new();
 
