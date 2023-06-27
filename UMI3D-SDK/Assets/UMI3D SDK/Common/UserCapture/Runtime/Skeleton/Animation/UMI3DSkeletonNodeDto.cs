@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.animation
 {
     /// <summary>
     /// DTO describing a subskeleton used for animation.

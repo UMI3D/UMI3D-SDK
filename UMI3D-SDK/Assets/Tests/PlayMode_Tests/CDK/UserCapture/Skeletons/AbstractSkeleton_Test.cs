@@ -18,8 +18,8 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using umi3d.cdk;
-using umi3d.cdk.collaboration;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.animation;
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -85,7 +85,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             GameObject subskeletonGo = new GameObject("Subskeleton");
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
-            
+
             Mock<AnimatedSkeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
             animatedSkeletonMock.Setup(x => x.GetPose()).Returns(new PoseDto());
 
