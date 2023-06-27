@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+namespace umi3d.common.binding
 {
     /// <summary>
     /// DTO for a binding, an association linking together two objects in the 3D space.

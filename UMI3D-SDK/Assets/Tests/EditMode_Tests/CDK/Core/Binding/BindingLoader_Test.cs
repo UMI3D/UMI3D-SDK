@@ -18,10 +18,11 @@ using Moq;
 using NUnit.Framework;
 using System.Threading.Tasks;
 using umi3d.cdk;
-
+using umi3d.cdk.binding;
 using umi3d.common;
+using umi3d.common.binding;
 
-namespace EditMode_Tests.Core.Bindings.CDK
+namespace EditMode_Tests.Core.Binding.CDK
 {
     public class BindingLoader_Test
     {

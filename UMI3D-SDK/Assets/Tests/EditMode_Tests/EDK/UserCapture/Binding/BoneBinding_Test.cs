@@ -16,12 +16,12 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
-using umi3d.edk;
-using umi3d.edk.userCapture;
+using umi3d.common.userCapture.binding;
+using umi3d.edk.userCapture.binding;
 
-namespace EditMode_Tests.Core.Bindings.EDK
+namespace EditMode_Tests.Core.Binding.EDK
 {
     public class BoneBinding_Test
     {

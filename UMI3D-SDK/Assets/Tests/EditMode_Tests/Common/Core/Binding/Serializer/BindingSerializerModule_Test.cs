@@ -17,9 +17,10 @@ limitations under the License.
 using NUnit.Framework;
 using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.binding;
 using UnityEngine;
 
-namespace EditMode_Tests.Core.Bindings.Common
+namespace EditMode_Tests.Core.Binding.Common
 {
     public class BindingSerializerModule_Test
     {

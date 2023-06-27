@@ -14,11 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common;
+using umi3d.common.binding;
 
 using UnityEngine;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.binding
 {
     /// <summary>
     /// Abstract client support for simple bindings.

@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.volumes;
+using umi3d.cdk.binding;
 using umi3d.common;
 using UnityEngine;
 

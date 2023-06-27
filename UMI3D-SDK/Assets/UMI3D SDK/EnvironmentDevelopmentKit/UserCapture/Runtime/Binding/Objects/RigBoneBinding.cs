@@ -15,9 +15,10 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.common.userCapture;
+using umi3d.common.binding;
+using umi3d.common.userCapture.binding;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.binding
 {
     /// <summary>
     /// Operation binding a rig under a node to a user's skeleton bone.

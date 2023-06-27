@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.binding
 {
     /// <summary>
     /// Handle binding management and computations.

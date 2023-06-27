@@ -18,12 +18,13 @@ using Moq;
 using NUnit.Framework;
 using System.Collections;
 using umi3d.cdk;
-using umi3d.common;
+using umi3d.cdk.binding;
+using umi3d.common.binding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
 
-namespace PlayMode_Tests.Core.Bindings.CDK
+namespace PlayMode_Tests.Core.Binding.CDK
 {
     public class NodeBinding_Test
     {

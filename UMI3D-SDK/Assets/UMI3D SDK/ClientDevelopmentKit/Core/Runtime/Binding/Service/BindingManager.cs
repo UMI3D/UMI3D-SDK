@@ -20,7 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.binding
 {
     /// <summary>
     /// Core binding manager. Handles binding lifecycles and computations.

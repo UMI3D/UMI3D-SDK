@@ -21,10 +21,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk;
-using umi3d.common;
+using umi3d.cdk.binding;
+using umi3d.common.binding;
 using UnityEngine;
 
-namespace EditMode_Tests.Core.Bindings.CDK
+namespace EditMode_Tests.Core.Binding.CDK
 {
     public class BindingManager_Test
     {
