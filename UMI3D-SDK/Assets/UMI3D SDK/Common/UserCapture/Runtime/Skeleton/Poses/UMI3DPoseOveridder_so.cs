@@ -1,3 +1,4 @@
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -25,8 +26,42 @@ namespace umi3d.common.userCapture
 
         public PoseOverriderDto ToDto(int poseIndexinPoseManager)
         {
-            PoseOverriderDto dto = new PoseOverriderDto(poseIndexinPoseManager, poseConditions, duration, interpolationable, composable, isHoverEnter, isHoverExit, isRelease, isTrigger);
+            PoseOverriderDto dto = new PoseOverriderDto(poseIndexinPoseManager, GetPoseConditionsCopy(), duration, interpolationable, composable, isHoverEnter, isHoverExit, isRelease, isTrigger);
             return dto;
+        }
+
+        public PoseConditionDto[] GetPoseConditionsCopy()
+        {
+            List<PoseConditionDto> copy = new List<PoseConditionDto>();
+            poseConditions.ForEach(pc =>
+            {
+                switch (pc)
+                {
+                    case MagnitudeConditionDto magnitudeConditionDto:
+                        copy.Add(new MagnitudeConditionDto()
+                        {
+                            magnitude = magnitudeConditionDto.magnitude,
+                            BoneOrigine = magnitudeConditionDto.BoneOrigine,
+                            targetObjectId = magnitudeConditionDto.TargetObjectId
+                        });
+                        break;
+                    default:
+                        throw new NotImplementedException("Please implemente clone for other conditions");
+                }
+            });
+            return copy.ToArray();
+        }
+
+        public DurationDto GetDurationCopy()
+        {
+            DurationDto copy = new DurationDto()
+            {
+                max = duration.max,
+                min = duration.min,
+                duration = duration.duration
+            };
+
+            return copy;
         }
     }
 }

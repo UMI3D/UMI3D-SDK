@@ -58,7 +58,40 @@ namespace umi3d.common.userCapture
         /// <returns></returns>
         public PoseDto ToDTO()
         {
-            return new PoseDto(boneDtos, bonePoseDto);
+            return new PoseDto(GetBonesCopy(), GetBonePoseCopy());
         }
-    }
+
+        /// <summary>
+        /// Gets a copy of all the bones
+        /// </summary>
+        /// <returns></returns>
+        public List<BoneDto> GetBonesCopy()
+        {
+            List<BoneDto> copy = new List<BoneDto>();
+            boneDtos.ForEach(b =>
+            {
+                copy.Add(new BoneDto()
+                {
+                    boneType = b.boneType,
+                    rotation = new Vector4Dto() { X = b.rotation.X, Y = b.rotation.Y, Z = b.rotation.Z, W = b.rotation.W }
+                });
+            });
+            return copy;
+        }
+
+        /// <summary>
+        /// Gets a copy of the bone pose
+        /// </summary>
+        /// <returns></returns>
+        public BonePoseDto GetBonePoseCopy()
+        {
+            BonePoseDto copy = new BonePoseDto()
+            {
+                Bone = bonePoseDto.Bone,
+                Position = new Vector3Dto() { X = bonePoseDto.Position.X, Y = bonePoseDto.Position.Y, Z = bonePoseDto.Position.Z },
+                Rotation = new Vector4Dto() { X = bonePoseDto.Rotation.X, Y = bonePoseDto.Rotation.Y, Z = bonePoseDto.Rotation.Z, W = bonePoseDto.Rotation.W }
+            };
+
+            return copy;
+        }
 }

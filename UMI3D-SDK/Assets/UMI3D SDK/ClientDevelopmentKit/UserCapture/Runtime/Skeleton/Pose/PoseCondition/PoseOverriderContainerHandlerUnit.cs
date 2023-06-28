@@ -147,7 +147,6 @@ namespace umi3d.cdk.userCapture
             {
                 if (poseOverrider.isHoverEnter)
                 {
-                    (poseOverrider.poseConditions[0] as MagnitudeConditionDto).TargetObjectId = (uint)poseOverriderContainerDto.relatedNodeId;
                     if (CheckConditions(poseOverrider.poseConditions))
                     {
                         if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;

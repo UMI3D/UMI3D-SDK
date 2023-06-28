@@ -40,6 +40,21 @@ namespace umi3d.edk.userCapture
         public void SetNodeId(ulong nodeId)
         {
             this.nodeID = nodeId;
+
+            poseOverriders.ForEach(po =>
+            {
+                PoseOverriderDto poDto = po.ToDto(po.pose.poseRef);
+                poDto.poseConditions.ForEach(pc =>
+                {
+                    switch (pc)
+                    {
+                        case MagnitudeConditionDto magnitudeConditionDto:
+                            magnitudeConditionDto.TargetObjectId = (uint)nodeID;
+                            break;
+                    }
+                });
+                poseOverridersDtos.Add(poDto);
+            });
         }
 
         public UMI3DPoseOverriderContainer(List<UMI3DPoseOveridder_so> poseOveridder_Sos)
@@ -87,20 +102,6 @@ namespace umi3d.edk.userCapture
             poseOverridersDtos.Clear();
             poseOverriders.ForEach(po =>
             {
-                PoseOverriderDto poDto = po.ToDto(po.pose.poseRef);
-                poDto.poseConditions.ForEach(pc =>
-                {
-                    switch (pc)
-                    {
-                        case MagnitudeConditionDto magnitudeConditionDto:
-                            magnitudeConditionDto.Magnitude = 1;
-                            magnitudeConditionDto.BoneOrigine = 13;
-                            magnitudeConditionDto.TargetObjectId = (uint)nodeID;
-                            break;
-                    }
-                });
-                poseOverridersDtos.Add(poDto);
-
                 po.pose.onPoseReferencedAndIndexSetted += (pose, indexInPoseManager) =>
                 {
                     InitDefinition(id);
