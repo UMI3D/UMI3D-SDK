@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using umi3d.common;
 using umi3d.common.userCapture.tracking;
 
@@ -24,7 +25,7 @@ namespace umi3d.edk.userCapture.tracking
     public class SetSendingCameraProperties : Operation
     {
         /// <summary>
-        /// Should the client send its camera properties? 
+        /// Should the client send its camera properties?
         /// </summary>
         public bool activeSending;
 

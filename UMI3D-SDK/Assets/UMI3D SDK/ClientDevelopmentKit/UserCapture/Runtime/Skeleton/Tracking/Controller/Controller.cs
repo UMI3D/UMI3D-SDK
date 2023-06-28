@@ -23,7 +23,7 @@ namespace umi3d.cdk.userCapture.tracking
     public class Controller : MonoBehaviour, IController
     {
         [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))]
-        uint _boneType;
+        private uint _boneType;
 
         public uint boneType => _boneType;
 
@@ -38,6 +38,4 @@ namespace umi3d.cdk.userCapture.tracking
             GameObject.Destroy(gameObject);
         }
     }
-
-    // redondant avec TrackedSkeletonBoneController ?
 }

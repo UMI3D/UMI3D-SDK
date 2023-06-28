@@ -32,7 +32,6 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Destroy()
         {
-
         }
     }
 }

@@ -63,7 +63,5 @@ namespace umi3d.common.userCapture.tracking
             bytable = null;
             return false;
         }
-
-
     }
 }

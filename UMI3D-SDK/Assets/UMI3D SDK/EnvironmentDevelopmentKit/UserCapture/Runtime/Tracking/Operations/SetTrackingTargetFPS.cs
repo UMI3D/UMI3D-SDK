@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using umi3d.common;
 using umi3d.common.userCapture.tracking;
 
@@ -21,8 +22,8 @@ namespace umi3d.edk.userCapture.tracking
     /// <summary>
     /// <see cref="Operation"/> to control the frequency of target tracking updates.
     /// </summary>
-    /// Using this operation enables to lower the number of tracked frame per second when required, 
-    /// reducing the load on the networking system. 
+    /// Using this operation enables to lower the number of tracked frame per second when required,
+    /// reducing the load on the networking system.
     /// A higher FPS will result with a better tracking of the movement, but will have a high impact on the networking load.
     public class SetTrackingTargetFPS : Operation
     {
@@ -73,7 +74,7 @@ namespace umi3d.edk.userCapture.tracking
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             SetTrackingBoneTargetFPSDto boneTargetFPS = (SetTrackingBoneTargetFPSDto)base.ToOperationDto(user);
-            boneTargetFPS.boneType= this.boneType;
+            boneTargetFPS.boneType = this.boneType;
 
             return boneTargetFPS;
         }

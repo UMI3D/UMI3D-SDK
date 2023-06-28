@@ -26,7 +26,7 @@ namespace umi3d.common.userCapture.tracking
     public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
         /// <summary>
-        /// User id of the tracked user 
+        /// User id of the tracked user
         /// </summary>
         public ulong userId { get; set; }
 

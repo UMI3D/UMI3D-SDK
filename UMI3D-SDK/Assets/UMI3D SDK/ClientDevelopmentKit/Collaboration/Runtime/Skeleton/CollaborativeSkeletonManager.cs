@@ -16,7 +16,6 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
@@ -27,9 +26,8 @@ using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
-using UnityEngine.Events;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.userCapture
 {
     public interface ICollaborativeSkeletonsManager
     {
@@ -39,7 +37,6 @@ namespace umi3d.cdk.collaboration
 
         ISkeleton GetSkeletonById(ulong userId);
     }
-
 
     public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager, ICollaborativeSkeletonsManager
     {
@@ -66,11 +63,12 @@ namespace umi3d.cdk.collaboration
                 return _standardHierarchy;
             }
         }
+
         private UMI3DSkeletonHierarchy _standardHierarchy;
 
-        float targetTrackingFPS = 30f;
-        bool sendCameraProperties = true;
-        bool sendTrackingLoopOnce = false;
+        private float targetTrackingFPS = 30f;
+        private bool sendCameraProperties = true;
+        private bool sendTrackingLoopOnce = false;
 
         public TrackingOption option;
 
@@ -236,7 +234,7 @@ namespace umi3d.cdk.collaboration
             if (sendTrackingLoopOnce)
                 return;
 
-            while (Exists && ShouldSendTracking && personalSkeleton.BonesAsyncFPS.ContainsKey(boneType)) 
+            while (Exists && ShouldSendTracking && personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
             {
                 if (personalSkeleton.BonesAsyncFPS[boneType] > 0)
                 {
@@ -256,7 +254,6 @@ namespace umi3d.cdk.collaboration
                     catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
 
                     await UMI3DAsyncManager.Delay((int)(1000f / personalSkeleton.BonesAsyncFPS[boneType]));
-
                 }
                 else
                     await UMI3DAsyncManager.Yield();
@@ -279,7 +276,6 @@ namespace umi3d.cdk.collaboration
                 personalSkeleton.BonesAsyncFPS[boneType] = newFPSTarget;
                 SendAsyncBoneData(boneType);
             }
-
             else if (personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
                 personalSkeleton.BonesAsyncFPS.Remove(boneType);
         }

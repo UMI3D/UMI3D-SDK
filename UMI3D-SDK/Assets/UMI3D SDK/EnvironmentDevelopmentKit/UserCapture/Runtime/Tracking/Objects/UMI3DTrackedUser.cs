@@ -14,12 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture;
 using umi3d.common;
-using UnityEngine;
-using UnityEngine.Events;
-using System.Threading.Tasks;
-using System.Linq;
 using umi3d.common.userCapture.tracking;
 
 namespace umi3d.edk.userCapture.tracking

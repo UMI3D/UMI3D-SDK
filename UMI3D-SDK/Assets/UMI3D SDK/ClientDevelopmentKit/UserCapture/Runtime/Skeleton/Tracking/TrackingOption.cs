@@ -16,6 +16,6 @@ limitations under the License.
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackingOption { }
-
+    public class TrackingOption
+    { }
 }

@@ -14,14 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.userCapture
 {
     /// <summary>
     /// Component attached to the viewpoint of any skeleton.
     /// </summary>
-    public class UMI3DViewpointHelper : MonoBehaviour {}
+    public class UMI3DViewpointHelper : MonoBehaviour
+    { }
 }

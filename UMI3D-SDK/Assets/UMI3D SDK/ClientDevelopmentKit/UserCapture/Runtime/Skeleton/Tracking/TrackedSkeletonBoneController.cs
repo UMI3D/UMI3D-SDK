@@ -14,16 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.userCapture;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-
     public class TrackedSkeletonBoneController : TrackedSkeletonBone, IController
     {
         public Vector3 position

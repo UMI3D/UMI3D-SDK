@@ -15,11 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.userCapture;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace umi3d.cdk.userCapture.tracking
 {
@@ -46,7 +43,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public virtual ControllerDto ToControllerDto()
         {
-            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position.Dto(), rotation = this.transform.rotation.Dto(), isOverrider = false};
+            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position.Dto(), rotation = this.transform.rotation.Dto(), isOverrider = false };
         }
     }
 }

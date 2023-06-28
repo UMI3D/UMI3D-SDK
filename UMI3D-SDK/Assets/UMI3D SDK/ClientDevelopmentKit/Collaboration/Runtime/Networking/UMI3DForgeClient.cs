@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.common;

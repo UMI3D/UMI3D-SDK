@@ -1,10 +1,22 @@
+/*
+Copyright 2019 - 2021 Inetum
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+*/
+
 using inetum.unityUtils;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Security.Permissions;
-using UnityEditor;
-using UnityEngine;
 
 namespace umi3d.edk.userCapture.tracking
 {
@@ -14,7 +26,6 @@ namespace umi3d.edk.userCapture.tracking
 
         private Dictionary<ulong, float> asyncFPS = new Dictionary<ulong, float>();
         private Dictionary<ulong, Dictionary<uint, float>> asyncBonesFPS = new Dictionary<ulong, Dictionary<uint, float>>();
-
 
         public void SyncFPSTracking()
         {
@@ -30,7 +41,6 @@ namespace umi3d.edk.userCapture.tracking
             }
         }
 
-
         public void SyncFPSTracking(UMI3DUser user)
         {
             SetTrackingTargetFPS FPSRequest = new SetTrackingTargetFPS(FPSTrackingTarget);
@@ -41,7 +51,6 @@ namespace umi3d.edk.userCapture.tracking
             if (asyncFPS.ContainsKey(user.Id()))
                 asyncFPS.Remove(user.Id());
         }
-
 
         public void UpdateFPSTracking(float FPSTarget)
         {
@@ -67,7 +76,6 @@ namespace umi3d.edk.userCapture.tracking
             }
         }
 
-
         public void UpdateFPSTracking(UMI3DUser user, float FPSTarget)
         {
             SetTrackingTargetFPS FPSRequest = new SetTrackingTargetFPS(FPSTarget);
@@ -77,11 +85,9 @@ namespace umi3d.edk.userCapture.tracking
 
             if (FPSTarget != FPSTrackingTarget)
                 asyncFPS[user.Id()] = FPSTarget;
-
             else if (asyncFPS.ContainsKey(user.Id()))
                 asyncFPS.Remove(user.Id());
         }
-
 
         public void UpdateBoneFPS(float FPSTarget, uint boneType)
         {
@@ -99,9 +105,8 @@ namespace umi3d.edk.userCapture.tracking
                         userBonesFPS[boneType] = FPSTarget;
                         asyncBonesFPS[user.Id()] = userBonesFPS;
                     }
-
                     else
-                        asyncBonesFPS.Add(user.Id(), new Dictionary<uint, float>() {{ boneType, FPSTarget }});
+                        asyncBonesFPS.Add(user.Id(), new Dictionary<uint, float>() { { boneType, FPSTarget } });
                 }
             }
             else
@@ -116,7 +121,6 @@ namespace umi3d.edk.userCapture.tracking
                 }
             }
         }
-
 
         public void UpdateBoneFPS(UMI3DUser user, float FPSTarget, uint boneType)
         {
@@ -145,8 +149,6 @@ namespace umi3d.edk.userCapture.tracking
             }
         }
 
-
-
         public void SyncBoneFPS(uint boneType)
         {
             SetTrackingBoneTargetFPS BoneFPSRequest = new SetTrackingBoneTargetFPS(FPSTrackingTarget, boneType);
@@ -159,7 +161,6 @@ namespace umi3d.edk.userCapture.tracking
                 userBonesFPS.Value.Remove(boneType);
             }
         }
-
 
         public void SyncBoneFPS(UMI3DUser user, uint boneType)
         {
@@ -174,7 +175,6 @@ namespace umi3d.edk.userCapture.tracking
                 asyncBonesFPS[user.Id()] = userBonesFPS;
             }
         }
-
 
         public void SyncAllBones()
         {
@@ -195,7 +195,6 @@ namespace umi3d.edk.userCapture.tracking
 
             asyncBonesFPS.Clear();
         }
-
 
         public void SyncAllBones(UMI3DUser user)
         {

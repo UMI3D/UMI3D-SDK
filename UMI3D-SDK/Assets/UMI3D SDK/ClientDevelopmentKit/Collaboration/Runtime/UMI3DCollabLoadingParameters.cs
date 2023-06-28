@@ -19,6 +19,8 @@ using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.volumes;
+using umi3d.cdk.collaboration.userCapture.animation;
+using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -59,7 +61,7 @@ namespace umi3d.cdk.collaboration
             .SetNext(new PreloadedSceneLoader())
             .SetNext(new UMI3DInteractableLoader())
             .SetNext(new UMI3DGlobalToolLoader())
-            .SetNext(new animation.UMI3DCollaborativeSkeletonNodeLoader())
+            .SetNext(new UMI3DCollaborativeSkeletonNodeLoader())
             .SetNext(new UMI3DMeshNodeLoader())
             .SetNext(new UMI3DLineRendererLoader())
             .SetNext(new UMI3DSubMeshNodeLoader())
@@ -68,7 +70,7 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DPoseOverriderContainerLoader())
             .SetNext(new emotes.UMI3DEmotesConfigLoader())
             .SetNext(new emotes.UMI3DEmoteLoader())
-            .SetNext(new binding.CollaborationBindingLoader())
+            .SetNext(new CollaborationBindingLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)

@@ -14,13 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
@@ -31,19 +26,19 @@ namespace umi3d.cdk.userCapture.tracking
     public class TrackedSkeleton : MonoBehaviour, ISubWritableSkeleton
     {
         public List<IController> controllers = new List<IController>();
-        List<IController> controllersToDestroy = new();
+        private List<IController> controllersToDestroy = new();
         public Camera Viewpoint;
         public Transform Hips;
         public TrackedAnimator trackedAnimator;
-        Animator animator;
+        private Animator animator;
         public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
-        List<uint> types = new List<uint>();
+        private List<uint> types = new List<uint>();
 
         private ISkeletonManager skeletonManager;
 
         public void Start()
         {
-             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
+            foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
@@ -69,7 +64,7 @@ namespace umi3d.cdk.userCapture.tracking
             var dto = new PoseDto();
             dto?.SetBonePoseDtoArray(bones
                 .Select(kp => kp.Value)
-                .Where(x=> x is IController)
+                .Where(x => x is IController)
                 .Select(tb => tb.ToBoneDto()).ToList());
             return dto;
         }
@@ -133,7 +128,6 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
-
         #region Ik
 
         /// <summary>
@@ -151,30 +145,39 @@ namespace umi3d.cdk.userCapture.tracking
                     case BoneType.LeftKnee:
                         SetHint(controller, AvatarIKHint.LeftKnee);
                         break;
+
                     case BoneType.RightKnee:
                         SetHint(controller, AvatarIKHint.RightKnee);
                         break;
+
                     case BoneType.LeftForearm:
                         SetHint(controller, AvatarIKHint.LeftElbow);
                         break;
+
                     case BoneType.RightForearm:
                         SetHint(controller, AvatarIKHint.RightElbow);
                         break;
+
                     case BoneType.LeftAnkle:
                         SetGoal(controller, AvatarIKGoal.LeftFoot);
                         break;
+
                     case BoneType.RightAnkle:
                         SetGoal(controller, AvatarIKGoal.RightFoot);
                         break;
+
                     case BoneType.LeftHand:
                         SetGoal(controller, AvatarIKGoal.LeftHand);
                         break;
+
                     case BoneType.RightHand:
                         SetGoal(controller, AvatarIKGoal.RightHand);
                         break;
+
                     case BoneType.Viewpoint:
                         LookAt(controller);
                         break;
+
                     default:
                         SetControl(controller, BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType).Value);
                         break;
@@ -193,30 +196,39 @@ namespace umi3d.cdk.userCapture.tracking
                     case BoneType.LeftKnee:
                         SetHint(controller, AvatarIKHint.LeftKnee);
                         break;
+
                     case BoneType.RightKnee:
                         SetHint(controller, AvatarIKHint.RightKnee);
                         break;
+
                     case BoneType.LeftForearm:
                         SetHint(controller, AvatarIKHint.LeftElbow);
                         break;
+
                     case BoneType.RightForearm:
                         SetHint(controller, AvatarIKHint.RightElbow);
                         break;
+
                     case BoneType.LeftAnkle:
                         SetGoal(controller, AvatarIKGoal.LeftFoot);
                         break;
+
                     case BoneType.RightAnkle:
                         SetGoal(controller, AvatarIKGoal.RightFoot);
                         break;
+
                     case BoneType.LeftHand:
                         SetGoal(controller, AvatarIKGoal.LeftHand);
                         break;
+
                     case BoneType.RightHand:
                         SetGoal(controller, AvatarIKGoal.RightHand);
                         break;
+
                     case BoneType.Viewpoint:
                         LookAt(controller);
                         break;
+
                     default:
                         SetControl(controller, BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType).Value);
                         break;
@@ -273,8 +285,7 @@ namespace umi3d.cdk.userCapture.tracking
                 animator.SetLookAtWeight(0);
             }
         }
-        #endregion
 
+        #endregion Ik
     }
-
 }

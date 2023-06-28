@@ -18,7 +18,7 @@ using System.Linq;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
 
-namespace umi3d.cdk.collaboration.animation
+namespace umi3d.cdk.collaboration.userCapture.animation
 {
     /// <summary>
     /// Loader for <see cref="UMI3DSkeletonNodeDto"/> in a collaborative context.

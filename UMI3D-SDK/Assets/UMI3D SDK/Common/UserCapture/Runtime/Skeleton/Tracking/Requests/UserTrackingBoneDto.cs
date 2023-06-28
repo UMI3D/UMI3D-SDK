@@ -14,16 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using System.Collections.Generic;
-using UnityEngine.UIElements;
-
 namespace umi3d.common.userCapture.tracking
 {
     public class UserTrackingBoneDto : AbstractBrowserRequestDto
     {
         /// <summary>
-        /// User id of the tracked user 
+        /// User id of the tracked user
         /// </summary>
         public ulong userId { get; set; }
 

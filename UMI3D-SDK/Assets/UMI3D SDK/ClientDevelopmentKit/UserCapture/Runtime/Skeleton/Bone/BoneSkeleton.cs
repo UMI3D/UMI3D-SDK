@@ -14,27 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using umi3d.cdk.userCapture;
-using umi3d.common.userCapture;
 using UnityEngine;
 
-public class BoneSkeleton : MonoBehaviour
+namespace umi3d.cdk.userCapture
 {
-    public void Init(uint boneTypes, Transform node)
+    public class BoneSkeleton : MonoBehaviour
     {
-        this.boneTypes = boneTypes;
-        this.node = node;
+        public void Init(uint boneTypes, Transform node)
+        {
+            this.boneTypes = boneTypes;
+            this.node = node;
+        }
+
+        private void Awake()
+        {
+            bonSkeletonInstances.TryAdd(boneTypes, this);
+        }
+
+        public static Dictionary<uint, BoneSkeleton> bonSkeletonInstances = new Dictionary<uint, BoneSkeleton>();
+
+        public uint boneTypes;
+        public Transform node;
     }
-
-    private void Awake()
-    {
-        bonSkeletonInstances.TryAdd(boneTypes, this);
-    }
-
-    public static Dictionary<uint, BoneSkeleton> bonSkeletonInstances = new Dictionary<uint, BoneSkeleton>();
-
-    public uint boneTypes;
-    public Transform node;
 }

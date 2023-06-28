@@ -22,15 +22,15 @@ using System.Threading.Tasks;
 using umi3d.cdk;
 using umi3d.cdk.binding;
 using umi3d.cdk.collaboration;
-using umi3d.cdk.collaboration.binding;
+using umi3d.cdk.collaboration.userCapture;
+using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.cdk.userCapture;
-using umi3d.common;
 using umi3d.common.binding;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
 
 
-namespace EditMode_Tests.Collaboration.Binding.CDK
+namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 {
     public class CollaborationBindingLoader_Test : UserCaptureBindingLoader_Test
     {

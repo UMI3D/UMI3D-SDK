@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.cdk.collaboration.emotes;
+using umi3d.cdk.collaboration.userCapture;
 
 namespace umi3d.cdk.collaboration
 {

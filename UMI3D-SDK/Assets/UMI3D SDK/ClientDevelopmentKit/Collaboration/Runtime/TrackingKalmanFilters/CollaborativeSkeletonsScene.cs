@@ -15,9 +15,9 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
 
-public class CollaborativeSkeletonsScene : SingleBehaviour<CollaborativeSkeletonsScene>
-{ }
+namespace umi3d.cdk.collaboration.userCapture
+{
+    public class CollaborativeSkeletonsScene : SingleBehaviour<CollaborativeSkeletonsScene>
+    { }
+}

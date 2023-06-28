@@ -28,5 +28,4 @@ namespace umi3d.cdk.userCapture.tracking
             IkCallback?.Invoke(layerIndex);
         }
     }
-
 }

@@ -25,7 +25,7 @@ using umi3d.common.userCapture.binding;
 
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration.binding
+namespace umi3d.cdk.collaboration.userCapture.binding
 {
     /// <summary>
     /// Loader for bindings and bone bindings on other users' skeleton.
