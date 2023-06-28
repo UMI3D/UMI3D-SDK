@@ -16,7 +16,7 @@ limitations under the License.
 
 using System;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     /// <summary>
     /// Class to describe a bone's 6-D pose in the frame of reference of a user.

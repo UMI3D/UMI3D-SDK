@@ -16,7 +16,7 @@ limitations under the License.
 
 using System;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     [UMI3DSerializerOrder(10)]
     public class ControllerSerializer : UMI3DSerializerModule

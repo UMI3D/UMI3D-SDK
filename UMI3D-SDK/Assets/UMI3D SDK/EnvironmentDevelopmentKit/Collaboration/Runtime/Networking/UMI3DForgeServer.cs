@@ -463,7 +463,7 @@ namespace umi3d.edk.collaboration
                     trackingFrame.position = UMI3DSerializer.Read<Vector3Dto>(container);
                     trackingFrame.rotation = UMI3DSerializer.Read<Vector4Dto>(container);
                     //trackingFrame.refreshFrequency = UMI3DSerializer.Read<float>(container);
-                    trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.ControllerDto>(container);
+                    trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.description.ControllerDto>(container);
                 }
             }
 

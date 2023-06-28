@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     public class UMI3DSkeletonHierarchy
     {

@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEditor;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     public static class BoneTypeHelper
     {

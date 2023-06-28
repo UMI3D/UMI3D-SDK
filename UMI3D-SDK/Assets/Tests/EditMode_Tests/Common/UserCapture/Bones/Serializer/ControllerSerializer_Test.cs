@@ -18,9 +18,10 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 using UnityEngine;
 
-namespace EditMode_Tests.UserCapture.Bones.Common
+namespace EditMode_Tests.UserCapture.Description.Common
 {
     [TestFixture]
     public class ControllerSerializer_Test

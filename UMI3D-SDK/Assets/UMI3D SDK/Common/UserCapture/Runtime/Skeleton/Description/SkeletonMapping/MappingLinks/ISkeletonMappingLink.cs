@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     /// <summary>
     /// Relation between a set f skeleton information and a position. Links are used to map an unknown skeleton to the UMI3D standard.

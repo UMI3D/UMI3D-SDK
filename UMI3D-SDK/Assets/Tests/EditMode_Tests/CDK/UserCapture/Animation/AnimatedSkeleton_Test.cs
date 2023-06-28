@@ -26,6 +26,7 @@ using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 

@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using umi3d.common.userCapture.description;
 
 namespace umi3d.common.userCapture.tracking
 {

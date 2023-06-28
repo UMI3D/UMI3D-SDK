@@ -22,7 +22,7 @@ using umi3d.common;
 using umi3d.common.binding;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
-
+using umi3d.common.userCapture.description;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture.binding

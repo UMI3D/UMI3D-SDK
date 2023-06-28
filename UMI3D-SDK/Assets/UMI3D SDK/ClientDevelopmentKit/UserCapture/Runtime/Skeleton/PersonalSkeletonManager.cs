@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System.Collections;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 
 namespace umi3d.cdk.userCapture
 {

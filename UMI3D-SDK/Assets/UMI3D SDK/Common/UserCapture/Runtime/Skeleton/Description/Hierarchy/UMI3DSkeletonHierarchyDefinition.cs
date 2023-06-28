@@ -19,7 +19,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     [CreateAssetMenu(fileName = "UMI3DSkeletonHierarchyDefinition", menuName = "UMI3D/UMI3D Skeleton Hierarchy Definition")]
     public class UMI3DSkeletonHierarchyDefinition : ScriptableObject

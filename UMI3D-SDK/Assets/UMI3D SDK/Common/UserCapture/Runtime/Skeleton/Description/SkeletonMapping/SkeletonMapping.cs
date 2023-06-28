@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     [System.Serializable]
     public class SkeletonMapping

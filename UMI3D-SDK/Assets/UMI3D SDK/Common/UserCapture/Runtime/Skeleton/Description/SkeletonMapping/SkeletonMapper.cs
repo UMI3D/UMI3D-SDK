@@ -19,7 +19,7 @@ using System.Linq;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     public class SkeletonMapper : MonoBehaviour
     {

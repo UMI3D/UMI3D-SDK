@@ -17,7 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.description
 {
     public class BoneSkeleton : MonoBehaviour
     {

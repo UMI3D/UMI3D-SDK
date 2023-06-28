@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture.description;
 using UnityEditor;
 
 using UnityEngine;

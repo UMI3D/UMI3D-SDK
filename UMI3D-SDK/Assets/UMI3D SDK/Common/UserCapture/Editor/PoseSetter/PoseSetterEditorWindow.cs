@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using umi3d.common.userCapture.description;
 using umi3d.edk.userCapture.pose.editor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;

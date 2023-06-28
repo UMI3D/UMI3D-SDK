@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.description
 {
     /// <summary>
     /// Helper class to convert bonetypes from/to the UMI3D standard
