@@ -29,15 +29,18 @@ namespace umi3d.cdk.collaboration.emotes
         #region DependencyInjection
 
         private IEmoteService emoteManagementService;
+        private IEnvironmentManager environmentManager;
 
         public UMI3DEmotesConfigLoader()
         {
             emoteManagementService = EmoteManager.Instance;
+            environmentManager = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DEmotesConfigLoader(IEmoteService emoteManager)
+        public UMI3DEmotesConfigLoader(IEmoteService emoteManager, IEnvironmentManager environmentManager)
         {
             emoteManagementService = emoteManager;
+            this.environmentManager = environmentManager;
         }
 
         #endregion DependencyInjection
@@ -52,10 +55,10 @@ namespace umi3d.cdk.collaboration.emotes
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmotesConfigDto;
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+            environmentManager.RegisterEntity(dto.id, dto, null).NotifyLoaded();
 
             foreach (UMI3DEmoteDto emoteDto in dto.emotes)
-                UMI3DEnvironmentLoader.Instance.RegisterEntity(emoteDto.id, emoteDto, null).NotifyLoaded();
+                environmentManager.RegisterEntity(emoteDto.id, emoteDto, null).NotifyLoaded();
 
             emoteManagementService.UpdateEmoteConfig(dto);
             return Task.CompletedTask;
