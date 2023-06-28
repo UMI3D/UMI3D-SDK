@@ -17,7 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
-using UnityEngine;  
+using UnityEngine;
 
 namespace umi3d.common.userCapture
 {
@@ -38,7 +38,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         public event Action<UMI3DPose_so, int> onPoseReferencedAndIndexSetted;
 
-        public int poseRef { get; private set; } 
+        public int poseRef { get; private set; }
 
         public void Init(List<BoneDto> bonePoses, BonePoseDto bonePoseDto)
         {
@@ -94,4 +94,5 @@ namespace umi3d.common.userCapture
 
             return copy;
         }
+    }
 }

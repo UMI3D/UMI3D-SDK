@@ -39,6 +39,7 @@ namespace umi3d.cdk.collaboration
         public void SetSubSkeletons()
         {
             TrackedSkeleton = Instantiate((UMI3DEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
+            this.HipsAnchor = TrackedSkeleton.Hips;
             PoseSkeleton = new PoseSkeleton();
             Skeletons.Add(TrackedSkeleton);
             base.Skeletons.Add(PoseSkeleton);

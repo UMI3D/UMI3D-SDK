@@ -30,7 +30,8 @@ namespace umi3d.cdk.userCapture
     {
         public List<IController> controllers = new List<IController>();
         List<IController> controllersToDestroy = new();
-        public Camera viewpoint;
+        public Camera Viewpoint;
+        public Transform Hips;
         public TrackedAnimator trackedAnimator;
         Animator animator;
         public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
@@ -56,7 +57,7 @@ namespace umi3d.cdk.userCapture
             return new UserCameraPropertiesDto()
             {
                 scale = 1f,
-                projectionMatrix = viewpoint.projectionMatrix.Dto(),
+                projectionMatrix = Viewpoint.projectionMatrix.Dto(),
                 boneType = BoneType.Viewpoint,
             };
         }

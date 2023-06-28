@@ -38,7 +38,8 @@ namespace umi3d.cdk.userCapture
 
         public UMI3DSkeletonHierarchy SkeletonHierarchy { get; set; }
 
-        public virtual Transform HipsAnchor { get => hipsAnchor; }
+        public virtual Transform HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
+
         public virtual ulong UserId { get; set; }
 
         protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator = new();
@@ -64,8 +65,10 @@ namespace umi3d.cdk.userCapture
             foreach (uint boneType in Bones.Keys)
                 alreadyComputedBonesCache[boneType] = false;
 
-            //very naive
+            //very naive : for now, we consider the tracked hips as the computer hips
             Bones[BoneType.Hips].s_Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            Bones[BoneType.Hips].s_Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
+
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
             // better use normal recusive computations then.
