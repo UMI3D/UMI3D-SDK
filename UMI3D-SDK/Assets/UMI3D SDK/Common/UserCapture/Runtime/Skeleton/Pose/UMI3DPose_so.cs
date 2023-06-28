@@ -41,7 +41,7 @@ namespace umi3d.common.userCapture.pose
 
         public void Init(List<BoneDto> bonePoses, BonePoseDto bonePoseDto)
         {
-            this.boneDtos = bonePoses;
+            this.boneDtos.AddRange(bonePoses);
             this.bonePoseDto = bonePoseDto;
         }
 
