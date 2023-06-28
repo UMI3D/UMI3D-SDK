@@ -17,7 +17,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose
 {
     [System.Serializable]
     public class BonePoseDto : UMI3DDto

@@ -19,6 +19,7 @@ using System.Collections;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.animation;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation

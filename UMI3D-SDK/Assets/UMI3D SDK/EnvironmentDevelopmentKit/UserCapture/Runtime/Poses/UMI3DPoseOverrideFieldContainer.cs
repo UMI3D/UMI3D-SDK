@@ -17,8 +17,9 @@ limitations under the License.
 using System.Collections.Generic;
 using UnityEngine;
 using umi3d.edk.userCapture;
+using umi3d.edk.userCapture.pose;
 
-namespace umi3d.common.collaboration
+namespace umi3d.edk.userCapture.pose
 {
     public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
     {

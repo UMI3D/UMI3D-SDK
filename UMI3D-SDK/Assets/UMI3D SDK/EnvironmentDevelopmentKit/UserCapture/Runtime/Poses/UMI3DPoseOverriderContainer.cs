@@ -21,9 +21,10 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.pose
 {
     [Serializable]
     public class UMI3DPoseOverriderContainer : UMI3DLoadableEntity

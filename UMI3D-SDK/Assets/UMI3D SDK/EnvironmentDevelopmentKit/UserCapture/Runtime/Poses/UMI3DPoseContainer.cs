@@ -19,10 +19,11 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using umi3d.edk;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.pose
 {
     public class UMI3DPoseContainer : SingleBehaviour<UMI3DPoseContainer>, IPoseContainer
     {

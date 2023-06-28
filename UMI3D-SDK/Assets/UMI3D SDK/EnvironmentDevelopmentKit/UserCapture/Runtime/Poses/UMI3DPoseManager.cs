@@ -20,11 +20,11 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.pose
 {
     public class UMI3DPoseManager : Singleton<UMI3DPoseManager>
     {

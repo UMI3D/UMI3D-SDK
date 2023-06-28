@@ -22,11 +22,11 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose.editor
 {
     public class PoseConditionPanel : VisualElement
     {
-        public class Uxmlfactory : UxmlFactory<PoseConditionPanel, PoseConditionPanel.UxmlTraits> { }
+        public class Uxmlfactory : UxmlFactory<PoseConditionPanel, UxmlTraits> { }
 
         public event Action<UMI3DPoseOveridder_so> onConditionCreated;
 
@@ -66,7 +66,7 @@ namespace umi3d.common.userCapture
 
         public UMI3DPoseOveridder_so GetPoseOveridder_So()
         {
-            UMI3DPoseOveridder_so poseOverrider = (UMI3DPoseOveridder_so)ScriptableObject.CreateInstance(typeof(UMI3DPoseOveridder_so));
+            var poseOverrider = (UMI3DPoseOveridder_so)ScriptableObject.CreateInstance(typeof(UMI3DPoseOveridder_so));
             poseOveridder_So.duration = new DurationDto((uint)duration.value, (uint)min_duration.value, (ulong)max_duration.value);
             poseOveridder_So.composable = tg_isComposable.value;
             poseOveridder_So.interpolationable = tg_isInterpolationable.value;
@@ -115,7 +115,7 @@ namespace umi3d.common.userCapture
 
             add_condition.clicked += () =>
             {
-                ConditionField condition = new ConditionField();
+                var condition = new ConditionField();
                 condition_fields.Add(condition);
                 condition_container.Add(condition);
             };

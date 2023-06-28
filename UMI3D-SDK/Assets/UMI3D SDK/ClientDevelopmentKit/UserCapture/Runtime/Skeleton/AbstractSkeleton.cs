@@ -17,7 +17,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-
+using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose
 {
     [System.Serializable]
     public class DirectionConditionDto : PoseConditionDto
@@ -23,7 +23,7 @@ namespace umi3d.common.userCapture
 
         public DirectionConditionDto(Vector3Dto direction)
         {
-            this.Direction = direction;
+            Direction = direction;
         }
 
         private Vector3Dto direction;

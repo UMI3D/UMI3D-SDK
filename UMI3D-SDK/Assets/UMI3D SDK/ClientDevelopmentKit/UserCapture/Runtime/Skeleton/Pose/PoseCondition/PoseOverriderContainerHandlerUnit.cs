@@ -23,6 +23,7 @@ using System.Threading;
 using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture
 {

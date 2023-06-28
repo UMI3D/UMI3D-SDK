@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.Common

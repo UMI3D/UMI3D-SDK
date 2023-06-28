@@ -1,4 +1,4 @@
-﻿/*
+﻿ /*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,9 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.pose
 {
     public interface IPoseManager
     {

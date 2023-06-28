@@ -17,6 +17,7 @@ limitations under the License.
 using System.Threading.Tasks;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.volumes;
 using umi3d.common;
 using umi3d.common.interaction;

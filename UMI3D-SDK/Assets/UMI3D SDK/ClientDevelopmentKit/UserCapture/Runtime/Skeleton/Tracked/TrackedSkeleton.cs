@@ -22,6 +22,7 @@ using System.Runtime.CompilerServices;
 using System.Threading;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture

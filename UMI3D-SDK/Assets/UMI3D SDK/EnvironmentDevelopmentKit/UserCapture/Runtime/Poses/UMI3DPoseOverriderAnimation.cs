@@ -18,7 +18,7 @@ using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.pose
 {
     /// <summary>
     /// Hand pose animation component.

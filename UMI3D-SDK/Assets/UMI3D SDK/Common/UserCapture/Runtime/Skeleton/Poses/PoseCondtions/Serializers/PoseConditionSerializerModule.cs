@@ -16,7 +16,7 @@ limitations under the License.
 
 using System;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose
 {
     public class PoseConditionSerializerModule : UMI3DSerializerModule
     {
@@ -105,12 +105,12 @@ namespace umi3d.common.userCapture
                             }
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
                 default:
-                    result = default(T);
+                    result = default;
                     readable = false;
                     return false;
             }
@@ -128,7 +128,7 @@ namespace umi3d.common.userCapture
 
                         if (readable)
                         {
-                            MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
+                            var magnitudeConditionDto = new MagnitudeConditionDto(
                                 targetObjectId: targetObjectId,
                                 boneOrigine: boneOrigin,
                                 magnitude: magnitude
@@ -137,7 +137,7 @@ namespace umi3d.common.userCapture
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
@@ -148,7 +148,7 @@ namespace umi3d.common.userCapture
 
                         if (readable)
                         {
-                            BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto(
+                            var boneRotationConditionDto = new BoneRotationConditionDto(
                                 boneId: boneId,
                                 rotation: rotation
                             );
@@ -156,7 +156,7 @@ namespace umi3d.common.userCapture
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
@@ -166,14 +166,14 @@ namespace umi3d.common.userCapture
 
                         if (readable)
                         {
-                            DirectionConditionDto directionConditionDto = new DirectionConditionDto(
+                            var directionConditionDto = new DirectionConditionDto(
                                 direction: direction
                             );
                             result = (T)Convert.ChangeType(directionConditionDto, typeof(T));
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
@@ -183,14 +183,14 @@ namespace umi3d.common.userCapture
 
                         if (readable)
                         {
-                            UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto(
+                            var userScaleConditinoDto = new UserScaleConditionDto(
                                 scale: scale
                             );
                             result = (T)Convert.ChangeType(userScaleConditinoDto, typeof(T));
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
@@ -200,14 +200,14 @@ namespace umi3d.common.userCapture
 
                         if (readable)
                         {
-                            ScaleConditionDto scaleCondition = new ScaleConditionDto(
+                            var scaleCondition = new ScaleConditionDto(
                                 scale: scale
                             );
                             result = (T)Convert.ChangeType(scaleCondition, typeof(T));
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
@@ -218,7 +218,7 @@ namespace umi3d.common.userCapture
 
                         if (readable)
                         {
-                            RangeConditionDto rangeConditionDto = new RangeConditionDto(
+                            var rangeConditionDto = new RangeConditionDto(
                                 conditionA: conditionA,
                                 conditionB: conditionB
                             );
@@ -226,7 +226,7 @@ namespace umi3d.common.userCapture
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         return false;
                     }
 
@@ -237,7 +237,7 @@ namespace umi3d.common.userCapture
 
                         if (conditions != null)
                         {
-                            NotConditionDto notConditionDto = new NotConditionDto(
+                            var notConditionDto = new NotConditionDto(
                                 conditions: conditions
                             );
                             result = (T)Convert.ChangeType(notConditionDto, typeof(T));
@@ -245,12 +245,12 @@ namespace umi3d.common.userCapture
                             return true;
                         }
 
-                        result = default(T);
+                        result = default;
                         readable = false;
                         return false;
                     }
             }
-            result = default(T);
+            result = default;
             readable = false;
             return false;
         }

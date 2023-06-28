@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose
 {
     [System.Serializable]
     public class RangeConditionDto : PoseConditionDto

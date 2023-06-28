@@ -16,8 +16,9 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.pose
 {
     public class PoseSkeleton : ISubWritableSkeleton
     {

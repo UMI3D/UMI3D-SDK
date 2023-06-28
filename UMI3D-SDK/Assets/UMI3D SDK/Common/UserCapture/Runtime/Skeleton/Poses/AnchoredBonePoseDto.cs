@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose
 {
     [System.Serializable]
     public class AnchoredBonePoseDto : BonePoseDto

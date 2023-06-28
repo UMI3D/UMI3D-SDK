@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.pose;
 using umi3d.common.userCapture;
 
 namespace umi3d.cdk.collaboration

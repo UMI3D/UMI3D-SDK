@@ -1,10 +1,11 @@
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace umi3d.edk
+namespace umi3d.edk.userCapture.pose
 {
     public class PoseRequest : Operation
     {

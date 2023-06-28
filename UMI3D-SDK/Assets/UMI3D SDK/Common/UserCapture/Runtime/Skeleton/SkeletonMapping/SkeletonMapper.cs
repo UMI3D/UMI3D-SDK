@@ -16,6 +16,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Linq;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.common.userCapture

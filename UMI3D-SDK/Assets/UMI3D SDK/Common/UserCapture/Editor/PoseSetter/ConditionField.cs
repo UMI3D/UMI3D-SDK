@@ -19,7 +19,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Reflection;
-using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using UnityEditor;
 using UnityEditor.UIElements;
 using UnityEngine;

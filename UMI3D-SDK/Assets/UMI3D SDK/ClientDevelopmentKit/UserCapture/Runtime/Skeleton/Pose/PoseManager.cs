@@ -17,9 +17,10 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.pose
 {
     public class PoseManager : Singleton<PoseManager>, IPoseManager
     {

@@ -21,7 +21,7 @@ using umi3d.edk.userCapture;
 using umi3d.edk;
 using UnityEngine;
 
-namespace umi3d.common.collaboration
+namespace umi3d.edk.userCapture.pose
 {
     [Serializable]
     public class OverriderContainerField

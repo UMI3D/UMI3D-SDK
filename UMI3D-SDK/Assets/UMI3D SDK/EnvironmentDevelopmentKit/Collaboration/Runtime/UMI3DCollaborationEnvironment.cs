@@ -18,6 +18,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.edk.userCapture;
 using System.Collections.Generic;
+using umi3d.edk.userCapture.pose;
 
 namespace umi3d.edk.collaboration
 {

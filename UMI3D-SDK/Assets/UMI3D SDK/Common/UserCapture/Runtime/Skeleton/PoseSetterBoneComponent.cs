@@ -19,7 +19,7 @@ using inetum.unityUtils;
 using umi3d.common.userCapture;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.pose
 {
     public class PoseSetterBoneComponent : MonoBehaviour
     {

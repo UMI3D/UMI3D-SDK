@@ -13,7 +13,8 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-namespace umi3d.common.userCapture
+
+namespace umi3d.common.userCapture.pose
 {
     [System.Serializable]
     public class BoneRotationConditionDto : PoseConditionDto
@@ -22,8 +23,8 @@ namespace umi3d.common.userCapture
 
         public BoneRotationConditionDto(uint boneId, Vector4Dto rotation)
         {
-            this.BoneId = boneId;
-            this.Rotation = rotation;
+            BoneId = boneId;
+            Rotation = rotation;
         }
 
         private uint boneId;
