@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk.binding;
 using umi3d.cdk.userCapture.binding;
 using umi3d.common;
@@ -56,14 +57,14 @@ namespace umi3d.cdk.collaboration.binding
         #endregion DependencyInjection
 
         /// <inheritdoc/>
-        protected override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case NodeBindingDataDto
                     or MultiBindingDataDto:
                     {
-                        return base.LoadData(boundNodeId, dto);
+                        return await base.LoadData(boundNodeId, dto);
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {

@@ -63,7 +63,7 @@ namespace umi3d.cdk.binding
 
             await environmentLoaderService.WaitUntilEntityLoaded(dto.boundNodeId, null);
 
-            AbstractBinding binding = LoadData(dto.boundNodeId, dto.data);
+            AbstractBinding binding = await LoadData(dto.boundNodeId, dto.data);
 
             bindingManagementService.AddBinding(dto.boundNodeId, binding);
 
@@ -95,7 +95,7 @@ namespace umi3d.cdk.binding
         /// <param name="boundNodeId"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        protected virtual AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected virtual async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
@@ -108,7 +108,7 @@ namespace umi3d.cdk.binding
                             return null;
                         }
 
-                        UMI3DNodeInstance parentNode = environmentLoaderService.GetNodeInstance(nodeBindingDataDto.parentNodeId);
+                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
                         if (parentNode is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.parentNodeId}. Parent node does not exist.", DEBUG_SCOPE);
@@ -120,11 +120,14 @@ namespace umi3d.cdk.binding
                 case MultiBindingDataDto multiBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentLoaderService.GetNodeInstance(boundNodeId);
-                        AbstractSimpleBinding[] bindings = multiBindingDataDto.Bindings
-                                                                    .Select(x => LoadData(boundNodeId, x) as AbstractSimpleBinding)
-                                                                    .Where(x => x is not null)
-                                                                    .OrderByDescending(x => x.Priority)
-                                                                    .ToArray();
+
+                        var tasks = multiBindingDataDto.Bindings.Select(x => LoadData(boundNodeId, x));
+                        var bindings = await Task.WhenAll(tasks);
+
+                        var simpleBindings = bindings.Select(x => x as AbstractSimpleBinding)
+                                                        .Where(x => x is not null)
+                                                        .OrderByDescending(x => x.Priority)
+                                                        .ToArray();
 
                         if (bindings.Length == 0)
                         {
@@ -132,7 +135,7 @@ namespace umi3d.cdk.binding
                             return null;
                         }
 
-                        return new MultiBinding(multiBindingDataDto, bindings, boundNode.transform, isOrdered: true);
+                        return new MultiBinding(multiBindingDataDto, simpleBindings, boundNode.transform, isOrdered: true);
                     }
                 default:
                     return null;
