@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture.pose
 {

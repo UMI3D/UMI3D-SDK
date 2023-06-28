@@ -18,7 +18,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine.UIElements;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.tracking
 {
     public class UserTrackingBoneDto : AbstractBrowserRequestDto
     {

@@ -24,8 +24,9 @@ using BeardedManStudios.Forge.Networking;
 using System.Linq;
 using inetum.unityUtils;
 using System;
+using umi3d.common.userCapture.tracking;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk.collaboration.tracking
 {
     public class UMI3DTrackingRelay : UMI3DRelay<UserTrackingFrameDto>
     {

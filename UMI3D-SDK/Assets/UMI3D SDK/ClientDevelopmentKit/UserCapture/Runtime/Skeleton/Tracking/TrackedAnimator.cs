@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.tracking
 {
     public class TrackedAnimator : MonoBehaviour
     {

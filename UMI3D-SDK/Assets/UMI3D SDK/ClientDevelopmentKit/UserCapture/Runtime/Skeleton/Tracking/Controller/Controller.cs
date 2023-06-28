@@ -18,7 +18,7 @@ using inetum.unityUtils;
 using umi3d.common.userCapture;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.tracking
 {
     public class Controller : MonoBehaviour, IController
     {

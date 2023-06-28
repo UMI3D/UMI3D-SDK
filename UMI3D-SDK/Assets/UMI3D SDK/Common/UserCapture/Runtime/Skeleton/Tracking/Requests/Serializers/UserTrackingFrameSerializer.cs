@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.tracking
 {
     public class UserTrackingFrameSerializer : UMI3DSerializerModule
     {

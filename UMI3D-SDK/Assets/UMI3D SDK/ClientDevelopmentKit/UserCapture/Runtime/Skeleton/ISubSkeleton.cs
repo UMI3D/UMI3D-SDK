@@ -16,6 +16,7 @@ limitations under the License.
 
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture
 {

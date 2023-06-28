@@ -16,7 +16,7 @@ limitations under the License.
 
 using System;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.tracking
 {
     public class UserTrackingBoneSerializer : UMI3DSerializerModule
     {

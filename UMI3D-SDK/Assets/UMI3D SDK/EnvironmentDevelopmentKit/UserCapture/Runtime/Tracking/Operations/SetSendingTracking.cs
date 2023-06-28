@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using umi3d.common;
+using umi3d.common.userCapture.tracking;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.tracking
 {
     /// <summary>
     /// <see cref="Operation"/> to control the tracking of the avatar.

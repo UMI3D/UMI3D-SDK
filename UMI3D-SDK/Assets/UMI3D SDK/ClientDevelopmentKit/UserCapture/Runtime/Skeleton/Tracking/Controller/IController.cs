@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.tracking
 {
     public interface IController
     {

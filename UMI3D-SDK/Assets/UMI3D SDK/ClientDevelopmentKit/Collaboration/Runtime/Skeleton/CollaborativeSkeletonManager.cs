@@ -21,9 +21,11 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 using UnityEngine;
 using UnityEngine.Events;
 

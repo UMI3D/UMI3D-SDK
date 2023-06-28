@@ -18,6 +18,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.tracking;
 using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Tracking.Common

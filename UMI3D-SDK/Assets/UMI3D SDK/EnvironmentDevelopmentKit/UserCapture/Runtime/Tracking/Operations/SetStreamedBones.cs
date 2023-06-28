@@ -15,8 +15,9 @@ limitations under the License.
 */
 using System.Collections.Generic;
 using umi3d.common;
+using umi3d.common.userCapture.tracking;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.tracking
 {
     /// <summary>
     /// <see cref="Operation"/> to control the list of the streamed bones.

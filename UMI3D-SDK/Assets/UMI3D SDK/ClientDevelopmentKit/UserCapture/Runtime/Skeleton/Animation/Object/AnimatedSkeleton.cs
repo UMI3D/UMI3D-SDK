@@ -20,6 +20,7 @@ using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation

@@ -22,7 +22,9 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.collaboration.emotes;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.emotes;
+using umi3d.edk.collaboration.tracking;
 using umi3d.edk.interaction;
 using umi3d.edk.volume;
 using UnityEngine;
@@ -299,7 +301,7 @@ namespace umi3d.edk.collaboration
                 switch (dto)
                 {
 
-                    case common.userCapture.UserCameraPropertiesDto cam:
+                    case UserCameraPropertiesDto cam:
                         MainThreadManager.Run(() =>
                         {
                             ///TODO
@@ -422,7 +424,7 @@ namespace umi3d.edk.collaboration
 
         public static event Action<UserTrackingFrameDto, ulong> avatarFrameEvent;
 
-        public static void RequestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
+        public static void RequestAvatarListener(UnityAction<UserTrackingFrameDto, ulong> action, string reason)
         {
             // do something with reason
 

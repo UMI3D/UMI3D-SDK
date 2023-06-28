@@ -21,7 +21,7 @@ using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.tracking
 {
     /// <summary>
     /// Representation for each tracked bone.

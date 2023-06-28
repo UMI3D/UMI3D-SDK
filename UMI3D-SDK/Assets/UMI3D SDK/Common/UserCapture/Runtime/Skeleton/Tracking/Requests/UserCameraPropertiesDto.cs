@@ -16,7 +16,7 @@ limitations under the License.
 
 using System;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.tracking
 {
     /// <summary>
     /// A request to inform the media about the properties of the user's camera.

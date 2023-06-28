@@ -23,6 +23,7 @@ using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using umi3d.edk.userCapture;
 using umi3d.edk.userCapture.pose;
+using umi3d.edk.userCapture.tracking;
 
 namespace umi3d.edk.collaboration
 {

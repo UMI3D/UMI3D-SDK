@@ -20,8 +20,9 @@ using UnityEngine;
 using UnityEngine.Events;
 using System.Threading.Tasks;
 using System.Linq;
+using umi3d.common.userCapture.tracking;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.tracking
 {
     /// <summary>
     /// <see cref="UMI3DUser"/> with a UMI3D Avatar attached to it.

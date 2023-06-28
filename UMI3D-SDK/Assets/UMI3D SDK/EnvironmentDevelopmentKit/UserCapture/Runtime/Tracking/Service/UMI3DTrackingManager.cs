@@ -6,7 +6,7 @@ using System.Security.Permissions;
 using UnityEditor;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture
+namespace umi3d.edk.userCapture.tracking
 {
     public class UMI3DTrackingManager : Singleton<UMI3DTrackingManager>
     {

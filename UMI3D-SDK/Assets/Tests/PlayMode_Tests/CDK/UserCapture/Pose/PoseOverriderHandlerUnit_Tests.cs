@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using umi3d.cdk;
 using umi3d.cdk.collaboration;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 using UnityEngine.SceneManagement;
