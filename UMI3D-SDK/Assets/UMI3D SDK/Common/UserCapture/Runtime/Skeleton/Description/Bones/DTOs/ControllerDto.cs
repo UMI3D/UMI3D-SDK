@@ -25,6 +25,7 @@ namespace umi3d.common.userCapture.description
         /// Position relative to the tracked node.
         /// </summary>
         public Vector3Dto position { get; set; }
+
         public bool isOverrider { get; set; }
     }
 }

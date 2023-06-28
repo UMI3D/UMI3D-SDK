@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using inetum.unityUtils;
+
 using System;
 using System.Linq;
 using umi3d.common.userCapture.pose;
@@ -23,7 +23,7 @@ namespace umi3d.common.userCapture.description
 {
     public class SkeletonMapper : MonoBehaviour
     {
-        const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
+        private const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
 
         public BonePoseDto BoneAnchor;
         public SkeletonMapping[] Mappings;
@@ -33,15 +33,15 @@ namespace umi3d.common.userCapture.description
             try
             {
                 var pose = new PoseDto(
-                    boneAnchor : BoneAnchor,
-                    bones : Mappings.Select(m => m.GetPose()).ToList()
+                    boneAnchor: BoneAnchor,
+                    bones: Mappings.Select(m => m.GetPose()).ToList()
                 );
 
                 return pose;
             }
             catch (Exception e)
             {
-                UMI3DLogger.LogException(e,scope);
+                UMI3DLogger.LogException(e, scope);
             }
             return null;
         }
