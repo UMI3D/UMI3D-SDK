@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using UnityEngine;
@@ -27,8 +26,8 @@ namespace umi3d.common.userCapture.pose
     [Serializable]
     public class UMI3DPose_so : ScriptableObject
     {
-        [SerializeField] List<BoneDto> boneDtos = new List<BoneDto>();
-        [SerializeField] BonePoseDto bonePoseDto;
+        [SerializeField] private List<BoneDto> boneDtos = new List<BoneDto>();
+        [SerializeField] private BonePoseDto bonePoseDto;
 
         public List<BoneDto> BoneDtos { get => boneDtos; }
         public BonePoseDto BonePoseDto { get => bonePoseDto; }

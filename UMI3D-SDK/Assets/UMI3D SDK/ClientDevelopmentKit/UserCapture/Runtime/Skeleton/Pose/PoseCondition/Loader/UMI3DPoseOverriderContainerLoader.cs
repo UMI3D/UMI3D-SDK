@@ -1,27 +1,24 @@
-using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
-using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
     public class UMI3DPoseOverriderContainerLoader : AbstractLoader, IEntity
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction;
+
         /// <summary>
         /// When the condtions of a pose are satisfied,
         /// returns the right pose overrider
         /// </summary>
         public List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
 
-        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
-        ulong overriderID;
+        private ulong overriderID;
 
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
@@ -90,7 +87,6 @@ namespace umi3d.cdk.userCapture.pose
 
             return Task.FromResult(false);
         }
-
 
         private void StartNewPoseOverriderContainerUnit(UMI3DPoseOverriderContainerDto uMI3DPoseOverriderContainerDto)
         {

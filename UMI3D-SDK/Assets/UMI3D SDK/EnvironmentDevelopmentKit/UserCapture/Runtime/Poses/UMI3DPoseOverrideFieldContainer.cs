@@ -16,8 +16,6 @@ limitations under the License.
 
 using System.Collections.Generic;
 using UnityEngine;
-using umi3d.edk.userCapture;
-using umi3d.edk.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
 {
@@ -28,12 +26,11 @@ namespace umi3d.edk.userCapture.pose
             _ = UMI3DPoseManager.Instance;
         }
 
-
         [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
+
         public List<OverriderContainerField> GetAllPoseOverriders()
         {
             return allPoseOverriders;
         }
     }
 }
-

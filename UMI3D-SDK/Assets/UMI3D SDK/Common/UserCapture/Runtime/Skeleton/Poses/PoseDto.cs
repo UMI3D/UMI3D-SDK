@@ -20,10 +20,11 @@ namespace umi3d.common.userCapture.pose
 {
     public class PoseDto : UMI3DDto
     {
-        public PoseDto() { }
+        public PoseDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="bonePoseDtos">all the bone pose that are composing the current pose</param>
         /// <param name="boneAnchor"></param>
@@ -37,6 +38,7 @@ namespace umi3d.common.userCapture.pose
         /// all the bone pose that are composing the current pose
         /// </summary>
         public List<BoneDto> bones { get; set; }
+
         public void SetBonePoseDtoArray(List<BoneDto> bones)
         {
             this.bones = bones;

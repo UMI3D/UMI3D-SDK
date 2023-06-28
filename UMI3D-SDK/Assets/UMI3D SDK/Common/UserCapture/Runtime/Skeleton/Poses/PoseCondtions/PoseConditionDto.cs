@@ -19,7 +19,7 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class PoseConditionDto : UMI3DDto
     {
-        public PoseConditionDto() { }
+        public PoseConditionDto()
+        { }
     }
 }
-

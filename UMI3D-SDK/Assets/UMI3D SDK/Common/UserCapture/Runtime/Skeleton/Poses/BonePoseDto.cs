@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
@@ -22,10 +21,11 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class BonePoseDto : UMI3DDto
     {
-        public BonePoseDto() { }
+        public BonePoseDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="bone">The current bone to update</param>
         /// <param name="position">The position of the bone</param>
@@ -44,17 +44,20 @@ namespace umi3d.common.userCapture.pose
         }
 
         [SerializeField] private uint bone;
+
         /// <summary>
         /// The current bone to update
         /// </summary>
         public uint Bone { get => bone; set => bone = value; }
 
-        [SerializeField] Vector3Dto position = new Vector3Dto();
-        [SerializeField] Vector4Dto rotation = new Vector4Dto();
+        [SerializeField] private Vector3Dto position = new Vector3Dto();
+        [SerializeField] private Vector4Dto rotation = new Vector4Dto();
+
         /// <summary>
         /// The position of the bone
         /// </summary>
         public Vector3Dto Position { get => position; set => position = value; }
+
         /// <summary>
         /// The rotation of the bone
         /// </summary>

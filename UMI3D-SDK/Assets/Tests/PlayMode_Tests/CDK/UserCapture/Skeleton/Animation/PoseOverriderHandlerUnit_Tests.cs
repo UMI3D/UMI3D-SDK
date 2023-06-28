@@ -16,18 +16,13 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using PlayMode_Tests;
-using System.Collections;
 using System.Collections.Generic;
 using umi3d.cdk;
 using umi3d.cdk.collaboration;
 using umi3d.cdk.userCapture;
-using umi3d.cdk.userCapture.pose;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 
 namespace PlayMode_Tests.UserCapture.Pose.CDK
 {
@@ -77,7 +72,6 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             if (UMI3DLoadingHandler.Exists)
                 Object.Destroy(UMI3DLoadingHandler.Instance);
         }
-
 
         [Test]
         public void TestNullData()
@@ -156,6 +150,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
         }
 
         #region HelperMethod
+
         private UMI3DPoseOverriderContainerDto GenerateASimplePoseContainer()
         {
             UMI3DPoseOverriderContainerDto container = new UMI3DPoseOverriderContainerDto()
@@ -203,14 +198,12 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         }
                     }.ToArray()
                 },
-
-
             }.ToArray(),
             };
 
             return container;
         }
 
-        #endregion
+        #endregion HelperMethod
     }
 }

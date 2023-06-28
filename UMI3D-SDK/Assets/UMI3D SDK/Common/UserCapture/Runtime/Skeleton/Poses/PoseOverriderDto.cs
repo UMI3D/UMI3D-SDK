@@ -19,10 +19,11 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class PoseOverriderDto
     {
-        public PoseOverriderDto() { }
+        public PoseOverriderDto()
+        { }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="pose"></param>
         /// <param name="poseConditionDtos">The different condition that are needed for the overrider to get activated</param>
@@ -44,17 +45,18 @@ namespace umi3d.common.userCapture.pose
         }
 
         public int poseIndexinPoseManager { get; set; }
+
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
         public PoseConditionDto[] poseConditions { get; set; }
+
         public DurationDto duration { get; set; }
         public bool interpolationable { get; set; }
         public bool composable { get; set; }
         public bool isHoverEnter { get; set; }
-        public bool isHoverExit { get; set;}
-        public bool isRelease { get; set; } 
+        public bool isHoverExit { get; set; }
+        public bool isRelease { get; set; }
         public bool isTrigger { get; set; }
     }
 }
-

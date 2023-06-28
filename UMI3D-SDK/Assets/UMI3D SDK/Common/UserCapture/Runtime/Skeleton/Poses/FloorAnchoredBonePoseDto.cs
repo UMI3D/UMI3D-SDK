@@ -19,16 +19,16 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class FloorAnchoredBonePoseDto : BonePoseDto
     {
-        public FloorAnchoredBonePoseDto() { }
+        public FloorAnchoredBonePoseDto()
+        { }
 
         public FloorAnchoredBonePoseDto(BonePoseDto bonePoseDto)
             : base(bonePoseDto.Bone, bonePoseDto.Position, bonePoseDto.Rotation)
         {
-
         }
 
         /// <summary>
-        /// 
+        ///
         /// </summary>
         /// <param name="bone">The current bone to update</param>
         /// <param name="position">The position of the bone</param>
@@ -36,8 +36,6 @@ namespace umi3d.common.userCapture.pose
         public FloorAnchoredBonePoseDto(uint bone, Vector3Dto position, Vector4Dto rotation)
              : base(bone, position, rotation)
         {
-
         }
     }
 }
-

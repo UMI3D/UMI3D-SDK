@@ -1,12 +1,9 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace umi3d.common.userCapture.pose
 {
     public class NodeAnchoredBonePoseDto : BonePoseDto
     {
-        public NodeAnchoredBonePoseDto() { }
+        public NodeAnchoredBonePoseDto()
+        { }
 
         public NodeAnchoredBonePoseDto(uint node, uint bone, Vector3Dto position, Vector4Dto rotation) : base(bone, position, rotation)
         {

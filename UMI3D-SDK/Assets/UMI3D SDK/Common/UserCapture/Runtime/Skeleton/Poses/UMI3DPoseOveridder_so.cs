@@ -1,9 +1,7 @@
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
-
 
 namespace umi3d.common.userCapture.pose
 {
@@ -12,17 +10,19 @@ namespace umi3d.common.userCapture.pose
     public class UMI3DPoseOveridder_so : ScriptableObject
     {
         public UMI3DPose_so pose;
+
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
         [SerializeReference] public PoseConditionDto[] poseConditions;
+
         public DurationDto duration;
         public bool interpolationable;
         public bool composable;
         public bool isHoverEnter;
         public bool isHoverExit;
         public bool isRelease;
-        public bool isTrigger; 
+        public bool isTrigger;
 
         public PoseOverriderDto ToDto(int poseIndexinPoseManager)
         {
@@ -45,6 +45,7 @@ namespace umi3d.common.userCapture.pose
                             targetObjectId = magnitudeConditionDto.TargetObjectId
                         });
                         break;
+
                     default:
                         throw new NotImplementedException("Please implemente clone for other conditions");
                 }

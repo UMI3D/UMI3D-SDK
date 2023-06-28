@@ -13,14 +13,12 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -32,12 +30,13 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// Scriptable objects to load
         /// </summary>
-        [SerializeField] private  List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
+        [SerializeField] private List<UMI3DPoseOveridder_so> poseOverriders = new List<UMI3DPoseOveridder_so>();
 
         [SerializeField] private bool isStart;
         public bool IsStart => isStart;
 
         public ulong nodeID { get; set; }
+
         public void SetNodeId(ulong nodeId)
         {
             this.nodeID = nodeId;
@@ -66,17 +65,17 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// list of all the pose dto of this meta class
         /// </summary>
-        List<PoseOverriderDto> poseOverridersDtos = new List<PoseOverriderDto>();
+        private List<PoseOverriderDto> poseOverridersDtos = new List<PoseOverriderDto>();
 
         /// <summary>
         /// Async lis of all the pose overider
         /// </summary>
-        UMI3DAsyncListProperty<PoseOverriderDto> poseOverriderDtoAsyncList;
+        private UMI3DAsyncListProperty<PoseOverriderDto> poseOverriderDtoAsyncList;
 
         /// <summary>
         /// ID of this entty
         /// </summary>
-        ulong overriderID;
+        private ulong overriderID;
 
         /// <summary>
         /// Check if the UMI3DPoseOverriderMetaClass has been registered to the Environnement and do it if not
@@ -92,9 +91,8 @@ namespace umi3d.edk.userCapture.pose
             return GetLoadEntity();
         }
 
-
         /// <summary>
-        /// Load the scriptable objects as dtos and inits the assync list 
+        /// Load the scriptable objects as dtos and inits the assync list
         /// </summary>
         /// <param name="id"></param>
         public void InitDefinition(ulong id)
@@ -196,6 +194,7 @@ namespace umi3d.edk.userCapture.pose
         }
 
         #region filter
+
         private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
 
         /// <inheritdoc/>
@@ -215,7 +214,7 @@ namespace umi3d.edk.userCapture.pose
         {
             return ConnectionFilters.Remove(filter);
         }
-        #endregion
+
+        #endregion filter
     }
 }
-

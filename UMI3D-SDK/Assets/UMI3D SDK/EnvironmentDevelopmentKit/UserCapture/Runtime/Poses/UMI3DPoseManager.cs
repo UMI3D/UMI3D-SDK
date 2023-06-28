@@ -15,14 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using umi3d.common;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
-using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
@@ -45,7 +39,7 @@ namespace umi3d.edk.userCapture.pose
             Init();
         }
 
-        bool posesInitialized = false;
+        private bool posesInitialized = false;
 
         public Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();

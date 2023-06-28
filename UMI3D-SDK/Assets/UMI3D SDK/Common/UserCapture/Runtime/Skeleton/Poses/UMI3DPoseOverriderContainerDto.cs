@@ -1,7 +1,3 @@
-using System.Collections;
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace umi3d.common.userCapture.pose
 {
     public class UMI3DPoseOverriderContainerDto : UMI3DDto, IEntity
@@ -12,6 +8,7 @@ namespace umi3d.common.userCapture.pose
         public ulong id { get; set; }
 
         public ulong relatedNodeId { get; set; }
+
         /// <summary>
         /// All the pose ovveriders of the linked container
         /// </summary>

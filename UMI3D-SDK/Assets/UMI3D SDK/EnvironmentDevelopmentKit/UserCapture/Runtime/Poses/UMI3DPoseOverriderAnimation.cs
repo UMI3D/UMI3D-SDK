@@ -40,7 +40,7 @@ namespace umi3d.edk.userCapture.pose
         {
             this.poseOverriderContainer = poseOverriderContainer;
             SetUp();
-        }   
+        }
 
         /// <summary>
         /// Animation associated with the hand pose.
@@ -52,6 +52,7 @@ namespace umi3d.edk.userCapture.pose
                 nodeAnimation = value;
             }
         }
+
         /// <summary>
         /// Hand pose associated with the animation.
         /// </summary>
@@ -88,7 +89,7 @@ namespace umi3d.edk.userCapture.pose
                         progress = 0f
                     });
 
-                nodeAnimation.ObjectAnimationChain.SetValue(op);       
+                nodeAnimation.ObjectAnimationChain.SetValue(op);
             }
         }
     }

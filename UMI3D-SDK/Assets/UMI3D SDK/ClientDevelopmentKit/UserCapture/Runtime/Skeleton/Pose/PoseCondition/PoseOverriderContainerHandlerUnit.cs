@@ -14,21 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using umi3d.common.userCapture;
-using umi3d.common;
-using UnityEngine;
-using System;
-using System.Threading;
 using inetum.unityUtils;
+using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common;
 using umi3d.common.userCapture.pose;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Pose overrider handler to calculate whether the pose can be played or not depending on the set of condition of a specific container 
+    /// Pose overrider handler to calculate whether the pose can be played or not depending on the set of condition of a specific container
     /// </summary>
     public class PoseOverriderContainerHandlerUnit
     {
@@ -36,7 +34,7 @@ namespace umi3d.cdk.userCapture
         private readonly ISubWritableSkeleton trackedSkeletonService;
         private readonly ISkeletonManager personnalSkeletonService;
 
-        public PoseOverriderContainerHandlerUnit(UMI3DPoseOverriderContainerDto overriderContainer) 
+        public PoseOverriderContainerHandlerUnit(UMI3DPoseOverriderContainerDto overriderContainer)
         {
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSkeleton;
@@ -51,17 +49,18 @@ namespace umi3d.cdk.userCapture
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
-        bool isActive = false;
-        UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
+        private bool isActive = false;
+        private UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
 
         public event EventHandler<PoseOverriderDto> OnConditionValidated;
+
         public event EventHandler<PoseOverriderDto> OnConditionDesactivated;
 
-        List<PoseOverriderDto> nonEnvirnmentalPoseOverriders= new List<PoseOverriderDto>();
-        List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
+        private List<PoseOverriderDto> nonEnvirnmentalPoseOverriders = new List<PoseOverriderDto>();
+        private List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
 
-        List<PoseOverriderDto> environmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
-        List<PoseOverriderDto> nonEnvironmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
+        private List<PoseOverriderDto> environmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
+        private List<PoseOverriderDto> nonEnvironmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
 
         /// <summary>
         /// return a copy of the environmental overriders
@@ -85,7 +84,6 @@ namespace umi3d.cdk.userCapture
             return poseOverriderDtos;
         }
 
-
         /// <summary>
         /// returns a copy of the activated environmental overriders
         /// </summary>
@@ -96,7 +94,6 @@ namespace umi3d.cdk.userCapture
             poseOverriderDtos.AddRange(environmentalActivatedPoseOverriders);
             return poseOverriderDtos;
         }
-
 
         /// <summary>
         /// returns a copy of the activated non environmental overriders
@@ -110,7 +107,7 @@ namespace umi3d.cdk.userCapture
         }
 
         /// <summary>
-        /// Set the 
+        /// Set the
         /// </summary>
         /// <param name="poseOverriderContainerDto"></param>
         /// <returns></returns>
@@ -121,7 +118,7 @@ namespace umi3d.cdk.userCapture
             this.poseOverriderContainerDto = poseOverriderContainerDto;
             nonEnvirnmentalPoseOverriders = poseOverriderContainerDto.poseOverriderDtos.Where(pod =>
             {
-                if (pod.isRelease ||pod.isTrigger|| pod.isHoverEnter||pod.isHoverExit)
+                if (pod.isRelease || pod.isTrigger || pod.isHoverEnter || pod.isHoverExit)
                 {
                     return true;
                 }
@@ -131,8 +128,9 @@ namespace umi3d.cdk.userCapture
 
             return true;
         }
+
         /// <summary>
-        /// Stops the check of fall the overriders 
+        /// Stops the check of fall the overriders
         /// </summary>
         public void DisableCheck()
         {
@@ -254,7 +252,7 @@ namespace umi3d.cdk.userCapture
 
                         OnConditionValidated?.Invoke(this, envirnmentalPoseOverriders[i]);
                         environmentalActivatedPoseOverriders.Add(envirnmentalPoseOverriders[i]);
-                    } 
+                    }
                     else if (environmentalActivatedPoseOverriders.Contains(envirnmentalPoseOverriders[i]))
                     {
                         OnConditionDesactivated?.Invoke(this, envirnmentalPoseOverriders[i]);
@@ -272,7 +270,6 @@ namespace umi3d.cdk.userCapture
                 }
             }
         }
-
 
         private bool CheckConditions(PoseConditionDto[] poseConditions)
         {
@@ -293,14 +290,17 @@ namespace umi3d.cdk.userCapture
             {
                 case MagnitudeConditionDto magnitudeConditionDto:
                     return HandleMagnitude(magnitudeConditionDto);
+
                 case BoneRotationConditionDto boneRotationConditionDto:
                     return HandleBoneRotation(boneRotationConditionDto);
+
                 case DirectionConditionDto directionConditionDto:
 
                     break;
 
                 case ScaleConditionDto scaleConditionDto:
                     return HandleTargetScale(scaleConditionDto);
+
                 case RangeConditionDto rangeConditionDto:
 
                     break;
@@ -327,10 +327,8 @@ namespace umi3d.cdk.userCapture
 
             Vector3 targetPosition = targetNodeInstance.transform.position;
 
-
             Vector3 bonePosition = (trackedSkeletonService as TrackedSkeleton).GetBonePosition(magnitudeConditionDto.BoneOrigine);
-            
-            
+
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
             if (distance < magnitudeConditionDto.Magnitude)
@@ -353,7 +351,6 @@ namespace umi3d.cdk.userCapture
 
             return false;
         }
-
 
         private bool HandleTargetScale(ScaleConditionDto scaleConditionDto)
         {

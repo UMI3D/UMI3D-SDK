@@ -17,9 +17,7 @@ limitations under the License.
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
-using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK

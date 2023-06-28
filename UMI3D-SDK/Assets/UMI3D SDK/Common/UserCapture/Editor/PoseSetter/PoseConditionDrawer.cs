@@ -1,8 +1,5 @@
-using umi3d.common.userCapture;
 using UnityEditor;
-using UnityEditor.UIElements;
 using UnityEngine;
-using UnityEngine.UIElements;
 
 namespace umi3d.common.userCapture.pose.editor
 {
