@@ -32,7 +32,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
-    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>
+    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>, IEnvironmentManager, ILoadingManager, INavMeshManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
