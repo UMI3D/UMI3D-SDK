@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration.userCapture
+namespace umi3d.cdk.collaboration.userCapture.description
 {
     /// <summary>
     /// Component attached to the viewpoint of any skeleton.
