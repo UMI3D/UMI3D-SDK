@@ -54,6 +54,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
             var skeleton = collaborativeSkeletonsmanager.GetSkeletonById(userId);
             if (skeleton is not null)
             {
+                // add animated skeleton to subskeleton list and re-order it by descending priority
                 var animatedSkeletons = skeleton.Skeletons
                                         .Where(x => x is AnimatedSkeleton)
                                         .Cast<AnimatedSkeleton>()
@@ -63,6 +64,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
                 skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
                 skeleton.Skeletons.AddRange(animatedSkeletons);
 
+                // if it is the browser, register that it is required to delete animated skeleton on leaving
                 if (userId == collaborationClientServer.GetUserId() && !isRegisteredForPersonalSkeletonCleanup)
                 {
                     isRegisteredForPersonalSkeletonCleanup = true;
@@ -77,6 +79,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
                     collaborationClientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
                 }
 
+                // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
                     subskeleton.StartParameterSelfUpdate(skeleton);
             }

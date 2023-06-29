@@ -73,17 +73,57 @@ namespace umi3d.cdk.userCapture.animation
 
         public async Task Load(UMI3DSkeletonNodeDto skeletonNodeDto)
         {
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);
-
-            var go = nodeInstance.gameObject;
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
 
             // a skeleton node should contain an animator
-            Animator animator = go.GetComponentInChildren<Animator>();
+            Animator animator = nodeInstance.gameObject.GetComponentInChildren<Animator>();
             if (animator == null)
                 return;
 
-            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; // required for applying movements on your body when you're not looking at it
 
+            // get skeleton mapper from model or create one
+            SkeletonMapper skeletonMapper = GetSkeletonMapper(skeletonNodeDto, animator);
+            if (skeletonMapper == null) // failed infinding/adding skeletonMapper
+            {
+                UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed", DEBUG_SCOPE);
+                return;
+            }
+
+            var modelTracker = nodeInstance.gameObject.GetOrAddComponent<ModelTracker>();
+            modelTracker.animatorsToRebind.Add(animator);
+
+            // get animation related to the skeleton node
+            Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
+            foreach (var id in skeletonNodeDto.relatedAnimationsId)
+            {
+                var instance = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, null);
+                if (instance.Object is not UMI3DAnimatorAnimation animation)
+                {
+                    UMI3DLogger.LogWarning($"Unable to get animation {id} for Skeleton Node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}.", DEBUG_SCOPE);
+                    continue;
+                }
+                    
+                animations.Enqueue(animation);
+            }
+
+            // create subSkeleton and add it to a skeleton
+            AnimatedSkeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
+            AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
+
+            // hide the model if it has any renderers
+            foreach (var renderer in nodeInstance.gameObject.GetComponentsInChildren<Renderer>())
+                renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
+        }
+
+        /// <summary>
+        /// Extract skeleton mapper from skeleton or create one
+        /// </summary>
+        /// <param name="skeletonNodeDto"></param>
+        /// <param name="animator"></param>
+        /// <returns></returns>
+        protected SkeletonMapper GetSkeletonMapper(UMI3DSkeletonNodeDto skeletonNodeDto, Animator animator)
+        {
             // if the designer added a skeleton mapper, uses its links
             if (animator.gameObject.TryGetComponent(out SkeletonMapper skeletonMapper))
             {
@@ -99,36 +139,14 @@ namespace umi3d.cdk.userCapture.animation
                 else
                 {
                     UMI3DLogger.LogWarning($"SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but no mapping could be retrieved.", DEBUG_SCOPE);
-                    return;
+                    return null;
                 }
             }
             else if (animator.avatar.isHuman)// if null, we try to adapt the unity avatar (rigs) by ourselves assuming it is close to the UMI3D standard one
             {
                 skeletonMapper = AutoMapAnimatorSkeleton(animator, skeletonNodeDto);
             }
-
-            if (skeletonMapper == null) // failed infinding/adding skeletonMapper
-            {
-                UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed", DEBUG_SCOPE);
-                return;
-            }
-
-            var modelTracker = go.GetOrAddComponent<ModelTracker>();
-            modelTracker.animatorsToRebind.Add(animator);
-
-            Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
-            // create subSkeletonand add it to a skeleton
-            foreach (var id in skeletonNodeDto.relatedAnimationsId)
-            {
-                await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, null);
-                animations.Enqueue(environmentLoader.GetEntityObject<UMI3DAnimatorAnimation>(id));
-            }
-            AnimatedSkeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
-            AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
-
-            // hide the model if it has any renderers
-            foreach (var renderer in go.GetComponentsInChildren<Renderer>())
-                renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
+            return skeletonMapper;
         }
 
         /// <summary>
@@ -254,6 +272,8 @@ namespace umi3d.cdk.userCapture.animation
         protected virtual void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
         {
             var skeleton = personnalSkeletonService.personalSkeleton;
+
+            // add animated skeleton to subskeleton list and re-order it by descending priority
             var animatedSkeletons = skeleton.Skeletons
                                         .Where(x => x is AnimatedSkeleton)
                                         .Cast<AnimatedSkeleton>()
@@ -263,6 +283,7 @@ namespace umi3d.cdk.userCapture.animation
             personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
             personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
 
+            // if some animator parameters should be updated by the browsers itself, start listening to them
             if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
                 subskeleton.StartParameterSelfUpdate(skeleton);
         }
