@@ -521,15 +521,15 @@ namespace umi3d.common.userCapture.pose.editor
 
                 ResetAllBones();
 
-                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.BonePoseDto.Bone);
+                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.GetBonePoseCopy().Bone);
                 root_boneComponent.isRoot = true;
                 root_boneComponent.isSavable = false;
                 treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(true, root_boneComponent.BoneType);
 
-                UpdateBoneComponent(currentPose.BonePoseDto);
-                anchor_dropdown.SetValueWithoutNotify(anchor_dropdown.choices.Find(c => c == currentPose.BonePoseDto.GetType().ToString().Split(".").Last()));
+                UpdateBoneComponent(currentPose.GetBonePoseCopy());
+                anchor_dropdown.SetValueWithoutNotify(anchor_dropdown.choices.Find(c => c == currentPose.GetBonePoseCopy().GetType().ToString().Split(".").Last()));
 
-                currentPose.BoneDtos.ForEach(bp =>
+                currentPose.GetBonesCopy().ForEach(bp =>
                 {
                     UpdateBoneComponent(bp);
                 });

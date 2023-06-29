@@ -27,11 +27,11 @@ namespace umi3d.common.userCapture.pose
     [Serializable]
     public class UMI3DPose_so : ScriptableObject
     {
-        [SerializeField] private List<BoneDto> boneDtos = new List<BoneDto>();
-        [SerializeField] private BonePoseDto bonePoseDto;
+        [SerializeField] private List<Bone> bones = new List<Bone>();
+        [SerializeField] private BonePose bonePose;
 
-        public List<BoneDto> BoneDtos { get => boneDtos; }
-        public BonePoseDto BonePoseDto { get => bonePoseDto; }
+        public List<Bone> BoneDtos { get => bones; }
+        public BonePose BonePoseDto { get => bonePose; }
 
         /// <summary>
         /// An event thats called when the PoseManager has played his Start() method
@@ -40,10 +40,23 @@ namespace umi3d.common.userCapture.pose
 
         public int poseRef { get; private set; }
 
-        public void Init(List<BoneDto> bonePoses, BonePoseDto bonePoseDto)
+        public void Init(List<BoneDto> bones, BonePoseDto bonePoseDto)
         {
-            this.boneDtos.AddRange(bonePoses);
-            this.bonePoseDto = bonePoseDto;
+            bones.ForEach(bp =>
+            {
+                this.bones.Add(new Bone()
+                {
+                    boneType = bp.boneType,
+                    rotation = bp.rotation.Quaternion()
+                });
+            });
+
+            this.bonePose = new BonePose()
+            {
+                boneType = bonePoseDto.Bone,
+                position = new Vector3(bonePoseDto.Position.X, bonePoseDto.Position.Y, bonePoseDto.Position.Z),
+                rotation = bonePoseDto.Rotation.Quaternion()
+            };
         }
 
         public void SendPoseIndexationEvent(int i)
@@ -68,12 +81,12 @@ namespace umi3d.common.userCapture.pose
         public List<BoneDto> GetBonesCopy()
         {
             List<BoneDto> copy = new List<BoneDto>();
-            boneDtos.ForEach(b =>
+            bones.ForEach(b =>
             {
                 copy.Add(new BoneDto()
                 {
                     boneType = b.boneType,
-                    rotation = new Vector4Dto() { X = b.rotation.X, Y = b.rotation.Y, Z = b.rotation.Z, W = b.rotation.W }
+                    rotation = new Vector4Dto() { X = b.rotation.x, Y = b.rotation.y, Z = b.rotation.z, W = b.rotation.w }
                 });
             });
             return copy;
@@ -87,12 +100,27 @@ namespace umi3d.common.userCapture.pose
         {
             BonePoseDto copy = new BonePoseDto()
             {
-                Bone = bonePoseDto.Bone,
-                Position = new Vector3Dto() { X = bonePoseDto.Position.X, Y = bonePoseDto.Position.Y, Z = bonePoseDto.Position.Z },
-                Rotation = new Vector4Dto() { X = bonePoseDto.Rotation.X, Y = bonePoseDto.Rotation.Y, Z = bonePoseDto.Rotation.Z, W = bonePoseDto.Rotation.W }
+                Bone = bonePose.boneType,
+                Position = new Vector3Dto() { X = bonePose.position.x, Y = bonePose.position.y, Z = bonePose.position.z },
+                Rotation = new Vector4Dto() { X = bonePose.rotation.x, Y = bonePose.rotation.y, Z = bonePose.rotation.z, W = bonePose.rotation.w }
             };
 
             return copy;
+        }
+
+        [Serializable]
+        public struct Bone
+        {
+            public uint boneType;
+            public Quaternion rotation;
+        }
+
+        [Serializable]
+        public struct BonePose
+        {
+            public uint boneType;
+            public Vector3 position;
+            public Quaternion rotation;
         }
     }
 }
