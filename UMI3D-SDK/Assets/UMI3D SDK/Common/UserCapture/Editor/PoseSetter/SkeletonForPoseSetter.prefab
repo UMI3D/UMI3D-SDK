@@ -48,7 +48,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 45
 --- !u!1 &370767244524767857
 GameObject:
   m_ObjectHideFlags: 0
@@ -98,7 +98,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 50
 --- !u!1 &430489325316252956
 GameObject:
   m_ObjectHideFlags: 0
@@ -147,7 +147,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 54
 --- !u!1 &592209415126376049
 GameObject:
   m_ObjectHideFlags: 0
@@ -197,7 +197,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 32
 --- !u!1 &740405203353732264
 GameObject:
   m_ObjectHideFlags: 0
@@ -295,7 +295,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 25
 --- !u!1 &1086351783086425038
 GameObject:
   m_ObjectHideFlags: 0
@@ -344,7 +344,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 37
 --- !u!1 &1446335021924109844
 GameObject:
   m_ObjectHideFlags: 0
@@ -548,7 +548,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 20
 --- !u!1 &1930955312713052419
 GameObject:
   m_ObjectHideFlags: 0
@@ -597,7 +597,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 21
 --- !u!1 &2120138210481331045
 GameObject:
   m_ObjectHideFlags: 0
@@ -647,7 +647,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 54
 --- !u!1 &2433345503288303220
 GameObject:
   m_ObjectHideFlags: 0
@@ -696,7 +696,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 29
 --- !u!1 &2458632727735415276
 GameObject:
   m_ObjectHideFlags: 0
@@ -746,7 +746,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 29
 --- !u!1 &2471535149422745871
 GameObject:
   m_ObjectHideFlags: 0
@@ -844,7 +844,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 47
 --- !u!1 &2766088064972012567
 GameObject:
   m_ObjectHideFlags: 0
@@ -1034,7 +1034,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 6
 --- !u!1 &2878559908758858904
 GameObject:
   m_ObjectHideFlags: 0
@@ -1083,7 +1083,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 30
 --- !u!1 &2962564205835960669
 GameObject:
   m_ObjectHideFlags: 0
@@ -1132,7 +1132,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 56
 --- !u!1 &3027092467328521170
 GameObject:
   m_ObjectHideFlags: 0
@@ -1181,7 +1181,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 18
 --- !u!1 &3097016618499948876
 GameObject:
   m_ObjectHideFlags: 0
@@ -1329,7 +1329,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 5
 --- !u!1 &3401476981742061117
 GameObject:
   m_ObjectHideFlags: 0
@@ -1378,7 +1378,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 12
 --- !u!1 &3455818659855435865
 GameObject:
   m_ObjectHideFlags: 0
@@ -1524,7 +1524,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 49
 --- !u!1 &3643001857510207813
 GameObject:
   m_ObjectHideFlags: 0
@@ -1623,7 +1623,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 35
 --- !u!1 &3684459497496271873
 GameObject:
   m_ObjectHideFlags: 0
@@ -1673,7 +1673,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 46
 --- !u!1 &3699148699094710632
 GameObject:
   m_ObjectHideFlags: 0
@@ -1818,7 +1818,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 1
 --- !u!1 &4265065566310594747
 GameObject:
   m_ObjectHideFlags: 0
@@ -1867,7 +1867,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 36
 --- !u!1 &4380063681864902044
 GameObject:
   m_ObjectHideFlags: 0
@@ -1970,7 +1970,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 16
 --- !u!1 &4560996905527112008
 GameObject:
   m_ObjectHideFlags: 0
@@ -2020,7 +2020,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 10
 --- !u!1 &4806497778639237385
 GameObject:
   m_ObjectHideFlags: 0
@@ -2069,7 +2069,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 39
 --- !u!1 &5456008635515033010
 GameObject:
   m_ObjectHideFlags: 0
@@ -2118,7 +2118,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 40
 --- !u!1 &5604758098223885447
 GameObject:
   m_ObjectHideFlags: 0
@@ -2304,7 +2304,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 17
 --- !u!1 &5640910292110348564
 GameObject:
   m_ObjectHideFlags: 0
@@ -2401,7 +2401,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 27
 --- !u!1 &6165936417181372323
 GameObject:
   m_ObjectHideFlags: 0
@@ -2449,7 +2449,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 2
 --- !u!1 &6198685187649670552
 GameObject:
   m_ObjectHideFlags: 0
@@ -2500,7 +2500,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 23
 --- !u!1 &6298459138485114055
 GameObject:
   m_ObjectHideFlags: 0
@@ -2549,7 +2549,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 34
 --- !u!1 &6436869222675410682
 GameObject:
   m_ObjectHideFlags: 0
@@ -2647,7 +2647,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 19
 --- !u!1 &6661487992438335513
 GameObject:
   m_ObjectHideFlags: 0
@@ -2792,7 +2792,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 31
 --- !u!1 &7101186545629759174
 GameObject:
   m_ObjectHideFlags: 0
@@ -2841,7 +2841,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 11
 --- !u!1 &7143852334958841018
 GameObject:
   m_ObjectHideFlags: 0
@@ -2891,7 +2891,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 15
 --- !u!1 &7246825199498325441
 GameObject:
   m_ObjectHideFlags: 0
@@ -2940,7 +2940,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 28
 --- !u!1 &7331708933434014075
 GameObject:
   m_ObjectHideFlags: 0
@@ -2989,7 +2989,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 33
 --- !u!1 &7347836858296278850
 GameObject:
   m_ObjectHideFlags: 0
@@ -3038,7 +3038,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 24
 --- !u!1 &7359742883113201913
 GameObject:
   m_ObjectHideFlags: 0
@@ -3088,7 +3088,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 48
 --- !u!1 &7872639051384978390
 GameObject:
   m_ObjectHideFlags: 0
@@ -3138,7 +3138,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 14
 --- !u!1 &8104242564424492204
 GameObject:
   m_ObjectHideFlags: 0
@@ -3283,7 +3283,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 27
 --- !u!1 &8330665530457458362
 GameObject:
   m_ObjectHideFlags: 0
@@ -3382,7 +3382,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 38
 --- !u!1 &8553916383537555124
 GameObject:
   m_ObjectHideFlags: 0
@@ -3431,7 +3431,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 41
 --- !u!1 &8612764962424888934
 GameObject:
   m_ObjectHideFlags: 0
@@ -3578,7 +3578,7 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 28
 --- !u!1 &9193072003945082913
 GameObject:
   m_ObjectHideFlags: 0
@@ -3629,4 +3629,4 @@ MonoBehaviour:
   isRoot: 0
   isSelected: 0
   isSavable: 1
-  boneType: 0
+  boneType: 3
