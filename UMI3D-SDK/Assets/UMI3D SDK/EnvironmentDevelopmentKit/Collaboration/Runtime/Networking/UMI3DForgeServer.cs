@@ -459,11 +459,11 @@ namespace umi3d.edk.collaboration
                 {
                     trackingFrame.userId = UMI3DSerializer.Read<ulong>(container);
                     trackingFrame.parentId = UMI3DSerializer.Read<ulong>(container);
-                    //trackingFrame.skeletonHighOffset = UMI3DSerializer.Read<float>(container);
                     trackingFrame.position = UMI3DSerializer.Read<Vector3Dto>(container);
                     trackingFrame.rotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                    //trackingFrame.refreshFrequency = UMI3DSerializer.Read<float>(container);
                     trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.description.ControllerDto>(container);
+                    trackingFrame.playerServerPoses = UMI3DSerializer.ReadList<int>(container);
+                    trackingFrame.playerUserPoses = UMI3DSerializer.ReadList<int>(container);
                 }
             }
 
@@ -473,14 +473,6 @@ namespace umi3d.edk.collaboration
             avatarFrameEvent?.Invoke(trackingFrame, server.Time.Timestep);
 
             user.CurrentTrackingFrame = trackingFrame;
-
-            MainThreadManager.Run(() =>
-            {   
-                ///TODO 
-                ///
-
-                //UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id(), server.Time.Timestep);
-            });
 
             trackingRelay.SetFrame(player, trackingFrame);
         }

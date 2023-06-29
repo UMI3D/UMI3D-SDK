@@ -467,6 +467,7 @@ namespace umi3d.common.userCapture.pose.editor
                 AssetDatabase.SaveAssets();
 
                 SavePoseOverrider(pose_So, path);
+                EditorUtility.SetDirty(pose_So);
             }
         }
 
