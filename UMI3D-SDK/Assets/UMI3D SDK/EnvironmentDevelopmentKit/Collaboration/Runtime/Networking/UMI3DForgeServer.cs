@@ -451,14 +451,8 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                trackingFrame = new UserTrackingFrameDto();
-
                 var container = new ByteContainer(frame);
-                uint id = UMI3DSerializer.Read<uint>(container);
-                if (id == UMI3DOperationKeys.UserTrackingFrame)
-                {
-                    trackingFrame = UMI3DSerializer.Read<UserTrackingFrameDto>(container);
-                }
+                trackingFrame = UMI3DSerializer.Read<UserTrackingFrameDto>(container);
             }
 
             if (trackingFrame == null)
