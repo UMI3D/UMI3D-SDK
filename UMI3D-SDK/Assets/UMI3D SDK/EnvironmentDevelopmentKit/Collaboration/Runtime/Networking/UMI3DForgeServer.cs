@@ -457,13 +457,7 @@ namespace umi3d.edk.collaboration
                 uint id = UMI3DSerializer.Read<uint>(container);
                 if (id == UMI3DOperationKeys.UserTrackingFrame)
                 {
-                    trackingFrame.userId = UMI3DSerializer.Read<ulong>(container);
-                    trackingFrame.parentId = UMI3DSerializer.Read<ulong>(container);
-                    trackingFrame.position = UMI3DSerializer.Read<Vector3Dto>(container);
-                    trackingFrame.rotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                    trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.description.ControllerDto>(container);
-                    trackingFrame.playerServerPoses = UMI3DSerializer.ReadList<int>(container);
-                    trackingFrame.playerUserPoses = UMI3DSerializer.ReadList<int>(container);
+                    trackingFrame = UMI3DSerializer.Read<UserTrackingFrameDto>(container);
                 }
             }
 

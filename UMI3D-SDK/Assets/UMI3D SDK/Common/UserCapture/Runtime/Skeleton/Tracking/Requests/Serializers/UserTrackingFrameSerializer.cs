@@ -32,8 +32,7 @@ namespace umi3d.common.userCapture.tracking
             if (typeof(T) == typeof(UserTrackingFrameDto))
             {
                 if (
-                    UMI3DSerializer.TryRead(container, out uint idKey)
-                    && UMI3DSerializer.TryRead(container, out ulong userId)
+                    UMI3DSerializer.TryRead(container, out ulong userId)
                     && UMI3DSerializer.TryRead(container, out ulong parentId)
 
                     && UMI3DSerializer.TryRead(container, out Vector3Dto position)
@@ -77,8 +76,7 @@ namespace umi3d.common.userCapture.tracking
         {
             if (value is UserTrackingFrameDto c)
             {
-                bytable = UMI3DSerializer.Write(UMI3DOperationKeys.UserTrackingFrame)
-                    + UMI3DSerializer.Write(c.userId)
+                bytable = UMI3DSerializer.Write(c.userId)
                     + UMI3DSerializer.Write(c.parentId)
                     + UMI3DSerializer.Write(c.position)
                     + UMI3DSerializer.Write(c.rotation)

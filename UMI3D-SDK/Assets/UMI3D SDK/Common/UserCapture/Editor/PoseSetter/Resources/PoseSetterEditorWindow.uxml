@@ -46,7 +46,7 @@
                 <ui:VisualElement name="Conditions" class="SubEditorPart">
                     <ui:Toggle label="Is an overrider ?" name="tg_enable_condtion" />
                     <ui:VisualElement name="condition_settings">
-                        <umi3d.common.userCapture.PoseConditionPanel name="condition_panel" class="BoneArea">
+                        <umi3d.common.userCapture.pose.editor.PoseConditionPanel name="condition_panel">
                             <ui:VisualElement name="Toggles">
                                 <ui:Toggle label="Is Composable" name="tg_isComposable" />
                                 <ui:Toggle label="Is Interpolable" name="tg_isInterpolationable" />
@@ -65,7 +65,7 @@
                                     <ui:VisualElement name="condition_container" />
                                 </ui:ScrollView>
                             </ui:VisualElement>
-                        </umi3d.common.userCapture.PoseConditionPanel>
+                        </umi3d.common.userCapture.pose.editor.PoseConditionPanel>
                     </ui:VisualElement>
                 </ui:VisualElement>
             </ui:VisualElement>
