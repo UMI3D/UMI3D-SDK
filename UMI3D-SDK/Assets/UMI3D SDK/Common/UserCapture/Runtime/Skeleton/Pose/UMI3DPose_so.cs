@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using umi3d.common.userCapture.description;
@@ -25,7 +27,7 @@ namespace umi3d.common.userCapture.pose
     /// Scriptable object to contains data for PoseDto
     /// </summary>
     [Serializable]
-    public class UMI3DPose_so : ScriptableObject
+    public class UMI3DPose_so : ScriptableObject, IJsonSerializer
     {
         [SerializeField] private List<Bone> bones = new List<Bone>();
         [SerializeField] private BonePose bonePose;
@@ -47,15 +49,15 @@ namespace umi3d.common.userCapture.pose
                 this.bones.Add(new Bone()
                 {
                     boneType = bp.boneType,
-                    rotation = bp.rotation.Quaternion()
+                    rotation = new p_Quat() { x = bp.rotation.X, y = bp.rotation.Y, z = bp.rotation.Z, w = bp.rotation.W }
                 });
             });
 
             this.bonePose = new BonePose()
             {
                 boneType = bonePoseDto.Bone,
-                position = new Vector3(bonePoseDto.Position.X, bonePoseDto.Position.Y, bonePoseDto.Position.Z),
-                rotation = bonePoseDto.Rotation.Quaternion()
+                position = new float3() { x = bonePoseDto.Position.X, y = bonePoseDto.Position.Y, z = bonePoseDto.Position.Z },
+                rotation = new p_Quat() { x = bonePoseDto.Rotation.X, y = bonePoseDto.Rotation.Y, z = bonePoseDto.Rotation.Z, w = bonePoseDto.Rotation.W }
             };
         }
 
@@ -112,15 +114,44 @@ namespace umi3d.common.userCapture.pose
         public struct Bone
         {
             public uint boneType;
-            public Quaternion rotation;
+            public p_Quat rotation;
         }
 
         [Serializable]
         public struct BonePose
         {
             public uint boneType;
-            public Vector3 position;
-            public Quaternion rotation;
+            public float3 position;
+            public p_Quat rotation;
+        }
+
+        [Serializable]
+        public struct p_Quat
+        {
+            public float x, y, z, w;
+        }
+
+        [Serializable]
+        public struct float3
+        {
+            public float x, y, z;
+        }
+
+        public string JsonSerialize()
+        {
+            PoseDto poseDto = ToDTO();
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All, Formatting = Formatting.Indented };
+            string json = JsonConvert.SerializeObject(poseDto, settings);
+            return json;
+        }
+
+        public ScriptableObject JsonDeserializeScriptableObject(string data)
+        {
+            JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All, Formatting = Formatting.Indented };
+            PoseDto poseDto = JsonConvert.DeserializeObject(data, settings) as PoseDto;
+            UMI3DPose_so poseSo = CreateInstance<UMI3DPose_so>();
+            poseSo.Init(poseDto.bones, poseDto.boneAnchor);
+            return poseSo;           
         }
     }
 }

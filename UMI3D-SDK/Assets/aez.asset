@@ -1,0 +1,326 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a67480b6ca0867c48bb778b3b5cb6ab2, type: 3}
+  m_Name: aez
+  m_EditorClassIdentifier: 
+  bones:
+  - boneType: 7
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 9
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 4
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 8
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 17
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 19
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 14
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 18
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 25
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 24
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 23
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 10
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 11
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 5
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 6
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 30
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 31
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 32
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 33
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 34
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 35
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 39
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 40
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 41
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 36
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 37
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 38
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 27
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 28
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 29
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 12
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 3
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 1
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 2
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 20
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 21
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 15
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 16
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 45
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 46
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 47
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 48
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 49
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 50
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 54
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 54
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 56
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 27
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 28
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  - boneType: 29
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
+  bonePose:
+    boneType: 13
+    position:
+      x: 0
+      y: 0
+      z: 0
+    rotation:
+      x: 0
+      y: 0
+      z: 0
+      w: 1
