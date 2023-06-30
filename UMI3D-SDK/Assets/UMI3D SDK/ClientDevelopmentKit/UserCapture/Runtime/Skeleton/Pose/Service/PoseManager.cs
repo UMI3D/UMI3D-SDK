@@ -32,7 +32,7 @@ namespace umi3d.cdk.userCapture.pose
         public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>();
 
         private readonly ISkeletonManager skeletonManager;
-        private readonly UMI3DEnvironmentLoader environmentLoader;
+        private readonly IEnvironmentManager environmentLoader;
 
         private bool isInit = false;
 
@@ -43,7 +43,7 @@ namespace umi3d.cdk.userCapture.pose
             InitLocalPoses();
         }
 
-        public PoseManager(ISkeletonManager skeletonManager, UMI3DEnvironmentLoader environmentLoader)
+        public PoseManager(ISkeletonManager skeletonManager, IEnvironmentManager environmentLoader)
         {
             this.skeletonManager = skeletonManager;
             this.environmentLoader = environmentLoader;
