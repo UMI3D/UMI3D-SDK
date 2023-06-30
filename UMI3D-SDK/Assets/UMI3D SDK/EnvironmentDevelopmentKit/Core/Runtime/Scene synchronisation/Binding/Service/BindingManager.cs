@@ -69,7 +69,7 @@ namespace umi3d.edk.binding
             {
                 Transaction t = new() { reliable = true };
                 foreach (var (_, binding) in bindings.GetValue())
-                    t.AddIfNotNull(binding.GetLoadEntity());
+                    t.AddIfNotNull(binding.GetLoadEntity(new() { user }));
                 t.Dispatch();
             }
         }
