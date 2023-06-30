@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common.userCapture.tracking;
 
 namespace umi3d.edk.userCapture.tracking
 {
@@ -26,6 +28,13 @@ namespace umi3d.edk.userCapture.tracking
 
         private Dictionary<ulong, float> asyncFPS = new Dictionary<ulong, float>();
         private Dictionary<ulong, Dictionary<uint, float>> asyncBonesFPS = new Dictionary<ulong, Dictionary<uint, float>>();
+
+        public event Action<UserTrackingFrameDto, ulong> AvatarFrameReceived;
+
+        public void OnAvatarFrameReceived(UserTrackingFrameDto trackingFrameDto, ulong period)
+        {
+            AvatarFrameReceived?.Invoke(trackingFrameDto, period);
+        }
 
         public void SyncFPSTracking()
         {

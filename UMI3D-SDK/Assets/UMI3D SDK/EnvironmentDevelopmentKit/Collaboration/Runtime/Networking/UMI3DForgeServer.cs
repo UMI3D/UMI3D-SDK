@@ -26,6 +26,7 @@ using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.emotes;
 using umi3d.edk.collaboration.tracking;
 using umi3d.edk.interaction;
+using umi3d.edk.userCapture.tracking;
 using umi3d.edk.volume;
 using UnityEngine;
 using UnityEngine.Events;
@@ -422,15 +423,6 @@ namespace umi3d.edk.collaboration
 
         #region avatar
 
-        public static event Action<UserTrackingFrameDto, ulong> avatarFrameEvent;
-
-        public static void RequestAvatarListener(UnityAction<UserTrackingFrameDto, ulong> action, string reason)
-        {
-            // do something with reason
-
-            avatarFrameEvent += (frame, userId) => action.Invoke(frame, userId);
-        }
-
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
@@ -458,7 +450,7 @@ namespace umi3d.edk.collaboration
             if (trackingFrame == null)
                 return;
 
-            avatarFrameEvent?.Invoke(trackingFrame, server.Time.Timestep);
+            UMI3DTrackingManager.Instance.OnAvatarFrameReceived(trackingFrame, server.Time.Timestep);
 
             user.CurrentTrackingFrame = trackingFrame;
 
