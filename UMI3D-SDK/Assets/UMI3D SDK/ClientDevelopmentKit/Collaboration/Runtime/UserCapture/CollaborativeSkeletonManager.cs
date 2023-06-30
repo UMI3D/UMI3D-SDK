@@ -48,7 +48,10 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
-        public event Action<ulong> skeletonEvent;
+        /// <summary>
+        /// Invoked when a <see cref="CollaborativeSkeleton"/> is created. Parameter is the correspondig user id.
+        /// </summary>
+        public event Action<ulong> CollaborativeSkeletonCreated;
 
         /// <summary>
         /// If true the avatar tracking is sent.
@@ -148,7 +151,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 if (userId != UMI3DClientServer.Instance.GetUserId())
                 {
                     skeletons[userId] = CreateSkeleton(userId, collabScene.transform, StandardHierarchy);
-                    skeletonEvent?.Invoke(userId);
+                    CollaborativeSkeletonCreated?.Invoke(userId);
                 }
             }
         }
