@@ -97,14 +97,17 @@ namespace umi3d.cdk.userCapture.animation
             Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
             foreach (var id in skeletonNodeDto.relatedAnimationsId)
             {
-                var instance = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, null);
-                if (instance.Object is not UMI3DAnimatorAnimation animation)
+                UMI3DAnimatorAnimation anim;
+                var instance = environmentLoader.TryGetEntityInstance(id);
+                if (instance is null)
                 {
-                    UMI3DLogger.LogWarning($"Unable to get animation {id} for Skeleton Node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}.", DEBUG_SCOPE);
-                    continue;
+                    anim = null;
+                    environmentLoader.WaitUntilEntityLoaded(id, (animInstance) => { anim = animInstance.Object as UMI3DAnimatorAnimation; }, null);
                 }
                     
-                animations.Enqueue(animation);
+                else
+                    anim = instance.Object as UMI3DAnimatorAnimation;
+                animations.Enqueue(anim);
             }
 
             // create subSkeleton and add it to a skeleton

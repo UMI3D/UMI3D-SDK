@@ -57,9 +57,7 @@ namespace umi3d.cdk.userCapture.animation
         /// Cached coroutine of parameters self update.
         /// </summary>
         private Coroutine updateParameterRoutine;
-        private SkeletonMapper skeletonMapper;
-        private UMI3DAnimatorAnimation[] uMI3DAnimatorAnimations;
-        private uint[] animatorSelfTrackedParameters;
+
         private readonly ICoroutineService coroutineService;
 
         public AnimatedSubskeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, uint[] selfUpdatedAnimatorParameters = null)
@@ -171,7 +169,7 @@ namespace umi3d.cdk.userCapture.animation
 
             foreach (var anim in Animations)
             {
-                anim.ApplyParameter(name, parameterDto);
+                anim?.ApplyParameter(name, parameterDto);
             }
         }
     }
