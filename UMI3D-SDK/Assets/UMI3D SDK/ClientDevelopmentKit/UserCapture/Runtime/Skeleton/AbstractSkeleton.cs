@@ -118,7 +118,7 @@ namespace umi3d.cdk.userCapture
                 if (Bones.ContainsKey(bone))
                     Bones[bone].s_Rotation = Quaternion.identity;
                 else
-                    Bones[bone] = new ISkeleton.s_Transform();
+                    Bones[bone] = new ISkeleton.s_Transform() { s_Rotation = Quaternion.identity };
             }
 
             // for each subskeleton, in descending order (lastest has lowest priority),

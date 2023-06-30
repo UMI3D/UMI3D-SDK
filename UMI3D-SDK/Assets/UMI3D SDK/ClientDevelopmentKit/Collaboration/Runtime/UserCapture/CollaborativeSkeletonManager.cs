@@ -163,6 +163,15 @@ namespace umi3d.cdk.collaboration.userCapture
             cs.SkeletonHierarchy = skeletonHierarchy;
             cs.SetSubSkeletons();
 
+            // consider all bones we should have according to the hierarchy, and set all values to identity
+            foreach (var bone in skeletonHierarchy.HierarchyDict.Keys)
+            {
+                if (cs.Bones.ContainsKey(bone))
+                    cs.Bones[bone].s_Rotation = Quaternion.identity;
+                else
+                    cs.Bones[bone] = new ISkeleton.s_Transform() { s_Rotation = Quaternion.identity };
+            }
+
             return cs;
         }
 
