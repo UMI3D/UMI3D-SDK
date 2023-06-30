@@ -25,14 +25,14 @@ using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Animation.CDK
 {
-    public class AnimatedSkeleton_Test
+    [TestFixture, TestOf(typeof(AnimatedSubskeleton))]
+    public class AnimatedSubskeleton_Test
     {
         private Mock<SkeletonMapper> mockSkeletonMapper;
         private Mock<UMI3DEnvironmentLoader> environmentLoaderService;
@@ -58,7 +58,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         public void Test_GetCameraDto()
         {
             // GIVEN
-            var animatedSkeleton = new AnimatedSkeleton(null, null);
+            var animatedSkeleton = new AnimatedSubskeleton(null, null);
 
             // WHEN
             var cameraDto = animatedSkeleton.GetCameraDto();
@@ -75,7 +75,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         public void Test_GetPose_NoAnimation()
         {
             // GIVEN
-            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0]);
+            var animatedSkeleton = new AnimatedSubskeleton(null, new UMI3DAnimatorAnimation[0]);
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -108,7 +108,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
 
-            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
+            var animatedSkeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -135,7 +135,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(animId)).Returns(mockAnimation.Object);
 
-            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, new UMI3DAnimatorAnimation[] { mockAnimation.Object });
+            var animatedSkeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, new UMI3DAnimatorAnimation[] { mockAnimation.Object });
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -169,7 +169,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
 
-            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
+            var animatedSkeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -203,7 +203,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
 
-            var animatedSkeleton = new AnimatedSkeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
+            var animatedSkeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray());
 
             // WHEN
             var pose = animatedSkeleton.GetPose();
@@ -221,7 +221,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         public void StartParameterSelfUpdate_Null()
         {
             // GIVEN
-            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0]);
+            var animatedSkeleton = new AnimatedSubskeleton(null, new UMI3DAnimatorAnimation[0]);
 
             // WHEN
             Action action = () => animatedSkeleton.StartParameterSelfUpdate(null);
@@ -237,7 +237,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             var mockSkeleton = new Mock<ISkeleton>();
             var mockCoroutineService = new Mock<ICoroutineService>();
             mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
-            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0], 0, new uint[0], mockCoroutineService.Object);
+            var animatedSkeleton = new AnimatedSubskeleton(null, new UMI3DAnimatorAnimation[0], 0, new uint[0], mockCoroutineService.Object);
 
             // WHEN
             animatedSkeleton.StartParameterSelfUpdate(mockSkeleton.Object);
@@ -255,7 +255,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             var mockSkeleton = new Mock<ISkeleton>();
             var mockCoroutineService = new Mock<ICoroutineService>();
             mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
-            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0], 0, parameters, mockCoroutineService.Object);
+            var animatedSkeleton = new AnimatedSubskeleton(null, new UMI3DAnimatorAnimation[0], 0, parameters, mockCoroutineService.Object);
 
             // WHEN
             animatedSkeleton.StartParameterSelfUpdate(mockSkeleton.Object);
@@ -276,7 +276,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             var mockCoroutineService = new Mock<ICoroutineService>();
             mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
             mockCoroutineService.Setup(x => x.DettachCoroutine(It.IsAny<Coroutine>()));
-            var animatedSkeleton = new AnimatedSkeleton(null, new UMI3DAnimatorAnimation[0], 0, new uint[0], mockCoroutineService.Object);
+            var animatedSkeleton = new AnimatedSubskeleton(null, new UMI3DAnimatorAnimation[0], 0, new uint[0], mockCoroutineService.Object);
 
             // WHEN
             animatedSkeleton.StopParameterSelfUpdate();

@@ -26,7 +26,7 @@ namespace umi3d.edk.userCapture.animation
     ///  A Skeleton node is a subskeleton with a Unity Animator
     /// that is packaged in a bundle. It is loaded the same way as a Mesh.
     /// </summary>
-    public class UMI3DSkeletonNode : UMI3DModel
+    public class UMI3DSkeletonAnimationNode : UMI3DModel
     {
         /// <summary>
         /// List of states names in the embedded animator.
@@ -60,13 +60,13 @@ namespace umi3d.edk.userCapture.animation
         /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
         {
-            return new UMI3DSkeletonNodeDto();
+            return new SkeletonAnimationNodeDto();
         }
 
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            var skeletonNodeDto = dto as UMI3DSkeletonNodeDto;
+            var skeletonNodeDto = dto as SkeletonAnimationNodeDto;
             skeletonNodeDto.userId = userId;
             skeletonNodeDto.relatedAnimationsId = relatedAnimationIds ?? new ulong[0];
             skeletonNodeDto.priority = priority;

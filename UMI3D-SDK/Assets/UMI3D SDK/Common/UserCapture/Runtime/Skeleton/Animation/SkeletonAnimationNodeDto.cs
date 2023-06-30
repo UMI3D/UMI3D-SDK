@@ -21,7 +21,7 @@ namespace umi3d.common.userCapture.animation
     /// </summary>
     /// A Skeleton node is a subskeleton with a Unity Animator
     /// that is packaged in a bundle. It is loaded the same way as a Mesh.
-    public class UMI3DSkeletonNodeDto : UMI3DMeshNodeDto
+    public class SkeletonAnimationNodeDto : UMI3DMeshNodeDto
     {
         /// <summary>
         /// User that will use this skeleton.

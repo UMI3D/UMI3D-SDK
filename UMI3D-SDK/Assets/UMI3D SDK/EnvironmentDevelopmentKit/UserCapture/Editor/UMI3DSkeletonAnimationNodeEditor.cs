@@ -19,9 +19,9 @@ using UnityEditor;
 
 namespace umi3d.edk.userCapture.animation.editor
 {
-    [CustomEditor(typeof(UMI3DSkeletonNode), true)]
+    [CustomEditor(typeof(UMI3DSkeletonAnimationNode), true)]
     [CanEditMultipleObjects]
-    public class UMI3DSkeletonNodeEditor : UMI3DModelEditor
+    public class UMI3DSkeletonAnimationNodeEditor : UMI3DModelEditor
     {
         private SerializedProperty animationsStates;
 

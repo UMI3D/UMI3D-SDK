@@ -28,7 +28,7 @@ namespace umi3d.cdk.userCapture.animation
     /// <summary>
     /// Subskeleton that is the target if a skeleton animation, using an Animator.
     /// </summary>
-    public class AnimatedSkeleton : ISubSkeleton
+    public class AnimatedSubskeleton : ISubSkeleton
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
 
@@ -62,7 +62,7 @@ namespace umi3d.cdk.userCapture.animation
         private uint[] animatorSelfTrackedParameters;
         private readonly ICoroutineService coroutineService;
 
-        public AnimatedSkeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, uint[] selfUpdatedAnimatorParameters = null)
+        public AnimatedSubskeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, uint[] selfUpdatedAnimatorParameters = null)
         {
             Mapper = mapper;
             Priority = priority;
@@ -71,7 +71,7 @@ namespace umi3d.cdk.userCapture.animation
             coroutineService = CoroutineManager.Instance;
         }
 
-        public AnimatedSkeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, uint[] selfUpdatedAnimatorParameters, ICoroutineService coroutineService)
+        public AnimatedSubskeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, uint[] selfUpdatedAnimatorParameters, ICoroutineService coroutineService)
         {
             Mapper = mapper;
             Priority = priority;

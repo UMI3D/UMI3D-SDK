@@ -88,10 +88,10 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSkeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
+            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
             animatedSkeletonMock.Setup(x => x.GetPose()).Returns(new PoseDto());
 
-            List<AnimatedSkeleton> animatedSubskeletons = new()
+            List<AnimatedSubskeleton> animatedSubskeletons = new()
             {
                 animatedSkeletonMock.Object,
                 animatedSkeletonMock.Object
@@ -118,7 +118,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSkeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
+            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
             PoseDto poseDto = new PoseDto();
             poseDto.SetBonePoseDtoArray(new List<BoneDto>
             {
@@ -131,7 +131,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             animatedSkeletonMock.Setup(x => x.GetPose()).Returns(poseDto);
 
-            List<AnimatedSkeleton> animatedSubskeletons = new()
+            List<AnimatedSubskeleton> animatedSubskeletons = new()
             {
                 animatedSkeletonMock.Object,
                 animatedSkeletonMock.Object

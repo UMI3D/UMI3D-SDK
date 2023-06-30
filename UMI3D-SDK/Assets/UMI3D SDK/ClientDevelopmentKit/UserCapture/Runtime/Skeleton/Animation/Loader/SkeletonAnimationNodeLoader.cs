@@ -28,10 +28,10 @@ using UnityEngine;
 namespace umi3d.cdk.userCapture.animation
 {
     /// <summary>
-    /// Loader called to load <see cref="UMI3DSkeletonNodeDto"/>.
+    /// Loader called to load <see cref="SkeletonAnimationNodeDto"/>.
     /// </summary>
     /// It is based upon the <see cref="UMI3DMeshNodeDto"/> as the animation ressources are packaged in a bundle just like in a model.
-    public class UMI3DSkeletonNodeLoader : UMI3DMeshNodeLoader
+    public class SkeletonAnimationNodeLoader : UMI3DMeshNodeLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
 
@@ -40,13 +40,13 @@ namespace umi3d.cdk.userCapture.animation
         protected readonly ISkeletonManager personnalSkeletonService;
         protected readonly UMI3DEnvironmentLoader environmentLoader;
 
-        public UMI3DSkeletonNodeLoader() : base()
+        public SkeletonAnimationNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
             environmentLoader = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DSkeletonNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoader) : base()
+        public SkeletonAnimationNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoader) : base()
         {
             this.personnalSkeletonService = personnalSkeletonService;
             this.environmentLoader = environmentLoader;
@@ -57,21 +57,21 @@ namespace umi3d.cdk.userCapture.animation
         /// <inheritdoc/>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            return data.dto is UMI3DSkeletonNodeDto && base.CanReadUMI3DExtension(data);
+            return data.dto is SkeletonAnimationNodeDto && base.CanReadUMI3DExtension(data);
         }
 
         /// <inheritdoc/>
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            if (data.dto is not UMI3DSkeletonNodeDto)
+            if (data.dto is not SkeletonAnimationNodeDto)
                 UMI3DLogger.LogError("DTO should be an UM3DSkeletonNodeDto", DEBUG_SCOPE);
 
             await base.ReadUMI3DExtension(data);
 
-            await Load(data.dto as UMI3DSkeletonNodeDto);
+            await Load(data.dto as SkeletonAnimationNodeDto);
         }
 
-        public async Task Load(UMI3DSkeletonNodeDto skeletonNodeDto)
+        public async Task Load(SkeletonAnimationNodeDto skeletonNodeDto)
         {
             UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
 
@@ -108,7 +108,7 @@ namespace umi3d.cdk.userCapture.animation
             }
 
             // create subSkeleton and add it to a skeleton
-            AnimatedSkeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
+            AnimatedSubskeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
             AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
 
             // hide the model if it has any renderers
@@ -122,7 +122,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="skeletonNodeDto"></param>
         /// <param name="animator"></param>
         /// <returns></returns>
-        protected SkeletonMapper GetSkeletonMapper(UMI3DSkeletonNodeDto skeletonNodeDto, Animator animator)
+        protected SkeletonMapper GetSkeletonMapper(SkeletonAnimationNodeDto skeletonNodeDto, Animator animator)
         {
             // if the designer added a skeleton mapper, uses its links
             if (animator.gameObject.TryGetComponent(out SkeletonMapper skeletonMapper))
@@ -155,7 +155,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="animator"></param>
         /// <param name="skeletonNodeDto"></param>
         /// <returns></returns>
-        protected SkeletonMapper AutoMapAnimatorSkeleton(Animator animator, UMI3DSkeletonNodeDto skeletonNodeDto)
+        protected SkeletonMapper AutoMapAnimatorSkeleton(Animator animator, SkeletonAnimationNodeDto skeletonNodeDto)
         {
             SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
 
@@ -269,18 +269,18 @@ namespace umi3d.cdk.userCapture.animation
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="subskeleton"></param>
-        protected virtual void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
+        protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton subskeleton)
         {
             var skeleton = personnalSkeletonService.personalSkeleton;
 
             // add animated skeleton to subskeleton list and re-order it by descending priority
             var animatedSkeletons = skeleton.Skeletons
-                                        .Where(x => x is AnimatedSkeleton)
-                                        .Cast<AnimatedSkeleton>()
+                                        .Where(x => x is AnimatedSubskeleton)
+                                        .Cast<AnimatedSubskeleton>()
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-            personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
+            personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
             personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
 
             // if some animator parameters should be updated by the browsers itself, start listening to them

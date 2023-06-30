@@ -23,7 +23,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
     /// <summary>
     /// Loader for <see cref="UMI3DSkeletonNodeDto"/> in a collaborative context.
     /// </summary>
-    public class UMI3DCollaborativeSkeletonNodeLoader : UMI3DSkeletonNodeLoader
+    public class CollaborationSkeletonAnimationNodeLoader : SkeletonAnimationNodeLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration;
 
@@ -34,13 +34,13 @@ namespace umi3d.cdk.collaboration.userCapture.animation
         private readonly ICollaborativeSkeletonsManager collaborativeSkeletonsmanager;
         private readonly UMI3DCollaborationClientServer collaborationClientServer;
 
-        public UMI3DCollaborativeSkeletonNodeLoader()
+        public CollaborationSkeletonAnimationNodeLoader()
         {
             this.collaborativeSkeletonsmanager = CollaborativeSkeletonManager.Instance;
             this.collaborationClientServer = UMI3DCollaborationClientServer.Instance;
         }
 
-        public UMI3DCollaborativeSkeletonNodeLoader(ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
+        public CollaborationSkeletonAnimationNodeLoader(ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
                                                     UMI3DCollaborationClientServer collaborationClientServer)
         {
             this.collaborativeSkeletonsmanager = collaborativeSkeletonsmanager;
@@ -49,19 +49,19 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
         #endregion Dependency Injection
 
-        protected override void AttachToSkeleton(ulong userId, AnimatedSkeleton subskeleton)
+        protected override void AttachToSkeleton(ulong userId, AnimatedSubskeleton subskeleton)
         {
             var skeleton = collaborativeSkeletonsmanager.GetSkeletonById(userId);
             if (skeleton is not null)
             {
                 // add animated skeleton to subskeleton list and re-order it by descending priority
                 var animatedSkeletons = skeleton.Skeletons
-                                        .Where(x => x is AnimatedSkeleton)
-                                        .Cast<AnimatedSkeleton>()
+                                        .Where(x => x is AnimatedSubskeleton)
+                                        .Cast<AnimatedSubskeleton>()
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-                skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
+                skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
                 skeleton.Skeletons.AddRange(animatedSkeletons);
 
                 // if it is the browser, register that it is required to delete animated skeleton on leaving
@@ -71,7 +71,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
                     void RemoveSkeletons()
                     {
-                        skeleton.Skeletons.RemoveAll(x => x is AnimatedSkeleton);
+                        skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
                         collaborationClientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
                         isRegisteredForPersonalSkeletonCleanup = false;
                     }
