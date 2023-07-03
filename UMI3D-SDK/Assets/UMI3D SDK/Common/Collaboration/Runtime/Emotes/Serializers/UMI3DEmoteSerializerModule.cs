@@ -21,6 +21,7 @@ namespace umi3d.common.collaboration.emotes
     /// </summary>
     public class UMI3DEmoteSerializerModule : UMI3DSerializerModule<UMI3DEmoteDto>
     {
+        /// <inheritdoc/>
         public bool Read(ByteContainer container, out bool readable, out UMI3DEmoteDto result)
         {
             readable = true;
@@ -48,6 +49,7 @@ namespace umi3d.common.collaboration.emotes
             return readable;
         }
 
+        /// <inheritdoc/>
         public bool Write(UMI3DEmoteDto dto, out Bytable bytable, params object[] parameters)
         {
             bytable = UMI3DSerializer.Write(dto.id)
@@ -59,6 +61,7 @@ namespace umi3d.common.collaboration.emotes
             return true;
         }
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return true;
