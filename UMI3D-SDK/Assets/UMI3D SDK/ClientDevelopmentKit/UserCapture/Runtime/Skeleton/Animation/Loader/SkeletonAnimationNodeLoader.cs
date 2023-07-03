@@ -66,7 +66,10 @@ namespace umi3d.cdk.userCapture.animation
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             if (data.dto is not SkeletonAnimationNodeDto)
+            {
                 UMI3DLogger.LogError("DTO should be an UM3DSkeletonNodeDto", DEBUG_SCOPE);
+                return;
+            }
 
             await base.ReadUMI3DExtension(data);
 
@@ -75,12 +78,15 @@ namespace umi3d.cdk.userCapture.animation
 
         public async Task Load(SkeletonAnimationNodeDto skeletonNodeDto)
         {
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
+            UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
 
             // a skeleton node should contain an animator
             Animator animator = nodeInstance.gameObject.GetComponentInChildren<Animator>();
             if (animator == null)
+            {
+                UMI3DLogger.LogWarning($"Cannot load skeleton animation {skeletonNodeDto.id}. No animator was found on node for user {skeletonNodeDto.userId}. ", DEBUG_SCOPE);
                 return;
+            }   
 
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; // required for applying movements on your body when you're not looking at it
 
@@ -88,7 +94,7 @@ namespace umi3d.cdk.userCapture.animation
             SkeletonMapper skeletonMapper = GetSkeletonMapper(skeletonNodeDto, animator);
             if (skeletonMapper == null) // failed infinding/adding skeletonMapper
             {
-                UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed.", DEBUG_SCOPE);
                 return;
             }
 
@@ -147,7 +153,7 @@ namespace umi3d.cdk.userCapture.animation
                     return null;
                 }
             }
-            else if (animator.avatar.isHuman)// if null, we try to adapt the unity avatar (rigs) by ourselves assuming it is close to the UMI3D standard one
+            else if (animator.avatar != null && animator.avatar.isHuman)// if null, we try to adapt the unity avatar (rigs) by ourselves assuming it is close to the UMI3D standard one
             {
                 skeletonMapper = AutoMapAnimatorSkeleton(animator, skeletonNodeDto);
             }
@@ -198,7 +204,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <returns></returns>
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
-            return (UMI3DEnvironmentLoader.Parameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
+            return (loadingManager.LoadingParameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
                             .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(x.Bonetype)))
                             .Where(x => x.unityBoneContainer.HasValue)
                             .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
