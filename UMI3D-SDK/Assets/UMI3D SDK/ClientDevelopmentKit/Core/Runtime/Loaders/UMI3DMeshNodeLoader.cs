@@ -77,7 +77,7 @@ namespace umi3d.cdk
             var nodeDto = data.dto as UMI3DMeshNodeDto;
             if (data.node == null)
             {
-                throw (new Umi3dException("Dto should be an UMI3DAbstractNodeDto"));
+                throw (new Umi3dException("Node gameobject is not referenced. Dto should be an UMI3DAbstractNodeDto."));
             }
 
             await base.ReadUMI3DExtension(data);
