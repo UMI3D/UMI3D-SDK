@@ -67,6 +67,8 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             var data = new ReadUMI3DExtensionData(emoteDto);
 
+            environmentManagerMock.Setup(x => x.RegisterEntity(It.IsAny<ulong>(), It.IsAny<UMI3DEmoteDto>(), null, null)).Returns(new UMI3DNodeInstance(() => { }));
+
             // WHEN
             await emoteLoader.ReadUMI3DExtension(data);
 

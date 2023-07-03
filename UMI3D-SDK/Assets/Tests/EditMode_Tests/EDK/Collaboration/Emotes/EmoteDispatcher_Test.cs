@@ -53,6 +53,8 @@ namespace PlayMode_Tests.Collaboration.Emotes.EDK
             CleanSingletons();
         }
 
+        #region DispatchEmoteTrigger
+
         [TestCase(0uL, true)]
         [TestCase(0uL, false)]
         [Test]
@@ -87,5 +89,7 @@ namespace PlayMode_Tests.Collaboration.Emotes.EDK
             // UNDONE: Test call of mocked server to know if transaction is not sent. Require refacto of Transaction.Dispatch()
             Assert.Pass();
         }
+
+        #endregion DispatchEmoteTrigger
     }
 }
