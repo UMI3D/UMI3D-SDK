@@ -85,20 +85,24 @@ namespace umi3d.cdk.collaboration.emotes
 
         #region Dependencies Injection
 
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
-        private readonly UMI3DCollaborationClientServer collabClientServerService;
+        private readonly ILoadingManager environmentLoaderService;
+        private readonly IEnvironmentManager environmentManager;
+        private readonly IUMI3DCollaborationClientServer collabClientServerService;
 
         public EmoteManager() : base()
         {
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentManager = UMI3DCollaborationEnvironmentLoader.Instance;
             collabClientServerService = UMI3DCollaborationClientServer.Instance;
         }
 
-        public EmoteManager(UMI3DEnvironmentLoader environmentLoader,
-                            UMI3DCollaborationClientServer collabClientServerService)
+        public EmoteManager(ILoadingManager environmentLoader,
+                            IEnvironmentManager environmentManager,
+                            IUMI3DCollaborationClientServer collabClientServerService)
                             : base()
         {
             environmentLoaderService = environmentLoader;
+            this.environmentManager = environmentManager;
             this.collabClientServerService = collabClientServerService;
         }
 
@@ -142,7 +146,7 @@ namespace umi3d.cdk.collaboration.emotes
 
             emoteConfigDto = dto;
 
-            if (!environmentLoaderService.isEnvironmentLoaded)
+            if (!environmentManager.loaded)
                 environmentLoaderService.onEnvironmentLoaded.AddListener(LoadEmotes);
             else //sometimes the environment is already loaded when loading emotes
                 LoadEmotes();
@@ -276,7 +280,7 @@ namespace umi3d.cdk.collaboration.emotes
         private void StartPlayMode(Emote emote)
         {
             playingEmote = emote;
-            playingEmoteAnimation = environmentLoaderService.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
+            playingEmoteAnimation = environmentManager.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
             playingEmoteAnimation.AnimationEnded += StopEmote;
         }
 

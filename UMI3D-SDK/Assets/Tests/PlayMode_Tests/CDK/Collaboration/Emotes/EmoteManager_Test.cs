@@ -21,40 +21,33 @@ using umi3d.cdk.collaboration;
 using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
 using umi3d.common.collaboration.emotes;
-using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 
 namespace PlayMode_Tests.Collaboration.Emotes.CDK
 {
     public class EmoteManager_Test
     {
         private EmoteManager emoteManagerService;
-
-        private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
+        private Mock<IUMI3DCollaborationClientServer> collaborationClientServerMock;
+        private Mock<IEnvironmentManager> environmentManagerMock;
+        private Mock<ILoadingManager> loadingManagerMock;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
             if (EmoteManager.Exists)
                 EmoteManager.Destroy();
-
-            if (UMI3DEnvironmentLoader.Exists)
-                UMI3DEnvironmentLoader.Destroy();
         }
 
         [SetUp]
         public void SetUp()
         {
-            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
-            GameObject go = new GameObject("CollabServer");
-            UnityEngine.Object.Instantiate(go);
+            collaborationClientServerMock = new Mock<IUMI3DCollaborationClientServer>();
+            environmentManagerMock = new Mock<IEnvironmentManager>();
+            loadingManagerMock = new Mock<ILoadingManager>();
 
-            var collaborationClientServer = go.AddComponent<UMI3DCollaborationClientServer>();
-            environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
-
-            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object,
-                                                    collaborationClientServer);
+            emoteManagerService = new EmoteManager(loadingManagerMock.Object,
+                                                    environmentManagerMock.Object,
+                                                    collaborationClientServerMock.Object);
         }
 
         [TearDown]
@@ -62,21 +55,6 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
         {
             if (EmoteManager.Exists)
                 EmoteManager.Destroy();
-
-            if (UMI3DEnvironmentLoader.Exists)
-                UMI3DEnvironmentLoader.Destroy();
-        }
-
-        [UnityTearDown]
-        public void UnityTearDown()
-        {
-            SceneManager.UnloadSceneAsync(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
-
-            if (UMI3DClientServer.Exists)
-                UMI3DClientServer.Destroy();
-
-            if (UMI3DCollaborationClientServer.Exists)
-                UMI3DCollaborationClientServer.Destroy();
         }
 
         #region LoadEmoteConfig
@@ -96,9 +74,13 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
             bool wasEmotesLoaded = false;
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
+            loadingManagerMock.Setup(x => x.onEnvironmentLoaded).Returns(new UnityEngine.Events.UnityEvent());
+            collaborationClientServerMock.Setup(x => x.OnRedirection).Returns(new UnityEngine.Events.UnityEvent());
+            collaborationClientServerMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
+
             // WHEN
             emoteManagerService.UpdateEmoteConfig(dto);
-            environmentLoaderServiceMock.Object.onEnvironmentLoaded.Invoke();
+            loadingManagerMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
             Assert.IsTrue(wasEmotesLoaded);
@@ -131,9 +113,13 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
             bool wasEmotesLoaded = false;
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
+            loadingManagerMock.Setup(x => x.onEnvironmentLoaded).Returns(new UnityEngine.Events.UnityEvent());
+            collaborationClientServerMock.Setup(x => x.OnRedirection).Returns(new UnityEngine.Events.UnityEvent());
+            collaborationClientServerMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
+
             // WHEN
             emoteManagerService.UpdateEmoteConfig(dto);
-            environmentLoaderServiceMock.Object.onEnvironmentLoaded.Invoke();
+            loadingManagerMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
             Assert.IsTrue(wasEmotesLoaded);
@@ -166,9 +152,13 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
             bool wasEmotesLoaded = false;
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
+            loadingManagerMock.Setup(x => x.onEnvironmentLoaded).Returns(new UnityEngine.Events.UnityEvent());
+            collaborationClientServerMock.Setup(x => x.OnRedirection).Returns(new UnityEngine.Events.UnityEvent());
+            collaborationClientServerMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
+
             // WHEN
             emoteManagerService.UpdateEmoteConfig(dto);
-            environmentLoaderServiceMock.Object.onEnvironmentLoaded.Invoke();
+            loadingManagerMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
             Assert.IsTrue(wasEmotesLoaded);
@@ -215,7 +205,7 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
             };
             Mock<UMI3DAbstractAnimation> mockAnimation = new(mockDto);
 
-            environmentLoaderServiceMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(emote.AnimationId)).Returns(mockAnimation.Object);
+            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(emote.AnimationId)).Returns(mockAnimation.Object);
 
             // WHEN
             emoteManagerService.PlayEmote(emote);
@@ -294,7 +284,7 @@ namespace PlayMode_Tests.Collaboration.Emotes.CDK
             UMI3DAnimatorAnimationDto mockDto = new UMI3DAnimatorAnimationDto();
             Mock<UMI3DAbstractAnimation> mockAnimation = new(mockDto);
 
-            environmentLoaderServiceMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId)).Returns(mockAnimation.Object);
+            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId)).Returns(mockAnimation.Object);
 
             // WHEN
             emoteManagerService.PlayEmote(playingEmote);

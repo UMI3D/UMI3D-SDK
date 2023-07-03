@@ -30,6 +30,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
     {
         private UMI3DEmoteLoader emoteLoader;
         private Mock<IEmoteService> emoteManagerMock;
+        private Mock<IEnvironmentManager> environmentManagerMock;
 
         #region Test SetUp
 
@@ -37,7 +38,8 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         public void SetUp()
         {
             emoteManagerMock = new Mock<IEmoteService>();
-            emoteLoader = new UMI3DEmoteLoader(emoteManagerMock.Object);
+            environmentManagerMock = new Mock<IEnvironmentManager>();
+            emoteLoader = new UMI3DEmoteLoader(emoteManagerMock.Object, environmentManagerMock.Object);
         }
 
         #endregion Test SetUp
@@ -52,9 +54,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             [Values("Label", "")] string label)
         {
             // GIVEN
-            var emoteManagerMock = new Mock<IEmoteService>();
             emoteManagerMock.Setup(x => x.UpdateEmote(It.IsAny<UMI3DEmoteDto>()));
-            emoteLoader = new UMI3DEmoteLoader(emoteManagerMock.Object);
 
             var emoteDto = new UMI3DEmoteDto()
             {

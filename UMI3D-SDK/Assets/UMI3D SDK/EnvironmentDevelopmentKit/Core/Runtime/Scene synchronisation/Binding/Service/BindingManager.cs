@@ -41,7 +41,7 @@ namespace umi3d.edk.binding
 
         #region DI
 
-        private readonly UMI3DServer umi3dServerService;
+        private readonly IUMI3DServer umi3dServerService;
         //private readonly UMI3DEnvironment umi3dEnvironmentService;
 
         public BindingManager() : base()
@@ -50,7 +50,7 @@ namespace umi3d.edk.binding
             Init();
         }
 
-        public BindingManager(UMI3DServer umi3dServerService) : base()
+        public BindingManager(IUMI3DServer umi3dServerService) : base()
         {
             this.umi3dServerService = umi3dServerService;
             Init();

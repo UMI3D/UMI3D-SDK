@@ -28,9 +28,10 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
     {
         private EmoteManager emoteManagerService;
 
-        private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
+        private Mock<ILoadingManager> environmentLoaderServiceMock;
+        private Mock<IEnvironmentManager> environmentManagerMock;
 
-        private Mock<UMI3DCollaborationClientServer> collaborationClientServerMock;
+        private Mock<IUMI3DCollaborationClientServer> collaborationClientServerMock;
 
         #region Test SetUp
 
@@ -47,10 +48,13 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         [SetUp]
         public void SetUp()
         {
-            environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
-            collaborationClientServerMock = new Mock<UMI3DCollaborationClientServer>();
+            environmentLoaderServiceMock = new Mock<ILoadingManager>();
+            environmentManagerMock = new Mock<IEnvironmentManager>();
+            collaborationClientServerMock = new Mock<IUMI3DCollaborationClientServer>();
 
-            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object, null); // monobehaviour are not called during edit mode tests
+            emoteManagerService = new EmoteManager(environmentLoaderServiceMock.Object,
+                                                   environmentManagerMock.Object,
+                                                   collaborationClientServerMock.Object);
         }
 
         [TearDown]

@@ -14,26 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using Moq;
 using NUnit.Framework;
 using umi3d.edk;
 using umi3d.edk.collaboration.emotes;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 
 namespace PlayMode_Tests.Collaboration.Emotes.EDK
 {
     public class EmoteDispatcher_Test
     {
+        private Mock<IUMI3DEnvironmentManager> umi3dEnvironmentMock;
         private EmoteDispatcher emoteDispatcher;
 
         private void CleanSingletons()
         {
             if (EmoteDispatcher.Exists)
                 EmoteDispatcher.Destroy();
-
-            if (UMI3DEnvironment.Exists)
-                UMI3DEnvironment.Destroy();
         }
 
         [OneTimeSetUp]
@@ -45,25 +42,15 @@ namespace PlayMode_Tests.Collaboration.Emotes.EDK
         [SetUp]
         public void SetUp()
         {
-            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
-            GameObject go = new GameObject("UMI3D Environment");
-            UnityEngine.Object.Instantiate(go);
+            umi3dEnvironmentMock = new Mock<IUMI3DEnvironmentManager>();
 
-            UMI3DEnvironment umi3dEnvironment = go.AddComponent<UMI3DEnvironment>();
-
-            emoteDispatcher = new EmoteDispatcher(umi3dEnvironment);
+            emoteDispatcher = new EmoteDispatcher(umi3dEnvironmentMock.Object);
         }
 
         [TearDown]
         public void TearDown()
         {
             CleanSingletons();
-        }
-
-        [UnityTearDown]
-        public void UnityTearDown()
-        {
-            SceneManager.UnloadSceneAsync(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
         }
 
         [TestCase(0uL, true)]
