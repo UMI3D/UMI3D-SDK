@@ -439,8 +439,8 @@ namespace umi3d.cdk
         /// </summary>
         public bool loaded { get; private set; } = false;
 
-        public UnityEvent onResourcesLoaded = new UnityEvent();
-        public UnityEvent onEnvironmentLoaded = new UnityEvent();
+        public UnityEvent onResourcesLoaded { get; protected set; } = new UnityEvent();
+        public UnityEvent onEnvironmentLoaded { get; protected set; } = new UnityEvent();
 
         /// <summary>
         /// Is environement (except videos) loaded ?

@@ -55,6 +55,11 @@ namespace umi3d.cdk.collaboration
 
         public override void Init()
         {
+            // force instanciation
+            _ = UMI3DCollaborationEnvironmentLoader.Instance;
+
+            nodeLoader = new UMI3DNodeLoader();
+
             (loader = new EntityGroupLoader())
             .SetNext(new UMI3DInteractionLoader())
             .SetNext(new UMI3DAnimationLoader())

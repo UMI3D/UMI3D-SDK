@@ -32,6 +32,20 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        #region Dependency Injection
+
+        public UMI3DNodeLoader() : base()
+        {
+        }
+
+        public UMI3DNodeLoader(IEnvironmentManager environmentManager,
+                               ILoadingManager loadingManager) 
+            : base(environmentManager, loadingManager)
+        {
+        }
+
+        #endregion Dependency Injection
+
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is UMI3DNodeDto && base.CanReadUMI3DExtension(data);
@@ -53,7 +67,7 @@ namespace umi3d.cdk
 
             if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
             {
-                SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+                SetCollider(nodeDto.id, environmentManager.GetNodeInstance(nodeDto.id), nodeDto.colliderDto);
             }
 
             if (nodeDto.xBillboard || nodeDto.yBillboard)
@@ -61,7 +75,7 @@ namespace umi3d.cdk
                 Billboard b = data.node.AddComponent<Billboard>();
                 b.X = nodeDto.xBillboard;
                 b.Y = nodeDto.yBillboard;
-                data.node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
+                data.node.gameObject.GetComponent<Billboard>().glTFNodeDto = environmentManager.GetNodeInstance(nodeDto.id).dto as GlTFNodeDto;
             }
 
             if (nodeDto.lodDto != null)
@@ -80,7 +94,7 @@ namespace umi3d.cdk
 
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(skinMeshEntityId, e =>
+            loadingManager.WaitUntilEntityLoaded(skinMeshEntityId, e =>
             {
                 if (e is UMI3DNodeInstance nodeI)
                 {
@@ -128,7 +142,7 @@ namespace umi3d.cdk
                 foreach (ulong id in lod.nodes)
                 {
                     UMI3DNodeInstance n = null;
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, e =>
+                    loadingManager.WaitUntilEntityLoaded(id, e =>
                     {
                         n = e as UMI3DNodeInstance;
                     });
@@ -320,7 +334,7 @@ namespace umi3d.cdk
                         }
                         else if (!dto.colliderDto.isMeshCustom)
                         {
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
 
                         }
                     }
@@ -338,7 +352,7 @@ namespace umi3d.cdk
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
                             //SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
                         }
                     }
                     break;
@@ -547,7 +561,7 @@ namespace umi3d.cdk
                         }
                         else if (!dto.colliderDto.isMeshCustom)
                         {
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
 
                         }
                     }
@@ -565,7 +579,7 @@ namespace umi3d.cdk
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
                             //SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
                         }
                     }
                     break;
@@ -615,12 +629,12 @@ namespace umi3d.cdk
         {
             if (resourceDto == null) return;
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(resourceDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = loadingManager.LoadingParameters.ChooseVariant(resourceDto.variants);  // Peut etre ameliore
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = loadingManager.LoadingParameters.SelectLoader(ext);
             if (loader != null)
             {
                var o = await UMI3DResourcesManager.LoadFile( id,fileToLoad,loader);
@@ -656,7 +670,7 @@ namespace umi3d.cdk
 
         protected virtual void SetCollider(ulong id, UMI3DNodeInstance nodeInstance, ColliderDto dto)
         {
-            //UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(pid);// go.GetComponent<UMI3DNodeInstance>();
+            //UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(pid);// go.GetComponent<UMI3DNodeInstance>();
             GameObject go = nodeInstance.gameObject;
 
             //Remove old oliders

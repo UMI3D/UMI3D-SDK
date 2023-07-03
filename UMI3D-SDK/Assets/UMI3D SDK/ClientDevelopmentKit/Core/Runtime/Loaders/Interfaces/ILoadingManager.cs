@@ -21,6 +21,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
@@ -29,6 +30,10 @@ namespace umi3d.cdk
         Material baseMaterial { get; }
         GlTFNodeLoader nodeLoader { get; }
         UMI3DSceneLoader sceneLoader { get; }
+        AbstractUMI3DLoadingParameters LoadingParameters { get; }
+
+        public UnityEvent onResourcesLoaded { get; }
+        public UnityEvent onEnvironmentLoaded { get; }
 
         Task ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node);
 

@@ -28,7 +28,7 @@ namespace umi3d.edk
     /// Root node of any UMI3D enviroment.
     /// </summary>
     /// As there is only one envionment node, it could be called as a manager.
-    public class UMI3DEnvironment : SingleBehaviour<UMI3DEnvironment>
+    public class UMI3DEnvironment : SingleBehaviour<UMI3DEnvironment>, IUMI3DEnvironmentManager
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration;
 

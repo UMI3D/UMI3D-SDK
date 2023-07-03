@@ -33,19 +33,24 @@ namespace umi3d.cdk.binding
 
         #region DependencyInjection
 
-        private readonly IBindingBrowserService bindingManagementService;
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        protected readonly IBindingBrowserService bindingManagementService;
+        protected readonly ILoadingManager environmentLoaderService;
+        protected readonly IEnvironmentManager environmentManager;
 
         public BindingLoader()
         {
             bindingManagementService = BindingManager.Instance;
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentManager = UMI3DEnvironmentLoader.Instance;
         }
 
-        public BindingLoader(IBindingBrowserService bindingManager, UMI3DEnvironmentLoader environmentLoaderService)
+        public BindingLoader(ILoadingManager environmentLoaderService,
+                             IEnvironmentManager environmentManager,
+                             IBindingBrowserService bindingManagementService)
         {
-            bindingManagementService = bindingManager;
+            this.bindingManagementService = bindingManagementService;
             this.environmentLoaderService = environmentLoaderService;
+            this.environmentManager = environmentManager;
         }
 
         #endregion DependencyInjection
@@ -68,7 +73,7 @@ namespace umi3d.cdk.binding
             bindingManagementService.AddBinding(dto.boundNodeId, binding);
 
             void onDelete() { bindingManagementService.RemoveBinding(dto.boundNodeId); }
-            environmentLoaderService.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
+            environmentManager.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
         }
 
         /// <inheritdoc/>
@@ -101,7 +106,7 @@ namespace umi3d.cdk.binding
             {
                 case NodeBindingDataDto nodeBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentLoaderService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(boundNodeId);
                         if (node is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
@@ -119,7 +124,7 @@ namespace umi3d.cdk.binding
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentLoaderService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
 
                         var tasks = multiBindingDataDto.Bindings.Select(x => LoadData(boundNodeId, x));
                         var bindings = await Task.WhenAll(tasks);

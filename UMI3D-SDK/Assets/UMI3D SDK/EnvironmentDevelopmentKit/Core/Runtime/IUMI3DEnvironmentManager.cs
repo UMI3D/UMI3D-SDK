@@ -14,27 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using umi3d.common;
-using UnityEngine;
-
-namespace umi3d.cdk
+namespace umi3d.edk
 {
-    public interface IEnvironmentManager
+    public interface IUMI3DEnvironmentManager
     {
-        GameObject gameObject { get; }
-        bool loaded { get; }
-
-        Transform transform { get; }
-
-        T GetEntityObject<T>(ulong id) where T : class;
-
-        UMI3DEntityInstance GetEntityInstance(ulong id);
-
-        UMI3DNodeInstance GetNodeInstance(ulong id);
-
-        UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
-
-        UMI3DEntityInstance TryGetEntityInstance(ulong id);
+        ulong RegisterEntity(UMI3DEntity entity);
+        ulong RegisterEntity(UMI3DEntity entity, ulong id);
+        E _GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity;
     }
 }

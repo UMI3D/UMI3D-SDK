@@ -33,6 +33,7 @@ namespace umi3d.cdk.userCapture.pose
 
         private readonly ISkeletonManager skeletonManager;
         private readonly IEnvironmentManager environmentLoader;
+        private readonly ILoadingManager loadingManager;
 
         private bool isInit = false;
 
@@ -43,10 +44,11 @@ namespace umi3d.cdk.userCapture.pose
             InitLocalPoses();
         }
 
-        public PoseManager(ISkeletonManager skeletonManager, IEnvironmentManager environmentLoader)
+        public PoseManager(ISkeletonManager skeletonManager, IEnvironmentManager environmentLoader, ILoadingManager loadingManager)
         {
             this.skeletonManager = skeletonManager;
             this.environmentLoader = environmentLoader;
+            this.loadingManager = loadingManager;
             InitLocalPoses();
         }
 
@@ -56,7 +58,7 @@ namespace umi3d.cdk.userCapture.pose
             {
                 isInit = true;
 
-                List<UMI3DPose_so> clientPoses = (environmentLoader.LoadingParameters as UMI3DUserCaptureLoadingParameters).clientPoses;
+                List<UMI3DPose_so> clientPoses = (loadingManager.LoadingParameters as UMI3DUserCaptureLoadingParameters).clientPoses;
                 localPoses = new PoseDto[clientPoses.Count];
                 for (int i = 0; i < clientPoses.Count; i++)
                 {

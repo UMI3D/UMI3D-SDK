@@ -35,21 +35,14 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
     public class AnimatedSubskeleton_Test
     {
         private Mock<SkeletonMapper> mockSkeletonMapper;
-        private Mock<UMI3DEnvironmentLoader> environmentLoaderService;
+        private Mock<IEnvironmentManager> environmentLoaderService;
 
         [SetUp]
         public void SetUp()
         {
             mockSkeletonMapper = new Mock<SkeletonMapper>();
 
-            environmentLoaderService = new Mock<UMI3DEnvironmentLoader>();
-        }
-
-        [TearDown]
-        public void TearDown()
-        {
-            if (UMI3DEnvironmentLoader.Exists)
-                UMI3DEnvironmentLoader.Destroy();
+            environmentLoaderService = new Mock<IEnvironmentManager>();
         }
 
         #region GetCameraDto

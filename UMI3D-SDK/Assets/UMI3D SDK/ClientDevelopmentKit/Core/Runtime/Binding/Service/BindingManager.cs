@@ -32,18 +32,18 @@ namespace umi3d.cdk.binding
         #region dependency injection
 
         private readonly ILateRoutineService routineService;
-        private readonly UMI3DEnvironmentLoader environmentService;
+        private readonly IUMI3DClientServer clientServer;
 
         public BindingManager() : base()
         {
             routineService = CoroutineManager.Instance;
-            environmentService = UMI3DEnvironmentLoader.Instance;
+            clientServer = UMI3DClientServer.Instance;
         }
 
-        public BindingManager(ILateRoutineService coroutineService, UMI3DEnvironmentLoader environmentService)
+        public BindingManager(ILateRoutineService coroutineService, IUMI3DClientServer clientServer)
         {
             this.routineService = coroutineService;
-            this.environmentService = environmentService;
+            this.clientServer = clientServer;
         }
 
         #endregion dependency injection
@@ -100,7 +100,7 @@ namespace umi3d.cdk.binding
             if (Bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
             {
                 bindingRoutine = routineService.AttachLateRoutine(BindingApplicationRoutine());
-                UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (bindingRoutine is not null) routineService.DettachLateRoutine(bindingRoutine); });
+                clientServer.OnLeavingEnvironment.AddListener(() => { if (bindingRoutine is not null) routineService.DettachLateRoutine(bindingRoutine); });
             }
                 
         }

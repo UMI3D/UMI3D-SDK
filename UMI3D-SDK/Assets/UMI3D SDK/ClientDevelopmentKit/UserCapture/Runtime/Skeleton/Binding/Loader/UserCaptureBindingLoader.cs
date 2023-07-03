@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture.binding
 
         #region DependencyInjection
 
-        private readonly UMI3DEnvironmentLoader environmentService;
+        private readonly IEnvironmentManager environmentService;
         private readonly ISkeletonManager personnalSkeletonService;
 
         public UserCaptureBindingLoader() : base()
@@ -45,9 +45,10 @@ namespace umi3d.cdk.userCapture.binding
         }
 
         public UserCaptureBindingLoader(IBindingBrowserService bindingManager,
-                                            UMI3DEnvironmentLoader environmentService,
-                                            ISkeletonManager personnalSkeletonService)
-                                            : base(bindingManager, environmentService)
+                                        IEnvironmentManager environmentService,
+                                        ILoadingManager loadingManager,
+                                        ISkeletonManager personnalSkeletonService)
+             : base(loadingManager, environmentService, bindingManager)
         {
             this.environmentService = environmentService;
             this.personnalSkeletonService = personnalSkeletonService;

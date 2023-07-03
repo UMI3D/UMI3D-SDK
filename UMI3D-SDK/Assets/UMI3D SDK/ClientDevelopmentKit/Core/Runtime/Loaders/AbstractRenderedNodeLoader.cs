@@ -33,6 +33,21 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        #region Dependency Injection
+
+        public AbstractRenderedNodeLoader() : base()
+        {
+        }
+
+        public AbstractRenderedNodeLoader(IEnvironmentManager environmentManager,
+                                          ILoadingManager loadingManager) 
+            : base(environmentManager, loadingManager)
+        {
+        }
+
+        #endregion Dependency Injection
+
+
         /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
@@ -90,8 +105,8 @@ namespace umi3d.cdk
                                 extension.overridedMaterials.Insert(((SetEntityListAddPropertyDto)data.property).index, (MaterialOverrideDto)addProperty.value);
                                 if (extension.applyCustomMaterial)
                                 {
-                                    var node = (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(data.property.entityId);
-                                    SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(data.property.entityId));
+                                    var node = environmentManager.GetNodeInstance(data.property.entityId);
+                                    SetMaterialOverided(extension, environmentManager.GetNodeInstance(data.property.entityId));
                                 }
                             }
                             //       
@@ -103,7 +118,7 @@ namespace umi3d.cdk
                                 RevertOneOverrider((UMI3DNodeInstance)data.entity, (MaterialOverrideDto)removeProperty.value);
                                 extension.overridedMaterials.RemoveAt(removeProperty.index);
 
-                                SetMaterialOverided(extension, (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(data.property.entityId)); // necessary if multiples overriders override the same removed material
+                                SetMaterialOverided(extension, environmentManager.GetNodeInstance(data.property.entityId)); // necessary if multiples overriders override the same removed material
 
                             }
                             else
@@ -124,7 +139,7 @@ namespace umi3d.cdk
                                 bool shouldAdd = ((MaterialOverrideDto)changeProperty.value).addMaterialIfNotExists;
 
                                 //Apply new overrider (Apply again the list from the new element to then end of the list)
-                                var node = (UMI3DNodeInstance)UMI3DEnvironmentLoader.GetEntity(data.property.entityId);
+                                var node = environmentManager.GetNodeInstance(data.property.entityId);
                                 UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(propertValue.newMaterialId, propertValue.overridedMaterialsId, node, () =>
                                 {
                                     for (int i = changeProperty.index + 1; i < extension.overridedMaterials.Count; i++)
@@ -451,7 +466,7 @@ namespace umi3d.cdk
 
         protected virtual void RevertOneOverrider(UMI3DNodeInstance entity, MaterialOverrideDto matToRemoveDto)
         {
-            var matToRemove = (Material)UMI3DEnvironmentLoader.GetEntity(matToRemoveDto.newMaterialId)?.Object;
+            var matToRemove = environmentManager.GetEntityObject<Material>(matToRemoveDto.newMaterialId);
             if (matToRemove == null) return;
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(entity))
             {
@@ -491,12 +506,12 @@ namespace umi3d.cdk
 
         protected IEnumerator ApplyMaterialOverrider(ulong newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
         {
-            UMI3DEntityInstance matEntity = UMI3DEnvironmentLoader.GetEntity(newMatId);
+            UMI3DEntityInstance matEntity = environmentManager.TryGetEntityInstance(newMatId);
             if (matEntity == null) UMI3DLogger.LogWarning("Material not found : " + newMatId + " , that should not happen", scope);
 
             while (matEntity == null)
             {
-                matEntity = UMI3DEnvironmentLoader.GetEntity(newMatId);
+                matEntity = environmentManager.TryGetEntityInstance(newMatId);
 
                 yield return new WaitForSeconds(0.2f);
             }

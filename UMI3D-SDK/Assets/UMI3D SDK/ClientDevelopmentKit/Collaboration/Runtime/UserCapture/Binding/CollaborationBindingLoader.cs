@@ -35,21 +35,19 @@ namespace umi3d.cdk.collaboration.userCapture.binding
 
         #region DependencyInjection
 
-        private readonly UMI3DEnvironmentLoader environmentService;
         private readonly ICollaborativeSkeletonsManager skeletonService;
 
         public CollaborationBindingLoader() : base()
         {
-            environmentService = UMI3DCollaborationEnvironmentLoader.Instance;
             skeletonService = CollaborativeSkeletonManager.Instance;
         }
 
         public CollaborationBindingLoader(IBindingBrowserService bindingManager,
-                                                UMI3DCollaborationEnvironmentLoader environmentLoader,
-                                                ICollaborativeSkeletonsManager skeletonService) :
-                                                base(bindingManager, environmentLoader)
+                                          ILoadingManager loadingManager,
+                                          IEnvironmentManager environmentManager,
+                                          ICollaborativeSkeletonsManager skeletonService)
+            : base(loadingManager, environmentManager, bindingManager)
         {
-            this.environmentService = environmentLoader;
             this.skeletonService = skeletonService;
         }
 
@@ -67,7 +65,7 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
-                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
                         var skeleton = skeletonService.skeletons[riggedBoneBinding.userId];
                         if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
@@ -85,7 +83,7 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
                         var skeleton = skeletonService.skeletons[boneBindingDataDto.userId];
                         if (!skeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {

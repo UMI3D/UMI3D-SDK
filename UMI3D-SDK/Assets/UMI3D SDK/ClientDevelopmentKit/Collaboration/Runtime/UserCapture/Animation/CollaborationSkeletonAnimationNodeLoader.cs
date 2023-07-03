@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Linq;
+using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
 
@@ -32,16 +34,22 @@ namespace umi3d.cdk.collaboration.userCapture.animation
         #region Dependency Injection
 
         private readonly ICollaborativeSkeletonsManager collaborativeSkeletonsmanager;
-        private readonly UMI3DCollaborationClientServer collaborationClientServer;
+        private readonly IUMI3DClientServer collaborationClientServer;
 
-        public CollaborationSkeletonAnimationNodeLoader()
+        public CollaborationSkeletonAnimationNodeLoader() : base()
         {
             this.collaborativeSkeletonsmanager = CollaborativeSkeletonManager.Instance;
             this.collaborationClientServer = UMI3DCollaborationClientServer.Instance;
         }
 
-        public CollaborationSkeletonAnimationNodeLoader(ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
-                                                    UMI3DCollaborationClientServer collaborationClientServer)
+        public CollaborationSkeletonAnimationNodeLoader(IEnvironmentManager environmentManager,
+                                                        ILoadingManager loadingManager,
+                                                        IUMI3DResourcesManager resourcesManager,
+                                                        ICoroutineService coroutineManager,
+                                                        ISkeletonManager personnalSkeletonService,
+                                                        ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
+                                                        IUMI3DClientServer collaborationClientServer)
+            : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService)
         {
             this.collaborativeSkeletonsmanager = collaborativeSkeletonsmanager;
             this.collaborationClientServer = collaborationClientServer;

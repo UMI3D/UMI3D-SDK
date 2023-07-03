@@ -28,15 +28,18 @@ namespace umi3d.cdk.collaboration.emotes
         #region DependencyInjection
 
         private IEmoteService emoteManagementService;
+        private IEnvironmentManager environmentManager;
 
         public UMI3DEmoteLoader()
         {
             emoteManagementService = EmoteManager.Instance;
+            environmentManager = UMI3DCollaborationEnvironmentLoader.Instance;
         }
 
-        public UMI3DEmoteLoader(IEmoteService emoteManager)
+        public UMI3DEmoteLoader(IEmoteService emoteManager, IEnvironmentManager environmentManager)
         {
             emoteManagementService = emoteManager;
+            this.environmentManager = environmentManager;
         }
 
         #endregion DependencyInjection
@@ -51,7 +54,7 @@ namespace umi3d.cdk.collaboration.emotes
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmoteDto;
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+            environmentManager.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             emoteManagementService.UpdateEmote(dto);
             return Task.CompletedTask;
         }

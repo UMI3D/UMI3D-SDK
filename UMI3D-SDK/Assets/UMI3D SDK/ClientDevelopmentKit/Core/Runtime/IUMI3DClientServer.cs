@@ -14,27 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using System.Threading.Tasks;
 using umi3d.common;
-using UnityEngine;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
-    public interface IEnvironmentManager
+    public interface IUMI3DClientServer
     {
-        GameObject gameObject { get; }
-        bool loaded { get; }
+        bool AuthorizationInHeader { get; }
+        UnityEvent OnLeaving { get; }
+        UnityEvent OnLeavingEnvironment { get; }
+        UMI3DVersion.Version version { get; }
 
-        Transform transform { get; }
-
-        T GetEntityObject<T>(ulong id) where T : class;
-
-        UMI3DEntityInstance GetEntityInstance(ulong id);
-
-        UMI3DNodeInstance GetNodeInstance(ulong id);
-
-        UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
-
-        UMI3DEntityInstance TryGetEntityInstance(ulong id);
+        object GetHttpClient();
+        double GetRoundTripLAtency();
+        ulong GetTime();
+        ulong GetUserId();
+        Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument);
+        void _SendRequest(AbstractBrowserRequestDto dto, bool reliable);
     }
 }

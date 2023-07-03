@@ -48,14 +48,14 @@ namespace umi3d.edk.collaboration.emotes
 
         #region Dependency Injection
 
-        private readonly UMI3DEnvironment umi3dEnvironmentService;
+        private readonly IUMI3DEnvironmentManager umi3dEnvironmentService;
 
         public EmoteDispatcher() : base()
         {
             umi3dEnvironmentService = UMI3DEnvironment.Instance;
         }
 
-        public EmoteDispatcher(UMI3DEnvironment umi3dEnvironmentService) : base()
+        public EmoteDispatcher(IUMI3DEnvironmentManager umi3dEnvironmentService) : base()
         {
             this.umi3dEnvironmentService = umi3dEnvironmentService;
         }
@@ -87,7 +87,7 @@ namespace umi3d.edk.collaboration.emotes
                 return;
             }
 
-            UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.id == emoteId);
+            UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.Id() == emoteId);
 
             if (!emote.Available.GetValue(sendingUser))
             {

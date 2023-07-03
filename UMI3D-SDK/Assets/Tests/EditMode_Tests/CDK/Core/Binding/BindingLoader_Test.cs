@@ -29,7 +29,8 @@ namespace EditMode_Tests.Core.Binding.CDK
         protected BindingLoader bindingLoader;
 
         protected Mock<IBindingBrowserService> bindingManagementServiceMock;
-        protected Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
+        protected Mock<IEnvironmentManager> environmentManagerMock;
+        protected Mock<ILoadingManager> loadingManagerMock;
 
         #region Test SetUp
 
@@ -43,8 +44,11 @@ namespace EditMode_Tests.Core.Binding.CDK
         public virtual void SetUp()
         {
             bindingManagementServiceMock = new();
-            environmentLoaderServiceMock = new();
-            bindingLoader = new BindingLoader(bindingManagementServiceMock.Object, environmentLoaderServiceMock.Object);
+            environmentManagerMock = new();
+            loadingManagerMock = new();
+            bindingLoader = new BindingLoader(loadingManagerMock.Object,
+                                              environmentManagerMock.Object,
+                                              bindingManagementService: bindingManagementServiceMock.Object);
         }
 
         [TearDown]
@@ -116,9 +120,9 @@ namespace EditMode_Tests.Core.Binding.CDK
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            environmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
            
@@ -126,7 +130,7 @@ namespace EditMode_Tests.Core.Binding.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
@@ -148,9 +152,9 @@ namespace EditMode_Tests.Core.Binding.CDK
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            environmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
@@ -158,7 +162,7 @@ namespace EditMode_Tests.Core.Binding.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 

@@ -30,6 +30,8 @@ namespace PlayMode_Tests.Core.Binding.EDK
     {
         protected BindingManager bindingManager;
 
+        private Mock<IUMI3DServer> umi3dServerMock;
+
         #region Test SetUp
 
         [OneTimeSetUp]
@@ -42,9 +44,10 @@ namespace PlayMode_Tests.Core.Binding.EDK
         [SetUp]
         public void SetUp()
         {
-            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
-
-            bindingManager = new BindingManager(UMI3DServer.Instance);
+            umi3dServerMock = new();
+            umi3dServerMock.Setup(x => x.OnUserJoin).Returns(new UMI3DUserEvent());
+            
+            bindingManager = new BindingManager(umi3dServerMock.Object);
         }
 
         [TearDown]
@@ -55,16 +58,12 @@ namespace PlayMode_Tests.Core.Binding.EDK
 
         private void ClearSingletons()
         {
-            if (UMI3DServer.Exists)
-                UMI3DServer.Destroy();
-
             if (BindingManager.Exists)
                 BindingManager.Destroy();
         }
 
         #endregion Test SetUp
 
-        // TODO: Replace the region name by the tested method name
         #region AreBindingsEnabled
 
         [Test]
