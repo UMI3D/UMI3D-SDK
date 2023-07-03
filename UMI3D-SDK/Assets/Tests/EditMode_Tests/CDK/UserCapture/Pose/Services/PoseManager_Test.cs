@@ -17,6 +17,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
     {
         PoseManager poseManager = null;
         Mock<IEnvironmentManager> environmentLoaderServiceMock = null;
+        Mock<ILoadingManager> loadingManagerMock = null;
         Mock<ISkeletonManager> skeletonManagerServiceMock = null;
 
         UMI3DUserCaptureLoadingParameters userCaptureLoadingParameters = null;
@@ -26,9 +27,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             environmentLoaderServiceMock = new Mock<IEnvironmentManager>();
             skeletonManagerServiceMock = new Mock<ISkeletonManager>();
+            loadingManagerMock = new();
             userCaptureLoadingParameters = new UMI3DUserCaptureLoadingParameters();
 
-            environmentLoaderServiceMock.Setup(x => x.LoadingParameters).Returns(userCaptureLoadingParameters);
+            loadingManagerMock.Setup(x => x.LoadingParameters).Returns(userCaptureLoadingParameters);
             userCaptureLoadingParameters.clientPoses = new List<UMI3DPose_so>()
             {
                 new UMI3DPose_so(),
@@ -43,12 +45,15 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void TearDown()
         {
             poseManager = null;
+
+            if (PoseManager.Exists)
+                PoseManager.Destroy();
         }
 
         [Test]
         public void TestInitLocalPose()
         {
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentLoaderServiceMock.Object);
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentLoaderServiceMock.Object, loadingManagerMock.Object);
 
             Assert.IsTrue(poseManager.localPoses.Length == userCaptureLoadingParameters.clientPoses.Count);
         }
@@ -56,7 +61,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void TestGetSetPose()
         {
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentLoaderServiceMock.Object);
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentLoaderServiceMock.Object, loadingManagerMock.Object);
             poseManager.SetPoses(PoseDictionary());
 
             Assert.IsTrue(poseManager.GetPose(0, 0).bones.Count == 2);
