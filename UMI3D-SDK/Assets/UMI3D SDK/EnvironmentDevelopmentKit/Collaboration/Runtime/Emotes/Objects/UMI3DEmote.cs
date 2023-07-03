@@ -18,6 +18,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration.emotes;
+using umi3d.edk.core;
 using UnityEngine;
 
 namespace umi3d.edk.collaboration.emotes
@@ -28,14 +29,8 @@ namespace umi3d.edk.collaboration.emotes
     /// An emote is a short animation that is played to convey a specific communication, often an emotion.
     /// Emotes are used on non-immersive devices to allow the user to communicate non-verbally.
     [System.Serializable]
-    public class UMI3DEmote : UMI3DLoadableEntity
+    public class UMI3DEmote : AbstractLoadableEntity
     {
-        /// <summary>
-        /// Emote entity id
-        /// </summary>
-        [HideInInspector]
-        public ulong id;
-
         /// <summary>
         /// Emote name displayed to players
         /// </summary>
@@ -121,7 +116,7 @@ namespace umi3d.edk.collaboration.emotes
         /// Export the <see cref="UMI3DEmote"/> to a <see cref="UMI3DEmoteDto"/> for transfer
         /// </summary>
         /// <returns></returns>
-        public IEntity ToEntityDto(UMI3DUser user)
+        public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new UMI3DEmoteDto()
             {
@@ -144,7 +139,7 @@ namespace umi3d.edk.collaboration.emotes
         #region Loading
 
         /// <inheritdoc/>
-        public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
+        public override LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new LoadEntity()
             {
@@ -156,7 +151,7 @@ namespace umi3d.edk.collaboration.emotes
         }
 
         /// <inheritdoc/>
-        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        public override DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
             {
@@ -167,30 +162,6 @@ namespace umi3d.edk.collaboration.emotes
         }
 
         #endregion Loading
-
-        #region Filters
-
-        private readonly HashSet<UMI3DUserFilter> ConnectionFilters = new HashSet<UMI3DUserFilter>();
-
-        /// <inheritdoc/>
-        public bool LoadOnConnection(UMI3DUser user)
-        {
-            return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
-        }
-
-        /// <inheritdoc/>
-        public bool AddConnectionFilter(UMI3DUserFilter filter)
-        {
-            return ConnectionFilters.Add(filter);
-        }
-
-        /// <inheritdoc/>
-        public bool RemoveConnectionFilter(UMI3DUserFilter filter)
-        {
-            return ConnectionFilters.Remove(filter);
-        }
-
-        #endregion Filters
 
         #endregion UMI3DLoadableEntity
     }

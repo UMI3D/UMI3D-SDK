@@ -87,7 +87,7 @@ namespace umi3d.edk.collaboration.emotes
                 return;
             }
 
-            UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.id == emoteId);
+            UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.Id() == emoteId);
 
             if (!emote.Available.GetValue(sendingUser))
             {
