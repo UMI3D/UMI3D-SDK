@@ -38,18 +38,20 @@ namespace umi3d.cdk.userCapture.animation
         #region Dependency Injection
 
         protected readonly ISkeletonManager personnalSkeletonService;
-        protected readonly UMI3DEnvironmentLoader environmentLoader;
 
         public SkeletonAnimationNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
-            environmentLoader = UMI3DEnvironmentLoader.Instance;
         }
 
-        public SkeletonAnimationNodeLoader(ISkeletonManager personnalSkeletonService, UMI3DEnvironmentLoader environmentLoader) : base()
+        public SkeletonAnimationNodeLoader(IEnvironmentManager environmentManager,
+                                           ILoadingManager loadingManager,
+                                           IUMI3DResourcesManager resourcesManager,
+                                           ICoroutineService coroutineManager,
+                                           ISkeletonManager personnalSkeletonService) 
+            : base(environmentManager, loadingManager, resourcesManager, coroutineManager)
         {
             this.personnalSkeletonService = personnalSkeletonService;
-            this.environmentLoader = environmentLoader;
         }
 
         #endregion Dependency Injection
@@ -98,11 +100,11 @@ namespace umi3d.cdk.userCapture.animation
             foreach (var id in skeletonNodeDto.relatedAnimationsId)
             {
                 UMI3DAnimatorAnimation anim;
-                var instance = environmentLoader.TryGetEntityInstance(id);
+                var instance = environmentManager.TryGetEntityInstance(id);
                 if (instance is null)
                 {
                     anim = null;
-                    environmentLoader.WaitUntilEntityLoaded(id, (animInstance) => { anim = animInstance.Object as UMI3DAnimatorAnimation; }, null);
+                    loadingManager.WaitUntilEntityLoaded(id, (animInstance) => { anim = animInstance.Object as UMI3DAnimatorAnimation; }, null);
                 }
                     
                 else

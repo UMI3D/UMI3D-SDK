@@ -29,6 +29,7 @@ namespace umi3d.cdk
         Material baseMaterial { get; }
         GlTFNodeLoader nodeLoader { get; }
         UMI3DSceneLoader sceneLoader { get; }
+        AbstractUMI3DLoadingParameters LoadingParameters { get; }
 
         Task ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node);
 

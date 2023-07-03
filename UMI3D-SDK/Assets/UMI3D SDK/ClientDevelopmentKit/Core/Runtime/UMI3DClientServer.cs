@@ -25,7 +25,7 @@ namespace umi3d.cdk
     /// <summary>
     /// UMI3D server on the browser.
     /// </summary>
-    public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>
+    public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>, IUMI3DClientServer
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Networking;
         /// <summary>
@@ -33,8 +33,8 @@ namespace umi3d.cdk
         /// </summary>
         protected MediaDto _media;
 
-        public UnityEvent OnLeaving = new UnityEvent();
-        public UnityEvent OnLeavingEnvironment = new UnityEvent();
+        public UnityEvent OnLeaving { get; } = new UnityEvent();
+        public UnityEvent OnLeavingEnvironment { get; } = new UnityEvent();
 
         protected UMI3DTransactionDispatcher _transactionDispatcher;
         public static UMI3DTransactionDispatcher transactionDispatcher
@@ -45,7 +45,7 @@ namespace umi3d.cdk
             }
             set
             {
-                if(Exists)
+                if (Exists)
                 {
                     Instance._transactionDispatcher = value;
                 }

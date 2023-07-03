@@ -39,7 +39,7 @@ namespace umi3d.cdk
         public List<string> supportedformats = new List<string>();
         public float maximumResolution;
 
-        public virtual UMI3DNodeLoader nodeLoader { get; } = new UMI3DNodeLoader();
+        public virtual UMI3DNodeLoader nodeLoader { get; protected set; }
         public virtual UMI3DAbstractAnchorLoader AnchorLoader { get; protected set; } = null;
 
         public NotificationLoader notificationLoader;
@@ -97,6 +97,8 @@ namespace umi3d.cdk
 
         public virtual void Init()
         {
+            nodeLoader = new UMI3DNodeLoader();
+
             (loader = new EntityGroupLoader())
             .SetNext(new UMI3DAnimationLoader())
             .SetNext(new PreloadedSceneLoader())
