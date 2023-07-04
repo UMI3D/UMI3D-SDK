@@ -125,7 +125,11 @@ namespace umi3d.cdk.userCapture.animation
             // hide the model if it has any renderers
             foreach (var renderer in nodeInstance.gameObject.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
+
+            await Task.CompletedTask;
         }
+
+        #region SkeletonMapping
 
         /// <summary>
         /// Extract skeleton mapper from skeleton or create one
@@ -274,6 +278,8 @@ namespace umi3d.cdk.userCapture.animation
                 }
             }
         }
+
+        #endregion SkeletonMapping
 
         /// <summary>
         /// Attach an animated subskeleton to a skeleton
