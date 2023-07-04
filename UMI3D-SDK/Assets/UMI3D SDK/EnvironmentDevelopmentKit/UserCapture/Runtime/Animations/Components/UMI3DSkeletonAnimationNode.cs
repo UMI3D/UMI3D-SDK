@@ -28,6 +28,8 @@ namespace umi3d.edk.userCapture.animation
     /// </summary>
     public class UMI3DSkeletonAnimationNode : UMI3DModel
     {
+        private const DebugScope DEBUG_SCOPE = DebugScope.EDK | DebugScope.UserCapture | DebugScope.Animation;
+
         /// <summary>
         /// List of states names in the embedded animator.
         /// </summary>
@@ -55,7 +57,67 @@ namespace umi3d.edk.userCapture.animation
         /// List of parameters that are updated by the browsers themselves based on skeleton movement.
         /// </summary>
         /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public uint[] animatorSelfTrackedParameters;
+        public uint[] animatorSelfTrackedParameters = new uint[0];
+
+        public bool AreAnimationsGenerated => relatedAnimationIds.Length > 0;
+
+        public Operation[] GetLoadAnimations(UMI3DUser user = null)
+        {
+            if (!AreAnimationsGenerated)
+            {
+                UMI3DLogger.LogWarning($"Cannot load animations, no animations are available. Try to generate them beforehand.", DEBUG_SCOPE);
+                return null;
+            }
+
+            Queue<Operation> ops = new();
+            foreach (var id in relatedAnimationIds)
+            {
+                var animation = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAnimatorAnimation>(id);
+                ops.Enqueue(animation.GetLoadEntity(user is not null ? new() { user } : null));
+            }
+            return ops.ToArray();
+        }
+
+        public Operation[] GetDeleteAnimations(UMI3DUser user = null)
+        {
+            Queue<Operation> ops = new();
+            foreach (var id in relatedAnimationIds)
+            {
+                var animation = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAnimatorAnimation>(id);
+                ops.Enqueue(animation.GetDeleteEntity(user is not null ? new() { user } : null));
+            }
+            return ops.ToArray();
+        }
+
+        public Operation[] GenerateAnimations(IEnumerable<string> stateNames = null, bool arePlaying = true, bool areLooping = false, UMI3DNode node = null)
+        {
+            if (AreAnimationsGenerated)
+            {
+                UMI3DLogger.LogWarning($"Animations are already generated.", DEBUG_SCOPE);
+                return null;
+            }
+
+            Queue<Operation> ops = new();
+            Queue<ulong> animationsIdList = new();
+            foreach (var animationState in stateNames ?? animationStates)
+            {
+                UMI3DAnimatorAnimation animation = gameObject.AddComponent<UMI3DAnimatorAnimation>();
+                animation.Register();
+                animation.objectNode.SetValue(node != null ? node : this);
+                animation.objectLooping.SetValue(areLooping);
+                animation.objectPlaying.SetValue(arePlaying);
+                foreach (var parameter in animatorSelfTrackedParameters)
+                {
+                    animation.objectParameters.Add(((SkeletonAnimatorParameterKeys)parameter).ToString(), 0f);
+                }
+                animation.objectStateName.SetValue(animationState);
+
+                ops.Enqueue(animation.GetLoadEntity());
+                animationsIdList.Enqueue(animation.Id());
+            }
+            relatedAnimationIds = animationsIdList.ToArray();
+            return ops.ToArray();
+        }
 
         /// <inheritdoc/>
         protected override UMI3DNodeDto CreateDto()
@@ -68,9 +130,9 @@ namespace umi3d.edk.userCapture.animation
             base.WriteProperties(dto, user);
             var skeletonNodeDto = dto as SkeletonAnimationNodeDto;
             skeletonNodeDto.userId = userId;
-            skeletonNodeDto.relatedAnimationsId = relatedAnimationIds ?? new ulong[0];
+            skeletonNodeDto.relatedAnimationsId = relatedAnimationIds;
             skeletonNodeDto.priority = priority;
-            skeletonNodeDto.animatorSelfTrackedParameters = animatorSelfTrackedParameters ?? new uint[0];
+            skeletonNodeDto.animatorSelfTrackedParameters = animatorSelfTrackedParameters;
         }
 
         public override Bytable ToBytes(UMI3DUser user)
@@ -80,6 +142,19 @@ namespace umi3d.edk.userCapture.animation
                     + UMI3DSerializer.Write(priority)
                     + UMI3DSerializer.WriteCollection(relatedAnimationIds)
                     + UMI3DSerializer.WriteCollection(animatorSelfTrackedParameters);
+        }
+
+        public void OnDestroy()
+        {
+            foreach (var id in relatedAnimationIds)
+            {
+                var animation = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAnimatorAnimation>(id);
+                if (animation != null)
+                {
+                    UMI3DEnvironment.Instance.RemoveEntity(animation.Id());
+                    UnityEngine.Object.Destroy(animation);
+                }
+            }
         }
     }
 }
