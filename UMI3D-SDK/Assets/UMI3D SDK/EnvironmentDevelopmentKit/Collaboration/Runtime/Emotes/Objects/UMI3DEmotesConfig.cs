@@ -42,7 +42,7 @@ namespace umi3d.edk.collaboration.emotes
         /// List of included emotes
         /// </summary>
         [Tooltip("List of included emotes.")]
-        public List<UMI3DEmote> IncludedEmotes;
+        public List<UMI3DEmote> IncludedEmotes = new();
 
         #region Registration
 
