@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture.animation;
 using umi3d.edk.editor;
 using UnityEditor;
 
@@ -24,11 +25,17 @@ namespace umi3d.edk.userCapture.animation.editor
     public class UMI3DSkeletonAnimationNodeEditor : UMI3DModelEditor
     {
         private SerializedProperty animationsStates;
+        private SerializedProperty relatedAnimationIds;
+        private SerializedProperty priority;
+        private SerializedProperty animatorSelfTrackedParameters;
 
         protected override void OnEnable()
         {
             base.OnEnable();
             animationsStates = serializedObject.FindProperty("animationStates");
+            relatedAnimationIds = serializedObject.FindProperty("relatedAnimationIds");
+            priority = serializedObject.FindProperty("priority");
+            animatorSelfTrackedParameters = serializedObject.FindProperty("animatorSelfTrackedParameters");
         }
 
         public override void OnInspectorGUI()
@@ -38,6 +45,11 @@ namespace umi3d.edk.userCapture.animation.editor
 
             serializedObject.Update();
             EditorGUILayout.PropertyField(animationsStates);
+            EditorGUILayout.PropertyField(relatedAnimationIds);
+            EditorGUILayout.PropertyField(priority);
+            EditorGUILayout.LabelField("Animator self-tracked parameters:");
+            for (int i = 0; i < animatorSelfTrackedParameters.arraySize; i++)
+                EditorGUILayout.LabelField($"- {(SkeletonAnimatorParameterKeys)animatorSelfTrackedParameters.GetArrayElementAtIndex(i).intValue}");
 
             serializedObject.ApplyModifiedProperties();
         }

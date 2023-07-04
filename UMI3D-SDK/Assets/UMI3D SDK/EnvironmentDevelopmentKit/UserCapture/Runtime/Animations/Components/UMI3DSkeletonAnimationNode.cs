@@ -33,7 +33,8 @@ namespace umi3d.edk.userCapture.animation
         /// <summary>
         /// List of states names in the embedded animator.
         /// </summary>
-        [Tooltip("List of states names in the embedded animator.")]
+        [Header("Skeleton Animation Node")]
+        [Tooltip("List of states names in the embedded animator."), EditorReadOnly]
         public List<string> animationStates = new();
 
         /// <summary>
@@ -46,11 +47,12 @@ namespace umi3d.edk.userCapture.animation
         /// Collection of ID of UMI3D animations associated with this node.
         /// </summary>
         [EditorReadOnly]
-        public ulong[] relatedAnimationIds;
+        public ulong[] relatedAnimationIds = new ulong[0];
 
         /// <summary>
         /// Priority for application of skeleton animation.
         /// </summary>
+        [EditorReadOnly]
         public uint priority;
 
         /// <summary>
