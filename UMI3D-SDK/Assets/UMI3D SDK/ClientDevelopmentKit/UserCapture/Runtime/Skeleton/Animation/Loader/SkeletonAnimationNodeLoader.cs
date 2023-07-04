@@ -35,23 +35,29 @@ namespace umi3d.cdk.userCapture.animation
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
 
+        private bool isRegisteredForPersonalSkeletonCleanup;
+
         #region Dependency Injection
 
         protected readonly ISkeletonManager personnalSkeletonService;
+        protected readonly IUMI3DClientServer clientServer;
 
         public SkeletonAnimationNodeLoader() : base()
         {
             personnalSkeletonService = PersonalSkeletonManager.Instance;
+            clientServer = UMI3DClientServer.Instance;
         }
 
         public SkeletonAnimationNodeLoader(IEnvironmentManager environmentManager,
                                            ILoadingManager loadingManager,
                                            IUMI3DResourcesManager resourcesManager,
                                            ICoroutineService coroutineManager,
-                                           ISkeletonManager personnalSkeletonService) 
+                                           ISkeletonManager personnalSkeletonService,
+                                           IUMI3DClientServer clientServer) 
             : base(environmentManager, loadingManager, resourcesManager, coroutineManager)
         {
             this.personnalSkeletonService = personnalSkeletonService;
+            this.clientServer = clientServer;
         }
 
         #endregion Dependency Injection
@@ -299,6 +305,21 @@ namespace umi3d.cdk.userCapture.animation
 
             personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
             personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
+
+            // if it is the browser, register that it is required to delete animated skeleton on leaving
+            if (!isRegisteredForPersonalSkeletonCleanup)
+            {
+                isRegisteredForPersonalSkeletonCleanup = true;
+
+                void RemoveSkeletons()
+                {
+                    skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                    clientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
+                    isRegisteredForPersonalSkeletonCleanup = false;
+                }
+
+                clientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
+            }
 
             // if some animator parameters should be updated by the browsers itself, start listening to them
             if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)

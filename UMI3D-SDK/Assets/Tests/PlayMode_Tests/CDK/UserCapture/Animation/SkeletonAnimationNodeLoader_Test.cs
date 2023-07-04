@@ -27,6 +27,7 @@ using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
 using UnityEngine;
+using UnityEngine.Events;
 using UnityEngine.SceneManagement;
 
 namespace PlayMode_Tests.UserCapture.Animation.CDK
@@ -41,7 +42,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
         private Mock<IUMI3DResourcesManager> resourcesManagerMock;
         private Mock<ICoroutineService> coroutineManagerMock;
         private Mock<ISkeletonManager> personnalSkeletonServiceMock;
-
+        private Mock<IUMI3DClientServer> clientServerMock;
         private GameObject personalSkeletonGo;
         private PersonalSkeleton personalSkeleton;
         private GameObject skeletonNodeGo;
@@ -98,12 +99,14 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             resourcesManagerMock = new();
             coroutineManagerMock = new();
             personnalSkeletonServiceMock = new();
+            clientServerMock = new();
 
             skeletonAnimationNodeLoader = new SkeletonAnimationNodeLoader(environmentManagerMock.Object,
                                                                           loadingManagerMock.Object,
                                                                           resourcesManagerMock.Object,
                                                                           coroutineManagerMock.Object,
-                                                                          personnalSkeletonServiceMock.Object);
+                                                                          personnalSkeletonServiceMock.Object,
+                                                                          clientServerMock.Object);
         }
 
         [OneTimeTearDown]
@@ -160,6 +163,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             var dto = new SkeletonAnimationNodeDto()
             {
                 id = 1005uL,
+                userId = 1008uL,
                 pid = 0,
                 active = true,
                 animatorSelfTrackedParameters = new uint[0],
@@ -178,7 +182,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             loadingManagerMock.Setup(x => x.LoadingParameters).Returns(loadingParametersMock.Object);
             loadingParametersMock.Setup(x => x.ChooseVariant(It.IsAny<List<FileDto>>())).Returns(new FileDto());
             resourcesManagerMock.Setup(x => x._LoadFile(It.IsAny<ulong>(), It.IsAny<FileDto>(), It.IsAny<IResourcesLoader>())).Returns(Task.FromResult(skeletonNodeGo as object));
-
+            clientServerMock.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
             loadingParametersMock.Setup(x => x.SelectLoader(It.IsAny<string>())).Returns(new ObjMeshDtoLoader());
 
             var data = new ReadUMI3DExtensionData(dto) { node = skeletonNodeGo };
