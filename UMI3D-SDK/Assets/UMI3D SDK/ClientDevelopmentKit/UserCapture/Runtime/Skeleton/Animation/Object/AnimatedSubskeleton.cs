@@ -16,6 +16,8 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections;
+using System.Linq;
+
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
@@ -111,8 +113,12 @@ namespace umi3d.cdk.userCapture.animation
 
             if (SelfUpdatedAnimatorParameters.Length > 0)
             {
-                updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
-                UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (updateParameterRoutine is not null) coroutineService.DettachCoroutine(updateParameterRoutine); });
+                // coroutine is modifying an animator and thus require to be put on main thread
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                {
+                    updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
+                    UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (updateParameterRoutine is not null) coroutineService.DettachCoroutine(updateParameterRoutine); });
+                });
             }
         }
 
@@ -121,8 +127,11 @@ namespace umi3d.cdk.userCapture.animation
         /// </summary>
         public void StopParameterSelfUpdate()
         {
-            if (updateParameterRoutine is not null)
-                coroutineService.DettachCoroutine(updateParameterRoutine);
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                if (updateParameterRoutine is not null)
+                    coroutineService.DettachCoroutine(updateParameterRoutine);
+            });
         }
 
         /// <summary>
@@ -152,7 +161,6 @@ namespace umi3d.cdk.userCapture.animation
                         UpdateParameter(name, (uint)type, valueParameter);
                 }
                 previousPosition = skeleton.HipsAnchor.transform.position;
-
                 yield return null;
             }
         }
