@@ -73,7 +73,7 @@ namespace umi3d.cdk
         /// </summary>
         /// This animator could be shared by several <see cref="UMI3DAnimatorAnimation"/> as each animation
         /// corresponds to a state of the animator.
-        private Animator animator;
+        protected Animator animator { get; private set; }
 
         #endregion Fields
 
