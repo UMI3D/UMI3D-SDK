@@ -117,7 +117,7 @@ namespace umi3d.cdk.userCapture.animation
                 MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
                 {
                     updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
-                    UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (updateParameterRoutine is not null) coroutineService.DettachCoroutine(updateParameterRoutine); });
+                    UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(StopParameterSelfUpdate);
                 });
             }
         }
@@ -131,6 +131,8 @@ namespace umi3d.cdk.userCapture.animation
             {
                 if (updateParameterRoutine is not null)
                     coroutineService.DettachCoroutine(updateParameterRoutine);
+
+                UMI3DClientServer.Instance.OnLeavingEnvironment.RemoveListener(StopParameterSelfUpdate);
             });
         }
 
