@@ -366,32 +366,36 @@ namespace umi3d.cdk
         /// <param name="parameterDto"></param>
         public void ApplyParameter(string name, UMI3DAnimatorParameterDto parameterDto)
         {
-            if (animator == null) return;
+            if (animator == null)
+                return;
 
-            UMI3DAnimatorParameterType type = (UMI3DAnimatorParameterType)parameterDto.type;
-
-            switch (type)
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
             {
-                case UMI3DAnimatorParameterType.Bool:
-                    var val = (bool)parameterDto.value;
-                    if (val)
-                    {
-                        animator.SetTrigger(name);
-                    }
-                    animator.SetBool(name, val);
-                    break;
+                UMI3DAnimatorParameterType type = (UMI3DAnimatorParameterType)parameterDto.type;
 
-                case UMI3DAnimatorParameterType.Float:
-                    animator.SetFloat(name, (float)parameterDto.value);
-                    break;
+                switch (type)
+                {
+                    case UMI3DAnimatorParameterType.Bool:
+                        var val = (bool)parameterDto.value;
+                        if (val)
+                        {
+                            animator.SetTrigger(name);
+                        }
+                        animator.SetBool(name, val);
+                        break;
 
-                case UMI3DAnimatorParameterType.Integer:
-                    animator.SetInteger(name, (int)parameterDto.value);
-                    break;
+                    case UMI3DAnimatorParameterType.Float:
+                        animator.SetFloat(name, (float)parameterDto.value);
+                        break;
 
-                default:
-                    break;
-            }
+                    case UMI3DAnimatorParameterType.Integer:
+                        animator.SetInteger(name, (int)parameterDto.value);
+                        break;
+
+                    default:
+                        break;
+                }
+            });
         }
 
         /// <summary>
