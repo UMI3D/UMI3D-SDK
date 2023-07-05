@@ -237,7 +237,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         private IEnumerator TrackEnd()
         {
-            while (GetProgress() < 1)
+            while (animator != null && GetProgress() < 1)
                 yield return null;
 
             OnEnd();
