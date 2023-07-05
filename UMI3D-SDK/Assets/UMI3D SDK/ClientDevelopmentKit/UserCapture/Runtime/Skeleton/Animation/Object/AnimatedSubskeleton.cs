@@ -16,7 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections;
-
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
@@ -152,12 +152,13 @@ namespace umi3d.cdk.userCapture.animation
         private IEnumerator UpdateParametersRoutine(ISkeleton skeleton)
         {
             Vector3 previousPosition = Vector3.zero;
+            Dictionary<uint, float> previousValues = new();
 
             while (true)
             {
                 foreach (var parameter in SelfUpdatedAnimatorParameters)
                 {
-                    (string name, UMI3DAnimatorParameterType type, object valueParameter) = parameter switch
+                    (string name, UMI3DAnimatorParameterType typeKey, float valueParameter) = parameter switch
                     {
                         (uint)SkeletonAnimatorParameterKeys.SPEED => ("SPEED", UMI3DAnimatorParameterType.Float, (skeleton.HipsAnchor.transform.position - previousPosition).magnitude / Time.deltaTime),
                         (uint)SkeletonAnimatorParameterKeys.SPEED_X => ("SPEED_X", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.transform.position.x - previousPosition.x) / Time.deltaTime),
@@ -167,12 +168,33 @@ namespace umi3d.cdk.userCapture.animation
                         _ => default
                     };
 
-                    if (name != default)
-                        UpdateParameter(name, (uint)type, valueParameter);
+                    if (name != default
+                            && (!previousValues.TryGetValue(parameter, out float previousValue) || IsChangeSignificant(previousValue, valueParameter)))
+                    {
+                        UpdateParameter(name, (uint)typeKey, valueParameter);
+                        previousValues[parameter] = valueParameter;
+                    }
                 }
                 previousPosition = skeleton.HipsAnchor.transform.position;
+
                 yield return null;
             }
+        }
+
+        private bool IsChangeSignificant(float previousValue, float newValue, float threshold = 0.05f)
+        {
+            if (previousValue == newValue)
+                return false;
+
+            if (newValue == 0f && previousValue != 0f) // avoid slow movement persistance
+                return true;
+
+            var den = previousValue == 0 ? 1f : previousValue;
+
+            if (Mathf.Abs(newValue - previousValue) / den > threshold)
+                return true;
+
+            return false;
         }
 
         /// <summary>
