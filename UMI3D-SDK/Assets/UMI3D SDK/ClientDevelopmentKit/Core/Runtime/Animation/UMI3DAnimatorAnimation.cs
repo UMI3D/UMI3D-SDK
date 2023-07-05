@@ -13,13 +13,13 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.utils;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -93,15 +93,20 @@ namespace umi3d.cdk
 
         #region DI
         private ICoroutineService coroutineService;
+        private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
         public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
         {
             coroutineService = CoroutineManager.Instance;
+            unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
         }
 
-        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto, ICoroutineService coroutineService) : base(dto)
+        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto,
+                                      ICoroutineService coroutineService,
+                                      IUnityMainThreadDispatcher unityMainThreadDispatcher) : base(dto)
         {
             this.coroutineService = coroutineService;
+            this.unityMainThreadDispatcher = unityMainThreadDispatcher;
         }
         #endregion DI
 
@@ -116,7 +121,7 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,
                 (n) =>
                 {
-                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                    unityMainThreadDispatcher.Enqueue(() =>
                     {
                         SetNode(dto.nodeId);
 
@@ -187,11 +192,7 @@ namespace umi3d.cdk
             animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
             IsPaused = false;
             trackingAnimationCoroutine ??= coroutineService.AttachCoroutine(TrackEnd());
-            UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() =>
-            {
-                if (trackingAnimationCoroutine is not null)
-                    coroutineService.DettachCoroutine(trackingAnimationCoroutine);
-            });
+            UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(StopTracking);
         }
 
         /// <summary>
@@ -243,6 +244,13 @@ namespace umi3d.cdk
                 yield return null;
 
             OnEnd();
+        }
+
+        private void StopTracking()
+        {
+            if (trackingAnimationCoroutine is not null)
+                coroutineService.DettachCoroutine(trackingAnimationCoroutine);
+            UMI3DClientServer.Instance.OnLeavingEnvironment.RemoveListener(StopTracking);
         }
 
         /// <inheritdoc/>
@@ -371,7 +379,7 @@ namespace umi3d.cdk
             if (animator == null)
                 return;
 
-            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            unityMainThreadDispatcher.Enqueue(() =>
             {
                 UMI3DAnimatorParameterType type = (UMI3DAnimatorParameterType)parameterDto.type;
 

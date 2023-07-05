@@ -97,7 +97,7 @@ namespace umi3d.cdk.userCapture.animation
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; // required for applying movements on your body when you're not looking at it
 
             // get skeleton mapper from model or create one
-            SkeletonMapper skeletonMapper = GetSkeletonMapper(skeletonNodeDto, animator);
+            ISkeletonMapper skeletonMapper = GetSkeletonMapper(skeletonNodeDto, animator);
             if (skeletonMapper == null) // failed infinding/adding skeletonMapper
             {
                 UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed.", DEBUG_SCOPE);
@@ -137,7 +137,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="skeletonNodeDto"></param>
         /// <param name="animator"></param>
         /// <returns></returns>
-        protected SkeletonMapper GetSkeletonMapper(SkeletonAnimationNodeDto skeletonNodeDto, Animator animator)
+        protected ISkeletonMapper GetSkeletonMapper(SkeletonAnimationNodeDto skeletonNodeDto, Animator animator)
         {
             // if the designer added a skeleton mapper, uses its links
             if (animator.gameObject.TryGetComponent(out SkeletonMapper skeletonMapper))
