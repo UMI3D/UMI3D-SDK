@@ -18,7 +18,6 @@ using System;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
-using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
@@ -41,10 +40,6 @@ namespace umi3d.cdk.userCapture
         public virtual Transform HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
 
         public virtual ulong UserId { get; set; }
-
-        protected Vector3LinearDelayedExtrapolator nodePositionExtrapolator = new();
-
-        protected QuaternionLinearDelayedExtrapolator nodeRotationExtrapolator = new();
 
         public TrackedSkeleton TrackedSkeleton;
         public PoseSkeleton PoseSkeleton = null;

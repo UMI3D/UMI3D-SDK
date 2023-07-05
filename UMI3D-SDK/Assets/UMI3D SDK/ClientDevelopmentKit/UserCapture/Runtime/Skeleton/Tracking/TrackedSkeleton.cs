@@ -112,6 +112,15 @@ namespace umi3d.cdk.userCapture.tracking
                 vc.rotation = bone.rotation.Quaternion();
 
                 types.Add(bone.boneType);
+
+                if (bones.TryGetValue(bone.boneType, out var boneTransform) && bone.boneType.Equals(BoneType.Head))
+                {
+                    boneTransform.transform.rotation = vc.rotation;
+                }
+                else
+                {
+                    // SETUP IK
+                }
             }
             foreach (var dc in controllers.Where(c => c is DistantController && !types.Contains(c.boneType)).ToList())
             {

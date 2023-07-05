@@ -14,16 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using NAudio.Wave;
-using System;
-using System.Collections;
-using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common.userCapture.tracking;
-using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
