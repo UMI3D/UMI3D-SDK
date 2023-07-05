@@ -127,6 +127,8 @@ namespace umi3d.cdk
                         }
 
                         animator = (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>();
+                        if (animator != null)
+                            animator.Rebind();
                     });
                 }
             );
