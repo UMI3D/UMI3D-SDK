@@ -16,11 +16,13 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections;
+
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
+using umi3d.common.utils;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation
@@ -35,7 +37,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <summary>
         /// Reference to the skeleton mapper that computes related links into a pose.
         /// </summary>
-        public virtual SkeletonMapper Mapper { get; protected set; }
+        public virtual ISkeletonMapper Mapper { get; protected set; }
 
         /// <summary>
         /// Priority level of the animated skeleton.
@@ -58,24 +60,32 @@ namespace umi3d.cdk.userCapture.animation
         /// </summary>
         private Coroutine updateParameterRoutine;
 
+        #region Dependency Injection
+
         private readonly ICoroutineService coroutineService;
+        private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public AnimatedSubskeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, uint[] selfUpdatedAnimatorParameters = null)
-        {
-            Mapper = mapper;
-            Priority = priority;
-            Animations = animations;
-            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters ?? new uint[0];
-            coroutineService = CoroutineManager.Instance;
-        }
-
-        public AnimatedSubskeleton(SkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, uint[] selfUpdatedAnimatorParameters, ICoroutineService coroutineService)
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, uint[] selfUpdatedAnimatorParameters,
+                                    ICoroutineService coroutineService, IUnityMainThreadDispatcher unityMainThreadDispatcher)
         {
             Mapper = mapper;
             Priority = priority;
             Animations = animations;
             SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters;
             this.coroutineService = coroutineService;
+            this.unityMainThreadDispatcher = unityMainThreadDispatcher;
+        }
+
+        #endregion Dependency Injection
+
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, uint[] selfUpdatedAnimatorParameters = null)
+        {
+            Mapper = mapper;
+            Priority = priority;
+            Animations = animations;
+            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters ?? new uint[0];
+            coroutineService = CoroutineManager.Instance;
+            unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
         }
 
         ///<inheritdoc/>
@@ -111,8 +121,12 @@ namespace umi3d.cdk.userCapture.animation
 
             if (SelfUpdatedAnimatorParameters.Length > 0)
             {
-                updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
-                UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(() => { if (updateParameterRoutine is not null) coroutineService.DettachCoroutine(updateParameterRoutine); });
+                // coroutine is modifying an animator and thus require to be put on main thread
+                unityMainThreadDispatcher.Enqueue(() =>
+                {
+                    updateParameterRoutine = coroutineService.AttachCoroutine(UpdateParametersRoutine(skeleton));
+                    UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(StopParameterSelfUpdate);
+                });
             }
         }
 
@@ -121,8 +135,13 @@ namespace umi3d.cdk.userCapture.animation
         /// </summary>
         public void StopParameterSelfUpdate()
         {
-            if (updateParameterRoutine is not null)
-                coroutineService.DettachCoroutine(updateParameterRoutine);
+            unityMainThreadDispatcher.Enqueue(() =>
+            {
+                if (updateParameterRoutine is not null)
+                    coroutineService.DettachCoroutine(updateParameterRoutine);
+
+                UMI3DClientServer.Instance.OnLeavingEnvironment.RemoveListener(StopParameterSelfUpdate);
+            });
         }
 
         /// <summary>
@@ -152,7 +171,6 @@ namespace umi3d.cdk.userCapture.animation
                         UpdateParameter(name, (uint)type, valueParameter);
                 }
                 previousPosition = skeleton.HipsAnchor.transform.position;
-
                 yield return null;
             }
         }

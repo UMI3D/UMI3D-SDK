@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration.emotes;
 using umi3d.edk.core;
@@ -44,12 +43,7 @@ namespace umi3d.edk.collaboration.emotes
         {
             get
             {
-                if (_animationId == null)
-                {
-                    if (id == default)
-                        Id();
-                    _animationId = new UMI3DAsyncProperty<ulong>(id, UMI3DPropertyKeys.AnimationEmote, 0L);
-                }
+                _animationId ??= new UMI3DAsyncProperty<ulong>(Id(), UMI3DPropertyKeys.AnimationEmote, default);
                 return _animationId;
             }
             private set => _animationId = value;
@@ -64,12 +58,7 @@ namespace umi3d.edk.collaboration.emotes
         {
             get
             {
-                if (_available == null)
-                {
-                    if (id == default)
-                        Id();
-                    _available = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.ActiveEmote, availableAtStart);
-                }
+                _available ??= new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.ActiveEmote, availableAtStart);
                 return _available;
             }
             private set => _available = value;
@@ -90,24 +79,6 @@ namespace umi3d.edk.collaboration.emotes
         [Header("Icon"), Tooltip("Icon illustrating the emote to be displayed on the client side.")]
         public UMI3DResource iconResource;
 
-        /// <summary>
-        /// True when the entity is registered into the environment
-        /// </summary>
-        [HideInInspector]
-        public bool registered = false;
-
-        /// <inheritdoc/>
-        public ulong Id()
-        {
-            if (!registered)
-            {
-                id = UMI3DEnvironment.Register(this);
-                _available = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.ActiveEmote, availableAtStart);
-                registered = true;
-            }
-            return id;
-        }
-
         #region UMI3DLoadableEntity
 
         #region Serialization
@@ -126,12 +97,6 @@ namespace umi3d.edk.collaboration.emotes
                 available = this.availableAtStart,
                 iconResource = this.iconResource.ToDto(),
             };
-        }
-
-        /// <inheritdoc/>
-        public Bytable ToBytes(UMI3DUser user)
-        {
-            return UMI3DSerializer.Write(ToEntityDto(user));
         }
 
         #endregion Serialization

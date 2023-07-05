@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
-    public class SkeletonMapper : MonoBehaviour
+    public class SkeletonMapper : MonoBehaviour, ISkeletonMapper
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
 

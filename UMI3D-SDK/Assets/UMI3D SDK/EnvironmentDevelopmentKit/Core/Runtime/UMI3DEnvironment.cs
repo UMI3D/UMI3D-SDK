@@ -473,6 +473,19 @@ namespace umi3d.edk
             }
         }
 
+        /// <summary>
+        /// Remove an entity from the scene by id. 
+        /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
+        /// </summary>
+        /// <param name="id">UMI3D id of the object to remove</param>
+        public void RemoveEntity(ulong id)
+        {
+            if (id != 0)
+            {
+                entities?.Remove(id);
+            }
+        }
+
         public class DictionaryGenerator<A>
         {
             private readonly HashSet<ulong> unRegisteredIds = new HashSet<ulong>();

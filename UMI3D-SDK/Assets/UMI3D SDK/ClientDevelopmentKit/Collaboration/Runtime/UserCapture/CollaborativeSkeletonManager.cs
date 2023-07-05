@@ -35,7 +35,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         CollaborativeSkeletonsScene collabScene { get; }
 
-        ISkeleton GetSkeletonById(ulong userId);
+        ISkeleton TryGetSkeletonById(ulong userId);
     }
 
     public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager, ICollaborativeSkeletonsManager
@@ -189,7 +189,7 @@ namespace umi3d.cdk.collaboration.userCapture
             return skeletons.Values.Where(x => x is CollaborativeSkeleton).Select(x => x as CollaborativeSkeleton).ToList();
         }
 
-        public ISkeleton GetSkeletonById(ulong userId)
+        public ISkeleton TryGetSkeletonById(ulong userId)
         {
             if (skeletons.ContainsKey(userId))
                 return skeletons[userId];

@@ -53,7 +53,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void TestInitLocalPose()
         {
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentLoaderServiceMock.Object, loadingManagerMock.Object);
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
 
             Assert.IsTrue(poseManager.localPoses.Length == userCaptureLoadingParameters.clientPoses.Count);
         }
@@ -61,7 +61,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void TestGetSetPose()
         {
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentLoaderServiceMock.Object, loadingManagerMock.Object);
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
             poseManager.SetPoses(PoseDictionary());
 
             Assert.IsTrue(poseManager.GetPose(0, 0).bones.Count == 2);

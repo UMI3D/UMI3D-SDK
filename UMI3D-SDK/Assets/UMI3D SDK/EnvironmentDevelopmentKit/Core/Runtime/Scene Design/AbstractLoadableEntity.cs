@@ -33,19 +33,43 @@ namespace umi3d.edk.core
 
         #region Dependencies Injection
 
-        private readonly UMI3DServer umi3dServerService;
-        private readonly UMI3DEnvironment umi3dEnvironmentService;
+        protected IUMI3DServer UMI3DServerService
+        {
+            get
+            {
+                _umi3dServerService ??= UMI3DServer.Instance;
+                return _umi3dServerService;
+            }
+            private set
+            {
+                _umi3dServerService = value;
+            }
+        }
+        private IUMI3DServer _umi3dServerService;
+
+        protected IUMI3DEnvironmentManager UMI3DEnvironmentService
+        {
+            get
+            {
+                _umi3dEnvironmentService ??= UMI3DEnvironment.Instance;
+                return _umi3dEnvironmentService;
+            }
+            private set
+            {
+                _umi3dEnvironmentService = value;
+            }
+        }
+        private IUMI3DEnvironmentManager _umi3dEnvironmentService;
 
         public AbstractLoadableEntity()
         {
-            umi3dServerService = UMI3DServer.Instance;
-            umi3dEnvironmentService = UMI3DEnvironment.Instance;
+            // lazy initialilisation of services because singlebahviour cannot be instanciated during serialization time (e.g. UMI3DEmotes)
         }
 
-        protected AbstractLoadableEntity(UMI3DServer umi3dServerService, UMI3DEnvironment umi3dEnvironmentService)
+        protected AbstractLoadableEntity(IUMI3DServer umi3dServerService, IUMI3DEnvironmentManager umi3dEnvironmentService)
         {
-            this.umi3dServerService = umi3dServerService;
-            this.umi3dEnvironmentService = umi3dEnvironmentService;
+            this.UMI3DServerService = umi3dServerService;
+            this.UMI3DEnvironmentService = umi3dEnvironmentService;
         }
 
         #endregion Dependencies Injection
@@ -54,7 +78,7 @@ namespace umi3d.edk.core
         {
             if (!registered)
             {
-                id = umi3dEnvironmentService.RegisterEntity(this);
+                id = UMI3DEnvironmentService.RegisterEntity(this);
                 registered = true;
             }
             return id;
@@ -84,7 +108,7 @@ namespace umi3d.edk.core
             var operation = new LoadEntity()
             {
                 entities = new List<UMI3DLoadableEntity>() { this },
-                users = users != null ? new HashSet<UMI3DUser>(users) : umi3dServerService.UserSetWhenHasJoined()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServerService.UserSetWhenHasJoined()
             };
 
             return operation;
@@ -96,7 +120,7 @@ namespace umi3d.edk.core
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = users != null ? new HashSet<UMI3DUser>(users) : umi3dServerService.UserSet()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServerService.UserSet()
             };
             return operation;
         }

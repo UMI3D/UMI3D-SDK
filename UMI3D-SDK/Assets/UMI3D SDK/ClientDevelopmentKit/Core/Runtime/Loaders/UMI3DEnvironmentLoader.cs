@@ -156,7 +156,7 @@ namespace umi3d.cdk
             while (!finished)
                 await UMI3DAsyncManager.Yield(tokens);
             if (error)
-                throw new Umi3dException("Entity Failed to be loaded");
+                throw new Umi3dException($"Failed to load entity. Entity id: {id}.");
 
             return loaded;
         }
