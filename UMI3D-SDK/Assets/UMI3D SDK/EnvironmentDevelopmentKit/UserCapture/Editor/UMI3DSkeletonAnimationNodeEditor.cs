@@ -27,7 +27,8 @@ namespace umi3d.edk.userCapture.animation.editor
         private SerializedProperty animationsStates;
         private SerializedProperty relatedAnimationIds;
         private SerializedProperty priority;
-        private SerializedProperty animatorSelfTrackedParameters;
+
+        private UMI3DSkeletonAnimationNode targetObject;
 
         protected override void OnEnable()
         {
@@ -35,12 +36,14 @@ namespace umi3d.edk.userCapture.animation.editor
             animationsStates = serializedObject.FindProperty("animationStates");
             relatedAnimationIds = serializedObject.FindProperty("relatedAnimationIds");
             priority = serializedObject.FindProperty("priority");
-            animatorSelfTrackedParameters = serializedObject.FindProperty("animatorSelfTrackedParameters");
         }
 
         public override void OnInspectorGUI()
         {
             base.OnInspectorGUI();
+
+            targetObject ??= target as UMI3DSkeletonAnimationNode;
+
             EditorGUI.BeginChangeCheck();
 
             serializedObject.Update();
@@ -48,8 +51,26 @@ namespace umi3d.edk.userCapture.animation.editor
             EditorGUILayout.PropertyField(relatedAnimationIds);
             EditorGUILayout.PropertyField(priority);
             EditorGUILayout.LabelField("Animator self-tracked parameters:");
-            for (int i = 0; i < animatorSelfTrackedParameters.arraySize; i++)
-                EditorGUILayout.LabelField($"- {animatorSelfTrackedParameters.GetArrayElementAtIndex(i)}");
+
+            if (targetObject != null)
+            {
+                foreach (var parameter in targetObject.animatorSelfTrackedParameters)
+                {
+                    EditorGUILayout.LabelField($"- {(SkeletonAnimatorParameterKeys)parameter.parameterKey}");
+                    EditorGUILayout.LabelField($"  Ranges:");
+                    if (parameter.ranges.Count > 0)
+                    {
+                        foreach (var range in parameter.ranges)
+                        {
+                            EditorGUILayout.LabelField($"   - [{range.startBound};{range.endBound} -> {(range.rawValue ? "Raw" : range.result)}");
+                        }
+                    }
+                    else
+                    {
+                        EditorGUILayout.LabelField($"   None");
+                    }
+                }
+            }
 
             serializedObject.ApplyModifiedProperties();
         }
