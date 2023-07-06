@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using UnityEngine;
@@ -59,7 +60,7 @@ namespace umi3d.edk.userCapture.animation
         /// List of parameters that are updated by the browsers themselves based on skeleton movement.
         /// </summary>
         /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public uint[] animatorSelfTrackedParameters = new uint[0];
+        public SkeletonAnimationParameter[] animatorSelfTrackedParameters = new SkeletonAnimationParameter[0];
 
         public bool AreAnimationsGenerated => relatedAnimationIds.Length > 0;
 
@@ -110,7 +111,7 @@ namespace umi3d.edk.userCapture.animation
                 animation.objectPlaying.SetValue(arePlaying);
                 foreach (var parameter in animatorSelfTrackedParameters)
                 {
-                    animation.objectParameters.Add(((SkeletonAnimatorParameterKeys)parameter).ToString(), 0f);
+                    animation.objectParameters.Add(((SkeletonAnimatorParameterKeys)parameter.parameterKey).ToString(), 0f);
                 }
                 animation.objectStateName.SetValue(animationState);
 
@@ -134,7 +135,7 @@ namespace umi3d.edk.userCapture.animation
             skeletonNodeDto.userId = userId;
             skeletonNodeDto.relatedAnimationsId = relatedAnimationIds;
             skeletonNodeDto.priority = priority;
-            skeletonNodeDto.animatorSelfTrackedParameters = animatorSelfTrackedParameters;
+            skeletonNodeDto.animatorSelfTrackedParameters = animatorSelfTrackedParameters.Select(x=>x.ToDto()).ToArray();
         }
 
         public override Bytable ToBytes(UMI3DUser user)
@@ -143,7 +144,7 @@ namespace umi3d.edk.userCapture.animation
                     + UMI3DSerializer.Write(userId)
                     + UMI3DSerializer.Write(priority)
                     + UMI3DSerializer.WriteCollection(relatedAnimationIds)
-                    + UMI3DSerializer.WriteCollection(animatorSelfTrackedParameters);
+                    + UMI3DSerializer.WriteCollection(animatorSelfTrackedParameters); //TODO : Add serializer for parameter
         }
 
         public void OnDestroy()

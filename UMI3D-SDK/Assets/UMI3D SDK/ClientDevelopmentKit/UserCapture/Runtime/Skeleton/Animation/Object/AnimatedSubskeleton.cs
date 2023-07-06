@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
@@ -53,7 +54,72 @@ namespace umi3d.cdk.userCapture.animation
         /// Parameters required by the animator that are updated by the browser itself.
         /// </summary>
         /// The key correspond to a key in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public virtual uint[] SelfUpdatedAnimatorParameters { get; protected set; }
+        public virtual SkeletonAnimationParameter[] SelfUpdatedAnimatorParameters { get; protected set; }
+
+        public class SkeletonAnimationParameter
+        {
+            public SkeletonAnimationParameter(SkeletonAnimationParameterDto dto)
+            {
+                parameterKey = dto.parameterKey;
+                ranges = dto.ranges?.Select(dtoRange => new Range()
+                {
+                    startBound = dtoRange.startBound,
+                    endBound = dtoRange.endBound,
+                    rawValue = dtoRange.rawValue,
+                    result = dtoRange.result
+                }).ToArray() ?? new Range[0];
+            }
+
+            public uint parameterKey;
+
+            public Range[] ranges;
+
+            public struct Range
+            {
+                public float startBound;
+                public float endBound;
+                public float result;
+                public bool rawValue;
+            }
+
+            #region Optimization
+
+            public float MinRange
+            {
+                get
+                {
+                    if (!hasLookedForMinRange)
+                    {
+                        _minRange = ranges.Select(x => x.startBound).Min();
+                        hasLookedForMinRange = true;
+                    }
+
+                    return _minRange;
+                }
+            }
+
+            private float _minRange;
+            private bool hasLookedForMinRange;
+
+            public float MaxRange
+            {
+                get
+                {
+                    if (!hasLookedForMaxRange)
+                    {
+                        _maxRange = ranges.Select(x => x.endBound).Max();
+                        hasLookedForMaxRange = true;
+                    }
+
+                    return _maxRange;
+                }
+            }
+
+            private float _maxRange;
+            private bool hasLookedForMaxRange;
+
+            #endregion Optimization
+        }
 
         /// <summary>
         /// Cached coroutine of parameters self update.
@@ -65,25 +131,27 @@ namespace umi3d.cdk.userCapture.animation
         private readonly ICoroutineService coroutineService;
         private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, uint[] selfUpdatedAnimatorParameters,
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters,
                                     ICoroutineService coroutineService, IUnityMainThreadDispatcher unityMainThreadDispatcher)
         {
             Mapper = mapper;
             Priority = priority;
             Animations = animations;
-            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters;
+            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToArray()
+                                                ?? new SkeletonAnimationParameter[0];
             this.coroutineService = coroutineService;
             this.unityMainThreadDispatcher = unityMainThreadDispatcher;
         }
 
         #endregion Dependency Injection
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, uint[] selfUpdatedAnimatorParameters = null)
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters = null)
         {
             Mapper = mapper;
             Priority = priority;
             Animations = animations;
-            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters ?? new uint[0];
+            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToArray()
+                                                ?? new SkeletonAnimationParameter[0];
             coroutineService = CoroutineManager.Instance;
             unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
         }
@@ -158,7 +226,7 @@ namespace umi3d.cdk.userCapture.animation
             {
                 foreach (var parameter in SelfUpdatedAnimatorParameters)
                 {
-                    (string name, UMI3DAnimatorParameterType typeKey, float valueParameter) = parameter switch
+                    (string name, UMI3DAnimatorParameterType typeKey, float valueParameter) = parameter.parameterKey switch
                     {
                         (uint)SkeletonAnimatorParameterKeys.SPEED => ("SPEED", UMI3DAnimatorParameterType.Float, (skeleton.HipsAnchor.transform.position - previousPosition).magnitude / Time.deltaTime),
                         (uint)SkeletonAnimatorParameterKeys.SPEED_X => ("SPEED_X", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.transform.position.x - previousPosition.x) / Time.deltaTime),
@@ -168,17 +236,46 @@ namespace umi3d.cdk.userCapture.animation
                         _ => default
                     };
 
+                    bool inited = previousValues.TryGetValue(parameter.parameterKey, out float previousValue);
                     if (name != default
-                            && (!previousValues.TryGetValue(parameter, out float previousValue) || IsChangeSignificant(previousValue, valueParameter)))
+                                && (!inited || IsChangeSignificant(previousValue, valueParameter)))
                     {
-                        UpdateParameter(name, (uint)typeKey, valueParameter);
-                        previousValues[parameter] = valueParameter;
+                        if (parameter.ranges.Length > 0)
+                        {
+                            valueParameter = ApplyRanges(parameter, valueParameter);
+                        }
+
+                        if (!inited || valueParameter != previousValues[parameter.parameterKey])
+                        {
+                            UpdateParameter(name, (uint)typeKey, valueParameter);
+                            previousValues[parameter.parameterKey] = valueParameter;
+                        }
                     }
                 }
                 previousPosition = skeleton.HipsAnchor.transform.position;
 
                 yield return null;
             }
+        }
+
+        private float ApplyRanges(SkeletonAnimationParameter parameter, float value)
+        {
+            if (value < parameter.MinRange)
+                return parameter.MinRange;
+
+            if (value > parameter.MaxRange)
+                return parameter.MaxRange;
+
+            foreach (var range in parameter.ranges)
+            {
+                if (range.startBound <= value && value <= range.endBound)
+                {
+                    if (!range.rawValue)
+                        value = range.result;
+                    return value;
+                }
+            }
+            return value;
         }
 
         private bool IsChangeSignificant(float previousValue, float newValue, float threshold = 0.05f)

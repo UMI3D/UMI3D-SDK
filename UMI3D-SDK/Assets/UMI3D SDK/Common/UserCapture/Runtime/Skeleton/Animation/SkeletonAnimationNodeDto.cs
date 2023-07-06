@@ -42,6 +42,6 @@ namespace umi3d.common.userCapture.animation
         /// List of parameters that are updated by the browsers themselves based on skeleton movement.
         /// </summary>
         /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public uint[] animatorSelfTrackedParameters;
+        public SkeletonAnimationParameterDto[] animatorSelfTrackedParameters;
     }
 }

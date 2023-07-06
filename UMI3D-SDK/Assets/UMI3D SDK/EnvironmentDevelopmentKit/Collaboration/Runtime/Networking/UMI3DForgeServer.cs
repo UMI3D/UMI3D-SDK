@@ -426,6 +426,9 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
+            if (!UMI3DCollaborationServer.Exists)
+                return;
+
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null) return;
 
