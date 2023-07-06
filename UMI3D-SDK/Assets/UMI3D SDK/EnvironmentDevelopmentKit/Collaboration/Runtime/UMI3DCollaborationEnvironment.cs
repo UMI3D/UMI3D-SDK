@@ -28,10 +28,6 @@ namespace umi3d.edk.collaboration
     public class UMI3DCollaborationEnvironment : UMI3DEnvironment
     {
         private IUMI3DPoseManager poseManagerService;
-        private void Start()
-        {
-            poseManagerService = UMI3DPoseManager.Instance;
-        }
 
         /// <inheritdoc/>
         protected override UMI3DEnvironmentDto CreateDto()
@@ -47,6 +43,7 @@ namespace umi3d.edk.collaboration
             {
                 dto.userList = UMI3DCollaborationServer.Collaboration.ToDto(user);
 
+                if (poseManagerService == null) poseManagerService = UMI3DPoseManager.Instance;
                 dto.allPoses = poseManagerService.AllPoses;
                 dto.allPoseOverriderContainer = poseManagerService.AllPoseOverriderContainer;
             }

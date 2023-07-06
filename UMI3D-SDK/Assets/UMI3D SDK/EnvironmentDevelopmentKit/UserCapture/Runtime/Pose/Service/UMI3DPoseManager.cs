@@ -58,6 +58,9 @@ namespace umi3d.edk.userCapture.pose
             allPoses.Add(userId, poseDtos);
         }
 
+        /// <summary>
+        /// Inits all the poses and pose overriders to make them ready for dto server-client exchanges
+        /// </summary>
         private void Init()
         {
             if (posesInitialized == false)
@@ -69,6 +72,9 @@ namespace umi3d.edk.userCapture.pose
             }
         }
 
+        /// <summary>
+        /// Take pose in scriptables object format and put them in posedto format
+        /// </summary>
         private void ServerPoseInit()
         {
             List<UMI3DPose_so> allServerPoses = poseContainerService.GetAllServerPoses();
@@ -84,6 +90,9 @@ namespace umi3d.edk.userCapture.pose
             allPoses.Add(0, poses);
         }
 
+        /// <summary>
+        /// Take pose overriders fields to generate all the needed pose overriders containers 
+        /// </summary>
         private void PoseOverrider_Init()
         {
             List<OverriderContainerField> overriderContainerFields = poseOverriderContainerService.GetAllPoseOverriders();
