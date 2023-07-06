@@ -49,7 +49,7 @@ namespace umi3d.edk.userCapture.animation.editor
             EditorGUILayout.PropertyField(priority);
             EditorGUILayout.LabelField("Animator self-tracked parameters:");
             for (int i = 0; i < animatorSelfTrackedParameters.arraySize; i++)
-                EditorGUILayout.LabelField($"- {(SkeletonAnimatorParameterKeys)animatorSelfTrackedParameters.GetArrayElementAtIndex(i).intValue}");
+                EditorGUILayout.LabelField($"- {animatorSelfTrackedParameters.GetArrayElementAtIndex(i)}");
 
             serializedObject.ApplyModifiedProperties();
         }
