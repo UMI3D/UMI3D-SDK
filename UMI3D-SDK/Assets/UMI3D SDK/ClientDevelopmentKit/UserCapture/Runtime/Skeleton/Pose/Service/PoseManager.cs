@@ -71,11 +71,13 @@ namespace umi3d.cdk.userCapture.pose
             }
         }
 
+        /// <inheritdoc/>
         public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
         {
             this.allPoses = allPoses;
         }
 
+        /// <inheritdoc/>
         public PoseDto GetPose(ulong key, int index)
         {
             List<PoseDto> poses = allPoses[key];

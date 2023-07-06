@@ -21,6 +21,12 @@ namespace umi3d.cdk.userCapture.pose
 {
     public interface IPoseManager
     {
+        /// <summary>
+        /// Gets a specific pose based on an userid (0 for environment) and its id.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="index"></param>
+        /// <returns></returns>
         PoseDto GetPose(ulong key, int index);
 
         /// <summary>

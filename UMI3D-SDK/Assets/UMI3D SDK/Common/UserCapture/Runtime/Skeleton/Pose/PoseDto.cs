@@ -42,6 +42,7 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         public List<BoneDto> bones { get; set; }
 
+
         public void SetBonePoseDtoArray(List<BoneDto> bones)
         {
             this.bones = bones;

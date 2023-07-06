@@ -35,13 +35,13 @@ namespace umi3d.common.userCapture.pose
         public List<Bone> BoneDtos { get => bones; }
         public BonePose BonePoseDto { get => bonePose; }
 
+        public int poseRef { get; set; }
+
         /// <summary>
-        /// An event thats called when the PoseManager has played his Start() method
+        /// Stores the data inside the scriptable object
         /// </summary>
-        public event Action<UMI3DPose_so, int> onPoseReferencedAndIndexSetted;
-
-        public int poseRef { get; private set; }
-
+        /// <param name="bones"></param>
+        /// <param name="bonePoseDto"></param>
         public void Init(List<BoneDto> bones, BonePoseDto bonePoseDto)
         {
             bones.ForEach(bp =>
@@ -59,12 +59,6 @@ namespace umi3d.common.userCapture.pose
                 position = new float3() { x = bonePoseDto.Position.X, y = bonePoseDto.Position.Y, z = bonePoseDto.Position.Z },
                 rotation = new p_Quat() { x = bonePoseDto.Rotation.X, y = bonePoseDto.Rotation.Y, z = bonePoseDto.Rotation.Z, w = bonePoseDto.Rotation.W }
             };
-        }
-
-        public void SendPoseIndexationEvent(int i)
-        {
-            poseRef = i;
-            onPoseReferencedAndIndexSetted?.Invoke(this, i);
         }
 
         /// <summary>

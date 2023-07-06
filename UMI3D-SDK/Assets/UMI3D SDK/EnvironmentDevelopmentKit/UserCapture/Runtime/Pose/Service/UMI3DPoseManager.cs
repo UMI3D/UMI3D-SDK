@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using umi3d.common.userCapture.pose;
 
@@ -44,11 +45,6 @@ namespace umi3d.edk.userCapture.pose
         public Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
 
-        public void UpdateAlPoseOverriders(UMI3DPoseOverriderContainerDto allPoseOverriderContainer)
-        {
-            this.allPoseOverriderContainer.Find(a => a.id == allPoseOverriderContainer.id).poseOverriderDtos = allPoseOverriderContainer.poseOverriderDtos;
-        }
-
         public List<UMI3DPoseOverriderContainerDto> GetOverriders()
         {
             return allPoseOverriderContainer;
@@ -56,30 +52,42 @@ namespace umi3d.edk.userCapture.pose
 
         public void Init()
         {
-            List<UMI3DPose_so> allServerPoses = poseContainerService.GetAllServerPoses();
             if (posesInitialized == false)
             {
                 posesInitialized = true;
-                List<PoseDto> poses = new List<PoseDto>();
-                for (int i = 0; i < allServerPoses.Count; i++)
-                {
-                    allServerPoses[i].SendPoseIndexationEvent(i);
-                    PoseDto poseDto = allServerPoses[i].ToDTO();
-                    poseDto.id = i;
-                    poses.Add(poseDto);
-                }
 
-                allPoses.Add(0, poses);
-                InitEachPoseAnimationWithPoseOverriderContainer();
+                ServerPoseInit();
+                PoseOverrider_Init();
             }
         }
 
-        private void InitEachPoseAnimationWithPoseOverriderContainer()
+        public void SetNewUserPose(ulong userId, List<PoseDto> poseDtos)
+        {
+            allPoses.Add(userId, poseDtos);
+        }
+
+        private void ServerPoseInit()
+        {
+            List<UMI3DPose_so> allServerPoses = poseContainerService.GetAllServerPoses();
+            List<PoseDto> poses = new List<PoseDto>();
+            for (int i = 0; i < allServerPoses.Count; i++)
+            {
+                PoseDto poseDto = allServerPoses[i].ToDTO();
+                poseDto.id = i;
+                allServerPoses[i].poseRef = poseDto.id;
+                poses.Add(poseDto);
+            }
+
+            allPoses.Add(0, poses);
+        }
+
+        private void PoseOverrider_Init()
         {
             List<OverriderContainerField> overriderContainerFields = poseOverriderContainerService.GetAllPoseOverriders();
             for (int i = 0; i < overriderContainerFields.Count; i++)
             {
                 overriderContainerFields[i].PoseOverriderContainer.Id();
+
                 if (overriderContainerFields[i].uMI3DModel.GetComponent<UMI3DPoseOverriderAnimation>() == null)
                 {
                     overriderContainerFields[i].uMI3DModel.gameObject.AddComponent<UMI3DPoseOverriderAnimation>()
@@ -89,11 +97,6 @@ namespace umi3d.edk.userCapture.pose
                 overriderContainerFields[i].SetNode();
                 allPoseOverriderContainer.Add(overriderContainerFields[i].PoseOverriderContainer.ToDto());
             }
-        }
-
-        public void InitNewUserPoses(ulong userId, List<PoseDto> poseDtos)
-        {
-            allPoses.Add(userId, poseDtos);
         }
     }
 }

@@ -99,14 +99,6 @@ namespace umi3d.edk.userCapture.pose
         {
             if (poseOverridersDtos == null) poseOverridersDtos = new List<PoseOverriderDto>();
             poseOverridersDtos.Clear();
-            poseOverriders.ForEach(po =>
-            {
-                po.pose.onPoseReferencedAndIndexSetted += (pose, indexInPoseManager) =>
-                {
-                    InitDefinition(id);
-                    UMI3DPoseManager.Instance.UpdateAlPoseOverriders(ToDto());
-                };
-            });
 
             poseOverriderDtoAsyncList = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ActivePoseOverrider, poseOverridersDtos);
         }
