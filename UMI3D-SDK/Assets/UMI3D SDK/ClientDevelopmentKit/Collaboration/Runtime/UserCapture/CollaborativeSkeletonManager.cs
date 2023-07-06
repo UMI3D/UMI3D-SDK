@@ -111,9 +111,9 @@ namespace umi3d.cdk.collaboration.userCapture
         public void Init()
         {
             UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += () => UpdateSkeletons(collaborativeLoaderService.UserList);
-            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); SetTrackingSending(ShouldSendTracking); canClearSkeletons = true; });
-            UMI3DCollaborationClientServer.Instance.OnLeavingEnvironment.AddListener(Clear);
-            UMI3DCollaborationClientServer.Instance.OnRedirection.AddListener(Clear);
+            collaborativeLoaderService.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); SetTrackingSending(ShouldSendTracking); canClearSkeletons = true; });
+            collaborationClientServerService.OnLeavingEnvironment.AddListener(Clear);
+            collaborationClientServerService.OnRedirection.AddListener(Clear);
         }
 
         public void Clear()
@@ -130,14 +130,14 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public void InitSkeletons()
         {
-            skeletons[collaborationClientServerService.GetUserId()] = personalSkeleton;
-            personalSkeleton.UserId = UMI3DClientServer.Instance.GetUserId();
+            personalSkeleton.UserId = collaborationClientServerService.GetUserId();
+            skeletons[personalSkeleton.UserId] = personalSkeleton;
         }
 
         protected void UpdateSkeletons(List<UMI3DUser> usersList)
         {
             List<ulong> readyUserIdList = usersList.Where(u => u.status >= StatusType.READY).Select(u => u.id).ToList();
-            readyUserIdList.Remove(UMI3DClientServer.Instance.GetUserId());
+            readyUserIdList.Remove(collaborationClientServerService.GetUserId());
 
             var joinnedUsersId = readyUserIdList.Except(skeletons.Keys).ToList();
             var deletedUsersId = skeletons.Keys.Except(readyUserIdList).ToList();
@@ -153,10 +153,10 @@ namespace umi3d.cdk.collaboration.userCapture
 
             foreach (var userId in joinnedUsersId)
             {
-                if (userId != UMI3DClientServer.Instance.GetUserId())
+                if (userId != collaborationClientServerService.GetUserId())
                 {
                     skeletons[userId] = CreateSkeleton(userId, collabScene.transform, StandardHierarchy);
-                    computeCoroutine ??= CoroutineManager.Instance.AttachLateRoutine(ComputeCoroutine());
+                    computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
                     CollaborativeSkeletonCreated?.Invoke(userId);
                 }
             }
@@ -233,11 +233,12 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             while (skeletons.Count > 1)
             {
-                foreach (var skeleton in skeletons)
+                foreach (var skeletonPair in skeletons)
                 {
-                    if (skeleton.Key != personalSkeleton.UserId)
+                    var skeleton = skeletonPair.Value;
+                    if (skeleton.UserId != personalSkeleton.UserId)
                     {
-                        skeleton.Value.Compute();
+                        skeleton.Compute();
                     }
                 }
                 yield return null;
