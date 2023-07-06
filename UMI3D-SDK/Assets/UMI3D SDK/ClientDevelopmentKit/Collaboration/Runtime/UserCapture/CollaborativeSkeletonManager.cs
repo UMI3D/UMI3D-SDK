@@ -45,7 +45,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
 
-        public virtual PersonalSkeleton personalSkeleton => personnalSkeletonManager.personalSkeleton;
+        public virtual PersonalSkeleton personalSkeleton => personalSkeletonManager.personalSkeleton;
 
         public virtual CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
@@ -78,23 +78,29 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Dependency Injection
 
-        private UMI3DCollaborationClientServer collaborationClientServerService;
-        private UMI3DCollaborationEnvironmentLoader collaborativeLoaderService;
-        private readonly PersonalSkeletonManager personnalSkeletonManager;
+        private readonly IUMI3DCollaborationClientServer collaborationClientServerService;
+        private readonly UMI3DCollaborationEnvironmentLoader collaborativeLoaderService;
+        private readonly ILateRoutineService routineService;
+        private readonly ISkeletonManager personalSkeletonManager;
 
         public CollaborativeSkeletonManager() : base()
         {
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
-            personnalSkeletonManager = PersonalSkeletonManager.Instance;
+            routineService = CoroutineManager.Instance;
+            personalSkeletonManager = PersonalSkeletonManager.Instance;
             Init();
         }
 
-        public CollaborativeSkeletonManager(UMI3DCollaborationClientServer collaborationClientServer, UMI3DCollaborationEnvironmentLoader collaborativeLoader) : base()
+        public CollaborativeSkeletonManager(IUMI3DCollaborationClientServer collaborationClientServer,
+                                            UMI3DCollaborationEnvironmentLoader collaborativeLoader,
+                                            ISkeletonManager personalSkeletonManager,
+                                            ILateRoutineService routineService) : base()
         {
             this.collaborationClientServerService = collaborationClientServer;
             this.collaborativeLoaderService = collaborativeLoader;
-            personnalSkeletonManager = PersonalSkeletonManager.Instance;
+            this.personalSkeletonManager = personalSkeletonManager;
+            this.routineService = routineService;
             Init();
         }
 
@@ -119,7 +125,7 @@ namespace umi3d.cdk.collaboration.userCapture
             }
 
             if (computeCoroutine != null)
-                CoroutineManager.Instance.DettachLateRoutine(computeCoroutine);
+                routineService.DettachLateRoutine(computeCoroutine);
         }
 
         public void InitSkeletons()
@@ -150,6 +156,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 if (userId != UMI3DClientServer.Instance.GetUserId())
                 {
                     skeletons[userId] = CreateSkeleton(userId, collabScene.transform, StandardHierarchy);
+                    computeCoroutine ??= CoroutineManager.Instance.AttachLateRoutine(ComputeCoroutine());
                     CollaborativeSkeletonCreated?.Invoke(userId);
                 }
             }
@@ -173,8 +180,6 @@ namespace umi3d.cdk.collaboration.userCapture
                 else
                     cs.Bones[bone] = new ISkeleton.s_Transform() { s_Rotation = Quaternion.identity };
             }
-
-            computeCoroutine ??= CoroutineManager.Instance.AttachLateRoutine(ComputeCoroutine());
 
             return cs;
         }
@@ -237,6 +242,8 @@ namespace umi3d.cdk.collaboration.userCapture
                 }
                 yield return null;
             }
+            routineService.DettachLateRoutine(computeCoroutine);
+            computeCoroutine = null;
         }
 
         public UserCameraPropertiesDto GetCameraProperty()
@@ -249,7 +256,7 @@ namespace umi3d.cdk.collaboration.userCapture
             if (sendTrackingLoopOnce)
                 return;
             sendTrackingLoopOnce = true;
-            while (Exists && ShouldSendTracking && UMI3DCollaborationClientServer.Instance.status != StatusType.NONE)
+            while (ShouldSendTracking && collaborationClientServerService.status != StatusType.NONE)
             {
                 if (targetTrackingFPS > 0)
                 {
@@ -257,7 +264,7 @@ namespace umi3d.cdk.collaboration.userCapture
                     {
                         var frame = GetFrame();
 
-                        if (frame != null && UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
+                        if (frame != null && collaborationClientServerService.GetUserId() != 0)
                             UMI3DClientServer.SendTracking(frame);
 
                         //Camera properties are not sent
@@ -279,7 +286,7 @@ namespace umi3d.cdk.collaboration.userCapture
             if (sendTrackingLoopOnce)
                 return;
 
-            while (Exists && ShouldSendTracking && personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
+            while (ShouldSendTracking && personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
             {
                 if (personalSkeleton.BonesAsyncFPS[boneType] > 0)
                 {
@@ -291,7 +298,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
                             if (boneData != null)
                             {
-                                boneData.userId = UMI3DCollaborationClientServer.Instance.GetUserId();
+                                boneData.userId = collaborationClientServerService.GetUserId();
                                 UMI3DClientServer.SendTracking(boneData);
                             }
                         }
