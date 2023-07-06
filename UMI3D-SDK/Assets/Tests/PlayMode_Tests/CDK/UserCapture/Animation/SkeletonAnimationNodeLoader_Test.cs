@@ -166,7 +166,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
                 userId = 1008uL,
                 pid = 0,
                 active = true,
-                animatorSelfTrackedParameters = new uint[0],
+                animatorSelfTrackedParameters = new SkeletonAnimationParameterDto[0],
                 mesh = new ResourceDto()
             };
 
