@@ -156,7 +156,6 @@ namespace umi3d.cdk.collaboration.userCapture
                 if (userId != collaborationClientServerService.GetUserId())
                 {
                     skeletons[userId] = CreateSkeleton(userId, collabScene.transform, StandardHierarchy);
-                    computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
                     CollaborativeSkeletonCreated?.Invoke(userId);
                 }
             }
@@ -214,6 +213,7 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             foreach (var frame in frames)
                 UpdateFrame(frame);
+            computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
         }
 
         public void UpdateFrame(UserTrackingFrameDto frame)
