@@ -21,7 +21,7 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
 {
-    public class UMI3DPoseManager : Singleton<UMI3DPoseManager>
+    public class UMI3DPoseManager : Singleton<UMI3DPoseManager>, IUMI3DPoseManager
     {
         private readonly IPoseContainer poseContainerService;
         private readonly IPoseOverriderFieldContainer poseOverriderContainerService;
@@ -45,12 +45,20 @@ namespace umi3d.edk.userCapture.pose
         public Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
 
-        public List<UMI3DPoseOverriderContainerDto> GetOverriders()
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public Dictionary<ulong, List<PoseDto>> AllPoses {get => allPoses;} 
+        /// <inheritdoc/>
+        public List<UMI3DPoseOverriderContainerDto> AllPoseOverriderContainer { get => allPoseOverriderContainer; }
+
+        /// <inheritdoc/>
+        public void SetNewUserPose(ulong userId, List<PoseDto> poseDtos)
         {
-            return allPoseOverriderContainer;
+            allPoses.Add(userId, poseDtos);
         }
 
-        public void Init()
+        private void Init()
         {
             if (posesInitialized == false)
             {
@@ -59,11 +67,6 @@ namespace umi3d.edk.userCapture.pose
                 ServerPoseInit();
                 PoseOverrider_Init();
             }
-        }
-
-        public void SetNewUserPose(ulong userId, List<PoseDto> poseDtos)
-        {
-            allPoses.Add(userId, poseDtos);
         }
 
         private void ServerPoseInit()

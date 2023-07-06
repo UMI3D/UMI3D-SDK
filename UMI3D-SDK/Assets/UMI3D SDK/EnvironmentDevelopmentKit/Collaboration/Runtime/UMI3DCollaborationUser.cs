@@ -35,6 +35,7 @@ namespace umi3d.edk.collaboration
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
 
         private RegisterIdentityDto identityDto;
+        private IUMI3DPoseManager poseManagerService;
 
         /// <inheritdoc/>
         protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }
@@ -197,8 +198,8 @@ namespace umi3d.edk.collaboration
                 else
                     this.userSize.SetValue(userSize);
             }
-
-            UMI3DPoseManager.Instance.SetNewUserPose(userId, userPoses.ToList());
+            if (poseManagerService == null) poseManagerService = UMI3DPoseManager.Instance;
+            poseManagerService.SetNewUserPose(userId, userPoses.ToList());
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
