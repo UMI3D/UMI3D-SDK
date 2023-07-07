@@ -35,25 +35,25 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
     [TestFixture, TestOf(typeof(SkeletonAnimationNodeLoader))]
     public class SkeletonAnimationNodeLoader_Test
     {
-        private SkeletonAnimationNodeLoader skeletonAnimationNodeLoader;
+        protected SkeletonAnimationNodeLoader skeletonAnimationNodeLoader;
 
-        private Mock<IEnvironmentManager> environmentManagerMock;
-        private Mock<ILoadingManager> loadingManagerMock;
-        private Mock<IUMI3DResourcesManager> resourcesManagerMock;
-        private Mock<ICoroutineService> coroutineManagerMock;
-        private Mock<ISkeletonManager> personnalSkeletonServiceMock;
-        private Mock<IUMI3DClientServer> clientServerMock;
-        private GameObject personalSkeletonGo;
-        private PersonalSkeleton personalSkeleton;
-        private GameObject skeletonNodeGo;
-        private Animator animator;
+        protected Mock<IEnvironmentManager> environmentManagerMock;
+        protected Mock<ILoadingManager> loadingManagerMock;
+        protected Mock<IUMI3DResourcesManager> resourcesManagerMock;
+        protected Mock<ICoroutineService> coroutineManagerMock;
+        protected Mock<ISkeletonManager> personnalSkeletonServiceMock;
+        protected Mock<IUMI3DClientServer> clientServerMock;
+        protected GameObject personalSkeletonGo;
+        protected PersonalSkeleton personalSkeleton;
+        protected GameObject skeletonNodeGo;
+        protected Animator animator;
 
         private GameObject[] boneGameObjects;
 
         #region Test SetUp
 
         [OneTimeSetUp]
-        public void OneTimeSetup()
+        public virtual void OneTimeSetup()
         {
             SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
 
@@ -92,7 +92,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
         }
 
         [SetUp]
-        public void SetUp()
+        public virtual void SetUp()
         {
             environmentManagerMock = new();
             loadingManagerMock = new();

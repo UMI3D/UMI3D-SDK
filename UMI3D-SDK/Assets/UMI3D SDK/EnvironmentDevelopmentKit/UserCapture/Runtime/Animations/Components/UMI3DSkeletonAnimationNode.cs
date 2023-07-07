@@ -83,6 +83,12 @@ namespace umi3d.edk.userCapture.animation
 
         public Operation[] GetDeleteAnimations(UMI3DUser user = null)
         {
+            if (!AreAnimationsGenerated)
+            {
+                UMI3DLogger.LogWarning($"Cannot delete animations, no animations are generated.", DEBUG_SCOPE);
+                return null;
+            }
+
             Queue<Operation> ops = new();
             foreach (var id in relatedAnimationIds)
             {
