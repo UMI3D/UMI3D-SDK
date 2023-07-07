@@ -14,12 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.edk
 {
-    public interface IUMI3DEnvironmentManager
+    public interface IUMI3DEnvironmentManager : IUserManager
     {
         ulong RegisterEntity(UMI3DEntity entity);
         ulong RegisterEntity(UMI3DEntity entity, ulong id);
         E _GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity;
+    }
+
+    public interface IUserManager
+    {
+        IEnumerable<UMI3DUser> GetUsers();
+        HashSet<UMI3DUser> GetUserSet();
+        HashSet<UMI3DUser> GetJoinedUserSet();
     }
 }

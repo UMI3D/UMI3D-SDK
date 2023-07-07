@@ -307,6 +307,51 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Access to all entities of a given type.
+        /// </summary>
+        public virtual IEnumerable<E> _GetEntities<E>() where E : class, UMI3DEntity
+        {
+            return entities.Values.Where(entities => entities is E).Select(e => e as E);
+        }
+
+        /// <summary>
+        /// Get the collection of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<UMI3DUser> GetUsers()
+        {
+            return _GetEntities<UMI3DUser>();
+        }
+
+        /// <summary>
+        /// Get the set of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
+        public virtual HashSet<UMI3DUser> GetUserSet()
+        {
+            return new(_GetEntities<UMI3DUser>());
+        }
+
+        /// <summary>
+        /// Get the set of all <see cref="UMI3DUser"/> instances in the environment that have already joined.
+        /// </summary>
+        /// <returns></returns>
+        public virtual HashSet<UMI3DUser> GetJoinedUserSet()
+        {
+            return new(_GetEntities<UMI3DUser>().Where((u) => u.hasJoined));
+        }
+
+        /// <summary>
+        /// Get the collection of all <see cref="UMI3DUser"/> instances in the environment.
+        /// </summary>
+        /// <returns></returns>
+        public virtual IEnumerable<UMI3DUser> Users()
+        {
+            return UMI3DEnvironment.GetEntities<UMI3DUser>();
+        }
+
+
+        /// <summary>
         /// Return all id that have been registered and remove.
         /// </summary>
         /// <returns></returns>
