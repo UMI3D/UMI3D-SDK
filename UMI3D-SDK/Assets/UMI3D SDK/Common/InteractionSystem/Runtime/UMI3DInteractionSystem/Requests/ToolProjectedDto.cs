@@ -24,22 +24,11 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Projected tool id
         /// </summary>
-        public ulong toolId;
+        public ulong toolId { get; set; }
 
         /// <summary>
         /// Bone type the tool is attached to.
         /// </summary>
-        public uint boneType;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.ToolProjected; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(toolId)
-                + UMI3DSerializer.Write(boneType);
-        }
+        public uint boneType { get; set; }
     }
 }

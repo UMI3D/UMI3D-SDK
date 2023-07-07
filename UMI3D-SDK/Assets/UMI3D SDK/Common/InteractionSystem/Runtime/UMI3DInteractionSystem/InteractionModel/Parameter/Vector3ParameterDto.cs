@@ -22,7 +22,7 @@ namespace umi3d.common.interaction
     /// Boolean parameter dto.
     /// </summary>
     [System.Serializable]
-    public class Vector3ParameterDto : AbstractParameterDto<SerializableVector3>
+    public class Vector3ParameterDto : AbstractParameterDto<Vector3Dto>
     {
         public Vector3ParameterDto() : base() { }
     }

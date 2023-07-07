@@ -44,7 +44,7 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToByte()
         {
-            return UMI3DSerializer.WriteIBytableCollection(variants);
+            return UMI3DSerializer.WriteCollection(variants);
         }
     }
 }

@@ -35,14 +35,14 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Event when an interaction is performed on a parameter.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        /// <typeparam name="T">type of the parameter value.</typeparam>
         [System.Serializable]
         public class ParameterEvent<T> : UnityEvent<ParameterEventContent<T>> { }
 
         /// <summary>
         /// Parameter interaction Event content.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        /// <typeparam name="T">type of the parameter value.</typeparam>
         [System.Serializable]
         public class ParameterEventContent<T> : InteractionEventContent
         {
@@ -56,7 +56,7 @@ namespace umi3d.edk.interaction
                 this.value = value;
             }
 
-            public ParameterEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, T value) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public ParameterEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, T value) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.value = value;
             }

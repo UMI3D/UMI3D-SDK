@@ -27,21 +27,21 @@ namespace umi3d.common
         /// <summary>
         /// Node where the animator can be found on.
         /// </summary>
-        public ulong nodeId = 0;
+        public ulong nodeId { get; set; } = 0;
 
         /// <summary>
         /// Animation state's name in the animator controller.
         /// </summary>
-        public string stateName = "";
+        public string stateName { get; set; } = "";
 
         /// <summary>
         /// Animation normalized time at start. 
         /// </summary>
-        public float normalizedTime = 0f;
+        public float normalizedTime { get; set; } = 0f;
 
         /// <summary>
         /// Animator parameters.
         /// </summary>
-        public Dictionary<string, object> parameters = new Dictionary<string, object>();
+        public Dictionary<string, object> parameters { get; set; } = new Dictionary<string, object>();
     }
 }

@@ -41,7 +41,7 @@ namespace umi3d.cdk
         public async Task ReadUMI3DExtension(UIImageDto dto, GameObject node)
         {
             Image image = node.GetOrAddComponent<Image>();
-            image.color = dto.color;
+            image.color = dto.color.Struct();
             image.type = dto.type.Convert();
 
 
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = (SerializableColor)property.value;
+                        image.color = (dto.color = (ColorDto)property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
@@ -133,7 +133,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
+                        image.color = (dto.color = UMI3DSerializer.Read<ColorDto>(container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:

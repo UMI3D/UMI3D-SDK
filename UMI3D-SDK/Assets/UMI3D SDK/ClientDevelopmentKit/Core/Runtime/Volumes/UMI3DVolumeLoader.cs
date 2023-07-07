@@ -52,7 +52,7 @@ namespace umi3d.cdk.volumes
 
                     break;
                 default:
-                    throw (new Umi3dException("Unknown Dto Type"));
+                    throw (new Umi3dException("Unknown Dto type"));
             }
         }
 

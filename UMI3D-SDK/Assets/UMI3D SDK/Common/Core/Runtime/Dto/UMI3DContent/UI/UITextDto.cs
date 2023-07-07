@@ -26,78 +26,75 @@ namespace umi3d.common
         /// <summary>
         /// Text anchor alignment relatively to the boxing rectangle.
         /// </summary>
-        public TextAnchorType alignment;
+        public TextAnchorType alignment { get; set; }
 
         /// <summary>
         /// Should the horizontal aligment be computed using glyph geometery instead of glyph metrics? 
         /// </summary>
-        public bool alignByGeometry;
+        public bool alignByGeometry { get; set; }
 
         /// <summary>
         /// Text main color.
         /// </summary>
-        public SerializableColor color;
+        public ColorDto color { get; set; }
 
         /// <summary>
         /// Name of the font used.
         /// </summary>
-        public string font;
+        public string font { get; set; }
 
         /// <summary>
         /// Size of the font.
         /// </summary>
         /// Beware to have a size that fits in the boxing rectangle.
-        public int fontSize;
+        public int fontSize { get; set; }
 
         /// <summary>
         /// Font style (bold, italic, ...).
         /// </summary>
-        public FontStyleType fontStyle;
+        public FontStyleType fontStyle { get; set; }
 
         /// <summary>
         /// The way to handle the overflow when the text is horizontally too long.
         /// </summary>
-        public HorizontalWrapType horizontalOverflow;
+        public HorizontalWrapType horizontalOverflow { get; set; }
 
         /// <summary>
         /// Space between two lines, expressed as a factor of the font size.
         /// </summary>
         /// When set to 1, it is normal line spacing.
-        public float lineSpacing;
+        public float lineSpacing { get; set; }
 
         /// <summary>
         /// Should the text be resized to fit better when required?
         /// </summary>
-        public bool resizeTextForBestFit;
+        public bool resizeTextForBestFit { get; set; }
 
         /// <summary>
         /// Maximal size when resizing the text.
         /// </summary>
         /// A value of 1 indicates that the text could be infinitly large.
-        public int resizeTextMaxSize;
+        public int resizeTextMaxSize { get; set; }
 
         /// <summary>
         ///  Minimum size when resizing the text
         /// </summary>
-        public int resizeTextMinSize;
+        public int resizeTextMinSize { get; set; }
 
         /// <summary>
         /// Does the text supports Rich Text?
         /// </summary>
         /// Rich text handles several markups (bold, italic, color...).
-        public bool supportRichText;
+        public bool supportRichText { get; set; }
 
         /// <summary>
         /// Textual content to display.
         /// </summary>
-        public string text;
+        public string text { get; set; }
 
         /// <summary>
         /// The way to handle the overflow when the text is vertically too long.
         /// </summary>
-        public VerticalWrapType verticalOverflow;
-
-
-        public UITextDto() : base() { }
+        public VerticalWrapType verticalOverflow { get; set; }
     }
 }

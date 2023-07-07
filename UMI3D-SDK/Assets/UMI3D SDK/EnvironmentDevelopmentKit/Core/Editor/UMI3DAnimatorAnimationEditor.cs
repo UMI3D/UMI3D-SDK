@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -28,7 +29,6 @@ namespace umi3d.edk.editor
         protected override void OnEnable()
         {
             base.OnEnable();
-
             node = serializedObject.FindProperty("node");
             stateName = serializedObject.FindProperty("stateName");
         }
@@ -49,7 +49,15 @@ namespace umi3d.edk.editor
             EditorGUI.BeginChangeCheck();
             serializedObject.Update();
             EditorGUILayout.PropertyField(stateName);
-            EditorGUILayout.LabelField("Animator parameters can be changed via script (objectParameters field).");
+            
+            EditorGUILayout.LabelField("Animator parameters should be changed via script (objectParameters field).");
+            GUI.enabled = false;
+            EditorGUILayout.PropertyField(playing);
+            EditorGUILayout.PropertyField(looping);
+            EditorGUILayout.PropertyField(startTime);
+            EditorGUILayout.PropertyField(pauseFrame);
+            GUI.enabled = true;
+
             serializedObject.ApplyModifiedProperties();
 
             EditorGUILayout.Space();

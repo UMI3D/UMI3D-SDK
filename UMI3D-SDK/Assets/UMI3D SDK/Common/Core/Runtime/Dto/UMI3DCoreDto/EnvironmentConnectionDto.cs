@@ -22,22 +22,22 @@ namespace umi3d.common
     [System.Serializable]
     public class EnvironmentConnectionDto : UMI3DDto
     {
-        public string name;
-        public string httpUrl;
-        public string resourcesUrl;
-        public bool authorizationInHeader;
-        public string forgeHost;
-        public string forgeMasterServerHost;
-        public string forgeNatServerHost;
-        public ushort forgeServerPort;
-        public ushort forgeMasterServerPort;
-        public ushort forgeNatServerPort;
+        public string name { get; set; }
+        public string httpUrl { get; set; }
+        public string resourcesUrl { get; set; }
+        public bool authorizationInHeader { get; set; }
+        public string forgeHost { get; set; }
+        public string forgeMasterServerHost { get; set; }
+        public string forgeNatServerHost { get; set; }
+        public ushort forgeServerPort { get; set; }
+        public ushort forgeMasterServerPort { get; set; }
+        public ushort forgeNatServerPort { get; set; }
 
         /// <summary>
         /// Umi3d version of the environment.
         /// </summary>
         /// Versions are Major.Minor.Status.Date
-        public string version;
+        public string version { get; set; }
 
         public EnvironmentConnectionDto() : base() { }
     }

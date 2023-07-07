@@ -1,20 +1,30 @@
 {
     "name": "glTFastEditorTests",
+    "rootNamespace": "",
     "references": [
         "UnityEngine.TestRunner",
         "UnityEditor.TestRunner",
-        "glTFast",
+        "UMI3D.CDK.Core",
+        "UMI3D.CDK.Collaboration",
+        "UMI3D.CDK.UserCapture",
+        "UMI3D.Common.UserCapture",
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration",
+        "UMI3D.Common.Core",
         "glTFastSchema",
-        "Unity.Mathematics"
+        "Unity.Mathematics",
+        "glTFast.dots",
+        "glTFast.Export",
+        "glTFastEditor",
+        "glTFast"
     ],
-    "includePlatforms": [
-        "Editor"
-    ],
+    "includePlatforms": [],
     "excludePlatforms": [],
     "allowUnsafeCode": false,
     "overrideReferences": true,
     "precompiledReferences": [
-        "nunit.framework.dll"
+        "nunit.framework.dll",
+        "Moq.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

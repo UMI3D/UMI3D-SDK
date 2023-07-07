@@ -27,17 +27,17 @@ namespace umi3d.common
         /// <summary>
         /// The unique identifier of the entity
         /// </summary>
-        public ulong entityId;
+        public ulong entityId { get; set; }
 
         /// <summary>
         /// The name of the modified property
         /// </summary>
-        public ulong property;
+        public ulong property { get; set; }
 
         /// <summary>
         /// The new value for the property
         /// </summary>
-        public object value;
+        public object value { get; set; }
 
         /// <summary>
         /// Make a Copy of a SetEntityPropertyDto or a class inheriting it.

@@ -21,7 +21,6 @@ namespace umi3d.common.interaction
     /// </summary>
     public class EventTriggeredDto : InteractionRequestDto
     {
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.EventTriggered; }
+        
     }
 }

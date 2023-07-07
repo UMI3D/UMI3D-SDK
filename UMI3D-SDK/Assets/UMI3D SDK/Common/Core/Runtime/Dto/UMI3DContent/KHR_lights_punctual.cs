@@ -25,25 +25,25 @@ namespace umi3d.common
     [System.Serializable]
     public class KHR_lights_punctual
     {
-        public SerializableColor color = Color.white;
-        public string name;
-        public float intensity = 1f;
-        public float range = 2f;
-        public string type = LightTypes.Point;
-        public KHR_spot spot = null;
+        public ColorDto color { get; set; } = Color.white.Dto();
+        public string name { get; set; }
+        public float intensity { get; set; } = 1f;
+        public float range { get; set; } = 2f;
+        public string type { get; set; } = LightTypes.Point;
+        public KHR_spot spot { get; set; } = null;
 
         [System.Serializable]
         public class KHR_spot
         {
-            public float innerConeAngle = 0f;
-            public float outerConeAngle = Mathf.PI / 4f;
+            public float innerConeAngle { get; set; } = 0f;
+            public float outerConeAngle { get; set; } = Mathf.PI / 4f;
         }
 
         public static class LightTypes
         {
-            public static string Directional = "directional";
-            public static string Point = "point";
-            public static string Spot = "spot";
+            public static string Directional { get; set; } = "directional";
+            public static string Point { get; set; } = "point";
+            public static string Spot { get; set; } = "spot";
         }
     }
 }

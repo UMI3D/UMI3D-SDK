@@ -18,9 +18,17 @@ using System;
 
 namespace umi3d.common
 {
+    [UMI3DSerializerOrder(1001)]
     public class UMI3DSerializerStringModules : UMI3DSerializerModule
     {
-        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+        public bool? IsCountable<T>()
+        {
+            if(typeof(T) == typeof(string))
+                return false;
+            return null;
+        }
+
+        public bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
             switch (true)
@@ -61,7 +69,7 @@ namespace umi3d.common
             return false;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable)
+        public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             Func<byte[], int, int, (int, int)> f;
 

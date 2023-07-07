@@ -23,8 +23,19 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DEnvironmentSerializerCollaborationModule : UMI3DSerializerModule
     {
+        public bool? IsCountable<T>()
+        {
+            return true switch
+            {
+                true when typeof(T) == typeof(UserDto) => true,
+                true when typeof(T) == typeof(UMI3DCollaborationUser) => true,
+                true when typeof(T) == typeof(RegisterIdentityDto) => true,
+                _ => null,
+            };
+        }
+
         /// <inheritdoc/>
-        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+        public bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
             {
@@ -54,14 +65,14 @@ namespace umi3d.edk.collaboration
         }
 
         /// <inheritdoc/>
-        public override bool Write<T>(T value, out Bytable bytable)
+        public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
             {
                 case UserDto user:
                     bytable = UMI3DSerializer.Write<ulong>(user.id)
                     + UMI3DSerializer.Write<uint>((uint)user.status)
-                    + UMI3DSerializer.Write<ulong>(user.avatarId)
+                    //+ UMI3DSerializer.Write<ulong>(user.avatarId)
                     + UMI3DSerializer.Write<ulong>(user.audioSourceId)
                     + UMI3DSerializer.Write<int>(user.audioFrequency)
                     + UMI3DSerializer.Write<ulong>(user.videoSourceId)
@@ -83,7 +94,7 @@ namespace umi3d.edk.collaboration
                 case UMI3DCollaborationUser user:
                     bytable = UMI3DSerializer.Write<ulong>(user.Id())
                     + UMI3DSerializer.Write<uint>((uint)user.status)
-                    + UMI3DSerializer.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id())
+                    //+ UMI3DSerializer.Write<ulong>(user.Avatar == null ? 0 : user.Avatar.Id())
                     + UMI3DSerializer.Write<ulong>(user.audioPlayer?.Id() ?? 0)
                     + UMI3DSerializer.Write<int>(user.audioFrequency.GetValue())
                     + UMI3DSerializer.Write<ulong>(user.videoPlayer?.Id() ?? 0)

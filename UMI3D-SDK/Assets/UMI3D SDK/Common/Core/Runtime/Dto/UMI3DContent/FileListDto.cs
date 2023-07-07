@@ -27,11 +27,11 @@ namespace umi3d.common
         /// <summary>
         /// Base URL of all files in the list.
         /// </summary>
-        public string baseUrl;
+        public string baseUrl { get; set; }
 
         /// <summary>
         /// Relative URLs of files in the list to <see cref="baseUrl"/>.
         /// </summary>
-        public List<string> files = new List<string>();
+        public List<string> files { get; set; } = new List<string>();
     }
 }

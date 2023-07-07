@@ -51,7 +51,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="assetLibrary"></param>
         /// <returns></returns>
-        public abstract UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary);
+        public abstract UMI3DLocalAssetDirectoryDto ChooseVariant(AssetLibraryDto assetLibrary);
 
         /// <summary>
         /// Choose the best file variant for this client.

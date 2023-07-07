@@ -81,11 +81,11 @@ namespace umi3d.cdk
 #endif
         }
 
-        /// <summary>
-        /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
-        /// <param name="onFinish"></param>
-        /// </summary>
-        public static async Task LoadVideoPlayers()
+            /// <summary>
+            /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
+            /// <param name="onFinish"></param>
+            /// </summary>
+            public static async Task LoadVideoPlayers()
         {
             if (videoPlayersToLoad.Count > 0)
                 await LoadVideoPlayersCoroutine();

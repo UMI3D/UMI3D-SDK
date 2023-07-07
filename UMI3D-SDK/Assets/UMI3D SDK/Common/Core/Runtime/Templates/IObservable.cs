@@ -21,7 +21,7 @@ namespace umi3d.common
     /// <summary>
     /// Interface for objects containing a value that is subscribed upon.
     /// </summary>
-    /// <typeparam name="T">Type of the value contained.</typeparam>
+    /// <typeparam name="T">type of the value contained.</typeparam>
     public interface IObservable<T> : IPublisher<T>
     {
         /// <summary>

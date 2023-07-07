@@ -32,7 +32,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
-    public class UMI3DEnvironmentLoader : inetum.unityUtils.SingleBehaviour<UMI3DEnvironmentLoader>
+    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>, IEnvironmentManager , ILoadingManager, INavMeshManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
@@ -43,6 +43,42 @@ namespace umi3d.cdk
         private readonly Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>> entitywaited = new Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>>();
         private readonly HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
         private readonly HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
+
+        public UMI3DEnvironmentLoader() : base()
+        {
+            sceneLoader = new UMI3DSceneLoader();
+            nodeLoader = new GlTFNodeLoader();
+
+            onEnvironmentLoaded.AddListener(() => InterpolationRoutine());
+        }
+
+        public UMI3DEnvironmentLoader(Material baseMaterial, AbstractUMI3DLoadingParameters parameters)
+            : this()
+        {
+            _baseMaterial = new Material(baseMaterial);
+            this.parameters = parameters;
+        }
+
+        /// <summary>
+        /// Anchor of loading.
+        /// </summary>
+        /// For backwards compatibility only.
+        [Obsolete("UMI3DLoadingHandler.Instance.gameObject instead")]
+        public GameObject gameObject => UMI3DLoadingHandler.Instance.gameObject;
+
+        /// <summary>
+        /// Anchor of loading transform.
+        /// </summary>
+        /// For backwards compatibility only.
+        [Obsolete("UMI3DLoadingHandler.Instance.transform instead")]
+        public Transform transform => UMI3DLoadingHandler.Instance.transform;
+
+        /// <summary>
+        /// Anchor of loading access to coroutine logic.
+        /// </summary>
+        /// For backwards compatibility only.
+        [Obsolete("UMI3DLoadingHandler.StartCoroutine() instead")]
+        public static Coroutine StartCoroutine(IEnumerator enumerator) => UMI3DLoadingHandler.StartCoroutine(enumerator);
 
         /// <summary>
         /// Call a callback when an entity is registerd.
@@ -57,7 +93,21 @@ namespace umi3d.cdk
             if (!Exists) return;
             if (Instance.entitywaited == null) return;
 
-            UMI3DEntityInstance node = GetEntity(id);
+            Instance.WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
+        }
+
+        /// <summary>
+        /// Call a callback when an entity is registerd.
+        /// The entity might not be totaly loaded when the callback is called.
+        /// all property of UMI3DEntityInstance and UMI3DNodeInstance are set.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <param name="entityLoaded"></param>
+        /// <param name="entityFailedToLoad"></para
+        public virtual void WaitUntilEntityLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
+        {
+            if (Instance.entitywaited == null) return;
+            UMI3DEntityInstance node = TryGetEntityInstance(id);
             if (node != null && node.IsLoaded)
             {
                 entityLoaded?.Invoke(node);
@@ -69,16 +119,27 @@ namespace umi3d.cdk
                 else
                     Instance.entitywaited[id] = new List<(Action<UMI3DEntityInstance>, Action)>() { (entityLoaded, entityFailedToLoad) };
             }
+
+            return;
         }
 
         public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id, List<CancellationToken> tokens)
         {
             if (!Exists)
-                throw new Umi3dException("Do Not Exist");
-            if (Instance.entitywaited == null)
-                throw new Umi3dException("Do Not Exist");
+                throw new Umi3dException("EnvironmentLoader does not exist");
 
-            UMI3DEntityInstance node = GetEntity(id);
+            if (Instance.entitywaited == null)
+                throw new Umi3dException("Entity waited to be loaded does not exist");
+
+            return await Instance.WaitUntilEntityLoaded(id, tokens);
+        }
+
+        public virtual async Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong id, List<CancellationToken> tokens)
+        {
+            if (entitywaited == null)
+                throw new Umi3dException("Entity waited to be loaded does not exist");
+
+            UMI3DEntityInstance node = TryGetEntityInstance(id);
             if (node != null && node.IsLoaded)
             {
                 return (node);
@@ -90,12 +151,12 @@ namespace umi3d.cdk
             Action<UMI3DEntityInstance> entityLoaded = (e) => { loaded = e; finished = true; };
             Action entityFailedToLoad = () => { error = true; finished = true; };
 
-            WaitForAnEntityToBeLoaded(id, entityLoaded, entityFailedToLoad);
+            WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
 
             while (!finished)
                 await UMI3DAsyncManager.Yield(tokens);
             if (error)
-                throw new Umi3dException("Entity Failed to be loaded");
+                throw new Umi3dException($"Failed to load entity. Entity id: {id}.");
 
             return loaded;
         }
@@ -161,7 +222,54 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
+        [Obsolete("Use GetEntityInstance or GetEntityObject<T> instead.")]
         public static UMI3DEntityInstance GetEntity(ulong id) { return id != 0 && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] : null; }
+
+        /// <summary>
+        /// Get an entity with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns></returns>
+        public virtual UMI3DEntityInstance GetEntityInstance(ulong id)
+        {
+            if (id == 0 || !entities.ContainsKey(id))
+                throw new ArgumentException(message: $"Entity {id} does not exist.");
+            else if (entities[id] != null)
+                return entities[id];
+            else
+                throw new Umi3dException($"Entity {id} is referenced but is null.");
+        }
+
+        /// <summary>
+        /// Get an entity with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns></returns>
+        public virtual UMI3DEntityInstance TryGetEntityInstance(ulong id)
+        {
+            if (id == 0)
+                throw new ArgumentException(message: $"Entity {id} does not exist.");
+            else if (!entities.ContainsKey(id))
+                return null;
+            else if (entities[id] != null)
+                return entities[id];
+            else
+                throw new Umi3dException($"Entity {id} is referenced but is null.");
+        }
+
+        /// <summary>
+        /// Get an entity with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns></returns>
+        public virtual T GetEntityObject<T>(ulong id) where T : class
+        {
+            var entity = GetEntityInstance(id);
+            if (entity.Object is T objEntity)
+                return objEntity;
+            else
+                throw new Umi3dException($"Entity {id} is not of type {nameof(T)}.");
+        }
 
         /// <summary>
         /// Get a node with an id.
@@ -169,6 +277,18 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
         public static UMI3DNodeInstance GetNode(ulong id) { return id != 0 && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] as UMI3DNodeInstance : null; }
+
+        /// <summary>
+        /// Get a node with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns>Node instance or null if node does not exist.</returns>
+        public virtual UMI3DNodeInstance GetNodeInstance(ulong id)
+        {
+            if (GetEntityInstance(id) is not UMI3DNodeInstance node)
+                throw new Umi3dException($"Entity {id} is not an UMI3DNodeInstance.");
+            return node;
+        }
 
         /// <summary>
         /// Get a node id with a collider.
@@ -204,7 +324,7 @@ namespace umi3d.cdk
                 if (node == null)
                     throw new Exception($"id:{id} found but the value was of type {Instance.entities[id].GetType()}");
                 if (node.gameObject != instance)
-                    Destroy(instance);
+                    UnityEngine.Object.Destroy(instance);
                 return node;
             }
             else
@@ -222,22 +342,36 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the node.</param>
         /// <param name="dto">dto of the node.</param>
         /// <returns></returns>
+        [Obsolete("Use Instance.RegisterEntity() instead")]
         public static UMI3DEntityInstance RegisterEntityInstance(ulong id, UMI3DDto dto, object Object, Action delete = null)
+        {
+            if (!Exists)
+                return null;
+            else
+                return Instance.RegisterEntity(id, dto, Object, delete);
+        }
+
+        /// <summary>
+        /// Register an entity without a gameobject.
+        /// </summary>
+        /// <param name="id">unique id of the node.</param>
+        /// <param name="dto">dto of the node.</param>
+        /// <returns></returns>
+        public virtual UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null)
         {
             UMI3DEntityInstance node = null;
             if (!Exists)
-            {
-                return null;
-            }
-            else if (Instance.entities.ContainsKey(id))
-            {
-                node = Instance.entities[id];
-            }
+                throw new Umi3dException("Cannot register entity. Loader does not exist.");
+
+            else if (entities.ContainsKey(id))
+                node = entities[id];
+
             else
             {
-                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = Object, Delete = delete };
-                Instance.entities.Add(id, node);
+                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = objectInstance, Delete = delete };
+                entities.Add(id, node);
             }
+
             return node;
         }
 
@@ -249,10 +383,28 @@ namespace umi3d.cdk
         public UMI3DSceneLoader sceneLoader { get; private set; }
         public GlTFNodeLoader nodeLoader { get; private set; }
 
+        private Material _baseMaterial;
         /// <summary>
         /// Basic material used to init a new material with the same properties
         /// </summary>
-        public Material baseMaterial;
+        public Material baseMaterial
+        {
+            get
+            {
+                if (_baseMaterial == null)
+                    throw new Umi3dException("Base Material on UMI3DEnvironmentLoader should never be null");
+                return _baseMaterial;
+            }
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
+        internal void SetBaseMaterial(Material newBaseMat)
+        {
+            _baseMaterial = new Material(newBaseMat);
+        }
 
         /// <summary>
         /// return a copy of the baseMaterial. it can be modified 
@@ -280,20 +432,6 @@ namespace umi3d.cdk
             callback.Invoke(new Material(baseMaterial));
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
-        /// <param name="newBaseMat">A new material to override the baseMaterial used to initialise all materials</param>
-        public void SetBaseMaterial(Material newBaseMat) { baseMaterial = new Material(newBaseMat); }
-
-        /// <inheritdoc/>
-        protected override void Awake()
-        {
-            base.Awake();
-            sceneLoader = new UMI3DSceneLoader();
-            nodeLoader = new GlTFNodeLoader();
-        }
-
         #region workflow
 
         /// <summary>
@@ -301,8 +439,8 @@ namespace umi3d.cdk
         /// </summary>
         public bool loaded { get; private set; } = false;
 
-        public UnityEvent onResourcesLoaded = new UnityEvent();
-        public UnityEvent onEnvironmentLoaded = new UnityEvent();
+        public UnityEvent onResourcesLoaded { get; protected set; } = new UnityEvent();
+        public UnityEvent onEnvironmentLoaded { get; protected set; } = new UnityEvent();
 
         /// <summary>
         /// Is environement (except videos) loaded ?
@@ -442,9 +580,14 @@ namespace umi3d.cdk
 
         #region parameters
 
-        [SerializeField]
         private AbstractUMI3DLoadingParameters parameters = null;
         public static AbstractUMI3DLoadingParameters Parameters => Exists ? Instance.parameters : null;
+        public virtual AbstractUMI3DLoadingParameters LoadingParameters => parameters;
+
+        internal void SetParameters(AbstractUMI3DLoadingParameters parameters)
+        {
+            this.parameters = parameters;
+        }
 
         #endregion
 
@@ -498,7 +641,7 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         public static async Task LoadEntity(IEntity entity, List<CancellationToken> tokens)
         {
-            if (Exists) await Instance._LoadEntity(entity,tokens);
+            if (Exists) await Instance._LoadEntity(entity, tokens);
         }
 
         public static async Task LoadEntity(ByteContainer container)
@@ -612,7 +755,7 @@ namespace umi3d.cdk
                 {
                     var node = entity as UMI3DNodeInstance;
                     node.ClearBeforeDestroy();
-                    Destroy(node.gameObject);
+                    UnityEngine.Object.Destroy(node.gameObject);
                 }
                 Instance.entities[entityId].Delete?.Invoke();
                 Instance.entities.Remove(entityId);
@@ -645,7 +788,7 @@ namespace umi3d.cdk
 
             foreach (ulong entity in Instance.entities.ToList().Select(p => { return p.Key; }))
             {
-                DeleteEntity(entity,null);
+                DeleteEntity(entity, null);
             }
             if (clearCache)
                 UMI3DResourcesManager.Instance.ClearCache();
@@ -680,15 +823,15 @@ namespace umi3d.cdk
             {
                 if (extension.defaultMaterial != null && extension.defaultMaterial.variants != null && extension.defaultMaterial.variants.Count > 0)
                 {
-                    baseMaterial = null;
+                    _baseMaterial = null;
                     LoadDefaultMaterial(extension.defaultMaterial);
                 }
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
                     await Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, node));
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
-                RenderSettings.ambientSkyColor = extension.skyColor;
-                RenderSettings.ambientEquatorColor = extension.horizontalColor;
-                RenderSettings.ambientGroundColor = extension.groundColor;
+                RenderSettings.ambientSkyColor = extension.skyColor.Struct();
+                RenderSettings.ambientEquatorColor = extension.horizontalColor.Struct();
+                RenderSettings.ambientGroundColor = extension.groundColor.Struct();
                 RenderSettings.ambientIntensity = extension.ambientIntensity;
                 if (extension.skybox != null)
                 {
@@ -771,13 +914,13 @@ namespace umi3d.cdk
                     RenderSettings.ambientMode = (AmbientMode)data.property.value;
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = (SerializableColor)data.property.value;
+                    RenderSettings.ambientSkyColor = ((ColorDto)data.property.value).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = (SerializableColor)data.property.value;
+                    RenderSettings.ambientEquatorColor = ((ColorDto)data.property.value).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = (SerializableColor)data.property.value;
+                    RenderSettings.ambientGroundColor = ((ColorDto)data.property.value).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = (float)data.property.value;
@@ -817,13 +960,13 @@ namespace umi3d.cdk
                     RenderSettings.ambientMode = (AmbientMode)UMI3DSerializer.Read<int>(data.container);
                     return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
-                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientSkyColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientHorizontalColor:
-                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientEquatorColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientGroundColor:
-                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<SerializableColor>(data.container);
+                    RenderSettings.ambientGroundColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = UMI3DSerializer.Read<float>(data.container);
@@ -865,8 +1008,8 @@ namespace umi3d.cdk
             if (!Exists) return;
             try
             {
-                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.entityId,tokens);
-                if (!await SetEntity(new SetUMI3DPropertyData(dto, e,tokens)))
+                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.entityId, tokens);
+                if (!await SetEntity(new SetUMI3DPropertyData(dto, e, tokens)))
                     UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + dto.entityId + "   propKey : " + dto.property, scope);
             }
             catch (Exception e)
@@ -882,7 +1025,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static async Task SetEntity(uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
         {
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId,container.tokens);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, container.tokens);
 
             if (!await SetEntity(entityId, new SetUMI3DPropertyContainerData(e, operationId, propertyKey, container)))
                 UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
@@ -997,7 +1140,7 @@ namespace umi3d.cdk
             {
                 try
                 {
-                    var e = await WaitForAnEntityToBeLoaded(id,container.tokens);
+                    var e = await WaitForAnEntityToBeLoaded(id, container.tokens);
 
                     var newContainer = new ByteContainer(container);
                     if (!await SetEntity(id, new SetUMI3DPropertyContainerData(e, operationId, propertyKey, newContainer)))
@@ -1019,26 +1162,31 @@ namespace umi3d.cdk
 
         private readonly Dictionary<ulong, Dictionary<ulong, IExtrapolator>> entityFilters = new Dictionary<ulong, Dictionary<ulong, IExtrapolator>>();
 
-        private void Update()
+        protected async void InterpolationRoutine()
         {
-            foreach (ulong entityId in Instance.entityFilters.Keys)
+            while (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
             {
-                foreach (ulong property in Instance.entityFilters[entityId].Keys)
+                foreach (ulong entityId in Instance.entityFilters.Keys)
                 {
-                    UMI3DEntityInstance node = UMI3DEnvironmentLoader.GetEntity(entityId);
-                    IExtrapolator extrapolator = Instance.entityFilters[entityId][property];
-
-                    extrapolator.ComputeExtrapolatedValue();
-
-                    var entityPropertyDto = new SetEntityPropertyDto()
+                    foreach (ulong property in Instance.entityFilters[entityId].Keys)
                     {
-                        entityId = entityId,
-                        property = property,
-                        value = extrapolator.ExtrapolatedValue.ToSerializable()
-                    };
+                        UMI3DEntityInstance node = UMI3DEnvironmentLoader.GetEntity(entityId);
+                        IExtrapolator extrapolator = Instance.entityFilters[entityId][property];
 
-                    SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
+                        extrapolator.ComputeExtrapolatedValue();
+
+                        var entityPropertyDto = new SetEntityPropertyDto()
+                        {
+                            entityId = entityId,
+                            property = property,
+                            value = extrapolator.ExtrapolatedValue.ToSerializable()
+                        };
+                        //SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
+                        Task.FromResult(SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node)));
+                    }
                 }
+
+                await UMI3DAsyncManager.Yield();
             }
         }
 
@@ -1051,7 +1199,7 @@ namespace umi3d.cdk
         {
             if (!Exists) return false;
             var e = await WaitForAnEntityToBeLoaded(dto.entityId, tokens);
-            return await Instance.StartInterpolation(e, dto.entityId, dto.property, dto.startValue,tokens);
+            return await Instance.StartInterpolation(e, dto.entityId, dto.property, dto.startValue, tokens);
         }
 
         /// <summary>
@@ -1068,7 +1216,7 @@ namespace umi3d.cdk
 
             var value = new ReadUMI3DPropertyData(propertyKey, container);
             await ReadValueEntity(value);
-            return await Instance.StartInterpolation(e, entityId, propertyKey, value.result.Deserialize(),container.tokens);
+            return await Instance.StartInterpolation(e, entityId, propertyKey, value.result.Deserialize(), container.tokens);
         }
 
         protected async Task<bool> StartInterpolation(UMI3DEntityInstance node, ulong entityId, ulong propertyKey, object startValue, List<CancellationToken> tokens)
@@ -1096,7 +1244,6 @@ namespace umi3d.cdk
                     property = propertyKey,
                     value = startValue.ToSerializable()
                 };
-
                 return await SetEntity(new SetUMI3DPropertyData(entityPropertyDto, node, tokens));
             }
             return false;

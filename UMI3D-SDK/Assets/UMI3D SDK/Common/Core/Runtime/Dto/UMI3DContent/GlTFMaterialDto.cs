@@ -25,13 +25,13 @@ namespace umi3d.common
     /// </summary>
     public class GlTFMaterialDto : UMI3DDto, IEntity
     {
-        public string alphaMode;
-        public bool doubleSided = false;
-        public string name;
-        public PBRMaterialDto pbrMetallicRoughness = new PBRMaterialDto();
-        public GlTFMaterialExtensions extensions = null;
+        public string alphaMode { get; set; }
+        public bool doubleSided { get; set; } = false;
+        public string name { get; set; }
+        public PBRMaterialDto pbrMetallicRoughness { get; set; } = new PBRMaterialDto();
+        public GlTFMaterialExtensions extensions { get; set; } = null;
 
 
-        public SerializableVector3 emissiveFactor;
+        public Vector3Dto emissiveFactor { get; set; }
     }
 }

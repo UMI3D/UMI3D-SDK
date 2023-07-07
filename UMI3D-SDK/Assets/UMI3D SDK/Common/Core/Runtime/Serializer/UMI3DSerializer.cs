@@ -57,7 +57,8 @@ namespace umi3d.common
         public static void AddModule(List<UMI3DSerializerModule> moduleList)
         {
             foreach (UMI3DSerializerModule module in moduleList)
-                modules.Add(module);
+                if(module != null)
+                    modules.Add(module);
         }
 
         /// <summary>
@@ -73,7 +74,7 @@ namespace umi3d.common
         /// <summary>
         /// Read a value from a ByteContainer and update it
         /// </summary>
-        /// <typeparam name="T">Type to read</typeparam>
+        /// <typeparam name="T">type to read</typeparam>
         /// <param name="container"></param>
         /// <returns></returns>
         public static T Read<T>(ByteContainer container)
@@ -85,7 +86,7 @@ namespace umi3d.common
         /// <summary>
         /// Try to read a value from a ByteContainer and update it.
         /// </summary>
-        /// <typeparam name="T">Type to read</typeparam>
+        /// <typeparam name="T">type to read</typeparam>
         /// <param name="container"></param>
         /// <param name="result">result if readable</param>
         /// <returns>state if the value is readable from this byte container</returns>
@@ -142,6 +143,7 @@ namespace umi3d.common
         public static List<T> ReadList<T>(ByteContainer container)
         {
             byte listType = UMI3DSerializer.Read<byte>(container);
+
             switch (listType)
             {
                 case UMI3DObjectKeys.CountArray:
@@ -206,8 +208,8 @@ namespace umi3d.common
         /// <summary>
         /// Utility class to describe a Dictionary<K,V> entry that can be read from a ByteContainer
         /// </summary>
-        /// <typeparam name="K">Key Type</typeparam>
-        /// <typeparam name="V">Value Type</typeparam>
+        /// <typeparam name="K">Key type</typeparam>
+        /// <typeparam name="V">Value type</typeparam>
         private class TypedDictionaryEntry<K, V> : TypedDictionaryEntry
         {
             public V value;
@@ -342,60 +344,13 @@ namespace umi3d.common
         }
 
         /// <summary>
-        /// Get the right <see cref="UMI3DObjectKeys"/> for a value of a given type.
-        /// </summary>
-        /// <typeparam name="T"></typeparam>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static Bytable GetType<T>(T value)
-        {
-            switch (value)
-            {
-                case bool b:
-                    return Write(UMI3DObjectKeys.Bool);
-                case double b:
-                    return Write(UMI3DObjectKeys.Double);
-                case float b:
-                    return Write(UMI3DObjectKeys.Float);
-                case int b:
-                    return Write(UMI3DObjectKeys.Int);
-                case SerializableVector2 v:
-                case Vector2 b:
-                    return Write(UMI3DObjectKeys.Vector2);
-                case SerializableVector3 v:
-                case Vector3 b:
-                    return Write(UMI3DObjectKeys.Vector3);
-                case Quaternion q:
-                case SerializableVector4 v:
-                case Vector4 b:
-                    return Write(UMI3DObjectKeys.Vector4);
-                case Color b:
-                    return Write(UMI3DObjectKeys.Color);
-                case TextureDto b:
-                    return Write(UMI3DObjectKeys.TextureDto);
-                default:
-                    return new Bytable();
-            }
-        }
-
-        /// <summary>
         /// Get a bytable from a enumerable set of values of unknown type.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Bytable Write(IEnumerable value)
+        static Bytable WriteIEnumerable(IEnumerable value, params object[] parameters)
         {
-            return WriteCollection(value.Cast<object>());
-        }
-
-        /// <summary>
-        /// Get a bytable from a key-value set of values of unknown type.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static Bytable Write(IDictionary value)
-        {
-            return WriteCollection(value);
+            return WriteCollection(value.Cast<object>(), parameters);
         }
 
         /// <summary>
@@ -405,24 +360,22 @@ namespace umi3d.common
         /// <param name="value"></param>
         /// <returns></returns>
         /// <exception cref="Exception"></exception>
-        public static Bytable Write<T>(T value)
+        public static Bytable Write<T>(T value, params object[] parameters)
         {
             foreach (UMI3DSerializerModule module in modules)
             {
-                if (module.Write<T>(value, out Bytable bc))
+                if (module.Write<T>(value, out Bytable bc, parameters))
                     return bc;
             }
 
             switch (value)
             {
-                case IBytable b:
-                    return b.ToBytableArray();
                 case IDictionary Id:
-                    return Write(Id);
+                    return WriteCollectionIDictionary(Id, parameters);
                 case IEnumerable Ie:
-                    return Write(Ie);
+                    return WriteIEnumerable(Ie, parameters);
                 case DictionaryEntry De:
-                    return Write(De.Key) + Write(De.Value);
+                    return Write(De.Key, parameters) + Write(De.Value, parameters);
                 default:
                     break;
             }
@@ -430,20 +383,42 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
+        public static bool IsCountable<T>()
+        {
+            foreach (UMI3DSerializerModule module in modules)
+            {
+                var r = module.IsCountable<T>();
+                if(r.HasValue)
+                    return r.Value;
+            }
+            throw new Exception($"Missing case [{typeof(T)} was not catched]");
+        }
+
+        public static bool IsCountable<T>(T value)
+        {
+            return IsCountable<T>();
+        }
+
         /// <summary>
         /// Get a bytable from a enumerable set of values of unknown type.
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Bytable WriteCollection<T>(IEnumerable<T> value)
+        public static Bytable WriteCollection<T>(IEnumerable<T> value, params object[] parameters)
         {
-            if (typeof(IBytable).IsAssignableFrom(typeof(T)) || (value.Count() > 0 && !value.Any(e => !typeof(IBytable).IsAssignableFrom(e.GetType()))))
+            if(value is IDictionary dic)
+                return WriteCollectionIDictionary(dic, parameters);
+
+            if (value.Count() > 0)
             {
-                return WriteIBytableCollection(value.Select((e) => e as IBytable));
+                if (typeof(T) == typeof(DictionaryEntryBytable) && value.Cast<DictionaryEntryBytable>().Any(e => !e.IsCountable()))
+                    return ListToIndexesBytable(value, parameters);
+                else if (!IsCountable<T>() || value.Any(e => !IsCountable(e)))
+                    return ListToIndexesBytable(value, parameters);
             }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
             foreach (T v in value)
-                b += Write(v);
+                b += Write(v, parameters);
             return b;
         }
 
@@ -452,11 +427,11 @@ namespace umi3d.common
         /// </summary>
         /// <param name="value"></param>
         /// <returns></returns>
-        public static Bytable WriteCollection(IDictionary value)
+        static Bytable WriteCollectionIDictionary(IDictionary value, params object[] parameters)
         {
-            if (value.Count > 0 && !value.Entries().Any(e => !typeof(IBytable).IsAssignableFrom(e.Value.GetType())))
+            if (value.Count > 0 && value.Entries().Any(e => !IsCountable(e.Key) || !IsCountable(e.Value)))
             {
-                return WriteIBytableCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)));
+                return WriteCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)), parameters);
             }
             Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count);
             foreach (object v in value)
@@ -467,27 +442,55 @@ namespace umi3d.common
         /// <summary>
         /// Utility class for dictionnary serialization of key-value pairs.
         /// </summary>
-        private class DictionaryEntryBytable : IBytable
+        private class DictionaryEntryBytable
         {
             private readonly object key;
-            private readonly IBytable value;
+            private readonly object value;
 
             public DictionaryEntryBytable(DictionaryEntry entry)
             {
                 this.key = entry.Key;
-                this.value = entry.Value as IBytable;
+                this.value = entry.Value;
             }
 
             /// <inheritdoc/>
             public bool IsCountable()
             {
-                return value.IsCountable();
+                return UMI3DSerializer.IsCountable(value);
             }
 
             /// <inheritdoc/>
             public Bytable ToBytableArray(params object[] parameters)
             {
-                return Write(key) + Write(value);
+                return Write(key, parameters) + Write(value, parameters);
+            }
+        }
+
+        private class DictionaryEntryBytableSerializerModule : UMI3DSerializerModule
+        {
+            public bool? IsCountable<T>()
+            {
+                return null; // not possible to knwo without looking at the value
+            }
+
+            public bool Read<T>(ByteContainer container, out bool readable, out T result)
+            {
+                readable = false;
+                result = default;
+                return false;
+            }
+
+            public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
+            {
+                if (value is not DictionaryEntryBytable dictionaryEntryBytable)
+                {
+                    bytable = default;
+                    return false;
+                }
+
+                bytable = dictionaryEntryBytable.ToBytableArray(parameters);
+
+                return true;
             }
         }
 
@@ -509,28 +512,12 @@ namespace umi3d.common
         }
 
         /// <summary>
-        /// Get a <see cref="Bytable"/> from an enumerable set of adequate values and <paramref name="parameters"/>.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        public static Bytable WriteIBytableCollection(IEnumerable<IBytable> ibytes, params object[] parameters)
-        {
-            if (ibytes.Count() > 0)
-            {
-                if (ibytes.First().IsCountable()) return ListToCountBytable(ibytes, parameters);
-                else return ListToIndexesBytable(ibytes, parameters);
-            }
-            return Write(UMI3DObjectKeys.CountArray)
-                + Write(0);
-        }
-
-        /// <summary>
         /// Get a <see cref="Bytable"/> from an enumerable set of <paramref name="operations"/> to apply and their <paramref name="parameters"/>.
         /// </summary>
         /// <param name="operations"></param>
         /// <param name="parameters"></param>
         /// <returns></returns>
-        private static Bytable ListToIndexesBytable(IEnumerable<IBytable> operations, params object[] parameters)
+        private static Bytable ListToIndexesBytable<T>(IEnumerable<T> operations, params object[] parameters)
         {
             Bytable ret = Write(UMI3DObjectKeys.IndexesArray);
 
@@ -542,7 +529,7 @@ namespace umi3d.common
             {
                 int size = operations.Count() * sizeof(int);
                 (int, Func<byte[], int, int, (int, int, int)> f3) func = operations
-                    .Select(o => o.ToBytableArray(parameters))
+                    .Select(o => Write(o,parameters))
                     .Select(c =>
                     {
                         Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { (int, int) cr = c.function(by, i, 0); return (cr.Item1, i, j); };
@@ -572,18 +559,6 @@ namespace umi3d.common
                 return ret + new Bytable(length, f5);
             }
             return ret;
-        }
-
-        /// <summary>
-        /// Get a bytable with a known size from a list of <paramref name="operations"/> to apply and their <paramref name="parameters"/>.
-        /// </summary>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private static Bytable ListToCountBytable(IEnumerable<IBytable> operations, params object[] parameters)
-        {
-            return Write(UMI3DObjectKeys.CountArray)
-                + Write(operations.Count())
-                + operations.Select(op => op.ToBytableArray(parameters));
         }
     }
 }

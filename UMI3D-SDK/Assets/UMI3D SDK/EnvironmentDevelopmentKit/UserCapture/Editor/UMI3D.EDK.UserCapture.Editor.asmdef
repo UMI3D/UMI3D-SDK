@@ -1,0 +1,21 @@
+{
+    "name": "UMI3D.EDK.UserCapture.Editor",
+    "rootNamespace": "",
+    "references": [
+        "UMI3D.Common.Core",
+        "UMI3D.Common.UserCapture",
+        "UMI3D.EDK.Core",
+        "UMI3D.EDK.UserCapture",
+        "UMI3D.EDK.Core.Editor",
+        "inetum.unityUtils"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

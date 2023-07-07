@@ -24,15 +24,6 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Hover state.
         /// </summary>
-        public bool state;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.HoverStateChanged; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters) + UMI3DSerializer.Write(state);
-        }
+        public bool state { get; set; }
     }
 }

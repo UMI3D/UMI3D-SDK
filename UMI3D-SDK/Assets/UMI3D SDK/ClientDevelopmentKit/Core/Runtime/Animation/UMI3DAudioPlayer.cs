@@ -1,5 +1,6 @@
 ﻿/*
 Copyright 2019 - 2023 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -74,7 +75,7 @@ namespace umi3d.cdk
             SetVolumeAttenuationMode(dto.volumeAttenuationMode);
 
             if (dto.volumeAttenuationCurve.keys.Count > 0)
-                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve);
+                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve.Struct());
 
             if (dto.audioResource == null || dto.audioResource.variants == null || dto.audioResource.variants.Count < 1)
             {
@@ -173,9 +174,9 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = (SerializableAnimationCurve)value.property.value;
+                    var curve = (AnimationCurveDto)value.property.value;
                     if (curve.keys.Count > 0)
-                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
                     ADto.volumeAttenuationCurve = curve;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
@@ -249,9 +250,9 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = UMI3DSerializer.Read<SerializableAnimationCurve>(value.container);
+                    var curve = UMI3DSerializer.Read<AnimationCurveDto>(value.container);
                     if (curve.keys.Count > 0)
-                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
 
                     ADto.volumeAttenuationCurve = curve;
                     break;

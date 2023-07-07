@@ -26,12 +26,8 @@ namespace umi3d.worldController
         public const uint RegisterUser = 1;
     }
 
-    public class WorldControllerMessage : IBytable
+    public class WorldControllerMessage
     {
-        public virtual bool IsCountable()
-        {
-            return true;
-        }
 
         public virtual uint messageId => 0;
 

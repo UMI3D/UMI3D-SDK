@@ -25,35 +25,35 @@ namespace umi3d.common
         /// <summary>
         /// Model ressource.
         /// </summary>
-        public ResourceDto mesh = new ResourceDto();
+        public ResourceDto mesh { get; set; } = new ResourceDto();
 
         /// <summary>
         /// Optional id generator for child objects. Can be used to animate sub objects without to split it in different assets. <br/>
         /// {{pid}} will be replaced by the objects parent id. <br/>
         /// {{name}} will be replaced by the sub-object's name (if there is any).
         /// </summary>
-        public string idGenerator = null;
+        public string idGenerator { get; set; } = null;
 
         /// <summary>
         /// If true, add subobjects with id on the loaded mesh to track children (move, rotate, scale, activated, overide material).<br/>
         /// If true, idGenerator must be not null and subobjects must have unique name.<br/>
         /// If false, it is not possible to move the subobjects of this mesh.
         /// </summary>
-        public bool areSubobjectsTracked;
+        public bool areSubobjectsTracked { get; set; }
 
         /// <summary>
         /// State if the subobject was generated in a rightHanded 
         /// </summary>
-        public bool isRightHanded = true;
+        public bool isRightHanded { get; set; } = true;
 
         /// <summary>
         /// If true, the mesh will be used for navmesh generation on the browser.
         /// </summary>
-        public bool isPartOfNavmesh = false;
+        public bool isPartOfNavmesh { get; set; } = false;
 
         /// <summary>
         /// Indicate whether or not the user is allowed to navigate through this object.
         /// </summary>
-        public bool isTraversable = true;
+        public bool isTraversable { get; set; } = true;
     }
 }

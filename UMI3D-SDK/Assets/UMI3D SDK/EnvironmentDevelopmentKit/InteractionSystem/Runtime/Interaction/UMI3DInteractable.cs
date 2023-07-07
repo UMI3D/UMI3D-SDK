@@ -126,12 +126,12 @@ namespace umi3d.edk.interaction
 
             public HoverEventContent(UMI3DUser user, HoveredDto dto) : base(user, dto)
             {
-                position = dto.position;
-                normal = dto.normal;
-                direction = dto.direction;
+                position = dto.position.Struct();
+                normal = dto.normal.Struct();
+                direction = dto.direction.Struct();
             }
 
-            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public HoverEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, Vector3 position, Vector3 normal, Vector3 direction) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.position = position;
                 this.normal = normal;
@@ -274,7 +274,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user"></param>
         /// <param name="dto"></param>
-        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public void Hovered(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             Vector3 pos = UMI3DSerializer.Read<Vector3>(container);
             Vector3 norm = UMI3DSerializer.Read<Vector3>(container);
@@ -300,7 +300,7 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user"></param>
         /// <param name="dto"></param>
-        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public void HoverStateChanged(UMI3DUser user, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             Vector3 pos = UMI3DSerializer.Read<Vector3>(container);
             Vector3 norm = UMI3DSerializer.Read<Vector3>(container);

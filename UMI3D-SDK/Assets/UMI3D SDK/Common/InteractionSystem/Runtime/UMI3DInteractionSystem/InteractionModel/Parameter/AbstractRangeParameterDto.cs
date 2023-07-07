@@ -25,14 +25,14 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Min value of range
         /// </summary>
-        public T min;
+        public T min { get; set; }
         /// <summary>
         /// Max value of range
         /// </summary>
-        public T max;
+        public T max { get; set; }
         /// <summary>
         /// Increment of range between two values
         /// </summary>
-        public T increment;
+        public T increment { get; set; }
     }
 }

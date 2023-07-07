@@ -75,7 +75,7 @@ namespace umi3d.cdk.volumes
             {
                 case BoxDto boxDto:
                     var box = new Box() { id = boxDto.id };
-                    box.SetBounds(new Bounds() { center = boxDto.center, size = boxDto.size });
+                    box.SetBounds(new Bounds() { center = boxDto.center.Struct(), size = boxDto.size.Struct() });
                     box.RootNodeId = dto.rootNodeId;
 
                     primitives.Add(boxDto.id, box);

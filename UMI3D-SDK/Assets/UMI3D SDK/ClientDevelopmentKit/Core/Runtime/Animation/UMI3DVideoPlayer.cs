@@ -1,5 +1,6 @@
 ﻿/*
 Copyright 2019 - 2023 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -55,7 +56,7 @@ namespace umi3d.cdk
         public override bool IsPlaying() => videoPlayer.isPlaying;
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
-        {
+        { 
         }
 
         /// <inheritdoc/>

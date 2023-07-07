@@ -25,16 +25,16 @@ namespace umi3d.common
         /// <summary>
         /// Animator id (optional - used for video texture synchronisation).
         /// </summary>
-        public string animationId = null;
+        public string animationId { get; set; } = null;
 
         /// <summary>
         /// Audio source id (optional - used for video texture synchronisation).
         /// </summary>
-        public string audioSourceId = null;
+        public string audioSourceId { get; set; } = null;
 
         /// <summary>
         /// Streaming user Id (optional - used for video chat).
         /// </summary>
-        public string streamingFromUserId = null;
+        public string streamingFromUserId { get; set; } = null;
     }
 }

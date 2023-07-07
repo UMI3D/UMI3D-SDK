@@ -134,12 +134,12 @@ namespace umi3d.common
 
         public void Read<T>()
         {
-
-            UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
+            UMI3DSerializer.AddModule(UMI3DSerializerModuleUtils.GetModules().ToList());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
 
             T result;
             if (UMI3DSerializer.TryRead<T>(container, out result))

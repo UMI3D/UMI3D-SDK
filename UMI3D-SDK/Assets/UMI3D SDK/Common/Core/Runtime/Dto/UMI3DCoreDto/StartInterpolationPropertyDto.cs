@@ -24,6 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// The value at which to start interpolation.
         /// </summary>
-        public object startValue;
+        public object startValue { get; set; }
     }
 }

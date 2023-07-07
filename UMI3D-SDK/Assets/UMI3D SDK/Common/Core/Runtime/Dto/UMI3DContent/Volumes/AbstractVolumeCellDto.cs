@@ -25,11 +25,11 @@ namespace umi3d.common.volume
         /// <summary>
         /// Node to position the cell in relation to.
         /// </summary>
-        public ulong rootNodeId;
+        public ulong rootNodeId { get; set; }
 
         /// <summary>
         /// Should user be able to enter this volume?
         /// </summary>
-        public bool isTraversable = true;
+        public bool isTraversable { get; set; } = true;
     }
 }

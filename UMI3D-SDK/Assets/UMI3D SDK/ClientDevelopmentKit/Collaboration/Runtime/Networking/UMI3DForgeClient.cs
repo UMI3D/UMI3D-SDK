@@ -16,13 +16,17 @@ using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -297,7 +301,7 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+            var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
             switch (dto)
             {
                 case TokenDto tokenDto:
@@ -335,7 +339,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                SendBinaryData((int)DataChannelTypes.Data, dto.ToBytableArray().ToBytes(), reliable);
+                SendBinaryData((int)DataChannelTypes.Data, UMI3DSerializer.Write(dto).ToBytes(), reliable);
             }
         }
 
@@ -374,7 +378,7 @@ namespace umi3d.cdk.collaboration
 
             if (useDto)
             {
-                var dto = UMI3DDto.FromBson(frame.StreamData.byteArr);
+                var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
 
                 switch (dto)
                 {
@@ -391,7 +395,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DLogger.Log($"Type not catch {dto.GetType()}", scope);
+                            UMI3DLogger.Log($"type not catch {dto.GetType()}", scope);
                         });
                         break;
                 }
@@ -422,7 +426,7 @@ namespace umi3d.cdk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DLogger.Log($"Type not catch {TransactionId}", scope);
+                            UMI3DLogger.Log($"type not catch {TransactionId}", scope);
                         });
                         break;
                 }
@@ -433,6 +437,12 @@ namespace umi3d.cdk.collaboration
         {
             switch (operation.operation)
             {
+                case NavigationModeRequestDto navigationMode:
+                    MainThreadManager.Run(() =>
+                    {
+                        UnityEngine.Debug.Log("TODO : update Navigation mode");
+                    });
+                    break;
                 case FrameRequestDto frame:
                     bool waitforreparenting = true;
                     MainThreadManager.Run(async () =>
@@ -484,15 +494,34 @@ namespace umi3d.cdk.collaboration
                         UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
                     });
                     break;
-                case EmoteDispatchDto emoteDispatchDto:
+                case SetTrackingTargetFPSDto setTargetFPS:
                     MainThreadManager.Run(() =>
                     {
-                        if (emoteDispatchDto.shouldTrigger)
-                            (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)
-                                ?.PlayEmoteOnOtherAvatar(emoteDispatchDto.emoteId, emoteDispatchDto.sendingUserId);
-                        else
-                            (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)
-                                ?.StopEmoteOnOtherAvatar(emoteDispatchDto.emoteId, emoteDispatchDto.sendingUserId);
+                        CollaborativeSkeletonManager.Instance.SetFPSTarget(setTargetFPS.targetFPS);
+                    });
+                    break;
+                case SetStreamedBonesDto streamedBones:
+                    MainThreadManager.Run(() =>
+                    {
+                        CollaborativeSkeletonManager.Instance.SetStreamedBones(streamedBones.streamedBones);
+                    }); 
+                    break;
+                case SetSendingCameraPropertiesDto sendingCamera:
+                    MainThreadManager.Run(() =>
+                    {
+                        CollaborativeSkeletonManager.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
+                    });
+                    break;
+                case SetSendingTrackingDto sendingTracking:
+                    MainThreadManager.Run(() =>
+                    {
+                        CollaborativeSkeletonManager.Instance.SetTrackingSending(sendingTracking.activeSending);
+                    });
+                    break;
+                case ApplyPoseDto playPoseDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        CollaborativeSkeletonManager.Instance.HandlePoseRequest(playPoseDto);
                     });
                     break;
                 default:
@@ -505,9 +534,18 @@ namespace umi3d.cdk.collaboration
         {
             switch (operationId)
             {
+                case UMI3DOperationKeys.FlyingNavigationMode:
+                case UMI3DOperationKeys.LayeredFlyingNavigationMode:
+                case UMI3DOperationKeys.FpsNavigationMode:
+                case UMI3DOperationKeys.LockedNavigationMode:
+                    MainThreadManager.Run(() =>
+                    {
+                        UnityEngine.Debug.Log("TODO : update Navigation mode");
+                    });
+                    break;
                 case UMI3DOperationKeys.NavigationRequest:
                     {
-                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
                         var nav = new NavigateDto() { position = pos };
                         MainThreadManager.Run(() =>
                         {
@@ -517,8 +555,8 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.TeleportationRequest:
                     {
-                        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
                         var nav = new TeleportDto() { position = pos, rotation = rot };
                         MainThreadManager.Run(() =>
                         {
@@ -558,8 +596,8 @@ namespace umi3d.cdk.collaboration
                     break;
                 //case UMI3DOperationKeys.BoardedVehicleRequest:
                 //    {
-                //        SerializableVector3 pos = UMI3DSerializer.Read<SerializableVector3>(container);
-                //        SerializableVector4 rot = UMI3DSerializer.Read<SerializableVector4>(container);
+                //        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                //        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
                 //        ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
                 //        bool stopNavigation = UMI3DSerializer.Read<bool>(container);
                 //        ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);
@@ -584,20 +622,6 @@ namespace umi3d.cdk.collaboration
                 //        });
                 //    }
                 //    break;
-                case UMI3DOperationKeys.EmoteRequest:
-                    {
-                        ulong emoteId = UMI3DSerializer.Read<ulong>(container);
-                        bool trigger = UMI3DSerializer.Read<bool>(container);
-                        ulong sendingUserId = UMI3DSerializer.Read<ulong>(container);
-                        MainThreadManager.Run(() =>
-                        {
-                            if (trigger)
-                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.PlayEmoteOnOtherAvatar(emoteId, sendingUserId);
-                            else
-                                (UMI3DClientUserTracking.Instance as UMI3DCollaborationClientUserTracking)?.StopEmoteOnOtherAvatar(emoteId, sendingUserId);
-                        });
-                    }
-                    break;
                 case UMI3DOperationKeys.GetLocalInfoRequest:
                     string key = UMI3DSerializer.Read<string>(container);
                     MainThreadManager.Run(() =>
@@ -630,6 +654,43 @@ namespace umi3d.cdk.collaboration
                     MainThreadManager.Run(() =>
                     {
                         UMI3DCollaborationClientServer.ReceivedLogoutMessage(forceLogout.reason);
+                    });
+                    break;
+                case UMI3DOperationKeys.SetUTSTargetFPS:
+                    float target = UMI3DSerializer.Read<float>(container);
+                    CollaborativeSkeletonManager.Instance.SetFPSTarget(target);
+                    break;
+                case UMI3DOperationKeys.SetUTSBoneTargetFPS:
+                    float FPStarget = UMI3DSerializer.Read<float>(container);
+                    uint boneId = UMI3DSerializer.Read<uint>(container);
+                    CollaborativeSkeletonManager.Instance.SetBoneFPSTarget(boneId, FPStarget);
+                    break;
+                case UMI3DOperationKeys.SetStreamedBones:
+                    List<uint> streamedBones = UMI3DSerializer.ReadList<uint>(container);
+                    CollaborativeSkeletonManager.Instance.SetStreamedBones(streamedBones);
+                    break;
+                case UMI3DOperationKeys.SetSendingCameraProperty:
+                    bool sendCamera = UMI3DSerializer.Read<bool>(container);
+                    CollaborativeSkeletonManager.Instance.SetCameraPropertiesSending(sendCamera);
+                    break;
+                case UMI3DOperationKeys.SetSendingTracking:
+                    bool sendTracking = UMI3DSerializer.Read<bool>(container);
+                    CollaborativeSkeletonManager.Instance.SetTrackingSending(sendTracking);
+                    break;
+                case UMI3DOperationKeys.PlayPoseRequest:
+                    ulong userID = UMI3DSerializer.Read<ulong>(container);
+                    int indexInList = UMI3DSerializer.Read<int>(container);
+                    bool stopPose = UMI3DSerializer.Read<bool>(container);
+                    ApplyPoseDto playPoseDto = new ApplyPoseDto
+                    {
+                        userID = userID,
+                        indexInList = indexInList,
+                        stopPose = stopPose
+                    };
+
+                    MainThreadManager.Run(() =>
+                    {
+                        CollaborativeSkeletonManager.Instance.HandlePoseRequest(playPoseDto);
                     });
                     break;
                 default:
@@ -674,7 +735,7 @@ namespace umi3d.cdk.collaboration
             if (useDto)
                 SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBson(), false);
             else
-                SendBinaryData((int)DataChannelTypes.Tracking, dto.ToBytableArray().ToBytes(), false);
+                SendBinaryData((int)DataChannelTypes.Tracking, UMI3DSerializer.Write(dto).ToBytes(), false);
         }
 
         /// <inheritdoc/>
@@ -682,25 +743,12 @@ namespace umi3d.cdk.collaboration
         {
             if (useDto)
             {
-                if (UMI3DDto.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
+                if (UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
                 {
-                    foreach (UserTrackingFrameDto trackingFrame in frames.values)
+                    MainThreadManager.Run(() =>
                     {
-                        if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar))
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                (userAvatar as UMI3DCollaborativeUserAvatar).UpdateAvatarPosition(trackingFrame, frame.TimeStep);
-                            });
-                        }
-                        else
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                UMI3DLogger.LogWarning("User Avatar not found.", scope);
-                            });
-                        }
-                    }
+                        CollaborativeSkeletonManager.Instance.UpdateFrames(frames.values);
+                    });
                 }
             }
             else
@@ -709,23 +757,10 @@ namespace umi3d.cdk.collaboration
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);
-                    foreach (UserTrackingFrameDto trackingFrame in frames)
+                    MainThreadManager.Run(() =>
                     {
-                        if (UMI3DClientUserTracking.Instance.embodimentDict.TryGetValue(trackingFrame.userId, out UserAvatar userAvatar) && userAvatar is UMI3DCollaborativeUserAvatar user)
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                user.UpdateAvatarPosition(trackingFrame, frame.TimeStep);
-                            });
-                        }
-                        else
-                        {
-                            MainThreadManager.Run(() =>
-                            {
-                                UMI3DLogger.LogWarning("User Avatar not found.", scope);
-                            });
-                        }
-                    }
+                        CollaborativeSkeletonManager.Instance.UpdateFrames(frames);
+                    });
                 }
                 catch (Exception e)
                 {

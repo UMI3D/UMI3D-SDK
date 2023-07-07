@@ -84,7 +84,7 @@ namespace umi3d.common
             EditorGUI.TextArea(R1, obj.container?.ToString());
             EditorGUI.EndDisabledGroup();
 
-            Rect RE = newRect("Type To Read", position, sl);
+            Rect RE = newRect("type To Read", position, sl);
             RE.width /= 2;
             Rect RB = new Rect(RE);
             RB.x += RE.width;

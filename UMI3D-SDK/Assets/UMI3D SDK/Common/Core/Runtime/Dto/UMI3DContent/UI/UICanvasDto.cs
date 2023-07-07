@@ -26,18 +26,16 @@ namespace umi3d.common
         /// Number of pixels par unit in the UI to use for dynamically created elements.
         /// </summary>
         /// Such dynamically created elements typically includes bitmaps, such as UI texts.
-        public float dynamicPixelsPerUnit;
+        public float dynamicPixelsPerUnit { get; set; }
 
         /// <summary>
         /// Number of pixels that should correspond to one unit in the UI.
         /// </summary>
-        public float referencePixelsPerUnit;
+        public float referencePixelsPerUnit { get; set; }
 
         /// <summary>
         /// Order of the canvas in the rendering of the layer.
         /// </summary>
-        public int orderInLayer;
-
-        public UICanvasDto() : base() { }
+        public int orderInLayer { get; set; }
     }
 }

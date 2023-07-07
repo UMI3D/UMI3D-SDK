@@ -29,28 +29,28 @@ namespace umi3d.common
         /// <summary>
         /// UMI3D id.
         /// </summary>
-        public ulong id;
+        public ulong id { get; set; }
 
         /// <summary>
         /// Id of the library. A unique name.
         /// </summary>
         /// Typically "com.compagny.application".
-        public string libraryId;
+        public string libraryId { get; set; }
 
         /// <summary>
         /// Base path of all URLs in the library.
         /// </summary>
-        public string baseUrl;
+        public string baseUrl { get; set; }
 
         /// <summary>
         /// Version of this library.
         /// </summary>
-        public string version;
+        public string version { get; set; }
 
         /// <summary>
         /// Directories where a stored all the variants of the library.
         /// </summary>
         /// A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.
-        public List<UMI3DLocalAssetDirectory> variants;
+        public List<UMI3DLocalAssetDirectoryDto> variants { get; set; }
     }
 }

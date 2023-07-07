@@ -26,7 +26,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Tools that are in the toolbox themselves DTOs as <see cref="GlobalToolDto"/>.
         /// </summary>
-        public List<GlobalToolDto> tools;
+        public List<GlobalToolDto> tools { get; set; }
 
         public ToolboxDto() : base() { }
     }

@@ -24,22 +24,11 @@ namespace umi3d.common.interaction
         /// <summary>
         /// True if the browser sent a positive answser to the notification request.
         /// </summary>
-        public bool callback;
+        public bool callback { get; set; }
 
         /// <summary>
         /// Notification id.
         /// </summary>
-        public ulong id;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.NotificationCallback; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(id)
-                + UMI3DSerializer.Write(callback);
-        }
+        public ulong id { get; set; }
     }
 }

@@ -1,0 +1,576 @@
+{
+  "$type": "umi3d.common.userCapture.pose.PoseDto, UMI3D.Common.UserCapture",
+  "bones": {
+    "$type": "System.Collections.Generic.List`1[[umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture]], mscorlib",
+    "$values": [
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 7,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 9,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 4,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 8,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 17,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 19,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 14,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 18,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 25,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 24,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 23,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 10,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 11,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 5,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 6,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 30,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 31,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 32,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 33,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 34,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 35,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 39,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 40,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 41,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 36,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 37,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 38,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 27,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 28,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 29,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 12,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 3,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 1,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 2,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 20,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 21,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 15,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 16,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 45,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 46,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 47,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 48,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 49,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 50,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 54,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 54,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 56,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 27,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 28,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      },
+      {
+        "$type": "umi3d.common.userCapture.description.BoneDto, UMI3D.Common.UserCapture",
+        "boneType": 29,
+        "rotation": {
+          "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+          "X": 0.0,
+          "Y": 0.0,
+          "Z": 0.0,
+          "W": 1.0
+        }
+      }
+    ]
+  },
+  "boneAnchor": {
+    "$type": "umi3d.common.userCapture.pose.BonePoseDto, UMI3D.Common.UserCapture",
+    "Bone": 13,
+    "Position": {
+      "$type": "umi3d.common.Vector3Dto, UMI3D.Common.Core",
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0
+    },
+    "Rotation": {
+      "$type": "umi3d.common.Vector4Dto, UMI3D.Common.Core",
+      "X": 0.0,
+      "Y": 0.0,
+      "Z": 0.0,
+      "W": 1.0
+    }
+  },
+  "id": 0
+}

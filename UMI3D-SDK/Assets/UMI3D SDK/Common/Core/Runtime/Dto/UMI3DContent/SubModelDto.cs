@@ -28,38 +28,36 @@ namespace umi3d.common
         /// <summary>
         /// Id of the root object of the model 
         /// </summary>
-        public ulong modelId;
+        public ulong modelId { get; set; }
 
         /// <summary>
         /// Name of the submodel 
         /// </summary>
-        public string subModelName;
+        public string subModelName { get; set; }
 
         /// <summary>
         /// List of submodel name in hierachy from root to this subModel
         /// </summary>
-        public List<string> subModelHierachyNames;
+        public List<string> subModelHierachyNames { get; set; }
 
         /// <summary>
         /// List of submodel index in hierachy from root to this subModel
         /// </summary>
-        public List<int> subModelHierachyIndexes;
+        public List<int> subModelHierachyIndexes { get; set; }
 
         /// <summary>
         /// subModel Loader should apply root model material overrider or ignore it
         /// </summary>
-        public bool ignoreModelMaterialOverride;
+        public bool ignoreModelMaterialOverride { get; set; }
 
         /// <summary>
         /// If true, the mesh will be used for navmesh generation on the browser.
         /// </summary>
-        public bool isPartOfNavmesh = false;
+        public bool isPartOfNavmesh { get; set; } = false;
 
         /// <summary>
         /// Indicate whether or not the user is allowed to navigate through this object.
         /// </summary>
-        public bool isTraversable = true;
-
-        public SubModelDto() : base() { }
+        public bool isTraversable { get; set; } = true;
     }
 }

@@ -36,17 +36,17 @@ namespace umi3d.cdk
         {
             UMI3DAbstractAnimation animationInstance = value.dto switch
             {
-                UMI3DAnimationDto anim => new UMI3DAnimation(anim),
+                UMI3DAnimationDto anim         => new UMI3DAnimation(anim),
                 UMI3DAnimatorAnimationDto anim => new UMI3DAnimatorAnimation(anim),
-                UMI3DNodeAnimationDto anim => new UMI3DNodeAnimation(anim),
-                UMI3DVideoPlayerDto anim => UMI3DVideoPlayerLoader.LoadVideoPlayer(anim),
-                UMI3DAudioPlayerDto anim => new UMI3DAudioPlayer(anim),
+                UMI3DNodeAnimationDto anim     => new UMI3DNodeAnimation(anim),
+                UMI3DVideoPlayerDto anim       => UMI3DVideoPlayerLoader.LoadVideoPlayer(anim),
+                UMI3DAudioPlayerDto anim       => new UMI3DAudioPlayer(anim),
                 _ => null
             };
 
             if (animationInstance is not null)
             {
-                UMI3DEnvironmentLoader.RegisterEntityInstance(animationInstance.Id, value.dto, animationInstance).NotifyLoaded();
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(animationInstance.Id, value.dto, animationInstance).NotifyLoaded();
                 animationInstance.Init();
             }
             return Task.CompletedTask;
@@ -81,10 +81,10 @@ namespace umi3d.cdk
                 return true;
 
             if (await UMI3DAnimation.ReadMyUMI3DProperty(value))
-                return true;
+                    return true;
             if (await UMI3DAudioPlayer.ReadMyUMI3DProperty(value))
-                return true;
-            return await UMI3DNodeAnimation.ReadMyUMI3DProperty(value);
+                    return true;
+             return await UMI3DNodeAnimation.ReadMyUMI3DProperty(value);
         }
     }
 }

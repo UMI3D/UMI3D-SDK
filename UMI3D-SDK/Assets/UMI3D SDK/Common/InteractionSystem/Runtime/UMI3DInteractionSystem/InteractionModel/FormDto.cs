@@ -27,7 +27,7 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Fields of the form that are themselves DTOs as <see cref="AbstractParameterDto"/>.
         /// </summary>
-        public List<ulong> fields = new List<ulong>();
+        public List<ulong> fields { get; set; } = new List<ulong>();
 
         public FormDto() : base() { }
     }

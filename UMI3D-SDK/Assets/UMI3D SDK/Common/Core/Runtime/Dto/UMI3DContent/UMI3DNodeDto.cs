@@ -27,29 +27,29 @@ namespace umi3d.common
         /// <summary>
         /// Is the permanently object constently facing the users' billboard on the X-axis?
         /// </summary>
-        public bool xBillboard = false;
+        public bool xBillboard { get; set; } = false;
 
         /// <summary>
         /// Is the permanently object constently facing the users' billboard on the Y-axis?
         /// </summary>
-        public bool yBillboard = false;
+        public bool yBillboard { get; set; } = false;
 
         /// <summary>
         /// Collider attached to this node.
         /// </summary>
-        public ColliderDto colliderDto = null;
+        public ColliderDto colliderDto { get; set; } = null;
 
         /// <summary>
         /// Levels of details available for this node.
         /// </summary>
-        public UMI3DLodDto lodDto;
+        public UMI3DLodDto lodDto { get; set; }
 
         /// <summary>
         /// Contains a collection of UMI3DId refering entities with skinnedMeshRenderer 
         /// and an interger that is the position of this node in the bones array of the skinnedMeshRenderer.
         /// Used only with Model with tracked sub object and skinnedMeshRenderer
         /// </summary>
-        public Dictionary<ulong, int> skinnedRendererLinks = new Dictionary<ulong, int>();
+        public Dictionary<ulong, int> skinnedRendererLinks { get; set; } = new Dictionary<ulong, int>();
 
     }
 }
