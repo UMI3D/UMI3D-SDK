@@ -28,7 +28,7 @@ using UnityEngine;
 
 public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 {
-    const string filename =  "UMI3DBuilderData";
+    const string filename = "UMI3DBuilderData";
     ScriptableLoader<UMI3DBuilderData> data;
     VersionGUI version;
     LogScrollView info;
@@ -119,20 +119,20 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
             info.NewTitle($"Build Packages");
             version.UpdateVersion();
 
-            cleanBuildFolder( data.data.PackageFolderPath);
+            cleanBuildFolder(data.data.PackageFolderPath);
 
             await Task.Delay(100);
             // Build player.
-            var assets = Build(data.data.PackageFolderPath);
+            var assets = await Build(data.data.PackageFolderPath);
 
-            foreach(var asset in assets)
+            foreach (var asset in assets)
                 info.NewLine($"Build {asset.Item2} : {asset.Item1}");
 
             await Task.Delay(100);
 
             if (comit)
             {
-                info.NewTitle( $"Commit");
+                info.NewTitle($"Commit");
 
                 await Git.CommitAll(CommitMessage, info.NewLine, info.NewError);
 
@@ -162,9 +162,9 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         Directory.CreateDirectory(buildFolder);
     }
 
-    List<(string, string)> Build(string buildFolder)
+    async Task<List<(string, string)>> Build(string buildFolder)
     {
-        return PackagesExporter.ExportPackages(buildFolder+"/");
+        return await PackagesExporter.ExportPackages(buildFolder + "/");
     }
     #endregion
 }

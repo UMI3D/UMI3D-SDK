@@ -22,7 +22,41 @@ using System.IO;
 using System.Linq;
 using inetum.unityUtils.editor;
 using System.Threading.Tasks;
+using MathNet.Numerics.RootFinding;
+using UnityEditor.Build;
+using UnityEditor.Build.Reporting;
 #if UNITY_EDITOR
+
+public class BuildEvents : IPreprocessBuildWithReport, IPostprocessBuildWithReport
+{
+    public int callbackOrder { get { return 0; } }
+
+    public static bool IsBuilding { get; private set; }
+
+    public void OnPreprocessBuild(BuildReport report)
+    {
+        IsBuilding = true;
+        Debug.Log("Build started");
+    }
+
+    public void OnPostprocessBuild(BuildReport report)
+    {
+        IsBuilding = false;
+        Debug.Log("Build finished");
+    }
+
+    public async Task WaitBuildingEnd()
+    {
+        Debug.Log("Build start");
+        await Task.Delay(100000);
+        while (IsBuilding)
+        {
+            await Task.Delay(1000);
+        }
+        Debug.Log("Build end");
+    }
+}
+
 public class PackagesExporter
 {
     static string packageFolder = "../Packages/";
@@ -113,25 +147,27 @@ public class PackagesExporter
     }
 
     //[MenuItem("UMI3D/Export Packages")]
-    public static void ExportPackagesAll()
+    public static async Task ExportPackagesAll()
     {
-        ExportPackages(true, "../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+       await ExportPackages(true, "../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
     }
 
-    public static List<(string, string)> ExportPackages(string path)
+    public static async Task <List<(string, string)>> ExportPackages(string path)
     {
-        return ExportPackages(true, path, ExportPackageOptions.Recurse);
+        return await ExportPackages(true, path, ExportPackageOptions.Recurse);
     }
 
 
     //[MenuItem("UMI3D/Export Packages (EDK & CDK only)")]
-    static void ExportPackagesEDKCDK()
+    static async Task ExportPackagesEDKCDK()
     {
-        ExportPackages(false,"../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+       await ExportPackages(false,"../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
     }
 
-    static List<(string, string)> ExportPackages(bool all, string path, ExportPackageOptions flags)
+    static async Task<List <(string, string)>> ExportPackages(bool all, string path, ExportPackageOptions flags)
     {
+        BuildEvents buildEvents = new();
+
         packageFolder = path;
         var fullpath = Application.dataPath + "/../" + packageFolder;
         var core = new List<string> { assetCommon + coreFolder, assetEDK + coreFolder, assetCDK + coreFolder };
@@ -180,19 +216,27 @@ public class PackagesExporter
             list.Add((Application.dataPath + "/../" + pathServerStarterKit, StarterKit));
 
             AssetDatabase.ExportPackage(assetDependencies, pathDependencies, flags );
+            await buildEvents.WaitBuildingEnd();
             AssetDatabase.ExportPackage(core.ToArray(), pathCore, flags);
+            await buildEvents.WaitBuildingEnd();
             AssetDatabase.ExportPackage(interaction.ToArray(), pathInteractionSystem, flags);
+            await buildEvents.WaitBuildingEnd();
             AssetDatabase.ExportPackage(userCapture.ToArray(), pathUserCapture, flags);
+            await buildEvents.WaitBuildingEnd();
             AssetDatabase.ExportPackage(collaboration.ToArray(), pathCollaboration, flags);
+            await buildEvents.WaitBuildingEnd();
 
             AssetDatabase.ExportPackage(ServerStarterKit.ToArray(), pathServerStarterKit, flags);
+            await buildEvents.WaitBuildingEnd();
         }
 
         list.Add((Application.dataPath + "/../" + pathCdk, Cdk));
         list.Add((Application.dataPath + "/../" + pathEdk, Edk));
 
         AssetDatabase.ExportPackage(cdk, pathCdk, flags);
+        await buildEvents.WaitBuildingEnd();
         AssetDatabase.ExportPackage(edk, pathEdk, flags);
+        await buildEvents.WaitBuildingEnd();
 
         return list;
     }
