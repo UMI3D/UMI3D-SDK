@@ -33,20 +33,6 @@ namespace umi3d.edk.core
 
         #region Dependencies Injection
 
-        protected IUMI3DServer UMI3DServerService
-        {
-            get
-            {
-                _umi3dServerService ??= UMI3DServer.Instance;
-                return _umi3dServerService;
-            }
-            private set
-            {
-                _umi3dServerService = value;
-            }
-        }
-        private IUMI3DServer _umi3dServerService;
-
         protected IUMI3DEnvironmentManager UMI3DEnvironmentService
         {
             get
@@ -66,9 +52,8 @@ namespace umi3d.edk.core
             // lazy initialilisation of services because singlebahviour cannot be instanciated during serialization time (e.g. UMI3DEmotes)
         }
 
-        protected AbstractLoadableEntity(IUMI3DServer umi3dServerService, IUMI3DEnvironmentManager umi3dEnvironmentService)
+        protected AbstractLoadableEntity(IUMI3DEnvironmentManager umi3dEnvironmentService)
         {
-            this.UMI3DServerService = umi3dServerService;
             this.UMI3DEnvironmentService = umi3dEnvironmentService;
         }
 
@@ -108,7 +93,7 @@ namespace umi3d.edk.core
             var operation = new LoadEntity()
             {
                 entities = new List<UMI3DLoadableEntity>() { this },
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServerService.UserSetWhenHasJoined()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DEnvironmentService.GetJoinedUserSet()
             };
 
             return operation;
@@ -120,7 +105,7 @@ namespace umi3d.edk.core
             var operation = new DeleteEntity()
             {
                 entityId = Id(),
-                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServerService.UserSet()
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DEnvironmentService.GetJoinedUserSet()
             };
             return operation;
         }
