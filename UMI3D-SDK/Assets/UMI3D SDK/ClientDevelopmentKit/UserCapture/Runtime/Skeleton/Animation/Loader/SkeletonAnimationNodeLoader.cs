@@ -15,14 +15,17 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation
@@ -53,7 +56,7 @@ namespace umi3d.cdk.userCapture.animation
                                            IUMI3DResourcesManager resourcesManager,
                                            ICoroutineService coroutineManager,
                                            ISkeletonManager personnalSkeletonService,
-                                           IUMI3DClientServer clientServer) 
+                                           IUMI3DClientServer clientServer)
             : base(environmentManager, loadingManager, resourcesManager, coroutineManager)
         {
             this.personnalSkeletonService = personnalSkeletonService;
@@ -92,7 +95,7 @@ namespace umi3d.cdk.userCapture.animation
             {
                 UMI3DLogger.LogWarning($"Cannot load skeleton animation {skeletonNodeDto.id}. No animator was found on node for user {skeletonNodeDto.userId}. ", DEBUG_SCOPE);
                 return;
-            }   
+            }
 
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; // required for applying movements on your body when you're not looking at it
 

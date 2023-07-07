@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Linq;
+
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
