@@ -64,15 +64,18 @@ namespace umi3d.cdk.collaboration.userCapture.animation
             var skeleton = collaborativeSkeletonsmanager.TryGetSkeletonById(userId);
             if (skeleton != null)
             {
-                // add animated skeleton to subskeleton list and re-order it by descending priority
-                var animatedSkeletons = skeleton.Skeletons
+                lock (skeleton.Skeletons) // loader can start parallel async task
+                {
+                    // add animated skeleton to subskeleton list and re-order it by descending priority
+                    var animatedSkeletons = skeleton.Skeletons
                                         .Where(x => x is AnimatedSubskeleton)
                                         .Cast<AnimatedSubskeleton>()
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-                skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
-                skeleton.Skeletons.AddRange(animatedSkeletons);
+                    skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                    skeleton.Skeletons.AddRange(animatedSkeletons);
+                }
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)

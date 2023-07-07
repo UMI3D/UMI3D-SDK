@@ -289,15 +289,19 @@ namespace umi3d.cdk.userCapture.animation
         protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton subskeleton)
         {
             var skeleton = personnalSkeletonService.personalSkeleton;
+
             // add animated skeleton to subskeleton list and re-order it by descending priority
-            var animatedSkeletons = skeleton.Skeletons
+            lock (skeleton.Skeletons) // loader can start parallel async task
+            {
+                var animatedSkeletons = skeleton.Skeletons
                                         .Where(x => x is AnimatedSubskeleton)
                                         .Cast<AnimatedSubskeleton>()
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-            personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
-            personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
+                personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
+            }
 
             // if it is the browser, register that it is required to delete animated skeleton on leaving
             if (!isRegisteredForPersonalSkeletonCleanup)
