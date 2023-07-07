@@ -37,6 +37,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
+            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_BINDING_SCENE_NAME);
             // Destroy used singletons preventively here
             ClearSingletons();
         }
@@ -54,6 +55,12 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void TearDown()
         {
             ClearSingletons();
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            SceneManager.UnloadSceneAsync(PlayModeTestHelper.EMPTY_BINDING_SCENE_NAME);
         }
 
         private void ClearSingletons()

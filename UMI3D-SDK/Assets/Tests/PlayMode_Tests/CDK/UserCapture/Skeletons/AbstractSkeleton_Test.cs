@@ -23,6 +23,7 @@ using umi3d.cdk.userCapture.animation;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
+using umi3d.common.utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 
@@ -32,6 +33,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
     {
         protected AbstractSkeleton abstractSkeleton;
         protected GameObject skeletonGo;
+        private Mock<IUnityMainThreadDispatcher> unityMainThreadDispatcherMock;
 
         [OneTimeSetUp]
         public virtual void OneTimeSetup()
@@ -46,6 +48,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             skeletonGo = new GameObject("Susbkeleton");
             UnityEngine.Object.Instantiate(skeletonGo);
+
+            unityMainThreadDispatcherMock = new Mock<IUnityMainThreadDispatcher>();
         }
 
         [TearDown]
@@ -88,7 +92,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
+            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
             animatedSkeletonMock.Setup(x => x.GetPose()).Returns(new PoseDto());
 
             List<AnimatedSubskeleton> animatedSubskeletons = new()
@@ -118,7 +122,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null);
+            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
             PoseDto poseDto = new PoseDto();
             poseDto.SetBonePoseDtoArray(new List<BoneDto>
             {
