@@ -14,10 +14,10 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.emotes
 {
     /// <summary>
     /// Manager that handles emotes
@@ -85,20 +85,24 @@ namespace umi3d.cdk.collaboration
 
         #region Dependencies Injection
 
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
-        private readonly UMI3DCollaborationClientServer collabClientServerService;
+        private readonly ILoadingManager environmentLoaderService;
+        private readonly IEnvironmentManager environmentManager;
+        private readonly IUMI3DCollaborationClientServer collabClientServerService;
 
         public EmoteManager() : base()
         {
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentManager = UMI3DCollaborationEnvironmentLoader.Instance;
             collabClientServerService = UMI3DCollaborationClientServer.Instance;
         }
 
-        public EmoteManager(UMI3DEnvironmentLoader environmentLoader,
-                            UMI3DCollaborationClientServer collabClientServerService)
+        public EmoteManager(ILoadingManager environmentLoader,
+                            IEnvironmentManager environmentManager,
+                            IUMI3DCollaborationClientServer collabClientServerService)
                             : base()
         {
             environmentLoaderService = environmentLoader;
+            this.environmentManager = environmentManager;
             this.collabClientServerService = collabClientServerService;
         }
 
@@ -142,7 +146,7 @@ namespace umi3d.cdk.collaboration
 
             emoteConfigDto = dto;
 
-            if (!environmentLoaderService.isEnvironmentLoaded)
+            if (!environmentManager.loaded)
                 environmentLoaderService.onEnvironmentLoaded.AddListener(LoadEmotes);
             else //sometimes the environment is already loaded when loading emotes
                 LoadEmotes();
@@ -276,7 +280,7 @@ namespace umi3d.cdk.collaboration
         private void StartPlayMode(Emote emote)
         {
             playingEmote = emote;
-            playingEmoteAnimation = environmentLoaderService.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
+            playingEmoteAnimation = environmentManager.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
             playingEmoteAnimation.AnimationEnded += StopEmote;
         }
 

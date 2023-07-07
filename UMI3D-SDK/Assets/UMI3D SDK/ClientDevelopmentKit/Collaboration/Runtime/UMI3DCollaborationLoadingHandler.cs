@@ -14,17 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
+using umi3d.cdk.collaboration.emotes;
+using umi3d.cdk.collaboration.userCapture;
 
 namespace umi3d.cdk.collaboration
 {
     /// <summary>
-    /// <inheritdoc/> 
+    /// <inheritdoc/>
     /// Specialized for collaborative browsers.
     /// </summary>
     public class UMI3DCollaborationLoadingHandler : UMI3DLoadingHandler
     {
         #region Emotes
+
         private IEmoteService emoteService;
 
         #endregion Emotes

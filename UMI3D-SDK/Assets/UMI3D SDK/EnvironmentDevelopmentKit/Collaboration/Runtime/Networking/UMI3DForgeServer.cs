@@ -20,9 +20,13 @@ using System.Collections.Generic;
 using umi3d.cdk.collaboration;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.tracking;
+using umi3d.edk.collaboration.emotes;
+using umi3d.edk.collaboration.tracking;
 using umi3d.edk.interaction;
-using umi3d.edk.userCapture;
+using umi3d.edk.userCapture.tracking;
 using umi3d.edk.volume;
 using UnityEngine;
 using UnityEngine.Events;
@@ -298,7 +302,7 @@ namespace umi3d.edk.collaboration
                 switch (dto)
                 {
 
-                    case common.userCapture.UserCameraPropertiesDto cam:
+                    case UserCameraPropertiesDto cam:
                         MainThreadManager.Run(() =>
                         {
                             ///TODO
@@ -419,18 +423,12 @@ namespace umi3d.edk.collaboration
 
         #region avatar
 
-        public static event Action<UserTrackingFrameDto, ulong> avatarFrameEvent;
-
-        public static void RequestAvatarListener(UnityAction<common.userCapture.UserTrackingFrameDto, ulong> action, string reason)
-        {
-            // do something with reason
-
-            avatarFrameEvent += (frame, userId) => action.Invoke(frame, userId);
-        }
-
         /// <inheritdoc/>
         protected override void OnAvatarFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
+            if (!UMI3DCollaborationServer.Exists)
+                return;
+
             UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null) return;
 
@@ -448,36 +446,16 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                trackingFrame = new UserTrackingFrameDto();
-
                 var container = new ByteContainer(frame);
-                uint id = UMI3DSerializer.Read<uint>(container);
-                if (id == UMI3DOperationKeys.UserTrackingFrame)
-                {
-                    trackingFrame.userId = UMI3DSerializer.Read<ulong>(container);
-                    trackingFrame.parentId = UMI3DSerializer.Read<ulong>(container);
-                    //trackingFrame.skeletonHighOffset = UMI3DSerializer.Read<float>(container);
-                    trackingFrame.position = UMI3DSerializer.Read<Vector3Dto>(container);
-                    trackingFrame.rotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                    //trackingFrame.refreshFrequency = UMI3DSerializer.Read<float>(container);
-                    trackingFrame.trackedBones = UMI3DSerializer.ReadList<common.userCapture.ControllerDto>(container);
-                }
+                trackingFrame = UMI3DSerializer.Read<UserTrackingFrameDto>(container);
             }
 
             if (trackingFrame == null)
                 return;
 
-            avatarFrameEvent?.Invoke(trackingFrame, server.Time.Timestep);
+            UMI3DTrackingManager.Instance.OnAvatarFrameReceived(trackingFrame, server.Time.Timestep);
 
             user.CurrentTrackingFrame = trackingFrame;
-
-            MainThreadManager.Run(() =>
-            {   
-                ///TODO 
-                ///
-
-                //UMI3DEmbodimentManager.Instance.UserTrackingReception(trackingFrame, user.Id(), server.Time.Timestep);
-            });
 
             trackingRelay.SetFrame(player, trackingFrame);
         }

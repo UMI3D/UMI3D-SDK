@@ -15,13 +15,16 @@ limitations under the License.
 */
 
 using System.Linq;
-
+using System.Threading.Tasks;
+using umi3d.cdk.binding;
 using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
-
+using umi3d.common.userCapture.binding;
+using umi3d.common.userCapture.description;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.binding
 {
     /// <summary>
     /// Loader for bone bindings, i.e. <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.
@@ -32,7 +35,7 @@ namespace umi3d.cdk.userCapture
 
         #region DependencyInjection
 
-        private readonly UMI3DEnvironmentLoader environmentService;
+        private readonly IEnvironmentManager environmentService;
         private readonly ISkeletonManager personnalSkeletonService;
 
         public UserCaptureBindingLoader() : base()
@@ -42,9 +45,10 @@ namespace umi3d.cdk.userCapture
         }
 
         public UserCaptureBindingLoader(IBindingBrowserService bindingManager,
-                                            UMI3DEnvironmentLoader environmentService,
-                                            ISkeletonManager personnalSkeletonService)
-                                            : base(bindingManager, environmentService)
+                                        IEnvironmentManager environmentService,
+                                        ILoadingManager loadingManager,
+                                        ISkeletonManager personnalSkeletonService)
+             : base(loadingManager, environmentService, bindingManager)
         {
             this.environmentService = environmentService;
             this.personnalSkeletonService = personnalSkeletonService;
@@ -53,14 +57,14 @@ namespace umi3d.cdk.userCapture
         #endregion DependencyInjection
 
         /// <inheritdoc/>
-        protected override AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case NodeBindingDataDto
                      or MultiBindingDataDto:
                     {
-                        return base.LoadData(boundNodeId, dto);
+                        return await base.LoadData(boundNodeId, dto);
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {

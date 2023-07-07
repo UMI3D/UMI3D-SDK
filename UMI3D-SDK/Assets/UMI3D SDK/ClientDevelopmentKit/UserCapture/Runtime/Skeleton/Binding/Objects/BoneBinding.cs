@@ -14,11 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.cdk.binding;
 using umi3d.common;
-using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.binding
 {
     /// <summary>
     /// Client support for bone binding.

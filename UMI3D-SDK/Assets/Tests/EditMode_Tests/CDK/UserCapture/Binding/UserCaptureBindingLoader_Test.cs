@@ -14,17 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using EditMode_Tests.Core.Bindings.CDK;
+using EditMode_Tests.Core.Binding.CDK;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.cdk;
+using umi3d.cdk.binding;
 using umi3d.cdk.userCapture;
-using umi3d.common;
+using umi3d.cdk.userCapture.binding;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 
-namespace EditMode_Tests.UserCapture.Bindings.CDK
+namespace EditMode_Tests.UserCapture.Binding.CDK
 {
     public class UserCaptureBindingLoader_Test : BindingLoader_Test
     {
@@ -43,9 +46,13 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
         public override void SetUp()
         {
             bindingManagementServiceMock = new();
-            environmentLoaderServiceMock = new();
+            environmentManagerMock = new();
+            loadingManagerMock = new();
             skeletonServiceMock = new();
-            bindingLoader = new UserCaptureBindingLoader(bindingManagementServiceMock.Object, environmentLoaderServiceMock.Object, skeletonServiceMock.Object);
+            bindingLoader = new UserCaptureBindingLoader(bindingManagementServiceMock.Object,
+                                                         environmentManagerMock.Object,
+                                                         loadingManagerMock.Object,
+                                                         skeletonServiceMock.Object);
         }
 
         [TearDown]
@@ -88,9 +95,9 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            environmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
@@ -100,7 +107,7 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
@@ -126,9 +133,9 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            environmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
             skeletonServiceMock.Setup(x => x.personalSkeleton).Returns(personalSkeletonMock.Object);
 
@@ -138,7 +145,7 @@ namespace EditMode_Tests.UserCapture.Bindings.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 

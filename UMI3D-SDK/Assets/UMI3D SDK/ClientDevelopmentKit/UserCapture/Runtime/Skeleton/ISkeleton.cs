@@ -15,9 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-
-using umi3d.common.userCapture;
-
+using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.tracking;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -35,7 +34,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// User's registered id
         /// </summary>
-        public ulong userId { get; }
+        public ulong UserId { get; }
 
         #region Data struture
 

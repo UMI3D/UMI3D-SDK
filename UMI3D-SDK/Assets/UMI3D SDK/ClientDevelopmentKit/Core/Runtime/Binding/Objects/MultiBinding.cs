@@ -16,10 +16,10 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.common;
+using umi3d.common.binding;
 using UnityEngine;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.binding
 {
     /// <summary>
     /// Client support for multi-binding, several bindings on same bound node.

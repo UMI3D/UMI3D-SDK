@@ -21,10 +21,12 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk;
-using umi3d.common;
+using umi3d.cdk.binding;
+using umi3d.common.binding;
 using UnityEngine;
+using UnityEngine.Events;
 
-namespace EditMode_Tests.Core.Bindings.CDK
+namespace EditMode_Tests.Core.Binding.CDK
 {
     public class BindingManager_Test
     {
@@ -32,47 +34,33 @@ namespace EditMode_Tests.Core.Bindings.CDK
 
         private Mock<BindingManager> mockBindingManager;
 
-        private Mock<UMI3DEnvironmentLoader> mockEnvironmentLoader;
+        private Mock<IUMI3DClientServer> mockClientServer;
 
-        private Mock<CoroutineManager> mockCoroutineService;
+        private Mock<ILateRoutineService> mockLateRoutineService;
 
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
             if (BindingManager.Exists)
                 BindingManager.Destroy();
-
-            if (UMI3DEnvironmentLoader.Exists)
-                UMI3DEnvironmentLoader.Destroy();
-
-            if (CoroutineManager.Exists)
-                CoroutineManager.Destroy();
         }
 
         [SetUp]
         public void SetUp()
         {
-            mockCoroutineService = new Mock<CoroutineManager>();
-            mockEnvironmentLoader = new Mock<UMI3DEnvironmentLoader>();
-            mockBindingManager = new Mock<BindingManager>(mockCoroutineService.Object, mockEnvironmentLoader.Object);
+            mockLateRoutineService = new Mock<ILateRoutineService>();
+            mockClientServer = new Mock<IUMI3DClientServer>();
+            mockBindingManager = new Mock<BindingManager>(mockLateRoutineService.Object, mockClientServer.Object);
             mockBindingManager.CallBase = true;
         }
 
         [TearDown]
         public void TearDown()
         {
-            mockCoroutineService.Reset();
-            mockEnvironmentLoader.Reset();
             mockBindingManager.Reset();
 
             if (BindingManager.Exists)
                 BindingManager.Destroy();
-
-            if (UMI3DEnvironmentLoader.Exists)
-                UMI3DEnvironmentLoader.Destroy();
-
-            if (CoroutineManager.Exists)
-                CoroutineManager.Destroy();
         }
 
         #region UpdateBindingActivation
@@ -122,13 +110,13 @@ namespace EditMode_Tests.Core.Bindings.CDK
             var binding = new NodeBinding(nodeBindingDto, null, null);
 
             var initialSize = bindingManager.Bindings.Count;
-            mockCoroutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
+            mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
 
             // WHEN
             bindingManager.AddBinding(1005uL, binding);
 
             // THEN
-            mockCoroutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
+            mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
             Assert.AreEqual(initialSize + 1, bindingManager.Bindings.Count);
         }
 
@@ -144,13 +132,14 @@ namespace EditMode_Tests.Core.Bindings.CDK
             var nodeBindingDto = new NodeBindingDataDto() { parentNodeId = 1005uL, priority = 10 };
             var binding = new NodeBinding(nodeBindingDto, null, null);
             var initialSize = bindingManager.Bindings.Count;
-            mockCoroutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
+            mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
+            mockClientServer.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
 
             // WHEN
             bindingManager.AddBinding(1005uL, binding);
 
             // THEN
-            mockCoroutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Once());
+            mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Once());
             Assert.AreEqual(initialSize + 1, bindingManager.Bindings.Count);
         }
 
@@ -177,7 +166,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
             bindingManager.RemoveBinding(otherBoundNodeId);
 
             // THEN
-            mockCoroutineService.Verify(x => x.DettachCoroutine(It.IsAny<Coroutine>()), Times.Never());
+            mockLateRoutineService.Verify(x => x.DettachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
             Assert.AreEqual(initialSize, bindingManager.Bindings.Count);
         }
 
@@ -194,7 +183,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
 
             // GIVEN
             int initialSize = bindingManager.Bindings.Count;
-            mockCoroutineService.Setup(x => x.DettachCoroutine(It.IsAny<Coroutine>()));
+            mockLateRoutineService.Setup(x => x.DettachLateRoutine(It.IsAny<IEnumerator>()));
 
             // WHEN
             bindingManager.RemoveBinding(boundNodeId);
@@ -227,6 +216,7 @@ namespace EditMode_Tests.Core.Bindings.CDK
             mockBindingManager.Setup(x => x.BindingApplicationRoutine()).CallBase();
             mockBindingManager.Setup(x => x.AreBindingsActivated).Returns(true);
             mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
+            mockClientServer.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
 
             Queue<Mock<NodeBinding>> mockNodeBindings = new Queue<Mock<NodeBinding>>();
             foreach (var v in testValue)

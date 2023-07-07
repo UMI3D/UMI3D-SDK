@@ -15,8 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.userCapture;
-
+using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture

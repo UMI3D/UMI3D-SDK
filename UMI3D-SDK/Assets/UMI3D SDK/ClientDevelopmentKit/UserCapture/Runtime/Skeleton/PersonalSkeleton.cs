@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.userCapture;
+using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
+using umi3d.common.userCapture.tracking;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -28,9 +30,10 @@ namespace umi3d.cdk.userCapture
 
         protected void Start()
         {
+            PoseSkeleton = new PoseSkeleton();
             Skeletons = new List<ISubSkeleton>
             {
-                TrackedSkeleton, poseSkeleton
+                TrackedSkeleton, PoseSkeleton
             };
         }
 

@@ -14,10 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+
+namespace umi3d.common.collaboration.emotes
 {
+    /// <summary>
+    /// Serializer for <see cref="EmoteRequestDto"/>.
+    /// </summary>
     public class EmoteRequestSerializerModule : UMI3DSerializerModule<EmoteRequestDto>
     {
+        /// <inheritdoc/>
         public bool Read(ByteContainer container, out bool readable, out EmoteRequestDto result)
         {
             readable = true;
@@ -39,6 +44,7 @@ namespace umi3d.common.collaboration
             return readable;
         }
 
+        /// <inheritdoc/>
         public bool Write(EmoteRequestDto dto, out Bytable bytable, params object[] parameters)
         {
             bytable = UMI3DSerializer.Write(UMI3DOperationKeys.EmoteRequest)
@@ -47,6 +53,7 @@ namespace umi3d.common.collaboration
             return true;
         }
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return true;

@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common
+namespace umi3d.common.binding
 {
     /// <summary>
     /// Node binding data, required to bind two nodes together.

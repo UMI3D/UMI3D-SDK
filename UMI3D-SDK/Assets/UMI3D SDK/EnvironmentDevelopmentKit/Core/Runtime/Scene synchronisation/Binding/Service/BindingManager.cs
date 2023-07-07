@@ -20,7 +20,7 @@ using System.Linq;
 
 using umi3d.common;
 
-namespace umi3d.edk
+namespace umi3d.edk.binding
 {
     /// <summary>
     /// Manage bindings from envrionment side
@@ -41,7 +41,7 @@ namespace umi3d.edk
 
         #region DI
 
-        private readonly UMI3DServer umi3dServerService;
+        private readonly IUMI3DServer umi3dServerService;
         //private readonly UMI3DEnvironment umi3dEnvironmentService;
 
         public BindingManager() : base()
@@ -50,7 +50,7 @@ namespace umi3d.edk
             Init();
         }
 
-        public BindingManager(UMI3DServer umi3dServerService) : base()
+        public BindingManager(IUMI3DServer umi3dServerService) : base()
         {
             this.umi3dServerService = umi3dServerService;
             Init();
@@ -69,7 +69,7 @@ namespace umi3d.edk
             {
                 Transaction t = new() { reliable = true };
                 foreach (var (_, binding) in bindings.GetValue())
-                    t.AddIfNotNull(binding.GetLoadEntity());
+                    t.AddIfNotNull(binding.GetLoadEntity(new() { user }));
                 t.Dispatch();
             }
         }

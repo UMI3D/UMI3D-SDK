@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture
+using umi3d.common.binding;
+
+namespace umi3d.common.userCapture.binding
 {
     /// <summary>
     /// Bone binding data dto, required to load a bone binding.

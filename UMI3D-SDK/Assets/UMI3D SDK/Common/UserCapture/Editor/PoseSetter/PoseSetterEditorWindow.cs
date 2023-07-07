@@ -21,13 +21,14 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using umi3d.edk.userCapture;
+using umi3d.common.userCapture.description;
+using umi3d.edk.userCapture.pose.editor;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
 using UnityEngine.UIElements;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.pose.editor
 {
 
     public class PoseSetterEditorWindow : EditorWindow
@@ -58,7 +59,7 @@ namespace umi3d.common.userCapture
         Button save = null;
         Button load = null;
         Button clear_roots = null;
-        Button reset_skeleton = null;   
+        Button reset_skeleton = null;
 
         PoseConditionPanel conditionPanel = null;
 
@@ -71,8 +72,8 @@ namespace umi3d.common.userCapture
         Slider z_rot_slider = null;
         #endregion
 
-        public enum SymetryTarget { None, Hands, Arms}
-        public enum LoaEnum { None, LOA_0, LOA_1, LOA_2, LOA_3, LOA_4}
+        public enum SymetryTarget { None, Hands, Arms }
+        public enum LoaEnum { None, LOA_0, LOA_1, LOA_2, LOA_3, LOA_4 }
         SymetryTarget symetryTarget = SymetryTarget.None;
         LoaEnum loaEnum = LoaEnum.None;
         BoneTreeView treeView = null;
@@ -107,13 +108,13 @@ namespace umi3d.common.userCapture
             ReadConstEnum(typeof(BoneType));
         }
 
-        UnityEngine.Object selected; 
+        UnityEngine.Object selected;
         public void OnSelectionChange()
         {
-            if (CheckIfIsBoneComponent(Selection.activeObject));
+            if (CheckIfIsBoneComponent(Selection.activeObject)) ;
             {
                 selected = Selection.activeObject;
-                Tools.current = Tool.Rotate;      
+                Tools.current = Tool.Rotate;
             }
         }
 
@@ -122,9 +123,7 @@ namespace umi3d.common.userCapture
             if (Tools.current != Tool.Rotate)
             {
                 if (CheckIfIsBoneComponent(selected))
-                {
                     Tools.current = Tool.Rotate;
-                }
             }
         }
 
@@ -133,9 +132,7 @@ namespace umi3d.common.userCapture
             if (Selection.activeObject is GameObject go)
             {
                 if (go.GetComponent<PoseSetterBoneComponent>() != null)
-                {
                     return true;
-                }
             }
             return false;
         }
@@ -203,7 +200,7 @@ namespace umi3d.common.userCapture
         /// </summary>
         private void SetOnGUIContainer()
         {
-            TreeViewState m_TreeViewState = new TreeViewState();
+            var m_TreeViewState = new TreeViewState();
             treeView = new BoneTreeView(m_TreeViewState);
 
             bone_container.onGUIHandler = () =>
@@ -231,7 +228,7 @@ namespace umi3d.common.userCapture
         {
             save.clicked += () => SaveToScriptableObjectAtPath();
             load.clicked += () => LoadA_UMI3DPose_so();
-            clear_roots.clicked += () => { ResetAllBones();  UpdateRootListView(); };
+            clear_roots.clicked += () => { ResetAllBones(); UpdateRootListView(); };
             reset_skeleton.clicked += () => { ResetSkeleton(); };
 
             btn_from_left.clicked += () => { ApllySymetry(true); };
@@ -292,9 +289,7 @@ namespace umi3d.common.userCapture
             tg_enable_condtion.RegisterValueChangedCallback(b =>
             {
                 if (b.newValue == true)
-                {
                     conditionPanel.Enable();
-                }
                 else
                 {
                     conditionPanel.Disable();
@@ -314,7 +309,7 @@ namespace umi3d.common.userCapture
                                                             .Where(bc => bc.BoneType != 0)
                                                             .ToList();
 
-            List<TreeViewItem<BoneTreeElement>> treeViewItems = new List<TreeViewItem<BoneTreeElement>>();
+            var treeViewItems = new List<TreeViewItem<BoneTreeElement>>();
             bone_components.ForEach(bc =>
             {
                 treeViewItems.Add(GetBoneTreeViewItem(bc));
@@ -326,9 +321,9 @@ namespace umi3d.common.userCapture
 
         private TreeViewItem<BoneTreeElement> GetBoneTreeViewItem(PoseSetterBoneComponent bc)
         {
-            BoneTreeElement boneTreeElement = new BoneTreeElement(bc.isRoot, false);
+            var boneTreeElement = new BoneTreeElement(bc.isRoot, false);
             string boneName = bc.name.Split(":")[1]; // this is a WIP line because the skeleton has "Mixamo:" every where as prefix
-            TreeViewItem<BoneTreeElement> boneTreeViewItem = new TreeViewItem<BoneTreeElement>((int)bc.BoneType, 1, boneName, boneTreeElement);
+            var boneTreeViewItem = new TreeViewItem<BoneTreeElement>((int)bc.BoneType, 1, boneName, boneTreeElement);
 
             boneTreeElement?.onIsRootChanged.AddListener((data) => { ChangeIsRoot(data); });
             boneTreeElement?.onIsSelectedChanged.AddListener((data) => { ChangeIsSelected(data); });
@@ -379,13 +374,7 @@ namespace umi3d.common.userCapture
                 boneComponent = bone_components.Find(bc => bc.BoneType == boolChangeData.itemID);
                 boneComponent.isSelected = boolChangeData.boolValue;
                 if (boolChangeData.boolValue)
-                {
                     selectedBone = boneComponent.transform;
-                    // //Dont uncomments appart if you like atomic holocaust !!!!
-                    //x_rot_slider.value = selectedBone.transform.eulerAngles.x;
-                    //y_rot_slider.value = selectedBone.transform.eulerAngles.y;
-                    //z_rot_slider.value = selectedBone.transform.eulerAngles.z;
-                }
             }
         }
 
@@ -416,9 +405,7 @@ namespace umi3d.common.userCapture
             //                                  that do not contain the current new root and set them as root.
             //                                      --> this would be a great way to make sur to never loose work and dont get confusing poses.
             if (boneComponent.GetComponentsInParent<PoseSetterBoneComponent>().Where(bc => bc.isRoot != null).FirstOrDefault() != boneComponent)
-            {
                 boneComponent.isSavable = true;
-            }
             else
             {
                 boneComponent.isSavable = false;
@@ -443,13 +430,13 @@ namespace umi3d.common.userCapture
             string path = this.path.value;
             if (path == "") path = "Assets/";
 
-            List<PoseSetterBoneComponent> roots = bone_components.Where(bc => bc.isRoot == true).ToList();
+            var roots = bone_components.Where(bc => bc.isRoot == true).ToList();
 
             foreach (PoseSetterBoneComponent r in roots)
             {
                 r.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
                 List<BoneDto> bonsPoseSos = new();
-                UMI3DPose_so pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
+                var pose_So = (UMI3DPose_so)CreateInstance(typeof(UMI3DPose_so));
                 pose_So.name = name;
                 AssetDatabase.CreateAsset(pose_So, path + $"/{name}_from_{GetConstEnumField(r.BoneType)}.asset");
 
@@ -464,7 +451,7 @@ namespace umi3d.common.userCapture
                 boneToSave.ForEach(bc =>
                 {
                     Vector4Dto bonerotation = bc.transform.rotation.Dto();
-                    BoneDto bonePose_So = new BoneDto()
+                    var bonePose_So = new BoneDto()
                     {
                         boneType = bc.BoneType,
                         rotation = bonerotation
@@ -480,12 +467,13 @@ namespace umi3d.common.userCapture
                 AssetDatabase.SaveAssets();
 
                 SavePoseOverrider(pose_So, path);
+                EditorUtility.SetDirty(pose_So);
             }
         }
 
         private BonePoseDto CreateBonePoseDTOOfType(Vector4Dto rootRotation, PoseSetterBoneComponent r)
         {
-            BonePoseDto bonePoseDto = new BonePoseDto(r.BoneType, r.transform.position.Dto(), rootRotation);
+            var bonePoseDto = new BonePoseDto(r.BoneType, r.transform.position.Dto(), rootRotation);
             string anchor = anchor_dropdown.value;
             switch (anchor_dropdown.value)
             {
@@ -519,15 +507,13 @@ namespace umi3d.common.userCapture
         private void LoadA_UMI3DPose_so()
         {
             if (bone_components?.Count == 0)
-            {
                 Debug.Log($"<color=red> Well you should refer a rigious skeleton</color>");
-            }
             else
             {
                 name.value = currentPose.name;
                 string[] path = AssetDatabase.GetAssetPath(currentPose).Split("/");
                 string finalPath = "";
-                for (int i = 0; i < path.Length-1; i++)
+                for (int i = 0; i < path.Length - 1; i++)
                 {
                     finalPath += path[i] + "/";
                 }
@@ -535,17 +521,17 @@ namespace umi3d.common.userCapture
 
                 ResetAllBones();
 
-                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.BonePoseDto.Bone);
+                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.GetBonePoseCopy().Bone);
                 root_boneComponent.isRoot = true;
                 root_boneComponent.isSavable = false;
                 treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(true, root_boneComponent.BoneType);
 
-                UpdateBoneComponent(currentPose.BonePoseDto);
-                anchor_dropdown.SetValueWithoutNotify(anchor_dropdown.choices.Find(c => c == currentPose.BonePoseDto.GetType().ToString().Split(".").Last()));
+                UpdateBoneComponent(currentPose.GetBonePoseCopy());
+                anchor_dropdown.SetValueWithoutNotify(anchor_dropdown.choices.Find(c => c == currentPose.GetBonePoseCopy().GetType().ToString().Split(".").Last()));
 
-                currentPose.BoneDtos.ForEach(bp =>
+                currentPose.GetBonesCopy().ForEach(bp =>
                 {
-                    UpdateBoneComponent(bp);               
+                    UpdateBoneComponent(bp);
                 });
 
                 UpdateRootListView();
@@ -566,9 +552,7 @@ namespace umi3d.common.userCapture
                 }
 
                 if (bc.isSavable != false)
-                {
                     bc.isSavable = false;
-                }
             });
         }
 
@@ -576,7 +560,8 @@ namespace umi3d.common.userCapture
         {
             ResetAllBones();
             (object_field.value as GameObject).GetComponentsInChildren<PoseSetterBoneComponent>()
-                                            .ForEach(bc => { 
+                                            .ForEach(bc =>
+                                            {
                                                 bc.transform.rotation = Quaternion.identity;
                                             });
         }
@@ -608,7 +593,7 @@ namespace umi3d.common.userCapture
             {
                 Vector3 rotation = selectedBone.rotation.eulerAngles;
                 rotation.x = value.newValue;
-                Quaternion quaternion = Quaternion.Euler(rotation);
+                var quaternion = Quaternion.Euler(rotation);
                 selectedBone.rotation = quaternion;
             }
         }
@@ -619,7 +604,7 @@ namespace umi3d.common.userCapture
             {
                 Vector3 rotation = selectedBone.rotation.eulerAngles;
                 rotation.y = value.newValue;
-                Quaternion quaternion = Quaternion.Euler(rotation);
+                var quaternion = Quaternion.Euler(rotation);
                 selectedBone.rotation = quaternion;
             }
         }
@@ -630,7 +615,7 @@ namespace umi3d.common.userCapture
             {
                 Vector3 rotation = selectedBone.rotation.eulerAngles;
                 rotation.z = value.newValue;
-                Quaternion quaternion = Quaternion.Euler(rotation);
+                var quaternion = Quaternion.Euler(rotation);
                 selectedBone.rotation = quaternion;
             }
         }
@@ -641,12 +626,12 @@ namespace umi3d.common.userCapture
             if (symetryTarget == SymetryTarget.None) return;
             if (object_field.value == null) return;
 
-            Transform[] origin_target = new Transform[2];
+            var origin_target = new Transform[2];
             origin_target = GetSymRoot(isFromLeft, symetryTarget);
             PoseSetterBoneComponent[] originBC = origin_target[0].GetComponentsInChildren<PoseSetterBoneComponent>();
             PoseSetterBoneComponent[] targetBC = origin_target[1].GetComponentsInChildren<PoseSetterBoneComponent>();
 
-            for(int i = 0; i < originBC.Length; i++)
+            for (int i = 0; i < originBC.Length; i++)
             {
                 Transform ot = originBC[i].transform;
                 targetBC[i].transform.rotation = new Quaternion(ot.rotation.x * -1.0f,
@@ -658,7 +643,7 @@ namespace umi3d.common.userCapture
 
         private Transform[] GetSymRoot(bool isFromLeft, SymetryTarget symetryTarget)
         {
-            Transform[] origin_target = new Transform[2];
+            var origin_target = new Transform[2];
             switch (symetryTarget)
             {
                 case SymetryTarget.Hands:
@@ -697,7 +682,7 @@ namespace umi3d.common.userCapture
         string[] constEnumFieldName = null;
         private void ReadConstEnum(Type type)
         {
-            System.Collections.Generic.IEnumerable<FieldInfo> val = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
+            IEnumerable<FieldInfo> val = type.GetFields(BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)
                             .Where(fi => fi.IsLiteral && !fi.IsInitOnly);
             constEnumFieldName = val.Select(fi => fi.Name).ToArray();
         }
@@ -705,9 +690,7 @@ namespace umi3d.common.userCapture
         private string GetConstEnumField(uint id)
         {
             if (constEnumFieldName != null)
-            {
                 return constEnumFieldName[id];
-            }
             return id.ToString();
         }
         #endregion

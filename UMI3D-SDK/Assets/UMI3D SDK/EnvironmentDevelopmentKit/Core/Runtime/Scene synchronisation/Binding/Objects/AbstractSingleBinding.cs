@@ -16,7 +16,7 @@ limitations under the License.
 
 using UnityEngine;
 
-namespace umi3d.edk
+namespace umi3d.edk.binding
 {
     /// <summary>
     /// Operation binding a node and only one object.

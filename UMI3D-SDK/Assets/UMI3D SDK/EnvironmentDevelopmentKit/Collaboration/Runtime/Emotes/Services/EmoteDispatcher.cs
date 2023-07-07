@@ -18,7 +18,7 @@ using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk.collaboration.emotes
 {
     /// <summary>
     /// Dispatch emote requests by trigerring the right animation
@@ -48,19 +48,19 @@ namespace umi3d.edk.collaboration
 
         #region Dependency Injection
 
-        private readonly UMI3DEnvironment umi3dEnvironmentService;
+        private readonly IUMI3DEnvironmentManager umi3dEnvironmentService;
 
         public EmoteDispatcher() : base()
         {
             umi3dEnvironmentService = UMI3DEnvironment.Instance;
         }
 
-        public EmoteDispatcher(UMI3DEnvironment umi3dEnvironmentService) : base()
+        public EmoteDispatcher(IUMI3DEnvironmentManager umi3dEnvironmentService) : base()
         {
             this.umi3dEnvironmentService = umi3dEnvironmentService;
         }
 
-        #endregion environmentLoaderService
+        #endregion Dependency Injection
 
         /// <summary>
         /// Emote configuration for the environment for each user. Key is user id.
@@ -87,7 +87,7 @@ namespace umi3d.edk.collaboration
                 return;
             }
 
-            UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.id == emoteId);
+            UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.Id() == emoteId);
 
             if (!emote.Available.GetValue(sendingUser))
             {

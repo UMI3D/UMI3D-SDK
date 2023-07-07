@@ -19,11 +19,10 @@ using System.Collections.Generic;
 using System.Linq;
 
 using umi3d.common;
-using umi3d.common.collaboration;
-
+using umi3d.common.collaboration.emotes;
 using UnityEngine;
 
-namespace umi3d.edk.collaboration
+namespace umi3d.edk.collaboration.emotes
 {
     /// <summary>
     /// Emote config file to send to users
@@ -43,7 +42,7 @@ namespace umi3d.edk.collaboration
         /// List of included emotes
         /// </summary>
         [Tooltip("List of included emotes.")]
-        public List<UMI3DEmote> IncludedEmotes;
+        public List<UMI3DEmote> IncludedEmotes = new();
 
         #region Registration
 
@@ -121,6 +120,7 @@ namespace umi3d.edk.collaboration
 
             return operation;
         }
+
         #endregion Loading
 
         #region Filters
@@ -138,6 +138,7 @@ namespace umi3d.edk.collaboration
         {
             return ConnectionFilters.Count == 0 || !ConnectionFilters.Any(f => !f.Accept(user));
         }
+
         /// <inheritdoc/>
         public bool RemoveConnectionFilter(UMI3DUserFilter filter)
         {

@@ -15,10 +15,11 @@ limitations under the License.
 */
 
 using umi3d.common;
+using umi3d.common.binding;
 
 using UnityEngine;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.binding
 {
     /// <summary>
     /// Client support for node binding.

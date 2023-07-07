@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture;
+using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture
 {
@@ -33,6 +34,6 @@ namespace umi3d.cdk.userCapture
         /// Get subskeleton camera parameters.
         /// </summary>
         /// <returns></returns>
-        UserCameraPropertiesDto GetCameraDto(); 
+        UserCameraPropertiesDto GetCameraDto();
     }
 }

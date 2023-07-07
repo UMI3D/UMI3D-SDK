@@ -14,17 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture.description;
 using UnityEditor;
 
 using UnityEngine;
 
-namespace umi3d.common.userCapture
+namespace umi3d.common.userCapture.animation
 {
     [CustomEditor(typeof(SkeletonMapper))]
     public class SkeletonMapperEditor : Editor
     {
         [DrawGizmo(GizmoType.Selected)]
-        static void DrawGizmos(SkeletonMapper mapper, GizmoType type)
+        private static void DrawGizmos(SkeletonMapper mapper, GizmoType type)
         {
             Gizmos.color = Color.green;
             foreach (Transform child in mapper.GetComponentsInChildren<Transform>())

@@ -17,7 +17,8 @@ limitations under the License.
 using System.Collections;
 
 using umi3d.common.userCapture;
-using umi3d.edk.userCapture;
+using umi3d.edk.binding;
+using umi3d.edk.userCapture.binding;
 
 using UnityEngine;
 
@@ -136,7 +137,7 @@ namespace umi3d.edk.collaboration
 
         private void RemoveAudioSource(UMI3DCollaborationUser user)
         {
-            if (user is null)
+            if (user is null || user.audioPlayer == null)
                 return;
             Transaction t = new() { reliable = true };
             var audioSource = user.audioPlayer.ObjectNode.GetValue();

@@ -17,8 +17,9 @@ limitations under the License.
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.binding;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.binding
 {
     /// <summary>
     /// Loader for bindings.
@@ -32,19 +33,24 @@ namespace umi3d.cdk
 
         #region DependencyInjection
 
-        private readonly IBindingBrowserService bindingManagementService;
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        protected readonly IBindingBrowserService bindingManagementService;
+        protected readonly ILoadingManager environmentLoaderService;
+        protected readonly IEnvironmentManager environmentManager;
 
         public BindingLoader()
         {
             bindingManagementService = BindingManager.Instance;
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentManager = UMI3DEnvironmentLoader.Instance;
         }
 
-        public BindingLoader(IBindingBrowserService bindingManager, UMI3DEnvironmentLoader environmentLoaderService)
+        public BindingLoader(ILoadingManager environmentLoaderService,
+                             IEnvironmentManager environmentManager,
+                             IBindingBrowserService bindingManagementService)
         {
-            bindingManagementService = bindingManager;
+            this.bindingManagementService = bindingManagementService;
             this.environmentLoaderService = environmentLoaderService;
+            this.environmentManager = environmentManager;
         }
 
         #endregion DependencyInjection
@@ -62,12 +68,12 @@ namespace umi3d.cdk
 
             await environmentLoaderService.WaitUntilEntityLoaded(dto.boundNodeId, null);
 
-            AbstractBinding binding = LoadData(dto.boundNodeId, dto.data);
+            AbstractBinding binding = await LoadData(dto.boundNodeId, dto.data);
 
             bindingManagementService.AddBinding(dto.boundNodeId, binding);
 
             void onDelete() { bindingManagementService.RemoveBinding(dto.boundNodeId); }
-            environmentLoaderService.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
+            environmentManager.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
         }
 
         /// <inheritdoc/>
@@ -94,20 +100,20 @@ namespace umi3d.cdk
         /// <param name="boundNodeId"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        protected virtual AbstractBinding LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected virtual async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case NodeBindingDataDto nodeBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentLoaderService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(boundNodeId);
                         if (node is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
                             return null;
                         }
 
-                        UMI3DNodeInstance parentNode = environmentLoaderService.GetNodeInstance(nodeBindingDataDto.parentNodeId);
+                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
                         if (parentNode is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.parentNodeId}. Parent node does not exist.", DEBUG_SCOPE);
@@ -118,12 +124,15 @@ namespace umi3d.cdk
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentLoaderService.GetNodeInstance(boundNodeId);
-                        AbstractSimpleBinding[] bindings = multiBindingDataDto.Bindings
-                                                                    .Select(x => LoadData(boundNodeId, x) as AbstractSimpleBinding)
-                                                                    .Where(x => x is not null)
-                                                                    .OrderByDescending(x => x.Priority)
-                                                                    .ToArray();
+                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
+
+                        var tasks = multiBindingDataDto.Bindings.Select(x => LoadData(boundNodeId, x));
+                        var bindings = await Task.WhenAll(tasks);
+
+                        var simpleBindings = bindings.Select(x => x as AbstractSimpleBinding)
+                                                        .Where(x => x is not null)
+                                                        .OrderByDescending(x => x.Priority)
+                                                        .ToArray();
 
                         if (bindings.Length == 0)
                         {
@@ -131,7 +140,7 @@ namespace umi3d.cdk
                             return null;
                         }
 
-                        return new MultiBinding(multiBindingDataDto, bindings, boundNode.transform, isOrdered: true);
+                        return new MultiBinding(multiBindingDataDto, simpleBindings, boundNode.transform, isOrdered: true);
                     }
                 default:
                     return null;

@@ -15,10 +15,10 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.binding
 {
     /// <summary>
     /// Client support for binding between a bone and a rig.

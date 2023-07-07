@@ -28,7 +28,7 @@ namespace umi3d.edk
     /// Root node of any UMI3D enviroment.
     /// </summary>
     /// As there is only one envionment node, it could be called as a manager.
-    public class UMI3DEnvironment : SingleBehaviour<UMI3DEnvironment>
+    public class UMI3DEnvironment : SingleBehaviour<UMI3DEnvironment>, IUMI3DEnvironmentManager
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration;
 
@@ -470,6 +470,19 @@ namespace umi3d.edk
             if (id != 0 && Exists)
             {
                 Instance.entities?.Remove(id);
+            }
+        }
+
+        /// <summary>
+        /// Remove an entity from the scene by id. 
+        /// Supported Types: AbstractObject3D, GenericInteraction, Tool, Toolbox
+        /// </summary>
+        /// <param name="id">UMI3D id of the object to remove</param>
+        public void RemoveEntity(ulong id)
+        {
+            if (id != 0)
+            {
+                entities?.Remove(id);
             }
         }
 

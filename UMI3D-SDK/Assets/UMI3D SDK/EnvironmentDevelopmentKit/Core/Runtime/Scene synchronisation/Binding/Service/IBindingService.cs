@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.edk
+namespace umi3d.edk.binding
 {
     /// <summary>
     /// Manage bindings from envrionment side

@@ -16,7 +16,7 @@ limitations under the License.
 
 using umi3d.edk.core;
 
-namespace umi3d.edk
+namespace umi3d.edk.binding
 {
     /// <summary>
     /// Operation binding a node and one or several objects.

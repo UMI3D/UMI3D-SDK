@@ -14,15 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.emotes
 {
     /// <summary>
     /// Serializer module for <see cref="UMI3DEmoteDto"/>.
     /// </summary>
     public class UMI3DEmoteSerializerModule : UMI3DSerializerModule<UMI3DEmoteDto>
     {
+        /// <inheritdoc/>
         public bool Read(ByteContainer container, out bool readable, out UMI3DEmoteDto result)
         {
             readable = true;
@@ -50,6 +49,7 @@ namespace umi3d.common.collaboration
             return readable;
         }
 
+        /// <inheritdoc/>
         public bool Write(UMI3DEmoteDto dto, out Bytable bytable, params object[] parameters)
         {
             bytable = UMI3DSerializer.Write(dto.id)
@@ -61,6 +61,7 @@ namespace umi3d.common.collaboration
             return true;
         }
 
+        /// <inheritdoc/>
         public bool IsCountable()
         {
             return true;

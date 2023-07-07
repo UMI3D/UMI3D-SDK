@@ -27,6 +27,8 @@ namespace inetum.unityUtils
     internal class CoroutineManagerMono : SingleBehaviour<CoroutineManagerMono>, ICoroutineService, ILateRoutineService
     {
         private List<IEnumerator> routines = new();
+        private Queue<IEnumerator> routinesToRemove = new();
+        private Queue<IEnumerator> routinesToAdd = new();
 
         /// <summary>
         /// Call this method to attach a coroutine to the handler and start it.
@@ -50,19 +52,34 @@ namespace inetum.unityUtils
 
         public IEnumerator AttachLateRoutine(IEnumerator routine)
         {
-            routines.Add(routine);
+            routinesToAdd.Enqueue(routine);
             return routine;
         }
 
         public void DettachLateRoutine(IEnumerator routine)
         {
-            routines.Remove(routine);
+            routinesToRemove.Enqueue(routine);
         }
 
         private void LateUpdate()
         {
-            if (routines.Count == 0)
-                return;
+            if (routinesToAdd.Count > 0)
+            {
+                foreach (var routineToAdd in routinesToAdd)
+                {
+                    routines.Add(routineToAdd);
+                }
+                routinesToAdd.Clear();
+            }
+
+            if (routinesToRemove.Count > 0)
+            {
+                foreach (var routineToRemove in routinesToRemove)
+                {
+                    routines.Remove(routineToRemove);
+                }
+                routinesToRemove.Clear();
+            }
 
             foreach (var routine in routines)
                 routine.MoveNext();

@@ -14,24 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
 using System.Collections.Generic;
-using System.IO.Ports;
-using System.Linq;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.pose
 {
     public class PoseSkeleton : ISubWritableSkeleton
     {
-        private readonly PoseManager poseManagerService;
+        private readonly IPoseManager poseManagerService;
 
         public PoseSkeleton()
         {
             poseManagerService = PoseManager.Instance;
         }
 
-        public PoseSkeleton(PoseManager poseManager)
+        public PoseSkeleton(IPoseManager poseManager)
         {
             this.poseManagerService = poseManager;
         }
@@ -112,6 +113,7 @@ namespace umi3d.cdk.userCapture
             localCurrentlyActivatedPoses.Clear();
             serverCurrentlyActivatedPoses.Clear();
         }
+
         /// <summary>
         ///last in has priority,,, server poses have priority
         /// </summary>
@@ -119,12 +121,11 @@ namespace umi3d.cdk.userCapture
         public PoseDto GetPose()
         {
             PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
-
             for (int i = 0; i < localCurrentlyActivatedPoses?.Count; i++)
             {
                 for (int j = 0; j < localCurrentlyActivatedPoses[i].bones?.Count; j++)
                 {
-                    int indexOf = poseDto.bones.IndexOf(localCurrentlyActivatedPoses[i].bones[j]);
+                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == localCurrentlyActivatedPoses[i].bones[j].boneType);
                     if (indexOf != -1)
                     {
                         poseDto.bones[indexOf] = localCurrentlyActivatedPoses[i].bones[j];
@@ -140,7 +141,7 @@ namespace umi3d.cdk.userCapture
             {
                 for (int j = 0; j < serverCurrentlyActivatedPoses[i].bones?.Count; j++)
                 {
-                    int indexOf = poseDto.bones.IndexOf(serverCurrentlyActivatedPoses[i].bones[j]);
+                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == serverCurrentlyActivatedPoses[i].bones[j].boneType);
                     if (indexOf != -1)
                     {
                         poseDto.bones[indexOf] = serverCurrentlyActivatedPoses[i].bones[j];

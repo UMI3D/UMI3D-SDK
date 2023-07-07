@@ -14,13 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using EditMode_Tests.Core.Bindings.Common;
+using EditMode_Tests.Core.Binding.Common;
 using NUnit.Framework;
 using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 using UnityEngine;
 
-namespace EditMode_Tests.UserCapture.Bindings.Common
+namespace EditMode_Tests.UserCapture.Binding.Common
 {
     [TestFixture]
     public class UserCaptureBindingSerializerModule_Test : BindingSerializerModule_Test

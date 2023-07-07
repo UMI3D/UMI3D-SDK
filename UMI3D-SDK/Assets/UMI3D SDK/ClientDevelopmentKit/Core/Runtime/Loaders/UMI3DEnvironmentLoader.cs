@@ -32,7 +32,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
-    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>
+    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>, IEnvironmentManager , ILoadingManager, INavMeshManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
@@ -156,7 +156,7 @@ namespace umi3d.cdk
             while (!finished)
                 await UMI3DAsyncManager.Yield(tokens);
             if (error)
-                throw new Umi3dException("Entity Failed to be loaded");
+                throw new Umi3dException($"Failed to load entity. Entity id: {id}.");
 
             return loaded;
         }
@@ -439,8 +439,8 @@ namespace umi3d.cdk
         /// </summary>
         public bool loaded { get; private set; } = false;
 
-        public UnityEvent onResourcesLoaded = new UnityEvent();
-        public UnityEvent onEnvironmentLoaded = new UnityEvent();
+        public UnityEvent onResourcesLoaded { get; protected set; } = new UnityEvent();
+        public UnityEvent onEnvironmentLoaded { get; protected set; } = new UnityEvent();
 
         /// <summary>
         /// Is environement (except videos) loaded ?

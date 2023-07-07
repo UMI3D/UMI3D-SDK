@@ -17,8 +17,11 @@ limitations under the License.
 using NUnit.Framework;
 using PlayMode_Tests.UserCapture.Skeletons.CDK;
 using umi3d.cdk.collaboration;
+using umi3d.cdk.collaboration.userCapture;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
-namespace PlayMode_Tests.Collaboration.Skeletons.CDK
+namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 {
     public class CollaborativeSkeleton_Test : AbstractSkeleton_Test
     {

@@ -14,24 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using EditMode_Tests.UserCapture.Bindings.CDK;
+using EditMode_Tests.UserCapture.Binding.CDK;
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.cdk;
+using umi3d.cdk.binding;
 using umi3d.cdk.collaboration;
+using umi3d.cdk.collaboration.userCapture;
+using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.cdk.userCapture;
-using umi3d.common;
+using umi3d.common.binding;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.binding;
 
 
-namespace EditMode_Tests.Collaboration.Binding.CDK
+namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 {
     public class CollaborationBindingLoader_Test : UserCaptureBindingLoader_Test
     {
-        protected Mock<CollaborativeSkeletonManager> collaborativeSkeletonManager;
-        protected Mock<UMI3DCollaborationEnvironmentLoader> collabEnvironmentLoaderServiceMock;
+        protected Mock<ICollaborativeSkeletonsManager> collaborativeSkeletonManager;
+
 
         #region Test SetUp
 
@@ -47,10 +51,13 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
         {
             bindingManagementServiceMock = new();
             skeletonServiceMock = new();
-            collabEnvironmentLoaderServiceMock = new();
-            environmentLoaderServiceMock = new();
+            loadingManagerMock = new();
+            environmentManagerMock = new();
             collaborativeSkeletonManager = new();
-            bindingLoader = new CollaborationBindingLoader(bindingManagementServiceMock.Object, collabEnvironmentLoaderServiceMock.Object, collaborativeSkeletonManager.Object);
+            bindingLoader = new CollaborationBindingLoader(bindingManagementServiceMock.Object,
+                                                           loadingManagerMock.Object,
+                                                           environmentManagerMock.Object,
+                                                           collaborativeSkeletonManager.Object);
         }
 
         [TearDown]
@@ -100,9 +107,9 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
             
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            collabEnvironmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            collabEnvironmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            collabEnvironmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
@@ -112,7 +119,7 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            collabEnvironmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
@@ -134,9 +141,9 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            collabEnvironmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            collabEnvironmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            collabEnvironmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
@@ -144,7 +151,7 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            collabEnvironmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
@@ -171,9 +178,9 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            collabEnvironmentLoaderServiceMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
-            collabEnvironmentLoaderServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            collabEnvironmentLoaderServiceMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object); ;
+            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
+            environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object); ;
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
@@ -183,7 +190,7 @@ namespace EditMode_Tests.Collaboration.Binding.CDK
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            collabEnvironmentLoaderServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 

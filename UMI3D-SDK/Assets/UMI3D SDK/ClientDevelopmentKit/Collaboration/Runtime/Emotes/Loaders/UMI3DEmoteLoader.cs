@@ -13,9 +13,9 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.emotes;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.cdk.collaboration.emotes
 {
     /// <summary>
     /// Loader for <see cref="UMI3DEmoteDto"/>. Manages the dtos from the client-side.
@@ -26,18 +26,22 @@ namespace umi3d.cdk.collaboration
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region DependencyInjection
+
         private IEmoteService emoteManagementService;
+        private IEnvironmentManager environmentManager;
 
         public UMI3DEmoteLoader()
         {
             emoteManagementService = EmoteManager.Instance;
+            environmentManager = UMI3DCollaborationEnvironmentLoader.Instance;
         }
 
-
-        public UMI3DEmoteLoader(IEmoteService emoteManager)
+        public UMI3DEmoteLoader(IEmoteService emoteManager, IEnvironmentManager environmentManager)
         {
             emoteManagementService = emoteManager;
+            this.environmentManager = environmentManager;
         }
+
         #endregion DependencyInjection
 
         /// <inheritdoc/>
@@ -50,7 +54,7 @@ namespace umi3d.cdk.collaboration
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmoteDto;
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+            environmentManager.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             emoteManagementService.UpdateEmote(dto);
             return Task.CompletedTask;
         }
