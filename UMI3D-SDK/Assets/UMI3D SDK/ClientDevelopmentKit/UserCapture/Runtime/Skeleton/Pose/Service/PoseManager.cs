@@ -23,13 +23,25 @@ namespace umi3d.cdk.userCapture.pose
 {
     public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
+        /// <summary>
+        /// All the pose overrider container in the scene
+        /// </summary>
         [SerializeField] private List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
 
-        public PoseDto defaultPose;
+        /// <summary>
+        /// All the local pose of the client
+        /// </summary>
         public PoseDto[] localPoses;
 
+        /// <summary>
+        /// All the poses in the experience key: userID, value : list of the poses of the related user
+        /// </summary>
         public Dictionary<ulong, List<PoseDto>> allPoses;
-        public Dictionary<ulong, PoseOverriderContainerHandlerUnit> allPoseHandlerUnits = new Dictionary<ulong, PoseOverriderContainerHandlerUnit>();
+
+        /// <summary>
+        /// All pose condition processors
+        /// </summary>
+        public Dictionary<ulong, PoseConditionProcessor> conditionProcessors = new Dictionary<ulong, PoseConditionProcessor>();
 
         private bool isInit = false;
 
@@ -91,7 +103,7 @@ namespace umi3d.cdk.userCapture.pose
 
             for (int i = 0; i < allPoseOverriderContainer.Count; i++)
             {
-                PoseOverriderContainerHandlerUnit handlerUnit = new PoseOverriderContainerHandlerUnit(allPoseOverriderContainer[i]);
+                PoseConditionProcessor handlerUnit = new PoseConditionProcessor(allPoseOverriderContainer[i]);
                 handlerUnit.CheckCondtionOfAllOverriders();
                 handlerUnit.OnConditionValidated += (unit, pose) =>
                 {
@@ -101,34 +113,34 @@ namespace umi3d.cdk.userCapture.pose
                 {
                     StopTargetPose(pose);
                 };
-                allPoseHandlerUnits.Add(allPoseOverriderContainer[i].relatedNodeId, handlerUnit);
+                conditionProcessors.Add(allPoseOverriderContainer[i].relatedNodeId, handlerUnit);
             }
         }
 
         /// <inheritdoc/>
         public void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
-            PoseOverriderContainerHandlerUnit unit = new PoseOverriderContainerHandlerUnit(overrider);
+            PoseConditionProcessor unit = new PoseConditionProcessor(overrider);
             unit.OnConditionValidated += (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
             unit.OnConditionDesactivated += (unit, poseOverriderDto) => StopTargetPose(poseOverriderDto);
-            allPoseHandlerUnits.Add(overrider.relatedNodeId, unit);
+            conditionProcessors.Add(overrider.relatedNodeId, unit);
         }
 
         /// <inheritdoc/>
         public void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
         {
-            if (allPoseHandlerUnits.TryGetValue(overrider.relatedNodeId, out PoseOverriderContainerHandlerUnit unit))
+            if (conditionProcessors.TryGetValue(overrider.relatedNodeId, out PoseConditionProcessor unit))
             {
                 unit.OnConditionValidated -= (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
                 unit.DisableCheck();
-                allPoseHandlerUnits.Remove(overrider.relatedNodeId);
+                conditionProcessors.Remove(overrider.relatedNodeId);
             }
         }
 
         /// <inheritdoc/>
         public void OnHoverEnter(ulong id)
         {
-            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
             {
                 unit.CheckHoverEnterConditions();
             }
@@ -137,7 +149,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void OnHoverExit(ulong id)
         {
-            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
             {
                 unit.CheckHoverExitConditions();
             }
@@ -146,7 +158,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void OnTrigger(ulong id)
         {
-            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
             {
                 unit.CheckTriggerConditions();
             }
@@ -155,7 +167,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void OnRelease(ulong id)
         {
-            if (allPoseHandlerUnits.TryGetValue(id, out PoseOverriderContainerHandlerUnit unit))
+            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
             {
                 unit.CheckReleaseConditions();
             }

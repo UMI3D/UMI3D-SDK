@@ -29,20 +29,20 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Pose overrider handler to calculate whether the pose can be played or not depending on the set of condition of a specific container
     /// </summary>
-    public class PoseOverriderContainerHandlerUnit
+    public class PoseConditionProcessor
     {
         private readonly UMI3DEnvironmentLoader environmentLoaderService;
         private readonly ISubWritableSkeleton trackedSkeletonService;
         private readonly ISkeletonManager personnalSkeletonService;
 
-        public PoseOverriderContainerHandlerUnit(UMI3DPoseOverriderContainerDto overriderContainer)
+        public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer)
         {
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSkeleton;
             SetPoseOverriderContainer(overriderContainer);
         }
 
-        public PoseOverriderContainerHandlerUnit(UMI3DEnvironmentLoader environmentLoaderService, ISubWritableSkeleton trackedSkeletonService)
+        public PoseConditionProcessor(UMI3DEnvironmentLoader environmentLoaderService, ISubWritableSkeleton trackedSkeletonService)
         {
             this.environmentLoaderService = environmentLoaderService;
             this.trackedSkeletonService = trackedSkeletonService;
@@ -50,14 +50,32 @@ namespace umi3d.cdk.userCapture
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        /// <summary>
+        /// If th e condition processor is enable
+        /// </summary>
         private bool isActive = false;
+        /// <summary>
+        /// Ref to the related pose container
+        /// </summary>
         private UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
 
+        /// <summary>
+        /// Sends a signal when the condition is validated
+        /// </summary>
         public event EventHandler<PoseOverriderDto> OnConditionValidated;
 
+        /// <summary>
+        /// Sends a signal when the contition is desactivated
+        /// </summary>
         public event EventHandler<PoseOverriderDto> OnConditionDesactivated;
 
+        /// <summary>
+        /// All the overriders  which ca nonly be considerd if they an interaction ocurs
+        /// </summary>
         private List<PoseOverriderDto> nonEnvirnmentalPoseOverriders = new List<PoseOverriderDto>();
+        /// <summary>
+        /// All the overriders that are considered without interection (more expensive interm of perfs)
+        /// </summary>
         private List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
 
         private List<PoseOverriderDto> environmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
@@ -318,7 +336,7 @@ namespace umi3d.cdk.userCapture
         {
             UMI3DNodeInstance targetNodeInstance = null;
 
-            targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.TargetObjectId);
+            targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
 
             if (targetNodeInstance == null)
             {

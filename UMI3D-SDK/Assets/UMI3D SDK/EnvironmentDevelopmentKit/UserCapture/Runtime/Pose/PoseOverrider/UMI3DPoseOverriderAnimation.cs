@@ -64,6 +64,9 @@ namespace umi3d.edk.userCapture.pose
             }
         }
 
+        /// <summary>
+        /// Sets up the pose animation
+        /// </summary>
         public void SetUp()
         {
             if (NodeAnimation == null && PoseOverriderContainer != null)

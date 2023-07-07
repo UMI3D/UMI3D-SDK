@@ -21,14 +21,32 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose.editor
 {
+    /// <summary>
+    /// A class used to tag the bones to work with the pose setter tool
+    /// </summary>
     public class PoseSetterBoneComponent : MonoBehaviour
     {
+        /// <summary>
+        /// If the bone is the root of the pose
+        /// </summary>
         [EditorReadOnly] public bool isRoot;
+        /// <summary>
+        /// If the bone is selected
+        /// </summary>
         [EditorReadOnly] public bool isSelected;
+        /// <summary>
+        /// If the bone can be saved
+        /// </summary>
         [EditorReadOnly] public bool isSavable = true;
 
+        /// <summary>
+        /// The type of the bone 
+        /// </summary>
         [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneType;
 
+        /// <summary>
+        /// Accessor for the bone type
+        /// </summary>
         public uint BoneType { get => boneType; }
     }
 }

@@ -369,7 +369,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public void HandlePoseRequest(ApplyPoseDto playPoseDto)
         {
-            PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.poseKey, playPoseDto.indexInList);
+            PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.userID, playPoseDto.indexInList);
             skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
             if (playPoseDto.stopPose)
             {

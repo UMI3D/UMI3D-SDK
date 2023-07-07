@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// <inheritdoc/>
+    /// A condition to check the distance from a bone to a node
+    /// </summary>
     [System.Serializable]
     public class MagnitudeConditionDto : PoseConditionDto
     {
@@ -25,17 +29,26 @@ namespace umi3d.common.userCapture.pose
         {
             this.Magnitude = magnitude;
             this.BoneOrigine = boneOrigine;
-            this.TargetObjectId = targetObjectId;
+            this.TargetNodeId = targetObjectId;
         }
 
         public float magnitude;
+        /// <summary>
+        /// distance
+        /// </summary>
         public float Magnitude { get => magnitude; set => magnitude = value; }
 
         public uint boneOrigin;
+        /// <summary>
+        /// bone id 
+        /// </summary>
         public uint BoneOrigine { get => boneOrigin;  set => boneOrigin = value; }
 
-        public uint targetObjectId;
-        public uint TargetObjectId { get => targetObjectId; set => targetObjectId = value; }
+        public uint targetNodeId;
+        /// <summary>
+        /// Id of the target object 
+        /// </summary>
+        public uint TargetNodeId { get => targetNodeId; set => targetNodeId = value; }
     }
 }
 

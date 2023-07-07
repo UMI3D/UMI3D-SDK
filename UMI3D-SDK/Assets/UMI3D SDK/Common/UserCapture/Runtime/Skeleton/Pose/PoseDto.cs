@@ -20,6 +20,9 @@ using umi3d.common.userCapture.description;
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// A dto that discribes a pose
+    /// </summary>
     [Serializable]
     public class PoseDto : UMI3DDto
     {
@@ -42,14 +45,23 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         public List<BoneDto> bones { get; set; }
 
-
+        /// <summary>
+        /// Sets the bones that are describing the pose
+        /// </summary>
+        /// <param name="bones"></param>
         public void SetBonePoseDtoArray(List<BoneDto> bones)
         {
             this.bones = bones;
         }
 
+        /// <summary>
+        /// Where the pose starts on the skeleotn
+        /// </summary>
         public BonePoseDto boneAnchor { get; set; }
 
+        /// <summary>
+        /// Position in the list of poses of the related user
+        /// </summary>
         public int id { get; set; }
     }
 }

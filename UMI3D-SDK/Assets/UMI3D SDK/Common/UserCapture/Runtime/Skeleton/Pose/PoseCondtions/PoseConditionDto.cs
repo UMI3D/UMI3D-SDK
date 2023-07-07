@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// A condition that can be set to conditionate the activation of a pose
+    /// </summary>
     [System.Serializable]
     public class PoseConditionDto : UMI3DDto
     {

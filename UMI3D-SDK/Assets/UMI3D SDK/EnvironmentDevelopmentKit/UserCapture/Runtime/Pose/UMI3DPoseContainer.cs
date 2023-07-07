@@ -23,6 +23,9 @@ namespace umi3d.edk.userCapture.pose
 {
     public class UMI3DPoseContainer : SingleBehaviour<UMI3DPoseContainer>, IPoseContainer
     {
+        /// <summary>
+        /// All the server poses
+        /// </summary>
         [SerializeField] private List<UMI3DPose_so> allServerPoses = new List<UMI3DPose_so>();
 
         public List<UMI3DPose_so> GetAllServerPoses()

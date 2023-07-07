@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// <inheritdoc/>
+    /// A condition to check the rotation of a bone 
+    /// </summary>
     [System.Serializable]
     public class BoneRotationConditionDto : PoseConditionDto
     {
@@ -28,9 +32,15 @@ namespace umi3d.common.userCapture.pose
         }
 
         private uint boneId;
+        /// <summary>
+        /// Related bone
+        /// </summary>
         public uint BoneId { get => boneId; set => boneId = value; }
 
         private Vector4Dto rotation;
+        /// <summary>
+        /// Rotation to validate the condititon
+        /// </summary>
         public Vector4Dto Rotation { get => rotation; set => rotation = value; }
 
         private float acceptanceRange;

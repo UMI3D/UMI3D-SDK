@@ -16,6 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// <inheritdoc/>
+    /// A condition to check thescale of an object
+    /// </summary>
     [System.Serializable]
     public class ScaleConditionDto : PoseConditionDto
     {
@@ -30,6 +34,9 @@ namespace umi3d.common.userCapture.pose
         public Vector3Dto Scale { get => scale; set => scale = value; }
 
         private uint targetId;
+        /// <summary>
+        /// Id of the target object
+        /// </summary>
         public uint TargetId { get => targetId; set => targetId = value; }
     }
 }

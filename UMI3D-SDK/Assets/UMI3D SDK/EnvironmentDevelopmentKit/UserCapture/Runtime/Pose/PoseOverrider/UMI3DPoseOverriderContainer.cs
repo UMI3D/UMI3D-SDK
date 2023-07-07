@@ -24,6 +24,9 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// A class responsible for packaging a collection of pose overriders per node it refers to
+    /// </summary>
     [Serializable]
     public class UMI3DPoseOverriderContainer : UMI3DLoadableEntity
     {
@@ -49,7 +52,7 @@ namespace umi3d.edk.userCapture.pose
                     switch (pc)
                     {
                         case MagnitudeConditionDto magnitudeConditionDto:
-                            magnitudeConditionDto.TargetObjectId = (uint)nodeID;
+                            magnitudeConditionDto.TargetNodeId = (uint)nodeID;
                             break;
                     }
                 });

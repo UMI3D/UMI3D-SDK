@@ -679,13 +679,11 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
                     ulong userID = UMI3DSerializer.Read<ulong>(container);
-                    ulong poseKey = UMI3DSerializer.Read<ulong>(container);
                     int indexInList = UMI3DSerializer.Read<int>(container);
                     bool stopPose = UMI3DSerializer.Read<bool>(container);
                     ApplyPoseDto playPoseDto = new ApplyPoseDto
                     {
                         userID = userID,
-                        poseKey = poseKey,
                         indexInList = indexInList,
                         stopPose = stopPose
                     };

@@ -20,15 +20,22 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// An operation to tell a client to play a specific pose
+    /// </summary>
     public class PoseRequest : Operation
     {
-        public ulong poseKey;
+        /// <summary>
+        /// The index of the pose in the array
+        /// </summary>
         public int indexInList;
+        /// <summary>
+        /// True stops the pose, false starts the pose
+        /// </summary>
         public bool stopPose;
 
-        public PoseRequest(ulong poseKey, int indexInList, bool stopPose = false)
+        public PoseRequest(int indexInList, bool stopPose = false)
         {
-            this.poseKey = poseKey;
             this.indexInList = indexInList;
             this.stopPose = stopPose;
         }
@@ -36,7 +43,6 @@ namespace umi3d.edk.userCapture.pose
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(GetOperationKey())
-                + UMI3DSerializer.Write(poseKey)
                 + UMI3DSerializer.Write(indexInList)
                 + UMI3DSerializer.Write(stopPose);
         }
@@ -61,6 +67,6 @@ namespace umi3d.edk.userCapture.pose
         { return new ApplyPoseDto(); }
 
         protected virtual void WriteProperties(ApplyPoseDto dto, ulong userID)
-        { dto.userID = userID; dto.indexInList = indexInList; dto.poseKey = poseKey; dto.stopPose = stopPose; }
+        { dto.userID = userID; dto.indexInList = indexInList; dto.stopPose = stopPose; }
     }
 }

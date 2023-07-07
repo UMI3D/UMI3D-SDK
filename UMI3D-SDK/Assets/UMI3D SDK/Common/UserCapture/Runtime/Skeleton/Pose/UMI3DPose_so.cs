@@ -29,10 +29,22 @@ namespace umi3d.common.userCapture.pose
     [Serializable]
     public class UMI3DPose_so : ScriptableObject, IJsonSerializer
     {
+        /// <summary>
+        /// All the bones that describe the pose
+        /// </summary>
         [SerializeField] private List<Bone> bones = new List<Bone>();
+        /// <summary>
+        /// The bone that anchor the pose
+        /// </summary>
         [SerializeField] private BonePose bonePose;
 
+        /// <summary>
+        /// Get the bones composing the pose
+        /// </summary>
         public List<Bone> BoneDtos { get => bones; }
+        /// <summary>
+        /// Gets the bone anchor
+        /// </summary>
         public BonePose BonePoseDto { get => bonePose; }
 
         public int poseRef { get; set; }
@@ -131,6 +143,7 @@ namespace umi3d.common.userCapture.pose
             public float x, y, z;
         }
 
+        /// <inheritdoc/>
         public string JsonSerialize()
         {
             PoseDto poseDto = ToDTO();
@@ -139,6 +152,7 @@ namespace umi3d.common.userCapture.pose
             return json;
         }
 
+        /// <inheritdoc/>
         public ScriptableObject JsonDeserializeScriptableObject(string data)
         {
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All, Formatting = Formatting.Indented };

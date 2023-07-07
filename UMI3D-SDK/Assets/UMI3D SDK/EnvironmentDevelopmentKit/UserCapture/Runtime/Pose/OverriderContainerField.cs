@@ -26,7 +26,11 @@ namespace umi3d.edk.userCapture.pose
     [Serializable]
     public class OverriderContainerField
     {
+        /// <summary>
+        /// A pose overrider container
+        /// </summary>
         [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
+
         public UMI3DPoseOverriderContainer PoseOverriderContainer { get => poseOverriderContainer; }
 
         [SerializeField] UMI3DModel _uMI3DModel;

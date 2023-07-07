@@ -6,10 +6,14 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// A pose overrider description as a scriptable object
+    /// </summary>
     [CreateAssetMenu()]
     [Serializable]
     public class UMI3DPoseOveridder_so : ScriptableObject
     {
+
         public UMI3DPose_so pose;
 
         /// <summary>
@@ -43,7 +47,7 @@ namespace umi3d.common.userCapture.pose
                         {
                             magnitude = magnitudeConditionDto.magnitude,
                             BoneOrigine = magnitudeConditionDto.BoneOrigine,
-                            targetObjectId = magnitudeConditionDto.TargetObjectId
+                            targetNodeId = magnitudeConditionDto.TargetNodeId
                         });
                         break;
 

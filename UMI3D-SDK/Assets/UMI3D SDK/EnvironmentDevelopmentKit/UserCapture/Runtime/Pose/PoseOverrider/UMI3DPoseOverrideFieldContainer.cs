@@ -26,6 +26,9 @@ namespace umi3d.edk.userCapture.pose
             _ = UMI3DPoseManager.Instance;
         }
 
+        /// <summary>
+        /// The container fields, the init to set up the pose containers
+        /// </summary>
         [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
 
         public List<OverriderContainerField> GetAllPoseOverriders()

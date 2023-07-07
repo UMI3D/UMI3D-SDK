@@ -263,7 +263,7 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.MAGNITUDE_CONDITION)
                         + UMI3DSerializer.Write(magnitudeConditionDto.Magnitude)
                         + UMI3DSerializer.Write(magnitudeConditionDto.BoneOrigine)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.TargetObjectId);
+                        + UMI3DSerializer.Write(magnitudeConditionDto.TargetNodeId);
                     break;
 
                 case RangeConditionDto rangeConditionDto:

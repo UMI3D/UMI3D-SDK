@@ -40,9 +40,18 @@ namespace umi3d.edk.userCapture.pose
             Init();
         }
 
+        /// <summary>
+        /// A bool to make sure the initialisation only occurs once
+        /// </summary>
         private bool posesInitialized = false;
 
+        /// <summary>
+        /// A collection of all the poses in the experience key: userid, value: all the poses of the user
+        /// </summary>
         public Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>();
+        /// <summary>
+        /// List of all the pose overriders in the experience
+        /// </summary>
         protected List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer = new();
 
         /// <summary>

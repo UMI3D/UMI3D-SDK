@@ -17,12 +17,24 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// The dto that forces the client to just play or stop a specific pose
+    /// </summary>
     public class ApplyPoseDto : AbstractOperationDto
     {
+        /// <summary>
+        /// Id of the user to apply the pose to
+        /// </summary>
         public ulong userID { get; set; }
-        public ulong poseKey { get; set; }
+
+        /// <summary>
+        /// Index in the list of poses
+        /// </summary>
         public int indexInList { get; set; }
 
+        /// <summary>
+        /// Is it a message to stop or to start the related pose
+        /// </summary>
         public bool stopPose { get; set; } = false;
     }
 }

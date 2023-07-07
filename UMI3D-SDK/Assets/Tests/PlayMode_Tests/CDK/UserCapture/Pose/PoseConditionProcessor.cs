@@ -29,7 +29,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 {
     public class PoseOverriderHandlerUnit_Tests
     {
-        private PoseOverriderContainerHandlerUnit unit = null;
+        private PoseConditionProcessor unit = null;
 
         private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
 
@@ -51,7 +51,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             collaborationClientServerMock = new Mock<UMI3DCollaborationClientServer>();
             TrackedSkeletonMock = new Mock<TrackedSkeleton>();
 
-            unit = new PoseOverriderContainerHandlerUnit(environmentLoaderServiceMock.Object, TrackedSkeletonMock.Object);
+            unit = new PoseConditionProcessor(environmentLoaderServiceMock.Object, TrackedSkeletonMock.Object);
         }
 
         [TearDown]
@@ -168,7 +168,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         {
                             Magnitude = 1,
                             BoneOrigine = 13,
-                            TargetObjectId = 100012
+                            TargetNodeId = 100012
                         }
                     }.ToArray()
                 },
@@ -182,7 +182,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         {
                             Magnitude = 1,
                             BoneOrigine = 13,
-                            TargetObjectId = 100012
+                            TargetNodeId = 100012
                         }
                     }.ToArray()
                 },
@@ -195,7 +195,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         {
                             Magnitude = 1,
                             BoneOrigine = 13,
-                            TargetObjectId = 100012
+                            TargetNodeId = 100012
                         }
                     }.ToArray()
                 },
