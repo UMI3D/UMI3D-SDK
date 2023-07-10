@@ -14,16 +14,22 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// Mapping between a UMI3D and other objects, based on links.
+    /// </summary>
     [System.Serializable]
     public class SkeletonMapping
     {
-        [inetum.unityUtils.ConstEnum(typeof(BoneType), typeof(uint))]
+        /// <summary>
+        /// Mapped UMI3D bone.
+        /// </summary>
         public uint BoneType;
 
+        /// <summary>
+        /// Rule to compute the mapping between the bone and other objects.
+        /// </summary>
         public ISkeletonMappingLink Link;
 
         public SkeletonMapping(uint boneType, ISkeletonMappingLink link)
@@ -32,19 +38,25 @@ namespace umi3d.common.userCapture.description
             this.Link = link;
         }
 
+        /// <summary>
+        /// Get pose of the bone after computing links.
+        /// </summary>
+        /// <returns></returns>
         public BoneDto GetPose()
         {
             var computed = Link.Compute();
-            Quaternion rotation = new Quaternion(computed.rotation.x,
-                                                computed.rotation.y,
-                                                computed.rotation.z,
-                                                computed.rotation.w
-            );
+            Vector4Dto rotation = new Vector4Dto()
+            {
+                X = computed.rotation.x,
+                Y = computed.rotation.y,
+                Z = computed.rotation.z,
+                W = computed.rotation.w
+            };
 
             return new BoneDto()
             {
                 boneType = BoneType,
-                rotation = rotation.Dto()
+                rotation = rotation
             };
         }
     }

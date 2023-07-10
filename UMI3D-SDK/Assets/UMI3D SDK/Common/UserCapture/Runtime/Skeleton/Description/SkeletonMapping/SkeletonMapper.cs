@@ -21,6 +21,9 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// Mapper between any skeleton hiearchy and the UMI3D one.
+    /// </summary>
     public class SkeletonMapper : MonoBehaviour, ISkeletonMapper
     {
         private const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
@@ -28,6 +31,10 @@ namespace umi3d.common.userCapture.description
         public BonePoseDto BoneAnchor;
         public SkeletonMapping[] Mappings;
 
+        /// <summary>
+        /// Get pose of the bone using mappings.
+        /// </summary>
+        /// <returns></returns>
         public virtual PoseDto GetPose()
         {
             try

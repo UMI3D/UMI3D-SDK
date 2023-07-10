@@ -36,6 +36,7 @@ namespace umi3d.common.userCapture.description
             this.node = node;
         }
 
+        /// <inheritdoc/>
         public virtual (Vector3 position, Quaternion rotation) Compute()
         {
             var computed = node.Compute();

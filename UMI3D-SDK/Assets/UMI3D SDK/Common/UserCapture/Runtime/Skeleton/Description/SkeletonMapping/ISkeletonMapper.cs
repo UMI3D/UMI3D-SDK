@@ -18,8 +18,15 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// Mapper between any skeleton hiearchy and the UMI3D one.
+    /// </summary>
     public interface ISkeletonMapper
     {
+        /// <summary>
+        /// Get pose of the bone using mappings.
+        /// </summary>
+        /// <returns></returns>
         PoseDto GetPose();
     }
 }

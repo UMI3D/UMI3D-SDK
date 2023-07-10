@@ -20,26 +20,35 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// UMI3D hierarchy of bones.
+    /// </summary>
     public class UMI3DSkeletonHierarchy
     {
         public UMI3DSkeletonHierarchy(UMI3DSkeletonHierarchyDefinition definition)
         {
-            if (definition is null)
+            if (definition is null) //empty hierarchy has at least a hips
             {
-                _hierarchy.Add(BoneType.Hips, new() { boneTypeParent = BoneType.None, relativePosition = Vector3.zero });
+                HierarchyDict.Add(BoneType.Hips, new() { boneTypeParent = BoneType.None, relativePosition = Vector3.zero });
                 return;
             }
 
             foreach (var relation in definition.BoneRelations)
             {
-                _hierarchy.Add(relation.Bonetype, new UMI3DSkeletonHierarchyNode { boneTypeParent = relation.BonetypeParent, relativePosition = relation.RelativePosition });
+                HierarchyDict.Add(relation.Bonetype, new UMI3DSkeletonHierarchyNode { boneTypeParent = relation.BonetypeParent, relativePosition = relation.RelativePosition });
             }
         }
 
         public struct UMI3DSkeletonHierarchyNode
         {
+            /// <summary>
+            /// UMI3D bone type of the parent bone. 0 if no parent bone.
+            /// </summary>
             public uint boneTypeParent;
 
+            /// <summary>
+            /// Relative position of the bone relative to it's parent position.
+            /// </summary>
             public Vector3 relativePosition;
 
             public static implicit operator (uint boneTypeParent, Vector3 relativePosition)(UMI3DSkeletonHierarchyNode node)
@@ -48,7 +57,13 @@ namespace umi3d.common.userCapture.description
             }
         }
 
+        /// <summary>
+        /// Cache of the hiearchy.
+        /// </summary>
         private readonly Dictionary<uint, UMI3DSkeletonHierarchyNode> _hierarchy = new();
+        /// <summary>
+        /// UMI3D hiearchy nodes, indexed by bonetypes.
+        /// </summary>
         public Dictionary<uint, UMI3DSkeletonHierarchyNode> HierarchyDict => _hierarchy;
 
         /// <summary>

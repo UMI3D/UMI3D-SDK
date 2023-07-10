@@ -21,18 +21,33 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// Define a UMI3D skeleton hiearchy of bones.
+    /// </summary>
     [CreateAssetMenu(fileName = "UMI3DSkeletonHierarchyDefinition", menuName = "UMI3D/UMI3D Skeleton Hierarchy Definition")]
     public class UMI3DSkeletonHierarchyDefinition : ScriptableObject
     {
+        /// <summary>
+        /// Relation between a bone and its parent.
+        /// </summary>
         [Serializable]
         public class BoneRelation
         {
+            /// <summary>
+            /// Bone type in UMI3D standards.
+            /// </summary>
             [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
             public uint Bonetype;
 
+            /// <summary>
+            /// Parent bone in the hierarchy.
+            /// </summary>
             [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Parent bone in the hierarchy.")]
             public uint BonetypeParent;
 
+            /// <summary>
+            /// The position of the current bone type relative to its parent.
+            /// </summary>
             [Tooltip("The relative position of the current bone type.")]
             public Vector3 RelativePosition;
 
@@ -44,6 +59,10 @@ namespace umi3d.common.userCapture.description
             }
         }
 
+        /// <summary>
+        /// Collection of relation between a bone and its parent.
+        /// </summary>
+        [Tooltip("Collection of relation between a bone and its parent. Declare the hierarchy.")]
         public List<BoneRelation> BoneRelations = new List<BoneRelation>();
     }
 }
