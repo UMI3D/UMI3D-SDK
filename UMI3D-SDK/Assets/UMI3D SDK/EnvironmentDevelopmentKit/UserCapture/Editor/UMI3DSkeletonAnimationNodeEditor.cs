@@ -20,6 +20,9 @@ using UnityEditor;
 
 namespace umi3d.edk.userCapture.animation.editor
 {
+    /// <summary>
+    /// Custom editor for <see cref="UMI3DSkeletonAnimationNode"/>.
+    /// </summary>
     [CustomEditor(typeof(UMI3DSkeletonAnimationNode), true)]
     [CanEditMultipleObjects]
     public class UMI3DSkeletonAnimationNodeEditor : UMI3DModelEditor

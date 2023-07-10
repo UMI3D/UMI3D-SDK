@@ -114,7 +114,7 @@ namespace umi3d.cdk.userCapture.animation
             foreach (var renderer in nodeInstance.gameObject.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
 
-            _ = Task.Run(async () =>
+            _ = Task.Run(async () => // task is required to load asynchronously while not blocking the loading process
             {
                 // get animation related to the skeleton node
                 Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);

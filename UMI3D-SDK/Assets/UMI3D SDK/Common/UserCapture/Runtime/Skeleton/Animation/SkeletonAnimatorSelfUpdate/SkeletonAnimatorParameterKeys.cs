@@ -17,7 +17,8 @@ limitations under the License.
 namespace umi3d.common.userCapture.animation
 {
     /// <summary>
-    /// Keys used to request browsers to compute themselves the animator parameters for a skeleton.
+    /// Keys used to request browsers to compute themselves the animator parameters for a skeleton. <br/>
+    /// Each key result in a different computation formula in browsers.
     /// </summary>
     /// It ensure smooth animations on clients.
     public enum SkeletonAnimatorParameterKeys : uint

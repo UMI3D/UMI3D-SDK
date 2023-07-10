@@ -25,8 +25,9 @@ using umi3d.common;
 namespace umi3d.cdk.collaboration.userCapture.animation
 {
     /// <summary>
-    /// Loader for <see cref="UMI3DSkeletonNodeDto"/> in a collaborative context.
+    /// Loader for <see cref="common.userCapture.animation.SkeletonAnimationNodeDto"/> in a collaborative context.
     /// </summary>
+    /// Main difference with <see cref="SkeletonAnimationNodeLoader"/> is that it uses collaborative skeletons.
     public class CollaborationSkeletonAnimationNodeLoader : SkeletonAnimationNodeLoader
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Collaboration;
@@ -66,7 +67,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
             var skeleton = collaborativeSkeletonsmanager.TryGetSkeletonById(userId);
             if (skeleton != null)
             {
-                lock (skeleton.Skeletons) // loader can start parallel async task
+                lock (skeleton.Skeletons) // loader can start parallel async tasks, required to load concurrently
                 {
                     // add animated skeleton to subskeleton list and re-order it by descending priority
                     var animatedSkeletons = skeleton.Skeletons

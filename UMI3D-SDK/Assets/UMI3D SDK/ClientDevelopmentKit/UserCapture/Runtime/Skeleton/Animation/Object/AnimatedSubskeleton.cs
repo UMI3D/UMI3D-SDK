@@ -35,6 +35,8 @@ namespace umi3d.cdk.userCapture.animation
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
 
+        #region Properties
+
         /// <summary>
         /// Reference to the skeleton mapper that computes related links into a pose.
         /// </summary>
@@ -56,6 +58,11 @@ namespace umi3d.cdk.userCapture.animation
         /// The key correspond to a key in <see cref="SkeletonAnimatorParameterKeys"/>.
         public virtual SkeletonAnimationParameter[] SelfUpdatedAnimatorParameters { get; protected set; }
 
+        #endregion Properties
+
+        /// <summary>
+        /// See <see cref="SkeletonAnimationParameterDto"/>.
+        /// </summary>
         public class SkeletonAnimationParameter
         {
             public SkeletonAnimationParameter(SkeletonAnimationParameterDto dto)
@@ -179,6 +186,8 @@ namespace umi3d.cdk.userCapture.animation
             return null;
         }
 
+        #region ParameterSelfUpdate
+
         /// <summary>
         /// Start animation parameters self update. Parameters are recomputed each frame based on the <paramref name="skeleton"/> movement.
         /// </summary>
@@ -258,6 +267,12 @@ namespace umi3d.cdk.userCapture.animation
             }
         }
 
+        /// <summary>
+        ///  Applies range parameter settings.
+        /// </summary>
+        /// <param name="parameter"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
         private float ApplyRanges(SkeletonAnimationParameter parameter, float value)
         {
             if (value < parameter.MinRange)
@@ -278,6 +293,13 @@ namespace umi3d.cdk.userCapture.animation
             return value;
         }
 
+        /// <summary>
+        /// Tell if a value has changed significantly compared to a threshold.
+        /// </summary>
+        /// <param name="previousValue"></param>
+        /// <param name="newValue"></param>
+        /// <param name="threshold"></param>
+        /// <returns></returns>
         private bool IsChangeSignificant(float previousValue, float newValue, float threshold = 0.05f)
         {
             if (previousValue == newValue)
@@ -309,5 +331,7 @@ namespace umi3d.cdk.userCapture.animation
                 anim?.ApplyParameter(name, parameterDto);
             }
         }
+
+        #endregion ParameterSelfUpdate
     }
 }
