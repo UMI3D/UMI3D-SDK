@@ -19,6 +19,7 @@ namespace umi3d.common.binding
     /// <summary>
     /// Abstract binding data.
     /// </summary>
+    /// See <see cref="BindingDto"/>.
     [System.Serializable]
     public abstract class AbstractBindingDataDto : UMI3DDto
     {

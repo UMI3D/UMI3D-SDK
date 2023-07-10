@@ -22,7 +22,8 @@ using umi3d.common.binding;
 namespace umi3d.cdk.binding
 {
     /// <summary>
-    /// Loader for bindings.
+    /// Loader for bindings.<br/>
+    /// See <see cref="BindingDto"/>.
     /// </summary>
     public class BindingLoader : AbstractLoader
     {

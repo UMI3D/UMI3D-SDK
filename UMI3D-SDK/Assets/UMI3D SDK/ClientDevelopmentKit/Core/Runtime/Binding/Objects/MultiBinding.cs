@@ -26,6 +26,9 @@ namespace umi3d.cdk.binding
     /// </summary>
     public class MultiBinding : AbstractBinding
     {
+        /// <summary>
+        /// Cache of bindings on the node ordered by descending priority.
+        /// </summary>
         protected AbstractSimpleBinding[] orderedBindings;
 
         public List<AbstractSimpleBinding> Bindings => orderedBindings.ToList();

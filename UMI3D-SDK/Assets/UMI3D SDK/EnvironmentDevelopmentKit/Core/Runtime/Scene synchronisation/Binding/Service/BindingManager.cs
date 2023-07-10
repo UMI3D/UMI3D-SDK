@@ -23,7 +23,7 @@ using umi3d.common;
 namespace umi3d.edk.binding
 {
     /// <summary>
-    /// Manage bindings from envrionment side
+    /// Manage bindings from envrionment side.
     /// </summary>
     public class BindingManager : Singleton<BindingManager>, IBindingService
     {
@@ -58,11 +58,17 @@ namespace umi3d.edk.binding
 
         #endregion DI
 
+        #region Initialization
+
         protected void Init()
         {
             umi3dServerService.OnUserJoin.AddListener(DispatchBindings);
         }
 
+        /// <summary>
+        /// Send all synchronized bindings to a user.
+        /// </summary>
+        /// <param name="user"></param>
         protected virtual void DispatchBindings(UMI3DUser user)
         {
             if (bindings.GetValue().Count > 0)
@@ -73,6 +79,8 @@ namespace umi3d.edk.binding
                 t.Dispatch();
             }
         }
+
+        #endregion Initialization
 
         /// <inheritdoc/>
         public virtual bool AreBindingsEnabled(UMI3DUser user = null)

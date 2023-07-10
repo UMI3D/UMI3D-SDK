@@ -27,7 +27,8 @@ using UnityEngine;
 namespace umi3d.cdk.collaboration.userCapture.binding
 {
     /// <summary>
-    /// Loader for bindings and bone bindings on other users' skeleton.
+    /// Loader for bindings and bone bindings on other users' skeleton. <br/>
+    /// See <see cref="BindingDto"/>, <see cref="BoneBindingDataDto"/> and <see cref="RigBoneBindingDataDto"/>.
     /// </summary>
     public class CollaborationBindingLoader : BindingLoader
     {

@@ -19,87 +19,94 @@ using System.Collections.Generic;
 namespace umi3d.edk.binding
 {
     /// <summary>
-    /// Manage bindings from envrionment side
+    /// Manage bindings from envrionment side.
     /// </summary>
     public interface IBindingService
     {
         /// <summary>
         /// Are bindings activated on a uer client?
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        /// <param name="user">User to get the property value. Null to get synchronized one.</param>
+        /// <returns>True if bindings are enabled i.e. computed on browsers.</returns>
         bool AreBindingsEnabled(UMI3DUser user = null);
 
         /// <summary>
         /// Get current bindings by node for a user.
         /// </summary>
-        /// <param name="user"></param>
-        /// <returns></returns>
+        /// <param name="user">User to get the property value. Null to get synchronized one.</param>
+        /// <returns>Current bindings indexed by node.</returns>
         Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null);
 
         /// <summary>
         /// Add a new Binding. Don't specify users to target all users.
         /// </summary>
-        /// <param name="binding">the new binding value</param>
-        /// <returns>The associated operation</returns>
+        /// <param name="binding">The new binding to add.</param>
+        /// <param name="users">Users that should receive the binding. Don't specify users to target all users.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> AddBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Set a collection of Bindings. Don't specify users to target all users.
         /// </summary>
-        /// <param name="user">the user</param>
-        /// <param name="bindings">the list of bindings</param>
-        /// <returns>The associated SetEntityProperty</returns>
+        /// <param name="bindings">The new bindings to add.</param>
+        /// <param name="users">Users that should receive the binding. Don't specify users to target all users.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> AddBindingRange(IEnumerable<AbstractBinding> bindings, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove all bindings on a node for all users. Don't specify users to target all users.
         /// </summary>
-        /// <param name="binding">the new binding value</param>
-        /// <returns>The list of associated SetEntityProperty.</returns>
+        /// <param name="nodeId">Id of the node from which bindings should be removed.</param>
+        /// <param name="users">Users that should see the bindings removed. Don't specify users to target all users.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove all bindings on a node Binding for a user.
         /// </summary>
-        /// <param name="binding">the new binding value</param>
-        /// <returns>The list of associated SetEntityProperty.</returns>
+        /// <param name="nodeId">Id of the node from which bindings should be removed.</param>
+        /// <param name="user">User that should see the bindings removed.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user);
 
         /// <summary>
         /// Remove all bindings on a node for a user et reattach the objet under a new parent. Don't specify users to target all users.
         /// </summary>
-        /// <param name="obj">the avatar node</param>
         /// <param name="binding">the new binding value</param>
         /// <param name="newparent">a transform intended to be the new parent</param>
-        /// <returns>The list of associated SetEntityProperty.</returns>
+        /// <param name="users">Users that should see the bindings removed. Don't specify users to target all users.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> RemoveAllBindingsAndReattach(AbstractBinding binding, UMI3DAbstractNode newparent, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove a Binding for several users. Don't specify users to target all users.
         /// </summary>
         /// <param name="binding">the new binding value</param>
-        /// <returns>The list of associated SetEntityProperty.</returns>
+        /// <param name="users">Users that should see the binding removed. Don't specify users to target all users.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove a Binding for one users.
         /// </summary>
         /// <param name="binding">the new binding value</param>
-        /// <returns>The list of associated SetEntityProperty.</returns>
+        /// <param name="users">User that should see the binding removed.</param>
+        /// <returns>The associated operations.</returns>
         List<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user);
 
         /// <summary>
         /// Set the activation of Bindings for several users. Don't specify users to target all users.
         /// </summary>
-        /// <param name="activated">the activation value</param>
+        /// <param name="activated">If true, bindings are computed on the browser.</param>
+        /// <param name="users">User to set the property value. Null to get synchronized one.</param>
         /// <returns>The associated operation. Is null if no operation is required.</returns>
         Operation SetBindingsActivation(bool activated, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Set the activation of Bindings for one user.
         /// </summary>
-        /// <param name="activated">the activation value</param>
+        /// <param name="activated">If true, bindings are computed on the browser.</param>
+        /// <param name="user">User to set the property value. </param>
         /// <returns>The associated operation. Is null if no operation is required.</returns>
         Operation SetBindingsActivation(bool activated, UMI3DUser user);
     }

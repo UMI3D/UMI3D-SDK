@@ -36,20 +36,20 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// Add a binding that already has been loaded.
         /// </summary>
-        /// <param name="boundNodeId"></param>
-        /// <param name="binding"></param>
+        /// <param name="boundNodeId">Id of the node that will apply the binding on itself.</param>
+        /// <param name="binding">Binding to add</param>
         public void AddBinding(ulong boundNodeId, AbstractBinding binding);
 
         /// <summary>
         /// Remove a binding to compute.
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="boundNodeid">Id of the node that is bound.</param>
         public void RemoveBinding(ulong boundNodeid);
 
         /// <summary>
         /// Enable/disable bindings computation for this client.
         /// </summary>
-        /// <param name="dto"></param>
+        /// <param name="isEnabled">If true, bindings are allowed to be computed on browser.</param>
         public void UpdateBindingsActivation(bool isEnabled);
     }
 }
