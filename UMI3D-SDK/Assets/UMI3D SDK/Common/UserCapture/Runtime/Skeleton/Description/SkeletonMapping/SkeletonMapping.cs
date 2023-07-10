@@ -45,7 +45,7 @@ namespace umi3d.common.userCapture.description
         /// Get pose of the bone after computing links.
         /// </summary>
         /// <returns></returns>
-        public BoneDto GetPose()
+        public virtual BoneDto GetPose()
         {
             if (Link == null)
                 UMI3DLogger.LogWarning("Skeleton Mapping Link is null.", DEBUG_SCOPE);
