@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.networking
 {
     /// <summary>
     /// DTO describing the indication that a user should wait for Transactions or Requests to come 

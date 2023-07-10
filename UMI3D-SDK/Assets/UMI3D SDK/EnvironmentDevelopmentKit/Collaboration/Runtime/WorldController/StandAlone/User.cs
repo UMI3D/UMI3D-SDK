@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.worldController
 {

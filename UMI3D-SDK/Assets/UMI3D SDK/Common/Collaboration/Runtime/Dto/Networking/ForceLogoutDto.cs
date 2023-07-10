@@ -14,12 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.common;
-using UnityEngine;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.networking
 {
     /// <summary>
     /// DTO describing a forced logout order.

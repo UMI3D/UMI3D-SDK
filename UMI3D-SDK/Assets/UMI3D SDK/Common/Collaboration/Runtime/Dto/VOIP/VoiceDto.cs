@@ -14,26 +14,32 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using umi3d.common.interaction;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.voip
 {
     /// <summary>
-    /// DTO describing the browser answer to connection requirements.
+    /// DTO describing a vocal server configuration.
     /// </summary>
-    [Serializable]
-    public class UserConnectionAnswerDto : UserDto
+    /// This server can be a Murmur server, for example.
+    public class VoiceDto
     {
         /// <summary>
-        /// Answers to the connection form.
+        /// URL of the vocal server.
         /// </summary>
-        /// Not null if the received <see cref="UserConnectionDto"/> contained a form.
-        public FormAnswerDto parameters { get; set; }
+        public string url { get; set; }
 
         /// <summary>
-        /// State if the libraries have been updated
+        /// Login credential to connect to the vocal server.
         /// </summary>
-        public bool librariesUpdated { get; set; } = false;
+        public string login { get; set; }
+
+        /// <summary>
+        /// Password credential to connect to the vocal server.
+        /// </summary>
+        public string password { get; set; }
+
+        /// <summary>
+        /// Name of the channel to join in the server.
+        /// </summary>
+        public string channelName { get; set; }
     }
 }

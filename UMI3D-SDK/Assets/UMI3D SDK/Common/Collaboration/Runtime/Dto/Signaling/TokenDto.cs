@@ -14,17 +14,19 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+using System;
+
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing the current status of the user from the server point of view.
+    /// DTO to describe an update of a token.
     /// </summary>
-    /// Receiving on a browser this DTO should set the user status to the attributed one.
-    public class StatusDto : UMI3DDto
+    [Serializable]
+    public class TokenDto : UMI3DDto
     {
         /// <summary>
-        /// Attributed user status.
+        /// Token to update.
         /// </summary>
-        public StatusType status { get; set; }
+        public string token { get; set; } = null;
     }
 }

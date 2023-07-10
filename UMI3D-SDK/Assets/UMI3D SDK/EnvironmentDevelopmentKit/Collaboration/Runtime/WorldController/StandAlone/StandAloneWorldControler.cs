@@ -19,7 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.collaboration;
 using UnityEngine;
 

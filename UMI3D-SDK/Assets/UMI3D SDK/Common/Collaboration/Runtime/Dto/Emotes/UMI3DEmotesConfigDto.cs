@@ -13,7 +13,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.common.collaboration.emotes
+namespace umi3d.common.collaboration.dto.emotes
 {
     /// <summary>
     /// Emote configuration asset that describes available emotes for client usage

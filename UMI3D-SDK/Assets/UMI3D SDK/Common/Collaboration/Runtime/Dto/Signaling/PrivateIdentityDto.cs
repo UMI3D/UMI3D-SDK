@@ -14,28 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System;
+using System.Collections.Generic;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing a publicly visible identity. All browsers can see this identity.
+    /// DTO describing idnetifiers that are known only from the user and the media.
     /// </summary>
     [Serializable]
-    public class PublicIdentityDto : UMI3DDto
+    public class PrivateIdentityDto : IdentityDto
     {
         /// <summary>
-        /// Id of the user
+        /// Global token of the user.
         /// </summary>
-        public ulong userId { get; set; } = 0;
+        public string globalToken { get; set; }
 
         /// <summary>
-        /// Public login attributed to the user.
+        /// Essential data to enable the connection to an environment using a Forge server.
         /// </summary>
-        public string login { get; set; } = null;
+        public EnvironmentConnectionDto connectionDto { get; set; }
 
         /// <summary>
-        /// Public name attributed to the user and that should be displayed on browsers.
+        /// Libraries possessed by the user.
         /// </summary>
-        public string displayName { get; set; } = null;
+        public List<LibrariesDto> libraries { get; set; }
     }
 }

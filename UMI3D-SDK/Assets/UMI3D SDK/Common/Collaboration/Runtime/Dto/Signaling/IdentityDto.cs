@@ -13,27 +13,34 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing a vocal message sent through the UMI3D server.
+    /// DTO describing an identity, a set of identifying info of the user.
     /// </summary>
-    public class VoiceDataDto : UMI3DDto
+    [Serializable]
+    public class IdentityDto : PublicIdentityDto
     {
         /// <summary>
-        /// Forge ID of the sending browser.
+        /// Local token of the user.
         /// </summary>
-        public uint senderId { get; set; }
+        public string localToken { get; set; }
 
         /// <summary>
-        /// Length of the message in bytes.
+        /// Header token used in request made to the Resources Server or HTTP Server
         /// </summary>
-        public int length { get; set; }
+        public string headerToken { get; set; }
 
         /// <summary>
-        /// Message as a byte array.
+        /// key that can be use for encryption
         /// </summary>
-        public byte[] data { get; set; }
+        public string key { get; set; }
+
+        /// <summary>
+        /// id of the user;
+        /// </summary>
+        public string guid { get; set; }
     }
 }

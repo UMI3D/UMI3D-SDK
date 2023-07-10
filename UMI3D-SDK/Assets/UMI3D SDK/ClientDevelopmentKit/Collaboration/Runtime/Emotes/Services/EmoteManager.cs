@@ -14,7 +14,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration.emotes;
+using umi3d.common.collaboration.dto.emotes;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration.emotes

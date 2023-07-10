@@ -11,7 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration.emotes
+namespace umi3d.common.collaboration.dto.emotes
 {
     /// <summary>
     /// Emote data, including a reference to the icon resource, packaged in a DTO.

@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 
+using umi3d.common.collaboration.dto.emotes;
+
 namespace umi3d.common.collaboration.emotes
 {
     /// <summary>

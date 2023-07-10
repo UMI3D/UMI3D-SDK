@@ -13,26 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
-using umi3d.common.userCapture.pose;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing user configuration when joining an environment.
+    /// DTO describing an identity sent to the UMI3D server.
     /// </summary>
-    public class JoinDto : UMI3DDto
+    /// Same than <see cref="IdentityDto"/> but with customizable metadata.
+    [Serializable]
+    public class RegisterIdentityDto : IdentityDto
     {
         /// <summary>
-        /// The local poses from the client
+        /// Customizable data as a byte array. 
         /// </summary>
-        public List<PoseDto> clientLocalPoses { get; set; }
-
-        /// <summary>
-        /// User size scale relative to the environment.
-        /// </summary>
-        public Vector3Dto userSize { get; set; }
+        /// The server should know how to parse them.
+        public byte[] metaData { get; set; }
     }
 }

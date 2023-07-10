@@ -13,7 +13,7 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration.emotes;
+using umi3d.common.collaboration.dto.emotes;
 
 namespace umi3d.cdk.collaboration.emotes
 {

@@ -15,7 +15,7 @@ limitations under the License.
 */
 using umi3d.common.interaction;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.networking
 {
     /// <summary>
     /// DTO describing a connection to a media with a form answer.

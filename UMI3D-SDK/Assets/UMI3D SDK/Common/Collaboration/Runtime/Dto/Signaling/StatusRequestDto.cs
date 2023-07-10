@@ -14,21 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing the number of users in an environment at a given time.
+    /// DTO describing a request from the server to know the current status of the browser's client.
     /// </summary>
-    public class PlayerCountDto : UMI3DDto
+    public class StatusRequestDto : UMI3DDto
     {
         /// <summary>
-        /// Connected player count
+        /// Browser's client status.
         /// </summary>
-        public int count { get; set; }
-
-        /// <summary>
-        /// Last change date with format "MM:dd:yyyy:HH:mm:ss";
-        /// </summary>
-        public string lastUpdate { get; set; }
+        public StatusType status { get; set; }
     }
 }

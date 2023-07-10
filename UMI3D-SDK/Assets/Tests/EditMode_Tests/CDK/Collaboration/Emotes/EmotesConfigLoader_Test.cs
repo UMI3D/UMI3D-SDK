@@ -20,7 +20,7 @@ using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
-using umi3d.common.collaboration.emotes;
+using umi3d.common.collaboration.dto.emotes;
 
 namespace EditMode_Tests.Collaboration.Emotes.CDK
 {

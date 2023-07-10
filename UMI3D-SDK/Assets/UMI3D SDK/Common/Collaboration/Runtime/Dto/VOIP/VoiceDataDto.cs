@@ -14,19 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.voip
 {
     /// <summary>
-    /// DTO to describe an update of a token.
+    /// DTO describing a vocal message sent through the UMI3D server.
     /// </summary>
-    [Serializable]
-    public class TokenDto : UMI3DDto
+    public class VoiceDataDto : UMI3DDto
     {
         /// <summary>
-        /// Token to update.
+        /// Forge ID of the sending browser.
         /// </summary>
-        public string token { get; set; } = null;
+        public uint senderId { get; set; }
+
+        /// <summary>
+        /// Length of the message in bytes.
+        /// </summary>
+        public int length { get; set; }
+
+        /// <summary>
+        /// Message as a byte array.
+        /// </summary>
+        public byte[] data { get; set; }
     }
 }

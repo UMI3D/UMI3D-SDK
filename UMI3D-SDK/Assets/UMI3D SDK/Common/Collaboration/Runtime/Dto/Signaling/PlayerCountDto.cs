@@ -13,30 +13,22 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
-using System.Collections.Generic;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing idnetifiers that are known only from the user and the media.
+    /// DTO describing the number of users in an environment at a given time.
     /// </summary>
-    [Serializable]
-    public class PrivateIdentityDto : IdentityDto
+    public class PlayerCountDto : UMI3DDto
     {
         /// <summary>
-        /// Global token of the user.
+        /// Connected player count
         /// </summary>
-        public string globalToken { get; set; }
+        public int count { get; set; }
 
         /// <summary>
-        /// Essential data to enable the connection to an environment using a Forge server.
+        /// Last change date with format "MM:dd:yyyy:HH:mm:ss";
         /// </summary>
-        public EnvironmentConnectionDto connectionDto { get; set; }
-
-        /// <summary>
-        /// Libraries possessed by the user.
-        /// </summary>
-        public List<LibrariesDto> libraries { get; set; }
+        public string lastUpdate { get; set; }
     }
 }
