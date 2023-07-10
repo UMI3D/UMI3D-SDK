@@ -131,7 +131,7 @@ namespace umi3d.cdk.collaboration
 
         private void Connected(PrivateIdentityDto identity)
         {
-            globalToken = identity.GlobalToken;
+            globalToken = identity.globalToken;
             privateIdentity = identity;
         }
 

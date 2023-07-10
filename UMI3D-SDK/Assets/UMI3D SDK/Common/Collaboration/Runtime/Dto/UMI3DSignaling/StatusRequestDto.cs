@@ -24,6 +24,6 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Browser's client status.
         /// </summary>
-        public StatusType CurrentStatus { get; set; }
+        public StatusType status { get; set; }
     }
 }

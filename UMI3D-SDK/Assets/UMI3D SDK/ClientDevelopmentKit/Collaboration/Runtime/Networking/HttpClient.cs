@@ -109,7 +109,7 @@ namespace umi3d.cdk.collaboration
 
             ConnectionFormDto dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
 
-            if (dto1 != null && dto1?.GlobalToken != null && dto1?.connectionDto != null)
+            if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
                 return dto2.ToPrivateIdentity();
@@ -323,7 +323,7 @@ namespace umi3d.cdk.collaboration
             {
                 return new PrivateIdentityDto()
                 {
-                    GlobalToken = GlobalToken,
+                    globalToken = GlobalToken,
                     connectionDto = UMI3DDtoSerializer.FromJson<EnvironmentConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
                     libraries = libraries,
                     localToken = localToken,

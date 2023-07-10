@@ -35,16 +35,12 @@ namespace umi3d.common.collaboration
         public StatusType status { get; set; }
 
         /// <summary>
-        /// User's avatar UMI3D id.
-        /// </summary>
-        //public ulong avatarId;
-
-        /// <summary>
         /// Forge id of the user.
         /// </summary>
         public uint networkId { get; set; }
 
         #region audio
+
         /// <summary>
         /// UMI3D id of the audio source where the user's voice comes from.
         /// </summary>
@@ -59,6 +55,7 @@ namespace umi3d.common.collaboration
         /// To stream video. Not used at the moment.
         /// </summary>
         public ulong videoSourceId { get; set; }
+
         #endregion audio
 
         /// <summary>

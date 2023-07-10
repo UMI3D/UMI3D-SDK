@@ -29,12 +29,12 @@ namespace umi3d.common.collaboration
         public string localToken { get; set; }
 
         /// <summary>
-        /// 
+        /// Header token used in request made to the Resources Server or HTTP Server
         /// </summary>
         public string headerToken { get; set; }
 
         /// <summary>
-        /// 
+        /// key that can be use for encryption
         /// </summary>
         public string key { get; set; }
 

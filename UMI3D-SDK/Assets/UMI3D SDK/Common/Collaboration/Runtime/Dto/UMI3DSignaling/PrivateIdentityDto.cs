@@ -27,10 +27,10 @@ namespace umi3d.common.collaboration
         /// <summary>
         /// Global token of the user.
         /// </summary>
-        public string GlobalToken { get; set; }
+        public string globalToken { get; set; }
 
         /// <summary>
-        /// 
+        /// Essential data to enable the connection to an environment using a Forge server.
         /// </summary>
         public EnvironmentConnectionDto connectionDto { get; set; }
 

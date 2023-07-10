@@ -549,7 +549,7 @@ namespace umi3d.edk.collaboration
                 user.networkPlayer?.Networker?.Ping();
             }
             catch { }
-            var sr = new StatusRequestDto { CurrentStatus = user.status };
+            var sr = new StatusRequestDto { status = user.status };
             ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
 

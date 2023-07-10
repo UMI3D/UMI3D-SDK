@@ -31,6 +31,9 @@ namespace umi3d.common.collaboration
         /// Not null if the received <see cref="UserConnectionDto"/> contained a form.
         public FormAnswerDto parameters { get; set; }
 
+        /// <summary>
+        /// State if the libraries have been updated
+        /// </summary>
         public bool librariesUpdated { get; set; } = false;
     }
 }

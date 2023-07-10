@@ -24,7 +24,7 @@ namespace umi3d.common.collaboration
     public class PublicIdentityDto : UMI3DDto
     {
         /// <summary>
-        /// 
+        /// Id of the user
         /// </summary>
         public ulong userId { get; set; } = 0;
 
