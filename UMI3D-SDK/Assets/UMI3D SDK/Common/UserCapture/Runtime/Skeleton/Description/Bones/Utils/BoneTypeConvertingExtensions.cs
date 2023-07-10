@@ -24,10 +24,10 @@ namespace umi3d.common.userCapture.description
     public static class BoneTypeConvertingExtensions
     {
         /// <summary>
-        /// Convert Unity's Bonetypes to UMI3D Bonetypes
+        /// Convert a Unity's Bonetype to UMI3D Bonetype key.
         /// </summary>
-        /// <param name="HumanBodyBones"></param>
-        /// <returns></returns>
+        /// <param name="HumanBodyBones">Unity HumanBodyBone key.</param>
+        /// <returns>Corresponding UMI3D BoneType key. Return null if BoneType.None if no corresponding key is found.</returns>
         public static uint Convert(this HumanBodyBones HumanBodyBones)
         {
             switch (HumanBodyBones)
@@ -205,6 +205,11 @@ namespace umi3d.common.userCapture.description
             }
         }
 
+        /// <summary>
+        /// Convert a UMI3D BoneType key into a Unity HumanBodyBone key. Return null if no corresponding key is found.
+        /// </summary>
+        /// <param name="boneType"></param>
+        /// <returns>Corresponding Unity HumanBodyBone key. Return null if no corresponding key is found.</returns>
         public static HumanBodyBones? ConvertToBoneType(this uint boneType)
         {
             switch (boneType)

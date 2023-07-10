@@ -18,14 +18,19 @@ using System;
 
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// Serializer for <see cref="ControllerDto"/>.
+    /// </summary>
     [UMI3DSerializerOrder(10)]
     public class ControllerSerializer : UMI3DSerializerModule
     {
+        /// <inheritdoc/>
         public bool? IsCountable<T>()
         {
             return typeof(T) == typeof(ControllerDto) ? true : null;
         }
 
+        /// <inheritdoc/>
         public bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             if (typeof(T) == typeof(ControllerDto))
@@ -48,6 +53,7 @@ namespace umi3d.common.userCapture.description
             return false;
         }
 
+        /// <inheritdoc/>
         public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             if (value is ControllerDto c)

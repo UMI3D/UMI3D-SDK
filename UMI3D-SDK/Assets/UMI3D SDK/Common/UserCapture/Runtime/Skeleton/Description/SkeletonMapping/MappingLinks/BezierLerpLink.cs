@@ -40,7 +40,7 @@ namespace umi3d.common.userCapture.description
         {
         }
 
-        //B(f) = (1-t)^3 A + 3(1-t)^2 t AT + 3(1-t) t^2 BT + t^3 B
+        /// <inheritdoc/>
         public override (Vector3 position, Quaternion rotation) Compute()
         {
             var cA = nodeA.Compute();
@@ -49,6 +49,7 @@ namespace umi3d.common.userCapture.description
             var tA = isTangeantALocal ? cA.position + cA.rotation * TangeantA : TangeantA;
             var tB = isTangeantBLocal ? cB.position + cB.rotation * TangeantB : TangeantB;
 
+            // B(f) = (1 - t) ^ 3 A + 3(1 - t) ^ 2 t AT +3(1 - t) t ^ 2 BT + t ^ 3 B
             var p = Mathf.Pow((1 - factor), 3) * cA.position + 3 * Mathf.Pow((1 - factor), 2) * factor * tA + 3 * (1 - factor) * Mathf.Pow(factor, 2) * tB + Mathf.Pow((factor), 3) * cB.position;
             var r = Quaternion.Slerp(cA.rotation, cB.rotation, factor);
 

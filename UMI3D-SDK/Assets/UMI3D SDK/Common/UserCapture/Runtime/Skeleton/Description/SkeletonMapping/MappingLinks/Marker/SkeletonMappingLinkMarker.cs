@@ -23,6 +23,9 @@ namespace umi3d.common.userCapture.description
     /// </summary>
     public abstract class SkeletonMappingLinkMarker : MonoBehaviour
     {
+        /// <summary>
+        /// Bone type for which to generate the link.
+        /// </summary>
         [Tooltip("Bone type for which to generate the link.")]
         [inetum.unityUtils.ConstEnum(typeof(BoneType), typeof(uint))]
         public uint BoneType;

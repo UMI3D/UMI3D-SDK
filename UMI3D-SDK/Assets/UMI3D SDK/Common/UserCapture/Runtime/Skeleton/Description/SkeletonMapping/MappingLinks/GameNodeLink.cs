@@ -33,6 +33,7 @@ namespace umi3d.common.userCapture.description
             this.transform = transform;
         }
 
+        /// <inheritdoc/>
         public virtual (Vector3 position, Quaternion rotation) Compute()
         {
             return (transform.position, transform.rotation);
