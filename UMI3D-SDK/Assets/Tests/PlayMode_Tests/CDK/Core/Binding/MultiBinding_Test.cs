@@ -22,7 +22,7 @@ using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.binding;
 using umi3d.common;
-using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;

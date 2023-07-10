@@ -24,6 +24,7 @@ using umi3d.cdk.binding;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.binding;
 using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
 

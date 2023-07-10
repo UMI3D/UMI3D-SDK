@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using umi3d.common.userCapture.binding;
 
 namespace umi3d.edk.userCapture.binding

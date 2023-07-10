@@ -17,7 +17,7 @@ limitations under the License.
 using EditMode_Tests.Core.Binding.Common;
 using NUnit.Framework;
 using umi3d.common;
-using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
 using UnityEngine;
