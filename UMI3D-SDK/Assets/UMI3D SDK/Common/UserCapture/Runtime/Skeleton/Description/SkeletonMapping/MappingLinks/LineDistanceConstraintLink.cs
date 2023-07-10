@@ -24,24 +24,23 @@ namespace umi3d.common.userCapture.description
     public class LineDistanceConstraintLink : ISkeletonMappingLink
     {
         public ISkeletonMappingLink node;
-        public ISkeletonMappingLink contraintNode;
         public float distance;
         public Vector3 direction;
-        public bool isLocal;
 
         public LineDistanceConstraintLink(ISkeletonMappingLink node, float distance, Vector3 direction)
         {
             this.node = node;
             this.distance = distance;
-            this.direction = direction;
+            this.direction = direction.normalized;
         }
 
         /// <inheritdoc/>
         public virtual (Vector3 position, Quaternion rotation) Compute()
         {
             var c = node.Compute();
-            var cContraint = contraintNode.Compute();
-            //todo
+
+            c.position += direction * distance;
+            
             return c;
         }
     }
