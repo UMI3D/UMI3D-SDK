@@ -52,15 +52,4 @@ namespace umi3d.common
         /// </summary>
         public ResourceDto icon3D { get; set; }
     }
-
-    /// <summary>
-    /// Notification concerning a UMI3D scene object.
-    /// </summary>
-    public class NotificationOnObjectDto : NotificationDto
-    {
-        /// <summary>
-        /// UMI3D id of the concerned object.
-        /// </summary>
-        public ulong objectId { get; set; }
-    }
 }

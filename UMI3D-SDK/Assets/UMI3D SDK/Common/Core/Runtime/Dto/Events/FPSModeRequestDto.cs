@@ -16,9 +16,19 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Navigation mode for fps navigation
+    /// </summary>
     public class FPSModeRequestDto : FlyingModeRequestDto
     {
+        /// <summary>
+        /// maximum jumpd heigth
+        /// </summary>
         public float jumpHeigth { get; set; }
+
+        /// <summary>
+        /// Maximum distance to which a user can teleport it self with a navigation fishing road
+        /// </summary>
         public float fishingRoadMaxDistance { get; set; }
     }
 }

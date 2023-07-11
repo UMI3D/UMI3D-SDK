@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -17,23 +17,13 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// Dto to state movement speed;
+    /// Notification concerning a UMI3D scene object.
     /// </summary>
-    public class SpeedDto
+    public class NotificationOnObjectDto : NotificationDto
     {
         /// <summary>
-        /// Speed when going forward
+        /// UMI3D id of the concerned object.
         /// </summary>
-        public float forwardSpeed { get; set; }
-
-        /// <summary>
-        /// Speed when going Backward
-        /// </summary>
-        public float backwardSpeed { get; set; }
-
-        /// <summary>
-        /// speed when going side way
-        /// </summary>
-        public float sideSpeed { get; set; }
+        public ulong objectId { get; set; }
     }
 }

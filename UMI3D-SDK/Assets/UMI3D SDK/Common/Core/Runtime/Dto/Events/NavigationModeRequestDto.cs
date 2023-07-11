@@ -16,7 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
-
+    /// <summary>
+    /// Base naviagation request class
+    /// </summary>
     public abstract class NavigationModeRequestDto : AbstractOperationDto
     {
     }

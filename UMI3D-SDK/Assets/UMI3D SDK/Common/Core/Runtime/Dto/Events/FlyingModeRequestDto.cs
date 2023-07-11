@@ -16,11 +16,29 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Navigation mode where the user can move freely ignoring the navemesh
+    /// </summary>
     public class FlyingModeRequestDto : NavigationModeRequestDto
     {
+        /// <summary>
+        /// SpeedDto when walking
+        /// </summary>
         public SpeedDto walking { get; set; }
+
+        /// <summary>
+        /// SpeedDto when crouching
+        /// </summary>
         public SpeedDto crouching { get; set; }
+
+        /// <summary>
+        /// SpeedDto when running
+        /// </summary>
         public SpeedDto running { get; set; }
+
+        /// <summary>
+        /// SpeedDto when running and crouching
+        /// </summary>
         public SpeedDto runningCrouching { get; set; }
     }
 }
