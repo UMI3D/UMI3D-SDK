@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common.userCapture.description;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
@@ -32,5 +34,9 @@ namespace umi3d.cdk.userCapture
         /// Hierarchy used for the skeleton's structure.
         /// </summary>
         public UMI3DSkeletonHierarchy StandardHierarchy { get; }
+
+        IDictionary<uint, float> BonesAsyncFPS { get; }
+
+        Vector3 worldSize { get; }
     }
 }

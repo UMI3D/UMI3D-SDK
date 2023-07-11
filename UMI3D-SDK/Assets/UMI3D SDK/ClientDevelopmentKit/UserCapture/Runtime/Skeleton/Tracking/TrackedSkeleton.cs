@@ -35,7 +35,8 @@ namespace umi3d.cdk.userCapture.tracking
         public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
         private List<uint> types = new List<uint>();
 
-        private ISkeletonManager skeletonManager;
+        [HideInInspector]
+        public ISkeletonManager skeletonManager;
 
         public void Start()
         {
@@ -47,7 +48,7 @@ namespace umi3d.cdk.userCapture.tracking
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
             }
 
-            skeletonManager = PersonalSkeletonManager.Instance;
+            skeletonManager ??= PersonalSkeletonManager.Instance;
         }
 
         public UserCameraPropertiesDto GetCameraDto()
@@ -131,10 +132,12 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
+            if (bones.Count == 0)
+                return;
             trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
-            foreach (var asyncBone in skeletonManager.personalSkeleton.BonesAsyncFPS)
+            foreach (var asyncBone in skeletonManager.BonesAsyncFPS)
             {
-                trackingFrame.trackedBones.Add(bones.First(b => b.Value.boneType.Equals(asyncBone.Key)).Value.ToControllerDto());
+                trackingFrame.trackedBones.Add(bones.First(p => p.Value.boneType == asyncBone.Key).Value.ToControllerDto());
             }
         }
 

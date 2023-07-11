@@ -156,7 +156,7 @@ namespace umi3d.cdk.userCapture
 
                 bones = skeleton.GetPose()?.bones;
 
-                if (bones is null) //if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
+                if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                     continue;
 
                 foreach (var b in bones)

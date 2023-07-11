@@ -27,7 +27,7 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public class PersonalSkeleton : AbstractSkeleton
     {
-        public Dictionary<uint, float> BonesAsyncFPS { get; protected set; } = new();
+        public IDictionary<uint, float> BonesAsyncFPS { get; protected set; } = new Dictionary<uint, float>();
 
         /// <summary>
         /// Size of the skeleton.
