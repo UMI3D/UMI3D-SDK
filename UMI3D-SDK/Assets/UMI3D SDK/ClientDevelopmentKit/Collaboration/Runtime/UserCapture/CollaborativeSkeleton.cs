@@ -22,6 +22,9 @@ using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
+    /// <summary>
+    /// Skeleton of other users than the browser's main user.
+    /// </summary>
     public class CollaborativeSkeleton : AbstractSkeleton
     {
         protected Vector3LinearDelayedExtrapolator posExtrapolator = new();
@@ -35,13 +38,10 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            if (Skeletons != null)
+            foreach (ISubSkeleton skeleton in Skeletons)
             {
-                foreach (ISubSkeleton skeleton in Skeletons)
-                {
-                    if (skeleton is ISubWritableSkeleton writableSubskeleton)
-                        writableSubskeleton.UpdateFrame(frame);
-                }
+                if (skeleton is ISubWritableSkeleton writableSubskeleton)
+                    writableSubskeleton.UpdateFrame(frame);
             }
 
             posExtrapolator.AddMeasure(frame.position.Struct());

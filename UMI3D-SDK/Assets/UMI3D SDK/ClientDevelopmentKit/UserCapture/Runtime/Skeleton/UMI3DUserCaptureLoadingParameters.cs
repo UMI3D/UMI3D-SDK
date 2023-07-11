@@ -21,12 +21,17 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Loading helper of the UserCapture module.
+    /// </summary>
     public class UMI3DUserCaptureLoadingParameters : UMI3DLoadingParameters
     {
         [Header("User Capture")]
+        [Tooltip("Hierarchy definition used to instanciate users' skeletons.")]
         public UMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition;
 
         [Header("Poses")]
+        [Tooltip("Specific poses defined by the browser.")]
         public List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
     }
 }

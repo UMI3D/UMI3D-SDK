@@ -21,10 +21,14 @@ using umi3d.common.userCapture.description;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// User's skeleton manager.
+    /// </summary>
     public class PersonalSkeletonManager : Singleton<PersonalSkeletonManager>, ISkeletonManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        /// <inheritdoc/>
         public PersonalSkeleton personalSkeleton
         {
             get
@@ -40,6 +44,7 @@ namespace umi3d.cdk.userCapture
             protected set => _skeleton = value;
         }
 
+        /// <inheritdoc/>
         public UMI3DSkeletonHierarchy StandardHierarchy
         {
             get
