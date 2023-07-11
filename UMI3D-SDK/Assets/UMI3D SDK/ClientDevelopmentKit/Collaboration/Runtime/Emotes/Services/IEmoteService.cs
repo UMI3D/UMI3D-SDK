@@ -28,7 +28,7 @@ namespace umi3d.cdk.collaboration.emotes
         /// <summary>
         /// Triggered when emotes are loaded and made available.
         /// </summary>
-        public event Action<List<Emote>> EmotesLoaded;
+        public event Action<IReadOnlyList<Emote>> EmotesLoaded;
 
         /// <summary>
         /// Triggered when an emote is modified.
@@ -93,7 +93,7 @@ namespace umi3d.cdk.collaboration.emotes
         /// <summary>
         /// Emotes attributed to the user.
         /// </summary>
-        public List<Emote> Emotes { get; }
+        public IReadOnlyList<Emote> Emotes { get; }
 
         #endregion Emote Changes
     }
