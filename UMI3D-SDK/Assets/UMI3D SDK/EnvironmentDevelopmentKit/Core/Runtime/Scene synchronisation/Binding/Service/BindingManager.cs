@@ -89,7 +89,7 @@ namespace umi3d.edk.binding
         }
 
         /// <inheritdoc/>
-        public virtual Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null)
+        public virtual IDictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null)
         {
             return bindings.GetValue(user);
         }
@@ -119,13 +119,13 @@ namespace umi3d.edk.binding
         #region AddBinding
 
         /// <inheritdoc/>
-        public virtual List<Operation> AddBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> AddBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
         {
             return AddOrUpgradeBinding(binding, users);
         }
 
         /// <inheritdoc/>
-        public virtual List<Operation> AddBindingRange(IEnumerable<AbstractBinding> bindings, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> AddBindingRange(IEnumerable<AbstractBinding> bindings, IEnumerable<UMI3DUser> users = null)
         {
             List<Operation> operations = new();
             foreach (AbstractBinding binding in bindings)
@@ -141,7 +141,7 @@ namespace umi3d.edk.binding
         /// </summary>
         /// <param name="binding"></param>
         /// <returns></returns>
-        private List<Operation> AddOrUpgradeBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
+        private IReadOnlyList<Operation> AddOrUpgradeBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
         {
             if (binding is null)
             {
@@ -267,19 +267,19 @@ namespace umi3d.edk.binding
         #region RemoveBinding
 
         /// <inheritdoc/>
-        public virtual List<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
         {
             return RemoveOrDowngradeBinding(binding, users);
         }
 
         /// <inheritdoc/>
-        public virtual List<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user)
+        public virtual IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user)
         {
             return RemoveOrDowngradeBinding(binding, new UMI3DUser[] { user });
         }
 
         /// <inheritdoc/>
-        public virtual List<Operation> RemoveOrDowngradeBinding(AbstractBinding bindingToRemove, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveOrDowngradeBinding(AbstractBinding bindingToRemove, IEnumerable<UMI3DUser> users = null)
         {
             if (bindingToRemove is null)
             {
@@ -417,7 +417,7 @@ namespace umi3d.edk.binding
         }
 
         /// <inheritdoc/>
-        public virtual List<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null)
         {
             var operations = new List<Operation>();
             if (!bindings.isAsync) // all users have same value
@@ -456,15 +456,16 @@ namespace umi3d.edk.binding
         }
 
         /// <inheritdoc/>
-        public virtual List<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user)
+        public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user)
         {
             return RemoveAllBindings(nodeId, new UMI3DUser[] { user });
         }
 
         /// <inheritdoc/>
-        public virtual List<Operation> RemoveAllBindingsAndReattach(AbstractBinding binding, UMI3DAbstractNode newparent, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveAllBindingsAndReattach(AbstractBinding binding, UMI3DAbstractNode newparent, IEnumerable<UMI3DUser> users = null)
         {
-            List<Operation> operations = RemoveAllBindings(binding.boundNodeId, users);
+            List<Operation> operations = new();
+            operations.AddRange(RemoveAllBindings(binding.boundNodeId, users));
 
             var node = UMI3DEnvironment.Instance._GetEntityInstance<UMI3DAbstractNode>(binding.boundNodeId);
             node.transform.SetParent(newparent.transform, true);

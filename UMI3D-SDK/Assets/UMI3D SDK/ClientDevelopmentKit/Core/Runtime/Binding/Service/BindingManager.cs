@@ -52,7 +52,8 @@ namespace umi3d.cdk.binding
         public virtual bool AreBindingsActivated { get; private set; } = true;
 
         /// <inheritdoc/>
-        public virtual Dictionary<ulong, AbstractBinding> Bindings { get; private set; } = new();
+        public virtual IReadOnlyDictionary<ulong, AbstractBinding> Bindings => bindings;
+        protected Dictionary<ulong, AbstractBinding> bindings = new();
 
         protected AbstractBinding[] bindingExecutionQueue = new AbstractBinding[0];
 
@@ -93,11 +94,11 @@ namespace umi3d.cdk.binding
 
             if (binding is not null)
             {
-                Bindings[boundNodeId] = binding;
+                bindings[boundNodeId] = binding;
                 ReorderQueue();
             }
 
-            if (Bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
+            if (bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
             {
                 bindingRoutine = routineService.AttachLateRoutine(BindingApplicationRoutine());
                 clientServer.OnLeavingEnvironment.AddListener(() => { if (bindingRoutine is not null) routineService.DettachLateRoutine(bindingRoutine); });
@@ -113,7 +114,7 @@ namespace umi3d.cdk.binding
         {
             while (AreBindingsActivated)
             {
-                if (Bindings.Count != bindingExecutionQueue.Length)
+                if (bindings.Count != bindingExecutionQueue.Length)
                     ReorderQueue();
 
                 foreach (var binding in bindingExecutionQueue)
@@ -128,8 +129,8 @@ namespace umi3d.cdk.binding
 
         private void ReorderQueue()
         {
-            if (Bindings.Values.Count > 0)
-                bindingExecutionQueue = Bindings.Values.OrderByDescending(x => x.Priority).ToArray();
+            if (bindings.Count > 0)
+                bindingExecutionQueue = bindings.Values.OrderByDescending(x => x.Priority).ToArray();
             else
                 bindingExecutionQueue = new AbstractBinding[0];
         }
@@ -137,12 +138,12 @@ namespace umi3d.cdk.binding
         /// <inheritdoc/>
         public virtual void RemoveBinding(ulong boundNodeId)
         {
-            if (Bindings.ContainsKey(boundNodeId))
+            if (bindings.ContainsKey(boundNodeId))
             {
-                Bindings.Remove(boundNodeId);
+                bindings.Remove(boundNodeId);
                 ReorderQueue();
 
-                if (Bindings.Count == 0 && bindingRoutine is not null)
+                if (bindings.Count == 0 && bindingRoutine is not null)
                 {
                     routineService.DettachLateRoutine(bindingRoutine);
                     bindingRoutine = null;

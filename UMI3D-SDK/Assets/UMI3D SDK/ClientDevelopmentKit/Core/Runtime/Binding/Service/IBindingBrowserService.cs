@@ -31,7 +31,7 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// Currently computed bindings per UMI3D node id.
         /// </summary>
-        public Dictionary<ulong, AbstractBinding> Bindings { get; }
+        public IReadOnlyDictionary<ulong, AbstractBinding> Bindings { get; }
 
         /// <summary>
         /// Add a binding that already has been loaded.
