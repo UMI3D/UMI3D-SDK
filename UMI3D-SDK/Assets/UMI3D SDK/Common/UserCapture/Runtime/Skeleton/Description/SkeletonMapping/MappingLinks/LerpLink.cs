@@ -29,13 +29,12 @@ namespace umi3d.common.userCapture.description
         /// <summary>
         /// Linear inteprolaiton factor between 0 and 1. 0 is using completely node A values, and 1 is using ones from node B.
         /// </summary>
-        [Range(0, 1)]
         public float factor;
 
         public LerpLink(ISkeletonMappingLink nodeA, ISkeletonMappingLink nodeB)
         {
-            this.nodeA = nodeA;
-            this.nodeB = nodeB;
+            this.nodeA = nodeA ?? throw new System.ArgumentNullException("SkeletonMapping link A is null");
+            this.nodeB = nodeB ?? throw new System.ArgumentNullException("SkeletonMapping link B is null");
         }
 
         /// <inheritdoc/>

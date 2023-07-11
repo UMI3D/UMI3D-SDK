@@ -17,22 +17,38 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
+using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Representation of a human user, controlled by a player.
+    /// </summary>
     public interface ISkeleton
     {
+        /// <summary>
+        /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
+        /// </summary>
         Dictionary<uint, s_Transform> Bones { get; }
 
+        /// <summary>
+        /// Subskeletons that compose the final skeleton.
+        /// </summary>
         List<ISubSkeleton> Skeletons { get; }
 
+        /// <summary>
+        /// Skeleton hiearchy used, with relative position between each bone.
+        /// </summary>
         UMI3DSkeletonHierarchy SkeletonHierarchy { get; }
 
+        /// <summary>
+        /// Anchor of the skeleton hierarchy.
+        /// </summary>
         Transform HipsAnchor { get; }
 
         /// <summary>
-        /// User's registered id
+        /// Id of the user represented by this skeleton.
         /// </summary>
         public ulong UserId { get; }
 
@@ -55,8 +71,17 @@ namespace umi3d.cdk.userCapture
 
         #endregion Data struture
 
+        /// <summary>
+        /// Update the positions/rotation of bone of subskeletons based on the received frame.
+        /// </summary>
+        /// <param name="frame"></param>
         public void UpdateFrame(UserTrackingFrameDto frame);
 
+        /// <summary>
+        /// Update the skeleton bones based on subskeletons data.
+        /// </summary>
+        /// Merge the bones of each subskeleton to find a final state for each bone.
+        /// <returns></returns>
         public ISkeleton Compute();
     }
 }

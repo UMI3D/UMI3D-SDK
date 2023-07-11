@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+
 namespace umi3d.common.userCapture.description
 {
     /// <summary>
@@ -22,6 +23,8 @@ namespace umi3d.common.userCapture.description
     [System.Serializable]
     public class SkeletonMapping
     {
+        private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
+
         /// <summary>
         /// Mapped UMI3D bone.
         /// </summary>
@@ -42,8 +45,11 @@ namespace umi3d.common.userCapture.description
         /// Get pose of the bone after computing links.
         /// </summary>
         /// <returns></returns>
-        public BoneDto GetPose()
+        public virtual BoneDto GetPose()
         {
+            if (Link == null)
+                UMI3DLogger.LogWarning("Skeleton Mapping Link is null.", DEBUG_SCOPE);
+
             var computed = Link.Compute();
             Vector4Dto rotation = new Vector4Dto()
             {

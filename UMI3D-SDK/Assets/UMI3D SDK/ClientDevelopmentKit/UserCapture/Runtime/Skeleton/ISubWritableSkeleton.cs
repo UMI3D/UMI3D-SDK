@@ -19,6 +19,9 @@ using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// <see cref="ISubSkeleton"/> that could be exported to a <see cref="UserTrackingFrameDto"/>.
+    /// </summary>
     public interface ISubWritableSkeleton : ISubSkeleton
     {
         /// <summary>

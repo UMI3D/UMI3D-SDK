@@ -27,12 +27,12 @@ namespace umi3d.common.userCapture.description
         public Vector3 TangeantB;
 
         /// <summary>
-        /// if set to true the tangeant poisition is 'nodeA.rotation * TangeantA + nodeA.position'
+        /// if set to true the tangeant position is 'nodeA.rotation * TangeantA + nodeA.position'
         /// </summary>
         public bool isTangeantALocal;
 
         /// <summary>
-        /// if set to true the tangeant poisition is 'nodeB.rotation * TangeantB + nodeB.position'
+        /// if set to true the tangeant position is 'nodeB.rotation * TangeantB + nodeB.position'
         /// </summary>
         public bool isTangeantBLocal;
 
