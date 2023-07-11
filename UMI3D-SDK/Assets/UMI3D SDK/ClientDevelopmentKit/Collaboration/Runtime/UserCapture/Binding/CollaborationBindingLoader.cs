@@ -67,7 +67,7 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
                         UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
-                        var skeleton = skeletonService.skeletons[riggedBoneBinding.userId];
+                        var skeleton = skeletonService.Skeletons[riggedBoneBinding.userId];
                         if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
@@ -85,7 +85,7 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                 case BoneBindingDataDto boneBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
-                        var skeleton = skeletonService.skeletons[boneBindingDataDto.userId];
+                        var skeleton = skeletonService.Skeletons[boneBindingDataDto.userId];
                         if (!skeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);

@@ -114,7 +114,7 @@ namespace umi3d.cdk.userCapture
         private void ComputeBonePosition(uint boneType)
         {
             if (!alreadyComputedBonesCache[boneType]
-                && SkeletonHierarchy.HierarchyDict.TryGetValue(boneType, out var boneRelation)
+                && SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
                 && boneRelation.boneTypeParent != BoneType.None)
             {
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
@@ -136,7 +136,7 @@ namespace umi3d.cdk.userCapture
         private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
         {
             // consider all bones we should have according to the hierarchy, and set all values to identity
-            foreach (var bone in hierarchy.HierarchyDict.Keys)
+            foreach (var bone in hierarchy.Relations.Keys)
             {
                 if (Bones.ContainsKey(bone))
                     Bones[bone].s_Rotation = Quaternion.identity;
