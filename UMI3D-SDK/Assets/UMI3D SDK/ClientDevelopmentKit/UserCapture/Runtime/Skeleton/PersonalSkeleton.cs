@@ -24,7 +24,7 @@ namespace umi3d.cdk.userCapture
 {
     public class PersonalSkeleton : AbstractSkeleton
     {
-        public Dictionary<uint, float> BonesAsyncFPS { get; protected set; } = new();
+        public IDictionary<uint, float> BonesAsyncFPS { get; protected set; } = new Dictionary<uint, float>();
 
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 

@@ -68,6 +68,10 @@ namespace umi3d.cdk.collaboration.userCapture
             }
         }
 
+        public IDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS;
+
+        public Vector3 worldSize => personalSkeleton.worldSize;
+
         private UMI3DSkeletonHierarchy _standardHierarchy;
 
         private float targetTrackingFPS = 30f;

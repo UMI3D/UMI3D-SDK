@@ -33,7 +33,6 @@ namespace umi3d.cdk.userCapture
     {
         private readonly UMI3DEnvironmentLoader environmentLoaderService;
         private readonly ISubWritableSkeleton trackedSkeletonService;
-        private readonly ISkeletonManager personnalSkeletonService;
 
         public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer)
         {
@@ -334,9 +333,7 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleMagnitude(MagnitudeConditionDto magnitudeConditionDto)
         {
-            UMI3DNodeInstance targetNodeInstance = null;
-
-            targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
+            UMI3DNodeInstance targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
 
             if (targetNodeInstance == null)
             {

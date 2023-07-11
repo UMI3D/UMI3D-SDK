@@ -16,8 +16,10 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections;
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture.description;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
@@ -48,6 +50,10 @@ namespace umi3d.cdk.userCapture
                 return _standardHierarchy;
             }
         }
+
+        public IDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS;
+
+        public Vector3 worldSize => personalSkeleton.worldSize;
 
         private UMI3DSkeletonHierarchy _standardHierarchy;
 
