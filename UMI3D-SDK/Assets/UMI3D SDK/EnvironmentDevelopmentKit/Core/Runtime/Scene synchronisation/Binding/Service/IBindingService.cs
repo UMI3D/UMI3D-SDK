@@ -35,7 +35,7 @@ namespace umi3d.edk.binding
         /// </summary>
         /// <param name="user">User to get the property value. Null to get synchronized one.</param>
         /// <returns>Current bindings indexed by node.</returns>
-        Dictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null);
+        IDictionary<ulong, AbstractBinding> GetBindings(UMI3DUser user = null);
 
         /// <summary>
         /// Add a new Binding. Don't specify users to target all users.
@@ -43,7 +43,7 @@ namespace umi3d.edk.binding
         /// <param name="binding">The new binding to add.</param>
         /// <param name="users">Users that should receive the binding. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> AddBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> AddBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Set a collection of Bindings. Don't specify users to target all users.
@@ -51,7 +51,7 @@ namespace umi3d.edk.binding
         /// <param name="bindings">The new bindings to add.</param>
         /// <param name="users">Users that should receive the binding. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> AddBindingRange(IEnumerable<AbstractBinding> bindings, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> AddBindingRange(IEnumerable<AbstractBinding> bindings, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove all bindings on a node for all users. Don't specify users to target all users.
@@ -59,7 +59,7 @@ namespace umi3d.edk.binding
         /// <param name="nodeId">Id of the node from which bindings should be removed.</param>
         /// <param name="users">Users that should see the bindings removed. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove all bindings on a node Binding for a user.
@@ -67,7 +67,7 @@ namespace umi3d.edk.binding
         /// <param name="nodeId">Id of the node from which bindings should be removed.</param>
         /// <param name="user">User that should see the bindings removed.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user);
+        IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user);
 
         /// <summary>
         /// Remove all bindings on a node for a user et reattach the objet under a new parent. Don't specify users to target all users.
@@ -76,7 +76,7 @@ namespace umi3d.edk.binding
         /// <param name="newparent">a transform intended to be the new parent</param>
         /// <param name="users">Users that should see the bindings removed. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> RemoveAllBindingsAndReattach(AbstractBinding binding, UMI3DAbstractNode newparent, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> RemoveAllBindingsAndReattach(AbstractBinding binding, UMI3DAbstractNode newparent, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove a Binding for several users. Don't specify users to target all users.
@@ -84,7 +84,7 @@ namespace umi3d.edk.binding
         /// <param name="binding">the new binding value</param>
         /// <param name="users">Users that should see the binding removed. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
 
         /// <summary>
         /// Remove a Binding for one users.
@@ -92,7 +92,7 @@ namespace umi3d.edk.binding
         /// <param name="binding">the new binding value</param>
         /// <param name="users">User that should see the binding removed.</param>
         /// <returns>The associated operations.</returns>
-        List<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user);
+        IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user);
 
         /// <summary>
         /// Set the activation of Bindings for several users. Don't specify users to target all users.

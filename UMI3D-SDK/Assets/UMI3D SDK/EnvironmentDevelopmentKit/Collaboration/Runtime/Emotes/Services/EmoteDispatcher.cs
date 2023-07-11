@@ -36,7 +36,7 @@ namespace umi3d.edk.collaboration.emotes
         /// <summary>
         /// Emote configuration for the environment for each user.
         /// </summary>
-        public Dictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; }
+        public IDictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; }
     }
 
     /// <summary>
@@ -65,7 +65,7 @@ namespace umi3d.edk.collaboration.emotes
         /// <summary>
         /// Emote configuration for the environment for each user. Key is user id.
         /// </summary>
-        public Dictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; protected set; } = new();
+        public IDictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; protected set; } = new Dictionary<ulong, UMI3DEmotesConfig>();
 
         /// <summary>
         /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.

@@ -176,11 +176,15 @@ namespace EditMode_Tests.Core.Binding.CDK
         [TestCase(0uL)]
         public void RemoveBinding_Registered(ulong boundNodeId)
         {
-            Dictionary<ulong, AbstractBinding> mockBindingsDict = new() { { boundNodeId, new NodeBinding(null, null, null) } };
+            NodeBindingDataDto dto = new();
+            NodeBinding nodeBinding = new NodeBinding(dto, null, null);
 
             mockBindingManager.CallBase = false;
+            mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
             mockBindingManager.Setup(x => x.RemoveBinding(It.IsAny<ulong>())).CallBase();
-            mockBindingManager.Setup(x => x.Bindings).Returns(mockBindingsDict);
+            mockBindingManager.Setup(x => x.Bindings).CallBase();
+
+            bindingManager.AddBinding(boundNodeId, nodeBinding);
 
             // GIVEN
             int initialSize = bindingManager.Bindings.Count;

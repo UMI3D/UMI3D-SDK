@@ -81,7 +81,13 @@ namespace umi3d.common.userCapture
         public const uint RightLittleProximal = 54;
         public const uint RightLittleIntermediate = 55;
         public const uint RightLittleDistal = 56;
+        /// <summary>
+        /// Position on the floor between the feet
+        /// </summary>
         public const uint CenterFeet = 57;
+        /// <summary>
+        /// Browser's camera
+        /// </summary>
         public const uint Viewpoint = 58;
     }
 }

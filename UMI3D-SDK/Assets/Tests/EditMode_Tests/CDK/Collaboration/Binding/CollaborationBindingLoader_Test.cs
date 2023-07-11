@@ -114,7 +114,7 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
-            collaborativeSkeletonManager.Setup(x => x.skeletons).Returns(new Dictionary<ulong, ISkeleton>() { { userId, skeletonMock.Object } });
+            collaborativeSkeletonManager.Setup(x => x.Skeletons).Returns(new Dictionary<ulong, ISkeleton>() { { userId, skeletonMock.Object } });
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
@@ -185,7 +185,7 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
-            collaborativeSkeletonManager.Setup(x => x.skeletons).Returns(new Dictionary<ulong, ISkeleton>() { { userId, skeletonMock.Object } });
+            collaborativeSkeletonManager.Setup(x => x.Skeletons).Returns(new Dictionary<ulong, ISkeleton>() { { userId, skeletonMock.Object } });
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
