@@ -33,15 +33,16 @@ namespace PlayMode_Tests.UserCapture.Animation.EDK
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            // Destroy used singletons preventively here
+            ClearSingletons();
+
+            SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BASE);
+            _ = UMI3DEnvironment.Instance;
+            _ = UMI3DServer.Instance;
         }
 
         [SetUp]
         public void SetUp()
         {
-            _ = UMI3DEnvironment.Instance;
-            _ = UMI3DServer.Instance;
-            SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BASE);
             GameObject go = new GameObject("UMI3DSkeletonAnimationNode");
             UnityEngine.Object.Instantiate(go);
             skeletonAnimationNode = go.AddComponent<UMI3DSkeletonAnimationNode>();
@@ -50,6 +51,22 @@ namespace PlayMode_Tests.UserCapture.Animation.EDK
         [TearDown]
         public void TearDown()
         {
+            UnityEngine.Object.Destroy(skeletonAnimationNode.gameObject);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
+        {
+            ClearSingletons();
+        }
+
+        private void ClearSingletons()
+        {
+            if (UMI3DEnvironment.Exists)
+                UnityEngine.Object.Destroy(UMI3DEnvironment.Instance);
+
+            if (UMI3DServer.Exists)
+                UnityEngine.Object.Destroy(UMI3DServer.Instance);
         }
 
         #endregion Test SetUp
