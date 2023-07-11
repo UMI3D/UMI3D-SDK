@@ -17,4 +17,7 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Base.unity
     guid: 5a35396b8f45f8d498bb8cce8924c342
+  - enabled: 1
+    path: Assets/Tests/PlayMode_Tests/TestScenes/TESTSCENE_CDK_Base.unity
+    guid: 51e795ce6e1f54245b13b7d5f6ac7bc0
   m_configObjects: {}

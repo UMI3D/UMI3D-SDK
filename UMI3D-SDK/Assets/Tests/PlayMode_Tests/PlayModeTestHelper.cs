@@ -15,12 +15,6 @@ limitations under the License.
 */
 
 
-using System;
-using System.Collections.Generic;
-using umi3d.common;
-using UnityEditor;
-using UnityEngine;
-
 namespace PlayMode_Tests
 {
     public static class PlayModeTestHelper
@@ -30,5 +24,7 @@ namespace PlayMode_Tests
         public const string TEST_SCENE_EDK_BINDINGS = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Bindings";
 
         public const string TEST_SCENE_EDK_BASE = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Base";
+
+        public const string TEST_SCENE_CDK_BASE = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_CDK_Base";
     }
 }
