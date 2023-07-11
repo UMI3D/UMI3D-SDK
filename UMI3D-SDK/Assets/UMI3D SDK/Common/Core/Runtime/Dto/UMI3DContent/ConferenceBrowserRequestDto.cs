@@ -16,10 +16,24 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Request to update conference value such as microphone state.
+    /// </summary>
     public class ConferenceBrowserRequestDto : AbstractBrowserRequestDto
     {
+        /// <summary>
+        /// conference operation key tu update  
+        /// </summary>
         public uint operation { get; set; }
+
+        /// <summary>
+        /// value to update to
+        /// </summary>
         public bool value { get; set; }
+
+        /// <summary>
+        /// id of the user
+        /// </summary>
         public ulong id { get; set; }
     }
 }

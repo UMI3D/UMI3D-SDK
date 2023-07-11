@@ -29,10 +29,10 @@ namespace umi3d.common
         /// </summary>
         public Vector3Dto position { get; set; }
 
-    /// <summary>
-    /// Scene reference rotation.
-    /// </summary>
-    public Vector4Dto rotation { get; set; }
+        /// <summary>
+        /// Scene reference rotation.
+        /// </summary>
+        public Vector4Dto rotation { get; set; }
 
         /// <summary>
         /// Scene reference scale.
