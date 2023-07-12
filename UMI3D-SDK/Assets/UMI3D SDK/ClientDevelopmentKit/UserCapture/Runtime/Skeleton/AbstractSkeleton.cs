@@ -41,7 +41,20 @@ namespace umi3d.cdk.userCapture
         public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public UMI3DSkeletonHierarchy SkeletonHierarchy { get; set; }
+        public UMI3DSkeletonHierarchy SkeletonHierarchy 
+        { 
+            get
+            {
+                return _skeletonHierarchy;
+            }
+            set
+            {
+                if (value == null)
+                    throw new System.ArgumentNullException("Cannot set a null Hierarchy.");
+                _skeletonHierarchy = value;
+            }
+        }
+        private UMI3DSkeletonHierarchy _skeletonHierarchy;
 
         /// <inheritdoc/>
         public virtual Transform HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
