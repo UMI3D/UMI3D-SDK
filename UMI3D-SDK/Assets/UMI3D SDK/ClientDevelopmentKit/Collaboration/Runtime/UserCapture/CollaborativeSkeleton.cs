@@ -19,6 +19,7 @@ using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common.userCapture.tracking;
+using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
@@ -48,9 +49,9 @@ namespace umi3d.cdk.collaboration.userCapture
             rotExtrapolator.AddMeasure(frame.rotation.Quaternion());
         }
 
-        public void SetSubSkeletons()
+        public void SetSubSkeletons(GameObject trackedSkeletonPrefab)
         {
-            TrackedSkeleton = Instantiate((UMI3DEnvironmentLoader.Parameters as UMI3DCollabLoadingParameters).CollabTrackedSkeleton, this.transform).GetComponent<TrackedSkeleton>();
+            TrackedSkeleton = Instantiate(trackedSkeletonPrefab, this.transform).GetComponent<TrackedSkeleton>();
             HipsAnchor = TrackedSkeleton.Hips;
             PoseSkeleton = new PoseSkeleton();
             Skeletons.Add(TrackedSkeleton);
