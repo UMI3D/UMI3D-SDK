@@ -30,15 +30,6 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
-    public interface ICollaborativeSkeletonsManager
-    {
-        IReadOnlyDictionary<ulong, ISkeleton> Skeletons { get; }
-
-        CollaborativeSkeletonsScene CollabSkeletonsScene { get; }
-
-        ISkeleton TryGetSkeletonById(ulong userId);
-    }
-
     public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager, ICollaborativeSkeletonsManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
