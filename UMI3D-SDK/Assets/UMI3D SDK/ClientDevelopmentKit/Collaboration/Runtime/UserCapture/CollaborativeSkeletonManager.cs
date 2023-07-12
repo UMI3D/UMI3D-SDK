@@ -86,13 +86,15 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
+            collaborativeEnvironmentManagementService = UMI3DCollaborationEnvironmentLoader.Instance;
             routineService = CoroutineManager.Instance;
             personalSkeletonManager = PersonalSkeletonManager.Instance;
             Init();
         }
 
         public CollaborativeSkeletonManager(IUMI3DCollaborationClientServer collaborationClientServer,
-                                            UMI3DCollaborationEnvironmentLoader collaborativeLoader,
+                                            ILoadingManager collaborativeLoader,
+                                            ICollaborationEnvironmentManager collaborativeEnvironmentManagementService,
                                             ISkeletonManager personalSkeletonManager,
                                             ILateRoutineService routineService) : base()
         {
@@ -100,6 +102,7 @@ namespace umi3d.cdk.collaboration.userCapture
             this.collaborativeLoaderService = collaborativeLoader;
             this.personalSkeletonManager = personalSkeletonManager;
             this.routineService = routineService;
+            this.collaborativeEnvironmentManagementService = collaborativeEnvironmentManagementService;
             Init();
         }
 
@@ -174,7 +177,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 cs.transform.SetParent(CollabSkeletonsScene.transform);
 
             cs.SkeletonHierarchy = skeletonHierarchy;
-            cs.SetSubSkeletons();
+            cs.SetSubSkeletons((collaborativeLoaderService.LoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton);
 
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in skeletonHierarchy.Relations.Keys)

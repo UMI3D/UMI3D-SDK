@@ -30,7 +30,7 @@ namespace umi3d.cdk
         Material baseMaterial { get; }
         GlTFNodeLoader nodeLoader { get; }
         UMI3DSceneLoader sceneLoader { get; }
-        AbstractUMI3DLoadingParameters LoadingParameters { get; }
+        IUMI3DLoadingParameters LoadingParameters { get; }
 
         public UnityEvent onResourcesLoaded { get; }
         public UnityEvent onEnvironmentLoaded { get; }
