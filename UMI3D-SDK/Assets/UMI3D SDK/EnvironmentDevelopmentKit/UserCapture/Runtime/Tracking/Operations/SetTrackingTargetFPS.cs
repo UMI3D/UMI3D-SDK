@@ -47,7 +47,7 @@ namespace umi3d.edk.userCapture.tracking
         /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            var targetFPS = new SetTrackingTargetFPSDto()
+            SetTrackingTargetFPSDto targetFPS = new ()
             {
                 targetFPS = this.targetFPS
             };
@@ -73,8 +73,11 @@ namespace umi3d.edk.userCapture.tracking
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            SetTrackingBoneTargetFPSDto boneTargetFPS = (SetTrackingBoneTargetFPSDto)base.ToOperationDto(user);
-            boneTargetFPS.boneType = this.boneType;
+            SetTrackingBoneTargetFPSDto boneTargetFPS = new() 
+            {
+                targetFPS = this.targetFPS,
+                boneType = this.boneType
+            };
 
             return boneTargetFPS;
         }

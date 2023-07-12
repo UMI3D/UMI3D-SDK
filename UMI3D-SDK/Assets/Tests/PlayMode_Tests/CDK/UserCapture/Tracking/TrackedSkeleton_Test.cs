@@ -28,7 +28,6 @@ using System.Linq;
 using System.Reflection;
 using System;
 using umi3d.cdk.userCapture;
-using UnityEngine.Rendering;
 
 namespace PlayMode_Tests.UserCapture.Tracking.CDK
 {

@@ -26,8 +26,8 @@ namespace umi3d.edk.userCapture.tracking
     {
         public float FPSTrackingTarget = 15f;
 
-        private Dictionary<ulong, float> asyncFPS = new Dictionary<ulong, float>();
-        private Dictionary<ulong, Dictionary<uint, float>> asyncBonesFPS = new Dictionary<ulong, Dictionary<uint, float>>();
+        public Dictionary<ulong, float> asyncFPS = new Dictionary<ulong, float>();
+        public Dictionary<ulong, Dictionary<uint, float>> asyncBonesFPS = new Dictionary<ulong, Dictionary<uint, float>>();
 
         public event Action<UserTrackingFrameDto, ulong> AvatarFrameReceived;
 

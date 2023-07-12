@@ -59,6 +59,8 @@ namespace umi3d.cdk.userCapture.tracking
         public override ControllerDto ToControllerDto()
         {
             var dto = base.ToControllerDto();
+            if (dto == null)
+                return null;
             dto.isOverrider = true;
             return dto;
         }
