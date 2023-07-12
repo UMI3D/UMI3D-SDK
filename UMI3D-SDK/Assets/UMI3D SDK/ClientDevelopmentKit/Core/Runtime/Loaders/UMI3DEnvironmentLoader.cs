@@ -52,7 +52,7 @@ namespace umi3d.cdk
             onEnvironmentLoaded.AddListener(() => InterpolationRoutine());
         }
 
-        public UMI3DEnvironmentLoader(Material baseMaterial, AbstractUMI3DLoadingParameters parameters)
+        public UMI3DEnvironmentLoader(Material baseMaterial, IUMI3DLoadingParameters parameters)
             : this()
         {
             _baseMaterial = new Material(baseMaterial);
@@ -580,11 +580,11 @@ namespace umi3d.cdk
 
         #region parameters
 
-        private AbstractUMI3DLoadingParameters parameters = null;
-        public static AbstractUMI3DLoadingParameters Parameters => Exists ? Instance.parameters : null;
-        public virtual AbstractUMI3DLoadingParameters LoadingParameters => parameters;
+        private IUMI3DLoadingParameters parameters = null;
+        public static IUMI3DLoadingParameters Parameters => Exists ? Instance.parameters : null;
+        public virtual IUMI3DLoadingParameters LoadingParameters => parameters;
 
-        internal void SetParameters(AbstractUMI3DLoadingParameters parameters)
+        internal void SetParameters(IUMI3DLoadingParameters parameters)
         {
             this.parameters = parameters;
         }

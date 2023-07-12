@@ -24,14 +24,16 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Loading helper of the UserCapture module.
     /// </summary>
-    public class UMI3DUserCaptureLoadingParameters : UMI3DLoadingParameters
+    public class UMI3DUserCaptureLoadingParameters : UMI3DLoadingParameters, IUMI3DUserCaptureLoadingParameters
     {
         [Header("User Capture")]
-        [Tooltip("Hierarchy definition used to instanciate users' skeletons.")]
-        public UMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition;
+        [SerializeField, Tooltip("Hierarchy definition used to instantiate users' skeletons.")]
+        private UMI3DSkeletonHierarchyDefinition skeletonHierarchyDefinition;
+        public UMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition => skeletonHierarchyDefinition;
 
         [Header("Poses")]
-        [Tooltip("Specific poses defined by the browser.")]
-        public List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
+        [SerializeField, Tooltip("Specific poses defined by the browser.")]
+        private List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
+        public List<UMI3DPose_so> ClientPoses => clientPoses;
     }
 }

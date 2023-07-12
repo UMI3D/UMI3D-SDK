@@ -28,11 +28,6 @@ namespace umi3d.cdk
     public abstract class AbstractUMI3DLoadingParameters : ScriptableObject
     {
         /// <summary>
-        /// Loader for KHR Light.
-        /// </summary>
-        public virtual KHR_lights_punctualLoader khr_lights_punctualLoader { get; } = new KHR_lights_punctualLoader();
-
-        /// <summary>
         /// Return the best ResourcesLoader for an extension.
         /// </summary>
         /// <param name="extension"></param>
