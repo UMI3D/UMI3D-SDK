@@ -52,12 +52,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton;
+        public TrackedSkeleton TrackedSkeleton { get; protected set; }
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSkeleton = null;
+        public PoseSkeleton PoseSkeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.

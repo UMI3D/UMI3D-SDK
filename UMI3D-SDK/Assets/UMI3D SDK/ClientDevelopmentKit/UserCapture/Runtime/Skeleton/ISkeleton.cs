@@ -19,6 +19,8 @@ using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
 using umi3d.common.userCapture;
 using UnityEngine;
+using umi3d.cdk.userCapture.tracking;
+using umi3d.cdk.userCapture.pose;
 
 namespace umi3d.cdk.userCapture
 {
@@ -51,6 +53,16 @@ namespace umi3d.cdk.userCapture
         /// Id of the user represented by this skeleton.
         /// </summary>
         public ulong UserId { get; }
+
+        /// <summary>
+        /// Subskeleton updated from tracked controllers.
+        /// </summary>
+        public TrackedSkeleton TrackedSkeleton { get; }
+
+        /// <summary>
+        /// Susbskeleton for body poses.
+        /// </summary>
+        public PoseSkeleton PoseSkeleton { get; }
 
         #region Data struture
 
