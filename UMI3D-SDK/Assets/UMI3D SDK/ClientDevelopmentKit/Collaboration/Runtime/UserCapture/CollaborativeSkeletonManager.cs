@@ -34,22 +34,21 @@ namespace umi3d.cdk.collaboration.userCapture
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
+        #region Fields
+
         public virtual IReadOnlyDictionary<ulong, ISkeleton> Skeletons => skeletons;
-        protected Dictionary<ulong, ISkeleton> skeletons = new (); 
+        protected Dictionary<ulong, ISkeleton> skeletons = new();
 
         public virtual PersonalSkeleton personalSkeleton => personalSkeletonManager.personalSkeleton;
+
+        public Vector3 worldSize => personalSkeleton.worldSize;
 
         public virtual CollaborativeSkeletonsScene CollabSkeletonsScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         /// <summary>
-        /// Invoked when a <see cref="CollaborativeSkeleton"/> is created. Parameter is the correspondig user id.
+        /// Invoked when a <see cref="CollaborativeSkeleton"/> is created. Parameter is the corresponding user id.
         /// </summary>
         public event Action<ulong> CollaborativeSkeletonCreated;
-
-        /// <summary>
-        /// If true the avatar tracking is sent.
-        /// </summary>
-        public bool ShouldSendTracking { get; protected set; } = true;
 
         public UMI3DSkeletonHierarchy StandardHierarchy
         {
@@ -60,22 +59,26 @@ namespace umi3d.cdk.collaboration.userCapture
             }
         }
 
-        public IDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS;
-
-        public Vector3 worldSize => personalSkeleton.worldSize;
-
         private UMI3DSkeletonHierarchy _standardHierarchy;
+
+        /// <summary>
+        /// If true the avatar tracking is sent.
+        /// </summary>
+        public bool ShouldSendTracking { get; protected set; } = true;
+
+        public IDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS;
 
         private float targetTrackingFPS = 30f;
         private bool sendCameraProperties = true;
         private bool sendTrackingLoopOnce = false;
 
-        public TrackingOption option;
+        #endregion Fields
 
         #region Dependency Injection
 
         private readonly IUMI3DCollaborationClientServer collaborationClientServerService;
-        private readonly UMI3DCollaborationEnvironmentLoader collaborativeLoaderService;
+        private readonly ILoadingManager collaborativeLoaderService;
+        private readonly ICollaborationEnvironmentManager collaborativeEnvironmentManagementService;
         private readonly ILateRoutineService routineService;
         private readonly ISkeletonManager personalSkeletonManager;
 
@@ -102,17 +105,19 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #endregion Dependency Injection
 
+        #region LifeCycle
+
         private bool canClearSkeletons = false;
 
-        public void Init()
+        private void Init()
         {
-            UMI3DCollaborationEnvironmentLoader.OnUpdateUserList += () => UpdateSkeletons(collaborativeLoaderService.UserList);
+            collaborativeEnvironmentManagementService.OnUpdateUserList += () => UpdateSkeletons(collaborativeEnvironmentManagementService.UserList);
             collaborativeLoaderService.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); SetTrackingSending(ShouldSendTracking); canClearSkeletons = true; });
             collaborationClientServerService.OnLeavingEnvironment.AddListener(Clear);
             collaborationClientServerService.OnRedirection.AddListener(Clear);
         }
 
-        public void Clear()
+        private void Clear()
         {
             if (canClearSkeletons)
             {
@@ -124,18 +129,18 @@ namespace umi3d.cdk.collaboration.userCapture
                 routineService.DettachLateRoutine(computeCoroutine);
         }
 
-        public void InitSkeletons()
+        private void InitSkeletons()
         {
             personalSkeleton.UserId = collaborationClientServerService.GetUserId();
             skeletons[personalSkeleton.UserId] = personalSkeleton;
         }
 
-        protected void UpdateSkeletons(List<UMI3DUser> usersList)
+        private void UpdateSkeletons(IEnumerable<UMI3DUser> users)
         {
-            List<ulong> readyUserIdList = usersList.Where(u => u.status >= StatusType.READY).Select(u => u.id).ToList();
+            List<ulong> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => u.id).ToList();
             readyUserIdList.Remove(collaborationClientServerService.GetUserId());
 
-            var joinnedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
+            var joinedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
             var deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();
 
             foreach (var userId in deletedUsersId)
@@ -147,12 +152,11 @@ namespace umi3d.cdk.collaboration.userCapture
                 }
             }
 
-            foreach (var userId in joinnedUsersId)
+            foreach (var userId in joinedUsersId)
             {
                 if (userId != collaborationClientServerService.GetUserId())
                 {
-                    skeletons[userId] = CreateSkeleton(userId, CollabSkeletonsScene.transform, StandardHierarchy);
-                    CollaborativeSkeletonCreated?.Invoke(userId);
+                    CreateSkeleton(userId, CollabSkeletonsScene.transform, StandardHierarchy);
                 }
             }
         }
@@ -162,8 +166,13 @@ namespace umi3d.cdk.collaboration.userCapture
             GameObject go = new GameObject();
             CollaborativeSkeleton cs = go.AddComponent<CollaborativeSkeleton>();
             cs.UserId = userId;
-            cs.transform.parent = parent.transform;
-            cs.name = userId.ToString();
+            cs.name = $"skeleton_user_{userId}";
+
+            if (parent != null)
+                cs.transform.SetParent(parent);
+            else
+                cs.transform.SetParent(CollabSkeletonsScene.transform);
+
             cs.SkeletonHierarchy = skeletonHierarchy;
             cs.SetSubSkeletons();
 
@@ -176,8 +185,14 @@ namespace umi3d.cdk.collaboration.userCapture
                     cs.Bones[bone] = new ISkeleton.s_Transform() { s_Rotation = Quaternion.identity };
             }
 
+            skeletons[userId] = cs;
+            CollaborativeSkeletonCreated?.Invoke(userId);
             return cs;
         }
+
+        #endregion LifeCycle
+
+        #region Skeleton getters
 
         public CollaborativeSkeleton GetCollaborativeSkeleton(ulong userId)
         {
@@ -197,11 +212,14 @@ namespace umi3d.cdk.collaboration.userCapture
             return null;
         }
 
+        #endregion Skeleton getters
+
+        #region Tracking management
+
         public UserTrackingFrameDto GetFrame()
         {
             var frame = personalSkeleton.GetFrame(option);
-            frame.userId = collaborationClientServerService.GetUserId();
-            //frame.refreshFrequency = targetTrackingFPS;
+            frame.userId = personalSkeleton.UserId;
             return frame;
         }
 
@@ -223,31 +241,6 @@ namespace umi3d.cdk.collaboration.userCapture
             skeleton.UpdateFrame(frame);
         }
 
-        private IEnumerator computeCoroutine;
-
-        private IEnumerator ComputeCoroutine()
-        {
-            while (Skeletons.Count > 1)
-            {
-                foreach (var skeletonPair in Skeletons)
-                {
-                    var skeleton = skeletonPair.Value;
-                    if (skeleton.UserId != personalSkeleton.UserId)
-                    {
-                        skeleton.Compute();
-                    }
-                }
-                yield return null;
-            }
-            routineService.DettachLateRoutine(computeCoroutine);
-            computeCoroutine = null;
-        }
-
-        public UserCameraPropertiesDto GetCameraProperty()
-        {
-            return personalSkeleton.GetCameraProperty();
-        }
-
         private async void SendTrackingLoop()
         {
             if (sendTrackingLoopOnce)
@@ -257,18 +250,14 @@ namespace umi3d.cdk.collaboration.userCapture
             {
                 if (targetTrackingFPS > 0)
                 {
-                    try
-                    {
-                        var frame = GetFrame();
+                    var frame = GetFrame();
 
-                        if (frame != null && collaborationClientServerService.GetUserId() != 0)
-                            UMI3DClientServer.SendTracking(frame);
+                    if (frame != null && personalSkeleton.UserId != 0)
+                        collaborationClientServerService.SendTracking(frame);
 
-                        //Camera properties are not sent
-                        if (sendCameraProperties)
-                            GetCameraProperty();
-                    }
-                    catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
+                    // camera properties are not sent
+                    if (sendCameraProperties)
+                        GetCameraProperty();
 
                     await UMI3DAsyncManager.Delay((int)(1000f / targetTrackingFPS));
                 }
@@ -283,24 +272,20 @@ namespace umi3d.cdk.collaboration.userCapture
             if (sendTrackingLoopOnce)
                 return;
 
-            while (ShouldSendTracking && personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
+            while (ShouldSendTracking && BonesAsyncFPS.ContainsKey(boneType))
             {
-                if (personalSkeleton.BonesAsyncFPS[boneType] > 0)
+                if (BonesAsyncFPS[boneType] > 0)
                 {
-                    try
+                    if (personalSkeleton.TrackedSkeleton.bones.ContainsKey(boneType))
                     {
-                        if (personalSkeleton.TrackedSkeleton.bones.ContainsKey(boneType))
-                        {
-                            var boneData = personalSkeleton.TrackedSkeleton.GetBone(boneType);
+                        var boneData = personalSkeleton.TrackedSkeleton.GetBone(boneType);
 
-                            if (boneData != null)
-                            {
-                                boneData.userId = collaborationClientServerService.GetUserId();
-                                UMI3DClientServer.SendTracking(boneData);
-                            }
+                        if (boneData != null)
+                        {
+                            boneData.userId = personalSkeleton.UserId;
+                            collaborationClientServerService.SendTracking(boneData);
                         }
                     }
-                    catch (System.Exception e) { UnityEngine.Debug.LogException(e); }
 
                     await UMI3DAsyncManager.Delay((int)(1000f / personalSkeleton.BonesAsyncFPS[boneType]));
                 }
@@ -322,16 +307,16 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             if (newFPSTarget != targetTrackingFPS)
             {
-                personalSkeleton.BonesAsyncFPS[boneType] = newFPSTarget;
+                BonesAsyncFPS[boneType] = newFPSTarget;
                 SendAsyncBoneData(boneType);
             }
-            else if (personalSkeleton.BonesAsyncFPS.ContainsKey(boneType))
-                personalSkeleton.BonesAsyncFPS.Remove(boneType);
+            else if (BonesAsyncFPS.ContainsKey(boneType))
+                BonesAsyncFPS.Remove(boneType);
         }
 
         public void SyncBoneFPS(uint boneType)
         {
-            personalSkeleton.BonesAsyncFPS.Remove(boneType);
+            BonesAsyncFPS.Remove(boneType);
         }
 
         /// <summary>
@@ -340,7 +325,7 @@ namespace umi3d.cdk.collaboration.userCapture
         /// <param name="bonesToStream"></param>
         public void SetStreamedBones(List<uint> bonesToStream)
         {
-            UMI3DLogger.LogWarning("TODO", scope);
+            // UNDONE: Implement
         }
 
         /// <summary>
@@ -363,20 +348,51 @@ namespace umi3d.cdk.collaboration.userCapture
                 SendTrackingLoop();
         }
 
+        #endregion Tracking management
+
+        #region Compute Final Skeleton
+
+        private IEnumerator computeCoroutine;
+        private TrackingOption option;
+
+        private IEnumerator ComputeCoroutine()
+        {
+            while (Skeletons.Count > 1)
+            {
+                foreach (var skeletonPair in Skeletons)
+                {
+                    var skeleton = skeletonPair.Value;
+                    if (skeleton.UserId != personalSkeleton.UserId)
+                    {
+                        skeleton.Compute();
+                    }
+                }
+                yield return null;
+            }
+            routineService.DettachLateRoutine(computeCoroutine);
+            computeCoroutine = null;
+        }
+
+        #endregion Compute Final Skeleton
+
+        public UserCameraPropertiesDto GetCameraProperty()
+        {
+            return personalSkeleton.GetCameraProperty();
+        }
+
+        #region Pose
+
         public void HandlePoseRequest(ApplyPoseDto playPoseDto)
         {
             PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.userID, playPoseDto.indexInList);
             Skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
+
             if (playPoseDto.stopPose)
-            {
-                (skeleton as PersonalSkeleton)?.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });
-                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });
-            }
+                skeleton.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });
             else
-            {
-                (skeleton as PersonalSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
-                (skeleton as CollaborativeSkeleton)?.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
-            }
+                skeleton.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
         }
+
+        #endregion Pose
     }
 }
