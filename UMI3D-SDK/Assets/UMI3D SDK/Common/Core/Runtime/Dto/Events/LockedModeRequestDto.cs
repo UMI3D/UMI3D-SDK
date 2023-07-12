@@ -16,6 +16,9 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Navigation mode where a user can not move
+    /// </summary>
     public class LockedModeRequestDto : NavigationModeRequestDto
     {
     }

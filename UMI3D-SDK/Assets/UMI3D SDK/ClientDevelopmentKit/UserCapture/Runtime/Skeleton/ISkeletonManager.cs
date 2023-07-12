@@ -20,10 +20,19 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// User's skeleton manager.
+    /// </summary>
     public interface ISkeletonManager
     {
+        /// <summary>
+        /// Skeleton of the browser's user.
+        /// </summary>
         public PersonalSkeleton personalSkeleton { get; }
 
+        /// <summary>
+        /// Hierarchy used for the skeleton's structure.
+        /// </summary>
         public UMI3DSkeletonHierarchy StandardHierarchy { get; }
 
         IDictionary<uint, float> BonesAsyncFPS { get; }

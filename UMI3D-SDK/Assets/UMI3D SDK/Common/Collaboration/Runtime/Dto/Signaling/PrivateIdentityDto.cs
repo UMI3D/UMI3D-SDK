@@ -16,7 +16,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
     /// DTO describing idnetifiers that are known only from the user and the media.

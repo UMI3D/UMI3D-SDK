@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Linq;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -26,10 +25,10 @@ namespace umi3d.common.userCapture.description
     /// </summary>
     public class SkeletonMapper : MonoBehaviour, ISkeletonMapper
     {
-        private const DebugScope scope = DebugScope.Common | DebugScope.UserCapture;
+        private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
 
         public BonePoseDto BoneAnchor;
-        public SkeletonMapping[] Mappings;
+        public SkeletonMapping[] Mappings = new SkeletonMapping[0];
 
         /// <summary>
         /// Get pose of the bone using mappings.
@@ -37,20 +36,15 @@ namespace umi3d.common.userCapture.description
         /// <returns></returns>
         public virtual PoseDto GetPose()
         {
-            try
-            {
-                var pose = new PoseDto(
-                    boneAnchor: BoneAnchor,
-                    bones: Mappings.Select(m => m.GetPose()).ToList()
-                );
+            if (BoneAnchor == null)
+                UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
 
-                return pose;
-            }
-            catch (Exception e)
-            {
-                UMI3DLogger.LogException(e, scope);
-            }
-            return null;
+            var pose = new PoseDto(
+                boneAnchor: BoneAnchor,
+                bones: Mappings.Select(m => m?.GetPose()).Where(b=>b != null).ToList()
+            );
+
+            return pose;
         }
     }
 }

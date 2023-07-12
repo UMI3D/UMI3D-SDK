@@ -20,7 +20,7 @@ using umi3d.common.userCapture.tracking;
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
-    /// Behaviur of a piece of skeleton position to merge to have the whole skeleton position.
+    /// Behaviour of a piece of skeleton position to merge to have the whole skeleton position.
     /// </summary>
     public interface ISubSkeleton
     {

@@ -18,6 +18,7 @@ using NUnit.Framework;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using UnityEngine;
 
 namespace EditMode_Tests.Core.Binding.Common

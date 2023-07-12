@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -27,26 +26,46 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Representation of a human user, controlled by a player. <br/>
+    /// Can either be the skeleton of the browser's user or skeleton of other players.
+    /// </summary>
     public abstract class AbstractSkeleton : MonoBehaviour, ISkeleton
     {
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        /// <inheritdoc/>
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
 
+        /// <inheritdoc/>
         public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
 
+        /// <inheritdoc/>
         public UMI3DSkeletonHierarchy SkeletonHierarchy { get; set; }
 
+        /// <inheritdoc/>
         public virtual Transform HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
 
+        /// <inheritdoc/>
         public virtual ulong UserId { get; set; }
 
+        /// <summary>
+        /// Subskeleton updated from tracked controllers.
+        /// </summary>
         public TrackedSkeleton TrackedSkeleton;
+
+        /// <summary>
+        /// Susbskeleton for body poses.
+        /// </summary>
         public PoseSkeleton PoseSkeleton = null;
 
-        [SerializeField]
+        /// <summary>
+        /// Anchor of the skeleton hierarchy.
+        /// </summary>
+        [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
+        /// <inheritdoc/>
         public ISkeleton Compute()
         {
             if (Skeletons == null || Skeletons.Count == 0)
@@ -95,7 +114,7 @@ namespace umi3d.cdk.userCapture
         private void ComputeBonePosition(uint boneType)
         {
             if (!alreadyComputedBonesCache[boneType]
-                && SkeletonHierarchy.HierarchyDict.TryGetValue(boneType, out var boneRelation)
+                && SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
                 && boneRelation.boneTypeParent != BoneType.None)
             {
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
@@ -105,7 +124,7 @@ namespace umi3d.cdk.userCapture
 
                 if (!bonesSetByTrackedSkeleton.Contains(boneType))
                     Bones[boneType].s_Rotation = Bones[BoneType.Hips].s_Rotation * Bones[boneType].s_Rotation; // all global bones rotations should be turned the same way as the anchor
-                
+
                 alreadyComputedBonesCache[boneType] = true;
             }
         }
@@ -117,7 +136,7 @@ namespace umi3d.cdk.userCapture
         private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
         {
             // consider all bones we should have according to the hierarchy, and set all values to identity
-            foreach (var bone in hierarchy.HierarchyDict.Keys)
+            foreach (var bone in hierarchy.Relations.Keys)
             {
                 if (Bones.ContainsKey(bone))
                     Bones[bone].s_Rotation = Quaternion.identity;
@@ -135,16 +154,7 @@ namespace umi3d.cdk.userCapture
 
                 List<BoneDto> bones;
 
-                try
-                {
-                    bones = skeleton.GetPose()?.bones;
-                }
-                catch (Exception e)
-                {
-                    Debug.Log(skeleton?.GetType()?.Name.ToString());
-                    UMI3DLogger.LogException(e, scope);
-                    return;
-                }
+                bones = skeleton.GetPose()?.bones;
 
                 if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                     continue;
@@ -168,6 +178,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
+        /// <inheritdoc/>
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
     }
 }

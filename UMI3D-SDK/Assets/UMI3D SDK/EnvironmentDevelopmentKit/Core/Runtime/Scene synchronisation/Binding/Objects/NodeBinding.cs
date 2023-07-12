@@ -16,6 +16,7 @@ limitations under the License.
 
 using umi3d.common;
 using umi3d.common.binding;
+using umi3d.common.dto.binding;
 
 namespace umi3d.edk.binding
 {

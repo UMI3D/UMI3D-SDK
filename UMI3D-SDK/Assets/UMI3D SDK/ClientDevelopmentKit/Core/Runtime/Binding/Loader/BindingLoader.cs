@@ -17,7 +17,7 @@ limitations under the License.
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.binding;
+using umi3d.common.dto.binding;
 
 namespace umi3d.cdk.binding
 {

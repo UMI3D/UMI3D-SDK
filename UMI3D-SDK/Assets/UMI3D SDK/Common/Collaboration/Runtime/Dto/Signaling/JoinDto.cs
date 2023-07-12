@@ -14,31 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using umi3d.common.interaction;
+using System.Collections.Generic;
+using umi3d.common.userCapture.pose;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing user requirements for a connection.
+    /// DTO describing user configuration when joining an environment.
     /// </summary>
-    /// Typically sent by a server during the connection process.
-    [Serializable]
-    public class UserConnectionDto : UserDto
+    public class JoinDto : UMI3DDto
     {
         /// <summary>
-        /// Connection form as a set of parameters.
+        /// The local poses from the client
         /// </summary>
-        public ConnectionFormDto parameters { get; set; }
+        public List<PoseDto> clientLocalPoses { get; set; }
 
         /// <summary>
-        /// State if the libraries have been updated
+        /// User size scale relative to the environment.
         /// </summary>
-        public bool librariesUpdated { get; set; } = false;
-
-        /// <summary>
-        /// Password to use to connect to the vocal server.
-        /// </summary>
-        public string audioPassword { get; set; }
+        public Vector3Dto userSize { get; set; }
     }
 }

@@ -1,0 +1,28 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: bc2911d068a42554ca93059fec32d4bf, type: 3}
+  m_Name: DummyCollabLoadingParameters
+  m_EditorClassIdentifier: 
+  supportedformats: []
+  maximumResolution: 0
+  notificationLoader: {fileID: 0}
+  _skyboxMaterial: {fileID: 2100000, guid: bd1d2abb566a35d4f94629630e015811, type: 2}
+  defaultMat: {fileID: 2100000, guid: bd1d2abb566a35d4f94629630e015811, type: 2}
+  _skyboxEquirectangularMaterial: {fileID: 2100000, guid: bd1d2abb566a35d4f94629630e015811,
+    type: 2}
+  SkeletonHierarchyDefinition: {fileID: 11400000, guid: e4facea53a30b4c40aa447fc608d5c8a,
+    type: 2}
+  clientPoses: []
+  CollaborationUserCaptureActivated: 0
+  CollabTrackedSkeleton: {fileID: 0}
+  areEmotesSupported: 0
+  defaultEmoteIcon: {fileID: 0}

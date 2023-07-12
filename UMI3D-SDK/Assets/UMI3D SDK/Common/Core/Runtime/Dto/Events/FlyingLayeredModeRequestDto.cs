@@ -16,8 +16,14 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Flying mode that can go up and down.
+    /// </summary>
     public class FlyingLayeredModeRequestDto : FlyingModeRequestDto
     {
+        /// <summary>
+        /// Up and down speed
+        /// </summary>
         public float upDownSpeed { get; set; }
     }
 }

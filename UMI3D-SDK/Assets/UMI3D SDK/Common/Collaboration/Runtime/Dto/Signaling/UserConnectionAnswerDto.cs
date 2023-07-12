@@ -13,21 +13,27 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 
-namespace umi3d.common.collaboration
+using System;
+using umi3d.common.interaction;
+
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing an identity sent to the UMI3D server.
+    /// DTO describing the browser answer to connection requirements.
     /// </summary>
-    /// Same than <see cref="IdentityDto"/> but with customizable metadata.
     [Serializable]
-    public class RegisterIdentityDto : IdentityDto
+    public class UserConnectionAnswerDto : UserDto
     {
         /// <summary>
-        /// Customizable data as a byte array. 
+        /// Answers to the connection form.
         /// </summary>
-        /// The server should know how to parse them.
-        public byte[] metaData { get; set; }
+        /// Not null if the received <see cref="UserConnectionDto"/> contained a form.
+        public FormAnswerDto parameters { get; set; }
+
+        /// <summary>
+        /// State if the libraries have been updated
+        /// </summary>
+        public bool librariesUpdated { get; set; } = false;
     }
 }

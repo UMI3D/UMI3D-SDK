@@ -13,33 +13,29 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing a vocal server configuration.
+    /// DTO describing a publicly visible identity. All browsers can see this identity.
     /// </summary>
-    /// This server can be a Murmur server, for example.
-    public class VoiceDto
+    [Serializable]
+    public class PublicIdentityDto : UMI3DDto
     {
         /// <summary>
-        /// URL of the vocal server.
+        /// Id of the user
         /// </summary>
-        public string url { get; set; }
+        public ulong userId { get; set; } = 0;
 
         /// <summary>
-        /// Login credential to connect to the vocal server.
+        /// Public login attributed to the user.
         /// </summary>
-        public string login { get; set; }
+        public string login { get; set; } = null;
 
         /// <summary>
-        /// Password credential to connect to the vocal server.
+        /// Public name attributed to the user and that should be displayed on browsers.
         /// </summary>
-        public string password { get; set; }
-
-        /// <summary>
-        /// Name of the channel to join in the server.
-        /// </summary>
-        public string channelName { get; set; }
+        public string displayName { get; set; } = null;
     }
 }

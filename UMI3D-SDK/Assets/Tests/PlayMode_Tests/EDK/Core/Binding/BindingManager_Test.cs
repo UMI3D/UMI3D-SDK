@@ -16,12 +16,9 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using System;
 using umi3d.edk;
 using umi3d.edk.binding;
-using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 
 
 namespace PlayMode_Tests.Core.Binding.EDK
@@ -37,7 +34,8 @@ namespace PlayMode_Tests.Core.Binding.EDK
         [OneTimeSetUp]
         public void OneTimeSetup()
         {
-            SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BINDINGS);
+            SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BASE);
+            SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BINDINGS, LoadSceneMode.Additive);
             // Destroy used singletons preventively here
             ClearSingletons();
         }

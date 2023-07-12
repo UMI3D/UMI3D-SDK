@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using UnityEngine;
 
 namespace umi3d.cdk.binding

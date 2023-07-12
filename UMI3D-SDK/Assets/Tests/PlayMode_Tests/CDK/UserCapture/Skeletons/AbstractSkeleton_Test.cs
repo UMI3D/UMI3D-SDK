@@ -39,13 +39,13 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         public virtual void OneTimeSetup()
         {
             ClearSingletons();
+
+            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
         }
 
         [SetUp]
         public virtual void SetUp()
         {
-            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
-
             skeletonGo = new GameObject("Susbkeleton");
             UnityEngine.Object.Instantiate(skeletonGo);
 
@@ -54,6 +54,12 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
         [TearDown]
         public virtual void TearDown()
+        {
+            UnityEngine.Object.Destroy(skeletonGo.gameObject);
+        }
+
+        [OneTimeTearDown]
+        public void OneTimeTearDown()
         {
             ClearSingletons();
         }

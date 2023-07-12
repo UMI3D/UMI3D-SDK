@@ -14,7 +14,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration.emotes;
+using umi3d.common.collaboration.dto.emotes;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration.emotes
@@ -32,7 +32,8 @@ namespace umi3d.cdk.collaboration.emotes
         /// <summary>
         /// Emotes attributed to the user
         /// </summary>
-        public virtual List<Emote> Emotes { get; } = new();
+        public virtual IReadOnlyList<Emote> Emotes => emotes;
+        protected List<Emote> emotes = new();
 
         /// <summary>
         /// Last received Emote Configuration dto reference
@@ -113,7 +114,7 @@ namespace umi3d.cdk.collaboration.emotes
         /// <summary>
         /// Triggered when emotes are loaded and made available.
         /// </summary>
-        public event Action<List<Emote>> EmotesLoaded;
+        public event Action<IReadOnlyList<Emote>> EmotesLoaded;
 
         /// <summary>
         /// Triggered when an emote is modified.
@@ -174,7 +175,7 @@ namespace umi3d.cdk.collaboration.emotes
                         && emoteDtoInConfig.iconResource.variants.Count > 0
                         && emoteDtoInConfig.iconResource.variants[0].metrics.size != 0)
                         LoadIcon(emoteDtoInConfig, emote);
-                    Emotes.Add(emote);
+                    emotes.Add(emote);
                 }
             }
             hasReceivedEmotes = true;
@@ -194,7 +195,7 @@ namespace umi3d.cdk.collaboration.emotes
                 return;
             }
 
-            var emote = Emotes.Find(x => x.dto.id == dto.id);
+            var emote = emotes.Find(x => x.dto.id == dto.id);
             emote.available = dto.available;
             emote.dto = dto;
             EmoteUpdated?.Invoke(emote);
@@ -230,7 +231,7 @@ namespace umi3d.cdk.collaboration.emotes
             if (!hasReceivedEmotes) return;
 
             EmotesLoaded?.Invoke(null); // used to empty the UI
-            Emotes.Clear();
+            emotes.Clear();
             emoteConfigDto = null;
             hasReceivedEmotes = false;
 

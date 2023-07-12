@@ -16,10 +16,24 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Dto to state movement speed;
+    /// </summary>
     public class SpeedDto
     {
+        /// <summary>
+        /// Speed when going forward
+        /// </summary>
         public float forwardSpeed { get; set; }
+
+        /// <summary>
+        /// Speed when going Backward
+        /// </summary>
         public float backwardSpeed { get; set; }
+
+        /// <summary>
+        /// speed when going side way
+        /// </summary>
         public float sideSpeed { get; set; }
     }
 }

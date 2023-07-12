@@ -14,21 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common
 {
     /// <summary>
-    /// DTO describing the number of users in an environment at a given time.
+    /// Notification concerning a UMI3D scene object.
     /// </summary>
-    public class PlayerCountDto : UMI3DDto
+    public class NotificationOnObjectDto : NotificationDto
     {
         /// <summary>
-        /// Connected player count
+        /// UMI3D id of the concerned object.
         /// </summary>
-        public int count { get; set; }
-
-        /// <summary>
-        /// Last change date with format "MM:dd:yyyy:HH:mm:ss";
-        /// </summary>
-        public string lastUpdate { get; set; }
+        public ulong objectId { get; set; }
     }
 }

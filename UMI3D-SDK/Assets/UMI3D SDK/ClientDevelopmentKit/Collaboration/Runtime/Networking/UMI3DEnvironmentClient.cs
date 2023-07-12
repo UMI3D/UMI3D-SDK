@@ -22,7 +22,7 @@ using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;

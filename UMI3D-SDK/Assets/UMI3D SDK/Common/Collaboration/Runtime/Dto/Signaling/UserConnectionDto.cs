@@ -13,34 +13,32 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
 
-namespace umi3d.common.collaboration
+using System;
+using umi3d.common.interaction;
+
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing an identity, a set of identifying info of the user.
+    /// DTO describing user requirements for a connection.
     /// </summary>
+    /// Typically sent by a server during the connection process.
     [Serializable]
-    public class IdentityDto : PublicIdentityDto
+    public class UserConnectionDto : UserDto
     {
         /// <summary>
-        /// Local token of the user.
+        /// Connection form as a set of parameters.
         /// </summary>
-        public string localToken { get; set; }
+        public ConnectionFormDto parameters { get; set; }
 
         /// <summary>
-        /// Header token used in request made to the Resources Server or HTTP Server
+        /// State if the libraries have been updated
         /// </summary>
-        public string headerToken { get; set; }
+        public bool librariesUpdated { get; set; } = false;
 
         /// <summary>
-        /// key that can be use for encryption
+        /// Password to use to connect to the vocal server.
         /// </summary>
-        public string key { get; set; }
-
-        /// <summary>
-        /// id of the user;
-        /// </summary>
-        public string guid { get; set; }
+        public string audioPassword { get; set; }
     }
 }

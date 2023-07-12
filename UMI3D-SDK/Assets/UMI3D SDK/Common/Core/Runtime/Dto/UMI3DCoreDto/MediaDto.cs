@@ -42,7 +42,5 @@ namespace umi3d.common
         /// Path of the media.
         /// </summary>
         public string url { get; set; }
-
-        public MediaDto() : base() { }
     }
 }

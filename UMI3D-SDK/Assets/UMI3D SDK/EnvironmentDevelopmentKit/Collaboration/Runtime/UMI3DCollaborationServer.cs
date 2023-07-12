@@ -31,6 +31,8 @@ using umi3d.edk.userCapture;
 using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.edk.collaboration
 {

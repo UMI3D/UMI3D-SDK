@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.networking
 {
     /// <summary>
     /// DTO describing to use to help a masterserver to guide a user through a gate.

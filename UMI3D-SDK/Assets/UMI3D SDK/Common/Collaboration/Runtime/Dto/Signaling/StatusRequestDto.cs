@@ -14,25 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture;
-using umi3d.common.userCapture.pose;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing user configuration when joining an environment.
+    /// DTO describing a request from the server to know the current status of the browser's client.
     /// </summary>
-    public class JoinDto : UMI3DDto
+    public class StatusRequestDto : UMI3DDto
     {
         /// <summary>
-        /// The local poses from the client
+        /// Browser's client status.
         /// </summary>
-        public List<PoseDto> clientLocalPoses { get; set; }
-
-        /// <summary>
-        /// User size scale relative to the environment.
-        /// </summary>
-        public Vector3Dto userSize { get; set; }
+        public StatusType status { get; set; }
     }
 }

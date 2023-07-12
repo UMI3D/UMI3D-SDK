@@ -26,22 +26,22 @@ namespace umi3d.common.userCapture.animation
         /// <summary>
         /// User that will use this skeleton.
         /// </summary>
-        public ulong userId;
+        public ulong userId { get; set; }
 
         /// <summary>
         /// Level of priority of the skeleton animation.
         /// </summary>
-        public uint priority;
+        public uint priority { get; set; }
 
         /// <summary>
         /// UMI3D animations ids supported by the bundled animator.
         /// </summary>
-        public ulong[] relatedAnimationsId;
+        public ulong[] relatedAnimationsId { get; set; }
 
         /// <summary>
         /// List of parameters that are updated by the browsers themselves based on skeleton movement.
         /// </summary>
         /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public SkeletonAnimationParameterDto[] animatorSelfTrackedParameters;
+        public SkeletonAnimationParameterDto[] animatorSelfTrackedParameters { get; set; }
     }
 }

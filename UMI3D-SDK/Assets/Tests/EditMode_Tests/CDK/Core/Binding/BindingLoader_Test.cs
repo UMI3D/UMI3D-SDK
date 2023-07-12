@@ -21,6 +21,7 @@ using umi3d.cdk;
 using umi3d.cdk.binding;
 using umi3d.common;
 using umi3d.common.binding;
+using umi3d.common.dto.binding;
 
 namespace EditMode_Tests.Core.Binding.CDK
 {

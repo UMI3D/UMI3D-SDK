@@ -16,7 +16,7 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using umi3d.common.binding;
+using umi3d.common.dto.binding;
 using umi3d.edk.binding;
 
 namespace EditMode_Tests.Core.Binding.EDK

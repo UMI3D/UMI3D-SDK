@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.voip;
 using umi3d.common.interaction;
 
 namespace umi3d.common.collaboration

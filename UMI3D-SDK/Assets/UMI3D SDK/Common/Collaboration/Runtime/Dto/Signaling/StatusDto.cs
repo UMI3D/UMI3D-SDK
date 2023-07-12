@@ -14,15 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing a request from the server to know the current status of the browser's client.
+    /// DTO describing the current status of the user from the server point of view.
     /// </summary>
-    public class StatusRequestDto : UMI3DDto
+    /// Receiving on a browser this DTO should set the user status to the attributed one.
+    public class StatusDto : UMI3DDto
     {
         /// <summary>
-        /// Browser's client status.
+        /// Attributed user status.
         /// </summary>
         public StatusType status { get; set; }
     }

@@ -49,11 +49,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
             serverGo = new GameObject();
             UnityEngine.Object.Instantiate(serverGo);
             serverGo.AddComponent<UMI3DCollaborationServer>();
-            //var server = UMI3DCollaborationServer.Instance; 
 
             for (int i = 0; i < UnityEngine.Random.Range(4,15); i++)
             {
-                UMI3DCollaborationServer.Collaboration.CreateUser(new umi3d.common.collaboration.RegisterIdentityDto() { guid = Guid.NewGuid().ToString(), login = i.ToString() }, (a, b) => { });
+                UMI3DCollaborationServer.Collaboration.CreateUser(new umi3d.common.collaboration.dto.signaling.RegisterIdentityDto() { guid = Guid.NewGuid().ToString(), login = i.ToString() }, (a, b) => { });
             }
         }
 

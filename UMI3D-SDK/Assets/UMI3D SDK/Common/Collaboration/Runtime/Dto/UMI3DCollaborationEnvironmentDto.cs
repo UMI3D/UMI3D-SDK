@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
-using umi3d.common.userCapture;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.userCapture.pose;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto
 {
     public class UMI3DCollaborationEnvironmentDto : UMI3DEnvironmentDto
     {

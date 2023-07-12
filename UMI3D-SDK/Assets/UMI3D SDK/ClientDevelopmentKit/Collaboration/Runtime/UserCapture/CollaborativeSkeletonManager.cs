@@ -32,9 +32,9 @@ namespace umi3d.cdk.collaboration.userCapture
 {
     public interface ICollaborativeSkeletonsManager
     {
-        Dictionary<ulong, ISkeleton> skeletons { get; }
+        IReadOnlyDictionary<ulong, ISkeleton> Skeletons { get; }
 
-        CollaborativeSkeletonsScene collabScene { get; }
+        CollaborativeSkeletonsScene CollabSkeletonsScene { get; }
 
         ISkeleton TryGetSkeletonById(ulong userId);
     }
@@ -43,11 +43,12 @@ namespace umi3d.cdk.collaboration.userCapture
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
-        public virtual Dictionary<ulong, ISkeleton> skeletons { get; protected set; } = new();
+        public virtual IReadOnlyDictionary<ulong, ISkeleton> Skeletons => skeletons;
+        protected Dictionary<ulong, ISkeleton> skeletons = new (); 
 
         public virtual PersonalSkeleton personalSkeleton => personalSkeletonManager.personalSkeleton;
 
-        public virtual CollaborativeSkeletonsScene collabScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
+        public virtual CollaborativeSkeletonsScene CollabSkeletonsScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         /// <summary>
         /// Invoked when a <see cref="CollaborativeSkeleton"/> is created. Parameter is the correspondig user id.
@@ -143,12 +144,12 @@ namespace umi3d.cdk.collaboration.userCapture
             List<ulong> readyUserIdList = usersList.Where(u => u.status >= StatusType.READY).Select(u => u.id).ToList();
             readyUserIdList.Remove(collaborationClientServerService.GetUserId());
 
-            var joinnedUsersId = readyUserIdList.Except(skeletons.Keys).ToList();
-            var deletedUsersId = skeletons.Keys.Except(readyUserIdList).ToList();
+            var joinnedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
+            var deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();
 
             foreach (var userId in deletedUsersId)
             {
-                if (skeletons.TryGetValue(userId, out var skeleton) && skeleton is CollaborativeSkeleton collabSkeleton)
+                if (Skeletons.TryGetValue(userId, out var skeleton) && skeleton is CollaborativeSkeleton collabSkeleton)
                 {
                     UnityEngine.Object.Destroy(collabSkeleton.gameObject);
                     skeletons.Remove(userId);
@@ -159,7 +160,7 @@ namespace umi3d.cdk.collaboration.userCapture
             {
                 if (userId != collaborationClientServerService.GetUserId())
                 {
-                    skeletons[userId] = CreateSkeleton(userId, collabScene.transform, StandardHierarchy);
+                    skeletons[userId] = CreateSkeleton(userId, CollabSkeletonsScene.transform, StandardHierarchy);
                     CollaborativeSkeletonCreated?.Invoke(userId);
                 }
             }
@@ -176,7 +177,7 @@ namespace umi3d.cdk.collaboration.userCapture
             cs.SetSubSkeletons();
 
             // consider all bones we should have according to the hierarchy, and set all values to identity
-            foreach (var bone in skeletonHierarchy.HierarchyDict.Keys)
+            foreach (var bone in skeletonHierarchy.Relations.Keys)
             {
                 if (cs.Bones.ContainsKey(bone))
                     cs.Bones[bone].s_Rotation = Quaternion.identity;
@@ -189,19 +190,19 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public CollaborativeSkeleton GetCollaborativeSkeleton(ulong userId)
         {
-            skeletons.TryGetValue(userId, out var cs);
+            Skeletons.TryGetValue(userId, out var cs);
             return cs as CollaborativeSkeleton;
         }
 
-        public List<CollaborativeSkeleton> GetCollaborativeSkeletons()
+        public IEnumerable<CollaborativeSkeleton> GetCollaborativeSkeletons()
         {
-            return skeletons.Values.Where(x => x is CollaborativeSkeleton).Select(x => x as CollaborativeSkeleton).ToList();
+            return Skeletons.Values.Where(x => x is CollaborativeSkeleton).Cast<CollaborativeSkeleton>();
         }
 
         public ISkeleton TryGetSkeletonById(ulong userId)
         {
-            if (skeletons.ContainsKey(userId))
-                return skeletons[userId];
+            if (Skeletons.ContainsKey(userId))
+                return Skeletons[userId];
             return null;
         }
 
@@ -222,7 +223,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public void UpdateFrame(UserTrackingFrameDto frame)
         {
-            if (!skeletons.TryGetValue(frame.userId, out ISkeleton skeleton))
+            if (!Skeletons.TryGetValue(frame.userId, out ISkeleton skeleton))
             {
                 UMI3DLogger.LogWarning($"Skeleton of user {frame.userId} not found. Cannot apply skeleton frame update.", scope);
                 return;
@@ -235,9 +236,9 @@ namespace umi3d.cdk.collaboration.userCapture
 
         private IEnumerator ComputeCoroutine()
         {
-            while (skeletons.Count > 1)
+            while (Skeletons.Count > 1)
             {
-                foreach (var skeletonPair in skeletons)
+                foreach (var skeletonPair in Skeletons)
                 {
                     var skeleton = skeletonPair.Value;
                     if (skeleton.UserId != personalSkeleton.UserId)
@@ -374,7 +375,7 @@ namespace umi3d.cdk.collaboration.userCapture
         public void HandlePoseRequest(ApplyPoseDto playPoseDto)
         {
             PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.userID, playPoseDto.indexInList);
-            skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
+            Skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
             if (playPoseDto.stopPose)
             {
                 (skeleton as PersonalSkeleton)?.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });

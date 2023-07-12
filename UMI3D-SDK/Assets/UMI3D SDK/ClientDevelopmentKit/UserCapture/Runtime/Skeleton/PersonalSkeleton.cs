@@ -22,10 +22,16 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
+    /// <summary>
+    /// Skeleton of the browser's main user.
+    /// </summary>
     public class PersonalSkeleton : AbstractSkeleton
     {
         public IDictionary<uint, float> BonesAsyncFPS { get; protected set; } = new Dictionary<uint, float>();
 
+        /// <summary>
+        /// Size of the skeleton.
+        /// </summary>
         public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
 
         protected void Start()
@@ -37,6 +43,11 @@ namespace umi3d.cdk.userCapture
             };
         }
 
+        /// <summary>
+        /// Write a tracking frame from all <see cref="ISubWritableSkeleton"/>.
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
         public UserTrackingFrameDto GetFrame(TrackingOption option)
         {
             var frame = new UserTrackingFrameDto()
@@ -66,6 +77,7 @@ namespace umi3d.cdk.userCapture
             return null;
         }
 
+        /// <inheritdoc/>
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
             if (Skeletons != null)

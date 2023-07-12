@@ -14,26 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using umi3d.common.interaction;
-
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing the browser answer to connection requirements.
+    /// DTO describing the number of users in an environment at a given time.
     /// </summary>
-    [Serializable]
-    public class UserConnectionAnswerDto : UserDto
+    public class PlayerCountDto : UMI3DDto
     {
         /// <summary>
-        /// Answers to the connection form.
+        /// Connected player count
         /// </summary>
-        /// Not null if the received <see cref="UserConnectionDto"/> contained a form.
-        public FormAnswerDto parameters { get; set; }
+        public int count { get; set; }
 
         /// <summary>
-        /// State if the libraries have been updated
+        /// Last change date with format "MM:dd:yyyy:HH:mm:ss";
         /// </summary>
-        public bool librariesUpdated { get; set; } = false;
+        public string lastUpdate { get; set; }
     }
 }

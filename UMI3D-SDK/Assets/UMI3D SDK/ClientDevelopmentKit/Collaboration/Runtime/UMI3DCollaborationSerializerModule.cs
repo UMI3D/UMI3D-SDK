@@ -16,7 +16,7 @@ limitations under the License.
 
 using umi3d.cdk.interaction;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 
 namespace umi3d.cdk.collaboration

@@ -15,27 +15,19 @@ limitations under the License.
 */
 using System;
 
-namespace umi3d.common.collaboration
+namespace umi3d.common.collaboration.dto.signaling
 {
     /// <summary>
-    /// DTO describing a publicly visible identity. All browsers can see this identity.
+    /// DTO describing an identity sent to the UMI3D server.
     /// </summary>
+    /// Same than <see cref="IdentityDto"/> but with customizable metadata.
     [Serializable]
-    public class PublicIdentityDto : UMI3DDto
+    public class RegisterIdentityDto : IdentityDto
     {
         /// <summary>
-        /// Id of the user
+        /// Customizable data as a byte array. 
         /// </summary>
-        public ulong userId { get; set; } = 0;
-
-        /// <summary>
-        /// Public login attributed to the user.
-        /// </summary>
-        public string login { get; set; } = null;
-
-        /// <summary>
-        /// Public name attributed to the user and that should be displayed on browsers.
-        /// </summary>
-        public string displayName { get; set; } = null;
+        /// The server should know how to parse them.
+        public byte[] metaData { get; set; }
     }
 }
