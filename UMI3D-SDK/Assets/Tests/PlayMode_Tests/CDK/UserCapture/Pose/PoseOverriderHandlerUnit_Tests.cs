@@ -125,12 +125,14 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 
             UMI3DNodeInstance i = new UMI3DNodeInstance(() => { });
             i.gameObject = new GameObject("UMI3D Node");
+            i.gameObject.transform.position = new Vector3(15,15,0);
             environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(i);
             environmentLoaderServiceMock.Setup(x => x.GetEntityInstance(It.IsAny<ulong>())).Returns(i);
 
             //When
             unit.SetPoseOverriderContainer(container);
 
+            // THEN
             Assert.IsFalse(unit.CheckTriggerConditions());
 
             // teardown
