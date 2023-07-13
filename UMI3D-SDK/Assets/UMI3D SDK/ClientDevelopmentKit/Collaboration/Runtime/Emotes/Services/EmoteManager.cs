@@ -92,7 +92,7 @@ namespace umi3d.cdk.collaboration.emotes
 
         public EmoteManager() : base()
         {
-            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
             environmentManager = UMI3DCollaborationEnvironmentLoader.Instance;
             collabClientServerService = UMI3DCollaborationClientServer.Instance;
         }
