@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,17 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.cdk.userCapture;
+using UnityEngine;
 
-namespace PlayMode_Tests
+namespace umi3d.cdk.collaboration
 {
-    public static class PlayModeTestHelper
+    public interface IUMI3DCollabLoadingParameters : IUMI3DUserCaptureLoadingParameters
     {
-        public const string EMPTY_TEST_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Empty";
-        
-        public const string TEST_SCENE_EDK_BINDINGS = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Bindings";
-
-        public const string TEST_SCENE_EDK_BASE = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Base";
-
-        public const string TEST_SCENE_CDK_BASE = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_CDK_Base";
+        bool CollaborationUserCaptureActivated { get; }
+        GameObject CollabTrackedSkeleton { get; }
     }
 }

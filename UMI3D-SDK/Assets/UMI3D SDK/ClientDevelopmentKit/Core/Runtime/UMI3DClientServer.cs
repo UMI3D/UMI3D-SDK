@@ -124,12 +124,9 @@ namespace umi3d.cdk
         protected virtual void _Send(AbstractBrowserRequestDto dto, bool reliable) { }
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
-        public static void SendTracking(AbstractBrowserRequestDto dto)
+        public virtual void SendTracking(AbstractBrowserRequestDto dto)
         {
-            if (Exists)
-                Instance._SendTracking(dto);
         }
-        protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
         public static async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)

@@ -30,10 +30,15 @@ namespace umi3d.cdk
     /// Loading helper.
     /// </summary>
     [CreateAssetMenu(fileName = "DefaultLoadingParameters", menuName = "UMI3D/Default Loading Parameters")]
-    public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters
+    public class UMI3DLoadingParameters : AbstractUMI3DLoadingParameters, IUMI3DLoadingParameters
     {
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Loading;
+
+        /// <summary>
+        /// Loader for KHR Light.
+        /// </summary>
+        public virtual KHR_lights_punctualLoader khr_lights_punctualLoader { get; } = new KHR_lights_punctualLoader();
 
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> supportedformats = new List<string>();

@@ -43,8 +43,6 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public Dictionary<ulong, PoseConditionProcessor> conditionProcessors = new Dictionary<ulong, PoseConditionProcessor>();
 
-        private bool isInit = false;
-
         #region Dependency Injection
 
         private readonly ISkeletonManager skeletonManager;
@@ -54,32 +52,25 @@ namespace umi3d.cdk.userCapture.pose
         {
             skeletonManager = PersonalSkeletonManager.Instance;
             loadingManager = UMI3DEnvironmentLoader.Instance;
-            InitLocalPoses();
         }
 
         public PoseManager(ISkeletonManager skeletonManager, ILoadingManager loadingManager)
         {
             this.skeletonManager = skeletonManager;
             this.loadingManager = loadingManager;
-            InitLocalPoses();
         }
 
         #endregion Dependency Injection
 
-        private void InitLocalPoses()
+        public void InitLocalPoses()
         {
-            if (isInit == false)
+            List<UMI3DPose_so> clientPoses = (loadingManager.LoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses;
+            localPoses = new PoseDto[clientPoses.Count];
+            for (int i = 0; i < clientPoses.Count; i++)
             {
-                isInit = true;
-
-                List<UMI3DPose_so> clientPoses = (loadingManager.LoadingParameters as UMI3DUserCaptureLoadingParameters).clientPoses;
-                localPoses = new PoseDto[clientPoses.Count];
-                for (int i = 0; i < clientPoses.Count; i++)
-                {
-                    PoseDto poseDto = clientPoses[i].ToDTO();
-                    poseDto.id = i;
-                    localPoses[i] = poseDto;
-                }
+                PoseDto poseDto = clientPoses[i].ToDTO();
+                poseDto.id = i;
+                localPoses[i] = poseDto;
             }
         }
 

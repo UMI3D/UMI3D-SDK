@@ -32,6 +32,7 @@ namespace umi3d.cdk
         ulong GetTime();
         ulong GetUserId();
         Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument);
+        void SendTracking(AbstractBrowserRequestDto dto);
         void _SendRequest(AbstractBrowserRequestDto dto, bool reliable);
     }
 }

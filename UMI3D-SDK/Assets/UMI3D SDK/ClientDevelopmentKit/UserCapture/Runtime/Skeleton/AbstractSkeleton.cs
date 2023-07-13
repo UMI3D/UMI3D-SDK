@@ -41,7 +41,20 @@ namespace umi3d.cdk.userCapture
         public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public UMI3DSkeletonHierarchy SkeletonHierarchy { get; set; }
+        public UMI3DSkeletonHierarchy SkeletonHierarchy 
+        { 
+            get
+            {
+                return _skeletonHierarchy;
+            }
+            set
+            {
+                if (value == null)
+                    throw new System.ArgumentNullException("Cannot set a null Hierarchy.");
+                _skeletonHierarchy = value;
+            }
+        }
+        private UMI3DSkeletonHierarchy _skeletonHierarchy;
 
         /// <inheritdoc/>
         public virtual Transform HipsAnchor { get => hipsAnchor; set => hipsAnchor = value; }
@@ -52,12 +65,24 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton;
+        public TrackedSkeleton TrackedSkeleton 
+        { 
+            get
+            {
+                return trackedSkeleton;
+            }
+            protected set
+            {
+                trackedSkeleton = value;
+            }
+        }
+        [SerializeField]
+        private TrackedSkeleton trackedSkeleton;
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSkeleton = null;
+        public PoseSkeleton PoseSkeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.

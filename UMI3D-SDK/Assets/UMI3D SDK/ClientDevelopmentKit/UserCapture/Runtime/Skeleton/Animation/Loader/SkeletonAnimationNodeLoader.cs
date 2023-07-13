@@ -211,7 +211,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <returns></returns>
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
-            return (loadingManager.LoadingParameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
+            return (loadingManager.LoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
                             .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(x.Bonetype)))
                             .Where(x => x.unityBoneContainer.HasValue)
                             .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))

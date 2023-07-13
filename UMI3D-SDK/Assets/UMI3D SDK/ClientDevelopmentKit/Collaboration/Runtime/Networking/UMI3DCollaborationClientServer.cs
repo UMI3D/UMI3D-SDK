@@ -372,7 +372,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="dto">Dto to send</param>
         /// <param name="reliable">is the data channel used reliable</param>
-        protected override void _SendTracking(AbstractBrowserRequestDto dto)
+        public override void SendTracking(AbstractBrowserRequestDto dto)
         {
             environmentClient?.SendTracking(dto);
         }

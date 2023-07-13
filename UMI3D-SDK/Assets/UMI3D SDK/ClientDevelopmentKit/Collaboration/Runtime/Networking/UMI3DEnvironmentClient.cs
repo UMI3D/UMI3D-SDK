@@ -570,6 +570,7 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
             isJoinning = true;
 
+            PoseManager.Instance.InitLocalPoses();
             var joinDto = new JoinDto()
             {
                 clientLocalPoses = PoseManager.Instance.localPoses.ToList(),

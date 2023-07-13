@@ -66,21 +66,21 @@ namespace umi3d.cdk.userCapture
 
         #region Dependency Injection
 
-        private readonly UMI3DLoadingHandler loadingServiceAnchor;
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        private readonly IEnvironmentManager environmentManager;
+        private readonly ILoadingManager environmentLoaderService;
         private readonly ILateRoutineService lateRoutineService;
 
         public PersonalSkeletonManager()
         {
-            loadingServiceAnchor = UMI3DLoadingHandler.Instance;
+            environmentManager = UMI3DEnvironmentLoader.Instance;
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             lateRoutineService = CoroutineManager.Instance;
             Init();
         }
 
-        public PersonalSkeletonManager(UMI3DLoadingHandler loadingServiceAnchor, UMI3DEnvironmentLoader environmentLoaderService, ILateRoutineService lateRoutineService)
+        public PersonalSkeletonManager(IEnvironmentManager environmentManager, ILoadingManager environmentLoaderService, ILateRoutineService lateRoutineService)
         {
-            this.loadingServiceAnchor = loadingServiceAnchor;
+            this.environmentManager = environmentManager;
             this.environmentLoaderService = environmentLoaderService;
             this.lateRoutineService = lateRoutineService;
             Init();
@@ -95,7 +95,7 @@ namespace umi3d.cdk.userCapture
 
         private void InitPersonalSkeleton()
         {
-            personalSkeleton = loadingServiceAnchor.GetComponentInChildren<PersonalSkeleton>();
+            personalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
             personalSkeleton.SkeletonHierarchy = StandardHierarchy;
             lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }

@@ -14,17 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+using umi3d.cdk.userCapture;
 
-namespace PlayMode_Tests
+namespace umi3d.cdk.collaboration.userCapture
 {
-    public static class PlayModeTestHelper
+    public interface ICollaborativeSkeletonsManager
     {
-        public const string EMPTY_TEST_SCENE_NAME = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_Empty";
-        
-        public const string TEST_SCENE_EDK_BINDINGS = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Bindings";
+        IReadOnlyDictionary<ulong, ISkeleton> Skeletons { get; }
 
-        public const string TEST_SCENE_EDK_BASE = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_EDK_Base";
+        CollaborativeSkeletonsScene CollabSkeletonsScene { get; }
 
-        public const string TEST_SCENE_CDK_BASE = "Tests/PlayMode_Tests/TestScenes/TESTSCENE_CDK_Base";
+        ISkeleton TryGetSkeletonById(ulong userId);
     }
 }

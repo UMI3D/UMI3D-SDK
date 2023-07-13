@@ -21,6 +21,7 @@ using umi3d.cdk;
 using umi3d.cdk.collaboration;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -29,36 +30,42 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 {
     public class PoseOverriderHandlerUnit_Tests
     {
-        private PoseConditionProcessor unit = null;
+        private PoseConditionProcessor unit;
 
-        private Mock<UMI3DEnvironmentLoader> environmentLoaderServiceMock;
+        private Mock<IEnvironmentManager> environmentLoaderServiceMock;
+        private Mock<IUMI3DCollaborationClientServer> collaborationClientServerMock;
+        private TrackedSkeleton trackedSkeleton;
+        private TrackedSkeletonBone trackedSkeletonBone;
+        private GameObject skeletonGo;
 
-        private Mock<UMI3DCollaborationClientServer> collaborationClientServerMock;
-
-        private Mock<TrackedSkeleton> TrackedSkeletonMock;
+        #region Test Setup
 
         [OneTimeSetUp]
         public void OneTimeSetUp()
         {
             ClearSingletons();
             SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME);
+
+            skeletonGo = new GameObject("Skeleton");
+
+            trackedSkeleton = skeletonGo.AddComponent<TrackedSkeleton>();
+            trackedSkeletonBone = new GameObject("Tracked skeleton bone").AddComponent<TrackedSkeletonBone>();
+            trackedSkeletonBone.boneType = BoneType.Chest;
+            trackedSkeleton.bones = new() { { BoneType.Chest, trackedSkeletonBone } };
         }
 
         [SetUp]
         public void SetUp()
         {
-            environmentLoaderServiceMock = new Mock<UMI3DEnvironmentLoader>();
-            collaborationClientServerMock = new Mock<UMI3DCollaborationClientServer>();
-            TrackedSkeletonMock = new Mock<TrackedSkeleton>();
+            environmentLoaderServiceMock = new Mock<IEnvironmentManager>();
+            collaborationClientServerMock = new Mock<IUMI3DCollaborationClientServer>();
 
-            unit = new PoseConditionProcessor(environmentLoaderServiceMock.Object, TrackedSkeletonMock.Object);
+            unit = new PoseConditionProcessor(null, environmentLoaderServiceMock.Object, trackedSkeleton);
         }
 
         [TearDown]
         public void TearDown()
         {
-            unit = null;
-
             ClearSingletons();
         }
 
@@ -69,34 +76,35 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 
             if (UMI3DCollaborationClientServer.Exists)
                 UMI3DCollaborationClientServer.Destroy();
-
-            if (UMI3DLoadingHandler.Exists)
-                Object.Destroy(UMI3DLoadingHandler.Instance);
         }
 
+        #endregion Test Setup
+
         [Test]
-        public void TestNullData()
+        public void SetPoseOverriderContainer_Null()
         {
             //Given
-            UMI3DPoseOverriderContainerDto container = null;
-
-            TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(15, 15, 0));
-            UMI3DNodeInstance i = new UMI3DNodeInstance(() => Debug.Log("loaded"));
-            i.gameObject = new GameObject("hey");
+            UMI3DNodeInstance i = new UMI3DNodeInstance(() => { });
+            i.gameObject = new GameObject("UMI3D Node");
             environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(i);
             environmentLoaderServiceMock.Setup(x => x.GetEntityInstance(It.IsAny<ulong>())).Returns(i);
 
             //When
-            Assert.IsFalse(unit.SetPoseOverriderContainer(container));
+            var result = unit.SetPoseOverriderContainer(null);
 
+            //When
+            Assert.IsFalse(result);
             Assert.IsFalse(unit.CheckTriggerConditions());
+
+            // teardown
+            UnityEngine.Object.Destroy(i.gameObject);
         }
 
         /// <summary>
         /// test that we can handle an empty list of sub skeleton i the compute méthod
         /// </summary>
         [Test]
-        public void TestPoseOverriderSorting()
+        public void SetPoseOverriderContainer_Sorting()
         {
             //Given
             UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
@@ -110,30 +118,32 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
         }
 
         [Test]
-        public void TestOnTrigger_FalseCondtion()
+        public void SetPoseOverriderContainer_FalseCondition()
         {
             //Given
             UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
 
-            TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(15, 15, 0));
             UMI3DNodeInstance i = new UMI3DNodeInstance(() => { });
             i.gameObject = new GameObject("UMI3D Node");
+            i.gameObject.transform.position = new Vector3(15,15,0);
             environmentLoaderServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(i);
             environmentLoaderServiceMock.Setup(x => x.GetEntityInstance(It.IsAny<ulong>())).Returns(i);
 
             //When
             unit.SetPoseOverriderContainer(container);
 
+            // THEN
             Assert.IsFalse(unit.CheckTriggerConditions());
+
+            // teardown
+            UnityEngine.Object.Destroy(i.gameObject);
         }
 
         [Test]
-        public void TestOnTrigger_TrueCondtion()
+        public void SetPoseOverriderContainer_TrueCondition()
         {
             // Given
             UMI3DPoseOverriderContainerDto container = GenerateASimplePoseContainer();
-
-            TrackedSkeletonMock.Setup(x => x.GetBonePosition(13)).Returns(new Vector3(0, 0, 0));
 
             UMI3DNodeInstance i = new UMI3DNodeInstance(() => { });
             i.gameObject = new GameObject("UMI3D Node");
@@ -148,6 +158,9 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             // Then
             Assert.IsTrue(result, "Object was null.");
             Assert.IsTrue(unit.CheckTriggerConditions());
+
+            // teardown
+            UnityEngine.Object.Destroy(i.gameObject);
         }
 
         #region HelperMethod
@@ -167,7 +180,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         new MagnitudeConditionDto()
                         {
                             Magnitude = 1,
-                            BoneOrigine = 13,
+                            BoneOrigine = trackedSkeletonBone.boneType,
                             TargetNodeId = 100012
                         }
                     }.ToArray()
@@ -181,7 +194,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         new MagnitudeConditionDto()
                         {
                             Magnitude = 1,
-                            BoneOrigine = 13,
+                            BoneOrigine = trackedSkeletonBone.boneType,
                             TargetNodeId = 100012
                         }
                     }.ToArray()
@@ -194,7 +207,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                         new MagnitudeConditionDto()
                         {
                             Magnitude = 1,
-                            BoneOrigine = 13,
+                            BoneOrigine = trackedSkeletonBone.boneType,
                             TargetNodeId = 100012
                         }
                     }.ToArray()

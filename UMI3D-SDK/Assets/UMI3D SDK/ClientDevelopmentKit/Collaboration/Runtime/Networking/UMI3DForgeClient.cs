@@ -57,7 +57,7 @@ namespace umi3d.cdk.collaboration
             {
                 lock (UMI3DCollaborationEnvironmentLoader.Instance.UserList)
                 {
-                    return UMI3DCollaborationEnvironmentLoader.Instance.UserList?.Find(u => u?.networkId == nid);
+                    return UMI3DCollaborationEnvironmentLoader.Instance.UserList?.FirstOrDefault(u => u?.networkId == nid);
                 }
             }
 

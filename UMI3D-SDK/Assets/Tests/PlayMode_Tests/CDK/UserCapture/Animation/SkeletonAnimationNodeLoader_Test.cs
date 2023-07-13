@@ -178,7 +178,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
 
             environmentManagerMock.Setup(x => x.GetNodeInstance(dto.id)).Returns(instance);
             personnalSkeletonServiceMock.Setup(x => x.personalSkeleton).Returns(personalSkeleton);
-            var loadingParametersMock = new Mock<UMI3DLoadingParameters>();
+            var loadingParametersMock = new Mock<IUMI3DUserCaptureLoadingParameters>();
             loadingManagerMock.Setup(x => x.LoadingParameters).Returns(loadingParametersMock.Object);
             loadingParametersMock.Setup(x => x.ChooseVariant(It.IsAny<List<FileDto>>())).Returns(new FileDto());
             resourcesManagerMock.Setup(x => x._LoadFile(It.IsAny<ulong>(), It.IsAny<FileDto>(), It.IsAny<IResourcesLoader>())).Returns(Task.FromResult(skeletonNodeGo as object));

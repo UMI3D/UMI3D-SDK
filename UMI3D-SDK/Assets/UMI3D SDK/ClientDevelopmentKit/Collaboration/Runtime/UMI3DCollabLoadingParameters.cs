@@ -31,12 +31,17 @@ namespace umi3d.cdk.collaboration
     /// Loading helper in a collaboration context.
     /// </summary>
     [CreateAssetMenu(fileName = "CollabLoadingParameters", menuName = "UMI3D/Collab Loading Parameters")]
-    public class UMI3DCollabLoadingParameters : UMI3DUserCaptureLoadingParameters
+    public class UMI3DCollabLoadingParameters : UMI3DUserCaptureLoadingParameters, IUMI3DCollabLoadingParameters
     {
         #region Collab User Capture
         [Header("Collab User Capture")]
-        public bool CollaborationUserCaptureActivated;
-        public GameObject CollabTrackedSkeleton;
+        [SerializeField]
+        private bool collaborationUserCaptureActivated;
+        public bool CollaborationUserCaptureActivated => collaborationUserCaptureActivated;
+
+        [SerializeField]
+        private GameObject collabTrackedSkeleton;
+        public GameObject CollabTrackedSkeleton => collabTrackedSkeleton;
 
         #endregion Collab User Capture
 

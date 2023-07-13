@@ -20,7 +20,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         Mock<ILoadingManager> loadingManagerMock = null;
         Mock<ISkeletonManager> skeletonManagerServiceMock = null;
 
-        UMI3DUserCaptureLoadingParameters userCaptureLoadingParameters = null;
+        Mock<IUMI3DUserCaptureLoadingParameters> userCaptureLoadingParameters = null;
 
         [SetUp]
         public void Setup()
@@ -28,17 +28,16 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             environmentLoaderServiceMock = new Mock<IEnvironmentManager>();
             skeletonManagerServiceMock = new Mock<ISkeletonManager>();
             loadingManagerMock = new();
-            userCaptureLoadingParameters = new UMI3DUserCaptureLoadingParameters();
-
-            loadingManagerMock.Setup(x => x.LoadingParameters).Returns(userCaptureLoadingParameters);
-            userCaptureLoadingParameters.clientPoses = new List<UMI3DPose_so>()
+            userCaptureLoadingParameters = new();
+            userCaptureLoadingParameters.Setup(x => x.ClientPoses).Returns(new List<UMI3DPose_so>()
             {
                 new UMI3DPose_so(),
                 new UMI3DPose_so(),
                 new UMI3DPose_so(),
                 new UMI3DPose_so(),
                 new UMI3DPose_so()
-            };
+            });
+            loadingManagerMock.Setup(x => x.LoadingParameters).Returns(userCaptureLoadingParameters.Object);
         }
 
         [TearDown]
@@ -53,9 +52,14 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void TestInitLocalPose()
         {
+            // GIVEN
             poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
 
-            Assert.IsTrue(poseManager.localPoses.Length == userCaptureLoadingParameters.clientPoses.Count);
+            // WHEN
+            poseManager.InitLocalPoses();
+
+            // THEN
+            Assert.IsTrue(poseManager.localPoses.Length == userCaptureLoadingParameters.Object.ClientPoses.Count);
         }
 
         [Test]
