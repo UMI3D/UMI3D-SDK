@@ -20,7 +20,7 @@ using umi3d.edk;
 using umi3d.edk.collaboration.emotes;
 using UnityEngine;
 
-namespace PlayMode_Tests.Collaboration.Emotes.EDK
+namespace EditMode_Tests.Collaboration.Emotes.EDK
 {
     public class EmoteDispatcher_Test
     {
