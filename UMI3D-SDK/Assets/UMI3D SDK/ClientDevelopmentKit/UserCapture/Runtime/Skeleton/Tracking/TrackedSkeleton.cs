@@ -71,7 +71,7 @@ namespace umi3d.cdk.userCapture.tracking
             return dto;
         }
 
-        public UserTrackingBoneDto GetBone(uint boneType)
+        public UserTrackingBoneDto GetController(uint boneType)
         {
             return new UserTrackingBoneDto()
             {

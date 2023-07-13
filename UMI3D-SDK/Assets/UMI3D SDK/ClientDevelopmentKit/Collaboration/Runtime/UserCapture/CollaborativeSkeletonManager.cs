@@ -291,7 +291,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 {
                     if (personalSkeleton.TrackedSkeleton.bones.ContainsKey(boneType))
                     {
-                        var boneData = personalSkeleton.TrackedSkeleton.GetBone(boneType);
+                        var boneData = personalSkeleton.TrackedSkeleton.GetController(boneType);
 
                         if (boneData != null)
                         {
