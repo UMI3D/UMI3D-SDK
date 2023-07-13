@@ -31,20 +31,21 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public class PoseConditionProcessor
     {
-        private readonly UMI3DEnvironmentLoader environmentLoaderService;
+        private readonly IEnvironmentManager environmentManagerService;
         private readonly ISubWritableSkeleton trackedSkeletonService;
 
         public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer)
         {
-            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
+            environmentManagerService = UMI3DEnvironmentLoader.Instance;
             trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSkeleton;
             SetPoseOverriderContainer(overriderContainer);
         }
 
-        public PoseConditionProcessor(UMI3DEnvironmentLoader environmentLoaderService, ISubWritableSkeleton trackedSkeletonService)
+        public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer, IEnvironmentManager environmentLoaderService, ISubWritableSkeleton trackedSkeletonService)
         {
-            this.environmentLoaderService = environmentLoaderService;
+            this.environmentManagerService = environmentLoaderService;
             this.trackedSkeletonService = trackedSkeletonService;
+            SetPoseOverriderContainer(overriderContainer);
         }
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
@@ -333,7 +334,7 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleMagnitude(MagnitudeConditionDto magnitudeConditionDto)
         {
-            UMI3DNodeInstance targetNodeInstance = environmentLoaderService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
+            UMI3DNodeInstance targetNodeInstance = environmentManagerService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
 
             if (targetNodeInstance == null)
             {
@@ -343,7 +344,6 @@ namespace umi3d.cdk.userCapture
 
             Vector3 targetPosition = targetNodeInstance.transform.position;
 
-            Vector3 bonePosition = (trackedSkeletonService as TrackedSkeleton).GetBonePosition(magnitudeConditionDto.BoneOrigine);
             Vector3 bonePosition = Vector3.zero;
             if ((trackedSkeletonService as TrackedSkeleton).bones.TryGetValue(magnitudeConditionDto.BoneOrigine, out TrackedSkeletonBone bone))
                 bonePosition = bone.transform.position;
@@ -360,8 +360,6 @@ namespace umi3d.cdk.userCapture
 
         private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
         {
-            Quaternion boneRotation = (trackedSkeletonService as TrackedSkeleton).GetBoneRotation(boneRotationConditionDto.BoneId);
-            if (boneRotation == Quaternion.identity) return false;
             Quaternion boneRotation;
             if ((trackedSkeletonService as TrackedSkeleton).bones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
                 boneRotation = bone.transform.rotation;
