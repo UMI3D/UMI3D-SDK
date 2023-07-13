@@ -135,15 +135,10 @@ namespace umi3d.cdk.userCapture
             if (poseOverriderContainerDto == null) return false;
 
             this.poseOverriderContainerDto = poseOverriderContainerDto;
-            nonEnvirnmentalPoseOverriders = poseOverriderContainerDto.poseOverriderDtos.Where(pod =>
-            {
-                if (pod.isRelease || pod.isTrigger || pod.isHoverEnter || pod.isHoverExit)
-                {
-                    return true;
-                }
-                envirnmentalPoseOverriders.Add(pod);
-                return false;
-            }).ToList();
+            nonEnvirnmentalPoseOverriders = poseOverriderContainerDto.poseOverriderDtos
+                                                .Where(pod=>pod.isRelease || pod.isTrigger || pod.isHoverEnter || pod.isHoverExit)
+                                                .ToList();
+            envirnmentalPoseOverriders.AddRange(poseOverriderContainerDto.poseOverriderDtos.Except(nonEnvirnmentalPoseOverriders));
 
             return true;
         }
@@ -313,19 +308,19 @@ namespace umi3d.cdk.userCapture
                 case BoneRotationConditionDto boneRotationConditionDto:
                     return HandleBoneRotation(boneRotationConditionDto);
 
-                case DirectionConditionDto directionConditionDto:
-
-                    break;
-
                 case ScaleConditionDto scaleConditionDto:
                     return HandleTargetScale(scaleConditionDto);
 
-                case RangeConditionDto rangeConditionDto:
+                case DirectionConditionDto directionConditionDto:
+                    // UNDONE
+                    break;
 
+                case RangeConditionDto rangeConditionDto:
+                    // UNDONE
                     break;
 
                 case NotConditionDto notConditionDto:
-
+                    // UNDONE
                     break;
             }
 
