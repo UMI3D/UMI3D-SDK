@@ -54,7 +54,7 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             get
             {
-                _standardHierarchy ??= new UMI3DSkeletonHierarchy((collaborativeLoaderService.LoadingParameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
+                _standardHierarchy ??= new UMI3DSkeletonHierarchy((collaborativeLoaderService.LoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
                 return _standardHierarchy;
             }
         }
@@ -79,6 +79,7 @@ namespace umi3d.cdk.collaboration.userCapture
         private readonly IUMI3DCollaborationClientServer collaborationClientServerService;
         private readonly ILoadingManager collaborativeLoaderService;
         private readonly ICollaborationEnvironmentManager collaborativeEnvironmentManagementService;
+        private readonly IPoseManager poseManager;
         private readonly ILateRoutineService routineService;
         private readonly ISkeletonManager personalSkeletonManager;
 
@@ -87,6 +88,7 @@ namespace umi3d.cdk.collaboration.userCapture
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
             collaborativeEnvironmentManagementService = UMI3DCollaborationEnvironmentLoader.Instance;
+            poseManager = PoseManager.Instance;
             routineService = CoroutineManager.Instance;
             personalSkeletonManager = PersonalSkeletonManager.Instance;
             Init();
@@ -95,12 +97,14 @@ namespace umi3d.cdk.collaboration.userCapture
         public CollaborativeSkeletonManager(IUMI3DCollaborationClientServer collaborationClientServer,
                                             ILoadingManager collaborativeLoader,
                                             ICollaborationEnvironmentManager collaborativeEnvironmentManagementService,
+                                            IPoseManager poseManager,
                                             ISkeletonManager personalSkeletonManager,
                                             ILateRoutineService routineService) : base()
         {
             this.collaborationClientServerService = collaborationClientServer;
             this.collaborativeLoaderService = collaborativeLoader;
             this.personalSkeletonManager = personalSkeletonManager;
+            this.poseManager = poseManager;
             this.routineService = routineService;
             this.collaborativeEnvironmentManagementService = collaborativeEnvironmentManagementService;
             Init();
@@ -177,7 +181,13 @@ namespace umi3d.cdk.collaboration.userCapture
                 cs.transform.SetParent(CollabSkeletonsScene.transform);
 
             cs.SkeletonHierarchy = skeletonHierarchy;
-            cs.SetSubSkeletons((collaborativeLoaderService.LoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton);
+
+            var trackedSkeletonPrefab = (collaborativeLoaderService.LoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton;
+            var trackedSkeleton = UnityEngine.Object.Instantiate(trackedSkeletonPrefab, cs.transform).GetComponent<TrackedSkeleton>();
+            
+            var poseSkeleton = new PoseSkeleton(poseManager);
+
+            cs.SetSubSkeletons(trackedSkeleton, poseSkeleton);
 
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in skeletonHierarchy.Relations.Keys)
