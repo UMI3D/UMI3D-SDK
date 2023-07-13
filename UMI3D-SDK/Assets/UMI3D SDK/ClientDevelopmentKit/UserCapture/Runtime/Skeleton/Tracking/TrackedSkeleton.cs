@@ -79,20 +79,6 @@ namespace umi3d.cdk.userCapture.tracking
             };
         }
 
-        public virtual Vector3 GetBonePosition(uint index)
-        {
-            bones.TryGetValue(index, out var boneTransform);
-            if (boneTransform == null) return Vector3.zero;
-            return boneTransform.transform.position;
-        }
-
-        public virtual Quaternion GetBoneRotation(uint index)
-        {
-            bones.TryGetValue(index, out var boneTransform);
-            if (boneTransform == null) return Quaternion.identity;
-            return boneTransform.transform.rotation;
-        }
-
         public void UpdateFrame(UserTrackingFrameDto trackingFrame)
         {
             types.Clear();

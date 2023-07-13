@@ -344,6 +344,9 @@ namespace umi3d.cdk.userCapture
             Vector3 targetPosition = targetNodeInstance.transform.position;
 
             Vector3 bonePosition = (trackedSkeletonService as TrackedSkeleton).GetBonePosition(magnitudeConditionDto.BoneOrigine);
+            Vector3 bonePosition = Vector3.zero;
+            if ((trackedSkeletonService as TrackedSkeleton).bones.TryGetValue(magnitudeConditionDto.BoneOrigine, out TrackedSkeletonBone bone))
+                bonePosition = bone.transform.position;
 
             float distance = Vector3.Distance(targetPosition, bonePosition);
 
@@ -359,6 +362,11 @@ namespace umi3d.cdk.userCapture
         {
             Quaternion boneRotation = (trackedSkeletonService as TrackedSkeleton).GetBoneRotation(boneRotationConditionDto.BoneId);
             if (boneRotation == Quaternion.identity) return false;
+            Quaternion boneRotation;
+            if ((trackedSkeletonService as TrackedSkeleton).bones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
+                boneRotation = bone.transform.rotation;
+            else
+                return false;
 
             if (Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.AcceptanceRange)
             {
