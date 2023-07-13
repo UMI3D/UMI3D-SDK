@@ -52,19 +52,17 @@ namespace umi3d.cdk.userCapture.pose
         {
             skeletonManager = PersonalSkeletonManager.Instance;
             loadingManager = UMI3DEnvironmentLoader.Instance;
-            InitLocalPoses();
         }
 
         public PoseManager(ISkeletonManager skeletonManager, ILoadingManager loadingManager)
         {
             this.skeletonManager = skeletonManager;
             this.loadingManager = loadingManager;
-            InitLocalPoses();
         }
 
         #endregion Dependency Injection
 
-        private void InitLocalPoses()
+        public void InitLocalPoses()
         {
             List<UMI3DPose_so> clientPoses = (loadingManager.LoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses;
             localPoses = new PoseDto[clientPoses.Count];
