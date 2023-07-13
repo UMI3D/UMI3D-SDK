@@ -52,8 +52,13 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void TestInitLocalPose()
         {
+            // GIVEN
             poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
 
+            // WHEN
+            poseManager.InitLocalPoses();
+
+            // THEN
             Assert.IsTrue(poseManager.localPoses.Length == userCaptureLoadingParameters.Object.ClientPoses.Count);
         }
 
