@@ -26,6 +26,7 @@ using UnityEngine;
 using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
+using inetum.unityUtils;
 
 namespace umi3d.cdk
 {
@@ -77,8 +78,8 @@ namespace umi3d.cdk
         /// Anchor of loading access to coroutine logic.
         /// </summary>
         /// For backwards compatibility only.
-        [Obsolete("UMI3DLoadingHandler.StartCoroutine() instead")]
-        public static Coroutine StartCoroutine(IEnumerator enumerator) => UMI3DLoadingHandler.StartCoroutine(enumerator);
+        [Obsolete("Use ICoroutineManager instead")]
+        public static Coroutine StartCoroutine(IEnumerator enumerator) => CoroutineManager.Instance.AttachCoroutine(enumerator);
 
         /// <summary>
         /// Call a callback when an entity is registerd.
