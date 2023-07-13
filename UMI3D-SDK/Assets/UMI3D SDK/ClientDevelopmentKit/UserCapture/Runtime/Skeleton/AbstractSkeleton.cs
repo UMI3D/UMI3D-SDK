@@ -65,7 +65,19 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton { get; protected set; }
+        public TrackedSkeleton TrackedSkeleton 
+        { 
+            get
+            {
+                return trackedSkeleton;
+            }
+            protected set
+            {
+                trackedSkeleton = value;
+            }
+        }
+        [SerializeField]
+        private TrackedSkeleton trackedSkeleton;
 
         /// <summary>
         /// Susbskeleton for body poses.
