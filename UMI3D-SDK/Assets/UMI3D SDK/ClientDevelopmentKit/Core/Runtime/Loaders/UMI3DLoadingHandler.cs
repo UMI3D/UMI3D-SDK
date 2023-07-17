@@ -39,7 +39,7 @@ namespace umi3d.cdk
 
         [Header("Loading")]
         [SerializeField]
-        protected UMI3DLoadingParameters parameters;
+        protected AbstractUMI3DLoadingParameters parameters;
         #endregion Loading
 
         protected override void Awake()
@@ -49,7 +49,8 @@ namespace umi3d.cdk
             // LOADING SERVICE
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             environmentLoaderService.SetParameters(parameters);
-            environmentLoaderService.SetBaseMaterial(parameters.defaultMat);
+            if(parameters is UMI3DLoadingParameters loadingParameters)
+            environmentLoaderService.SetBaseMaterial(loadingParameters.defaultMat);
         }
     }
 }
