@@ -19,11 +19,14 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
+    /// <summary>
+    /// Catches OnAnimatorIk event and dispatch it. Has to be on a gameobject with an animator component.
+    /// </summary>
     public class TrackedAnimator : MonoBehaviour
     {
         public Action<int> IkCallback;
 
-        public TrackedSkeleton skeleton;
+        // mandatory for OnAnimatorIk event
         private Animator animator;
 
         void Start()
