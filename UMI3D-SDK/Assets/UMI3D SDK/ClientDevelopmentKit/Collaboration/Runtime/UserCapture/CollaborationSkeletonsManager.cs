@@ -30,19 +30,26 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
-    public class CollaborationSkeletonsManager : Singleton<CollaborationSkeletonsManager>, ISkeletonManager, ICollaborationSkeletonsManager
+    /// <summary>
+    /// Skeleton manager that handles collaborative skeletons and personal skeleton in a collaborative context.
+    /// </summary>
+    public class CollaborationSkeletonsManager : Singleton<CollaborationSkeletonsManager>, ICollaborationSkeletonsManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
         #region Fields
 
+        /// <inheritdoc/>
         public virtual IReadOnlyDictionary<ulong, ISkeleton> Skeletons => skeletons;
         protected Dictionary<ulong, ISkeleton> skeletons = new();
 
+        /// <inheritdoc/>
         public virtual PersonalSkeleton personalSkeleton => personalSkeletonManager.personalSkeleton;
 
+        /// <inheritdoc/>
         public Vector3 worldSize => personalSkeleton.worldSize;
 
+        /// <inheritdoc/>
         public virtual CollaborativeSkeletonsScene CollabSkeletonsScene => CollaborativeSkeletonsScene.Exists ? CollaborativeSkeletonsScene.Instance : null;
 
         /// <summary>
@@ -50,6 +57,7 @@ namespace umi3d.cdk.collaboration.userCapture
         /// </summary>
         public event Action<ulong> CollaborativeSkeletonCreated;
 
+        /// <inheritdoc/>
         public UMI3DSkeletonHierarchy StandardHierarchy
         {
             get
@@ -79,12 +87,13 @@ namespace umi3d.cdk.collaboration.userCapture
         }
         protected bool shouldSendTracking = true;
 
-        public IReadOnlyDictionary<uint, float> BonesAsyncFPS => personalSkeletonManager.BonesAsyncFPS;
+        /// <inheritdoc/>
+        public IReadOnlyDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS as IReadOnlyDictionary<uint, float>;
 
-        /// <summary>
-        /// Number of tracked frame per second that are sent to the server.
-        /// </summary>
+        /// <inheritdoc/>
         public float TargetTrackingFPS { get; set; } = 30f;
+
+        /// <inheritdoc/>
         public bool ShouldSendCameraProperties { get; set; } = true;
         private bool sendTrackingLoopOnce = false;
 
@@ -280,7 +289,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
                     // UNDONE: camera properties are not sent
                     if (ShouldSendCameraProperties)
-                        GetCameraProperty();
+                        personalSkeleton.GetCameraDto();
 
                     await UMI3DAsyncManager.Delay((int)(1000f / TargetTrackingFPS));
                 }
@@ -368,11 +377,6 @@ namespace umi3d.cdk.collaboration.userCapture
         }
 
         #endregion Compute Final Skeleton
-
-        public UserCameraPropertiesDto GetCameraProperty()
-        {
-            return personalSkeleton.GetCameraDto();
-        }
 
         #region Pose
 
