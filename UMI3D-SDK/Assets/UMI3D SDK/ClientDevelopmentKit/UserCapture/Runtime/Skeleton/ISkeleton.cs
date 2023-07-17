@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture
         List<ISubskeleton> Subskeletons { get; }
 
         /// <summary>
-        /// Skeleton hiearchy used, with relative position between each bone.
+        /// Skeleton hierarchy used, with relative position between each bone.
         /// </summary>
         UMI3DSkeletonHierarchy SkeletonHierarchy { get; }
 
