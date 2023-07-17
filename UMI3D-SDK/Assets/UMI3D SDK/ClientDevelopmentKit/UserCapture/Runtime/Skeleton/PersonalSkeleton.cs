@@ -37,14 +37,14 @@ namespace umi3d.cdk.userCapture
         protected void Start()
         {
             PoseSkeleton = new PoseSkeleton();
-            Skeletons = new List<ISubSkeleton>
+            Skeletons = new List<ISubskeleton>
             {
                 TrackedSkeleton, PoseSkeleton
             };
         }
 
         /// <summary>
-        /// Write a tracking frame from all <see cref="ISubWritableSkeleton"/>.
+        /// Write a tracking frame from all <see cref="IWritableSubskeleton"/>.
         /// </summary>
         /// <param name="option"></param>
         /// <returns></returns>
@@ -56,9 +56,9 @@ namespace umi3d.cdk.userCapture
                 rotation = transform.rotation.Dto(),
             };
 
-            foreach (ISubSkeleton skeleton in Skeletons)
+            foreach (ISubskeleton skeleton in Skeletons)
             {
-                if (skeleton is ISubWritableSkeleton writableSkeleton)
+                if (skeleton is IWritableSubskeleton writableSkeleton)
                     writableSkeleton.WriteTrackingFrame(frame, option);
             }
 
@@ -82,9 +82,9 @@ namespace umi3d.cdk.userCapture
         {
             if (Skeletons != null)
             {
-                foreach (ISubSkeleton skeleton in Skeletons)
+                foreach (ISubskeleton skeleton in Skeletons)
                 {
-                    if (skeleton is ISubWritableSkeleton writableSkeleton)
+                    if (skeleton is IWritableSubskeleton writableSkeleton)
                         writableSkeleton.UpdateFrame(frame);
                 }
             }

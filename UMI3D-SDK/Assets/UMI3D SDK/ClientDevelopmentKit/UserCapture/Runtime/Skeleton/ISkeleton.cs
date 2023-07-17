@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeletons that compose the final skeleton.
         /// </summary>
-        List<ISubSkeleton> Skeletons { get; }
+        List<ISubskeleton> Skeletons { get; }
 
         /// <summary>
         /// Skeleton hiearchy used, with relative position between each bone.

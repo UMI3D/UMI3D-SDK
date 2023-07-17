@@ -38,7 +38,7 @@ namespace umi3d.cdk.userCapture
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
+        public virtual List<ISubskeleton> Skeletons { get; protected set; } = new();
 
         /// <inheritdoc/>
         public UMI3DSkeletonHierarchy SkeletonHierarchy 

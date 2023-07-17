@@ -24,7 +24,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackedSkeleton : MonoBehaviour, ISubWritableSkeleton
+    public class TrackedSkeleton : MonoBehaviour, IWritableSubskeleton
     {
         public List<IController> controllers = new List<IController>();
         private List<IController> controllersToDestroy = new();

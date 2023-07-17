@@ -39,9 +39,9 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            foreach (ISubSkeleton skeleton in Skeletons)
+            foreach (ISubskeleton skeleton in Skeletons)
             {
-                if (skeleton is ISubWritableSkeleton writableSubskeleton)
+                if (skeleton is IWritableSubskeleton writableSubskeleton)
                     writableSubskeleton.UpdateFrame(frame);
             }
 
