@@ -289,9 +289,9 @@ namespace umi3d.cdk.collaboration.userCapture
             {
                 if (BonesAsyncFPS[boneType] > 0)
                 {
-                    if (personalSkeleton.TrackedSkeleton.bones.ContainsKey(boneType))
+                    if (personalSkeleton.TrackedSubskeleton.bones.ContainsKey(boneType))
                     {
-                        var boneData = personalSkeleton.TrackedSkeleton.GetController(boneType);
+                        var boneData = personalSkeleton.TrackedSubskeleton.GetController(boneType);
 
                         if (boneData != null)
                         {
@@ -401,9 +401,9 @@ namespace umi3d.cdk.collaboration.userCapture
             Skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
 
             if (playPoseDto.stopPose)
-                skeleton.PoseSkeleton.StopPose(new List<PoseDto> { poseDto });
+                skeleton.PoseSubskeleton.StopPose(new List<PoseDto> { poseDto });
             else
-                skeleton.PoseSkeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
+                skeleton.PoseSubskeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
         }
 
         #endregion Pose

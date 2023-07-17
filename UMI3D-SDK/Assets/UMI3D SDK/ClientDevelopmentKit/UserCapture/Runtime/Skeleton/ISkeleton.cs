@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeletons that compose the final skeleton.
         /// </summary>
-        List<ISubskeleton> Skeletons { get; }
+        List<ISubskeleton> Subskeletons { get; }
 
         /// <summary>
         /// Skeleton hiearchy used, with relative position between each bone.
@@ -57,12 +57,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton { get; }
+        public TrackedSkeleton TrackedSubskeleton { get; }
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSkeleton { get; }
+        public PoseSkeleton PoseSubskeleton { get; }
 
         #region Data struture
 

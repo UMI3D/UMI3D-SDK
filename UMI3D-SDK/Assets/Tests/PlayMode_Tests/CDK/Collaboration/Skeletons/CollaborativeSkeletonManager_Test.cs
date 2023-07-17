@@ -130,8 +130,8 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             Assert.IsNotNull(skeleton.HipsAnchor);
             Assert.IsNotNull(skeleton.transform.parent);
 
-            Assert.IsNotNull(skeleton.PoseSkeleton);
-            Assert.IsNotNull(skeleton.TrackedSkeleton);
+            Assert.IsNotNull(skeleton.PoseSubskeleton);
+            Assert.IsNotNull(skeleton.TrackedSubskeleton);
         }
 
         [Test]
@@ -158,8 +158,8 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             Assert.IsNotNull(skeleton.HipsAnchor);
             Assert.IsNotNull(skeleton.transform.parent);
 
-            Assert.IsNotNull(skeleton.PoseSkeleton);
-            Assert.IsNotNull(skeleton.TrackedSkeleton);
+            Assert.IsNotNull(skeleton.PoseSubskeleton);
+            Assert.IsNotNull(skeleton.TrackedSubskeleton);
         }
 
         [Test]

@@ -294,16 +294,16 @@ namespace umi3d.cdk.userCapture.animation
             var skeleton = personnalSkeletonService.personalSkeleton;
 
             // add animated skeleton to subskeleton list and re-order it by descending priority
-            lock (skeleton.Skeletons) // loader can start parallel async task
+            lock (skeleton.Subskeletons) // loader can start parallel async task
             {
-                var animatedSkeletons = skeleton.Skeletons
+                var animatedSkeletons = skeleton.Subskeletons
                                         .Where(x => x is AnimatedSubskeleton)
                                         .Cast<AnimatedSubskeleton>()
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-                personnalSkeletonService.personalSkeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
-                personnalSkeletonService.personalSkeleton.Skeletons.AddRange(animatedSkeletons);
+                personnalSkeletonService.personalSkeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                personnalSkeletonService.personalSkeleton.Subskeletons.AddRange(animatedSkeletons);
             }
 
             // if it is the browser, register that it is required to delete animated skeleton on leaving
@@ -313,7 +313,7 @@ namespace umi3d.cdk.userCapture.animation
 
                 void RemoveSkeletons()
                 {
-                    skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                    skeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
                     clientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
                     isRegisteredForPersonalSkeletonCleanup = false;
                 }

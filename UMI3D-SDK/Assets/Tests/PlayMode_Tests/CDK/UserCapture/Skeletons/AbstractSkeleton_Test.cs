@@ -107,7 +107,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
                 animatedSkeletonMock.Object
             };
 
-            abstractSkeleton.Skeletons.AddRange(animatedSubskeletons);
+            abstractSkeleton.Subskeletons.AddRange(animatedSubskeletons);
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -147,7 +147,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
                 animatedSkeletonMock.Object
             };
 
-            abstractSkeleton.Skeletons.AddRange(animatedSubskeletons);
+            abstractSkeleton.Subskeletons.AddRange(animatedSubskeletons);
 
             //When
             ISkeleton results = abstractSkeleton.Compute();

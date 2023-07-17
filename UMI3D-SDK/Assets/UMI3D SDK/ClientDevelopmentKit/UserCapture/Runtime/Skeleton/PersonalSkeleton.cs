@@ -32,14 +32,14 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Size of the skeleton.
         /// </summary>
-        public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
+        public Vector3 worldSize => TrackedSubskeleton.transform.lossyScale;
 
         protected void Start()
         {
-            PoseSkeleton = new PoseSkeleton();
-            Skeletons = new List<ISubskeleton>
+            PoseSubskeleton = new PoseSkeleton();
+            Subskeletons = new List<ISubskeleton>
             {
-                TrackedSkeleton, PoseSkeleton
+                TrackedSubskeleton, PoseSubskeleton
             };
         }
 
@@ -56,7 +56,7 @@ namespace umi3d.cdk.userCapture
                 rotation = transform.rotation.Dto(),
             };
 
-            foreach (ISubskeleton skeleton in Skeletons)
+            foreach (ISubskeleton skeleton in Subskeletons)
             {
                 if (skeleton is IWritableSubskeleton writableSkeleton)
                     writableSkeleton.WriteTrackingFrame(frame, option);
@@ -68,7 +68,7 @@ namespace umi3d.cdk.userCapture
         public UserCameraPropertiesDto GetCameraProperty()
         {
             //The first skeleton is the TrackedSkeleton
-            foreach (var skeleton in Skeletons)
+            foreach (var skeleton in Subskeletons)
             {
                 var c = skeleton.GetCameraDto();
                 if (c != null)
@@ -80,9 +80,9 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            if (Skeletons != null)
+            if (Subskeletons != null)
             {
-                foreach (ISubskeleton skeleton in Skeletons)
+                foreach (ISubskeleton skeleton in Subskeletons)
                 {
                     if (skeleton is IWritableSubskeleton writableSkeleton)
                         writableSkeleton.UpdateFrame(frame);

@@ -39,7 +39,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            foreach (ISubskeleton skeleton in Skeletons)
+            foreach (ISubskeleton skeleton in Subskeletons)
             {
                 if (skeleton is IWritableSubskeleton writableSubskeleton)
                     writableSubskeleton.UpdateFrame(frame);
@@ -51,11 +51,11 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public void SetSubSkeletons(TrackedSkeleton trackedSkeleton, PoseSkeleton poseSkeleton)
         {
-            TrackedSkeleton = trackedSkeleton;
-            HipsAnchor = TrackedSkeleton.Hips;
-            PoseSkeleton = poseSkeleton;
-            Skeletons.Add(TrackedSkeleton);
-            Skeletons.Add(PoseSkeleton);
+            TrackedSubskeleton = trackedSkeleton;
+            HipsAnchor = TrackedSubskeleton.Hips;
+            PoseSubskeleton = poseSkeleton;
+            Subskeletons.Add(TrackedSubskeleton);
+            Subskeletons.Add(PoseSubskeleton);
         }
     }
 }

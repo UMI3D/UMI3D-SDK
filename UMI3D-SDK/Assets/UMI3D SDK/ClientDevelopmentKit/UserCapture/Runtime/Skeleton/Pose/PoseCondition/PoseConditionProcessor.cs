@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
         public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer)
         {
             environmentManagerService = UMI3DEnvironmentLoader.Instance;
-            trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSkeleton;
+            trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSubskeleton;
             SetPoseOverriderContainer(overriderContainer);
         }
 
