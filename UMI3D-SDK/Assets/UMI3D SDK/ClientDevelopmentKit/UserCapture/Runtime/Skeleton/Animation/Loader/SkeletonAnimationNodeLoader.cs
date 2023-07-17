@@ -225,7 +225,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="animator"></param>
         protected void ExtractRigsFromAnimator(Animator animator)
         {
-            var newHierachy = personnalSkeletonService.personalSkeleton.SkeletonHierarchy.Generate(animator.transform);
+            var newHierachy = personnalSkeletonService.PersonalSkeleton.SkeletonHierarchy.Generate(animator.transform);
 
             var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x => x);
 
@@ -291,7 +291,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="subskeleton"></param>
         protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton subskeleton)
         {
-            var skeleton = personnalSkeletonService.personalSkeleton;
+            var skeleton = personnalSkeletonService.PersonalSkeleton;
 
             // add animated skeleton to subskeleton list and re-order it by descending priority
             lock (skeleton.Subskeletons) // loader can start parallel async task
@@ -302,8 +302,8 @@ namespace umi3d.cdk.userCapture.animation
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-                personnalSkeletonService.personalSkeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
-                personnalSkeletonService.personalSkeleton.Subskeletons.AddRange(animatedSkeletons);
+                personnalSkeletonService.PersonalSkeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                personnalSkeletonService.PersonalSkeleton.Subskeletons.AddRange(animatedSkeletons);
             }
 
             // if it is the browser, register that it is required to delete animated skeleton on leaving

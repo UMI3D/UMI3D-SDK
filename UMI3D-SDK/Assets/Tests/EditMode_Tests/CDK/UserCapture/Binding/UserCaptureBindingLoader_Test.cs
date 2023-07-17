@@ -102,7 +102,7 @@ namespace EditMode_Tests.UserCapture.Binding.CDK
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
-            skeletonServiceMock.Setup(x => x.personalSkeleton).Returns(personalSkeletonMock.Object);
+            skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
@@ -138,7 +138,7 @@ namespace EditMode_Tests.UserCapture.Binding.CDK
             environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
             environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
 
-            skeletonServiceMock.Setup(x => x.personalSkeleton).Returns(personalSkeletonMock.Object);
+            skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
             bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
 

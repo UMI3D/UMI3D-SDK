@@ -177,7 +177,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             };
 
             environmentManagerMock.Setup(x => x.GetNodeInstance(dto.id)).Returns(instance);
-            personnalSkeletonServiceMock.Setup(x => x.personalSkeleton).Returns(personalSkeleton);
+            personnalSkeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeleton);
             var loadingParametersMock = new Mock<IUMI3DUserCaptureLoadingParameters>();
             loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(loadingParametersMock.Object);
             loadingParametersMock.Setup(x => x.ChooseVariant(It.IsAny<List<FileDto>>())).Returns(new FileDto());
@@ -192,7 +192,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
 
             // THEN
             environmentManagerMock.Verify(x => x.GetNodeInstance(dto.id));
-            personnalSkeletonServiceMock.Verify(x => x.personalSkeleton, Times.Never());
+            personnalSkeletonServiceMock.Verify(x => x.PersonalSkeleton, Times.Never());
         }
 
         #endregion ReadUMI3DExtension
