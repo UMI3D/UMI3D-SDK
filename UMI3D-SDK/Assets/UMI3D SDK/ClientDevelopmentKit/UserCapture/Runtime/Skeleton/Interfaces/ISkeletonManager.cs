@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public UMI3DSkeletonHierarchy StandardHierarchy { get; }
 
-        IDictionary<uint, float> BonesAsyncFPS { get; }
+        IReadOnlyDictionary<uint, float> BonesAsyncFPS { get; }
 
         Vector3 worldSize { get; }
     }

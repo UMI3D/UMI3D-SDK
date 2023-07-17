@@ -26,5 +26,9 @@ namespace umi3d.cdk.collaboration.userCapture
         CollaborativeSkeletonsScene CollabSkeletonsScene { get; }
 
         ISkeleton TryGetSkeletonById(ulong userId);
+
+        void SetBoneFPSTarget(uint boneType, float newFPSTarget);
+
+        void SyncBoneFPS(uint boneType);
     }
 }

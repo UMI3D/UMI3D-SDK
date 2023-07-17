@@ -56,7 +56,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public IDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS;
+        public IReadOnlyDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS as IReadOnlyDictionary<uint, float>;
 
         public Vector3 worldSize => personalSkeleton.worldSize;
 

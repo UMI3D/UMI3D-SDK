@@ -500,7 +500,7 @@ namespace umi3d.cdk.collaboration
                 case SetTrackingTargetFPSDto setTargetFPS:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.SetFPSTarget(setTargetFPS.targetFPS);
+                        CollaborativeSkeletonManager.Instance.TargetTrackingFPS = setTargetFPS.targetFPS;
                     });
                     break;
                 case SetStreamedBonesDto streamedBones:
@@ -512,13 +512,13 @@ namespace umi3d.cdk.collaboration
                 case SetSendingCameraPropertiesDto sendingCamera:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.SetCameraPropertiesSending(sendingCamera.activeSending);
+                        CollaborativeSkeletonManager.Instance.ShouldSendCameraProperties = sendingCamera.activeSending;
                     });
                     break;
                 case SetSendingTrackingDto sendingTracking:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.SetTrackingSending(sendingTracking.activeSending);
+                        CollaborativeSkeletonManager.Instance.ShouldSendTracking = sendingTracking.activeSending;
                     });
                     break;
                 case ApplyPoseDto playPoseDto:
@@ -597,34 +597,6 @@ namespace umi3d.cdk.collaboration
                             await UMI3DAsyncManager.Yield();
                     }
                     break;
-                //case UMI3DOperationKeys.BoardedVehicleRequest:
-                //    {
-                //        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
-                //        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
-                //        ulong vehicleId = UMI3DSerializer.Read<ulong>(container);
-                //        bool stopNavigation = UMI3DSerializer.Read<bool>(container);
-                //        ulong bodyAnimationId = UMI3DSerializer.Read<ulong>(container);
-                //        bool changeBonesToStream = UMI3DSerializer.Read<bool>(container);
-                //        System.Collections.Generic.List<uint> bonesToStream = UMI3DSerializer.ReadList<uint>(container);
-
-                //        var nav = new BoardedVehicleDto()
-                //        {
-                //            position = pos,
-                //            rotation = rot,
-                //            VehicleId = vehicleId,
-                //            StopNavigation = stopNavigation,
-                //            BodyAnimationId = bodyAnimationId,
-                //            ChangeBonesToStream = changeBonesToStream,
-                //            BonesToStream = bonesToStream
-                //        };
-
-                //        MainThreadManager.Run(() =>
-                //        {
-                //            StartCoroutine(UMI3DNavigation.Navigate(nav));
-                //            UMI3DClientUserTracking.Instance.EmbarkVehicle(nav);
-                //        });
-                //    }
-                //    break;
                 case UMI3DOperationKeys.GetLocalInfoRequest:
                     string key = UMI3DSerializer.Read<string>(container);
                     MainThreadManager.Run(() =>
@@ -661,7 +633,7 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
                     float target = UMI3DSerializer.Read<float>(container);
-                    CollaborativeSkeletonManager.Instance.SetFPSTarget(target);
+                    CollaborativeSkeletonManager.Instance.TargetTrackingFPS = target;
                     break;
                 case UMI3DOperationKeys.SetUTSBoneTargetFPS:
                     float FPStarget = UMI3DSerializer.Read<float>(container);
@@ -674,11 +646,11 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
                     bool sendCamera = UMI3DSerializer.Read<bool>(container);
-                    CollaborativeSkeletonManager.Instance.SetCameraPropertiesSending(sendCamera);
+                    CollaborativeSkeletonManager.Instance.ShouldSendCameraProperties = sendCamera;
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
                     bool sendTracking = UMI3DSerializer.Read<bool>(container);
-                    CollaborativeSkeletonManager.Instance.SetTrackingSending(sendTracking);
+                    CollaborativeSkeletonManager.Instance.ShouldSendTracking = sendTracking;
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
                     ulong userID = UMI3DSerializer.Read<ulong>(container);
