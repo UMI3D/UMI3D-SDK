@@ -62,7 +62,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        PoseSkeleton PoseSubskeleton { get; }
+        PoseSubskeleton PoseSubskeleton { get; }
 
         #region Data struture
 

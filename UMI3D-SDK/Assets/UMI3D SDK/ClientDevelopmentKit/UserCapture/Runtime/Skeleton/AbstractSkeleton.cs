@@ -82,7 +82,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSubskeleton { get; protected set; }
+        public PoseSubskeleton PoseSubskeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.

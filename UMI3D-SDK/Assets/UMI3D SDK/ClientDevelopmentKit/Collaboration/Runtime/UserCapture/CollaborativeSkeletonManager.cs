@@ -185,7 +185,7 @@ namespace umi3d.cdk.collaboration.userCapture
             var trackedSkeletonPrefab = (collaborativeLoaderService.AbstractLoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton;
             var trackedSkeleton = UnityEngine.Object.Instantiate(trackedSkeletonPrefab, cs.transform).GetComponent<TrackedSkeleton>();
             
-            var poseSkeleton = new PoseSkeleton(poseManager);
+            var poseSkeleton = new PoseSubskeleton(poseManager);
 
             cs.SetSubSkeletons(trackedSkeleton, poseSkeleton);
 

@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration.userCapture
             rotExtrapolator.AddMeasure(frame.rotation.Quaternion());
         }
 
-        public void SetSubSkeletons(TrackedSkeleton trackedSkeleton, PoseSkeleton poseSkeleton)
+        public void SetSubSkeletons(TrackedSkeleton trackedSkeleton, PoseSubskeleton poseSkeleton)
         {
             TrackedSubskeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;

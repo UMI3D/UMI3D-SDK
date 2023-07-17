@@ -36,7 +36,7 @@ namespace umi3d.cdk.userCapture
 
         protected void Start()
         {
-            PoseSubskeleton = new PoseSkeleton();
+            PoseSubskeleton = new PoseSubskeleton();
             Subskeletons = new List<ISubskeleton>
             {
                 TrackedSubskeleton, PoseSubskeleton

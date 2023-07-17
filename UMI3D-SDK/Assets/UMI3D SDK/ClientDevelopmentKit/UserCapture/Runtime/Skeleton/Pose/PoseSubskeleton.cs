@@ -23,16 +23,16 @@ using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture.pose
 {
-    public class PoseSkeleton : IWritableSubskeleton
+    public class PoseSubskeleton : IWritableSubskeleton
     {
         private readonly IPoseManager poseManagerService;
 
-        public PoseSkeleton()
+        public PoseSubskeleton()
         {
             poseManagerService = PoseManager.Instance;
         }
 
-        public PoseSkeleton(IPoseManager poseManager)
+        public PoseSubskeleton(IPoseManager poseManager)
         {
             this.poseManagerService = poseManager;
         }
