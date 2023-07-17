@@ -21,7 +21,7 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-    public interface IUMI3DLoadingParameters
+    public interface IUMI3DLoadingParameters : IUMI3DAbstractLoadingParameters
     {
         UMI3DAbstractAnchorLoader AnchorLoader { get; }
         List<AbstractUMI3DMaterialLoader> MaterialLoaders { get; }
@@ -30,6 +30,11 @@ namespace umi3d.cdk
         Material skyboxEquirectangularMaterial { get; }
         Material skyboxMaterial { get; }
         KHR_lights_punctualLoader khr_lights_punctualLoader { get; }
+
+    }
+
+    public interface IUMI3DAbstractLoadingParameters
+    {
 
         UMI3DLocalAssetDirectoryDto ChooseVariant(AssetLibraryDto assetLibrary);
         FileDto ChooseVariant(List<FileDto> files);

@@ -224,7 +224,7 @@ namespace umi3d.cdk
                 try
                 {
 
-                    UMI3DEnvironmentLoader.Parameters.SelectMaterialLoader(material).LoadMaterialFromExtension(material, (m) =>
+                    UMI3DEnvironmentLoader.AbstractParameters.SelectMaterialLoader(material).LoadMaterialFromExtension(material, (m) =>
                     {
                         if (material.name != null && material.name.Length > 0 && m != null)
                             m.name = material.name;

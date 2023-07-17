@@ -25,7 +25,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Abstract loading parameters and workflow 
     /// </summary>
-    public abstract class AbstractUMI3DLoadingParameters : ScriptableObject
+    public abstract class AbstractUMI3DLoadingParameters : ScriptableObject, IUMI3DAbstractLoadingParameters
     {
         /// <summary>
         /// Return the best ResourcesLoader for an extension.

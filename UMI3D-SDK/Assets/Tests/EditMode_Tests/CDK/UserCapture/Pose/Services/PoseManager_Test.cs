@@ -37,7 +37,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 new UMI3DPose_so(),
                 new UMI3DPose_so()
             });
-            loadingManagerMock.Setup(x => x.LoadingParameters).Returns(userCaptureLoadingParameters.Object);
+            loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(userCaptureLoadingParameters.Object);
         }
 
         [TearDown]

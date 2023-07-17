@@ -116,7 +116,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
             parameterMock.Setup(x => x.CollabTrackedSkeleton).Returns(trackedSubskeletonGo);
-            collaborativeLoaderServiceMock.Setup(x => x.LoadingParameters).Returns(parameterMock.Object);
+            collaborativeLoaderServiceMock.Setup(x => x.AbstractLoadingParameters).Returns(parameterMock.Object);
 
             // WHEN
             var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, skeletonGo.transform, hierarchy);
@@ -144,7 +144,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
             parameterMock.Setup(x => x.CollabTrackedSkeleton).Returns(trackedSubskeletonGo);
-            collaborativeLoaderServiceMock.Setup(x => x.LoadingParameters).Returns(parameterMock.Object);
+            collaborativeLoaderServiceMock.Setup(x => x.AbstractLoadingParameters).Returns(parameterMock.Object);
 
             // WHEN
             var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, null, hierarchy);

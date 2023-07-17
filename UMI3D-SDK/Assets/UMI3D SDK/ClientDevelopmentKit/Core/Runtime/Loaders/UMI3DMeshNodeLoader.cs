@@ -83,12 +83,12 @@ namespace umi3d.cdk
             await base.ReadUMI3DExtension(data);
 
             //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
-            FileDto fileToLoad = loadingManager.LoadingParameters.ChooseVariant(nodeDto.mesh.variants);  // Peut etre ameliore
+            FileDto fileToLoad = loadingManager.AbstractLoadingParameters.ChooseVariant(nodeDto.mesh.variants);  // Peut etre ameliore
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
             string pathIfInBundle = fileToLoad.pathIfInBundle;
-            IResourcesLoader loader = loadingManager.LoadingParameters.SelectLoader(ext);
+            IResourcesLoader loader = loadingManager.AbstractLoadingParameters.SelectLoader(ext);
             Vector3 offset = Vector3.zero;
             if (loader is AbstractMeshDtoLoader meshLoader)
                 offset = meshLoader.GetRotationOffset();
@@ -192,7 +192,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
-            string url = loadingManager.LoadingParameters.ChooseVariant(dto.mesh.variants).url;
+            string url = loadingManager.AbstractLoadingParameters.ChooseVariant(dto.mesh.variants).url;
             if (!resourcesManager.IsSubModelsSetFor(url))
             {
                 var copy = GameObject.Instantiate(goInCache, resourcesManager.CacheTransform);// goInCache.transform.parent);

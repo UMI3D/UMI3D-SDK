@@ -53,7 +53,7 @@ namespace umi3d.cdk
             onEnvironmentLoaded.AddListener(() => InterpolationRoutine());
         }
 
-        public UMI3DEnvironmentLoader(Material baseMaterial, IUMI3DLoadingParameters parameters)
+        public UMI3DEnvironmentLoader(Material baseMaterial, IUMI3DAbstractLoadingParameters parameters)
             : this()
         {
             _baseMaterial = new Material(baseMaterial);
@@ -581,11 +581,15 @@ namespace umi3d.cdk
 
         #region parameters
 
-        private IUMI3DLoadingParameters parameters = null;
-        public static IUMI3DLoadingParameters Parameters => Exists ? Instance.parameters : null;
-        public virtual IUMI3DLoadingParameters LoadingParameters => parameters;
+        private IUMI3DAbstractLoadingParameters parameters = null;
+        public static IUMI3DAbstractLoadingParameters AbstractParameters => Exists ? Instance.parameters : null;
 
-        internal void SetParameters(IUMI3DLoadingParameters parameters)
+        public static IUMI3DLoadingParameters Parameters => Exists ? Instance.parameters as IUMI3DLoadingParameters : null;
+        public virtual IUMI3DAbstractLoadingParameters AbstractLoadingParameters => parameters;
+
+        public IUMI3DLoadingParameters LoadingParameters => parameters as IUMI3DLoadingParameters;
+
+        internal void SetParameters(IUMI3DAbstractLoadingParameters parameters)
         {
             this.parameters = parameters;
         }
@@ -673,10 +677,10 @@ namespace umi3d.cdk
                         await UMI3DResourcesManager.LoadLibrary(library.libraryId);
                         break;
                     case AbstractEntityDto dto:
-                        await Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto, tokens));
+                        await AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto, tokens));
                         break;
                     case GlTFMaterialDto matDto:
-                        Parameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
+                        AbstractParameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
                         {
 
                             if (matDto.name != null && matDto.name.Length > 0)
@@ -828,7 +832,7 @@ namespace umi3d.cdk
                     LoadDefaultMaterial(extension.defaultMaterial);
                 }
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
-                    await Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, node));
+                    await AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, node));
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor.Struct();
                 RenderSettings.ambientEquatorColor = extension.horizontalColor.Struct();
@@ -836,7 +840,7 @@ namespace umi3d.cdk
                 RenderSettings.ambientIntensity = extension.ambientIntensity;
                 if (extension.skybox != null)
                 {
-                    Parameters.LoadSkybox(extension.skybox, extension.skyboxType, extension.skyboxRotation, extension.ambientIntensity);
+                    AbstractParameters.LoadSkybox(extension.skybox, extension.skyboxType, extension.skyboxRotation, extension.ambientIntensity);
                 }
             }
         }
@@ -847,10 +851,10 @@ namespace umi3d.cdk
         /// <param name="matDto"></param>
         private async void LoadDefaultMaterial(ResourceDto matDto)
         {
-            FileDto fileToLoad = Parameters.ChooseVariant(matDto.variants);
+            FileDto fileToLoad = AbstractParameters.ChooseVariant(matDto.variants);
             if (fileToLoad == null) return;
             string ext = fileToLoad.extension;
-            IResourcesLoader loader = Parameters.SelectLoader(ext);
+            IResourcesLoader loader = AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var mat = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
@@ -910,10 +914,10 @@ namespace umi3d.cdk
             switch (data.property.property)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
-                    return await Parameters.SetUMI3DProperty(data);
+                    return await AbstractParameters.SetUMI3DProperty(data);
                 case UMI3DPropertyKeys.AmbientType:
                     RenderSettings.ambientMode = (AmbientMode)data.property.value;
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
                     RenderSettings.ambientSkyColor = ((ColorDto)data.property.value).Struct();
                     return true;
@@ -925,16 +929,16 @@ namespace umi3d.cdk
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = (float)data.property.value;
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
                     if (dto.skybox != null)
                     {
-                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
-                        Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                        AbstractParameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                        AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                     }
                     return true;
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 default:
                     return false;
             }
@@ -956,10 +960,10 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
-                    return await Parameters.SetUMI3DProperty(data);
+                    return await AbstractParameters.SetUMI3DProperty(data);
                 case UMI3DPropertyKeys.AmbientType:
                     RenderSettings.ambientMode = (AmbientMode)UMI3DSerializer.Read<int>(data.container);
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyColor:
                     RenderSettings.ambientSkyColor = UMI3DSerializer.Read<ColorDto>(data.container).Struct();
                     return true;
@@ -971,18 +975,18 @@ namespace umi3d.cdk
                     return true;
                 case UMI3DPropertyKeys.AmbientIntensity:
                     RenderSettings.ambientIntensity = UMI3DSerializer.Read<float>(data.container);
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 case UMI3DPropertyKeys.AmbientSkyboxImage:
                     dto.skybox = UMI3DSerializer.Read<ResourceDto>(data.container);
                     if (dto.skybox != null)
                     {
-                        Parameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
-                        Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                        AbstractParameters.LoadSkybox(dto.skybox, dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                        AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                     }
                     return true;
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
                     dto.skyboxRotation = UMI3DSerializer.Read<float>(data.container);
-                    return Parameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                    return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
                 default:
                     return false;
             }
@@ -993,7 +997,7 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.PreloadedScenes:
-                    return await Parameters.ReadUMI3DProperty(data);
+                    return await AbstractParameters.ReadUMI3DProperty(data);
                 default:
                     return false;
             }
@@ -1050,7 +1054,7 @@ namespace umi3d.cdk
             {
                 if (await SetUMI3DProperty(data)) return true;
                 if (UMI3DEnvironmentLoader.Exists && await UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(data)) return true;
-                return await Parameters.SetUMI3DProperty(data);
+                return await AbstractParameters.SetUMI3DProperty(data);
             }
         }
 
@@ -1073,7 +1077,7 @@ namespace umi3d.cdk
             {
                 if (await SetUMI3DProperty(data)) return true;
                 if (UMI3DEnvironmentLoader.Exists && await UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(data)) return true;
-                return await Parameters.SetUMI3DProperty(data);
+                return await AbstractParameters.SetUMI3DProperty(data);
             }
         }
 
@@ -1081,7 +1085,7 @@ namespace umi3d.cdk
         {
             if (await ReadUMI3DProperty(data)) return true;
             if (UMI3DEnvironmentLoader.Exists && await UMI3DEnvironmentLoader.Instance.sceneLoader.ReadUMI3DProperty(data)) return true;
-            return await Parameters.ReadUMI3DProperty(data);
+            return await AbstractParameters.ReadUMI3DProperty(data);
         }
 
 
@@ -1089,7 +1093,7 @@ namespace umi3d.cdk
         {
             if (await SetUMI3DProperty(data)) return true;
             if (UMI3DEnvironmentLoader.Exists && await UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(data)) return true;
-            return await Parameters.SetUMI3DProperty(data);
+            return await AbstractParameters.SetUMI3DProperty(data);
         }
 
 

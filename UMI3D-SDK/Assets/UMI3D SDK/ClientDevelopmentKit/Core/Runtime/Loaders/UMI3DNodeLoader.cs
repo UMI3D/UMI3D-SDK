@@ -629,12 +629,12 @@ namespace umi3d.cdk
         {
             if (resourceDto == null) return;
 
-            FileDto fileToLoad = loadingManager.LoadingParameters.ChooseVariant(resourceDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = loadingManager.AbstractLoadingParameters.ChooseVariant(resourceDto.variants);  // Peut etre ameliore
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = loadingManager.LoadingParameters.SelectLoader(ext);
+            IResourcesLoader loader = loadingManager.AbstractLoadingParameters.SelectLoader(ext);
             if (loader != null)
             {
                var o = await UMI3DResourcesManager.LoadFile( id,fileToLoad,loader);

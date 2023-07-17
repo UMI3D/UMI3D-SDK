@@ -205,8 +205,8 @@ namespace umi3d.cdk.collaboration.emotes
         {
             try
             {
-                var iconResourceFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(emoteRefInConfig.iconResource.variants);
-                IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(iconResourceFile.extension);
+                var iconResourceFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(emoteRefInConfig.iconResource.variants);
+                IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(iconResourceFile.extension);
                 Texture2D texture = (Texture2D)await UMI3DResourcesManager.LoadFile(emoteConfigDto.id,
                                                                                      iconResourceFile,
                                                                                      loader);

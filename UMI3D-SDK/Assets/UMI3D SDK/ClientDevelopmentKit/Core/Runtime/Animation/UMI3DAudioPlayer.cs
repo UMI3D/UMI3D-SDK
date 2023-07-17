@@ -83,12 +83,12 @@ namespace umi3d.cdk
                 return;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.audioResource.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.audioResource.variants);
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad, loader);
@@ -183,7 +183,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)value.property.value;
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
@@ -209,7 +209,7 @@ namespace umi3d.cdk
         async void LoadClip(FileDto fileToLoad, UMI3DAudioPlayerDto ADto)
         {
             string ext = fileToLoad.extension;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(ADto.id, fileToLoad, loader);
@@ -260,7 +260,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = UMI3DSerializer.Read<ResourceDto>(value.container);
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;

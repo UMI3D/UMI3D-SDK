@@ -54,7 +54,7 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             get
             {
-                _standardHierarchy ??= new UMI3DSkeletonHierarchy((collaborativeLoaderService.LoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
+                _standardHierarchy ??= new UMI3DSkeletonHierarchy((collaborativeLoaderService.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
                 return _standardHierarchy;
             }
         }
@@ -182,7 +182,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
             cs.SkeletonHierarchy = skeletonHierarchy;
 
-            var trackedSkeletonPrefab = (collaborativeLoaderService.LoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton;
+            var trackedSkeletonPrefab = (collaborativeLoaderService.AbstractLoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton;
             var trackedSkeleton = UnityEngine.Object.Instantiate(trackedSkeletonPrefab, cs.transform).GetComponent<TrackedSkeleton>();
             
             var poseSkeleton = new PoseSkeleton(poseManager);

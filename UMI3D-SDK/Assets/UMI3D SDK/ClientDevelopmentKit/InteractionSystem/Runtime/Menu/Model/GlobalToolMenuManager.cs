@@ -164,7 +164,7 @@ namespace umi3d.cdk.interaction
 
         static async void LoadTExture(Texture2D icon2DTex, AbstractInteractionDto interactionDto)
         {
-            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(interactionDto.icon2D.variants);
+            FileDto icon2DFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(interactionDto.icon2D.variants);
             if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
             {
                 var rawData = await UMI3DResourcesManager.GetFile(icon2DFile.url);

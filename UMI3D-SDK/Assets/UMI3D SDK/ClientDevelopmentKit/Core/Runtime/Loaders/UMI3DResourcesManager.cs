@@ -581,7 +581,7 @@ namespace umi3d.cdk
                     try
                     {
                         string extension = System.IO.Path.GetExtension(pair.url);
-                        IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(extension);
+                        IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(extension);
 
                         if (loader != null)
                         {
@@ -620,7 +620,7 @@ namespace umi3d.cdk
                     try
                     {
                         string extension = System.IO.Path.GetExtension(data.url);
-                        IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(extension);
+                        IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(extension);
                         if (loader != null)
                         {
                             ulong? id = data.entityIds?.FirstOrDefault();
@@ -936,7 +936,7 @@ namespace umi3d.cdk
                     RemoveLibrary(lib);
                 }
 
-                UMI3DLocalAssetDirectoryDto variant = UMI3DEnvironmentLoader.Parameters.ChooseVariant(assetLibrary);
+                UMI3DLocalAssetDirectoryDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
 
                 var bytes = await UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), false);
                 progress1.AddComplete();
