@@ -23,6 +23,14 @@ namespace umi3d.cdk.userCapture.tracking
     {
         public Action<int> IkCallback;
 
+        public TrackedSkeleton skeleton;
+        private Animator animator;
+
+        void Start()
+        {
+            animator = GetComponent<Animator>();
+        }
+
         private void OnAnimatorIK(int layerIndex)
         {
             IkCallback?.Invoke(layerIndex);

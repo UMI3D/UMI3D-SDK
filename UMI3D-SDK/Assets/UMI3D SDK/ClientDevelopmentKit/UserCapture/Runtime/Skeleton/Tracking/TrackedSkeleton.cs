@@ -33,18 +33,31 @@ namespace umi3d.cdk.userCapture.tracking
         public Camera Viewpoint;
         public Transform Hips;
         public TrackedAnimator trackedAnimator;
+        [SerializeField]
         private Animator animator;
         public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
         private List<uint> types = new List<uint>();
 
         public void Start()
         {
+            trackedAnimator.IkCallback = new System.Action<int>((u => HandleAnimatorIK(u)));
+
             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
                 if (bone.GetType() == typeof(TrackedSkeletonBoneController))
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+            }
+        }
+
+        protected void Update()
+        {
+            for (int i = 0; i < controllers.Count; i++)
+            {
+                var controller = controllers[i];
+                (controller as DistantController).position = bones[controller.boneType].transform.position;
+                (controller as DistantController).rotation = bones[controller.boneType].transform.rotation;
             }
         }
 
@@ -124,7 +137,7 @@ namespace umi3d.cdk.userCapture.tracking
         {
             CleanToDestroy();
 
-            foreach (var controller in controllers)
+            foreach (var controller in controllers.Where(c => c.boneType != BoneType.Head))
             {
                 switch (controller.boneType)
                 {
