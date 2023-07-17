@@ -44,7 +44,7 @@ namespace umi3d.cdk.collaboration
             }
 
             // SKELETON SERVICE
-            _ = CollaborativeSkeletonManager.Instance;
+            _ = CollaborationSkeletonsManager.Instance;
 
             base.Awake();
         }

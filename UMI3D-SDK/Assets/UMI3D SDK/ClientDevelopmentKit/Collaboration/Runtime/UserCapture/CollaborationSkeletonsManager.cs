@@ -30,7 +30,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
-    public class CollaborativeSkeletonManager : Singleton<CollaborativeSkeletonManager>, ISkeletonManager, ICollaborativeSkeletonsManager
+    public class CollaborationSkeletonsManager : Singleton<CollaborationSkeletonsManager>, ISkeletonManager, ICollaborationSkeletonsManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
 
@@ -99,7 +99,7 @@ namespace umi3d.cdk.collaboration.userCapture
         private readonly ILateRoutineService routineService;
         private readonly ISkeletonManager personalSkeletonManager;
 
-        public CollaborativeSkeletonManager() : base()
+        public CollaborationSkeletonsManager() : base()
         {
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
@@ -110,7 +110,7 @@ namespace umi3d.cdk.collaboration.userCapture
             Init();
         }
 
-        public CollaborativeSkeletonManager(IUMI3DCollaborationClientServer collaborationClientServer,
+        public CollaborationSkeletonsManager(IUMI3DCollaborationClientServer collaborationClientServer,
                                             ILoadingManager collaborativeLoader,
                                             ICollaborationEnvironmentManager collaborativeEnvironmentManagementService,
                                             IPoseManager poseManager,

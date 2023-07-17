@@ -19,7 +19,7 @@ using umi3d.cdk.userCapture;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
-    public interface ICollaborativeSkeletonsManager
+    public interface ICollaborationSkeletonsManager
     {
         IReadOnlyDictionary<ulong, ISkeleton> Skeletons { get; }
 

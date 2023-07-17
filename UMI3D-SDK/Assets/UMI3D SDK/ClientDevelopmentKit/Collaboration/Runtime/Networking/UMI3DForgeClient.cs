@@ -500,31 +500,31 @@ namespace umi3d.cdk.collaboration
                 case SetTrackingTargetFPSDto setTargetFPS:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.TargetTrackingFPS = setTargetFPS.targetFPS;
+                        CollaborationSkeletonsManager.Instance.TargetTrackingFPS = setTargetFPS.targetFPS;
                     });
                     break;
                 case SetStreamedBonesDto streamedBones:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.SetStreamedBones(streamedBones.streamedBones);
+                        CollaborationSkeletonsManager.Instance.SetStreamedBones(streamedBones.streamedBones);
                     }); 
                     break;
                 case SetSendingCameraPropertiesDto sendingCamera:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.ShouldSendCameraProperties = sendingCamera.activeSending;
+                        CollaborationSkeletonsManager.Instance.ShouldSendCameraProperties = sendingCamera.activeSending;
                     });
                     break;
                 case SetSendingTrackingDto sendingTracking:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.ShouldSendTracking = sendingTracking.activeSending;
+                        CollaborationSkeletonsManager.Instance.ShouldSendTracking = sendingTracking.activeSending;
                     });
                     break;
                 case ApplyPoseDto playPoseDto:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.HandlePoseRequest(playPoseDto);
+                        CollaborationSkeletonsManager.Instance.HandlePoseRequest(playPoseDto);
                     });
                     break;
                 default:
@@ -633,24 +633,24 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.SetUTSTargetFPS:
                     float target = UMI3DSerializer.Read<float>(container);
-                    CollaborativeSkeletonManager.Instance.TargetTrackingFPS = target;
+                    CollaborationSkeletonsManager.Instance.TargetTrackingFPS = target;
                     break;
                 case UMI3DOperationKeys.SetUTSBoneTargetFPS:
                     float FPStarget = UMI3DSerializer.Read<float>(container);
                     uint boneId = UMI3DSerializer.Read<uint>(container);
-                    CollaborativeSkeletonManager.Instance.SetBoneFPSTarget(boneId, FPStarget);
+                    CollaborationSkeletonsManager.Instance.SetBoneFPSTarget(boneId, FPStarget);
                     break;
                 case UMI3DOperationKeys.SetStreamedBones:
                     List<uint> streamedBones = UMI3DSerializer.ReadList<uint>(container);
-                    CollaborativeSkeletonManager.Instance.SetStreamedBones(streamedBones);
+                    CollaborationSkeletonsManager.Instance.SetStreamedBones(streamedBones);
                     break;
                 case UMI3DOperationKeys.SetSendingCameraProperty:
                     bool sendCamera = UMI3DSerializer.Read<bool>(container);
-                    CollaborativeSkeletonManager.Instance.ShouldSendCameraProperties = sendCamera;
+                    CollaborationSkeletonsManager.Instance.ShouldSendCameraProperties = sendCamera;
                     break;
                 case UMI3DOperationKeys.SetSendingTracking:
                     bool sendTracking = UMI3DSerializer.Read<bool>(container);
-                    CollaborativeSkeletonManager.Instance.ShouldSendTracking = sendTracking;
+                    CollaborationSkeletonsManager.Instance.ShouldSendTracking = sendTracking;
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
                     ulong userID = UMI3DSerializer.Read<ulong>(container);
@@ -665,7 +665,7 @@ namespace umi3d.cdk.collaboration
 
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.HandlePoseRequest(playPoseDto);
+                        CollaborationSkeletonsManager.Instance.HandlePoseRequest(playPoseDto);
                     });
                     break;
                 default:
@@ -722,7 +722,7 @@ namespace umi3d.cdk.collaboration
                 {
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.UpdateFrames(frames.values);
+                        CollaborationSkeletonsManager.Instance.UpdateFrames(frames.values);
                     });
                 }
             }
@@ -734,7 +734,7 @@ namespace umi3d.cdk.collaboration
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);
                     MainThreadManager.Run(() =>
                     {
-                        CollaborativeSkeletonManager.Instance.UpdateFrames(frames);
+                        CollaborationSkeletonsManager.Instance.UpdateFrames(frames);
                     });
                 }
                 catch (Exception e)

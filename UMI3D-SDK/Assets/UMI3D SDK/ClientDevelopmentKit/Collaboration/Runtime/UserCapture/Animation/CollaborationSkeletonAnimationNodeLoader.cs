@@ -34,11 +34,11 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
         #region Dependency Injection
 
-        protected readonly ICollaborativeSkeletonsManager collaborativeSkeletonsmanager;
+        protected readonly ICollaborationSkeletonsManager collaborativeSkeletonsmanager;
 
         public CollaborationSkeletonAnimationNodeLoader() : base()
         {
-            this.collaborativeSkeletonsmanager = CollaborativeSkeletonManager.Instance;
+            this.collaborativeSkeletonsmanager = CollaborationSkeletonsManager.Instance;
         }
 
         public CollaborationSkeletonAnimationNodeLoader(IEnvironmentManager environmentManager,
@@ -46,7 +46,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
                                                         IUMI3DResourcesManager resourcesManager,
                                                         ICoroutineService coroutineManager,
                                                         ISkeletonManager personnalSkeletonService,
-                                                        ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
+                                                        ICollaborationSkeletonsManager collaborativeSkeletonsmanager,
                                                         IUMI3DClientServer clientServer)
             : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService, clientServer)
         {

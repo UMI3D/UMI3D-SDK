@@ -32,10 +32,10 @@ using UnityEngine.SceneManagement;
 
 namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 {
-    [TestFixture, TestOf(typeof(CollaborativeSkeletonManager))]
-    public class CollaborativeSkeletonManager_Test
+    [TestFixture, TestOf(typeof(CollaborationSkeletonsManager))]
+    public class CollaborationSkeletonsManager_Test
     {
-        private CollaborativeSkeletonManager collaborativeSkeletonManager;
+        private CollaborationSkeletonsManager collaborativeSkeletonManager;
         private GameObject skeletonGo;
         private GameObject trackedSubskeletonGo;
         private Mock<IUMI3DCollaborationClientServer> collaborationClientServerServiceMock;
@@ -71,7 +71,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborationClientServerServiceMock.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
             collaborationClientServerServiceMock.Setup(x => x.OnRedirection).Returns(new UnityEvent());
 
-            collaborativeSkeletonManager = new CollaborativeSkeletonManager(collaborationClientServerServiceMock.Object,
+            collaborativeSkeletonManager = new CollaborationSkeletonsManager(collaborationClientServerServiceMock.Object,
                                                                             collaborativeLoaderServiceMock.Object,
                                                                             collaborativeEnvironmentManagementServiceMock.Object,
                                                                             poseManagerMock.Object,
@@ -93,7 +93,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             UnityEngine.Object.Destroy(trackedSubskeletonGo);
             UnityEngine.Object.Destroy(skeletonGo);
 
-            CollaborativeSkeletonManager.Destroy();
+            CollaborationSkeletonsManager.Destroy();
         }
 
         [OneTimeTearDown]
