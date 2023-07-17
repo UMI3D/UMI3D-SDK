@@ -51,16 +51,6 @@ namespace umi3d.cdk.userCapture.tracking
             skeletonManager ??= PersonalSkeletonManager.Instance;
         }
 
-        public UserCameraPropertiesDto GetCameraDto()
-        {
-            return new UserCameraPropertiesDto()
-            {
-                scale = 1f,
-                projectionMatrix = Viewpoint.projectionMatrix.Dto(),
-                boneType = BoneType.Viewpoint,
-            };
-        }
-
         public PoseDto GetPose()
         {
             var dto = new PoseDto();

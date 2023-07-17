@@ -268,7 +268,7 @@ namespace umi3d.cdk.collaboration.userCapture
                     if (frame != null && personalSkeleton.UserId != 0)
                         collaborationClientServerService.SendTracking(frame);
 
-                    // camera properties are not sent
+                    // UNDONE: camera properties are not sent
                     if (sendCameraProperties)
                         GetCameraProperty();
 
@@ -390,7 +390,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public UserCameraPropertiesDto GetCameraProperty()
         {
-            return personalSkeleton.GetCameraProperty();
+            return personalSkeleton.GetCameraDto();
         }
 
         #region Pose

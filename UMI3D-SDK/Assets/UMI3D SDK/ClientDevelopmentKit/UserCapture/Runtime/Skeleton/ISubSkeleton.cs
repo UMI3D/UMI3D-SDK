@@ -29,11 +29,5 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <returns></returns>
         PoseDto GetPose();
-
-        /// <summary>
-        /// Get subskeleton camera parameters.
-        /// </summary>
-        /// <returns></returns>
-        UserCameraPropertiesDto GetCameraDto();
     }
 }

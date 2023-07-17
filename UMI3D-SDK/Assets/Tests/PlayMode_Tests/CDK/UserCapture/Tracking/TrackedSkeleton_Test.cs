@@ -151,31 +151,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
         #endregion Test SetUp
 
-        #region GetCameraDto
-
-        [Test]
-        public void Test_GetCameraDto()
-        {
-            // GIVEN
-            var camTarget = new UserCameraPropertiesDto()
-            {
-                scale = 1f,
-                projectionMatrix = viewpoint.projectionMatrix.Dto(),
-                boneType = BoneType.Viewpoint,
-            };
-
-            // WHEN
-            var cameraDto = trackedSkeleton.GetCameraDto();
-
-            // THEN
-            Assert.IsNotNull(cameraDto);
-            Assert.AreEqual(camTarget.boneType, cameraDto.boneType);
-            Assert.IsTrue(camTarget.projectionMatrix.Struct() == cameraDto.projectionMatrix.Struct(), "Projection Matrix are not the same.");
-            Assert.AreEqual(camTarget.scale, cameraDto.scale);
-        }
-
-        #endregion GetCameraDto
-
         #region GetPose
 
         [Test]

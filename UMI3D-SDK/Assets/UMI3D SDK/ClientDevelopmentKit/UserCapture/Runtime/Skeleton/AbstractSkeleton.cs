@@ -205,5 +205,15 @@ namespace umi3d.cdk.userCapture
 
         /// <inheritdoc/>
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
+
+        public UserCameraPropertiesDto GetCameraDto()
+        {
+            return new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = TrackedSubskeleton.Viewpoint.projectionMatrix.Dto(),
+                boneType = BoneType.Viewpoint,
+            };
+        }
     }
 }

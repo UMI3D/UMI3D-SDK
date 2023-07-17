@@ -196,10 +196,5 @@ namespace umi3d.cdk.userCapture.pose
                 trackingFrame.playerServerPoses.Add(pose.id);
             });
         }
-
-        public UserCameraPropertiesDto GetCameraDto()
-        {
-            return null;
-        }
     }
 }

@@ -65,18 +65,6 @@ namespace umi3d.cdk.userCapture
             return frame;
         }
 
-        public UserCameraPropertiesDto GetCameraProperty()
-        {
-            //The first skeleton is the TrackedSkeleton
-            foreach (var skeleton in Subskeletons)
-            {
-                var c = skeleton.GetCameraDto();
-                if (c != null)
-                    return c;
-            }
-            return null;
-        }
-
         /// <inheritdoc/>
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {

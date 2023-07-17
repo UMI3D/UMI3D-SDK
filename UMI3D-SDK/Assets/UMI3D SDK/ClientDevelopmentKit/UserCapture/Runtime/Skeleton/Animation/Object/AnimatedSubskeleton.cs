@@ -163,13 +163,6 @@ namespace umi3d.cdk.userCapture.animation
             unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
         }
 
-        ///<inheritdoc/>
-        /// Always returns null for AnimatonSkeleton.
-        public virtual UserCameraPropertiesDto GetCameraDto()
-        {
-            return null;
-        }
-
         /// <summary>
         /// Get the skeleton pose based on the position of this AnimationSkeleton.
         /// </summary>
