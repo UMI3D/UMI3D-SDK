@@ -23,32 +23,20 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class MagnitudeConditionDto : PoseConditionDto
     {
-        public MagnitudeConditionDto() { }
-
-        public MagnitudeConditionDto(float magnitude, uint boneOrigine, uint targetObjectId)
-        {
-            this.Magnitude = magnitude;
-            this.BoneOrigine = boneOrigine;
-            this.TargetNodeId = targetObjectId;
-        }
-
-        public float magnitude;
         /// <summary>
         /// distance
         /// </summary>
-        public float Magnitude { get => magnitude; set => magnitude = value; }
+        public float Magnitude { get; set; }
 
-        public uint boneOrigin;
         /// <summary>
         /// bone id 
         /// </summary>
-        public uint BoneOrigine { get => boneOrigin;  set => boneOrigin = value; }
+        public uint BoneOrigin { get; set; }
 
-        public uint targetNodeId;
         /// <summary>
         /// Id of the target object 
         /// </summary>
-        public uint TargetNodeId { get => targetNodeId; set => targetNodeId = value; }
+        public ulong TargetNodeId { get; set; }
     }
 }
 

@@ -20,9 +20,8 @@ namespace umi3d.common.userCapture.pose
     /// A condition that can be set to conditionate the activation of a pose
     /// </summary>
     [System.Serializable]
-    public class PoseConditionDto : UMI3DDto
+    public abstract class PoseConditionDto : UMI3DDto
     {
-        public PoseConditionDto()
-        { }
+
     }
 }

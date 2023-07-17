@@ -14,16 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture.pose
+using System.Collections.Generic;
+using umi3d.common.userCapture.pose;
+
+namespace umi3d.edk.userCapture.pose
 {
-    /// <summary>
-    /// <inheritdoc/>
-    /// A condition to check the scale of the user
-    /// </summary>
-    [System.Serializable]
-    public class UserScaleConditionDto : PoseConditionDto
+    public interface IPosesRegister
     {
-        public Vector3Dto Scale { get; set; }
+        public IList<UMI3DPose_so> EnvironmentPoses { get; }
     }
 }
-

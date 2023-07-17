@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,24 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture.pose
+using umi3d.common.userCapture.pose;
+
+namespace umi3d.cdk.userCapture.pose
 {
-    /// <summary>
-    /// <inheritdoc/>
-    /// A condition to check the scale of the user
-    /// </summary>
-    [System.Serializable]
-    public class UserScaleConditionDto : PoseConditionDto
+    public class PoseOverriderContainer
     {
-        public Vector3Dto Scale { get; set; }
+        private UMI3DPoseOverriderContainerDto dto;
+
+        public PoseOverrider[] PoseOverriders { get; private set; }
+
+        public ulong Id => dto.id;
+
+        public ulong NodeId => dto.relatedNodeId;
+
+        public PoseOverriderContainer(UMI3DPoseOverriderContainerDto dto, PoseOverrider[] poseOverriders)
+        {
+            this.dto = dto;
+            PoseOverriders = poseOverriders;
+        }
     }
 }
-

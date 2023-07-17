@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,21 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using System.Collections.Generic;
-using umi3d.common.userCapture.pose;
-using UnityEngine;
-
-namespace umi3d.edk.userCapture.pose
+namespace umi3d.common.userCapture.pose
 {
-    public class UMI3DPoseContainer : SingleBehaviour<UMI3DPoseContainer>, IPoseContainer
+    public enum PoseActivationMode : ushort
     {
-        /// <summary>
-        /// All the server poses
-        /// </summary>
-        [SerializeField] private List<UMI3DPose_so> allServerPoses = new List<UMI3DPose_so>();
-
-        public List<UMI3DPose_so> GetAllServerPoses()
-        { return allServerPoses; }
+        NONE,
+        TRIGGER,
+        RELEASE,
+        HOVER_ENTER,
+        HOVER_EXIT
     }
 }

@@ -51,36 +51,41 @@ namespace umi3d.common.userCapture
         {
             if (fieldActualConditionType == typeof(MagnitudeConditionDto))
             {
-                return new MagnitudeConditionDto(
-                    (temporaryChildren[0] as FloatField).value,
-                    (uint)(temporaryChildren[1] as IntegerField).value,
-                    (uint)(temporaryChildren[2] as IntegerField).value
-                );
+                return new MagnitudeConditionDto()
+                {
+                    Magnitude = (temporaryChildren[0] as FloatField).value,
+                    BoneOrigin = (uint)(temporaryChildren[1] as IntegerField).value,
+                    //TargetNodeId  = (uint)(temporaryChildren[2] as IntegerField).value
+                };
             }
             else if (fieldActualConditionType == typeof(DirectionConditionDto))
             {
-                return new DirectionConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value.Dto()
-                );
+                return new DirectionConditionDto()
+                {
+                    Direction = (temporaryChildren[0] as Vector3Field).value.Dto()
+                };
             }
             else if (fieldActualConditionType == typeof(BoneRotationConditionDto))
             {
-                return new BoneRotationConditionDto(
-                    (uint)(temporaryChildren[0] as IntegerField).value,
-                    (temporaryChildren[1] as Vector4Field).value.Dto()
-                );
+                return new BoneRotationConditionDto()
+                {
+                    BoneId = (uint)(temporaryChildren[0] as IntegerField).value,
+                    Rotation = (temporaryChildren[1] as Vector4Field).value.Dto()
+                };
             }
             else if (fieldActualConditionType == typeof(UserScaleConditionDto))
             {
-                return new UserScaleConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value.Dto()
-                );
+                return new UserScaleConditionDto()
+                {
+                    Scale = (temporaryChildren[0] as Vector3Field).value.Dto()
+                };
             }
             else if (fieldActualConditionType == typeof(ScaleConditionDto))
             {
-                return new UserScaleConditionDto(
-                    (temporaryChildren[0] as Vector3Field).value.Dto()
-                );
+                return new UserScaleConditionDto()
+                {
+                    Scale = (temporaryChildren[0] as Vector3Field).value.Dto()
+                };
             }
             else if (fieldActualConditionType == typeof(RangeConditionDto))
             {

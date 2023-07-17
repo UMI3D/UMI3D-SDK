@@ -22,17 +22,9 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class NotConditionDto : PoseConditionDto
     {
-        public NotConditionDto() { }
-
-        public NotConditionDto(PoseConditionDto[] conditions)
-        {
-            this.Conditions = conditions;
-        }
-
-        PoseConditionDto[] conditions;
         /// <summary>
-        /// Lis of the condition to be not valid
+        /// List of conditions to be false
         /// </summary>
-        public PoseConditionDto[] Conditions { get => conditions; set => conditions = value; }
+        public PoseConditionDto[] Conditions { get; set; }
     }
 }

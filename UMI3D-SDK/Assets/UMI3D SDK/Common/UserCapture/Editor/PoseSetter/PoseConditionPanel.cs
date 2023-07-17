@@ -22,15 +22,17 @@ using System.Linq;
 using UnityEngine;
 using UnityEngine.UIElements;
 
+using static umi3d.common.userCapture.pose.UMI3DPoseOverrider_so;
+
 namespace umi3d.common.userCapture.pose.editor
 {
     public class PoseConditionPanel : VisualElement
     {
         public class Uxmlfactory : UxmlFactory<PoseConditionPanel, UxmlTraits> { }
 
-        public event Action<UMI3DPoseOveridder_so> onConditionCreated;
+        public event Action<UMI3DPoseOverrider_so> onConditionCreated;
 
-        Toggle tg_isInterpolationable;
+        Toggle tg_isInterpolable;
         Toggle tg_isComposable;
         UintField_UI_Elements duration;
         UintField_UI_Elements min_duration;
@@ -43,7 +45,7 @@ namespace umi3d.common.userCapture.pose.editor
 
         List<ConditionField> condition_fields = new List<ConditionField>();
 
-        UMI3DPoseOveridder_so poseOveridder_So;
+        UMI3DPoseOverrider_so poseOverrider_So;
 
         public void Init()
         {
@@ -61,29 +63,29 @@ namespace umi3d.common.userCapture.pose.editor
         public void Disable()
         {
             Hide();
-            poseOveridder_So = null;
+            poseOverrider_So = null;
         }
 
-        public UMI3DPoseOveridder_so GetPoseOveridder_So()
+        public UMI3DPoseOverrider_so GetPoseOverrider_So()
         {
-            var poseOverrider = (UMI3DPoseOveridder_so)ScriptableObject.CreateInstance(typeof(UMI3DPoseOveridder_so));
-            poseOveridder_So.duration = new DurationDto((uint)duration.value, (uint)min_duration.value, (ulong)max_duration.value);
-            poseOveridder_So.composable = tg_isComposable.value;
-            poseOveridder_So.interpolationable = tg_isInterpolationable.value;
-            poseOveridder_So.poseConditions = new PoseConditionDto[condition_fields.Count];
+            var poseOverrider = (UMI3DPoseOverrider_so)ScriptableObject.CreateInstance(typeof(UMI3DPoseOverrider_so));
+            poseOverrider_So.duration = new Duration() { min = (uint)min_duration.value, max = (uint)max_duration.value, duration = (uint)duration.value };
+            poseOverrider_So.composable = tg_isComposable.value;
+            poseOverrider_So.interpolable = tg_isInterpolable.value;
+            poseOverrider_So.poseConditions = new PoseConditionDto[condition_fields.Count];
 
 
             for (int i = 0; i < condition_fields.Count; i++)
             {
-                poseOveridder_So.poseConditions[i] = condition_fields[i].GetPoseConditionDto();
+                poseOverrider_So.poseConditions[i] = condition_fields[i].GetPoseConditionDto();
             }
 
-            return poseOveridder_So;
+            return poseOverrider_So;
         }
 
         private void GetRef()
         {
-            tg_isInterpolationable = this.Q<Toggle>("tg_isInterpolationable");
+            tg_isInterpolable = this.Q<Toggle>("tg_isInterpolationable");
             tg_isComposable = this.Q<Toggle>("tg_isComposable");
 
             duration = this.Q<UintField_UI_Elements>("duration");
@@ -148,8 +150,8 @@ namespace umi3d.common.userCapture.pose.editor
 
         private void CreatePoseOverriderInstance()
         {
-            poseOveridder_So = ScriptableObject.CreateInstance("UMI3DPoseOveridder_so") as UMI3DPoseOveridder_so;
-            onConditionCreated?.Invoke(poseOveridder_So);
+            poseOverrider_So = ScriptableObject.CreateInstance("UMI3DPoseOverrider_so") as UMI3DPoseOverrider_so;
+            onConditionCreated?.Invoke(poseOverrider_So);
         }
     }
 }

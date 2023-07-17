@@ -14,26 +14,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
-    public class UMI3DPoseOverrideFieldContainer : UMI3DPoseContainer, IPoseOverriderFieldContainer
+    public sealed class UMI3DPosesRegister : MonoBehaviour, IPosesRegister, IPoseOverridersRegister
     {
-        private void Start()
-        {
-            _ = UMI3DPoseManager.Instance;
-        }
+        /// <summary>
+        /// All the server poses
+        /// </summary>
+        [SerializeField]
+        private List<UMI3DPose_so> environmentPoses = new();
+
+        public IList<UMI3DPose_so> EnvironmentPoses => environmentPoses;
 
         /// <summary>
         /// The container fields, the init to set up the pose containers
         /// </summary>
-        [SerializeField] private List<OverriderContainerField> allPoseOverriders = new List<OverriderContainerField>();
+        [SerializeField] private List<PoseOverriderContainerField> poseOverriderFields = new();
 
-        public List<OverriderContainerField> GetAllPoseOverriders()
+        public IList<PoseOverriderContainerField> PoseOverriderFields => poseOverriderFields;
+
+        private void Start()
         {
-            return allPoseOverriders;
+            _ = UMI3DPoseManager.Instance;
         }
     }
 }

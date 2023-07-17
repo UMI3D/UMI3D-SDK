@@ -65,53 +65,76 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void TestGetSetPose()
         {
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
-            poseManager.SetPoses(PoseDictionary());
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object)
+            {
+                Poses = PoseDictionary()
+            };
 
-            Assert.IsTrue(poseManager.GetPose(0, 0).bones.Count == 2);
-            Assert.IsTrue(poseManager.GetPose(1, 0).bones.Count == 2);
-            Assert.IsTrue(poseManager.GetPose(1, 2).bones.Count == 4);
+            Assert.IsTrue(poseManager.Poses[0][0].Bones.Count == 2);
+            Assert.IsTrue(poseManager.Poses[1][0].Bones.Count == 2);
+            Assert.IsTrue(poseManager.Poses[1][2].Bones.Count == 4);
         }
 
         #region Utils
-        private Dictionary<ulong, List<PoseDto>> PoseDictionary()
+        private Dictionary<ulong, IList<SkeletonPose>> PoseDictionary()
         {
-            Dictionary<ulong, List<PoseDto>> allPoses = new Dictionary<ulong, List<PoseDto>>()
+            Dictionary<ulong, IList<SkeletonPose>> allPoses = new Dictionary<ulong, IList<SkeletonPose>>()
             {
-                {0, new List<PoseDto>()
+                {0, 
+                    new List<SkeletonPose>()
                     {
-                        new PoseDto()
-                        {
-                            bones = new List<BoneDto>()
+                        new SkeletonPose(
+                            new PoseDto()
                             {
-                                new BoneDto(),
-                                new BoneDto()
-                            }
-                        },
-                        new PoseDto()
+                                bones = new List<BoneDto>()
+                                {
+                                    new BoneDto(),
+                                    new BoneDto()
+                                }
+                            }),
+                        new SkeletonPose(
+                            new PoseDto()
+                            {
+                                bones = new List<BoneDto>()
+                                {
+                                    new BoneDto(),
+                                    new BoneDto()
+                                }
+                            }),
                     }
                 },
-                {1, new List<PoseDto>()
+                {1, 
+                    new List<SkeletonPose>()
                     {
-                        new PoseDto()
-                        {
-                            bones = new List<BoneDto>()
+                        new SkeletonPose(
+                            new PoseDto()
                             {
-                                new BoneDto(),
-                                new BoneDto()
-                            }
-                        },
-                        new PoseDto(),
-                        new PoseDto()
-                        {
-                            bones = new List<BoneDto>()
+                                bones = new List<BoneDto>()
+                                {
+                                    new BoneDto(),
+                                    new BoneDto()
+                                }
+                            }),
+                        new SkeletonPose(
+                            new PoseDto()
                             {
-                                new BoneDto(),
-                                new BoneDto(),
-                                new BoneDto(),
-                                new BoneDto()
-                            }
-                        },
+                                bones = new List<BoneDto>()
+                                {
+                                    new BoneDto(),
+                                    new BoneDto()
+                                }
+                            }),
+                        new SkeletonPose(
+                            new PoseDto()
+                            {
+                                bones = new List<BoneDto>()
+                                {
+                                    new BoneDto(),
+                                    new BoneDto(),
+                                    new BoneDto(),
+                                    new BoneDto()
+                                }
+                            }),
                     }
                 },
             };

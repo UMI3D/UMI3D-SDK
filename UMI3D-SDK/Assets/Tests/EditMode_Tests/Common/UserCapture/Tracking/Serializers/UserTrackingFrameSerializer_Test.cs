@@ -76,13 +76,13 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
             for (int i = 0; i < nbTrackedbones; i++)
                 dto.trackedBones.Add(new ControllerDto() { position = new() });
 
-            dto.playerServerPoses = new(nbServerPoses);
+            dto.environmentPosesIndexes = new(nbServerPoses);
             for (int i = 0; i < nbServerPoses; i++)
-                dto.playerServerPoses.Add(rng.Next());
+                dto.environmentPosesIndexes.Add(rng.Next());
 
-            dto.playerUserPoses = new(nbUserPoses);
+            dto.customPosesIndexes = new(nbUserPoses);
             for (int i = 0; i < nbServerPoses; i++)
-                dto.playerUserPoses.Add(rng.Next());
+                dto.customPosesIndexes.Add(rng.Next());
 
             serializer.Write(dto, out Bytable bytable);
             ByteContainer byteContainer = new ByteContainer(1, bytable.ToBytes());
@@ -102,13 +102,13 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
             for (var i = 0; i < dto.trackedBones.Count; i++)
                 Assert.AreEqual(dto.trackedBones[i].boneType, result.trackedBones[i].boneType);
 
-            Assert.AreEqual(dto.playerServerPoses.Count, result.playerServerPoses.Count);
-            for (var i = 0; i < dto.playerServerPoses.Count; i++)
-                Assert.AreEqual(dto.playerServerPoses[i], result.playerServerPoses[i]);
+            Assert.AreEqual(dto.environmentPosesIndexes.Count, result.environmentPosesIndexes.Count);
+            for (var i = 0; i < dto.environmentPosesIndexes.Count; i++)
+                Assert.AreEqual(dto.environmentPosesIndexes[i], result.environmentPosesIndexes[i]);
 
-            Assert.AreEqual(dto.playerUserPoses.Count, result.playerUserPoses.Count);
-            for (var i = 0; i < dto.playerUserPoses.Count; i++)
-                Assert.AreEqual(dto.playerUserPoses[i], result.playerUserPoses[i]);
+            Assert.AreEqual(dto.customPosesIndexes.Count, result.customPosesIndexes.Count);
+            for (var i = 0; i < dto.customPosesIndexes.Count; i++)
+                Assert.AreEqual(dto.customPosesIndexes[i], result.customPosesIndexes[i]);
         }
 
         #endregion WriteRead

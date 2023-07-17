@@ -41,9 +41,9 @@ namespace umi3d.common.userCapture.tracking
         /// </summary>
         public List<ControllerDto> trackedBones { get; set; }
 
-        public List<int> playerServerPoses { get; set; } = new List<int>();
+        public List<int> environmentPosesIndexes { get; set; } = new List<int>();
 
-        public List<int> playerUserPoses { get; set; } = new List<int>();
+        public List<int> customPosesIndexes { get; set; } = new List<int>();
 
         /// <summary>
         /// Current position of the user.

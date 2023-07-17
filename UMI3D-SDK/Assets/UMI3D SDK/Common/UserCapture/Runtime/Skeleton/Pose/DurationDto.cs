@@ -19,15 +19,6 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class DurationDto : UMI3DDto
     {
-        public DurationDto() { }
-
-        public DurationDto(ulong duration, ulong? min, ulong? max)
-        {
-            this.duration = duration;
-            this.min = min; 
-            this.max = max;
-        }
-
         public ulong duration { get; set; }
         public ulong? min { get; set; } 
         public ulong? max { get; set;}

@@ -23,14 +23,6 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class DirectionConditionDto : PoseConditionDto
     {
-        public DirectionConditionDto() { }
-
-        public DirectionConditionDto(Vector3Dto direction)
-        {
-            Direction = direction;
-        }
-
-        private Vector3Dto direction;
-        public Vector3Dto Direction { get => direction; set => direction = value; }
+        public Vector3Dto Direction { get; set; }
     }
 }

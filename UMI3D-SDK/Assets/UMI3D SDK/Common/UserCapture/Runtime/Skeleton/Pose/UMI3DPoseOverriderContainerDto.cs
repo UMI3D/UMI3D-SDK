@@ -30,7 +30,7 @@ namespace umi3d.common.userCapture.pose
         public ulong relatedNodeId { get; set; }
 
         /// <summary>
-        /// All the pose ovveriders of the linked container
+        /// All the pose overriders of the linked container
         /// </summary>
         public PoseOverriderDto[] poseOverriderDtos { get; set; }
     }

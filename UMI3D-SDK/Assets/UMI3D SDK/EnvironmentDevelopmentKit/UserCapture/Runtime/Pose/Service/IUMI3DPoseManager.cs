@@ -24,18 +24,22 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// Returns all the pose containers of the scene 
         /// </summary>
-        List<UMI3DPoseOverriderContainerDto> AllPoseOverriderContainer { get; }
+        IList<UMI3DPoseOverriderContainerDto> PoseOverriderContainers { get; }
 
         /// <summary>
         /// Returns all the pose stored for every users in the experience
         /// </summary>
-        Dictionary<ulong, List<PoseDto>> AllPoses { get; }
+        IDictionary<ulong, IList<PoseDto>> Poses { get; }
+
+        void RegisterEnvironmentPoses(IPosesRegister register);
+
+        void RegisterPoseOverriders(IPoseOverridersRegister register);
 
         /// <summary>
         /// Sets the new poses of a specific user based on his id,
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="poseDtos"></param>
-        void SetNewUserPose(ulong userId, List<PoseDto> poseDtos);
+        void RegisterUserCustomPose(ulong userId, IEnumerable<PoseDto> poseDtos);
     }
 }

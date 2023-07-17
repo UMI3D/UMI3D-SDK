@@ -1,5 +1,5 @@
-/*
-Copyright 2019 - 2021 Inetum
+﻿/*
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,31 +14,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.pose;
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
-    /// A dto that describes a pose
+    /// Browser representation of a pose.
     /// </summary>
-    [Serializable]
-    public class PoseDto : UMI3DDto
+    public class SkeletonPose
     {
-        /// <summary>
-        /// all the bone pose that are composing the current pose
-        /// </summary>
-        public List<BoneDto> bones { get; set; }
+        private PoseDto dto;
+
+        public int Index => dto.index;
+
+        public BonePoseDto BonePose => dto.boneAnchor;
+
+        public List<BoneDto> Bones => dto.bones;
 
         /// <summary>
-        /// Where the pose starts on the skeleotn
+        /// If true the pose is defined by the browser, not the environment.
         /// </summary>
-        public BonePoseDto boneAnchor { get; set; }
+        public bool IsCustom { get; private set; } = false;
 
-        /// <summary>
-        /// Position in the list of poses of the related user
-        /// </summary>
-        public int index { get; set; }
+        public SkeletonPose(PoseDto dto, bool isCustom = false)
+        {
+            this.dto = dto;
+            IsCustom = isCustom;
+        }
     }
 }

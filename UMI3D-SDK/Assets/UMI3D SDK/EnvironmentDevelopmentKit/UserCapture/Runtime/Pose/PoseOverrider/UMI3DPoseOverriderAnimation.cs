@@ -21,48 +21,26 @@ using UnityEngine;
 namespace umi3d.edk.userCapture.pose
 {
     /// <summary>
-    /// Hand pose animation component.
+    /// Pose animation component.
     /// </summary>
     [RequireComponent(typeof(UMI3DNode))]
     public class UMI3DPoseOverriderAnimation : MonoBehaviour
     {
-        /// <summary>
-        /// Animation associated with the pose.
-        /// </summary>
-        protected UMI3DNodeAnimation nodeAnimation;
-
-        /// <summary>
-        /// Hand pose associated with the animation.
-        /// </summary>
-        protected UMI3DPoseOverriderContainer poseOverriderContainer;
-
         public void Init(UMI3DPoseOverriderContainer poseOverriderContainer)
         {
-            this.poseOverriderContainer = poseOverriderContainer;
+            this.PoseOverriderContainer = poseOverriderContainer;
             SetUp();
         }
 
         /// <summary>
-        /// Animation associated with the hand pose.
+        /// Animation associated with the pose.
         /// </summary>
-        public UMI3DNodeAnimation NodeAnimation
-        {
-            get => nodeAnimation; set
-            {
-                nodeAnimation = value;
-            }
-        }
+        public UMI3DNodeAnimation NodeAnimation { get; protected set; }
 
         /// <summary>
-        /// Hand pose associated with the animation.
+        /// Pose associated with the animation.
         /// </summary>
-        public UMI3DPoseOverriderContainer PoseOverriderContainer
-        {
-            get => poseOverriderContainer; set
-            {
-                poseOverriderContainer = value;
-            }
-        }
+        public UMI3DPoseOverriderContainer PoseOverriderContainer { get; protected set; }
 
         /// <summary>
         /// Sets up the pose animation
@@ -71,9 +49,9 @@ namespace umi3d.edk.userCapture.pose
         {
             if (NodeAnimation == null && PoseOverriderContainer != null)
             {
-                nodeAnimation = (gameObject.AddComponent(typeof(UMI3DNodeAnimation)) as UMI3DNodeAnimation);
+                NodeAnimation = gameObject.AddComponent<UMI3DNodeAnimation>();
 
-                nodeAnimation.Register();
+                NodeAnimation.Register();
 
                 var op = new List<UMI3DNodeAnimation.OperationChain>();
 
@@ -82,7 +60,7 @@ namespace umi3d.edk.userCapture.pose
                     users = UMI3DServer.Instance.UserSetWhenHasJoined(),
                     entityId = PoseOverriderContainer.Id(),
                     property = UMI3DPropertyKeys.ActivePoseOverrider,
-                    value = PoseOverriderContainer.IsStart
+                    value = PoseOverriderContainer.IsStarted
                 };
 
                 op.Add(
@@ -92,7 +70,7 @@ namespace umi3d.edk.userCapture.pose
                         progress = 0f
                     });
 
-                nodeAnimation.ObjectAnimationChain.SetValue(op);
+                NodeAnimation.ObjectAnimationChain.SetValue(op);
             }
         }
     }

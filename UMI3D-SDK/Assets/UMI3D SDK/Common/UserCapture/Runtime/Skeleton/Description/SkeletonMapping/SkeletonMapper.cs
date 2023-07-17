@@ -39,12 +39,11 @@ namespace umi3d.common.userCapture.description
             if (BoneAnchor == null)
                 UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
 
-            var pose = new PoseDto(
-                boneAnchor: BoneAnchor,
-                bones: Mappings.Select(m => m?.GetPose()).Where(b=>b != null).ToList()
-            );
-
-            return pose;
+            return new PoseDto()
+            {
+                boneAnchor = BoneAnchor,
+                bones = Mappings.Select(m => m?.GetPose()).Where(b => b != null).ToList()
+            };
         }
     }
 }

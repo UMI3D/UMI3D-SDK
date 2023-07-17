@@ -23,27 +23,16 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class BoneRotationConditionDto : PoseConditionDto
     {
-        public BoneRotationConditionDto() { }
-
-        public BoneRotationConditionDto(uint boneId, Vector4Dto rotation)
-        {
-            BoneId = boneId;
-            Rotation = rotation;
-        }
-
-        private uint boneId;
         /// <summary>
         /// Related bone
         /// </summary>
-        public uint BoneId { get => boneId; set => boneId = value; }
+        public uint BoneId { get; set; }
 
-        private Vector4Dto rotation;
         /// <summary>
-        /// Rotation to validate the condititon
+        /// Rotation to validate the condition
         /// </summary>
-        public Vector4Dto Rotation { get => rotation; set => rotation = value; }
+        public Vector4Dto Rotation { get; set; }
 
-        private float acceptanceRange;
-        public float AcceptanceRange { get => acceptanceRange; set => acceptanceRange = value; }
+        public float AcceptanceRange { get; set; }
     }
 }

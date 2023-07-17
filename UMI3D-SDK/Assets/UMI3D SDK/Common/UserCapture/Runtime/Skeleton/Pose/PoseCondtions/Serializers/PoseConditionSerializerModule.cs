@@ -124,15 +124,16 @@ namespace umi3d.common.userCapture.pose
                     {
                         readable = UMI3DSerializer.TryRead(container, out float magnitude);
                         readable &= UMI3DSerializer.TryRead(container, out uint boneOrigin);
-                        readable &= UMI3DSerializer.TryRead(container, out uint targetObjectId);
+                        readable &= UMI3DSerializer.TryRead(container, out ulong targetObjectId);
 
                         if (readable)
                         {
-                            var magnitudeConditionDto = new MagnitudeConditionDto(
-                                targetObjectId: targetObjectId,
-                                boneOrigine: boneOrigin,
-                                magnitude: magnitude
-                            );
+                            var magnitudeConditionDto = new MagnitudeConditionDto()
+                            {
+                                TargetNodeId = targetObjectId,
+                                BoneOrigin = boneOrigin,
+                                Magnitude = magnitude
+                            };
                             result = (T)Convert.ChangeType(magnitudeConditionDto, typeof(T));
                             return true;
                         }
@@ -145,13 +146,16 @@ namespace umi3d.common.userCapture.pose
                     {
                         readable = UMI3DSerializer.TryRead(container, out uint boneId);
                         readable &= UMI3DSerializer.TryRead(container, out Vector4Dto rotation);
+                        readable &= UMI3DSerializer.TryRead(container, out float acceptanceRange);
 
                         if (readable)
                         {
-                            var boneRotationConditionDto = new BoneRotationConditionDto(
-                                boneId: boneId,
-                                rotation: rotation
-                            );
+                            var boneRotationConditionDto = new BoneRotationConditionDto()
+                            {
+                                BoneId = boneId,
+                                Rotation = rotation,
+                                AcceptanceRange = acceptanceRange
+                            };
                             result = (T)Convert.ChangeType(boneRotationConditionDto, typeof(T));
                             return true;
                         }
@@ -166,9 +170,10 @@ namespace umi3d.common.userCapture.pose
 
                         if (readable)
                         {
-                            var directionConditionDto = new DirectionConditionDto(
-                                direction: direction
-                            );
+                            var directionConditionDto = new DirectionConditionDto()
+                            {
+                                Direction = direction
+                            };
                             result = (T)Convert.ChangeType(directionConditionDto, typeof(T));
                             return true;
                         }
@@ -183,10 +188,11 @@ namespace umi3d.common.userCapture.pose
 
                         if (readable)
                         {
-                            var userScaleConditinoDto = new UserScaleConditionDto(
-                                scale: scale
-                            );
-                            result = (T)Convert.ChangeType(userScaleConditinoDto, typeof(T));
+                            var userScaleConditionDto = new UserScaleConditionDto()
+                            {
+                                Scale = scale
+                            };
+                            result = (T)Convert.ChangeType(userScaleConditionDto, typeof(T));
                             return true;
                         }
 
@@ -197,12 +203,15 @@ namespace umi3d.common.userCapture.pose
                 case true when typeof(T) == typeof(ScaleConditionDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out Vector3Dto scale);
+                        readable &= UMI3DSerializer.TryRead(container, out ulong targetNodeId);
 
                         if (readable)
                         {
-                            var scaleCondition = new ScaleConditionDto(
-                                scale: scale
-                            );
+                            var scaleCondition = new ScaleConditionDto()
+                            {
+                                Scale = scale,
+                                TargetId = targetNodeId
+                            };
                             result = (T)Convert.ChangeType(scaleCondition, typeof(T));
                             return true;
                         }
@@ -218,10 +227,11 @@ namespace umi3d.common.userCapture.pose
 
                         if (readable)
                         {
-                            var rangeConditionDto = new RangeConditionDto(
-                                conditionA: conditionA,
-                                conditionB: conditionB
-                            );
+                            var rangeConditionDto = new RangeConditionDto()
+                            {
+                                ConditionA = conditionA,
+                                ConditionB = conditionB
+                            };
                             result = (T)Convert.ChangeType(rangeConditionDto, typeof(T));
                             return true;
                         }
@@ -237,9 +247,10 @@ namespace umi3d.common.userCapture.pose
 
                         if (conditions != null)
                         {
-                            var notConditionDto = new NotConditionDto(
-                                conditions: conditions
-                            );
+                            var notConditionDto = new NotConditionDto()
+                            {
+                                Conditions = conditions
+                            };
                             result = (T)Convert.ChangeType(notConditionDto, typeof(T));
                             readable = true;
                             return true;
@@ -262,7 +273,7 @@ namespace umi3d.common.userCapture.pose
                 case MagnitudeConditionDto magnitudeConditionDto:
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.MAGNITUDE_CONDITION)
                         + UMI3DSerializer.Write(magnitudeConditionDto.Magnitude)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.BoneOrigine)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.BoneOrigin)
                         + UMI3DSerializer.Write(magnitudeConditionDto.TargetNodeId);
                     break;
 
@@ -275,7 +286,8 @@ namespace umi3d.common.userCapture.pose
                 case BoneRotationConditionDto boneRotationConditionDto:
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.BONE_ROTATION_CONDITION)
                         + UMI3DSerializer.Write(boneRotationConditionDto.BoneId)
-                        + UMI3DSerializer.Write(boneRotationConditionDto.Rotation);
+                        + UMI3DSerializer.Write(boneRotationConditionDto.Rotation)
+                        + UMI3DSerializer.Write(boneRotationConditionDto.AcceptanceRange);
                     break;
 
                 case DirectionConditionDto directionConditionDto:
@@ -288,14 +300,15 @@ namespace umi3d.common.userCapture.pose
                         + UMI3DSerializer.WriteCollection(notConditionDto.Conditions);
                     break;
 
-                case UserScaleConditionDto userScaleConditinoDto:
+                case UserScaleConditionDto userScaleConditionDto:
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.USER_SCALE_CONDITION)
-                        + UMI3DSerializer.Write(userScaleConditinoDto.Scale);
+                        + UMI3DSerializer.Write(userScaleConditionDto.Scale);
                     break;
 
                 case ScaleConditionDto scaleConditionDto:
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.SCALE_CONDITION)
-                        + UMI3DSerializer.Write(scaleConditionDto.Scale);
+                        + UMI3DSerializer.Write(scaleConditionDto.Scale)
+                        + UMI3DSerializer.Write(scaleConditionDto.TargetId);
                     break;
 
                 default:

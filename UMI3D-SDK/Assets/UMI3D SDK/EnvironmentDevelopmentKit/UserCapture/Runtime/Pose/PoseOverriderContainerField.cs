@@ -14,13 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections;
 using System.Collections.Generic;
-using umi3d.common.userCapture.pose;
+using umi3d.edk.userCapture;
+using umi3d.edk;
+using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
-    public interface IPoseContainer
+    [Serializable]
+    public class PoseOverriderContainerField
     {
-        public List<UMI3DPose_so> GetAllServerPoses();
+        /// <summary>
+        /// A pose overrider container
+        /// </summary>
+        [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
+
+        public UMI3DPoseOverriderContainer PoseOverriderContainer => poseOverriderContainer;
+
+        [SerializeField] UMI3DModel model;
+        public UMI3DModel Model => model; 
+
+        public void Init()
+        {
+            PoseOverriderContainer.Init(nodeId: Model.Id());
+        }
     }
 }

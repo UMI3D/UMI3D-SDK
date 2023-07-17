@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 
@@ -23,18 +22,19 @@ namespace umi3d.edk.userCapture.pose
     /// <summary>
     /// An operation to tell a client to play a specific pose
     /// </summary>
-    public class PoseRequest : Operation
+    public class ApplyPoseRequest : Operation
     {
         /// <summary>
         /// The index of the pose in the array
         /// </summary>
         public int indexInList;
+
         /// <summary>
         /// True stops the pose, false starts the pose
         /// </summary>
         public bool stopPose;
 
-        public PoseRequest(int indexInList, bool stopPose = false)
+        public ApplyPoseRequest(int indexInList, bool stopPose = false)
         {
             this.indexInList = indexInList;
             this.stopPose = stopPose;
@@ -64,9 +64,15 @@ namespace umi3d.edk.userCapture.pose
         }
 
         protected virtual ApplyPoseDto CreateDto()
-        { return new ApplyPoseDto(); }
+        {
+            return new ApplyPoseDto();
+        }
 
         protected virtual void WriteProperties(ApplyPoseDto dto, ulong userID)
-        { dto.userID = userID; dto.indexInList = indexInList; dto.stopPose = stopPose; }
+        {
+            dto.userID = userID;
+            dto.indexInList = indexInList;
+            dto.stopPose = stopPose;
+        }
     }
 }

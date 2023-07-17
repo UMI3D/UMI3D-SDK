@@ -19,221 +19,86 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
     /// Pose overrider handler to calculate whether the pose can be played or not depending on the set of condition of a specific container
     /// </summary>
     public class PoseConditionProcessor
     {
-        private readonly IEnvironmentManager environmentManagerService;
-        private readonly IWritableSubskeleton trackedSkeletonService;
+        /// <summary>
+        /// Ref to the related pose container
+        /// </summary>
+        private PoseOverriderContainer poseOverriderContainer;
 
-        public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer)
+        /// <summary>
+        /// Sends a signal when the condition is validated
+        /// </summary>
+        public event Action<PoseOverrider> ConditionValidated;
+
+        /// <summary>
+        /// Sends a signal when the condition is deactivated
+        /// </summary>
+        public event Action<PoseOverrider> ConditionDeactivated;
+
+        /// <summary>
+        /// All the overriders  which ca only be considered if they an interaction occurs
+        /// </summary>
+        private readonly List<PoseOverrider> interactionalPoseOverriders = new();
+        /// <summary>
+        /// All the overriders that are considered without interaction (more performance expensive)
+        /// </summary>
+        private readonly List<PoseOverrider> nonInteractionalPoseOverriders = new();
+
+        public PoseConditionProcessor(PoseOverriderContainer overriderContainer)
         {
-            environmentManagerService = UMI3DEnvironmentLoader.Instance;
-            trackedSkeletonService = PersonalSkeletonManager.Instance.PersonalSkeleton.TrackedSubskeleton;
-            SetPoseOverriderContainer(overriderContainer);
+            this.poseOverriderContainer = overriderContainer ?? throw new System.ArgumentNullException();
+            interactionalPoseOverriders = poseOverriderContainer.PoseOverriders
+                                                .Where(pod => pod.ActivationMode != (ushort)PoseActivationMode.NONE)
+                                                .ToList();
+            nonInteractionalPoseOverriders.AddRange(poseOverriderContainer.PoseOverriders.Except(interactionalPoseOverriders));
+
+            if (nonInteractionalPoseOverriders.Count > 0)
+                CheckConditionsOfAllOverriders();
         }
 
-        public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer, IEnvironmentManager environmentLoaderService, IWritableSubskeleton trackedSkeletonService)
-        {
-            this.environmentManagerService = environmentLoaderService;
-            this.trackedSkeletonService = trackedSkeletonService;
-            SetPoseOverriderContainer(overriderContainer);
-        }
 
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
         /// <summary>
         /// If th e condition processor is enable
         /// </summary>
-        private bool isActive = false;
-        /// <summary>
-        /// Ref to the related pose container
-        /// </summary>
-        private UMI3DPoseOverriderContainerDto poseOverriderContainerDto;
-
-        /// <summary>
-        /// Sends a signal when the condition is validated
-        /// </summary>
-        public event EventHandler<PoseOverriderDto> OnConditionValidated;
-
-        /// <summary>
-        /// Sends a signal when the contition is desactivated
-        /// </summary>
-        public event EventHandler<PoseOverriderDto> OnConditionDesactivated;
-
-        /// <summary>
-        /// All the overriders  which ca nonly be considerd if they an interaction ocurs
-        /// </summary>
-        private List<PoseOverriderDto> nonEnvirnmentalPoseOverriders = new List<PoseOverriderDto>();
-        /// <summary>
-        /// All the overriders that are considered without interection (more expensive interm of perfs)
-        /// </summary>
-        private List<PoseOverriderDto> envirnmentalPoseOverriders = new List<PoseOverriderDto>();
-
-        private List<PoseOverriderDto> environmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
-        private List<PoseOverriderDto> nonEnvironmentalActivatedPoseOverriders = new List<PoseOverriderDto>();
-
-        /// <summary>
-        /// return a copy of the environmental overriders
-        /// </summary>
-        /// <returns></returns>
-        public List<PoseOverriderDto> GetEnvironmentalPoseOverriders()
-        {
-            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
-            poseOverriderDtos.AddRange(envirnmentalPoseOverriders);
-            return poseOverriderDtos;
-        }
-
-        /// <summary>
-        /// returns a copy of the non environmental overriders
-        /// </summary>
-        /// <returns></returns>
-        public List<PoseOverriderDto> GetNonEnvironmentalPoseOverriders()
-        {
-            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
-            poseOverriderDtos.AddRange(nonEnvirnmentalPoseOverriders);
-            return poseOverriderDtos;
-        }
-
-        /// <summary>
-        /// returns a copy of the activated environmental overriders
-        /// </summary>
-        /// <returns></returns>
-        public List<PoseOverriderDto> GetEnvironmentalActivatedPoseOverriders()
-        {
-            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
-            poseOverriderDtos.AddRange(environmentalActivatedPoseOverriders);
-            return poseOverriderDtos;
-        }
-
-        /// <summary>
-        /// returns a copy of the activated non environmental overriders
-        /// </summary>
-        /// <returns></returns>
-        public List<PoseOverriderDto> GetNonEnvironmentalActivatedPoseOverriders()
-        {
-            List<PoseOverriderDto> poseOverriderDtos = new List<PoseOverriderDto>();
-            poseOverriderDtos.AddRange(nonEnvironmentalActivatedPoseOverriders);
-            return poseOverriderDtos;
-        }
-
-        /// <summary>
-        /// Set the
-        /// </summary>
-        /// <param name="poseOverriderContainerDto"></param>
-        /// <returns></returns>
-        public bool SetPoseOverriderContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
-        {
-            if (poseOverriderContainerDto == null) return false;
-
-            this.poseOverriderContainerDto = poseOverriderContainerDto;
-            nonEnvirnmentalPoseOverriders = poseOverriderContainerDto.poseOverriderDtos
-                                                .Where(pod=>pod.isRelease || pod.isTrigger || pod.isHoverEnter || pod.isHoverExit)
-                                                .ToList();
-            envirnmentalPoseOverriders.AddRange(poseOverriderContainerDto.poseOverriderDtos.Except(nonEnvirnmentalPoseOverriders));
-
-            return true;
-        }
+        private bool isProcessing;
 
         /// <summary>
         /// Stops the check of fall the overriders
         /// </summary>
         public void DisableCheck()
         {
-            this.isActive = false;
+            CoroutineManager.Instance.DettachCoroutine(checkRoutine);
+            checkRoutine = null;
+            isProcessing = false;
         }
 
         /// <summary>
-        /// Activated if the Hover Enter is triggered
+        /// Active poses that listens to this activation mode.
         /// </summary>
-        public bool CheckHoverEnterConditions()
+        public bool TryActivate(PoseActivationMode mode)
         {
-            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
+            foreach (PoseOverrider poseOverrider in interactionalPoseOverriders)
             {
-                if (poseOverrider.isHoverEnter)
+                if (poseOverrider.ActivationMode == (ushort)mode && poseOverrider.CheckConditions())
                 {
-                    if (CheckConditions(poseOverrider.poseConditions))
-                    {
-                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
+                    if (poseOverrider.IsActive) 
+                        continue;
 
-                        OnConditionValidated?.Invoke(this, poseOverrider);
-                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Activated if the Hover Exit is triggered
-        /// </summary>
-        public bool CheckHoverExitConditions()
-        {
-            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
-            {
-                if (poseOverrider.isHoverExit)
-                {
-                    if (CheckConditions(poseOverrider.poseConditions))
-                    {
-                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
-
-                        OnConditionValidated?.Invoke(this, poseOverrider);
-                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Activated if the Trigger is triggered
-        /// </summary>
-        public bool CheckTriggerConditions()
-        {
-            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
-            {
-                if (poseOverrider.isTrigger)
-                {
-                    if (CheckConditions(poseOverrider.poseConditions))
-                    {
-                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
-
-                        OnConditionValidated?.Invoke(this, poseOverrider);
-                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
-                        return true;
-                    }
-                }
-            }
-            return false;
-        }
-
-        /// <summary>
-        /// Activated if the Release Enter is triggered
-        /// </summary>
-        public bool CheckReleaseConditions()
-        {
-            foreach (PoseOverriderDto poseOverrider in nonEnvirnmentalPoseOverriders)
-            {
-                if (poseOverrider.isRelease)
-                {
-                    if (CheckConditions(poseOverrider.poseConditions))
-                    {
-                        if (nonEnvironmentalActivatedPoseOverriders.Contains(poseOverrider)) continue;
-
-                        OnConditionValidated?.Invoke(this, poseOverrider);
-                        nonEnvironmentalActivatedPoseOverriders.Add(poseOverrider);
-                        return true;
-                    }
+                    ConditionValidated?.Invoke(poseOverrider);
+                    poseOverrider.IsActive = true;
+                    return true;
                 }
             }
             return false;
@@ -244,146 +109,45 @@ namespace umi3d.cdk.userCapture
         /// return -1 if there is no pose playable,
         /// overwise returns the index of the playable pose
         /// </summary>
-        public void CheckCondtionOfAllOverriders()
+        public void CheckConditionsOfAllOverriders()
         {
-            if (!isActive)
+            if (!isProcessing)
             {
-                isActive = true;
-                CoroutineManager.Instance.AttachCoroutine(LaunchCheck());
+                isProcessing = true;
+                checkRoutine = CoroutineManager.Instance.AttachCoroutine(RegularCheckRoutine());
             }
         }
 
-        private IEnumerator LaunchCheck()
+        private Coroutine checkRoutine;
+
+        private float checkPeriod = 0.1f;
+
+        private IEnumerator RegularCheckRoutine()
         {
-            while (isActive)
+            while (isProcessing)
             {
-                yield return new WaitForSeconds(0.1f);
-                for (int i = 0; i < envirnmentalPoseOverriders.Count; i++)
+                yield return new WaitForSeconds(seconds: checkPeriod);
+                for (int i = 0; i < nonInteractionalPoseOverriders.Count; i++)
                 {
-                    if (CheckConditions(envirnmentalPoseOverriders[i].poseConditions))
+                    var poseOverrider = nonInteractionalPoseOverriders[i];
+                    if (poseOverrider.CheckConditions() && !poseOverrider.IsActive)
                     {
-                        if (environmentalActivatedPoseOverriders.Contains(envirnmentalPoseOverriders[i])) continue;
-
-                        OnConditionValidated?.Invoke(this, envirnmentalPoseOverriders[i]);
-                        environmentalActivatedPoseOverriders.Add(envirnmentalPoseOverriders[i]);
+                        ConditionValidated?.Invoke(poseOverrider);
+                        poseOverrider.IsActive = true;
                     }
-                    else if (environmentalActivatedPoseOverriders.Contains(envirnmentalPoseOverriders[i]))
+                    else if (poseOverrider.IsActive)
                     {
-                        OnConditionDesactivated?.Invoke(this, envirnmentalPoseOverriders[i]);
-                        environmentalActivatedPoseOverriders.Remove(envirnmentalPoseOverriders[i]);
-                    }
-                }
-
-                for (int i = 0; i < nonEnvironmentalActivatedPoseOverriders.Count; i++)
-                {
-                    if (!CheckConditions(nonEnvironmentalActivatedPoseOverriders[i].poseConditions))
-                    {
-                        OnConditionDesactivated?.Invoke(this, nonEnvironmentalActivatedPoseOverriders[i]);
-                        nonEnvironmentalActivatedPoseOverriders.Remove(nonEnvironmentalActivatedPoseOverriders[i]);
+                        poseOverrider.IsActive = false;
+                        ConditionDeactivated?.Invoke(poseOverrider);
                     }
                 }
             }
-        }
-
-        private bool CheckConditions(PoseConditionDto[] poseConditions)
-        {
-            for (int i = 0; i < poseConditions.Length; i++)
+            if (checkRoutine != null)
             {
-                if (!CheckCondition(poseConditions[i]))
-                {
-                    return false;
-                }
+                CoroutineManager.Instance.DettachCoroutine(checkRoutine);
+                checkRoutine = null;
             }
-
-            return true;
-        }
-
-        private bool CheckCondition(PoseConditionDto poseConditionDto)
-        {
-            switch (poseConditionDto)
-            {
-                case MagnitudeConditionDto magnitudeConditionDto:
-                    return HandleMagnitude(magnitudeConditionDto);
-
-                case BoneRotationConditionDto boneRotationConditionDto:
-                    return HandleBoneRotation(boneRotationConditionDto);
-
-                case ScaleConditionDto scaleConditionDto:
-                    return HandleTargetScale(scaleConditionDto);
-
-                case DirectionConditionDto directionConditionDto:
-                    // UNDONE
-                    break;
-
-                case RangeConditionDto rangeConditionDto:
-                    // UNDONE
-                    break;
-
-                case NotConditionDto notConditionDto:
-                    // UNDONE
-                    break;
-            }
-
-            return false;
-        }
-
-        private bool HandleMagnitude(MagnitudeConditionDto magnitudeConditionDto)
-        {
-            UMI3DNodeInstance targetNodeInstance = environmentManagerService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
-
-            if (targetNodeInstance == null)
-            {
-                UMI3DLogger.LogError("you havent referenced the right entity ID in your magnitude DTO", scope);
-                return false;
-            }
-
-            Vector3 targetPosition = targetNodeInstance.transform.position;
-
-            Vector3 bonePosition = Vector3.zero;
-            if ((trackedSkeletonService as TrackedSkeleton).bones.TryGetValue(magnitudeConditionDto.BoneOrigine, out TrackedSkeletonBone bone))
-                bonePosition = bone.transform.position;
-
-            float distance = Vector3.Distance(targetPosition, bonePosition);
-
-            if (distance < magnitudeConditionDto.Magnitude)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool HandleBoneRotation(BoneRotationConditionDto boneRotationConditionDto)
-        {
-            Quaternion boneRotation;
-            if ((trackedSkeletonService as TrackedSkeleton).bones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
-                boneRotation = bone.transform.rotation;
-            else
-                return false;
-
-            if (Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.AcceptanceRange)
-            {
-                return true;
-            }
-
-            return false;
-        }
-
-        private bool HandleTargetScale(ScaleConditionDto scaleConditionDto)
-        {
-            UMI3DNodeInstance targetNodeInstance = UMI3DEnvironmentLoader.Instance
-                                            .GetEntityInstance(scaleConditionDto.TargetId)
-                                            as UMI3DNodeInstance;
-
-            Vector3 targetScale = targetNodeInstance.transform.localScale;
-            Vector3 wantedScale = scaleConditionDto.Scale.Struct();
-
-            if (targetScale.sqrMagnitude <= wantedScale.sqrMagnitude)
-            {
-                return true;
-            }
-
-            return false;
+            isProcessing = false;
         }
     }
 }
