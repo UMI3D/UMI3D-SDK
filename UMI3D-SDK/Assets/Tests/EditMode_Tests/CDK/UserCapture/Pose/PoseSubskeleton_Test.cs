@@ -22,9 +22,9 @@ using umi3d.common.userCapture.pose;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
 {
-    public class PoseSkeleton_Test
+    public class PoseSubskeleton_Test
     {
-        private PoseSkeleton poseSkeleton = null;
+        private PoseSubskeleton poseSubskeleton = null;
 
         private Mock<IPoseManager> poseManagerServiceMock;
 
@@ -39,7 +39,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             poseManagerServiceMock = new Mock<IPoseManager>();
 
-            poseSkeleton = new PoseSkeleton(poseManagerServiceMock.Object);
+            poseSubskeleton = new PoseSubskeleton(poseManagerServiceMock.Object);
         }
 
         [TearDown]
@@ -59,21 +59,21 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void SetPose_Null()
         {
-            poseSkeleton.SetPose(true, null, true);
+            poseSubskeleton.SetPose(true, null, true);
         }
 
         [Test]
         public void SetPose_Server()
         {
-            poseSkeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, true);
-            Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 2);
+            poseSubskeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, true);
+            Assert.IsTrue(poseSubskeleton.GetServerPoses().Count == 2);
         }
 
         [Test]
         public void SetPose_Client()
         {
-            poseSkeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, false);
-            Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 2);
+            poseSubskeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, false);
+            Assert.IsTrue(poseSubskeleton.GetLocalPoses().Count == 2);
         }
 
         #endregion SetPose
@@ -86,12 +86,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseDto pose_01 = new PoseDto();
             PoseDto pose_02 = new PoseDto();
 
-            poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
-            poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
-            poseSkeleton.StopAllPoses();
+            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
+            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
+            poseSubskeleton.StopAllPoses();
 
-            Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 0);
-            Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 0);
+            Assert.IsTrue(poseSubskeleton.GetLocalPoses().Count == 0);
+            Assert.IsTrue(poseSubskeleton.GetServerPoses().Count == 0);
         }
 
         [Test]
@@ -100,14 +100,14 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseDto pose_01 = new PoseDto();
             PoseDto pose_02 = new PoseDto();
 
-            poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
-            poseSkeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
-            poseSkeleton.StopPose(new List<PoseDto>() { pose_01 }, false);
+            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
+            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
+            poseSubskeleton.StopPose(new List<PoseDto>() { pose_01 }, false);
 
-            Assert.IsTrue(poseSkeleton.GetLocalPoses().Count == 1);
-            Assert.IsTrue(poseSkeleton.GetServerPoses().Count == 2);
-            Assert.IsFalse(poseSkeleton.GetLocalPoses().Contains(pose_01));
-            Assert.IsTrue(poseSkeleton.GetLocalPoses()[0] == pose_02);
+            Assert.IsTrue(poseSubskeleton.GetLocalPoses().Count == 1);
+            Assert.IsTrue(poseSubskeleton.GetServerPoses().Count == 2);
+            Assert.IsFalse(poseSubskeleton.GetLocalPoses().Contains(pose_01));
+            Assert.IsTrue(poseSubskeleton.GetLocalPoses()[0] == pose_02);
         }
 
         #endregion StopAllPoses

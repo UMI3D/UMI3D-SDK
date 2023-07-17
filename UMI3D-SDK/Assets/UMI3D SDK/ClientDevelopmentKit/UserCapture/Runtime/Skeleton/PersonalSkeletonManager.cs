@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
         /// <inheritdoc/>
-        public PersonalSkeleton personalSkeleton
+        public PersonalSkeleton PersonalSkeleton
         {
             get
             {
@@ -56,9 +56,9 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public IDictionary<uint, float> BonesAsyncFPS => personalSkeleton.BonesAsyncFPS;
+        public IReadOnlyDictionary<uint, float> BonesAsyncFPS => PersonalSkeleton.BonesAsyncFPS as IReadOnlyDictionary<uint, float>;
 
-        public Vector3 worldSize => personalSkeleton.worldSize;
+        public Vector3 WorldSize => PersonalSkeleton.worldSize;
 
         private UMI3DSkeletonHierarchy _standardHierarchy;
 
@@ -95,16 +95,16 @@ namespace umi3d.cdk.userCapture
 
         private void InitPersonalSkeleton()
         {
-            personalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
-            personalSkeleton.SkeletonHierarchy = StandardHierarchy;
+            PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
+            PersonalSkeleton.SkeletonHierarchy = StandardHierarchy;
             lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }
 
         private IEnumerator ComputeCoroutine()
         {
-            while (personalSkeleton != null)
+            while (PersonalSkeleton != null)
             {
-                personalSkeleton.Compute();
+                PersonalSkeleton.Compute();
                 yield return null;
             }
         }

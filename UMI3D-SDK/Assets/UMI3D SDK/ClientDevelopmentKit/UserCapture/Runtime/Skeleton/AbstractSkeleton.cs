@@ -38,7 +38,7 @@ namespace umi3d.cdk.userCapture
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
+        public virtual List<ISubskeleton> Subskeletons { get; protected set; } = new();
 
         /// <inheritdoc/>
         public UMI3DSkeletonHierarchy SkeletonHierarchy 
@@ -65,7 +65,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton 
+        public TrackedSkeleton TrackedSubskeleton 
         { 
             get
             {
@@ -82,7 +82,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSkeleton { get; protected set; }
+        public PoseSubskeleton PoseSubskeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.
@@ -93,7 +93,7 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public ISkeleton Compute()
         {
-            if (Skeletons == null || Skeletons.Count == 0)
+            if (Subskeletons == null || Subskeletons.Count == 0)
                 return this;
 
             RetrieveBonesRotation(SkeletonHierarchy);
@@ -173,9 +173,9 @@ namespace umi3d.cdk.userCapture
 
             // for each subskeleton, in descending order (lastest has lowest priority),
             // get the relative orientation of all available bones
-            for (int i = Skeletons.Count - 1; 0 <= i; i--)
+            for (int i = Subskeletons.Count - 1; 0 <= i; i--)
             {
-                var skeleton = Skeletons[i];
+                var skeleton = Subskeletons[i];
 
                 List<BoneDto> bones;
 
@@ -205,5 +205,15 @@ namespace umi3d.cdk.userCapture
 
         /// <inheritdoc/>
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
+
+        public UserCameraPropertiesDto GetCameraDto()
+        {
+            return new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = TrackedSubskeleton.Viewpoint.projectionMatrix.Dto(),
+                boneType = BoneType.Viewpoint,
+            };
+        }
     }
 }

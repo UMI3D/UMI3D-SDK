@@ -56,23 +56,6 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
                                                         mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object);
         }
 
-        #region GetCameraDto
-
-        [Test]
-        public void Test_GetCameraDto()
-        {
-            // GIVEN
-            // Nothing
-
-            // WHEN
-            var cameraDto = animatedSubskeleton.GetCameraDto();
-
-            // THEN
-            Assert.IsNull(cameraDto);
-        }
-
-        #endregion GetCameraDto
-
         #region GetPose
 
         [Test]

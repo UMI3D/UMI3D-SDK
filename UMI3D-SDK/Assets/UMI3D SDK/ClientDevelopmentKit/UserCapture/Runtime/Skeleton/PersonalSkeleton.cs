@@ -27,24 +27,24 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public class PersonalSkeleton : AbstractSkeleton
     {
-        public IDictionary<uint, float> BonesAsyncFPS { get; protected set; } = new Dictionary<uint, float>();
+        public IDictionary<uint, float> BonesAsyncFPS => TrackedSubskeleton.BonesAsyncFPS;
 
         /// <summary>
         /// Size of the skeleton.
         /// </summary>
-        public Vector3 worldSize => TrackedSkeleton.transform.lossyScale;
+        public Vector3 worldSize => TrackedSubskeleton.transform.lossyScale;
 
         protected void Start()
         {
-            PoseSkeleton = new PoseSkeleton();
-            Skeletons = new List<ISubSkeleton>
+            PoseSubskeleton = new PoseSubskeleton();
+            Subskeletons = new List<ISubskeleton>
             {
-                TrackedSkeleton, PoseSkeleton
+                TrackedSubskeleton, PoseSubskeleton
             };
         }
 
         /// <summary>
-        /// Write a tracking frame from all <see cref="ISubWritableSkeleton"/>.
+        /// Write a tracking frame from all <see cref="IWritableSubskeleton"/>.
         /// </summary>
         /// <param name="option"></param>
         /// <returns></returns>
@@ -56,35 +56,23 @@ namespace umi3d.cdk.userCapture
                 rotation = transform.rotation.Dto(),
             };
 
-            foreach (ISubSkeleton skeleton in Skeletons)
+            foreach (ISubskeleton skeleton in Subskeletons)
             {
-                if (skeleton is ISubWritableSkeleton writableSkeleton)
+                if (skeleton is IWritableSubskeleton writableSkeleton)
                     writableSkeleton.WriteTrackingFrame(frame, option);
             }
 
             return frame;
         }
 
-        public UserCameraPropertiesDto GetCameraProperty()
-        {
-            //The first skeleton is the TrackedSkeleton
-            foreach (var skeleton in Skeletons)
-            {
-                var c = skeleton.GetCameraDto();
-                if (c != null)
-                    return c;
-            }
-            return null;
-        }
-
         /// <inheritdoc/>
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            if (Skeletons != null)
+            if (Subskeletons != null)
             {
-                foreach (ISubSkeleton skeleton in Skeletons)
+                foreach (ISubskeleton skeleton in Subskeletons)
                 {
-                    if (skeleton is ISubWritableSkeleton writableSkeleton)
+                    if (skeleton is IWritableSubskeleton writableSkeleton)
                         writableSkeleton.UpdateFrame(frame);
                 }
             }

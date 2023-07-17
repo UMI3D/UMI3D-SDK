@@ -35,7 +35,7 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 {
     public class CollaborationBindingLoader_Test : UserCaptureBindingLoader_Test
     {
-        protected Mock<ICollaborativeSkeletonsManager> collaborativeSkeletonManager;
+        protected Mock<ICollaborationSkeletonsManager> collaborativeSkeletonManager;
 
 
         #region Test SetUp
@@ -73,8 +73,8 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
             if (UMI3DCollaborationEnvironmentLoader.Exists)
                 UMI3DCollaborationEnvironmentLoader.Destroy();
 
-            if (CollaborativeSkeletonManager.Exists)
-                CollaborativeSkeletonManager.Destroy();
+            if (CollaborationSkeletonsManager.Exists)
+                CollaborationSkeletonsManager.Destroy();
         }
 
         #endregion Test SetUp

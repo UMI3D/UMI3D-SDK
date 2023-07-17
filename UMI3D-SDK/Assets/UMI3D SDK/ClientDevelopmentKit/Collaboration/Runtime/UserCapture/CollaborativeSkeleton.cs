@@ -39,9 +39,9 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public override void UpdateFrame(UserTrackingFrameDto frame)
         {
-            foreach (ISubSkeleton skeleton in Skeletons)
+            foreach (ISubskeleton skeleton in Subskeletons)
             {
-                if (skeleton is ISubWritableSkeleton writableSubskeleton)
+                if (skeleton is IWritableSubskeleton writableSubskeleton)
                     writableSubskeleton.UpdateFrame(frame);
             }
 
@@ -49,13 +49,13 @@ namespace umi3d.cdk.collaboration.userCapture
             rotExtrapolator.AddMeasure(frame.rotation.Quaternion());
         }
 
-        public void SetSubSkeletons(TrackedSkeleton trackedSkeleton, PoseSkeleton poseSkeleton)
+        public void SetSubSkeletons(TrackedSkeleton trackedSkeleton, PoseSubskeleton poseSkeleton)
         {
-            TrackedSkeleton = trackedSkeleton;
-            HipsAnchor = TrackedSkeleton.Hips;
-            PoseSkeleton = poseSkeleton;
-            Skeletons.Add(TrackedSkeleton);
-            Skeletons.Add(PoseSkeleton);
+            TrackedSubskeleton = trackedSkeleton;
+            HipsAnchor = TrackedSubskeleton.Hips;
+            PoseSubskeleton = poseSkeleton;
+            Subskeletons.Add(TrackedSubskeleton);
+            Subskeletons.Add(PoseSubskeleton);
         }
     }
 }

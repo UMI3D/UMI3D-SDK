@@ -32,16 +32,16 @@ namespace umi3d.cdk.userCapture
     public class PoseConditionProcessor
     {
         private readonly IEnvironmentManager environmentManagerService;
-        private readonly ISubWritableSkeleton trackedSkeletonService;
+        private readonly IWritableSubskeleton trackedSkeletonService;
 
         public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer)
         {
             environmentManagerService = UMI3DEnvironmentLoader.Instance;
-            trackedSkeletonService = PersonalSkeletonManager.Instance.personalSkeleton.TrackedSkeleton;
+            trackedSkeletonService = PersonalSkeletonManager.Instance.PersonalSkeleton.TrackedSubskeleton;
             SetPoseOverriderContainer(overriderContainer);
         }
 
-        public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer, IEnvironmentManager environmentLoaderService, ISubWritableSkeleton trackedSkeletonService)
+        public PoseConditionProcessor(UMI3DPoseOverriderContainerDto overriderContainer, IEnvironmentManager environmentLoaderService, IWritableSubskeleton trackedSkeletonService)
         {
             this.environmentManagerService = environmentLoaderService;
             this.trackedSkeletonService = trackedSkeletonService;
