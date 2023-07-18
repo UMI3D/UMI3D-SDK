@@ -104,10 +104,6 @@ namespace umi3d.cdk.userCapture.tracking
                 {
                     boneTransform.transform.rotation = vc.rotation;
                 }
-                else
-                {
-                    // SETUP IK
-                }
             }
             foreach (var dc in controllers.Where(c => c is DistantController && !types.Contains(c.boneType)).ToList())
             {
@@ -248,7 +244,20 @@ namespace umi3d.cdk.userCapture.tracking
             if (controller.isActif)
             {
                 animator.SetIKPosition(goal, controller.position);
-                animator.SetIKRotation(goal, controller.rotation);
+
+                switch (controller.boneType)
+                {
+                    case BoneType.RightHand:
+                        animator.SetIKRotation(goal, controller.rotation * Quaternion.Euler(0, 90, 0));
+                        break;
+                    case BoneType.LeftHand:
+                        animator.SetIKRotation(goal, controller.rotation * Quaternion.Euler(0, -90, 0));
+                        break;
+                    default:
+                        animator.SetIKRotation(goal, controller.rotation);
+                        break;
+                }
+
                 animator.SetIKPositionWeight(goal, 1);
                 animator.SetIKRotationWeight(goal, 1);
             }
