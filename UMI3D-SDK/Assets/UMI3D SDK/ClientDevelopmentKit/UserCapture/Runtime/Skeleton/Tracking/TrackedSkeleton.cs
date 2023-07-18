@@ -66,7 +66,7 @@ namespace umi3d.cdk.userCapture.tracking
             var dto = new PoseDto();
             dto?.SetBonePoseDtoArray(bones
                 .Select(kp => kp.Value)
-                .Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
+                //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 .Select(tb => tb.ToBoneDto()).ToList());
             return dto;
         }

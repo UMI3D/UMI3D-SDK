@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
@@ -41,8 +42,8 @@ namespace umi3d.cdk.userCapture
         public virtual List<ISubskeleton> Subskeletons { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public UMI3DSkeletonHierarchy SkeletonHierarchy 
-        { 
+        public UMI3DSkeletonHierarchy SkeletonHierarchy
+        {
             get
             {
                 return _skeletonHierarchy;
@@ -65,8 +66,8 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSubskeleton 
-        { 
+        public TrackedSkeleton TrackedSubskeleton
+        {
             get
             {
                 return trackedSkeleton;
@@ -173,7 +174,7 @@ namespace umi3d.cdk.userCapture
 
             // for each subskeleton, in descending order (lastest has lowest priority),
             // get the relative orientation of all available bones
-            for (int i = Subskeletons.Count - 1; 0 <= i; i--)
+            for (int i = 0; i < Subskeletons.Count; i++)
             {
                 var skeleton = Subskeletons[i];
 
@@ -184,7 +185,7 @@ namespace umi3d.cdk.userCapture
                 if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                     continue;
 
-                foreach (var b in bones)
+                foreach (var b in bones.Where(c => c.boneType != BoneType.Hips))
                 {
                     // if a bone rotation has already been registered, erase it
                     if (Bones.ContainsKey(b.boneType))
@@ -198,6 +199,13 @@ namespace umi3d.cdk.userCapture
                     foreach (var b in bones)
                     {
                         bonesSetByTrackedSkeleton.Add(b.boneType);
+                    }
+                }
+                else
+                {
+                    foreach (var b in bones)
+                    {
+                        bonesSetByTrackedSkeleton.Remove(b.boneType);
                     }
                 }
             }
