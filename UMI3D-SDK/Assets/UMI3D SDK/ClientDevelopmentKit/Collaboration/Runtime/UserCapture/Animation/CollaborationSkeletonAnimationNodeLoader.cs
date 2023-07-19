@@ -34,11 +34,11 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
         #region Dependency Injection
 
-        protected readonly ICollaborativeSkeletonsManager collaborativeSkeletonsmanager;
+        protected readonly ICollaborationSkeletonsManager collaborativeSkeletonsmanager;
 
         public CollaborationSkeletonAnimationNodeLoader() : base()
         {
-            this.collaborativeSkeletonsmanager = CollaborativeSkeletonManager.Instance;
+            this.collaborativeSkeletonsmanager = CollaborationSkeletonsManager.Instance;
         }
 
         public CollaborationSkeletonAnimationNodeLoader(IEnvironmentManager environmentManager,
@@ -46,7 +46,7 @@ namespace umi3d.cdk.collaboration.userCapture.animation
                                                         IUMI3DResourcesManager resourcesManager,
                                                         ICoroutineService coroutineManager,
                                                         ISkeletonManager personnalSkeletonService,
-                                                        ICollaborativeSkeletonsManager collaborativeSkeletonsmanager,
+                                                        ICollaborationSkeletonsManager collaborativeSkeletonsmanager,
                                                         IUMI3DClientServer clientServer)
             : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService, clientServer)
         {
@@ -67,17 +67,17 @@ namespace umi3d.cdk.collaboration.userCapture.animation
             var skeleton = collaborativeSkeletonsmanager.TryGetSkeletonById(userId);
             if (skeleton != null)
             {
-                lock (skeleton.Skeletons) // loader can start parallel async tasks, required to load concurrently
+                lock (skeleton.Subskeletons) // loader can start parallel async tasks, required to load concurrently
                 {
                     // add animated skeleton to subskeleton list and re-order it by descending priority
-                    var animatedSkeletons = skeleton.Skeletons
+                    var animatedSkeletons = skeleton.Subskeletons
                                         .Where(x => x is AnimatedSubskeleton)
                                         .Cast<AnimatedSubskeleton>()
                                         .Append(subskeleton)
                                         .OrderByDescending(x => x.Priority).ToList();
 
-                    skeleton.Skeletons.RemoveAll(x => x is AnimatedSubskeleton);
-                    skeleton.Skeletons.AddRange(animatedSkeletons);
+                    skeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                    skeleton.Subskeletons.AddRange(animatedSkeletons);
                 }
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them

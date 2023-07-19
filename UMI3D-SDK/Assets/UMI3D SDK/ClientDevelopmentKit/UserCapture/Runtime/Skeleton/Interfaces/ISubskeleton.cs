@@ -22,18 +22,12 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Behaviour of a piece of skeleton position to merge to have the whole skeleton position.
     /// </summary>
-    public interface ISubSkeleton
+    public interface ISubskeleton
     {
         /// <summary>
         /// Get the skeleton pose based on the position of this subskeleton.
         /// </summary>
         /// <returns></returns>
         PoseDto GetPose();
-
-        /// <summary>
-        /// Get subskeleton camera parameters.
-        /// </summary>
-        /// <returns></returns>
-        UserCameraPropertiesDto GetCameraDto();
     }
 }

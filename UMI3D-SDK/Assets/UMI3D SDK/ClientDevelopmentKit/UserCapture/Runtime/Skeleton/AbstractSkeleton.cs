@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
@@ -38,11 +39,11 @@ namespace umi3d.cdk.userCapture
         public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public virtual List<ISubSkeleton> Skeletons { get; protected set; } = new();
+        public virtual List<ISubskeleton> Subskeletons { get; protected set; } = new();
 
         /// <inheritdoc/>
-        public UMI3DSkeletonHierarchy SkeletonHierarchy 
-        { 
+        public UMI3DSkeletonHierarchy SkeletonHierarchy
+        {
             get
             {
                 return _skeletonHierarchy;
@@ -65,8 +66,8 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton 
-        { 
+        public TrackedSkeleton TrackedSubskeleton
+        {
             get
             {
                 return trackedSkeleton;
@@ -82,7 +83,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSkeleton { get; protected set; }
+        public PoseSubskeleton PoseSubskeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.
@@ -93,7 +94,7 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public ISkeleton Compute()
         {
-            if (Skeletons == null || Skeletons.Count == 0)
+            if (Subskeletons == null || Subskeletons.Count == 0)
                 return this;
 
             RetrieveBonesRotation(SkeletonHierarchy);
@@ -173,9 +174,9 @@ namespace umi3d.cdk.userCapture
 
             // for each subskeleton, in descending order (lastest has lowest priority),
             // get the relative orientation of all available bones
-            for (int i = Skeletons.Count - 1; 0 <= i; i--)
+            for (int i = 0; i < Subskeletons.Count; i++)
             {
-                var skeleton = Skeletons[i];
+                var skeleton = Subskeletons[i];
 
                 List<BoneDto> bones;
 
@@ -184,7 +185,7 @@ namespace umi3d.cdk.userCapture
                 if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                     continue;
 
-                foreach (var b in bones)
+                foreach (var b in bones.Where(c => c.boneType != BoneType.Hips))
                 {
                     // if a bone rotation has already been registered, erase it
                     if (Bones.ContainsKey(b.boneType))
@@ -200,10 +201,27 @@ namespace umi3d.cdk.userCapture
                         bonesSetByTrackedSkeleton.Add(b.boneType);
                     }
                 }
+                else
+                {
+                    foreach (var b in bones)
+                    {
+                        bonesSetByTrackedSkeleton.Remove(b.boneType);
+                    }
+                }
             }
         }
 
         /// <inheritdoc/>
         public abstract void UpdateFrame(UserTrackingFrameDto frame);
+
+        public UserCameraPropertiesDto GetCameraDto()
+        {
+            return new UserCameraPropertiesDto()
+            {
+                scale = 1f,
+                projectionMatrix = TrackedSubskeleton.Viewpoint.projectionMatrix.Dto(),
+                boneType = BoneType.Viewpoint,
+            };
+        }
     }
 }

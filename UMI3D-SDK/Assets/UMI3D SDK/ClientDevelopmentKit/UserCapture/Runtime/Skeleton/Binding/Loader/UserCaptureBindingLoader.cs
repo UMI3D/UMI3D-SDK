@@ -68,7 +68,7 @@ namespace umi3d.cdk.userCapture.binding
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        if (!personnalSkeletonService.personalSkeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
+                        if (!personnalSkeletonService.PersonalSkeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
                             return null;
@@ -79,18 +79,18 @@ namespace umi3d.cdk.userCapture.binding
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Rig \"{riggedBoneBinding.rigName}\" does not exist on bound node.", DEBUG_SCOPE);
                             return null;
                         }
-                        return new RigBoneBinding(riggedBoneBinding, rig, personnalSkeletonService.personalSkeleton);
+                        return new RigBoneBinding(riggedBoneBinding, rig, personnalSkeletonService.PersonalSkeleton);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
                         UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
-                        if (!personnalSkeletonService.personalSkeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
+                        if (!personnalSkeletonService.PersonalSkeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton", DEBUG_SCOPE);
                             return null;
                         }
 
-                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.personalSkeleton);
+                        return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.PersonalSkeleton);
                     }
                 default:
                     return null;

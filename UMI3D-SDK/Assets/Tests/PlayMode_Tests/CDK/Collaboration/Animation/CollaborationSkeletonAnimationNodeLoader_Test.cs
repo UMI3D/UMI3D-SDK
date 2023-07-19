@@ -25,7 +25,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Animation.CDK
     [TestFixture, TestOf(typeof(CollaborationSkeletonAnimationNodeLoader))]
     public class CollaborationSkeletonAnimationNodeLoader_Test : SkeletonAnimationNodeLoader_Test
     {
-        protected Mock<ICollaborativeSkeletonsManager> collaborativeSkeletonsManagerMock;
+        protected Mock<ICollaborationSkeletonsManager> collaborativeSkeletonsManagerMock;
 
         #region Test SetUp
 

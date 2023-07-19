@@ -36,17 +36,17 @@ namespace umi3d.cdk.collaboration.userCapture.binding
 
         #region DependencyInjection
 
-        private readonly ICollaborativeSkeletonsManager skeletonService;
+        private readonly ICollaborationSkeletonsManager skeletonService;
 
         public CollaborationBindingLoader() : base()
         {
-            skeletonService = CollaborativeSkeletonManager.Instance;
+            skeletonService = CollaborationSkeletonsManager.Instance;
         }
 
         public CollaborationBindingLoader(IBindingBrowserService bindingManager,
                                           ILoadingManager loadingManager,
                                           IEnvironmentManager environmentManager,
-                                          ICollaborativeSkeletonsManager skeletonService)
+                                          ICollaborationSkeletonsManager skeletonService)
             : base(loadingManager, environmentManager, bindingManager)
         {
             this.skeletonService = skeletonService;

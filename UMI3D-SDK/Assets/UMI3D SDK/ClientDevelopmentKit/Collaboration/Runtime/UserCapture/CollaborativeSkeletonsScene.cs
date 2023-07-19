@@ -18,6 +18,9 @@ using inetum.unityUtils;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
+    /// <summary>
+    /// Scene where <see cref="CollaborativeSkeleton"/> are put.
+    /// </summary>
     public class CollaborativeSkeletonsScene : SingleBehaviour<CollaborativeSkeletonsScene>
     { }
 }

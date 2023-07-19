@@ -37,10 +37,10 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeletons that compose the final skeleton.
         /// </summary>
-        List<ISubSkeleton> Skeletons { get; }
+        List<ISubskeleton> Subskeletons { get; }
 
         /// <summary>
-        /// Skeleton hiearchy used, with relative position between each bone.
+        /// Skeleton hierarchy used, with relative position between each bone.
         /// </summary>
         UMI3DSkeletonHierarchy SkeletonHierarchy { get; }
 
@@ -52,17 +52,17 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Id of the user represented by this skeleton.
         /// </summary>
-        public ulong UserId { get; }
+        ulong UserId { get; }
 
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSkeleton { get; }
+        TrackedSkeleton TrackedSubskeleton { get; }
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSkeleton PoseSkeleton { get; }
+        PoseSubskeleton PoseSubskeleton { get; }
 
         #region Data struture
 
@@ -87,13 +87,19 @@ namespace umi3d.cdk.userCapture
         /// Update the positions/rotation of bone of subskeletons based on the received frame.
         /// </summary>
         /// <param name="frame"></param>
-        public void UpdateFrame(UserTrackingFrameDto frame);
+        void UpdateFrame(UserTrackingFrameDto frame);
 
         /// <summary>
         /// Update the skeleton bones based on subskeletons data.
         /// </summary>
         /// Merge the bones of each subskeleton to find a final state for each bone.
         /// <returns></returns>
-        public ISkeleton Compute();
+        ISkeleton Compute();
+
+        /// <summary>
+        /// Get subskeleton camera parameters.
+        /// </summary>
+        /// <returns></returns>
+        UserCameraPropertiesDto GetCameraDto();
     }
 }

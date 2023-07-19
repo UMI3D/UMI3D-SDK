@@ -24,22 +24,24 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackedSkeleton : MonoBehaviour, ISubWritableSkeleton
+    public class TrackedSkeleton : MonoBehaviour, IWritableSubskeleton
     {
+        public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
+
         public List<IController> controllers = new List<IController>();
         private List<IController> controllersToDestroy = new();
         public Camera Viewpoint;
         public Transform Hips;
         public TrackedAnimator trackedAnimator;
+        [SerializeField]
         private Animator animator;
         public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
         private List<uint> types = new List<uint>();
 
-        [HideInInspector]
-        public ISkeletonManager skeletonManager;
-
         public void Start()
         {
+            trackedAnimator.IkCallback = new System.Action<int>((u => HandleAnimatorIK(u)));
+
             foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
             {
                 if (!bones.ContainsKey(bone.boneType))
@@ -47,18 +49,16 @@ namespace umi3d.cdk.userCapture.tracking
                 if (bone.GetType() == typeof(TrackedSkeletonBoneController))
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
             }
-
-            skeletonManager ??= PersonalSkeletonManager.Instance;
         }
 
-        public UserCameraPropertiesDto GetCameraDto()
+        protected void Update()
         {
-            return new UserCameraPropertiesDto()
+            for (int i = 0; i < controllers.Count; i++)
             {
-                scale = 1f,
-                projectionMatrix = Viewpoint.projectionMatrix.Dto(),
-                boneType = BoneType.Viewpoint,
-            };
+                var controller = controllers[i];
+                (controller as DistantController).position = bones[controller.boneType].transform.position;
+                (controller as DistantController).rotation = bones[controller.boneType].transform.rotation;
+            }
         }
 
         public PoseDto GetPose()
@@ -66,7 +66,7 @@ namespace umi3d.cdk.userCapture.tracking
             var dto = new PoseDto();
             dto?.SetBonePoseDtoArray(bones
                 .Select(kp => kp.Value)
-                .Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
+                //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 .Select(tb => tb.ToBoneDto()).ToList());
             return dto;
         }
@@ -104,10 +104,6 @@ namespace umi3d.cdk.userCapture.tracking
                 {
                     boneTransform.transform.rotation = vc.rotation;
                 }
-                else
-                {
-                    // SETUP IK
-                }
             }
             foreach (var dc in controllers.Where(c => c is DistantController && !types.Contains(c.boneType)).ToList())
             {
@@ -121,7 +117,7 @@ namespace umi3d.cdk.userCapture.tracking
             if (bones.Count == 0)
                 return;
             trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
-            foreach (var asyncBone in skeletonManager.BonesAsyncFPS)
+            foreach (var asyncBone in BonesAsyncFPS)
             {
                 trackingFrame.trackedBones.Add(bones.First(p => p.Value.boneType == asyncBone.Key).Value.ToControllerDto());
             }
@@ -137,7 +133,7 @@ namespace umi3d.cdk.userCapture.tracking
         {
             CleanToDestroy();
 
-            foreach (var controller in controllers)
+            foreach (var controller in controllers.Where(c => c.boneType != BoneType.Head))
             {
                 switch (controller.boneType)
                 {
@@ -248,7 +244,20 @@ namespace umi3d.cdk.userCapture.tracking
             if (controller.isActif)
             {
                 animator.SetIKPosition(goal, controller.position);
-                animator.SetIKRotation(goal, controller.rotation);
+
+                switch (controller.boneType)
+                {
+                    case BoneType.RightHand:
+                        animator.SetIKRotation(goal, controller.rotation * Quaternion.Euler(0, 90, 0));
+                        break;
+                    case BoneType.LeftHand:
+                        animator.SetIKRotation(goal, controller.rotation * Quaternion.Euler(0, -90, 0));
+                        break;
+                    default:
+                        animator.SetIKRotation(goal, controller.rotation);
+                        break;
+                }
+
                 animator.SetIKPositionWeight(goal, 1);
                 animator.SetIKRotationWeight(goal, 1);
             }

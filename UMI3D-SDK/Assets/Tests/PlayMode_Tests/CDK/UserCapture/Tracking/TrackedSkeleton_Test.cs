@@ -151,31 +151,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
         #endregion Test SetUp
 
-        #region GetCameraDto
-
-        [Test]
-        public void Test_GetCameraDto()
-        {
-            // GIVEN
-            var camTarget = new UserCameraPropertiesDto()
-            {
-                scale = 1f,
-                projectionMatrix = viewpoint.projectionMatrix.Dto(),
-                boneType = BoneType.Viewpoint,
-            };
-
-            // WHEN
-            var cameraDto = trackedSkeleton.GetCameraDto();
-
-            // THEN
-            Assert.IsNotNull(cameraDto);
-            Assert.AreEqual(camTarget.boneType, cameraDto.boneType);
-            Assert.IsTrue(camTarget.projectionMatrix.Struct() == cameraDto.projectionMatrix.Struct(), "Projection Matrix are not the same.");
-            Assert.AreEqual(camTarget.scale, cameraDto.scale);
-        }
-
-        #endregion GetCameraDto
-
         #region GetPose
 
         [Test]
@@ -410,10 +385,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             UserTrackingFrameDto frame = new UserTrackingFrameDto() { trackedBones = new() };
 
-            Mock<ISkeletonManager> personalSkeletonServiceMock = new Mock<ISkeletonManager> ();
-            personalSkeletonServiceMock.Setup(x => x.BonesAsyncFPS).Returns(new Dictionary<uint, float>());
-            trackedSkeleton.skeletonManager = personalSkeletonServiceMock.Object;
-
             // WHEN
             trackedSkeleton.WriteTrackingFrame(frame, option);
 
@@ -429,10 +400,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             UserTrackingFrameDto frame = new UserTrackingFrameDto() { trackedBones = new() };
 
-            Mock<ISkeletonManager> personalSkeletonServiceMock = new();
-            personalSkeletonServiceMock.Setup(x => x.BonesAsyncFPS).Returns(new Dictionary<uint, float>() { { trackedBones[0].boneType, 15f }, { trackedBones[2].boneType, 15f } });
-            trackedSkeleton.skeletonManager = personalSkeletonServiceMock.Object;
-
             Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
 
             foreach (var bone in trackedBones)
@@ -441,7 +408,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
                     bones.Add(bone.boneType, bone);
             }
 
-            foreach (var pair in personalSkeletonServiceMock.Object.BonesAsyncFPS)
+            foreach (var pair in trackedSkeleton.BonesAsyncFPS)
             {
                 frameTarget.trackedBones.Add(new ControllerDto() { boneType = pair.Key });
             }
@@ -466,10 +433,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             UserTrackingFrameDto frameTarget = new UserTrackingFrameDto() { trackedBones = new() { trackedBones[3].ToControllerDto() }};
 
             UserTrackingFrameDto frame = new UserTrackingFrameDto() { trackedBones = new() };
-
-            Mock<ISkeletonManager> personalSkeletonServiceMock = new();
-            personalSkeletonServiceMock.Setup(x => x.BonesAsyncFPS).Returns(new Dictionary<uint, float>());
-            trackedSkeleton.skeletonManager = personalSkeletonServiceMock.Object;
 
             List<IController> controllers = new List<IController>();
 
@@ -507,9 +470,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             UserTrackingFrameDto frame = new UserTrackingFrameDto() { trackedBones = new() };
 
-            Mock<ISkeletonManager> personalSkeletonServiceMock = new();
-            personalSkeletonServiceMock.Setup(x => x.BonesAsyncFPS).Returns(new Dictionary<uint, float>() { { trackedBones[1].boneType, 15f }, { trackedBones[0].boneType, 15f } });
-            trackedSkeleton.skeletonManager = personalSkeletonServiceMock.Object;
+            trackedSkeleton.BonesAsyncFPS = new Dictionary<uint, float>() { { trackedBones[1].boneType, 15f }, { trackedBones[0].boneType, 15f } };
 
             List<IController> controllers = new List<IController>();
 
@@ -529,7 +490,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.bones = bones;
             trackedSkeleton.controllers = controllers;
 
-            foreach (var pair in personalSkeletonServiceMock.Object.BonesAsyncFPS)
+            foreach (var pair in trackedSkeleton.BonesAsyncFPS)
             {
                 frameTarget.trackedBones.Add(new ControllerDto() { boneType = pair.Key , isOverrider = true, position = Vector3.one.Dto(), rotation = Quaternion.identity.Dto()});
             }

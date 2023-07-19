@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture.animation
     /// <summary>
     /// Subskeleton that is the target if a skeleton animation, using an Animator.
     /// </summary>
-    public class AnimatedSubskeleton : ISubSkeleton
+    public class AnimatedSubskeleton : ISubskeleton
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
 
@@ -161,13 +161,6 @@ namespace umi3d.cdk.userCapture.animation
                                                 ?? new SkeletonAnimationParameter[0];
             coroutineService = CoroutineManager.Instance;
             unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
-        }
-
-        ///<inheritdoc/>
-        /// Always returns null for AnimatonSkeleton.
-        public virtual UserCameraPropertiesDto GetCameraDto()
-        {
-            return null;
         }
 
         /// <summary>
