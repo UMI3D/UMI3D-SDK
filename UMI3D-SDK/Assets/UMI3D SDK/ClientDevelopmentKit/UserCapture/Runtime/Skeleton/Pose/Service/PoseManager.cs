@@ -79,7 +79,7 @@ namespace umi3d.cdk.userCapture.pose
 
             PoseConditionProcessor unit = new PoseConditionProcessor(overrider);
             unit.ConditionValidated += ApplyPoseOverride;
-            unit.ConditionDeactivated += StopPoseOverride;
+            unit.ConditionInvalided += StopPoseOverride;
             conditionProcessors.Add(overrider.NodeId, unit);
         }
 
@@ -99,7 +99,6 @@ namespace umi3d.cdk.userCapture.pose
         {
             if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
             {
-                Debug.Log("Activation de pose");
                 unit.TryActivate(poseActivationMode);
             }
         }

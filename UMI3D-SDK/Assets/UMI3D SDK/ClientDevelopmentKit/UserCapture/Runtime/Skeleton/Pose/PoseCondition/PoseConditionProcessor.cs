@@ -36,14 +36,14 @@ namespace umi3d.cdk.userCapture.pose
         private PoseOverriderContainer poseOverriderContainer;
 
         /// <summary>
-        /// Sends a signal when the condition is validated
+        /// Sends a signal when the condition become validated
         /// </summary>
         public event Action<PoseOverrider> ConditionValidated;
 
         /// <summary>
-        /// Sends a signal when the condition is deactivated
+        /// Sends a signal when the condition become invalid
         /// </summary>
-        public event Action<PoseOverrider> ConditionDeactivated;
+        public event Action<PoseOverrider> ConditionInvalided;
 
         /// <summary>
         /// All the overriders  which ca only be considered if they an interaction occurs
@@ -63,7 +63,7 @@ namespace umi3d.cdk.userCapture.pose
             nonInteractionalPoseOverriders.AddRange(poseOverriderContainer.PoseOverriders.Except(interactionalPoseOverriders));
 
             if (nonInteractionalPoseOverriders.Count > 0)
-                CheckConditionsOfAllOverriders();
+                StartWatchConditions();
         }
 
 
@@ -91,13 +91,14 @@ namespace umi3d.cdk.userCapture.pose
         {
             foreach (PoseOverrider poseOverrider in interactionalPoseOverriders)
             {
+                if (poseOverrider.IsActive)
+                    continue;
+
                 if (poseOverrider.ActivationMode == (ushort)mode && poseOverrider.CheckConditions())
                 {
-                    if (poseOverrider.IsActive) 
-                        continue;
-
                     ConditionValidated?.Invoke(poseOverrider);
                     poseOverrider.IsActive = true;
+                    StartWatchConditions();
                     return true;
                 }
             }
@@ -106,10 +107,8 @@ namespace umi3d.cdk.userCapture.pose
 
         /// <summary>
         /// Start to check all overriders
-        /// return -1 if there is no pose playable,
-        /// overwise returns the index of the playable pose
         /// </summary>
-        public void CheckConditionsOfAllOverriders()
+        public void StartWatchConditions()
         {
             if (!isProcessing)
             {
@@ -120,13 +119,15 @@ namespace umi3d.cdk.userCapture.pose
 
         private Coroutine checkRoutine;
 
-        private float checkPeriod = 0.1f;
+        private const float CHECK_PERIOD = 0.1f;
 
         private IEnumerator RegularCheckRoutine()
         {
             while (isProcessing)
             {
-                yield return new WaitForSeconds(seconds: checkPeriod);
+                yield return new WaitForSeconds(seconds: CHECK_PERIOD);
+
+                // check to enable/disable auto-watched poses (nonInteractional)
                 for (int i = 0; i < nonInteractionalPoseOverriders.Count; i++)
                 {
                     var poseOverrider = nonInteractionalPoseOverriders[i];
@@ -138,7 +139,18 @@ namespace umi3d.cdk.userCapture.pose
                     else if (poseOverrider.IsActive)
                     {
                         poseOverrider.IsActive = false;
-                        ConditionDeactivated?.Invoke(poseOverrider);
+                        ConditionInvalided?.Invoke(poseOverrider);
+                    }
+                }
+
+                // check to disable interactional activated poses that have thei condition failed
+                for (int i=0; i<interactionalPoseOverriders.Count-1; i++)
+                {
+                    var poseOverrider = interactionalPoseOverriders[i];
+                    if (poseOverrider.IsActive && !poseOverrider.CheckConditions())
+                    {
+                        poseOverrider.IsActive = false;
+                        ConditionInvalided?.Invoke(poseOverrider);
                     }
                 }
             }
