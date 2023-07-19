@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common.userCapture.pose;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
@@ -76,6 +77,30 @@ namespace umi3d.cdk.userCapture.pose
                 if (!PoseConditions[i].Check())
                     return false;
             }
+            return true;
+        }
+
+        public bool IsFinished(float startTime)
+        {
+            float currentDuration = Time.time - startTime;
+
+            if (Duration.min.HasValue && currentDuration < Duration.min)
+                return false;
+
+            if (CheckConditions())
+            {
+                if (Duration.max.HasValue && currentDuration > Duration.max)
+                    return true;
+
+                if (!Duration.max.HasValue && Duration.duration == 0) // infinite mode
+                    return false;
+
+                if (!Duration.max.HasValue && currentDuration > Duration.duration)
+                    return true;
+
+                return false;
+            }
+            
             return true;
         }
     }

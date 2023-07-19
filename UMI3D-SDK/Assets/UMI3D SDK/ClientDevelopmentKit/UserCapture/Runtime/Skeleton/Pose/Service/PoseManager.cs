@@ -89,7 +89,7 @@ namespace umi3d.cdk.userCapture.pose
             if (conditionProcessors.TryGetValue(overrider.NodeId, out PoseConditionProcessor unit))
             {
                 unit.ConditionValidated -= ApplyPoseOverride;
-                unit.DisableCheck();
+                unit.StopWatchNonInteractionalConditions();
                 conditionProcessors.Remove(overrider.NodeId);
             }
         }
@@ -106,12 +106,10 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void ApplyPoseOverride(PoseOverrider poseOverrider)
         {
-            Debug.Log("Set target pose");
             if (poseOverrider != null)
             {
                 foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
                 {
-                    Debug.Log("Start de pose");
                     if (pose.Index == poseOverrider.PoseIndexInPoseManager)
                     {
                         skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(pose);

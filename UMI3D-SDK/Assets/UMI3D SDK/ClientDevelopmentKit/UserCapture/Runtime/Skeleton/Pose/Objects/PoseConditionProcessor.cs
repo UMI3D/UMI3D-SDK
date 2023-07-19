@@ -15,12 +15,15 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.common;
 using umi3d.common.userCapture.pose;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
@@ -49,10 +52,13 @@ namespace umi3d.cdk.userCapture.pose
         /// All the overriders  which ca only be considered if they an interaction occurs
         /// </summary>
         private readonly List<PoseOverrider> interactionalPoseOverriders = new();
+
         /// <summary>
         /// All the overriders that are considered without interaction (more performance expensive)
         /// </summary>
         private readonly List<PoseOverrider> nonInteractionalPoseOverriders = new();
+
+        private Dictionary<PoseOverrider, Coroutine> watchConditionsCoroutines = new();
 
         public PoseConditionProcessor(PoseOverriderContainer overriderContainer)
         {
@@ -63,11 +69,10 @@ namespace umi3d.cdk.userCapture.pose
             nonInteractionalPoseOverriders.AddRange(poseOverriderContainer.PoseOverriders.Except(interactionalPoseOverriders));
 
             if (nonInteractionalPoseOverriders.Count > 0)
-                StartWatchConditions();
+                StartWatchNonInteractionalConditions();
         }
 
-
-        private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
+        private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
 
         /// <summary>
         /// If th e condition processor is enable
@@ -75,12 +80,24 @@ namespace umi3d.cdk.userCapture.pose
         private bool isProcessing;
 
         /// <summary>
+        /// Start to check all overriders
+        /// </summary>
+        public void StartWatchNonInteractionalConditions()
+        {
+            if (!isProcessing)
+            {
+                isProcessing = true;
+                regularActivationCheckRoutine = CoroutineManager.Instance.AttachCoroutine(RegularActivationCheckRoutine());
+            }
+        }
+
+        /// <summary>
         /// Stops the check of fall the overriders
         /// </summary>
-        public void DisableCheck()
+        public void StopWatchNonInteractionalConditions()
         {
-            CoroutineManager.Instance.DettachCoroutine(checkRoutine);
-            checkRoutine = null;
+            CoroutineManager.Instance.DettachCoroutine(regularActivationCheckRoutine);
+            regularActivationCheckRoutine = null;
             isProcessing = false;
         }
 
@@ -96,32 +113,20 @@ namespace umi3d.cdk.userCapture.pose
 
                 if (poseOverrider.ActivationMode == (ushort)mode && poseOverrider.CheckConditions())
                 {
-                    ConditionValidated?.Invoke(poseOverrider);
                     poseOverrider.IsActive = true;
-                    StartWatchConditions();
+                    ConditionValidated?.Invoke(poseOverrider);
+                    StartWatchConditions(poseOverrider);
                     return true;
                 }
             }
             return false;
         }
 
-        /// <summary>
-        /// Start to check all overriders
-        /// </summary>
-        public void StartWatchConditions()
-        {
-            if (!isProcessing)
-            {
-                isProcessing = true;
-                checkRoutine = CoroutineManager.Instance.AttachCoroutine(RegularCheckRoutine());
-            }
-        }
-
-        private Coroutine checkRoutine;
+        private Coroutine regularActivationCheckRoutine;
 
         private const float CHECK_PERIOD = 0.1f;
 
-        private IEnumerator RegularCheckRoutine()
+        private IEnumerator RegularActivationCheckRoutine()
         {
             while (isProcessing)
             {
@@ -131,35 +136,52 @@ namespace umi3d.cdk.userCapture.pose
                 for (int i = 0; i < nonInteractionalPoseOverriders.Count; i++)
                 {
                     var poseOverrider = nonInteractionalPoseOverriders[i];
-                    if (poseOverrider.CheckConditions() && !poseOverrider.IsActive)
+                    if (!poseOverrider.IsActive && poseOverrider.CheckConditions())
                     {
-                        ConditionValidated?.Invoke(poseOverrider);
                         poseOverrider.IsActive = true;
-                    }
-                    else if (poseOverrider.IsActive)
-                    {
-                        poseOverrider.IsActive = false;
-                        ConditionInvalided?.Invoke(poseOverrider);
-                    }
-                }
-
-                // check to disable interactional activated poses that have thei condition failed
-                for (int i=0; i<interactionalPoseOverriders.Count-1; i++)
-                {
-                    var poseOverrider = interactionalPoseOverriders[i];
-                    if (poseOverrider.IsActive && !poseOverrider.CheckConditions())
-                    {
-                        poseOverrider.IsActive = false;
-                        ConditionInvalided?.Invoke(poseOverrider);
+                        ConditionValidated?.Invoke(poseOverrider);
+                        StartWatchConditions(poseOverrider);
                     }
                 }
             }
-            if (checkRoutine != null)
+            if (regularActivationCheckRoutine != null)
             {
-                CoroutineManager.Instance.DettachCoroutine(checkRoutine);
-                checkRoutine = null;
+                CoroutineManager.Instance.DettachCoroutine(regularActivationCheckRoutine);
+                regularActivationCheckRoutine = null;
             }
             isProcessing = false;
+        }
+
+        private void StartWatchConditions(PoseOverrider poseOverrider)
+        {
+            if (poseOverrider == null || !poseOverrider.IsActive)
+                return;
+
+            var coroutine = CoroutineManager.Instance.AttachCoroutine(WatchConditionsRoutine(poseOverrider));
+            watchConditionsCoroutines.Add(poseOverrider, coroutine);
+        }
+
+        private void StopWatchConditions(PoseOverrider poseOverrider)
+        {
+            watchConditionsCoroutines.TryGetValue(poseOverrider, out Coroutine coroutine);
+            if (coroutine != null)
+            {
+                watchConditionsCoroutines.Remove(poseOverrider);
+                CoroutineManager.Instance.DettachCoroutine(coroutine);
+            }
+        }
+
+        private IEnumerator WatchConditionsRoutine(PoseOverrider poseOverrider)
+        {
+            float startTime = Time.time;
+            while (poseOverrider.IsActive && !poseOverrider.IsFinished(startTime))
+            {
+                yield return new WaitForSeconds(seconds: CHECK_PERIOD);
+            }
+            poseOverrider.IsActive = false;
+            ConditionInvalided?.Invoke(poseOverrider);
+
+            StopWatchConditions(poseOverrider);
         }
     }
 }
