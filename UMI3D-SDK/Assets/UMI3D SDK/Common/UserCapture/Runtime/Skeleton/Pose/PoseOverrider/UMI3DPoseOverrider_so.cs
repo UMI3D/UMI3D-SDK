@@ -32,7 +32,8 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        [SerializeReference] public PoseConditionDto[] poseConditions;
+        [SerializeReference, HideInInspector] 
+        public PoseConditionDto[] poseConditions;
 
         [System.Serializable]
         public struct Duration
@@ -64,6 +65,41 @@ namespace umi3d.common.userCapture.pose
 
         public PoseActivationMode activationMode;
 
+        // HACK: Workaround not to fix pose setter
+        #region Pose condition access
+        [Space(10)]
+        [Header("Pose conditions")]
+
+        [Header("- Magnitude condition")]
+        public bool HasMagnitudeCondition;
+        /// <summary>
+        /// distance
+        /// </summary>
+        public float Magnitude;
+
+        /// <summary>
+        /// bone id 
+        /// </summary>
+        [ConstEnum(typeof(BoneType), typeof(uint))]
+        public uint BoneOrigin;
+
+
+        [Header("- Direction condition")]
+        public bool HasDirectionCondition;
+        /// <summary>
+        /// distance
+        /// </summary>
+        public Vector3 Direction;
+
+        [Header("- Direction condition")]
+        public bool HasScaleCondition;
+
+        /// <summary>
+        /// distance
+        /// </summary>
+        public Vector3 TargetScale;
+        #endregion
+
         public PoseOverriderDto ToDto(int poseIndexInPoseManager)
         {
             return new PoseOverriderDto()
@@ -79,24 +115,31 @@ namespace umi3d.common.userCapture.pose
 
         public PoseConditionDto[] GetPoseConditionsCopy() //? why ?
         {
-            List<PoseConditionDto> copy = new List<PoseConditionDto>();
-            poseConditions.ForEach(pc =>
-            {
-                switch (pc)
-                {
-                    case MagnitudeConditionDto magnitudeConditionDto:
-                        copy.Add(new MagnitudeConditionDto()
-                        {
-                            Magnitude = magnitudeConditionDto.Magnitude,
-                            BoneOrigin = magnitudeConditionDto.BoneOrigin,
-                            TargetNodeId = magnitudeConditionDto.TargetNodeId
-                        });
-                        break;
+            List<PoseConditionDto> copy = new();
 
-                    default:
-                        throw new NotImplementedException("Please implement clone for other conditions");
-                }
-            });
+            if (HasMagnitudeCondition)
+            {
+                copy.Add(new MagnitudeConditionDto()
+                {
+                    Magnitude = Magnitude,
+                    BoneOrigin = BoneOrigin
+                    // UNDONE : Add related TargetNodeId = 
+                });
+            }
+            if (HasDirectionCondition)
+            {
+                copy.Add(new DirectionConditionDto()
+                {
+                    Direction = Direction.Dto()
+                });;
+            }
+            if (HasScaleCondition)
+            {
+                copy.Add(new ScaleConditionDto()
+                {
+                    Scale = TargetScale.Dto()
+                });
+            }
             return copy.ToArray();
         }
     }
