@@ -15,17 +15,11 @@ limitations under the License.
 */
 
 using umi3d.cdk.userCapture.tracking;
-using umi3d.common;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
-    public interface IPoseCondition
-    {
-        public bool Check();
-    }
-
     public class MagnitudePoseCondition : IPoseCondition
     {
         protected MagnitudeConditionDto MagnitudeConditionDto;
@@ -50,51 +44,6 @@ namespace umi3d.cdk.userCapture.pose
                 bonePosition = bone.transform.position;
 
             return Vector3.Distance(targetPosition, bonePosition) < MagnitudeConditionDto.Magnitude;
-        }
-    }
-
-    public class BoneRotationPoseCondition : IPoseCondition
-    {
-        protected BoneRotationConditionDto boneRotationConditionDto;
-
-        protected TrackedSkeleton trackedSkeleton;
-
-        public BoneRotationPoseCondition(BoneRotationConditionDto dto, TrackedSkeleton trackedSkeleton)
-        {
-            this.boneRotationConditionDto = dto;
-            this.trackedSkeleton = trackedSkeleton;
-        }
-
-        public bool Check()
-        {
-            Quaternion boneRotation;
-            if (trackedSkeleton.bones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
-                boneRotation = bone.transform.rotation;
-            else
-                return false;
-
-            return Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.AcceptanceRange;
-        }
-    }
-
-    public class ScalePoseCondition : IPoseCondition
-    {
-        protected ScaleConditionDto scaleConditionDto;
-
-        protected Transform nodeTransform;
-
-        public ScalePoseCondition(ScaleConditionDto dto, Transform nodeTransform)
-        {
-            this.scaleConditionDto = dto;
-            this.nodeTransform = nodeTransform;
-        }
-
-        public bool Check()
-        {
-            Vector3 targetScale = nodeTransform.localScale;
-            Vector3 wantedScale = scaleConditionDto.Scale.Struct();
-
-            return targetScale.sqrMagnitude <= wantedScale.sqrMagnitude;
         }
     }
 }
