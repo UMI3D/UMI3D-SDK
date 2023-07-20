@@ -19,6 +19,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
+    /// <summary>
+    /// Wrapper for <see cref="ScaleConditionDto"/>.
+    /// </summary>
     public class ScalePoseCondition : IPoseCondition
     {
         protected ScaleConditionDto scaleConditionDto;
@@ -31,6 +34,7 @@ namespace umi3d.cdk.userCapture.pose
             this.nodeTransform = nodeTransform;
         }
 
+        /// <inheritdoc/>
         public bool Check()
         {
             Vector3 targetScale = nodeTransform.localScale;

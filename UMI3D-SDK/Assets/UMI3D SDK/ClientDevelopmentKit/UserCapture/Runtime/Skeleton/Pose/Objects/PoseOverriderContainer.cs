@@ -24,8 +24,14 @@ namespace umi3d.cdk.userCapture.pose
 
         public PoseOverrider[] PoseOverriders { get; private set; }
 
+        /// <summary>
+        /// UMI3D ID.
+        /// </summary>
         public ulong Id => dto.id;
 
+        /// <summary>
+        /// See <see cref="UMI3DPoseOverriderContainerDto.relatedNodeId"/>.
+        /// </summary>
         public ulong NodeId => dto.relatedNodeId;
 
         public PoseOverriderContainer(UMI3DPoseOverriderContainerDto dto, PoseOverrider[] poseOverriders)

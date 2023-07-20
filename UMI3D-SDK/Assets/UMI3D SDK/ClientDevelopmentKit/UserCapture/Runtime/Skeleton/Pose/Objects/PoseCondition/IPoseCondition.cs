@@ -16,8 +16,15 @@ limitations under the License.
 
 namespace umi3d.cdk.userCapture.pose
 {
+    /// <summary>
+    /// Conditions that define whether a pose should be applied or not.
+    /// </summary>
     public interface IPoseCondition
     {
+        /// <summary>
+        /// Test if a pose should be applied according to this condition.
+        /// </summary>
+        /// <returns>If a pose should be applied according to this condition.</returns>
         public bool Check();
     }
 }

@@ -20,9 +20,12 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
+    /// <summary>
+    /// Wrapper for <see cref="MagnitudeConditionDto"/>.
+    /// </summary>
     public class MagnitudePoseCondition : IPoseCondition
     {
-        protected MagnitudeConditionDto MagnitudeConditionDto;
+        protected MagnitudeConditionDto magnitudeConditionDto;
 
         protected Transform nodeTransform;
 
@@ -30,20 +33,21 @@ namespace umi3d.cdk.userCapture.pose
 
         public MagnitudePoseCondition(MagnitudeConditionDto dto, Transform nodeTransform, ITrackedSubskeleton trackedSkeleton)
         {
-            this.MagnitudeConditionDto = dto;
+            this.magnitudeConditionDto = dto;
             this.nodeTransform = nodeTransform;
             this.trackedSkeleton = trackedSkeleton;
         }
 
+        /// <inheritdoc/>
         public bool Check()
         {
             Vector3 targetPosition = nodeTransform.position;
 
             Vector3 bonePosition = Vector3.zero;
-            if (trackedSkeleton.TrackedBones.TryGetValue(MagnitudeConditionDto.BoneOrigin, out TrackedSkeletonBone bone))
+            if (trackedSkeleton.TrackedBones.TryGetValue(magnitudeConditionDto.BoneOrigin, out TrackedSkeletonBone bone))
                 bonePosition = bone.transform.position;
 
-            return Vector3.Distance(targetPosition, bonePosition) < MagnitudeConditionDto.Magnitude;
+            return Vector3.Distance(targetPosition, bonePosition) < magnitudeConditionDto.Magnitude;
         }
     }
 }
