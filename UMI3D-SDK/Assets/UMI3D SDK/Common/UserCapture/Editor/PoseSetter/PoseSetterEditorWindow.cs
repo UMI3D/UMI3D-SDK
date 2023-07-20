@@ -492,7 +492,7 @@ namespace umi3d.common.userCapture.pose.editor
         {
             if (tg_enable_condtion.value == true)
             {
-                UMI3DPoseOveridder_so poseOverrider = conditionPanel.GetPoseOveridder_So();
+                UMI3DPoseOverrider_so poseOverrider = conditionPanel.GetPoseOverrider_So();
                 poseOverrider.pose = pose_So;
                 string name = poseOverrider.name = pose_So.name + "_overrider";
                 AssetDatabase.CreateAsset(poseOverrider, path + $"/{name}.asset");

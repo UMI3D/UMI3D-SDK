@@ -22,46 +22,22 @@ namespace umi3d.cdk.userCapture.pose
     public interface IPoseManager
     {
         /// <summary>
-        /// Gets a specific pose based on an userid (0 for environment) and its id.
+        /// Poses based on an user id (0 for environment) and their id.
         /// </summary>
-        /// <param name="key"></param>
-        /// <param name="index"></param>
-        /// <returns></returns>
-        PoseDto GetPose(ulong key, int index);
+        IDictionary<ulong, IList<SkeletonPose>> Poses { get; set; }
 
         /// <summary>
-        /// Activated if the Hover Enter is triggered
+        /// Activate all poses that listen to this mode.
         /// </summary>
-        void OnHoverEnter(ulong id);
-
-        /// <summary>
-        /// Activated if the Hover Exit is triggered
-        /// </summary>
-        void OnHoverExit(ulong id);
-
-        /// <summary>
-        /// Activated if the Release Enter is triggered
-        /// </summary>
-        void OnRelease(ulong id);
-
-        /// <summary>
-        /// Activated if the Trigger is triggered
-        /// </summary>
-        void OnTrigger(ulong id);
-
-        void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses);
-
-        /// <summary>
-        /// Inits all the pose overrider containers
-        /// </summary>
-        /// <param name="allPoseOverriderContainer"></param>
-        void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer);
+        /// <param name="id"></param>
+        /// <param name="poseActivationMode"></param>
+        void TryActivatePose(ulong id, PoseActivationMode poseActivationMode);
 
         /// <summary>
         /// Sets the related pose to the overrider Dto, in the poseSkeleton
         /// </summary>
         /// <param name="poseOverriderDto"></param>
-        void SetTargetPose(PoseOverriderDto poseOverriderDto, bool isSeverPose = true);
+        void ApplyPoseOverride(PoseOverrider poseOverrider);
 
         /// <summary>
         /// Stops all poses
@@ -73,19 +49,19 @@ namespace umi3d.cdk.userCapture.pose
         /// Stops the related pose to the overriderDto, in the poseSkeleton
         /// </summary>
         /// <param name="poseOverriderDto"></param>
-        void StopTargetPose(PoseOverriderDto poseOverriderDto, bool isServerPose = true);
+        void StopPoseOverride(PoseOverrider poseOverrider);
 
         /// <summary>
         /// Allows to add a pose handler unit at runtime
         /// </summary>
         /// <param name="overrider"></param>
         /// <param name="unit"></param>
-        void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider);
+        void SubscribePoseConditionProcessor(PoseOverriderContainer overrider);
 
         /// <summary>
         /// Allows to remove a pose handler unit at runtime
         /// </summary>
         /// <param name="overrider"></param>
-        void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider);
+        void UnsubscribePoseConditionProcessor(PoseOverriderContainer overrider);
     }
 }

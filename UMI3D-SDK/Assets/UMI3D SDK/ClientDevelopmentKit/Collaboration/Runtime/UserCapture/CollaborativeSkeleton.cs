@@ -15,11 +15,8 @@ limitations under the License.
 */
 
 using umi3d.cdk.userCapture;
-using umi3d.cdk.userCapture.pose;
-using umi3d.cdk.userCapture.tracking;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common.userCapture.tracking;
-using UnityEngine;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
@@ -37,25 +34,16 @@ namespace umi3d.cdk.collaboration.userCapture
             transform.rotation = rotExtrapolator.Extrapolate();
         }
 
-        public override void UpdateFrame(UserTrackingFrameDto frame)
+        public override void UpdateBones(UserTrackingFrameDto frame)
         {
             foreach (ISubskeleton skeleton in Subskeletons)
             {
                 if (skeleton is IWritableSubskeleton writableSubskeleton)
-                    writableSubskeleton.UpdateFrame(frame);
+                    writableSubskeleton.UpdateBones(frame);
             }
 
             posExtrapolator.AddMeasure(frame.position.Struct());
             rotExtrapolator.AddMeasure(frame.rotation.Quaternion());
-        }
-
-        public void SetSubSkeletons(TrackedSkeleton trackedSkeleton, PoseSubskeleton poseSkeleton)
-        {
-            TrackedSubskeleton = trackedSkeleton;
-            HipsAnchor = TrackedSubskeleton.Hips;
-            PoseSubskeleton = poseSkeleton;
-            Subskeletons.Add(TrackedSubskeleton);
-            Subskeletons.Add(PoseSubskeleton);
         }
     }
 }

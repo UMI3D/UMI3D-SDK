@@ -21,6 +21,7 @@ using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
+using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.Common
 {
@@ -159,10 +160,11 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         public void ReadPose()
         {
             // GIVEN
-            PoseDto poseDto = new PoseDto(
-                bones: GetTestBonePoseDtoSample(),
-                boneAnchor: new BonePoseDto() { Bone = 24u, Position = Vector3Dto.zero, Rotation = Vector4Dto.one }
-            );
+            PoseDto poseDto = new PoseDto()
+            {
+                bones = GetTestBonePoseDtoSample(),
+                boneAnchor = new BonePoseDto() { Bone = 24u, Position = Vector3Dto.zero, Rotation = Vector4Dto.one }
+            };
 
             poseSerializerModule.Write(poseDto, out Bytable data);
 
@@ -195,17 +197,15 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         {
             int poseIndexinPoseManager = 12;
 
-            PoseOverriderDto poseOverriderDto = new PoseOverriderDto(
-                poseIndexinPoseManager: poseIndexinPoseManager,
-                poseConditionDtos: GetConditionsTestSet(),
-                duration: new DurationDto(24, 222, 13),
-                interpolationable: true,
-                composable: false,
-                isHoverEnter: false,
-                isHoverExit: true,
-                isTrigger: true,
-                isRelease: false
-            );
+            PoseOverriderDto poseOverriderDto = new PoseOverriderDto()
+            {
+                poseIndexInPoseManager =  poseIndexinPoseManager,
+                poseConditions = GetConditionsTestSet(),
+                duration = new DurationDto() { duration=24, max=12, min=2},
+                isInterpolable = true,
+                isComposable = false,
+                activationMode = 0,
+            };
 
             poseSerializerModule.Write(poseOverriderDto, out Bytable data);
 
@@ -214,7 +214,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseOverriderDto result);
             Assert.IsTrue(readable);
 
-            int poseIndex = result.poseIndexinPoseManager;
+            int poseIndex = result.poseIndexInPoseManager;
 
             Assert.IsTrue(poseIndex == poseIndexinPoseManager);
             Assert.IsTrue((result.poseConditions[0] as UserScaleConditionDto).Scale.Struct()
@@ -223,15 +223,15 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                 == (poseOverriderDto.poseConditions[1] as DirectionConditionDto).Direction.Struct());
 
             Assert.AreEqual(poseOverriderDto.duration.duration, result.duration.duration);
-            Assert.AreEqual(poseOverriderDto.interpolationable, result.interpolationable);
-            Assert.AreEqual(poseOverriderDto.composable, result.composable);
+            Assert.AreEqual(poseOverriderDto.isInterpolable, result.isInterpolable);
+            Assert.AreEqual(poseOverriderDto.isComposable, result.isComposable);
         }
 
         private PoseConditionDto[] GetConditionsTestSet()
         {
             return new PoseConditionDto[]{
-                new UserScaleConditionDto(Vector3Dto.one),
-                new DirectionConditionDto(Vector3Dto.one)
+                new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
+                new DirectionConditionDto() { Direction = Vector3.one.Dto() },
             };
         }
 
@@ -242,11 +242,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadDuration()
         {
-            DurationDto duration = new DurationDto(
-                duration: 159,
-                min: 5,
-                max: 89486
-            );
+            DurationDto duration = new DurationDto()
+            {
+                duration = 159,
+                min = 5,
+                max = 89486
+            };
 
             poseSerializerModule.Write(duration, out Bytable data);
 

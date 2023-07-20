@@ -82,15 +82,34 @@ namespace umi3d.cdk.collaboration
         public override async Task ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
         {
             await base.ReadUMI3DExtension(_dto, node);
+
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-            if (dto == null) return;
+            if (dto == null) 
+                return;
+
             userList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
-            PoseManager.Instance.SetPoses(dto.allPoses);
-            onEnvironmentLoaded.AddListener(() => PoseManager.Instance.SetPosesOverriders(dto.allPoseOverriderContainer));
+
+            PoseManager.Instance.Poses = dto.poses.ToDictionary(x => x.Key, x => x.Value.Select(p=> new SkeletonPose(p, isCustom: x.Key != UMI3DGlobalID.EnvironementId)).ToList() as IList<SkeletonPose>);
+            poseLoader ??= new UMI3DPoseOverriderContainerLoader();
+
+            onEnvironmentLoaded.AddListener(LoadPoses);
+            void LoadPoses()
+            {
+                dto.poseOverriderContainers.ForEach(x =>
+                {
+                    var container = poseLoader.LoadContainer(x);
+                    PoseManager.Instance.SubscribePoseConditionProcessor(container);
+                });
+                onEnvironmentLoaded.RemoveListener(LoadPoses);
+            }
+
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
+
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
         }
+
+        private UMI3DPoseOverriderContainerLoader poseLoader;
 
         /// <summary>
         /// Called when a user starts to speak.
@@ -155,8 +174,8 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(data.property.property, data.entity, data.property.value);
-                case UMI3DPropertyKeys.AllPoses:
-                    return UpdateAllPoses(data.entity);
+                case UMI3DPropertyKeys.Poses:
+                    return UpdatePoses(data.entity);
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
                     return UpdateUser(data.property.property, data.entity, (ulong)(long)data.property.value);
@@ -199,9 +218,9 @@ namespace umi3d.cdk.collaboration
                         string value = UMI3DSerializer.Read<string>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
-                case UMI3DPropertyKeys.AllPoses:
+                case UMI3DPropertyKeys.Poses:
                     {
-                        return UpdateAllPoses(data.entity);
+                        return UpdatePoses(data.entity);
                     }
 
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
@@ -289,19 +308,20 @@ namespace umi3d.cdk.collaboration
             return user?.UpdateUser(property, value) ?? false;
         }
 
-        private bool UpdateAllPoses(UMI3DEntityInstance entityInstance)
+        private bool UpdatePoses(UMI3DEntityInstance entityInstance)
         {
             switch (entityInstance.dto)
             {
                 case SetEntityDictionaryAddPropertyDto addPropertyDto:
                     {
-                        PoseManager.Instance.allPoses.Add((ulong)addPropertyDto.key, (List<PoseDto>)addPropertyDto.value);
+                        PoseManager.Instance.Poses.Add((ulong)addPropertyDto.key, 
+                                                        ((List<PoseDto>)addPropertyDto.value).Select(poseDto=>new cdk.userCapture.pose.SkeletonPose(poseDto)).ToList());
                         return true;
                     }
 
                 case SetEntityDictionaryRemovePropertyDto removePropertyDto:
                     {
-                        PoseManager.Instance.allPoses.Remove((ulong)removePropertyDto.key);
+                        PoseManager.Instance.Poses.Remove((ulong)removePropertyDto.key);
                         return true;
                     }
             }

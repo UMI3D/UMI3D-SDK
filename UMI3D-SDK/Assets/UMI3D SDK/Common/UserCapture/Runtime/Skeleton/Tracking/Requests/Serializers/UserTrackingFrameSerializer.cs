@@ -55,9 +55,9 @@ namespace umi3d.common.userCapture.tracking
 
                             trackedBones = trackedBones,
 
-                            playerServerPoses = playerServerPoses,
+                            environmentPosesIndexes = playerServerPoses,
 
-                            playerUserPoses = playerUserPoses
+                            customPosesIndexes = playerUserPoses
                         };
                         readable = true;
                         result = (T)Convert.ChangeType(trackingFrame, typeof(T));
@@ -81,8 +81,8 @@ namespace umi3d.common.userCapture.tracking
                     + UMI3DSerializer.Write(c.position)
                     + UMI3DSerializer.Write(c.rotation)
                     + UMI3DSerializer.WriteCollection(c.trackedBones)
-                    + UMI3DSerializer.WriteCollection(c.playerServerPoses)
-                    + UMI3DSerializer.WriteCollection(c.playerUserPoses);
+                    + UMI3DSerializer.WriteCollection(c.environmentPosesIndexes)
+                    + UMI3DSerializer.WriteCollection(c.customPosesIndexes);
                 return true;
             }
 

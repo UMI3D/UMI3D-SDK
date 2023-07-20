@@ -32,15 +32,13 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Size of the skeleton.
         /// </summary>
-        public Vector3 worldSize => TrackedSubskeleton.transform.lossyScale;
+        public Vector3 worldSize => TrackedSubskeleton.Hips.lossyScale;
 
         protected void Start()
         {
             PoseSubskeleton = new PoseSubskeleton();
-            Subskeletons = new List<ISubskeleton>
-            {
-                TrackedSubskeleton, PoseSubskeleton
-            };
+
+            Init(trackedSkeleton, PoseSubskeleton);
         }
 
         /// <summary>
@@ -66,14 +64,14 @@ namespace umi3d.cdk.userCapture
         }
 
         /// <inheritdoc/>
-        public override void UpdateFrame(UserTrackingFrameDto frame)
+        public override void UpdateBones(UserTrackingFrameDto frame)
         {
             if (Subskeletons != null)
             {
                 foreach (ISubskeleton skeleton in Subskeletons)
                 {
                     if (skeleton is IWritableSubskeleton writableSkeleton)
-                        writableSkeleton.UpdateFrame(frame);
+                        writableSkeleton.UpdateBones(frame);
                 }
             }
         }

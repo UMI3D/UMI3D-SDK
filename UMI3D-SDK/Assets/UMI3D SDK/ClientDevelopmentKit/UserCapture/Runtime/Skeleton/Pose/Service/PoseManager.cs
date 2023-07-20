@@ -16,27 +16,22 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.userCapture.pose;
-using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
     public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
         /// <summary>
-        /// All the pose overrider container in the scene
-        /// </summary>
-        [SerializeField] private List<UMI3DPoseOverriderContainerDto> poseOverriderContainerDtos = new();
-
-        /// <summary>
         /// All the local pose of the client
         /// </summary>
-        public PoseDto[] localPoses;
+        public PoseDto[] localPoses = new PoseDto[0];
 
         /// <summary>
         /// All the poses in the experience key: userID, value : list of the poses of the related user
         /// </summary>
-        public Dictionary<ulong, List<PoseDto>> allPoses;
+        public IDictionary<ulong, IList<SkeletonPose>> Poses { get; set; } = new Dictionary<ulong, IList<SkeletonPose>>();
 
         /// <summary>
         /// All pose condition processors
@@ -68,130 +63,72 @@ namespace umi3d.cdk.userCapture.pose
             localPoses = new PoseDto[clientPoses.Count];
             for (int i = 0; i < clientPoses.Count; i++)
             {
-                PoseDto poseDto = clientPoses[i].ToDTO();
-                poseDto.id = i;
+                PoseDto poseDto = clientPoses[i].ToDto();
+                poseDto.index = i;
                 localPoses[i] = poseDto;
             }
         }
 
         /// <inheritdoc/>
-        public void SetPoses(Dictionary<ulong, List<PoseDto>> allPoses)
+        public void SubscribePoseConditionProcessor(PoseOverriderContainer overrider)
         {
-            this.allPoses = allPoses;
-        }
+            if (conditionProcessors.ContainsKey(overrider.NodeId))
+                return;
 
-        /// <inheritdoc/>
-        public PoseDto GetPose(ulong key, int index)
-        {
-            List<PoseDto> poses = allPoses[key];
-            return poses?[index];
-        }
-
-        /// <inheritdoc/>
-        public void SetPosesOverriders(List<UMI3DPoseOverriderContainerDto> allPoseOverriderContainer)
-        {
-            poseOverriderContainerDtos = allPoseOverriderContainer;
-
-            for (int i = 0; i < allPoseOverriderContainer.Count; i++)
-            {
-                PoseConditionProcessor handlerUnit = new PoseConditionProcessor(allPoseOverriderContainer[i]);
-                handlerUnit.CheckCondtionOfAllOverriders();
-                handlerUnit.OnConditionValidated += (unit, pose) =>
-                {
-                    SetTargetPose(pose);
-                };
-                handlerUnit.OnConditionDesactivated += (unit, pose) =>
-                {
-                    StopTargetPose(pose);
-                };
-                conditionProcessors.Add(allPoseOverriderContainer[i].relatedNodeId, handlerUnit);
-            }
-        }
-
-        /// <inheritdoc/>
-        public void SubscribeNewPoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
-        {
             PoseConditionProcessor unit = new PoseConditionProcessor(overrider);
-            unit.OnConditionValidated += (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
-            unit.OnConditionDesactivated += (unit, poseOverriderDto) => StopTargetPose(poseOverriderDto);
-            conditionProcessors.Add(overrider.relatedNodeId, unit);
+            unit.ConditionValidated += ApplyPoseOverride;
+            unit.ConditionInvalided += StopPoseOverride;
+            conditionProcessors.Add(overrider.NodeId, unit);
         }
 
         /// <inheritdoc/>
-        public void UnSubscribePoseHandlerUnit(UMI3DPoseOverriderContainerDto overrider)
+        public void UnsubscribePoseConditionProcessor(PoseOverriderContainer overrider)
         {
-            if (conditionProcessors.TryGetValue(overrider.relatedNodeId, out PoseConditionProcessor unit))
+            if (conditionProcessors.TryGetValue(overrider.NodeId, out PoseConditionProcessor unit))
             {
-                unit.OnConditionValidated -= (unit, poseOverriderDto) => SetTargetPose(poseOverriderDto);
-                unit.DisableCheck();
-                conditionProcessors.Remove(overrider.relatedNodeId);
+                unit.ConditionValidated -= ApplyPoseOverride;
+                unit.StopWatchNonInteractionalConditions();
+                conditionProcessors.Remove(overrider.NodeId);
             }
         }
 
         /// <inheritdoc/>
-        public void OnHoverEnter(ulong id)
+        public void TryActivatePose(ulong id, PoseActivationMode poseActivationMode)
         {
             if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
             {
-                unit.CheckHoverEnterConditions();
+                unit.TryActivate(poseActivationMode);
             }
         }
 
         /// <inheritdoc/>
-        public void OnHoverExit(ulong id)
+        public void ApplyPoseOverride(PoseOverrider poseOverrider)
         {
-            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
-            {
-                unit.CheckHoverExitConditions();
-            }
-        }
+            if (poseOverrider == null)
+                return;
 
-        /// <inheritdoc/>
-        public void OnTrigger(ulong id)
-        {
-            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
+            foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
             {
-                unit.CheckTriggerConditions();
-            }
-        }
-
-        /// <inheritdoc/>
-        public void OnRelease(ulong id)
-        {
-            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
-            {
-                unit.CheckReleaseConditions();
-            }
-        }
-
-        /// <inheritdoc/>
-        public void SetTargetPose(PoseOverriderDto poseOverriderDto, bool isSeverPose = true)
-        {
-            if (poseOverriderDto != null && allPoses != null)
-            {
-                foreach (PoseDto pose in allPoses[0])
+                if (pose.Index == poseOverrider.PoseIndexInPoseManager)
                 {
-                    if (pose.id == poseOverriderDto.poseIndexinPoseManager)
-                    {
-                        skeletonManager.PersonalSkeleton.PoseSubskeleton.SetPose(poseOverriderDto.composable, new List<PoseDto>() { pose }, isSeverPose);
-                        return;
-                    }
+                    skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(pose);
+                    return;
                 }
             }
         }
 
         /// <inheritdoc/>
-        public void StopTargetPose(PoseOverriderDto poseOverriderDto, bool isServerPose = true)
+        public void StopPoseOverride(PoseOverrider poseOverrider)
         {
-            if (poseOverriderDto != null && allPoses != null)
+            if (poseOverrider == null)
+                return;
+
+            foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
             {
-                foreach (PoseDto pose in allPoses[0])
+                if (pose.Index == poseOverrider.PoseIndexInPoseManager)
                 {
-                    if (pose.id == poseOverriderDto.poseIndexinPoseManager)
-                    {
-                        skeletonManager.PersonalSkeleton.PoseSubskeleton.StopPose(new List<PoseDto>() { pose }, isServerPose);
-                        return;
-                    }
+                    skeletonManager.PersonalSkeleton.PoseSubskeleton.StopPose(pose);
+                    return;
                 }
             }
         }

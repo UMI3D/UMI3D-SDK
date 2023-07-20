@@ -22,6 +22,8 @@ using umi3d.common.userCapture.pose;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
 {
+    using SkeletonPose = umi3d.cdk.userCapture.pose.SkeletonPose;
+
     public class PoseSubskeleton_Test
     {
         private PoseSubskeleton poseSubskeleton = null;
@@ -59,21 +61,24 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void SetPose_Null()
         {
-            poseSubskeleton.SetPose(true, null, true);
+            poseSubskeleton.StartPose(new List<SkeletonPose>(), true);
         }
 
         [Test]
-        public void SetPose_Server()
+        public void SetPoses()
         {
-            poseSubskeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, true);
-            Assert.IsTrue(poseSubskeleton.GetServerPoses().Count == 2);
-        }
+            // GIVEN
+            var poses = new List<SkeletonPose>()
+            {
+                new SkeletonPose(new PoseDto(), true),
+                new SkeletonPose(new PoseDto()),
+            };
 
-        [Test]
-        public void SetPose_Client()
-        {
-            poseSubskeleton.SetPose(true, new List<PoseDto>() { new PoseDto(), new PoseDto() }, false);
-            Assert.IsTrue(poseSubskeleton.GetLocalPoses().Count == 2);
+            // WHEN
+            poseSubskeleton.StartPose(poses, true);
+            
+            // THEN
+            Assert.IsTrue(poseSubskeleton.ActivatedPoses.Count == 2);
         }
 
         #endregion SetPose
@@ -83,31 +88,20 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void StopAllPoses_All()
         {
-            PoseDto pose_01 = new PoseDto();
-            PoseDto pose_02 = new PoseDto();
+            // GIVEN
+            var poses = new List<SkeletonPose>()
+            {
+                new SkeletonPose(new PoseDto(), true),
+                new SkeletonPose(new PoseDto()),
+            };
 
-            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
-            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
+            poseSubskeleton.StartPose(poses, false);
+
+            // WHEN
             poseSubskeleton.StopAllPoses();
 
-            Assert.IsTrue(poseSubskeleton.GetLocalPoses().Count == 0);
-            Assert.IsTrue(poseSubskeleton.GetServerPoses().Count == 0);
-        }
-
-        [Test]
-        public void StopAllPoses_Specific()
-        {
-            PoseDto pose_01 = new PoseDto();
-            PoseDto pose_02 = new PoseDto();
-
-            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, false);
-            poseSubskeleton.SetPose(false, new List<PoseDto>() { pose_01, pose_02 }, true);
-            poseSubskeleton.StopPose(new List<PoseDto>() { pose_01 }, false);
-
-            Assert.IsTrue(poseSubskeleton.GetLocalPoses().Count == 1);
-            Assert.IsTrue(poseSubskeleton.GetServerPoses().Count == 2);
-            Assert.IsFalse(poseSubskeleton.GetLocalPoses().Contains(pose_01));
-            Assert.IsTrue(poseSubskeleton.GetLocalPoses()[0] == pose_02);
+            // THEN
+            Assert.IsTrue(poseSubskeleton.ActivatedPoses.Count == 0);
         }
 
         #endregion StopAllPoses

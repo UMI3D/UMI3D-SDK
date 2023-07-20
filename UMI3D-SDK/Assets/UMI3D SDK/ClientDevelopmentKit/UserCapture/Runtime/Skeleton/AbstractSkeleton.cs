@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
@@ -36,10 +37,12 @@ namespace umi3d.cdk.userCapture
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
         /// <inheritdoc/>
-        public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
+        public virtual IDictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.s_Transform>();
 
         /// <inheritdoc/>
-        public virtual List<ISubskeleton> Subskeletons { get; protected set; } = new();
+        public virtual IReadOnlyList<ISubskeleton> Subskeletons => subskeletons;
+
+        protected List<ISubskeleton> subskeletons = new();
 
         /// <inheritdoc/>
         public UMI3DSkeletonHierarchy SkeletonHierarchy
@@ -55,6 +58,7 @@ namespace umi3d.cdk.userCapture
                 _skeletonHierarchy = value;
             }
         }
+
         private UMI3DSkeletonHierarchy _skeletonHierarchy;
 
         /// <inheritdoc/>
@@ -66,30 +70,29 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSubskeleton
-        {
-            get
-            {
-                return trackedSkeleton;
-            }
-            protected set
-            {
-                trackedSkeleton = value;
-            }
-        }
+        public ITrackedSubskeleton TrackedSubskeleton => trackedSkeleton;
+
         [SerializeField]
-        private TrackedSkeleton trackedSkeleton;
+        protected TrackedSkeleton trackedSkeleton;
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSubskeleton PoseSubskeleton { get; protected set; }
+        public IPoseSubskeleton PoseSubskeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
+
+        public void Init(TrackedSkeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
+        {
+            this.trackedSkeleton = trackedSkeleton;
+            HipsAnchor = TrackedSubskeleton.Hips;
+            PoseSubskeleton = poseSkeleton;
+            subskeletons = new List<ISubskeleton> { TrackedSubskeleton, PoseSubskeleton };
+        }
 
         /// <inheritdoc/>
         public ISkeleton Compute()
@@ -178,9 +181,7 @@ namespace umi3d.cdk.userCapture
             {
                 var skeleton = Subskeletons[i];
 
-                List<BoneDto> bones;
-
-                bones = skeleton.GetPose()?.bones;
+                List<BoneDto> bones = skeleton.GetPose()?.bones;
 
                 if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                     continue;
@@ -212,16 +213,57 @@ namespace umi3d.cdk.userCapture
         }
 
         /// <inheritdoc/>
-        public abstract void UpdateFrame(UserTrackingFrameDto frame);
+        public abstract void UpdateBones(UserTrackingFrameDto frame);
 
         public UserCameraPropertiesDto GetCameraDto()
         {
             return new UserCameraPropertiesDto()
             {
                 scale = 1f,
-                projectionMatrix = TrackedSubskeleton.Viewpoint.projectionMatrix.Dto(),
+                projectionMatrix = TrackedSubskeleton.ViewPoint.projectionMatrix.Dto(),
                 boneType = BoneType.Viewpoint,
             };
+        }
+
+        public void AddSubskeleton(ISubskeleton subskeleton)
+        {
+            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+                return;
+
+            lock (subskeletons) // loader can start parallel async tasks, required to load concurrently
+            {
+                var animatedSubskeletons = subskeletons
+                                    .Where(x => x is AnimatedSubskeleton)
+                                    .Cast<AnimatedSubskeleton>()
+                                    .Append(animatedSubskeleton)
+                                    .OrderByDescending(x => x.Priority).ToList();
+
+                subskeletons.Clear();
+
+                if (TrackedSubskeleton != null)
+                    subskeletons.Add(TrackedSubskeleton);
+
+                subskeletons.AddRange(animatedSubskeletons);
+
+                if (PoseSubskeleton != null)
+                    subskeletons.Add(PoseSubskeleton);
+
+                // if some animator parameters should be updated by the browsers itself, start listening to them
+                if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                    animatedSubskeleton.StartParameterSelfUpdate(this);
+            }
+        }
+
+        public void RemoveSubskeleton(ISubskeleton subskeleton)
+        {
+            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+                return;
+
+            if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                animatedSubskeleton.StopParameterSelfUpdate();
+
+            if (subskeletons.Contains(animatedSubskeleton))
+                subskeletons.Remove(animatedSubskeleton);
         }
     }
 }

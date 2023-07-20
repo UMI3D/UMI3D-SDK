@@ -722,7 +722,7 @@ namespace umi3d.cdk.collaboration
                 {
                     MainThreadManager.Run(() =>
                     {
-                        CollaborationSkeletonsManager.Instance.UpdateFrames(frames.values);
+                        CollaborationSkeletonsManager.Instance.UpdateSkeleton(frames.values);
                     });
                 }
             }
@@ -734,7 +734,7 @@ namespace umi3d.cdk.collaboration
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);
                     MainThreadManager.Run(() =>
                     {
-                        CollaborationSkeletonsManager.Instance.UpdateFrames(frames);
+                        CollaborationSkeletonsManager.Instance.UpdateSkeleton(frames);
                     });
                 }
                 catch (Exception e)

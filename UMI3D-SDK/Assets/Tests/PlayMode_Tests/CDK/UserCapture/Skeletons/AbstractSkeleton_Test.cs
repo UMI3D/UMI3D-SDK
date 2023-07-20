@@ -107,7 +107,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
                 animatedSkeletonMock.Object
             };
 
-            abstractSkeleton.Subskeletons.AddRange(animatedSubskeletons);
+            foreach (var animatedSubskeleton in animatedSubskeletons)
+                abstractSkeleton.AddSubskeleton(animatedSubskeleton);
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -129,15 +130,17 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
             Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
-            PoseDto poseDto = new PoseDto();
-            poseDto.SetBonePoseDtoArray(new List<BoneDto>
+            PoseDto poseDto = new PoseDto
             {
-                new BoneDto()
+                bones = new List<BoneDto>
                 {
-                    boneType = BoneType.CenterFeet,
-                    rotation = Vector4.one.Dto()
-                },
-            });
+                    new BoneDto()
+                    {
+                        boneType = BoneType.CenterFeet,
+                        rotation = Vector4.one.Dto()
+                    },
+                }
+            };
 
             animatedSkeletonMock.Setup(x => x.GetPose()).Returns(poseDto);
 
@@ -147,7 +150,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
                 animatedSkeletonMock.Object
             };
 
-            abstractSkeleton.Subskeletons.AddRange(animatedSubskeletons);
+            foreach (var animatedSubskeleton in animatedSubskeletons)
+                abstractSkeleton.AddSubskeleton(animatedSubskeleton);
 
             //When
             ISkeleton results = abstractSkeleton.Compute();

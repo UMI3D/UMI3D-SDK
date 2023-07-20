@@ -212,7 +212,7 @@ namespace umi3d.cdk.collaboration.userCapture
             
             var poseSkeleton = new PoseSubskeleton(poseManager);
 
-            cs.SetSubSkeletons(trackedSkeleton, poseSkeleton);
+            cs.Init(trackedSkeleton, poseSkeleton);
 
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in skeletonHierarchy.Relations.Keys)
@@ -254,14 +254,14 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Tracking management
 
-        public void UpdateFrames(List<UserTrackingFrameDto> frames)
+        public void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames)
         {
             foreach (var frame in frames)
-                UpdateFrame(frame);
+                UpdateSkeleton(frame);
             computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
         }
 
-        public void UpdateFrame(UserTrackingFrameDto frame)
+        public void UpdateSkeleton(UserTrackingFrameDto frame)
         {
             if (!Skeletons.TryGetValue(frame.userId, out ISkeleton skeleton))
             {
@@ -269,7 +269,8 @@ namespace umi3d.cdk.collaboration.userCapture
                 return;
             }
 
-            skeleton.UpdateFrame(frame);
+            skeleton.UpdateBones(frame);
+            computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
         }
 
         private async void SendTrackingLoop()
@@ -308,7 +309,7 @@ namespace umi3d.cdk.collaboration.userCapture
             {
                 if (BonesAsyncFPS[boneType] > 0)
                 {
-                    if (PersonalSkeleton.TrackedSubskeleton.bones.ContainsKey(boneType))
+                    if (PersonalSkeleton.TrackedSubskeleton.TrackedBones.ContainsKey(boneType))
                     {
                         var boneData = PersonalSkeleton.TrackedSubskeleton.GetController(boneType);
 
@@ -382,13 +383,15 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public void HandlePoseRequest(ApplyPoseDto playPoseDto)
         {
-            PoseDto poseDto = PoseManager.Instance.GetPose(playPoseDto.userID, playPoseDto.indexInList);
-            Skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton);
+            SkeletonPose pose = PoseManager.Instance.Poses[playPoseDto.userID][playPoseDto.indexInList];
+
+            if (!Skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton))
+                return;
 
             if (playPoseDto.stopPose)
-                skeleton.PoseSubskeleton.StopPose(new List<PoseDto> { poseDto });
+                skeleton.PoseSubskeleton.StopPose(pose);
             else
-                skeleton.PoseSubskeleton.SetPose(false, new List<PoseDto> { poseDto }, true);
+                skeleton.PoseSubskeleton.StartPose(pose);
         }
 
         #endregion Pose

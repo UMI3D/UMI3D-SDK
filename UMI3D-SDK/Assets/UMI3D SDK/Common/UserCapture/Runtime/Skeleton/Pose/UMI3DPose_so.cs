@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using Newtonsoft.Json;
-using Newtonsoft.Json.Serialization;
 using System;
 using System.Collections.Generic;
 using umi3d.common.userCapture.description;
@@ -47,7 +46,10 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         public BonePose BonePoseDto { get => bonePose; }
 
-        public int poseRef { get; set; }
+        /// <summary>
+        /// Pose index
+        /// </summary>
+        public int Index { get; set; }
 
         /// <summary>
         /// Stores the data inside the scriptable object
@@ -61,15 +63,15 @@ namespace umi3d.common.userCapture.pose
                 this.bones.Add(new Bone()
                 {
                     boneType = bp.boneType,
-                    rotation = new p_Quat() { x = bp.rotation.X, y = bp.rotation.Y, z = bp.rotation.Z, w = bp.rotation.W }
+                    rotation = bp.rotation.Quaternion()
                 });
             });
 
             this.bonePose = new BonePose()
             {
                 boneType = bonePoseDto.Bone,
-                position = new float3() { x = bonePoseDto.Position.X, y = bonePoseDto.Position.Y, z = bonePoseDto.Position.Z },
-                rotation = new p_Quat() { x = bonePoseDto.Rotation.X, y = bonePoseDto.Rotation.Y, z = bonePoseDto.Rotation.Z, w = bonePoseDto.Rotation.W }
+                position = bonePoseDto.Position.Struct(),
+                rotation = bonePoseDto.Rotation.Quaternion()
             };
         }
 
@@ -77,9 +79,9 @@ namespace umi3d.common.userCapture.pose
         /// Transforms the Scriptable Object to its DTO counterpart
         /// </summary>
         /// <returns></returns>
-        public PoseDto ToDTO()
+        public PoseDto ToDto()
         {
-            return new PoseDto(GetBonesCopy(), GetBonePoseCopy());
+            return new PoseDto() { bones = GetBonesCopy(), boneAnchor = GetBonePoseCopy() };
         }
 
         /// <summary>
@@ -109,8 +111,8 @@ namespace umi3d.common.userCapture.pose
             BonePoseDto copy = new BonePoseDto()
             {
                 Bone = bonePose.boneType,
-                Position = new Vector3Dto() { X = bonePose.position.x, Y = bonePose.position.y, Z = bonePose.position.z },
-                Rotation = new Vector4Dto() { X = bonePose.rotation.x, Y = bonePose.rotation.y, Z = bonePose.rotation.z, W = bonePose.rotation.w }
+                Position = bonePose.position.Dto(),
+                Rotation = bonePose.rotation.Dto()
             };
 
             return copy;
@@ -120,33 +122,21 @@ namespace umi3d.common.userCapture.pose
         public struct Bone
         {
             public uint boneType;
-            public p_Quat rotation;
+            public Quaternion rotation;
         }
 
         [Serializable]
         public struct BonePose
         {
             public uint boneType;
-            public float3 position;
-            public p_Quat rotation;
-        }
-
-        [Serializable]
-        public struct p_Quat
-        {
-            public float x, y, z, w;
-        }
-
-        [Serializable]
-        public struct float3
-        {
-            public float x, y, z;
+            public Vector3 position;
+            public Quaternion rotation;
         }
 
         /// <inheritdoc/>
         public string JsonSerialize()
         {
-            PoseDto poseDto = ToDTO();
+            PoseDto poseDto = ToDto();
             JsonSerializerSettings settings = new JsonSerializerSettings { TypeNameHandling = TypeNameHandling.All, Formatting = Formatting.Indented };
             string json = JsonConvert.SerializeObject(poseDto, settings);
             return json;

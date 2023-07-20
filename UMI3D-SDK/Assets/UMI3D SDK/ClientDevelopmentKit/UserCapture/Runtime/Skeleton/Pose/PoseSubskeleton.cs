@@ -14,17 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture.tracking;
-using umi3d.common.userCapture;
+using umi3d.common;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture.pose
 {
-    public class PoseSubskeleton : IWritableSubskeleton
+    /// <summary>
+    /// Subskeleton that handles body poses.
+    /// </summary>
+    public class PoseSubskeleton : IPoseSubskeleton
     {
+        #region Dependency Injection
+
         private readonly IPoseManager poseManagerService;
 
         public PoseSubskeleton()
@@ -37,46 +43,43 @@ namespace umi3d.cdk.userCapture.pose
             this.poseManagerService = poseManager;
         }
 
-        private List<PoseDto> localCurrentlyActivatedPoses = new List<PoseDto>();
-        private List<PoseDto> serverCurrentlyActivatedPoses = new List<PoseDto>();
+        #endregion Dependency Injection
 
-        public List<PoseDto> GetLocalPoses()
-        {
-            List<PoseDto> poses = new List<PoseDto>();
-            poses.AddRange(localCurrentlyActivatedPoses);
-            return poses;
-        }
+        public IReadOnlyList<SkeletonPose> ActivatedPoses => activatedPoses;
+        protected List<SkeletonPose> activatedPoses = new();
 
-        public List<PoseDto> GetServerPoses()
+        /// <summary>
+        /// Set a pose for the calculation of the next tracking frame
+        /// </summary>
+        /// <param name="isOverriding"></param>
+        /// <param name="posesToAdd"></param>
+        /// <param name="isServerPose"></param>
+        public void StartPose(IEnumerable<SkeletonPose> posesToAdd, bool isOverriding = false)
         {
-            List<PoseDto> poses = new List<PoseDto>();
-            poses.AddRange(serverCurrentlyActivatedPoses);
-            return poses;
+            if (posesToAdd == null)
+                return;
+
+            if (isOverriding)
+                activatedPoses.Clear();
+
+            activatedPoses.AddRange(posesToAdd);
         }
 
         /// <summary>
         /// Set a pose for the calculation of the next tracking frame
         /// </summary>
-        /// <param name="isOveriding"></param>
+        /// <param name="isOverriding"></param>
         /// <param name="poseToAdd"></param>
         /// <param name="isServerPose"></param>
-        public void SetPose(bool isOveriding, List<PoseDto> poseToAdd, bool isServerPose)
+        public void StartPose(SkeletonPose poseToAdd, bool isOverriding = false)
         {
-            if (poseToAdd == null) return;
-            if (isOveriding)
-            {
-                serverCurrentlyActivatedPoses.Clear();
-                localCurrentlyActivatedPoses.Clear();
-            }
+            if (poseToAdd == null)
+                return;
 
-            if (isServerPose)
-            {
-                serverCurrentlyActivatedPoses.AddRange(poseToAdd);
-            }
-            else
-            {
-                localCurrentlyActivatedPoses.AddRange(poseToAdd);
-            }
+            if (isOverriding)
+                activatedPoses.Clear();
+
+            activatedPoses.Add(poseToAdd);
         }
 
         /// <summary>
@@ -84,25 +87,49 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="posesToStop"></param>
         /// <param name="isServerPose"></param>
-        public void StopPose(List<PoseDto> posesToStop = null, bool isServerPose = false)
+        public void StopPose(IEnumerable<SkeletonPose> posesToStop)
         {
-            if (posesToStop != null)
+            if (posesToStop == null)
+                return;
+            posesToStop.ForEach(pts =>
             {
-                if (isServerPose)
-                {
-                    posesToStop.ForEach(pts =>
-                    {
-                        serverCurrentlyActivatedPoses.Remove(pts);
-                    });
-                }
-                else
-                {
-                    posesToStop.ForEach(pts =>
-                    {
-                        localCurrentlyActivatedPoses.Remove(pts);
-                    });
-                }
-            }
+                activatedPoses.Remove(pts);
+            });
+        }
+
+        /// <summary>
+        /// Stops a specific set of poses
+        /// </summary>
+        /// <param name="posesToStop"></param>
+        /// <param name="isServerPose"></param>
+        public void StopPose(SkeletonPose poseToStop)
+        {
+            if (poseToStop == null)
+                return;
+            activatedPoses.Remove(poseToStop);
+        }
+
+        /// <summary>
+        /// Stops a specific set of poses
+        /// </summary>
+        /// <param name="posesToStop"></param>
+        /// <param name="isServerPose"></param>
+        public void StopPose(IEnumerable<int> posesToStopIds)
+        {
+            posesToStopIds.ForEach(poseId =>
+            {
+                activatedPoses.Remove(activatedPoses.Find(x => x.Index == poseId));
+            });
+        }
+
+        /// <summary>
+        /// Stops a specific set of poses
+        /// </summary>
+        /// <param name="posesToStop"></param>
+        /// <param name="isServerPose"></param>
+        public void StopPose(int poseToStopId)
+        {
+            activatedPoses.Remove(activatedPoses.Find(x => x.Index == poseToStopId));
         }
 
         /// <summary>
@@ -110,8 +137,7 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public void StopAllPoses()
         {
-            localCurrentlyActivatedPoses.Clear();
-            serverCurrentlyActivatedPoses.Clear();
+            activatedPoses.Clear();
         }
 
         /// <summary>
@@ -121,34 +147,18 @@ namespace umi3d.cdk.userCapture.pose
         public PoseDto GetPose()
         {
             PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
-            for (int i = 0; i < localCurrentlyActivatedPoses?.Count; i++)
+            foreach (var pose in activatedPoses)
             {
-                for (int j = 0; j < localCurrentlyActivatedPoses[i].bones?.Count; j++)
+                foreach (var bone in pose.Bones)
                 {
-                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == localCurrentlyActivatedPoses[i].bones[j].boneType);
+                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == bone.boneType);
                     if (indexOf != -1)
                     {
-                        poseDto.bones[indexOf] = localCurrentlyActivatedPoses[i].bones[j];
+                        poseDto.bones[indexOf] = bone;
                     }
                     else
                     {
-                        poseDto.bones.Add(localCurrentlyActivatedPoses[i].bones[j]);
-                    }
-                }
-            }
-
-            for (int i = 0; i < serverCurrentlyActivatedPoses?.Count; i++)
-            {
-                for (int j = 0; j < serverCurrentlyActivatedPoses[i].bones?.Count; j++)
-                {
-                    int indexOf = poseDto.bones.FindIndex(a => a.boneType == serverCurrentlyActivatedPoses[i].bones[j].boneType);
-                    if (indexOf != -1)
-                    {
-                        poseDto.bones[indexOf] = serverCurrentlyActivatedPoses[i].bones[j];
-                    }
-                    else
-                    {
-                        poseDto.bones.Add(serverCurrentlyActivatedPoses[i].bones[j]);
+                        poseDto.bones.Add(bone);
                     }
                 }
             }
@@ -160,20 +170,44 @@ namespace umi3d.cdk.userCapture.pose
         /// Updates the state of the pose manager using the tracking frame
         /// </summary>
         /// <param name="trackingFrame"></param>
-        public void UpdateFrame(UserTrackingFrameDto trackingFrame)
+        public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
-            localCurrentlyActivatedPoses.Clear();
-            serverCurrentlyActivatedPoses.Clear();
-
-            trackingFrame.playerUserPoses.ForEach(pup =>
+            // add new poses
+            foreach (var poseIndex in trackingFrame.customPosesIndexes)
             {
-                localCurrentlyActivatedPoses.Add(poseManagerService.GetPose(trackingFrame.userId, pup));
-            });
+                if (!poseManagerService.Poses.TryGetValue(trackingFrame.userId, out IList<SkeletonPose> userPoses))
+                    continue;
 
-            trackingFrame.playerServerPoses.ForEach(psp =>
+                var pose = userPoses[poseIndex];
+
+                if (!activatedPoses.Contains(pose))
+                    StartPose(pose);
+            }
+
+            foreach (var poseIndex in trackingFrame.environmentPosesIndexes)
             {
-                serverCurrentlyActivatedPoses.Add(poseManagerService.GetPose(0, psp));
-            });
+                if (!poseManagerService.Poses.TryGetValue(UMI3DGlobalID.EnvironementId, out IList<SkeletonPose> userPoses))
+                    continue;
+
+                var pose = userPoses[poseIndex];
+
+                if (!activatedPoses.Contains(pose))
+                    StartPose(pose);
+            }
+
+            // remove not activated poses
+            int nbObjToRemove = activatedPoses.Count - (trackingFrame.customPosesIndexes.Count + trackingFrame.environmentPosesIndexes.Count);
+            if (nbObjToRemove > 0)
+            {
+                Queue<SkeletonPose> posesToRemove = new Queue<SkeletonPose>(nbObjToRemove);
+                activatedPoses.ForEach(pose =>
+                {
+                    if (!trackingFrame.customPosesIndexes.Contains(pose.Index) && !trackingFrame.environmentPosesIndexes.Contains(pose.Index))
+                        posesToRemove.Enqueue(pose);
+                });
+                foreach (SkeletonPose pose in posesToRemove)
+                    StopPose(pose);
+            }
         }
 
         /// <summary>
@@ -183,17 +217,19 @@ namespace umi3d.cdk.userCapture.pose
         /// <param name="option"></param>
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
-            if (trackingFrame.playerUserPoses == null) trackingFrame.playerUserPoses = new();
-            if (trackingFrame.playerServerPoses == null) trackingFrame.playerServerPoses = new();
+            trackingFrame.customPosesIndexes ??= new();
+            trackingFrame.environmentPosesIndexes ??= new();
 
-            localCurrentlyActivatedPoses.ForEach((pose) =>
+            activatedPoses.ForEach((pose) =>
             {
-                trackingFrame.playerUserPoses.Add(pose.id);
-            });
-
-            serverCurrentlyActivatedPoses.ForEach((pose) =>
-            {
-                trackingFrame.playerServerPoses.Add(pose.id);
+                if (pose.IsCustom)
+                {
+                    trackingFrame.customPosesIndexes.Add(pose.Index);
+                }
+                else
+                {
+                    trackingFrame.environmentPosesIndexes.Add(pose.Index);
+                }
             });
         }
     }

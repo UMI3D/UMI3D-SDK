@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.cdk.userCapture;
+using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.collaboration.userCapture
 {
@@ -48,7 +49,7 @@ namespace umi3d.cdk.collaboration.userCapture
         IReadOnlyDictionary<uint, float> BonesAsyncFPS { get; }
 
         /// <summary>
-        /// Number of <see cref="common.userCapture.tracking.UserTrackingFrameDto"/> per second that are sent to the server.
+        /// Number of <see cref="UserTrackingFrameDto"/> per second that are sent to the server.
         /// </summary>
         float TargetTrackingFPS { get; set; }
 
@@ -69,5 +70,7 @@ namespace umi3d.cdk.collaboration.userCapture
         /// </summary>
         /// <param name="boneType"></param>
         void SyncBoneFPS(uint boneType);
+        void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames);
+        void UpdateSkeleton(UserTrackingFrameDto frame);
     }
 }

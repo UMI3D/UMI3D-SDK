@@ -230,11 +230,11 @@ namespace umi3d.cdk.userCapture.animation
                 {
                     (string name, UMI3DAnimatorParameterType typeKey, float valueParameter) = parameter.parameterKey switch
                     {
-                        (uint)SkeletonAnimatorParameterKeys.SPEED => ("SPEED", UMI3DAnimatorParameterType.Float, (skeleton.HipsAnchor.transform.position - previousPosition).magnitude / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_X => ("SPEED_X", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.transform.position.x - previousPosition.x) / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_Y => ("SPEED_Y", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.transform.position.y - previousPosition.y) / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_Z => ("SPEED_Z", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.transform.position.z - previousPosition.z) / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_X_Y => ("SPEED_X_Y", UMI3DAnimatorParameterType.Float, (Vector3.ProjectOnPlane(skeleton.HipsAnchor.transform.position, Vector3.up) - Vector3.ProjectOnPlane(previousPosition, Vector3.up)).magnitude / Time.deltaTime),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED => ("SPEED", UMI3DAnimatorParameterType.Float, (skeleton.HipsAnchor.position - previousPosition).magnitude / Time.deltaTime),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_X => ("SPEED_X", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.position.x - previousPosition.x) / Time.deltaTime),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_Y => ("SPEED_Y", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.position.y - previousPosition.y) / Time.deltaTime),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_Z => ("SPEED_Z", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.position.z - previousPosition.z) / Time.deltaTime),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_X_Y => ("SPEED_X_Y", UMI3DAnimatorParameterType.Float, (Vector3.ProjectOnPlane(skeleton.HipsAnchor.position, Vector3.up) - Vector3.ProjectOnPlane(previousPosition, Vector3.up)).magnitude / Time.deltaTime),
                         _ => default
                     };
 

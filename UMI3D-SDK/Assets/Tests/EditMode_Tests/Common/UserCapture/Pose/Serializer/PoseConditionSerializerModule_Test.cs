@@ -53,11 +53,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadMagnitudeCondition()
         {
-            MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto(
-                magnitude: 1220,
-                boneOrigine: 12,
-                targetObjectId: 24
-            );
+            MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto()
+            {
+                Magnitude = 1220,
+                BoneOrigin = 12,
+                TargetNodeId = 24
+            };
 
             poseConditionSerializerModule.Write(magnitudeConditionDto, out Bytable data);
 
@@ -71,10 +72,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadBoneRotationCondition()
         {
-            BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto(
-                boneId: 8,
-                rotation: Vector4Dto.one
-            );
+            BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto()
+            {
+                BoneId = 8,
+                Rotation = Vector4.one.Dto(),
+                AcceptanceRange = 1f
+            };
 
             poseConditionSerializerModule.Write(boneRotationConditionDto, out Bytable data);
 
@@ -92,9 +95,10 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadDirectionCondition()
         {
-            DirectionConditionDto directionConditionDto = new DirectionConditionDto(
-                direction: Vector3.one.Dto()
-            );
+            DirectionConditionDto directionConditionDto = new DirectionConditionDto()
+            {
+                Direction = Vector3.one.Dto(),
+            };
 
             poseConditionSerializerModule.Write(directionConditionDto, out Bytable data);
 
@@ -110,9 +114,10 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadUserScaleCondition()
         {
-            UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto(
-                scale: Vector3.one.Dto()
-            );
+            UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto()
+            {
+                Scale = Vector3.one.Dto(),
+            };
 
             poseConditionSerializerModule.Write(userScaleConditinoDto, out Bytable data);
 
@@ -126,9 +131,10 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadScaleCondition()
         {
-            ScaleConditionDto scaleConditionDto = new ScaleConditionDto(
-                scale: Vector3.one.Dto()
-            );
+            ScaleConditionDto scaleConditionDto = new ScaleConditionDto()
+            {
+                Scale = Vector3.one.Dto()
+            };
 
             poseConditionSerializerModule.Write(scaleConditionDto, out Bytable data);
 
@@ -146,10 +152,11 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadRangeCondition()
         {
-            RangeConditionDto rangeConditionDto = new RangeConditionDto(
-                conditionA: new MagnitudeConditionDto(12, 53, 15),
-                conditionB: new ScaleConditionDto(Vector3Dto.one)
-            );
+            RangeConditionDto rangeConditionDto = new RangeConditionDto()
+            {
+                ConditionA = new MagnitudeConditionDto() { Magnitude = 12, BoneOrigin = 53, TargetNodeId = 15 },
+                ConditionB = new ScaleConditionDto() { Scale = Vector3.one.Dto() }
+            };
 
             poseConditionSerializerModule.Write(rangeConditionDto, out Bytable data);
 
@@ -166,9 +173,10 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadNotCondition()
         {
-            NotConditionDto notConditionDto = new NotConditionDto(
-                conditions: GetCondditionsTestSet()
-            );
+            NotConditionDto notConditionDto = new NotConditionDto()
+            {
+                Conditions = GetConditionsTestSet()
+            };
 
             poseConditionSerializerModule.Write(notConditionDto, out Bytable data);
 
@@ -183,11 +191,11 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                 == (notConditionDto.Conditions[1] as DirectionConditionDto).Direction.X);
         }
 
-        private PoseConditionDto[] GetCondditionsTestSet()
+        private PoseConditionDto[] GetConditionsTestSet()
         {
             return new PoseConditionDto[]{
-                new UserScaleConditionDto(Vector3Dto.one),
-                new DirectionConditionDto(Vector3Dto.one)
+                new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
+                new DirectionConditionDto() { Direction = Vector3.one.Dto() }
             };
         }
 

@@ -86,7 +86,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             // TrackedSkeleton's viewpoint setup
             viewpointGo = NewGameObject("Viewpoint");
             viewpoint = viewpointGo.AddComponent<Camera>();
-            trackedSkeleton.Viewpoint = viewpoint;
+            trackedSkeleton.viewpoint = viewpoint;
 
             // TrackedBones instantiation
             firstTrackedBoneGo = NewGameObject("First Bone");
@@ -291,7 +291,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            trackedSkeleton.UpdateFrame(frame);
+            trackedSkeleton.UpdateBones(frame);
 
             // THEN
             Assert.AreEqual(expectedControllers.Count, trackedSkeleton.controllers.Count);
@@ -322,7 +322,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             }
 
             // WHEN
-            trackedSkeleton.UpdateFrame(frame);
+            trackedSkeleton.UpdateBones(frame);
 
             // THEN
             Assert.AreEqual(expectedControllers.Count, trackedSkeleton.controllers.Count);
@@ -363,7 +363,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            trackedSkeleton.UpdateFrame(frame);
+            trackedSkeleton.UpdateBones(frame);
 
             // THEN
             Assert.AreEqual(expectedControllers.Count, trackedSkeleton.controllers.Count);
@@ -408,7 +408,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
                     bones.Add(bone.boneType, bone);
             }
 
-            foreach (var pair in trackedSkeleton.BonesAsyncFPS)
+            foreach (var pair in trackedSkeleton.bones)
             {
                 frameTarget.trackedBones.Add(new ControllerDto() { boneType = pair.Key });
             }
@@ -490,7 +490,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.bones = bones;
             trackedSkeleton.controllers = controllers;
 
-            foreach (var pair in trackedSkeleton.BonesAsyncFPS)
+            foreach (var pair in trackedSkeleton.bones)
             {
                 frameTarget.trackedBones.Add(new ControllerDto() { boneType = pair.Key , isOverrider = true, position = Vector3.one.Dto(), rotation = Quaternion.identity.Dto()});
             }

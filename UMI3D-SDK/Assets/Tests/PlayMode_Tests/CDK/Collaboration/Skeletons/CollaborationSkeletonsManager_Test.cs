@@ -83,7 +83,8 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             var trackedSubskeleton = trackedSubskeletonGo.AddComponent<TrackedSkeleton>();
             hipsTracked = new GameObject("Hips tracked");
             hipsTracked.transform.SetParent(trackedSubskeletonGo.transform);
-            trackedSubskeleton.Hips = hipsTracked.transform;
+
+            trackedSubskeleton.hips = hipsTracked.transform;
         }
 
         [TearDown]

@@ -15,10 +15,9 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.edk.userCapture;
-using System.Collections.Generic;
 using umi3d.edk.userCapture.pose;
 using umi3d.common.collaboration.dto;
+using System.Linq;
 
 namespace umi3d.edk.collaboration
 {
@@ -43,9 +42,9 @@ namespace umi3d.edk.collaboration
             {
                 dto.userList = UMI3DCollaborationServer.Collaboration.ToDto(user);
 
-                if (poseManagerService == null) poseManagerService = UMI3DPoseManager.Instance;
-                dto.allPoses = poseManagerService.AllPoses;
-                dto.allPoseOverriderContainer = poseManagerService.AllPoseOverriderContainer;
+                poseManagerService ??= UMI3DPoseManager.Instance;
+                dto.poses = poseManagerService.Poses.ToDictionary(x=>x.Key, x=>x.Value.ToList());
+                dto.poseOverriderContainers = poseManagerService.PoseOverriderContainers.ToList();
             }
         }
     }

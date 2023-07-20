@@ -28,7 +28,7 @@ namespace umi3d.cdk.userCapture
         /// Update the position of this subskeleton according to the received <paramref name="trackingFrame"/>.
         /// </summary>
         /// <param name="trackingFrame"></param>
-        void UpdateFrame(UserTrackingFrameDto trackingFrame);
+        void UpdateBones(UserTrackingFrameDto trackingFrame);
 
         /// <summary>
         /// Fill out the <paramref name="trackingFrame"/> with data from the subskeleton.
