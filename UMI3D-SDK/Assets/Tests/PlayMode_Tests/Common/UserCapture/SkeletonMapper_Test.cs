@@ -63,7 +63,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             var result = skeletonMapper.GetPose();
 
             // THEN
-            Assert.AreEqual(skeletonMapper.BoneAnchor.Bone, result.boneAnchor.Bone);
+            Assert.AreEqual(skeletonMapper.BoneAnchor.bone, result.boneAnchor.bone);
             Assert.AreEqual(skeletonMapper.Mappings.Length, result.bones.Count);
         }
 

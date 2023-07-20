@@ -17,11 +17,11 @@ limitations under the License.
 namespace umi3d.common.userCapture.pose
 {
     /// <summary>
-    /// <inheritdoc/>
+    /// <inheritdoc/><br/>
     /// A condition to check the distance from a bone to a node
     /// </summary>
     [System.Serializable]
-    public class MagnitudeConditionDto : PoseConditionDto
+    public class MagnitudeConditionDto : AbstractPoseConditionDto
     {
         /// <summary>
         /// distance
@@ -34,7 +34,7 @@ namespace umi3d.common.userCapture.pose
         public uint BoneOrigin { get; set; }
 
         /// <summary>
-        /// Id of the target object 
+        /// UMI3D Id of the target object 
         /// </summary>
         public ulong TargetNodeId { get; set; }
     }

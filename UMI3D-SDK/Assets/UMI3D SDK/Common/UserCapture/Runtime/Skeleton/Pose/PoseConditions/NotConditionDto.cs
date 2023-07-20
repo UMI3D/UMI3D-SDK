@@ -16,15 +16,15 @@ limitations under the License.
 namespace umi3d.common.userCapture.pose
 {
     /// <summary>
-    /// <inheritdoc/>
+    /// <inheritdoc/><br/>
     /// A condition is the conditions are not valid
     /// </summary>
     [System.Serializable]
-    public class NotConditionDto : PoseConditionDto
+    public class NotConditionDto : AbstractPoseConditionDto
     {
         /// <summary>
         /// List of conditions to be false
         /// </summary>
-        public PoseConditionDto[] Conditions { get; set; }
+        public AbstractPoseConditionDto[] Conditions { get; set; }
     }
 }

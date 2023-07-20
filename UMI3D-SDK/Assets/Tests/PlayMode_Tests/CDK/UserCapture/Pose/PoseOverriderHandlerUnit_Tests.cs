@@ -174,7 +174,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                 {
                     poseIndexInPoseManager = 0,
                     activationMode = (ushort)PoseActivationMode.HOVER_ENTER,
-                    poseConditions = new List<PoseConditionDto>()
+                    poseConditions = new List<AbstractPoseConditionDto>()
                     {
                         new MagnitudeConditionDto()
                         {
@@ -188,7 +188,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                 {
                     poseIndexInPoseManager = 0,
                     activationMode = (ushort)PoseActivationMode.TRIGGER,
-                    poseConditions = new List<PoseConditionDto>()
+                    poseConditions = new List<AbstractPoseConditionDto>()
                     {
                         new MagnitudeConditionDto()
                         {
@@ -202,7 +202,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
                 {
                     poseIndexInPoseManager = 0,
                     activationMode = (ushort)PoseActivationMode.NONE,
-                    poseConditions = new List<PoseConditionDto>()
+                    poseConditions = new List<AbstractPoseConditionDto>()
                     {
                         new MagnitudeConditionDto()
                         {

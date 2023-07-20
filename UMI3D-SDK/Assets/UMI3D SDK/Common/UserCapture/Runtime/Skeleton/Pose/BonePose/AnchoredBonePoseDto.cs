@@ -19,35 +19,6 @@ namespace umi3d.common.userCapture.pose
     [System.Serializable]
     public class AnchoredBonePoseDto : BonePoseDto
     {
-        public AnchoredBonePoseDto()
-        { }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="otherBone">The anchor bone</param>
-        /// <param name="bone">The current bone to update</param>
-        /// <param name="position">The position of the bone</param>
-        /// <param name="rotation">The rotation of the bone</param>
-        public AnchoredBonePoseDto(uint otherBone, uint bone, Vector3Dto position, Vector4Dto rotation) : base(bone, position, rotation)
-        {
-            this.otherBone = otherBone;
-        }
-
-        /// <summary>
-        ///
-        /// </summary>
-        /// <param name="otherBone">The anchor bone</param>
-        /// <param name="bonePoseDto">The bone DTO corresponding to the current anchor bone pose dto you want to do</param>
-        public AnchoredBonePoseDto(uint otherBone, BonePoseDto bonePoseDto) : base(bonePoseDto.Bone, bonePoseDto.Position, bonePoseDto.Rotation)
-        {
-            this.otherBone = otherBone;
-        }
-
-        public AnchoredBonePoseDto(BonePoseDto bonePoseDto) : base(bonePoseDto.Bone, bonePoseDto.Position, bonePoseDto.Rotation)
-        {
-        }
-
         /// <summary>
         /// The anchor bone
         /// </summary>

@@ -68,11 +68,11 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <summary>
-        /// Instantiate a <see cref="IPoseCondition"/> from a  <see cref="PoseConditionDto"/>.
+        /// Instantiate a <see cref="IPoseCondition"/> from a  <see cref="AbstractPoseConditionDto"/>.
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        private IPoseCondition LoadPoseCondition(PoseConditionDto dto)
+        private IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
         {
             switch (dto)
             {

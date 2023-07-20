@@ -47,7 +47,7 @@ namespace umi3d.common.userCapture
             SetUpDropDown();
         }
 
-        public PoseConditionDto GetPoseConditionDto()
+        public AbstractPoseConditionDto GetPoseConditionDto()
         {
             if (fieldActualConditionType == typeof(MagnitudeConditionDto))
             {
@@ -101,7 +101,7 @@ namespace umi3d.common.userCapture
 
         private void SetUpDropDown()
         {
-            typeCollection = TypeCache.GetTypesDerivedFrom<PoseConditionDto>();
+            typeCollection = TypeCache.GetTypesDerivedFrom<AbstractPoseConditionDto>();
 
             foreach (var type in typeCollection)
             {

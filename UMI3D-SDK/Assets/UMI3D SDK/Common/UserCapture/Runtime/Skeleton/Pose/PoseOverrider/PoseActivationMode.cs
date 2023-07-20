@@ -16,12 +16,34 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// How the pose could be activated by the user.
+    /// </summary>
     public enum PoseActivationMode : ushort
     {
+        /// <summary>
+        /// The pose does not depend on a user interaction.
+        /// </summary>
         NONE,
+
+        /// <summary>
+        /// The pose require a trigger interaction from the user.
+        /// </summary>
         TRIGGER,
+
+        /// <summary>
+        /// The pose require a release interaction from the user.
+        /// </summary>
         RELEASE,
+
+        /// <summary>
+        /// The pose require a hover interaction from the user.
+        /// </summary>
         HOVER_ENTER,
+
+        /// <summary>
+        /// The pose require exiting a hover interaction from the user.
+        /// </summary>
         HOVER_EXIT
     }
 }

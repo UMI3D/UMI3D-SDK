@@ -21,7 +21,7 @@ namespace umi3d.common.userCapture.pose
     /// A condition to check the rotation of a bone 
     /// </summary>
     [System.Serializable]
-    public class BoneRotationConditionDto : PoseConditionDto
+    public class BoneRotationConditionDto : AbstractPoseConditionDto
     {
         /// <summary>
         /// Related bone
@@ -33,6 +33,9 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         public Vector4Dto Rotation { get; set; }
 
+        /// <summary>
+        /// Range of rotation in which the condition is still validated.
+        /// </summary>
         public float AcceptanceRange { get; set; }
     }
 }

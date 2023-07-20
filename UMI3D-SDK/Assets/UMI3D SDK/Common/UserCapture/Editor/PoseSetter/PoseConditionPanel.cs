@@ -72,7 +72,7 @@ namespace umi3d.common.userCapture.pose.editor
             poseOverrider_So.duration = new Duration() { min = (uint)min_duration.value, max = (uint)max_duration.value, duration = (uint)duration.value };
             poseOverrider_So.composable = tg_isComposable.value;
             poseOverrider_So.interpolable = tg_isInterpolable.value;
-            poseOverrider_So.poseConditions = new PoseConditionDto[condition_fields.Count];
+            poseOverrider_So.poseConditions = new AbstractPoseConditionDto[condition_fields.Count];
 
 
             for (int i = 0; i < condition_fields.Count; i++)

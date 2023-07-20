@@ -18,6 +18,9 @@ using System;
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// Serializer for <see cref="AbstractPoseConditionDto"/>;
+    /// </summary>
     public class PoseConditionSerializerModule : UMI3DSerializerModule
     {
         public enum PoseConditionSerializingIndex : int
@@ -42,7 +45,7 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(NotConditionDto) => true,
                 true when typeof(T) == typeof(UserScaleConditionDto) => true,
                 true when typeof(T) == typeof(ScaleConditionDto) => true,
-                true when typeof(T) == typeof(PoseConditionDto) => true,
+                true when typeof(T) == typeof(AbstractPoseConditionDto) => true,
 
                 _ => null
             };
@@ -52,13 +55,13 @@ namespace umi3d.common.userCapture.pose
         {
             switch (true)
             {
-                case true when typeof(T) == typeof(PoseConditionDto):
+                case true when typeof(T) == typeof(AbstractPoseConditionDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out int index);
 
                         if (readable)
                         {
-                            PoseConditionDto poseConditionDto = null;
+                            AbstractPoseConditionDto poseConditionDto = null;
 
                             switch (index)
                             {
@@ -222,8 +225,8 @@ namespace umi3d.common.userCapture.pose
 
                 case true when typeof(T) == typeof(RangeConditionDto):
                     {
-                        readable = UMI3DSerializer.TryRead(container, out PoseConditionDto conditionA);
-                        readable &= UMI3DSerializer.TryRead(container, out PoseConditionDto conditionB);
+                        readable = UMI3DSerializer.TryRead(container, out AbstractPoseConditionDto conditionA);
+                        readable &= UMI3DSerializer.TryRead(container, out AbstractPoseConditionDto conditionB);
 
                         if (readable)
                         {
@@ -242,8 +245,8 @@ namespace umi3d.common.userCapture.pose
 
                 case true when typeof(T) == typeof(NotConditionDto):
                     {
-                        PoseConditionDto[] conditions;
-                        conditions = UMI3DSerializer.ReadArray<PoseConditionDto>(container);
+                        AbstractPoseConditionDto[] conditions;
+                        conditions = UMI3DSerializer.ReadArray<AbstractPoseConditionDto>(container);
 
                         if (conditions != null)
                         {

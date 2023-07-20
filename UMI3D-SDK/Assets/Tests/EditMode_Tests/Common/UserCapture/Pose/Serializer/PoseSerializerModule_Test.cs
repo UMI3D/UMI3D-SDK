@@ -52,11 +52,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         public void ReadBonePose()
         {
             // GIVEN
-            BonePoseDto bonePoseDto = new BonePoseDto(
-                bone: 2u,
-                position: Vector3Dto.one,
-                rotation: Vector4Dto.one
-            );
+            BonePoseDto bonePoseDto = new BonePoseDto()
+            {
+                bone = 2u,
+                position = Vector3Dto.one,
+                rotation = Vector4Dto.one
+            };
 
             poseSerializerModule.Write(bonePoseDto, out Bytable data);
 
@@ -68,20 +69,21 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             // THEN
             Assert.IsTrue(readable);
 
-            Assert.AreEqual(bonePoseDto.Bone, result.Bone);
-            Assert.IsTrue(result.Position.Struct() == bonePoseDto.Position.Struct());
-            Assert.IsTrue(result.Rotation.Struct() == bonePoseDto.Rotation.Struct());
+            Assert.AreEqual(bonePoseDto.bone, result.bone);
+            Assert.IsTrue(result.position.Struct() == bonePoseDto.position.Struct());
+            Assert.IsTrue(result.rotation.Struct() == bonePoseDto.rotation.Struct());
         }
 
         [Test]
         public void ReadBonePose_AnchoredBonePose()
         {
-            AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto(
-                bone: 2,
-                position: Vector3Dto.one,
-                rotation: Vector4Dto.one,
-                otherBone: 17
-            );
+            AnchoredBonePoseDto anchorBonePoseDto = new AnchoredBonePoseDto()
+            {
+                bone = 2,
+                position = Vector3Dto.one,
+                rotation = Vector4Dto.one,
+                otherBone = 17
+            };
 
             poseSerializerModule.Write(anchorBonePoseDto, out Bytable data);
 
@@ -90,11 +92,11 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.AreEqual((anchorBonePoseDto as BonePoseDto).Bone, (result as BonePoseDto).Bone);
-            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
-                 == (anchorBonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
-                == (anchorBonePoseDto as BonePoseDto).Rotation.Struct()));
+            Assert.AreEqual((anchorBonePoseDto as BonePoseDto).bone, (result as BonePoseDto).bone);
+            Assert.IsTrue(((result as BonePoseDto).position.Struct()
+                 == (anchorBonePoseDto as BonePoseDto).position.Struct()));
+            Assert.IsTrue(((result as BonePoseDto).rotation.Struct()
+                == (anchorBonePoseDto as BonePoseDto).rotation.Struct()));
 
             Assert.IsTrue(((result as AnchoredBonePoseDto).otherBone
                 == (anchorBonePoseDto as AnchoredBonePoseDto).otherBone));
@@ -103,13 +105,13 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadBonePose_NodeAnchoredBonePose()
         {
-            NodeAnchoredBonePoseDto nodeAnchoredBonePoseDto = new NodeAnchoredBonePoseDto(
-                bone: 2,
-                position: Vector3Dto.one,
-                rotation: Vector4Dto.one,
-                node: 17
-            );
-
+            NodeAnchoredBonePoseDto nodeAnchoredBonePoseDto = new NodeAnchoredBonePoseDto()
+            {
+                bone = 2,
+                position = Vector3Dto.one,
+                rotation = Vector4Dto.one,
+                node = 17
+            };
             poseSerializerModule.Write(nodeAnchoredBonePoseDto, out Bytable data);
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
@@ -117,12 +119,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as BonePoseDto).Bone
-                == (nodeAnchoredBonePoseDto as BonePoseDto).Bone));
-            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
-                 == (nodeAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
-                == (nodeAnchoredBonePoseDto as BonePoseDto).Rotation.Struct()));
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (nodeAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position.Struct()
+                 == (nodeAnchoredBonePoseDto as BonePoseDto).position.Struct()));
+            Assert.IsTrue(((result as BonePoseDto).rotation.Struct()
+                == (nodeAnchoredBonePoseDto as BonePoseDto).rotation.Struct()));
 
             Assert.IsTrue(((result as NodeAnchoredBonePoseDto).node
                 == (nodeAnchoredBonePoseDto as NodeAnchoredBonePoseDto).node));
@@ -131,11 +133,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         [Test]
         public void ReadBonePose_FloorAnchoredBonePoseDto()
         {
-            FloorAnchoredBonePoseDto floorAnchoredBonePoseDto = new FloorAnchoredBonePoseDto(
-                bone: 2,
-                position: Vector3Dto.one,
-                rotation: Vector4Dto.one
-            );
+            FloorAnchoredBonePoseDto floorAnchoredBonePoseDto = new FloorAnchoredBonePoseDto()
+            {
+                bone = 2,
+                position = Vector3Dto.one,
+                rotation = Vector4Dto.one
+            };
 
             poseSerializerModule.Write(floorAnchoredBonePoseDto, out Bytable data);
 
@@ -144,12 +147,12 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as BonePoseDto).Bone
-                == (floorAnchoredBonePoseDto as BonePoseDto).Bone));
-            Assert.IsTrue(((result as BonePoseDto).Position.Struct()
-                 == (floorAnchoredBonePoseDto as BonePoseDto).Position.Struct()));
-            Assert.IsTrue(((result as BonePoseDto).Rotation.Struct()
-                == (floorAnchoredBonePoseDto as BonePoseDto).Rotation.Struct()));
+            Assert.IsTrue(((result as BonePoseDto).bone
+                == (floorAnchoredBonePoseDto as BonePoseDto).bone));
+            Assert.IsTrue(((result as BonePoseDto).position.Struct()
+                 == (floorAnchoredBonePoseDto as BonePoseDto).position.Struct()));
+            Assert.IsTrue(((result as BonePoseDto).rotation.Struct()
+                == (floorAnchoredBonePoseDto as BonePoseDto).rotation.Struct()));
         }
 
         #endregion Read Bone Pose
@@ -163,7 +166,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             PoseDto poseDto = new PoseDto()
             {
                 bones = GetTestBonePoseDtoSample(),
-                boneAnchor = new BonePoseDto() { Bone = 24u, Position = Vector3Dto.zero, Rotation = Vector4Dto.one }
+                boneAnchor = new BonePoseDto() { bone = 24u, position = Vector3Dto.zero, rotation = Vector4Dto.one }
             };
 
             poseSerializerModule.Write(poseDto, out Bytable data);
@@ -180,7 +183,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                 Assert.AreEqual(poseDto.bones[i].boneType, (result.bones[i]).boneType);
             }
 
-            Assert.AreEqual(poseDto.boneAnchor.Bone, result.boneAnchor.Bone);
+            Assert.AreEqual(poseDto.boneAnchor.bone, result.boneAnchor.bone);
         }
 
         private List<BoneDto> GetTestBonePoseDtoSample()
@@ -227,9 +230,9 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             Assert.AreEqual(poseOverriderDto.isComposable, result.isComposable);
         }
 
-        private PoseConditionDto[] GetConditionsTestSet()
+        private AbstractPoseConditionDto[] GetConditionsTestSet()
         {
-            return new PoseConditionDto[]{
+            return new AbstractPoseConditionDto[]{
                 new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
                 new DirectionConditionDto() { Direction = Vector3.one.Dto() },
             };
