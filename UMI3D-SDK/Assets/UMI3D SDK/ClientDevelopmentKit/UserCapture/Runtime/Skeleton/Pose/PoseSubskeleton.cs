@@ -27,7 +27,7 @@ namespace umi3d.cdk.userCapture.pose
     /// <summary>
     /// Subskeleton that handles body poses.
     /// </summary>
-    public class PoseSubskeleton : IWritableSubskeleton
+    public class PoseSubskeleton : IPoseSubskeleton
     {
         #region Dependency Injection
 

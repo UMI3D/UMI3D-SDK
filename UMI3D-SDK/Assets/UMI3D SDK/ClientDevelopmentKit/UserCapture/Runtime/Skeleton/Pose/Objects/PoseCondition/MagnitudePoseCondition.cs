@@ -26,9 +26,9 @@ namespace umi3d.cdk.userCapture.pose
 
         protected Transform nodeTransform;
 
-        protected TrackedSkeleton trackedSkeleton;
+        protected ITrackedSubskeleton trackedSkeleton;
 
-        public MagnitudePoseCondition(MagnitudeConditionDto dto, Transform nodeTransform, TrackedSkeleton trackedSkeleton)
+        public MagnitudePoseCondition(MagnitudeConditionDto dto, Transform nodeTransform, ITrackedSubskeleton trackedSkeleton)
         {
             this.MagnitudeConditionDto = dto;
             this.nodeTransform = nodeTransform;
@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture.pose
             Vector3 targetPosition = nodeTransform.position;
 
             Vector3 bonePosition = Vector3.zero;
-            if (trackedSkeleton.bones.TryGetValue(MagnitudeConditionDto.BoneOrigin, out TrackedSkeletonBone bone))
+            if (trackedSkeleton.TrackedBones.TryGetValue(MagnitudeConditionDto.BoneOrigin, out TrackedSkeletonBone bone))
                 bonePosition = bone.transform.position;
 
             return Vector3.Distance(targetPosition, bonePosition) < MagnitudeConditionDto.Magnitude;

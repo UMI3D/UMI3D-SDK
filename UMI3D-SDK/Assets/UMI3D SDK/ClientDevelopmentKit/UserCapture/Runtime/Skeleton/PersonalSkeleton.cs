@@ -32,13 +32,13 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Size of the skeleton.
         /// </summary>
-        public Vector3 worldSize => TrackedSubskeleton.transform.lossyScale;
+        public Vector3 worldSize => TrackedSubskeleton.Hips.lossyScale;
 
         protected void Start()
         {
             PoseSubskeleton = new PoseSubskeleton();
 
-            Init(TrackedSubskeleton, PoseSubskeleton);
+            Init(trackedSkeleton, PoseSubskeleton);
         }
 
         /// <summary>

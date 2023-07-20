@@ -70,25 +70,15 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public TrackedSkeleton TrackedSubskeleton
-        {
-            get
-            {
-                return trackedSkeleton;
-            }
-            protected set
-            {
-                trackedSkeleton = value;
-            }
-        }
+        public ITrackedSubskeleton TrackedSubskeleton => trackedSkeleton;
 
         [SerializeField]
-        private TrackedSkeleton trackedSkeleton;
+        protected TrackedSkeleton trackedSkeleton;
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        public PoseSubskeleton PoseSubskeleton { get; protected set; }
+        public IPoseSubskeleton PoseSubskeleton { get; protected set; }
 
         /// <summary>
         /// Anchor of the skeleton hierarchy.
@@ -96,9 +86,9 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
-        public void Init(TrackedSkeleton trackedSkeleton, PoseSubskeleton poseSkeleton)
+        public void Init(TrackedSkeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
         {
-            TrackedSubskeleton = trackedSkeleton;
+            this.trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton, PoseSubskeleton };
@@ -230,7 +220,7 @@ namespace umi3d.cdk.userCapture
             return new UserCameraPropertiesDto()
             {
                 scale = 1f,
-                projectionMatrix = TrackedSubskeleton.Viewpoint.projectionMatrix.Dto(),
+                projectionMatrix = TrackedSubskeleton.ViewPoint.projectionMatrix.Dto(),
                 boneType = BoneType.Viewpoint,
             };
         }

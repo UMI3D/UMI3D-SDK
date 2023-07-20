@@ -309,7 +309,7 @@ namespace umi3d.cdk.collaboration.userCapture
             {
                 if (BonesAsyncFPS[boneType] > 0)
                 {
-                    if (PersonalSkeleton.TrackedSubskeleton.bones.ContainsKey(boneType))
+                    if (PersonalSkeleton.TrackedSubskeleton.TrackedBones.ContainsKey(boneType))
                     {
                         var boneData = PersonalSkeleton.TrackedSubskeleton.GetController(boneType);
 

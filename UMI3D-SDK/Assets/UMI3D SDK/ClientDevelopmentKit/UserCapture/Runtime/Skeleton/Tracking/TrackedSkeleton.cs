@@ -24,18 +24,29 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackedSkeleton : MonoBehaviour, IWritableSubskeleton
+    public class TrackedSkeleton : MonoBehaviour, ITrackedSubskeleton
     {
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
         public List<IController> controllers = new List<IController>();
         private List<IController> controllersToDestroy = new();
-        public Camera Viewpoint;
-        public Transform Hips;
-        public TrackedAnimator trackedAnimator;
+
+        [SerializeField]
+        public Camera viewpoint;
+        public Camera ViewPoint => viewpoint;
+        
+        [SerializeField]
+        public Transform hips;
+        public Transform Hips => hips;
+        
         [SerializeField]
         private Animator animator;
-        public Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+        public TrackedAnimator trackedAnimator;
+
+        [SerializeField]
+        public Dictionary<uint, TrackedSkeletonBone> bones = new();
+        public IReadOnlyDictionary<uint, TrackedSkeletonBone> TrackedBones => bones;
+
         private List<uint> types = new List<uint>();
 
         public void Start()

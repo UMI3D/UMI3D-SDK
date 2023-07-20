@@ -24,9 +24,9 @@ namespace umi3d.cdk.userCapture.pose
     {
         protected BoneRotationConditionDto boneRotationConditionDto;
 
-        protected TrackedSkeleton trackedSkeleton;
+        protected ITrackedSubskeleton trackedSkeleton;
 
-        public BoneRotationPoseCondition(BoneRotationConditionDto dto, TrackedSkeleton trackedSkeleton)
+        public BoneRotationPoseCondition(BoneRotationConditionDto dto, ITrackedSubskeleton trackedSkeleton)
         {
             this.boneRotationConditionDto = dto;
             this.trackedSkeleton = trackedSkeleton;
@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture.pose
         public bool Check()
         {
             Quaternion boneRotation;
-            if (trackedSkeleton.bones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
+            if (trackedSkeleton.TrackedBones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
                 boneRotation = bone.transform.rotation;
             else
                 return false;

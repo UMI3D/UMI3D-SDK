@@ -57,12 +57,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        TrackedSkeleton TrackedSubskeleton { get; }
+        ITrackedSubskeleton TrackedSubskeleton { get; }
 
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
-        PoseSubskeleton PoseSubskeleton { get; }
+        IPoseSubskeleton PoseSubskeleton { get; }
 
         #region Data struture
 
