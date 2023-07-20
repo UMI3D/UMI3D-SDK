@@ -288,23 +288,13 @@ namespace umi3d.cdk.userCapture.animation
         /// Attach an animated subskeleton to a skeleton
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="subskeleton"></param>
-        protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton subskeleton)
+        /// <param name="animatedSubskeleton"></param>
+        protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton animatedSubskeleton)
         {
             var skeleton = personnalSkeletonService.PersonalSkeleton;
 
             // add animated skeleton to subskeleton list and re-order it by descending priority
-            lock (skeleton.Subskeletons) // loader can start parallel async task
-            {
-                var animatedSkeletons = skeleton.Subskeletons
-                                        .Where(x => x is AnimatedSubskeleton)
-                                        .Cast<AnimatedSubskeleton>()
-                                        .Append(subskeleton)
-                                        .OrderByDescending(x => x.Priority).ToList();
-
-                personnalSkeletonService.PersonalSkeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
-                personnalSkeletonService.PersonalSkeleton.Subskeletons.AddRange(animatedSkeletons);
-            }
+            skeleton.AddSubskeleton(animatedSubskeleton);
 
             // if it is the browser, register that it is required to delete animated skeleton on leaving
             if (!isRegisteredForPersonalSkeletonCleanup)
@@ -313,17 +303,17 @@ namespace umi3d.cdk.userCapture.animation
 
                 void RemoveSkeletons()
                 {
-                    skeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
+                    foreach (var subskeleton in skeleton.Subskeletons.ToList())
+                    {
+                        if (subskeleton is AnimatedSubskeleton)
+                            skeleton.RemoveSubskeleton(subskeleton);
+                    }
                     clientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
                     isRegisteredForPersonalSkeletonCleanup = false;
                 }
 
                 clientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
             }
-
-            // if some animator parameters should be updated by the browsers itself, start listening to them
-            if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
-                subskeleton.StartParameterSelfUpdate(skeleton);
         }
     }
 }

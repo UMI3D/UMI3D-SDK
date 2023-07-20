@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -54,8 +55,7 @@ namespace umi3d.cdk.collaboration.userCapture
             TrackedSubskeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
-            Subskeletons.Add(TrackedSubskeleton);
-            Subskeletons.Add(PoseSubskeleton);
+            subskeletons = new List<ISubskeleton> { TrackedSubskeleton, PoseSubskeleton };
         }
     }
 }

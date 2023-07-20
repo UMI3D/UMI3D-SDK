@@ -15,12 +15,12 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
-using umi3d.common.userCapture;
 using UnityEngine;
-using umi3d.cdk.userCapture.tracking;
-using umi3d.cdk.userCapture.pose;
 
 namespace umi3d.cdk.userCapture
 {
@@ -32,12 +32,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
         /// </summary>
-        Dictionary<uint, s_Transform> Bones { get; }
+        IDictionary<uint, s_Transform> Bones { get; }
 
         /// <summary>
         /// Subskeletons that compose the final skeleton.
         /// </summary>
-        List<ISubskeleton> Subskeletons { get; }
+        IReadOnlyList<ISubskeleton> Subskeletons { get; }
 
         /// <summary>
         /// Skeleton hierarchy used, with relative position between each bone.
@@ -72,15 +72,6 @@ namespace umi3d.cdk.userCapture
             public Quaternion s_Rotation;
         }
 
-        public struct SavedTransform
-        {
-            public Transform obj;
-            public Vector3 savedPosition;
-            public Quaternion savedRotation;
-            public Vector3 savedLocalScale;
-            public Vector3 savedLossyScale;
-        }
-
         #endregion Data struture
 
         /// <summary>
@@ -101,5 +92,17 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <returns></returns>
         UserCameraPropertiesDto GetCameraDto();
+
+        /// <summary>
+        /// Add a subskeleton to the skeleton.
+        /// </summary>
+        /// <param name="subskeleton"></param>
+        void AddSubskeleton(ISubskeleton subskeleton);
+
+        /// <summary>
+        /// Add a subskeleton to the skeleton.
+        /// </summary>
+        /// <param name="subskeleton"></param>
+        void RemoveSubskeleton(ISubskeleton subskeleton);
     }
 }

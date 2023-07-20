@@ -16,8 +16,6 @@ limitations under the License.
 
 using inetum.unityUtils;
 
-using System.Linq;
-
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
@@ -55,34 +53,19 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
         #endregion Dependency Injection
 
-        protected override void AttachToSkeleton(ulong userId, AnimatedSubskeleton subskeleton)
+        protected override void AttachToSkeleton(ulong userId, AnimatedSubskeleton animatedSubskeleton)
         {
             // personnal skeleton is targeted
             if (clientServer.GetUserId() == userId)
             {
-                base.AttachToSkeleton(userId, subskeleton);
+                base.AttachToSkeleton(userId, animatedSubskeleton);
                 return;
             }
 
             var skeleton = collaborativeSkeletonsmanager.TryGetSkeletonById(userId);
             if (skeleton != null)
             {
-                lock (skeleton.Subskeletons) // loader can start parallel async tasks, required to load concurrently
-                {
-                    // add animated skeleton to subskeleton list and re-order it by descending priority
-                    var animatedSkeletons = skeleton.Subskeletons
-                                        .Where(x => x is AnimatedSubskeleton)
-                                        .Cast<AnimatedSubskeleton>()
-                                        .Append(subskeleton)
-                                        .OrderByDescending(x => x.Priority).ToList();
-
-                    skeleton.Subskeletons.RemoveAll(x => x is AnimatedSubskeleton);
-                    skeleton.Subskeletons.AddRange(animatedSkeletons);
-                }
-
-                // if some animator parameters should be updated by the browsers itself, start listening to them
-                if (subskeleton.SelfUpdatedAnimatorParameters.Length > 0)
-                    subskeleton.StartParameterSelfUpdate(skeleton);
+                skeleton.AddSubskeleton(animatedSubskeleton);
             }
             else
                 UMI3DLogger.LogWarning($"Skeleton of user {userId} not found. Cannot attach skeleton node.", DEBUG_SCOPE);

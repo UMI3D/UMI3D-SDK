@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
@@ -36,10 +37,12 @@ namespace umi3d.cdk.userCapture
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
         /// <inheritdoc/>
-        public virtual Dictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new();
+        public virtual IDictionary<uint, ISkeleton.s_Transform> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.s_Transform>();
 
         /// <inheritdoc/>
-        public virtual List<ISubskeleton> Subskeletons { get; protected set; } = new();
+        public virtual IReadOnlyList<ISubskeleton> Subskeletons => subskeletons;
+
+        protected List<ISubskeleton> subskeletons = new();
 
         /// <inheritdoc/>
         public UMI3DSkeletonHierarchy SkeletonHierarchy
@@ -55,6 +58,7 @@ namespace umi3d.cdk.userCapture
                 _skeletonHierarchy = value;
             }
         }
+
         private UMI3DSkeletonHierarchy _skeletonHierarchy;
 
         /// <inheritdoc/>
@@ -77,6 +81,7 @@ namespace umi3d.cdk.userCapture
                 trackedSkeleton = value;
             }
         }
+
         [SerializeField]
         private TrackedSkeleton trackedSkeleton;
 
@@ -178,9 +183,7 @@ namespace umi3d.cdk.userCapture
             {
                 var skeleton = Subskeletons[i];
 
-                List<BoneDto> bones;
-
-                bones = skeleton.GetPose()?.bones;
+                List<BoneDto> bones = skeleton.GetPose()?.bones;
 
                 if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                     continue;
@@ -222,6 +225,47 @@ namespace umi3d.cdk.userCapture
                 projectionMatrix = TrackedSubskeleton.Viewpoint.projectionMatrix.Dto(),
                 boneType = BoneType.Viewpoint,
             };
+        }
+
+        public void AddSubskeleton(ISubskeleton subskeleton)
+        {
+            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+                return;
+
+            lock (subskeletons) // loader can start parallel async tasks, required to load concurrently
+            {
+                var animatedSubskeletons = subskeletons
+                                    .Where(x => x is AnimatedSubskeleton)
+                                    .Cast<AnimatedSubskeleton>()
+                                    .Append(animatedSubskeleton)
+                                    .OrderByDescending(x => x.Priority).ToList();
+
+                subskeletons.Clear();
+
+                if (TrackedSubskeleton != null)
+                    subskeletons.Add(TrackedSubskeleton);
+
+                subskeletons.AddRange(animatedSubskeletons);
+
+                if (PoseSubskeleton != null)
+                    subskeletons.Add(PoseSubskeleton);
+
+                // if some animator parameters should be updated by the browsers itself, start listening to them
+                if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                    animatedSubskeleton.StartParameterSelfUpdate(this);
+            }
+        }
+
+        public void RemoveSubskeleton(ISubskeleton subskeleton)
+        {
+            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+                return;
+
+            if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                animatedSubskeleton.StopParameterSelfUpdate();
+
+            if (subskeletons.Contains(animatedSubskeleton))
+                subskeletons.Remove(animatedSubskeleton);
         }
     }
 }

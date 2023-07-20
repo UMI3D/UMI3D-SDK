@@ -19,8 +19,6 @@ using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 
-using UnityEngine;
-
 namespace umi3d.cdk.userCapture.pose
 {
     public class PoseManager : Singleton<PoseManager>, IPoseManager
@@ -106,15 +104,15 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void ApplyPoseOverride(PoseOverrider poseOverrider)
         {
-            if (poseOverrider != null)
+            if (poseOverrider == null)
+                return;
+
+            foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
             {
-                foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
+                if (pose.Index == poseOverrider.PoseIndexInPoseManager)
                 {
-                    if (pose.Index == poseOverrider.PoseIndexInPoseManager)
-                    {
-                        skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(pose);
-                        return;
-                    }
+                    skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(pose);
+                    return;
                 }
             }
         }
@@ -122,15 +120,15 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void StopPoseOverride(PoseOverrider poseOverrider)
         {
-            if (poseOverrider != null)
+            if (poseOverrider == null)
+                return;
+
+            foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
             {
-                foreach (SkeletonPose pose in Poses[UMI3DGlobalID.EnvironementId])
+                if (pose.Index == poseOverrider.PoseIndexInPoseManager)
                 {
-                    if (pose.Index == poseOverrider.PoseIndexInPoseManager)
-                    {
-                        skeletonManager.PersonalSkeleton.PoseSubskeleton.StopPose(pose);
-                        return;
-                    }
+                    skeletonManager.PersonalSkeleton.PoseSubskeleton.StopPose(pose);
+                    return;
                 }
             }
         }
