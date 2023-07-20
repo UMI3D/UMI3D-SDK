@@ -291,7 +291,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            trackedSkeleton.UpdateFrame(frame);
+            trackedSkeleton.UpdateBones(frame);
 
             // THEN
             Assert.AreEqual(expectedControllers.Count, trackedSkeleton.controllers.Count);
@@ -322,7 +322,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             }
 
             // WHEN
-            trackedSkeleton.UpdateFrame(frame);
+            trackedSkeleton.UpdateBones(frame);
 
             // THEN
             Assert.AreEqual(expectedControllers.Count, trackedSkeleton.controllers.Count);
@@ -363,7 +363,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            trackedSkeleton.UpdateFrame(frame);
+            trackedSkeleton.UpdateBones(frame);
 
             // THEN
             Assert.AreEqual(expectedControllers.Count, trackedSkeleton.controllers.Count);

@@ -212,7 +212,7 @@ namespace umi3d.cdk.collaboration.userCapture
             
             var poseSkeleton = new PoseSubskeleton(poseManager);
 
-            cs.SetSubSkeletons(trackedSkeleton, poseSkeleton);
+            cs.Init(trackedSkeleton, poseSkeleton);
 
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in skeletonHierarchy.Relations.Keys)
@@ -254,14 +254,14 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Tracking management
 
-        public void UpdateFrames(List<UserTrackingFrameDto> frames)
+        public void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames)
         {
             foreach (var frame in frames)
-                UpdateFrame(frame);
+                UpdateSkeleton(frame);
             computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
         }
 
-        public void UpdateFrame(UserTrackingFrameDto frame)
+        public void UpdateSkeleton(UserTrackingFrameDto frame)
         {
             if (!Skeletons.TryGetValue(frame.userId, out ISkeleton skeleton))
             {
@@ -269,7 +269,8 @@ namespace umi3d.cdk.collaboration.userCapture
                 return;
             }
 
-            skeleton.UpdateFrame(frame);
+            skeleton.UpdateBones(frame);
+            computeCoroutine ??= routineService.AttachLateRoutine(ComputeCoroutine());
         }
 
         private async void SendTrackingLoop()

@@ -96,6 +96,14 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
+        public void Init(TrackedSkeleton trackedSkeleton, PoseSubskeleton poseSkeleton)
+        {
+            TrackedSubskeleton = trackedSkeleton;
+            HipsAnchor = TrackedSubskeleton.Hips;
+            PoseSubskeleton = poseSkeleton;
+            subskeletons = new List<ISubskeleton> { TrackedSubskeleton, PoseSubskeleton };
+        }
+
         /// <inheritdoc/>
         public ISkeleton Compute()
         {
@@ -215,7 +223,7 @@ namespace umi3d.cdk.userCapture
         }
 
         /// <inheritdoc/>
-        public abstract void UpdateFrame(UserTrackingFrameDto frame);
+        public abstract void UpdateBones(UserTrackingFrameDto frame);
 
         public UserCameraPropertiesDto GetCameraDto()
         {

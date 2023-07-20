@@ -37,10 +37,8 @@ namespace umi3d.cdk.userCapture
         protected void Start()
         {
             PoseSubskeleton = new PoseSubskeleton();
-            subskeletons = new List<ISubskeleton>
-            {
-                TrackedSubskeleton, PoseSubskeleton
-            };
+
+            Init(TrackedSubskeleton, PoseSubskeleton);
         }
 
         /// <summary>
@@ -66,14 +64,14 @@ namespace umi3d.cdk.userCapture
         }
 
         /// <inheritdoc/>
-        public override void UpdateFrame(UserTrackingFrameDto frame)
+        public override void UpdateBones(UserTrackingFrameDto frame)
         {
             if (Subskeletons != null)
             {
                 foreach (ISubskeleton skeleton in Subskeletons)
                 {
                     if (skeleton is IWritableSubskeleton writableSkeleton)
-                        writableSkeleton.UpdateFrame(frame);
+                        writableSkeleton.UpdateBones(frame);
                 }
             }
         }

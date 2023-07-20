@@ -169,7 +169,7 @@ namespace umi3d.cdk.userCapture.pose
         /// Updates the state of the pose manager using the tracking frame
         /// </summary>
         /// <param name="trackingFrame"></param>
-        public void UpdateFrame(UserTrackingFrameDto trackingFrame)
+        public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
             // add new poses
             foreach (var poseIndex in trackingFrame.customPosesIndexes)

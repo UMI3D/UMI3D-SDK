@@ -81,7 +81,7 @@ namespace umi3d.cdk.userCapture.tracking
             };
         }
 
-        public void UpdateFrame(UserTrackingFrameDto trackingFrame)
+        public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
             types.Clear();
             foreach (var bone in trackingFrame.trackedBones)

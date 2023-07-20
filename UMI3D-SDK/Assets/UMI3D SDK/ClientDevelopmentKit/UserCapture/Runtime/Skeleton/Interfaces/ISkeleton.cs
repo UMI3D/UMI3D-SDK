@@ -78,7 +78,7 @@ namespace umi3d.cdk.userCapture
         /// Update the positions/rotation of bone of subskeletons based on the received frame.
         /// </summary>
         /// <param name="frame"></param>
-        void UpdateFrame(UserTrackingFrameDto frame);
+        void UpdateBones(UserTrackingFrameDto frame);
 
         /// <summary>
         /// Update the skeleton bones based on subskeletons data.
