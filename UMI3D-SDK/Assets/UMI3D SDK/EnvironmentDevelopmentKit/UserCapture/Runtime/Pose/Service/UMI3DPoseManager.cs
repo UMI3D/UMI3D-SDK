@@ -22,6 +22,9 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Service that handle poses from the environment side.
+    /// </summary>
     public class UMI3DPoseManager : Singleton<UMI3DPoseManager>, IUMI3DPoseManager
     {
         #region Dependency Injection

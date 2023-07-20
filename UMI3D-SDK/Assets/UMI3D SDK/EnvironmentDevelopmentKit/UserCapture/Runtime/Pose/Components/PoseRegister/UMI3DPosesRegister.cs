@@ -21,21 +21,27 @@ using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Entry point for poses and pose overriders designed for the environment.
+    /// </summary>
     public sealed class UMI3DPosesRegister : MonoBehaviour, IPosesRegister, IPoseOverridersRegister
     {
         /// <summary>
-        /// All the server poses
+        /// All the server poses.
         /// </summary>
-        [SerializeField]
+        [SerializeField, Tooltip("Poses designed for the environment.")]
         private List<UMI3DPose_so> environmentPoses = new();
 
+        /// <inheritdoc/>
         public IList<UMI3DPose_so> EnvironmentPoses => environmentPoses;
 
         /// <summary>
-        /// The container fields, the init to set up the pose containers
+        /// The container fields, the init to set up the pose containers.
         /// </summary>
-        [SerializeField] private List<PoseOverriderContainerField> poseOverriderFields = new();
+        [SerializeField, Tooltip("The container fields, the init to set up the pose containers.")] 
+        private List<PoseOverriderContainerField> poseOverriderFields = new();
 
+        /// <inheritdoc/>
         public IList<PoseOverriderContainerField> PoseOverriderFields => poseOverriderFields;
 
         private void Start()

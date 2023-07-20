@@ -19,8 +19,14 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Entry point for poses designed for the environment.
+    /// </summary>
     public interface IPosesRegister
     {
+        /// <summary>
+        /// Poses designed for the environment.
+        /// </summary>
         public IList<UMI3DPose_so> EnvironmentPoses { get; }
     }
 }

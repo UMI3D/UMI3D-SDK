@@ -18,8 +18,14 @@ using System.Collections.Generic;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Entry point for pose overriders designed for the environment.
+    /// </summary>
     public interface IPoseOverridersRegister
     {
+        /// <summary>
+        /// Pose overriders designed for the environment.
+        /// </summary>
         public IList<PoseOverriderContainerField> PoseOverriderFields { get; }
     }
 }
