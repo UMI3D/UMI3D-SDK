@@ -92,7 +92,7 @@ namespace EditMode_Tests.UserCapture.Binding.CDK
             var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
 
             var personalSkeletonMock = new Mock<PersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.s_Transform>() { { targetBoneType, new() } });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new() } });
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
@@ -130,7 +130,7 @@ namespace EditMode_Tests.UserCapture.Binding.CDK
             var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
 
             var personalSkeletonMock = new Mock<PersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.s_Transform>() { { targetBoneType, new()} });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new()} });
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 

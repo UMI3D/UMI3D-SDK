@@ -57,19 +57,19 @@ namespace umi3d.cdk.userCapture.binding
         {
             if (boundTransform is null) // node is destroyed
             {
+                UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
                 success = false;
                 return;
             }
 
-            var parentBone = skeleton.Bones[BoneType];
-            if (parentBone is null)
+            if (!skeleton.Bones.TryGetValue(BoneType, out ISkeleton.Transformation parentBoneTransform))
             {
                 UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
                 success = false;
                 return;
             }
 
-            Compute((parentBone.s_Position, parentBone.s_Rotation, Vector3.one));
+            Compute((parentBoneTransform.Position, parentBoneTransform.Rotation, Vector3.one));
             success = true;
         }
     }
