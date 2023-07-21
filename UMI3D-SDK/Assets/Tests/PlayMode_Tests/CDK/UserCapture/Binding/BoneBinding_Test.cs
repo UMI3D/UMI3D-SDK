@@ -88,9 +88,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.s_Transform>()
+            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
             {
-                { boneType, new() { s_Position = parentGo.transform.position, s_Rotation= parentGo.transform.rotation } }
+                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -125,9 +125,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.s_Transform>()
+            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
             {
-                { boneType, new() { s_Position = parentGo.transform.position, s_Rotation= parentGo.transform.rotation } }
+                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -146,8 +146,8 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
                 parentGo.transform.Translate(1, 1, 1);
                 parentGo.transform.Rotate(1, 1, 1);
 
-                skeletonBones[boneType].s_Position = parentGo.transform.position;
-                skeletonBones[boneType].s_Rotation = parentGo.transform.rotation;
+                skeletonBones[boneType].Position = parentGo.transform.position;
+                skeletonBones[boneType].Rotation = parentGo.transform.rotation;
 
                 // WHEN
                 binding.Apply(out bool succes);
@@ -180,9 +180,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.s_Transform>()
+            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
             {
-                { boneType, new() { s_Position = parentGo.transform.position, s_Rotation= parentGo.transform.rotation } }
+                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -217,9 +217,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.s_Transform>()
+            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
             {
-                { boneType, new() { s_Position = parentGo.transform.position, s_Rotation= parentGo.transform.rotation } }
+                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -237,8 +237,8 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
                 // GIVEN
                 parentGo.transform.Translate(1, 1, 1);
                 parentGo.transform.Rotate(1, 1, 1);
-                skeletonBones[boneType].s_Position = parentGo.transform.position;
-                skeletonBones[boneType].s_Rotation = parentGo.transform.rotation;
+                skeletonBones[boneType].Position = parentGo.transform.position;
+                skeletonBones[boneType].Rotation = parentGo.transform.rotation;
 
                 // WHEN
                 binding.Apply(out bool success);
@@ -271,9 +271,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.s_Transform>()
+            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
             {
-                { boneType, new() { s_Position = parentGo.transform.position, s_Rotation= parentGo.transform.rotation } }
+                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -308,9 +308,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.s_Transform>()
+            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
             {
-                { boneType, new() { s_Position = parentGo.transform.position, s_Rotation= parentGo.transform.rotation } }
+                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -328,8 +328,8 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
                 // GIVEN
                 parentGo.transform.Translate(1, 1, 1);
                 parentGo.transform.Rotate(1, 1, 1);
-                skeletonBones[boneType].s_Position = parentGo.transform.position;
-                skeletonBones[boneType].s_Rotation = parentGo.transform.rotation;
+                skeletonBones[boneType].Position = parentGo.transform.position;
+                skeletonBones[boneType].Rotation = parentGo.transform.rotation;
 
                 // WHEN
                 binding.Apply(out bool success);

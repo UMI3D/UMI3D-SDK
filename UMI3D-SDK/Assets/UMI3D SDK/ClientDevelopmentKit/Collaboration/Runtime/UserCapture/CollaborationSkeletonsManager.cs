@@ -218,9 +218,9 @@ namespace umi3d.cdk.collaboration.userCapture
             foreach (var bone in skeletonHierarchy.Relations.Keys)
             {
                 if (cs.Bones.ContainsKey(bone))
-                    cs.Bones[bone].s_Rotation = Quaternion.identity;
+                    cs.Bones[bone].Rotation = Quaternion.identity;
                 else
-                    cs.Bones[bone] = new ISkeleton.s_Transform() { s_Rotation = Quaternion.identity };
+                    cs.Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity };
             }
 
             skeletons[userId] = cs;

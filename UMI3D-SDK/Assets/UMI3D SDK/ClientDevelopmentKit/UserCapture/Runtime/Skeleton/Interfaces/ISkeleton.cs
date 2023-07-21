@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -32,7 +33,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
         /// </summary>
-        IDictionary<uint, s_Transform> Bones { get; }
+        IDictionary<uint, Transformation> Bones { get; }
 
         /// <summary>
         /// Subskeletons that compose the final skeleton.
@@ -47,7 +48,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>
-        Transform HipsAnchor { get; }
+        UnityEngine.Transform HipsAnchor { get; }
 
         /// <summary>
         /// Id of the user represented by this skeleton.
@@ -63,16 +64,6 @@ namespace umi3d.cdk.userCapture
         /// Susbskeleton for body poses.
         /// </summary>
         IPoseSubskeleton PoseSubskeleton { get; }
-
-        #region Data struture
-
-        public class s_Transform
-        {
-            public Vector3 s_Position;
-            public Quaternion s_Rotation;
-        }
-
-        #endregion Data struture
 
         /// <summary>
         /// Update the positions/rotation of bone of subskeletons based on the received frame.
@@ -104,5 +95,15 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="subskeleton"></param>
         void RemoveSubskeleton(ISubskeleton subskeleton);
+
+        #region Data struture
+
+        public class Transformation
+        {
+            public Vector3 Position;
+            public Quaternion Rotation;
+        }
+
+        #endregion Data struture
     }
 }
