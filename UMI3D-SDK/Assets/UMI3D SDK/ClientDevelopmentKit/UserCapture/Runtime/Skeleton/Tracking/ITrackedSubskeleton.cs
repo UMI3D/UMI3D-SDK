@@ -25,7 +25,7 @@ namespace umi3d.cdk.userCapture.tracking
         IDictionary<uint, float> BonesAsyncFPS { get; set; }
         Camera ViewPoint { get; }
         Transform Hips { get; }
-        IReadOnlyDictionary<uint, TrackedSkeletonBone> TrackedBones { get; }
+        IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones { get; }
 
         UserTrackingBoneDto GetController(uint boneType);
     }

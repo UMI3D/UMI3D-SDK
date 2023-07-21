@@ -31,8 +31,8 @@ using umi3d.cdk.userCapture;
 
 namespace PlayMode_Tests.UserCapture.Tracking.CDK
 {
-    [TestFixture, TestOf(typeof(TrackedSkeleton))]
-    public class TrackedSkeleton_Test
+    [TestFixture, TestOf(typeof(TrackedSubskeleton))]
+    public class TrackedSubskeleton_Test
     {
         protected GameObject trackedSkeletonGo;
         protected GameObject viewpointGo;
@@ -41,14 +41,14 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         protected GameObject thirdTrackedBoneGo;
         protected GameObject trackedBoneControllerGo;
 
-        protected TrackedSkeleton trackedSkeleton;
+        protected TrackedSubskeleton trackedSkeleton;
         protected Camera viewpoint;
 
         protected DistantController firstOtherDistantController;
         protected DistantController secondOtherDistantController;
         protected DistantController thirdOtherDistantController;
 
-        protected List<TrackedSkeletonBone> trackedBones;
+        protected List<TrackedSubskeletonBone> trackedBones;
         protected List<DistantController> distantControllers;
 
         List<uint> bonetypesValues;
@@ -81,7 +81,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             // TrackedSkeleton instantiation
             trackedSkeletonGo = NewGameObject("Tracked Skeleton");
-            trackedSkeleton = trackedSkeletonGo.AddComponent<TrackedSkeleton>();
+            trackedSkeleton = trackedSkeletonGo.AddComponent<TrackedSubskeleton>();
 
             // TrackedSkeleton's viewpoint setup
             viewpointGo = NewGameObject("Viewpoint");
@@ -90,23 +90,23 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             // TrackedBones instantiation
             firstTrackedBoneGo = NewGameObject("First Bone");
-            var FirstTSB = firstTrackedBoneGo.AddComponent<TrackedSkeletonBone>();
+            var FirstTSB = firstTrackedBoneGo.AddComponent<TrackedSubskeletonBone>();
             FirstTSB.boneType = GetRandomBonetype();
 
             secondTrackedBoneGo = NewGameObject("Second Bone");
-            var SecondTSB = secondTrackedBoneGo.AddComponent<TrackedSkeletonBone>();
+            var SecondTSB = secondTrackedBoneGo.AddComponent<TrackedSubskeletonBone>();
             SecondTSB.boneType = GetRandomBonetype();
 
             thirdTrackedBoneGo = NewGameObject("Third Bone");
-            var ThirdTSB = thirdTrackedBoneGo.AddComponent<TrackedSkeletonBone>();
+            var ThirdTSB = thirdTrackedBoneGo.AddComponent<TrackedSubskeletonBone>();
             ThirdTSB.boneType = GetRandomBonetype();
 
             // TrackedBoneController instantiation
             trackedBoneControllerGo = NewGameObject("Tracked Bone Controller");
-            var TSBC = trackedBoneControllerGo.AddComponent<TrackedSkeletonBoneController>();
+            var TSBC = trackedBoneControllerGo.AddComponent<TrackedSubskeletonBoneController>();
             TSBC.boneType = GetRandomBonetype();
 
-            trackedBones = new List<TrackedSkeletonBone> { FirstTSB, SecondTSB, ThirdTSB, TSBC };
+            trackedBones = new List<TrackedSubskeletonBone> { FirstTSB, SecondTSB, ThirdTSB, TSBC };
 
             // DistantControllers setup
             firstOtherDistantController = new DistantController() { isActif = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
@@ -161,7 +161,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             List<IController> controllers = new List<IController>();
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             trackedSkeleton.bones = bones;
             trackedSkeleton.controllers = controllers;
@@ -183,7 +183,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             List<IController> controllers = new List<IController>();
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             foreach (var bone in trackedBones)
             {
@@ -210,7 +210,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             List<IController> controllers = new List<IController>();
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             foreach (var bone in trackedBones)
             {
@@ -241,13 +241,13 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             List<IController> controllers = new List<IController>();
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             foreach (var bone in trackedBones)
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
-                if (bone.GetType() == typeof(TrackedSkeletonBoneController))
+                if (bone.GetType() == typeof(TrackedSubskeletonBoneController))
                 {
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
                     targetPose.bones.Add(bone.ToBoneDto());
@@ -400,11 +400,11 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             UserTrackingFrameDto frame = new UserTrackingFrameDto() { trackedBones = new() };
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             foreach (var bone in trackedBones)
             {
-                if (!bones.ContainsKey(bone.boneType) && bone is not TrackedSkeletonBoneController)
+                if (!bones.ContainsKey(bone.boneType) && bone is not TrackedSubskeletonBoneController)
                     bones.Add(bone.boneType, bone);
             }
 
@@ -436,13 +436,13 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             List<IController> controllers = new List<IController>();
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             foreach (var bone in trackedBones)
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
-                if (bone.GetType() == typeof(TrackedSkeletonBoneController))
+                if (bone.GetType() == typeof(TrackedSubskeletonBoneController))
                 {
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
                 }
@@ -474,13 +474,13 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             List<IController> controllers = new List<IController>();
 
-            Dictionary<uint, TrackedSkeletonBone> bones = new Dictionary<uint, TrackedSkeletonBone>();
+            Dictionary<uint, TrackedSubskeletonBone> bones = new Dictionary<uint, TrackedSubskeletonBone>();
 
             foreach (var bone in trackedBones)
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
-                if (bone.GetType() == typeof(TrackedSkeletonBoneController))
+                if (bone.GetType() == typeof(TrackedSubskeletonBoneController))
                 {
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
                     frameTarget.trackedBones.Add(new ControllerDto() { boneType = bone.boneType, isOverrider = true, position = bone.transform.position.Dto(), rotation = bone.transform.rotation.Dto() });

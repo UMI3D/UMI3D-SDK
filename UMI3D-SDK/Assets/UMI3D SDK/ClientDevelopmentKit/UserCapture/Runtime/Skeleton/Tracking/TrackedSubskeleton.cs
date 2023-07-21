@@ -24,7 +24,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackedSkeleton : MonoBehaviour, ITrackedSubskeleton
+    public class TrackedSubskeleton : MonoBehaviour, ITrackedSubskeleton
     {
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
@@ -44,8 +44,8 @@ namespace umi3d.cdk.userCapture.tracking
         public TrackedAnimator trackedAnimator;
 
         [SerializeField]
-        public Dictionary<uint, TrackedSkeletonBone> bones = new();
-        public IReadOnlyDictionary<uint, TrackedSkeletonBone> TrackedBones => bones;
+        public Dictionary<uint, TrackedSubskeletonBone> bones = new();
+        public IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones => bones;
 
         private List<uint> types = new List<uint>();
 
@@ -53,11 +53,11 @@ namespace umi3d.cdk.userCapture.tracking
         {
             trackedAnimator.IkCallback = new System.Action<int>((u => HandleAnimatorIK(u)));
 
-            foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
+            foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
-                if (bone.GetType() == typeof(TrackedSkeletonBoneController))
+                if (bone.GetType() == typeof(TrackedSubskeletonBoneController))
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
             }
         }
@@ -129,7 +129,7 @@ namespace umi3d.cdk.userCapture.tracking
         {
             if (bones.Count == 0)
                 return;
-            trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
+            trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSubskeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
             foreach (var asyncBone in BonesAsyncFPS)
             {
                 trackingFrame.trackedBones.Add(bones.First(p => p.Value.boneType == asyncBone.Key).Value.ToControllerDto());

@@ -15,18 +15,18 @@ limitations under the License.
 */
 
 using NUnit.Framework;
-using umi3d.common.userCapture;
-using UnityEngine.SceneManagement;
-using UnityEngine;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common.userCapture;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace PlayMode_Tests.UserCapture.Tracking.CDK
 {
-
-    public class TrackedSkeletonBoneController_Test
+    [TestFixture, TestOf(typeof(TrackedSubskeletonBone))]
+    public class TrackedSubskeletonBone_Test
     {
-        protected GameObject controllerGo;
-        protected TrackedSkeletonBoneController skeletonBoneController;
+        protected GameObject boneGo;
+        protected TrackedSubskeletonBone skeletonBone;
 
         #region Test SetUp
 
@@ -39,18 +39,18 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [SetUp]
         public void Setup()
         {
-            controllerGo = new GameObject("ControllerGo");
-            skeletonBoneController = controllerGo.AddComponent<TrackedSkeletonBoneController>();
-            Object.Instantiate(controllerGo);
-            controllerGo.transform.position = Vector3.one;
-            controllerGo.transform.rotation = Quaternion.identity;
-            controllerGo.transform.localScale = Vector3.one;
+            boneGo = new GameObject("BoneGo");
+            skeletonBone = boneGo.AddComponent<TrackedSubskeletonBone>();
+            Object.Instantiate(boneGo);
+            boneGo.transform.position = Vector3.one;
+            boneGo.transform.rotation = Quaternion.identity;
+            boneGo.transform.localScale = Vector3.one;
         }
 
         [TearDown]
         public void TearDown()
         {
-            Object.Destroy(controllerGo);
+            Object.Destroy(boneGo);
         }
 
         #endregion Test SetUp
@@ -61,10 +61,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         public void ToBoneDto_BoneTypeNone_Test()
         {
             // GIVEN
-            skeletonBoneController.boneType = BoneType.None;
+            skeletonBone.boneType = BoneType.None;
 
             // WHEN
-            var dto = skeletonBoneController.ToBoneDto();
+            var dto = skeletonBone.ToBoneDto();
 
             // THEN
             Assert.IsTrue(dto == null);
@@ -74,14 +74,14 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         public void ToBoneDto_BoneTypeNotNone_Test([Random(1, 58, 1)] int bonetype)
         {
             // GIVEN
-            skeletonBoneController.boneType = (uint)bonetype;
+            skeletonBone.boneType = (uint)bonetype;
 
             // WHEN
-            var dto = skeletonBoneController.ToBoneDto();
+            var dto = skeletonBone.ToBoneDto();
 
             // THEN
-            Assert.AreEqual(skeletonBoneController.boneType, dto.boneType);
-            Assert.AreEqual(skeletonBoneController.transform.rotation, dto.rotation.Quaternion());
+            Assert.AreEqual(skeletonBone.boneType, dto.boneType);
+            Assert.AreEqual(skeletonBone.transform.rotation, dto.rotation.Quaternion());
         }
 
         #endregion ToBoneDto
@@ -92,10 +92,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         public void ToControllerDto_BoneTypeNone_Test()
         {
             // GIVEN
-            skeletonBoneController.boneType = BoneType.None;
+            skeletonBone.boneType = BoneType.None;
 
             // WHEN
-            var dto = skeletonBoneController.ToControllerDto();
+            var dto = skeletonBone.ToControllerDto();
 
             // THEN
             Assert.IsTrue(dto == null);
@@ -105,16 +105,16 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         public void ToControllerDto_BoneTypeNotNone_Test([Random(1, 58, 1)] int bonetype)
         {
             // GIVEN
-            skeletonBoneController.boneType = (uint)bonetype;
+            skeletonBone.boneType = (uint)bonetype;
 
             // WHEN
-            var dto = skeletonBoneController.ToControllerDto();
+            var dto = skeletonBone.ToControllerDto();
 
             // THEN
-            Assert.AreEqual(skeletonBoneController.boneType, dto.boneType);
-            Assert.AreEqual(skeletonBoneController.transform.rotation, dto.rotation.Quaternion());
-            Assert.AreEqual(skeletonBoneController.transform.position, dto.position.Struct());
-            Assert.IsTrue(dto.isOverrider);
+            Assert.AreEqual(skeletonBone.boneType, dto.boneType);
+            Assert.AreEqual(skeletonBone.transform.rotation, dto.rotation.Quaternion());
+            Assert.AreEqual(skeletonBone.transform.position, dto.position.Struct());
+            Assert.IsFalse(dto.isOverrider);
         }
 
         #endregion ToControllerDto
