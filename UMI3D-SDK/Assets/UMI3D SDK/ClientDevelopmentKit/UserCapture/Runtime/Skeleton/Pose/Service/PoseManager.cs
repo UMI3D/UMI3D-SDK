@@ -21,6 +21,9 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture.pose
 {
+    /// <summary>
+    /// Manager that handles poses.
+    /// </summary>
     public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
         /// <summary>

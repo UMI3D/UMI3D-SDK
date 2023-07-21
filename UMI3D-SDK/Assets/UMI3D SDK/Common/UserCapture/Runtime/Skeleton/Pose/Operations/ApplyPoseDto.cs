@@ -35,6 +35,6 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Is it a message to stop or to start the related pose
         /// </summary>
-        public bool stopPose { get; set; } = false;
+        public bool stopPose { get; set; }
     }
 }

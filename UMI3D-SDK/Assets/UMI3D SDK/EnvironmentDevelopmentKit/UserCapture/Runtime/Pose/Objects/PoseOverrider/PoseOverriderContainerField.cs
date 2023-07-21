@@ -15,26 +15,30 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.edk.userCapture;
-using umi3d.edk;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Field to bind a pose overrider to a UMI3D model.
+    /// </summary>
     [Serializable]
     public class PoseOverriderContainerField
     {
         /// <summary>
         /// A pose overrider container
         /// </summary>
-        [SerializeField] UMI3DPoseOverriderContainer poseOverriderContainer;
+        [SerializeField] 
+        private UMI3DPoseOverriderContainer poseOverriderContainer;
 
         public UMI3DPoseOverriderContainer PoseOverriderContainer => poseOverriderContainer;
 
-        [SerializeField] UMI3DModel model;
-        public UMI3DModel Model => model; 
+        [SerializeField, Tooltip("Model that is used for pose conditions.")] 
+        private UMI3DModel model;
+        /// <summary>
+        /// Model that is used for pose conditions.
+        /// </summary>
+        public UMI3DModel Model => model;
 
         public void Init()
         {

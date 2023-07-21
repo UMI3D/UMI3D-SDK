@@ -19,10 +19,16 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.pose
 {
+    /// <summary>
+    /// Links a collection of condition to a specific pose.
+    /// </summary>
     public class PoseOverrider
     {
         private PoseOverriderDto dto;
 
+        /// <summary>
+        /// If true, the pose overrider is currently applied.
+        /// </summary>
         public bool IsActive { get; set; }
 
         public PoseOverrider(PoseOverriderDto dto, IPoseCondition[] poseConditions)
@@ -80,6 +86,11 @@ namespace umi3d.cdk.userCapture.pose
             return true;
         }
 
+        /// <summary>
+        /// Check if a pose overriders should be ended.
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <returns></returns>
         public bool IsFinished(float startTime)
         {
             float currentDuration = Time.time - startTime;

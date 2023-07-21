@@ -19,6 +19,9 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Service that handle poses from the environment side.
+    /// </summary>
     public interface IUMI3DPoseManager
     {
         /// <summary>
@@ -31,15 +34,25 @@ namespace umi3d.edk.userCapture.pose
         /// </summary>
         IDictionary<ulong, IList<PoseDto>> Poses { get; }
 
+        /// <summary>
+        /// Register poses that are designed for the environment.
+        /// Put them in standard format.
+        /// </summary>
+        /// <param name="register">Register that has the poses.</param>
         void RegisterEnvironmentPoses(IPosesRegister register);
 
+        /// <summary>
+        /// Register pose overriders that are designed for the environment.
+        /// Generate all the needed pose overriders containers.
+        /// </summary>
+        /// <param name="register">Register that has the pose overriders.</param>
         void RegisterPoseOverriders(IPoseOverridersRegister register);
 
         /// <summary>
-        /// Sets the new poses of a specific user based on his id,
+        /// Register poses that are designed for each browser.
         /// </summary>
-        /// <param name="userId"></param>
-        /// <param name="poseDtos"></param>
+        /// <param name="userId">User id of the browser sending custom poses.</param>
+        /// <param name="poseDtos">Poses to register.</param>
         void RegisterUserCustomPose(ulong userId, IEnumerable<PoseDto> poseDtos);
     }
 }

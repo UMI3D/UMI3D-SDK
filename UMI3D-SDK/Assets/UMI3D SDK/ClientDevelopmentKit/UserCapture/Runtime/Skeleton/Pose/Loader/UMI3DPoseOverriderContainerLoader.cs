@@ -21,6 +21,9 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture.pose
 {
+    /// <summary>
+    /// Loader for <see cref="UMI3DPoseOverriderContainerDto"/>.
+    /// </summary>
     public class UMI3DPoseOverriderContainerLoader : AbstractLoader, IEntity
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture | DebugScope.Loading;
@@ -31,7 +34,6 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
         /// </summary>
-        /// <param name="poseOverriderContainerDto"></param>
         public void Load(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
             var container = LoadContainer(poseOverriderContainerDto);
@@ -39,6 +41,11 @@ namespace umi3d.cdk.userCapture.pose
             UMI3DEnvironmentLoader.Instance.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container).NotifyLoaded();
         }
 
+        /// <summary>
+        /// Instantiate a <see cref="PoseOverriderContainer"/> from a  <see cref="UMI3DPoseOverriderContainerDto"/>.
+        /// </summary>
+        /// <param name="poseOverriderContainerDto"></param>
+        /// <returns></returns>
         public PoseOverriderContainer LoadContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
         {
             var poseOverriders = poseOverriderContainerDto.poseOverriderDtos.Select(x => LoadPoseOverrider(x)).ToArray();
@@ -46,6 +53,11 @@ namespace umi3d.cdk.userCapture.pose
             return container;
         }
 
+        /// <summary>
+        /// Instantiate a <see cref="PoseOverrider"/> from a  <see cref="PoseOverriderDto"/>.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
         public PoseOverrider LoadPoseOverrider(PoseOverriderDto dto)
         {
             return new PoseOverrider(dto,
@@ -55,7 +67,12 @@ namespace umi3d.cdk.userCapture.pose
                                         .ToArray());
         }
 
-        private IPoseCondition LoadPoseCondition(PoseConditionDto dto)
+        /// <summary>
+        /// Instantiate a <see cref="IPoseCondition"/> from a  <see cref="AbstractPoseConditionDto"/>.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <returns></returns>
+        private IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
         {
             switch (dto)
             {

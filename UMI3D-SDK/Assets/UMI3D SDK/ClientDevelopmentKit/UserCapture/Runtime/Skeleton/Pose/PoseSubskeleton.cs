@@ -25,7 +25,7 @@ using umi3d.common.userCapture.tracking;
 namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
-    /// Subskeleton that handles body poses.
+    /// Subskeleton that receive poses on its bones.
     /// </summary>
     public class PoseSubskeleton : IPoseSubskeleton
     {
@@ -45,32 +45,23 @@ namespace umi3d.cdk.userCapture.pose
 
         #endregion Dependency Injection
 
+        /// <inheritdoc/>
         public IReadOnlyList<SkeletonPose> ActivatedPoses => activatedPoses;
         protected List<SkeletonPose> activatedPoses = new();
 
-        /// <summary>
-        /// Set a pose for the calculation of the next tracking frame
-        /// </summary>
-        /// <param name="isOverriding"></param>
-        /// <param name="posesToAdd"></param>
-        /// <param name="isServerPose"></param>
+        /// <inheritdoc/>
         public void StartPose(IEnumerable<SkeletonPose> posesToAdd, bool isOverriding = false)
         {
             if (posesToAdd == null)
                 return;
 
             if (isOverriding)
-                activatedPoses.Clear();
+                StopAllPoses();
 
             activatedPoses.AddRange(posesToAdd);
         }
 
-        /// <summary>
-        /// Set a pose for the calculation of the next tracking frame
-        /// </summary>
-        /// <param name="isOverriding"></param>
-        /// <param name="poseToAdd"></param>
-        /// <param name="isServerPose"></param>
+        /// <inheritdoc/>
         public void StartPose(SkeletonPose poseToAdd, bool isOverriding = false)
         {
             if (poseToAdd == null)
@@ -82,11 +73,7 @@ namespace umi3d.cdk.userCapture.pose
             activatedPoses.Add(poseToAdd);
         }
 
-        /// <summary>
-        /// Stops a specific set of poses
-        /// </summary>
-        /// <param name="posesToStop"></param>
-        /// <param name="isServerPose"></param>
+        /// <inheritdoc/>
         public void StopPose(IEnumerable<SkeletonPose> posesToStop)
         {
             if (posesToStop == null)
@@ -97,11 +84,7 @@ namespace umi3d.cdk.userCapture.pose
             });
         }
 
-        /// <summary>
-        /// Stops a specific set of poses
-        /// </summary>
-        /// <param name="posesToStop"></param>
-        /// <param name="isServerPose"></param>
+        /// <inheritdoc/>
         public void StopPose(SkeletonPose poseToStop)
         {
             if (poseToStop == null)
@@ -109,11 +92,7 @@ namespace umi3d.cdk.userCapture.pose
             activatedPoses.Remove(poseToStop);
         }
 
-        /// <summary>
-        /// Stops a specific set of poses
-        /// </summary>
-        /// <param name="posesToStop"></param>
-        /// <param name="isServerPose"></param>
+        /// <inheritdoc/>
         public void StopPose(IEnumerable<int> posesToStopIds)
         {
             posesToStopIds.ForEach(poseId =>
@@ -122,28 +101,19 @@ namespace umi3d.cdk.userCapture.pose
             });
         }
 
-        /// <summary>
-        /// Stops a specific set of poses
-        /// </summary>
-        /// <param name="posesToStop"></param>
-        /// <param name="isServerPose"></param>
+        /// <inheritdoc/>
         public void StopPose(int poseToStopId)
         {
             activatedPoses.Remove(activatedPoses.Find(x => x.Index == poseToStopId));
         }
 
-        /// <summary>
-        /// stops all the poses s
-        /// </summary>
+        /// <inheritdoc/>
         public void StopAllPoses()
         {
             activatedPoses.Clear();
         }
 
-        /// <summary>
-        ///last in has priority,,, server poses have priority
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public PoseDto GetPose()
         {
             PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
@@ -166,10 +136,7 @@ namespace umi3d.cdk.userCapture.pose
             return poseDto;
         }
 
-        /// <summary>
-        /// Updates the state of the pose manager using the tracking frame
-        /// </summary>
-        /// <param name="trackingFrame"></param>
+        /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
             // add new poses
@@ -210,11 +177,7 @@ namespace umi3d.cdk.userCapture.pose
             }
         }
 
-        /// <summary>
-        /// Add the poses to the tracking frame
-        /// </summary>
-        /// <param name="trackingFrame"></param>
-        /// <param name="option"></param>
+        /// <inheritdoc/>
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             trackingFrame.customPosesIndexes ??= new();

@@ -20,7 +20,7 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.pose.editor
 {
-    [CustomPropertyDrawer(typeof(PoseConditionDto))]
+    [CustomPropertyDrawer(typeof(AbstractPoseConditionDto))]
     public class PoseConditionDrawer : PropertyDrawer
     {
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)

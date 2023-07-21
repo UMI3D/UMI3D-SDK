@@ -17,11 +17,11 @@ limitations under the License.
 namespace umi3d.common.userCapture.pose
 {
     /// <summary>
-    /// <inheritdoc/>
+    /// <inheritdoc/><br/>
     /// A condition to check the direction
     /// </summary>
     [System.Serializable]
-    public class DirectionConditionDto : PoseConditionDto
+    public class DirectionConditionDto : AbstractPoseConditionDto
     {
         public Vector3Dto Direction { get; set; }
     }

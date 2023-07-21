@@ -30,7 +30,7 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        public PoseConditionDto[] poseConditions { get; set; }
+        public AbstractPoseConditionDto[] poseConditions { get; set; }
 
         /// <summary>
         /// How long the pose should last [Not Implemented]

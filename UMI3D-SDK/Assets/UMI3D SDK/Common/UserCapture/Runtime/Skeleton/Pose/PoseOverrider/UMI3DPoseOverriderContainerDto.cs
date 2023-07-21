@@ -17,13 +17,11 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
-    public class UMI3DPoseOverriderContainerDto : UMI3DDto, IEntity
+    /// <summary>
+    /// Wrap several pose overriders around a same related UMI3D node.
+    /// </summary>
+    public class UMI3DPoseOverriderContainerDto : AbstractEntityDto, IEntity
     {
-        /// <summary>
-        /// The id of the entity
-        /// </summary>
-        public ulong id { get; set; }
-
         /// <summary>
         /// Id the corresponding node in the scene
         /// </summary>

@@ -473,17 +473,36 @@ namespace umi3d.common.userCapture.pose.editor
 
         private BonePoseDto CreateBonePoseDTOOfType(Vector4Dto rootRotation, PoseSetterBoneComponent r)
         {
-            var bonePoseDto = new BonePoseDto(r.BoneType, r.transform.position.Dto(), rootRotation);
+            var bonePoseDto = new BonePoseDto()
+            {
+                bone = r.BoneType,
+                position = r.transform.position.Dto(),
+                rotation = rootRotation
+            };
             string anchor = anchor_dropdown.value;
             switch (anchor_dropdown.value)
             {
                 case "AnchoredBonePoseDto":
-                    return new AnchoredBonePoseDto(bonePoseDto);
+                    return new AnchoredBonePoseDto()
+                    {
+                        bone = bonePoseDto.bone,
+                        position = bonePoseDto.position,
+                        rotation = bonePoseDto.rotation
+                    };
                 case "NodeAnchor":
-
-                    break;
+                    return new NodeAnchoredBonePoseDto()
+                    {
+                        bone = bonePoseDto.bone,
+                        position = bonePoseDto.position,
+                        rotation = bonePoseDto.rotation
+                    };
                 case "FloorAnchoredBonePoseDto":
-                    return new FloorAnchoredBonePoseDto(bonePoseDto);
+                    return new FloorAnchoredBonePoseDto()
+                    {
+                        bone = bonePoseDto.bone,
+                        position = bonePoseDto.position,
+                        rotation = bonePoseDto.rotation,
+                    };
             }
             return bonePoseDto;
         }
@@ -521,7 +540,7 @@ namespace umi3d.common.userCapture.pose.editor
 
                 ResetAllBones();
 
-                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.GetBonePoseCopy().Bone);
+                PoseSetterBoneComponent root_boneComponent = bone_components.Find(bc => bc.BoneType == currentPose.GetBonePoseCopy().bone);
                 root_boneComponent.isRoot = true;
                 root_boneComponent.isSavable = false;
                 treeView.UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(true, root_boneComponent.BoneType);
@@ -578,10 +597,10 @@ namespace umi3d.common.userCapture.pose.editor
 
         private void UpdateBoneComponent(BonePoseDto bonePoseDto)
         {
-            PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonePoseDto.Bone);
+            PoseSetterBoneComponent bone_component = bone_components.Find(bc => bc.BoneType == bonePoseDto.bone);
             if (bone_component != null)
             {
-                bone_component.transform.rotation = bonePoseDto.Rotation.Quaternion();
+                bone_component.transform.rotation = bonePoseDto.rotation.Quaternion();
                 bone_component.isSavable = true;
             }
         }

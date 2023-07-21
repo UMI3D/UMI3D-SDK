@@ -64,7 +64,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as MagnitudeConditionDto).Magnitude == magnitudeConditionDto.Magnitude);
         }
@@ -83,7 +83,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as BoneRotationConditionDto).BoneId == boneRotationConditionDto.BoneId);
             Assert.IsTrue((result as BoneRotationConditionDto).Rotation.X == boneRotationConditionDto.Rotation.X);
@@ -104,7 +104,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as DirectionConditionDto).Direction.X == directionConditionDto.Direction.X);
             Assert.IsTrue((result as DirectionConditionDto).Direction.Y == directionConditionDto.Direction.Y);
@@ -123,7 +123,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as UserScaleConditionDto).Scale.X == userScaleConditinoDto.Scale.X);
         }
@@ -140,7 +140,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as ScaleConditionDto).Scale.X == scaleConditionDto.Scale.X);
         }
@@ -162,7 +162,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue(((result as RangeConditionDto).ConditionA as MagnitudeConditionDto).Magnitude
                 == (rangeConditionDto.ConditionA as MagnitudeConditionDto).Magnitude);
@@ -182,7 +182,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out PoseConditionDto result);
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
 
             Assert.IsTrue(((result as NotConditionDto).Conditions[0] as UserScaleConditionDto).Scale.X
@@ -191,9 +191,9 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                 == (notConditionDto.Conditions[1] as DirectionConditionDto).Direction.X);
         }
 
-        private PoseConditionDto[] GetConditionsTestSet()
+        private AbstractPoseConditionDto[] GetConditionsTestSet()
         {
-            return new PoseConditionDto[]{
+            return new AbstractPoseConditionDto[]{
                 new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
                 new DirectionConditionDto() { Direction = Vector3.one.Dto() }
             };

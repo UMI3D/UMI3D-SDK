@@ -17,7 +17,6 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 using umi3d.edk.core;
