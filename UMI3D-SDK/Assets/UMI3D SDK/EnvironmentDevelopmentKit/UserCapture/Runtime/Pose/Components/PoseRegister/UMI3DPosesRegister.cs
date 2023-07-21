@@ -46,7 +46,7 @@ namespace umi3d.edk.userCapture.pose
 
         private void Start()
         {
-            _ = UMI3DPoseManager.Instance;
+            _ = PoseManager.Instance;
         }
     }
 }

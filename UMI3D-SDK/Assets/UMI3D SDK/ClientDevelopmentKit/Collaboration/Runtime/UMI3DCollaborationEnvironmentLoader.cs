@@ -97,8 +97,7 @@ namespace umi3d.cdk.collaboration
             {
                 dto.poseOverriderContainers.ForEach(x =>
                 {
-                    var container = poseLoader.LoadContainer(x);
-                    PoseManager.Instance.SubscribePoseConditionProcessor(container);
+                   poseLoader.LoadContainer(x);
                 });
                 onEnvironmentLoaded.RemoveListener(LoadPoses);
             }

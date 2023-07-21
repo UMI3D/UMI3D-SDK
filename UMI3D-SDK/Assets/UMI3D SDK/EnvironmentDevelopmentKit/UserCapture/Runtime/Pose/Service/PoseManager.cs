@@ -25,16 +25,16 @@ namespace umi3d.edk.userCapture.pose
     /// <summary>
     /// Service that handle poses from the environment side.
     /// </summary>
-    public class UMI3DPoseManager : Singleton<UMI3DPoseManager>, IUMI3DPoseManager
+    public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
         #region Dependency Injection
 
-        public UMI3DPoseManager() : base()
+        public PoseManager() : base()
         {
             Init();
         }
 
-        public UMI3DPoseManager(IPosesRegister poseContainer, IPoseOverridersRegister poseOverriderFieldContainer) : base()
+        public PoseManager(IPosesRegister poseContainer, IPoseOverridersRegister poseOverriderFieldContainer) : base()
         {
             Init();
         }
@@ -54,7 +54,7 @@ namespace umi3d.edk.userCapture.pose
         private readonly Dictionary<ulong, IList<PoseDto>> poses = new();
 
         /// <inheritdoc/>
-        public IList<UMI3DPoseOverriderContainerDto> PoseOverriderContainers { get; private set; } = new List<UMI3DPoseOverriderContainerDto>();
+        public IList<UMI3DPoseOverridersContainerDto> PoseOverriderContainers { get; private set; } = new List<UMI3DPoseOverridersContainerDto>();
 
         /// <inheritdoc/>
         public void RegisterUserCustomPose(ulong userId, IEnumerable<PoseDto> poseDtos)
@@ -126,7 +126,7 @@ namespace umi3d.edk.userCapture.pose
 
                 overrider.Init();
 
-                PoseOverriderContainers.Add((UMI3DPoseOverriderContainerDto)overrider.PoseOverriderContainer.ToEntityDto());
+                PoseOverriderContainers.Add((UMI3DPoseOverridersContainerDto)overrider.PoseOverriderContainer.ToEntityDto());
             }
         }
     }

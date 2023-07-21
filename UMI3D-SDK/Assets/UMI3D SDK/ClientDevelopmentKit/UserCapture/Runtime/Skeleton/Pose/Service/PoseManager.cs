@@ -37,9 +37,9 @@ namespace umi3d.cdk.userCapture.pose
         public IDictionary<ulong, IList<SkeletonPose>> Poses { get; set; } = new Dictionary<ulong, IList<SkeletonPose>>();
 
         /// <summary>
-        /// All pose condition processors
+        /// All pose condition processors indexed by related node id.
         /// </summary>
-        public Dictionary<ulong, PoseConditionProcessor> conditionProcessors = new Dictionary<ulong, PoseConditionProcessor>();
+        public Dictionary<ulong, PoseOverridersContainerProcessor> poseOverridersContainerProcessors = new Dictionary<ulong, PoseOverridersContainerProcessor>();
 
         #region Dependency Injection
 
@@ -73,32 +73,32 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void SubscribePoseConditionProcessor(PoseOverriderContainer overrider)
+        public void AddPoseOverriders(PoseOverridersContainer container)
         {
-            if (conditionProcessors.ContainsKey(overrider.NodeId))
+            if (poseOverridersContainerProcessors.ContainsKey(container.NodeId))
                 return;
 
-            PoseConditionProcessor unit = new PoseConditionProcessor(overrider);
-            unit.ConditionValidated += ApplyPoseOverride;
-            unit.ConditionInvalided += StopPoseOverride;
-            conditionProcessors.Add(overrider.NodeId, unit);
+            PoseOverridersContainerProcessor unit = new PoseOverridersContainerProcessor(container);
+            unit.ConditionsValidated += ApplyPoseOverride;
+            unit.ConditionsInvalided += StopPoseOverride;
+            poseOverridersContainerProcessors.Add(container.NodeId, unit);
         }
 
         /// <inheritdoc/>
-        public void UnsubscribePoseConditionProcessor(PoseOverriderContainer overrider)
+        public void RemovePoseOverriders(PoseOverridersContainer container)
         {
-            if (conditionProcessors.TryGetValue(overrider.NodeId, out PoseConditionProcessor unit))
+            if (poseOverridersContainerProcessors.TryGetValue(container.NodeId, out PoseOverridersContainerProcessor unit))
             {
-                unit.ConditionValidated -= ApplyPoseOverride;
+                unit.ConditionsValidated -= ApplyPoseOverride;
                 unit.StopWatchNonInteractionalConditions();
-                conditionProcessors.Remove(overrider.NodeId);
+                poseOverridersContainerProcessors.Remove(container.NodeId);
             }
         }
 
         /// <inheritdoc/>
-        public void TryActivatePose(ulong id, PoseActivationMode poseActivationMode)
+        public void TryActivatePoseOverriders(ulong id, PoseActivationMode poseActivationMode)
         {
-            if (conditionProcessors.TryGetValue(id, out PoseConditionProcessor unit))
+            if (poseOverridersContainerProcessors.TryGetValue(id, out PoseOverridersContainerProcessor unit))
             {
                 unit.TryActivate(poseActivationMode);
             }

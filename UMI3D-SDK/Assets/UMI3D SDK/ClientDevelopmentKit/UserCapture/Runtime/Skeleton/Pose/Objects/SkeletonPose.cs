@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// See <see cref="PoseDto.boneAnchor"/>.
         /// </summary>
-        public BonePoseDto BonePose => dto.boneAnchor;
+        public BonePoseDto BoneAnchor => dto.boneAnchor;
 
         /// <summary>
         /// See <see cref="PoseDto.bones"/>.
