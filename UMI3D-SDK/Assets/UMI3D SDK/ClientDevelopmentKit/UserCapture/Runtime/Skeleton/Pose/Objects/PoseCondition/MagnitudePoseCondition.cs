@@ -44,7 +44,7 @@ namespace umi3d.cdk.userCapture.pose
             Vector3 targetPosition = nodeTransform.position;
 
             Vector3 bonePosition = Vector3.zero;
-            if (trackedSkeleton.TrackedBones.TryGetValue(magnitudeConditionDto.BoneOrigin, out TrackedSkeletonBone bone))
+            if (trackedSkeleton.TrackedBones.TryGetValue(magnitudeConditionDto.BoneOrigin, out TrackedSubskeletonBone bone))
                 bonePosition = bone.transform.position;
 
             return Vector3.Distance(targetPosition, bonePosition) < magnitudeConditionDto.Magnitude;

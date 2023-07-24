@@ -24,7 +24,7 @@ namespace umi3d.cdk.userCapture.tracking
     /// <summary>
     /// Representation for each tracked bone.
     /// </summary>
-    public class TrackedSkeletonBone : MonoBehaviour
+    public class TrackedSubskeletonBone : MonoBehaviour
     {
         /// <summary>
         /// Bone type in UMI3D standards. See <see cref="BoneDto"/>.

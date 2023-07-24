@@ -73,7 +73,7 @@ namespace umi3d.cdk.userCapture
         public ITrackedSubskeleton TrackedSubskeleton => trackedSkeleton;
 
         [SerializeField]
-        protected TrackedSkeleton trackedSkeleton;
+        protected TrackedSubskeleton trackedSkeleton;
 
         /// <summary>
         /// Susbskeleton for body poses.
@@ -86,7 +86,7 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
-        public void Init(TrackedSkeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
+        public void Init(TrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
         {
             this.trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;

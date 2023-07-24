@@ -35,8 +35,8 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 
         private Mock<IEnvironmentManager> environmentLoaderServiceMock;
         private Mock<IUMI3DCollaborationClientServer> collaborationClientServerMock;
-        private TrackedSkeleton trackedSkeleton;
-        private TrackedSkeletonBone trackedSkeletonBone;
+        private TrackedSubskeleton trackedSkeleton;
+        private TrackedSubskeletonBone trackedSkeletonBone;
         private GameObject skeletonGo;
 
         #region Test Setup
@@ -49,8 +49,8 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 
             skeletonGo = new GameObject("Skeleton");
 
-            trackedSkeleton = skeletonGo.AddComponent<TrackedSkeleton>();
-            trackedSkeletonBone = new GameObject("Tracked skeleton bone").AddComponent<TrackedSkeletonBone>();
+            trackedSkeleton = skeletonGo.AddComponent<TrackedSubskeleton>();
+            trackedSkeletonBone = new GameObject("Tracked skeleton bone").AddComponent<TrackedSubskeletonBone>();
             trackedSkeletonBone.boneType = BoneType.Chest;
             trackedSkeleton.bones = new() { { BoneType.Chest, trackedSkeletonBone } };
         }

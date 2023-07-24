@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
@@ -24,7 +23,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackedSkeleton : MonoBehaviour, ITrackedSubskeleton
+    public class TrackedSubskeleton : MonoBehaviour, ITrackedSubskeleton
     {
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
@@ -44,8 +43,8 @@ namespace umi3d.cdk.userCapture.tracking
         public TrackedAnimator trackedAnimator;
 
         [SerializeField]
-        public Dictionary<uint, TrackedSkeletonBone> bones = new();
-        public IReadOnlyDictionary<uint, TrackedSkeletonBone> TrackedBones => bones;
+        public Dictionary<uint, TrackedSubskeletonBone> bones = new();
+        public IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones => bones;
 
         private List<uint> types = new List<uint>();
 
@@ -53,11 +52,11 @@ namespace umi3d.cdk.userCapture.tracking
         {
             trackedAnimator.IkCallback = new System.Action<int>((u => HandleAnimatorIK(u)));
 
-            foreach (var bone in GetComponentsInChildren<TrackedSkeletonBone>())
+            foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
             {
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
-                if (bone.GetType() == typeof(TrackedSkeletonBoneController))
+                if (bone.GetType() == typeof(TrackedSubskeletonBoneController))
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
             }
         }
@@ -74,13 +73,13 @@ namespace umi3d.cdk.userCapture.tracking
 
         public PoseDto GetPose()
         {
-            var dto = new PoseDto
+            var dto = new PoseDto() { bones = new(bones.Count) };
+
+            foreach (var bone in bones.Values)
             {
-                bones = bones
-                    .Select(kp => kp.Value)
-                    //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
-                    .Select(tb => tb.ToBoneDto()).ToList()
-            };
+                //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
+                dto.bones.Add(bone.ToBoneDto());
+            }
             return dto;
         }
 
@@ -97,13 +96,13 @@ namespace umi3d.cdk.userCapture.tracking
             types.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
-                DistantController vc = controllers.Find(c => c.boneType == bone.boneType) as DistantController;
-
-                if (vc == null)
+                if (controllers.Find(c => c.boneType == bone.boneType) is not DistantController vc)
                 {
-                    vc = new DistantController();
-                    vc.boneType = bone.boneType;
-                    vc.isOverrider = bone.isOverrider;
+                    vc = new DistantController
+                    {
+                        boneType = bone.boneType,
+                        isOverrider = bone.isOverrider
+                    };
                     controllers.Add(vc);
                 }
 
@@ -118,21 +117,48 @@ namespace umi3d.cdk.userCapture.tracking
                     boneTransform.transform.rotation = vc.rotation;
                 }
             }
-            foreach (var dc in controllers.Where(c => c is DistantController && !types.Contains(c.boneType)).ToList())
+
+            Queue<DistantController> controllersToRemove = new();
+            foreach (var c in controllers)
             {
-                controllersToDestroy.Add(dc);
-                controllers.Remove(dc);
+                if (c is  DistantController dc && !types.Contains(c.boneType)) 
+                {
+                    controllersToRemove.Enqueue(dc);
+                    controllersToDestroy.Add(dc);
+                }
             }
+            foreach (var dc in controllersToRemove)
+                controllers.Remove(dc);
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             if (bones.Count == 0)
                 return;
-            trackingFrame.trackedBones = bones.Select(kp => kp.Value).OfType<TrackedSkeletonBoneController>().Select(tb => tb.ToControllerDto()).Where(b => b != null).ToList();
+
+            trackingFrame.trackedBones = new(bones.Count);
+
+            // get dto for each bone that is a bone controller
+            foreach (var bone in bones.Values)
+            {
+                if (bone is not TrackedSubskeletonBoneController tBone)
+                    continue;
+
+                if (tBone.boneType != BoneType.None)
+                    trackingFrame.trackedBones.Add(tBone.ToControllerDto());
+            }
+
+            // get dto for each bone that is async
             foreach (var asyncBone in BonesAsyncFPS)
             {
-                trackingFrame.trackedBones.Add(bones.First(p => p.Value.boneType == asyncBone.Key).Value.ToControllerDto());
+                foreach (var bone in bones.Values)
+                {
+                    if (bone.boneType == asyncBone.Key)
+                    {
+                        trackingFrame.trackedBones.Add(bone.ToControllerDto());
+                        break;
+                    }
+                }
             }
         }
 
@@ -146,8 +172,11 @@ namespace umi3d.cdk.userCapture.tracking
         {
             CleanToDestroy();
 
-            foreach (var controller in controllers.Where(c => c.boneType != BoneType.Head))
+            foreach (var controller in controllers)
             {
+                if (controller.boneType == BoneType.Head)
+                    continue;
+
                 switch (controller.boneType)
                 {
                     case BoneType.LeftKnee:

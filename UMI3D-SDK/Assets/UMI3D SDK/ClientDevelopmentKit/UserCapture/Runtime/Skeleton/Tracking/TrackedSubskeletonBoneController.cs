@@ -14,13 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class TrackedSkeletonBoneController : TrackedSkeletonBone, IController
+    public class TrackedSubskeletonBoneController : TrackedSubskeletonBone, IController
     {
         public Vector3 position
         {

@@ -39,7 +39,7 @@ namespace umi3d.cdk.userCapture.pose
         public bool Check()
         {
             Quaternion boneRotation;
-            if (trackedSkeleton.TrackedBones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSkeletonBone bone))
+            if (trackedSkeleton.TrackedBones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSubskeletonBone bone))
                 boneRotation = bone.transform.rotation;
             else
                 return false;
