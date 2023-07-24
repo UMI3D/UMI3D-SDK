@@ -31,7 +31,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 {
     public class PoseOverriderHandlerUnit_Tests
     {
-        private PoseConditionProcessor unit;
+        private PoseOverridersContainerProcessor unit;
 
         private Mock<IEnvironmentManager> environmentLoaderServiceMock;
         private Mock<IUMI3DCollaborationClientServer> collaborationClientServerMock;
@@ -58,7 +58,7 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
         [SetUp]
         public void SetUp()
         {
-            unit = new PoseConditionProcessor(null);
+            unit = new PoseOverridersContainerProcessor(null);
         }
 
         [TearDown]
@@ -164,9 +164,9 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
 
         #region HelperMethod
 
-        private UMI3DPoseOverriderContainerDto GenerateASimplePoseContainer()
+        private UMI3DPoseOverridersContainerDto GenerateASimplePoseContainer()
         {
-            UMI3DPoseOverriderContainerDto container = new UMI3DPoseOverriderContainerDto()
+            UMI3DPoseOverridersContainerDto container = new UMI3DPoseOverridersContainerDto()
             {
                 poseOverriderDtos = new List<PoseOverriderDto>()
             {

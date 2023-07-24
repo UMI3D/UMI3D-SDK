@@ -27,24 +27,24 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// The index of the pose in the array
         /// </summary>
-        public int indexInList;
+        public int index;
 
         /// <summary>
         /// True stops the pose, false starts the pose
         /// </summary>
-        public bool stopPose;
+        public bool shouldStopPose;
 
         public ApplyPoseRequest(int indexInList, bool stopPose = false)
         {
-            this.indexInList = indexInList;
-            this.stopPose = stopPose;
+            this.index = indexInList;
+            this.shouldStopPose = stopPose;
         }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(GetOperationKey())
-                + UMI3DSerializer.Write(indexInList)
-                + UMI3DSerializer.Write(stopPose);
+                + UMI3DSerializer.Write(index)
+                + UMI3DSerializer.Write(shouldStopPose);
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
@@ -71,8 +71,8 @@ namespace umi3d.edk.userCapture.pose
         protected virtual void WriteProperties(ApplyPoseDto dto, ulong userID)
         {
             dto.userID = userID;
-            dto.indexInList = indexInList;
-            dto.stopPose = stopPose;
+            dto.indexInList = index;
+            dto.stopPose = shouldStopPose;
         }
     }
 }

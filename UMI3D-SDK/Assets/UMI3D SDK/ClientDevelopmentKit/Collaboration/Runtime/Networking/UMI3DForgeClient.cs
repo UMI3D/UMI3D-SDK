@@ -524,7 +524,7 @@ namespace umi3d.cdk.collaboration
                 case ApplyPoseDto playPoseDto:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborationSkeletonsManager.Instance.HandlePoseRequest(playPoseDto);
+                        CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
                     });
                     break;
                 default:
@@ -665,7 +665,7 @@ namespace umi3d.cdk.collaboration
 
                     MainThreadManager.Run(() =>
                     {
-                        CollaborationSkeletonsManager.Instance.HandlePoseRequest(playPoseDto);
+                        CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
                     });
                     break;
                 default:

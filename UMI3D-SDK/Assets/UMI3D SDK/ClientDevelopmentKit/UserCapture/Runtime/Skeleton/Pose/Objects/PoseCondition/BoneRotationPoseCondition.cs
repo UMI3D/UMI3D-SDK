@@ -44,7 +44,7 @@ namespace umi3d.cdk.userCapture.pose
             else
                 return false;
 
-            return Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.AcceptanceRange;
+            return Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.Threshold;
         }
     }
 }

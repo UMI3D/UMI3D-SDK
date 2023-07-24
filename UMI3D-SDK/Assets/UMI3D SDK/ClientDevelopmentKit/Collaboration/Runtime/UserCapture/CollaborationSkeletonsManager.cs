@@ -381,7 +381,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Pose
 
-        public void HandlePoseRequest(ApplyPoseDto playPoseDto)
+        public void ApplyPoseRequest(ApplyPoseDto playPoseDto)
         {
             SkeletonPose pose = PoseManager.Instance.Poses[playPoseDto.userID][playPoseDto.indexInList];
 

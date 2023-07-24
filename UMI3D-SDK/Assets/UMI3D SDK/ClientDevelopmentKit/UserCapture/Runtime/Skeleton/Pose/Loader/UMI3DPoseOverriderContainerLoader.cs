@@ -22,7 +22,7 @@ using umi3d.common.userCapture.pose;
 namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
-    /// Loader for <see cref="UMI3DPoseOverriderContainerDto"/>.
+    /// Loader for <see cref="UMI3DPoseOverridersContainerDto"/>.
     /// </summary>
     public class UMI3DPoseOverriderContainerLoader : AbstractLoader, IEntity
     {
@@ -34,22 +34,22 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
         /// </summary>
-        public void Load(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
+        public void Load(UMI3DPoseOverridersContainerDto poseOverriderContainerDto)
         {
             var container = LoadContainer(poseOverriderContainerDto);
-            PoseManager.Instance.SubscribePoseConditionProcessor(container);
             UMI3DEnvironmentLoader.Instance.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container).NotifyLoaded();
         }
 
         /// <summary>
-        /// Instantiate a <see cref="PoseOverriderContainer"/> from a  <see cref="UMI3DPoseOverriderContainerDto"/>.
+        /// Instantiate a <see cref="PoseOverridersContainer"/> from a  <see cref="UMI3DPoseOverridersContainerDto"/>.
         /// </summary>
         /// <param name="poseOverriderContainerDto"></param>
         /// <returns></returns>
-        public PoseOverriderContainer LoadContainer(UMI3DPoseOverriderContainerDto poseOverriderContainerDto)
+        public PoseOverridersContainer LoadContainer(UMI3DPoseOverridersContainerDto poseOverriderContainerDto)
         {
             var poseOverriders = poseOverriderContainerDto.poseOverriderDtos.Select(x => LoadPoseOverrider(x)).ToArray();
-            PoseOverriderContainer container = new PoseOverriderContainer(poseOverriderContainerDto, poseOverriders);
+            PoseOverridersContainer container = new PoseOverridersContainer(poseOverriderContainerDto, poseOverriders);
+            PoseManager.Instance.AddPoseOverriders(container);
             return container;
         }
 
@@ -101,7 +101,7 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            return data.dto is UMI3DPoseOverriderContainerDto;
+            return data.dto is UMI3DPoseOverridersContainerDto;
         }
 
         /// <summary>
@@ -111,7 +111,7 @@ namespace umi3d.cdk.userCapture.pose
         {
             switch (value.dto)
             {
-                case UMI3DPoseOverriderContainerDto overriderContainerDto:
+                case UMI3DPoseOverridersContainerDto overriderContainerDto:
                     Load(overriderContainerDto);
                     break;
             }
@@ -128,7 +128,7 @@ namespace umi3d.cdk.userCapture.pose
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
 
-                    Load(value.entity.dto as UMI3DPoseOverriderContainerDto);
+                    Load(value.entity.dto as UMI3DPoseOverridersContainerDto);
                     return Task.FromResult(true);
             }
 
@@ -145,7 +145,7 @@ namespace umi3d.cdk.userCapture.pose
                 case UMI3DPropertyKeys.ActivePoseOverrider:
                     ulong id = UMI3DSerializer.Read<ulong>(value.container);
                     PoseOverriderDto[] dtos = UMI3DSerializer.ReadArray<PoseOverriderDto>(value.container);
-                    Load(new UMI3DPoseOverriderContainerDto() { id = id, poseOverriderDtos = dtos });
+                    Load(new UMI3DPoseOverridersContainerDto() { id = id, poseOverriderDtos = dtos });
                     return Task.FromResult(true);
             }
 

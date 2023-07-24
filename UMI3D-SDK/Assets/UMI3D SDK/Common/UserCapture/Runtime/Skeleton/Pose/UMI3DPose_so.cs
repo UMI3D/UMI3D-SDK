@@ -32,12 +32,12 @@ namespace umi3d.common.userCapture.pose
         /// All the bones that describe the pose
         /// </summary>
         [SerializeField]
-        private List<BoneField> bones = new List<BoneField>();
+        private List<BoneField> bones = new ();
         /// <summary>
         /// The bone that anchor the pose
         /// </summary>
         [SerializeField]
-        private BonePoseField bonePose;
+        private BonePoseField boneAnchor;
 
         /// <summary>
         /// Get the bones composing the pose
@@ -46,7 +46,7 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Gets the bone anchor
         /// </summary>
-        public BonePoseField BonePoseDto { get => bonePose; }
+        public BonePoseField boneAnchorDto { get => boneAnchor; }
 
         /// <summary>
         /// Pose index
@@ -69,7 +69,7 @@ namespace umi3d.common.userCapture.pose
                 });
             });
 
-            this.bonePose = new BonePoseField()
+            this.boneAnchor = new BonePoseField()
             {
                 boneType = bonePoseDto.bone,
                 position = bonePoseDto.position.Struct(),
@@ -112,9 +112,9 @@ namespace umi3d.common.userCapture.pose
         {
             BonePoseDto copy = new BonePoseDto()
             {
-                bone = bonePose.boneType,
-                position = bonePose.position.Dto(),
-                rotation = bonePose.rotation.Dto()
+                bone = boneAnchor.boneType,
+                position = boneAnchor.position.Dto(),
+                rotation = boneAnchor.rotation.Dto()
             };
 
             return copy;

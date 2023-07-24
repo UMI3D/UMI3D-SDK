@@ -32,9 +32,9 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Activate all poses that listen to this mode.
         /// </summary>
-        /// <param name="id"></param>
+        /// <param name="nodeId"></param>
         /// <param name="poseActivationMode"></param>
-        void TryActivatePose(ulong id, PoseActivationMode poseActivationMode);
+        void TryActivatePoseOverriders(ulong nodeId, PoseActivationMode poseActivationMode);
 
         /// <summary>
         /// Sets the related pose to the overrider Dto, in the poseSkeleton
@@ -59,12 +59,12 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="overrider"></param>
         /// <param name="unit"></param>
-        void SubscribePoseConditionProcessor(PoseOverriderContainer overrider);
+        void AddPoseOverriders(PoseOverridersContainer overrider);
 
         /// <summary>
         /// Allows to remove a pose handler unit at runtime
         /// </summary>
         /// <param name="overrider"></param>
-        void UnsubscribePoseConditionProcessor(PoseOverriderContainer overrider);
+        void RemovePoseOverriders(PoseOverridersContainer overrider);
     }
 }

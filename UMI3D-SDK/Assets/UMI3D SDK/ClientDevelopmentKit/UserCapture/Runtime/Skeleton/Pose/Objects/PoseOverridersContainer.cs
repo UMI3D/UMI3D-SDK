@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,22 +14,30 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture.pose;
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.cdk.userCapture.pose
 {
-    /// <summary>
-    /// Wrap several pose overriders around a same related UMI3D node.
-    /// </summary>
-    public class UMI3DPoseOverriderContainerDto : AbstractEntityDto, IEntity
+    public class PoseOverridersContainer
     {
-        /// <summary>
-        /// Id the corresponding node in the scene
-        /// </summary>
-        public ulong relatedNodeId { get; set; }
+        private UMI3DPoseOverridersContainerDto dto;
+
+        public PoseOverrider[] PoseOverriders { get; private set; }
 
         /// <summary>
-        /// All the pose overriders of the linked container
+        /// UMI3D ID.
         /// </summary>
-        public PoseOverriderDto[] poseOverriderDtos { get; set; }
+        public ulong Id => dto.id;
+
+        /// <summary>
+        /// See <see cref="UMI3DPoseOverridersContainerDto.relatedNodeId"/>.
+        /// </summary>
+        public ulong NodeId => dto.relatedNodeId;
+
+        public PoseOverridersContainer(UMI3DPoseOverridersContainerDto dto, PoseOverrider[] poseOverriders)
+        {
+            this.dto = dto;
+            PoseOverriders = poseOverriders;
+        }
     }
 }

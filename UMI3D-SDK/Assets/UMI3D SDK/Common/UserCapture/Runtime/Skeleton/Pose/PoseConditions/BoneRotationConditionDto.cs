@@ -36,6 +36,6 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Range of rotation in which the condition is still validated.
         /// </summary>
-        public float AcceptanceRange { get; set; }
+        public float Threshold { get; set; }
     }
 }

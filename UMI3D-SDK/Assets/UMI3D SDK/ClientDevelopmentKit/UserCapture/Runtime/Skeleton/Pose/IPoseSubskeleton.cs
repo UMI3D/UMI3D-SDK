@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// List of poses that are currently applied on the subskeleton.
         /// </summary>
-        IReadOnlyList<SkeletonPose> ActivatedPoses { get; }
+        IReadOnlyList<SkeletonPose> AppliedPoses { get; }
 
         /// <summary>
         /// Set poses for the calculation of the next tracking frame

@@ -76,7 +76,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             {
                 BoneId = 8,
                 Rotation = Vector4.one.Dto(),
-                AcceptanceRange = 1f
+                Threshold = 1f
             };
 
             poseConditionSerializerModule.Write(boneRotationConditionDto, out Bytable data);

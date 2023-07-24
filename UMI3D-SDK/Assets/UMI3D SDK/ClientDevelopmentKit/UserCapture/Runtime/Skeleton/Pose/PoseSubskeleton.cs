@@ -46,8 +46,8 @@ namespace umi3d.cdk.userCapture.pose
         #endregion Dependency Injection
 
         /// <inheritdoc/>
-        public IReadOnlyList<SkeletonPose> ActivatedPoses => activatedPoses;
-        protected List<SkeletonPose> activatedPoses = new();
+        public IReadOnlyList<SkeletonPose> AppliedPoses => appliedPoses;
+        protected List<SkeletonPose> appliedPoses = new();
 
         /// <inheritdoc/>
         public void StartPose(IEnumerable<SkeletonPose> posesToAdd, bool isOverriding = false)
@@ -58,7 +58,7 @@ namespace umi3d.cdk.userCapture.pose
             if (isOverriding)
                 StopAllPoses();
 
-            activatedPoses.AddRange(posesToAdd);
+            appliedPoses.AddRange(posesToAdd);
         }
 
         /// <inheritdoc/>
@@ -68,9 +68,9 @@ namespace umi3d.cdk.userCapture.pose
                 return;
 
             if (isOverriding)
-                activatedPoses.Clear();
+                appliedPoses.Clear();
 
-            activatedPoses.Add(poseToAdd);
+            appliedPoses.Add(poseToAdd);
         }
 
         /// <inheritdoc/>
@@ -80,7 +80,7 @@ namespace umi3d.cdk.userCapture.pose
                 return;
             posesToStop.ForEach(pts =>
             {
-                activatedPoses.Remove(pts);
+                appliedPoses.Remove(pts);
             });
         }
 
@@ -89,7 +89,7 @@ namespace umi3d.cdk.userCapture.pose
         {
             if (poseToStop == null)
                 return;
-            activatedPoses.Remove(poseToStop);
+            appliedPoses.Remove(poseToStop);
         }
 
         /// <inheritdoc/>
@@ -97,27 +97,27 @@ namespace umi3d.cdk.userCapture.pose
         {
             posesToStopIds.ForEach(poseId =>
             {
-                activatedPoses.Remove(activatedPoses.Find(x => x.Index == poseId));
+                appliedPoses.Remove(appliedPoses.Find(x => x.Index == poseId));
             });
         }
 
         /// <inheritdoc/>
         public void StopPose(int poseToStopId)
         {
-            activatedPoses.Remove(activatedPoses.Find(x => x.Index == poseToStopId));
+            appliedPoses.Remove(appliedPoses.Find(x => x.Index == poseToStopId));
         }
 
         /// <inheritdoc/>
         public void StopAllPoses()
         {
-            activatedPoses.Clear();
+            appliedPoses.Clear();
         }
 
         /// <inheritdoc/>
         public PoseDto GetPose()
         {
             PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
-            foreach (var pose in activatedPoses)
+            foreach (var pose in appliedPoses)
             {
                 foreach (var bone in pose.Bones)
                 {
@@ -147,7 +147,7 @@ namespace umi3d.cdk.userCapture.pose
 
                 var pose = userPoses[poseIndex];
 
-                if (!activatedPoses.Contains(pose))
+                if (!appliedPoses.Contains(pose))
                     StartPose(pose);
             }
 
@@ -158,16 +158,16 @@ namespace umi3d.cdk.userCapture.pose
 
                 var pose = userPoses[poseIndex];
 
-                if (!activatedPoses.Contains(pose))
+                if (!appliedPoses.Contains(pose))
                     StartPose(pose);
             }
 
             // remove not activated poses
-            int nbObjToRemove = activatedPoses.Count - (trackingFrame.customPosesIndexes.Count + trackingFrame.environmentPosesIndexes.Count);
+            int nbObjToRemove = appliedPoses.Count - (trackingFrame.customPosesIndexes.Count + trackingFrame.environmentPosesIndexes.Count);
             if (nbObjToRemove > 0)
             {
                 Queue<SkeletonPose> posesToRemove = new Queue<SkeletonPose>(nbObjToRemove);
-                activatedPoses.ForEach(pose =>
+                appliedPoses.ForEach(pose =>
                 {
                     if (!trackingFrame.customPosesIndexes.Contains(pose.Index) && !trackingFrame.environmentPosesIndexes.Contains(pose.Index))
                         posesToRemove.Enqueue(pose);
@@ -183,7 +183,7 @@ namespace umi3d.cdk.userCapture.pose
             trackingFrame.customPosesIndexes ??= new();
             trackingFrame.environmentPosesIndexes ??= new();
 
-            activatedPoses.ForEach((pose) =>
+            appliedPoses.ForEach((pose) =>
             {
                 if (pose.IsCustom)
                 {

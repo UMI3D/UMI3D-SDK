@@ -22,12 +22,12 @@ namespace umi3d.edk.userCapture.pose
     /// <summary>
     /// Service that handle poses from the environment side.
     /// </summary>
-    public interface IUMI3DPoseManager
+    public interface IPoseManager
     {
         /// <summary>
         /// Returns all the pose containers of the scene 
         /// </summary>
-        IList<UMI3DPoseOverriderContainerDto> PoseOverriderContainers { get; }
+        IList<UMI3DPoseOverridersContainerDto> PoseOverriderContainers { get; }
 
         /// <summary>
         /// Returns all the pose stored for every users in the experience

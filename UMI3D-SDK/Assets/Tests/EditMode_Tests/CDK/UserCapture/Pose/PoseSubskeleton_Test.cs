@@ -78,7 +78,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeleton.StartPose(poses, true);
             
             // THEN
-            Assert.IsTrue(poseSubskeleton.ActivatedPoses.Count == 2);
+            Assert.IsTrue(poseSubskeleton.AppliedPoses.Count == 2);
         }
 
         #endregion SetPose
@@ -101,7 +101,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeleton.StopAllPoses();
 
             // THEN
-            Assert.IsTrue(poseSubskeleton.ActivatedPoses.Count == 0);
+            Assert.IsTrue(poseSubskeleton.AppliedPoses.Count == 0);
         }
 
         #endregion StopAllPoses

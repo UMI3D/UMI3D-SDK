@@ -157,7 +157,7 @@ namespace umi3d.common.userCapture.pose
                             {
                                 BoneId = boneId,
                                 Rotation = rotation,
-                                AcceptanceRange = acceptanceRange
+                                Threshold = acceptanceRange
                             };
                             result = (T)Convert.ChangeType(boneRotationConditionDto, typeof(T));
                             return true;
@@ -290,7 +290,7 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.BONE_ROTATION_CONDITION)
                         + UMI3DSerializer.Write(boneRotationConditionDto.BoneId)
                         + UMI3DSerializer.Write(boneRotationConditionDto.Rotation)
-                        + UMI3DSerializer.Write(boneRotationConditionDto.AcceptanceRange);
+                        + UMI3DSerializer.Write(boneRotationConditionDto.Threshold);
                     break;
 
                 case DirectionConditionDto directionConditionDto:
