@@ -454,7 +454,8 @@ namespace umi3d.edk.collaboration
             if (trackingFrame == null)
                 return;
 
-            UMI3DTrackingManager.Instance.OnAvatarFrameReceived(trackingFrame, server.Time.Timestep);
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(
+                () => UMI3DTrackingManager.Instance.OnAvatarFrameReceived(trackingFrame, server.Time.Timestep));
 
             user.CurrentTrackingFrame = trackingFrame;
 
