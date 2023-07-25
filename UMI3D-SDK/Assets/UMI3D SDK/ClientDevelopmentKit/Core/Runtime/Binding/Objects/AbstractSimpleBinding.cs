@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common.dto.binding;
+
 using UnityEngine;
 
 namespace umi3d.cdk.binding
@@ -65,8 +66,13 @@ namespace umi3d.cdk.binding
 
         #endregion DTO access
 
+        private bool isOriginalPositionRegistered;
+        private Vector3 originalPositionOffset;
+        private Quaternion originalRotationOffset;
+
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
+            originalRotationOffset = boundTransform.rotation;
         }
 
         /// <summary>
@@ -77,17 +83,22 @@ namespace umi3d.cdk.binding
         {
             if (SyncPosition && SyncRotation)
             {
-                Quaternion rotation = parentTransform.rotation * OffSetRotation;
+                Quaternion rotation = parentTransform.rotation * OffSetRotation * originalRotationOffset;
                 Vector3 position = parentTransform.position + AnchorPosition + rotation * (OffSetPosition - AnchorPosition);
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
             else if (SyncPosition)
             {
-                boundTransform.position = parentTransform.position + OffSetPosition;
+                if (!isOriginalPositionRegistered)
+                {
+                    isOriginalPositionRegistered = true;
+                    originalPositionOffset = boundTransform.position - parentTransform.position;
+                }
+                boundTransform.position = parentTransform.position + originalPositionOffset + OffSetPosition;
             }
             else if (SyncRotation)
             {
-                boundTransform.rotation = parentTransform.rotation * OffSetRotation;
+                boundTransform.rotation = parentTransform.rotation * OffSetRotation * originalRotationOffset;
             }
             if (SyncScale)
                 boundTransform.localScale = Vector3.Scale(parentTransform.scale, OffSetScale);
