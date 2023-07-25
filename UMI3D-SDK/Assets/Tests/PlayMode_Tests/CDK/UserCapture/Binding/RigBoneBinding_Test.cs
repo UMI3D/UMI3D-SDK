@@ -105,7 +105,6 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
 
-            var parentPreviousPosition = parentGo.transform.position;
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
             var previousScale = rigGo.transform.localScale;
@@ -115,7 +114,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             // THEN
             Assert.IsTrue(succes);
-            Assert.IsTrue(parentGo.transform.position - parentPreviousPosition == rigGo.transform.position - previousPosition - offSetPosition);
+            Assert.IsTrue(parentGo.transform.position + offSetPosition == rigGo.transform.position);
             Assert.IsTrue(previousRotation == rigGo.transform.rotation);
             Assert.IsTrue(previousScale == rigGo.transform.localScale);
         }
@@ -143,14 +142,11 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
 
-            var parentPreviousPosition = parentGo.transform.position;
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
             var previousScale = rigGo.transform.localScale;
 
             int numberOfFrames = 10;
-
-            binding.Apply(out _);
 
             for (int i = 0; i < numberOfFrames; i++)
             {
@@ -166,7 +162,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(succes);
-                Assert.IsTrue((parentGo.transform.position - parentPreviousPosition) == (rigGo.transform.position - previousPosition - offSetPosition));
+                Assert.IsTrue(parentGo.transform.position + offSetPosition == rigGo.transform.position);
                 Assert.IsTrue(previousRotation == rigGo.transform.rotation);
                 Assert.IsTrue(previousScale == rigGo.transform.localScale);
 
