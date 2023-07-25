@@ -72,6 +72,9 @@ namespace umi3d.cdk
 
         public Material defaultMat = null;
 
+        public override Material GetDefaultMaterial() => defaultMat;
+        
+
         [SerializeField]
         private Material _skyboxEquirectangularMaterial;
 

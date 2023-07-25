@@ -49,8 +49,7 @@ namespace umi3d.cdk
             // LOADING SERVICE
             environmentLoaderService = UMI3DEnvironmentLoader.Instance;
             environmentLoaderService.SetParameters(parameters);
-            if(parameters is UMI3DLoadingParameters loadingParameters)
-            environmentLoaderService.SetBaseMaterial(loadingParameters.defaultMat);
+            environmentLoaderService.SetBaseMaterial(parameters.GetDefaultMaterial());
         }
     }
 }

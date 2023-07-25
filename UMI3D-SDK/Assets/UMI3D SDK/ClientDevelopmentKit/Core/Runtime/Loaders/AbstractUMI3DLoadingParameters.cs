@@ -120,5 +120,11 @@ namespace umi3d.cdk
         /// <param name="skyboxExposure"></param>
         /// <returns></returns>
         public abstract bool SetSkyboxProperties(SkyboxType type, float skyboxRotatio, float skyboxExposure);
+
+        /// <summary>
+        /// Get the default material
+        /// </summary>
+        /// <returns></returns>
+        public abstract Material GetDefaultMaterial();
     }
 }

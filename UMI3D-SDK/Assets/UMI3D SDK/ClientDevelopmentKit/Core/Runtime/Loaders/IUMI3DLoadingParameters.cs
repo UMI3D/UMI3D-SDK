@@ -46,6 +46,7 @@ namespace umi3d.cdk
         bool SetSkyboxProperties(SkyboxType type, float skyboxRotation, float skyboxExposure);
         Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data);
         Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data);
+        Material GetDefaultMaterial();
         Task UnknownOperationHandler(DtoContainer operation);
         Task UnknownOperationHandler(uint operationId, ByteContainer container);
     }
