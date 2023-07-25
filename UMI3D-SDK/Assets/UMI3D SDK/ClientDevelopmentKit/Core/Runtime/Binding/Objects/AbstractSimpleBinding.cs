@@ -66,8 +66,6 @@ namespace umi3d.cdk.binding
 
         #endregion DTO access
 
-        private bool isOriginalPositionRegistered;
-        private Vector3 originalPositionOffset;
         private Quaternion originalRotationOffset;
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
@@ -89,12 +87,7 @@ namespace umi3d.cdk.binding
             }
             else if (SyncPosition)
             {
-                if (!isOriginalPositionRegistered)
-                {
-                    isOriginalPositionRegistered = true;
-                    originalPositionOffset = boundTransform.position - parentTransform.position;
-                }
-                boundTransform.position = parentTransform.position + originalPositionOffset + OffSetPosition;
+                boundTransform.position = parentTransform.position + OffSetPosition;
             }
             else if (SyncRotation)
             {
