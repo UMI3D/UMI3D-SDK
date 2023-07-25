@@ -272,6 +272,8 @@ namespace umi3d.edk.collaboration
                 id = Id(),
                 status = status,
                 //avatarId = Avatar == null ? 0 : Avatar.Id(),
+
+                userSize = userSize.GetValue(),
                 networkId = networkPlayer?.NetworkId ?? 0,
                 audioSourceId = audioPlayer?.Id() ?? 0,
                 audioFrequency = audioFrequency.GetValue(),

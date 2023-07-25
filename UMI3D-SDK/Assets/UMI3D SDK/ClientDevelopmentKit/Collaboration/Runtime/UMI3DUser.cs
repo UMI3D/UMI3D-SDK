@@ -79,6 +79,11 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public bool avatarStatus => dto.avatarStatus;
         /// <summary>
+        /// See <see cref="UserDto.userSize"/>.
+        /// </summary>
+        public Vector3Dto userSize => dto.userSize;
+
+        /// <summary>
         /// See <see cref="UserDto.attentionRequired"/>.
         /// </summary>
         public bool attentionRequired => dto.attentionRequired;
@@ -257,6 +262,11 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
                     dto.onStopSpeakingAnimationId = (ulong)value;
                     return true;
+
+                case UMI3DPropertyKeys.UserSize:
+                    dto.userSize = (Vector3Dto)value;
+                    return true;
+
                 default:
                     return false;
             }

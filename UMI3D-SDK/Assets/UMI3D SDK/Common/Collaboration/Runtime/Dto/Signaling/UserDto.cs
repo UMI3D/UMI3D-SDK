@@ -74,6 +74,11 @@ namespace umi3d.common.collaboration.dto.signaling
         public bool avatarStatus { get; set; }
 
         /// <summary>
+        /// Size of the user.
+        /// </summary>
+        public Vector3Dto userSize { get; set; } 
+
+        /// <summary>
         /// Is the user indicating they require special attention?
         /// </summary>
         /// It is the equivalent of a "raise your end" feature in videochat.
