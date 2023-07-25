@@ -149,7 +149,8 @@ namespace umi3d.cdk.userCapture
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
                     ComputeBonePosition(boneRelation.boneTypeParent);
 
-                Bones[boneType].Position = Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
+                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * 0.5f);
+                Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
 
                 if (!bonesSetByTrackedSkeleton.Contains(boneType))
                     Bones[boneType].Rotation = Bones[BoneType.Hips].Rotation * Bones[boneType].Rotation; // all global bones rotations should be turned the same way as the anchor
