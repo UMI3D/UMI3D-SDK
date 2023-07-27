@@ -64,7 +64,9 @@ namespace umi3d.cdk.collaboration
                         audioLogin = UMI3DSerializer.Read<string>(container),
                         audioUseMumble = UMI3DSerializer.Read<bool>(container),
 
-                        login = UMI3DSerializer.Read<string>(container)
+                        login = UMI3DSerializer.Read<string>(container),
+                        userSize = UMI3DSerializer.Read<Vector3Dto>(container),
+
                     };
                     result = (T)(object)user;
                     readable = true;
