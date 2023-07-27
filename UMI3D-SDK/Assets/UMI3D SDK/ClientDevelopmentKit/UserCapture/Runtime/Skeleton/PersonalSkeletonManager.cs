@@ -63,6 +63,7 @@ namespace umi3d.cdk.userCapture
         private UMI3DSkeletonHierarchy _standardHierarchy;
 
         private PersonalSkeleton _skeleton;
+        private IEnumerator computeRoutine;
 
         #region Dependency Injection
 
@@ -97,7 +98,7 @@ namespace umi3d.cdk.userCapture
         {
             PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
             PersonalSkeleton.SkeletonHierarchy = StandardHierarchy;
-            lateRoutineService.AttachLateRoutine(ComputeCoroutine());
+            computeRoutine ??= lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }
 
         private IEnumerator ComputeCoroutine()
@@ -107,6 +108,8 @@ namespace umi3d.cdk.userCapture
                 PersonalSkeleton.Compute();
                 yield return null;
             }
+            lateRoutineService.DettachLateRoutine(computeRoutine);
+            computeRoutine = null;
         }
     }
 }

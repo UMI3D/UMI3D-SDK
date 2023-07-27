@@ -415,7 +415,12 @@ namespace umi3d.cdk.collaboration
                             try
                             {
                                 await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
-                            } catch (Exception ex)
+                            }
+                            catch (ArgumentException ae)
+                            {
+                                // HACK
+                            }
+                            catch (Exception ex)
                             {
                                 UMI3DLogger.LogError("Error while performing transaction", scope);
                                 UMI3DLogger.LogException(ex, scope);

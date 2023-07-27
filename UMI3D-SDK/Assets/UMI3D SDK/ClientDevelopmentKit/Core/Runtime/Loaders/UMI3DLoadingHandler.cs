@@ -28,7 +28,7 @@ namespace umi3d.cdk
     /// Handler to define the position in the scene and in the scene graph to load objects.
     /// </summary>
     /// This handler is a place to nstantiate all the UMI3D services.
-    public class UMI3DLoadingHandler : PersistentSingleBehaviour<UMI3DLoadingHandler>
+    public class UMI3DLoadingHandler : SingleBehaviour<UMI3DLoadingHandler>
     {
         #region Loading
         /// <summary>

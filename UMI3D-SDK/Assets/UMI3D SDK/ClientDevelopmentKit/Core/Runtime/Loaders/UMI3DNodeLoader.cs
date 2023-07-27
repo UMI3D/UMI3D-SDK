@@ -757,13 +757,20 @@ namespace umi3d.cdk
             {
                 try
                 {
-                    MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
-                    mc.sharedMesh = mesh.sharedMesh;
-                    mc.convex = dto.convex;
-                    if (nodeInstance != null)
-                        nodeInstance.colliders.Add(mc);
-                    else
-                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
+                    if (!mesh.mesh.isReadable)
+                    {
+                        UnityEngine.Debug.Log($"Mesh is not readable. GameObject: {mesh.gameObject.name}. No mesh collider will be add.");
+                    }
+                    if (mesh.mesh.isReadable)
+                    {
+                        MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
+                        mc.sharedMesh = mesh.sharedMesh;
+                        mc.convex = dto.convex;
+                        if (nodeInstance != null)
+                            nodeInstance.colliders.Add(mc);
+                        else
+                            UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
+                    }
                 }
                 catch (Exception e)
                 {
