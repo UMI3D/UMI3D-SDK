@@ -59,7 +59,7 @@ namespace umi3d.edk.binding
         /// <param name="nodeId">Id of the node from which bindings should be removed.</param>
         /// <param name="users">Users that should see the bindings removed. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null, bool syncServerTransform = true);
 
         /// <summary>
         /// Remove all bindings on a node Binding for a user.
@@ -67,7 +67,7 @@ namespace umi3d.edk.binding
         /// <param name="nodeId">Id of the node from which bindings should be removed.</param>
         /// <param name="user">User that should see the bindings removed.</param>
         /// <returns>The associated operations.</returns>
-        IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user);
+        IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user, bool syncServerTransform = true);
 
         /// <summary>
         /// Remove all bindings on a node for a user et reattach the objet under a new parent. Don't specify users to target all users.
@@ -84,7 +84,7 @@ namespace umi3d.edk.binding
         /// <param name="binding">the new binding value</param>
         /// <param name="users">Users that should see the binding removed. Don't specify users to target all users.</param>
         /// <returns>The associated operations.</returns>
-        IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null);
+        IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null, bool syncServerTransform = true);
 
         /// <summary>
         /// Remove a Binding for one users.
@@ -92,7 +92,7 @@ namespace umi3d.edk.binding
         /// <param name="binding">the new binding value</param>
         /// <param name="users">User that should see the binding removed.</param>
         /// <returns>The associated operations.</returns>
-        IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user);
+        IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user, bool syncServerTransform = true);
 
         /// <summary>
         /// Set the activation of Bindings for several users. Don't specify users to target all users.

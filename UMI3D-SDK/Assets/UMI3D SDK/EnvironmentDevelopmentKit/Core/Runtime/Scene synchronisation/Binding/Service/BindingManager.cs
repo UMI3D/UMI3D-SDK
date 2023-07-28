@@ -184,7 +184,16 @@ namespace umi3d.edk.binding
                 }
                 else //users should receive the added binding
                 {
-                    bindings.Add(binding.boundNodeId, binding);
+                    if (users is not null)
+                    {
+                        foreach (UMI3DUser user in users)
+                            bindings.Add(user, binding.boundNodeId, binding);
+                    }
+                    else
+                    {
+                        bindings.Add(binding.boundNodeId, binding);
+                    }
+
                     operations.Add(binding.GetLoadEntity(targetUsers));
                 }
             }
@@ -267,19 +276,19 @@ namespace umi3d.edk.binding
         #region RemoveBinding
 
         /// <inheritdoc/>
-        public virtual IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, IEnumerable<UMI3DUser> users = null, bool syncServerTransform = true)
         {
-            return RemoveOrDowngradeBinding(binding, users);
+            return RemoveOrDowngradeBinding(binding, users, syncServerTransform);
         }
 
         /// <inheritdoc/>
-        public virtual IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user)
+        public virtual IReadOnlyList<Operation> RemoveBinding(AbstractBinding binding, UMI3DUser user, bool syncServerTransform = true)
         {
-            return RemoveOrDowngradeBinding(binding, new UMI3DUser[] { user });
+            return RemoveOrDowngradeBinding(binding, new UMI3DUser[] { user }, syncServerTransform);
         }
 
         /// <inheritdoc/>
-        public virtual IReadOnlyList<Operation> RemoveOrDowngradeBinding(AbstractBinding bindingToRemove, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveOrDowngradeBinding(AbstractBinding bindingToRemove, IEnumerable<UMI3DUser> users = null, bool syncServerTransform = true)
         {
             if (bindingToRemove is null)
             {
@@ -309,6 +318,15 @@ namespace umi3d.edk.binding
                                 bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
                         }
                         operations.Add(bindingToRemove.GetDeleteEntity(targetUsers));
+                        
+                        if (syncServerTransform)
+                        {
+                            var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
+                            operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
+                            operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
+                            operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
+                        }
+
                     }
                     else if (bindingOnNode is MultiBinding existingMultiBinding // the binding is inside a multibinding
                             && bindingToRemove is AbstractSingleBinding singleBindingToRemove
@@ -347,13 +365,26 @@ namespace umi3d.edk.binding
 
                 if (usersWithValues.Count > 0)
                 {
-                    var usersWithSameBinding = usersWithValues.Where((u) => bindings.GetValue(u)[bindingToRemove.boundNodeId].Id() == bindingToRemove.Id());
+                    var usersWithSameBinding = usersWithValues.Where((u) => bindings.GetValue(u)[bindingToRemove.boundNodeId].Id() == bindingToRemove.Id()).ToList();
 
                     if (usersWithSameBinding.Count() > 0)
                     {
+                        var ops = new List<Operation>();
+
+                        UMI3DAbstractNode node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
+
                         foreach (UMI3DUser user in usersWithSameBinding)
+                        {
                             bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
+                            if (syncServerTransform)
+                            {
+                                ops.Add(node.objectPosition.SetValue(user, node.objectPosition.GetValue(user)));
+                                ops.Add(node.objectRotation.SetValue(user, node.objectRotation.GetValue(user)));
+                                ops.Add(node.objectScale.SetValue(user, node.objectScale.GetValue(user)));
+                            }
+                        }
                         operations.Add(bindingToRemove.GetDeleteEntity(usersWithSameBinding.ToHashSet()));
+                        operations.AddRange(ops);
                     }
 
                     if (bindingToRemove is AbstractSingleBinding singleBindingToRemove)
@@ -417,7 +448,7 @@ namespace umi3d.edk.binding
         }
 
         /// <inheritdoc/>
-        public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null)
+        public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null, bool syncServerTransform = true)
         {
             var operations = new List<Operation>();
             if (!bindings.isAsync) // all users have same value
@@ -433,9 +464,18 @@ namespace umi3d.edk.binding
                 var bindingToDelete = bindings.GetValue()[nodeId];
 
                 operations.Add(bindingToDelete.GetDeleteEntity(targetUsers));
+
+                if (syncServerTransform)
+                {
+                    var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(nodeId);
+                    operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
+                    operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
+                    operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
+                }
             }
             else // some users have specific values
             {
+
                 users
                     .Where((u) => bindings.GetValue(u).ContainsKey(nodeId))
                     .GroupBy(u => bindings.GetValue(u)[nodeId])
@@ -443,6 +483,22 @@ namespace umi3d.edk.binding
                     {
                         var bindingToDelete = userGroup.Key;
                         operations.Add(bindingToDelete.GetDeleteEntity(userGroup.ToHashSet()));
+
+                        if (syncServerTransform)
+                        {
+                            var ops = new List<Operation>();
+                            var userList = userGroup.ToList();
+                            var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToDelete.boundNodeId);
+
+                            foreach ( var user in userList )
+                            {
+                                ops.Add(node.objectPosition.SetValue(user, node.objectPosition.GetValue(user)));
+                                ops.Add(node.objectRotation.SetValue(user, node.objectRotation.GetValue(user)));
+                                ops.Add(node.objectScale.SetValue(user, node.objectScale.GetValue(user)));
+                            }
+
+                            operations.AddRange(ops);
+                        }
                     });
             }
 
@@ -456,9 +512,9 @@ namespace umi3d.edk.binding
         }
 
         /// <inheritdoc/>
-        public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user)
+        public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, UMI3DUser user, bool syncServerTransform = true)
         {
-            return RemoveAllBindings(nodeId, new UMI3DUser[] { user });
+            return RemoveAllBindings(nodeId, new UMI3DUser[] { user }, syncServerTransform);
         }
 
         /// <inheritdoc/>
