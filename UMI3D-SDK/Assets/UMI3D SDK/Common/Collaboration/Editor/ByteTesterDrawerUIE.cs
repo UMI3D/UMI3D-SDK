@@ -96,23 +96,25 @@ namespace umi3d.common
             Indent.x += 80;
             Indent.width -= 80;
 
-            if (obj.results != null)
+            Rect Rdisplay = newRect(position, sl);
+            obj.display = EditorGUI.Foldout(Rdisplay, obj.display, "Results");
+            if (obj.results != null && obj.display)
                 foreach (var r in obj.results)
                 {
-                    Rect R2 = newRect(r.type, Indent, sl);
-                    R2.width /= 3;
-                    Rect R3 = new Rect(R2);
-                    R3.x += R2.width;
-                    Rect R4 = new Rect(R3);
-                    R4.x += R3.width;
+                        Rect R2 = newRect(r.type, Indent, sl);
+                        R2.width /= 3;
+                        Rect R3 = new Rect(R2);
+                        R3.x += R2.width;
+                        Rect R4 = new Rect(R3);
+                        R4.x += R3.width;
 
-                    EditorGUI.BeginDisabledGroup(true);
-                    EditorGUI.TextField(R2, r.name);
-                    EditorGUI.EndDisabledGroup();
-                    r.convertType = (ByteTester.TypeToEmum)EditorGUI.EnumPopup(R3, r.convertType);
-                    EditorGUI.BeginDisabledGroup(true);
-                    DrawConvert(r, R4);
-                    EditorGUI.EndDisabledGroup();
+                        EditorGUI.BeginDisabledGroup(true);
+                        EditorGUI.TextField(R2, r.name);
+                        EditorGUI.EndDisabledGroup();
+                        r.convertType = (ByteTester.TypeToEmum)EditorGUI.EnumPopup(R3, r.convertType);
+                        EditorGUI.BeginDisabledGroup(true);
+                        DrawConvert(r, R4);
+                        EditorGUI.EndDisabledGroup();
                 }
 
             obj.height = height;
