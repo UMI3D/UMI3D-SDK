@@ -64,8 +64,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string language = string.Empty;
 
-        private static ulong lastGivenUserId = 1;
-
         /// <summary>
         /// Current id for ForgeNetworkingRemastered
         /// </summary>
@@ -116,8 +114,8 @@ namespace umi3d.edk.collaboration
         public UMI3DCollaborationUser(RegisterIdentityDto identity)
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
-            this.userId = identity is not null ? identity.userId : Id();
-            lastGivenUserId = this.userId;
+
+            userId = identity is not null ? UMI3DEnvironment.Register(this, identity.userId) : Id();
 
             audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
             microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);
@@ -133,7 +131,7 @@ namespace umi3d.edk.collaboration
             onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
             onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
 
-            userSize = new UMI3DAsyncProperty<Vector3Dto>(base.userId, UMI3DPropertyKeys.UserSize, new());
+            userSize = new UMI3DAsyncProperty<Vector3Dto>(userId, UMI3DPropertyKeys.UserSize, new());
 
             status = StatusType.CREATED;
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
