@@ -20,6 +20,7 @@ using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
+using UnityEngine.XR;
 
 namespace umi3d.cdk.userCapture.tracking
 {
@@ -33,11 +34,11 @@ namespace umi3d.cdk.userCapture.tracking
         [SerializeField]
         public Camera viewpoint;
         public Camera ViewPoint => viewpoint;
-        
+
         [SerializeField]
         public Transform hips;
         public Transform Hips => hips;
-        
+
         [SerializeField]
         private Animator animator;
         public TrackedAnimator trackedAnimator;
@@ -46,7 +47,7 @@ namespace umi3d.cdk.userCapture.tracking
         public Dictionary<uint, TrackedSubskeletonBone> bones = new();
         public IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones => bones;
 
-        private List<uint> types = new List<uint>();
+        private List<uint> receivedTypes = new List<uint>();
 
         public void Start()
         {
@@ -66,8 +67,20 @@ namespace umi3d.cdk.userCapture.tracking
             for (int i = 0; i < controllers.Count; i++)
             {
                 var controller = controllers[i];
-                (controller as DistantController).position = bones[controller.boneType].transform.position;
-                (controller as DistantController).rotation = bones[controller.boneType].transform.rotation;
+                if (!receivedTypes.Contains(controller.boneType))
+                {
+                    (controller as DistantController).position = bones[controller.boneType].transform.position;
+                    (controller as DistantController).rotation = bones[controller.boneType].transform.rotation;
+                }
+            }
+        }
+
+        protected void LateUpdate()
+        {
+            int index = controllers.FindIndex(vc => vc.boneType.Equals(BoneType.Head));
+            if (receivedTypes.Contains(BoneType.Head) && bones.TryGetValue(BoneType.Head, out var boneTransform) && index != -1)
+            {
+                boneTransform.transform.rotation = controllers[index].rotation;
             }
         }
 
@@ -93,7 +106,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
-            types.Clear();
+            receivedTypes.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
                 if (controllers.Find(c => c.boneType == bone.boneType) is not DistantController vc)
@@ -110,18 +123,18 @@ namespace umi3d.cdk.userCapture.tracking
                 vc.position = bone.position.Struct();
                 vc.rotation = bone.rotation.Quaternion();
 
-                types.Add(bone.boneType);
+                receivedTypes.Add(bone.boneType);
 
-                if (bones.TryGetValue(bone.boneType, out var boneTransform) && bone.boneType.Equals(BoneType.Head))
-                {
-                    boneTransform.transform.rotation = vc.rotation;
-                }
+                //if (bones.TryGetValue(bone.boneType, out var boneTransform) && bone.boneType.Equals(BoneType.Head))
+                //{
+                //    boneTransform.transform.rotation = vc.rotation;
+                //}
             }
 
             Queue<DistantController> controllersToRemove = new();
             foreach (var c in controllers)
             {
-                if (c is  DistantController dc && !types.Contains(c.boneType)) 
+                if (c is DistantController dc && !receivedTypes.Contains(c.boneType))
                 {
                     controllersToRemove.Enqueue(dc);
                     controllersToDestroy.Add(dc);
