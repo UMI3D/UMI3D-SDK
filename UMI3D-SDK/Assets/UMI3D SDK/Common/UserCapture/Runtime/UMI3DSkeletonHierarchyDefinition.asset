@@ -169,3 +169,6 @@ MonoBehaviour:
   - Bonetype: 44
     BonetypeParent: 43
     RelativePosition: {x: 0.03394358, y: -0.019597458, z: 0.019597925}
+  - Bonetype: 58
+    BonetypeParent: 3
+    RelativePosition: {x: 0, y: 0.08, z: 0.1}
