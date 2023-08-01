@@ -227,7 +227,7 @@ namespace umi3d.cdk.userCapture.animation
         {
             var newHierachy = personnalSkeletonService.PersonalSkeleton.SkeletonHierarchy.Generate(animator.transform);
 
-            var quickAccessHierarchy = newHierachy.ToDictionary(x => x.boneTransform.name, x => x);
+            var quickAccessHierarchy = newHierachy.Where(kv => kv.umi3dBoneType != BoneType.Viewpoint).ToDictionary(x => x.boneTransform.name, x => x);
 
             static string RemoveWhiteSpaces(string s)
             {
@@ -246,6 +246,9 @@ namespace umi3d.cdk.userCapture.animation
 
             void Compute(Transform node)
             {
+                if (!quickAccessHierarchy.ContainsKey(node.name))
+                    return;
+
                 var (umi3dBoneType, boneTransform) = quickAccessHierarchy[node.name];
 
                 var unityBoneName = BoneTypeConvertingExtensions.ConvertToBoneType(umi3dBoneType).ToString();
