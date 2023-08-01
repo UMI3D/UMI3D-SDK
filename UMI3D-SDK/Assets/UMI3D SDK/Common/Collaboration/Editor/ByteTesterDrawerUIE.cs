@@ -116,10 +116,13 @@ namespace umi3d.common
                     EditorGUI.BeginDisabledGroup(true);
                     EditorGUI.TextField(R2, r.name);
                     EditorGUI.EndDisabledGroup();
-                    r.convertType = (ByteTester.TypeToEmum)EditorGUI.EnumPopup(R3, r.convertType);
-                    EditorGUI.BeginDisabledGroup(true);
-                    DrawConvert(r, R4);
-                    EditorGUI.EndDisabledGroup();
+                    if (r.convertType != null)
+                    {
+                        r.convertType = EditorGUI.EnumPopup(R3, r.convertType);
+                        EditorGUI.BeginDisabledGroup(true);
+                        DrawConvert(r, R4);
+                        EditorGUI.EndDisabledGroup();
+                    }
                     if (r.action != null && r.actionName != null)
                     {
                         if(GUI.Button(R5, r.actionName))

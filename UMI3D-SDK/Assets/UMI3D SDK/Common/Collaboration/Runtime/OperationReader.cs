@@ -81,7 +81,10 @@ namespace umi3d.common
             public string type;
             public string name;
             public object value;
-            public TypeToEmum convertType;
+
+            public Enum? convertType;
+
+
             public string actionName;
             public Action action;
 
@@ -92,6 +95,7 @@ namespace umi3d.common
                 this.value = "";
                 this.action = null;
                 this.actionName = null;
+
             }
 
             public Result(string type, string name, object value) : this()
@@ -99,6 +103,7 @@ namespace umi3d.common
                 this.type = type;
                 this.name = name;
                 this.value = value;
+                ComputeEnum();
             }
 
             public Result(string type, string name, object value, string actionName, Action action) : this(type,name,value)
@@ -117,10 +122,24 @@ namespace umi3d.common
                 action?.Invoke();
             }
 
+            void ComputeEnum()
+            {
+                switch (value)
+                {
+                    case uint _:
+                        convertType = TypeToEmum.PropertyKey;
+                        break;
+                    default:
+                        convertType = null;
+                        break;
+                }
+            }
+
+
         }
 
 
-        public enum TypeToSerialize { Byte, Short, UShort, Int, Uint, Long, Ulong, Char, String, IndexedList, NextIndexList }
+        public enum TypeToSerialize { Byte, Short, UShort, Int, Uint, Long, Ulong, Char, String, List }
         public enum TypeToEmum { PropertyKey, OperationKey, BoneType }
 
 
@@ -164,15 +183,15 @@ namespace umi3d.common
                 case TypeToSerialize.String:
                     Read<string>();
                     break;
-                case TypeToSerialize.IndexedList:
-                    ReadIndexedList();
+                case TypeToSerialize.List:
+                    ReadList();
                     break;
                 default:
                     throw new Exception("Missing Case " + type);
             }
         }
 
-        public void Read<T>()
+        public T Read<T>()
         {
             UMI3DSerializer.AddModule(UMI3DSerializerModuleUtils.GetModules().ToList());
 
@@ -180,13 +199,36 @@ namespace umi3d.common
             if (UMI3DSerializer.TryRead<T>(container, out result))
             {
                 this.results.Add(new(typeof(T).Name, result.ToString(), result));
+                return result;
+            }
+            return default(T);
+        }
+
+        void ReadList()
+        {
+            var t = Read<byte>();
+            switch (t)
+            {
+                case UMI3DObjectKeys.CountArray:
+                    ReadCountList();
+                    break;
+                case UMI3DObjectKeys.IndexesArray:
+                     ReadIndexedList();
+                    break;
+                default:
+                    this.results.Add(new("","Na Matching list type",""));
+                    break;
             }
         }
 
-
-
-        public void ReadIndexedList()
+        void ReadCountList()
         {
+            this.results.Add(new("", "Not implemented", ""));
+        }
+
+        void ReadIndexedList()
+        {
+            int i = 0;
             int indexMaxPos = -1;
             int maxLength = container.bytes.Length;
             int valueIndex = -1;
@@ -203,13 +245,13 @@ namespace umi3d.common
                
                 var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 var byteTester = new ByteTester(SubContainer, operationReader);
-                this.results.Add(new(typeof(int).Name, nopIndex.ToString(), nopIndex, "To Tester", () => { operationReader.testers.Add(byteTester); }));
+                this.results.Add(new(typeof(int).Name, nopIndex.ToString(), nopIndex, $"Tester {i++}", () => { operationReader.testers.Add(byteTester); }));
                 valueIndex = nopIndex;
             }
             {
                 var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 var byteTester = new ByteTester(SubContainer, operationReader);
-                this.results.Add(new("To Tester", () => { operationReader.testers.Add(byteTester); }));
+                this.results.Add(new($"Tester {i}", () => { operationReader.testers.Add(byteTester); }));
             }
         }
 
