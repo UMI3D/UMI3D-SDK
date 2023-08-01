@@ -93,28 +93,40 @@ namespace umi3d.common
                 obj.Read(obj.type);
 
             Rect Indent = new Rect(position);
-            Indent.x += 80;
-            Indent.width -= 80;
+            Indent.x += 60;
+            Indent.width -= 60;
 
             Rect Rdisplay = newRect(position, sl);
             obj.display = EditorGUI.Foldout(Rdisplay, obj.display, "Results");
             if (obj.results != null && obj.display)
                 foreach (var r in obj.results)
                 {
-                        Rect R2 = newRect(r.type, Indent, sl);
-                        R2.width /= 3;
-                        Rect R3 = new Rect(R2);
-                        R3.x += R2.width;
-                        Rect R4 = new Rect(R3);
-                        R4.x += R3.width;
 
-                        EditorGUI.BeginDisabledGroup(true);
-                        EditorGUI.TextField(R2, r.name);
-                        EditorGUI.EndDisabledGroup();
-                        r.convertType = (ByteTester.TypeToEmum)EditorGUI.EnumPopup(R3, r.convertType);
-                        EditorGUI.BeginDisabledGroup(true);
-                        DrawConvert(r, R4);
-                        EditorGUI.EndDisabledGroup();
+
+                    Rect R2 = newRect(r.type, Indent, sl);
+                    R2.width /= 4;
+                    Rect R3 = new Rect(R2);
+                    R3.x += R2.width;
+                    Rect R4 = new Rect(R3);
+                    R4.x += R3.width;
+                    Rect R5 = new Rect(R4);
+                    R5.x += R4.width;
+
+
+                    EditorGUI.BeginDisabledGroup(true);
+                    EditorGUI.TextField(R2, r.name);
+                    EditorGUI.EndDisabledGroup();
+                    r.convertType = (ByteTester.TypeToEmum)EditorGUI.EnumPopup(R3, r.convertType);
+                    EditorGUI.BeginDisabledGroup(true);
+                    DrawConvert(r, R4);
+                    EditorGUI.EndDisabledGroup();
+                    if (r.action != null && r.actionName != null)
+                    {
+                        if(GUI.Button(R5, r.actionName))
+                        {
+                            r.Do();
+                        }
+                    }
                 }
 
             obj.height = height;
