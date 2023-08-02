@@ -62,6 +62,28 @@ namespace EditMode_Tests
             WriteRead_T(value,true);
         }
 
+        class TestClass
+        {
+            public int value;
+        }
+        [Test]
+        public void WriteReadSelectList()
+        {
+            List<int> value = new List<int>() { 1, 3, 1000, 3994, 555 };
+            var v2 = value.Select(i => new TestClass() { value = i }).ToList();
+
+
+            var v3 = v2.Select(c => c.value);
+
+            var bytable = UMI3DSerializer.Write(v3);
+            var result = UMI3DSerializer.ReadList<int>(new ByteContainer(0, bytable.ToBytes()));
+            Assert.IsTrue(result.Count == value.Count, "Object deserialization failed.");
+            for (int i = 0; i < value.Count; i++)
+            {
+                Assert.AreEqual(value[i], result[i], $"values does not match {value} => {result} at [{i}]");
+            }
+        }
+
         //[Test]
         //public void WriteReadCountableList2()
         //{

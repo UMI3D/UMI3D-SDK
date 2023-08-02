@@ -346,6 +346,29 @@ namespace umi3d.common
 
         static System.Reflection.MethodInfo _WriteIEnumerableMethodInfo;
 
+
+        static bool IsGenericIEnumerable(Type type)
+        {
+            if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+            {
+                return true;
+            }
+
+            var interfaces = type.GetInterfaces();
+            return interfaces.Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        }
+
+        static Type GetGenericTypeOfIEnumerable(Type type)
+        {
+            if (IsGenericIEnumerable(type))
+            {
+                return type.GetGenericArguments().Last();
+            }
+
+            var enumerableInterface = type.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+            return enumerableInterface?.GetGenericArguments()[0];
+        }
+
         /// <summary>
         /// Get a bytable from a enumerable set of values of unknown type.
         /// </summary>
@@ -356,7 +379,7 @@ namespace umi3d.common
             if(_WriteIEnumerableMethodInfo == null)
                 _WriteIEnumerableMethodInfo = typeof(UMI3DSerializer).GetMethod("_WriteIEnumerable");
 
-            Type typeToPass = value.GetType().GetGenericArguments()[0];
+            Type typeToPass = GetGenericTypeOfIEnumerable(value.GetType());
             var genericMethod = _WriteIEnumerableMethodInfo.MakeGenericMethod(typeToPass);
             return genericMethod.Invoke(null, new[] { value, parameters }) as Bytable;
         }
