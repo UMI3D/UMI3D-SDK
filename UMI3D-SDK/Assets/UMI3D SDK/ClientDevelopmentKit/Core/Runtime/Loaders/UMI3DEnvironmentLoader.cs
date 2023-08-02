@@ -65,7 +65,7 @@ namespace umi3d.cdk
         /// </summary>
         /// For backwards compatibility only.
         [Obsolete("UMI3DLoadingHandler.Instance.gameObject instead")]
-        public GameObject gameObject => UMI3DLoadingHandler.Instance.gameObject;
+        public GameObject gameObject => UMI3DLoadingHandler.Exists ? UMI3DLoadingHandler.Instance.gameObject : null;
 
         /// <summary>
         /// Anchor of loading transform.

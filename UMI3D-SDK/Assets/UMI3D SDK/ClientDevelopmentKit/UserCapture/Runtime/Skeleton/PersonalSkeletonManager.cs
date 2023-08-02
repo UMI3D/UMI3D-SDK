@@ -63,6 +63,7 @@ namespace umi3d.cdk.userCapture
         private UMI3DSkeletonHierarchy _standardHierarchy;
 
         private PersonalSkeleton _skeleton;
+        public bool IsPersonalSkeletonNull => _skeleton == null;
         private IEnumerator computeRoutine;
 
         #region Dependency Injection
@@ -91,14 +92,33 @@ namespace umi3d.cdk.userCapture
 
         protected virtual void Init()
         {
-            environmentLoaderService.onEnvironmentLoaded.AddListener(InitPersonalSkeleton);
+            environmentLoaderService.onEnvironmentLoaded.AddListener(() =>
+            {
+                if (IsPersonalSkeletonNull) InitPersonalSkeleton();
+            });
         }
 
         private void InitPersonalSkeleton()
         {
+            if (environmentManager == null || environmentManager.gameObject == null || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
+            {
+                lateRoutineService.AttachLateRoutine(WhileUntilTheHanlderExist());
+                return;
+            }
+
             PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
             PersonalSkeleton.SkeletonHierarchy = StandardHierarchy;
             computeRoutine ??= lateRoutineService.AttachLateRoutine(ComputeCoroutine());
+        }
+
+        IEnumerator WhileUntilTheHanlderExist()
+        {
+            while (environmentManager == null || environmentManager.gameObject == null || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
+            {
+                yield return null;
+            }
+
+            InitPersonalSkeleton();
         }
 
         private IEnumerator ComputeCoroutine()
