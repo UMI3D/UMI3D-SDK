@@ -366,7 +366,7 @@ namespace umi3d.common
             }
 
             var enumerableInterface = type.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
-            return enumerableInterface?.GetGenericArguments()[0];
+            return enumerableInterface?.GetGenericArguments().Last();
         }
 
         /// <summary>
