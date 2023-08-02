@@ -117,7 +117,6 @@ namespace umi3d.edk.collaboration
 
           
             userId = identity is not null && identity.userId != 0 ? UMI3DEnvironment.Register(this, identity.userId) : Id();
-            UnityEngine.Debug.Log($"<color=red>user info {identity} {identity?.userId} {Id()} {userId} </color>");
 
             audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
             microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);
