@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using NUnit.Framework;
+using NUnit.Framework.Internal;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -59,6 +61,49 @@ namespace EditMode_Tests
             List<int> value = new List<int>() { 1, 3, 1000, 3994, 555};
             WriteRead_T(value,true);
         }
+
+        //[Test]
+        //public void WriteReadCountableList2()
+        //{
+        //    List<ulong> value = new List<ulong>() { 1, 3, 1000, 3994, 555 };
+        //    WriteRead_T(value, true);
+        //}
+
+        //public static bool IsGenericIEnumerable(Type type)
+        //{
+        //    if (type.IsGenericType && type.GetGenericTypeDefinition() == typeof(IEnumerable<>))
+        //    {
+        //        return true;
+        //    }
+
+        //    var interfaces = type.GetInterfaces();
+        //    return interfaces.Any(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        //}
+
+        //public static Type GetGenericTypeOfIEnumerable(Type type)
+        //{
+        //    if (IsGenericIEnumerable(type))
+        //    {
+        //        return type.GetGenericArguments()[0];
+        //    }
+
+        //    var enumerableInterface = type.GetInterfaces().FirstOrDefault(i => i.IsGenericType && i.GetGenericTypeDefinition() == typeof(IEnumerable<>));
+        //    return enumerableInterface?.GetGenericArguments()[0];
+        //}
+
+        //[Test]
+        //public void Test()
+        //{
+        //    var listType = typeof(List<int>);
+        //    var dictType = typeof(Dictionary<string, int>);
+
+        //    UnityEngine.Debug.Log($"Is {listType} a generic IEnumerable? {IsGenericIEnumerable(listType)}");
+        //    UnityEngine.Debug.Log($"Is {dictType} a generic IEnumerable? {IsGenericIEnumerable(dictType)}");
+
+        //    UnityEngine.Debug.Log($"Generic type of {listType}: {GetGenericTypeOfIEnumerable(listType)}");
+        //    UnityEngine.Debug.Log($"Generic type of {dictType}: {GetGenericTypeOfIEnumerable(dictType)}");
+
+        //}
 
         [Test]
         public void WriteReadUnCountableList()
