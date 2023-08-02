@@ -282,7 +282,7 @@ namespace umi3d.cdk.collaboration.userCapture
             sendTrackingLoopOnce = true;
             while (ShouldSendTracking && collaborationClientServerService.status != StatusType.NONE)
             {
-                if (TargetTrackingFPS > 0)
+                if (TargetTrackingFPS > 0 && !PersonalSkeletonManager.instance.IsPersonalSkeletonNull)
                 {
                     var frame = PersonalSkeleton.GetFrame(option);
                     frame.userId = PersonalSkeleton.UserId;
