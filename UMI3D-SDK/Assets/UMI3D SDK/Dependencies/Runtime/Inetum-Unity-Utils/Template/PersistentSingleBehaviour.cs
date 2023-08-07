@@ -31,6 +31,7 @@ namespace inetum.unityUtils
         {
             if (base._Awake())
             {
+                transform.SetParent(null);
                 DontDestroyOnLoad(this);
                 return true;
             }
