@@ -29,6 +29,7 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DAudioBridger : inetum.unityUtils.SingleBehaviour<UMI3DAudioBridger>
     {
+        public Transform parent;
         /// <summary>
         /// Is sound spatialized?
         /// </summary>
@@ -73,7 +74,9 @@ namespace umi3d.edk.collaboration
             if (user.audioPlayer == null) // create one if does not exist
             {
                 GameObject go = new GameObject($"AudioSource_user_{user.Id()}");
+                go.transform.SetParent(parent);
                 audioSourceNode = go.AddComponent<UMI3DNode>();
+                
 
                 user.audioPlayer = audioSourceNode.gameObject.AddComponent<UMI3DAudioPlayer>();
                 user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
@@ -143,6 +146,7 @@ namespace umi3d.edk.collaboration
             var audioSource = user.audioPlayer.ObjectNode.GetValue();
             t.AddIfNotNull(BindingManager.Instance.RemoveAllBindings(audioSource.Id()));
             t.AddIfNotNull(audioSource.GetDeleteEntity());
+            t.Dispatch();
             UnityEngine.Object.Destroy(audioSource.gameObject);
         }
     }

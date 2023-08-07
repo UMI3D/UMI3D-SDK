@@ -74,8 +74,12 @@ namespace umi3d.edk.binding
             if (bindings.GetValue().Count > 0)
             {
                 Transaction t = new() { reliable = true };
-                foreach (var (_, binding) in bindings.GetValue())
-                    t.AddIfNotNull(binding.GetLoadEntity(new() { user }));
+                foreach (var (_, binding) in bindings.GetValue()) {
+                    var g = UMI3DEnvironment.GetEntityIfExist<UMI3DEntity>(binding.boundNodeId);
+
+                    if (g.entity != null)
+                        t.AddIfNotNull(binding.GetLoadEntity(new() { user }));
+                }
                 t.Dispatch();
             }
         }
