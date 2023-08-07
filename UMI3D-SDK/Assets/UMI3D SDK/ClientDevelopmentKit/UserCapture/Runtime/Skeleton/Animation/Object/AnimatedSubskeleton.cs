@@ -224,7 +224,7 @@ namespace umi3d.cdk.userCapture.animation
             Vector3 previousPosition = Vector3.zero;
             Dictionary<uint, float> previousValues = new();
 
-            while (true)
+            while (skeleton != null && skeleton.HipsAnchor != null)
             {
                 foreach (var parameter in SelfUpdatedAnimatorParameters)
                 {

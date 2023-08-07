@@ -185,10 +185,13 @@ namespace umi3d.cdk
         public void Play(float atTime)
         {
             var nTime = dto.normalizedTime + atTime / Duration;
-            
-            if (animator == null)
-                UMI3DLogger.LogError($"No animator on node {node}", DebugScope.CDK | DebugScope.Animation);
 
+            if (animator == null)
+            {
+                UMI3DLogger.LogError($"No animator on node {node}", DebugScope.CDK | DebugScope.Animation);
+                IsPaused = true;
+                return;
+            }
             animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
             IsPaused = false;
             trackingAnimationCoroutine ??= coroutineService.AttachCoroutine(TrackEnd());

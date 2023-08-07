@@ -24,7 +24,7 @@ namespace inetum.unityUtils
     /// <summary>
     /// Singleton monobehaviour that runs coroutines. Prefer to use <see cref="CoroutineManagerMono"/>
     /// </summary>
-    internal class CoroutineManagerMono : SingleBehaviour<CoroutineManagerMono>, ICoroutineService, ILateRoutineService
+    internal class CoroutineManagerMono : PersistentSingleBehaviour<CoroutineManagerMono>, ICoroutineService, ILateRoutineService
     {
         private List<IEnumerator> routines = new();
         private Queue<IEnumerator> routinesToRemove = new();
