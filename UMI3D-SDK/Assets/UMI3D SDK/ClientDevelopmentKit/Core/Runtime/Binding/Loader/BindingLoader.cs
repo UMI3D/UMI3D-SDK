@@ -18,6 +18,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.dto.binding;
+using UnityEngine;
 
 namespace umi3d.cdk.binding
 {
@@ -105,6 +106,30 @@ namespace umi3d.cdk.binding
         {
             switch (dto)
             {
+                case RigNodeBindingDataDto nodeBindingDataDto:
+                    {
+                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(boundNodeId);
+                        if (node is null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+                        Transform rig = node.transform.GetComponentsInChildren<Transform>().Where(t => t.name == nodeBindingDataDto.rigName).FirstOrDefault();
+                        if (rig == null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Rig \"{nodeBindingDataDto.rigName}\" does not exist on bound node.", DEBUG_SCOPE);
+                            return null;
+                        }
+
+                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
+                        if (parentNode is null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.parentNodeId}. Parent node does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+
+                        return new RigNodeBinding(nodeBindingDataDto, rig, parentNode);
+                    }
                 case NodeBindingDataDto nodeBindingDataDto:
                     {
                         UMI3DNodeInstance node = environmentManager.GetNodeInstance(boundNodeId);
