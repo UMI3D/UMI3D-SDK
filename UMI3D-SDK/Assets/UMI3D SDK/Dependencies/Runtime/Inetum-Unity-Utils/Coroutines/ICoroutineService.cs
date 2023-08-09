@@ -28,12 +28,12 @@ namespace inetum.unityUtils
         // <summary>
         /// Call this method to attach a coroutine to the handler and start it.
         /// </summary>
-        public Coroutine AttachCoroutine(IEnumerator coroutine);
+        public Coroutine AttachCoroutine(IEnumerator coroutine, bool isPersistent = false);
 
         /// <summary>
         /// Call this method to remove a coroutine from the handler and stop it.
         /// </summary>
-        public void DettachCoroutine(Coroutine coroutine);
+        public void DetachCoroutine(Coroutine coroutine);
     }
 
     /// <summary>
@@ -44,11 +44,11 @@ namespace inetum.unityUtils
         // <summary>
         /// Call this method to attach a late update routine to the handler and start it.
         /// </summary>
-        public IEnumerator AttachLateRoutine(IEnumerator routine);
+        public IEnumerator AttachLateRoutine(IEnumerator routine, bool isPersistent = false);
 
         /// <summary>
         /// Call this method to remove a late update routine from the handler and stop it.
         /// </summary>
-        public void DettachLateRoutine(IEnumerator routine);
+        public void DetachLateRoutine(IEnumerator routine);
     }
 }

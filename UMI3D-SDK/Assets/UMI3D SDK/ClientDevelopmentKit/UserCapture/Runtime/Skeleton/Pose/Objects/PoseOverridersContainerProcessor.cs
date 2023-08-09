@@ -99,7 +99,7 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public void StopWatchNonInteractionalConditions()
         {
-            CoroutineManager.Instance.DettachCoroutine(regularActivationCheckRoutine);
+            CoroutineManager.Instance.DetachCoroutine(regularActivationCheckRoutine);
             regularActivationCheckRoutine = null;
             isProcessing = false;
         }
@@ -156,7 +156,7 @@ namespace umi3d.cdk.userCapture.pose
             }
             if (regularActivationCheckRoutine != null)
             {
-                CoroutineManager.Instance.DettachCoroutine(regularActivationCheckRoutine);
+                CoroutineManager.Instance.DetachCoroutine(regularActivationCheckRoutine);
                 regularActivationCheckRoutine = null;
             }
             isProcessing = false;
@@ -185,7 +185,7 @@ namespace umi3d.cdk.userCapture.pose
             if (coroutine != null)
             {
                 watchConditionsCoroutines.Remove(poseOverrider);
-                CoroutineManager.Instance.DettachCoroutine(coroutine);
+                CoroutineManager.Instance.DetachCoroutine(coroutine);
             }
         }
 

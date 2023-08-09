@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -22,9 +22,9 @@ using UnityEngine;
 namespace inetum.unityUtils
 {
     /// <summary>
-    /// Singleton monobehaviour that runs coroutines. Prefer to use <see cref="CoroutineManagerMono"/>
+    /// Singleton monobehaviour that runs coroutines. Prefer to use <see cref="PersistentCoroutineManagerMono"/>
     /// </summary>
-    internal class CoroutineManagerMono : SingleBehaviour<CoroutineManagerMono>, ICoroutineService, ILateRoutineService
+    internal class PersistentCoroutineManagerMono : PersistentSingleBehaviour<PersistentCoroutineManagerMono>, ICoroutineService, ILateRoutineService
     {
         private List<IEnumerator> routines = new();
         private Queue<IEnumerator> routinesToRemove = new();

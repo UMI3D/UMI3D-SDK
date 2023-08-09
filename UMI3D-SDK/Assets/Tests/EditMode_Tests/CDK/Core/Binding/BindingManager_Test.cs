@@ -111,13 +111,13 @@ namespace EditMode_Tests.Core.Binding.CDK
             var binding = new NodeBinding(nodeBindingDto, null, null);
 
             var initialSize = bindingManager.Bindings.Count;
-            mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
+            mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false));
 
             // WHEN
             bindingManager.AddBinding(1005uL, binding);
 
             // THEN
-            mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
+            mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false), Times.Never());
             Assert.AreEqual(initialSize + 1, bindingManager.Bindings.Count);
         }
 
@@ -133,14 +133,14 @@ namespace EditMode_Tests.Core.Binding.CDK
             var nodeBindingDto = new NodeBindingDataDto() { parentNodeId = 1005uL, priority = 10 };
             var binding = new NodeBinding(nodeBindingDto, null, null);
             var initialSize = bindingManager.Bindings.Count;
-            mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()));
+            mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false));
             mockClientServer.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
 
             // WHEN
             bindingManager.AddBinding(1005uL, binding);
 
             // THEN
-            mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>()), Times.Once());
+            mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false), Times.Once());
             Assert.AreEqual(initialSize + 1, bindingManager.Bindings.Count);
         }
 
@@ -167,7 +167,7 @@ namespace EditMode_Tests.Core.Binding.CDK
             bindingManager.RemoveBinding(otherBoundNodeId);
 
             // THEN
-            mockLateRoutineService.Verify(x => x.DettachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
+            mockLateRoutineService.Verify(x => x.DetachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
             Assert.AreEqual(initialSize, bindingManager.Bindings.Count);
         }
 
@@ -188,7 +188,7 @@ namespace EditMode_Tests.Core.Binding.CDK
 
             // GIVEN
             int initialSize = bindingManager.Bindings.Count;
-            mockLateRoutineService.Setup(x => x.DettachLateRoutine(It.IsAny<IEnumerator>()));
+            mockLateRoutineService.Setup(x => x.DetachLateRoutine(It.IsAny<IEnumerator>()));
 
             // WHEN
             bindingManager.RemoveBinding(boundNodeId);

@@ -208,7 +208,7 @@ namespace umi3d.cdk.userCapture.animation
             unityMainThreadDispatcher.Enqueue(() =>
             {
                 if (updateParameterRoutine is not null)
-                    coroutineService.DettachCoroutine(updateParameterRoutine);
+                    coroutineService.DetachCoroutine(updateParameterRoutine);
 
                 UMI3DClientServer.Instance.OnLeavingEnvironment.RemoveListener(StopParameterSelfUpdate);
             });

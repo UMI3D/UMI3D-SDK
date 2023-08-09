@@ -128,7 +128,7 @@ namespace umi3d.cdk.userCapture
                 PersonalSkeleton.Compute();
                 yield return null;
             }
-            lateRoutineService.DettachLateRoutine(computeRoutine);
+            lateRoutineService.DetachLateRoutine(computeRoutine);
             computeRoutine = null;
         }
     }

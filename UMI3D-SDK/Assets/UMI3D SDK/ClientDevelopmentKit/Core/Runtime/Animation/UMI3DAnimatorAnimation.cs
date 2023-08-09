@@ -206,7 +206,7 @@ namespace umi3d.cdk
             lastPauseTime = GetProgress() * Duration;
             IsPaused = true;
             if (trackingAnimationCoroutine != null)
-                coroutineService.DettachCoroutine(trackingAnimationCoroutine);
+                coroutineService.DetachCoroutine(trackingAnimationCoroutine);
             trackingAnimationCoroutine = null;
             animator.Play(dto.stateName, layer: 0, normalizedTime: 1);
         }
@@ -225,7 +225,7 @@ namespace umi3d.cdk
             
             if (trackingAnimationCoroutine != null)
             {
-                coroutineService.DettachCoroutine(trackingAnimationCoroutine);
+                coroutineService.DetachCoroutine(trackingAnimationCoroutine);
                 trackingAnimationCoroutine = null;
             }
                 
@@ -252,7 +252,7 @@ namespace umi3d.cdk
         private void StopTracking()
         {
             if (trackingAnimationCoroutine is not null)
-                coroutineService.DettachCoroutine(trackingAnimationCoroutine);
+                coroutineService.DetachCoroutine(trackingAnimationCoroutine);
             UMI3DClientServer.Instance.OnLeavingEnvironment.RemoveListener(StopTracking);
         }
 
