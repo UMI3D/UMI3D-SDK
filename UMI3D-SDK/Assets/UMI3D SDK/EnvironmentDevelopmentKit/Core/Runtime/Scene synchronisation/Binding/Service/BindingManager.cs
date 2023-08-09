@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.Linq;
 
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk.binding
 {
@@ -74,7 +75,8 @@ namespace umi3d.edk.binding
             if (bindings.GetValue().Count > 0)
             {
                 Transaction t = new() { reliable = true };
-                foreach (var (_, binding) in bindings.GetValue()) {
+                foreach (var (_, binding) in bindings.GetValue())
+                {
                     var g = UMI3DEnvironment.GetEntityIfExist<UMI3DEntity>(binding.boundNodeId);
 
                     if (g.entity != null)
@@ -322,7 +324,7 @@ namespace umi3d.edk.binding
                                 bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
                         }
                         operations.Add(bindingToRemove.GetDeleteEntity(targetUsers));
-                        
+
                         if (syncServerTransform)
                         {
                             var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
@@ -349,6 +351,14 @@ namespace umi3d.edk.binding
                         {
                             foreach (UMI3DUser user in users)
                                 bindings.SetValue(user, newBinding.boundNodeId, newBinding);
+                        }
+
+                        if (syncServerTransform)
+                        {
+                            var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
+                            operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
+                            operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
+                            operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
                         }
                     }
                     else
@@ -382,9 +392,9 @@ namespace umi3d.edk.binding
                             bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
                             if (syncServerTransform)
                             {
-                                ops.Add(node.objectPosition.SetValue(user, node.objectPosition.GetValue(user)));
-                                ops.Add(node.objectRotation.SetValue(user, node.objectRotation.GetValue(user)));
-                                ops.Add(node.objectScale.SetValue(user, node.objectScale.GetValue(user)));
+                                ops.Add(node.objectPosition.SetValue(user, node.objectPosition.GetValue(user), true));
+                                ops.Add(node.objectRotation.SetValue(user, node.objectRotation.GetValue(user), true));
+                                ops.Add(node.objectScale.SetValue(user, node.objectScale.GetValue(user), true));
                             }
                         }
                         operations.Add(bindingToRemove.GetDeleteEntity(usersWithSameBinding.ToHashSet()));
@@ -411,6 +421,13 @@ namespace umi3d.edk.binding
                                        foreach (UMI3DUser user in userGroup)
                                            bindings.SetValue(user, newBinding.boundNodeId, newBinding); // no binding left on node
                                    });
+                        if (syncServerTransform)
+                        {
+                            var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
+                            operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
+                            operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
+                            operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
+                        }
                     }
                 }
                 else
@@ -494,7 +511,7 @@ namespace umi3d.edk.binding
                             var userList = userGroup.ToList();
                             var node = UMI3DEnvironment.GetEntityInstance<UMI3DAbstractNode>(bindingToDelete.boundNodeId);
 
-                            foreach ( var user in userList )
+                            foreach (var user in userList)
                             {
                                 ops.Add(node.objectPosition.SetValue(user, node.objectPosition.GetValue(user)));
                                 ops.Add(node.objectRotation.SetValue(user, node.objectRotation.GetValue(user)));
