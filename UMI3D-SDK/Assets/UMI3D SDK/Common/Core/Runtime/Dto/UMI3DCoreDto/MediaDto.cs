@@ -26,23 +26,21 @@ namespace umi3d.common
         /// <summary>
         /// Name of the media.
         /// </summary>
-        public string name;
+        public string name { get; set; }
 
         /// <summary>
         /// The interaction's icon 2D. 
         /// </summary>
-        public ResourceDto icon2D;
+        public ResourceDto icon2D { get; set; }
 
         /// <summary>
         /// The interaction's icon 3D. 
         /// </summary>
-        public ResourceDto icon3D;
+        public ResourceDto icon3D { get; set; }
 
         /// <summary>
         /// Path of the media.
         /// </summary>
-        public string url;
-
-        public MediaDto() : base() { }
+        public string url { get; set; }
     }
 }

@@ -25,13 +25,11 @@ namespace umi3d.common
         /// <summary>
         /// Average number of polygons in one cubic meter.
         /// </summary>
-        public float density;
+        public float density { get; set; }
 
         /// <summary>
         /// Total number of polygons of the mesh.
         /// </summary>
-        public int polygons;
-
-        public MeshMetricDto() : base() { }
+        public int polygons { get; set; }
     }
 }

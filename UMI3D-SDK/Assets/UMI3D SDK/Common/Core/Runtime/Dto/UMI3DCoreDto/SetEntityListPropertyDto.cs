@@ -24,6 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// Position in list.
         /// </summary>
-        public int index;
+        public int index { get; set; }
     }
 }

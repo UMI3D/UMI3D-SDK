@@ -25,8 +25,6 @@ namespace umi3d.common
         /// <summary>
         /// New position of the user.
         /// </summary>
-        public SerializableVector3 position;
-
-        public NavigateDto() : base() { }
+        public Vector3Dto position { get; set; }
     }
 }

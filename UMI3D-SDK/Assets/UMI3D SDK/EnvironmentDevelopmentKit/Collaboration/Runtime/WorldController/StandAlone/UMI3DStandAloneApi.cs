@@ -19,7 +19,8 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.collaboration;
 using UnityEngine;
 using WebSocketSharp;
@@ -70,7 +71,7 @@ namespace umi3d.worldController
                 Error(e.Response, "Can not read string from byte");
                 return;
             }
-            ConnectionDto dto = UMI3DDto.FromJson<FormConnectionAnswerDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+            ConnectionDto dto = UMI3DDtoSerializer.FromJson<FormConnectionAnswerDto>(text, Newtonsoft.Json.TypeNameHandling.None);
 
             if (dto == null)
             {
@@ -140,7 +141,7 @@ namespace umi3d.worldController
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
             }
-            var dto = UMI3DDto.FromBson(bytes);
+            var dto = UMI3DDtoSerializer.FromBson(bytes);
             bool finished = false;
             UMI3DDto result = null;
             MainThreadManager.Run(() => RenewCredential(dto as PrivateIdentityDto, (res) => { finished = true; result = res; }));

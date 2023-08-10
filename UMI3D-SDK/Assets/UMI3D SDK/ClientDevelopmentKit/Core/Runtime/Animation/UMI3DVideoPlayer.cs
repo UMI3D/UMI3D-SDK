@@ -1,5 +1,6 @@
 ﻿/*
 Copyright 2019 - 2023 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -55,7 +56,7 @@ namespace umi3d.cdk
         public override bool IsPlaying() => videoPlayer.isPlaying;
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
-        {
+        { 
         }
 
         /// <inheritdoc/>
@@ -83,7 +84,7 @@ namespace umi3d.cdk
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
 
             // setup video player
-            FileDto fileDto = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.videoResource.variants);
+            FileDto fileDto = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.videoResource.variants);
             if (!UMI3DClientServer.Instance.AuthorizationInHeader)
                 videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
             else

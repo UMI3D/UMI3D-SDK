@@ -47,7 +47,7 @@ namespace umi3d.cdk.menu.interaction
             {
                 icon2D = new Texture2D(0, 0);
 
-                FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(toolbox.icon2D.variants);
+                FileDto icon2DFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(toolbox.icon2D.variants);
 
                 if ((icon2DFile.url != null) && (icon2DFile.url != ""))
                 {

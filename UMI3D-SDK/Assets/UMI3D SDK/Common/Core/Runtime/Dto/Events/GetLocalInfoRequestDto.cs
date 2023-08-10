@@ -25,8 +25,6 @@ namespace umi3d.common
         /// <summary>
         /// Local file id. Used in the http Get request. It should only contains only lower case letter or number.
         /// </summary>
-        public string key;
-
-        public GetLocalInfoRequestDto() : base() { }
+        public string key { get; set; }
     }
 }

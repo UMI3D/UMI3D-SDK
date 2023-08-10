@@ -1,5 +1,6 @@
 ﻿/*
 Copyright 2019 - 2023 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -67,7 +68,7 @@ namespace umi3d.cdk
             if (started) return;
             progress = 0;
             if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
-            foreach (UMI3DAnimationDto.AnimationChainDto chain in dto.animationChain)
+            foreach (AnimationChainDto chain in dto.animationChain)
             {
                 float p = GetProgress();
                 if (p < chain.startOnProgress)
@@ -84,7 +85,7 @@ namespace umi3d.cdk
         {
             if (!started) return;
             if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
-            foreach (UMI3DAnimationDto.AnimationChainDto chain in dto.animationChain)
+            foreach (AnimationChainDto chain in dto.animationChain)
                 UMI3DAnimationManager.Instance.StopAnimation(chain.animationId);
             foreach (Coroutine c in Coroutines)
                 UMI3DAnimationManager.StopCoroutine(c);
@@ -175,7 +176,7 @@ namespace umi3d.cdk
 
         private static bool UpdateChain(ReadUMI3DPropertyData value)
         {
-            value.result = UMI3DSerializer.ReadList<UMI3DAnimationDto.AnimationChainDto>(value.container);
+            value.result = UMI3DSerializer.ReadList<AnimationChainDto>(value.container);
             return true;
         }
 
@@ -184,16 +185,16 @@ namespace umi3d.cdk
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
-                    dto.animationChain.Add((UMI3DAnimationDto.AnimationChainDto)add.value);
+                    dto.animationChain.Add((AnimationChainDto)add.value);
                     break;
                 case SetEntityListRemovePropertyDto rem:
                     dto.animationChain.RemoveAt((int)(Int64)rem.index);
                     break;
                 case SetEntityListPropertyDto set:
-                    dto.animationChain[(int)(Int64)set.index] = (UMI3DAnimationDto.AnimationChainDto)set.value;
+                    dto.animationChain[(int)(Int64)set.index] = (AnimationChainDto)set.value;
                     break;
                 default:
-                    dto.animationChain = ((List<object>)property.value).Select(o => o as UMI3DAnimationDto.AnimationChainDto).ToList();
+                    dto.animationChain = ((List<object>)property.value).Select(o => o as AnimationChainDto).ToList();
                     break;
             }
             return true;
@@ -202,7 +203,7 @@ namespace umi3d.cdk
         private bool UpdateChain(uint operationId, uint propertyKey, ByteContainer container)
         {
             if (dto.animationChain == null)
-                dto.animationChain = new List<UMI3DAnimationDto.AnimationChainDto>();
+                dto.animationChain = new List<AnimationChainDto>();
             UMI3DSerializer.ReadList(operationId, container, dto.animationChain);
             return true;
         }
@@ -215,7 +216,7 @@ namespace umi3d.cdk
             if (started) return;
             progress = atTime;
             if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
-            foreach (UMI3DAnimationDto.AnimationChainDto chain in dto.animationChain)
+            foreach (AnimationChainDto chain in dto.animationChain)
             {
                 float p = GetProgress();
                 if (p < chain.startOnProgress)

@@ -95,6 +95,7 @@ namespace MainThreadDispatcher
             if (_instance == null)
             {
                 _instance = this;
+                this.transform.SetParent(null);
                 DontDestroyOnLoad(this.gameObject);
             }
         }

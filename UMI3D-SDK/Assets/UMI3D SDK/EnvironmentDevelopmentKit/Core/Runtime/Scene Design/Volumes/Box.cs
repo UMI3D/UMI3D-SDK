@@ -69,8 +69,8 @@ namespace umi3d.edk.volume
             return new BoxDto()
             {
                 id = Id(),
-                center = center.GetValue() + (extendFromBottom ? bounds.extents.y * Vector3.up : Vector3.zero),
-                size = size.GetValue(),
+                center =( center.GetValue() + (extendFromBottom ? bounds.extents.y * Vector3.up : Vector3.zero)).Dto(),
+                size = size.GetValue().Dto(),
                 rootNodeId = GetRootNode().Id(),
                 isTraversable = IsTraversable()
             };

@@ -17,12 +17,32 @@ limitations under the License.
 using System;
 using System.Collections;
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.common
 {
+    [UMI3DSerializerOrder(1000)]
     public class UMI3DSerializerBasicModules : UMI3DSerializerModule
     {
-        public override bool Read<T>(ByteContainer container, out bool readable, out T result)
+        public bool? IsCountable<T>()
+        {
+            return true switch
+            {
+                true when typeof(T) == typeof(char) => true,
+                true when typeof(T) == typeof(bool) => true,
+                true when typeof(T) == typeof(byte) => true,
+                true when typeof(T) == typeof(short) => true,
+                true when typeof(T) == typeof(ushort) => true,
+                true when typeof(T) == typeof(int) => true,
+                true when typeof(T) == typeof(uint) => true,
+                true when typeof(T) == typeof(float) => true,
+                true when typeof(T) == typeof(long) => true,
+                true when typeof(T) == typeof(ulong) => true,
+                _ => null,
+            };
+        }
+
+        public bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             readable = true;
             switch (true)
@@ -125,10 +145,9 @@ namespace umi3d.common
             return false;
         }
 
-        public override bool Write<T>(T value, out Bytable bytable)
+        public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             Func<byte[], int, int, (int, int)> f;
-
             switch (value)
             {
                 case char c:

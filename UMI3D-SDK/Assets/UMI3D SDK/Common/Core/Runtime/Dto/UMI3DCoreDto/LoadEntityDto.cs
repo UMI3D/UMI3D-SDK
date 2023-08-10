@@ -28,6 +28,6 @@ namespace umi3d.common
         /// <summary>
         /// Entities to load.
         /// </summary>
-        public List<IEntity> entities;
+        public List<IEntity> entities { get; set; }
     }
 }

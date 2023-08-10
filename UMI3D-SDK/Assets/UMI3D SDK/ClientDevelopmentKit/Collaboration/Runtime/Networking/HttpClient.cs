@@ -21,7 +21,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Networking;
@@ -100,16 +101,16 @@ namespace umi3d.cdk.collaboration
 
             try
             {
-                dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+                dto1 = UMI3DDtoSerializer.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
             }
             catch (Exception)
             {
-                dto2 = UMI3DDto.FromJson<FakePrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+                dto2 = UMI3DDtoSerializer.FromJson<FakePrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
             }
 
-            ConnectionFormDto dto3 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
+            ConnectionFormDto dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
 
-            if (dto1 != null && dto1?.GlobalToken != null && dto1?.connectionDto != null)
+            if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
                 return dto2.ToPrivateIdentity();
@@ -170,22 +171,22 @@ namespace umi3d.cdk.collaboration
                     case Color col:
                         return new ColorParameterDto
                         {
-                            value = col
+                            value = col.Dto()
                         };
                     case Vector4 v4:
                         return new Vector4ParameterDto
                         {
-                            value = v4
+                            value = v4.Dto()
                         };
                     case Vector3 v3:
                         return new Vector3ParameterDto
                         {
-                            value = v3
+                            value = v3.Dto()
                         };
                     case Vector2 v2:
                         return new Vector2ParameterDto
                         {
-                            value = v2
+                            value = v2.Dto()
                         };
                 }
                 UnityEngine.Debug.LogError($"Missing case. {obj}");
@@ -323,8 +324,8 @@ namespace umi3d.cdk.collaboration
             {
                 return new PrivateIdentityDto()
                 {
-                    GlobalToken = GlobalToken,
-                    connectionDto = UMI3DDto.FromJson<EnvironmentConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
+                    globalToken = GlobalToken,
+                    connectionDto = UMI3DDtoSerializer.FromJson<EnvironmentConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
                     libraries = libraries,
                     localToken = localToken,
                     headerToken = headerToken,
@@ -370,7 +371,7 @@ namespace umi3d.cdk.collaboration
                     var b = uwr?.downloadHandler.data;
                     if(b != null)
                     {
-                        result = UMI3DDto.FromBson<PendingTransactionDto>(b);
+                        result = UMI3DDtoSerializer.FromBson<PendingTransactionDto>(b);
                     }
                 }
                 catch (Exception e)
@@ -457,7 +458,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
                 if (uwr?.downloadHandler.data == null) return null;
                 string json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-                return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
+                return UMI3DDtoSerializer.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
             }
         }
 

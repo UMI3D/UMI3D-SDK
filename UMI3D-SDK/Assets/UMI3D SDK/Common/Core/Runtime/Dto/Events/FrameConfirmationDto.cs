@@ -24,19 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// User id of the user in the Frame.
         /// </summary>
-        public ulong userId;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId()
-        {
-            return UMI3DOperationKeys.FrameConfirmation;
-        }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(userId);
-        }
+        public ulong userId { get; set; }
     }
 };

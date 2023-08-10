@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:UMI3D-SDK/Assets/UMI3D SDK/Common/UserCapture/Editor/UMI3D.Common.UserCapture.Editor.asmdef.meta
+guid: c2d0a480efad0dd4f93ae8616c4e31ef
+========
 guid: d688d3cbc2c1041f68fa250ae633471b
+>>>>>>>> origin/2.6:UMI3D-SDK/Assets/UMI3D SDK/Dependencies/Runtime/GltFast/Runtime/Scripts/DOTS/glTFast.dots.asmdef.meta
 AssemblyDefinitionImporter:
   externalObjects: {}
   userData: 

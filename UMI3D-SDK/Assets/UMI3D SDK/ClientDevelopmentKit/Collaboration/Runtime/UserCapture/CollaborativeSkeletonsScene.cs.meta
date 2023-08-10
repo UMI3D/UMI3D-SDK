@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+<<<<<<<< HEAD:UMI3D-SDK/Assets/UMI3D SDK/ClientDevelopmentKit/Collaboration/Runtime/TrackingKalmanFilters/CollaborativeSkeletonsScene.cs.meta
+guid: 2cc06672ab6d0a444869c6bf975bc7b7
+========
+guid: 46bbc3b214ebe30488b67ddbab96a956
+>>>>>>>> origin/2.6:UMI3D-SDK/Assets/UMI3D SDK/EnvironmentDevelopmentKit/UserCapture/Runtime/Scene Synchonisation/EmoteTriggerOperationDto.cs.meta
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences: []
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

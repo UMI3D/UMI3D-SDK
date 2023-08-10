@@ -22,10 +22,10 @@ namespace umi3d.edk.editor
     [CanEditMultipleObjects]
     public class UMI3DAbstractAnimationEditor : Editor
     {
-        private SerializedProperty playing;
-        private SerializedProperty looping;
-        private SerializedProperty startTime;
-        private SerializedProperty pauseFrame;
+        protected SerializedProperty playing;
+        protected SerializedProperty looping;
+        protected SerializedProperty startTime;
+        protected SerializedProperty pauseFrame;
 
         protected virtual void OnEnable()
         {

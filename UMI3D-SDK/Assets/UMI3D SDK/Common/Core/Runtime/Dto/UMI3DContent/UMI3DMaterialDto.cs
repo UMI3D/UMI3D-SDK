@@ -29,49 +29,49 @@ namespace umi3d.common
         /// <summary>
         /// Base color in PBR as a texture.
         /// </summary>
-        public TextureDto baseColorTexture;
+        public TextureDto baseColorTexture { get; set; }
 
         /// <summary>
         /// Metallic roughness in PBR as a texture.
         /// </summary>
-        public TextureDto metallicRoughnessTexture;
+        public TextureDto metallicRoughnessTexture { get; set; }
 
         //glTF additional maps
         /// <summary>
         /// Normal map as a texture.
         /// </summary>
-        public ScalableTextureDto normalTexture;
+        public ScalableTextureDto normalTexture { get; set; }
 
         /// <summary>
         /// Emission map as a texture.
         /// </summary>
-        public TextureDto emissiveTexture;
+        public TextureDto emissiveTexture { get; set; }
 
         /// <summary>
         /// Occlusion map as a texture.
         /// </summary>
-        public TextureDto occlusionTexture;
+        public TextureDto occlusionTexture { get; set; }
 
         //UMI3D additional maps
         /// <summary>
         /// Metallic map as a texture.
         /// </summary>
-        public TextureDto metallicTexture;
+        public TextureDto metallicTexture { get; set; }
 
         /// <summary>
         /// Roughness map as a texture.
         /// </summary>
-        public TextureDto roughnessTexture;
+        public TextureDto roughnessTexture { get; set; }
 
         /// <summary>
         /// Height map as a texture.
         /// </summary>
-        public ScalableTextureDto heightTexture;
+        public ScalableTextureDto heightTexture { get; set; }
 
         /// <summary>
         /// Map channel as a texture.
         /// </summary>
-        public TextureDto channelTexture;
+        public TextureDto channelTexture { get; set; }
 
         /// <summary>
         /// Modified properties in the shader as a key-value collection;

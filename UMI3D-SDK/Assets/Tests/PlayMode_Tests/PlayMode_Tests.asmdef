@@ -1,0 +1,32 @@
+{
+    "name": "PlayMode_Tests",
+    "rootNamespace": "",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "UMI3D.Common.Core",
+        "UMI3D.Common.UserCapture",
+        "UMI3D.CDK.Core",
+        "UMI3D.CDK.UserCapture",
+        "UMI3D.CDK.Collaboration",
+        "inetum.unityUtils",
+        "UMI3D.Common.Collaboration",
+        "UMI3D.EDK.Collaboration",
+        "UMI3D.EDK.UserCapture",
+        "UMI3D.EDK.Core"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll",
+        "Moq.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

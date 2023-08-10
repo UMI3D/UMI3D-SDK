@@ -17,9 +17,12 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.userCapture;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -32,7 +35,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// UMI3D server on the browser, in a collaborative context.
     /// </summary>
-    public class UMI3DCollaborationClientServer : UMI3DClientServer
+    public class UMI3DCollaborationClientServer : UMI3DClientServer, IUMI3DCollaborationClientServer
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -54,22 +57,19 @@ namespace umi3d.cdk.collaboration
 
         public static Func<MultiProgress> EnvironmentProgress = null;
 
-        public UnityEvent OnLeaving = new UnityEvent();
-        public UnityEvent OnLeavingEnvironment = new UnityEvent();
+        public UnityEvent OnNewToken { get; } = new UnityEvent();
+        public UnityEvent OnConnectionLost { get; } = new UnityEvent();
+        public UnityEvent OnRedirectionStarted { get; } = new UnityEvent();
+        public UnityEvent OnRedirectionAborted { get; } = new UnityEvent();
+        public UnityEvent OnRedirection { get; } = new UnityEvent();
+        public UnityEvent OnReconnect { get; } = new UnityEvent();
 
-        public UnityEvent OnNewToken = new UnityEvent();
-        public UnityEvent OnConnectionLost = new UnityEvent();
-        public UnityEvent OnRedirectionStarted = new UnityEvent();
-        public UnityEvent OnRedirectionAborted = new UnityEvent();
-        public UnityEvent OnRedirection = new UnityEvent();
-        public UnityEvent OnReconnect = new UnityEvent();
-
-        public UnityEvent OnConnectionCheck = new UnityEvent();
-        public UnityEvent OnConnectionRetreived = new UnityEvent();
+        public UnityEvent OnConnectionCheck { get; } = new UnityEvent();
+        public UnityEvent OnConnectionRetreived { get; } = new UnityEvent();
 
         static public OnProgressEvent onProgress = new OnProgressEvent();
 
-        public OnForceLogoutEvent OnForceLogoutMessage = new OnForceLogoutEvent();
+        public OnForceLogoutEvent OnForceLogoutMessage { get; } = new OnForceLogoutEvent();
 
         public ClientIdentifierApi Identifier;
 
@@ -112,13 +112,18 @@ namespace umi3d.cdk.collaboration
 
         private void Start()
         {
-            UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
-            UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
-            UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
-            UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
+            _ = UMI3DCollaborationEnvironmentLoader.Instance; // force right service instanciation
+            UMI3DSerializer.AddModule(UMI3DSerializerModuleUtils.GetModules().ToList());
+
+            //UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
+            //UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
+            //UMI3DSerializer.AddModule(new UMI3DUserCaptureBindingSerializerModule());
+            //UMI3DSerializer.AddModule(new UMI3DEmotesSerializerModule());
+            //UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
+            //UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
         }
 
 
@@ -183,6 +188,7 @@ namespace umi3d.cdk.collaboration
 
                         UMI3DEnvironmentClient env = environmentClient;
                         environmentClient = null;
+                        //UMI3DEnvironmentLoader.Clear();
 
                         if (env != null)
                             await env.Logout();
@@ -366,7 +372,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="dto">Dto to send</param>
         /// <param name="reliable">is the data channel used reliable</param>
-        protected override void _SendTracking(AbstractBrowserRequestDto dto)
+        public override void SendTracking(AbstractBrowserRequestDto dto)
         {
             environmentClient?.SendTracking(dto);
         }

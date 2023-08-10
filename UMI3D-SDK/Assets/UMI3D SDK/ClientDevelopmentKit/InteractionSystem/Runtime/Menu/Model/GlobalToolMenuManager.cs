@@ -164,7 +164,7 @@ namespace umi3d.cdk.interaction
 
         static async void LoadTExture(Texture2D icon2DTex, AbstractInteractionDto interactionDto)
         {
-            FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(interactionDto.icon2D.variants);
+            FileDto icon2DFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(interactionDto.icon2D.variants);
             if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
             {
                 var rawData = await UMI3DResourcesManager.GetFile(icon2DFile.url);
@@ -208,7 +208,7 @@ namespace umi3d.cdk.interaction
                                 id = evt.id,
                                 toolId = toolId,
                             };
-                            UMI3DClientServer.SendData(eventdto, true);
+                            UMI3DClientServer.SendRequest(eventdto, true);
                         }
                         else
                         {
@@ -217,7 +217,7 @@ namespace umi3d.cdk.interaction
                                 id = evt.id,
                                 toolId = toolId,
                             };
-                            UMI3DClientServer.SendData(eventdto, true);
+                            UMI3DClientServer.SendRequest(eventdto, true);
                         }
                     }
                     else
@@ -228,7 +228,7 @@ namespace umi3d.cdk.interaction
                             id = evt.id,
                             toolId = toolId,
                         };
-                        UMI3DClientServer.SendData(eventdto, true);
+                        UMI3DClientServer.SendRequest(eventdto, true);
                     }
                 });
 
@@ -275,7 +275,7 @@ namespace umi3d.cdk.interaction
                     {
                         booleanParameterDto.value = x;
                         requestDto.parameter = booleanParameterDto;
-                        UMI3DClientServer.SendData(requestDto, true);
+                        UMI3DClientServer.SendRequest(requestDto, true);
                     });
                     result = b;
                     break;
@@ -292,7 +292,7 @@ namespace umi3d.cdk.interaction
                     {
                         floatRangeParameterDto.value = x;
                         requestDto.parameter = floatRangeParameterDto;
-                        UMI3DClientServer.SendData(requestDto, true);
+                        UMI3DClientServer.SendRequest(requestDto, true);
                     });
                     result = f;
                     break;
@@ -310,7 +310,7 @@ namespace umi3d.cdk.interaction
                     {
                         enumParameterDto.value = x;
                         requestDto.parameter = enumParameterDto;
-                        UMI3DClientServer.SendData(requestDto, true);
+                        UMI3DClientServer.SendRequest(requestDto, true);
                     });
                     result = en;
                     break;
@@ -328,7 +328,7 @@ namespace umi3d.cdk.interaction
                     {
                         stringParameterDto.value = x;
                         requestDto.parameter = stringParameterDto;
-                        UMI3DClientServer.SendData(requestDto, true);
+                        UMI3DClientServer.SendRequest(requestDto, true);
                     });
                     result = s;
                     break;
@@ -346,7 +346,7 @@ namespace umi3d.cdk.interaction
                     {
                         localInfoRequestParameterDto.value = x;
                         requestDto.parameter = localInfoRequestParameterDto;
-                        UMI3DClientServer.SendData(requestDto, true);
+                        UMI3DClientServer.SendRequest(requestDto, true);
                     }
                     );
                     result = localReq;

@@ -63,9 +63,9 @@ namespace umi3d.cdk
             if (!Y) { pos -= Vector3.right * Vector3.Dot(Vector3.right, pos); }
 
             if (pos != Vector3.zero)
-                transform.rotation = Quaternion.LookRotation(-pos) * glTFNodeDto.rotation;
+                transform.rotation = Quaternion.LookRotation(-pos) * glTFNodeDto.rotation.Quaternion();
             else
-                transform.rotation = glTFNodeDto.rotation;
+                transform.rotation = glTFNodeDto.rotation.Quaternion();
         }
     }
 }

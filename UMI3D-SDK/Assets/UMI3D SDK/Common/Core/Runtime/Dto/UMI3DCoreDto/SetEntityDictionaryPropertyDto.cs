@@ -24,6 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// Key of the property in the dictionnary.
         /// </summary>
-        public object key;
+        public object key { get; set; }
     }
 }

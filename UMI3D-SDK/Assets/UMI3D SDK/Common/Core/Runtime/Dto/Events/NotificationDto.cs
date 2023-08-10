@@ -21,54 +21,35 @@ namespace umi3d.common
     /// </summary>
     public class NotificationDto : AbstractEntityDto, IEntity
     {
-        /// <summary>
-        /// Priority level of a notification.
-        /// </summary>
-        public enum NotificationPriority { Low, Medium, High }
 
         /// <summary>
         /// Priority level of the notification.
         /// </summary>
-        public NotificationPriority priority;
+        public NotificationPriority priority { get; set; }
         /// <summary>
         /// Notification title. A title is short and contain the main information on a notification.
         /// </summary>
-        public string title;
+        public string title { get; set; }
         /// <summary>
         /// Content of the notification. Could be a longer text than the title.
         /// </summary>
-        public string content;
+        public string content { get; set; }
         /// <summary>
         /// Answers to the notification as a string array.
         /// </summary>
-        public string[] callback;
+        public string[] callback { get; set; }
         /// <summary>
         /// a notification with a duration of 0 should stay visible untile a DeleteEntityDto is received
         /// </summary>
         /// <seealso cref="DeleteEntityDto"/>
-        public float duration;
+        public float duration { get; set; }
         /// <summary>
         /// Icon associated to a notification as a 2D resource.
         /// </summary>
-        public ResourceDto icon2D;
+        public ResourceDto icon2D { get; set; }
         /// <summary>
         /// Icon associated to a notification as a 3D resource.
         /// </summary>
-        public ResourceDto icon3D;
-
-        public NotificationDto() : base() { }
-    }
-
-    /// <summary>
-    /// Notification concerning a UMI3D scene object.
-    /// </summary>
-    public class NotificationOnObjectDto : NotificationDto
-    {
-        /// <summary>
-        /// UMI3D id of the concerned object.
-        /// </summary>
-        public ulong objectId;
-
-        public NotificationOnObjectDto() : base() { }
+        public ResourceDto icon3D { get; set; }
     }
 }

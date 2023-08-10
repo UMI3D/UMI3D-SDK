@@ -1,5 +1,6 @@
 ﻿/*
 Copyright 2019 - 2023 Inetum
+
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
@@ -74,7 +75,7 @@ namespace umi3d.cdk
             SetVolumeAttenuationMode(dto.volumeAttenuationMode);
 
             if (dto.volumeAttenuationCurve.keys.Count > 0)
-                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve);
+                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve.Struct());
 
             if (dto.audioResource == null || dto.audioResource.variants == null || dto.audioResource.variants.Count < 1)
             {
@@ -82,12 +83,12 @@ namespace umi3d.cdk
                 return;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.audioResource.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.audioResource.variants);
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad, loader);
@@ -173,16 +174,16 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = (SerializableAnimationCurve)value.property.value;
+                    var curve = (AnimationCurveDto)value.property.value;
                     if (curve.keys.Count > 0)
-                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
                     ADto.volumeAttenuationCurve = curve;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = (ResourceDto)value.property.value;
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
@@ -208,7 +209,7 @@ namespace umi3d.cdk
         async void LoadClip(FileDto fileToLoad, UMI3DAudioPlayerDto ADto)
         {
             string ext = fileToLoad.extension;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(ADto.id, fileToLoad, loader);
@@ -249,9 +250,9 @@ namespace umi3d.cdk
                     if (audioSource.rolloffMode != AudioRolloffMode.Custom)
                         UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
 
-                    var curve = UMI3DSerializer.Read<SerializableAnimationCurve>(value.container);
+                    var curve = UMI3DSerializer.Read<AnimationCurveDto>(value.container);
                     if (curve.keys.Count > 0)
-                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve);
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
 
                     ADto.volumeAttenuationCurve = curve;
                     break;
@@ -259,7 +260,7 @@ namespace umi3d.cdk
                     ResourceDto res = ADto.audioResource;
                     ADto.audioResource = UMI3DSerializer.Read<ResourceDto>(value.container);
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;

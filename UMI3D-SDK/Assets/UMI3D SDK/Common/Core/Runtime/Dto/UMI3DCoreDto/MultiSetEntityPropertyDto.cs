@@ -28,16 +28,16 @@ namespace umi3d.common
         /// <summary>
         /// The identifiers list of the entities.
         /// </summary>
-        public List<ulong> entityIds;
+        public List<ulong> entityIds { get; set; }
 
         /// <summary>
         /// The name of the modified property.
         /// </summary>
-        public ulong property;
+        public ulong property { get; set; }
 
         /// <summary>
         /// The new value for the property.
         /// </summary>
-        public object value;
+        public object value { get; set; }
     }
 }

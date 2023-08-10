@@ -23,7 +23,7 @@ namespace umi3d.edk
     /// <summary>
     /// Operation to send to clients for them to apply it. An operation aims to modify an entity or one of its properties.
     /// </summary>
-    public abstract class Operation : IBytable
+    public abstract class Operation
     {
         /// <summary>
         /// List of users to which this operation should be sent.
@@ -45,17 +45,11 @@ namespace umi3d.edk
         public abstract Bytable ToBytable(UMI3DUser user);
 
         /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
+        public Bytable ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
                 return ToBytable(null);
             return ToBytable(parameters[0] as UMI3DUser);
-        }
-
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return false;
         }
 
         public static Operation operator +(Operation a, Operation b)

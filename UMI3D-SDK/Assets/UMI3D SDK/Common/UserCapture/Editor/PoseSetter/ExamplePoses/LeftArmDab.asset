@@ -1,0 +1,304 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &-8943669648875081471
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingDistal
+  m_EditorClassIdentifier: 
+  bone: 38
+  position: {x: -0.0388036, y: 1.3606803, z: 0.33290404}
+  rotation: {x: 0.9505774, y: 0.1406657, z: 0.260194, w: -0.09442233}
+--- !u!114 &-8840965284198535902
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbIntermediate
+  m_EditorClassIdentifier: 
+  bone: 28
+  position: {x: -0.020332878, y: 1.4337456, z: 0.27720666}
+  rotation: {x: 0.19908911, y: 0.90473545, z: 0.28735545, w: 0.24340189}
+--- !u!114 &-8070744107996571851
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingDistal
+  m_EditorClassIdentifier: 
+  bone: 38
+  position: {x: 0.009755263, y: 1.3772113, z: 0.33867204}
+  rotation: {x: 0.71376264, y: 0.6500653, z: 0.2540899, w: 0.05828528}
+--- !u!114 &-7919063980506256143
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftForearm
+  m_EditorClassIdentifier: 
+  bone: 5
+  position: {x: -0.299472, y: 1.372591, z: 0.18038261}
+  rotation: {x: -0.24508706, y: 0.9337951, z: 0.06618013, w: 0.2521499}
+--- !u!114 &-7873990207597086265
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbProximal
+  m_EditorClassIdentifier: 
+  bone: 27
+  position: {x: 0.012132579, y: 1.4253292, z: 0.32094955}
+  rotation: {x: 0.34949866, y: 0.89994, z: 0.2015321, w: 0.16535997}
+--- !u!114 &-5175905417348198854
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbDistal
+  m_EditorClassIdentifier: 
+  bone: 29
+  position: {x: 0.013453329, y: 1.410253, z: 0.26214427}
+  rotation: {x: 0.19908589, y: 0.90473616, z: 0.28736216, w: 0.24339402}
+--- !u!114 &-3240629319988434941
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbProximal
+  m_EditorClassIdentifier: 
+  bone: 27
+  position: {x: -0.019984445, y: 1.4195832, z: 0.39038044}
+  rotation: {x: 0.8530828, y: 0.4081745, z: 0.32140663, w: -0.048390314}
+--- !u!114 &-1105700427531722715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbProximal
+  m_EditorClassIdentifier: 
+  bone: 27
+  position: {x: 0.0014597861, y: 1.4130973, z: 0.34469482}
+  rotation: {x: 0.63145983, y: 0.73027366, z: 0.24536508, w: 0.08806427}
+--- !u!114 &-366109831096420886
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingDistal
+  m_EditorClassIdentifier: 
+  bone: 38
+  position: {x: 0.06441083, y: 1.3761258, z: 0.32887614}
+  rotation: {x: 0.36196154, y: 0.89631295, z: 0.23146358, w: 0.1096915}
+--- !u!114 &-297973615650924504
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftUpperArm
+  m_EditorClassIdentifier: 
+  bone: 11
+  position: {x: -0.18760796, y: 1.4356554, z: -0.061714582}
+  rotation: {x: -0.13085845, y: 0.49857816, z: 0.21753961, w: 0.82883805}
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 6411971a4c5b6984e811cccee7a79ab2, type: 3}
+  m_Name: LeftArmDab
+  m_EditorClassIdentifier: 
+  bonePoses:
+  - {fileID: -297973615650924504}
+  - {fileID: -7919063980506256143}
+  - {fileID: 3703982989349559867}
+  - {fileID: -7873990207597086265}
+  - {fileID: 6791135948419602059}
+  - {fileID: -366109831096420886}
+  - {fileID: -1105700427531722715}
+  - {fileID: -8070744107996571851}
+  - {fileID: 158946585371582105}
+  - {fileID: -3240629319988434941}
+  - {fileID: 5883676772666122679}
+  - {fileID: 4100602274706911085}
+  - {fileID: 7081989564595804715}
+  - {fileID: 3199433621016516287}
+  - {fileID: -8943669648875081471}
+  - {fileID: 7645371319759619287}
+  - {fileID: -8840965284198535902}
+  - {fileID: -5175905417348198854}
+  boneAnchor: 10
+--- !u!114 &158946585371582105
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingDistal
+  m_EditorClassIdentifier: 
+  bone: 38
+  position: {x: 0.008865783, y: 1.3440807, z: 0.32874483}
+  rotation: {x: 0.71376264, y: 0.6500653, z: 0.2540899, w: 0.05828528}
+--- !u!114 &3199433621016516287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingIntermediate
+  m_EditorClassIdentifier: 
+  bone: 37
+  position: {x: -0.026690012, y: 1.3887329, z: 0.34793535}
+  rotation: {x: 0.80744, y: 0.52098465, z: 0.27595538, w: 0.021565042}
+--- !u!114 &3703982989349559867
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftHand
+  m_EditorClassIdentifier: 
+  bone: 6
+  position: {x: -0.09159965, y: 1.4897667, z: 0.31939173}
+  rotation: {x: 0.25609234, y: 0.93083715, z: 0.18365707, w: 0.18501198}
+--- !u!114 &4100602274706911085
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingDistal
+  m_EditorClassIdentifier: 
+  bone: 38
+  position: {x: -0.059761424, y: 1.4074401, z: 0.3594699}
+  rotation: {x: 0.769492, y: -0.54976267, z: 0.11289237, w: -0.30479348}
+--- !u!114 &5883676772666122679
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftLittleIntermediate
+  m_EditorClassIdentifier: 
+  bone: 40
+  position: {x: -0.03900682, y: 1.3920482, z: 0.36607584}
+  rotation: {x: 0.9098267, y: -0.2580162, z: 0.20907906, w: -0.24885689}
+--- !u!114 &6791135948419602059
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftRingDistal
+  m_EditorClassIdentifier: 
+  bone: 38
+  position: {x: 0.040029835, y: 1.4000196, z: 0.32788312}
+  rotation: {x: 0.36196166, y: 0.89631295, z: 0.23146352, w: 0.1096915}
+--- !u!114 &7081989564595804715
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbProximal
+  m_EditorClassIdentifier: 
+  bone: 27
+  position: {x: -0.0077330386, y: 1.4135636, z: 0.3658185}
+  rotation: {x: 0.873497, y: 0.4004833, z: 0.27620968, w: -0.018017974}
+--- !u!114 &7645371319759619287
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbb76583f6e30ba43bca6cce8022a05c, type: 3}
+  m_Name: leftArmDab_LeftThumbProximal
+  m_EditorClassIdentifier: 
+  bone: 27
+  position: {x: -0.05691706, y: 1.4591837, z: 0.293516}
+  rotation: {x: 0.19908184, y: 0.9047359, z: 0.28735942, w: 0.2434017}

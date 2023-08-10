@@ -1,0 +1,101 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UMI3D%20SDK/Common/UserCapture/Editor/PoseSetter/poseSetterStyle.uss?fileID=7433441132597879392&amp;guid=35ee429adc26a6a499e423892732884f&amp;type=3#poseSetterStyle" />
+    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1">
+        <ui:VisualElement name="MainContainer" style="flex-grow: 0;">
+            <ui:VisualElement name="GlobalInformations" class="EditorParts">
+                <ui:VisualElement name="TitleContainer">
+                    <ui:Label text="PoseSetterV0.77" display-tooltip-when-elided="true" name="title_version" enable-rich-text="true" class="Titles" />
+                </ui:VisualElement>
+                <ui:VisualElement name="NameThePose">
+                    <ui:TextField picking-mode="Ignore" label="Name" value="none" text="pose name" name="name" is-delayed="false" />
+                </ui:VisualElement>
+                <ui:VisualElement name="loa_setting" style="display: none;">
+                    <ui:DropdownField label="LOA" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="loa_dropdown" />
+                </ui:VisualElement>
+                <ui:VisualElement name="anchor_settings">
+                    <ui:DropdownField label="anchor type" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="anchor_dropdown" />
+                </ui:VisualElement>
+                <ui:VisualElement name="CustomDrawerContainer">
+                    <inetum.unityUtils.CustomObjectField focusable="true" name="object_field" tooltip="skeleton to edit" />
+                    <inetum.unityUtils.CustomObjectField focusable="true" name="so_field" tooltip="pose to edit" />
+                </ui:VisualElement>
+                <ui:VisualElement name="path_container">
+                    <ui:TextField picking-mode="Ignore" label="Save Path" value="filler text" name="path" />
+                </ui:VisualElement>
+                <ui:VisualElement />
+            </ui:VisualElement>
+            <ui:VisualElement name="Controls" class="EditorParts" style="visibility: visible; display: flex;">
+                <ui:VisualElement name="TitleContainer">
+                    <ui:Label text="Control buttons" display-tooltip-when-elided="true" class="Titles" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Symmetry" class="SubEditorPart" style="justify-content: space-around; align-items: stretch;">
+                    <ui:DropdownField label="Symetry target" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="symetry_dropdown" />
+                    <ui:VisualElement style="flex-direction: row; justify-content: flex-start; flex-grow: 0;">
+                        <ui:Button text="From Right" display-tooltip-when-elided="true" name="btn_from_right" tooltip="Symetry compared to right side" class="Buttons" />
+                        <ui:Button text="From Left" display-tooltip-when-elided="true" name="btn_from_left" tooltip="Symetry compared to LeftSide" class="Buttons" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="BasicControls" class="SubEditorPart" style="flex-direction: row; flex-wrap: wrap; flex-grow: 0; align-items: flex-start;">
+                    <ui:Button text="Save" display-tooltip-when-elided="true" name="save" class="Buttons" />
+                    <ui:Button text="Load" display-tooltip-when-elided="true" name="load" class="Buttons" />
+                    <ui:Button text="Clear Roots" display-tooltip-when-elided="true" name="clear_roots" class="Buttons" />
+                    <ui:Button text="ResetSkeleton" display-tooltip-when-elided="true" name="reset_skeleton" class="Buttons" />
+                </ui:VisualElement>
+                <ui:VisualElement name="Conditions" class="SubEditorPart">
+                    <ui:Toggle label="Is an overrider ?" name="tg_enable_condtion" />
+                    <ui:VisualElement name="condition_settings">
+                        <umi3d.common.userCapture.pose.editor.PoseConditionPanel name="condition_panel">
+                            <ui:VisualElement name="Toggles">
+                                <ui:Toggle label="Is Composable" name="tg_isComposable" />
+                                <ui:Toggle label="Is Interpolable" name="tg_isInterpolationable" style="display: none;" />
+                            </ui:VisualElement>
+                            <ui:VisualElement>
+                                <inetum.unityUtils.UintField_UI_Elements name="duration" label="Duration" />
+                                <inetum.unityUtils.UintField_UI_Elements name="min_duration" label="Min" />
+                                <inetum.unityUtils.UintField_UI_Elements name="max_duration" label="Max" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="ConditionsController" style="flex-direction: row; display: none;">
+                                <ui:Button text="Add Condition" display-tooltip-when-elided="true" name="add_condition" />
+                                <ui:Button text="Remove Condition" display-tooltip-when-elided="true" name="remove_condition" />
+                            </ui:VisualElement>
+                            <ui:VisualElement name="ConditionsContainer">
+                                <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="background-color: rgb(96, 96, 96); margin-left: 2px; margin-right: 2px; margin-top: 2px; margin-bottom: 2px; padding-left: 1px; padding-right: 1px; padding-top: 1px; padding-bottom: 1px; border-left-color: rgb(0, 0, 0); border-right-color: rgb(0, 0, 0); border-top-color: rgb(0, 0, 0); border-bottom-color: rgb(0, 0, 0); border-left-width: 1px; border-right-width: 1px; border-top-width: 1px; border-bottom-width: 1px; border-top-left-radius: 2px; border-bottom-left-radius: 2px; border-top-right-radius: 2px; border-bottom-right-radius: 2px;">
+                                    <ui:VisualElement name="condition_container" />
+                                </ui:ScrollView>
+                            </ui:VisualElement>
+                        </umi3d.common.userCapture.pose.editor.PoseConditionPanel>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="RootSelection" class="EditorParts">
+                <ui:VisualElement name="TitleContainer">
+                    <ui:Label text="Root Currently Selected" display-tooltip-when-elided="true" class="Titles" />
+                </ui:VisualElement>
+                <ui:VisualElement name="RootNamesRefContainer" style="flex-direction: column; flex-wrap: wrap; justify-content: space-between; flex-grow: 0;">
+                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" name="root_scroll_view" class="BoneArea" style="margin-bottom: 10px;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="BoneList" class="EditorParts">
+                <ui:VisualElement name="TitleContainer">
+                    <ui:Label text="Bone Tree View" display-tooltip-when-elided="true" class="Titles" />
+                </ui:VisualElement>
+                <ui:VisualElement name="search_bar">
+                    <ui:TextField picking-mode="Ignore" label="Filter by name" text="Type bone name" name="filter" />
+                </ui:VisualElement>
+                <ui:IMGUIContainer name="BoneHirarchy" class="BoneArea" style="flex-grow: 1;">
+                    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="height: 150px;">
+                        <ui:IMGUIContainer name="bone_container" class="BoneArea" style="flex-grow: 1; height: 100px; min-height: 100px;" />
+                    </ui:ScrollView>
+                </ui:IMGUIContainer>
+            </ui:VisualElement>
+            <ui:VisualElement name="AngleControls" class="EditorParts" style="display: none;">
+                <ui:VisualElement name="TitleContainer">
+                    <ui:Label text="Rotation Controls" display-tooltip-when-elided="true" class="Titles" />
+                </ui:VisualElement>
+                <ui:Slider picking-mode="Ignore" label="x_rot" value="0" high-value="180" name="x_rot_slider" low-value="-180" />
+                <ui:Slider picking-mode="Ignore" label="y_rot" value="0" high-value="180" name="y_rot_slider" low-value="-180" />
+                <ui:Slider picking-mode="Ignore" label="z_rot" value="0" high-value="180" name="z_rot_slider" low-value="-180" />
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>

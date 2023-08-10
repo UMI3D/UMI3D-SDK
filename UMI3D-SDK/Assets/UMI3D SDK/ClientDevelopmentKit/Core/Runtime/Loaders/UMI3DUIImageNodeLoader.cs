@@ -41,7 +41,7 @@ namespace umi3d.cdk
         public async Task ReadUMI3DExtension(UIImageDto dto, GameObject node)
         {
             Image image = node.GetOrAddComponent<Image>();
-            image.color = dto.color;
+            image.color = dto.color.Struct();
             image.type = dto.type.Convert();
 
 
@@ -52,10 +52,10 @@ namespace umi3d.cdk
                 return;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite.variants);
 
             string ext = fileToLoad.extension;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad,loader );
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = (SerializableColor)property.value;
+                        image.color = (dto.color = (ColorDto)property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
@@ -94,7 +94,7 @@ namespace umi3d.cdk
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
                         dto.sprite = property.value as ResourceDto;
-                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite?.variants);
+                        FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)
                         {
                             image.sprite = null;
@@ -113,7 +113,7 @@ namespace umi3d.cdk
         async void LoadText(Image image, FileDto fileToLoad, UIImageDto dto)
         {
             string ext = fileToLoad.extension;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad, loader);
@@ -133,7 +133,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ImageColor:
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
-                        image.color = dto.color = UMI3DSerializer.Read<SerializableColor>(container);
+                        image.color = (dto.color = UMI3DSerializer.Read<ColorDto>(container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
@@ -146,7 +146,7 @@ namespace umi3d.cdk
                     {
                         Image image = node.gameObject.GetOrAddComponent<Image>();
                         dto.sprite = UMI3DSerializer.Read<ResourceDto>(container);
-                        FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.sprite?.variants);
+                        FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)
                         {
                             image.sprite = null;

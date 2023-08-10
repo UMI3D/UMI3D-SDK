@@ -22,22 +22,61 @@ namespace umi3d.common
     [System.Serializable]
     public class EnvironmentConnectionDto : UMI3DDto
     {
-        public string name;
-        public string httpUrl;
-        public string resourcesUrl;
-        public bool authorizationInHeader;
-        public string forgeHost;
-        public string forgeMasterServerHost;
-        public string forgeNatServerHost;
-        public ushort forgeServerPort;
-        public ushort forgeMasterServerPort;
-        public ushort forgeNatServerPort;
+        /// <summary>
+        /// Name of the server
+        /// </summary>
+        public string name { get; set; }
+
+        /// <summary>
+        /// Http url
+        /// </summary>
+        public string httpUrl { get; set; }
+
+        /// <summary>
+        /// Url of the resources server. Resources at this url will be concidered as from the media itself.
+        /// </summary>
+        public string resourcesUrl { get; set; }
+
+        /// <summary>
+        /// Should the authorization token should be in the url or in the header
+        /// </summary>
+        public bool authorizationInHeader { get; set; }
+
+        /// <summary>
+        /// Url of the forge server for websocket.
+        /// </summary>
+        public string forgeHost { get; set; }
+
+        /// <summary>
+        /// Url of the Master server if any
+        /// </summary>
+        public string forgeMasterServerHost { get; set; }
+
+        /// <summary>
+        /// Url of the nat server if any
+        /// </summary>
+        public string forgeNatServerHost { get; set; }
+
+        /// <summary>
+        /// Port of the forge server
+        /// </summary>
+        public ushort forgeServerPort { get; set; }
+
+        /// <summary>
+        /// Port of the master server
+        /// </summary>
+        public ushort forgeMasterServerPort { get; set; }
+
+        /// <summary>
+        /// Port of the nat server
+        /// </summary>
+        public ushort forgeNatServerPort { get; set; }
 
         /// <summary>
         /// Umi3d version of the environment.
         /// </summary>
         /// Versions are Major.Minor.Status.Date
-        public string version;
+        public string version { get; set; }
 
         public EnvironmentConnectionDto() : base() { }
     }
