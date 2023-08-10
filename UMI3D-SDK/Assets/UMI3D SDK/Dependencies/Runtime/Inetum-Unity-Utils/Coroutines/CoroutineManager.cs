@@ -14,8 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections;
-
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace inetum.unityUtils
@@ -29,39 +30,62 @@ namespace inetum.unityUtils
         #region Dependency Injection
 
         private readonly CoroutineManagerMono coroutineManagerMono;
+        private readonly PersistentCoroutineManagerMono persistentCoroutineManagerMono;
+
+        private Dictionary<Coroutine, bool> coroutines = new();
+        private Dictionary<IEnumerator, bool> lateRoutines = new();
 
         public CoroutineManager() : base()
         {
             coroutineManagerMono = CoroutineManagerMono.Instance;
+            persistentCoroutineManagerMono = PersistentCoroutineManagerMono.Instance;
         }
 
-        internal CoroutineManager(CoroutineManagerMono coroutineManagerMono) : base()
+        internal CoroutineManager(CoroutineManagerMono coroutineManagerMono, PersistentCoroutineManagerMono persistentCoroutineManagerMono) : base()
         {
             this.coroutineManagerMono = coroutineManagerMono;
+            this.persistentCoroutineManagerMono = persistentCoroutineManagerMono;
         }
 
         #endregion Dependency Injection
 
         /// <inheritdoc/>
-        public virtual Coroutine AttachCoroutine(IEnumerator coroutine)
+        public virtual Coroutine AttachCoroutine(IEnumerator coroutine, bool isPersistent = false)
         {
-            return coroutineManagerMono.AttachCoroutine(coroutine);
+            ICoroutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
+            var resRoutine = routineService.AttachCoroutine(coroutine);
+            coroutines.Add(resRoutine, isPersistent);
+            return resRoutine;
         }
 
         /// <inheritdoc/>
-        public virtual void DettachCoroutine(Coroutine coroutine)
+        public virtual void DetachCoroutine(Coroutine coroutine)
         {
-            coroutineManagerMono.DettachCoroutine(coroutine);
+            if (coroutines.TryGetValue(coroutine, out bool isPersistent))
+            {
+                ICoroutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
+                routineService.DetachCoroutine(coroutine);
+            }
+            else
+                throw new Exception("Can't detach, coroutine not found");
         }
 
-        public virtual IEnumerator AttachLateRoutine(IEnumerator routine)
+        public virtual IEnumerator AttachLateRoutine(IEnumerator routine, bool isPersistent = false)
         {
-            return coroutineManagerMono.AttachLateRoutine(routine);
+            ILateRoutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
+            lateRoutines.Add(routine, isPersistent);
+            return routineService.AttachLateRoutine(routine);
         }
 
-        public virtual void DettachLateRoutine(IEnumerator routine)
+        public virtual void DetachLateRoutine(IEnumerator routine)
         {
-            coroutineManagerMono.AttachLateRoutine(routine);
+            if (lateRoutines.TryGetValue(routine, out bool isPersistent))
+            {
+                ILateRoutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
+                routineService.DetachLateRoutine(routine);
+            }
+            else
+                throw new Exception("Can't detach, routine not found");
         }
     }
 }

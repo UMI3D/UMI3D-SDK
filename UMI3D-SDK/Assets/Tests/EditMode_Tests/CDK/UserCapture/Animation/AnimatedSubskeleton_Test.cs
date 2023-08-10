@@ -229,7 +229,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             var mockSkeleton = new Mock<ISkeleton>();
 
             
-            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
             mockUnityMainThreadDispatcher.Setup(x => x.Enqueue(It.IsAny<Action>()));
 
             animatedSubskeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, new UMI3DAnimatorAnimation[0], 0, new SkeletonAnimationParameterDto[0],
@@ -239,7 +239,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             animatedSubskeleton.StartParameterSelfUpdate(mockSkeleton.Object);
 
             // THEN
-            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>()), Times.Never());
+            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false), Times.Never());
             mockUnityMainThreadDispatcher.Verify(x => x.Enqueue(It.IsAny<Action>()), Times.Never());
         }
 
@@ -253,7 +253,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             var parameters = parametersKey.Select(key => new SkeletonAnimationParameterDto() { parameterKey = key, ranges = new SkeletonAnimationParameterDto.RangeDto[0] }).ToArray();
 
             mockUnityMainThreadDispatcher.Setup(x => x.Enqueue(It.IsAny<Action>())).Callback<Action>(r => r()); // callback allow the nested code to be run also
-            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
+            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
 
             animatedSubskeleton = new AnimatedSubskeleton(null, new UMI3DAnimatorAnimation[0], 0, parameters,
                                                             mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object);
@@ -262,7 +262,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             animatedSubskeleton.StartParameterSelfUpdate(mockSkeleton.Object);
 
             // THEN
-            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>()), Times.Once());
+            mockCoroutineService.Verify(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false), Times.Once());
             mockUnityMainThreadDispatcher.Verify(x => x.Enqueue(It.IsAny<Action>()), Times.Once());
         }
 
@@ -276,8 +276,8 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             // GIVEN
             var mockSkeleton = new Mock<ISkeleton>();
 
-            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>()));
-            mockCoroutineService.Setup(x => x.DettachCoroutine(It.IsAny<Coroutine>()));
+            mockCoroutineService.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
+            mockCoroutineService.Setup(x => x.DetachCoroutine(It.IsAny<Coroutine>()));
 ;
             mockUnityMainThreadDispatcher.Setup(x => x.Enqueue(It.IsAny<Action>())).Callback<Action>(r=> r());
 
@@ -288,7 +288,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             animatedSubskeleton.StopParameterSelfUpdate();
 
             // THEN
-            mockCoroutineService.Verify(x => x.DettachCoroutine(It.IsAny<Coroutine>()), Times.Never());
+            mockCoroutineService.Verify(x => x.DetachCoroutine(It.IsAny<Coroutine>()), Times.Never());
             mockUnityMainThreadDispatcher.Verify(x => x.Enqueue(It.IsAny<Action>()), Times.Once());
             }
 

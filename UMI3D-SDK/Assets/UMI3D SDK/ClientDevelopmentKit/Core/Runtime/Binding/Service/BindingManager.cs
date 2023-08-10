@@ -101,7 +101,7 @@ namespace umi3d.cdk.binding
             if (bindings.Count > 0 && AreBindingsActivated && bindingRoutine is null)
             {
                 bindingRoutine = routineService.AttachLateRoutine(BindingApplicationRoutine());
-                clientServer.OnLeavingEnvironment.AddListener(() => { if (bindingRoutine is not null) routineService.DettachLateRoutine(bindingRoutine); });
+                clientServer.OnLeavingEnvironment.AddListener(() => { if (bindingRoutine is not null) routineService.DetachLateRoutine(bindingRoutine); });
             }
                 
         }
@@ -145,7 +145,7 @@ namespace umi3d.cdk.binding
 
                 if (bindings.Count == 0 && bindingRoutine is not null)
                 {
-                    routineService.DettachLateRoutine(bindingRoutine);
+                    routineService.DetachLateRoutine(bindingRoutine);
                     bindingRoutine = null;
                 }
             }
