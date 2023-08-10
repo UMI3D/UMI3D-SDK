@@ -26,6 +26,7 @@ namespace umi3d.edk.editor
     public class UMI3DModelEditor : RenderedNodeEditor
     {
         private SerializedProperty variants;
+        private SerializedProperty updateSkinnedMeshRendererWhenOffscreen;
         private SerializedProperty areSubobjectsTracked;
         private SerializedProperty areSubobjectsMarked;
         private SerializedProperty isRightHanded;
@@ -43,6 +44,7 @@ namespace umi3d.edk.editor
             base.OnEnable();
 
             variants = serializedObject.FindProperty("model.variants");
+            updateSkinnedMeshRendererWhenOffscreen = serializedObject.FindProperty("updateSkinnedMeshRendererWhenOffscreen");
             areSubobjectsTracked = serializedObject.FindProperty("areSubobjectsTracked");
             areSubobjectsMarked = serializedObject.FindProperty("areSubobjectsAlreadyMarked");
             isRightHanded = serializedObject.FindProperty("isRightHanded");
@@ -67,6 +69,7 @@ namespace umi3d.edk.editor
             warningLabelStyle.normal.textColor = Color.yellow;
 
             EditorGUILayout.PropertyField(variants, true);
+            EditorGUILayout.PropertyField(updateSkinnedMeshRendererWhenOffscreen);
             EditorGUILayout.PropertyField(areSubobjectsTracked);
             if (areSubobjectsTracked.boolValue)
             {

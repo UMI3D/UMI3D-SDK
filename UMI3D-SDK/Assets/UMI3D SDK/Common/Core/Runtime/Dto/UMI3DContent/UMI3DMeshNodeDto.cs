@@ -42,6 +42,10 @@ namespace umi3d.common
         public bool areSubobjectsTracked { get; set; }
 
         /// <summary>
+        /// </summary>
+        public bool updateSkinnedMeshRendererWhenOffscreen { get; set; }
+
+        /// <summary>
         /// State if the subobject was generated in a rightHanded 
         /// </summary>
         public bool isRightHanded { get; set; } = true;
