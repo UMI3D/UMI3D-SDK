@@ -19,7 +19,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.collaboration;
 using UnityEngine;
 
@@ -72,9 +73,9 @@ namespace umi3d.worldController
         /// <inheritdoc/>
         public override async Task<PrivateIdentityDto> RenewCredential(PrivateIdentityDto identityDto)
         {
-            if (identityDto?.GlobalToken != null && userMap.ContainsKey(identityDto.GlobalToken))
+            if (identityDto?.globalToken != null && userMap.ContainsKey(identityDto.globalToken))
             {
-                User user = userMap[identityDto.GlobalToken];
+                User user = userMap[identityDto.globalToken];
                 if (user != null)
                 {
                     await IAM.RenewCredential(user);

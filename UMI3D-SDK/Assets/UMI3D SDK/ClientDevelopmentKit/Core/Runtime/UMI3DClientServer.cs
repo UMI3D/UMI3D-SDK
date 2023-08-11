@@ -18,19 +18,23 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
+using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
     /// <summary>
     /// UMI3D server on the browser.
     /// </summary>
-    public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>
+    public class UMI3DClientServer : inetum.unityUtils.PersistentSingleBehaviour<UMI3DClientServer>, IUMI3DClientServer
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Networking;
         /// <summary>
         /// Environment connected to.
         /// </summary>
         protected MediaDto _media;
+
+        public UnityEvent OnLeaving { get; } = new UnityEvent();
+        public UnityEvent OnLeavingEnvironment { get; } = new UnityEvent();
 
         protected UMI3DTransactionDispatcher _transactionDispatcher;
         public static UMI3DTransactionDispatcher transactionDispatcher
@@ -41,7 +45,7 @@ namespace umi3d.cdk
             }
             set
             {
-                if(Exists)
+                if (Exists)
                 {
                     Instance._transactionDispatcher = value;
                 }
@@ -88,26 +92,41 @@ namespace umi3d.cdk
             return await Task.FromResult(false);
         }
 
+
+        [Obsolete("See SendRequest")]
+        public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
+        {
+            SendRequest(dto, reliable);
+        }
+
         /// <summary>
         /// Send a browser request to the server.
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
-        public static void SendData(AbstractBrowserRequestDto dto, bool reliable)
+        public static void SendRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (Exists)
-                Instance._Send(dto, reliable);
+                Instance._SendRequest(dto, reliable);
+        }
+
+        /// <summary>
+        /// Send a browser request to the server.
+        /// </summary>
+        /// <param name="dto"></param>
+        /// <param name="reliable">Should the request be reliable? Reliable are more expensive but are always delivered.</param>
+        /// <seealso cref="SendRequest"/>
+        public virtual void _SendRequest(AbstractBrowserRequestDto dto, bool reliable)
+        {
+            _Send(dto, reliable);
         }
 
         protected virtual void _Send(AbstractBrowserRequestDto dto, bool reliable) { }
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
-        public static void SendTracking(AbstractBrowserRequestDto dto)
+        public virtual void SendTracking(AbstractBrowserRequestDto dto)
         {
-            if (Exists)
-                Instance._SendTracking(dto);
         }
-        protected virtual void _SendTracking(AbstractBrowserRequestDto dto) { }
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
         public static async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)

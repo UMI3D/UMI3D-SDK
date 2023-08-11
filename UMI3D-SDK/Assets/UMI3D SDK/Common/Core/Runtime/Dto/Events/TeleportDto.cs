@@ -25,8 +25,6 @@ namespace umi3d.common
         /// <summary>
         /// Rotation the teleported user should ends with.
         /// </summary>
-        public SerializableVector4 rotation = null;
-
-        public TeleportDto() : base() { }
+        public Vector4Dto rotation { get; set; }
     }
 }

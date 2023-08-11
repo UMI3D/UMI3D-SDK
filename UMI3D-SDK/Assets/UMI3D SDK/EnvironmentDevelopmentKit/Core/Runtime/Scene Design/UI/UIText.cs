@@ -192,7 +192,7 @@ namespace umi3d.edk
             var textDto = dto as UITextDto;
             textDto.alignment = Alignment.GetValue(user).Convert();
             textDto.alignByGeometry = AlignByGeometry.GetValue(user);
-            textDto.color = TextColor.GetValue(user);
+            textDto.color = TextColor.GetValue(user).Dto();
             textDto.font = TextFont.GetValue(user).name;
             textDto.fontSize = FontSize.GetValue(user);
             textDto.fontStyle = FontStyle.GetValue(user).Convert();

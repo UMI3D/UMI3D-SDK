@@ -21,22 +21,11 @@ namespace umi3d.common.volume
     /// </summary>
     public class VolumeUserTransitDto : AbstractBrowserRequestDto
     {
-        public ulong volumeId;
+        public ulong volumeId { get; set; }
 
         /// <summary>
         /// True if the user entered in the volume, false if the user exited the volume.
         /// </summary>
-        public bool direction;
-
-        /// <inheritdoc/>
-        protected override uint GetOperationId() { return UMI3DOperationKeys.VolumeUserTransit; }
-
-        /// <inheritdoc/>
-        public override Bytable ToBytableArray(params object[] parameters)
-        {
-            return base.ToBytableArray(parameters)
-                + UMI3DSerializer.Write(volumeId)
-                + UMI3DSerializer.Write(direction);
-        }
+        public bool direction { get; set; }
     }
 }

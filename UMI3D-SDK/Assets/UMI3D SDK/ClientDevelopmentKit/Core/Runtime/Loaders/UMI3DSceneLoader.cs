@@ -79,9 +79,9 @@ namespace umi3d.cdk
             await base.ReadUMI3DExtension(data);
             var sceneDto = data.dto as UMI3DSceneNodeDto;
             if (sceneDto == null) return;
-            data.node.transform.localPosition = sceneDto.position;
-            data.node.transform.localRotation = sceneDto.rotation;
-            data.node.transform.localScale = sceneDto.scale;
+            data.node.transform.localPosition = sceneDto.position.Struct();
+            data.node.transform.localRotation = sceneDto.rotation.Quaternion();
+            data.node.transform.localScale = sceneDto.scale.Struct();
             await Task.WhenAll(sceneDto.LibrariesId.Select(async libraryId => await UMI3DResourcesManager.LoadLibrary(libraryId, sceneDto.id)));
 
             if (sceneDto.otherEntities != null)
@@ -115,26 +115,26 @@ namespace umi3d.cdk
             switch (data.property.property)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = (SerializableVector3)data.property.value;
+                    dto.position = (Vector3Dto)data.property.value;
                     if (node.updatePose)
                     {
-                        node.transform.localPosition = dto.position;
+                        node.transform.localPosition = dto.position.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    dto.rotation = (SerializableVector4)data.property.value;
+                    dto.rotation = (Vector4Dto)data.property.value;
                     if (node.updatePose)
                     {
-                        node.transform.localRotation = dto.rotation;
+                        node.transform.localRotation = dto.rotation.Quaternion();
                         node.SendOnPoseUpdated();
                     }
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = (SerializableVector3)data.property.value;
+                    dto.scale = (Vector3Dto)data.property.value;
                     if (node.updatePose)
                     {
-                        node.transform.localScale = dto.scale;
+                        node.transform.localScale = dto.scale.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -164,26 +164,26 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    dto.position = UMI3DSerializer.Read<SerializableVector3>(data.container); ;
+                    dto.position = UMI3DSerializer.Read<Vector3Dto>(data.container); ;
                     if (node.updatePose)
                     {
-                        node.transform.localPosition = dto.position;
+                        node.transform.localPosition = dto.position.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    dto.rotation = UMI3DSerializer.Read<SerializableVector4>(data.container); ;
+                    dto.rotation = UMI3DSerializer.Read<Vector4Dto>(data.container); ;
                     if (node.updatePose)
                     {
-                        node.transform.localRotation = dto.rotation;
+                        node.transform.localRotation = dto.rotation.Quaternion();
                         node.SendOnPoseUpdated();
                     }
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    dto.scale = UMI3DSerializer.Read<SerializableVector3>(data.container); ;
+                    dto.scale = UMI3DSerializer.Read<Vector3Dto>(data.container); ;
                     if (node.updatePose)
                     {
-                        node.transform.localScale = dto.scale;
+                        node.transform.localScale = dto.scale.Struct();
                         node.SendOnPoseUpdated();
                     }
                     break;
@@ -203,13 +203,13 @@ namespace umi3d.cdk
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    data.result = UMI3DSerializer.Read<SerializableVector3>(data.container);
+                    data.result = UMI3DSerializer.Read<Vector3Dto>(data.container);
                     break;
                 case UMI3DPropertyKeys.Rotation:
-                    data.result = UMI3DSerializer.Read<SerializableVector4>(data.container);
+                    data.result = UMI3DSerializer.Read<Vector4Dto>(data.container);
                     break;
                 case UMI3DPropertyKeys.Scale:
-                    data.result = UMI3DSerializer.Read<SerializableVector3>(data.container);
+                    data.result = UMI3DSerializer.Read<Vector3Dto>(data.container);
                     break;
                 default:
                     return false;
@@ -224,7 +224,7 @@ namespace umi3d.cdk
                 try
                 {
 
-                    UMI3DEnvironmentLoader.Parameters.SelectMaterialLoader(material).LoadMaterialFromExtension(material, (m) =>
+                    UMI3DEnvironmentLoader.AbstractParameters.SelectMaterialLoader(material).LoadMaterialFromExtension(material, (m) =>
                     {
                         if (material.name != null && material.name.Length > 0 && m != null)
                             m.name = material.name;
@@ -275,13 +275,13 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    materialToModify.color = (SerializableColor)property.value;
-                    glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = (SerializableColor)property.value;
+                    materialToModify.color = ((ColorDto)property.value).Struct();
+                    glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = (ColorDto)property.value;
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, (SerializableColor)property.value);
-                    glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)(Color)(SerializableColor)property.value;
+                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.EmissiveColor, ((ColorDto)property.value).Struct());
+                    glTFMaterialDto.emissiveFactor = ((Vector3)(Vector4)((ColorDto)property.value).Struct()).Dto();
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
@@ -289,19 +289,19 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
-                    Vector2 offset = (SerializableVector2)property.value;
+                    Vector2 offset = ((Vector2Dto)property.value).Struct();
                     foreach (string textureName in materialToModify.GetTexturePropertyNames())
                     {
                         materialToModify.SetTextureOffset(textureName, offset);
                     }
-                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset;
+                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset.Dto();
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
-                    var scale = (SerializableVector2)property.value;
+                    var scale = (Vector2Dto)property.value;
                     foreach (string textureName in materialToModify.GetTexturePropertyNames())
                     {
-                        materialToModify.SetTextureScale(textureName, scale);
+                        materialToModify.SetTextureScale(textureName, scale.Struct());
                     }
                     glTFMaterialDto.extensions.KHR_texture_transform.scale = scale;
                     break;
@@ -478,7 +478,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = bc;
+                    glTFMaterialDto.pbrMetallicRoughness.baseColorFactor = bc.Dto();
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
@@ -499,7 +499,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.emissiveFactor = (Vector3)(Vector4)ef;
+                    glTFMaterialDto.emissiveFactor = ((Vector3)(Vector4)ef).Dto();
                     break;
 
                 case UMI3DPropertyKeys.HeightTexture:
@@ -530,7 +530,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset;
+                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset.Dto();
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
@@ -557,7 +557,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale;
+                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale.Dto();
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
@@ -890,11 +890,11 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.BaseColorFactor:
-                    value = UMI3DSerializer.Read<SerializableColor>(container);
+                    value = UMI3DSerializer.Read<ColorDto>(container);
                     break;
 
                 case UMI3DPropertyKeys.EmissiveFactor:
-                    value = UMI3DSerializer.Read<SerializableColor>(container);
+                    value = UMI3DSerializer.Read<ColorDto>(container);
                     break;
 
                 case UMI3DPropertyKeys.Maintexture:
@@ -934,11 +934,11 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
-                    value = UMI3DSerializer.Read<SerializableVector2>(container);
+                    value = UMI3DSerializer.Read<Vector2Dto>(container);
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
-                    value = UMI3DSerializer.Read<SerializableVector2>(container);
+                    value = UMI3DSerializer.Read<Vector2Dto>(container);
                     break;
 
                 case UMI3DPropertyKeys.NormalTextureScale:

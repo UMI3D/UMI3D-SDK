@@ -25,13 +25,8 @@ namespace umi3d.cdk
     /// <summary>
     /// Abstract loading parameters and workflow 
     /// </summary>
-    public abstract class AbstractUMI3DLoadingParameters : ScriptableObject
+    public abstract class AbstractUMI3DLoadingParameters : ScriptableObject, IUMI3DAbstractLoadingParameters
     {
-        /// <summary>
-        /// Loader for KHR Light.
-        /// </summary>
-        public virtual KHR_lights_punctualLoader khr_lights_punctualLoader { get; } = new KHR_lights_punctualLoader();
-
         /// <summary>
         /// Return the best ResourcesLoader for an extension.
         /// </summary>
@@ -51,7 +46,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="assetLibrary"></param>
         /// <returns></returns>
-        public abstract UMI3DLocalAssetDirectory ChooseVariant(AssetLibraryDto assetLibrary);
+        public abstract UMI3DLocalAssetDirectoryDto ChooseVariant(AssetLibraryDto assetLibrary);
 
         /// <summary>
         /// Choose the best file variant for this client.
@@ -125,5 +120,11 @@ namespace umi3d.cdk
         /// <param name="skyboxExposure"></param>
         /// <returns></returns>
         public abstract bool SetSkyboxProperties(SkyboxType type, float skyboxRotatio, float skyboxExposure);
+
+        /// <summary>
+        /// Get the default material
+        /// </summary>
+        /// <returns></returns>
+        public abstract Material GetDefaultMaterial();
     }
 }

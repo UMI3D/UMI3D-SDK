@@ -83,7 +83,7 @@ namespace umi3d.edk
             if (operation.Count() > 0)
             {
                 Bytable b = UMI3DSerializer.Write(UMI3DOperationKeys.Transaction)
-                    + UMI3DSerializer.WriteIBytableCollection(operation, user);
+                    + UMI3DSerializer.WriteCollection(operation, user);
                 return (b.ToBytes(), true);
             }
             return (null, false);

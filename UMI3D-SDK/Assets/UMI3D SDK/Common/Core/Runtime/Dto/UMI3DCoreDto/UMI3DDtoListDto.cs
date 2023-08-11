@@ -29,6 +29,6 @@ namespace umi3d.common
         /// <summary>
         /// List of DTOs.
         /// </summary>
-        public List<T> values;
+        public List<T> values { get; set; }
     }
 }

@@ -27,8 +27,12 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.userCapture;
+using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.edk.collaboration
 {
@@ -208,14 +212,19 @@ namespace umi3d.edk.collaboration
             mumbleManager = murmur.MumbleManager.Create(mumbleIp, mumbleHttpIp, guid);
 
             if (collaborativeModule == null)
-                collaborativeModule = new List<UMI3DSerializerModule>() {
-                    new UMI3DSerializerBasicModules(),
-                    new UMI3DSerializerStringModules(),
-                    new UMI3DSerializerVectorModules(),
-                    new UMI3DSerializerAnimationModules(),
-                    new UMI3DSerializerShaderModules(),
-                    new UMI3DEnvironmentSerializerCollaborationModule(),
-                    new common.collaboration.UMI3DCollaborationSerializerModule() };
+                collaborativeModule = UMI3DSerializerModuleUtils.GetModules().ToList();
+
+            //new List<UMI3DSerializerModule>() {
+            //new UMI3DSerializerBasicModules(),
+            //new UMI3DSerializerStringModules(),
+            //new UMI3DSerializerVectorModules(),
+            //new UMI3DSerializerAnimationModules(),
+            //new UMI3DSerializerShaderModules(),
+            //new UMI3DUserCaptureBindingSerializerModule(),
+            //new UMI3DEmotesSerializerModule(),
+            //new UMI3DEnvironmentSerializerCollaborationModule(),
+            //new common.collaboration.UMI3DCollaborationSerializerModule() };
+            
             UMI3DSerializer.AddModule(collaborativeModule);
 
             if (!useIp)
@@ -542,7 +551,7 @@ namespace umi3d.edk.collaboration
                 user.networkPlayer?.Networker?.Ping();
             }
             catch { }
-            var sr = new StatusRequestDto { CurrentStatus = user.status };
+            var sr = new StatusRequestDto { status = user.status };
             ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
 

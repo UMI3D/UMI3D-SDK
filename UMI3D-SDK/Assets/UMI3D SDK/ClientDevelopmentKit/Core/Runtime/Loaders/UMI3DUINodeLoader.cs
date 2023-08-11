@@ -62,14 +62,14 @@ namespace umi3d.cdk
             }
             RectTransform transform = data.node.GetOrAddComponent<RectTransform>();
             var rect = data.dto as UIRectDto;
-            transform.anchoredPosition = rect.anchoredPosition;
-            transform.anchoredPosition3D = rect.anchoredPosition3D;
-            transform.anchorMax = rect.anchorMax;
-            transform.anchorMin = rect.anchorMin;
-            transform.offsetMax = rect.offsetMax;
-            transform.offsetMin = rect.offsetMin;
-            transform.pivot = rect.pivot;
-            transform.sizeDelta = rect.sizeDelta;
+            transform.anchoredPosition = rect.anchoredPosition.Struct();
+            transform.anchoredPosition3D = rect.anchoredPosition3D.Struct();
+            transform.anchorMax = rect.anchorMax.Struct();
+            transform.anchorMin = rect.anchorMin.Struct();
+            transform.offsetMax = rect.offsetMax.Struct();
+            transform.offsetMin = rect.offsetMin.Struct();
+            transform.pivot = rect.pivot.Struct();
+            transform.sizeDelta = rect.sizeDelta.Struct();
             if (rect.rectMask) data.node.GetOrAddComponent<RectMask2D>();
         }
 
@@ -85,49 +85,49 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnchoredPosition:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition = dto.anchoredPosition = (SerializableVector2)data.property.value;
+                        transform.anchoredPosition = (dto.anchoredPosition = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchoredPosition3D:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition3D = dto.anchoredPosition3D = (SerializableVector3)data.property.value;
+                        transform.anchoredPosition3D = (dto.anchoredPosition3D = (Vector3Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMax = dto.anchorMax = (SerializableVector2)data.property.value;
+                        transform.anchorMax = (dto.anchorMax = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMin = dto.anchorMin = (SerializableVector2)data.property.value;
+                        transform.anchorMin = (dto.anchorMin = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMax = dto.offsetMax = (SerializableVector2)data.property.value;
+                        transform.offsetMax = (dto.offsetMax = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMin = dto.offsetMin = (SerializableVector2)data.property.value;
+                        transform.offsetMin = (dto.offsetMin = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.Pivot:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.pivot = dto.pivot = (SerializableVector2)data.property.value;
+                        transform.pivot = (dto.pivot = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.SizeDelta:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.sizeDelta = dto.sizeDelta = (SerializableVector2)data.property.value;
+                        transform.sizeDelta = (dto.sizeDelta = (Vector2Dto)data.property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.RectMask:
@@ -171,49 +171,49 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnchoredPosition:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition = dto.anchoredPosition = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.anchoredPosition = (dto.anchoredPosition = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchoredPosition3D:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchoredPosition3D = dto.anchoredPosition3D = UMI3DSerializer.Read<SerializableVector3>(data.container);
+                        transform.anchoredPosition3D = (dto.anchoredPosition3D = UMI3DSerializer.Read<Vector3Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMax = dto.anchorMax = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.anchorMax = (dto.anchorMax = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.AnchorMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.anchorMin = dto.anchorMin = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.anchorMin = (dto.anchorMin = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMax:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMax = dto.offsetMax = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.offsetMax = (dto.offsetMax = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.OffsetMin:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.offsetMin = dto.offsetMin = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.offsetMin = (dto.offsetMin = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.Pivot:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.pivot = dto.pivot = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.pivot = (dto.pivot = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.SizeDelta:
                     {
                         RectTransform transform = node.gameObject.GetOrAddComponent<RectTransform>();
-                        transform.sizeDelta = dto.sizeDelta = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                        transform.sizeDelta = (dto.sizeDelta = UMI3DSerializer.Read<Vector2Dto>(data.container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.RectMask:

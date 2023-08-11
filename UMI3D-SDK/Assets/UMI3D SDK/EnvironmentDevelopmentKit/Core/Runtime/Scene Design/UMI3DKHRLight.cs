@@ -61,7 +61,7 @@ namespace umi3d.edk
                 intensity = objectLightIntensity.GetValue(user),
                 name = LightName,
                 range = objectLightRange.GetValue(user),
-                color = objectLightColor.GetValue(user),
+                color = objectLightColor.GetValue(user).Dto(),
                 type = objectLightType.GetValue(user)
             };
             if (dto.type == null) return null;

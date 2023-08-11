@@ -23,7 +23,7 @@ namespace umi3d.edk
     /// <summary>
     /// <see cref="UMI3DAsyncProperty"/> for list-like collections.
     /// </summary>
-    /// <typeparam name="T">Type of the values in the collection.</typeparam>
+    /// <typeparam name="T">type of the values in the collection.</typeparam>
     public class UMI3DAsyncListProperty<T> : UMI3DAsyncProperty<List<T>>
     {
         /// <summary>

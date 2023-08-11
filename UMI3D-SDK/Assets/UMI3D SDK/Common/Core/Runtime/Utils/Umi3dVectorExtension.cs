@@ -25,34 +25,34 @@ namespace umi3d.common
     [System.Obsolete]
     public static class Umi3dVectorExtension
     {
-        public static SerializableVector2 Unscaled(this SerializableVector2 v2, SerializableVector2 scale)
+        public static Vector2Dto Unscaled(this Vector2Dto v2, Vector2Dto scale)
         {
-            return (SerializableVector2)((Vector2)v2).Unscaled(scale);
+            return ((v2.Struct()).Unscaled(scale.Struct())).Dto();
         }
 
-        public static SerializableVector2 Scaled(this SerializableVector2 v2, SerializableVector2 scale)
+        public static Vector2Dto Scaled(this Vector2Dto v2, Vector2Dto scale)
         {
-            return (SerializableVector2)((Vector2)v2).Scaled(scale);
+            return (v2.Struct()).Scaled(scale.Struct()).Dto();
         }
 
-        public static SerializableVector3 Unscaled(this SerializableVector3 v3, SerializableVector3 scale)
+        public static Vector3Dto Unscaled(this Vector3Dto v3, Vector3Dto scale)
         {
-            return (SerializableVector3)((Vector3)v3).Unscaled(scale);
+            return (v3.Struct()).Unscaled(scale.Struct()).Dto();
         }
 
-        public static SerializableVector3 Scaled(this SerializableVector3 v3, SerializableVector3 scale)
+        public static Vector3Dto Scaled(this Vector3Dto v3, Vector3Dto scale)
         {
-            return (SerializableVector3)((Vector3)v3).Scaled(scale);
+            return (v3.Struct()).Scaled(scale.Struct()).Dto();
         }
 
-        public static SerializableVector4 Unscaled(this SerializableVector4 v4, SerializableVector4 scale)
+        public static Vector4Dto Unscaled(this Vector4Dto v4, Vector4Dto scale)
         {
-            return (SerializableVector4)((Vector4)v4).Unscaled(scale);
+            return ((v4.Struct()).Unscaled(scale.Struct())).Dto();
         }
 
-        public static SerializableVector4 Scaled(this SerializableVector4 v4, SerializableVector4 scale)
+        public static Vector4Dto Scaled(this Vector4Dto v4, Vector4Dto scale)
         {
-            return (SerializableVector4)((Vector4)v4).Scaled(scale);
+            return ((v4.Struct()).Scaled(scale.Struct()).Dto());
         }
     }
 }

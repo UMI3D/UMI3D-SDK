@@ -168,7 +168,7 @@ namespace umi3d.cdk
                     break;
                 default:
                     if (!await OperationDto(operation))
-                        await UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operation);
+                        await UMI3DEnvironmentLoader.AbstractParameters.UnknownOperationHandler(operation);
                     break;
             }
         }
@@ -211,7 +211,7 @@ namespace umi3d.cdk
                         await UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
                     }
                     else if (!await Operation(operationId, container))
-                        await UMI3DEnvironmentLoader.Parameters.UnknownOperationHandler(operationId, container);
+                        await UMI3DEnvironmentLoader.AbstractParameters.UnknownOperationHandler(operationId, container);
                     break;
             }
         }

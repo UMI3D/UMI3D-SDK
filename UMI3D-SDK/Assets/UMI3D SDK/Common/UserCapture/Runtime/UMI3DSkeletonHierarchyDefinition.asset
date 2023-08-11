@@ -1,0 +1,174 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!114 &11400000
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 0}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0a1449bb6f9ae3b42b20668a516bff16, type: 3}
+  m_Name: UMI3DSkeletonHierarchyDefinition
+  m_EditorClassIdentifier: 
+  BoneRelations:
+  - Bonetype: 13
+    BonetypeParent: 0
+    RelativePosition: {x: 0, y: 0, z: 0}
+  - Bonetype: 7
+    BonetypeParent: 13
+    RelativePosition: {x: -0.091244526, y: -0.06656399, z: -0.00055377925}
+  - Bonetype: 9
+    BonetypeParent: 7
+    RelativePosition: {x: -0.0024468019, y: -0.40595403, z: -0.005170411}
+  - Bonetype: 4
+    BonetypeParent: 9
+    RelativePosition: {x: 0.002446696, y: -0.42047998, z: -0.020576412}
+  - Bonetype: 8
+    BonetypeParent: 4
+    RelativePosition: {x: -0.0037335982, y: -0.10492193, z: 0.12640664}
+  - Bonetype: 17
+    BonetypeParent: 13
+    RelativePosition: {x: 0.09124453, y: -0.06656398, z: -0.00055377925}
+  - Bonetype: 19
+    BonetypeParent: 17
+    RelativePosition: {x: 0.002446805, y: -0.40595436, z: -0.0051452797}
+  - Bonetype: 14
+    BonetypeParent: 19
+    RelativePosition: {x: -0.0024466943, y: -0.4204787, z: -0.02060231}
+  - Bonetype: 18
+    BonetypeParent: 14
+    RelativePosition: {x: 0.0037335984, y: -0.10492194, z: 0.12640662}
+  - Bonetype: 25
+    BonetypeParent: 13
+    RelativePosition: {x: -0.0000000056483196, y: 0.09923459, z: -0.012273348}
+  - Bonetype: 24
+    BonetypeParent: 25
+    RelativePosition: {x: 0.0000013886521, y: 0.1164544, z: -0.014223412}
+  - Bonetype: 23
+    BonetypeParent: 24
+    RelativePosition: {x: -0.00000091440717, y: 0.13360204, z: -0.016264597}
+  - Bonetype: 10
+    BonetypeParent: 23
+    RelativePosition: {x: -0.061058242, y: 0.09110424, z: 0.0070555084}
+  - Bonetype: 11
+    BonetypeParent: 10
+    RelativePosition: {x: -0.12655036, y: -0.0026593448, z: -0.026009219}
+  - Bonetype: 5
+    BonetypeParent: 11
+    RelativePosition: {x: -0.27404684, y: 0.00000039126675, z: 0.000000065881096}
+  - Bonetype: 6
+    BonetypeParent: 5
+    RelativePosition: {x: -0.27614462, y: 0.00000028951808, z: 0.00000019646586}
+  - Bonetype: 30
+    BonetypeParent: 6
+    RelativePosition: {x: -0.12266614, y: -0.0023166884, z: 0.028220579}
+  - Bonetype: 31
+    BonetypeParent: 30
+    RelativePosition: {x: -0.038919672, y: 0.000000016868665, z: 0.00000038721547}
+  - Bonetype: 32
+    BonetypeParent: 31
+    RelativePosition: {x: -0.03415161, y: 0.000000005749108, z: -0.00000008770533}
+  - Bonetype: 33
+    BonetypeParent: 6
+    RelativePosition: {x: -0.12775522, y: 0.00000013342024, z: 0.00000020418457}
+  - Bonetype: 34
+    BonetypeParent: 33
+    RelativePosition: {x: -0.036139715, y: 0.000000026601377, z: 0.000000024623631}
+  - Bonetype: 35
+    BonetypeParent: 34
+    RelativePosition: {x: -0.0345976, y: 0.000000005432471, z: -0.00000026419679}
+  - Bonetype: 39
+    BonetypeParent: 6
+    RelativePosition: {x: -0.10908195, y: -0.0022636496, z: -0.047258176}
+  - Bonetype: 40
+    BonetypeParent: 39
+    RelativePosition: {x: -0.041366525, y: 0.000000022999533, z: 0.00000026898434}
+  - Bonetype: 41
+    BonetypeParent: 40
+    RelativePosition: {x: -0.025948359, y: 5.93904e-10, z: -0.00000036009018}
+  - Bonetype: 36
+    BonetypeParent: 6
+    RelativePosition: {x: -0.12147005, y: 0.00009894983, z: -0.022166291}
+  - Bonetype: 37
+    BonetypeParent: 36
+    RelativePosition: {x: -0.036011904, y: 0.000000015129366, z: 0.0000003511219}
+  - Bonetype: 38
+    BonetypeParent: 37
+    RelativePosition: {x: -0.03307317, y: 0.000000045317442, z: -0.00000020893265}
+  - Bonetype: 27
+    BonetypeParent: 6
+    RelativePosition: {x: -0.037888095, y: -0.021669967, z: 0.03003088}
+  - Bonetype: 28
+    BonetypeParent: 27
+    RelativePosition: {x: -0.03675443, y: -0.021220079, z: 0.021220123}
+  - Bonetype: 29
+    BonetypeParent: 28
+    RelativePosition: {x: -0.033943586, y: -0.019597441, z: 0.019597929}
+  - Bonetype: 12
+    BonetypeParent: 23
+    RelativePosition: {x: -0.0000002520208, y: 0.15032491, z: 0.007929048}
+  - Bonetype: 3
+    BonetypeParent: 12
+    RelativePosition: {x: -0.000000023707482, y: 0.1032183, z: 0.031424288}
+  - Bonetype: 20
+    BonetypeParent: 23
+    RelativePosition: {x: 0.06105696, y: 0.09110509, z: 0.007055634}
+  - Bonetype: 21
+    BonetypeParent: 20
+    RelativePosition: {x: 0.1265504, y: -0.0026602063, z: -0.026008958}
+  - Bonetype: 15
+    BonetypeParent: 21
+    RelativePosition: {x: 0.27404684, y: 0.0000003288411, z: 0.000000052756395}
+  - Bonetype: 16
+    BonetypeParent: 15
+    RelativePosition: {x: 0.27614462, y: 0.00000022661457, z: 0.0000001832407}
+  - Bonetype: 45
+    BonetypeParent: 16
+    RelativePosition: {x: 0.12266616, y: -0.002316732, z: 0.028220555}
+  - Bonetype: 46
+    BonetypeParent: 45
+    RelativePosition: {x: 0.038919672, y: -7.205551e-10, z: 0.00000037513024}
+  - Bonetype: 47
+    BonetypeParent: 46
+    RelativePosition: {x: 0.03415161, y: 0.0000000025299138, z: -0.000000086058414}
+  - Bonetype: 48
+    BonetypeParent: 16
+    RelativePosition: {x: 0.12775522, y: 0.000000089457735, z: 0.00000018011639}
+  - Bonetype: 49
+    BonetypeParent: 48
+    RelativePosition: {x: 0.036139715, y: 0.000000027565017, z: 0.000000030803374}
+  - Bonetype: 50
+    BonetypeParent: 49
+    RelativePosition: {x: 0.0345976, y: -0.0000000019721824, z: -0.0000002645789}
+  - Bonetype: 54
+    BonetypeParent: 16
+    RelativePosition: {x: 0.10908193, y: -0.002263685, z: -0.0472582}
+  - Bonetype: 55
+    BonetypeParent: 54
+    RelativePosition: {x: 0.041366525, y: 0.000000004310631, z: 0.00000025609583}
+  - Bonetype: 56
+    BonetypeParent: 55
+    RelativePosition: {x: 0.025948359, y: -0.000000009571486, z: -0.00000036661154}
+  - Bonetype: 51
+    BonetypeParent: 16
+    RelativePosition: {x: 0.12147004, y: 0.00009890902, z: -0.022166314}
+  - Bonetype: 52
+    BonetypeParent: 51
+    RelativePosition: {x: 0.036011904, y: 0.0000000023856512, z: 0.0000003486698}
+  - Bonetype: 53
+    BonetypeParent: 52
+    RelativePosition: {x: 0.03307317, y: 0.00000003760175, z: -0.00000021114596}
+  - Bonetype: 42
+    BonetypeParent: 16
+    RelativePosition: {x: 0.03788809, y: -0.02166998, z: 0.030030873}
+  - Bonetype: 43
+    BonetypeParent: 42
+    RelativePosition: {x: 0.036754426, y: -0.021220084, z: 0.021220122}
+  - Bonetype: 44
+    BonetypeParent: 43
+    RelativePosition: {x: 0.03394358, y: -0.019597458, z: 0.019597925}
+  - Bonetype: 58
+    BonetypeParent: 3
+    RelativePosition: {x: 0, y: 0.08, z: 0.1}

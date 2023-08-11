@@ -27,6 +27,6 @@ namespace umi3d.common
         /// <summary>
         /// Id of the entity.
         /// </summary>
-        public ulong id = 0;
+        public ulong id { get; set; } = 0;
     }
 }

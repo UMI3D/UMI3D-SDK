@@ -44,9 +44,8 @@ namespace umi3d.cdk
         /// <param name="id">Animation UMI3D id.</param>
         public virtual void StartAnimation(ulong id)
         {
-            (UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation).Start();
+            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Start();
         }
-
 
         /// <summary>
         /// Stop playing an animation.
@@ -64,7 +63,7 @@ namespace umi3d.cdk
         /// <param name="id">Animation UMI3D id.</param>
         public virtual void StopAnimation(ulong id)
         {
-            (UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation).Stop();
+            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Stop();
         }
     }
 }

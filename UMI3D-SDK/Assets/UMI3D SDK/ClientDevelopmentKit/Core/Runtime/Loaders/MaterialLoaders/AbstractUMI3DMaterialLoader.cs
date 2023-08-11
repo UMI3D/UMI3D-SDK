@@ -84,12 +84,12 @@ namespace umi3d.cdk
                     alternativeCallback.Invoke(null);
                 return;
             }
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(id, fileToLoad, loader);
@@ -121,12 +121,12 @@ namespace umi3d.cdk
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(id, fileToLoad, loader);
@@ -168,7 +168,7 @@ namespace umi3d.cdk
             {
                 if ((!string.IsNullOrEmpty(item.Key)) && item.Value != null)
                 {
-                    //Type type = item.Value.GetType();
+                    //type type = item.Value.GetType();
                     switch (item.Value)
                     {
                         case float f:
@@ -180,26 +180,26 @@ namespace umi3d.cdk
                         case Vector4 v:
                             newMat.SetVector(item.Key, v);
                             break;
-                        case SerializableVector4 v:
-                            newMat.SetVector(item.Key, v);
+                        case Vector4Dto v:
+                            newMat.SetVector(item.Key, v.Struct());
                             break;
                         case Vector3 v:
                             newMat.SetVector(item.Key, new Vector4(v.x, v.y, v.z));
                             break;
-                        case SerializableVector3 v:
+                        case Vector3Dto v:
                             newMat.SetVector(item.Key, new Vector4(v.X, v.Y, v.Z));
                             break;
                         case Vector2 v:
                             newMat.SetVector(item.Key, new Vector4(v.x, v.y));
                             break;
-                        case SerializableVector2 v:
+                        case Vector2Dto v:
                             newMat.SetVector(item.Key, new Vector4(v.X, v.Y));
                             break;
                         case Color c:
                             newMat.SetColor(item.Key, c);
                             break;
-                        case SerializableColor c:
-                            newMat.SetColor(item.Key, c);
+                        case ColorDto c:
+                            newMat.SetColor(item.Key, c.Struct());
                             break;
                         case int i:
                             newMat.SetInt(item.Key, i);

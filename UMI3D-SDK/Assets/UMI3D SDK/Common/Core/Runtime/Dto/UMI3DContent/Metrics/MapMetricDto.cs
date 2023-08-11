@@ -26,8 +26,6 @@ namespace umi3d.common
         /// <summary>
         /// number of pixels.
         /// </summary>
-        public int pixels;
-
-        public MapMetricDto() : base() { }
+        public int pixels { get; set; }
     }
 }

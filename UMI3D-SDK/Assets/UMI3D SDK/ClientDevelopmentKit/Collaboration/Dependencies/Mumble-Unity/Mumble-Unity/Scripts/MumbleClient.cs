@@ -396,7 +396,8 @@ namespace Mumble
                 MumbleAudioPlayer newPlayer = _audioPlayerCreator(userState.Name, userState.Session);
                 Debug.Assert(newPlayer != null, "MumbleAudioPlayer created null for " + userState.Name + ", " + userState.Session);
                 _mumbleAudioPlayers.Add(userState.Session, newPlayer);
-                newPlayer.Initialize(this, userState.Session);
+                // HACK new player should not be null but sometime it is null.
+                newPlayer?.Initialize(this, userState.Session);
             });
             if (OnNewDecodeBufferThreaded != null)
                 OnNewDecodeBufferThreaded(userState.Session);

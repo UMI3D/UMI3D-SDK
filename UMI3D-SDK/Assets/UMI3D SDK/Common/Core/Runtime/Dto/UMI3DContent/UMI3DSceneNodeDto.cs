@@ -27,32 +27,32 @@ namespace umi3d.common
         /// <summary>
         /// Scene reference point's position.
         /// </summary>
-        public SerializableVector3 position;
+        public Vector3Dto position { get; set; }
 
         /// <summary>
         /// Scene reference rotation.
         /// </summary>
-        public SerializableVector4 rotation;
+        public Vector4Dto rotation { get; set; }
 
         /// <summary>
         /// Scene reference scale.
         /// </summary>
-        public SerializableVector3 scale;
+        public Vector3Dto scale { get; set; }
 
         /// <summary>
         /// Animations packeaged with the scene.
         /// </summary>
-        public List<UMI3DAbstractAnimationDto> animations = new List<UMI3DAbstractAnimationDto>();
+        public List<UMI3DAbstractAnimationDto> animations { get; set; } = new List<UMI3DAbstractAnimationDto>();
 
         /// <summary>
         /// All UMI3D entities that are not on the scene graph.
         /// </summary>
-        public List<IEntity> otherEntities;
+        public List<IEntity> otherEntities { get; set; }
 
         /// <summary>
         /// Libraries required in the scene by their named ID and version.
         /// format is <id>:<version>
         /// </summary>
-        public List<string> LibrariesId;
+        public List<string> LibrariesId { get; set; }
     }
 }

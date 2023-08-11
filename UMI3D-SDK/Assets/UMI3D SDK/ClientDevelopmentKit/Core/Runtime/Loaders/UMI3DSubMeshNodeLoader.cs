@@ -60,7 +60,7 @@ namespace umi3d.cdk
                 var modelDto = (GlTFNodeDto)modelNodeInstance.dto;
                 UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(subDto.id);
 
-                string modelInCache = UMI3DEnvironmentLoader.Parameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
+                string modelInCache = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
 
                 var rootDto = (UMI3DMeshNodeDto)modelDto.extensions.umi3d;
                 GameObject instance = null;

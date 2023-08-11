@@ -27,6 +27,6 @@ namespace umi3d.common
         /// <summary>
         /// List of available levels of details.
         /// </summary>
-        public List<UMI3DLodDefinitionDto> lods;
+        public List<UMI3DLodDefinitionDto> lods { get; set; }
     }
 }

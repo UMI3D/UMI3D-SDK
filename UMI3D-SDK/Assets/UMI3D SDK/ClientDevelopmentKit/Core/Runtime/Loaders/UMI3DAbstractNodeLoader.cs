@@ -28,6 +28,27 @@ namespace umi3d.cdk
     {
         UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
+
+        #region Dependency Injection
+
+        protected readonly IEnvironmentManager environmentManager;
+        protected readonly ILoadingManager loadingManager;
+
+        public UMI3DAbstractNodeLoader() : base()
+        {
+            environmentManager = UMI3DEnvironmentLoader.Instance;
+            loadingManager = UMI3DEnvironmentLoader.Instance;
+        }
+
+        public UMI3DAbstractNodeLoader(IEnvironmentManager environmentManager,
+                                       ILoadingManager loadingManager)
+        {
+            this.environmentManager = environmentManager;
+            this.loadingManager = loadingManager;
+        }
+
+        #endregion Dependency Injection
+
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is UMI3DAbstractNodeDto;
@@ -50,11 +71,11 @@ namespace umi3d.cdk
             {
                 if (nodeDto.pid != 0)
                 {
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
+                    loadingManager.WaitUntilEntityLoaded(nodeDto.pid, e =>
                     {
                         if (e is UMI3DNodeInstance instance)
                         {
-                            var nodeInstance = UMI3DEnvironmentLoader.GetEntity(nodeDto.pid) as UMI3DNodeInstance;
+                            var nodeInstance = environmentManager.TryGetEntityInstance(nodeDto.pid) as UMI3DNodeInstance;
                             if ( nodeInstance != null && nodeInstance.mainInstance != null)
                             {
                                 data.node.transform.SetParent(nodeInstance.mainInstance.transform, false);
@@ -73,7 +94,7 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    data.node.transform.SetParent(UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
+                    data.node.transform.SetParent(environmentManager.transform, false);
                 }
 
                 if (data.node.activeSelf != nodeDto.active)
@@ -111,8 +132,8 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = (ulong)(long)data.property.value;
-                    UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                    UMI3DNodeInstance parent = environmentManager.GetNodeInstance(pid);
+                    node.transform.SetParent(parent != null ? parent.transform : environmentManager.transform);
                     if(parent != null)
                     {
                         ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();
@@ -176,7 +197,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = UMI3DSerializer.Read<ulong>(data.container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                    node.transform.SetParent(parent != null ? parent.transform : environmentManager.transform);
                     if (parent != null)
                     {
                         ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();

@@ -125,7 +125,7 @@ namespace umi3d.edk.interaction
         /// <param name="hoverredId">The id of the currently hoverred object.</param>
         /// <param name="boneType">User's used bone</param>
         /// <param name="container">Byte container</param>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, SerializableVector3 bonePosition, SerializableVector4 boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {

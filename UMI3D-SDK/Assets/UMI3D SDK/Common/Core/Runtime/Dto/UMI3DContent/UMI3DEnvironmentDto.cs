@@ -27,56 +27,56 @@ namespace umi3d.common
         /// <summary>
         /// List of Asset Libraries available for the environment, by their named id.
         /// </summary>
-        public List<string> LibrariesId;
+        public List<string> LibrariesId { get; set; }
 
         /// <summary>
         /// List of scene that are directly packaged with the environment.
         /// </summary>
-        public List<PreloadedSceneDto> preloadedScenes;
+        public List<PreloadedSceneDto> preloadedScenes { get; set; }
 
         /// <summary>
         /// Ambient lighting type in the environment.
         /// </summary>
-        public AmbientType ambientType;
+        public AmbientType ambientType { get; set; }
 
         /// <summary>
         /// Default color of the sky.
         /// </summary>
-        public SerializableColor skyColor;
+        public ColorDto skyColor { get; set; }
 
         /// <summary>
         /// Default color
         /// </summary>
-        public SerializableColor horizontalColor;
+        public ColorDto horizontalColor { get; set; }
 
         /// <summary>
         /// Default color of the ground.
         /// </summary>
-        public SerializableColor groundColor;
+        public ColorDto groundColor { get; set; }
 
         /// <summary>
         /// Default intensity of the ambient light.
         /// </summary>
-        public float ambientIntensity;
+        public float ambientIntensity { get; set; }
 
         /// <summary>
         /// Ressource of the asset for the skybox.
         /// </summary>
-        public ResourceDto skybox;
+        public ResourceDto skybox { get; set; }
 
         /// <summary>
         /// Format for <see cref="skybox"/>.
         /// </summary>
-        public SkyboxType skyboxType;
+        public SkyboxType skyboxType { get; set; }
 
         /// <summary>
         /// Rotation for <see cref="skybox"/>, only works with <see cref="SkyboxType.Equirectangular"/> [0, 360] degrees.
         /// </summary>
-        public float skyboxRotation = 0;
+        public float skyboxRotation { get; set; } = 0;
 
         /// <summary>
         /// ressource of the material applied to all objects by default.
         /// </summary>
-        public ResourceDto defaultMaterial;
+        public ResourceDto defaultMaterial { get; set; }
     }
 }

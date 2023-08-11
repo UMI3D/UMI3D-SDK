@@ -27,36 +27,36 @@ namespace umi3d.common
         /// <summary>
         /// Color of the line first point.
         /// </summary>
-        public SerializableColor startColor = Color.white;
+        public ColorDto startColor { get; set; } = Color.white.Dto();
 
         /// <summary>
         /// Color of the line last point.
         /// </summary>
-        public SerializableColor endColor = Color.white;
+        public ColorDto endColor { get; set; } = Color.white.Dto();
 
         /// <summary>
         /// If true, a line will be draw between the first and the last point.
         /// </summary>
-        public bool loop = false;
+        public bool loop { get; set; } = false;
 
         /// <summary>
         /// Draw line in world space
         /// </summary>
-        public bool useWorldSpace = false;
+        public bool useWorldSpace { get; set; } = false;
 
         /// <summary>
         /// line width on first point
         /// </summary>
-        public float startWidth = 0.01f;
+        public float startWidth { get; set; } = 0.01f;
 
         /// <summary>
         /// line width on last point
         /// </summary>
-        public float endWidth = 0.01f;
+        public float endWidth { get; set; } = 0.01f;
 
         /// <summary>
         /// The positions of points on the line
         /// </summary>
-        public List<SerializableVector3> positions = new List<SerializableVector3>();
+        public List<Vector3Dto> positions { get; set; } = new List<Vector3Dto>();
     }
 }

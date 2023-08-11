@@ -1,0 +1,15 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="True">
+    <Style src="project://database/Assets/UMI3D%20SDK/Dependencies/Runtime/Inetum-Unity-Utils/Editor/JsonExporter/json_exporter.uss?fileID=7433441132597879392&amp;guid=25c92770c04380b458a4c54f4057e135&amp;type=3#json_exporter" />
+    <ui:VisualElement name="Title" class="container">
+        <ui:Label text="JSON EXPORTER" display-tooltip-when-elided="true" class="background Label" style="align-items: stretch; -unity-text-align: upper-left; -unity-font-style: bold; color: rgb(255, 255, 255);" />
+    </ui:VisualElement>
+    <ui:VisualElement name="MainMenu" class="container">
+        <uie:ObjectField label="Object To Serialize" focusable="false" allow-scene-objects="true" name="serializable" />
+        <uie:ObjectField label="Object To Deserialize" name="deserializable" />
+        <ui:TextField picking-mode="Ignore" label="Path" value="filler text" />
+        <ui:VisualElement style="flex-direction: row; justify-content: space-around;">
+            <ui:Button text="Serialize" display-tooltip-when-elided="true" name="serialize" style="flex-grow: 1;" />
+            <ui:Button text="Deserialize" display-tooltip-when-elided="true" name="deserialize" style="flex-grow: 1;" />
+        </ui:VisualElement>
+    </ui:VisualElement>
+</ui:UXML>

@@ -24,7 +24,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.interaction;
 using umi3d.edk.userCapture;
 using UnityEngine.Events;
@@ -95,11 +95,11 @@ namespace umi3d.edk.collaboration
 
             try
             {
-                dto = UMI3DDto.FromBson(bytes) as RegisterIdentityDto;
+                dto = UMI3DDtoSerializer.FromBson(bytes) as RegisterIdentityDto;
             }
             catch
             {
-                dto = UMI3DDto.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
+                dto = UMI3DDtoSerializer.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
             }
 
             await UMI3DCollaborationServer.Instance.Register(dto);
@@ -474,9 +474,9 @@ namespace umi3d.edk.collaboration
                 {
                     try
                     {
-                        var join = dto as JoinDto;
+                        JoinDto join = dto as JoinDto;
+                        await user.JoinDtoReception(join.userSize, join.clientLocalPoses.ToArray());
 
-                        await UMI3DEmbodimentManager.Instance.JoinDtoReception(user, join.userSize, join.trackedBonetypes);
                         e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
                         await UMI3DCollaborationServer.NotifyUserJoin(user);
                     }
@@ -570,7 +570,7 @@ namespace umi3d.edk.collaboration
                         }
                         catch (Exception ex)
                         {
-                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] Type : {e.Item2?.GetType()} {ex}", scope);
+                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] type : {e.Item2?.GetType()} {ex}", scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
                     }).ToList(),
@@ -599,7 +599,7 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DUser user = GetUserFor(e.Request);
                 UMI3DLogger.Log($"Get Scene {user?.Id()}", scope);
-                UMI3DScene scene = UMI3DEnvironment.GetEntity<UMI3DScene>(id);
+                UMI3DScene scene = UMI3DEnvironment.GetEntityInstance<UMI3DScene>(id);
                 if (scene == null)
                 {
                     Return404(e.Response, "UMI3DScene is missing !");
@@ -750,7 +750,7 @@ namespace umi3d.edk.collaboration
                     memstream.Write(buffer, 0, bytesRead);
                 bytes = memstream.ToArray();
             }
-            action.Invoke(UMI3DDto.FromBson(bytes));
+            action.Invoke(UMI3DDtoSerializer.FromBson(bytes));
         }
 
         private byte[] ReadObject(HttpListenerRequest request)

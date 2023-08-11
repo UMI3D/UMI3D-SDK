@@ -80,12 +80,13 @@ namespace umi3d.edk.editor
             format = property.FindPropertyRelative("format");
             extension = property.FindPropertyRelative("extension");
             metrics = property.FindPropertyRelative("metrics");
-            resolution = property.FindPropertyRelative("metrics.resolution");
-            size = property.FindPropertyRelative("metrics.size");
+            resolution = metrics.FindPropertyRelative("resolution");
+            size = metrics.FindPropertyRelative("size");
             pathIfInBundle = property.FindPropertyRelative("pathIfInBundle");
             libraryKey = property.FindPropertyRelative("libraryKey");
 
             var RLine = new Rect(position.x, position.y, position.width, LineHeight);
+
             foldout = EditorGUI.Foldout(RLine, foldout, format.stringValue + " [ Resolution " + resolution.intValue + " ]", true);
             if (foldout)
             {

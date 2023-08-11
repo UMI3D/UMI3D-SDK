@@ -19,8 +19,8 @@ namespace umi3d.common
     [System.Serializable]
     public class GlTFAsset
     {
-        public string version = "2.0";
-        public string generator = "UMI3D@" + UMI3DVersion.version;
-        public string copyright = "2019 (c) Gfi Informatique";
+        public string version { get; set; } = "2.0";
+        public string generator { get; set; } = "UMI3D@" + UMI3DVersion.version;
+        public string copyright { get; set; } = "2019 (c) Gfi Informatique";
     }
 }

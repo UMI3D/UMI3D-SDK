@@ -25,26 +25,26 @@ namespace umi3d.common
         /// <summary>
         /// Should the node run it active scripts and components, and be displayed in the scene?
         /// </summary>
-        public bool active = true;
+        public bool active { get; set; } = true;
 
         /// <summary>
         /// Should the node exist only on immersive devices?
         /// </summary>
-        public bool immersiveOnly = false;
+        public bool immersiveOnly { get; set; } = false;
 
         /// <summary>
         /// Anchor related to that node for Augmented reality.
         /// </summary>
-        public UMI3DAnchorDto anchorDto = null;
+        public UMI3DAnchorDto anchorDto { get; set; } = null;
 
         /// <summary>
         /// UMI3D id of the parent node.
         /// </summary>
-        public ulong pid = 0;
+        public ulong pid { get; set; } = 0;
 
         /// <summary>
         /// Should the node be immuned to modifications?
         /// </summary>
-        public bool isStatic = false;
+        public bool isStatic { get; set; } = false;
     }
 }

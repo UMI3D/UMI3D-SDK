@@ -22,6 +22,6 @@ namespace umi3d.common
     [System.Serializable]
     public class ScalableTextureDto : TextureDto
     {
-        public float scale = 1f;
+        public float scale { get; set; } = 1f;
     }
 }

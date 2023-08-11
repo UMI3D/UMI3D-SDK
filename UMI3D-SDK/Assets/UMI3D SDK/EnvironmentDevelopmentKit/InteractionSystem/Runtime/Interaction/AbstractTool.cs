@@ -30,6 +30,7 @@ namespace umi3d.edk.interaction
     /// </summary>
     public abstract class AbstractTool : MonoBehaviour, UMI3DMediaEntity
     {
+        public event Action<ulong> onHasRegistered;
         #region properties
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace umi3d.edk.interaction
             {
                 toolId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolId);
+                onHasRegistered?.Invoke(toolId);
             }
         }
 
@@ -270,7 +272,7 @@ namespace umi3d.edk.interaction
                 + UMI3DSerializer.Write(Display.description)
                 + Display.icon2D?.ToByte()
                 + Display.icon3D?.ToByte()
-                + UMI3DSerializer.WriteIBytableCollection(objectInteractions.GetValue(user).Where(i => i != null), user)
+                + UMI3DSerializer.WriteCollection(objectInteractions.GetValue(user).Where(i => i != null), user)
                 + UMI3DSerializer.Write(objectActive.GetValue(user));
         }
 

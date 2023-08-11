@@ -72,13 +72,13 @@ namespace umi3d.cdk.interaction
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
                 state = true,
-                normal = normal,
-                position = position,
-                direction = direction,
-                bonePosition = bonePosition,
-                boneRotation = boneRotation
+                normal = normal.Dto(),
+                position = position.Dto(),
+                direction = direction.Dto(),
+                bonePosition = bonePosition.Dto(),
+                boneRotation = boneRotation.Dto()
             };
-            UMI3DClientServer.SendData(hoverDto, true);
+            UMI3DClientServer.SendRequest(hoverDto, true);
         }
 
         /// <summary>
@@ -92,13 +92,13 @@ namespace umi3d.cdk.interaction
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
                 state = false,
-                normal = normal,
-                position = position,
-                direction = direction,
-                bonePosition = bonePosition,
-                boneRotation = boneRotation
+                normal = normal.Dto(),
+                position = position.Dto(),
+                direction = direction.Dto(),
+                bonePosition = bonePosition.Dto(),
+                boneRotation = boneRotation.Dto()
             };
-            UMI3DClientServer.SendData(hoverDto, true);
+            UMI3DClientServer.SendRequest(hoverDto, true);
         }
 
         /// <summary>
@@ -115,13 +115,13 @@ namespace umi3d.cdk.interaction
                     toolId = id,
                     hoveredObjectId = hoveredObjectId,
                     boneType = bone,
-                    normal = normal,
-                    position = position,
-                    direction = direction,
-                    bonePosition = bonePosition,
-                    boneRotation = boneRotation
+                    normal = normal.Dto(),
+                    position = position.Dto(),
+                    direction = direction.Dto(),
+                    bonePosition = bonePosition.Dto(),
+                    boneRotation = boneRotation.Dto()
                 };
-                UMI3DClientServer.SendData(hoverDto, false);
+                UMI3DClientServer.SendRequest(hoverDto, false);
             }
         }
 

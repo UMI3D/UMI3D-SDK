@@ -16,7 +16,8 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 
 namespace umi3d.cdk.collaboration
@@ -131,7 +132,7 @@ namespace umi3d.cdk.collaboration
 
         private void Connected(PrivateIdentityDto identity)
         {
-            globalToken = identity.GlobalToken;
+            globalToken = identity.globalToken;
             privateIdentity = identity;
         }
 

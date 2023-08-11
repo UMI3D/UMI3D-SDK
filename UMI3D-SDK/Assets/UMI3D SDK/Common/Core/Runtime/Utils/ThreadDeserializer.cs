@@ -116,7 +116,7 @@ namespace umi3d.common
                         }
                     if (set)
                     {
-                        var dto = UMI3DDto.FromBson(c.Item1, c.Item3);
+                        var dto = UMI3DDtoSerializer.FromBson(c.Item1, c.Item3);
                         MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => c.Item2.Invoke(dto));
                     }
                 }

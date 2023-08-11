@@ -21,7 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using UnityEngine;
 using static umi3d.common.NotificationDto;
 
@@ -294,7 +294,6 @@ namespace umi3d.edk.collaboration
             else
             {
                 user = new UMI3DCollaborationUser(LoginDto);
-
                 UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
                 lock (users)
                 {
@@ -379,7 +378,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequest dto)
+        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequestDto dto)
         {
             var tr = new Transaction
             {
@@ -519,5 +518,7 @@ namespace umi3d.edk.collaboration
 
             return notif;
         }
+
+
     }
 }

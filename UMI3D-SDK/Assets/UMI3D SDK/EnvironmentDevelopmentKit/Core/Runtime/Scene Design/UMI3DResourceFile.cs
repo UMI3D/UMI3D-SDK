@@ -23,7 +23,7 @@ namespace umi3d.edk
     /// File info for a <see cref="UMI3DResource"/>.
     /// </summary>
     [System.Serializable]
-    public class UMI3DResourceFile : IBytable
+    public class UMI3DResourceFile
     {
         public bool isLocalFile = false;
         public string domain = "";
@@ -33,7 +33,7 @@ namespace umi3d.edk
         public string extension;
         public bool isInBundle = false;
         public string pathIfInBundle = "";
-        public AssetMetricDto metrics;
+        public AssetMetric metrics = new AssetMetric();
 
         public bool isInLibrary = false;
         public AssetLibrary libraryKey = null;
@@ -46,7 +46,7 @@ namespace umi3d.edk
                 url = GetUrl(),
                 format = format,
                 extension = extension,
-                metrics = metrics,
+                metrics = metrics.ToDto(),
                 pathIfInBundle = isInBundle ? pathIfInBundle : null,
                 libraryKey = isInLibrary ? libraryKey?.idVersion : null
             };
@@ -65,11 +65,6 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(isInLibrary ? libraryKey?.idVersion : null);
         }
 
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return true;
-        }
 
         public string GetUrl()
         {
@@ -82,12 +77,6 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, path));
             else
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
-        }
-
-        /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
-        {
-            return ToByte();
         }
     }
 }

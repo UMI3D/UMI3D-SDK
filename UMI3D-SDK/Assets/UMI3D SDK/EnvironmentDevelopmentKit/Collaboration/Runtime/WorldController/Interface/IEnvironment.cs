@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 
 public interface IEnvironment
 {

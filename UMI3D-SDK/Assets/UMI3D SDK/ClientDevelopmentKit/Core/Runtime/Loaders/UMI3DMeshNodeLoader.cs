@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -31,11 +32,33 @@ namespace umi3d.cdk
     public class UMI3DMeshNodeLoader : AbstractRenderedNodeLoader
     {
         public List<string> ignoredPrimitiveNameForSubObjectsLoading = new List<string>() { "Gltf_Primitive" };
-        public UMI3DMeshNodeLoader(List<string> ignoredPrimitiveNameForSubObjectsLoading)
+        public UMI3DMeshNodeLoader(List<string> ignoredPrimitiveNameForSubObjectsLoading) : this()
         {
             this.ignoredPrimitiveNameForSubObjectsLoading = ignoredPrimitiveNameForSubObjectsLoading;
         }
-        public UMI3DMeshNodeLoader() { }
+
+        #region Dependency Injection
+
+        protected readonly IUMI3DResourcesManager resourcesManager;
+        protected readonly ICoroutineService coroutineManager;
+
+        public UMI3DMeshNodeLoader() : base()
+        {
+            resourcesManager = UMI3DResourcesManager.Instance;
+            coroutineManager = CoroutineManager.Instance;
+        }
+
+        public UMI3DMeshNodeLoader(IEnvironmentManager environmentManager,
+                                   ILoadingManager loadingManager,
+                                   IUMI3DResourcesManager resourcesManager,
+                                   ICoroutineService coroutineManager)
+            : base(environmentManager, loadingManager)
+        {
+            this.resourcesManager = resourcesManager;
+            this.coroutineManager = coroutineManager;
+        }
+
+        #endregion Dependency Injection
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
@@ -54,24 +77,24 @@ namespace umi3d.cdk
             var nodeDto = data.dto as UMI3DMeshNodeDto;
             if (data.node == null)
             {
-                throw (new Umi3dException("Dto should be an UMI3DAbstractNodeDto"));
+                throw (new Umi3dException("Node gameobject is not referenced. Dto should be an UMI3DAbstractNodeDto."));
             }
 
             await base.ReadUMI3DExtension(data);
 
             //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(nodeDto.mesh.variants);  // Peut etre ameliore
+            FileDto fileToLoad = loadingManager.AbstractLoadingParameters.ChooseVariant(nodeDto.mesh.variants);  // Peut etre ameliore
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
             string pathIfInBundle = fileToLoad.pathIfInBundle;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = loadingManager.AbstractLoadingParameters.SelectLoader(ext);
             Vector3 offset = Vector3.zero;
             if (loader is AbstractMeshDtoLoader meshLoader)
                 offset = meshLoader.GetRotationOffset();
             if (loader != null)
             {
-                var o = await UMI3DResourcesManager.LoadFile(nodeDto.id, fileToLoad, loader);
+                var o = await resourcesManager._LoadFile(nodeDto.id, fileToLoad, loader);
 
                 if (data.dto is UMI3DMeshNodeDto meshDto)
                 {
@@ -169,10 +192,10 @@ namespace umi3d.cdk
         /// <returns></returns>
         private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
-            string url = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.mesh.variants).url;
-            if (!UMI3DResourcesManager.Instance.IsSubModelsSetFor(url))
+            string url = loadingManager.AbstractLoadingParameters.ChooseVariant(dto.mesh.variants).url;
+            if (!resourcesManager.IsSubModelsSetFor(url))
             {
-                var copy = GameObject.Instantiate(goInCache, UMI3DResourcesManager.Instance.gameObject.transform);// goInCache.transform.parent);
+                var copy = GameObject.Instantiate(goInCache, resourcesManager.CacheTransform);// goInCache.transform.parent);
                 foreach (LODGroup lodgroup in copy.GetComponentsInChildren<LODGroup>())
                     GameObject.Destroy(lodgroup);
 
@@ -180,12 +203,12 @@ namespace umi3d.cdk
                 subObjectsReferences.SetRoot(copy.transform);
 
                 SetSubObjectsReferencesAux(copy.transform, copy.transform, rotationOffsetByLoader, subObjectsReferences);
-                UMI3DResourcesManager.Instance.AddSubModels(url, subObjectsReferences);
+                resourcesManager.AddSubModels(url, subObjectsReferences);
                 return copy;
             }
             else
             {
-                return UMI3DResourcesManager.Instance.GetSubModelRoot(url).gameObject;
+                return resourcesManager.GetSubModelRoot(url).gameObject;
             }
         }
 
@@ -251,7 +274,7 @@ namespace umi3d.cdk
             }
 
             GameObject instance = null;
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(dto.id);
+            UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(dto.id);
 
             instance = GameObject.Instantiate(root, parent, true);
 
@@ -304,7 +327,7 @@ namespace umi3d.cdk
             {
                 nodeInstance.prefabLightmapData = data;
 
-                UMI3DEnvironmentLoader.StartCoroutine(RefreshLightmapData(data));
+                coroutineManager.AttachCoroutine(RefreshLightmapData(data));
             }
         }
 
@@ -315,7 +338,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         IEnumerator RefreshLightmapData(PrefabLightmapData data)
         {
-            while (!UMI3DEnvironmentLoader.Instance.loaded)
+            while (!environmentManager.loaded)
                 yield return null;
 
             data.Init();

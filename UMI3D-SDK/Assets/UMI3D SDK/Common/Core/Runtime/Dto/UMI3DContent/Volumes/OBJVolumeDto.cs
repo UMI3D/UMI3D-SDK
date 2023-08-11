@@ -24,6 +24,6 @@ namespace umi3d.common.volume
         /// <summary>
         /// URL to downlod the obj from.
         /// </summary>
-        public string objFile;
+        public string objFile { get; set; }
     }
 }
