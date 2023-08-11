@@ -79,6 +79,7 @@ namespace umi3d.edk.collaboration.tracking
         public UMI3DRelay(UMI3DForgeServer server)
         {
             this.server = server;
+            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u => RemoveUserFrame((u as UMI3DCollaborationUser).networkPlayer));
             InitTrackingFrameThread();
         }
 
@@ -92,6 +93,18 @@ namespace umi3d.edk.collaboration.tracking
             lock (framesPerPlayer)
             {
                 framesPerPlayer[from] = frame;
+            }
+        }
+
+        public void RemoveUserFrame(NetworkingPlayer player) 
+        {
+            lock (framesPerPlayer)
+            {
+                if (player != null && framesPerPlayer.ContainsKey(player))
+                {
+                    framesPerPlayer.Remove(player);
+                    lastFrameSentToAPlayer.Remove(player);
+                }
             }
         }
 

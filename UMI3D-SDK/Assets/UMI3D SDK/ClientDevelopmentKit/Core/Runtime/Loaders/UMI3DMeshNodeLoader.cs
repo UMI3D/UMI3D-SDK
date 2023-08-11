@@ -301,6 +301,11 @@ namespace umi3d.cdk
             {
                 renderer.shadowCastingMode = dto.castShadow ? UnityEngine.Rendering.ShadowCastingMode.On : UnityEngine.Rendering.ShadowCastingMode.Off;
                 renderer.receiveShadows = dto.receiveShadow;
+
+                if (renderer is SkinnedMeshRenderer && dto.updateSkinnedMeshRendererWhenOffscreen)
+                {
+                    (renderer as SkinnedMeshRenderer).updateWhenOffscreen = true;
+                }
             }
 
             instance.transform.localPosition = root.transform.localPosition;
