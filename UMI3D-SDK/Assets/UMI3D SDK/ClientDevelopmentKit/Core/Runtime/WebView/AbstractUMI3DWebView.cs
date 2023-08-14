@@ -60,23 +60,6 @@ namespace umi3d.cdk
             }
         }
 
-        private bool _syncView;
-        /// <summary>
-        /// Sync webview from webview master.
-        /// </summary>
-        public bool syncView
-        {
-            get => syncView;
-            set
-            {
-                if (_syncView != value)
-                {
-                    _syncView = value;
-                    OnSyncViewChanged(value);
-                }
-            }
-        }
-
         private Vector2 _size;
         /// <summary>
         /// Webview size.
@@ -118,17 +101,15 @@ namespace umi3d.cdk
         public virtual void Init(UMI3DWebViewDto dto)
         {
             url = dto.url;
-            size = dto.size;
-            textureSize = dto.textureSize;
+            size = dto.size.Struct();
+            textureSize = dto.textureSize.Struct();
             canInteract = dto.canInteract;
-            syncView = dto.syncView;
         }
 
         protected abstract void OnUrlChanged(string url);
         protected abstract void OnSizeChanged(Vector2 size);
         protected abstract void OnTextureSizeChanged(Vector2 size);
         protected abstract void OnCanInteractChanged(bool canInteract);
-        protected abstract void OnSyncViewChanged(bool syncView);
 
         #endregion
     }

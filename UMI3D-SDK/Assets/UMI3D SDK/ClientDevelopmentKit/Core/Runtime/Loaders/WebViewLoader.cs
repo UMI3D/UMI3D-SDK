@@ -68,16 +68,15 @@ namespace umi3d.cdk
                     webView.canInteract = dto.canInteract = (bool)data.property.value;
                     break;
                 case UMI3DPropertyKeys.WebViewSize:
-                    webView.size = dto.size = (SerializableVector2)data.property.value;
+                    dto.size = (Vector2Dto)data.property.value;
+                    webView.size = dto.size.Struct();
                     break;
                 case UMI3DPropertyKeys.WebViewTextureSize:
-                    webView.textureSize = dto.textureSize = (SerializableVector2)data.property.value;
+                    dto.textureSize = (Vector2Dto)data.property.value;
+                    webView.textureSize = dto.textureSize.Struct();
                     break;
                 case UMI3DPropertyKeys.WebViewUrl:
                     webView.url = dto.url = (string)data.property.value;
-                    break;
-                case UMI3DPropertyKeys.WebViewSyncView:
-                    webView.syncView = dto.syncView = (bool)data.property.value;
                     break;
                 default:
                     return false;
@@ -106,16 +105,15 @@ namespace umi3d.cdk
                     webView.canInteract = dto.canInteract = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.WebViewSize:
-                    webView.size = dto.size = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                    dto.size = UMI3DSerializer.Read<Vector2Dto>(data.container);
+                    webView.size = dto.size.Struct();
                     break;
                 case UMI3DPropertyKeys.WebViewTextureSize:
-                    webView.textureSize = dto.textureSize = UMI3DSerializer.Read<SerializableVector2>(data.container);
+                    dto.textureSize = UMI3DSerializer.Read<Vector2Dto>(data.container);
+                    webView.textureSize = dto.textureSize.Struct();
                     break;
                 case UMI3DPropertyKeys.WebViewUrl:
                     webView.url = dto.url = UMI3DSerializer.Read<string>(data.container);
-                    break;
-                case UMI3DPropertyKeys.WebViewSyncView:
-                    webView.syncView = dto.syncView = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 default:
                     return false;

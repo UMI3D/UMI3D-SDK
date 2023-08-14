@@ -294,7 +294,6 @@ namespace umi3d.common
         public const uint WebViewSize = 17002;
         public const uint WebViewTextureSize = 17003;
         public const uint WebViewUrl = 17004;
-        public const uint WebViewSyncView = 17005;
 
         #endregion
 

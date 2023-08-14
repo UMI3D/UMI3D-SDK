@@ -25,19 +25,14 @@ namespace umi3d.common
         public bool canInteract { get; set; }
 
         /// Webview size.
-        public SerializableVector2 size { get; set; }
+        public Vector2Dto size { get; set; }
 
         /// Webview texture dimensions.
-        public SerializableVector2 textureSize { get; set; }
+        public Vector2Dto textureSize { get; set; }
 
         /// <summary>
         /// Url to load on clients.
         /// </summary>
         public string url { get; set; }
-
-        /// <summary>
-        /// Synchronises all webview from a master view.
-        /// </summary>
-        public bool syncView { get; set; }
     }
 }

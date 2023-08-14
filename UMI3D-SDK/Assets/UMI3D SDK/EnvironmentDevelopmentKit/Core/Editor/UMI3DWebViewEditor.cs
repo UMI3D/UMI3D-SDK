@@ -17,12 +17,9 @@ limitations under the License.
 #if UNITY_EDITOR
 
 using UnityEditor;
-using UnityEngine;
 
 namespace umi3d.edk.editor
 {
-
-
     [CustomEditor(typeof(UMI3DWebView), false)]
     public class UMI3DWebViewEditor : UMI3DNodeEditor
     {
@@ -30,7 +27,6 @@ namespace umi3d.edk.editor
         private SerializedProperty size;
         private SerializedProperty textureSize;
         private SerializedProperty url;
-        private SerializedProperty syncView;
 
         protected override void OnEnable()
         {
@@ -40,7 +36,6 @@ namespace umi3d.edk.editor
             size = serializedObject.FindProperty("size");
             textureSize = serializedObject.FindProperty("textureSize");
             url = serializedObject.FindProperty("url");
-            syncView = serializedObject.FindProperty("syncView");
         }
 
         public override void OnInspectorGUI()
@@ -58,8 +53,6 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(textureSize);
 
             EditorGUILayout.Space();
-
-            EditorGUILayout.PropertyField(syncView);
 
             serializedObject.ApplyModifiedProperties();
         }

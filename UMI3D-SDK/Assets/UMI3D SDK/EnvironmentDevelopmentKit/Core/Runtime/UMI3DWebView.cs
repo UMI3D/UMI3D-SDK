@@ -52,12 +52,6 @@ namespace umi3d.edk
         [SerializeField, Tooltip("Url to load on clients")]
         private string url = string.Empty;
 
-        /// <summary>
-        /// Synchronises all webview from a master view.
-        /// </summary>
-        [SerializeField, Tooltip("ynchronises all webview from a master view")]
-        private bool syncView = false;
-
         #endregion
 
         #region Async properties
@@ -70,7 +64,6 @@ namespace umi3d.edk
 
         private UMI3DAsyncProperty<string> _objectUrl;
 
-        private UMI3DAsyncProperty<bool> _objectSyncView;
 
         /// <summary>
         /// Async property to change <see cref="canInteract"/> property.
@@ -93,11 +86,6 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAsyncProperty<string> objectUrl { get { Register(); return _objectUrl; } protected set => _objectUrl = value; }
 
-        /// <summary>
-        /// Async property to change <see cref="syncView"/> property.
-        /// </summary>
-        public UMI3DAsyncProperty<bool> objectSyncView { get { Register(); return _objectSyncView; } protected set => _objectSyncView = value; }
-
         #endregion
 
         #region Methods
@@ -113,13 +101,11 @@ namespace umi3d.edk
             objectSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewSize, size, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
-            objectSyncView = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewSyncView, syncView);
 
             objectCanInteract.OnValueChanged += (b) => canInteract = b;
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
             objectSize.OnValueChanged += (s) => size = s;
             objectUrl.OnValueChanged += (u) => url = u;
-            objectSyncView.OnValueChanged += (b) => syncView = b;
         }
 
         /// <summary>
@@ -153,10 +139,9 @@ namespace umi3d.edk
 
             var webViewDto = dto as UMI3DWebViewDto;
             webViewDto.canInteract = objectCanInteract.GetValue(user);
-            webViewDto.size = objectSize.GetValue(user);
-            webViewDto.textureSize = objectTextureSize.GetValue(user);
+            webViewDto.size = objectSize.GetValue(user).Dto();
+            webViewDto.textureSize = objectTextureSize.GetValue(user).Dto();
             webViewDto.url = objectUrl.GetValue(user);
-            webViewDto.syncView = objectSyncView.GetValue(user);
         }
 
         #endregion
