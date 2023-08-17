@@ -22,14 +22,21 @@ namespace inetum.unityUtils.editor
     using UnityEditor;
     using UnityEngine;
 
+    public interface ILogScrollViewData
+    {
+        string text { get; set; }
+    }
+
     public class LogScrollView
     {
-        public string text;
+        ILogScrollViewData data;
+        public string text { get => data.text; set => data.text = value; }
         Vector2 ScrollPos;
 
         readonly bool expand;
-        public LogScrollView(bool expand = true)
+        public LogScrollView(ILogScrollViewData data,bool expand = true)
         {
+            this.data = data;
             text = "";
             ScrollPos = Vector2.zero;
             this.expand = expand;
