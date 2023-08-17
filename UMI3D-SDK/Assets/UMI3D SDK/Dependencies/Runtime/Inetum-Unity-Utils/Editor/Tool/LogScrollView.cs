@@ -30,7 +30,15 @@ namespace inetum.unityUtils.editor
     public class LogScrollView
     {
         ILogScrollViewData data;
-        public string text { get => data.text; set => data.text = value; }
+        public string text { 
+            get => data.text;
+            set
+            {
+                data.text = value;
+                if (data is Object obj)
+                    EditorUtility.SetDirty(obj);
+            }
+        }
         Vector2 ScrollPos;
 
         readonly bool expand;

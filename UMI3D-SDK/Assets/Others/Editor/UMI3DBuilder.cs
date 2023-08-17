@@ -70,6 +70,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
     protected override void Draw()
     {
+        bool changed = false;
         GUI.enabled = !IsBuilding ;
 
         data.editor?.OnInspectorGUI();
@@ -91,13 +92,13 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
         EditorGUILayout.Separator();
         EditorGUILayout.LabelField(data.data.CommitMessageCommonTitle);
-        data.data.Commonmessage = EditorGUILayout.TextArea(data.data.Commonmessage);
+        data.data.Commonmessage = TextArea(data.data.Commonmessage, ref changed);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField(data.data.CommitMessageEdkTitle);
-        data.data.Edkmessage = EditorGUILayout.TextArea(data.data.Edkmessage);
+        data.data.Edkmessage = TextArea(data.data.Edkmessage, ref changed);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField(data.data.CommitMessageCdkTitle);
-        data.data.Cdkmessage = EditorGUILayout.TextArea(data.data.Cdkmessage);
+        data.data.Cdkmessage = TextArea(data.data.Cdkmessage, ref changed);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Full Changelog: <...>");
         EditorGUILayout.Separator();
@@ -108,6 +109,17 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
             DrawNotBuilding();
 
         info.Draw();
+
+        if(changed)
+            EditorUtility.SetDirty(data.data);
+    }
+
+    string TextArea(string text, ref bool changed)
+    {
+        var _text = EditorGUILayout.TextArea(text);
+        if (text != _text)
+            changed = true;
+        return _text;
     }
 
     protected virtual void DrawNotBuilding()
@@ -175,6 +187,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
     {
         data.data.packages = null;
         data.data.buildstepByStep = false;
+        EditorUtility.SetDirty(data.data);
     }
 
         async void CleanComputeBuildStepByStep(bool comit)
@@ -186,9 +199,13 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
     async void CleanComputeBuild(bool comit)
     {
+        EditorUtility.SetDirty(data.data);
         await CleanComputeBuildStart();
+        EditorUtility.SetDirty(data.data);
         await CleanComputeBuildMiddle();
+        EditorUtility.SetDirty(data.data);
         await CleanComputeBuildEnd(comit);
+        EditorUtility.SetDirty(data.data);
     }
 
     async Task CleanComputeBuildStart()
@@ -243,6 +260,11 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
             if (next != null)
             {
                 next.build = false;
+                EditorUtility.SetDirty(data.data);
+
+                await Task.Delay(100);
+
+
                 Build(next);
             }
             else
@@ -306,9 +328,9 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         return PackagesExporter.GetExportPackages(buildFolder);
     }
 
-    async void Build(PackageData data)
+    void Build(PackageData data)
     {
-        await PackagesExporter.BuildPackage(data);
+        PackagesExporter.SyncBuildPackage(data);
     }
     #endregion
 }

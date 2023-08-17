@@ -29,6 +29,7 @@ using System.Runtime.CompilerServices;
 using CodiceApp.EventTracking.Plastic;
 using MumbleProto;
 using static UnityEngine.Rendering.ReloadAttribute;
+using System;
 #if UNITY_EDITOR
 
 public class BuildEvents : IPreprocessBuildWithReport, IPostprocessBuildWithReport
@@ -61,6 +62,7 @@ public class BuildEvents : IPreprocessBuildWithReport, IPostprocessBuildWithRepo
     }
 }
 
+[Serializable]
 public class PackageData
 {
     readonly public string pathRoot = Application.dataPath + "/../";
@@ -68,7 +70,27 @@ public class PackageData
     public string name = null;
     public string FullPath => (pathRoot ?? string.Empty) + (relativePath ?? string.Empty);
     public List<string> folderTobuild;
-    public bool? build = null;
+
+
+    public bool buildState = false;
+    public bool isBuildng = false;
+    public bool? build
+    {
+        get => isBuildng ? buildState : null;
+        set
+        {
+            if(value == null)
+            {
+                isBuildng = false;
+                buildState = false;
+            }
+            else
+            {
+                isBuildng = true;
+                buildState = value.Value;
+            }
+        }
+    }
 }
 
 public class PackagesExporter
@@ -194,7 +216,10 @@ public class PackagesExporter
     {
         await ExportPackages(data, ExportPackageOptions.Recurse);
     }
-
+    public static void SyncBuildPackage(PackageData data)
+    {
+        AssetDatabase.ExportPackage(data.folderTobuild.ToArray(), data.relativePath, ExportPackageOptions.Recurse);
+    }
 
 
 
