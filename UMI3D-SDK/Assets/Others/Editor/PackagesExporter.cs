@@ -65,7 +65,7 @@ public class BuildEvents : IPreprocessBuildWithReport, IPostprocessBuildWithRepo
 [Serializable]
 public class PackageData
 {
-    readonly public string pathRoot = Application.dataPath + "/../";
+    readonly public string pathRoot ;
     public string relativePath = null;
     public string name = null;
     public string FullPath => (pathRoot ?? string.Empty) + (relativePath ?? string.Empty);
@@ -74,6 +74,12 @@ public class PackageData
 
     public bool buildState = false;
     public bool isBuildng = false;
+
+    public PackageData(string pathRoot)
+    {
+        this.pathRoot = pathRoot;
+    }
+
     public bool? build
     {
         get => isBuildng ? buildState : null;
@@ -226,9 +232,10 @@ public class PackagesExporter
     static List<PackageData> GetPackageDatas(bool all)
     {
         var result = new List<PackageData>();
+        string root = Application.dataPath + "/../";
 
-        PackageData cdk = new();
-        PackageData edk = new();
+        PackageData cdk = new(root);
+        PackageData edk = new(root);
 
         cdk.folderTobuild = new() {PackagesExporter.assetDependencies,
             assetCommon + coreFolder, assetCommon + interactionSystemFolder, assetCommon + userCaptureFolder, assetCommon + collaborationFolder,
@@ -249,12 +256,12 @@ public class PackagesExporter
 
         if (all)
         {
-            PackageData core = new();
-            PackageData assetDependencies = new();
-            PackageData interaction = new();
-            PackageData userCapture = new();
-            PackageData collaboration = new();
-            PackageData serverStarterKit = new();
+            PackageData core = new(root);
+            PackageData assetDependencies = new(root);
+            PackageData interaction = new(root);
+            PackageData userCapture = new(root);
+            PackageData collaboration = new(root);
+            PackageData serverStarterKit = new(root);
 
             assetDependencies.folderTobuild = new List<string> { PackagesExporter.assetDependencies };
 
@@ -316,6 +323,7 @@ public class PackagesExporter
     {
         foreach (var package in packages)
         {
+            package.build = false;
             await ExportPackages(package, flags);
             package.build = true;
         }
