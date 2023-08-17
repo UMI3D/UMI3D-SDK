@@ -91,358 +91,34 @@ namespace umi3d.cdk
         }
     }
 
-    public static partial class UMI3DClient
+    /// <summary>
+    /// The collection of <see cref="UMI3DConnectionData"/>.
+    /// 
+    /// <para>
+    /// Connections are stored at <see cref="UnityEngine.Application.persistentDataPath"/>/<see cref="UMI3DClientDataPersistence.directory"/>/<see cref="ConnectionDataCollection.connectionFile"/>.
+    /// </para>
+    /// <para>
+    /// There is an internal connection collection that is saved on disk only when the <see cref="ConnectionDataCollection.Save"/> method is called.
+    /// </para>
+    /// </summary>
+    internal static class UMI3DConnectionDataCollection
     {
-        /// <summary>
-        /// The collection of <see cref="UMI3DConnectionData"/>.
-        /// 
-        /// <para>
-        /// Connections are stored at <see cref="UnityEngine.Application.persistentDataPath"/>/<see cref="UMI3DClientDataPersistence.directory"/>/<see cref="ConnectionDataCollection.connectionFile"/>.
-        /// </para>
-        /// <para>
-        /// There is an internal connection collection that is saved on disk only when the <see cref="ConnectionDataCollection.Save"/> method is called.
-        /// </para>
-        /// </summary>
-        static class ConnectionDataCollection
-        {
-            const string connectionFile = "Connections";
+        const string connectionFile = "Connections";
 
-            static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(ConnectionDataCollection)}");
+        static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(UMI3DConnectionDataCollection)}");
 
-            static List<UMI3DConnectionData> connections;
+        static List<UMI3DConnectionData> connections;
 
-            public static bool hasUnsavedModifications = false;
-
-            /// <summary>
-            /// At the end of the method <see cref="connections"/> is not null.
-            /// </summary>
-            static void LazyInitCollection()
-            {
-                if (connections == null)
-                {
-                    connections = Fetch();
-                }
-            }
-
-            #region Contain
-
-            /// <summary>
-            /// Whether or not <paramref name="connectionData"/> is part of the collection.
-            /// </summary>
-            /// <param name="connectionData"></param>
-            /// <returns></returns>
-            public static bool Contains(UMI3DConnectionData connectionData)
-            {
-                if (connectionData == null)
-                {
-                    return false;
-                }
-
-                LazyInitCollection();
-
-                return connections.Contains(connectionData);
-            }
-
-            /// <summary>
-            /// Whether or not there is a <see cref="UMI3DConnectionData"/> with this url in the collection.
-            /// </summary>
-            /// <param name="url"></param>
-            /// <returns></returns>
-            public static bool Contains(string url)
-            {
-                if (string.IsNullOrEmpty(url))
-                {
-                    return false;
-                }
-
-                LazyInitCollection();
-
-                return connections.Find(connection =>
-                {
-                    return connection.url == url;
-                }) != null;
-            }
-
-            #endregion
-
-            #region Adds, Removes and Updates
-
-            /// <summary>
-            /// Adds a new connection to the collection.
-            /// 
-            /// <para>
-            /// Return:
-            /// <list type="bullet">
-            /// <item>True: if the connection has been added.</item>
-            /// <item>False: if the connection has not been added (because it is already present in the collection or the connection is null).</item>
-            /// </list>
-            /// </para>
-            /// </summary>
-            /// <param name="connectionData"></param>
-            /// <returns></returns>
-            public static bool Add(UMI3DConnectionData connectionData)
-            {
-                if (connectionData == null)
-                {
-                    ConnectionCollectionException.LogException(
-                        "Parameter is null",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
-                    );
-                    return false;
-                }
-
-                LazyInitCollection();
-
-                if (UMI3DClient.Contains_CD(connectionData))
-                {
-                    return false;
-                }
-
-                connections.Add(connectionData);
-                hasUnsavedModifications = true;
-                return true;
-            }
-
-            /// <summary>
-            /// Removes <paramref name="connectionData"/> from the collection.
-            /// 
-            /// <para>
-            /// Return:
-            /// <list type="bullet">
-            /// <item>True: if the connection has been removed.</item>
-            /// <item>False: if the connection has not been removed (because it is not present in the collection or the connection is null).</item>
-            /// </list>
-            /// </para>
-            /// </summary>
-            /// <param name="connectionData"></param>
-            /// <returns></returns>
-            public static bool Remove(UMI3DConnectionData connectionData)
-            {
-                if (connectionData == null)
-                {
-                    ConnectionCollectionException.LogException(
-                        "Parameter is null",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
-                    );
-                    return false;
-                }
-
-                LazyInitCollection();
-
-                if (!UMI3DClient.Contains_CD(connectionData))
-                {
-                    return false;
-                }
-
-                connections.Remove(connectionData);
-                hasUnsavedModifications = true;
-                return true;
-            }
-
-            /// <summary>
-            /// Removes the <see cref="UMI3DConnectionData"/> corresponding to <paramref name="url"/> from the collection.
-            /// 
-            /// <para>
-            /// Return:
-            /// <list type="bullet">
-            /// <item>True: if the connection has been removed.</item>
-            /// <item>False: if the connection has not been removed (because it is not present in the collection or the url is null).</item>
-            /// </list>
-            /// </para>
-            /// </summary>
-            /// <param name="connectionData"></param>
-            /// <returns></returns>
-            public static bool Remove(string url)
-            {
-                if (string.IsNullOrEmpty(url))
-                {
-                    ConnectionCollectionException.LogException(
-                        "Parameter is null",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.URLNullOrEmptyException
-                    );
-                    return false;
-                }
-
-                return Remove(UMI3DClient.FindConnection_CD(url));
-            }
-
-            /// <summary>
-            /// Updates the connections stored 
-            /// </summary>
-            /// <param name="connectionData"></param>
-            /// <returns></returns>
-            public static bool Update(UMI3DConnectionData connectionData)
-            {
-                if (connectionData == null)
-                {
-                    ConnectionCollectionException.LogException(
-                        "Parameter is null",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
-                    );
-                    return false;
-                }
-
-                LazyInitCollection();
-
-                int connectionIndex = connections.FindIndex(connection =>
-                {
-                    return connection.url == connectionData.url;
-                });
-                if (connectionIndex < 0)
-                {
-                    ConnectionCollectionException.LogException(
-                        "There is no connection to update.",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
-                    );
-                    return false;
-                }
-
-                connections.RemoveAt(connectionIndex);
-                connections.Insert(connectionIndex, connectionData);
-                hasUnsavedModifications = true;
-
-                return true;
-            }
-
-            #endregion
-
-            #region Queries
-
-            /// <summary>
-            /// Queries the connections that correspond to the <paramref name="predicate"/>.
-            /// </summary>
-            /// <param name="predicate"></param>
-            /// <param name="sortBy"></param>
-            /// <returns></returns>
-            public static List<UMI3DConnectionData> Query(Predicate<UMI3DConnectionData> predicate, Comparison<UMI3DConnectionData> sortBy = null)
-            {
-                if (predicate == null)
-                {
-                    ConnectionCollectionException.LogException(
-                        "Parameter is null",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.PredicateNullException
-                    );
-                    return null;
-                }
-
-                LazyInitCollection();
-
-                List<UMI3DConnectionData> result = connections.FindAll(predicate);
-
-                if (sortBy != null)
-                {
-                    result.Sort(sortBy);
-                }
-
-                return result;
-            }
-
-            /// <summary>
-            /// Finds the <see cref="UMI3DConnectionData"/> that correspond to the <paramref name="predicate"/>.
-            /// </summary>
-            /// <param name="predicate"></param>
-            /// <returns></returns>
-            public static UMI3DConnectionData FindConnection(Predicate<UMI3DConnectionData> predicate)
-            {
-                if (predicate == null)
-                {
-                    ConnectionCollectionException.LogException(
-                        "Parameter is null",
-                        inner: null,
-                        ConnectionCollectionException.ExceptionTypeEnum.PredicateNullException
-                    );
-                    return null;
-                }
-
-                LazyInitCollection();
-
-                return connections.Find(predicate);
-            }
-
-            #endregion
-
-            #region Persistence
-
-            /// <summary>
-            /// Fetch the connection collection that is currently saved.
-            /// </summary>
-            /// <returns></returns>
-            public static List<UMI3DConnectionData> Fetch()
-            {
-                if (!UMI3DClient.TryGetData_DP(
-                    out List<UMI3DConnectionData> connections,
-                    connectionFile,
-                    UMI3DClient.directory
-                 ))
-                {
-                    return new List<UMI3DConnectionData>();
-                }
-
-                return connections;
-            }
-
-            /// <summary>
-            /// Save the current state of the connection collection.
-            /// </summary>
-            public static void Save()
-            {
-                UMI3DClient.StoreData_DP(connections, connectionFile, UMI3DClient.directory);
-
-                hasUnsavedModifications = false;
-            }
-
-            #endregion
-
-
-            /// <summary>
-            /// An exception class to deal with <see cref="ConnectionDataCollection"/> issues.
-            /// </summary>
-            [Serializable]
-            class ConnectionCollectionException : Exception
-            {
-                static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(ConnectionCollectionException)}");
-
-                public enum ExceptionTypeEnum
-                {
-                    Unknown,
-                    ConnectionNullException,
-                    PredicateNullException,
-                    URLNullOrEmptyException
-                }
-
-                public ExceptionTypeEnum exceptionType;
-
-                public ConnectionCollectionException(string message, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown) : base($"{exceptionType}: {message}")
-                {
-                    this.exceptionType = exceptionType;
-                }
-                public ConnectionCollectionException(string message, Exception inner, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown) : base($"{exceptionType}: {message}", inner)
-                {
-                    this.exceptionType = exceptionType;
-                }
-
-                public static void LogException(string message, Exception inner, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown)
-                {
-                    logger.Exception(null, new ConnectionCollectionException(message, inner, exceptionType));
-                }
-            }
-        }
-
+        public static bool hasUnsavedModifications = false;
 
         /// <summary>
-        /// Whether or not the internal connection collection has been modified without beeing saved.
+        /// At the end of the method <see cref="connections"/> is not null.
         /// </summary>
-        public static bool HasConnectionsUnsaved
+        static void LazyInitCollection()
         {
-            get
+            if (connections == null)
             {
-                return ConnectionDataCollection.hasUnsavedModifications;
+                connections = Fetch();
             }
         }
 
@@ -453,9 +129,16 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="connectionData"></param>
         /// <returns></returns>
-        public static bool Contains_CD(UMI3DConnectionData connectionData)
+        public static bool Contains(UMI3DConnectionData connectionData)
         {
-            return ConnectionDataCollection.Contains(connectionData);
+            if (connectionData == null)
+            {
+                return false;
+            }
+
+            LazyInitCollection();
+
+            return connections.Contains(connectionData);
         }
 
         /// <summary>
@@ -463,9 +146,19 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="url"></param>
         /// <returns></returns>
-        public static bool Contains_CD(string url)
+        public static bool Contains(string url)
         {
-            return ConnectionDataCollection.Contains(url);
+            if (string.IsNullOrEmpty(url))
+            {
+                return false;
+            }
+
+            LazyInitCollection();
+
+            return connections.Find(connection =>
+            {
+                return connection.url == url;
+            }) != null;
         }
 
         #endregion
@@ -485,9 +178,28 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="connectionData"></param>
         /// <returns></returns>
-        public static bool Add_CD(UMI3DConnectionData connectionData)
+        public static bool Add(UMI3DConnectionData connectionData)
         {
-            return ConnectionDataCollection.Add(connectionData);
+            if (connectionData == null)
+            {
+                ConnectionCollectionException.LogException(
+                    "Parameter is null",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
+                );
+                return false;
+            }
+
+            LazyInitCollection();
+
+            if (Contains(connectionData))
+            {
+                return false;
+            }
+
+            connections.Add(connectionData);
+            hasUnsavedModifications = true;
+            return true;
         }
 
         /// <summary>
@@ -503,9 +215,28 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="connectionData"></param>
         /// <returns></returns>
-        public static bool Remove_CD(UMI3DConnectionData connectionData)
+        public static bool Remove(UMI3DConnectionData connectionData)
         {
-            return ConnectionDataCollection.Remove(connectionData);
+            if (connectionData == null)
+            {
+                ConnectionCollectionException.LogException(
+                    "Parameter is null",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
+                );
+                return false;
+            }
+
+            LazyInitCollection();
+
+            if (!Contains(connectionData))
+            {
+                return false;
+            }
+
+            connections.Remove(connectionData);
+            hasUnsavedModifications = true;
+            return true;
         }
 
         /// <summary>
@@ -521,9 +252,22 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="connectionData"></param>
         /// <returns></returns>
-        public static bool Remove_CD(string url)
+        public static bool Remove(string url)
         {
-            return ConnectionDataCollection.Remove(url);
+            if (string.IsNullOrEmpty(url))
+            {
+                ConnectionCollectionException.LogException(
+                    "Parameter is null",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.URLNullOrEmptyException
+                );
+                return false;
+            }
+
+            return Remove(FindConnection(connection =>
+            {
+                return connection.url == url;
+            }));
         }
 
         /// <summary>
@@ -531,9 +275,39 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="connectionData"></param>
         /// <returns></returns>
-        public static bool Update_CD(UMI3DConnectionData connectionData)
+        public static bool Update(UMI3DConnectionData connectionData)
         {
-            return ConnectionDataCollection.Update(connectionData);
+            if (connectionData == null)
+            {
+                ConnectionCollectionException.LogException(
+                    "Parameter is null",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
+                );
+                return false;
+            }
+
+            LazyInitCollection();
+
+            int connectionIndex = connections.FindIndex(connection =>
+            {
+                return connection.url == connectionData.url;
+            });
+            if (connectionIndex < 0)
+            {
+                ConnectionCollectionException.LogException(
+                    "There is no connection to update.",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.ConnectionNullException
+                );
+                return false;
+            }
+
+            connections.RemoveAt(connectionIndex);
+            connections.Insert(connectionIndex, connectionData);
+            hasUnsavedModifications = true;
+
+            return true;
         }
 
         #endregion
@@ -541,30 +315,33 @@ namespace umi3d.cdk
         #region Queries
 
         /// <summary>
-        /// Returns favorite connection sorted by <paramref name="sortBy"/>.
-        /// </summary>
-        /// <param name="sortBy"></param>
-        /// <returns></returns>
-        public static List<UMI3DConnectionData> GetFavorites_CD(Comparison<UMI3DConnectionData> sortBy = null)
-        {
-            return ConnectionDataCollection.Query(
-                predicate: connection =>
-                {
-                    return connection.isFavorite;
-                },
-                sortBy
-            );
-        }
-
-        /// <summary>
         /// Queries the connections that correspond to the <paramref name="predicate"/>.
         /// </summary>
         /// <param name="predicate"></param>
         /// <param name="sortBy"></param>
         /// <returns></returns>
-        public static List<UMI3DConnectionData> Query_CD(Predicate<UMI3DConnectionData> predicate, Comparison<UMI3DConnectionData> sortBy = null)
+        public static List<UMI3DConnectionData> Query(Predicate<UMI3DConnectionData> predicate, Comparison<UMI3DConnectionData> sortBy = null)
         {
-            return ConnectionDataCollection.Query(predicate, sortBy);
+            if (predicate == null)
+            {
+                ConnectionCollectionException.LogException(
+                    "Parameter is null",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.PredicateNullException
+                );
+                return null;
+            }
+
+            LazyInitCollection();
+
+            List<UMI3DConnectionData> result = connections.FindAll(predicate);
+
+            if (sortBy != null)
+            {
+                result.Sort(sortBy);
+            }
+
+            return result;
         }
 
         /// <summary>
@@ -572,22 +349,21 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="predicate"></param>
         /// <returns></returns>
-        public static UMI3DConnectionData FindConnection_CD(Predicate<UMI3DConnectionData> predicate)
+        public static UMI3DConnectionData FindConnection(Predicate<UMI3DConnectionData> predicate)
         {
-            return ConnectionDataCollection.FindConnection(predicate);
-        }
-
-        /// <summary>
-        /// Find the <see cref="UMI3DConnectionData"/> that match the <paramref name="url"/>.
-        /// </summary>
-        /// <param name="url"></param>
-        /// <returns></returns>
-        public static UMI3DConnectionData FindConnection_CD(string url)
-        {
-            return ConnectionDataCollection.FindConnection(connection =>
+            if (predicate == null)
             {
-                return connection.url == url;
-            });
+                ConnectionCollectionException.LogException(
+                    "Parameter is null",
+                    inner: null,
+                    ConnectionCollectionException.ExceptionTypeEnum.PredicateNullException
+                );
+                return null;
+            }
+
+            LazyInitCollection();
+
+            return connections.Find(predicate);
         }
 
         #endregion
@@ -598,19 +374,64 @@ namespace umi3d.cdk
         /// Fetch the connection collection that is currently saved.
         /// </summary>
         /// <returns></returns>
-        public static List<UMI3DConnectionData> Fetch_CD()
+        public static List<UMI3DConnectionData> Fetch()
         {
-            return ConnectionDataCollection.Fetch();
+            if (!UMI3DClient.TryGetData_DP(
+                out List<UMI3DConnectionData> connections,
+                connectionFile,
+                UMI3DClient.directory
+             ))
+            {
+                return new List<UMI3DConnectionData>();
+            }
+
+            return connections;
         }
 
         /// <summary>
         /// Save the current state of the connection collection.
         /// </summary>
-        public static void Save_CD()
+        public static void Save()
         {
-            ConnectionDataCollection.Save();
+            UMI3DClient.StoreData_DP(connections, connectionFile, UMI3DClient.directory);
+
+            hasUnsavedModifications = false;
         }
 
         #endregion
+
+
+        /// <summary>
+        /// An exception class to deal with <see cref="ConnectionDataCollection"/> issues.
+        /// </summary>
+        [Serializable]
+        class ConnectionCollectionException : Exception
+        {
+            static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(ConnectionCollectionException)}");
+
+            public enum ExceptionTypeEnum
+            {
+                Unknown,
+                ConnectionNullException,
+                PredicateNullException,
+                URLNullOrEmptyException
+            }
+
+            public ExceptionTypeEnum exceptionType;
+
+            public ConnectionCollectionException(string message, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown) : base($"{exceptionType}: {message}")
+            {
+                this.exceptionType = exceptionType;
+            }
+            public ConnectionCollectionException(string message, Exception inner, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown) : base($"{exceptionType}: {message}", inner)
+            {
+                this.exceptionType = exceptionType;
+            }
+
+            public static void LogException(string message, Exception inner, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown)
+            {
+                logger.Exception(null, new ConnectionCollectionException(message, inner, exceptionType));
+            }
+        }
     }
 }
