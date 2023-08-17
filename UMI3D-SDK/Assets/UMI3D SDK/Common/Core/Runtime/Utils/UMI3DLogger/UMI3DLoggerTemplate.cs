@@ -20,7 +20,7 @@
 //using System.Threading;
 //using UnityEngine;
 
-//namespace umi3d.common
+//namespace umi3d.debug
 //{
 //    /// <summary>
 //    /// Enumeration flags for log type.
@@ -356,7 +356,7 @@
 //        /// <summary>
 //        /// The logger.
 //        /// </summary>
-//        public UMI3DClientLogger Logger;
+//        public UMI3DLogger Logger;
 
 //        /// <summary>
 //        /// Create a log reporter.
@@ -365,7 +365,7 @@
 //        /// <param name="maxNumberOfLogs"></param>
 //        /// <param name="mainContext"></param>
 //        /// <param name="logger"></param>
-//        public UMI3DLogReport(string id, int maxNumberOfLogs = 10, UnityEngine.Object mainContext = null, UMI3DClientLogger logger = null)
+//        public UMI3DLogReport(string id, int maxNumberOfLogs = 10, UnityEngine.Object mainContext = null, UMI3DLogger logger = null)
 //        {
 //            this.ID = id;
 //            MaxNumberOfLogs = maxNumberOfLogs;
@@ -427,7 +427,7 @@
 
 
 //    /// <summary>
-//    /// A Logger for UMI3D client.
+//    /// A Logger for UMI3D.
 //    /// 
 //    /// <para>
 //    /// To take advantage of this logger you can fallow this simple guide:
@@ -437,7 +437,7 @@
 //    /// </para>
 //    /// </summary>
 //    [Serializable]
-//    public class UMI3DClientLogger
+//    public class UMI3DLogger
 //    {
 //        /// <summary>
 //        /// All <see cref="UMI3DLogType"/> cases.
@@ -504,14 +504,14 @@
 //        Dictionary<string, UMI3DLogReport> reporter;
 
 //        /// <summary>
-//        /// Create a client logger by defining all of its properties.
+//        /// Create a logger by defining all of its properties.
 //        /// </summary>
 //        /// <param name="logHandler"></param>
 //        /// <param name="logType"></param>
 //        /// <param name="mainTag"></param>
 //        /// <param name="mainContext"></param>
 //        /// <param name="isThreadDisplayed"></param>
-//        public UMI3DClientLogger(ILogHandler logHandler, UMI3DLogType logType, string mainTag, UnityEngine.Object mainContext, bool isThreadDisplayed)
+//        public UMI3DLogger(ILogHandler logHandler, UMI3DLogType logType, string mainTag, UnityEngine.Object mainContext, bool isThreadDisplayed)
 //        {
 //            this.LogHandler = logHandler;
 //            this.LogType = logType;
@@ -521,13 +521,13 @@
 //        }
 
 //        /// <summary>
-//        /// Create a client logger by defining some of its properties.
+//        /// Create a logger by defining some of its properties.
 //        /// </summary>
 //        /// <param name="logType"></param>
 //        /// <param name="mainTag"></param>
 //        /// <param name="mainContext"></param>
 //        /// <param name="isThreadDisplayed"></param>
-//        public UMI3DClientLogger(UMI3DLogType logType = LogTypeAllCases, string mainTag = null, UnityEngine.Object mainContext = null, bool isThreadDisplayed = false) : this(
+//        public UMI3DLogger(UMI3DLogType logType = LogTypeAllCases, string mainTag = null, UnityEngine.Object mainContext = null, bool isThreadDisplayed = false) : this(
 //            UnityEngine.Debug.unityLogger.logHandler,
 //            logType,
 //            mainTag,

@@ -15,7 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
-using umi3d.common;
+using umi3d.debug;
 
 namespace umi3d.cdk
 {
@@ -105,7 +105,7 @@ namespace umi3d.cdk
     {
         const string connectionFile = "Connections";
 
-        static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(UMI3DConnectionDataCollection)}");
+        static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(UMI3DConnectionDataCollection)}");
 
         static List<UMI3DConnectionData> connections;
 
@@ -407,7 +407,7 @@ namespace umi3d.cdk
         [Serializable]
         class ConnectionCollectionException : Exception
         {
-            static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(ConnectionCollectionException)}");
+            static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(ConnectionCollectionException)}");
 
             public enum ExceptionTypeEnum
             {

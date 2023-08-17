@@ -17,7 +17,7 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using umi3d.common;
+using umi3d.debug;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -128,7 +128,7 @@ namespace umi3d.cdk
 
         #region Private
 
-        static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(UMI3DSceneManager)}");
+        static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(UMI3DSceneManager)}");
 
         static Dictionary<string, Coroutine> loadings = new Dictionary<string, Coroutine>();
         static Dictionary<string, Coroutine> unloadings = new Dictionary<string, Coroutine>();

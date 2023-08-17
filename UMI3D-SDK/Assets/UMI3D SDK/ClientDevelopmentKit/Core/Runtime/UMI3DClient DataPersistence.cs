@@ -16,7 +16,7 @@ limitations under the License.
 using System;
 using System.IO;
 using System.Runtime.Serialization.Formatters.Binary;
-using umi3d.common;
+using umi3d.debug;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -150,7 +150,7 @@ namespace umi3d.cdk
         [Serializable]
         private class ClientDataPersistenceException : Exception
         {
-            static UMI3DClientLogger logger = new UMI3DClientLogger(mainTag: $"{nameof(ClientDataPersistenceException)}");
+            static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(ClientDataPersistenceException)}");
 
             public enum ExceptionTypeEnum
             {

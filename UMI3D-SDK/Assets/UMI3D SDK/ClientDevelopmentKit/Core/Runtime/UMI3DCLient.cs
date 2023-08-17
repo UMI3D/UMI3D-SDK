@@ -15,7 +15,7 @@ limitations under the License.
 */
 using System;
 using System.Collections.Generic;
-using umi3d.common;
+using umi3d.debug;
 using UnityEngine;
 
 namespace umi3d.cdk
