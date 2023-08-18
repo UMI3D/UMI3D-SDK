@@ -1,0 +1,663 @@
+<?xml version="1.0"?>
+<doc>
+    <assembly>
+        <name>UMI3DLogger_DEBUG</name>
+    </assembly>
+    <members>
+        <member name="T:umi3d.debug.UMI3DLogType">
+            <summary>
+            Enumeration flags for log type.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.None">
+            <summary>
+            No logs.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.DebugTodo">
+            <summary>
+            TODO Logs that are only visible if UMI3D_DEBUG is defined.
+            
+            <para>
+            They look like todo logs.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.DebugHack">
+            <summary>
+            HACK Logs that are only visible if UMI3D_DEBUG is defined.
+            
+            <para>
+            They look like hack logs.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.DebugTab">
+            <summary>
+            Table Logs that are only visible if UMI3D_DEBUG is defined.
+            
+            <para>
+            They look like a table of logs.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.Debug">
+            <summary>
+            Logs that are only visible if UMI3D_DEBUG is defined.
+            
+            <para>
+            They look like default logs.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.Default">
+            <summary>
+            Default logs. You can used them in build.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.Warning">
+            <summary>
+            Warning logs. You can used them in build.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.Assert">
+            <summary>
+            Assert Logs. You can used them in build.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.Error">
+            <summary>
+            Error Logs. You can used them in build.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogType.Exception">
+            <summary>
+            Exception Logs. You can used them in build.
+            </summary>
+        </member>
+        <member name="T:umi3d.debug.UMI3DLogColor">
+            <summary>
+            The color of the log when displayed in the Unity Console.
+            </summary>
+        </member>
+        <member name="T:umi3d.debug.UMI3DStringAlignment">
+            <summary>
+            Alignment of a message in a formated string.
+            </summary>
+        </member>
+        <member name="T:umi3d.debug.UMI3DLogCell">
+            <summary>
+            Represent a cell in a tab log.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogCell.Header">
+            <summary>
+            Title of the column.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogCell.Message">
+            <summary>
+            The message inside the cell.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogCell.StringFormatSize">
+            <summary>
+            The size of the cell.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogCell.StringFormatAlignment">
+            <summary>
+            The alignment of the message.
+            </summary>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogCell.#ctor(System.String,System.Object,System.Int32,umi3d.debug.UMI3DStringAlignment)">
+            <summary>
+            Create a cell.
+            </summary>
+            <param name="header"></param>
+            <param name="message"></param>
+            <param name="stringFormatSize"></param>
+            <param name="alignment"></param>
+        </member>
+        <member name="T:umi3d.debug.UMI3DCallTrace">
+            <summary>
+            A call trace is composed of the essential information to identify a calling method.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DCallTrace.MemberName">
+            <summary>
+            Name of the caller.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DCallTrace.SourceFilePath">
+            <summary>
+            File path of the caller.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DCallTrace.SourceLineNumber">
+            <summary>
+            Line number of the caller inside the file.
+            </summary>
+        </member>
+        <member name="P:umi3d.debug.UMI3DCallTrace.Trace">
+            <summary>
+            Get a string representation of a call trace.
+            </summary>
+        </member>
+        <member name="P:umi3d.debug.UMI3DCallTrace.PathAndNumber">
+            <summary>
+            A string representation of the path and line number of the call trace.
+            </summary>
+        </member>
+        <member name="P:umi3d.debug.UMI3DCallTrace.Path">
+            <summary>
+            Path of the call trace begining with Asset.
+            </summary>
+        </member>
+        <member name="P:umi3d.debug.UMI3DCallTrace.ClickableTrace">
+            <summary>
+            A href that can be clicked in the unity console.
+            </summary>
+        </member>
+        <member name="M:umi3d.debug.UMI3DCallTrace.#ctor(System.String,System.String,System.Int32)">
+            <summary>
+            Create a call trace.
+            </summary>
+            <param name="memberName"></param>
+            <param name="sourceFilePath"></param>
+            <param name="sourceLineNumber"></param>
+        </member>
+        <member name="T:umi3d.debug.UMI3DLog">
+            <summary>
+            The data display in the log.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLog.Type">
+            <summary>
+            Type of log.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLog.MainTag">
+            <summary>
+            The main tag.
+            
+            <para>
+            Usualy the type name of a logger's master.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLog.Tag">
+            <summary>
+            The tag.
+            
+            <para>
+            Used to identify the source of a log message. It usually identifies the method where the log call occurs.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLog.Color">
+            <summary>
+            Color of the log in the Unity console.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLog.Message">
+            <summary>
+            The message.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLog.Trace">
+            <summary>
+            The call trace.
+            </summary>
+        </member>
+        <member name="P:umi3d.debug.UMI3DLog.FormatedLog">
+            <summary>
+            Get a formated log.
+            </summary>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLog.#ctor(umi3d.debug.UMI3DLogType,System.String,System.String,umi3d.debug.UMI3DLogColor,System.Object,umi3d.debug.UMI3DCallTrace)">
+            <summary>
+            Create a <see cref="T:umi3d.debug.UMI3DLog"/>.
+            </summary>
+            <param name="type"></param>
+            <param name="mainTag"></param>
+            <param name="tag"></param>
+            <param name="color"></param>
+            <param name="message"></param>
+            <param name="trace"></param>
+        </member>
+        <member name="T:umi3d.debug.UMI3DLogReport">
+            <summary>
+            A log reporter.
+            
+            <para>
+            It is <see cref="T:umi3d.debug.UMI3DLog"/> queue that will display its logs when ask.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogReport.ID">
+            <summary>
+            The Id of this log report.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogReport.MaxNumberOfLogs">
+            <summary>
+            Maximum number of logs in this report.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogReport.MainContext">
+            <summary>
+            The main context of this logger.
+            
+            <para>
+            Usualy the instance of the logger's master if it is a <see cref="T:UnityEngine.Object"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogReport.Logger">
+            <summary>
+            The logger.
+            </summary>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogReport.#ctor(System.String,System.Int32,UnityEngine.Object,umi3d.debug.UMI3DLogger)">
+            <summary>
+            Create a log reporter.
+            </summary>
+            <param name="id"></param>
+            <param name="maxNumberOfLogs"></param>
+            <param name="mainContext"></param>
+            <param name="logger"></param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogReport.Enqueue(umi3d.debug.UMI3DLog)">
+            <summary>
+            Add a report at the end of the report.
+            </summary>
+            <param name="log"></param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogReport.Report">
+            <summary>
+            Report the stored logs.
+            </summary>
+        </member>
+        <member name="T:umi3d.debug.UMI3DLogger">
+            <summary>
+            A Logger for UMI3D.
+            
+            <para>
+            To take advantage of this logger you can fallow this simple guide:
+            <list type="bullet">
+            <item>Right click on the console tab header and selection "Use Monospace font"</item>
+            </list>
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.LogTypeAllCases">
+            <summary>
+            All <see cref="T:umi3d.debug.UMI3DLogType"/> cases.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.GeneralLogType">
+            <summary>
+            The static log type filter.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.LogHandler">
+            <summary>
+            The log handler that will handle logs.
+            
+            <para>
+            By default <see cref="P:UnityEngine.Debug.unityLogger"/>.logHandler.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.LogType">
+            <summary>
+            The log type filter of this logger.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.MainTag">
+            <summary>
+            The main tag of this logger.
+            
+            <para>
+            Usualy the type name of the logger's master.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.MainContext">
+            <summary>
+            The main context of this logger.
+            
+            <para>
+            Usualy the instance of the logger's master if it is a <see cref="T:UnityEngine.Object"/>.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.IsThreadDisplayed">
+            <summary>
+            Wherther or not the thread id has to be displayed.
+            
+            <para>
+            It is helpfull when debuging multi-threaded feature.
+            </para>
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.UMI3DLogger.tabHeaders">
+            <summary>
+            The list of table headers.
+            </summary>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.#ctor(UnityEngine.ILogHandler,umi3d.debug.UMI3DLogType,System.String,UnityEngine.Object,System.Boolean)">
+            <summary>
+            Create a logger by defining all of its properties.
+            </summary>
+            <param name="logHandler"></param>
+            <param name="logType"></param>
+            <param name="mainTag"></param>
+            <param name="mainContext"></param>
+            <param name="isThreadDisplayed"></param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.#ctor(umi3d.debug.UMI3DLogType,System.String,UnityEngine.Object,System.Boolean)">
+            <summary>
+            Create a logger by defining some of its properties.
+            </summary>
+            <param name="logType"></param>
+            <param name="mainTag"></param>
+            <param name="mainContext"></param>
+            <param name="isThreadDisplayed"></param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.GetReporter(System.String,System.Int32)">
+            <summary>
+            Get a log reporter.
+            </summary>
+            <param name="reportId"></param>
+            <param name="maxNumberOfLogs"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.DebugTodo(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an DebugTodo message.
+            
+            <para>
+            DebugTodo logs:
+            <list type="bullet">
+            <item>are not displayed in build.</item>
+            <item>Have no stack trace.</item>
+            </list>
+            </para>
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.DebugHack(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an DebugHack message.
+            
+            <para>
+            DebugHack logs:
+            <list type="bullet">
+            <item>are not displayed in build.</item>
+            <item>Have no stack trace.</item>
+            </list>
+            </para>
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.DebugTab(System.String,umi3d.debug.UMI3DLogCell[],UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs a DebugTab message.
+            
+            <para>
+            Debug logs:
+            <list type="bullet">
+            <item>are displayed in build only if the UMI3D_DEBUG macro has been added.</item>
+            <item>have no stack trace.</item>
+            </list>
+            </para>
+            </summary>
+            <param name="tabName">A unique identifier for the tab.</param>
+            <param name="cells">The collection of cells in a line.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Debug(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an Debug message.
+            
+            <para>
+            Debug logs:
+            <list type="bullet">
+            <item>are displayed in build only if the UMI3D_DEBUG macro has been added.</item>
+            <item>have no stack trace.</item>
+            </list>
+            </para>
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.DebugAssertion(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs a DebugAssertion message.
+            
+            <para>
+            DebugAssertion logs are displayed in build only if the UMI3D_DEBUG macro has been added.
+            </para>
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.DebugAssert(System.Boolean,System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs a DebugAssertion message if <paramref name="condition"/> is false.
+            
+            <para>
+            DebugAssert logs are displayed in build only if the UMI3D_DEBUG macro has been added.
+            </para>
+            </summary>
+            <param name="condition">The condition has to be false to log the message.</param>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Default(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an Default message.
+            
+            <para>
+            Default logs are no stack trace.
+            </para>
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Warning(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an Warning message.
+            
+            <para>
+            Warning have no stack trace.
+            </para>
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Assertion(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an Assertion message.
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Assert(System.Boolean,System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor,umi3d.debug.UMI3DLogReport,System.String,System.String,System.Int32)">
+            <summary>
+            A variant of Log that logs an Assertion message if <paramref name="condition"/> is false.
+            </summary>
+            <param name="condition">The condition has to be false to log the message.</param>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+            <param name="report">A report to wich this log will be added.</param>
+            <param name="memberName">The name of the caller.</param>
+            <param name="sourceFilePath">File path of the caller.</param>
+            <param name="sourceLineNumber">Line number in the file where of the caller.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Error(System.String,System.Object,UnityEngine.Object,umi3d.debug.UMI3DLogColor)">
+            <summary>
+            A variant of Log that logs an Error message.
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="message">String or object to be converted to string representation for display.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+        </member>
+        <member name="M:umi3d.debug.UMI3DLogger.Exception(System.String,System.Exception,UnityEngine.Object,umi3d.debug.UMI3DLogColor)">
+            <summary>
+            A variant of Log that logs an Exception message.
+            </summary>
+            <param name="tag">Used to identify the source of a log message. It usually identifies the method where the log call occurs.</param>
+            <param name="exception">Runtime Exception.</param>
+            <param name="context">Object to which the message applies.</param>
+            <param name="color">The color of the log in the Unity console.</param>
+        </member>
+        <member name="T:umi3d.debug.LogExtensions">
+            <summary>
+            Extensions toolkit.
+            </summary>
+        </member>
+        <member name="F:umi3d.debug.LogExtensions.spacing">
+            <summary>
+            Default spacing between the elements of a log.
+            </summary>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.GetString(System.Object)">
+            <summary>
+            Get a string from an object.
+            </summary>
+            <param name="message"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.FormatString(System.Object,System.Int32,umi3d.debug.UMI3DStringAlignment)">
+            <summary>
+            Format a message to be of the size of <paramref name="size"/> and aligned by <paramref name="alignment"/>.
+            </summary>
+            <param name="message"></param>
+            <param name="size"></param>
+            <param name="alignment"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.Repeat(System.Char,System.Int32)">
+            <summary>
+            Repeat <paramref name="c"/> <paramref name="repeatCount"/>.
+            </summary>
+            <param name="c"></param>
+            <param name="repeatCount"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.AddLogType(System.String,umi3d.debug.UMI3DLogType)">
+            <summary>
+            Add the log type after the message.
+            </summary>
+            <param name="message"></param>
+            <param name="logType"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.AddThreadID(System.String,System.Boolean)">
+            <summary>
+            Add the thread id after the message.
+            </summary>
+            <param name="message"></param>
+            <param name="IsThreadDisplayed"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.AddTags(System.String,System.String,System.String)">
+            <summary>
+            Add the tags of the log agter the message.
+            </summary>
+            <param name="message"></param>
+            <param name="MainTag"></param>
+            <param name="tag"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.AddColor(System.String,umi3d.debug.UMI3DLogColor,System.Action{System.String})">
+            <summary>
+            Add a color format string to highlight logs in the Unity console.
+            </summary>
+            <param name="message"></param>
+            <param name="color"></param>
+            <param name="setMessage"></param>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.AddTrace(System.String,umi3d.debug.UMI3DCallTrace)">
+            <summary>
+            Add the caller trace at the end of the message.
+            </summary>
+            <param name="message"></param>
+            <param name="trace"></param>
+            <returns></returns>
+        </member>
+        <member name="M:umi3d.debug.LogExtensions.FormatLog(System.Object,umi3d.debug.UMI3DLogType,System.String,System.String,umi3d.debug.UMI3DLogColor,System.Boolean,System.String,umi3d.debug.UMI3DCallTrace)">
+            <summary>
+            Format a log to display.
+            </summary>
+            <param name="message"></param>
+            <param name="logType"></param>
+            <param name="MainTag"></param>
+            <param name="tag"></param>
+            <param name="color"></param>
+            <param name="IsThreadDisplayed"></param>
+            <param name="headerMessage"></param>
+            <param name="trace"></param>
+            <returns></returns>
+        </member>
+    </members>
+</doc>
