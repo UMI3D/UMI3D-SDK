@@ -140,7 +140,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
     }
     protected virtual void DrawBuildingStepByStep()
     {
-        GUI.enabled = true;
+        GUI.enabled = !isBuilding;
         EditorGUILayout.Space();
         EditorGUILayout.BeginHorizontal();
         DrawNext();
@@ -163,7 +163,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
             {
                 EditorGUILayout.LabelField($"Commiting");
             }
-            if (current == null)
+            else if (current == null)
             {
                 if (GUILayout.Button($"Build {next.name}"))
                     CleanComputeBuildNext(current, next);
@@ -234,7 +234,9 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
     {
         try
         {
+            data.data.buildstepByStep = true;
             await BuildAll();
+            data.data.buildstepByStep = false;
 
             foreach (var asset in data.data.packages)
                 info.NewLine($"Build {asset.name} : {asset.FullPath}");
