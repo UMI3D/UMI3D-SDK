@@ -17,7 +17,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.debug;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk
@@ -27,7 +26,7 @@ namespace umi3d.cdk
     /// </summary>
     internal static class UMI3DWebRequest
     {
-        private static UMI3DLogger s_logger = new UMI3DLogger(mainTag: $"static_{nameof(UMI3DWebRequest)}");
+        private static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(UMI3DWebRequest)}");
 
         /// <summary>
         /// Send an HTTP Get Request.
@@ -50,11 +49,11 @@ namespace umi3d.cdk
         {
             if (shouldCleanAbort())
             {
-                s_logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.");
+                logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.");
                 yield break;
             }
 
-            s_logger.DebugTab(
+            logger.DebugTab(
                 tabName: "Request",
                 new[]
                 {
@@ -99,7 +98,7 @@ namespace umi3d.cdk
                 {
                     if (shouldCleanAbort())
                     {
-                        s_logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.");
+                        logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.");
                         yield break;
                     }
                     yield return null;

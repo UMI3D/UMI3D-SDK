@@ -69,7 +69,7 @@ namespace umi3d.cdk
             }
             remove
             {
-                LauncherOnMasterServer.connectFailed += value;
+                LauncherOnMasterServer.connectFailed -= value;
             }
         }
 
@@ -84,7 +84,7 @@ namespace umi3d.cdk
             }
             remove
             {
-                LauncherOnMasterServer.connectSucceeded += value;
+                LauncherOnMasterServer.connectSucceeded -= value;
             }
         }
 
@@ -99,7 +99,7 @@ namespace umi3d.cdk
             }
             remove
             {
-                LauncherOnMasterServer.requestServerInfSucceeded += value;
+                LauncherOnMasterServer.requestServerInfSucceeded -= value;
             }
         }
 
