@@ -230,7 +230,7 @@ namespace umi3d.cdk.collaboration
 
             this.progress = progress;
             this.libraryProgress = new MultiProgress("Download libraries");
-            this.joinProgress = new MultiProgress("Joinning Environment");
+            this.joinProgress = new MultiProgress("Joining Environment");
             progress.Add(libraryProgress);
             progress.Add(joinProgress);
 
