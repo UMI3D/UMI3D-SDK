@@ -36,7 +36,7 @@ namespace umi3d.cdk.collaboration
                 true when typeof(T) == typeof(AbstractInteractionDto) => true,
                 true when typeof(T) == typeof(DofGroupOptionDto) => true,
                 true when typeof(T) == typeof(DofGroupDto) => true,
-                _ => false
+                _ => null
             };
         }
 
