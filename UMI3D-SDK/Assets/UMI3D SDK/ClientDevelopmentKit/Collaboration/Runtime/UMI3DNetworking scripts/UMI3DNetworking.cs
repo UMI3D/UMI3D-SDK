@@ -19,11 +19,26 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.cdk.collaboration;
+using umi3d.common;
 using umi3d.debug;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk
 {
+    /// <summary>
+    /// Allow the browser to communicate with a distant server.
+    /// 
+    /// <para>
+    /// With this class the user can:
+    /// <list type="bullet">
+    /// <item>Send Web request (WR).</item>
+    /// <item>Try to connect to a Master Server (LoMS).</item>
+    /// <item>Try to connect to a World Controller (LoWC).</item>
+    /// </list>
+    /// </para>
+    /// </summary>
     public static class UMI3DNetworking
     {
         #region WebRequest
@@ -59,85 +74,27 @@ namespace umi3d.cdk
         #region LauncherOnMasterServer
 
         /// <summary>
-        /// Event raise when the connection to a master server failed.
-        /// </summary>
-        public static event Action connectFailed_LoMS
-        {
-            add
-            {
-                LauncherOnMasterServer.connectFailed += value;
-            }
-            remove
-            {
-                LauncherOnMasterServer.connectFailed -= value;
-            }
-        }
-
-        /// <summary>
-        /// Event raise when the connection to a master server succeeded.
-        /// </summary>
-        public static event Action connectSucceeded_LoMS
-        {
-            add
-            {
-                LauncherOnMasterServer.connectSucceeded += value;
-            }
-            remove
-            {
-                LauncherOnMasterServer.connectSucceeded -= value;
-            }
-        }
-
-        /// <summary>
-        /// Event raise when a request info to a master server has succeeded.
-        /// </summary>
-        public static event Action<(string serverName, string icon)> requestServerInfSucceeded_LoMS
-        {
-            add
-            {
-                LauncherOnMasterServer.requestServerInfSucceeded += value;
-            }
-            remove
-            {
-                LauncherOnMasterServer.requestServerInfSucceeded -= value;
-            }
-        }
-
-        /// <summary>
-        /// Event raise when a request info has succeeded.
-        /// </summary>
-        public static event Action<MasterServerResponse.Server> requestSessionInfSucceeded
-        {
-            add
-            {
-                LauncherOnMasterServer.requestSessionInfSucceeded += value;
-            }
-            remove
-            {
-                LauncherOnMasterServer.requestSessionInfSucceeded -= value;
-            }
-        }
-
-        /// <summary>
-        /// Try to connect to a master server asyncronously.
+        /// Try to connect to a master server asynchronously.
         /// 
         /// <para>
-        /// The connection is established in another thread. The <see cref="connectFailed"/> and <see cref="connectSucceeded"/> events are raised in the main-thread.
+        /// The connection is established in another thread. The <paramref name="connectSucceeded"/> and <paramref name="connectFailed"/> actions are raised in the main-thread.
         /// </para>
         /// </summary>
         /// <param name="url"></param>
+        /// <param name="connectSucceeded">Action raise when the connection succeeded.</param>
+        /// <param name="connectFailed">Action raise when the connection failed.</param>
         /// <returns></returns>
-        public static AsyncOperation ConnectAsync_LoMS(string url)
+        public static UMI3DAsyncOperation Connect_LoMS(string url, Action connectSucceeded, Action connectFailed)
         {
-            return LauncherOnMasterServer.ConnectAsync(url);
+            return LauncherOnMasterServer.Connect(url, connectSucceeded, connectFailed);
         }
 
         /// <summary>
-        /// Disconnect a master server.
+        /// Disconnect a master server asynchronously.
         /// </summary>
-        public static void Disconnect_LoMS()
+        public static UMI3DAsyncOperation Disconnect_LoMS()
         {
-            LauncherOnMasterServer.Disconnect();
+            return LauncherOnMasterServer.Disconnect();
         }
 
         /// <summary>
@@ -147,20 +104,46 @@ namespace umi3d.cdk
         /// The request is performed in another thread.
         /// </para>
         /// </summary>
-        /// <param name="requestFailed"></param>
-        public static void RequestServerInfo_LoMS(Action requestFailed)
+        /// <param name="requestServerInfSucceeded">Action raise when a request info has succeeded.</param>
+        /// <param name="requestFailed">Action raise when a request info has failed.</param>
+        public static void RequestServerInfo_LoMS(Action<(string serverName, string icon)> requestServerInfSucceeded, Action requestFailed)
         {
-            LauncherOnMasterServer.RequestServerInfo(requestFailed);
+            LauncherOnMasterServer.RequestServerInfo(requestServerInfSucceeded, requestFailed);
         }
 
         /// <summary>
         /// Get the requested information about this master server's <paramref name="sessionId"/> asyncronously.
         /// </summary>
-        /// <param name="sessionId"></param>
-        /// <param name="requestFailed"></param>
-        public static void RequestSessionInfo_LoMS(string sessionId, Action requestFailed)
+        /// <param name="sessionId">Id of the session.</param>
+        /// <param name="requestSessionInfSucceeded">Action raise when a request info has succeeded.</param>
+        /// <param name="requestFailed">Action raise when a request info has failed.</param>
+        public static void RequestSessionInfo_LoMS(string sessionId, Action<MasterServerResponse.Server> requestSessionInfSucceeded, Action requestFailed)
         {
-            LauncherOnMasterServer.RequestSessionInfo(sessionId, requestFailed);
+            LauncherOnMasterServer.RequestSessionInfo(sessionId, requestSessionInfSucceeded, requestFailed);
+        }
+
+        #endregion
+
+        #region LauncherOnWorldController
+
+        /// <summary>
+        /// Send a request to get a <see cref="MediaDto"/>.
+        /// </summary>
+        /// <param name="RawURL">A simplified version of the url where a media dto can be requested.</param>
+        /// <param name="requestSucceeded">Action raised when a media dto has been found.</param>
+        /// <param name="requestFailed">Action raised when the request failed.</param>
+        /// <param name="shouldCleanAbort">Whether or not the request has been interrupted.</param>
+        /// <param name="tryCount">The number of try.</param>
+        /// <param name="maxTryCount">The maximum number of try before giving up.</param>
+        /// <param name="report">A log report.</param>
+        /// <returns></returns>
+        public static Coroutine RequestMediaDto_LoWC(
+            string RawURL,
+            Action<MediaDto> requestSucceeded, Action<int> requestFailed, Func<bool> shouldCleanAbort,
+            int tryCount = 1, int maxTryCount = 3, UMI3DLogReport report = null
+        )
+        {
+            return LauncherOnWorldController.RequestMediaDto(RawURL, requestSucceeded, requestFailed, shouldCleanAbort, tryCount, maxTryCount, report);
         }
 
         #endregion

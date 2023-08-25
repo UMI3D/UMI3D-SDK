@@ -17,34 +17,55 @@ using System;
 using System.Collections;
 using System.Threading;
 using System.Threading.Tasks;
+using Unity.Jobs;
 using UnityEngine;
 
 namespace inetum.unityUtils
 {
     /// <summary>
-    /// A multi-threaded async operation.
+    /// A multi-threaded async operation based on <see cref="Coroutine"/> and <see cref="Task"/>.
     /// 
     /// <para>
     /// The operation is performed in another thread but the return events are performed in the main thread.
     /// </para>
     /// </summary>
-    public class AsyncOperation
+    public class UMI3DAsyncOperation
     {
         /// <summary>
-        /// Event raise when this <see cref="AsyncOperation"/> has completed.
+        /// The type of async operation.
         /// </summary>
-        public event Action<AsyncOperation> completed;
-        /// <summary>
-        /// Event raise when this <see cref="AsyncOperation"/> has been aborted.
-        /// </summary>
-        public event Action<AsyncOperation> aborted;
+        protected enum AsyncType
+        {
+            /// <summary>
+            /// The type has not been defined.
+            /// </summary>
+            Unknown,
+            /// <summary>
+            /// The async operation has been started with a <see cref="System.Threading.Tasks"/>
+            /// </summary>
+            Task,
+            /// <summary>
+            /// The async operation has been started with a Job from <see cref="Unity.Jobs"/>.
+            /// </summary>
+            Job
+        }
 
         /// <summary>
-        /// Whether or not this <see cref="AsyncOperation"/> is done.
+        /// Event raise when this <see cref="UMI3DAsyncOperation"/> has completed.
+        /// </summary>
+        public event Action<UMI3DAsyncOperation> completed;
+        /// <summary>
+        /// Event raise when this <see cref="UMI3DAsyncOperation"/> has been aborted.
+        /// </summary>
+        public event Action<UMI3DAsyncOperation> aborted;
+
+        /// <summary>
+        /// Whether or not this <see cref="UMI3DAsyncOperation"/> is done.
         /// </summary>
         public bool isDone { get; protected set; } = false;
 
         protected Coroutine coroutine;
+        protected AsyncType type = AsyncType.Unknown;
         protected void Completed()
         {
             completed?.Invoke(this);
@@ -60,12 +81,14 @@ namespace inetum.unityUtils
         /// <param name="operation">The operation to perform</param>
         /// <param name="token">Cancellation token</param>
         /// <returns></returns>
-        public AsyncOperation Start(Action operation, CancellationToken? token = null)
+        public UMI3DAsyncOperation Start(Action operation, CancellationToken? token = null)
         {
             if (coroutine != null)
             {
                 return this;
             }
+
+            type = AsyncType.Task;
 
             IEnumerator StartCoroutine()
             {
@@ -109,12 +132,14 @@ namespace inetum.unityUtils
         /// <param name="operation">The operation to perform</param>
         /// <param name="token">Cancellation token</param>
         /// <returns></returns>
-        public AsyncOperation Start(Func<Task> operation, CancellationToken? token = null)
+        public UMI3DAsyncOperation Start(Func<Task> operation, CancellationToken? token = null)
         {
             if (coroutine != null)
             {
                 return this;
             }
+
+            type = AsyncType.Task;
 
             IEnumerator StartCoroutine()
             {
@@ -153,12 +178,56 @@ namespace inetum.unityUtils
         }
 
         /// <summary>
+        /// Start a job.
+        /// 
+        /// <para>
+        /// Unlike task, a job cannot be cancelled.
+        /// </para>
+        /// </summary>
+        /// <param name="operation">The operation to perform</param>
+        /// <returns></returns>
+        public UMI3DAsyncOperation Start<Job>(Job job)
+            where Job: struct, IJob
+        {
+            if (coroutine != null)
+            {
+                return this;
+            }
+
+            type = AsyncType.Job;
+
+            IEnumerator StartCoroutine()
+            {
+                var handle = job.Schedule();
+
+                while (!handle.IsCompleted)
+                {
+                    yield return null;
+                }
+
+                handle.Complete();
+                isDone = true;
+                Completed();
+            }
+
+            coroutine = CoroutineManager.Instance.AttachCoroutine(StartCoroutine());
+
+            return this;
+        }
+
+        /// <summary>
         /// Stop the operation.
         /// </summary>
         public void Stop(CancellationTokenSource tokenSource = null)
         {
-            if (coroutine != null)
+            if (coroutine == null)
             {
+                return;
+            }
+
+            if (type == AsyncType.Job)
+            {
+                // Job cannot be cancelled.
                 return;
             }
 
@@ -175,12 +244,12 @@ namespace inetum.unityUtils
     /// The operation is performed in another thread but the return events are performed in the main thread.
     /// </para>
     /// </summary>
-    public class AsyncOperation<TResult> : AsyncOperation
+    public class UMI3DAsyncOperation<TResult> : UMI3DAsyncOperation
     {
         /// <summary>
-        /// Event raised when this <see cref="AsyncOperation"/> has completed.
+        /// Event raised when this <see cref="UMI3DAsyncOperation"/> has completed.
         /// </summary>
-        public event Action<AsyncOperation, TResult> completedWithResult;
+        public event Action<UMI3DAsyncOperation, TResult> completedWithResult;
 
         protected void OnCompletedWithResult(TResult result)
         {
@@ -193,12 +262,14 @@ namespace inetum.unityUtils
         /// <param name="operation">The operation to perform</param>
         /// <param name="token">Cancellation token</param>
         /// <returns></returns>
-        public AsyncOperation Start(Func<TResult> operation, CancellationToken? token = null)
+        public UMI3DAsyncOperation Start(Func<TResult> operation, CancellationToken? token = null)
         {
             if (coroutine != null)
             {
                 return this;
             }
+
+            type = AsyncType.Task;
 
             IEnumerator StartCoroutine()
             {
@@ -243,12 +314,14 @@ namespace inetum.unityUtils
         /// <param name="operation">The operation to perform</param>
         /// <param name="token">Cancellation token</param>
         /// <returns></returns>
-        public AsyncOperation Start(Func<Task<TResult>> operation, CancellationToken? token = null)
+        public UMI3DAsyncOperation Start(Func<Task<TResult>> operation, CancellationToken? token = null)
         {
             if (coroutine != null)
             {
                 return this;
             }
+
+            type = AsyncType.Task;
 
             IEnumerator StartCoroutine()
             {

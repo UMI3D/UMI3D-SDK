@@ -88,4 +88,12 @@ namespace inetum.unityUtils
                 throw new Exception("Can't detach, routine not found");
         }
     }
+
+    public static class IEnumeratorExtensions
+    {
+        public static Coroutine AttachCoroutine(this IEnumerator enumerator, bool isPersistent = false)
+        {
+            return CoroutineManager.Instance.AttachCoroutine(enumerator, isPersistent);
+        }
+    }
 }

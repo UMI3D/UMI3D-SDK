@@ -36,7 +36,6 @@ namespace umi3d.cdk
         const string requestServerInfoKey = "info";
         const string requestSessionInfoKey = "get";
 
-        const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration;
         static debug.UMI3DLogger logger = new debug.UMI3DLogger(mainTag: $"{nameof(LauncherOnMasterServer)}");
 
         /// <summary>
@@ -51,6 +50,16 @@ namespace umi3d.cdk
             )> request = new();
 
         static UnityEngine.Coroutine RequestInfoCoroutine;
+
+        /// <summary>
+        /// Action raise when a request info has succeeded.
+        /// </summary>
+        static Action<(string serverName, string icon)> requestServerInfSucceeded;
+
+        /// <summary>
+        /// Action raise when a request info has succeeded.
+        /// </summary>
+        static Action<MasterServerResponse.Server> requestSessionInfSucceeded;
 
         static void OnReceiveInfo(
             NetworkingPlayer player, 
@@ -146,42 +155,18 @@ namespace umi3d.cdk
 
         #endregion
 
-
-        #region Events
-
         /// <summary>
-        /// Event raise when the connection failed.
-        /// </summary>
-        public static event Action connectFailed;
-
-        /// <summary>
-        /// Event raise when the connection succeeded.
-        /// </summary>
-        public static event Action connectSucceeded;
-
-        /// <summary>
-        /// Event raise when a request info has succeeded.
-        /// </summary>
-        public static event Action<(string serverName, string icon)> requestServerInfSucceeded;
-
-        /// <summary>
-        /// Event raise when a request info has succeeded.
-        /// </summary>
-        public static event Action<MasterServerResponse.Server> requestSessionInfSucceeded;
-
-        #endregion
-
-
-        /// <summary>
-        /// Try to connect to a master server asyncronously.
+        /// Try to connect to a master server asynchronously.
         /// 
         /// <para>
-        /// The connection is established in another thread. The <see cref="connectFailed"/> and <see cref="connectSucceeded"/> events are raised in the main-thread.
+        /// The connection is established in another thread. The <paramref name="connectSucceeded"/> and <paramref name="connectFailed"/> actions are raised in the main-thread.
         /// </para>
         /// </summary>
         /// <param name="url"></param>
+        /// <param name="connectSucceeded">Action raise when the connection succeeded.</param>
+        /// <param name="connectFailed">Action raise when the connection failed.</param>
         /// <returns></returns>
-        public static AsyncOperation ConnectAsync(string url)
+        public static UMI3DAsyncOperation Connect(string url, Action connectSucceeded, Action connectFailed)
         {
             Disconnect();
 
@@ -196,7 +181,7 @@ namespace umi3d.cdk
                 return null;
             }
 
-            var asyncOperation = new AsyncOperation();
+            var asyncOperation = new UMI3DAsyncOperation();
 
             asyncOperation.completed += operation =>
             {
@@ -217,7 +202,7 @@ namespace umi3d.cdk
                     string[] ip_port = url.Split(':');
                     if (ip_port.Length > 2)
                     {
-                        logger.Assertion($"{nameof(ConnectAsync)}", $"url: {url} has not the right format. It should be: 000.000.000.000:00000");
+                        logger.Assertion($"{nameof(Connect)}", $"url: {url} has not the right format. It should be: 000.000.000.000:00000");
                         return;
                     }
 
@@ -237,20 +222,27 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// Disconnect a master server.
+        /// Disconnect a master server asynchronously.
+        /// 
+        /// <para>
+        /// Return an <see cref="UMI3DAsyncOperation"/> if <see cref="client"/> is not null, else return null.
+        /// </para>
         /// </summary>
-        public static void Disconnect()
+        public static UMI3DAsyncOperation Disconnect()
         {
+            if (RequestInfoCoroutine != null)
+            {
+                CoroutineManager.Instance.DetachCoroutine(RequestInfoCoroutine);
+            }
+            requestServerInfSucceeded = null;
+            requestSessionInfSucceeded = null;
+            request.Clear();
+
             if (client != null)
             {
                 client.textMessageReceived -= OnReceiveInfo;
-                if (RequestInfoCoroutine != null)
-                {
-                    CoroutineManager.Instance.DetachCoroutine(RequestInfoCoroutine);
-                }
-                request.Clear();
-
-                var asyncOperation = new AsyncOperation();
+                
+                var asyncOperation = new UMI3DAsyncOperation();
 
                 asyncOperation.Start(
                     () =>
@@ -258,7 +250,11 @@ namespace umi3d.cdk
                         client.Disconnect(forced: true);
                     }
                 );
+
+                return asyncOperation;
             }
+
+            return null;
         }
 
         /// <summary>
@@ -268,8 +264,9 @@ namespace umi3d.cdk
         /// The request is performed in another thread.
         /// </para>
         /// </summary>
-        /// <param name="requestFailed"></param>
-        public static void RequestServerInfo(Action requestFailed)
+        /// <param name="requestServerInfSucceeded">Action raise when a request info has succeeded.</param>
+        /// <param name="requestFailed">Action raise when a request info has failed.</param>
+        public static void RequestServerInfo(Action<(string serverName, string icon)> requestServerInfSucceeded, Action requestFailed)
         {
             if (client == null)
             {
@@ -291,7 +288,9 @@ namespace umi3d.cdk
                 return;
             }
 
-            var asyncOperation = new AsyncOperation();
+            LauncherOnMasterServer.requestServerInfSucceeded = requestServerInfSucceeded;
+
+            var asyncOperation = new UMI3DAsyncOperation();
 
             asyncOperation.Start(
                 () =>
@@ -331,9 +330,10 @@ namespace umi3d.cdk
         /// <summary>
         /// Get the requested information about this master server's <paramref name="sessionId"/> asyncronously.
         /// </summary>
-        /// <param name="sessionId"></param>
-        /// <param name="requestFailed"></param>
-        public static void RequestSessionInfo(string sessionId, Action requestFailed)
+        /// <param name="sessionId">Id of the session.</param>
+        /// <param name="requestSessionInfSucceeded">Action raise when a request info has succeeded.</param>
+        /// <param name="requestFailed">Action raise when a request info has failed.</param>
+        public static void RequestSessionInfo(string sessionId, Action<MasterServerResponse.Server> requestSessionInfSucceeded, Action requestFailed)
         {
             if (client == null)
             {
@@ -355,7 +355,7 @@ namespace umi3d.cdk
                 return;
             }
 
-            var asyncOperation = new AsyncOperation();
+            var asyncOperation = new UMI3DAsyncOperation();
 
             asyncOperation.Start(
                 () =>
