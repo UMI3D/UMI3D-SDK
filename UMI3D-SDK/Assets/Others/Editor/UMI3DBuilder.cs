@@ -16,11 +16,13 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
+using Codice.Client.BaseCommands.Import;
 using inetum.unityUtils;
 using inetum.unityUtils.editor;
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d;
 using UnityEditor;
@@ -34,6 +36,8 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
     LogScrollView info;
 
     string CommitMessage => $"SDK {version.version}";
+
+    public bool IsBuilding { get => isBuilding || (data?.data?.buildstepByStep ?? false); set => isBuilding = value; }
 
     bool isBuilding = false;
 
@@ -55,7 +59,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
                 ("date", (s) => UMI3DVersion.date)
             );
         data = new ScriptableLoader<UMI3DBuilderData>(filename);
-        info = new LogScrollView();
+        info = new LogScrollView(data.data);
         RefreshBranch();
     }
 
@@ -66,7 +70,8 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
     protected override void Draw()
     {
-        GUI.enabled = !isBuilding;
+        bool changed = false;
+        GUI.enabled = !IsBuilding ;
 
         data.editor?.OnInspectorGUI();
 
@@ -83,21 +88,42 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
         version.Draw();
 
-        GUI.enabled = !isBuilding;
+        GUI.enabled = !IsBuilding;
 
         EditorGUILayout.Separator();
         EditorGUILayout.LabelField(data.data.CommitMessageCommonTitle);
-        data.data.Commonmessage = EditorGUILayout.TextArea(data.data.Commonmessage);
+        data.data.Commonmessage = TextArea(data.data.Commonmessage, ref changed);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField(data.data.CommitMessageEdkTitle);
-        data.data.Edkmessage = EditorGUILayout.TextArea(data.data.Edkmessage);
+        data.data.Edkmessage = TextArea(data.data.Edkmessage, ref changed);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField(data.data.CommitMessageCdkTitle);
-        data.data.Cdkmessage = EditorGUILayout.TextArea(data.data.Cdkmessage);
+        data.data.Cdkmessage = TextArea(data.data.Cdkmessage, ref changed);
         EditorGUILayout.Space();
         EditorGUILayout.LabelField("Full Changelog: <...>");
         EditorGUILayout.Separator();
 
+        if (data.data.buildstepByStep)
+            DrawBuildingStepByStep();
+        else
+            DrawNotBuilding();
+
+        info.Draw();
+
+        if(changed)
+            EditorUtility.SetDirty(data.data);
+    }
+
+    string TextArea(string text, ref bool changed)
+    {
+        var _text = EditorGUILayout.TextArea(text);
+        if (text != _text)
+            changed = true;
+        return _text;
+    }
+
+    protected virtual void DrawNotBuilding()
+    {
         EditorGUILayout.Space();
         EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button("Build Packages but don't push"))
@@ -105,13 +131,86 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         if (GUILayout.Button($"Build and push on {data.data.Branch}"))
             CleanComputeBuild(true);
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
+        if (GUILayout.Button("Build Packages step by step but don't push"))
+            CleanComputeBuildStepByStep(false);
+        if (GUILayout.Button($"Build step by step and push on {data.data.Branch}"))
+            CleanComputeBuildStepByStep(true);
+        EditorGUILayout.EndHorizontal();
+    }
+    protected virtual void DrawBuildingStepByStep()
+    {
+        GUI.enabled = !isBuilding;
+        EditorGUILayout.Space();
+        EditorGUILayout.BeginHorizontal();
+        DrawNext();
+        if (GUILayout.Button($"Reset"))
+            _Reset();
+        EditorGUILayout.EndHorizontal();
+        GUI.enabled = !IsBuilding;
+    }
 
-        info.Draw();
+
+    void DrawNext()
+    {
+
+        if (data?.data?.packages != null && data.data.packages.Count > 0)
+        {
+            var current = data.data.packages.FirstOrDefault(p => !( p.build ?? true) );
+            var next = data.data.packages.FirstOrDefault(p => !p.build.HasValue);
+
+            if (current == null && next == null)
+            {
+                EditorGUILayout.LabelField($"Commiting");
+            }
+            else if (current == null)
+            {
+                if (GUILayout.Button($"Build {next.name}"))
+                    CleanComputeBuildNext(current, next);
+            }
+            else if(next == null)
+            {
+                if (GUILayout.Button($"Mark {current.name} as Build and End"))
+                    CleanComputeBuildNext(current, next);
+            }
+            else
+            {
+                if (GUILayout.Button($"Mark {current.name} as Build and Build {next.name}"))
+                    CleanComputeBuildNext(current, next);
+            }
+        }
+        else
+            EditorGUILayout.LabelField("No package to build");
+    }
+
+    void _Reset()
+    {
+        data.data.packages = null;
+        data.data.buildstepByStep = false;
+        EditorUtility.SetDirty(data.data);
+    }
+
+        async void CleanComputeBuildStepByStep(bool comit)
+    {
+        await CleanComputeBuildStart();
+        data.data.commit = comit;
+        data.data.buildstepByStep = true;
     }
 
     async void CleanComputeBuild(bool comit)
     {
-        isBuilding = true;
+        EditorUtility.SetDirty(data.data);
+        await CleanComputeBuildStart();
+        EditorUtility.SetDirty(data.data);
+        await CleanComputeBuildMiddle();
+        EditorUtility.SetDirty(data.data);
+        await CleanComputeBuildEnd(comit);
+        EditorUtility.SetDirty(data.data);
+    }
+
+    async Task CleanComputeBuildStart()
+    {
+        IsBuilding = true;
         await Task.Yield();
         try
         {
@@ -123,12 +222,71 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
             await Task.Delay(100);
             // Build player.
-            var assets = await Build(data.data.PackageFolderPath);
+            data.data.packages = GetPackage(data.data.PackageFolderPath);
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogException(e);
+        }
+    }
 
-            foreach (var asset in assets)
-                info.NewLine($"Build {asset.Item2} : {asset.Item1}");
+    async Task CleanComputeBuildMiddle()
+    {
+        try
+        {
+            data.data.buildstepByStep = true;
+            await BuildAll();
+            data.data.buildstepByStep = false;
+
+            foreach (var asset in data.data.packages)
+                info.NewLine($"Build {asset.name} : {asset.FullPath}");
 
             await Task.Delay(100);
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogException(e);
+        }
+    }
+
+    async void CleanComputeBuildNext(PackageData current, PackageData next)
+    {
+        try
+        {
+            if (current != null)
+            {
+                current.build = true;
+                info.NewLine($"Build {current.name} : {current.FullPath}");
+            }
+
+            if (next != null)
+            {
+                next.build = false;
+                EditorUtility.SetDirty(data.data);
+
+                await Task.Delay(100);
+
+
+                Build(next);
+            }
+            else
+            {
+                await CleanComputeBuildEnd(data.data.commit);
+                data.data.buildstepByStep = false;
+            }
+        }
+        catch (Exception e)
+        {
+            UnityEngine.Debug.LogException(e);
+        }
+    }
+
+
+    async Task CleanComputeBuildEnd(bool comit)
+    {
+        await Task.Yield();
+        try
+        {
 
             if (comit)
             {
@@ -138,7 +296,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
                 info.NewTitle($"Release");
 
-                var url = await ReleaseSdk.Release(data.data.Token, version.version, data.data.Branch, assets, data.data.message);
+                var url = await ReleaseSdk.Release(data.data.Token, version.version, data.data.Branch, data.data.packages, data.data.message);
 
                 Application.OpenURL(url);
             }
@@ -150,7 +308,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         {
             UnityEngine.Debug.LogException(e);
         }
-        isBuilding = false;
+        IsBuilding = false;
     }
 
     #region BuildUtils
@@ -162,9 +320,19 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         Directory.CreateDirectory(buildFolder);
     }
 
-    async Task<List<(string, string)>> Build(string buildFolder)
+    async Task BuildAll()
     {
-        return await PackagesExporter.ExportPackages(buildFolder + "/");
+        await PackagesExporter.ExportPackages(data.data.packages);
+    }
+
+    List<PackageData> GetPackage(string buildFolder)
+    {
+        return PackagesExporter.GetExportPackages(buildFolder);
+    }
+
+    void Build(PackageData data)
+    {
+        PackagesExporter.SyncBuildPackage(data);
     }
     #endregion
 }

@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.debug;
 using UnityEngine;
 
 namespace inetum.unityUtils
@@ -27,33 +28,95 @@ namespace inetum.unityUtils
     /// Easily mock-able for edit mode unit tests.
     public class CoroutineManager : Singleton<CoroutineManager>, ICoroutineService, ILateRoutineService
     {
+        static UMI3DLogger logger = new (mainTag: nameof(CoroutineManager));
+
         #region Dependency Injection
 
-        private readonly CoroutineManagerMono coroutineManagerMono;
-        private readonly PersistentCoroutineManagerMono persistentCoroutineManagerMono;
+        private CoroutineManagerMono coroutineManagerMono;
+        private PersistentCoroutineManagerMono persistentCoroutineManagerMono;
 
         private Dictionary<Coroutine, bool> coroutines = new();
         private Dictionary<IEnumerator, bool> lateRoutines = new();
 
         public CoroutineManager() : base()
         {
-            coroutineManagerMono = CoroutineManagerMono.Instance;
-            persistentCoroutineManagerMono = PersistentCoroutineManagerMono.Instance;
+            LazyInitialisationCoroutineManager();
+            LazyInitialisationPersistentCoroutineManager();
         }
 
         internal CoroutineManager(CoroutineManagerMono coroutineManagerMono, PersistentCoroutineManagerMono persistentCoroutineManagerMono) : base()
         {
-            this.coroutineManagerMono = coroutineManagerMono;
-            this.persistentCoroutineManagerMono = persistentCoroutineManagerMono;
+            logger.Assert(coroutineManagerMono != null, $"coroutineManagerMono null when creating a {nameof(CoroutineManager)}");
+            logger.Assert(persistentCoroutineManagerMono != null, $"persistentCoroutineManagerMono null when creating a {nameof(CoroutineManager)}");
+
+            LazyInitialisationCoroutineManager(coroutineManagerMono);
+            LazyInitialisationPersistentCoroutineManager(persistentCoroutineManagerMono);
         }
 
         #endregion Dependency Injection
 
+        /// <summary>
+        /// Set <see cref="coroutineManagerMono"/> in a lazy way.
+        /// 
+        /// <para>
+        /// If the field is already initialized then it won't be set again.
+        /// </para>
+        /// </summary>
+        /// <param name="coroutineManagerMono"></param>
+        void LazyInitialisationCoroutineManager(CoroutineManagerMono coroutineManagerMono = null)
+        {
+            if (this.coroutineManagerMono != null)
+            {
+                return;
+            }
+
+            if (coroutineManagerMono != null)
+            {
+                this.coroutineManagerMono = coroutineManagerMono;
+            }
+            else
+            {
+                this.coroutineManagerMono = CoroutineManagerMono.Instance;
+            }
+        }
+
+        /// <summary>
+        /// Set <see cref="persistentCoroutineManagerMono"/> in a lazy way.
+        /// 
+        /// <para>
+        /// If the field is already initialized then it won't be set again.
+        /// </para>
+        /// </summary>
+        /// <param name="persistentCoroutineManagerMono"></param>
+        void LazyInitialisationPersistentCoroutineManager(PersistentCoroutineManagerMono persistentCoroutineManagerMono = null)
+        {
+            if (this.persistentCoroutineManagerMono != null)
+            {
+                return;
+            }
+
+            if (persistentCoroutineManagerMono != null)
+            {
+                this.persistentCoroutineManagerMono = persistentCoroutineManagerMono;
+            }
+            else
+            {
+                this.persistentCoroutineManagerMono = PersistentCoroutineManagerMono.Instance;
+            }
+        }
+
         /// <inheritdoc/>
         public virtual Coroutine AttachCoroutine(IEnumerator coroutine, bool isPersistent = false)
         {
+            logger.Assert(coroutine != null, $"Coroutine null when trying to {nameof(AttachCoroutine)}.");
+
+            LazyInitialisationCoroutineManager();
+            LazyInitialisationPersistentCoroutineManager();
+            
             ICoroutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
             var resRoutine = routineService.AttachCoroutine(coroutine);
+            logger.Assert(resRoutine != null, $"resRoutine null when trying to attache. Is persistent coroutine: {isPersistent}");
+
             coroutines.Add(resRoutine, isPersistent);
             return resRoutine;
         }
@@ -61,6 +124,11 @@ namespace inetum.unityUtils
         /// <inheritdoc/>
         public virtual void DetachCoroutine(Coroutine coroutine)
         {
+            logger.Assert(coroutine != null, $"Coroutine null when trying to {nameof(DetachCoroutine)}.");
+
+            LazyInitialisationCoroutineManager();
+            LazyInitialisationPersistentCoroutineManager();
+
             if (coroutines.TryGetValue(coroutine, out bool isPersistent))
             {
                 ICoroutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
@@ -72,6 +140,11 @@ namespace inetum.unityUtils
 
         public virtual IEnumerator AttachLateRoutine(IEnumerator routine, bool isPersistent = false)
         {
+            logger.Assert(routine != null, $"Coroutine null when trying to {nameof(AttachLateRoutine)}.");
+
+            LazyInitialisationCoroutineManager();
+            LazyInitialisationPersistentCoroutineManager();
+
             ILateRoutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
             lateRoutines.Add(routine, isPersistent);
             return routineService.AttachLateRoutine(routine);
@@ -79,6 +152,11 @@ namespace inetum.unityUtils
 
         public virtual void DetachLateRoutine(IEnumerator routine)
         {
+            logger.Assert(routine != null, $"Coroutine null when trying to {nameof(DetachLateRoutine)}.");
+
+            LazyInitialisationCoroutineManager();
+            LazyInitialisationPersistentCoroutineManager();
+
             if (lateRoutines.TryGetValue(routine, out bool isPersistent))
             {
                 ILateRoutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;

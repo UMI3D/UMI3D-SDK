@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 #if UNITY_EDITOR
+using inetum.unityUtils.editor;
 using System;
+using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
 
 //[CreateAssetMenu(fileName = "UMI3DBuilderData", menuName = "Build Helper/Build Helper Data", order = 1)]
-public class UMI3DBuilderData : ScriptableObject
+public class UMI3DBuilderData : ScriptableObject, ILogScrollViewData
 {
     public string Branch;
     public string Token;
@@ -30,10 +32,19 @@ public class UMI3DBuilderData : ScriptableObject
     public string Cdkmessage;
     public string Commonmessage;
 
+    public List<PackageData> packages;
+
     public readonly string CommitMessageEdkTitle = "## EDK";
     public readonly string CommitMessageCdkTitle = "## CDK";
     public readonly string CommitMessageCommonTitle = "## Common";
     public string message => CommitMessageCommonTitle + "\n" + Commonmessage + "\n\n" + CommitMessageEdkTitle + "\n" + Edkmessage + "\n\n" + CommitMessageCdkTitle + "\n" + Cdkmessage + "\n\n";
+
+    public bool buildstepByStep = false;
+    public bool commit = false;
+
+    string ILogScrollViewData.text { get => scrollviewText; set => scrollviewText = value; }
+
+    public string scrollviewText;
 }
 
 [CustomEditor(typeof(UMI3DBuilderData))]
