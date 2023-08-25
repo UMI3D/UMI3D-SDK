@@ -169,9 +169,24 @@ namespace inetum.unityUtils
 
     public static class IEnumeratorExtensions
     {
+        /// <summary>
+        /// Attach the coroutine resulting from this <paramref name="enumerator"/> to a UMI3D Coroutine Manager.
+        /// </summary>
+        /// <param name="enumerator"></param>
+        /// <param name="isPersistent"></param>
+        /// <returns></returns>
         public static Coroutine AttachCoroutine(this IEnumerator enumerator, bool isPersistent = false)
         {
             return CoroutineManager.Instance.AttachCoroutine(enumerator, isPersistent);
+        }
+
+        /// <summary>
+        /// Detach the <paramref name="coroutine"/> from a UMI3D Coroutine Manager.
+        /// </summary>
+        /// <param name="coroutine"></param>
+        public static void DetachCoroutine(this Coroutine coroutine)
+        {
+            CoroutineManager.Instance.DetachCoroutine(coroutine);
         }
     }
 }
