@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using umi3d.cdk.collaboration;
 using umi3d.common;
 using umi3d.debug;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk
@@ -137,10 +136,10 @@ namespace umi3d.cdk
         /// <param name="maxTryCount">The maximum number of try before giving up.</param>
         /// <param name="report">A log report.</param>
         /// <returns></returns>
-        public static Coroutine RequestMediaDto_LoWC(
+        public static IEnumerator RequestMediaDto_LoWC(
             string RawURL,
             Action<MediaDto> requestSucceeded, Action<int> requestFailed, Func<bool> shouldCleanAbort,
-            int tryCount = 1, int maxTryCount = 3, UMI3DLogReport report = null
+            int tryCount = 0, int maxTryCount = 3, UMI3DLogReport report = null
         )
         {
             return LauncherOnWorldController.RequestMediaDto(RawURL, requestSucceeded, requestFailed, shouldCleanAbort, tryCount, maxTryCount, report);

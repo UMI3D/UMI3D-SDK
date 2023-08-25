@@ -42,125 +42,116 @@ namespace umi3d.cdk.collaboration
         /// <param name="maxTryCount">The maximum number of try before giving up.</param>
         /// <param name="report">A log report.</param>
         /// <returns></returns>
-        public static Coroutine RequestMediaDto(
-            string RawURL,
-            Action<MediaDto> requestSucceeded, Action<int> requestFailed, Func<bool> shouldCleanAbort,
-            int tryCount = 1, int maxTryCount = 3, UMI3DLogReport report = null
-        )
-        {
-            IEnumerator RequestMediaDtoEnumerator(
+        public static IEnumerator RequestMediaDto(
                 string RawURL,
                 Action<MediaDto> requestSucceeded, Action<int> requestFailed, Func<bool> shouldCleanAbort,
-                int tryCount = 1, int maxTryCount = 3, UMI3DLogReport report = null
-            )
+                int tryCount = 0, int maxTryCount = 3, UMI3DLogReport report = null
+        )
+        {
+            if (shouldCleanAbort?.Invoke() ?? false)
             {
-                if (shouldCleanAbort?.Invoke() ?? false)
-                {
-                    logger.Debug($"{nameof(RequestMediaDtoEnumerator)}", $"Caller requests to abort the connection with MediaDto in a clean way.", report: report);
-                    yield break;
-                }
-
-                string curentUrl = RawURL;
-                if (!curentUrl.EndsWith(UMI3DNetworkingKeys.media))
-                {
-                    curentUrl += UMI3DNetworkingKeys.media;
-                }
-                if (!curentUrl.StartsWith("http://") && !curentUrl.StartsWith("https://"))
-                {
-                    curentUrl = "http://" + curentUrl;
-                }
-
-                var tabReporter = logger.GetReporter("RequestMediaDTOTab");
-                var assertReporter = logger.GetReporter("RequestMediaDTOAssert");
-
-                IEnumerator nextTryEnumerator = null;
-
-                yield return UMI3DNetworking.Get_WR(
-                    credentials: (null, null),
-                    curentUrl,
-                    shouldCleanAbort,
-                    onCompleteSuccess: op =>
-                    {
-                        var uwr = op.webRequest;
-
-                        if (uwr?.downloadHandler.data == null)
-                        {
-                            logger.DebugAssertion($"{nameof(RequestMediaDtoEnumerator)}", $"downloadHandler.data == null.");
-                            tabReporter.Report();
-                            assertReporter.Report();
-                            return;
-                        }
-
-                        string json = null;
-                        MediaDto mediaDto = null;
-                        try
-                        {
-                            json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-                            mediaDto = UMI3DDtoSerializer.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
-                        }
-                        catch (Exception e)
-                        {
-                            WorldControllerException.LogException(
-                                $"Trying to get media dto from json cause an exception.",
-                                inner: e,
-                                WorldControllerException.ExceptionTypeEnum.MediaDtoFromJson
-                            );
-                            tabReporter.Report();
-                            assertReporter.Report();
-                            return;
-                        }
-
-                        requestSucceeded?.Invoke(mediaDto);
-                        logger.Default($"{nameof(RequestMediaDtoEnumerator)}", $"Request at: {RawURL} is a success.");
-                        tabReporter.Clear();
-                        assertReporter.Clear();
-                    },
-                    onCompleteFail: op =>
-                    {
-                        if (shouldCleanAbort?.Invoke() ?? false)
-                        {
-                            logger.Debug($"{nameof(RequestMediaDtoEnumerator)}", $"Caller requests to abort the connection with MediaDto in a clean way.", report: report);
-                            return;
-                        }
-
-                        logger.Assertion(
-                            tag: $"{nameof(RequestMediaDtoEnumerator)}",
-                            $"MediaDto failed:   " +
-                            $"{op.webRequest.result}".FormatString(19) +
-                            "   " +
-                            $"{curentUrl}".FormatString(40) +
-                            "   " +
-                            $"{tryCount}" +
-                            $"\n{op.webRequest.error}",
-                            report: assertReporter
-                            );
-
-                        if (tryCount < maxTryCount)
-                        {
-                            nextTryEnumerator = RequestMediaDtoEnumerator(RawURL, requestSucceeded, requestFailed, shouldCleanAbort, tryCount + 1, maxTryCount, report);
-                        }
-                        else
-                        {
-                            logger.Error($"{nameof(RequestMediaDtoEnumerator)}", $"MediaDto failed more than 3 times. Connection has been aborted.");
-                            tabReporter.Report();
-                            assertReporter.Report();
-                        }
-
-                        requestFailed?.Invoke(tryCount);
-                    },
-                    tabReporter
-                );
-
-                if (nextTryEnumerator != null)
-                {
-                    yield return nextTryEnumerator;
-                }
+                logger.Debug($"{nameof(RequestMediaDto)}", $"Caller requests to abort the connection with MediaDto in a clean way.", report: report);
+                yield break;
             }
 
-            return CoroutineManager.Instance.AttachCoroutine(RequestMediaDtoEnumerator(RawURL, requestSucceeded, requestFailed, shouldCleanAbort, tryCount, maxTryCount, report));
+            string curentUrl = RawURL;
+            if (!curentUrl.EndsWith(UMI3DNetworkingKeys.media))
+            {
+                curentUrl += UMI3DNetworkingKeys.media;
+            }
+            if (!curentUrl.StartsWith("http://") && !curentUrl.StartsWith("https://"))
+            {
+                curentUrl = "http://" + curentUrl;
+            }
+
+            var tabReporter = logger.GetReporter("RequestMediaDTOTab");
+            var assertReporter = logger.GetReporter("RequestMediaDTOAssert");
+
+            IEnumerator nextTryEnumerator = null;
+
+            yield return UMI3DNetworking.Get_WR(
+                credentials: (null, null),
+                curentUrl,
+                shouldCleanAbort,
+                onCompleteSuccess: op =>
+                {
+                    var uwr = op.webRequest;
+
+                    if (uwr?.downloadHandler.data == null)
+                    {
+                        logger.DebugAssertion($"{nameof(RequestMediaDto)}", $"downloadHandler.data == null.");
+                        tabReporter.Report();
+                        assertReporter.Report();
+                        return;
+                    }
+
+                    string json = null;
+                    MediaDto mediaDto = null;
+                    try
+                    {
+                        json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
+                        mediaDto = UMI3DDtoSerializer.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
+                    }
+                    catch (Exception e)
+                    {
+                        WorldControllerException.LogException(
+                            $"Trying to get media dto from json cause an exception.",
+                            inner: e,
+                            WorldControllerException.ExceptionTypeEnum.MediaDtoFromJson
+                        );
+                        tabReporter.Report();
+                        assertReporter.Report();
+                        return;
+                    }
+
+                    requestSucceeded?.Invoke(mediaDto);
+                    logger.Default($"{nameof(RequestMediaDto)}", $"Request at: {RawURL} is a success.");
+                    tabReporter.Clear();
+                    assertReporter.Clear();
+                },
+                onCompleteFail: op =>
+                {
+                    if (shouldCleanAbort?.Invoke() ?? false)
+                    {
+                        logger.Debug($"{nameof(RequestMediaDto)}", $"Caller requests to abort the connection with MediaDto in a clean way.", report: report);
+                        return;
+                    }
+
+                    logger.Assertion(
+                        tag: $"{nameof(RequestMediaDto)}",
+                        $"MediaDto failed:   " +
+                        $"{op.webRequest.result}".FormatString(19) +
+                        "   " +
+                        $"{curentUrl}".FormatString(40) +
+                        "   " +
+                        $"{tryCount}" +
+                        $"\n{op.webRequest.error}",
+                        report: assertReporter
+                        );
+
+                    if (tryCount < maxTryCount - 1)
+                    {
+                        nextTryEnumerator = RequestMediaDto(RawURL, requestSucceeded, requestFailed, shouldCleanAbort, tryCount + 1, maxTryCount, report);
+                    }
+                    else
+                    {
+                        logger.Error($"{nameof(RequestMediaDto)}", $"MediaDto failed more than 3 times. Connection has been aborted.");
+                        tabReporter.Report();
+                        assertReporter.Report();
+                    }
+
+                    requestFailed?.Invoke(tryCount);
+                },
+                tabReporter
+            );
+
+            if (nextTryEnumerator != null)
+            {
+                yield return nextTryEnumerator;
+            }
         }
 
-        
+
         /// <summary>
         /// An exception class to deal with <see cref="LauncherOnWorldController"/> issues.
         /// </summary>
