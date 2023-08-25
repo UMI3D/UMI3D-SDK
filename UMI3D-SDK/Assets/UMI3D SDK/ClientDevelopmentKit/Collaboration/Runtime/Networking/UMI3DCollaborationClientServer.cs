@@ -102,7 +102,6 @@ namespace umi3d.cdk.collaboration
         {
             if (Exists)
             {
-                worldControllerClient?.Clear();
                 if (environmentClient != null) await environmentClient?.Clear();
                 worldControllerClient = null;
                 environmentClient = null;
@@ -192,8 +191,6 @@ namespace umi3d.cdk.collaboration
 
                         if (env != null)
                             await env.Logout();
-                        if (worldControllerClient != null)
-                            worldControllerClient.Logout();
 
                         //Connection will not restart without this...
                         await Task.Yield();
@@ -241,8 +238,6 @@ namespace umi3d.cdk.collaboration
                 environmentClient = null;
             }
 
-            if (worldControllerClient != null)
-                worldControllerClient.Logout();
             if (Exists)
             {
                 Instance.OnLeavingEnvironment.Invoke();
