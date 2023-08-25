@@ -21,10 +21,8 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using umi3d.common;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.collaboration
 {
     /// <summary>
     /// Used to connect to a Master Server, when a World Controller is not used.

@@ -24,7 +24,7 @@ using umi3d.common;
 using umi3d.debug;
 using UnityEngine.Networking;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.collaboration
 {
     /// <summary>
     /// Allow the browser to communicate with a distant server.

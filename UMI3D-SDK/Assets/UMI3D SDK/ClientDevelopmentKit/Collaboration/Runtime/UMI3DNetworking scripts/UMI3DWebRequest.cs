@@ -19,7 +19,7 @@ using System.Collections.Generic;
 using umi3d.debug;
 using UnityEngine.Networking;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.collaboration
 {
     /// <summary>
     /// A class responsible for 
@@ -49,7 +49,7 @@ namespace umi3d.cdk
         {
             if (shouldCleanAbort())
             {
-                logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.");
+                logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.", report: report);
                 yield break;
             }
 
@@ -98,7 +98,7 @@ namespace umi3d.cdk
                 {
                     if (shouldCleanAbort())
                     {
-                        logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.");
+                        logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.", report: report);
                         yield break;
                     }
                     yield return null;
