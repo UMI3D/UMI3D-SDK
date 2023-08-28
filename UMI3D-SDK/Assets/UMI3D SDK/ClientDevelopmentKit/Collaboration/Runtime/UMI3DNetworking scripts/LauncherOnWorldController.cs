@@ -15,21 +15,84 @@ limitations under the License.
 */
 using System;
 using System.Collections;
-using System.Collections.Generic;
+using System.Security.AccessControl;
 using umi3d.common;
-using inetum.unityUtils;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.interaction;
 using umi3d.debug;
-using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
     internal static class LauncherOnWorldController
     {
         #region private
+
         static debug.UMI3DLogger logger = new debug.UMI3DLogger(mainTag: $"{nameof(LauncherOnWorldController)}");
 
+        static PrivateIdentityDto privateIdentityDto;
 
         #endregion
+
+        /// <summary>
+        /// Whether or not a connection or redirection is in progress.
+        /// </summary>
+        public static bool IsConnectingOrRedirecting;
+
+        /// <summary>
+        /// The status of the user in the server.
+        /// </summary>
+        public static StatusType status;
+
+        /// <summary>
+        /// Called to create a new Public Identity for this client.
+        /// </summary>
+        public static PublicIdentityDto PublicIdentity
+        {
+            get
+            {
+                if (privateIdentityDto != null)
+                {
+                    return new PublicIdentityDto()
+                    {
+                        userId = privateIdentityDto.userId,
+                        login = privateIdentityDto.login,
+                        displayName = privateIdentityDto.displayName
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Called to create a new Identity for this client.
+        /// </summary>
+        public static IdentityDto Identity
+        {
+            get
+            {
+                if (privateIdentityDto != null)
+                {
+                    return new IdentityDto()
+                    {
+                        userId = privateIdentityDto.userId,
+                        login = privateIdentityDto.login,
+                        displayName = privateIdentityDto.displayName,
+                        guid = privateIdentityDto.guid,
+                        headerToken = privateIdentityDto.headerToken,
+                        localToken = privateIdentityDto.localToken,
+                        key = privateIdentityDto.key
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
 
         /// <summary>
         /// Send a request to get a <see cref="MediaDto"/>.
@@ -64,8 +127,8 @@ namespace umi3d.cdk.collaboration
                 curentUrl = "http://" + curentUrl;
             }
 
-            var tabReporter = logger.GetReporter("RequestMediaDTOTab");
-            var assertReporter = logger.GetReporter("RequestMediaDTOAssert");
+            var getRequestReporter = logger.GetReporter("RequestMediaDTOGet");
+            var failRequestReporter = logger.GetReporter("RequestMediaDTOFail");
 
             IEnumerator nextTryEnumerator = null;
 
@@ -80,8 +143,8 @@ namespace umi3d.cdk.collaboration
                     if (uwr?.downloadHandler.data == null)
                     {
                         logger.DebugAssertion($"{nameof(RequestMediaDto)}", $"downloadHandler.data == null.");
-                        tabReporter.Report();
-                        assertReporter.Report();
+                        getRequestReporter.Report();
+                        failRequestReporter.Report();
                         return;
                     }
 
@@ -99,15 +162,15 @@ namespace umi3d.cdk.collaboration
                             inner: e,
                             WorldControllerException.ExceptionTypeEnum.MediaDtoFromJson
                         );
-                        tabReporter.Report();
-                        assertReporter.Report();
+                        getRequestReporter.Report();
+                        failRequestReporter.Report();
                         return;
                     }
 
                     requestSucceeded?.Invoke(mediaDto);
                     logger.Default($"{nameof(RequestMediaDto)}", $"Request at: {RawURL} is a success.");
-                    tabReporter.Clear();
-                    assertReporter.Clear();
+                    getRequestReporter.Clear();
+                    failRequestReporter.Clear();
                 },
                 onCompleteFail: op =>
                 {
@@ -126,7 +189,7 @@ namespace umi3d.cdk.collaboration
                         "   " +
                         $"{tryCount}" +
                         $"\n{op.webRequest.error}",
-                        report: assertReporter
+                        report: failRequestReporter
                         );
 
                     if (tryCount < maxTryCount - 1)
@@ -136,19 +199,256 @@ namespace umi3d.cdk.collaboration
                     else
                     {
                         logger.Error($"{nameof(RequestMediaDto)}", $"MediaDto failed more than 3 times. Connection has been aborted.");
-                        tabReporter.Report();
-                        assertReporter.Report();
+                        getRequestReporter.Report();
+                        failRequestReporter.Report();
                     }
 
                     requestFailed?.Invoke(tryCount);
                 },
-                tabReporter
+                getRequestReporter
             );
 
             if (nextTryEnumerator != null)
             {
                 yield return nextTryEnumerator;
             }
+        }
+
+        /// <summary>
+        /// A connection is simply a redirection from nowhere.
+        /// </summary>
+        /// <param name="mediaDto"></param>
+        /// <param name="language"></param>
+        /// <param name="shouldCleanAbort"></param>
+        /// <param name="formReceived"></param>
+        /// <param name="formAnswerReceived"></param>
+        /// <param name="connectionStarted"></param>
+        /// <param name="connectionSucceeded"></param>
+        /// <param name="connectionFailed"></param>
+        /// <param name="maxTryCount"></param>
+        /// <param name="report"></param>
+        public static IEnumerator Connect(
+            MediaDto mediaDto, 
+            string language,
+            Func<bool> shouldCleanAbort,
+            Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
+            Action connectionStarted, Action connectionSucceeded, Action connectionFailed,
+            int maxTryCount = 3, UMI3DLogReport report = null
+        )
+        {
+            return Redirect(
+                new RedirectionDto
+                {
+                    media = mediaDto,
+                    gate = null
+                },
+                globalToken: null, language,
+                shouldCleanAbort,
+                formReceived, formAnswerReceived,
+                redirectionStarted: connectionStarted,
+                redirectionSucceeded: connectionSucceeded,
+                redirectionFailed: connectionFailed,
+                maxTryCount, report
+            );
+        }
+
+        public static IEnumerator Redirect(
+            RedirectionDto redirectionDto,
+            string globalToken, string language,
+            Func<bool> shouldCleanAbort,
+            Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
+            Action redirectionStarted, Action redirectionSucceeded, Action redirectionFailed,
+            int maxTryCount = 3, UMI3DLogReport report = null
+        )
+        {
+            if (shouldCleanAbort?.Invoke() ?? false)
+            {
+                logger.Debug($"{nameof(Redirect)}", $"Caller requests to abort the redirection in a clean way.", report: report);
+                yield break;
+            }
+
+            if (IsConnectingOrRedirecting)
+            {
+                WorldControllerException.LogException(
+                    $"Trying to redirect when a redirection is already in progress.",
+                    inner: null,
+                    WorldControllerException.ExceptionTypeEnum.RedirectionAlreadyInProgress
+                );
+                yield break;
+            }
+
+            IsConnectingOrRedirecting = true;
+            redirectionStarted?.Invoke();
+            status = StatusType.AWAY;
+            ConnectionDto connectionDto = new ()
+            {
+                gate = redirectionDto.gate,
+                globalToken = globalToken,
+                language = language,
+                libraryPreloading = false,
+                metadata = null
+            };
+            string connectionUrl = redirectionDto.media.url + UMI3DNetworkingKeys.connect;
+
+            IEnumerator SendConnectionDto(ConnectionDto connectionDto, string json = null, int tryCount = 0)
+            {
+                if (shouldCleanAbort?.Invoke() ?? false)
+                {
+                    logger.Debug($"{nameof(SendConnectionDto)}", $"Caller requests to abort the redirection in a clean way.", report: report);
+                    yield break;
+                }
+
+                if (string.IsNullOrEmpty(json))
+                {
+                    try
+                    {
+                        json = connectionDto.ToJson(Newtonsoft.Json.TypeNameHandling.None);
+                    }
+                    catch (Exception e)
+                    {
+                        WorldControllerException.LogException(
+                            "Trying to get json from connectionDto cause an exception.",
+                            inner: e,
+                            WorldControllerException.ExceptionTypeEnum.ConnectionDtoToJson
+                        );
+                        IsConnectingOrRedirecting = false;
+                        yield break;
+                    }
+                }
+
+                IEnumerator nextTryEnumerator = null;
+                bool waitForFormAnswer = false;
+
+                yield return UMI3DNetworking.Post_WR(
+                    credentials: (null, null),
+                    connectionUrl,
+                    data: (UMI3DNetworking.ContentTypeJson, json),
+                    shouldCleanAbort,
+                    onCompleteSuccess: op =>
+                    {
+                        if (shouldCleanAbort?.Invoke() ?? false)
+                        {
+                            logger.Debug($"{nameof(SendConnectionDto)}", $"Caller requests to abort the redirection in a clean way.", report: report);
+                            return;
+                        }
+
+                        string answerString = null;
+                        try
+                        {
+                            answerString = System.Text.Encoding.UTF8.GetString(op.webRequest.downloadHandler.data);
+                        }
+                        catch (Exception e)
+                        {
+                            WorldControllerException.LogException(
+                                $"Trying to get string from webRequest.downloadHandler.data cause an exception.",
+                                inner: e, 
+                                WorldControllerException.ExceptionTypeEnum.WRDownloadHandlerToString
+                            );
+                            return;
+                        }
+
+                        var answerDtoReport = logger.GetReporter("AnswerDto");
+                        bool TryGetAnswerDto<DtoType>(out DtoType answer)
+                            where DtoType : UMI3DDto
+                        {
+                            DtoType dto = null;
+                            try
+                            {
+                                dto = UMI3DDtoSerializer.FromJson<DtoType>(answerString, Newtonsoft.Json.TypeNameHandling.None);
+                            }
+                            catch (Exception e)
+                            {
+                                logger.Assertion(
+                                    $"{nameof(TryGetAnswerDto)}", 
+                                    $"Trying to get the post answer dto fail: {typeof(DtoType).Name}\n" +
+                                    $"{e.Message}", 
+                                    report: report   
+                                );
+                            }
+
+                            answer = dto;
+                            return dto != null;
+                        }
+
+                        if (TryGetAnswerDto(out PrivateIdentityDto privateIdentityDto))
+                        {
+                            LauncherOnWorldController.privateIdentityDto = privateIdentityDto;
+                            redirectionSucceeded?.Invoke();
+                        }
+                        //else if (!TryGetAnswerDto<FakePrivateIdentityDto>(out postAnswerDto))
+                        //{
+
+                        //}
+                        else if (TryGetAnswerDto(out ConnectionFormDto connectionFormDto))
+                        {
+                            waitForFormAnswer = true;
+                            formReceived?.Invoke(connectionFormDto);
+                        }
+                        else
+                        {
+                            answerDtoReport.Report();
+                            redirectionFailed?.Invoke();
+                        }
+                    },
+                    onCompleteFail: op =>
+                    {
+                        if (shouldCleanAbort?.Invoke() ?? false)
+                        {
+                            logger.Debug($"{nameof(SendConnectionDto)}", $"Caller requests to abort the redirection in a clean way.", report: report);
+                            return;
+                        }
+
+                        var failRequestReporter = logger.GetReporter("RequestConnectionDTOFail");
+                        logger.Assertion(
+                            tag: $"{nameof(SendConnectionDto)}",
+                            $"Send connectionDto failed:   " +
+                            $"{op.webRequest.result}".FormatString(19) +
+                            "   " +
+                            $"{connectionUrl}".FormatString(40) +
+                            "   " +
+                            $"{tryCount}" +
+                            $"\n{op.webRequest.error}",
+                            report: failRequestReporter
+                        );
+
+                        if (tryCount < maxTryCount - 1)
+                        {
+                            nextTryEnumerator = SendConnectionDto(connectionDto, json, tryCount + 1);
+                        }
+                        else
+                        {
+                            logger.Error($"{nameof(SendConnectionDto)}", $"MediaDto failed more than 3 times. Connection has been aborted.");
+                            report.Report();
+                            failRequestReporter.Report();
+                        }
+                    },
+                    report
+                );
+
+                if (nextTryEnumerator != null)
+                {
+                    yield return nextTryEnumerator;
+                }
+                else if (waitForFormAnswer)
+                {
+                    FormConnectionAnswerDto formAnswerDto = null;
+
+                    do
+                    {
+                        formAnswerDto = formAnswerReceived?.Invoke();
+                        if (formAnswerDto == null)
+                        {
+                            yield return null;
+                        }
+                    } while (formAnswerDto == null);
+
+                    yield return SendConnectionDto(formAnswerDto);
+                }
+            }
+
+            yield return SendConnectionDto(connectionDto);
+
+            IsConnectingOrRedirecting = false;
         }
 
 
@@ -163,7 +463,10 @@ namespace umi3d.cdk.collaboration
             public enum ExceptionTypeEnum
             {
                 Unknown,
-                MediaDtoFromJson
+                MediaDtoFromJson,
+                RedirectionAlreadyInProgress,
+                ConnectionDtoToJson,
+                WRDownloadHandlerToString
             }
 
             public ExceptionTypeEnum exceptionType;

@@ -160,24 +160,24 @@ namespace umi3d.cdk.collaboration
         {
             if (!Exists)
             {
-                failed?.Invoke("No Intance of UMI3DCollaborationServer");
+                failed?.Invoke("No Instance of UMI3DCollaborationServer");
                 return;
             }
 
-            if (UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress)
+            if (Instance.IsRedirectionInProgress)
             {
                 failed?.Invoke("Redirection already in progress");
                 return;
             }
             bool aborted = false;
-            UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = true;
-            Instance.OnRedirectionStarted.Invoke();
+            ////Instance.IsRedirectionInProgress = true;
+            ////Instance.OnRedirectionStarted.Invoke();
 
             try
             {
                 if (Exists)
                 {
-                    Instance.status = StatusType.AWAY;
+                    ////Instance.status = StatusType.AWAY;
                     UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
                     if (await wc.Connect())
                     {
@@ -200,7 +200,7 @@ namespace umi3d.cdk.collaboration
 
                         worldControllerClient = wc;
                         environmentClient = await wc.ConnectToEnvironment(progress);
-                        environmentClient.status = StatusType.CREATED;
+                        Instance.status = StatusType.CREATED;
                     }
                 }
                 else
@@ -221,14 +221,6 @@ namespace umi3d.cdk.collaboration
                 Instance.OnRedirectionAborted.Invoke();
         }
 
-        public static void Connect(MediaDto dto, Action<string> failed = null)
-        {
-            Connect(new RedirectionDto()
-            {
-                media = dto,
-                gate = null
-            }, failed);
-        }
 
         public static async void Logout()
         {

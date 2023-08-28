@@ -67,37 +67,20 @@ namespace umi3d.cdk.collaboration
             return isConnected;
         }
 
-        public UMI3DWorldControllerClient(MediaDto media)
+        public UMI3DWorldControllerClient(RedirectionDto redirection, string globalToken = null)
         {
-            this.media = media;
+            this.media = redirection.media;
+            this.gate = redirection.gate;
+            this.globalToken = globalToken;
             isConnecting = false;
             isConnected = false;
             privateIdentity = null;
-        }
-
-        public UMI3DWorldControllerClient(MediaDto media, GateDto gate) : this(media)
-        {
-            this.gate = gate;
-        }
-
-        public UMI3DWorldControllerClient(RedirectionDto redirection) : this(redirection.media, redirection.gate)
-        {
-        }
-
-        public UMI3DWorldControllerClient(RedirectionDto redirection, string globalToken) : this(redirection)
-        {
-            this.globalToken = globalToken;
         }
 
         public ulong GetUserID() { return environment?.GetUserID() ?? 0; }
 
         public async Task<bool> Connect(bool downloadLibraryOnly = false)
         {
-            async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)
-            {
-                return await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
-            }
-
             async Task<bool> Connect(ConnectionDto dto)
             {
                 if (UMI3DCollaborationClientServer.Exists && !string.IsNullOrEmpty(media.url))
@@ -111,7 +94,7 @@ namespace umi3d.cdk.collaboration
                     }
                     else if (answerDto is ConnectionFormDto form)
                     {
-                        FormAnswerDto answer = await GetFormAnswer(form);
+                        FormAnswerDto answer = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
                         var _answer = new FormConnectionAnswerDto()
                         {
                             formAnswerDto = answer,
@@ -127,21 +110,27 @@ namespace umi3d.cdk.collaboration
             }
 
             if (!isConnected && !isConnecting)
+            {
                 return await Connect(new ConnectionDto()
                 {
                     globalToken = this.globalToken,
                     gate = this.gate,
                     libraryPreloading = downloadLibraryOnly
                 });
-            return false;
+            }
+            else
+            {
+                return false;
+            }
         }
 
         public UMI3DWorldControllerClient Redirection(RedirectionDto redirection)
         {
-            if (media.url == redirection.media.url)
-                return new UMI3DWorldControllerClient(redirection, globalToken);
-            else
-                return new UMI3DWorldControllerClient(redirection);
+            return new UMI3DWorldControllerClient(
+                redirection, 
+                globalToken: media.url == redirection.media.url ? globalToken : null
+            );
+
         }
 
         public async Task<UMI3DEnvironmentClient> ConnectToEnvironment(MultiProgress progress)

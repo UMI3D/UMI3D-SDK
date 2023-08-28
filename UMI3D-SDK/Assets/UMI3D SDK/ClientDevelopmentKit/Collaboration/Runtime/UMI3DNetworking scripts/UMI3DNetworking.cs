@@ -43,6 +43,11 @@ namespace umi3d.cdk.collaboration
         #region WebRequest
 
         /// <summary>
+        /// The content-type for a json.
+        /// </summary>
+        public const string ContentTypeJson = UMI3DWebRequest.ContentTypeJson;
+
+        /// <summary>
         /// Send an HTTP Get Request.
         /// </summary>
         /// <param name="credentials"></param>
@@ -63,6 +68,34 @@ namespace umi3d.cdk.collaboration
         {
             return UMI3DWebRequest.Get(
                 credentials, url,
+                shouldCleanAbort, onCompleteSuccess, onCompleteFail,
+                report
+            );
+        }
+
+        /// <summary>
+        /// Send an HTTP Post Request.
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <param name="shouldCleanAbort"></param>
+        /// <param name="onCompleteSuccess"></param>
+        /// <param name="onCompleteFail"></param>
+        /// <param name="report"></param>
+        /// <returns></returns>
+        public static IEnumerator Post_WR(
+        (string token, List<(string, string)> headers) credentials,
+        string url,
+        (string contentType, string json) data,
+        Func<bool> shouldCleanAbort,
+        Action<UnityWebRequestAsyncOperation> onCompleteSuccess,
+        Action<UnityWebRequestAsyncOperation> onCompleteFail,
+        UMI3DLogReport report = null
+        )
+        {
+            return UMI3DWebRequest.Post(
+                credentials, url, data,
                 shouldCleanAbort, onCompleteSuccess, onCompleteFail,
                 report
             );

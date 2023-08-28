@@ -13,10 +13,13 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.common.collaboration.dto.networking;
 using umi3d.debug;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration
@@ -26,6 +29,11 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     internal static class UMI3DWebRequest
     {
+        /// <summary>
+        /// The content-type for a json.
+        /// </summary>
+        public const string ContentTypeJson = "application/json";
+
         private static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(UMI3DWebRequest)}");
 
         /// <summary>
@@ -54,7 +62,7 @@ namespace umi3d.cdk.collaboration
             }
 
             logger.DebugTab(
-                tabName: "Request",
+                tabName: "Get",
                 new[]
                 {
                     new UMI3DLogCell(
@@ -66,11 +74,6 @@ namespace umi3d.cdk.collaboration
                         "url",
                         url,
                         40
-                    ),
-                    new UMI3DLogCell(
-                        "contentType",
-                        null,
-                        20
                     )
                 },
                 report: report
@@ -116,6 +119,151 @@ namespace umi3d.cdk.collaboration
                 {
                     onCompleteSuccess?.Invoke(operation);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Send an HTTP Post Request.
+        /// </summary>
+        /// <param name="credentials"></param>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <param name="shouldCleanAbort"></param>
+        /// <param name="onCompleteSuccess"></param>
+        /// <param name="onCompleteFail"></param>
+        /// <param name="report"></param>
+        /// <returns></returns>
+        public static IEnumerator Post(
+        (string token, List<(string, string)> headers) credentials,
+        string url,
+        (string contentType, string json) data,
+        Func<bool> shouldCleanAbort,
+        Action<UnityWebRequestAsyncOperation> onCompleteSuccess,
+        Action<UnityWebRequestAsyncOperation> onCompleteFail,
+        UMI3DLogReport report = null
+        )
+        {
+            if (shouldCleanAbort())
+            {
+                logger.Debug($"{nameof(Post)}", $"Caller requests to abort the PostRequest in a clean way.", report: report);
+                yield break;
+            }
+
+            logger.DebugTab(
+                tabName: "Post",
+                new[]
+                {
+                    new UMI3DLogCell(
+                        "headerToken",
+                        credentials.token,
+                        20
+                    ),
+                    new UMI3DLogCell(
+                        "url",
+                        url,
+                        40
+                    ),
+                    new UMI3DLogCell(
+                        "contentType",
+                        data.contentType,
+                        20
+                    )
+                },
+                report: report
+            );
+
+            using (var uwr = new UnityWebRequest(url, UnityWebRequest.kHttpVerbPOST))
+            {
+                byte[] bytes = null;
+
+                try
+                {
+                    bytes = System.Text.Encoding.UTF8.GetBytes(data.json);
+                }
+                catch (Exception e)
+                {
+                    WebRequestException.LogException(
+                        "Trying to get bytes from json cause an exception.",
+                        inner: e,
+                        WebRequestException.ExceptionTypeEnum.JsonToBytes
+                    );
+                    yield break;
+                }
+                uwr.uploadHandler = new UploadHandlerRaw(data: bytes)
+                {
+                    contentType = string.IsNullOrEmpty(data.contentType) ? ContentTypeJson : data.contentType
+                };
+                uwr.downloadHandler = new DownloadHandlerBuffer();
+
+                if (!string.IsNullOrEmpty(credentials.token))
+                {
+                    uwr.SetRequestHeader(name: common.UMI3DNetworkingKeys.Authorization, value: credentials.token);
+                }
+                if (credentials.headers != null)
+                {
+                    foreach ((string name, string value) item in credentials.headers)
+                    {
+                        uwr.SetRequestHeader(item.name, item.value);
+                    }
+                }
+
+                DateTime date = DateTime.UtcNow;
+
+                UnityWebRequestAsyncOperation operation = uwr.SendWebRequest();
+
+                while (!operation.isDone)
+                {
+                    if (shouldCleanAbort())
+                    {
+                        logger.Debug($"{nameof(Post)}", $"Caller requests to abort the PostRequest in a clean way.", report: report);
+                        yield break;
+                    }
+                    yield return null;
+                }
+
+#if UNITY_2020_1_OR_NEWER
+                if (uwr.result > UnityWebRequest.Result.Success)
+#else
+                if (uwr.isNetworkError || uwr.isHttpError)
+#endif
+                {
+                    onCompleteFail?.Invoke(operation);
+                }
+                else
+                {
+                    onCompleteSuccess?.Invoke(operation);
+                }
+            }
+        }
+
+        /// <summary>
+        /// An exception class to deal with <see cref="LauncherOnWorldController"/> issues.
+        /// </summary>
+        [Serializable]
+        public class WebRequestException : Exception
+        {
+            static debug.UMI3DLogger logger = new debug.UMI3DLogger(mainTag: $"{nameof(WebRequestException)}");
+
+            public enum ExceptionTypeEnum
+            {
+                Unknown,
+                JsonToBytes,
+            }
+
+            public ExceptionTypeEnum exceptionType;
+
+            public WebRequestException(string message, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown) : base($"{exceptionType}: {message}")
+            {
+                this.exceptionType = exceptionType;
+            }
+            public WebRequestException(string message, Exception inner, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown) : base($"{exceptionType}: {message}", inner)
+            {
+                this.exceptionType = exceptionType;
+            }
+
+            public static void LogException(string message, Exception inner, ExceptionTypeEnum exceptionType = ExceptionTypeEnum.Unknown)
+            {
+                logger.Exception(null, new WebRequestException(message, inner, exceptionType));
             }
         }
     }
