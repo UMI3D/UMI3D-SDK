@@ -13,14 +13,17 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using Newtonsoft.Json;
 using System;
 using System.Collections;
+using System.Collections.Generic;
 using System.Security.AccessControl;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using umi3d.debug;
+using static umi3d.cdk.collaboration.HttpClient;
 
 namespace umi3d.cdk.collaboration
 {
@@ -167,10 +170,10 @@ namespace umi3d.cdk.collaboration
                         return;
                     }
 
-                    requestSucceeded?.Invoke(mediaDto);
-                    logger.Default($"{nameof(RequestMediaDto)}", $"Request at: {RawURL} is a success.");
+                   logger.Default($"{nameof(RequestMediaDto)}", $"Request at: {RawURL} is a success.");
                     getRequestReporter.Clear();
                     failRequestReporter.Clear();
+                    requestSucceeded?.Invoke(mediaDto);
                 },
                 onCompleteFail: op =>
                 {
@@ -348,13 +351,13 @@ namespace umi3d.cdk.collaboration
                         }
 
                         var answerDtoReport = logger.GetReporter("AnswerDto");
-                        bool TryGetAnswerDto<DtoType>(out DtoType answer)
+                        bool TryGetAnswerDto<DtoType>(out DtoType answer, List<JsonConverter> converters = null)
                             where DtoType : UMI3DDto
                         {
                             DtoType dto = null;
                             try
                             {
-                                dto = UMI3DDtoSerializer.FromJson<DtoType>(answerString, Newtonsoft.Json.TypeNameHandling.None);
+                                dto = UMI3DDtoSerializer.FromJson<DtoType>(answerString, Newtonsoft.Json.TypeNameHandling.None, converters);
                             }
                             catch (Exception e)
                             {
@@ -362,7 +365,7 @@ namespace umi3d.cdk.collaboration
                                     $"{nameof(TryGetAnswerDto)}", 
                                     $"Trying to get the post answer dto fail: {typeof(DtoType).Name}\n" +
                                     $"{e.Message}", 
-                                    report: report   
+                                    report: answerDtoReport
                                 );
                             }
 
@@ -370,7 +373,11 @@ namespace umi3d.cdk.collaboration
                             return dto != null;
                         }
 
-                        if (TryGetAnswerDto(out PrivateIdentityDto privateIdentityDto))
+                        if (
+                            TryGetAnswerDto(out PrivateIdentityDto privateIdentityDto)
+                            && !string.IsNullOrEmpty(privateIdentityDto.globalToken)
+                            && privateIdentityDto.connectionDto != null
+                        )
                         {
                             LauncherOnWorldController.privateIdentityDto = privateIdentityDto;
                             redirectionSucceeded?.Invoke();
@@ -379,7 +386,12 @@ namespace umi3d.cdk.collaboration
                         //{
 
                         //}
-                        else if (TryGetAnswerDto(out ConnectionFormDto connectionFormDto))
+                        else if (
+                            TryGetAnswerDto(
+                                out ConnectionFormDto connectionFormDto, 
+                                new List<JsonConverter>() { new ParameterConverter() }
+                            )
+                        )
                         {
                             waitForFormAnswer = true;
                             formReceived?.Invoke(connectionFormDto);

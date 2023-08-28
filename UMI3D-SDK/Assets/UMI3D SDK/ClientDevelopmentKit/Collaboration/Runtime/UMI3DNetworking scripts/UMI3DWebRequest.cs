@@ -55,7 +55,7 @@ namespace umi3d.cdk.collaboration
             UMI3DLogReport report = null
         )
         {
-            if (shouldCleanAbort())
+            if (shouldCleanAbort?.Invoke() ?? false)
             {
                 logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.", report: report);
                 yield break;
@@ -99,7 +99,7 @@ namespace umi3d.cdk.collaboration
 
                 while (!operation.isDone)
                 {
-                    if (shouldCleanAbort())
+                    if (shouldCleanAbort?.Invoke() ?? false)
                     {
                         logger.Debug($"{nameof(Get)}", $"Caller requests to abort the GetRequest in a clean way.", report: report);
                         yield break;
@@ -143,7 +143,7 @@ namespace umi3d.cdk.collaboration
         UMI3DLogReport report = null
         )
         {
-            if (shouldCleanAbort())
+            if (shouldCleanAbort?.Invoke() ?? false)
             {
                 logger.Debug($"{nameof(Post)}", $"Caller requests to abort the PostRequest in a clean way.", report: report);
                 yield break;
@@ -213,7 +213,7 @@ namespace umi3d.cdk.collaboration
 
                 while (!operation.isDone)
                 {
-                    if (shouldCleanAbort())
+                    if (shouldCleanAbort?.Invoke() ?? false)
                     {
                         logger.Debug($"{nameof(Post)}", $"Caller requests to abort the PostRequest in a clean way.", report: report);
                         yield break;
