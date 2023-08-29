@@ -45,7 +45,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <summary>
         /// Priority level of the animated skeleton.
         /// </summary>
-        public virtual uint Priority { get; protected set; }
+        public virtual int Priority { get; protected set; }
 
         /// <summary>
         /// Animation id of the animated skeleton.
@@ -138,7 +138,7 @@ namespace umi3d.cdk.userCapture.animation
         private readonly ICoroutineService coroutineService;
         private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters,
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, int priority, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters,
                                     ICoroutineService coroutineService, IUnityMainThreadDispatcher unityMainThreadDispatcher)
         {
             Mapper = mapper;
@@ -152,7 +152,7 @@ namespace umi3d.cdk.userCapture.animation
 
         #endregion Dependency Injection
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters = null)
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, int priority = 0, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters = null)
         {
             Mapper = mapper;
             Priority = priority;

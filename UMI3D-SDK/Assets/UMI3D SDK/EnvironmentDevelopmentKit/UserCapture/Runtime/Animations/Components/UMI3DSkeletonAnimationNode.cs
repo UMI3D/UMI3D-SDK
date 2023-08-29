@@ -56,7 +56,7 @@ namespace umi3d.edk.userCapture.animation
         /// Priority for application of skeleton animation.
         /// </summary>
         [Tooltip("Priority for application of skeleton animation."), EditorReadOnly]
-        public uint priority;
+        public int priority;
 
         /// <summary>
         /// List of parameters that are updated by the browsers themselves based on skeleton movement.

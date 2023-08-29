@@ -120,7 +120,7 @@ namespace PlayMode_Tests.UserCapture.Animation.EDK
 
         [Test]
         public void GetDeleteAnimations_AnimationsGenerated([Values(1005uL)] ulong userId,
-                                                            [Values(100u)] uint priority,
+                                                            [Values(100)] int priority,
                                                             [Values(1, 10)] int nbStates)
         {
             // GIVEN
@@ -148,7 +148,7 @@ namespace PlayMode_Tests.UserCapture.Animation.EDK
 
         [Test]
         public void GenerateAnimations_AnimationsNotGenerated([Values(1005uL)] ulong userId,
-                                                              [Values(100u)] uint priority,
+                                                              [Values(100)] int priority,
                                                               [Values(0,1,10)] int nbStates)
         {
             // GIVEN
@@ -176,7 +176,7 @@ namespace PlayMode_Tests.UserCapture.Animation.EDK
             // GIVEN
             skeletonAnimationNode.animationStates = new() { "state" };
             skeletonAnimationNode.userId = 1005uL;
-            skeletonAnimationNode.priority = 10u;
+            skeletonAnimationNode.priority = 10;
             skeletonAnimationNode.GenerateAnimations();
 
             // WHEN

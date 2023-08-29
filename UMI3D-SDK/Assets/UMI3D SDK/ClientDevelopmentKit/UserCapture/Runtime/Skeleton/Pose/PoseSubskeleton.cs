@@ -49,6 +49,8 @@ namespace umi3d.cdk.userCapture.pose
         public IReadOnlyList<SkeletonPose> AppliedPoses => appliedPoses;
         protected List<SkeletonPose> appliedPoses = new();
 
+        public int Priority => 100;
+
         /// <inheritdoc/>
         public void StartPose(IEnumerable<SkeletonPose> posesToAdd, bool isOverriding = false)
         {

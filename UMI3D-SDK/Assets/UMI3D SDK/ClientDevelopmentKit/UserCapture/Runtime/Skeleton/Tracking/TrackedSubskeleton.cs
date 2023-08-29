@@ -14,7 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
@@ -46,6 +48,8 @@ namespace umi3d.cdk.userCapture.tracking
         [SerializeField]
         public Dictionary<uint, TrackedSubskeletonBone> bones = new();
         public IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones => bones;
+
+        public int Priority => 0;
 
         private List<uint> receivedTypes = new List<uint>();
 
@@ -88,7 +92,7 @@ namespace umi3d.cdk.userCapture.tracking
         {
             var dto = new PoseDto() { bones = new(bones.Count) };
 
-            foreach (var bone in bones.Values)
+            foreach (var bone in bones.Values.Where(x => controllers.Any(y => y.boneType == x.boneType)))
             {
                 //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 dto.bones.Add(bone.ToBoneDto());
@@ -124,7 +128,6 @@ namespace umi3d.cdk.userCapture.tracking
                 vc.rotation = bone.rotation.Quaternion();
 
                 receivedTypes.Add(bone.boneType);
-
                 //if (bones.TryGetValue(bone.boneType, out var boneTransform) && bone.boneType.Equals(BoneType.Head))
                 //{
                 //    boneTransform.transform.rotation = vc.rotation;
@@ -185,8 +188,13 @@ namespace umi3d.cdk.userCapture.tracking
         {
             CleanToDestroy();
 
+            bones.ForEach(b => b.Value.positionComputed = false);
+
             foreach (var controller in controllers)
             {
+                if(bones.ContainsKey(controller.boneType))
+                    bones[controller.boneType].positionComputed = true;
+
                 if (controller.boneType == BoneType.Head)
                     continue;
 
