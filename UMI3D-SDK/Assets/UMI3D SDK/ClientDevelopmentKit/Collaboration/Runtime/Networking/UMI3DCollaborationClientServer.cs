@@ -50,8 +50,6 @@ namespace umi3d.cdk.collaboration
         private static UMI3DWorldControllerClient worldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 
-        public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
-
         protected override EnvironmentConnectionDto connectionDto => environmentClient?.connectionDto;
         public override UMI3DVersion.Version version => environmentClient?.version;
 
@@ -170,14 +168,14 @@ namespace umi3d.cdk.collaboration
                 return;
             }
             bool aborted = false;
-            ////Instance.IsRedirectionInProgress = true;
-            ////Instance.OnRedirectionStarted.Invoke();
+            Instance.IsRedirectionInProgress = true;
+            Instance.OnRedirectionStarted.Invoke();
 
             try
             {
                 if (Exists)
                 {
-                    ////Instance.status = StatusType.AWAY;
+                    Instance.status = StatusType.AWAY;
                     UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
                     if (await wc.Connect())
                     {
@@ -187,7 +185,6 @@ namespace umi3d.cdk.collaboration
 
                         UMI3DEnvironmentClient env = environmentClient;
                         environmentClient = null;
-                        //UMI3DEnvironmentLoader.Clear();
 
                         if (env != null)
                             await env.Logout();
@@ -252,18 +249,20 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static void EnvironmentLogout(Action success, Action<string> failled)
         {
-            if (Exists)
-                Instance._EnvironmentLogout(success, failled);
-        }
+            async void _EnvironmentLogout(Action success, Action<string> failled)
+            {
+                if (await environmentClient.Logout())
+                    success?.Invoke();
+                else
+                    failled?.Invoke("Failed to Logout");
+                environmentClient = null;
+                Instance.OnLeavingEnvironment.Invoke();
+            }
 
-        private async void _EnvironmentLogout(Action success, Action<string> failled)
-        {
-            if (await environmentClient.Logout())
-                success?.Invoke();
-            else
-                failled?.Invoke("Failled to Logout");
-            environmentClient = null;
-            Instance.OnLeavingEnvironment.Invoke();
+            if (Exists)
+            {
+                _EnvironmentLogout(success, failled);
+            }
         }
 
         public void ConnectionStatus(UMI3DEnvironmentClient client, bool lost)
@@ -303,32 +302,32 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public override async Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument)
         {
+            /// <summary>
+            /// launch a new request
+            /// </summary>
+            /// <param name="argument">argument used in the request</param>
+            /// <returns></returns>
+            async Task<bool> TryAgain(RequestFailedArgument argument)
+            {
+                bool needNewToken = environmentClient != null && environmentClient.IsConnected() && argument.GetRespondCode() == 401 && (environmentClient.lastTokenUpdate - argument.date).TotalMilliseconds < 0;
+                if (needNewToken)
+                {
+                    UnityAction a = () => needNewToken = false;
+                    UMI3DCollaborationClientServer.Instance.OnNewToken.AddListener(a);
+                    while (environmentClient != null && environmentClient.IsConnected() && needNewToken && !((DateTime.UtcNow - argument.date).TotalMilliseconds > environmentClient.maxMillisecondToWait))
+                        await UMI3DAsyncManager.Yield();
+                    UMI3DCollaborationClientServer.Instance.OnNewToken.RemoveListener(a);
+                    return environmentClient != null && environmentClient.IsConnected();
+                }
+                return false;
+            }
+
             if (argument.ShouldTryAgain(argument))
             {
                 UMI3DLogger.LogWarning($"Http request failed [{argument}], try again", scope | DebugScope.Connection);
                 return await TryAgain(argument);
             }
             UMI3DLogger.LogError($"Http request failed [{argument}], abort", scope | DebugScope.Connection);
-            return false;
-        }
-
-        /// <summary>
-        /// launch a new request
-        /// </summary>
-        /// <param name="argument">argument used in the request</param>
-        /// <returns></returns>
-        private async Task<bool> TryAgain(RequestFailedArgument argument)
-        {
-            bool needNewToken = environmentClient != null && environmentClient.IsConnected() && argument.GetRespondCode() == 401 && (environmentClient.lastTokenUpdate - argument.date).TotalMilliseconds < 0;
-            if (needNewToken)
-            {
-                UnityAction a = () => needNewToken = false;
-                UMI3DCollaborationClientServer.Instance.OnNewToken.AddListener(a);
-                while (environmentClient != null && environmentClient.IsConnected() && needNewToken && !((DateTime.UtcNow - argument.date).TotalMilliseconds > environmentClient.maxMillisecondToWait))
-                    await UMI3DAsyncManager.Yield();
-                UMI3DCollaborationClientServer.Instance.OnNewToken.RemoveListener(a);
-                return environmentClient != null && environmentClient.IsConnected();
-            }
             return false;
         }
 

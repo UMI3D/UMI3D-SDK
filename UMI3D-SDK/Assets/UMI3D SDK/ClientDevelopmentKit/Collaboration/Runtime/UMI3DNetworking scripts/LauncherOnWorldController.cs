@@ -27,12 +27,16 @@ using static umi3d.cdk.collaboration.HttpClient;
 
 namespace umi3d.cdk.collaboration
 {
+    /// <summary>
+    /// Used to connect to a World Controller, when a Master Server is not used.
+    /// </summary>
     internal static class LauncherOnWorldController
     {
         #region private
 
         static debug.UMI3DLogger logger = new debug.UMI3DLogger(mainTag: $"{nameof(LauncherOnWorldController)}");
 
+        static RedirectionDto redirectionDto;
         static PrivateIdentityDto privateIdentityDto;
 
         #endregion
@@ -94,6 +98,30 @@ namespace umi3d.cdk.collaboration
                 {
                     return null;
                 }
+            }
+        }
+
+        /// <summary>
+        /// The current url to the media dto.
+        /// </summary>
+        public static string MediaDtoUrl
+        {
+            get
+            {
+                return redirectionDto?.media?.url;
+            }
+        }
+
+        /// <summary>
+        /// The current url where the connection dto is sent.
+        /// </summary>
+        public static string ConnectionDtoUrl
+        {
+            get
+            {
+                return !string.IsNullOrEmpty(MediaDtoUrl)
+                    ? MediaDtoUrl + UMI3DNetworkingKeys.connect
+                    : null;
             }
         }
 
@@ -218,21 +246,23 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// A connection is simply a redirection from nowhere.
+        /// Connect to a World Controller.
+        /// 
+        /// <para>
+        ///  A connection is simply a redirection from nowhere.
+        /// </para>
         /// </summary>
-        /// <param name="mediaDto"></param>
-        /// <param name="language"></param>
-        /// <param name="shouldCleanAbort"></param>
-        /// <param name="formReceived"></param>
-        /// <param name="formAnswerReceived"></param>
-        /// <param name="connectionStarted"></param>
-        /// <param name="connectionSucceeded"></param>
-        /// <param name="connectionFailed"></param>
-        /// <param name="maxTryCount"></param>
-        /// <param name="report"></param>
+        /// <param name="mediaDto">The media dto of the world controller.</param>
+        /// <param name="shouldCleanAbort">Whether or not the connection should be aborted.</param>
+        /// <param name="formReceived">Action raised when a form is received.</param>
+        /// <param name="formAnswerReceived">Return the answer to a form.</param>
+        /// <param name="connectionStarted">Action raised when the connection has started.</param>
+        /// <param name="connectionSucceeded">Action raised when the connection has succeeded.</param>
+        /// <param name="connectionFailed">Action raised when the connection has failed.</param>
+        /// <param name="maxTryCount">The maximum try count.</param>
+        /// <param name="report">A log reporter.</param>
         public static IEnumerator Connect(
-            MediaDto mediaDto, 
-            string language,
+            MediaDto mediaDto,
             Func<bool> shouldCleanAbort,
             Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
             Action connectionStarted, Action connectionSucceeded, Action connectionFailed,
@@ -245,7 +275,6 @@ namespace umi3d.cdk.collaboration
                     media = mediaDto,
                     gate = null
                 },
-                globalToken: null, language,
                 shouldCleanAbort,
                 formReceived, formAnswerReceived,
                 redirectionStarted: connectionStarted,
@@ -255,9 +284,21 @@ namespace umi3d.cdk.collaboration
             );
         }
 
+        /// <summary>
+        /// Redirect from one place to another.
+        /// </summary>
+        /// <param name="redirectionDto"></param>
+        /// <param name="shouldCleanAbort">Whether or not the connection should be aborted.</param>
+        /// <param name="formReceived">Action raised when a form is received.</param>
+        /// <param name="formAnswerReceived">Return the answer to a form.</param>
+        /// <param name="redirectionStarted">Action raised when the redirection has started.</param>
+        /// <param name="redirectionSucceeded">Action raised when the redirection has succeeded.</param>
+        /// <param name="redirectionFailed">Action raised when the redirection has failed.</param>
+        /// <param name="maxTryCount">The maximum try count.</param>
+        /// <param name="report">A log reporter.</param>
+        /// <returns></returns>
         public static IEnumerator Redirect(
             RedirectionDto redirectionDto,
-            string globalToken, string language,
             Func<bool> shouldCleanAbort,
             Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
             Action redirectionStarted, Action redirectionSucceeded, Action redirectionFailed,
@@ -281,17 +322,22 @@ namespace umi3d.cdk.collaboration
             }
 
             IsConnectingOrRedirecting = true;
-            redirectionStarted?.Invoke();
             status = StatusType.AWAY;
+
+            redirectionStarted?.Invoke();
+            logger.DebugTodo($"{nameof(Redirect)}", $"MicrophoneListener.Reset()");
+
+            logger.DebugTodo($"{nameof(Redirect)}", $"Let the user choose the language of the environment.");
             ConnectionDto connectionDto = new ()
             {
-                gate = redirectionDto.gate,
-                globalToken = globalToken,
-                language = language,
+                gate = redirectionDto?.gate,
+                globalToken = redirectionDto?.media?.url == MediaDtoUrl ? privateIdentityDto?.globalToken : null,
+                language = null,
                 libraryPreloading = false,
                 metadata = null
             };
-            string connectionUrl = redirectionDto.media.url + UMI3DNetworkingKeys.connect;
+
+            LauncherOnWorldController.redirectionDto = redirectionDto;
 
             IEnumerator SendConnectionDto(ConnectionDto connectionDto, string json = null, int tryCount = 0)
             {
@@ -319,12 +365,12 @@ namespace umi3d.cdk.collaboration
                     }
                 }
 
-                IEnumerator nextTryEnumerator = null;
+                bool tryAgain = false;
                 bool waitForFormAnswer = false;
 
                 yield return UMI3DNetworking.Post_WR(
                     credentials: (null, null),
-                    connectionUrl,
+                    ConnectionDtoUrl,
                     data: (UMI3DNetworking.ContentTypeJson, json),
                     shouldCleanAbort,
                     onCompleteSuccess: op =>
@@ -381,6 +427,7 @@ namespace umi3d.cdk.collaboration
                         {
                             LauncherOnWorldController.privateIdentityDto = privateIdentityDto;
                             redirectionSucceeded?.Invoke();
+                            //status = StatusType.CREATED;
                         }
                         //else if (!TryGetAnswerDto<FakePrivateIdentityDto>(out postAnswerDto))
                         //{
@@ -416,7 +463,7 @@ namespace umi3d.cdk.collaboration
                             $"Send connectionDto failed:   " +
                             $"{op.webRequest.result}".FormatString(19) +
                             "   " +
-                            $"{connectionUrl}".FormatString(40) +
+                            $"{ConnectionDtoUrl}".FormatString(40) +
                             "   " +
                             $"{tryCount}" +
                             $"\n{op.webRequest.error}",
@@ -425,7 +472,7 @@ namespace umi3d.cdk.collaboration
 
                         if (tryCount < maxTryCount - 1)
                         {
-                            nextTryEnumerator = SendConnectionDto(connectionDto, json, tryCount + 1);
+                            tryAgain = true;
                         }
                         else
                         {
@@ -437,9 +484,9 @@ namespace umi3d.cdk.collaboration
                     report
                 );
 
-                if (nextTryEnumerator != null)
+                if (tryAgain)
                 {
-                    yield return nextTryEnumerator;
+                    yield return SendConnectionDto(connectionDto, json, tryCount + 1);
                 }
                 else if (waitForFormAnswer)
                 {

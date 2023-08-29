@@ -264,7 +264,7 @@ namespace umi3d.cdk.collaboration
             ForgeClient.natServerPort = connectionDto.forgeNatServerPort;
 
             var Auth = new common.collaboration.UMI3DAuthenticator(GetLocalToken);
-            SetToken(worldControllerClient.Identity.localToken);
+            SetToken(UMI3DNetworking.Identity.localToken);
             JoinForge(Auth);
 
 
@@ -361,7 +361,7 @@ namespace umi3d.cdk.collaboration
 
         private void GetLocalToken(Action<string> callback)
         {
-            callback?.Invoke(worldControllerClient.Identity.localToken);
+            callback?.Invoke(UMI3DNetworking.Identity.localToken);
         }
 
 

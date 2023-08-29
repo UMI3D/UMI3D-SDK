@@ -36,31 +36,6 @@ namespace umi3d.cdk.collaboration
         private UMI3DEnvironmentClient environment;
         private PrivateIdentityDto privateIdentity;
 
-        /// <summary>
-        /// Called to create a new Public Identity for this client.
-        /// </summary>
-        public PublicIdentityDto PublicIdentity => new PublicIdentityDto()
-        {
-            userId = privateIdentity.userId,
-            login = privateIdentity.login,
-            displayName = privateIdentity.displayName
-
-        };
-
-        /// <summary>
-        /// Called to create a new Identity for this client.
-        /// </summary>
-        public IdentityDto Identity => new IdentityDto()
-        {
-            userId = privateIdentity.userId,
-            login = privateIdentity.login,
-            displayName = privateIdentity.displayName,
-            guid = privateIdentity.guid,
-            headerToken = privateIdentity.headerToken,
-            localToken = privateIdentity.localToken,
-            key = privateIdentity.key
-        };
-
         private readonly bool isConnecting, isConnected;
         public bool IsConnected()
         {

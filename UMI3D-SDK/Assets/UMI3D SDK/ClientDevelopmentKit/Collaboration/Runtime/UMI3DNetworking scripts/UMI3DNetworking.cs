@@ -21,6 +21,9 @@ using System.Collections;
 using System.Collections.Generic;
 using umi3d.cdk.collaboration;
 using umi3d.common;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.interaction;
 using umi3d.debug;
 using UnityEngine.Networking;
 
@@ -159,6 +162,72 @@ namespace umi3d.cdk.collaboration
         #region LauncherOnWorldController
 
         /// <summary>
+        /// Whether or not a connection or redirection is in progress.
+        /// </summary>
+        public static bool IsConnectingOrRedirecting
+        {
+            get
+            {
+                return LauncherOnWorldController.IsConnectingOrRedirecting;
+            }
+        }
+
+        /// <summary>
+        /// The status of the user in the server.
+        /// </summary>
+        public static StatusType status
+        {
+            get
+            {
+                return LauncherOnWorldController.status;
+            }
+        }
+
+        /// <summary>
+        /// Called to create a new Public Identity for this client.
+        /// </summary>
+        public static PublicIdentityDto PublicIdentity
+        {
+            get
+            {
+                return LauncherOnWorldController.PublicIdentity;
+            }
+        }
+
+        /// <summary>
+        /// Called to create a new Identity for this client.
+        /// </summary>
+        public static IdentityDto Identity
+        {
+            get
+            {
+                return LauncherOnWorldController.Identity;
+            }
+        }
+
+        /// <summary>
+        /// The current url to the media dto.
+        /// </summary>
+        public static string MediaDtoUrl
+        {
+            get
+            {
+                return LauncherOnWorldController.MediaDtoUrl;
+            }
+        }
+
+        /// <summary>
+        /// The current url where the connection dto is sent.
+        /// </summary>
+        public static string ConnectionDtoUrl
+        {
+            get
+            {
+                return LauncherOnWorldController.ConnectionDtoUrl;
+            }
+        }
+
+        /// <summary>
         /// Send a request to get a <see cref="MediaDto"/>.
         /// </summary>
         /// <param name="RawURL">A simplified version of the url where a media dto can be requested.</param>
@@ -176,6 +245,57 @@ namespace umi3d.cdk.collaboration
         )
         {
             return LauncherOnWorldController.RequestMediaDto(RawURL, requestSucceeded, requestFailed, shouldCleanAbort, tryCount, maxTryCount, report);
+        }
+
+        /// <summary>
+        /// Connect to a World Controller.
+        /// 
+        /// <para>
+        ///  A connection is simply a redirection from nowhere.
+        /// </para>
+        /// </summary>
+        /// <param name="mediaDto">The media dto of the world controller.</param>
+        /// <param name="shouldCleanAbort">Whether or not the connection should be aborted.</param>
+        /// <param name="formReceived">Action raised when a form is received.</param>
+        /// <param name="formAnswerReceived">Return the answer to a form.</param>
+        /// <param name="connectionStarted">Action raised when the connection has started.</param>
+        /// <param name="connectionSucceeded">Action raised when the connection has succeeded.</param>
+        /// <param name="connectionFailed">Action raised when the connection has failed.</param>
+        /// <param name="maxTryCount">The maximum try count.</param>
+        /// <param name="report">A log reporter.</param>
+        public static IEnumerator Connect_LoWC(
+            MediaDto mediaDto,
+            Func<bool> shouldCleanAbort,
+            Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
+            Action connectionStarted, Action connectionSucceeded, Action connectionFailed,
+            int maxTryCount = 3, UMI3DLogReport report = null
+        )
+        {
+            return LauncherOnWorldController.Connect(mediaDto, shouldCleanAbort, formReceived, formAnswerReceived, connectionStarted, connectionSucceeded, connectionFailed, maxTryCount, report);
+        }
+
+        /// <summary>
+        /// Redirect from one place to another.
+        /// </summary>
+        /// <param name="redirectionDto"></param>
+        /// <param name="shouldCleanAbort">Whether or not the connection should be aborted.</param>
+        /// <param name="formReceived">Action raised when a form is received.</param>
+        /// <param name="formAnswerReceived">Return the answer to a form.</param>
+        /// <param name="redirectionStarted">Action raised when the redirection has started.</param>
+        /// <param name="redirectionSucceeded">Action raised when the redirection has succeeded.</param>
+        /// <param name="redirectionFailed">Action raised when the redirection has failed.</param>
+        /// <param name="maxTryCount">The maximum try count.</param>
+        /// <param name="report">A log reporter.</param>
+        /// <returns></returns>
+        public static IEnumerator Redirect_LoWC(
+            RedirectionDto redirectionDto,
+            Func<bool> shouldCleanAbort,
+            Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
+            Action redirectionStarted, Action redirectionSucceeded, Action redirectionFailed,
+            int maxTryCount = 3, UMI3DLogReport report = null
+        )
+        {
+            return LauncherOnWorldController.Redirect(redirectionDto, shouldCleanAbort, formReceived, formAnswerReceived, redirectionStarted, redirectionSucceeded, redirectionFailed, maxTryCount, report);
         }
 
         #endregion
