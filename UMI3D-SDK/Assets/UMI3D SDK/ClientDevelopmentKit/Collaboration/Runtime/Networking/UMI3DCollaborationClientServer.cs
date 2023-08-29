@@ -50,8 +50,8 @@ namespace umi3d.cdk.collaboration
         private static UMI3DWorldControllerClient worldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 
-        protected override EnvironmentConnectionDto connectionDto => environmentClient?.connectionDto;
-        public override UMI3DVersion.Version version => environmentClient?.version;
+        protected override EnvironmentConnectionDto connectionDto => UMI3DNetworking.EnvironmentConnectionDto;
+        public override UMI3DVersion.Version version => UMI3DNetworking.EnvironmentUMI3DVersion;
 
         public static Func<MultiProgress> EnvironmentProgress = null;
 
@@ -83,8 +83,8 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public string environementName => environmentClient?.connectionDto?.name;
-        public string worldName => worldControllerClient?.name;
+        public string environementName => UMI3DNetworking.EnvironmentName;
+        public string worldName => UMI3DNetworking.WorldName;
 
         /// <inheritdoc/>
         protected override void OnDestroy()

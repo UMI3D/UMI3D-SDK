@@ -58,16 +58,6 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public readonly double maxMillisecondToWait = 10000;
 
-        /// <summary>
-        /// Data for connection through the Forge server.
-        /// </summary>
-        public readonly EnvironmentConnectionDto connectionDto;
-
-        /// <summary>
-        /// Computed version of the environment
-        /// </summary>
-        public readonly UMI3DVersion.Version version;
-
         private readonly UMI3DWorldControllerClient worldControllerClient;
 
         static public UnityEvent EnvironementJoinned = new UnityEvent();
@@ -224,8 +214,6 @@ namespace umi3d.cdk.collaboration
             this.isConnecting = false;
             this.isConnected = false;
             this.disconected = false;
-            this.connectionDto = connectionDto;
-            this.version = new UMI3DVersion.Version(connectionDto.version);
             this.worldControllerClient = worldControllerClient;
 
             this.progress = progress;
@@ -256,12 +244,12 @@ namespace umi3d.cdk.collaboration
             disconected = false;
 
             ForgeClient = UMI3DForgeClient.Create(this);
-            ForgeClient.ip = connectionDto.forgeHost;
-            ForgeClient.port = connectionDto.forgeServerPort;
-            ForgeClient.masterServerHost = connectionDto.forgeMasterServerHost;
-            ForgeClient.masterServerPort = connectionDto.forgeMasterServerPort;
-            ForgeClient.natServerHost = connectionDto.forgeNatServerHost;
-            ForgeClient.natServerPort = connectionDto.forgeNatServerPort;
+            ForgeClient.ip = UMI3DNetworking.EnvironmentConnectionDto.forgeHost;
+            ForgeClient.port = UMI3DNetworking.EnvironmentConnectionDto.forgeServerPort;
+            ForgeClient.masterServerHost = UMI3DNetworking.EnvironmentConnectionDto.forgeMasterServerHost;
+            ForgeClient.masterServerPort = UMI3DNetworking.EnvironmentConnectionDto.forgeMasterServerPort;
+            ForgeClient.natServerHost = UMI3DNetworking.EnvironmentConnectionDto.forgeNatServerHost;
+            ForgeClient.natServerPort = UMI3DNetworking.EnvironmentConnectionDto.forgeNatServerPort;
 
             var Auth = new common.collaboration.UMI3DAuthenticator(GetLocalToken);
             SetToken(UMI3DNetworking.Identity.localToken);
@@ -371,6 +359,12 @@ namespace umi3d.cdk.collaboration
         /// <param name="token"></param>
         public void SetToken(string token)
         {
+            IEnumerator OnNewTokenNextFrame()
+            {
+                yield return new WaitForFixedUpdate();
+                UMI3DCollaborationClientServer.Instance.OnNewToken?.Invoke();
+            }
+
             lastTokenUpdate = DateTime.UtcNow;
             HttpClient?.SetToken(token);
             BeardedManStudios.Forge.Networking.Unity.MainThreadManager.Run(
@@ -503,7 +497,7 @@ namespace umi3d.cdk.collaboration
                         libraryProgress.SetStatus("Downloading Libraries");
                         try
                         {
-                            await UMI3DResourcesManager.DownloadLibraries(LibrariesDto, worldControllerClient.name, libraryProgress);
+                            await UMI3DResourcesManager.DownloadLibraries(LibrariesDto, UMI3DNetworking.WorldName, libraryProgress);
                             librariesUpdated = true;
                         }
                         catch (Exception e)
@@ -551,14 +545,32 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        private IEnumerator OnNewTokenNextFrame()
-        {
-            yield return new WaitForFixedUpdate();
-            UMI3DCollaborationClientServer.Instance.OnNewToken?.Invoke();
-        }
-
         private async void Join(MultiProgress progress)
         {
+            async Task EnterScene(EnterDto enter, MultiProgress progress)
+            {
+                Progress PostJoinProgress = new Progress(1, "Joinning Environment");
+                MultiProgress LoadProgress = new MultiProgress("Loading Environment");
+                Progress UpdateProgress = new Progress(2, "Instanciating Environment");
+                progress.Add(PostJoinProgress);
+                progress.Add(LoadProgress);
+                progress.Add(UpdateProgress);
+
+                PostJoinProgress.AddComplete();
+                UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
+                useDto = enter.usedDto;
+                GlTFEnvironmentDto environement = await HttpClient.SendGetEnvironment();
+                UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
+                await (UMI3DEnvironmentLoader.Instance.Load(environement, LoadProgress));
+                UpdateProgress.AddComplete();
+                UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
+                UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
+                EnvironementLoaded.Invoke();
+                UserDto.answerDto.status = statusToBeSet;
+                UMI3DCollaborationClientServer.transactionPending = await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
+                UpdateProgress.AddComplete();
+            }
+
             //UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             libraryProgress.SetAsCompleted();
             Progress PostJoinProgress = new Progress(2, "Joinning Environment");
@@ -595,30 +607,6 @@ namespace umi3d.cdk.collaboration
                 progress.SetAsFailed();
                 isJoinning = false;
             }
-        }
-
-        private async Task EnterScene(EnterDto enter, MultiProgress progress)
-        {
-            Progress PostJoinProgress = new Progress(1, "Joinning Environment");
-            MultiProgress LoadProgress = new MultiProgress("Loading Environment");
-            Progress UpdateProgress = new Progress(2, "Instanciating Environment");
-            progress.Add(PostJoinProgress);
-            progress.Add(LoadProgress);
-            progress.Add(UpdateProgress);
-
-            PostJoinProgress.AddComplete();
-            UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
-            useDto = enter.usedDto;
-            GlTFEnvironmentDto environement = await HttpClient.SendGetEnvironment();
-            UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
-            await (UMI3DEnvironmentLoader.Instance.Load(environement, LoadProgress));
-            UpdateProgress.AddComplete();
-            UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
-            UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
-            EnvironementLoaded.Invoke();
-            UserDto.answerDto.status = statusToBeSet;
-            UMI3DCollaborationClientServer.transactionPending = await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
-            UpdateProgress.AddComplete();
         }
 
         /// <summary>

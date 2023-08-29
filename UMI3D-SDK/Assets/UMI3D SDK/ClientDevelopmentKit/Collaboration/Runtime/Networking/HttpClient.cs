@@ -39,7 +39,7 @@ namespace umi3d.cdk.collaboration
 
         internal string HeaderToken;
 
-        private string httpUrl => environmentClient.connectionDto.httpUrl;
+        private string httpUrl => UMI3DNetworking.EnvironmentConnectionDto.httpUrl;
 
         private readonly ThreadDeserializer deserializer;
         private readonly UMI3DEnvironmentClient environmentClient;
@@ -389,6 +389,19 @@ namespace umi3d.cdk.collaboration
         /// <param name="onError">Action to be call when the request fail.</param>
         public async void SendPostUpdateStatusAsync(StatusType status, bool throwError = false, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
+            /// <summary>
+            /// Send request using POST method to update user Identity.
+            /// </summary>
+            /// <param name="callback">Action to be call when the request succeed.</param>
+            /// <param name="onError">Action to be call when the request fail.</param>
+            async Task SendPostUpdateStatus(StatusType status, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+            {
+                UMI3DLogger.Log($"Send PostUpdateStatus", scope | DebugScope.Connection);
+                UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.status_update, null, new StatusDto() { status = status }.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
+                uwr.Dispose();
+                UMI3DLogger.Log($"Received PostUpdateStatus", scope | DebugScope.Connection);
+            }
+
             try
             {
                 await SendPostUpdateStatus(status, shouldTryAgain);
@@ -402,19 +415,6 @@ namespace umi3d.cdk.collaboration
                 if (throwError)
                     throw;
             }
-        }
-
-        /// <summary>
-        /// Send request using POST method to update user Identity.
-        /// </summary>
-        /// <param name="callback">Action to be call when the request succeed.</param>
-        /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task SendPostUpdateStatus(StatusType status, Func<RequestFailedArgument, bool> shouldTryAgain = null)
-        {
-            UMI3DLogger.Log($"Send PostUpdateStatus", scope | DebugScope.Connection);
-            UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.status_update, null, new StatusDto() { status = status }.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true);
-            uwr.Dispose();
-            UMI3DLogger.Log($"Received PostUpdateStatus", scope | DebugScope.Connection);
         }
 
         /// <summary>
@@ -432,15 +432,6 @@ namespace umi3d.cdk.collaboration
         #endregion
 
         #region media
-        /// <summary>
-        /// Send request using GET method to get the server Media.
-        /// </summary>
-        /// <param name="callback">Action to be call when the request succeed.</param>
-        /// <param name="onError">Action to be call when the request fail.</param>
-        public async Task<MediaDto> SendGetMedia(Func<RequestFailedArgument, bool> shouldTryAgain)
-        {
-            return await SendGetMedia(httpUrl + UMI3DNetworkingKeys.media, shouldTryAgain);
-        }
 
         /// <summary>
         /// Send request using GET method to get a Media at a specified url.

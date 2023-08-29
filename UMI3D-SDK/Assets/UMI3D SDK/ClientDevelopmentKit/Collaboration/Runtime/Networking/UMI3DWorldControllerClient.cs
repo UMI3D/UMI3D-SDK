@@ -29,7 +29,6 @@ namespace umi3d.cdk.collaboration
     public class UMI3DWorldControllerClient
     {
         private readonly MediaDto media;
-        public string name => media?.name;
 
         private readonly GateDto gate;
         private string globalToken;

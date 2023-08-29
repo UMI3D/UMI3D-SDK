@@ -183,6 +183,8 @@ namespace umi3d.cdk.collaboration
             }
         }
 
+        #region Dtos
+
         /// <summary>
         /// Called to create a new Public Identity for this client.
         /// </summary>
@@ -206,6 +208,43 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Create a new media dto from the one that is currently used.
+        /// </summary>
+        public static MediaDto MediaDto
+        {
+            get
+            {
+                return LauncherOnWorldController.MediaDto;
+            }
+        }
+
+        /// <summary>
+        /// Create a new gate dto from the one that is currently used.
+        /// </summary>
+        public static GateDto GateDto
+        {
+            get
+            {
+                return LauncherOnWorldController.GateDto;
+            }
+        }
+
+        /// <summary>
+        /// Create a new environment connection dto from the one that is currently used.
+        /// </summary>
+        public static EnvironmentConnectionDto EnvironmentConnectionDto
+        {
+            get
+            {
+                return LauncherOnWorldController.EnvironmentConnectionDto;
+            }
+        }
+
+        #endregion
+
+        #region Shortcut data
+
+        /// <summary>
         /// The current url to the media dto.
         /// </summary>
         public static string MediaDtoUrl
@@ -226,6 +265,41 @@ namespace umi3d.cdk.collaboration
                 return LauncherOnWorldController.ConnectionDtoUrl;
             }
         }
+
+        /// <summary>
+        /// Name of the world.
+        /// </summary>
+        public static string WorldName
+        {
+            get
+            {
+                return LauncherOnWorldController.WorldName;
+            }
+        }
+
+        /// <summary>
+        /// Name of the environment.
+        /// </summary>
+        public static string EnvironmentName
+        {
+            get
+            {
+                return LauncherOnWorldController.EnvironmentName;
+            }
+        }
+
+        /// <summary>
+        /// Create a new UMI3DVersion.Version corresponding to the version of the environment.
+        /// </summary>
+        public static UMI3DVersion.Version EnvironmentUMI3DVersion
+        {
+            get
+            {
+                return LauncherOnWorldController.EnvironmentUMI3DVersion;
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Send a request to get a <see cref="MediaDto"/>.

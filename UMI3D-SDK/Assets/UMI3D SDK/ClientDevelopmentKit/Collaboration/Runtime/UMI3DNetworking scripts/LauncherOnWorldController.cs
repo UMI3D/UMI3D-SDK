@@ -51,6 +51,8 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static StatusType status;
 
+        #region Dtos
+
         /// <summary>
         /// Called to create a new Public Identity for this client.
         /// </summary>
@@ -102,6 +104,87 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
+        /// Create a new media dto from the one that is currently used.
+        /// </summary>
+        public static MediaDto MediaDto
+        {
+            get
+            {
+                if (redirectionDto != null && redirectionDto.media != null)
+                {
+                    return new MediaDto
+                    {
+                        name = redirectionDto.media.name,
+                        url = redirectionDto.media.url,
+                        icon2D = redirectionDto.media.icon2D,
+                        icon3D = redirectionDto.media.icon3D
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create a new gate dto from the one that is currently used.
+        /// </summary>
+        public static GateDto GateDto
+        {
+            get
+            {
+                if (redirectionDto != null && redirectionDto.gate != null)
+                {
+                    return new GateDto
+                    {
+                        gateId = redirectionDto.gate.gateId,
+                        metaData = redirectionDto.gate.metaData
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        /// <summary>
+        /// Create a new environment connection dto from the one that is currently used.
+        /// </summary>
+        public static EnvironmentConnectionDto EnvironmentConnectionDto
+        {
+            get
+            {
+                if (privateIdentityDto != null && privateIdentityDto.connectionDto != null)
+                {
+                    return new EnvironmentConnectionDto
+                    {
+                        authorizationInHeader = privateIdentityDto.connectionDto.authorizationInHeader,
+                        forgeHost = privateIdentityDto.connectionDto.forgeHost,
+                        forgeMasterServerHost = privateIdentityDto.connectionDto.forgeMasterServerHost,
+                        forgeMasterServerPort = privateIdentityDto.connectionDto.forgeMasterServerPort,
+                        forgeNatServerHost = privateIdentityDto.connectionDto.forgeNatServerHost,
+                        forgeNatServerPort = privateIdentityDto.connectionDto.forgeNatServerPort,
+                        forgeServerPort = privateIdentityDto.connectionDto.forgeServerPort,
+                        httpUrl = privateIdentityDto.connectionDto.httpUrl,
+                        name = privateIdentityDto.connectionDto.name,
+                        resourcesUrl = privateIdentityDto.connectionDto.resourcesUrl,
+                        version = privateIdentityDto.connectionDto.version
+                    };
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        #endregion
+
+        #region Shortcut data.
+
+        /// <summary>
         /// The current url to the media dto.
         /// </summary>
         public static string MediaDtoUrl
@@ -124,6 +207,48 @@ namespace umi3d.cdk.collaboration
                     : null;
             }
         }
+
+        /// <summary>
+        /// Name of the world.
+        /// </summary>
+        public static string WorldName
+        {
+            get
+            {
+                return redirectionDto?.media?.name;
+            }
+        }
+
+        /// <summary>
+        /// Name of the environment.
+        /// </summary>
+        public static string EnvironmentName
+        {
+            get
+            {
+                return privateIdentityDto?.connectionDto?.name;
+            }
+        }
+
+        /// <summary>
+        /// Create a new UMI3DVersion.Version corresponding to the version of the environment.
+        /// </summary>
+        public static UMI3DVersion.Version EnvironmentUMI3DVersion
+        {
+            get
+            {
+                if (privateIdentityDto != null && privateIdentityDto.connectionDto != null)
+                {
+                    return new UMI3DVersion.Version(privateIdentityDto.connectionDto.version);
+                }
+                else
+                {
+                    return null;
+                }
+            }
+        }
+
+        #endregion
 
         /// <summary>
         /// Send a request to get a <see cref="MediaDto"/>.
