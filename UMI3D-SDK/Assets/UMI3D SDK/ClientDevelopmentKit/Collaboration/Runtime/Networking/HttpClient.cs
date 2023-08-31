@@ -431,29 +431,6 @@ namespace umi3d.cdk.collaboration
         }
         #endregion
 
-        #region media
-
-        /// <summary>
-        /// Send request using GET method to get a Media at a specified url.
-        /// </summary>
-        /// <param name="url">Url to send the resquest to. For a vanilla server add '/media' at the end of the server url.</param>
-        /// <param name="callback">Action to be call when the request succeed.</param>
-        /// <param name="onError">Action to be call when the request fail.</param>
-        public static async Task<MediaDto> SendGetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
-        {
-            UMI3DLogger.Log($"Send GetMedia", scope | DebugScope.Connection);
-
-            using (UnityWebRequest uwr = await _GetRequest(null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)))
-            {
-                UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
-                if (uwr?.downloadHandler.data == null) return null;
-                string json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-                return UMI3DDtoSerializer.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
-            }
-        }
-
-        #endregion
-
         #region resources
 
         /// <summary>

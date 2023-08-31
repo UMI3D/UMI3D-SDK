@@ -111,16 +111,6 @@ namespace umi3d.cdk.collaboration
         {
             _ = UMI3DCollaborationEnvironmentLoader.Instance; // force right service instanciation
             UMI3DSerializer.AddModule(UMI3DSerializerModuleUtils.GetModules().ToList());
-
-            //UMI3DSerializer.AddModule(new UMI3DSerializerBasicModules());
-            //UMI3DSerializer.AddModule(new UMI3DSerializerStringModules());
-            //UMI3DSerializer.AddModule(new UMI3DSerializerVectorModules());
-            //UMI3DSerializer.AddModule(new UMI3DSerializerAnimationModules());
-            //UMI3DSerializer.AddModule(new UMI3DSerializerShaderModules());
-            //UMI3DSerializer.AddModule(new UMI3DUserCaptureBindingSerializerModule());
-            //UMI3DSerializer.AddModule(new UMI3DEmotesSerializerModule());
-            //UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
-            //UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
         }
 
 
@@ -156,26 +146,26 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public static async void Connect(RedirectionDto redirection, Action<string> failed = null)
         {
-            if (!Exists)
-            {
-                failed?.Invoke("No Instance of UMI3DCollaborationServer");
-                return;
-            }
+            //if (!Exists)
+            //{
+            //    failed?.Invoke("No Instance of UMI3DCollaborationServer");
+            //    return;
+            //}
 
-            if (Instance.IsRedirectionInProgress)
-            {
-                failed?.Invoke("Redirection already in progress");
-                return;
-            }
+            //if (Instance.IsRedirectionInProgress)
+            //{
+            //    failed?.Invoke("Redirection already in progress");
+            //    return;
+            //}
             bool aborted = false;
-            Instance.IsRedirectionInProgress = true;
-            Instance.OnRedirectionStarted.Invoke();
+            //Instance.IsRedirectionInProgress = true;
+            //Instance.OnRedirectionStarted.Invoke();
 
             try
             {
                 if (Exists)
                 {
-                    Instance.status = StatusType.AWAY;
+                    //Instance.status = StatusType.AWAY;
                     UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
                     if (await wc.Connect())
                     {
@@ -329,18 +319,6 @@ namespace umi3d.cdk.collaboration
             }
             UMI3DLogger.LogError($"Http request failed [{argument}], abort", scope | DebugScope.Connection);
             return false;
-        }
-
-        /// <summary>
-        /// Get a media dto at a raw url using a get http request.
-        /// The result is store in UMI3DClientServer.Media.
-        /// </summary>
-        /// <param name="url">Url used for the get request.</param>
-        /// <seealso cref="UMI3DCollaborationClientServer.Media"/>
-        public static async Task<MediaDto> GetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
-        {
-            UMI3DLogger.Log($"Get media at {url}", scope | DebugScope.Connection);
-            return await HttpClient.SendGetMedia(url, shouldTryAgain);
         }
 
         /// <summary>

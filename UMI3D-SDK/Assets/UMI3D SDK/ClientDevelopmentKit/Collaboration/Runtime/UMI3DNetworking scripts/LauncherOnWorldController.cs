@@ -17,7 +17,6 @@ using Newtonsoft.Json;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Security.AccessControl;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
@@ -27,6 +26,57 @@ using static umi3d.cdk.collaboration.HttpClient;
 
 namespace umi3d.cdk.collaboration
 {
+    public class Observable
+    {
+        /// <summary>
+        /// Structural equality for (<see cref="Type"/>, string).
+        /// </summary>
+        struct TypeAndPurposeEqualityComparer : IEqualityComparer<(Type observer, string purpose)>
+        {
+            public bool Equals((Type observer, string purpose) x, (Type observer, string purpose) y)
+            {
+                return x.observer.Equals(y.observer) && x.purpose == y.purpose;
+            }
+
+            public int GetHashCode((Type, string) obj)
+            {
+                return obj.GetHashCode();
+            }
+        }
+
+        /// <summary>
+        /// Store the priority of an action uniquely identifiable by its observer type and purpose.
+        /// </summary>
+        Dictionary<(Type observer, string purpose), int> observersAndPurposeToPriorities = new(new TypeAndPurposeEqualityComparer());
+        /// <summary>
+        /// Store all the action info sorted by their priorities.
+        /// </summary>
+        SortedList<int, List<(Type observer, string purpose, Action action)>> prioritiesToActions = new();
+
+
+        public void Notify()
+        {
+            var priorities = prioritiesToActions.Keys;
+
+            for (int i = priorities.Count - 1; i >= 0; i--)
+            {
+                foreach (var item in prioritiesToActions[priorities[i]])
+                {
+                    try
+                    {
+                        item.action();
+                    }
+                    catch (Exception e)
+                    {
+
+                        throw;
+                    }
+                }
+            }
+        }
+    }
+
+
     /// <summary>
     /// Used to connect to a World Controller, when a Master Server is not used.
     /// </summary>
@@ -296,7 +346,7 @@ namespace umi3d.cdk.collaboration
                 {
                     var uwr = op.webRequest;
 
-                    if (uwr?.downloadHandler.data == null)
+                    if (uwr?.downloadHandler?.data == null)
                     {
                         logger.DebugAssertion($"{nameof(RequestMediaDto)}", $"downloadHandler.data == null.");
                         getRequestReporter.Report();
