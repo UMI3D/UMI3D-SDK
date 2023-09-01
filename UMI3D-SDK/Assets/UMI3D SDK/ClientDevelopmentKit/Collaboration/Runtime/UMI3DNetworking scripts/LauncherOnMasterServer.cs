@@ -27,7 +27,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Used to connect to a Master Server, when a World Controller is not used.
     /// </summary>
-    internal static class LauncherOnMasterServer
+    internal class LauncherOnMasterServer : IUMI3DMasterServerConnection, IUMI3DMasterServerDisconnection
     {
         #region Private
 
@@ -39,27 +39,26 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// The Master Server communicates over TCP
         /// </summary>
-        static TCPMasterClient client;
+        TCPMasterClient client;
 
-        static Queue<(
+        Queue<(
                 NetworkingPlayer player, 
                 Text frame, 
                 NetWorker sender
             )> request = new();
 
-        static UnityEngine.Coroutine RequestInfoCoroutine;
+        UnityEngine.Coroutine RequestInfoCoroutine;
 
         /// <summary>
         /// Action raise when a request info has succeeded.
         /// </summary>
-        static Action<(string serverName, string icon)> requestServerInfSucceeded;
-
+        Action<(string serverName, string icon)> requestServerInfSucceeded;
         /// <summary>
         /// Action raise when a request info has succeeded.
         /// </summary>
-        static Action<MasterServerResponse.Server> requestSessionInfSucceeded;
+        Action<MasterServerResponse.Server> requestSessionInfSucceeded;
 
-        static void OnReceiveInfo(
+        void OnReceiveInfo(
             NetworkingPlayer player, 
             Text frame, 
             NetWorker sender
@@ -68,19 +67,8 @@ namespace umi3d.cdk.collaboration
             request.Enqueue((player, frame, sender));
         }
 
-        static IEnumerator WaitForInfo()
+        IEnumerator WaitForInfo()
         {
-            if (client == null)
-            {
-                MasterServerException.LogException(
-                   $"Client null when trying to {nameof(WaitForInfo)}",
-                   inner: null,
-                   MasterServerException.ExceptionTypeEnum.ClientNull
-               );
-
-                yield break;
-            }
-
             if (!client.IsConnected)
             {
                 MasterServerException.LogException(
@@ -110,12 +98,12 @@ namespace umi3d.cdk.collaboration
                     }
                     catch (Exception e)
                     {
-                        Disconnect();
+                        Disconnect_MSD();
 
                         MasterServerException.LogException(
                             "Trying to get the received information cause an exception.",
                             inner: e,
-                            MasterServerException.ExceptionTypeEnum.ReceiveEcxeption
+                            MasterServerException.ExceptionTypeEnum.ReceiveException
                         );
 
                         yield break;
@@ -153,26 +141,24 @@ namespace umi3d.cdk.collaboration
 
         #endregion
 
+        public LauncherOnMasterServer()
+        {
+            client = new TCPMasterClient();
+            client.textMessageReceived += OnReceiveInfo;
+        }
+
+        #region IUMI3DMasterServerConnection
+
         /// <summary>
-        /// Try to connect to a master server asynchronously.
-        /// 
-        /// <para>
-        /// The connection is established in another thread. The <paramref name="connectSucceeded"/> and <paramref name="connectFailed"/> actions are raised in the main-thread.
-        /// </para>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="url"></param>
         /// <param name="connectSucceeded">Action raise when the connection succeeded.</param>
         /// <param name="connectFailed">Action raise when the connection failed.</param>
         /// <returns></returns>
-        public static UMI3DAsyncOperation Connect(string url, Action connectSucceeded, Action connectFailed)
+        public UMI3DAsyncOperation Connect_MSC(string url, Action connectSucceeded, Action connectFailed)
         {
-            Disconnect();
-
-            if (client == null)
-            {
-                client = new TCPMasterClient();
-                client.textMessageReceived += OnReceiveInfo;
-            }
+            Disconnect_MSD();
 
             if (string.IsNullOrEmpty(url))
             {
@@ -185,8 +171,8 @@ namespace umi3d.cdk.collaboration
             {
                 if (client.IsConnected)
                 {
+                    RequestInfoCoroutine = WaitForInfo().AttachCoroutine();
                     connectSucceeded?.Invoke();
-                    RequestInfoCoroutine = CoroutineManager.Instance.AttachCoroutine(WaitForInfo());
                 }
                 else
                 {
@@ -200,7 +186,7 @@ namespace umi3d.cdk.collaboration
                     string[] ip_port = url.Split(':');
                     if (ip_port.Length > 2)
                     {
-                        logger.Assertion($"{nameof(Connect)}", $"url: {url} has not the right format. It should be: 000.000.000.000:00000");
+                        logger.Assertion($"{nameof(Connect_MSC)}", $"url: {url} has not the right format. It should be: 000.000.000.000:00000");
                         return;
                     }
 
@@ -220,73 +206,23 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Disconnect a master server asynchronously.
-        /// 
-        /// <para>
-        /// Return an <see cref="UMI3DAsyncOperation"/> if <see cref="client"/> is not null, else return null.
-        /// </para>
-        /// </summary>
-        public static UMI3DAsyncOperation Disconnect()
-        {
-            if (RequestInfoCoroutine != null)
-            {
-                CoroutineManager.Instance.DetachCoroutine(RequestInfoCoroutine);
-            }
-            requestServerInfSucceeded = null;
-            requestSessionInfSucceeded = null;
-            request.Clear();
-
-            if (client != null)
-            {
-                client.textMessageReceived -= OnReceiveInfo;
-                
-                var asyncOperation = new UMI3DAsyncOperation();
-
-                asyncOperation.Start(
-                    () =>
-                    {
-                        client.Disconnect(forced: true);
-                    }
-                );
-
-                return asyncOperation;
-            }
-
-            return null;
-        }
-
-        /// <summary>
-        /// Get the requested information about this master server asyncronously.
-        /// 
-        /// <para>
-        /// The request is performed in another thread.
-        /// </para>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="requestServerInfSucceeded">Action raise when a request info has succeeded.</param>
         /// <param name="requestFailed">Action raise when a request info has failed.</param>
-        public static void RequestServerInfo(Action<(string serverName, string icon)> requestServerInfSucceeded, Action requestFailed)
+        public void RequestServerInfo_MSC(Action<(string serverName, string icon)> requestServerInfSucceeded, Action requestFailed)
         {
-            if (client == null)
-            {
-                MasterServerException.LogException(
-                    $"Client null when trying to {nameof(RequestServerInfo)}", 
-                    inner: null, 
-                    MasterServerException.ExceptionTypeEnum.ClientNull
-                );
-                return;
-            }
-
             if (!client.IsConnected)
             {
                 MasterServerException.LogException(
-                   $"Client is disconnected when trying to {nameof(RequestServerInfo)}",
+                   $"Client is disconnected when trying to {nameof(RequestServerInfo_MSC)}",
                    inner: null,
                    MasterServerException.ExceptionTypeEnum.ClientDisconnected
                );
                 return;
             }
 
-            LauncherOnMasterServer.requestServerInfSucceeded = requestServerInfSucceeded;
+            this.requestServerInfSucceeded = requestServerInfSucceeded;
 
             var asyncOperation = new UMI3DAsyncOperation();
 
@@ -312,7 +248,7 @@ namespace umi3d.cdk.collaboration
                     }
                     catch (Exception e)
                     {
-                        Disconnect();
+                        Disconnect_MSD();
                         requestFailed?.Invoke();
 
                         MasterServerException.LogException(
@@ -326,27 +262,17 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Get the requested information about this master server's <paramref name="sessionId"/> asyncronously.
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="sessionId">Id of the session.</param>
         /// <param name="requestSessionInfSucceeded">Action raise when a request info has succeeded.</param>
         /// <param name="requestFailed">Action raise when a request info has failed.</param>
-        public static void RequestSessionInfo(string sessionId, Action<MasterServerResponse.Server> requestSessionInfSucceeded, Action requestFailed)
+        public void RequestSessionInfo_MSC(string sessionId, Action<MasterServerResponse.Server> requestSessionInfSucceeded, Action requestFailed)
         {
-            if (client == null)
-            {
-                MasterServerException.LogException(
-                    $"Client null when trying to {nameof(RequestSessionInfo)}",
-                    inner: null,
-                    MasterServerException.ExceptionTypeEnum.ClientNull
-                );
-                return;
-            }
-
             if (!client.IsConnected)
             {
                 MasterServerException.LogException(
-                   $"Client is disconnected when trying to {nameof(RequestSessionInfo)}",
+                   $"Client is disconnected when trying to {nameof(RequestSessionInfo_MSC)}",
                    inner: null,
                    MasterServerException.ExceptionTypeEnum.ClientDisconnected
                );
@@ -390,7 +316,7 @@ namespace umi3d.cdk.collaboration
                     }
                     catch (Exception e)
                     {
-                        Disconnect();
+                        Disconnect_MSD();
                         requestFailed?.Invoke();
 
                         MasterServerException.LogException(
@@ -403,6 +329,38 @@ namespace umi3d.cdk.collaboration
             );
         }
 
+        #endregion
+
+        /// <summary>
+        /// Disconnect a master server asynchronously.
+        /// 
+        /// <para>
+        /// Return an <see cref="UMI3DAsyncOperation"/> if <see cref="client"/> is not null, else return null.
+        /// </para>
+        /// </summary>
+        public UMI3DAsyncOperation Disconnect_MSD()
+        {
+            if (RequestInfoCoroutine != null)
+            {
+                RequestInfoCoroutine.DetachCoroutine();
+            }
+            requestServerInfSucceeded = null;
+            requestSessionInfSucceeded = null;
+            request.Clear();
+
+            client.textMessageReceived -= OnReceiveInfo;
+
+            var asyncOperation = new UMI3DAsyncOperation();
+
+            asyncOperation.Start(
+                () =>
+                {
+                    client.Disconnect(forced: true);
+                }
+            );
+
+            return asyncOperation;
+        }
 
         /// <summary>
         /// An exception class to deal with <see cref="LauncherOnMasterServer"/> issues.
@@ -418,7 +376,7 @@ namespace umi3d.cdk.collaboration
                 ClientNull,
                 ClientDisconnected,
                 SendException,
-                ReceiveEcxeption
+                ReceiveException
             }
 
             public ExceptionTypeEnum exceptionType;

@@ -41,17 +41,55 @@ namespace umi3d.cdk.collaboration
     /// </list>
     /// </para>
     /// </summary>
-    public static class UMI3DNetworking
+    public class UMI3DNetworking : IUMI3DWebRequest, IUMI3DWorldConnection, IUMI3DWorldDisconnection
     {
+        static UMI3DNetworking defaultUMI3DNetworking;
+        static Dictionary<string, UMI3DNetworking> UMI3DNetworkings = new();
+
+        public UMI3DNetworking()
+        {
+            SetWebRequest(defaultWebRequest);
+            SetMasterServerConnection(defaultMasterServer);
+            SetMasterServerDisconnection(defaultMasterServer);
+        }
+
         #region WebRequest
 
         /// <summary>
-        /// The content-type for a json.
+        /// The web request interface to send or receive web requests.
         /// </summary>
-        public const string ContentTypeJson = UMI3DWebRequest.ContentTypeJson;
+        public static IUMI3DWebRequest webRequest
+        {
+            get
+            {
+                return defaultUMI3DNetworking;
+            }
+        }
+        IUMI3DWebRequest defaultWebRequest = new UMI3DWebRequest();
+        IUMI3DWebRequest currentWebRequest;
 
         /// <summary>
-        /// Send an HTTP Get Request.
+        /// update the current web request interface.
+        /// </summary>
+        /// <param name="WebRequest"></param>
+        public void SetWebRequest(IUMI3DWebRequest WebRequest)
+        {
+            currentWebRequest = WebRequest ?? defaultWebRequest;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public string ContentTypeJson
+        {
+            get
+            {
+                return currentWebRequest.ContentTypeJson;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="credentials"></param>
         /// <param name="url"></param>
@@ -60,7 +98,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="onCompleteFail"></param>
         /// <param name="report"></param>
         /// <returns></returns>
-        public static IEnumerator Get_WR(
+        public IEnumerator Get(
             (string token, List<(string, string)> headers) credentials,
             string url,
             Func<bool> shouldCleanAbort,
@@ -69,15 +107,15 @@ namespace umi3d.cdk.collaboration
             UMI3DLogReport report = null
         )
         {
-            return UMI3DWebRequest.Get(
-                credentials, url,
-                shouldCleanAbort, onCompleteSuccess, onCompleteFail,
-                report
-            );
+            return currentWebRequest.Get(
+                   credentials, url,
+                   shouldCleanAbort, onCompleteSuccess, onCompleteFail,
+                   report
+               );
         }
 
         /// <summary>
-        /// Send an HTTP Post Request.
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="credentials"></param>
         /// <param name="url"></param>
@@ -87,74 +125,101 @@ namespace umi3d.cdk.collaboration
         /// <param name="onCompleteFail"></param>
         /// <param name="report"></param>
         /// <returns></returns>
-        public static IEnumerator Post_WR(
-        (string token, List<(string, string)> headers) credentials,
-        string url,
-        (string contentType, string json) data,
-        Func<bool> shouldCleanAbort,
-        Action<UnityWebRequestAsyncOperation> onCompleteSuccess,
-        Action<UnityWebRequestAsyncOperation> onCompleteFail,
-        UMI3DLogReport report = null
+        public IEnumerator Post(
+            (string token, List<(string, string)> headers) credentials,
+            string url,
+            (string contentType, string json) data,
+            Func<bool> shouldCleanAbort,
+            Action<UnityWebRequestAsyncOperation> onCompleteSuccess,
+            Action<UnityWebRequestAsyncOperation> onCompleteFail,
+            UMI3DLogReport report = null
         )
         {
-            return UMI3DWebRequest.Post(
-                credentials, url, data,
-                shouldCleanAbort, onCompleteSuccess, onCompleteFail,
-                report
-            );
+            return currentWebRequest.Post(
+                   credentials, url, data,
+                   shouldCleanAbort, onCompleteSuccess, onCompleteFail,
+                   report
+               );
         }
 
         #endregion
 
         #region LauncherOnMasterServer
 
+        public static IUMI3DMasterServerConnection GetMasterServer(string url)
+        {
+            if (UMI3DNetworkings.ContainsKey(url))
+            {
+                return UMI3DNetworkings[url];
+            }
+            else
+            {
+                var result = new UMI3DNetworking();
+                UMI3DNetworkings.Add(url, result);
+                return result;
+            }
+        }
+        LauncherOnMasterServer defaultMasterServer = new LauncherOnMasterServer();
+        IUMI3DMasterServerConnection currentMasterServerConnection;
+        IUMI3DMasterServerDisconnection currentMasterServerDisconnection;
+
         /// <summary>
-        /// Try to connect to a master server asynchronously.
-        /// 
-        /// <para>
-        /// The connection is established in another thread. The <paramref name="connectSucceeded"/> and <paramref name="connectFailed"/> actions are raised in the main-thread.
-        /// </para>
+        /// Updates the current master server connection interface.
+        /// </summary>
+        /// <param name="masterServerConnection"></param>
+        public void SetMasterServerConnection(IUMI3DMasterServerConnection masterServerConnection)
+        {
+            currentMasterServerConnection = masterServerConnection ?? defaultMasterServer;
+        }
+
+        /// <summary>
+        /// Updates the current master server disconnection interface.
+        /// </summary>
+        /// <param name="masterServerDisconnection"></param>
+        public void SetMasterServerDisconnection(IUMI3DMasterServerDisconnection masterServerDisconnection)
+        {
+            currentMasterServerDisconnection = masterServerDisconnection ?? defaultMasterServer;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="url"></param>
         /// <param name="connectSucceeded">Action raise when the connection succeeded.</param>
         /// <param name="connectFailed">Action raise when the connection failed.</param>
         /// <returns></returns>
-        public static UMI3DAsyncOperation Connect_LoMS(string url, Action connectSucceeded, Action connectFailed)
+        public UMI3DAsyncOperation Connect_MSC(string url, Action connectSucceeded, Action connectFailed)
         {
-            return LauncherOnMasterServer.Connect(url, connectSucceeded, connectFailed);
+            return currentMasterServerConnection.Connect_MSC(url, connectSucceeded, connectFailed);
         }
 
         /// <summary>
-        /// Disconnect a master server asynchronously.
-        /// </summary>
-        public static UMI3DAsyncOperation Disconnect_LoMS()
-        {
-            return LauncherOnMasterServer.Disconnect();
-        }
-
-        /// <summary>
-        /// Get the requested information about this master server asyncronously.
-        /// 
-        /// <para>
-        /// The request is performed in another thread.
-        /// </para>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="requestServerInfSucceeded">Action raise when a request info has succeeded.</param>
         /// <param name="requestFailed">Action raise when a request info has failed.</param>
-        public static void RequestServerInfo_LoMS(Action<(string serverName, string icon)> requestServerInfSucceeded, Action requestFailed)
+        public void RequestServerInfo_MSC(Action<(string serverName, string icon)> requestServerInfSucceeded, Action requestFailed)
         {
-            LauncherOnMasterServer.RequestServerInfo(requestServerInfSucceeded, requestFailed);
+            currentMasterServerConnection.RequestServerInfo_MSC(requestServerInfSucceeded, requestFailed);
         }
 
         /// <summary>
-        /// Get the requested information about this master server's <paramref name="sessionId"/> asyncronously.
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="sessionId">Id of the session.</param>
         /// <param name="requestSessionInfSucceeded">Action raise when a request info has succeeded.</param>
         /// <param name="requestFailed">Action raise when a request info has failed.</param>
-        public static void RequestSessionInfo_LoMS(string sessionId, Action<MasterServerResponse.Server> requestSessionInfSucceeded, Action requestFailed)
+        public void RequestSessionInfo_MSC(string sessionId, Action<MasterServerResponse.Server> requestSessionInfSucceeded, Action requestFailed)
         {
-            LauncherOnMasterServer.RequestSessionInfo(sessionId, requestSessionInfSucceeded, requestFailed);
+            currentMasterServerConnection.RequestSessionInfo_MSC(sessionId, requestSessionInfSucceeded, requestFailed);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public UMI3DAsyncOperation Disconnect_MSD()
+        {
+            return currentMasterServerDisconnection.Disconnect_MSD();
         }
 
         #endregion
@@ -182,6 +247,41 @@ namespace umi3d.cdk.collaboration
                 return LauncherOnWorldController.status;
             }
         }
+
+        #region Observables
+
+        /// <summary>
+        /// Notifies observers that the redirection has started.
+        /// </summary>
+        public static IUMI3DObservable<(Type observer, string purpose)> RedirectionStartedObservable
+        {
+            get
+            {
+                return LauncherOnWorldController.RedirectionStartedObservable;
+            }
+        }
+        /// <summary>
+        /// Notifies observers that the redirection has succeeded.
+        /// </summary>
+        public static IUMI3DObservable<(Type observer, string purpose)> RedirectionSucceededObservable
+        {
+            get
+            {
+                return LauncherOnWorldController.RedirectionSucceededObservable;
+            }
+        }
+        /// <summary>
+        /// Notifies observers that the redirection has failed.
+        /// </summary>
+        public static IUMI3DObservable<(Type observer, string purpose)> RedirectionFailedObservable
+        {
+            get
+            {
+                return LauncherOnWorldController.RedirectionFailedObservable;
+            }
+        }
+
+        #endregion
 
         #region Dtos
 

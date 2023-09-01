@@ -28,6 +28,15 @@ namespace umi3d.cdk.collaboration
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Mumble;
 
+        #region Observable unsubscribers
+
+        /// <summary>
+        /// Unsubscriber for redirection started.
+        /// </summary>
+        IDisposable RedirectionStartedUnsubscriber;
+
+        #endregion
+
         #region Mumble
         #region Init
         protected override void Start()
@@ -41,7 +50,11 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
 
-            UMI3DCollaborationClientServer.Instance.OnRedirectionStarted.AddListener(Reset);
+            UMI3DNetworking.RedirectionStartedObservable.Subscribe(
+                out RedirectionStartedUnsubscriber,
+                (GetType(), $"{nameof(Reset): Reset microphone listener.}"), 
+                Reset
+            );
             UMI3DCollaborationClientServer.Instance.OnLeavingEnvironment.AddListener(Reset);
             UMI3DCollaborationClientServer.Instance.OnLeaving.AddListener(Reset);
 
@@ -52,7 +65,6 @@ namespace umi3d.cdk.collaboration
 
             pushToTalkKeycode = KeyCode.M;
         }
-
 
         (string, int, string, string) GetIdentity()
         {

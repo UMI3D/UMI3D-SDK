@@ -131,6 +131,11 @@ namespace umi3d.cdk.collaboration.emotes
         /// </summary>
         public event Action<Emote> EmoteEnded;
 
+        /// <summary>
+        /// Unsubscriber for redirection succeeded observable.
+        /// </summary>
+        IDisposable redirectionSucceededUnsubscriber;
+
         #endregion Events
 
         #region Emote Changes
@@ -152,7 +157,12 @@ namespace umi3d.cdk.collaboration.emotes
             else //sometimes the environment is already loaded when loading emotes
                 LoadEmotes();
 
-            collabClientServerService.OnRedirection.AddListener(ResetEmoteSystem); //? most of this work (e.g. cleaning the animation, should be handled by the server.
+            //? most of this work (e.g. cleaning the animation, should be handled by the server.
+            UMI3DNetworking.RedirectionSucceededObservable.Subscribe(
+                out redirectionSucceededUnsubscriber,
+                key: (GetType(), $"{nameof(ResetEmoteSystem)}"),
+                ResetEmoteSystem
+            );
             collabClientServerService.OnLeaving.AddListener(ResetEmoteSystem);
         }
 
@@ -236,7 +246,7 @@ namespace umi3d.cdk.collaboration.emotes
             hasReceivedEmotes = false;
 
             environmentLoaderService.onEnvironmentLoaded.RemoveListener(LoadEmotes);
-            collabClientServerService.OnRedirection.RemoveListener(ResetEmoteSystem);
+            redirectionSucceededUnsubscriber?.Dispose();
         }
 
         #endregion Emote Changes

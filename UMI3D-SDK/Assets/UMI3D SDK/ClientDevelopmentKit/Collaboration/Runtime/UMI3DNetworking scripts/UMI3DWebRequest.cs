@@ -13,31 +13,36 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using umi3d.common.collaboration.dto.networking;
 using umi3d.debug;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration
 {
     /// <summary>
-    /// A class responsible for 
+    /// A class responsible for sending and receiving web requests.
     /// </summary>
-    internal static class UMI3DWebRequest
+    internal class UMI3DWebRequest : IUMI3DWebRequest
     {
-        /// <summary>
-        /// The content-type for a json.
-        /// </summary>
-        public const string ContentTypeJson = "application/json";
+        const string contentTypeJson = "application/json";
 
         private static UMI3DLogger logger = new UMI3DLogger(mainTag: $"{nameof(UMI3DWebRequest)}");
 
         /// <summary>
-        /// Send an HTTP Get Request.
+        /// <inheritdoc/>
+        /// </summary>
+        public string ContentTypeJson
+        {
+            get
+            {
+                return contentTypeJson;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="credentials"></param>
         /// <param name="url"></param>
@@ -46,7 +51,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="onCompleteFail"></param>
         /// <param name="report"></param>
         /// <returns></returns>
-        public static IEnumerator Get(
+        public IEnumerator Get(
             (string token, List<(string, string)> headers) credentials,
             string url,
             Func<bool> shouldCleanAbort,
@@ -123,7 +128,7 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Send an HTTP Post Request.
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="credentials"></param>
         /// <param name="url"></param>
@@ -133,7 +138,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="onCompleteFail"></param>
         /// <param name="report"></param>
         /// <returns></returns>
-        public static IEnumerator Post(
+        public IEnumerator Post(
         (string token, List<(string, string)> headers) credentials,
         string url,
         (string contentType, string json) data,

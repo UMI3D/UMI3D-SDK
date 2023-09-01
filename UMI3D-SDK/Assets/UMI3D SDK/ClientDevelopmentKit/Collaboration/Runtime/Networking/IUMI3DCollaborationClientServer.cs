@@ -21,7 +21,6 @@ namespace umi3d.cdk.collaboration
 {
     public interface IUMI3DCollaborationClientServer : IUMI3DClientServer
     {
-        string environementName { get; }
         bool IsRedirectionInProgress { get; }
         UnityEvent OnConnectionCheck { get; }
         UnityEvent OnConnectionLost { get; }
@@ -31,9 +30,7 @@ namespace umi3d.cdk.collaboration
         UnityEvent OnReconnect { get; }
         UnityEvent OnRedirection { get; }
         UnityEvent OnRedirectionAborted { get; }
-        UnityEvent OnRedirectionStarted { get; }
         StatusType status { get; set; }
-        string worldName { get; }
 
         void ConnectionLost(UMI3DEnvironmentClient client);
 

@@ -57,7 +57,6 @@ namespace umi3d.cdk.collaboration
 
         public UnityEvent OnNewToken { get; } = new UnityEvent();
         public UnityEvent OnConnectionLost { get; } = new UnityEvent();
-        public UnityEvent OnRedirectionStarted { get; } = new UnityEvent();
         public UnityEvent OnRedirectionAborted { get; } = new UnityEvent();
         public UnityEvent OnRedirection { get; } = new UnityEvent();
         public UnityEvent OnReconnect { get; } = new UnityEvent();
@@ -82,9 +81,6 @@ namespace umi3d.cdk.collaboration
                     environmentClient.status = value;
             }
         }
-
-        public string environementName => UMI3DNetworking.EnvironmentName;
-        public string worldName => UMI3DNetworking.WorldName;
 
         /// <inheritdoc/>
         protected override void OnDestroy()
@@ -169,7 +165,7 @@ namespace umi3d.cdk.collaboration
                     UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
                     if (await wc.Connect())
                     {
-                        Instance.OnRedirection.Invoke();
+                        //Instance.OnRedirection.Invoke();
                         loadingEntities.Clear();
                         UMI3DEnvironmentLoader.Clear(false);
 

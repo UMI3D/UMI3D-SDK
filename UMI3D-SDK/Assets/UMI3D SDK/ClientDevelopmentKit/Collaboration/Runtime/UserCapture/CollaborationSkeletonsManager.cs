@@ -97,6 +97,11 @@ namespace umi3d.cdk.collaboration.userCapture
         public bool ShouldSendCameraProperties { get; set; } = true;
         private bool sendTrackingLoopOnce = false;
 
+        /// <summary>
+        /// Unsubscriber for redirection succeeded observable.
+        /// </summary>
+        IDisposable redirectionSucceededUnsubscriber;
+
         #endregion Fields
 
         #region Dependency Injection
@@ -146,7 +151,12 @@ namespace umi3d.cdk.collaboration.userCapture
             collaborativeEnvironmentManagementService.OnUpdateJoinnedUserList += () => UpdateSkeletons(collaborativeEnvironmentManagementService.UserList);
             collaborativeLoaderService.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); if (ShouldSendTracking) SendTrackingLoop(); canClearSkeletons = true; });
             collaborationClientServerService.OnLeavingEnvironment.AddListener(Clear);
-            collaborationClientServerService.OnRedirection.AddListener(Clear);
+
+            UMI3DNetworking.RedirectionSucceededObservable.Subscribe(
+                out redirectionSucceededUnsubscriber,
+                key: (GetType(), $"{nameof(Clear)}"),
+                Clear
+            );
         }
 
         private void Clear()
