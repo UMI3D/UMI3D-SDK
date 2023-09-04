@@ -31,6 +31,6 @@ namespace umi3d.cdk.collaboration
         /// Return an <see cref="UMI3DAsyncOperation"/> if <see cref="client"/> is not null, else return null.
         /// </para>
         /// </summary>
-        UMI3DAsyncOperation Disconnect_MSD();
+        UMI3DAsyncOperation Disconnect();
     }
 }

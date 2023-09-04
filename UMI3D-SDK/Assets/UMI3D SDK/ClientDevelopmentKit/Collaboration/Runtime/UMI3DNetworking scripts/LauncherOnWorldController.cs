@@ -29,7 +29,7 @@ namespace umi3d.cdk.collaboration
     /// <summary>
     /// Used to connect to a World Controller, when a Master Server is not used.
     /// </summary>
-    internal static class LauncherOnWorldController
+    internal sealed class LauncherOnWorldController : IUMI3DWorldControllerConnection, IUMI3DWorldControllerInformation
     {
         #region private
 
@@ -40,50 +40,81 @@ namespace umi3d.cdk.collaboration
 
         #endregion
 
-        /// <summary>
-        /// Whether or not a connection or redirection is in progress.
-        /// </summary>
-        public static bool IsConnectingOrRedirecting;
+        #region IUMI3DWorldControllerInformation
 
         /// <summary>
-        /// The status of the user in the server.
+        /// <inheritdoc/>
         /// </summary>
-        public static StatusType status;
-
-        #region Observables
-
-        static UMI3DObservable redirectionStartedObservable = new UMI3DObservable();
-        static UMI3DObservable redirectionSucceededObservable = new UMI3DObservable();
-        static UMI3DObservable redirectionFailedObservable = new UMI3DObservable();
+        public bool isConnectingOrRedirecting { get; private set; }
 
         /// <summary>
-        /// Notifies observers that the redirection has started.
+        /// <inheritdoc/>
         /// </summary>
-        public static IUMI3DObservable<(Type observer, string purpose)> RedirectionStartedObservable
+        public StatusType status { get; private set; }
+
+        #region Shortcut data
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public string MediaDtoUrl
         {
             get
             {
-                return redirectionStartedObservable;
+                return redirectionDto?.media?.url;
             }
         }
+
         /// <summary>
-        /// Notifies observers that the redirection has succeeded.
+        /// <inheritdoc/>
         /// </summary>
-        public static IUMI3DObservable<(Type observer, string purpose)> RedirectionSucceededObservable
+        public string ConnectionDtoUrl
         {
             get
             {
-                return redirectionSucceededObservable;
+                return !string.IsNullOrEmpty(MediaDtoUrl)
+                    ? MediaDtoUrl + UMI3DNetworkingKeys.connect
+                    : null;
             }
         }
+
         /// <summary>
-        /// Notifies observers that the redirection has failed.
+        /// <inheritdoc/>
         /// </summary>
-        public static IUMI3DObservable<(Type observer, string purpose)> RedirectionFailedObservable
+        public string WorldName
         {
             get
             {
-                return redirectionFailedObservable;
+                return redirectionDto?.media?.name;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public string EnvironmentName
+        {
+            get
+            {
+                return privateIdentityDto?.connectionDto?.name;
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public UMI3DVersion.Version EnvironmentUMI3DVersion
+        {
+            get
+            {
+                if (privateIdentityDto != null && privateIdentityDto.connectionDto != null)
+                {
+                    return new UMI3DVersion.Version(privateIdentityDto.connectionDto.version);
+                }
+                else
+                {
+                    return null;
+                }
             }
         }
 
@@ -92,9 +123,9 @@ namespace umi3d.cdk.collaboration
         #region Dtos
 
         /// <summary>
-        /// Called to create a new Public Identity for this client.
+        /// <inheritdoc/>
         /// </summary>
-        public static PublicIdentityDto PublicIdentity
+        public PublicIdentityDto PublicIdentity
         {
             get
             {
@@ -115,9 +146,9 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Called to create a new Identity for this client.
+        /// <inheritdoc/>
         /// </summary>
-        public static IdentityDto Identity
+        public IdentityDto Identity
         {
             get
             {
@@ -142,9 +173,9 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Create a new media dto from the one that is currently used.
+        /// <inheritdoc/>
         /// </summary>
-        public static MediaDto MediaDto
+        public MediaDto MediaDto
         {
             get
             {
@@ -166,9 +197,9 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Create a new gate dto from the one that is currently used.
+        /// <inheritdoc/>
         /// </summary>
-        public static GateDto GateDto
+        public GateDto GateDto
         {
             get
             {
@@ -188,9 +219,9 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Create a new environment connection dto from the one that is currently used.
+        /// <inheritdoc/>
         /// </summary>
-        public static EnvironmentConnectionDto EnvironmentConnectionDto
+        public EnvironmentConnectionDto EnvironmentConnectionDto
         {
             get
             {
@@ -220,76 +251,51 @@ namespace umi3d.cdk.collaboration
 
         #endregion
 
-        #region Shortcut data.
+        #endregion
+
+        #region IUMI3DWorldControllerConnection
+
+        #region Observables
+
+        UMI3DObservable _redirectionStartedObservable = new UMI3DObservable();
+        UMI3DObservable _redirectionSucceededObservable = new UMI3DObservable();
+        UMI3DObservable _redirectionFailedObservable = new UMI3DObservable();
 
         /// <summary>
-        /// The current url to the media dto.
+        /// <inheritdoc/>
         /// </summary>
-        public static string MediaDtoUrl
+        public IUMI3DObservable<(Type observer, string purpose)> redirectionStartedObservable
         {
             get
             {
-                return redirectionDto?.media?.url;
+                return _redirectionStartedObservable;
             }
         }
-
         /// <summary>
-        /// The current url where the connection dto is sent.
+        /// <inheritdoc/>
         /// </summary>
-        public static string ConnectionDtoUrl
+        public IUMI3DObservable<(Type observer, string purpose)> redirectionSucceededObservable
         {
             get
             {
-                return !string.IsNullOrEmpty(MediaDtoUrl)
-                    ? MediaDtoUrl + UMI3DNetworkingKeys.connect
-                    : null;
+                return _redirectionSucceededObservable;
             }
         }
-
         /// <summary>
-        /// Name of the world.
+        /// <inheritdoc/>
         /// </summary>
-        public static string WorldName
+        public IUMI3DObservable<(Type observer, string purpose)> redirectionFailedObservable
         {
             get
             {
-                return redirectionDto?.media?.name;
-            }
-        }
-
-        /// <summary>
-        /// Name of the environment.
-        /// </summary>
-        public static string EnvironmentName
-        {
-            get
-            {
-                return privateIdentityDto?.connectionDto?.name;
-            }
-        }
-
-        /// <summary>
-        /// Create a new UMI3DVersion.Version corresponding to the version of the environment.
-        /// </summary>
-        public static UMI3DVersion.Version EnvironmentUMI3DVersion
-        {
-            get
-            {
-                if (privateIdentityDto != null && privateIdentityDto.connectionDto != null)
-                {
-                    return new UMI3DVersion.Version(privateIdentityDto.connectionDto.version);
-                }
-                else
-                {
-                    return null;
-                }
+                return _redirectionFailedObservable;
             }
         }
 
         #endregion
 
         /// <summary>
-        /// Send a request to get a <see cref="MediaDto"/>.
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="RawURL">A simplified version of the url where a media dto can be requested.</param>
         /// <param name="requestSucceeded">Action raised when a media dto has been found.</param>
@@ -299,7 +305,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="maxTryCount">The maximum number of try before giving up.</param>
         /// <param name="report">A log report.</param>
         /// <returns></returns>
-        public static IEnumerator RequestMediaDto(
+        public IEnumerator RequestMediaDto(
                 string RawURL,
                 Action<MediaDto> requestSucceeded, Action<int> requestFailed, Func<bool> shouldCleanAbort,
                 int tryCount = 0, int maxTryCount = 3, UMI3DLogReport report = null
@@ -326,7 +332,7 @@ namespace umi3d.cdk.collaboration
 
             IEnumerator nextTryEnumerator = null;
 
-            yield return UMI3DNetworking.webRequest.Get(
+            yield return UMI3DNetworking.GetDefault.webRequest.Get(
                 credentials: (null, null),
                 curentUrl,
                 shouldCleanAbort,
@@ -409,11 +415,7 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Connect to a World Controller.
-        /// 
-        /// <para>
-        ///  A connection is simply a redirection from nowhere.
-        /// </para>
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="mediaDto">The media dto of the world controller.</param>
         /// <param name="shouldCleanAbort">Whether or not the connection should be aborted.</param>
@@ -424,7 +426,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="connectionFailed">Action raised when the connection has failed.</param>
         /// <param name="maxTryCount">The maximum try count.</param>
         /// <param name="report">A log reporter.</param>
-        public static IEnumerator Connect(
+        public IEnumerator Connect(
             MediaDto mediaDto,
             Func<bool> shouldCleanAbort,
             Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
@@ -448,7 +450,7 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Redirect from one place to another.
+        /// <inheritdoc/>
         /// </summary>
         /// <param name="redirectionDto"></param>
         /// <param name="shouldCleanAbort">Whether or not the connection should be aborted.</param>
@@ -460,7 +462,7 @@ namespace umi3d.cdk.collaboration
         /// <param name="maxTryCount">The maximum try count.</param>
         /// <param name="report">A log reporter.</param>
         /// <returns></returns>
-        public static IEnumerator Redirect(
+        public IEnumerator Redirect(
             RedirectionDto redirectionDto,
             Func<bool> shouldCleanAbort,
             Action<ConnectionFormDto> formReceived, Func<FormConnectionAnswerDto> formAnswerReceived,
@@ -531,10 +533,10 @@ namespace umi3d.cdk.collaboration
                 bool tryAgain = false;
                 bool waitForFormAnswer = false;
 
-                yield return UMI3DNetworking.webRequest.Post(
+                yield return UMI3DNetworking.GetDefault.webRequest.Post(
                     credentials: (null, null),
                     ConnectionDtoUrl,
-                    data: (UMI3DNetworking.webRequest.ContentTypeJson, json),
+                    data: (UMI3DNetworking.GetDefault.webRequest.ContentTypeJson, json),
                     shouldCleanAbort,
                     onCompleteSuccess: op =>
                     {
@@ -674,6 +676,7 @@ namespace umi3d.cdk.collaboration
             IsConnectingOrRedirecting = false;
         }
 
+        #endregion
 
         /// <summary>
         /// An exception class to deal with <see cref="LauncherOnWorldController"/> issues.
