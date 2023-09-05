@@ -16,8 +16,10 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
+using System.Security.Permissions;
 using umi3d.edk;
 using umi3d.edk.binding;
+using UnityEngine;
 using UnityEngine.SceneManagement;
 
 
@@ -28,6 +30,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
         protected BindingManager bindingManager;
 
         private Mock<IUMI3DServer> umi3dServerMock;
+        private Mock<IUMI3DEnvironmentManager> umi3dEnvironmentServiceMock;
 
         #region Test SetUp
 
@@ -45,7 +48,9 @@ namespace PlayMode_Tests.Core.Binding.EDK
         {
             umi3dServerMock = new();
             umi3dServerMock.Setup(x => x.OnUserJoin).Returns(new UMI3DUserEvent());
-            
+
+            umi3dEnvironmentServiceMock = new();
+
             bindingManager = new BindingManager(umi3dServerMock.Object);
         }
 
@@ -116,9 +121,14 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void AddBinding()
         {
             // GIVEN
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
             int initialCount = bindingManager.bindings.GetValue().Count;
 
-            var binding = new NodeBinding(10005uL, 10008uL);
+            var binding = new NodeBinding(boundNodeId, 10008uL);
 
             // WHEN
             var resultOperation = bindingManager.AddBinding(binding);
@@ -126,13 +136,20 @@ namespace PlayMode_Tests.Core.Binding.EDK
             // THEN
             Assert.GreaterOrEqual(resultOperation.Count, 1);
             Assert.AreEqual(initialCount + 1, bindingManager.bindings.GetValue().Count);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         [Test]
         public void AddBinding_Upgrade()
         {
             // GIVEN
-            ulong boundNodeId = 10005uL;
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
             var firstBinding = new NodeBinding(boundNodeId, 10008uL);
             var secondBinding = new NodeBinding(boundNodeId, 10009uL);
             bindingManager.AddBinding(firstBinding);
@@ -146,6 +163,9 @@ namespace PlayMode_Tests.Core.Binding.EDK
             Assert.GreaterOrEqual(resultOperation.Count, 1);
             Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
             Assert.IsAssignableFrom(typeof(MultiBinding), bindingManager.bindings[boundNodeId]);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         [Test]
@@ -170,7 +190,12 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void RemoveBinding()
         {
             // GIVEN
-            var binding = new NodeBinding(10005uL, 10008uL);
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
+            var binding = new NodeBinding(boundNodeId, 10008uL);
             bindingManager.AddBinding(binding);
             int initialCount = bindingManager.bindings.GetValue().Count;
 
@@ -180,13 +205,20 @@ namespace PlayMode_Tests.Core.Binding.EDK
             // THEN
             Assert.GreaterOrEqual(resultOperation.Count, 1);
             Assert.AreEqual(initialCount - 1, bindingManager.bindings.GetValue().Count);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         [Test]
         public void RemoveBinding_Downgrade()
         {
             // GIVEN
-            ulong boundNodeId = 10005uL;
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
             var firstBinding = new NodeBinding(boundNodeId, 10008uL);
             var secondBinding = new NodeBinding(boundNodeId, 10009uL);
             var binding = new MultiBinding(boundNodeId)
@@ -203,13 +235,21 @@ namespace PlayMode_Tests.Core.Binding.EDK
             Assert.GreaterOrEqual(resultOperation.Count, 1);
             Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
             Assert.IsAssignableFrom(typeof(NodeBinding), bindingManager.bindings[boundNodeId]);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         [Test]
         public void RemoveBinding_Null()
         {
             // GIVEN
-            var binding = new NodeBinding(10005uL, 10008uL);
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
+            var binding = new NodeBinding(boundNodeId, 10008uL);
             bindingManager.AddBinding(binding);
             int initialCount = bindingManager.bindings.GetValue().Count;
 
@@ -219,6 +259,9 @@ namespace PlayMode_Tests.Core.Binding.EDK
             // THEN
             Assert.IsNull(resultOperation);
             Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
 
@@ -230,24 +273,38 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void RemoveAllBindings()
         {
             // GIVEN
-            ulong boundNodeId = 10005uL;
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
             var binding = new NodeBinding(boundNodeId, 10008uL);
             bindingManager.AddBinding(binding);
             int initialCount = bindingManager.bindings.GetValue().Count;
 
+            
+
             // WHEN
+
             var resultOperation = bindingManager.RemoveAllBindings(boundNodeId);
 
             // THEN
             Assert.GreaterOrEqual(resultOperation.Count, 1);
             Assert.AreEqual(initialCount - 1, bindingManager.bindings.GetValue().Count);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         [Test]
         public void RemoveAllBindings_Multibinding()
         {
             // GIVEN
-            ulong boundNodeId = 10005uL;
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
             var firstBinding = new NodeBinding(boundNodeId, 10008uL);
             var secondBinding = new NodeBinding(boundNodeId, 10009uL);
             var binding = new MultiBinding(boundNodeId)
@@ -263,13 +320,20 @@ namespace PlayMode_Tests.Core.Binding.EDK
             // THEN
             Assert.GreaterOrEqual(resultOperation.Count, 1);
             Assert.AreEqual(initialCount - 1, bindingManager.bindings.GetValue().Count);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         [Test]
         public void RemoveAllBindings_InvalidKey()
         {
             // GIVEN
-            ulong boundNodeId = 10005uL;
+            var gameObject = new GameObject();
+            var node = gameObject.AddComponent<UMI3DNode>();
+            ulong boundNodeId = node.Id();
+            umi3dEnvironmentServiceMock.Setup(x => x._GetEntityInstance<UMI3DAbstractNode>(boundNodeId)).Returns(node);
+
             var binding = new NodeBinding(boundNodeId, 10008uL);
             bindingManager.AddBinding(binding);
             int initialCount = bindingManager.bindings.GetValue().Count;
@@ -280,6 +344,9 @@ namespace PlayMode_Tests.Core.Binding.EDK
             // THEN
             Assert.IsNull(resultOperation);
             Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
+
+            // teardown
+            UnityEngine.Object.Destroy(gameObject);
         }
 
         #endregion
