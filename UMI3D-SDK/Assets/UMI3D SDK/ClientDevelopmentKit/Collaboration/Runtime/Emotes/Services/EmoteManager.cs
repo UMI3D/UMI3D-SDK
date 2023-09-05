@@ -89,12 +89,17 @@ namespace umi3d.cdk.collaboration.emotes
         private readonly ILoadingManager environmentLoaderService;
         private readonly IEnvironmentManager environmentManager;
         private readonly IUMI3DCollaborationClientServer collabClientServerService;
+        /// <summary>
+        /// The networking instance that has been used when this object has been created.
+        /// </summary>
+        private readonly UMI3DNetworking networking;
 
         public EmoteManager() : base()
         {
             environmentLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
             environmentManager = UMI3DCollaborationEnvironmentLoader.Instance;
             collabClientServerService = UMI3DCollaborationClientServer.Instance;
+            networking = UMI3DNetworking.Networkings.Current;
         }
 
         public EmoteManager(ILoadingManager environmentLoader,
@@ -158,7 +163,7 @@ namespace umi3d.cdk.collaboration.emotes
                 LoadEmotes();
 
             //? most of this work (e.g. cleaning the animation, should be handled by the server.
-            UMI3DNetworking.RedirectionSucceededObservable.Subscribe(
+            networking.worldControllerConnection.redirectionSucceededObservable.Subscribe(
                 out redirectionSucceededUnsubscriber,
                 key: (GetType(), $"{nameof(ResetEmoteSystem)}"),
                 ResetEmoteSystem

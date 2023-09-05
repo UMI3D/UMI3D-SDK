@@ -39,7 +39,7 @@ namespace umi3d.cdk.collaboration
 
         internal string HeaderToken;
 
-        private string httpUrl => UMI3DNetworking.EnvironmentConnectionDto.httpUrl;
+        private string httpUrl => UMI3DNetworking.Networkings.Current.worldControllerInformation.EnvironmentConnectionDto.httpUrl;
 
         private readonly ThreadDeserializer deserializer;
         private readonly UMI3DEnvironmentClient environmentClient;

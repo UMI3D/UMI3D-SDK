@@ -45,64 +45,73 @@ namespace umi3d.cdk.collaboration
     /// </summary>
     public sealed class UMI3DNetworking
     {
-        static UMI3DNetworking defaultUMI3DNetworking = new UMI3DNetworking();
-        static Dictionary<string, UMI3DNetworking> UMI3DNetworkings = new();
+        //static UMI3DNetworking defaultUMI3DNetworking = new UMI3DNetworking();
+        //static Dictionary<string, UMI3DNetworking> UMI3DNetworkings = new();
 
-        /// <summary>
-        /// Get the default <see cref="UMI3DNetworking"/>.
-        /// </summary>
-        public static UMI3DNetworking GetDefault
+        ///// <summary>
+        ///// Get the default <see cref="UMI3DNetworking"/>.
+        ///// </summary>
+        //public static UMI3DNetworking GetDefault
+        //{
+        //    get
+        //    {
+        //        return defaultUMI3DNetworking;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Try to get a <see cref="UMI3DNetworking"/> corresponding to that <paramref name="url"/>.
+        ///// </summary>
+        ///// <param name="url"></param>
+        ///// <param name="networking"></param>
+        ///// <returns></returns>
+        //public static bool TryGet(string url, out UMI3DNetworking networking)
+        //{
+        //    if (UMI3DNetworkings.ContainsKey(url))
+        //    {
+        //        networking = UMI3DNetworkings[url];
+        //        return true;
+        //    }
+        //    else
+        //    {
+        //        networking = null;
+        //        return false;
+        //    }
+        //}
+
+        ///// <summary>
+        ///// Create a <see cref="UMI3DNetworking"/> for the url: <paramref name="url"/>.
+        ///// 
+        ///// <para>
+        ///// If this creation override a previous <see cref="UMI3DNetworking"/> <paramref name="hasBeenOverridden"/> will be set to true else false.
+        ///// </para>
+        ///// </summary>
+        ///// <param name="url"></param>
+        ///// <param name="hasBeenOverridden"></param>
+        ///// <returns></returns>
+        //public static UMI3DNetworking Create(string url, out bool hasBeenOverridden)
+        //{
+        //    var result = new UMI3DNetworking();
+        //    if (UMI3DNetworkings.ContainsKey(url))
+        //    {
+        //        hasBeenOverridden = true;
+        //        UMI3DNetworkings[url] = result;
+        //        return result;
+        //    }
+        //    else
+        //    {
+        //        hasBeenOverridden = false;
+        //        UMI3DNetworkings.Add(url, result);
+        //        return result;
+        //    }
+        //}
+
+        static CyclingEnumerator<UMI3DNetworking> networkings = new(new[] { new UMI3DNetworking() });
+        public static ICyclingEnumerator<UMI3DNetworking> Networkings
         {
             get
             {
-                return defaultUMI3DNetworking;
-            }
-        }
-
-        /// <summary>
-        /// Try to get a <see cref="UMI3DNetworking"/> corresponding to that <paramref name="url"/>.
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="networking"></param>
-        /// <returns></returns>
-        public static bool TryGet(string url, out UMI3DNetworking networking)
-        {
-            if (UMI3DNetworkings.ContainsKey(url))
-            {
-                networking = UMI3DNetworkings[url];
-                return true;
-            }
-            else
-            {
-                networking = null;
-                return false;
-            }
-        }
-
-        /// <summary>
-        /// Create a <see cref="UMI3DNetworking"/> for the url: <paramref name="url"/>.
-        /// 
-        /// <para>
-        /// If this creation override a previous <see cref="UMI3DNetworking"/> <paramref name="hasBeenOverridden"/> will be set to true else false.
-        /// </para>
-        /// </summary>
-        /// <param name="url"></param>
-        /// <param name="hasBeenOverridden"></param>
-        /// <returns></returns>
-        public static UMI3DNetworking Create(string url, out bool hasBeenOverridden)
-        {
-            var result = new UMI3DNetworking();
-            if (UMI3DNetworkings.ContainsKey(url))
-            {
-                hasBeenOverridden = true;
-                UMI3DNetworkings[url] = result;
-                return result;
-            }
-            else
-            {
-                hasBeenOverridden = false;
-                UMI3DNetworkings.Add(url, result);
-                return result;
+                return networkings;
             }
         }
 
@@ -151,6 +160,20 @@ namespace umi3d.cdk.collaboration
             }
         }
         /// <summary>
+        /// The master server information interface implementation.
+        /// </summary>
+        public IUMI3DMasterServerInformation masterServerInformation
+        {
+            get
+            {
+                return currentMasterServerInformation;
+            }
+            set
+            {
+                currentMasterServerInformation = value ?? defaultMasterServer;
+            }
+        }
+        /// <summary>
         /// The master server disconnection interface implementation.
         /// </summary>
         public IUMI3DMasterServerDisconnection masterServerDisconnection
@@ -166,6 +189,7 @@ namespace umi3d.cdk.collaboration
         }
         LauncherOnMasterServer defaultMasterServer = new LauncherOnMasterServer();
         IUMI3DMasterServerConnection currentMasterServerConnection;
+        IUMI3DMasterServerInformation currentMasterServerInformation;
         IUMI3DMasterServerDisconnection currentMasterServerDisconnection;
 
         #endregion

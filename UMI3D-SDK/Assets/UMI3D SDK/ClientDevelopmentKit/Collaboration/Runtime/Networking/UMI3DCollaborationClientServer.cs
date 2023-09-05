@@ -50,8 +50,8 @@ namespace umi3d.cdk.collaboration
         private static UMI3DWorldControllerClient worldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 
-        protected override EnvironmentConnectionDto connectionDto => UMI3DNetworking.EnvironmentConnectionDto;
-        public override UMI3DVersion.Version version => UMI3DNetworking.EnvironmentUMI3DVersion;
+        protected override EnvironmentConnectionDto connectionDto => UMI3DNetworking.Networkings.Current.worldControllerInformation.EnvironmentConnectionDto;
+        public override UMI3DVersion.Version version => UMI3DNetworking.Networkings.Current.worldControllerInformation.EnvironmentUMI3DVersion;
 
         public static Func<MultiProgress> EnvironmentProgress = null;
 

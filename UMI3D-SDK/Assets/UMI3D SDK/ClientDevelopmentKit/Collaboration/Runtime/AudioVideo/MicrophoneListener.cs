@@ -28,12 +28,17 @@ namespace umi3d.cdk.collaboration
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Mumble;
 
-        #region Observable unsubscribers
+        #region Networking
+
+        /// <summary>
+        /// The networking instance that has been used when this object has been created.
+        /// </summary>
+        UMI3DNetworking networking;
 
         /// <summary>
         /// Unsubscriber for redirection started.
         /// </summary>
-        IDisposable RedirectionStartedUnsubscriber;
+        IDisposable redirectionStartedUnsubscriber;
 
         #endregion
 
@@ -41,6 +46,8 @@ namespace umi3d.cdk.collaboration
         #region Init
         protected override void Start()
         {
+            networking = UMI3DNetworking.Networkings.Current;
+
             base.Start();
 
             QuittingManager.OnApplicationIsQuitting.AddListener(_OnApplicationQuit);
@@ -50,8 +57,8 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneServerUpdated.AddListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.AddListener(UseMumbleUpdate);
 
-            UMI3DNetworking.RedirectionStartedObservable.Subscribe(
-                out RedirectionStartedUnsubscriber,
+            networking.worldControllerConnection.redirectionStartedObservable.Subscribe(
+                out redirectionStartedUnsubscriber,
                 (GetType(), $"{nameof(Reset): Reset microphone listener.}"), 
                 Reset
             );
