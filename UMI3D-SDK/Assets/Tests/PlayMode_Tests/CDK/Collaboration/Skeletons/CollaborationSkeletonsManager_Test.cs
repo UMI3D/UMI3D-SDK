@@ -25,6 +25,7 @@ using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.userCapture.description;
 using UnityEngine;
 using UnityEngine.Events;
@@ -112,12 +113,15 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
         {
             // GIVEN
             ulong userId = 1005uL;
+            UserDto userDto = new UserDto() { id = userId };
+            UMI3DUser user = new UMI3DUser(userDto);
 
             UMI3DSkeletonHierarchy hierarchy = new UMI3DSkeletonHierarchy(null);
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
             parameterMock.Setup(x => x.CollabTrackedSkeleton).Returns(trackedSubskeletonGo);
             collaborativeLoaderServiceMock.Setup(x => x.AbstractLoadingParameters).Returns(parameterMock.Object);
+            collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(new List<UMI3DUser>() { user });
 
             // WHEN
             var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, skeletonGo.transform, hierarchy);
@@ -140,12 +144,15 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
         {
             // GIVEN
             ulong userId = 1005uL;
+            UserDto userDto = new UserDto() { id = userId };
+            UMI3DUser user = new UMI3DUser(userDto);
 
             UMI3DSkeletonHierarchy hierarchy = new UMI3DSkeletonHierarchy(null);
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
             parameterMock.Setup(x => x.CollabTrackedSkeleton).Returns(trackedSubskeletonGo);
             collaborativeLoaderServiceMock.Setup(x => x.AbstractLoadingParameters).Returns(parameterMock.Object);
+            collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(new List<UMI3DUser>() { user });
 
             // WHEN
             var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, null, hierarchy);
@@ -168,7 +175,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
         {
             // GIVEN
             ulong userId = 1005uL;
+            UserDto userDto = new UserDto() { id = userId };
+            UMI3DUser user = new UMI3DUser(userDto);
             GameObject go = new GameObject("Skeleton created");
+            collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(new List<UMI3DUser>() { user });
 
             // WHEN
             Action action = () => { _ = collaborativeSkeletonManager.CreateSkeleton(userId, go.transform, null); };
