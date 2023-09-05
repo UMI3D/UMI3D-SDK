@@ -51,7 +51,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Start()
         {
-            trackedAnimator.IkCallback = new System.Action<int>((u => HandleAnimatorIK(u)));
+            trackedAnimator.IkCallback += u => HandleAnimatorIK(u);
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
             {
