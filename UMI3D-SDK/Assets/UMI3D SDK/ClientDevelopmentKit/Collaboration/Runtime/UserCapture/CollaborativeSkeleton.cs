@@ -36,7 +36,8 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public override void UpdateBones(UserTrackingFrameDto frame)
         {
-            lock(SubskeletonsLock)
+            lastFrame = frame;
+            lock (SubskeletonsLock)
                 foreach (ISubskeleton skeleton in Subskeletons)
                 {
                     if (skeleton is IWritableSubskeleton writableSubskeleton)

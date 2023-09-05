@@ -192,6 +192,7 @@ namespace umi3d.cdk
                 IsPaused = true;
                 return;
             }
+
             animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
             IsPaused = false;
             trackingAnimationCoroutine ??= coroutineService.AttachCoroutine(TrackEnd());
@@ -424,7 +425,37 @@ namespace umi3d.cdk
                     animator = node.gameObject.GetComponentInChildren<Animator>();
                 if (animator != null && dto.playing)
                     Start();
+
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(debugClip);
+
             });
+        }
+
+        async void debugClip()
+        {
+            string name = null;
+            while (true)
+            {
+                await UMI3DAsyncManager.Yield();
+                try
+                {
+                    var m_CurrentClipInfo = animator.GetCurrentAnimatorClipInfo(0);
+                    //Access the current length of the clip
+                    if (m_CurrentClipInfo != null && m_CurrentClipInfo.Count() > 0)
+                    {
+                        var m_CurrentClipLength = m_CurrentClipInfo[0].clip.length;
+                        //Access the Animation clip name
+                        var m_ClipName = m_CurrentClipInfo[0].clip.name;
+
+                        if (name != m_ClipName)
+                        {
+                            UnityEngine.Debug.Log(m_ClipName);
+                            name = m_ClipName;
+                        }
+                    }
+                }
+                catch { }
+            }
         }
 
         #endregion Setter

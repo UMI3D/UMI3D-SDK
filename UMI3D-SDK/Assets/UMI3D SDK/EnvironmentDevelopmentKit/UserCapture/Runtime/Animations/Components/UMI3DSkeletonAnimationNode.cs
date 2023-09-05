@@ -142,9 +142,26 @@ namespace umi3d.edk.userCapture.animation
                 animation.objectNode.SetValue(node != null ? node : this);
                 animation.objectLooping.SetValue(areLooping);
                 animation.objectPlaying.SetValue(arePlaying);
+
+                
+
                 foreach (var parameter in animatorSelfTrackedParameters)
                 {
-                    animation.objectParameters.Add(((SkeletonAnimatorParameterKeys)parameter.parameterKey).ToString(), 0f);
+                    object defaultValue = ((SkeletonAnimatorParameterKeys)parameter.parameterKey) switch
+                    {
+                        SkeletonAnimatorParameterKeys.SPEED => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_X => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_ABS_X => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_Y => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_ABS_Y => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_Z => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_ABS_Z => 0f,
+                        SkeletonAnimatorParameterKeys.SPEED_X_Z => 0f,
+                        SkeletonAnimatorParameterKeys.JUMP => false,
+                        SkeletonAnimatorParameterKeys.CROUCH => false,
+                        _ => 0
+                    };
+                    animation.objectParameters.Add(parameter.parameterName, defaultValue);
                 }
                 animation.objectStateName.SetValue(animationState);
 

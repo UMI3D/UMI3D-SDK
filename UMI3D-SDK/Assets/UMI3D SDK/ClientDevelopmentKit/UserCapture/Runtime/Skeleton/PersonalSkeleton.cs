@@ -61,6 +61,7 @@ namespace umi3d.cdk.userCapture
                         writableSkeleton.WriteTrackingFrame(frame, option);
                 }
 
+            lastFrame = frame;
             return frame;
         }
 
@@ -76,6 +77,7 @@ namespace umi3d.cdk.userCapture
                             writableSkeleton.UpdateBones(frame);
                     }
             }
+            lastFrame = frame;
         }
     }
 }

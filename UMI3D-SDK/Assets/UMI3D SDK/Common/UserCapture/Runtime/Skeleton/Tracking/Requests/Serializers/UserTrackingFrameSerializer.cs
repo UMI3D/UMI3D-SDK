@@ -37,6 +37,9 @@ namespace umi3d.common.userCapture.tracking
 
                     && UMI3DSerializer.TryRead(container, out Vector3Dto position)
                     && UMI3DSerializer.TryRead(container, out Vector4Dto rotation)
+                    && UMI3DSerializer.TryRead(container, out Vector3Dto speed)
+                    && UMI3DSerializer.TryRead(container, out bool jumping)
+                    && UMI3DSerializer.TryRead(container, out bool crouching)
                     )
                 {
                     List<ControllerDto> trackedBones = UMI3DSerializer.ReadList<ControllerDto>(container);
@@ -52,6 +55,10 @@ namespace umi3d.common.userCapture.tracking
 
                             position = position,
                             rotation = rotation,
+
+                            speed = speed,
+                            jumping = jumping,
+                            crouching = crouching,
 
                             trackedBones = trackedBones,
 
@@ -80,6 +87,9 @@ namespace umi3d.common.userCapture.tracking
                     + UMI3DSerializer.Write(c.parentId)
                     + UMI3DSerializer.Write(c.position)
                     + UMI3DSerializer.Write(c.rotation)
+                    + UMI3DSerializer.Write(c.speed)
+                    + UMI3DSerializer.Write(c.jumping)
+                    + UMI3DSerializer.Write(c.crouching)
                     + UMI3DSerializer.WriteCollection(c.trackedBones)
                     + UMI3DSerializer.WriteCollection(c.environmentPosesIndexes)
                     + UMI3DSerializer.WriteCollection(c.customPosesIndexes);

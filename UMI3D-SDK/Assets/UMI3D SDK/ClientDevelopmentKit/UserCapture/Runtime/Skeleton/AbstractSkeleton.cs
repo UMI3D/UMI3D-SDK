@@ -84,6 +84,10 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public IPoseSubskeleton PoseSubskeleton { get; protected set; }
 
+
+        protected UserTrackingFrameDto lastFrame;
+        public UserTrackingFrameDto LastFrame => lastFrame;
+
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>
@@ -170,6 +174,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="hierarchy"></param>
         private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
         {
+            //UnityEngine.Debug.Log($"<color=orange>Compute for {UserId}</color>");
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in hierarchy.Relations.Keys)
             {
@@ -181,6 +186,7 @@ namespace umi3d.cdk.userCapture
 
             bonesSetByTrackedSkeleton.Clear();
 
+            List<string> deb = new();
             // for each subskeleton, in descending order (lastest has lowest priority),
             // get the relative orientation of all available bones
             lock (SubskeletonsLock)
@@ -194,6 +200,11 @@ namespace umi3d.cdk.userCapture
                     foreach (var b in bones.Where(c => c.boneType != BoneType.Hips))
                     {
                         // if a bone rotation has already been registered, erase it
+                        if(b.boneType == BoneType.LeftHip)
+                        {
+                            deb.Add(skeleton.GetType().Name);
+                        }
+
                         if (Bones.ContainsKey(b.boneType))
                             Bones[b.boneType].Rotation = b.rotation.Quaternion();
                         else
@@ -216,6 +227,8 @@ namespace umi3d.cdk.userCapture
                         }
                     }
                 }
+
+            //deb.Debug();
         }
 
         /// <inheritdoc/>

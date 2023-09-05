@@ -29,23 +29,48 @@ namespace umi3d.common.userCapture.animation
         SPEED,
 
         /// <summary>
-        /// Magnitude of the speed on the X axis.
+        /// Speed on the X axis.
         /// </summary>
         SPEED_X,
 
         /// <summary>
-        /// Magnitude of the speed on the Y axis.
+        /// Absolute speed on the X axis.
+        /// </summary>
+        SPEED_ABS_X,
+
+        /// <summary>
+        /// Speed on the Y axis.
         /// </summary>
         SPEED_Y,
 
         /// <summary>
-        /// Magnitude of the speed on the Z axis.
+        /// Absolute speed on the Y axis.
+        /// </summary>
+        SPEED_ABS_Y,
+
+        /// <summary>
+        /// Speed on the Z axis.
         /// </summary>
         SPEED_Z,
 
         /// <summary>
+        /// Absolute speed on the Z axis.
+        /// </summary>
+        SPEED_ABS_Z,
+
+        /// <summary>
         /// Magnitude of the speed on the XY plane.
         /// </summary>
-        SPEED_X_Y
+        SPEED_X_Z,
+
+        /// <summary>
+        /// State if the avatar is jumping.
+        /// </summary>
+        JUMP,
+
+        /// <summary>
+        /// State if the avatar is jumping.
+        /// </summary>
+        CROUCH,
     }
 }
