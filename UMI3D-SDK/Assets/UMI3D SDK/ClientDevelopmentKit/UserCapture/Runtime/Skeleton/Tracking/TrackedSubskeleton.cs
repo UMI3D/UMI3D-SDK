@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
@@ -51,6 +52,11 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Start()
         {
+            if (trackedAnimator == null) 
+            {
+                UMI3DLogger.LogWarning("TrackedAnimator was null for TrackedSubskeleton. Generating a new one", DebugScope.CDK);
+                trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
+            }
             trackedAnimator.IkCallback += u => HandleAnimatorIK(u);
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
