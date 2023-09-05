@@ -16,12 +16,10 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
-using System.Security.Permissions;
 using umi3d.edk;
 using umi3d.edk.binding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-
 
 namespace PlayMode_Tests.Core.Binding.EDK
 {
@@ -90,7 +88,6 @@ namespace PlayMode_Tests.Core.Binding.EDK
             // THEN
             Assert.AreEqual(bindingsEnabled, enabledResult);
         }
-
 
         #endregion AreBindingsEnabled
 
@@ -182,7 +179,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
             Assert.AreEqual(initialCount, bindingManager.bindings.GetValue().Count);
         }
 
-        #endregion
+        #endregion AddBinding
 
         #region RemoveBinding
 
@@ -264,8 +261,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
             UnityEngine.Object.Destroy(gameObject);
         }
 
-
-        #endregion
+        #endregion RemoveBinding
 
         #region RemoveAllBindings
 
@@ -281,8 +277,6 @@ namespace PlayMode_Tests.Core.Binding.EDK
             var binding = new NodeBinding(boundNodeId, 10008uL);
             bindingManager.AddBinding(binding);
             int initialCount = bindingManager.bindings.GetValue().Count;
-
-            
 
             // WHEN
 
@@ -339,7 +333,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
             int initialCount = bindingManager.bindings.GetValue().Count;
 
             // WHEN
-            var resultOperation = bindingManager.RemoveAllBindings(boundNodeId+5);
+            var resultOperation = bindingManager.RemoveAllBindings(boundNodeId + 5);
 
             // THEN
             Assert.IsNull(resultOperation);
@@ -349,6 +343,6 @@ namespace PlayMode_Tests.Core.Binding.EDK
             UnityEngine.Object.Destroy(gameObject);
         }
 
-        #endregion
+        #endregion RemoveAllBindings
     }
 }

@@ -22,7 +22,6 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.binding;
-using umi3d.common.binding;
 using umi3d.common.dto.binding;
 using UnityEngine;
 using UnityEngine.Events;
@@ -247,10 +246,10 @@ namespace PlayMode_Tests.Core.Binding.CDK
             foreach (var v in testValue)
             {
                 var mockNodeBinding = new Mock<NodeBinding>(null, go.transform, null);
-                mockNodeBinding.Setup(x=> x.ParentNodeId).Returns(v.id);
-                mockNodeBinding.Setup(x=> x.Priority).Returns(v.priority);
-                mockNodeBinding.Setup(x=> x.IsPartiallyFit).Returns(v.partialFit);
-                
+                mockNodeBinding.Setup(x => x.ParentNodeId).Returns(v.id);
+                mockNodeBinding.Setup(x => x.Priority).Returns(v.priority);
+                mockNodeBinding.Setup(x => x.IsPartiallyFit).Returns(v.partialFit);
+
                 bool success = true;
                 mockNodeBinding.Setup(x => x.Apply(out success)).Callback(() => { executionTracker.Enqueue(v.id); success = true; });
                 mockNodeBindings.Enqueue(mockNodeBinding);
@@ -274,6 +273,6 @@ namespace PlayMode_Tests.Core.Binding.CDK
             UnityEngine.Object.Destroy(go);
         }
 
-        #endregion
+        #endregion BindingRoutine
     }
 }
