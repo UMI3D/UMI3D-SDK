@@ -53,7 +53,7 @@ namespace umi3d.common.userCapture.description
                 UMI3DLogger.LogWarning("Skeleton Mapping Link is null.", DEBUG_SCOPE);
 
            // Debug.Log((Link as GameNodeLink).transform != null);
-            if (((Link as GameNodeLink).transform) == null)
+            if (((Link as GameNodeLink)?.transform) == null)
             {
                 return new BoneDto()
                 {
