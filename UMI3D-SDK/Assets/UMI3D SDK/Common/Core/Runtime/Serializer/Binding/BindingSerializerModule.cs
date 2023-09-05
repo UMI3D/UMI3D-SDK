@@ -130,6 +130,7 @@ namespace umi3d.common.binding
             return true switch
             {
                 true when typeof(T) == typeof(BindingDto) => true,
+                true when typeof(T) == typeof(AbstractSimpleBindingDataDto) => true,
                 true when typeof(T) == typeof(MultiBindingDataDto) => true,
                 true when typeof(T) == typeof(NodeBindingDataDto) => true,
                 _ => null
