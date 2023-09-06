@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
+using umi3d.common;
 using System.Linq;
 using System.Reflection;
 using umi3d.common.userCapture;
@@ -61,7 +62,12 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Start()
         {
-            trackedAnimator.IkCallback = new System.Action<int>((u => HandleAnimatorIK(u)));
+            if (trackedAnimator == null) 
+            {
+                UMI3DLogger.LogWarning("TrackedAnimator was null for TrackedSubskeleton. Generating a new one", DebugScope.CDK);
+                trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
+            }
+            trackedAnimator.IkCallback += u => HandleAnimatorIK(u);
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
             {
