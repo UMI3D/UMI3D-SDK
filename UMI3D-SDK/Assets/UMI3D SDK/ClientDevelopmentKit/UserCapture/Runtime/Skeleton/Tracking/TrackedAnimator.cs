@@ -24,7 +24,7 @@ namespace umi3d.cdk.userCapture.tracking
     /// </summary>
     public class TrackedAnimator : MonoBehaviour
     {
-        public Action<int> IkCallback;
+        public event Action<int> IkCallback;
 
         // mandatory for OnAnimatorIk event
         private Animator animator;

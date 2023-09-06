@@ -20,12 +20,12 @@ using inetum.unityUtils;
 
 public class ReleaseSdk
 {
-    public static async Task<string> Release(string token,string version, string branch, List<(string path,string name)> files, string changelog)
+    public static async Task<string> Release(string token,string version, string branch, List<PackageData> files, string changelog)
     {
         changelog += await ComputeChangeLog(branch, version, token);
         var release = await _Release(branch, version, changelog, true, false, token);
         foreach(var file in files)
-            await Github.AddFileToRelease(release, file.path, file.name, token);
+            await Github.AddFileToRelease(release, file.FullPath, file.name, token);
         return release.html_url;
     }
 

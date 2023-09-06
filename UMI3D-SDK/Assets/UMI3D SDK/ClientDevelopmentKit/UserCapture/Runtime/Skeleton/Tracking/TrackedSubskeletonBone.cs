@@ -32,6 +32,8 @@ namespace umi3d.cdk.userCapture.tracking
         [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
         public uint boneType;
 
+        public bool positionComputed;
+
         /// <summary>
         /// Convert this bone to a dto.
         /// </summary>

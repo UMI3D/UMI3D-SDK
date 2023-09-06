@@ -13,7 +13,7 @@ namespace umi3d.edk
     {
         public bool? IsCountable<T>()
         {
-            if( typeof(T).IsAssignableFrom(typeof(Operation)))
+            if( typeof(Operation).IsAssignableFrom(typeof(T)))
                 return false;
             return null;
         }

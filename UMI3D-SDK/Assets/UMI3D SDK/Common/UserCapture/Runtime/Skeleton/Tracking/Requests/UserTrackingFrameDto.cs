@@ -54,5 +54,11 @@ namespace umi3d.common.userCapture.tracking
         /// Current rotation of the user as a quaternion.
         /// </summary>
         public Vector4Dto rotation { get; set; }
+
+
+        public Vector3Dto speed { get; set; }
+        public bool jumping { get; set; }
+        public bool crouching { get; set; }
+
     }
 }

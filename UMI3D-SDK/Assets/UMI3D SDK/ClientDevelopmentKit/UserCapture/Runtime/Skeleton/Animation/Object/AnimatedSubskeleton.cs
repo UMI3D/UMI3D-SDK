@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
@@ -45,7 +46,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <summary>
         /// Priority level of the animated skeleton.
         /// </summary>
-        public virtual uint Priority { get; protected set; }
+        public virtual int Priority { get; protected set; }
 
         /// <summary>
         /// Animation id of the animated skeleton.
@@ -67,6 +68,7 @@ namespace umi3d.cdk.userCapture.animation
         {
             public SkeletonAnimationParameter(SkeletonAnimationParameterDto dto)
             {
+                parameterName = dto.parameterName;
                 parameterKey = dto.parameterKey;
                 ranges = dto.ranges?.Select(dtoRange => new Range()
                 {
@@ -77,6 +79,7 @@ namespace umi3d.cdk.userCapture.animation
                 }).ToArray() ?? new Range[0];
             }
 
+            public string parameterName;
             public uint parameterKey;
 
             public Range[] ranges;
@@ -138,7 +141,7 @@ namespace umi3d.cdk.userCapture.animation
         private readonly ICoroutineService coroutineService;
         private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters,
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, int priority, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters,
                                     ICoroutineService coroutineService, IUnityMainThreadDispatcher unityMainThreadDispatcher)
         {
             Mapper = mapper;
@@ -152,7 +155,7 @@ namespace umi3d.cdk.userCapture.animation
 
         #endregion Dependency Injection
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, uint priority = 0, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters = null)
+        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, int priority = 0, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters = null)
         {
             Mapper = mapper;
             Priority = priority;
@@ -222,39 +225,58 @@ namespace umi3d.cdk.userCapture.animation
         private IEnumerator UpdateParametersRoutine(ISkeleton skeleton)
         {
             Vector3 previousPosition = Vector3.zero;
-            Dictionary<uint, float> previousValues = new();
+            Dictionary<string, object> previousValues = new();
 
-            while (skeleton != null && skeleton.HipsAnchor != null)
+            while (skeleton != null)
             {
+                var lastFrame = skeleton.LastFrame;
+                if(lastFrame == null)
+                {
+                    UnityEngine.Debug.Log("No frame");
+                    yield return null;
+                    continue;
+                }
+                if (lastFrame.speed == null)
+                {
+                    UnityEngine.Debug.Log("No Speed");
+                    yield return null;
+                    continue;
+                }
                 foreach (var parameter in SelfUpdatedAnimatorParameters)
                 {
-                    (string name, UMI3DAnimatorParameterType typeKey, float valueParameter) = parameter.parameterKey switch
+                    (UMI3DAnimatorParameterType typeKey, object valueParameter) = parameter.parameterKey switch
                     {
-                        (uint)SkeletonAnimatorParameterKeys.SPEED => ("SPEED", UMI3DAnimatorParameterType.Float, (skeleton.HipsAnchor.position - previousPosition).magnitude / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_X => ("SPEED_X", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.position.x - previousPosition.x) / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_Y => ("SPEED_Y", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.position.y - previousPosition.y) / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_Z => ("SPEED_Z", UMI3DAnimatorParameterType.Float, Mathf.Abs(skeleton.HipsAnchor.position.z - previousPosition.z) / Time.deltaTime),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_X_Y => ("SPEED_X_Y", UMI3DAnimatorParameterType.Float, (Vector3.ProjectOnPlane(skeleton.HipsAnchor.position, Vector3.up) - Vector3.ProjectOnPlane(previousPosition, Vector3.up)).magnitude / Time.deltaTime),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED => (UMI3DAnimatorParameterType.Float, lastFrame.speed.Struct().magnitude),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_X => ( UMI3DAnimatorParameterType.Float, lastFrame.speed.X),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_X => ( UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.X)),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_Y => ( UMI3DAnimatorParameterType.Float, lastFrame.speed.Y),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_Y => ( UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.Y)),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_Z => ( UMI3DAnimatorParameterType.Float, lastFrame.speed.Z),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_Z => (UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.Z)),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_X_Z => (  UMI3DAnimatorParameterType.Float, Vector3.ProjectOnPlane(lastFrame.speed.Struct(), Vector3.up).magnitude),
+                        (uint)SkeletonAnimatorParameterKeys.JUMP => ( UMI3DAnimatorParameterType.Bool, (object)lastFrame.jumping),
+                        (uint)SkeletonAnimatorParameterKeys.CROUCH => ( UMI3DAnimatorParameterType.Bool, (object)lastFrame.crouching),
                         _ => default
                     };
 
-                    bool inited = previousValues.TryGetValue(parameter.parameterKey, out float previousValue);
-                    if (name != default
-                                && (!inited || IsChangeSignificant(previousValue, valueParameter)))
+                    if (parameter.parameterName != null)
                     {
-                        if (parameter.ranges.Length > 0)
+                        bool inited = previousValues.TryGetValue(parameter.parameterName, out object previousValue);
+                        if (!inited || IsChangeSignificant(previousValue, valueParameter, typeKey))
                         {
-                            valueParameter = ApplyRanges(parameter, valueParameter);
-                        }
+                            if (parameter.ranges.Length > 0 && typeKey == UMI3DAnimatorParameterType.Float)
+                            {
+                                valueParameter = ApplyRanges(parameter, (float)valueParameter);
+                            }
 
-                        if (!inited || valueParameter != previousValues[parameter.parameterKey])
-                        {
-                            UpdateParameter(name, (uint)typeKey, valueParameter);
-                            previousValues[parameter.parameterKey] = valueParameter;
+                            if (!inited || valueParameter != previousValues[parameter.parameterName])
+                            {
+                                UpdateParameter(parameter.parameterName, (uint)typeKey, valueParameter);
+                                previousValues[parameter.parameterName] = valueParameter;
+                            }
                         }
                     }
                 }
-                previousPosition = skeleton.HipsAnchor.transform.position;
 
                 yield return null;
             }
@@ -269,10 +291,10 @@ namespace umi3d.cdk.userCapture.animation
         private float ApplyRanges(SkeletonAnimationParameter parameter, float value)
         {
             if (value < parameter.MinRange)
-                return parameter.MinRange;
+                return value;
 
             if (value > parameter.MaxRange)
-                return parameter.MaxRange;
+                return value;
 
             foreach (var range in parameter.ranges)
             {
@@ -293,6 +315,35 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="newValue"></param>
         /// <param name="threshold"></param>
         /// <returns></returns>
+        private bool IsChangeSignificant(object previousValue, object newValue, UMI3DAnimatorParameterType typeKey, float threshold = 0.05f)
+        {
+            if (previousValue == newValue)
+                return false;
+
+            if (typeKey == UMI3DAnimatorParameterType.Float)
+                return IsChangeSignificant((float)previousValue, (float)newValue, threshold);
+            switch (typeKey)
+            {
+                case UMI3DAnimatorParameterType.Bool:
+                    return IsChangeSignificant((bool)previousValue, (bool)newValue);
+                    
+                case UMI3DAnimatorParameterType.Float:
+                    return IsChangeSignificant((float)previousValue, (float)newValue, threshold);
+                    
+                case UMI3DAnimatorParameterType.Integer:
+                    return IsChangeSignificant((int)previousValue, (int)newValue);
+            }
+
+            return true;
+        }
+
+        private bool IsChangeSignificant<T>(T previousValue, T newValue)
+        {
+            if (previousValue.Equals(newValue))
+                return false;
+            return true;
+        }
+
         private bool IsChangeSignificant(float previousValue, float newValue, float threshold = 0.05f)
         {
             if (previousValue == newValue)

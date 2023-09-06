@@ -25,6 +25,11 @@ using System.Threading.Tasks;
 using MathNet.Numerics.RootFinding;
 using UnityEditor.Build;
 using UnityEditor.Build.Reporting;
+using System.Runtime.CompilerServices;
+using CodiceApp.EventTracking.Plastic;
+using MumbleProto;
+using static UnityEngine.Rendering.ReloadAttribute;
+using System;
 #if UNITY_EDITOR
 
 public class BuildEvents : IPreprocessBuildWithReport, IPostprocessBuildWithReport
@@ -57,6 +62,43 @@ public class BuildEvents : IPreprocessBuildWithReport, IPostprocessBuildWithRepo
     }
 }
 
+[Serializable]
+public class PackageData
+{
+    readonly public string pathRoot ;
+    public string relativePath = null;
+    public string name = null;
+    public string FullPath => (pathRoot ?? string.Empty) + (relativePath ?? string.Empty);
+    public List<string> folderTobuild;
+
+
+    public bool buildState = false;
+    public bool isBuildng = false;
+
+    public PackageData(string pathRoot)
+    {
+        this.pathRoot = pathRoot;
+    }
+
+    public bool? build
+    {
+        get => isBuildng ? buildState : null;
+        set
+        {
+            if(value == null)
+            {
+                isBuildng = false;
+                buildState = false;
+            }
+            else
+            {
+                isBuildng = true;
+                buildState = value.Value;
+            }
+        }
+    }
+}
+
 public class PackagesExporter
 {
     static string packageFolder = "../Packages/";
@@ -77,11 +119,11 @@ public class PackagesExporter
     static string pathEdk => packageFolder + Edk;
     static string pathServerStarterKit => packageFolder + StarterKit;
 
-    static string pathCore => packageFolder + "module/" +Core;
-    static string pathDependencies => packageFolder + "module/"+Dependencies;
-    static string pathInteractionSystem => packageFolder + "module/"+ InteractionSystem;
+    static string pathCore => packageFolder + "module/" + Core;
+    static string pathDependencies => packageFolder + "module/" + Dependencies;
+    static string pathInteractionSystem => packageFolder + "module/" + InteractionSystem;
     static string pathUserCapture => packageFolder + "module/" + UserCapture;
-    static string pathCollaboration => packageFolder + "module/"+ Collaboration;
+    static string pathCollaboration => packageFolder + "module/" + Collaboration;
 
     const string assetDependencies = "Assets/UMI3D SDK/Dependencies";
     const string assetCommon = "Assets/UMI3D SDK/Common";
@@ -149,50 +191,124 @@ public class PackagesExporter
     //[MenuItem("UMI3D/Export Packages")]
     public static async Task ExportPackagesAll()
     {
-       await ExportPackages(true, "../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+        var packages = GetExportPackages("../Packages/", true);
+        await ExportPackages(packages, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
     }
-
-    public static async Task <List<(string, string)>> ExportPackages(string path)
-    {
-        return await ExportPackages(true, path, ExportPackageOptions.Recurse);
-    }
-
 
     //[MenuItem("UMI3D/Export Packages (EDK & CDK only)")]
     static async Task ExportPackagesEDKCDK()
     {
-       await ExportPackages(false,"../Packages/", ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
+        var packages = GetExportPackages("../Packages/", false);
+        await ExportPackages(packages, ExportPackageOptions.Recurse | ExportPackageOptions.Interactive);
     }
 
-    static async Task<List <(string, string)>> ExportPackages(bool all, string path, ExportPackageOptions flags)
+    public static async Task ExportPackages(List<PackageData> packages)
     {
-        BuildEvents buildEvents = new();
+        await ExportPackages(packages, ExportPackageOptions.Recurse);
+    }
 
-        packageFolder = path;
-        var fullpath = Application.dataPath + "/../" + packageFolder;
-        var core = new List<string> { assetCommon + coreFolder, assetEDK + coreFolder, assetCDK + coreFolder };
-        var interaction = new List<string> { assetCommon + interactionSystemFolder, assetEDK + interactionSystemFolder, assetCDK + interactionSystemFolder };
-        var userCapture = new List<string> { assetCommon + userCaptureFolder, assetEDK + userCaptureFolder, assetCDK + userCaptureFolder };
-        var collaboration = new List<string> { assetCommon + collaborationFolder, assetEDK + collaborationFolder, assetCDK + collaborationFolder };
+    public static List<PackageData> GetExportPackages(string path)
+    {
+        return GetExportPackages(path, true);
+    }
 
-        core.Add(assetDependencies);
-        interaction.AddRange(core);
-        collaboration.AddRange(interaction);
-        collaboration.AddRange(userCapture);
-        userCapture.AddRange(core);
+    static List<PackageData> GetExportPackages(string path, bool all)
+    {
+        CleanFolder(path);
+        return GetPackageDatas(all);
+    }
 
-        var cdk = new string[] {assetDependencies,
+    public static async Task BuildPackage(PackageData data)
+    {
+        await ExportPackages(data, ExportPackageOptions.Recurse);
+    }
+    public static void SyncBuildPackage(PackageData data)
+    {
+        AssetDatabase.ExportPackage(data.folderTobuild.ToArray(), data.relativePath, ExportPackageOptions.Recurse);
+    }
+
+
+
+    static List<PackageData> GetPackageDatas(bool all)
+    {
+        var result = new List<PackageData>();
+        string root = Application.dataPath + "/../";
+
+        PackageData cdk = new(root);
+        PackageData edk = new(root);
+
+        cdk.folderTobuild = new() {PackagesExporter.assetDependencies,
             assetCommon + coreFolder, assetCommon + interactionSystemFolder, assetCommon + userCaptureFolder, assetCommon + collaborationFolder,
             assetCDK + coreFolder, assetCDK + interactionSystemFolder, assetCDK + userCaptureFolder, assetCDK + collaborationFolder
         };
 
-        var edk = new string[] {assetDependencies,
+        edk.folderTobuild = new() {PackagesExporter.assetDependencies,
             assetCommon + coreFolder, assetCommon + interactionSystemFolder, assetCommon + userCaptureFolder, assetCommon + collaborationFolder,
             assetEDK + coreFolder, assetEDK + interactionSystemFolder, assetEDK + userCaptureFolder, assetEDK + collaborationFolder
         };
 
-        var ServerStarterKit = new List<string>(edk) { assetServerStarterKit };
+        cdk.relativePath = pathCdk;
+        edk.relativePath = pathEdk;
 
+        cdk.name = Cdk;
+        edk.name = Edk;
+
+
+        if (all)
+        {
+            PackageData core = new(root);
+            PackageData assetDependencies = new(root);
+            PackageData interaction = new(root);
+            PackageData userCapture = new(root);
+            PackageData collaboration = new(root);
+            PackageData serverStarterKit = new(root);
+
+            assetDependencies.folderTobuild = new List<string> { PackagesExporter.assetDependencies };
+
+            core.folderTobuild = new List<string> { assetCommon + coreFolder, assetEDK + coreFolder, assetCDK + coreFolder };
+            interaction.folderTobuild = new List<string> { assetCommon + interactionSystemFolder, assetEDK + interactionSystemFolder, assetCDK + interactionSystemFolder };
+            userCapture.folderTobuild = new List<string> { assetCommon + userCaptureFolder, assetEDK + userCaptureFolder, assetCDK + userCaptureFolder };
+            collaboration.folderTobuild = new List<string> { assetCommon + collaborationFolder, assetEDK + collaborationFolder, assetCDK + collaborationFolder };
+
+            core.folderTobuild.AddRange(assetDependencies.folderTobuild);
+            interaction.folderTobuild.AddRange(core.folderTobuild);
+            collaboration.folderTobuild.AddRange(interaction.folderTobuild);
+            collaboration.folderTobuild.AddRange(userCapture.folderTobuild);
+            userCapture.folderTobuild.AddRange(core.folderTobuild);
+
+            serverStarterKit.folderTobuild = new List<string>(edk.folderTobuild) { assetServerStarterKit };
+
+            assetDependencies.relativePath = pathDependencies;
+            core.relativePath = pathCore;
+            interaction.relativePath = pathInteractionSystem;
+            userCapture.relativePath = pathUserCapture;
+            collaboration.relativePath = pathCollaboration;
+            serverStarterKit.relativePath = pathServerStarterKit;
+
+            assetDependencies.name = Dependencies;
+            core.name = Core;
+            interaction.name = InteractionSystem;
+            userCapture.name = UserCapture;
+            collaboration.name = Collaboration;
+            serverStarterKit.name = StarterKit;
+
+            result.Add(assetDependencies);
+            result.Add(core);
+            result.Add(interaction);
+            result.Add(userCapture);
+            result.Add(collaboration);
+            result.Add(serverStarterKit);
+        }
+
+        result.Add(edk);
+        result.Add(cdk);
+
+        return result;
+    }
+
+    static void CleanFolder(string path)
+    {
+        var fullpath = Application.dataPath + "/../" + path;
         if (!Directory.Exists(fullpath))
         {
             Directory.CreateDirectory(fullpath);
@@ -202,43 +318,26 @@ public class PackagesExporter
         {
             Directory.CreateDirectory(fullpath + "/module");
         }
-        //Debug.Log($"Export package at {fullpath}");
-
-        List<(string,string)> list = new List<(string, string)>();
-
-        if (all)
+    }
+    static async Task<List<PackageData>> ExportPackages(List<PackageData> packages, ExportPackageOptions flags)
+    {
+        foreach (var package in packages)
         {
-            list.Add((Application.dataPath + "/../" + pathDependencies, Dependencies));
-            list.Add((Application.dataPath + "/../" + pathCore, Core));
-            list.Add((Application.dataPath + "/../" + pathInteractionSystem, InteractionSystem));
-            list.Add((Application.dataPath + "/../" + pathUserCapture, UserCapture));
-            list.Add((Application.dataPath + "/../" + pathCollaboration, Collaboration));
-            list.Add((Application.dataPath + "/../" + pathServerStarterKit, StarterKit));
-
-            AssetDatabase.ExportPackage(assetDependencies, pathDependencies, flags );
-            await buildEvents.WaitBuildingEnd();
-            AssetDatabase.ExportPackage(core.ToArray(), pathCore, flags);
-            await buildEvents.WaitBuildingEnd();
-            AssetDatabase.ExportPackage(interaction.ToArray(), pathInteractionSystem, flags);
-            await buildEvents.WaitBuildingEnd();
-            AssetDatabase.ExportPackage(userCapture.ToArray(), pathUserCapture, flags);
-            await buildEvents.WaitBuildingEnd();
-            AssetDatabase.ExportPackage(collaboration.ToArray(), pathCollaboration, flags);
-            await buildEvents.WaitBuildingEnd();
-
-            AssetDatabase.ExportPackage(ServerStarterKit.ToArray(), pathServerStarterKit, flags);
-            await buildEvents.WaitBuildingEnd();
+            package.build = false;
+            await ExportPackages(package, flags);
+            package.build = true;
         }
 
-        list.Add((Application.dataPath + "/../" + pathCdk, Cdk));
-        list.Add((Application.dataPath + "/../" + pathEdk, Edk));
-
-        AssetDatabase.ExportPackage(cdk, pathCdk, flags);
-        await buildEvents.WaitBuildingEnd();
-        AssetDatabase.ExportPackage(edk, pathEdk, flags);
-        await buildEvents.WaitBuildingEnd();
-
-        return list;
+        return packages;
     }
+
+    public static async Task ExportPackages(PackageData data, ExportPackageOptions flags)
+    {
+        BuildEvents buildEvents = new();
+        AssetDatabase.ExportPackage(data.folderTobuild.ToArray(), data.relativePath, flags);
+        await buildEvents.WaitBuildingEnd();
+    }
+
+
 }
 #endif

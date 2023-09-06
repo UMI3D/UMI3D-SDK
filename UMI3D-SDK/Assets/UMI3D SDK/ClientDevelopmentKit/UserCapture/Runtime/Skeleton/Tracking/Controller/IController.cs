@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture.description;
+using umi3d.common.userCapture;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -27,5 +29,10 @@ namespace umi3d.cdk.userCapture.tracking
         public uint boneType { get; }
         public Vector3 position { get; }
         public Quaternion rotation { get; }
+
+        public virtual ControllerDto ToControllerDto()
+        {
+            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = position.Dto(), rotation = rotation.Dto(), isOverrider = false };
+        }
     }
 }

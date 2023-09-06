@@ -52,5 +52,8 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="data"></param>
         public abstract void UpdateFrame(FrameRequestDto data);
+
+
+        public abstract (Vector3Dto speed,bool jumping, bool crouching) GetNaviagtionData();
     }
 }
