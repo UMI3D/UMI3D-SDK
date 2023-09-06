@@ -16,6 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 
+using Codice.Client.BaseCommands.Import;
 using inetum.unityUtils;
 using inetum.unityUtils.editor;
 using System;
