@@ -54,12 +54,14 @@ namespace umi3d.cdk.userCapture
                 rotation = transform.rotation.Dto(),
             };
 
-            foreach (ISubskeleton skeleton in Subskeletons)
-            {
-                if (skeleton is IWritableSubskeleton writableSkeleton)
-                    writableSkeleton.WriteTrackingFrame(frame, option);
-            }
+            lock(SubskeletonsLock)
+                foreach (ISubskeleton skeleton in Subskeletons)
+                {
+                    if (skeleton is IWritableSubskeleton writableSkeleton)
+                        writableSkeleton.WriteTrackingFrame(frame, option);
+                }
 
+            lastFrame = frame;
             return frame;
         }
 
@@ -68,12 +70,14 @@ namespace umi3d.cdk.userCapture
         {
             if (Subskeletons != null)
             {
-                foreach (ISubskeleton skeleton in Subskeletons)
-                {
-                    if (skeleton is IWritableSubskeleton writableSkeleton)
-                        writableSkeleton.UpdateBones(frame);
-                }
+                lock(SubskeletonsLock)
+                    foreach (ISubskeleton skeleton in Subskeletons)
+                    {
+                        if (skeleton is IWritableSubskeleton writableSkeleton)
+                            writableSkeleton.UpdateBones(frame);
+                    }
             }
+            lastFrame = frame;
         }
     }
 }

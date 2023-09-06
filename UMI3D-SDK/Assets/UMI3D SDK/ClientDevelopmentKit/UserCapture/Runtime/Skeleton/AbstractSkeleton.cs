@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture.animation;
@@ -38,6 +39,9 @@ namespace umi3d.cdk.userCapture
 
         /// <inheritdoc/>
         public virtual IDictionary<uint, ISkeleton.Transformation> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.Transformation>();
+
+
+        public object SubskeletonsLock { get; } = new();
 
         /// <inheritdoc/>
         public virtual IReadOnlyList<ISubskeleton> Subskeletons => subskeletons;
@@ -80,6 +84,10 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public IPoseSubskeleton PoseSubskeleton { get; protected set; }
 
+
+        protected UserTrackingFrameDto lastFrame;
+        public UserTrackingFrameDto LastFrame => lastFrame;
+
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>
@@ -91,7 +99,8 @@ namespace umi3d.cdk.userCapture
             this.trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
-            subskeletons = new List<ISubskeleton> { TrackedSubskeleton, PoseSubskeleton };
+            subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
+            subskeletons.AddSorted(PoseSubskeleton);
         }
 
         /// <inheritdoc/>
@@ -165,6 +174,7 @@ namespace umi3d.cdk.userCapture
         /// <param name="hierarchy"></param>
         private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
         {
+            //UnityEngine.Debug.Log($"<color=orange>Compute for {UserId}</color>");
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in hierarchy.Relations.Keys)
             {
@@ -176,41 +186,49 @@ namespace umi3d.cdk.userCapture
 
             bonesSetByTrackedSkeleton.Clear();
 
+            List<string> deb = new();
             // for each subskeleton, in descending order (lastest has lowest priority),
             // get the relative orientation of all available bones
-            for (int i = 0; i < Subskeletons.Count; i++)
-            {
-                var skeleton = Subskeletons[i];
-
-                List<BoneDto> bones = skeleton.GetPose()?.bones;
-
-                if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
-                    continue;
-
-                foreach (var b in bones.Where(c => c.boneType != BoneType.Hips))
+            lock (SubskeletonsLock)
+                foreach (var skeleton in Subskeletons)
                 {
-                    // if a bone rotation has already been registered, erase it
-                    if (Bones.ContainsKey(b.boneType))
-                        Bones[b.boneType].Rotation = b.rotation.Quaternion();
+                    List<BoneDto> bones = skeleton.GetPose()?.bones;
+
+                    if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
+                        continue;
+
+                    foreach (var b in bones.Where(c => c.boneType != BoneType.Hips))
+                    {
+                        // if a bone rotation has already been registered, erase it
+                        if(b.boneType == BoneType.LeftHip)
+                        {
+                            deb.Add(skeleton.GetType().Name);
+                        }
+
+                        if (Bones.ContainsKey(b.boneType))
+                            Bones[b.boneType].Rotation = b.rotation.Quaternion();
+                        else
+                            Bones.Add(b.boneType, new ISkeleton.Transformation() { Rotation = b.rotation.Quaternion() });
+                    }
+#pragma warning disable CS0252
+                    if (skeleton == trackedSkeleton) //the TrackedSkeleton is the first SubSkeleton
+#pragma warning restore CS0252
+                    {
+                        foreach (var b in bones)
+                        {
+                            bonesSetByTrackedSkeleton.Add(b.boneType);
+                        }
+                    }
                     else
-                        Bones.Add(b.boneType, new ISkeleton.Transformation() { Rotation = b.rotation.Quaternion() });
+                    {
+                        foreach (var b in bones)
+                        {
+                            bonesSetByTrackedSkeleton.Remove(b.boneType);
+                        }
+                    }
                 }
 
-                if (i == 0) //the TrackedSkeleton is the first SubSkeleton
-                {
-                    foreach (var b in bones)
-                    {
-                        bonesSetByTrackedSkeleton.Add(b.boneType);
-                    }
-                }
-                else
-                {
-                    foreach (var b in bones)
-                    {
-                        bonesSetByTrackedSkeleton.Remove(b.boneType);
-                    }
-                }
-            }
+            //deb.Debug();
         }
 
         /// <inheritdoc/>
@@ -226,28 +244,23 @@ namespace umi3d.cdk.userCapture
             };
         }
 
+        class SkeletonComparer : IComparer<ISubskeleton>
+        {
+            public int Compare(ISubskeleton x, ISubskeleton y)
+            {
+                return x.Priority.CompareTo(y.Priority);
+            }
+        }
+
+
         public void AddSubskeleton(ISubskeleton subskeleton)
         {
             if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
                 return;
 
-            lock (subskeletons) // loader can start parallel async tasks, required to load concurrently
+            lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
             {
-                var animatedSubskeletons = subskeletons
-                                    .Where(x => x is AnimatedSubskeleton)
-                                    .Cast<AnimatedSubskeleton>()
-                                    .Append(animatedSubskeleton)
-                                    .OrderByDescending(x => x.Priority).ToList();
-
-                subskeletons.Clear();
-
-                if (TrackedSubskeleton != null)
-                    subskeletons.Add(TrackedSubskeleton);
-
-                subskeletons.AddRange(animatedSubskeletons);
-
-                if (PoseSubskeleton != null)
-                    subskeletons.Add(PoseSubskeleton);
+                subskeletons.AddSorted(animatedSubskeleton);
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
