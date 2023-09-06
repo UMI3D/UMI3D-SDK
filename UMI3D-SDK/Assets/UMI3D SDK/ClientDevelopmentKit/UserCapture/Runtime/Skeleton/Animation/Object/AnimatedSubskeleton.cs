@@ -230,6 +230,18 @@ namespace umi3d.cdk.userCapture.animation
             while (skeleton != null)
             {
                 var lastFrame = skeleton.LastFrame;
+                if(lastFrame == null)
+                {
+                    UnityEngine.Debug.Log("No frame");
+                    yield return null;
+                    continue;
+                }
+                if (lastFrame.speed == null)
+                {
+                    UnityEngine.Debug.Log("No Speed");
+                    yield return null;
+                    continue;
+                }
                 foreach (var parameter in SelfUpdatedAnimatorParameters)
                 {
                     (UMI3DAnimatorParameterType typeKey, object valueParameter) = parameter.parameterKey switch
