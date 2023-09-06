@@ -356,7 +356,7 @@ namespace umi3d.cdk.userCapture.tracking
             if (controller.isActif)
             {
                 animator.SetIKHintPosition(hint, controller.position);
-                animator.SetIKHintPositionWeight(hint, 1);
+                animator.SetIKHintPositionWeight(hint, 0.6f);
             }
             else
             {
