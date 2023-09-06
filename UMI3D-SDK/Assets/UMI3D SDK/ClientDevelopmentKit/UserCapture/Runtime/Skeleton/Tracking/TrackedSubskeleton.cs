@@ -25,6 +25,8 @@ using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
+using umi3d.cdk.utils.extrapolation;
+using UnityEngine.XR;
 
 namespace umi3d.cdk.userCapture.tracking
 {
@@ -33,6 +35,7 @@ namespace umi3d.cdk.userCapture.tracking
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
         public List<IController> controllers = new List<IController>();
+        private Dictionary<IController, (Vector3LinearDelayedExtrapolator posExtrapolator, QuaternionLinearDelayedExtrapolator rotExtrapolator)> extrapolators = new();
         private List<IController> controllersToDestroy = new();
 
         [SerializeField]
@@ -76,6 +79,17 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
+        private void Update()
+        {
+            foreach(var controller in controllers)
+                if(controller is DistantController vc)
+                if(extrapolators.TryGetValue(controller, out var extrapolator))
+                {
+                    vc.position = extrapolator.posExtrapolator.Extrapolate();
+                    vc.rotation = extrapolator.rotExtrapolator.Extrapolate();
+                }    
+        }
+
         public PoseDto GetPose()
         {
             var dto = new PoseDto() { bones = new(bones.Count) };
@@ -107,14 +121,22 @@ namespace umi3d.cdk.userCapture.tracking
                     vc = new DistantController
                     {
                         boneType = bone.boneType,
-                        isOverrider = bone.isOverrider
+                        isOverrider = bone.isOverrider,
+                        position = bone.position.Struct(),
+                        rotation = bone.rotation.Quaternion()
                     };
                     controllers.Add(vc);
                 }
 
+                if(!extrapolators.TryGetValue(vc, out var extrapolator))
+                {
+                    extrapolator = (new(), new());
+                    extrapolators.Add(vc, extrapolator);
+                }
+
                 vc.isActif = true;
-                vc.position = bone.position.Struct();
-                vc.rotation = bone.rotation.Quaternion();
+                extrapolator.posExtrapolator.AddMeasure(bone.position.Struct());
+                extrapolator.rotExtrapolator.AddMeasure(bone.rotation.Quaternion());
 
                 receivedTypes.Add(bone.boneType);
             }
@@ -129,7 +151,10 @@ namespace umi3d.cdk.userCapture.tracking
                 }
             }
             foreach (var dc in controllersToRemove)
+            {
+                extrapolators.Remove(dc);
                 controllers.Remove(dc);
+            }
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
