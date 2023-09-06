@@ -449,7 +449,6 @@ namespace umi3d.cdk
 
                         if (name != m_ClipName)
                         {
-                            UnityEngine.Debug.Log(m_ClipName);
                             name = m_ClipName;
                         }
                     }
