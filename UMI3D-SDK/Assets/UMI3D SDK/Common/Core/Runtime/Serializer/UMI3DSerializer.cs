@@ -426,7 +426,7 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
-        public static bool IsCountable<T>()
+        public static bool? IsCountable<T>()
         {
             foreach (UMI3DSerializerModule module in modules)
             {
@@ -434,10 +434,11 @@ namespace umi3d.common
                 if(r.HasValue)
                     return r.Value;
             }
-            throw new Exception($"Missing case [{typeof(T)} was not catched]");
+            return null;
+            //throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
 
-        public static bool IsCountable<T>(T value)
+        public static bool? IsCountable<T>(T value)
         {
             return IsCountable<T>();
         }
@@ -456,7 +457,7 @@ namespace umi3d.common
             {
                 if (typeof(T) == typeof(DictionaryEntryBytable) && value.Cast<DictionaryEntryBytable>().Any(e => !e.IsCountable()))
                     return ListToIndexesBytable(value, parameters);
-                else if (!IsCountable<T>() || value.Any(e => !IsCountable(e)))
+                else if (!(IsCountable<T>() ?? true) || value.Any(e => !(IsCountable(e) ?? false)))
                     return ListToIndexesBytable(value, parameters);
             }
 
@@ -473,7 +474,7 @@ namespace umi3d.common
         /// <returns></returns>
         static Bytable WriteCollectionIDictionary(IDictionary value, params object[] parameters)
         {
-            if (value.Count > 0 && value.Entries().Any(e => !IsCountable(e.Key) || !IsCountable(e.Value)))
+            if (value.Count > 0 && value.Entries().Any(e => !(IsCountable(e.Key) ?? false) || !(IsCountable(e.Value) ?? false)))
             {
                 return WriteCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)), parameters);
             }
@@ -500,7 +501,7 @@ namespace umi3d.common
             /// <inheritdoc/>
             public bool IsCountable()
             {
-                return UMI3DSerializer.IsCountable(value);
+                return UMI3DSerializer.IsCountable(value) ?? false;
             }
 
             /// <inheritdoc/>

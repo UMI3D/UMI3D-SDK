@@ -31,7 +31,7 @@ namespace umi3d.common.userCapture.animation
         /// <summary>
         /// Level of priority of the skeleton animation.
         /// </summary>
-        public uint priority { get; set; }
+        public int priority { get; set; }
 
         /// <summary>
         /// UMI3D animations ids supported by the bundled animator.

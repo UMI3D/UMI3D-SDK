@@ -30,6 +30,8 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public interface ISkeleton
     {
+        UserTrackingFrameDto LastFrame { get; }
+
         /// <summary>
         /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
         /// </summary>

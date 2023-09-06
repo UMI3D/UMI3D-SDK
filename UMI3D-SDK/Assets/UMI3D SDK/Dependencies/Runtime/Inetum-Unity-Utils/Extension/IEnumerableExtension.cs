@@ -253,5 +253,34 @@ namespace inetum.unityUtils
             return source.ToDictionary(k => k.Key, k => k.Value);
         }
 
+        /// <summary>
+        /// Add an element in a sorted list
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="source"></param>
+        /// <param name="item"></param>
+        public static void AddSorted<T>(this List<T> source, T item) where T : IComparable<T>
+        {
+            if (source.Count == 0)
+            {
+                source.Add(item);
+                return;
+            }
+            if (source[source.Count - 1].CompareTo(item) <= 0)
+            {
+                source.Add(item);
+                return;
+            }
+            if (source[0].CompareTo(item) >= 0)
+            {
+                source.Insert(0, item);
+                return;
+            }
+            int index = source.BinarySearch(item);
+            if (index < 0)
+                index = ~index;
+            source.Insert(index, item);
+        }
+
     }
 }

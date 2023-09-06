@@ -22,6 +22,11 @@ namespace umi3d.common.userCapture.animation
     public class SkeletonAnimationParameterDto
     {
         /// <summary>
+        /// Name of the parameter in the animator.
+        /// </summary>
+        public string parameterName { get; set; }
+
+        /// <summary>
         /// Key of the parameter to compute in <see cref="SkeletonAnimatorParameterKeys"/>. <br/>
         /// Each key result in a different computation in browsers.
         /// </summary>

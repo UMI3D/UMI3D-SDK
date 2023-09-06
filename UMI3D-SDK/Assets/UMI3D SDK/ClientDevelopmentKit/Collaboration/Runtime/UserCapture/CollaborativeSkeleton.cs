@@ -36,11 +36,13 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public override void UpdateBones(UserTrackingFrameDto frame)
         {
-            foreach (ISubskeleton skeleton in Subskeletons)
-            {
-                if (skeleton is IWritableSubskeleton writableSubskeleton)
-                    writableSubskeleton.UpdateBones(frame);
-            }
+            lastFrame = frame;
+            lock (SubskeletonsLock)
+                foreach (ISubskeleton skeleton in Subskeletons)
+                {
+                    if (skeleton is IWritableSubskeleton writableSubskeleton)
+                        writableSubskeleton.UpdateBones(frame);
+                }
 
             posExtrapolator.AddMeasure(frame.position.Struct());
             rotExtrapolator.AddMeasure(frame.rotation.Quaternion());

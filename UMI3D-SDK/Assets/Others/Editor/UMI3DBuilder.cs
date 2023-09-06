@@ -195,6 +195,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         await CleanComputeBuildStart();
         data.data.commit = comit;
         data.data.buildstepByStep = true;
+        isBuilding = false;
     }
 
     async void CleanComputeBuild(bool comit)

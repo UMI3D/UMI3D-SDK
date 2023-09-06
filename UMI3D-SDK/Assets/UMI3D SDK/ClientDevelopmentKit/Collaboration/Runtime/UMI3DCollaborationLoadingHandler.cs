@@ -31,6 +31,8 @@ namespace umi3d.cdk.collaboration
 
         #endregion Emotes
 
+        public AbstractNavigation navigation;
+
         protected override void Awake()
         {
             // LOADING SERVICE
@@ -44,7 +46,7 @@ namespace umi3d.cdk.collaboration
             }
 
             // SKELETON SERVICE
-            _ = CollaborationSkeletonsManager.Instance;
+            CollaborationSkeletonsManager.Instance.navigation = navigation; //also use to init manager via Instance call
 
             base.Awake();
         }
