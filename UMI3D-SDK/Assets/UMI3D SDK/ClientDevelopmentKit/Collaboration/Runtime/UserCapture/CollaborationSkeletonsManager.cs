@@ -160,7 +160,10 @@ namespace umi3d.cdk.collaboration.userCapture
             }
 
             if (computeCoroutine != null)
+            {
                 routineService.DetachLateRoutine(computeCoroutine);
+                computeCoroutine = null;
+            } 
         }
 
         private void InitSkeletons()
