@@ -55,7 +55,7 @@ namespace umi3d.cdk.userCapture.binding
         /// <inheritdoc/>
         public override void Apply(out bool success)
         {
-            if (boundTransform is null) // node is destroyed
+            if (boundTransform == null) // node is destroyed
             {
                 UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
                 success = false;

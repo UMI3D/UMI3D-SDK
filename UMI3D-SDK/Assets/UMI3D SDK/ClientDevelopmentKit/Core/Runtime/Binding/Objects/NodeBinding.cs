@@ -46,7 +46,7 @@ namespace umi3d.cdk.binding
         /// <inheritdoc/>
         public override void Apply(out bool success)
         {
-            if (boundTransform is null || parentNode is null || parentNode.transform == null)
+            if (boundTransform == null || parentNode is null || parentNode.transform == null)
             {
                 if (parentNode is null || parentNode.transform == null)
                     UMI3DLogger.LogError($"Node {NodeBindingDataDto.parentNodeId} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
