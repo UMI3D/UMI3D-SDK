@@ -98,9 +98,9 @@ namespace umi3d.cdk.userCapture
         {
             this.trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
-            PoseSubskeleton = poseSkeleton;
+            //PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
-            subskeletons.AddSorted(PoseSubskeleton);
+            //subskeletons.AddSorted(PoseSubskeleton);
         }
 
         /// <inheritdoc/>
@@ -120,7 +120,7 @@ namespace umi3d.cdk.userCapture
             //very naive : for now, we consider the tracked hips as the computer hips
             Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
             Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
-                
+
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
             // better use normal recusive computations then.
@@ -143,7 +143,9 @@ namespace umi3d.cdk.userCapture
         /// Containing id of the bones set by the TrackedSkeleton in <see cref="RetrieveBonesRotation(UMI3DSkeletonHierarchy)"/> method.
         /// Preventing from the application of the Hips rotation to these bones in <see cref="ComputeBonePosition(uint)"/> method.
         /// </summary>
-        private List<uint> bonesSetByTrackedSkeleton = new();
+        private HashSet<uint> bonesSetByTrackedSkeleton = new();
+
+        private HashSet<uint> bonesSetByAnySkeleton = new();
 
         /// <summary>
         /// Compute the final position of each bone, and their parents recursively if not already computed
@@ -161,7 +163,12 @@ namespace umi3d.cdk.userCapture
                 Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * 0.5f);
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
 
-                if (!bonesSetByTrackedSkeleton.Contains(boneType))
+                if (!bonesSetByAnySkeleton.Contains(boneType))
+                {
+                    Bones[boneType].Rotation = Bones[boneRelation.boneTypeParent].Rotation;
+                }
+
+                else if (!bonesSetByTrackedSkeleton.Contains(boneType))
                     Bones[boneType].Rotation = Bones[BoneType.Hips].Rotation * Bones[boneType].Rotation; // all global bones rotations should be turned the same way as the anchor
 
                 alreadyComputedBonesCache[boneType] = true;
@@ -185,8 +192,8 @@ namespace umi3d.cdk.userCapture
             }
 
             bonesSetByTrackedSkeleton.Clear();
+            bonesSetByAnySkeleton.Clear();
 
-            List<string> deb = new();
             // for each subskeleton, in descending order (lastest has lowest priority),
             // get the relative orientation of all available bones
             lock (SubskeletonsLock)
@@ -200,10 +207,6 @@ namespace umi3d.cdk.userCapture
                     foreach (var b in bones.Where(c => c.boneType != BoneType.Hips))
                     {
                         // if a bone rotation has already been registered, erase it
-                        if(b.boneType == BoneType.LeftHip)
-                        {
-                            deb.Add(skeleton.GetType().Name);
-                        }
 
                         if (Bones.ContainsKey(b.boneType))
                             Bones[b.boneType].Rotation = b.rotation.Quaternion();
@@ -217,6 +220,7 @@ namespace umi3d.cdk.userCapture
                         foreach (var b in bones)
                         {
                             bonesSetByTrackedSkeleton.Add(b.boneType);
+                            bonesSetByAnySkeleton.Add(b.boneType);
                         }
                     }
                     else
@@ -224,11 +228,10 @@ namespace umi3d.cdk.userCapture
                         foreach (var b in bones)
                         {
                             bonesSetByTrackedSkeleton.Remove(b.boneType);
+                            bonesSetByAnySkeleton.Add(b.boneType);
                         }
                     }
                 }
-
-            //deb.Debug();
         }
 
         /// <inheritdoc/>

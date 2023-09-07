@@ -247,8 +247,7 @@ namespace umi3d.cdk.userCapture.tracking
                         break;
 
                     case BoneType.Head:
-                    case BoneType.Viewpoint:
-                        SetComputed(controller.boneType, BoneType.Head);
+                        SetComputed(controller.boneType);
                         LookAt(controller);
                         break;
 
@@ -300,7 +299,6 @@ namespace umi3d.cdk.userCapture.tracking
                         SetGoal(controller, AvatarIKGoal.RightHand);
                         break;
 
-                    case BoneType.Viewpoint:
                     case BoneType.Head:
                         LookAt(controller);
                         break;
@@ -362,7 +360,7 @@ namespace umi3d.cdk.userCapture.tracking
             if (controller.isActif)
             {
                 animator.SetIKHintPosition(hint, controller.position);
-                animator.SetIKHintPositionWeight(hint, 1);
+                animator.SetIKHintPositionWeight(hint, 0.6f);
             }
             else
             {
