@@ -14,13 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using Moq;
 using NUnit.Framework;
+using System.Threading;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
+using UnityEngine;
 
 namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 {
+    [TestFixture, TestOf(typeof(PersonalSkeleton))]
     public class PersonalSkeleton_Test : AbstractSkeleton_Test
     {
+        GameObject trackedSusbskeletonGo;
+
         [SetUp]
         public override void SetUp()
         {
@@ -28,6 +36,30 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             abstractSkeleton = skeletonGo.AddComponent<PersonalSkeleton>();
             abstractSkeleton.SkeletonHierarchy = new(null);
+
+            trackedSusbskeletonGo = new GameObject("tracked subskeleton");
+            var camera = trackedSusbskeletonGo.AddComponent<Camera>();
+
+            var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
+            trackedSubskeletonMock.Setup(x => x.Hips).Returns(trackedSusbskeletonGo.transform);
+            trackedSubskeletonMock.Setup(x => x.ViewPoint).Returns(camera);
+
+            var poseSkeletonMock = new Mock<IPoseSubskeleton>();
+            abstractSkeleton.Init(trackedSubskeletonMock.Object, poseSkeletonMock.Object);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+
+            Object.Destroy(trackedSusbskeletonGo);
+        }
+
+
+        [Test]
+        public void GetFrame_Test()
+        {
+
         }
     }
 }

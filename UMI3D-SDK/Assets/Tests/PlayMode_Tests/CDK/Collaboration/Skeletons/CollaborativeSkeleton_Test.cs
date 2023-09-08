@@ -14,17 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using Moq;
 using NUnit.Framework;
 using PlayMode_Tests.UserCapture.Skeletons.CDK;
-using umi3d.cdk.collaboration;
 using umi3d.cdk.collaboration.userCapture;
+using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
 using UnityEngine;
-using UnityEngine.SceneManagement;
 
 namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 {
     public class CollaborativeSkeleton_Test : AbstractSkeleton_Test
     {
+        protected GameObject trackedSusbskeletonGo;
+
         [SetUp]
         public override void SetUp()
         {
@@ -32,6 +35,24 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 
             abstractSkeleton = skeletonGo.AddComponent<CollaborativeSkeleton>();
             abstractSkeleton.SkeletonHierarchy = new(null);
+
+            trackedSusbskeletonGo = new GameObject("tracked subskeleton");
+            var camera = trackedSusbskeletonGo.AddComponent<Camera>();
+
+            var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
+            trackedSubskeletonMock.Setup(x => x.Hips).Returns(trackedSusbskeletonGo.transform);
+            trackedSubskeletonMock.Setup(x => x.ViewPoint).Returns(camera);
+
+            var poseSkeletonMock = new Mock<IPoseSubskeleton>();
+
+            abstractSkeleton.Init(trackedSubskeletonMock.Object, poseSkeletonMock.Object);
+        }
+
+        public override void TearDown()
+        {
+            base.TearDown();
+
+            Object.Destroy(trackedSusbskeletonGo);
         }
     }
 }
