@@ -37,6 +37,8 @@ namespace umi3d.cdk.userCapture
     {
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        #region Fields
+
         /// <inheritdoc/>
         public virtual IDictionary<uint, ISkeleton.Transformation> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.Transformation>();
 
@@ -76,11 +78,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public ITrackedSubskeleton TrackedSubskeleton => trackedSkeleton;
+        public ITrackedSubskeleton TrackedSubskeleton => _trackedSkeleton;
+        protected ITrackedSubskeleton _trackedSkeleton;
 
         [SerializeField]
         protected TrackedSubskeleton trackedSkeleton;
-
+        
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
@@ -96,9 +99,11 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
-        public void Init(TrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
+        #endregion Fields
+
+        public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
         {
-            this.trackedSkeleton = trackedSkeleton;
+            this._trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
