@@ -273,7 +273,7 @@ namespace umi3d.cdk.userCapture
                 subskeletons.AddSorted(animatedSubskeleton);
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
-                if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
                     animatedSubskeleton.StartParameterSelfUpdate(this);
             }
         }
@@ -283,7 +283,7 @@ namespace umi3d.cdk.userCapture
             if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
                 return;
 
-            if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+            if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
                 animatedSubskeleton.StopParameterSelfUpdate();
 
             if (subskeletons.Contains(animatedSubskeleton))

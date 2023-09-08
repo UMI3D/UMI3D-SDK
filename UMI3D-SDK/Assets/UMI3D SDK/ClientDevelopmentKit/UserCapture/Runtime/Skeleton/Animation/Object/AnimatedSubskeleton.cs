@@ -18,12 +18,10 @@ using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
-using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
 using UnityEngine;
 
@@ -51,13 +49,15 @@ namespace umi3d.cdk.userCapture.animation
         /// <summary>
         /// Animation id of the animated skeleton.
         /// </summary>
-        public virtual UMI3DAnimatorAnimation[] Animations { get; protected set; }
+        public virtual IReadOnlyList<UMI3DAnimatorAnimation> Animations => animations;
+        private readonly List<UMI3DAnimatorAnimation> animations;
 
         /// <summary>
         /// Parameters required by the animator that are updated by the browser itself.
         /// </summary>
         /// The key correspond to a key in <see cref="SkeletonAnimatorParameterKeys"/>.
-        public virtual SkeletonAnimationParameter[] SelfUpdatedAnimatorParameters { get; protected set; }
+        public virtual IReadOnlyList<SkeletonAnimationParameter> SelfUpdatedAnimatorParameters => selfUpdatedAnimatorParameters;
+        private readonly List<SkeletonAnimationParameter> selfUpdatedAnimatorParameters;
 
         #endregion Properties
 
@@ -76,13 +76,13 @@ namespace umi3d.cdk.userCapture.animation
                     endBound = dtoRange.endBound,
                     rawValue = dtoRange.rawValue,
                     result = dtoRange.result
-                }).ToArray() ?? new Range[0];
+                }).ToList() ?? new(0);
             }
 
             public string parameterName;
             public uint parameterKey;
 
-            public Range[] ranges;
+            public readonly List<Range> ranges;
 
             public struct Range
             {
@@ -141,27 +141,25 @@ namespace umi3d.cdk.userCapture.animation
         private readonly ICoroutineService coroutineService;
         private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, int priority, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters,
+        public AnimatedSubskeleton(ISkeletonMapper mapper, IEnumerable<UMI3DAnimatorAnimation> animations, int priority, IEnumerable<SkeletonAnimationParameterDto> selfUpdatedAnimatorParameters,
                                     ICoroutineService coroutineService, IUnityMainThreadDispatcher unityMainThreadDispatcher)
         {
             Mapper = mapper;
             Priority = priority;
-            Animations = animations;
-            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToArray()
-                                                ?? new SkeletonAnimationParameter[0];
+            this.animations = animations?.ToList() ?? throw new System.ArgumentNullException();
+            this.selfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToList() ?? new(0);
             this.coroutineService = coroutineService;
             this.unityMainThreadDispatcher = unityMainThreadDispatcher;
         }
 
         #endregion Dependency Injection
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, UMI3DAnimatorAnimation[] animations, int priority = 0, SkeletonAnimationParameterDto[] selfUpdatedAnimatorParameters = null)
+        public AnimatedSubskeleton(ISkeletonMapper mapper, IEnumerable<UMI3DAnimatorAnimation> animations, int priority = 0, IEnumerable<SkeletonAnimationParameterDto> selfUpdatedAnimatorParameters = null)
         {
             Mapper = mapper;
             Priority = priority;
-            Animations = animations;
-            SelfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToArray()
-                                                ?? new SkeletonAnimationParameter[0];
+            this.animations = animations?.ToList() ?? throw new System.ArgumentNullException();
+            this.selfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToList() ?? new(0);
             coroutineService = CoroutineManager.Instance;
             unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
         }
@@ -187,12 +185,12 @@ namespace umi3d.cdk.userCapture.animation
         /// <summary>
         /// Start animation parameters self update. Parameters are recomputed each frame based on the <paramref name="skeleton"/> movement.
         /// </summary>
-        public void StartParameterSelfUpdate(ISkeleton skeleton)
+        public virtual void StartParameterSelfUpdate(ISkeleton skeleton)
         {
             if (skeleton == null)
                 throw new System.ArgumentNullException("Skeleton to auto update is not defined.");
 
-            if (SelfUpdatedAnimatorParameters.Length > 0)
+            if (SelfUpdatedAnimatorParameters.Count > 0)
             {
                 // coroutine is modifying an animator and thus require to be put on main thread
                 unityMainThreadDispatcher.Enqueue(() =>
@@ -206,7 +204,7 @@ namespace umi3d.cdk.userCapture.animation
         /// <summary>
         /// Stop animation parameters self update.
         /// </summary>
-        public void StopParameterSelfUpdate()
+        public virtual void StopParameterSelfUpdate()
         {
             unityMainThreadDispatcher.Enqueue(() =>
             {
@@ -264,7 +262,7 @@ namespace umi3d.cdk.userCapture.animation
                         bool inited = previousValues.TryGetValue(parameter.parameterName, out object previousValue);
                         if (!inited || IsChangeSignificant(previousValue, valueParameter, typeKey))
                         {
-                            if (parameter.ranges.Length > 0 && typeKey == UMI3DAnimatorParameterType.Float)
+                            if (parameter.ranges.Count > 0 && typeKey == UMI3DAnimatorParameterType.Float)
                             {
                                 valueParameter = ApplyRanges(parameter, (float)valueParameter);
                             }
