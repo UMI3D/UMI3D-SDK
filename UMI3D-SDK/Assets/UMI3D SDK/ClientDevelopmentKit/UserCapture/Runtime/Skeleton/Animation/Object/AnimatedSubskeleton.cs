@@ -30,32 +30,23 @@ namespace umi3d.cdk.userCapture.animation
     /// <summary>
     /// Subskeleton that is the target if a skeleton animation, using an Animator.
     /// </summary>
-    public class AnimatedSubskeleton : ISubskeleton
+    public class AnimatedSubskeleton : IAnimatedSubskeleton
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.Animation | DebugScope.UserCapture;
 
         #region Properties
 
-        /// <summary>
-        /// Reference to the skeleton mapper that computes related links into a pose.
-        /// </summary>
+        /// <inheritdoc/>
         public virtual ISkeletonMapper Mapper { get; protected set; }
 
-        /// <summary>
-        /// Priority level of the animated skeleton.
-        /// </summary>
+        /// <inheritdoc/>
         public virtual int Priority { get; protected set; }
 
-        /// <summary>
-        /// Animation id of the animated skeleton.
-        /// </summary>
+        /// <inheritdoc/>
         public virtual IReadOnlyList<UMI3DAnimatorAnimation> Animations => animations;
         private readonly List<UMI3DAnimatorAnimation> animations;
 
-        /// <summary>
-        /// Parameters required by the animator that are updated by the browser itself.
-        /// </summary>
-        /// The key correspond to a key in <see cref="SkeletonAnimatorParameterKeys"/>.
+        /// <inheritdoc/>
         public virtual IReadOnlyList<SkeletonAnimationParameter> SelfUpdatedAnimatorParameters => selfUpdatedAnimatorParameters;
         private readonly List<SkeletonAnimationParameter> selfUpdatedAnimatorParameters;
 
@@ -182,9 +173,7 @@ namespace umi3d.cdk.userCapture.animation
 
         #region ParameterSelfUpdate
 
-        /// <summary>
-        /// Start animation parameters self update. Parameters are recomputed each frame based on the <paramref name="skeleton"/> movement.
-        /// </summary>
+        /// <inheritdoc/>
         public virtual void StartParameterSelfUpdate(ISkeleton skeleton)
         {
             if (skeleton == null)
@@ -201,9 +190,7 @@ namespace umi3d.cdk.userCapture.animation
             }
         }
 
-        /// <summary>
-        /// Stop animation parameters self update.
-        /// </summary>
+        /// <inheritdoc/>
         public virtual void StopParameterSelfUpdate()
         {
             unityMainThreadDispatcher.Enqueue(() =>
@@ -228,7 +215,7 @@ namespace umi3d.cdk.userCapture.animation
             while (skeleton != null)
             {
                 var lastFrame = skeleton.LastFrame;
-                if(lastFrame == null)
+                if (lastFrame == null)
                 {
                     UnityEngine.Debug.Log("No frame");
                     yield return null;
@@ -245,15 +232,15 @@ namespace umi3d.cdk.userCapture.animation
                     (UMI3DAnimatorParameterType typeKey, object valueParameter) = parameter.parameterKey switch
                     {
                         (uint)SkeletonAnimatorParameterKeys.SPEED => (UMI3DAnimatorParameterType.Float, lastFrame.speed.Struct().magnitude),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_X => ( UMI3DAnimatorParameterType.Float, lastFrame.speed.X),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_X => ( UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.X)),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_Y => ( UMI3DAnimatorParameterType.Float, lastFrame.speed.Y),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_Y => ( UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.Y)),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_Z => ( UMI3DAnimatorParameterType.Float, lastFrame.speed.Z),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_X => (UMI3DAnimatorParameterType.Float, lastFrame.speed.X),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_X => (UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.X)),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_Y => (UMI3DAnimatorParameterType.Float, lastFrame.speed.Y),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_Y => (UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.Y)),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_Z => (UMI3DAnimatorParameterType.Float, lastFrame.speed.Z),
                         (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_Z => (UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.Z)),
-                        (uint)SkeletonAnimatorParameterKeys.SPEED_X_Z => (  UMI3DAnimatorParameterType.Float, Vector3.ProjectOnPlane(lastFrame.speed.Struct(), Vector3.up).magnitude),
-                        (uint)SkeletonAnimatorParameterKeys.JUMP => ( UMI3DAnimatorParameterType.Bool, (object)lastFrame.jumping),
-                        (uint)SkeletonAnimatorParameterKeys.CROUCH => ( UMI3DAnimatorParameterType.Bool, (object)lastFrame.crouching),
+                        (uint)SkeletonAnimatorParameterKeys.SPEED_X_Z => (UMI3DAnimatorParameterType.Float, Vector3.ProjectOnPlane(lastFrame.speed.Struct(), Vector3.up).magnitude),
+                        (uint)SkeletonAnimatorParameterKeys.JUMP => (UMI3DAnimatorParameterType.Bool, (object)lastFrame.jumping),
+                        (uint)SkeletonAnimatorParameterKeys.CROUCH => (UMI3DAnimatorParameterType.Bool, (object)lastFrame.crouching),
                         _ => default
                     };
 
@@ -324,10 +311,10 @@ namespace umi3d.cdk.userCapture.animation
             {
                 case UMI3DAnimatorParameterType.Bool:
                     return IsChangeSignificant((bool)previousValue, (bool)newValue);
-                    
+
                 case UMI3DAnimatorParameterType.Float:
                     return IsChangeSignificant((float)previousValue, (float)newValue, threshold);
-                    
+
                 case UMI3DAnimatorParameterType.Integer:
                     return IsChangeSignificant((int)previousValue, (int)newValue);
             }
