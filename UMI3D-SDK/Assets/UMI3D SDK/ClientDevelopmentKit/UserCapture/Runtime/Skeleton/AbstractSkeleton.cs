@@ -40,7 +40,9 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public virtual IDictionary<uint, ISkeleton.Transformation> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.Transformation>();
 
-
+        /// <summary>
+        /// Lock for concurrent access to <see cref="Subskeletons"/> collection.
+        /// </summary>
         public object SubskeletonsLock { get; } = new();
 
         /// <inheritdoc/>
