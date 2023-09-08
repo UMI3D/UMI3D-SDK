@@ -21,9 +21,12 @@ using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
+using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -37,6 +40,9 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         protected AbstractSkeleton abstractSkeleton;
         protected GameObject skeletonGo;
         private Mock<IUnityMainThreadDispatcher> unityMainThreadDispatcherMock;
+
+        protected Mock<ITrackedSubskeleton> trackedSubskeletonMock;
+        protected Mock<IPoseSubskeleton> poseSubskeletonMock;
 
         [OneTimeSetUp]
         public virtual void OneTimeSetup()
@@ -176,6 +182,18 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         [Test]
         public void UpdateBones()
         {
+            // given
+            var frameDto = new UserTrackingFrameDto();
+            trackedSubskeletonMock.Setup(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()));
+            poseSubskeletonMock.Setup(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()));
+
+            // when
+            abstractSkeleton.UpdateBones(frameDto);
+
+            // then
+            Assert.AreEqual(frameDto, abstractSkeleton.LastFrame);
+            trackedSubskeletonMock.Verify(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()), Times.Once);
+            poseSubskeletonMock.Verify(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()), Times.Once);
         }
 
         #endregion UpdateBones

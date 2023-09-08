@@ -39,13 +39,13 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             trackedSusbskeletonGo = new GameObject("tracked subskeleton");
             var camera = trackedSusbskeletonGo.AddComponent<Camera>();
 
-            var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
+            trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
             trackedSubskeletonMock.Setup(x => x.Hips).Returns(trackedSusbskeletonGo.transform);
             trackedSubskeletonMock.Setup(x => x.ViewPoint).Returns(camera);
 
-            var poseSkeletonMock = new Mock<IPoseSubskeleton>();
+            poseSubskeletonMock = new Mock<IPoseSubskeleton>();
 
-            abstractSkeleton.Init(trackedSubskeletonMock.Object, poseSkeletonMock.Object);
+            abstractSkeleton.Init(trackedSubskeletonMock.Object, poseSubskeletonMock.Object);
         }
 
         public override void TearDown()
