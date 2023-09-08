@@ -263,9 +263,9 @@ namespace umi3d.cdk.userCapture
         }
 
 
-        public void AddSubskeleton(ISubskeleton subskeleton)
+        public void AddSubskeleton(IAnimatedSubskeleton animatedSubskeleton)
         {
-            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+            if (animatedSubskeleton == null)
                 return;
 
             lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
@@ -278,9 +278,9 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        public void RemoveSubskeleton(ISubskeleton subskeleton)
+        public void RemoveSubskeleton(IAnimatedSubskeleton animatedSubskeleton)
         {
-            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+            if (animatedSubskeleton == null)
                 return;
 
             if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
