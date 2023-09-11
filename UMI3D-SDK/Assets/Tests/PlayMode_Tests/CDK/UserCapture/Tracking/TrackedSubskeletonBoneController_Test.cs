@@ -81,7 +81,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             // THEN
             Assert.AreEqual(skeletonBoneController.boneType, dto.boneType);
-            Assert.AreEqual(skeletonBoneController.transform.rotation, dto.rotation.Quaternion());
+            Assert.AreEqual(skeletonBoneController.transform.localRotation, dto.localRotation.Quaternion());
         }
 
         #endregion ToBoneDto
