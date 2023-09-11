@@ -25,9 +25,11 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// Skeleton of the browser's main user.
     /// </summary>
-    public class PersonalSkeleton : AbstractSkeleton
+    public class PersonalSkeleton : AbstractSkeleton, IPersonalSkeleton
     {
         public IDictionary<uint, float> BonesAsyncFPS => TrackedSubskeleton.BonesAsyncFPS;
+
+        public Transform Transform => transform;
 
         /// <summary>
         /// Size of the skeleton.
@@ -41,11 +43,7 @@ namespace umi3d.cdk.userCapture
             Init(trackedSkeleton, PoseSubskeleton);
         }
 
-        /// <summary>
-        /// Write a tracking frame from all <see cref="IWritableSubskeleton"/>.
-        /// </summary>
-        /// <param name="option"></param>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public UserTrackingFrameDto GetFrame(TrackingOption option)
         {
             var frame = new UserTrackingFrameDto()
@@ -54,7 +52,7 @@ namespace umi3d.cdk.userCapture
                 rotation = transform.rotation.Dto(),
             };
 
-            lock(SubskeletonsLock)
+            lock (SubskeletonsLock)
                 foreach (ISubskeleton skeleton in Subskeletons)
                 {
                     if (skeleton is IWritableSubskeleton writableSkeleton)
@@ -68,7 +66,7 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public override void UpdateBones(UserTrackingFrameDto frame)
         {
-            lock(SubskeletonsLock)
+            lock (SubskeletonsLock)
             {
                 foreach (ISubskeleton skeleton in Subskeletons)
                 {
