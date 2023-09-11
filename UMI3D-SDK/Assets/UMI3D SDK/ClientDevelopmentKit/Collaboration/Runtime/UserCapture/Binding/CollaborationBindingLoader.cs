@@ -80,7 +80,7 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                             return null;
                         }
 
-                        return new RigBoneBinding(riggedBoneBinding, rig, skeleton);
+                        return new RigBoneBinding(riggedBoneBinding, rig, skeleton, boundNode.transform);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {

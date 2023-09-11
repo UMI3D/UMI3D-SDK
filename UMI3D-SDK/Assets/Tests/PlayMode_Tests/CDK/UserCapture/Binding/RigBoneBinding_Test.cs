@@ -103,7 +103,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
 
-            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
+            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object, go.transform);
 
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
@@ -140,7 +140,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
 
-            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
+            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object, go.transform);
 
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
@@ -195,7 +195,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
 
-            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
+            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object, go.transform);
 
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
@@ -207,7 +207,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             // THEN
             Assert.IsTrue(success);
             Assert.IsTrue(previousPosition == rigGo.transform.position);
-            Assert.IsTrue(parentGo.transform.rotation * offsetRotation * previousRotation == rigGo.transform.rotation);
+            Assert.IsTrue(parentGo.transform.rotation * Quaternion.Inverse(go.transform.rotation) * previousRotation * offsetRotation == rigGo.transform.rotation);
             Assert.IsTrue(previousScale == rigGo.transform.localScale);
         }
 
@@ -232,7 +232,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
 
-            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
+            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object, go.transform);
 
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
@@ -254,7 +254,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
                 // THEN
                 Assert.IsTrue(success);
                 Assert.IsTrue(previousPosition == rigGo.transform.position);
-                Assert.IsTrue(parentGo.transform.rotation * offsetRotation * previousRotation == rigGo.transform.rotation);
+                Assert.IsTrue(parentGo.transform.rotation * Quaternion.Inverse(go.transform.rotation) * previousRotation * offsetRotation == rigGo.transform.rotation);
                 Assert.IsTrue(previousScale == rigGo.transform.localScale);
 
                 yield return null;
@@ -286,7 +286,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
 
-            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
+            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object, go.transform);
 
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;
@@ -323,7 +323,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
 
-            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object);
+            RigBoneBinding binding = new(dto, rigGo.transform, skeletonBoneMock.Object, go.transform);
 
             var previousPosition = rigGo.transform.position;
             var previousRotation = rigGo.transform.rotation;

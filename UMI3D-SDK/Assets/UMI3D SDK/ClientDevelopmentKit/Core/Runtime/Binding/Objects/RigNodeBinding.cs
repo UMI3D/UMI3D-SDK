@@ -26,10 +26,15 @@ namespace umi3d.cdk.binding
     public class RigNodeBinding : NodeBinding
     {
 
-        public RigNodeBinding(RigNodeBindingDataDto dto, Transform boundTransform, UMI3DNodeInstance parentNode) : base(dto, boundTransform, parentNode)
-        { }
+        public RigNodeBinding(RigNodeBindingDataDto dto, Transform boundTransform, UMI3DNodeInstance parentNode, Transform rootObject) : base(dto, boundTransform, parentNode)
+        {
+            this.rootObject = rootObject;
+            this.originalRotationOffset = Quaternion.Inverse(rootObject.rotation) * boundTransform.rotation;
+        }
 
         protected RigNodeBindingDataDto RigNodeBindingDataDto => SimpleBindingData as RigNodeBindingDataDto;
+
+        protected Transform rootObject;
 
         #region DTO Access
 

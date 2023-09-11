@@ -79,7 +79,7 @@ namespace umi3d.cdk.userCapture.binding
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Rig \"{riggedBoneBinding.rigName}\" does not exist on bound node.", DEBUG_SCOPE);
                             return null;
                         }
-                        return new RigBoneBinding(riggedBoneBinding, rig, personnalSkeletonService.PersonalSkeleton);
+                        return new RigBoneBinding(riggedBoneBinding, rig, personnalSkeletonService.PersonalSkeleton, boundNode.transform);
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {

@@ -128,7 +128,7 @@ namespace umi3d.cdk.binding
                             return null;
                         }
 
-                        return new RigNodeBinding(nodeBindingDataDto, rig, parentNode);
+                        return new RigNodeBinding(nodeBindingDataDto, rig, parentNode, node.transform);
                     }
                 case NodeBindingDataDto nodeBindingDataDto:
                     {
