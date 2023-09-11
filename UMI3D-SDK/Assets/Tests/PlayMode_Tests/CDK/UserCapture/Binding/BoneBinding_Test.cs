@@ -199,7 +199,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             // THEN
             Assert.IsTrue(success);
             Assert.AreEqual(previousPosition, go.transform.position);
-            Assert.IsTrue(parentGo.transform.rotation * offsetRotation * previousRotation == go.transform.rotation);
+            Assert.IsTrue(parentGo.transform.rotation * previousRotation * offsetRotation == go.transform.rotation);
             Assert.AreEqual(previousScale, go.transform.localScale);
         }
 
@@ -246,7 +246,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
                 // THEN
                 Assert.IsTrue(success);
                 Assert.AreEqual(previousPosition, go.transform.position);
-                Assert.IsTrue(parentGo.transform.rotation * offsetRotation * previousRotation == go.transform.rotation);
+                Assert.IsTrue(parentGo.transform.rotation * previousRotation * offsetRotation == go.transform.rotation);
                 Assert.AreEqual(previousScale, go.transform.localScale);
 
                 yield return null;
