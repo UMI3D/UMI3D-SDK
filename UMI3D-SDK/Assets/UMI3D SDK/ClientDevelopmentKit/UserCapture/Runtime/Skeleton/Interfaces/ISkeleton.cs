@@ -105,6 +105,7 @@ namespace umi3d.cdk.userCapture
         {
             public Vector3 Position;
             public Quaternion Rotation;
+            public Quaternion LocalRotation;
         }
 
         #endregion Data struture

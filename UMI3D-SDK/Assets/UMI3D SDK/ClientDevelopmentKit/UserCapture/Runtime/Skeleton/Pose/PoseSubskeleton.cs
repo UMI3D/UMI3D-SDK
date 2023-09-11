@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.description;
@@ -116,9 +117,9 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public PoseDto GetPose()
+        public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
-            PoseDto poseDto = new PoseDto() { bones = new List<BoneDto>() };
+            SubSkeletonPoseDto poseDto = new SubSkeletonPoseDto() { bones = new List<SubSkeletonBoneDto>() };
             foreach (var pose in appliedPoses)
             {
                 foreach (var bone in pose.Bones)
@@ -126,16 +127,50 @@ namespace umi3d.cdk.userCapture.pose
                     int indexOf = poseDto.bones.FindIndex(a => a.boneType == bone.boneType);
                     if (indexOf != -1)
                     {
-                        poseDto.bones[indexOf] = bone;
+                        poseDto.bones[indexOf] = GetPose(hierarchy, bone, pose).subBone;
                     }
                     else
                     {
-                        poseDto.bones.Add(bone);
+                        poseDto.bones.Add(GetPose(hierarchy, bone, pose).subBone);
                     }
                 }
             }
 
             return poseDto;
+        }
+
+
+        private Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
+        private (BoneDto bone, SubSkeletonBoneDto subBone) GetPose(UMI3DSkeletonHierarchy hierarchy, BoneDto _bone, SkeletonPose pose)
+        {
+            if(_bone == null)
+                return (null, null);
+
+            if (computedMap.ContainsKey(_bone.boneType))
+                return computedMap[_bone.boneType];
+
+            if (!hierarchy.Relations.ContainsKey(_bone.boneType))
+                return (null, null);
+
+            var relation = hierarchy.Relations[_bone.boneType];
+
+            var parentBone = pose.Bones.FirstOrDefault(b => b.boneType == relation.boneTypeParent);
+
+            var parent = GetPose(hierarchy, parentBone, pose);
+
+            SubSkeletonBoneDto subBone = new();
+            subBone.localRotation =
+                parent.bone == null ?
+                    _bone.rotation :
+                    (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * _bone.rotation.Quaternion()).Dto();
+
+            computedMap[_bone.boneType] = new()
+            {
+                bone = _bone,
+                subBone = subBone
+            };
+
+            return computedMap[_bone.boneType];
         }
 
         /// <inheritdoc/>

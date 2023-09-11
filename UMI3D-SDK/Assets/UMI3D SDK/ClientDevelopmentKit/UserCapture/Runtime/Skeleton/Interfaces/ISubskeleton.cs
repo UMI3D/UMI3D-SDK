@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture
@@ -33,7 +34,7 @@ namespace umi3d.cdk.userCapture
         /// Get the skeleton pose based on the position of this subskeleton.
         /// </summary>
         /// <returns></returns>
-        PoseDto GetPose();
+        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
 
         int System.IComparable<ISubskeleton>.CompareTo(ISubskeleton other)
         {

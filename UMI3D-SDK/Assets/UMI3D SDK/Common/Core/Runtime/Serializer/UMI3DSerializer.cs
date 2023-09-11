@@ -16,8 +16,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using UnityEngine;
 
 namespace umi3d.common
 {
@@ -58,7 +56,7 @@ namespace umi3d.common
         public static void AddModule(List<UMI3DSerializerModule> moduleList)
         {
             foreach (UMI3DSerializerModule module in moduleList)
-                if(module != null)
+                if (module != null)
                     modules.Add(module);
         }
 
@@ -94,9 +92,10 @@ namespace umi3d.common
         public static bool TryRead<T>(ByteContainer container, out T result)
         {
             bool read;
-            if (container.length <= 0) { 
+            if (container.length <= 0)
+            {
                 result = default(T);
-                return false; 
+                return false;
             }
 
             foreach (UMI3DSerializerModule module in modules)
@@ -345,7 +344,7 @@ namespace umi3d.common
 
 
         static System.Reflection.MethodInfo _WriteIEnumerableMethodInfo;
-
+        static System.Reflection.MethodInfo _IsCountableMethodInfo;
 
         static bool IsGenericIEnumerable(Type type)
         {
@@ -376,7 +375,7 @@ namespace umi3d.common
         /// <returns></returns>
         static Bytable WriteIEnumerable(IEnumerable value, params object[] parameters)
         {
-            if(_WriteIEnumerableMethodInfo == null)
+            if (_WriteIEnumerableMethodInfo == null)
                 _WriteIEnumerableMethodInfo = typeof(UMI3DSerializer).GetMethod("_WriteIEnumerable");
 
             Type typeToPass = GetGenericTypeOfIEnumerable(value.GetType());
@@ -431,7 +430,7 @@ namespace umi3d.common
             foreach (UMI3DSerializerModule module in modules)
             {
                 var r = module.IsCountable<T>();
-                if(r.HasValue)
+                if (r.HasValue)
                     return r.Value;
             }
             return null;
@@ -450,7 +449,7 @@ namespace umi3d.common
         /// <returns></returns>
         public static Bytable WriteCollection<T>(IEnumerable<T> value, params object[] parameters)
         {
-            if(value is IDictionary dic)
+            if (value is IDictionary dic)
                 return WriteCollectionIDictionary(dic, parameters);
 
             if (value.Count() > 0)
@@ -474,7 +473,7 @@ namespace umi3d.common
         /// <returns></returns>
         static Bytable WriteCollectionIDictionary(IDictionary value, params object[] parameters)
         {
-            if (value.Count > 0 && value.Entries().Any(e => !(IsCountable(e.Key) ?? false) || !(IsCountable(e.Value) ?? false)))
+            if (value.Count > 0 && value.Entries().Any(e => !(IsCountableForObject(e.Key) ?? false) || !(IsCountableForObject(e.Value) ?? false)))
             {
                 return WriteCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)), parameters);
             }
@@ -482,6 +481,20 @@ namespace umi3d.common
             foreach (object v in value)
                 b += Write(v);
             return b;
+        }
+
+        /// <summary>
+        /// Is Countable version when we don't know <paramref name="obj"/> type in advance.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        static bool? IsCountableForObject(object obj)
+        {
+            if (_IsCountableMethodInfo == null)
+                _IsCountableMethodInfo = typeof(UMI3DSerializer).GetMethod("IsCountable", new Type[] { });
+
+            var genericMethod = _IsCountableMethodInfo.MakeGenericMethod(obj.GetType());
+            return genericMethod.Invoke(null, null) as bool?;
         }
 
         /// <summary>
@@ -574,7 +587,7 @@ namespace umi3d.common
             {
                 int size = operations.Count() * sizeof(int);
                 (int, Func<byte[], int, int, (int, int, int)> f3) func = operations
-                    .Select(o => Write(o,parameters))
+                    .Select(o => Write(o, parameters))
                     .Select(c =>
                     {
                         Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { (int, int) cr = c.function(by, i, 0); return (cr.Item1, i, j); };
