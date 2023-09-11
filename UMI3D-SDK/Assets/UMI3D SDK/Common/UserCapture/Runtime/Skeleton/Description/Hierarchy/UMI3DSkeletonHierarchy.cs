@@ -25,16 +25,23 @@ namespace umi3d.common.userCapture.description
     /// </summary>
     public class UMI3DSkeletonHierarchy
     {
-        public UMI3DSkeletonHierarchy(UMI3DSkeletonHierarchyDefinition definition)
+        private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
+
+        public UMI3DSkeletonHierarchy(IUMI3DSkeletonHierarchyDefinition definition)
         {
-            if (definition is null) //empty hierarchy has at least a hips
+            if (definition == null) //empty hierarchy has at least a hips
             {
                 relations.Add(BoneType.Hips, new() { boneTypeParent = BoneType.None, relativePosition = Vector3.zero });
                 return;
             }
 
-            foreach (var relation in definition.BoneRelations)
+            foreach (var relation in definition.Relations)
             {
+                if (relations.ContainsKey(relation.Bonetype))
+                {
+                    UMI3DLogger.LogWarning($"Hierarchy already contains a bone of type {BoneTypeHelper.GetBoneName(relation.Bonetype)}. Skipping relation.", DEBUG_SCOPE);
+                    continue;
+                }
                 relations.Add(relation.Bonetype, new UMI3DSkeletonHierarchyNode { boneTypeParent = relation.BonetypeParent, relativePosition = relation.RelativePosition });
             }
         }
@@ -58,11 +65,11 @@ namespace umi3d.common.userCapture.description
         }
 
         /// <summary>
-        /// Cache of the hiearchy.
+        /// Cache of the hierarchy.
         /// </summary>
         private readonly Dictionary<uint, UMI3DSkeletonHierarchyNode> relations = new();
         /// <summary>
-        /// UMI3D hiearchy nodes, indexed by bonetypes.
+        /// UMI3D hierarchy nodes, indexed by bone types.
         /// </summary>
         public IReadOnlyDictionary<uint, UMI3DSkeletonHierarchyNode> Relations => relations;
 
