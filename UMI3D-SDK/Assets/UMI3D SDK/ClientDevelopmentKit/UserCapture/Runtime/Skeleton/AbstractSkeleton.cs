@@ -118,7 +118,6 @@ namespace umi3d.cdk.userCapture
                 return this;
 
             RetrieveBonesRotation(SkeletonHierarchy);
-
             if (!Bones.ContainsKey(BoneType.Hips))
                 return this;
 
@@ -170,8 +169,7 @@ namespace umi3d.cdk.userCapture
 
                 Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * 0.5f);
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
-                Bones[boneType].Rotation = Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation;
-
+                Bones[boneType].Rotation = (Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation).normalized;
                 alreadyComputedBonesCache[boneType] = true;
             }
         }
