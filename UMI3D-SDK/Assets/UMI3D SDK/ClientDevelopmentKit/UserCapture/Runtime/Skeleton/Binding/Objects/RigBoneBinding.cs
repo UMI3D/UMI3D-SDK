@@ -42,7 +42,7 @@ namespace umi3d.cdk.userCapture.binding
         /// <inheritdoc/>
         public override void Apply(out bool success)
         {
-            if (boundTransform is null) // node is destroyed
+            if (boundTransform == null) // node is destroyed
             {
                 success = false;
                 return;
