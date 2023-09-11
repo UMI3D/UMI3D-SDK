@@ -19,7 +19,6 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using umi3d.common;
 using System.Linq;
-using System.Reflection;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
