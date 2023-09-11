@@ -170,13 +170,13 @@ namespace umi3d.cdk.userCapture.animation
         /// Get the skeleton pose based on the position of this AnimationSkeleton.
         /// </summary>
         /// <returns></returns>
-        public virtual PoseDto GetPose()
+        public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             foreach (var anim in Animations)
             {
                 if (anim?.IsPlaying() ?? false)
                 {
-                    return Mapper.GetPose();
+                    return Mapper.GetPose(hierarchy);
                 }
             }
             return null;

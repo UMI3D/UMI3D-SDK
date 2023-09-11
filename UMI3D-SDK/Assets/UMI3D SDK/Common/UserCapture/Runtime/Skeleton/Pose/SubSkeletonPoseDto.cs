@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,19 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture.pose;
+using System.Collections.Generic;
 
-namespace umi3d.common.userCapture.description
+namespace umi3d.common.userCapture.pose
 {
-    /// <summary>
-    /// Mapper between any skeleton hiearchy and the UMI3D one.
-    /// </summary>
-    public interface ISkeletonMapper
+    public class SubSkeletonPoseDto : UMI3DDto
     {
         /// <summary>
-        /// Get pose of the bone using mappings.
+        /// all the bone pose that are composing the current pose
         /// </summary>
-        /// <returns></returns>
-        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
+        public List<SubSkeletonBoneDto> bones { get; set; }
+
+        /// <summary>
+        /// Where the pose starts on the skeleotn
+        /// </summary>
+        public BonePoseDto boneAnchor { get; set; }
     }
 }

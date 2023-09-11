@@ -23,6 +23,7 @@ using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 
 using UnityEngine;
@@ -39,7 +40,6 @@ namespace umi3d.cdk.userCapture
 
         /// <inheritdoc/>
         public virtual IDictionary<uint, ISkeleton.Transformation> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.Transformation>();
-
 
         public object SubskeletonsLock { get; } = new();
 
@@ -98,9 +98,9 @@ namespace umi3d.cdk.userCapture
         {
             this.trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
-            //PoseSubskeleton = poseSkeleton;
+            PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
-            //subskeletons.AddSorted(PoseSubskeleton);
+            subskeletons.AddSorted(PoseSubskeleton);
         }
 
         /// <inheritdoc/>
@@ -162,14 +162,7 @@ namespace umi3d.cdk.userCapture
 
                 Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * 0.5f);
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
-
-                if (!bonesSetByAnySkeleton.Contains(boneType))
-                {
-                    Bones[boneType].Rotation = Bones[boneRelation.boneTypeParent].Rotation;
-                }
-
-                else if (!bonesSetByTrackedSkeleton.Contains(boneType))
-                    Bones[boneType].Rotation = Bones[BoneType.Hips].Rotation * Bones[boneType].Rotation; // all global bones rotations should be turned the same way as the anchor
+                Bones[boneType].Rotation = Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation;
 
                 alreadyComputedBonesCache[boneType] = true;
             }
@@ -186,9 +179,11 @@ namespace umi3d.cdk.userCapture
             foreach (var bone in hierarchy.Relations.Keys)
             {
                 if (Bones.ContainsKey(bone))
-                    Bones[bone].Rotation = Quaternion.identity;
+                {
+                    Bones[bone].LocalRotation = Quaternion.identity;
+                }
                 else
-                    Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity };
+                    Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity , LocalRotation = Quaternion.identity };
             }
 
             bonesSetByTrackedSkeleton.Clear();
@@ -199,7 +194,7 @@ namespace umi3d.cdk.userCapture
             lock (SubskeletonsLock)
                 foreach (var skeleton in Subskeletons)
                 {
-                    List<BoneDto> bones = skeleton.GetPose()?.bones;
+                    List<SubSkeletonBoneDto> bones = skeleton.GetPose(hierarchy)?.bones;
 
                     if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                         continue;
@@ -209,10 +204,11 @@ namespace umi3d.cdk.userCapture
                         // if a bone rotation has already been registered, erase it
 
                         if (Bones.ContainsKey(b.boneType))
-                            Bones[b.boneType].Rotation = b.rotation.Quaternion();
+                            Bones[b.boneType].LocalRotation = b.localRotation.Quaternion();
                         else
-                            Bones.Add(b.boneType, new ISkeleton.Transformation() { Rotation = b.rotation.Quaternion() });
+                            Bones.Add(b.boneType, new ISkeleton.Transformation() { LocalRotation = b.localRotation.Quaternion() });
                     }
+
 #pragma warning disable CS0252
                     if (skeleton == trackedSkeleton) //the TrackedSkeleton is the first SubSkeleton
 #pragma warning restore CS0252

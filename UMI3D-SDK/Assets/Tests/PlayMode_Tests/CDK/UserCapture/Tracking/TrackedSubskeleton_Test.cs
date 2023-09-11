@@ -154,6 +154,8 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose_NoTrackedSkeletonBone_NoDistantController()
         {
+
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
             var targetPose = new PoseDto() { bones = new() };
 
@@ -165,7 +167,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
@@ -179,8 +181,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose_NoTrackedSkeletonBoneController_NoDistantController()
         {
+
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto() { bones = new() };
+            var targetPose = new SubSkeletonPoseDto() { bones = new() };
 
             List<IController> controllers = new List<IController>();
 
@@ -198,7 +202,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
@@ -212,8 +216,9 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose_NoTrackedSkeletonBoneController()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto() { bones = new() };
+            var targetPose = new SubSkeletonPoseDto() { bones = new() };
 
             List<IController> controllers = new List<IController>();
 
@@ -231,7 +236,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
@@ -245,8 +250,9 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto() { bones = new() };
+            var targetPose = new SubSkeletonPoseDto() { bones = new() };
 
             List<IController> controllers = new List<IController>();
 
@@ -269,7 +275,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
