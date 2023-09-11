@@ -46,6 +46,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
         [Test]
         public void GetPose()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
             Queue<SkeletonMapping> mappings = new();
 
@@ -60,7 +61,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             skeletonMapper.Mappings = mappings.ToArray();
 
             // WHEN
-            var result = skeletonMapper.GetPose();
+            var result = skeletonMapper.GetPose(hierarchy);
 
             // THEN
             Assert.AreEqual(skeletonMapper.BoneAnchor.bone, result.boneAnchor.bone);

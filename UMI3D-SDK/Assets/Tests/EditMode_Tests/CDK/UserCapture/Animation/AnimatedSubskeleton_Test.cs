@@ -65,7 +65,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             // Nothing
 
             // WHEN
-            var pose = animatedSubskeleton.GetPose();
+            var pose = animatedSubskeleton.GetPose(new(null));
 
             // THEN
             Assert.IsNull(pose);
@@ -74,8 +74,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_NoAnimationPlaying()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto();
+            var targetPose = new SubSkeletonPoseDto();
 
             Dictionary<ulong, UMI3DAnimatorAnimationDto> animationsDtos = new()
             {
@@ -93,13 +94,13 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
                 environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(anim.Key)).Returns(mockAnimations[anim.Key].Object);
             }
 
-            mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
+            mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
 
             animatedSubskeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray(), 0, new SkeletonAnimationParameterDto[0],
                                                         mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object); 
 
             // WHEN
-            var pose = animatedSubskeleton.GetPose();
+            var pose = animatedSubskeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNull(pose);
@@ -108,8 +109,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_OneAnimationPlaying()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto();
+            var targetPose = new SubSkeletonPoseDto();
             ulong animId = 1L;
             UMI3DAnimatorAnimationDto animDto = new UMI3DAnimatorAnimationDto()
             {
@@ -119,7 +121,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             var mockAnimation = new Mock<UMI3DAnimatorAnimation>(animDto, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object);
             mockAnimation.Setup(x => x.IsPlaying()).Returns(true);
 
-            mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
+            mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
 
             environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(animId)).Returns(mockAnimation.Object);
 
@@ -127,7 +129,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
                                                         mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object); 
 
             // WHEN
-            var pose = animatedSubskeleton.GetPose();
+            var pose = animatedSubskeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
@@ -137,8 +139,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_OneAnimationPlayingAmongSeveral()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto();
+            var targetPose = new SubSkeletonPoseDto();
 
             Dictionary<ulong, UMI3DAnimatorAnimationDto> animationsDtos = new()
             {
@@ -156,13 +159,13 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
                 environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(anim.Key)).Returns(mockAnimations[anim.Key].Object);
             }
 
-            mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
+            mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
 
             animatedSubskeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray(), 0, new SkeletonAnimationParameterDto[0],
                                                         mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object); 
 
             // WHEN
-            var pose = animatedSubskeleton.GetPose();
+            var pose = animatedSubskeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
@@ -172,8 +175,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_SeveralPlaying()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto();
+            var targetPose = new SubSkeletonPoseDto();
 
             Dictionary<ulong, UMI3DAnimatorAnimationDto> animationsDtos = new()
             {
@@ -191,13 +195,13 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
                 environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(anim.Key)).Returns(mockAnimations[anim.Key].Object);
             }
 
-            mockSkeletonMapper.Setup(x => x.GetPose()).Returns(targetPose);
+            mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
 
             animatedSubskeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, mockAnimations.Values.Select(x => x.Object).ToArray(), 0, new SkeletonAnimationParameterDto[0],
                                                         mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object); 
 
             // WHEN
-            var pose = animatedSubskeleton.GetPose();
+            var pose = animatedSubskeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);

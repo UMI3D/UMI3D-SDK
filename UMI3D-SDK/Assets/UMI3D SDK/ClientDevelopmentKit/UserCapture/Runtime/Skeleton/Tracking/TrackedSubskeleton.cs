@@ -30,9 +30,6 @@ namespace umi3d.cdk.userCapture.tracking
 {
     public class TrackedSubskeleton : MonoBehaviour, ITrackedSubskeleton
     {
-        public bool debug;
-
-        public Transform handtracking;
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
         public List<IController> controllers = new List<IController>();
@@ -98,17 +95,15 @@ namespace umi3d.cdk.userCapture.tracking
             return $"Unknown bone {bone}";
         }
 
-        public PoseDto GetPose()
+        public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
-            var dto = new PoseDto() { bones = new(bones.Count) };
+            var dto = new SubSkeletonPoseDto() { bones = new(bones.Count) };
 
             foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.Any(y => y.boneType == x.boneType)))
             {
                 //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 dto.bones.Add(bone.ToBoneDto());
             }
-            if(debug)
-            UnityEngine.Debug.Log($"<color=orange>Get pose {dto.bones.ToString<BoneDto>(b => DebugBone(b.boneType) + $" {b.rotation.Quaternion().eulerAngles}")}</color>");
             return dto;
         }
 
@@ -153,12 +148,6 @@ namespace umi3d.cdk.userCapture.tracking
             }
             foreach (var dc in controllersToRemove)
                 controllers.Remove(dc);
-            if (debug)
-            {
-                UnityEngine.Debug.Log($"<color=green>Received {trackingFrame.userId} {receivedTypes.ToString<uint>(b => DebugBone(b))}</color>");
-                //+ $" {b.rotation.Quaternion().eulerAngles}"
-                UnityEngine.Debug.Log($"<color=green>Controller {controllers.ToString<IController>(b => DebugBone(b.boneType) + $" {b.rotation.eulerAngles}")}</color>");
-            }
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
@@ -185,8 +174,6 @@ namespace umi3d.cdk.userCapture.tracking
                     }
                 }
             }
-            if(debug)
-            UnityEngine.Debug.Log($"<color=red>Send {trackingFrame.trackedBones.ToString<ControllerDto>(b => DebugBone(b.boneType)+ $" {b.rotation.Quaternion().eulerAngles}")}</color>");
         }
 
         #region Ik

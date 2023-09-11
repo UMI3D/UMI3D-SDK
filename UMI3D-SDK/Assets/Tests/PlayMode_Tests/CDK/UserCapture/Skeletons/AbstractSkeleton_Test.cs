@@ -26,6 +26,7 @@ using umi3d.common.userCapture.pose;
 using umi3d.common.utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static UnityEngine.UIElements.VisualElement;
 
 namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 {
@@ -93,13 +94,14 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         [Test]
         public virtual void Compute_ListWithEmpties()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             //Given
             GameObject subskeletonGo = new GameObject("Subskeleton");
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
             Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
-            animatedSkeletonMock.Setup(x => x.GetPose()).Returns(new PoseDto());
+            animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(new SubSkeletonPoseDto());
 
             List<AnimatedSubskeleton> animatedSubskeletons = new()
             {
@@ -124,17 +126,18 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         [Test]
         public virtual void Compute_OneAnimatedSkeletonWithBones()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             //Given
             GameObject subskeletonGo = new GameObject("Subskeleton");
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
             Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
-            PoseDto poseDto = new PoseDto
+            var poseDto = new SubSkeletonPoseDto
             {
-                bones = new List<BoneDto>
+                bones = new List<SubSkeletonBoneDto>
                 {
-                    new BoneDto()
+                    new SubSkeletonBoneDto()
                     {
                         boneType = BoneType.CenterFeet,
                         rotation = Vector4.one.Dto()
@@ -142,7 +145,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
                 }
             };
 
-            animatedSkeletonMock.Setup(x => x.GetPose()).Returns(poseDto);
+            animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(poseDto);
 
             List<AnimatedSubskeleton> animatedSubskeletons = new()
             {

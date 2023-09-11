@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,19 +14,23 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture.pose;
-
-namespace umi3d.common.userCapture.description
+namespace umi3d.common.userCapture.pose
 {
-    /// <summary>
-    /// Mapper between any skeleton hiearchy and the UMI3D one.
-    /// </summary>
-    public interface ISkeletonMapper
+    public class SubSkeletonBoneDto : UMI3DDto
     {
         /// <summary>
-        /// Get pose of the bone using mappings.
+        /// Defines the type of the bone.
         /// </summary>
-        /// <returns></returns>
-        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
+        public uint boneType { get; set; }
+
+        /// <summary>
+        /// Rotation of the bone in world space
+        /// </summary>
+        public Vector4Dto localRotation { get; set; }
+
+        /// <summary>
+        /// Rotation of the bone in world space
+        /// </summary>
+        public Vector4Dto rotation { get; set; }
     }
 }
