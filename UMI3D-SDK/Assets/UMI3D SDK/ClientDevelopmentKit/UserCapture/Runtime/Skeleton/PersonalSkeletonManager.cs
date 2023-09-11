@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
         /// <inheritdoc/>
-        public PersonalSkeleton PersonalSkeleton
+        public IPersonalSkeleton PersonalSkeleton
         {
             get
             {
@@ -43,7 +43,7 @@ namespace umi3d.cdk.userCapture
                 else
                     return _skeleton;
             }
-            protected set => _skeleton = value;
+            protected set => _skeleton = (PersonalSkeleton)value;
         }
 
         /// <inheritdoc/>
@@ -107,7 +107,7 @@ namespace umi3d.cdk.userCapture
             }
 
             PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
-            PersonalSkeleton.SkeletonHierarchy = StandardHierarchy;
+            _skeleton.SkeletonHierarchy = StandardHierarchy;
             computeRoutine ??= lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }
 

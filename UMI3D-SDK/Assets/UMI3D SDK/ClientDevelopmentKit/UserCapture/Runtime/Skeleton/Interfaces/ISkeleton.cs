@@ -56,7 +56,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Id of the user represented by this skeleton.
         /// </summary>
-        ulong UserId { get; }
+        ulong UserId { get; set; }
 
         /// <summary>
         /// Subskeleton updated from tracked controllers.

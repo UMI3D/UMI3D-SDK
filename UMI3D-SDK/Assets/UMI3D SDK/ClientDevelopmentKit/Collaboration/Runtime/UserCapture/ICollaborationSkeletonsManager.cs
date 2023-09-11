@@ -70,7 +70,17 @@ namespace umi3d.cdk.collaboration.userCapture
         /// </summary>
         /// <param name="boneType"></param>
         void SyncBoneFPS(uint boneType);
+
+        /// <summary>
+        /// Update skeletons from tracking frames.
+        /// </summary>
+        /// <param name="frames"></param>
         void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames);
+
+        /// <summary>
+        /// Update a collaborative skeleton from a tracking frame.
+        /// </summary>
+        /// <param name="frame"></param>
         void UpdateSkeleton(UserTrackingFrameDto frame);
     }
 }

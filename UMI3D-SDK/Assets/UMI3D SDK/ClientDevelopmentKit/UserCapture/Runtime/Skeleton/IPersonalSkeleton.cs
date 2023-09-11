@@ -14,23 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture.description;
+using System.Collections.Generic;
+using umi3d.cdk.userCapture.tracking;
+using umi3d.common.userCapture.tracking;
+using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
-    /// <summary>
-    /// User's skeleton manager.
-    /// </summary>
-    public interface ISkeletonManager
+    public interface IPersonalSkeleton : ISkeleton
     {
-        /// <summary>
-        /// Skeleton of the browser's user.
-        /// </summary>
-        public IPersonalSkeleton PersonalSkeleton { get; }
+        IDictionary<uint, float> BonesAsyncFPS { get; }
+
+        Transform Transform { get; }
 
         /// <summary>
-        /// Hierarchy used for the skeleton's structure.
+        /// Size of the skeleton.
         /// </summary>
-        public UMI3DSkeletonHierarchy StandardHierarchy { get; }
+        Vector3 worldSize { get; }
+
+        /// <summary>
+        /// Write a tracking frame from all <see cref="IWritableSubskeleton"/>.
+        /// </summary>
+        /// <param name="option"></param>
+        /// <returns></returns>
+        UserTrackingFrameDto GetFrame(TrackingOption option);
     }
 }
