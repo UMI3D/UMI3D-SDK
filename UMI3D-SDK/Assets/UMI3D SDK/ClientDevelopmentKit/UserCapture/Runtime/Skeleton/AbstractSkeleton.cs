@@ -98,9 +98,9 @@ namespace umi3d.cdk.userCapture
         {
             this.trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
-            //PoseSubskeleton = poseSkeleton;
+            PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
-            //subskeletons.AddSorted(PoseSubskeleton);
+            subskeletons.AddSorted(PoseSubskeleton);
         }
 
         /// <inheritdoc/>
