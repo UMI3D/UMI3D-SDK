@@ -55,7 +55,7 @@ namespace umi3d.cdk.userCapture.tracking
         public int Priority => 0;
 
         private List<uint> receivedTypes = new List<uint>();
-        private Dictionary<uint, (Vector3LinearDelayedExtrapolator PositionExtrapolator, QuaternionLinearDelayedExtrapolator RotationExtrapolator)> extrapolators = new();
+        private Dictionary<uint, (Vector3LinearDelayedExtrapolator PositionExtrapolator, QuaternionLinearDelayedExtrapolator RotationExtrapolator, IController Controller)> extrapolators = new();
 
         public void Start()
         {
@@ -81,10 +81,11 @@ namespace umi3d.cdk.userCapture.tracking
         private void Update()
         {
             foreach (var extrapolator in extrapolators.Values)
-            {
-                extrapolator.PositionExtrapolator.Extrapolate();
-                extrapolator.RotationExtrapolator.Extrapolate();
-            }
+                if (extrapolator.Controller is DistantController vc)
+                {
+                    vc.position = extrapolator.PositionExtrapolator.Extrapolate();
+                    vc.rotation = extrapolator.RotationExtrapolator.Extrapolate();
+                }
         }
 
 
@@ -123,7 +124,7 @@ namespace umi3d.cdk.userCapture.tracking
                         rotation = bone.rotation.Quaternion()
                     };
                     controllers.Add(vc);
-                    extrapolators[bone.boneType] = (new(), new());
+                    extrapolators[bone.boneType] = (new(), new(), vc);
                 }
 
                 vc.isActif = true;
