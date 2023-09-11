@@ -308,8 +308,8 @@ namespace umi3d.cdk.userCapture.animation
                 {
                     foreach (var subskeleton in skeleton.Subskeletons.ToList())
                     {
-                        if (subskeleton is AnimatedSubskeleton)
-                            skeleton.RemoveSubskeleton(subskeleton);
+                        if (subskeleton is IAnimatedSubskeleton animatedSubskeleton)
+                            skeleton.RemoveSubskeleton(animatedSubskeleton);
                     }
                     clientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
                     isRegisteredForPersonalSkeletonCleanup = false;

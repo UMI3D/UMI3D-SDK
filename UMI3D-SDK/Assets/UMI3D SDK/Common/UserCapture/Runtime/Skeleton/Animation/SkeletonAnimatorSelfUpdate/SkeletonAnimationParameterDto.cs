@@ -36,7 +36,7 @@ namespace umi3d.common.userCapture.animation
         /// Ranges to clamp value to a constant result when in an interval. <br/>
         /// "If no range is defined, the parameter value is directly given to the animator.
         /// </summary>
-        public RangeDto[] ranges { get; set; }
+        public RangeDto[] ranges { get; set; } = new RangeDto[0];
 
         /// <summary>
         ///  Ranges to clamp value to a certain result when in an interval.

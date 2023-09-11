@@ -30,8 +30,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         private void Update()
         {
-            transform.position = posExtrapolator.Extrapolate();
-            transform.rotation = rotExtrapolator.Extrapolate();
+            transform.SetPositionAndRotation(posExtrapolator.Extrapolate(), rotExtrapolator.Extrapolate());
         }
 
         public override void UpdateBones(UserTrackingFrameDto frame)

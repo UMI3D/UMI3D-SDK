@@ -38,9 +38,14 @@ namespace umi3d.cdk.userCapture
     {
         protected const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
+        #region Fields
+
         /// <inheritdoc/>
         public virtual IDictionary<uint, ISkeleton.Transformation> Bones { get; protected set; } = new Dictionary<uint, ISkeleton.Transformation>();
 
+        /// <summary>
+        /// Lock for concurrent access to <see cref="Subskeletons"/> collection.
+        /// </summary>
         public object SubskeletonsLock { get; } = new();
 
         /// <inheritdoc/>
@@ -74,11 +79,12 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Subskeleton updated from tracked controllers.
         /// </summary>
-        public ITrackedSubskeleton TrackedSubskeleton => trackedSkeleton;
+        public ITrackedSubskeleton TrackedSubskeleton => _trackedSkeleton;
+        protected ITrackedSubskeleton _trackedSkeleton;
 
         [SerializeField]
         protected TrackedSubskeleton trackedSkeleton;
-
+        
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
@@ -94,9 +100,11 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
-        public void Init(TrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
+        #endregion Fields
+
+        public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
         {
-            this.trackedSkeleton = trackedSkeleton;
+            this._trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
@@ -252,9 +260,9 @@ namespace umi3d.cdk.userCapture
         }
 
 
-        public void AddSubskeleton(ISubskeleton subskeleton)
+        public void AddSubskeleton(IAnimatedSubskeleton animatedSubskeleton)
         {
-            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+            if (animatedSubskeleton == null)
                 return;
 
             lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
@@ -262,17 +270,17 @@ namespace umi3d.cdk.userCapture
                 subskeletons.AddSorted(animatedSubskeleton);
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
-                if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+                if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
                     animatedSubskeleton.StartParameterSelfUpdate(this);
             }
         }
 
-        public void RemoveSubskeleton(ISubskeleton subskeleton)
+        public void RemoveSubskeleton(IAnimatedSubskeleton animatedSubskeleton)
         {
-            if (subskeleton is not AnimatedSubskeleton animatedSubskeleton)
+            if (animatedSubskeleton == null)
                 return;
 
-            if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Length > 0)
+            if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
                 animatedSubskeleton.StopParameterSelfUpdate();
 
             if (subskeletons.Contains(animatedSubskeleton))
