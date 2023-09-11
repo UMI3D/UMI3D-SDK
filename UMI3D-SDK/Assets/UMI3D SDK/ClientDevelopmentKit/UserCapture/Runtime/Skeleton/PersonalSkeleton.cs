@@ -68,15 +68,15 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public override void UpdateBones(UserTrackingFrameDto frame)
         {
-            if (Subskeletons != null)
+            lock(SubskeletonsLock)
             {
-                lock(SubskeletonsLock)
-                    foreach (ISubskeleton skeleton in Subskeletons)
-                    {
-                        if (skeleton is IWritableSubskeleton writableSkeleton)
-                            writableSkeleton.UpdateBones(frame);
-                    }
+                foreach (ISubskeleton skeleton in Subskeletons)
+                {
+                    if (skeleton is IWritableSubskeleton writableSkeleton)
+                        writableSkeleton.UpdateBones(frame);
+                }
             }
+
             lastFrame = frame;
         }
     }

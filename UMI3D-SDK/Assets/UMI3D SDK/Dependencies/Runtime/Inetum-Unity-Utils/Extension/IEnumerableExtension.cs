@@ -261,25 +261,37 @@ namespace inetum.unityUtils
         /// <param name="item"></param>
         public static void AddSorted<T>(this List<T> source, T item) where T : IComparable<T>
         {
+            if (item == null)
+            {
+                throw new ArgumentNullException(nameof(item));
+            }
             if (source.Count == 0)
             {
                 source.Add(item);
                 return;
             }
-            if (source[source.Count - 1].CompareTo(item) <= 0)
+            try
             {
-                source.Add(item);
-                return;
+                if (source[^1].CompareTo(item) <= 0)
+                {
+                    source.Add(item);
+                    return;
+                }
+                if (source[0].CompareTo(item) >= 0)
+                {
+                    source.Insert(0, item);
+                    return;
+                }
+                int index = source.BinarySearch(item);
+                if (index < 0)
+                    index = ~index;
+
+                source.Insert(index, item);
             }
-            if (source[0].CompareTo(item) >= 0)
+            catch (NullReferenceException ex) 
             {
-                source.Insert(0, item);
-                return;
+                throw new NullReferenceException("An element of the list is null and could not be compared.\n"+ex.Message);
             }
-            int index = source.BinarySearch(item);
-            if (index < 0)
-                index = ~index;
-            source.Insert(index, item);
         }
 
     }

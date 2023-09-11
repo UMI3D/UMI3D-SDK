@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture;
@@ -90,13 +91,13 @@ namespace umi3d.cdk.userCapture
         /// Add a subskeleton to the skeleton.
         /// </summary>
         /// <param name="subskeleton"></param>
-        void AddSubskeleton(ISubskeleton subskeleton);
+        void AddSubskeleton(IAnimatedSubskeleton subskeleton);
 
         /// <summary>
         /// Add a subskeleton to the skeleton.
         /// </summary>
         /// <param name="subskeleton"></param>
-        void RemoveSubskeleton(ISubskeleton subskeleton);
+        void RemoveSubskeleton(IAnimatedSubskeleton subskeleton);
 
         #region Data struture
 
@@ -104,6 +105,7 @@ namespace umi3d.cdk.userCapture
         {
             public Vector3 Position;
             public Quaternion Rotation;
+            public Quaternion LocalRotation;
         }
 
         #endregion Data struture
