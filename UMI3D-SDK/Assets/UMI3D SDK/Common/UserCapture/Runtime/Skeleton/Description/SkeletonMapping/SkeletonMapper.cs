@@ -43,8 +43,6 @@ namespace umi3d.common.userCapture.description
 
             computedMap.Clear();
 
-
-
             return new SubSkeletonPoseDto()
             {
                 boneAnchor = BoneAnchor,
@@ -72,7 +70,7 @@ namespace umi3d.common.userCapture.description
             var parentMapping = Mappings.FirstOrDefault(m => m.BoneType == relation.boneTypeParent);
             var parent = GetPose(hierarchy, parentMapping);
 
-            SubSkeletonBoneDto subBone = new();
+            SubSkeletonBoneDto subBone = new() { boneType = mapping.BoneType };
             subBone.localRotation =  
                 parent.bone == null ? 
                     bone.rotation:
