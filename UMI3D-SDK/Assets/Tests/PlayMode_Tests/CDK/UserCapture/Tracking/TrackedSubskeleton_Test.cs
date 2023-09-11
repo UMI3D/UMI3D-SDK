@@ -206,7 +206,8 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             // THEN
             Assert.IsNotNull(pose);
-            Assert.AreEqual(targetPose.bones.Count, pose.bones.Count);
+            /// Not Trackers
+            Assert.AreEqual(0, pose.bones.Count);
             for (int i = 0; i < pose.bones.Count; i++)
             {
                 Assert.AreEqual(targetPose.bones[i].boneType, pose.bones[i].boneType);
@@ -240,7 +241,8 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             // THEN
             Assert.IsNotNull(pose);
-            Assert.AreEqual(targetPose.bones.Count, pose.bones.Count);
+            /// Not Trackers
+            Assert.AreEqual(0, pose.bones.Count);
             for (int i = 0; i < pose.bones.Count; i++)
             {
                 Assert.AreEqual(targetPose.bones[i].boneType, pose.bones[i].boneType);
@@ -263,11 +265,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
 
-                targetPose.bones.Add(bone.ToBoneDto());
-
                 if (bone is TrackedSubskeletonBoneController)
                 {
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+                    targetPose.bones.Add(bone.ToBoneDto());
                 }
             }
 
@@ -279,7 +280,8 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             // THEN
             Assert.IsNotNull(pose);
-            Assert.AreEqual(targetPose.bones.Count, pose.bones.Count);
+            /// Not Trackers
+            Assert.AreEqual((int)trackedBones.LongCount(b => b is TrackedSubskeletonBoneController), pose.bones.Count);
             for (int i = 0; i < pose.bones.Count; i++)
             {
                 Assert.AreEqual(targetPose.bones[i].boneType, pose.bones[i].boneType);
