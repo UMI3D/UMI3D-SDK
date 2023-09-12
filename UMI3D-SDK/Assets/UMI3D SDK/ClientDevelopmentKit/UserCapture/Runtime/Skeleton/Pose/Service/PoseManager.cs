@@ -62,7 +62,7 @@ namespace umi3d.cdk.userCapture.pose
 
         public void InitLocalPoses()
         {
-            List<UMI3DPose_so> clientPoses = (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses;
+            var clientPoses = (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses;
             localPoses = new PoseDto[clientPoses.Count];
             for (int i = 0; i < clientPoses.Count; i++)
             {

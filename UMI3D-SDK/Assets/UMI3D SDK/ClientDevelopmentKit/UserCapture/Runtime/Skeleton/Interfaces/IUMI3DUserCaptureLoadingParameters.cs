@@ -22,7 +22,7 @@ namespace umi3d.cdk.userCapture
 {
     public interface IUMI3DUserCaptureLoadingParameters : IUMI3DLoadingParameters
     {
-        List<UMI3DPose_so> ClientPoses { get; }
-        UMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition { get; }
+        IReadOnlyList<IUMI3DPoseData> ClientPoses { get; }
+        IUMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition { get; }
     }
 }
