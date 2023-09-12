@@ -1,9 +1,6 @@
 using Moq;
 using NUnit.Framework;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
@@ -13,14 +10,15 @@ using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
 {
-    public class PoseManager_Test : MonoBehaviour
+    [TestFixture, TestOf(nameof(PoseManager))]
+    public class PoseManager_Test
     {
-        PoseManager poseManager = null;
-        Mock<IEnvironmentManager> environmentLoaderServiceMock = null;
-        Mock<ILoadingManager> loadingManagerMock = null;
-        Mock<ISkeletonManager> skeletonManagerServiceMock = null;
+        PoseManager poseManager;
+        Mock<IEnvironmentManager> environmentLoaderServiceMock;
+        Mock<ILoadingManager> loadingManagerMock;
+        Mock<ISkeletonManager> skeletonManagerServiceMock;
 
-        Mock<IUMI3DUserCaptureLoadingParameters> userCaptureLoadingParameters = null;
+        Mock<IUMI3DUserCaptureLoadingParameters> userCaptureLoadingParametersMock;
 
         [SetUp]
         public void Setup()
@@ -28,16 +26,9 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             environmentLoaderServiceMock = new Mock<IEnvironmentManager>();
             skeletonManagerServiceMock = new Mock<ISkeletonManager>();
             loadingManagerMock = new();
-            userCaptureLoadingParameters = new();
-            userCaptureLoadingParameters.Setup(x => x.ClientPoses).Returns(new List<UMI3DPose_so>()
-            {
-                new UMI3DPose_so(),
-                new UMI3DPose_so(),
-                new UMI3DPose_so(),
-                new UMI3DPose_so(),
-                new UMI3DPose_so()
-            });
-            loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(userCaptureLoadingParameters.Object);
+            userCaptureLoadingParametersMock = new();
+
+            loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(userCaptureLoadingParametersMock.Object);
         }
 
         [TearDown]
@@ -50,33 +41,49 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         }
 
         [Test]
-        public void TestInitLocalPose()
+        public void InitLocalPoses()
         {
             // GIVEN
             poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
+            var poseDataMock = new Mock<IUMI3DPoseData>();
+            poseDataMock.Setup(x => x.ToDto()).Returns(new PoseDto());
+            userCaptureLoadingParametersMock.Setup(x => x.ClientPoses).Returns(new List<IUMI3DPoseData>()
+            {
+                poseDataMock.Object,
+                poseDataMock.Object,
+                poseDataMock.Object,
+                poseDataMock.Object,
+                poseDataMock.Object,
+                poseDataMock.Object,
+            });
 
             // WHEN
             poseManager.InitLocalPoses();
 
             // THEN
-            Assert.IsTrue(poseManager.localPoses.Length == userCaptureLoadingParameters.Object.ClientPoses.Count);
+            Assert.AreEqual(userCaptureLoadingParametersMock.Object.ClientPoses.Count, poseManager.localPoses.Length);
         }
 
         [Test]
-        public void TestGetSetPose()
+        public void Poses()
         {
+            // Given
             poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object)
             {
-                Poses = PoseDictionary()
+                Poses = GeneratePoseDictionary()
             };
 
-            Assert.IsTrue(poseManager.Poses[0][0].Bones.Count == 2);
-            Assert.IsTrue(poseManager.Poses[1][0].Bones.Count == 2);
-            Assert.IsTrue(poseManager.Poses[1][2].Bones.Count == 4);
+            // When
+            var poses = poseManager.Poses;
+
+            // Then
+            Assert.AreEqual(2, poses[0][0].Bones.Count);
+            Assert.AreEqual(2, poses[1][0].Bones.Count);
+            Assert.AreEqual(4, poses[1][2].Bones.Count);
         }
 
         #region Utils
-        private Dictionary<ulong, IList<SkeletonPose>> PoseDictionary()
+        private Dictionary<ulong, IList<SkeletonPose>> GeneratePoseDictionary()
         {
             Dictionary<ulong, IList<SkeletonPose>> allPoses = new Dictionary<ulong, IList<SkeletonPose>>()
             {
