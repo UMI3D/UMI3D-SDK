@@ -20,11 +20,12 @@ using System.Threading.Tasks;
 using umi3d.cdk;
 using umi3d.cdk.binding;
 using umi3d.common;
-using umi3d.common.binding;
 using umi3d.common.dto.binding;
+using UnityEngine.SceneManagement;
 
-namespace EditMode_Tests.Core.Binding.CDK
+namespace PlayMode_Tests.Core.Binding.CDK
 {
+    [TestFixture, TestOf(nameof(BindingLoader))]
     public class BindingLoader_Test
     {
         protected BindingLoader bindingLoader;
@@ -39,6 +40,8 @@ namespace EditMode_Tests.Core.Binding.CDK
         public virtual void OneTimeSetup()
         {
             ClearSingletons();
+
+            SceneManager.LoadScene(PlayModeTestHelper.EMPTY_TEST_SCENE_NAME, LoadSceneMode.Single);
         }
 
         [SetUp]
