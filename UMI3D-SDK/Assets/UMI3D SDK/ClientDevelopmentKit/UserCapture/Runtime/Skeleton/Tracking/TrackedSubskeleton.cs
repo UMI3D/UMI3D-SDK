@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using umi3d.common;
 using System.Linq;
