@@ -324,7 +324,7 @@ namespace umi3d.cdk.userCapture.animation
             RemoveSkeletons(skeleton);
         }
 
-        private void RemoveSkeletons(PersonalSkeleton skeleton)
+        private void RemoveSkeletons(IPersonalSkeleton skeleton)
         {
             foreach (var subskeleton in skeleton.Subskeletons.ToList())
             {
