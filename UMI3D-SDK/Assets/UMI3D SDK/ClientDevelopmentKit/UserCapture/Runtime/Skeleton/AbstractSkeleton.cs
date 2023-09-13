@@ -147,14 +147,6 @@ namespace umi3d.cdk.userCapture
         private Dictionary<uint, bool> alreadyComputedBonesCache = new();
 
         /// <summary>
-        /// Containing id of the bones set by the TrackedSkeleton in <see cref="RetrieveBonesRotation(UMI3DSkeletonHierarchy)"/> method.
-        /// Preventing from the application of the Hips rotation to these bones in <see cref="ComputeBonePosition(uint)"/> method.
-        /// </summary>
-        private HashSet<uint> bonesSetByTrackedSkeleton = new();
-
-        private HashSet<uint> bonesSetByAnySkeleton = new();
-
-        /// <summary>
         /// Compute the final position of each bone, and their parents recursively if not already computed
         /// </summary>
         /// <param name="boneType"></param>
@@ -192,9 +184,6 @@ namespace umi3d.cdk.userCapture
                     Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity , LocalRotation = Quaternion.identity };
             }
 
-            bonesSetByTrackedSkeleton.Clear();
-            bonesSetByAnySkeleton.Clear();
-
             // for each subskeleton, in ascending order (last has highest priority),
             // get the relative orientation of all available bones
             lock (SubskeletonsLock)
@@ -213,25 +202,6 @@ namespace umi3d.cdk.userCapture
                             Bones[b.boneType].LocalRotation = b.localRotation.Quaternion();
                         else
                             Bones.Add(b.boneType, new ISkeleton.Transformation() { LocalRotation = b.localRotation.Quaternion() });
-                    }
-
-#pragma warning disable CS0252
-                    if (skeleton == trackedSkeleton) //the TrackedSkeleton is the first SubSkeleton
-#pragma warning restore CS0252
-                    {
-                        foreach (var b in bones)
-                        {
-                            bonesSetByTrackedSkeleton.Add(b.boneType);
-                            bonesSetByAnySkeleton.Add(b.boneType);
-                        }
-                    }
-                    else
-                    {
-                        foreach (var b in bones)
-                        {
-                            bonesSetByTrackedSkeleton.Remove(b.boneType);
-                            bonesSetByAnySkeleton.Add(b.boneType);
-                        }
                     }
                 }
         }
