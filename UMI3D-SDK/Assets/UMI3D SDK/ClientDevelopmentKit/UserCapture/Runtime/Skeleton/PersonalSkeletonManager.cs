@@ -123,7 +123,7 @@ namespace umi3d.cdk.userCapture
 
         private IEnumerator ComputeCoroutine()
         {
-            while (PersonalSkeleton != null)
+            while (PersonalSkeleton?.gameObject != null)
             {
                 PersonalSkeleton.Compute();
                 yield return null;

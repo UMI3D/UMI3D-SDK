@@ -129,6 +129,15 @@ namespace umi3d.cdk.userCapture.animation
                 AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
             });
 
+
+            nodeInstance.Delete = () =>
+            {
+                if (isRegisteredForPersonalSkeletonCleanup)
+                {
+                    RemoveSkeletons();
+                }
+            };
+
             await Task.CompletedTask;
         }
 
@@ -304,19 +313,26 @@ namespace umi3d.cdk.userCapture.animation
             {
                 isRegisteredForPersonalSkeletonCleanup = true;
 
-                void RemoveSkeletons()
-                {
-                    foreach (var subskeleton in skeleton.Subskeletons.ToList())
-                    {
-                        if (subskeleton is IAnimatedSubskeleton animatedSubskeleton)
-                            skeleton.RemoveSubskeleton(animatedSubskeleton);
-                    }
-                    clientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
-                    isRegisteredForPersonalSkeletonCleanup = false;
-                }
-
-                clientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
+                clientServer.OnLeavingEnvironment.AddListener(() => RemoveSkeletons(skeleton));
             }
+        }
+
+        private void RemoveSkeletons()
+        {
+            var skeleton = personnalSkeletonService.PersonalSkeleton;
+
+            RemoveSkeletons(skeleton);
+        }
+
+        private void RemoveSkeletons(PersonalSkeleton skeleton)
+        {
+            foreach (var subskeleton in skeleton.Subskeletons.ToList())
+            {
+                if (subskeleton is IAnimatedSubskeleton animatedSubskeleton)
+                    skeleton.RemoveSubskeleton(animatedSubskeleton);
+            }
+            clientServer.OnLeavingEnvironment.RemoveListener(() => RemoveSkeletons(skeleton));
+            isRegisteredForPersonalSkeletonCleanup = false;
         }
     }
 }

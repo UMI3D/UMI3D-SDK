@@ -385,7 +385,6 @@ namespace umi3d.cdk
             unityMainThreadDispatcher.Enqueue(() =>
             {
                 UMI3DAnimatorParameterType type = (UMI3DAnimatorParameterType)parameterDto.type;
-
                 switch (type)
                 {
                     case UMI3DAnimatorParameterType.Bool:
