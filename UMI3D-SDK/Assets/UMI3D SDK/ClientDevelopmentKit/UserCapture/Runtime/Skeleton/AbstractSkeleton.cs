@@ -195,7 +195,7 @@ namespace umi3d.cdk.userCapture
             bonesSetByTrackedSkeleton.Clear();
             bonesSetByAnySkeleton.Clear();
 
-            // for each subskeleton, in descending order (lastest has lowest priority),
+            // for each subskeleton, in ascending order (last has highest priority),
             // get the relative orientation of all available bones
             lock (SubskeletonsLock)
                 foreach (var skeleton in Subskeletons)

@@ -136,6 +136,7 @@ namespace umi3d.cdk.userCapture.pose
                 }
             }
 
+            computedMap.Clear();
             return poseDto;
         }
 
@@ -158,11 +159,14 @@ namespace umi3d.cdk.userCapture.pose
 
             var parent = GetPose(hierarchy, parentBone, pose);
 
-            SubSkeletonBoneDto subBone = new();
-            subBone.localRotation =
+            SubSkeletonBoneDto subBone = new()
+            {
+                boneType = _bone.boneType,
+                localRotation =
                 parent.bone == null ?
                     _bone.rotation :
-                    (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * _bone.rotation.Quaternion()).Dto();
+                    (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * _bone.rotation.Quaternion()).Dto()
+            };
 
             computedMap[_bone.boneType] = new()
             {
