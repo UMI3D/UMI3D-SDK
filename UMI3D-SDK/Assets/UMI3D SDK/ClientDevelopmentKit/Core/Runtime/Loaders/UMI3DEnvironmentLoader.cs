@@ -269,7 +269,7 @@ namespace umi3d.cdk
             if (entity.Object is T objEntity)
                 return objEntity;
             else
-                throw new Umi3dException($"Entity {id} is not of type {nameof(T)}.");
+                throw new Umi3dException($"Entity {id} [{entity}:{entity?.GetType()}] is not of type {nameof(T)}.");
         }
 
         /// <summary>
