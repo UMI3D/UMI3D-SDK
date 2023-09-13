@@ -128,17 +128,17 @@ namespace umi3d.cdk.userCapture.animation
                 AnimatedSubskeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
                 AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
             });
-
-
-            nodeInstance.Delete = () =>
-            {
-                if (isRegisteredForPersonalSkeletonCleanup)
-                {
-                    RemoveSkeletons();
-                }
-            };
+            nodeInstance.Delete = () => Delete(skeletonNodeDto.userId);
 
             await Task.CompletedTask;
+        }
+
+        protected virtual void Delete(ulong userId)
+        {
+            if (isRegisteredForPersonalSkeletonCleanup)
+            {
+                RemoveSkeletons();
+            }
         }
 
         #region SkeletonMapping
