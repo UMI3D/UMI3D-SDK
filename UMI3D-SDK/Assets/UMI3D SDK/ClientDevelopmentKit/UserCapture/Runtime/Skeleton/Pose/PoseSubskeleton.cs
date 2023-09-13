@@ -168,22 +168,15 @@ namespace umi3d.cdk.userCapture.pose
 
             var parentBone = pose.Bones.Find(b => b.boneType == relation.boneTypeParent);
 
-            SubSkeletonBoneDto subBone;
+            SubSkeletonBoneDto subBone = new() { boneType= boneDto.boneType };
             if (parentBone == default) // bone has no parent
             {
-                subBone = new()
-                {
-                    localRotation = boneDto.rotation
-                };
+                subBone.localRotation = boneDto.rotation;
             }
             else // bone has a parent and thus its rotation depends on it
             {
                 var parent = GetBonePose(hierarchy, parentBone, pose);
-
-                subBone = new()
-                {
-                    localRotation = (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * boneDto.rotation.Quaternion()).Dto()
-                };
+                subBone.localRotation = (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * boneDto.rotation.Quaternion()).Dto();
             }
 
             computedMap[boneDto.boneType] = new()

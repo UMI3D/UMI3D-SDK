@@ -274,6 +274,9 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             // Then
             Assert.AreEqual(2, result.bones.Count);
+            var resultBoneTypes = poses[0].Bones.Select(x => x.boneType);
+            var expectedBoneTypes = result.bones.Select(x => x.boneType);
+            Assert.AreEqual(2, expectedBoneTypes.Intersect(resultBoneTypes).Count());
         }
 
         [Test]
