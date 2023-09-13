@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture.pose
         public PoseOverridersContainer(UMI3DPoseOverridersContainerDto dto, PoseOverrider[] poseOverriders)
         {
             this.dto = dto;
-            PoseOverriders = poseOverriders;
+            PoseOverriders = poseOverriders ?? new PoseOverrider[0];
         }
     }
 }
