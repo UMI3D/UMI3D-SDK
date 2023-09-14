@@ -14,7 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
+using System.Collections.Generic;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
@@ -28,12 +31,22 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// A pose overrider container
         /// </summary>
-        [SerializeField] 
         private UMI3DPoseOverriderContainer poseOverriderContainer;
-
         public UMI3DPoseOverriderContainer PoseOverriderContainer => poseOverriderContainer;
 
-        [SerializeField, Tooltip("Model that is used for pose conditions.")] 
+        /// <summary>
+        /// Scriptable objects to load
+        /// </summary>
+        [SerializeField, Tooltip("Pose overriders to load."), EditorReadOnly]
+        private List<UMI3DPoseOverrider_so> poseOverriders = new();
+
+        /// <summary>
+        /// Should the pose be applied?
+        /// </summary>
+        [SerializeField, Tooltip("Should the pose be applied?"), EditorReadOnly]
+        private bool isStart;
+
+        [SerializeField, Tooltip("Model that is used for pose conditions."), EditorReadOnly] 
         private UMI3DModel model;
         /// <summary>
         /// Model that is used for pose conditions.
@@ -42,6 +55,7 @@ namespace umi3d.edk.userCapture.pose
 
         public void Init()
         {
+            poseOverriderContainer = new UMI3DPoseOverriderContainer(model.Id(), poseOverriders, isStart);
             PoseOverriderContainer.Init(nodeId: Model.Id());
         }
     }
