@@ -25,26 +25,23 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public class BoneRotationPoseCondition : IPoseCondition
     {
-        protected BoneRotationConditionDto boneRotationConditionDto;
+        protected readonly BoneRotationConditionDto boneRotationConditionDto;
 
         protected ITrackedSubskeleton trackedSkeleton;
 
         public BoneRotationPoseCondition(BoneRotationConditionDto dto, ITrackedSubskeleton trackedSkeleton)
         {
-            this.boneRotationConditionDto = dto;
+            this.boneRotationConditionDto = dto ?? throw new System.ArgumentNullException(nameof(dto));
             this.trackedSkeleton = trackedSkeleton;
         }
 
         /// <inheritdoc/>
         public bool Check()
         {
-            Quaternion boneRotation;
-            if (trackedSkeleton.TrackedBones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSubskeletonBone bone))
-                boneRotation = bone.transform.rotation;
-            else
+            if (!trackedSkeleton.TrackedBones.TryGetValue(boneRotationConditionDto.BoneId, out TrackedSubskeletonBone bone))
                 return false;
 
-            return Quaternion.Angle(boneRotation, boneRotationConditionDto.Rotation.Quaternion()) < boneRotationConditionDto.Threshold;
+            return Quaternion.Angle(bone.transform.rotation, boneRotationConditionDto.Rotation.Quaternion()) <= boneRotationConditionDto.Threshold;
         }
     }
 }
