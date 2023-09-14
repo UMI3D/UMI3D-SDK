@@ -39,7 +39,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// All pose condition processors indexed by related node id.
         /// </summary>
-        protected Dictionary<ulong, PoseOverridersContainerProcessor> poseOverridersContainerProcessors = new Dictionary<ulong, PoseOverridersContainerProcessor>();
+        protected Dictionary<ulong, IPoseOverridersContainerProcessor> poseOverridersContainerProcessors = new Dictionary<ulong, IPoseOverridersContainerProcessor>();
 
         #region Dependency Injection
 
@@ -95,7 +95,7 @@ namespace umi3d.cdk.userCapture.pose
             if (container == null)
                 throw new System.ArgumentNullException(nameof(container));
 
-            if (poseOverridersContainerProcessors.TryGetValue(container.NodeId, out PoseOverridersContainerProcessor unit))
+            if (poseOverridersContainerProcessors.TryGetValue(container.NodeId, out IPoseOverridersContainerProcessor unit))
             {
                 unit.ConditionsValidated -= ApplyPoseOverride;
                 unit.StopWatchNonInteractionalConditions();
@@ -106,7 +106,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void TryActivatePoseOverriders(ulong nodeId, PoseActivationMode poseActivationMode)
         {
-            if (poseOverridersContainerProcessors.TryGetValue(nodeId, out PoseOverridersContainerProcessor unit))
+            if (poseOverridersContainerProcessors.TryGetValue(nodeId, out IPoseOverridersContainerProcessor unit))
             {
                 unit.TryActivate(poseActivationMode);
             }
