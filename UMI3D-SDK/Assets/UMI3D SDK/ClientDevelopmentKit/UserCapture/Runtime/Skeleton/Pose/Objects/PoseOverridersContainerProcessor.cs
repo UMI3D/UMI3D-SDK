@@ -197,7 +197,7 @@ namespace umi3d.cdk.userCapture.pose
         private IEnumerator WatchConditionsRoutine(PoseOverrider poseOverrider)
         {
             float startTime = Time.time;
-            while (poseOverrider.IsActive && !poseOverrider.IsFinished(startTime))
+            while (poseOverrider.IsActive && !IsProcessorFinished(poseOverrider, startTime))
             {
                 yield return new WaitForSeconds(seconds: CHECK_PERIOD);
             }
@@ -205,6 +205,36 @@ namespace umi3d.cdk.userCapture.pose
             ConditionsInvalided?.Invoke(poseOverrider);
 
             StopWatchConditions(poseOverrider);
+        }
+
+        /// <summary>
+        /// Check if a pose overriders should be ended.
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <returns></returns>
+        private bool IsProcessorFinished(PoseOverrider poseOverrider, float startTime)
+        {
+            float currentDuration = Time.time - startTime;
+
+            var duration = poseOverrider.Duration;
+            if (duration.min.HasValue && currentDuration < duration.min)
+                return false;
+
+            if (poseOverrider.CheckConditions())
+            {
+                if (duration.max.HasValue && currentDuration > duration.max)
+                    return true;
+
+                if (!duration.max.HasValue && duration.duration == 0) // infinite mode
+                    return false;
+
+                if (!duration.max.HasValue && currentDuration > duration.duration)
+                    return true;
+
+                return false;
+            }
+
+            return true;
         }
     }
 }
