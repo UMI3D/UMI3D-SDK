@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -24,23 +25,26 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public class ScalePoseCondition : IPoseCondition
     {
-        protected ScaleConditionDto scaleConditionDto;
+        protected readonly ScaleConditionDto scaleConditionDto;
 
         protected Transform nodeTransform;
 
         public ScalePoseCondition(ScaleConditionDto dto, Transform nodeTransform)
         {
-            this.scaleConditionDto = dto;
+            if (nodeTransform == null)
+                throw new ArgumentNullException(nameof(nodeTransform));
+
+            this.scaleConditionDto = dto ?? throw new ArgumentNullException(nameof(dto));
             this.nodeTransform = nodeTransform;
         }
 
         /// <inheritdoc/>
         public bool Check()
         {
-            Vector3 targetScale = nodeTransform.localScale;
+            Vector3 nodeScale = nodeTransform.localScale;
             Vector3 wantedScale = scaleConditionDto.Scale.Struct();
 
-            return targetScale.sqrMagnitude <= wantedScale.sqrMagnitude;
+            return nodeScale.sqrMagnitude <= wantedScale.sqrMagnitude;
         }
     }
 }
