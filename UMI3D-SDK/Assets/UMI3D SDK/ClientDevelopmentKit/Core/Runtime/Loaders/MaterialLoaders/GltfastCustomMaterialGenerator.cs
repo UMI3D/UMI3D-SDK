@@ -78,7 +78,7 @@ namespace umi3d.cdk
 
             if (gltfMaterial.pbrMetallicRoughness != null)
             {
-                material.color = gltfMaterial.pbrMetallicRoughness.baseColor.gamma;
+                material.ApplyShaderProperty(MRTKShaderUtils.MainColor, gltfMaterial.pbrMetallicRoughness.baseColor.gamma);
                 material.ApplyShaderProperty(MRTKShaderUtils.Metallic, gltfMaterial.pbrMetallicRoughness.metallicFactor);
                 material.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - gltfMaterial.pbrMetallicRoughness.roughnessFactor);
 
