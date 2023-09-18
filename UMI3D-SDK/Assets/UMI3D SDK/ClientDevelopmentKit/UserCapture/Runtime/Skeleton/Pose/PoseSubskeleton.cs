@@ -138,6 +138,7 @@ namespace umi3d.cdk.userCapture.pose
                 }
             }
 
+            computedMap.Clear();
             return poseDto;
         }
 

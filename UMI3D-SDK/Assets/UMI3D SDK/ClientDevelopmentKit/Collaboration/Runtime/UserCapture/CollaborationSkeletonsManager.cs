@@ -210,7 +210,7 @@ namespace umi3d.cdk.collaboration.userCapture
             else
                 cs.transform.SetParent(CollabSkeletonsScene.transform);
 
-            cs.transform.localScale = collaborativeEnvironmentManagementService.GetEntityObject<UMI3DUser>(userId).userSize.Struct();
+            cs.transform.localScale = collaborativeEnvironmentManagementService.UserList.First(u => u.id == userId).userSize.Struct();
 
             cs.SkeletonHierarchy = skeletonHierarchy;
 

@@ -70,5 +70,14 @@ namespace umi3d.cdk.collaboration.userCapture.animation
             else
                 UMI3DLogger.LogWarning($"Skeleton of user {userId} not found. Cannot attach skeleton node.", DEBUG_SCOPE);
         }
+
+        protected override void Delete(ulong userId)
+        {
+            if (clientServer.GetUserId() == userId)
+            {
+                base.Delete(userId);
+                return;
+            }
+        }
     }
 }
