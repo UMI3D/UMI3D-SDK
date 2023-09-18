@@ -30,6 +30,7 @@ using umi3d.common.userCapture.pose;
 using umi3d.common.utils;
 using umi3d.common.userCapture.animation;
 using UnityEngine;
+using TestUtils.UserCapture;
 
 namespace EditMode_Tests.UserCapture.Animation.CDK
 {
@@ -65,7 +66,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             // Nothing
 
             // WHEN
-            var pose = animatedSubskeleton.GetPose(new(null));
+            var pose = animatedSubskeleton.GetPose(HierarchyTestHelper.CreateTestHierarchy());
 
             // THEN
             Assert.IsNull(pose);
@@ -74,7 +75,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_NoAnimationPlaying()
         {
-            var hierarchy = new UMI3DSkeletonHierarchy(null);
+            var hierarchy = HierarchyTestHelper.CreateTestHierarchy();
             // GIVEN
             var targetPose = new SubSkeletonPoseDto();
 
@@ -109,7 +110,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_OneAnimationPlaying()
         {
-            var hierarchy = new UMI3DSkeletonHierarchy(null);
+            var hierarchy = HierarchyTestHelper.CreateTestHierarchy();
             // GIVEN
             var targetPose = new SubSkeletonPoseDto();
             ulong animId = 1L;
@@ -139,7 +140,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_OneAnimationPlayingAmongSeveral()
         {
-            var hierarchy = new UMI3DSkeletonHierarchy(null);
+            var hierarchy = HierarchyTestHelper.CreateTestHierarchy();
             // GIVEN
             var targetPose = new SubSkeletonPoseDto();
 
@@ -175,7 +176,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
         [Test]
         public void Test_GetPose_SeveralPlaying()
         {
-            var hierarchy = new UMI3DSkeletonHierarchy(null);
+            var hierarchy = HierarchyTestHelper.CreateTestHierarchy();
             // GIVEN
             var targetPose = new SubSkeletonPoseDto();
 

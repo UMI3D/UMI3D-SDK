@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -25,7 +26,7 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public class MagnitudePoseCondition : IPoseCondition
     {
-        protected MagnitudeConditionDto magnitudeConditionDto;
+        protected readonly MagnitudeConditionDto magnitudeConditionDto;
 
         protected Transform nodeTransform;
 
@@ -33,9 +34,12 @@ namespace umi3d.cdk.userCapture.pose
 
         public MagnitudePoseCondition(MagnitudeConditionDto dto, Transform nodeTransform, ITrackedSubskeleton trackedSkeleton)
         {
-            this.magnitudeConditionDto = dto;
+            if (nodeTransform == null)
+                throw new ArgumentNullException(nameof(nodeTransform));
+
+            this.magnitudeConditionDto = dto ?? throw new ArgumentNullException(nameof(dto));
             this.nodeTransform = nodeTransform;
-            this.trackedSkeleton = trackedSkeleton;
+            this.trackedSkeleton = trackedSkeleton ?? throw new ArgumentNullException(nameof(trackedSkeleton));
         }
 
         /// <inheritdoc/>

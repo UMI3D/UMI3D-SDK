@@ -15,14 +15,17 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.userCapture.description;
-using umi3d.common.userCapture.pose;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.common.userCapture.pose
 {
-    public interface IUMI3DUserCaptureLoadingParameters : IUMI3DLoadingParameters
+    public interface IUMI3DPoseOverriderData
     {
-        IReadOnlyList<IUMI3DPoseData> ClientPoses { get; }
-        IUMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition { get; }
+        /// <summary>
+        /// The different condition that are needed for the overrider to get activated
+        /// </summary>
+        IReadOnlyList<AbstractPoseConditionDto> PoseConditions { get; }
+        IUMI3DPoseData Pose { get; }
+
+        PoseOverriderDto ToDto(int poseIndexInPoseManager);
     }
 }
