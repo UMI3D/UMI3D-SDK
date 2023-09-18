@@ -243,8 +243,12 @@ namespace umi3d.cdk.userCapture.tracking
                         break;
 
                     default:
-                        SetComputed(controller.boneType);
-                        SetControl(controller, BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType).Value);
+                        var boneTypeUnity = BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType);
+                        if (boneTypeUnity.HasValue)
+                        {
+                            SetComputed(controller.boneType);
+                            SetControl(controller, boneTypeUnity.Value);
+                        }
                         break;
                 }
             }
