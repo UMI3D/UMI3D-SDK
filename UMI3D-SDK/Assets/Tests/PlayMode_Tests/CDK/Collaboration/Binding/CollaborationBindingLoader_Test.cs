@@ -14,9 +14,9 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using EditMode_Tests.UserCapture.Binding.CDK;
 using Moq;
 using NUnit.Framework;
+using PlayMode_Tests.UserCapture.Binding.CDK;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.cdk;
@@ -25,14 +25,14 @@ using umi3d.cdk.collaboration;
 using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.cdk.userCapture;
-using umi3d.common.binding;
 using umi3d.common.dto.binding;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
+using UnityEngine;
 
-
-namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
+namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
 {
+    [TestFixture, TestOf(nameof(CollaborationBindingLoader))]
     public class CollaborationBindingLoader_Test : UserCaptureBindingLoader_Test
     {
         protected Mock<ICollaborationSkeletonsManager> collaborativeSkeletonManager;
@@ -102,12 +102,12 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             var entityFake = new UMI3DEntityInstance(() => { });
             var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var nodeGameObject = new GameObject("Node to bind");
+            nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new() } });
             
-            nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
-
             loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
             environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
             environmentManagerMock.Setup(x => x.GetNodeInstance(dto.boundNodeId)).Returns(nodeMock.Object);
@@ -122,6 +122,9 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+
+            // teardown
+            Object.Destroy(nodeGameObject);
         }
 
         [Test]
@@ -139,8 +142,8 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             var entityFake = new UMI3DEntityInstance(() => { });
             var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
-
-            nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
+            var nodeGameObject = new GameObject("Node to bind");
+            nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
             environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
@@ -154,6 +157,9 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+
+            // teardown
+            Object.Destroy(nodeGameObject);
         }
 
         [Test]
@@ -173,11 +179,11 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             var entityFake = new UMI3DEntityInstance(() => { });
             var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var nodeGameObject = new GameObject("Node to bind");
+            nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new() } });
-
-            nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
             loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(dto.id, null)).Returns(Task.FromResult(entityFake));
             environmentManagerMock.Setup(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
@@ -193,6 +199,9 @@ namespace EditMode_Tests.Collaboration.UserCapture.Binding.CDK
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(dto.id, dto, null, It.IsAny<System.Action>()));
             bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+
+            // teardown
+            Object.Destroy(nodeGameObject);
         }
 
         #endregion ReadUMI3DExtension
