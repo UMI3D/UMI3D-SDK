@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Linq;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.binding;
 using UnityEngine;
@@ -53,7 +55,22 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            var parentBone = skeleton.Bones[BoneType];
+            ISkeleton.Transformation parentBone;
+
+            if (!RigBoneBindingDataDto.bindToController)
+                parentBone = skeleton.Bones[BoneType];
+            else
+            {
+                var controller = ((skeleton.TrackedSubskeleton as TrackedSubskeleton).controllers.Find(c => c.boneType == BoneType) as DistantController);
+
+                if (controller != null)
+                    parentBone = new()
+                    {
+                        Position = controller.position,
+                        Rotation = controller.rotation,
+                    };
+            }
+            
             if (parentBone is null)
             {
                 UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);

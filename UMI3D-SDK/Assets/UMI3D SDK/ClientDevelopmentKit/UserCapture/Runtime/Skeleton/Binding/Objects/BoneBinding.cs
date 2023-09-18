@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.cdk.binding;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.binding;
 using UnityEngine;
@@ -62,11 +63,34 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            if (!skeleton.Bones.TryGetValue(BoneType, out ISkeleton.Transformation parentBoneTransform))
+            ISkeleton.Transformation parentBoneTransform;
+
+            if (BoneBindingDataDto.bindToController)
             {
-                UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
-                success = false;
-                return;
+                var controller = ((skeleton.TrackedSubskeleton as TrackedSubskeleton).controllers.Find(c => c.boneType == BoneType) as DistantController);
+
+                if (controller != null)
+                    parentBoneTransform = new()
+                    {
+                        Position = controller.position,
+                        Rotation = controller.rotation,
+                    };
+                else
+                {
+                    UMI3DLogger.LogError($"No existing controller for {BoneType}. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                    success = false;
+                    return;
+                }
+            }
+            else
+            {
+                if (!skeleton.Bones.TryGetValue(BoneType, out parentBoneTransform))
+                {
+                    UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                    success = false;
+                    return;
+                }
+
             }
 
             Compute((parentBoneTransform.Position, parentBoneTransform.Rotation, Vector3.one));
