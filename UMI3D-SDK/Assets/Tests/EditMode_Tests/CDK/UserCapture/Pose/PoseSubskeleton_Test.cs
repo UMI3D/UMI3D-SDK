@@ -19,6 +19,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using TestUtils.UserCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
@@ -223,25 +224,13 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void GetPose_NoPoseSet()
         {
             // Given
-            HierarchyDefinitionLocal hierarchyDef = new();
-            hierarchyDef.Relations.Add(new(BoneType.Chest, BoneType.None, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.Spine, BoneType.Chest, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.LeftForearm, BoneType.Chest, Vector3.zero));
-
-            UMI3DSkeletonHierarchy hierarchy = new UMI3DSkeletonHierarchy(hierarchyDef);
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
             // When
             var result = poseSubskeleton.GetPose(hierarchy); //hierarchy parameter is not important
 
             // Then
             Assert.AreEqual(0, result.bones.Count);
-        }
-
-        private class HierarchyDefinitionLocal : IUMI3DSkeletonHierarchyDefinition
-        {
-            public IList<UMI3DSkeletonHierarchyDefinition.BoneRelation> Relations => relations;
-
-            private readonly List<UMI3DSkeletonHierarchyDefinition.BoneRelation> relations = new();
         }
 
         [Test]
@@ -262,12 +251,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             poseSubskeleton.StartPose(poses, false);
 
-            HierarchyDefinitionLocal hierarchyDef = new();
-            hierarchyDef.Relations.Add(new(BoneType.Chest, BoneType.None, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.Spine, BoneType.Chest, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.LeftForearm, BoneType.Chest, Vector3.zero));
-
-            UMI3DSkeletonHierarchy hierarchy = new UMI3DSkeletonHierarchy(hierarchyDef);
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
             // When
             var result = poseSubskeleton.GetPose(hierarchy);
