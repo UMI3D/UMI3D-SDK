@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
@@ -159,18 +160,20 @@ namespace umi3d.cdk.userCapture.pose
             if (boneDto == null)
                 throw new ArgumentNullException(nameof(boneDto));
 
-            if (computedMap.ContainsKey(boneDto.boneType))
-                return computedMap[boneDto.boneType];
+            uint boneType = boneDto.boneType;
 
-            if (!hierarchy.Relations.ContainsKey(boneDto.boneType))
-                throw new ArgumentException($"Bone ({boneDto.boneType}, {BoneTypeHelper.GetBoneName(boneDto.boneType)}) not defined in hierarchy.", nameof(boneDto));
+            if (computedMap.ContainsKey(boneType))
+                return computedMap[boneType];
 
-            var relation = hierarchy.Relations[boneDto.boneType];
+            if (!hierarchy.Relations.ContainsKey(boneType))
+                throw new ArgumentException($"Bone ({boneType}, \"{BoneTypeHelper.GetBoneName(boneType)}\") not defined in hierarchy.", nameof(boneDto));
+
+            var relation = hierarchy.Relations[boneType];
 
             var parentBone = pose.Bones.Find(b => b.boneType == relation.boneTypeParent);
 
-            SubSkeletonBoneDto subBone = new() { boneType= boneDto.boneType };
-            if (parentBone == default) // bone has no parent
+            SubSkeletonBoneDto subBone = new() { boneType= boneType };
+            if (parentBone == default || parentBone.boneType == BoneType.None) // bone has no parent
             {
                 subBone.localRotation = boneDto.rotation;
             }
@@ -180,13 +183,13 @@ namespace umi3d.cdk.userCapture.pose
                 subBone.localRotation = (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * boneDto.rotation.Quaternion()).Dto();
             }
 
-            computedMap[boneDto.boneType] = new()
+            computedMap[boneType] = new()
             {
                 bone = boneDto,
                 subBone = subBone
             };
 
-            return computedMap[boneDto.boneType];
+            return computedMap[boneType];
         }
 
         /// <inheritdoc/>
