@@ -55,7 +55,7 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            ISkeleton.Transformation parentBone;
+            ISkeleton.Transformation parentBone = null;
 
             if (!RigBoneBindingDataDto.bindToController)
                 parentBone = skeleton.Bones[BoneType];
