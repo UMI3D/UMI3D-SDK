@@ -23,6 +23,7 @@ using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.pose;
+using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
 {
@@ -229,7 +230,8 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 poseIndexInPoseManager = 1
             };
             var nodeInstance = new Mock<UMI3DNodeInstance>(new Action(() => { }));
-            nodeInstance.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
+            var go = new GameObject("magnitudePoseNode");
+            nodeInstance.Setup(x => x.transform).Returns(go.transform);
             environmentServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(nodeInstance.Object);
 
             var skeletonMock = new Mock<IPersonalSkeleton>();
