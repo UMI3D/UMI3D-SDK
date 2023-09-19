@@ -57,7 +57,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Start()
         {
-            if (trackedAnimator == null) 
+            if (trackedAnimator == null)
             {
                 UMI3DLogger.LogWarning("TrackedAnimator was null for TrackedSubskeleton. Generating a new one", DebugScope.CDK);
                 trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
@@ -70,7 +70,7 @@ namespace umi3d.cdk.userCapture.tracking
                     bones.Add(bone.boneType, bone);
             }
 
-            foreach(var tracker in GetComponentsInChildren<Tracker>())
+            foreach (var tracker in GetComponentsInChildren<Tracker>())
             {
                 controllers.Add(tracker.distantController);
             }
@@ -161,7 +161,7 @@ namespace umi3d.cdk.userCapture.tracking
 
             trackingFrame.trackedBones = new(bones.Count);
 
-            foreach(var controller in controllers)
+            foreach (var controller in controllers)
             {
                 trackingFrame.trackedBones.Add(controller.ToControllerDto());
             }
@@ -242,6 +242,11 @@ namespace umi3d.cdk.userCapture.tracking
                         LookAt(controller);
                         break;
 
+                    case BoneType.Viewpoint:
+                        SetComputed(controller.boneType);
+                        this.bones[controller.boneType].transform.rotation = controller.rotation;
+                        break;
+
                     default:
                         var boneTypeUnity = BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType);
                         if (boneTypeUnity.HasValue)
@@ -296,6 +301,10 @@ namespace umi3d.cdk.userCapture.tracking
 
                     case BoneType.Head:
                         LookAt(controller);
+                        break;
+
+                    case BoneType.Viewpoint:
+                        this.bones[controller.boneType].transform.rotation = controller.rotation;
                         break;
 
                     default:
