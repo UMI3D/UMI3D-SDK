@@ -44,6 +44,7 @@ namespace umi3d.edk.userCapture.binding
             {
                 userId = userId,
                 boneType = boneType,
+                bindToController = bindToController,
                 rigName = rigName,
 
                 offSetPosition = offsetPosition.Dto(),

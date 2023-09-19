@@ -40,6 +40,7 @@ namespace umi3d.common.userCapture.binding
 
             readable &= UMI3DSerializer.TryRead(container, out ulong userId);
             readable &= UMI3DSerializer.TryRead(container, out uint bonetype);
+            readable &= UMI3DSerializer.TryRead(container, out bool bindToController);
 
             readable &= UMI3DSerializer.TryRead(container, out string rigName);
 
@@ -57,7 +58,8 @@ namespace umi3d.common.userCapture.binding
                     boneType = bonetype,
                     partialFit = partialFit,
                     priority = priority,
-                    rigName = rigName
+                    rigName = rigName,
+                    bindToController = bindToController
                 }
                 : default;
 
@@ -82,6 +84,7 @@ namespace umi3d.common.userCapture.binding
 
                         + UMI3DSerializer.Write(rigBindingDataDto.userId)
                         + UMI3DSerializer.Write(rigBindingDataDto.boneType)
+                        + UMI3DSerializer.Write(rigBindingDataDto.bindToController)
 
                         + UMI3DSerializer.Write(rigBindingDataDto.rigName);
         }

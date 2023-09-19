@@ -33,5 +33,10 @@ namespace umi3d.common.userCapture.binding
         /// The bone to which the object is going to be binded
         /// </summary>
         public uint boneType { get; set; }
+
+        /// <summary>
+        /// Specifying if the object is binded to the computed bone or to the controller
+        /// </summary>
+        public bool bindToController { get; set; }
     }
 }
