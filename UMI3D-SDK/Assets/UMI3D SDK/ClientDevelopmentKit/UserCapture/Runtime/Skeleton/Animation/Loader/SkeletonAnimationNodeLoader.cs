@@ -208,7 +208,9 @@ namespace umi3d.cdk.userCapture.animation
             }
 
             // create link for each rig. May be improved with distance analysis for more complex links
-            skeletonMapper.Mappings = boneUnityMapping.Select(b => new SkeletonMapping(b.umi3dBoneType, new GameNodeLink(b.transform))).ToArray();
+            skeletonMapper.Mappings = (from bone in boneUnityMapping
+                                       where bone.transform != null
+                                       select new SkeletonMapping(bone.umi3dBoneType, new GameNodeLink(bone.transform))).ToArray();
 
             return skeletonMapper;
         }
