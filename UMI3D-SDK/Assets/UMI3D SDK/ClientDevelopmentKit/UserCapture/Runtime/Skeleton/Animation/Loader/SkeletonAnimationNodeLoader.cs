@@ -222,11 +222,12 @@ namespace umi3d.cdk.userCapture.animation
         /// <returns></returns>
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
-            return (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.Relations
-                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(x.Bonetype)))
-                            .Where(x => x.unityBoneContainer.HasValue)
-                            .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
-                            .ToArray();
+            return (from relationUMI3D in (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.Relations
+                    let relationUnity = (umi3dBoneType: relationUMI3D.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(relationUMI3D.Bonetype))
+                    where relationUnity.unityBoneContainer.HasValue
+                    let relationTransform = (relationUnity.umi3dBoneType, transform: animator.GetBoneTransform(relationUnity.unityBoneContainer.Value))
+                    where relationTransform.transform != null
+                    select relationTransform).ToArray();
         }
 
         /// <summary>
@@ -263,7 +264,7 @@ namespace umi3d.cdk.userCapture.animation
                 var (umi3dBoneType, boneTransform) = quickAccessHierarchy[node.name];
 
                 var unityBoneName = BoneTypeConvertingExtensions.ConvertToBoneType(umi3dBoneType).ToString();
-                var rigNameInAnimator = humanBoneRigRelations[unityBoneName.ToLower()];
+                var rigNameInAnimator = humanBoneRigRelations.ContainsKey(unityBoneName.ToLower()) ? humanBoneRigRelations[unityBoneName.ToLower()] : string.Empty;
 
                 if (boneInfoInAnimator.ContainsKey(rigNameInAnimator))
                 {
@@ -279,7 +280,7 @@ namespace umi3d.cdk.userCapture.animation
                         Compute(node.GetChild(i));
                     }
                 }
-                else // case that occurs if the bone is not found in hierarchy
+                else // case that occurs if the bone is not found in hierarchy, lift children up and delete parent.
                 {
                     var liftedNodes = new List<Transform>();
                     for (int i = 0; i < node.childCount; i++)
