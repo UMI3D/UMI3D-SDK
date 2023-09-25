@@ -23,7 +23,7 @@ using UnityEngine;
 namespace umi3d.common.userCapture.description
 {
     /// <summary>
-    /// Mapper between any skeleton hiearchy and the UMI3D one.
+    /// Mapper between any skeleton hierarchy and the UMI3D one.
     /// </summary>
     public class SkeletonMapper : MonoBehaviour, ISkeletonMapper
     {
@@ -47,7 +47,7 @@ namespace umi3d.common.userCapture.description
             return new SubSkeletonPoseDto()
             {
                 boneAnchor = BoneAnchor,
-                bones = Mappings.Select(b => GetBonePose(hierarchy,b).subBone).Where(b => b != null).ToList()
+                bones = Mappings.Select(b => GetBonePose(hierarchy, b).subBone).Where(b => b != null).ToList()
             };
         }
 
@@ -57,7 +57,7 @@ namespace umi3d.common.userCapture.description
                 throw new ArgumentNullException(nameof(mapping));
 
             uint boneType = mapping.BoneType;
-            
+
             if (computedMap.ContainsKey(boneType))
                 return computedMap[boneType];
 
