@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture.animation;
@@ -25,7 +26,7 @@ using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
-
+using umi3d.common.utils;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -84,7 +85,7 @@ namespace umi3d.cdk.userCapture
 
         [SerializeField]
         protected TrackedSubskeleton trackedSkeleton;
-        
+
         /// <summary>
         /// Susbskeleton for body poses.
         /// </summary>
@@ -108,6 +109,16 @@ namespace umi3d.cdk.userCapture
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
+            StartCoroutine(InitPoseSubskeleton());
+        }
+
+        private IEnumerator InitPoseSubskeleton()
+        {
+            while (this.lastFrame == null)
+            {
+                yield return new WaitForEndOfFrame();
+            }
+
             subskeletons.AddSorted(PoseSubskeleton);
         }
 
@@ -181,7 +192,7 @@ namespace umi3d.cdk.userCapture
                     Bones[bone].LocalRotation = Quaternion.identity;
                 }
                 else
-                    Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity , LocalRotation = Quaternion.identity };
+                    Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity, LocalRotation = Quaternion.identity };
             }
 
             // for each subskeleton, in ascending order (last has highest priority),
@@ -235,7 +246,7 @@ namespace umi3d.cdk.userCapture
 
             lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
             {
-                subskeletons.AddSorted(animatedSubskeleton);
+                UnityMainThreadDispatcherManager.Instance.Enqueue(() => subskeletons.AddSorted(animatedSubskeleton));
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)

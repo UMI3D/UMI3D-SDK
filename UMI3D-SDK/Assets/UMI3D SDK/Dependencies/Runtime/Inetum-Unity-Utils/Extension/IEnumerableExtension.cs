@@ -109,9 +109,9 @@ namespace inetum.unityUtils
         {
             if (action == null)
                 throw new Exception("action should not be null");
-            if(source != null)
+            if (source != null)
                 using (IEnumerator<A> it = source.GetEnumerator())
-                    if(it != null)
+                    if (it != null)
                         while (it.MoveNext())
                         {
                             action.Invoke(it.Current);
@@ -285,12 +285,15 @@ namespace inetum.unityUtils
                 int index = source.BinarySearch(item);
                 if (index < 0)
                     index = ~index;
-
                 source.Insert(index, item);
             }
-            catch (NullReferenceException ex) 
+            catch (NullReferenceException ex)
             {
-                throw new NullReferenceException("An element of the list is null and could not be compared.\n"+ex.Message);
+                throw new NullReferenceException("An element of the list is null and could not be compared.\n" + ex.Message);
+            }
+            catch (Exception e)
+            {
+                throw new Exception("An error has occured.\n" + e.Message);
             }
         }
 
