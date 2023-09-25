@@ -246,7 +246,7 @@ namespace umi3d.cdk.userCapture
 
             lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
             {
-                UnityMainThreadDispatcherManager.Instance.Enqueue(() => subskeletons.AddSorted(animatedSubskeleton));
+                UnityMainThreadDispatcherManager.Instance.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.AddSorted(animatedSubskeleton); } });
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
