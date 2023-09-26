@@ -109,6 +109,20 @@ namespace umi3d.cdk.userCapture
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
+
+            // init bones to prevent from early bindings arrival
+            foreach (var boneType in SkeletonHierarchy.Relations.Keys)
+            {
+                Bones[boneType] = new ISkeleton.Transformation()
+                {
+                    Position = Vector3.zero,
+                    Rotation = Quaternion.identity,
+                    LocalRotation = Quaternion.identity,
+                };
+            }
+            Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
+
             StartCoroutine(InitPoseSubskeleton());
         }
 
