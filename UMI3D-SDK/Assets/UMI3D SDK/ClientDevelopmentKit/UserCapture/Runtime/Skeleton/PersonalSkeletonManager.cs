@@ -108,6 +108,7 @@ namespace umi3d.cdk.userCapture
 
             PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
             _skeleton.SkeletonHierarchy = StandardHierarchy;
+            PersonalSkeleton.SelfInit();
             computeRoutine ??= lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }
 
