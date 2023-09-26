@@ -86,6 +86,7 @@ namespace umi3d.cdk.collaboration
         }
 
         public string environementName => environmentClient?.connectionDto?.name;
+        public string environementHttpUrl => environmentClient?.connectionDto?.httpUrl;
         public string worldName => worldControllerClient?.name;
 
         /// <inheritdoc/>

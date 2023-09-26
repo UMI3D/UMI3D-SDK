@@ -14,20 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
-using umi3d.common.userCapture.tracking;
 
 namespace umi3d.cdk.userCapture
 {
     /// <summary>
     /// Behaviour of a piece of skeleton position to merge to have the whole skeleton position.
     /// </summary>
-    public interface ISubskeleton
+    public interface ISubskeleton: IComparable<ISubskeleton>
     {
+        /// <summary>
+        /// Priority level of the skeleton.
+        /// </summary>
+        public int Priority { get; }
+
         /// <summary>
         /// Get the skeleton pose based on the position of this subskeleton.
         /// </summary>
         /// <returns></returns>
-        PoseDto GetPose();
+        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
+
+        int System.IComparable<ISubskeleton>.CompareTo(ISubskeleton other)
+        {
+            return Priority.CompareTo(other.Priority);
+        }
     }
 }

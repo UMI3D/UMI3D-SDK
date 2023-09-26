@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
@@ -25,16 +26,20 @@ namespace umi3d.common.userCapture.pose
     /// A pose overrider description as a scriptable object
     /// </summary>
     [Serializable]
-    [CreateAssetMenu(menuName ="UMI3D/Pose/Overrider")]
-    public class UMI3DPoseOverrider_so : ScriptableObject
+    [CreateAssetMenu(menuName = "UMI3D/Pose/Overrider")]
+    public class UMI3DPoseOverrider_so : ScriptableObject, IUMI3DPoseOverriderData
     {
+        [SerializeField]
         public UMI3DPose_so pose;
+
+        public IUMI3DPoseData Pose => pose;
 
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        [SerializeReference, HideInInspector] 
+        [SerializeReference, HideInInspector]
         public AbstractPoseConditionDto[] poseConditions;
+        public IReadOnlyList<AbstractPoseConditionDto> PoseConditions => GetPoseConditionsCopy().ToList();
 
         [System.Serializable]
         public struct Duration
@@ -121,7 +126,7 @@ namespace umi3d.common.userCapture.pose
             };
         }
 
-        public AbstractPoseConditionDto[] GetPoseConditionsCopy() //? why ?
+        public AbstractPoseConditionDto[] GetPoseConditionsCopy()
         {
             List<AbstractPoseConditionDto> copy = new();
 
@@ -139,7 +144,7 @@ namespace umi3d.common.userCapture.pose
                 copy.Add(new DirectionConditionDto()
                 {
                     Direction = Direction.Dto()
-                });;
+                });
             }
             if (HasScaleCondition)
             {

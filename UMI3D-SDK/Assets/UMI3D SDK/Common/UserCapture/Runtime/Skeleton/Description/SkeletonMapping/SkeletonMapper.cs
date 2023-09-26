@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+using System.Collections.Generic;
 using System.Linq;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -21,7 +23,7 @@ using UnityEngine;
 namespace umi3d.common.userCapture.description
 {
     /// <summary>
-    /// Mapper between any skeleton hiearchy and the UMI3D one.
+    /// Mapper between any skeleton hierarchy and the UMI3D one.
     /// </summary>
     public class SkeletonMapper : MonoBehaviour, ISkeletonMapper
     {
@@ -30,20 +32,62 @@ namespace umi3d.common.userCapture.description
         public BonePoseDto BoneAnchor;
         public SkeletonMapping[] Mappings = new SkeletonMapping[0];
 
+        private Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
         /// <summary>
         /// Get pose of the bone using mappings.
         /// </summary>
         /// <returns></returns>
-        public virtual PoseDto GetPose()
+        public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             if (BoneAnchor == null)
                 UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
 
-            return new PoseDto()
+            computedMap.Clear();
+
+            return new SubSkeletonPoseDto()
             {
                 boneAnchor = BoneAnchor,
-                bones = Mappings.Select(m => m?.GetPose()).Where(b => b != null).ToList()
+                bones = Mappings.Select(b => GetBonePose(hierarchy, b).subBone).Where(b => b != null).ToList()
             };
+        }
+
+        private (BoneDto bone, SubSkeletonBoneDto subBone) GetBonePose(UMI3DSkeletonHierarchy hierarchy, SkeletonMapping mapping)
+        {
+            if (mapping == null)
+                throw new ArgumentNullException(nameof(mapping));
+
+            uint boneType = mapping.BoneType;
+
+            if (computedMap.ContainsKey(boneType))
+                return computedMap[boneType];
+
+            if (!hierarchy.Relations.ContainsKey(boneType))
+                throw new ArgumentException($"Bone ({boneType}, \"{BoneTypeHelper.GetBoneName(boneType)}\") not defined in hierarchy.", nameof(mapping));
+
+            var relation = hierarchy.Relations[boneType];
+
+            var bone = mapping.GetPose();
+
+            var parentMapping = Array.Find(Mappings, m => m.BoneType == relation.boneTypeParent);
+
+            SubSkeletonBoneDto subBone = new() { boneType = boneType };
+            if (parentMapping == default || parentMapping.BoneType == BoneType.None) // bone has no parent
+            {
+                subBone.localRotation = bone.rotation;
+            }
+            else // bone has a parent and thus its rotation depends on it
+            {
+                var parent = GetBonePose(hierarchy, parentMapping);
+                subBone.localRotation = (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * bone.rotation.Quaternion()).Dto();
+            }
+
+            computedMap[boneType] = new()
+            {
+                bone = mapping.GetPose(),
+                subBone = subBone
+            };
+
+            return computedMap[boneType];
         }
     }
 }

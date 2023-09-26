@@ -15,44 +15,50 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 using umi3d.edk.core;
-using UnityEngine;
 
 namespace umi3d.edk.userCapture.pose
 {
     /// <summary>
     /// A class responsible for packaging a collection of pose overriders per node it refers to
     /// </summary>
-    [Serializable]
     public class UMI3DPoseOverriderContainer : AbstractLoadableEntity
     {
         /// <summary>
         /// Scriptable objects to load
         /// </summary>
-        [SerializeField, Tooltip("Pose overriders to load.")] 
-        private List<UMI3DPoseOverrider_so> poseOverriders = new();
+        private List<IUMI3DPoseOverriderData> poseOverriders = new();
 
         /// <summary>
         /// Async list of all the pose overrider
         /// </summary>
         public UMI3DAsyncListProperty<PoseOverriderDto> PoseOverriders;
 
+        public UMI3DPoseOverriderContainer(ulong nodeId, IEnumerable<IUMI3DPoseOverriderData> poseOverriders, bool isStart = false)
+            : base()
+        {
+            this.isStart = isStart;
+            this.poseOverriders = poseOverriders?.ToList() ?? new();
+            this.NodeId = nodeId;
+
+            PoseOverriders = new UMI3DAsyncListProperty<PoseOverriderDto>(nodeId, UMI3DPropertyKeys.ActivePoseOverrider, new());
+        }
+
         /// <summary>
         /// Should the pose be applied?
-        /// </summary>
-        [SerializeField, Tooltip("Should the pose be applied?")] 
-        private bool isStart;
+        /// </summary
         public bool IsStarted => isStart;
+
+        private bool isStart;
 
         public ulong NodeId { get; private set; }
 
         public void Init(ulong nodeId = 0)
         {
-            PoseOverriders = new UMI3DAsyncListProperty<PoseOverriderDto>(id, UMI3DPropertyKeys.ActivePoseOverrider, new());
             UpdateOverridersDtos(nodeId);
         }
 
@@ -62,7 +68,7 @@ namespace umi3d.edk.userCapture.pose
             PoseOverriders.SetValue(new());
             poseOverriders.ForEach(po =>
             {
-                PoseOverriderDto poDto = po.ToDto(po.pose.Index);
+                PoseOverriderDto poDto = po.ToDto(po.Pose.Index);
                 poDto.poseConditions.ForEach(pc =>
                 {
                     switch (pc)

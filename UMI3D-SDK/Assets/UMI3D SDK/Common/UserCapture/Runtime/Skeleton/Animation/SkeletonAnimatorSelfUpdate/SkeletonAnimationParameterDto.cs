@@ -22,6 +22,11 @@ namespace umi3d.common.userCapture.animation
     public class SkeletonAnimationParameterDto
     {
         /// <summary>
+        /// Name of the parameter in the animator.
+        /// </summary>
+        public string parameterName { get; set; }
+
+        /// <summary>
         /// Key of the parameter to compute in <see cref="SkeletonAnimatorParameterKeys"/>. <br/>
         /// Each key result in a different computation in browsers.
         /// </summary>
@@ -31,7 +36,7 @@ namespace umi3d.common.userCapture.animation
         /// Ranges to clamp value to a constant result when in an interval. <br/>
         /// "If no range is defined, the parameter value is directly given to the animator.
         /// </summary>
-        public RangeDto[] ranges { get; set; }
+        public RangeDto[] ranges { get; set; } = new RangeDto[0];
 
         /// <summary>
         ///  Ranges to clamp value to a certain result when in an interval.

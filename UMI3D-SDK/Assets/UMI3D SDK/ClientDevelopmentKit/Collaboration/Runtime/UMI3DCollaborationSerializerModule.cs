@@ -28,7 +28,16 @@ namespace umi3d.cdk.collaboration
     {
         public bool? IsCountable<T>()
         {
-            return true;
+            return true switch
+            {
+                true when typeof(T) == typeof(UserDto) => true,
+                true when typeof(T) == typeof(AnimationChainDto) => true,
+                true when typeof(T) == typeof(UMI3DNodeAnimation.OperationChain) => true,
+                true when typeof(T) == typeof(AbstractInteractionDto) => true,
+                true when typeof(T) == typeof(DofGroupOptionDto) => true,
+                true when typeof(T) == typeof(DofGroupDto) => true,
+                _ => null
+            };
         }
 
         /// <inheritdoc/>

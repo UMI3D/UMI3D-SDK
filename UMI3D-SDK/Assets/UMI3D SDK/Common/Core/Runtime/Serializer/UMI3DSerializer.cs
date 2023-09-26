@@ -16,8 +16,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using UnityEngine;
 
 namespace umi3d.common
 {
@@ -58,7 +56,7 @@ namespace umi3d.common
         public static void AddModule(List<UMI3DSerializerModule> moduleList)
         {
             foreach (UMI3DSerializerModule module in moduleList)
-                if(module != null)
+                if (module != null)
                     modules.Add(module);
         }
 
@@ -94,9 +92,10 @@ namespace umi3d.common
         public static bool TryRead<T>(ByteContainer container, out T result)
         {
             bool read;
-            if (container.length <= 0) { 
+            if (container.length <= 0)
+            {
                 result = default(T);
-                return false; 
+                return false;
             }
 
             foreach (UMI3DSerializerModule module in modules)
@@ -345,7 +344,7 @@ namespace umi3d.common
 
 
         static System.Reflection.MethodInfo _WriteIEnumerableMethodInfo;
-
+        static System.Reflection.MethodInfo _IsCountableMethodInfo;
 
         static bool IsGenericIEnumerable(Type type)
         {
@@ -376,7 +375,7 @@ namespace umi3d.common
         /// <returns></returns>
         static Bytable WriteIEnumerable(IEnumerable value, params object[] parameters)
         {
-            if(_WriteIEnumerableMethodInfo == null)
+            if (_WriteIEnumerableMethodInfo == null)
                 _WriteIEnumerableMethodInfo = typeof(UMI3DSerializer).GetMethod("_WriteIEnumerable");
 
             Type typeToPass = GetGenericTypeOfIEnumerable(value.GetType());
@@ -426,18 +425,19 @@ namespace umi3d.common
             throw new Exception($"Missing case [{typeof(T)}:{value} was not catched]");
         }
 
-        public static bool IsCountable<T>()
+        public static bool? IsCountable<T>()
         {
             foreach (UMI3DSerializerModule module in modules)
             {
                 var r = module.IsCountable<T>();
-                if(r.HasValue)
+                if (r.HasValue)
                     return r.Value;
             }
-            throw new Exception($"Missing case [{typeof(T)} was not catched]");
+            return null;
+            //throw new Exception($"Missing case [{typeof(T)} was not catched]");
         }
 
-        public static bool IsCountable<T>(T value)
+        public static bool? IsCountable<T>(T value)
         {
             return IsCountable<T>();
         }
@@ -449,14 +449,14 @@ namespace umi3d.common
         /// <returns></returns>
         public static Bytable WriteCollection<T>(IEnumerable<T> value, params object[] parameters)
         {
-            if(value is IDictionary dic)
+            if (value is IDictionary dic)
                 return WriteCollectionIDictionary(dic, parameters);
 
             if (value.Count() > 0)
             {
                 if (typeof(T) == typeof(DictionaryEntryBytable) && value.Cast<DictionaryEntryBytable>().Any(e => !e.IsCountable()))
                     return ListToIndexesBytable(value, parameters);
-                else if (!IsCountable<T>() || value.Any(e => !IsCountable(e)))
+                else if (!(IsCountable<T>() ?? true) || value.Any(e => !(IsCountable(e) ?? false)))
                     return ListToIndexesBytable(value, parameters);
             }
 
@@ -473,7 +473,7 @@ namespace umi3d.common
         /// <returns></returns>
         static Bytable WriteCollectionIDictionary(IDictionary value, params object[] parameters)
         {
-            if (value.Count > 0 && value.Entries().Any(e => !IsCountable(e.Key) || !IsCountable(e.Value)))
+            if (value.Count > 0 && value.Entries().Any(e => !(IsCountableForObject(e.Key) ?? false) || !(IsCountableForObject(e.Value) ?? false)))
             {
                 return WriteCollection(value.Entries().Select((e) => new DictionaryEntryBytable(e)), parameters);
             }
@@ -481,6 +481,20 @@ namespace umi3d.common
             foreach (object v in value)
                 b += Write(v);
             return b;
+        }
+
+        /// <summary>
+        /// Is Countable version when we don't know <paramref name="obj"/> type in advance.
+        /// </summary>
+        /// <param name="obj"></param>
+        /// <returns></returns>
+        static bool? IsCountableForObject(object obj)
+        {
+            if (_IsCountableMethodInfo == null)
+                _IsCountableMethodInfo = typeof(UMI3DSerializer).GetMethod("IsCountable", new Type[] { });
+
+            var genericMethod = _IsCountableMethodInfo.MakeGenericMethod(obj.GetType());
+            return genericMethod.Invoke(null, null) as bool?;
         }
 
         /// <summary>
@@ -500,7 +514,7 @@ namespace umi3d.common
             /// <inheritdoc/>
             public bool IsCountable()
             {
-                return UMI3DSerializer.IsCountable(value);
+                return UMI3DSerializer.IsCountable(value) ?? false;
             }
 
             /// <inheritdoc/>
@@ -573,7 +587,7 @@ namespace umi3d.common
             {
                 int size = operations.Count() * sizeof(int);
                 (int, Func<byte[], int, int, (int, int, int)> f3) func = operations
-                    .Select(o => Write(o,parameters))
+                    .Select(o => Write(o, parameters))
                     .Select(c =>
                     {
                         Func<byte[], int, int, (int, int, int)> f1 = (byte[] by, int i, int j) => { (int, int) cr = c.function(by, i, 0); return (cr.Item1, i, j); };

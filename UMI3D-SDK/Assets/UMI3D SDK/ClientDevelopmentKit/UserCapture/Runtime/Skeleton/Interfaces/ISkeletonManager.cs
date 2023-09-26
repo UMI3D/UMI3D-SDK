@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Skeleton of the browser's user.
         /// </summary>
-        public PersonalSkeleton PersonalSkeleton { get; }
+        public IPersonalSkeleton PersonalSkeleton { get; }
 
         /// <summary>
         /// Hierarchy used for the skeleton's structure.

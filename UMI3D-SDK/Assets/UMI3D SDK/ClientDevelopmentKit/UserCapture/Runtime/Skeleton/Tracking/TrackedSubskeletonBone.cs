@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -32,14 +33,16 @@ namespace umi3d.cdk.userCapture.tracking
         [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
         public uint boneType;
 
+        public bool positionComputed;
+
         /// <summary>
         /// Convert this bone to a dto.
         /// </summary>
         /// <param name="Anchor">Frame of reference</param>
         /// <returns></returns>
-        public BoneDto ToBoneDto()
+        public SubSkeletonBoneDto ToBoneDto()
         {
-            return boneType == BoneType.None ? null : new BoneDto { boneType = boneType, rotation = this.transform.rotation.Dto() };
+            return boneType == BoneType.None ? null : new SubSkeletonBoneDto { boneType = boneType, localRotation = this.transform.localRotation.Dto() };
         }
 
         public virtual ControllerDto ToControllerDto()

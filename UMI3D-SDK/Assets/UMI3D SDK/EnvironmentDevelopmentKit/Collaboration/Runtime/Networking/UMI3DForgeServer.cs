@@ -67,7 +67,8 @@ namespace umi3d.edk.collaboration
         UMI3DTrackingRelay trackingRelay;
 
         object timeLock = new object();
-        public ulong time {
+        public ulong time
+        {
             get
             {
                 lock (timeLock)
@@ -405,7 +406,7 @@ namespace umi3d.edk.collaboration
                         {
                             ulong emoteToTriggerId = UMI3DSerializer.Read<ulong>(container);
                             bool trigger = UMI3DSerializer.Read<bool>(container);
-                            
+
                             EmoteDispatcher.Instance.DispatchEmoteTrigger(user, emoteToTriggerId, trigger);
                         });
                         break;
@@ -556,7 +557,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private void Start()
         {
-            inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
@@ -575,11 +575,7 @@ namespace umi3d.edk.collaboration
                 VoipInterceptionList.Remove(user);
         }
 
-
-        /// <summary>
-        /// 
-        /// </summary>
-        private void ApplicationQuit()
+        private void OnDestroy()
         {
             Stop();
         }

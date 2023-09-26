@@ -128,8 +128,17 @@ namespace umi3d.cdk.userCapture.animation
                 AnimatedSubskeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
                 AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
             });
+            nodeInstance.Delete = () => Delete(skeletonNodeDto.userId);
 
             await Task.CompletedTask;
+        }
+
+        protected virtual void Delete(ulong userId)
+        {
+            if (isRegisteredForPersonalSkeletonCleanup)
+            {
+                RemoveSkeletons();
+            }
         }
 
         #region SkeletonMapping
@@ -199,7 +208,9 @@ namespace umi3d.cdk.userCapture.animation
             }
 
             // create link for each rig. May be improved with distance analysis for more complex links
-            skeletonMapper.Mappings = boneUnityMapping.Select(b => new SkeletonMapping(b.umi3dBoneType, new GameNodeLink(b.transform))).ToArray();
+            skeletonMapper.Mappings = (from bone in boneUnityMapping
+                                       where bone.transform != null
+                                       select new SkeletonMapping(bone.umi3dBoneType, new GameNodeLink(bone.transform))).ToArray();
 
             return skeletonMapper;
         }
@@ -211,11 +222,12 @@ namespace umi3d.cdk.userCapture.animation
         /// <returns></returns>
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
-            return (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.BoneRelations
-                            .Select(x => (umi3dBoneType: x.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(x.Bonetype)))
-                            .Where(x => x.unityBoneContainer.HasValue)
-                            .Select(x => (x.umi3dBoneType, transform: animator.GetBoneTransform(x.unityBoneContainer.Value)))
-                            .ToArray();
+            return (from relationUMI3D in (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.Relations
+                    let relationUnity = (umi3dBoneType: relationUMI3D.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(relationUMI3D.Bonetype))
+                    where relationUnity.unityBoneContainer.HasValue
+                    let relationTransform = (relationUnity.umi3dBoneType, transform: animator.GetBoneTransform(relationUnity.unityBoneContainer.Value))
+                    where relationTransform.transform != null
+                    select relationTransform).ToArray();
         }
 
         /// <summary>
@@ -252,7 +264,7 @@ namespace umi3d.cdk.userCapture.animation
                 var (umi3dBoneType, boneTransform) = quickAccessHierarchy[node.name];
 
                 var unityBoneName = BoneTypeConvertingExtensions.ConvertToBoneType(umi3dBoneType).ToString();
-                var rigNameInAnimator = humanBoneRigRelations[unityBoneName.ToLower()];
+                var rigNameInAnimator = humanBoneRigRelations.ContainsKey(unityBoneName.ToLower()) ? humanBoneRigRelations[unityBoneName.ToLower()] : string.Empty;
 
                 if (boneInfoInAnimator.ContainsKey(rigNameInAnimator))
                 {
@@ -268,7 +280,7 @@ namespace umi3d.cdk.userCapture.animation
                         Compute(node.GetChild(i));
                     }
                 }
-                else // case that occurs if the bone is not found in hierarchy
+                else // case that occurs if the bone is not found in hierarchy, lift children up and delete parent.
                 {
                     var liftedNodes = new List<Transform>();
                     for (int i = 0; i < node.childCount; i++)
@@ -304,19 +316,26 @@ namespace umi3d.cdk.userCapture.animation
             {
                 isRegisteredForPersonalSkeletonCleanup = true;
 
-                void RemoveSkeletons()
-                {
-                    foreach (var subskeleton in skeleton.Subskeletons.ToList())
-                    {
-                        if (subskeleton is AnimatedSubskeleton)
-                            skeleton.RemoveSubskeleton(subskeleton);
-                    }
-                    clientServer.OnLeavingEnvironment.RemoveListener(RemoveSkeletons);
-                    isRegisteredForPersonalSkeletonCleanup = false;
-                }
-
-                clientServer.OnLeavingEnvironment.AddListener(RemoveSkeletons);
+                clientServer.OnLeavingEnvironment.AddListener(() => RemoveSkeletons(skeleton));
             }
+        }
+
+        private void RemoveSkeletons()
+        {
+            var skeleton = personnalSkeletonService.PersonalSkeleton;
+
+            RemoveSkeletons(skeleton);
+        }
+
+        private void RemoveSkeletons(IPersonalSkeleton skeleton)
+        {
+            foreach (var subskeleton in skeleton.Subskeletons.ToList())
+            {
+                if (subskeleton is IAnimatedSubskeleton animatedSubskeleton)
+                    skeleton.RemoveSubskeleton(animatedSubskeleton);
+            }
+            clientServer.OnLeavingEnvironment.RemoveListener(() => RemoveSkeletons(skeleton));
+            isRegisteredForPersonalSkeletonCleanup = false;
         }
     }
 }

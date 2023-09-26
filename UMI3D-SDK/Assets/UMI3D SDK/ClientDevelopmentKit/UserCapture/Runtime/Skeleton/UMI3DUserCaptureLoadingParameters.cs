@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -29,11 +30,11 @@ namespace umi3d.cdk.userCapture
         [Header("User Capture")]
         [SerializeField, Tooltip("Hierarchy definition used to instantiate users' skeletons.")]
         private UMI3DSkeletonHierarchyDefinition skeletonHierarchyDefinition;
-        public UMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition => skeletonHierarchyDefinition;
+        public IUMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition => skeletonHierarchyDefinition;
 
         [Header("Poses")]
         [SerializeField, Tooltip("Specific poses defined by the browser.")]
         private List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
-        public List<UMI3DPose_so> ClientPoses => clientPoses;
+        public IReadOnlyList<IUMI3DPoseData> ClientPoses => clientPoses.Cast<IUMI3DPoseData>().ToList();
     }
 }

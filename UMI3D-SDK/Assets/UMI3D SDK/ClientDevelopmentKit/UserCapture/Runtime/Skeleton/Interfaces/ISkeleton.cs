@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture;
@@ -30,6 +31,8 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public interface ISkeleton
     {
+        UserTrackingFrameDto LastFrame { get; }
+
         /// <summary>
         /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
         /// </summary>
@@ -53,7 +56,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Id of the user represented by this skeleton.
         /// </summary>
-        ulong UserId { get; }
+        ulong UserId { get; set; }
 
         /// <summary>
         /// Subskeleton updated from tracked controllers.
@@ -88,13 +91,13 @@ namespace umi3d.cdk.userCapture
         /// Add a subskeleton to the skeleton.
         /// </summary>
         /// <param name="subskeleton"></param>
-        void AddSubskeleton(ISubskeleton subskeleton);
+        void AddSubskeleton(IAnimatedSubskeleton subskeleton);
 
         /// <summary>
         /// Add a subskeleton to the skeleton.
         /// </summary>
         /// <param name="subskeleton"></param>
-        void RemoveSubskeleton(ISubskeleton subskeleton);
+        void RemoveSubskeleton(IAnimatedSubskeleton subskeleton);
 
         #region Data struture
 
@@ -102,6 +105,7 @@ namespace umi3d.cdk.userCapture
         {
             public Vector3 Position;
             public Quaternion Rotation;
+            public Quaternion LocalRotation;
         }
 
         #endregion Data struture

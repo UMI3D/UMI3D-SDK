@@ -21,11 +21,8 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
-    /// <summary>
-    /// Define a UMI3D skeleton hiearchy of bones.
-    /// </summary>
     [CreateAssetMenu(fileName = "UMI3DSkeletonHierarchyDefinition", menuName = "UMI3D/UMI3D Skeleton Hierarchy Definition")]
-    public class UMI3DSkeletonHierarchyDefinition : ScriptableObject
+    public class UMI3DSkeletonHierarchyDefinition : ScriptableObject, IUMI3DSkeletonHierarchyDefinition
     {
         /// <summary>
         /// Relation between a bone and its parent.
@@ -62,7 +59,9 @@ namespace umi3d.common.userCapture.description
         /// <summary>
         /// Collection of relation between a bone and its parent.
         /// </summary>
-        [Tooltip("Collection of relation between a bone and its parent. Declare the hierarchy.")]
-        public List<BoneRelation> BoneRelations = new List<BoneRelation>();
+        [SerializeField, Tooltip("Collection of relation between a bone and its parent. Declare the hierarchy.")]
+        private List<BoneRelation> BoneRelations = new List<BoneRelation>();
+
+        public IList<BoneRelation> Relations => BoneRelations;
     }
 }

@@ -17,6 +17,7 @@ limitations under the License.
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using TestUtils.UserCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -46,13 +47,16 @@ namespace PlayMode_Tests.UserCapture.Description.Common
         [Test]
         public void GetPose()
         {
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+
             // GIVEN
             Queue<SkeletonMapping> mappings = new();
 
-            for (uint i = 0; i < 10; i++)
+            foreach (uint bone in hierarchy.Relations.Keys)
             {
-                var mappingMock = new Mock<SkeletonMapping>(i, null);
-                mappingMock.Setup(x => x.GetPose()).Returns(new BoneDto() { boneType = i });
+                var link = new Mock<ISkeletonMappingLink>();
+                var mappingMock = new Mock<SkeletonMapping>(bone, link.Object);
+                mappingMock.Setup(x => x.GetPose()).Returns(new BoneDto() { boneType = bone, rotation = Quaternion.identity.Dto() });
                 mappings.Enqueue(mappingMock.Object);
             }
 
@@ -60,7 +64,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             skeletonMapper.Mappings = mappings.ToArray();
 
             // WHEN
-            var result = skeletonMapper.GetPose();
+            var result = skeletonMapper.GetPose(hierarchy);
 
             // THEN
             Assert.AreEqual(skeletonMapper.BoneAnchor.bone, result.boneAnchor.bone);

@@ -26,38 +26,34 @@ namespace umi3d.common.userCapture.pose
     /// Scriptable object to contains data for PoseDto
     /// </summary>
     [Serializable]
-    public class UMI3DPose_so : ScriptableObject, IJsonSerializer
+    public class UMI3DPose_so : ScriptableObject, IJsonSerializer, IUMI3DPoseData
     {
+        #region Fields
+
         /// <summary>
         /// All the bones that describe the pose
         /// </summary>
         [SerializeField]
-        private List<BoneField> bones = new ();
+        private List<BoneField> bones = new();
+
         /// <summary>
         /// The bone that anchor the pose
         /// </summary>
         [SerializeField]
         private BonePoseField boneAnchor;
 
-        /// <summary>
-        /// Get the bones composing the pose
-        /// </summary>
-        public List<BoneField> BoneDtos { get => bones; }
-        /// <summary>
-        /// Gets the bone anchor
-        /// </summary>
-        public BonePoseField boneAnchorDto { get => boneAnchor; }
+        #endregion Fields
 
-        /// <summary>
-        /// Pose index
-        /// </summary>
+        /// <inheritdoc/>
+        public IList<BoneField> BoneDtos => bones;
+
+        /// <inheritdoc/>
+        public BonePoseField boneAnchorDto => boneAnchor;
+
+        /// <inheritdoc/>
         public int Index { get; set; }
 
-        /// <summary>
-        /// Stores the data inside the scriptable object
-        /// </summary>
-        /// <param name="bones"></param>
-        /// <param name="bonePoseDto"></param>
+        /// <inheritdoc/>
         public void Init(List<BoneDto> bones, BonePoseDto bonePoseDto)
         {
             bones.ForEach(bp =>
@@ -77,19 +73,13 @@ namespace umi3d.common.userCapture.pose
             };
         }
 
-        /// <summary>
-        /// Transforms the Scriptable Object to its DTO counterpart
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public PoseDto ToDto()
         {
             return new PoseDto() { bones = GetBonesCopy(), boneAnchor = GetBonePoseCopy() };
         }
 
-        /// <summary>
-        /// Gets a copy of all the bones
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public List<BoneDto> GetBonesCopy()
         {
             List<BoneDto> copy = new List<BoneDto>();
@@ -104,10 +94,7 @@ namespace umi3d.common.userCapture.pose
             return copy;
         }
 
-        /// <summary>
-        /// Gets a copy of the bone pose
-        /// </summary>
-        /// <returns></returns>
+        /// <inheritdoc/>
         public BonePoseDto GetBonePoseCopy()
         {
             BonePoseDto copy = new BonePoseDto()
@@ -151,7 +138,7 @@ namespace umi3d.common.userCapture.pose
             PoseDto poseDto = JsonConvert.DeserializeObject(data, settings) as PoseDto;
             UMI3DPose_so poseSo = CreateInstance<UMI3DPose_so>();
             poseSo.Init(poseDto.bones, poseDto.boneAnchor);
-            return poseSo;           
+            return poseSo;
         }
     }
 }

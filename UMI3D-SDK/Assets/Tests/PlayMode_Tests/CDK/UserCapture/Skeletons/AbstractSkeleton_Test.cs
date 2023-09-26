@@ -17,23 +17,33 @@ limitations under the License.
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
+using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
+using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using static umi3d.cdk.userCapture.animation.AnimatedSubskeleton;
+
 
 namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 {
+    [TestFixture, TestOf(typeof(AbstractSkeleton))]
     public abstract class AbstractSkeleton_Test
     {
         protected AbstractSkeleton abstractSkeleton;
         protected GameObject skeletonGo;
         private Mock<IUnityMainThreadDispatcher> unityMainThreadDispatcherMock;
+
+        protected Mock<ITrackedSubskeleton> trackedSubskeletonMock;
+        protected Mock<IPoseSubskeleton> poseSubskeletonMock;
 
         [OneTimeSetUp]
         public virtual void OneTimeSetup()
@@ -55,7 +65,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         [TearDown]
         public virtual void TearDown()
         {
-            UnityEngine.Object.Destroy(skeletonGo.gameObject);
+            Object.Destroy(abstractSkeleton);
+            Object.Destroy(skeletonGo);
         }
 
         [OneTimeTearDown]
@@ -71,7 +82,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         #region Compute
 
         /// <summary>
-        /// test that we can handle an empty list of sub skeleton i the compute méthod
+        /// test that we can handle an empty list of sub skeleton in the compute method
         /// </summary>
         [Test]
         public virtual void Compute_EmptyList()
@@ -83,7 +94,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             ISkeleton results = abstractSkeleton.Compute();
 
             //Then
-            Assert.AreEqual(0, results.Bones.Count);
+            Assert.AreEqual(1, results.Bones.Count);
+            Assert.AreEqual(BoneType.Hips, results.Bones.Keys.ToList()[0]);
             Assert.AreSame(abstractSkeleton, results);
         }
 
@@ -93,13 +105,16 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         [Test]
         public virtual void Compute_ListWithEmpties()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             //Given
             GameObject subskeletonGo = new GameObject("Subskeleton");
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
-            animatedSkeletonMock.Setup(x => x.GetPose()).Returns(new PoseDto());
+            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
+            animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
+
+            animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(new SubSkeletonPoseDto());
 
             List<AnimatedSubskeleton> animatedSubskeletons = new()
             {
@@ -119,22 +134,26 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         }
 
         /// <summary>
-        /// Test that we can compute correctly With one animated skelton with bones
+        /// Test that we can compute correctly With one animated skeleton with bones
         /// </summary>
         [Test]
         public virtual void Compute_OneAnimatedSkeletonWithBones()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             //Given
             GameObject subskeletonGo = new GameObject("Subskeleton");
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new UMI3DAnimatorAnimation[0], 0u, null, null, unityMainThreadDispatcherMock.Object);
-            PoseDto poseDto = new PoseDto
+            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
+            animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
+          
+            var poseDto = new SubSkeletonPoseDto
+
             {
-                bones = new List<BoneDto>
+                bones = new List<SubSkeletonBoneDto>
                 {
-                    new BoneDto()
+                    new SubSkeletonBoneDto()
                     {
                         boneType = BoneType.CenterFeet,
                         rotation = Vector4.one.Dto()
@@ -142,7 +161,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
                 }
             };
 
-            animatedSkeletonMock.Setup(x => x.GetPose()).Returns(poseDto);
+            animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(poseDto);
 
             List<AnimatedSubskeleton> animatedSubskeletons = new()
             {
@@ -161,5 +180,164 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         }
 
         #endregion Compute
+
+        #region UpdateBones
+
+        [Test]
+        public void UpdateBones()
+        {
+            // given
+            var frameDto = new UserTrackingFrameDto();
+            trackedSubskeletonMock.Setup(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()));
+            poseSubskeletonMock.Setup(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()));
+
+            // when
+            abstractSkeleton.UpdateBones(frameDto);
+
+            // then
+            Assert.AreEqual(frameDto, abstractSkeleton.LastFrame);
+            trackedSubskeletonMock.Verify(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()), Times.Once);
+            poseSubskeletonMock.Verify(x => x.UpdateBones(It.IsAny<UserTrackingFrameDto>()), Times.Once);
+        }
+
+        #endregion UpdateBones
+
+        #region GetCameraDto
+
+        [Test]
+        public void GetCameraDto()
+        {
+            // given
+
+            // when
+            var dto = abstractSkeleton.GetCameraDto();
+
+            // then
+            Assert.AreEqual(1f, dto.scale);
+            Assert.AreEqual(abstractSkeleton.TrackedSubskeleton.ViewPoint.projectionMatrix, dto.projectionMatrix.Struct());
+            Assert.AreEqual(BoneType.Viewpoint, dto.boneType);
+        }
+
+        #endregion GetCameraDto
+
+        #region AddSusbskeleton
+
+        [Test]
+        public void AddSusbskeleton_Null()
+        {
+            // given
+            var subskeletons = abstractSkeleton.Subskeletons.ToList();
+
+            // when
+            abstractSkeleton.AddSubskeleton(null);
+
+            // then
+            Assert.AreEqual(subskeletons.Count, abstractSkeleton.Subskeletons.Count);
+            for (int i = 0; i < subskeletons.Count; i++)
+            {
+                Assert.AreEqual(subskeletons[i], abstractSkeleton.Subskeletons[i]);
+            }
+        }
+
+        [Test]
+        public void AddSusbskeleton_AnimatedSusbskeleton()
+        {
+            // given
+            var subskeletons = abstractSkeleton.Subskeletons.ToList();
+
+            var newSubskeletonMock = new Mock<AnimatedSubskeleton>(null,
+                new UMI3DAnimatorAnimation[0],
+                0,
+                new umi3d.common.userCapture.animation.SkeletonAnimationParameterDto[] { new() },
+                null,
+                null
+                );
+            newSubskeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
+
+            newSubskeletonMock.Setup(x => x.StartParameterSelfUpdate(abstractSkeleton));
+
+            // when
+            abstractSkeleton.AddSubskeleton(newSubskeletonMock.Object);
+
+            // then
+            Assert.AreEqual(subskeletons.Count + 1, abstractSkeleton.Subskeletons.Count);
+            newSubskeletonMock.Verify(x => x.StartParameterSelfUpdate(abstractSkeleton), Times.Once);
+        }
+
+        [Test]
+        public void AddSusbskeleton_SeveralAnimatedSusbskeletonsOrderedInsert()
+        {
+            // given
+            var subskeletons = abstractSkeleton.Subskeletons.Where(x=>x is AnimatedSubskeleton).ToList();
+
+            var newSubskeleton1 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 2, null, null, null);
+            var newSubskeleton2 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 1, null, null, null);
+            var newSubskeleton3 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 3, null, null, null);
+            abstractSkeleton.AddSubskeleton(newSubskeleton1);
+            abstractSkeleton.AddSubskeleton(newSubskeleton2);
+
+            // when
+            abstractSkeleton.AddSubskeleton(newSubskeleton3);
+
+            // then
+            var sortedSubskeletons = abstractSkeleton.Subskeletons.Where(x => x is AnimatedSubskeleton).OrderBy(x => x.Priority).ToList();
+            var resultSubskeletons = abstractSkeleton.Subskeletons.Where(x => x is AnimatedSubskeleton).ToList();
+
+            Assert.AreEqual(subskeletons.Count + 3, resultSubskeletons.Count);
+            for (int i = 0; i < sortedSubskeletons.Count; i++)
+            {
+                Assert.AreEqual(sortedSubskeletons[i], resultSubskeletons[i]);
+            }
+        }
+
+        #endregion AddSusbskeleton
+
+        #region RemoveSusbskeleton
+
+        [Test]
+        public void RemoveSubskeleton_Null()
+        {
+            // given
+            var subskeletons = abstractSkeleton.Subskeletons.ToList();
+
+            // when
+            abstractSkeleton.RemoveSubskeleton(null);
+
+            // then
+            Assert.AreEqual(subskeletons.Count, abstractSkeleton.Subskeletons.Count);
+            for (int i = 0; i < subskeletons.Count; i++)
+            {
+                Assert.AreEqual(subskeletons[i], abstractSkeleton.Subskeletons[i]);
+            }
+        }
+
+        [Test]
+        public void RemoveSubskeleton_AnimatedSubskeleton()
+        {
+            // given
+            var newSubskeletonMock = new Mock<AnimatedSubskeleton>(null,
+                new List<UMI3DAnimatorAnimation>(0),
+                0,
+                new umi3d.common.userCapture.animation.SkeletonAnimationParameterDto[1] { new() },
+                null,
+                null
+                );
+            newSubskeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
+
+            abstractSkeleton.AddSubskeleton(newSubskeletonMock.Object);
+            var subskeletons = abstractSkeleton.Subskeletons.ToList();
+
+            newSubskeletonMock.Setup(x => x.StartParameterSelfUpdate(abstractSkeleton));
+            newSubskeletonMock.Setup(x => x.StopParameterSelfUpdate());
+
+            // when
+            abstractSkeleton.RemoveSubskeleton(newSubskeletonMock.Object);
+
+            // then
+            Assert.AreEqual(subskeletons.Count - 1, abstractSkeleton.Subskeletons.Count);
+            newSubskeletonMock.Verify(x => x.StopParameterSelfUpdate(), Times.Once);
+        }
+
+        #endregion RemoveSusbskeleton
     }
 }

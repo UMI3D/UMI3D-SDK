@@ -31,6 +31,7 @@ namespace umi3d.common
 
         /// <summary>
         /// Animation state's name in the animator controller.
+        /// If Animator is handeling the state itself, stateName should be set at empty string. 
         /// </summary>
         public string stateName { get; set; } = "";
 

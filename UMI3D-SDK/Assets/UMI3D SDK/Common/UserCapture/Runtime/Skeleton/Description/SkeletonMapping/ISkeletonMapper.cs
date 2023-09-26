@@ -27,6 +27,6 @@ namespace umi3d.common.userCapture.description
         /// Get pose of the bone using mappings.
         /// </summary>
         /// <returns></returns>
-        PoseDto GetPose();
+        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
     }
 }

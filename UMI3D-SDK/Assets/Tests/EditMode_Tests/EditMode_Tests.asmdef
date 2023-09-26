@@ -13,7 +13,8 @@
         "UMI3D.CDK.Collaboration",
         "UMI3D.EDK.Core",
         "UMI3D.EDK.UserCapture",
-        "UMI3D.EDK.Collaboration"
+        "UMI3D.EDK.Collaboration",
+        "TestUtils"
     ],
     "includePlatforms": [
         "Editor"

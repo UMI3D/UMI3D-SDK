@@ -85,34 +85,5 @@ namespace umi3d.cdk.userCapture.pose
             }
             return true;
         }
-
-        /// <summary>
-        /// Check if a pose overriders should be ended.
-        /// </summary>
-        /// <param name="startTime"></param>
-        /// <returns></returns>
-        public bool IsFinished(float startTime)
-        {
-            float currentDuration = Time.time - startTime;
-
-            if (Duration.min.HasValue && currentDuration < Duration.min)
-                return false;
-
-            if (CheckConditions())
-            {
-                if (Duration.max.HasValue && currentDuration > Duration.max)
-                    return true;
-
-                if (!Duration.max.HasValue && Duration.duration == 0) // infinite mode
-                    return false;
-
-                if (!Duration.max.HasValue && currentDuration > Duration.duration)
-                    return true;
-
-                return false;
-            }
-            
-            return true;
-        }
     }
 }

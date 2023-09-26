@@ -127,7 +127,14 @@ namespace umi3d.common.binding
         /// <inheritdoc/>
         public virtual bool? IsCountable<T>()
         {
-            return false; //binding could be multibinding that are not countable
+            return true switch
+            {
+                true when typeof(T) == typeof(BindingDto) => true,
+                true when typeof(T) == typeof(AbstractSimpleBindingDataDto) => true,
+                true when typeof(T) == typeof(MultiBindingDataDto) => true,
+                true when typeof(T) == typeof(NodeBindingDataDto) => true,
+                _ => null
+            };
         }
     }
 }

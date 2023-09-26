@@ -154,6 +154,8 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose_NoTrackedSkeletonBone_NoDistantController()
         {
+
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
             var targetPose = new PoseDto() { bones = new() };
 
@@ -165,7 +167,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
@@ -179,8 +181,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose_NoTrackedSkeletonBoneController_NoDistantController()
         {
+
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto() { bones = new() };
+            var targetPose = new SubSkeletonPoseDto() { bones = new() };
 
             List<IController> controllers = new List<IController>();
 
@@ -198,11 +202,12 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
-            Assert.AreEqual(targetPose.bones.Count, pose.bones.Count);
+            /// Not Trackers
+            Assert.AreEqual(0, pose.bones.Count);
             for (int i = 0; i < pose.bones.Count; i++)
             {
                 Assert.AreEqual(targetPose.bones[i].boneType, pose.bones[i].boneType);
@@ -212,8 +217,9 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose_NoTrackedSkeletonBoneController()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto() { bones = new() };
+            var targetPose = new SubSkeletonPoseDto() { bones = new() };
 
             List<IController> controllers = new List<IController>();
 
@@ -231,11 +237,12 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
-            Assert.AreEqual(targetPose.bones.Count, pose.bones.Count);
+            /// Not Trackers
+            Assert.AreEqual(0, pose.bones.Count);
             for (int i = 0; i < pose.bones.Count; i++)
             {
                 Assert.AreEqual(targetPose.bones[i].boneType, pose.bones[i].boneType);
@@ -245,8 +252,9 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         [Test]
         public void Test_GetPose()
         {
+            var hierarchy = new UMI3DSkeletonHierarchy(null);
             // GIVEN
-            var targetPose = new PoseDto() { bones = new() };
+            var targetPose = new SubSkeletonPoseDto() { bones = new() };
 
             List<IController> controllers = new List<IController>();
 
@@ -257,11 +265,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
                 if (!bones.ContainsKey(bone.boneType))
                     bones.Add(bone.boneType, bone);
 
-                targetPose.bones.Add(bone.ToBoneDto());
-
                 if (bone is TrackedSubskeletonBoneController)
                 {
                     controllers.Add(new DistantController() { boneType = bone.boneType, isActif = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+                    targetPose.bones.Add(bone.ToBoneDto());
                 }
             }
 
@@ -269,11 +276,12 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedSkeleton.controllers = controllers;
 
             // WHEN
-            var pose = trackedSkeleton.GetPose();
+            var pose = trackedSkeleton.GetPose(hierarchy);
 
             // THEN
             Assert.IsNotNull(pose);
-            Assert.AreEqual(targetPose.bones.Count, pose.bones.Count);
+            /// Not Trackers
+            Assert.AreEqual((int)trackedBones.LongCount(b => b is TrackedSubskeletonBoneController), pose.bones.Count);
             for (int i = 0; i < pose.bones.Count; i++)
             {
                 Assert.AreEqual(targetPose.bones[i].boneType, pose.bones[i].boneType);

@@ -38,6 +38,11 @@ namespace umi3d.edk.userCapture.binding
         public ulong userId;
 
         /// <summary>
+        /// Specifying if the object is binded to the computed bone or to the controller
+        /// </summary>
+        public bool bindToController;
+
+        /// <summary>
         ///
         /// </summary>
         /// <param name="boundNodeId"></param>
@@ -58,6 +63,7 @@ namespace umi3d.edk.userCapture.binding
             {
                 userId = userId,
                 boneType = boneType,
+                bindToController = bindToController,
 
                 offSetPosition = offsetPosition.Dto(),
                 offSetRotation = offsetRotation.Dto(),

@@ -149,7 +149,7 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser(UserDto user)
         {
             dto = user;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             OnNewUser.Invoke(this);
         }
 

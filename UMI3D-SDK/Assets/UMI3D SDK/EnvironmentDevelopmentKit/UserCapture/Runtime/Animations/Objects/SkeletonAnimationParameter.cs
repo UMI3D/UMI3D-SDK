@@ -30,6 +30,11 @@ namespace umi3d.edk.userCapture.animation
     public class SkeletonAnimationParameter
     {
         /// <summary>
+        /// Key of the parameter name in the animator.
+        /// </summary>
+        public string parameterName;
+
+        /// <summary>
         /// Key of the parameter to compute in <see cref="SkeletonAnimatorParameterKeys"/>. <br/>
         /// Each key result in a different computation in browsers.
         /// </summary>
@@ -85,6 +90,7 @@ namespace umi3d.edk.userCapture.animation
         {
             return new SkeletonAnimationParameterDto()
             {
+                parameterName = parameterName,
                 parameterKey = parameterKey,
                 ranges = ranges.Select(x => x.ToDto()).ToArray()
             };
