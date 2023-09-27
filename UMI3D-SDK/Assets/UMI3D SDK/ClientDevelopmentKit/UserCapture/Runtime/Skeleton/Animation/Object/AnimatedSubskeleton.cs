@@ -44,10 +44,12 @@ namespace umi3d.cdk.userCapture.animation
 
         /// <inheritdoc/>
         public virtual IReadOnlyList<UMI3DAnimatorAnimation> Animations => animations;
+
         private readonly List<UMI3DAnimatorAnimation> animations;
 
         /// <inheritdoc/>
         public virtual IReadOnlyList<SkeletonAnimationParameter> SelfUpdatedAnimatorParameters => selfUpdatedAnimatorParameters;
+
         private readonly List<SkeletonAnimationParameter> selfUpdatedAnimatorParameters;
 
         #endregion Properties
@@ -65,7 +67,7 @@ namespace umi3d.cdk.userCapture.animation
                 {
                     startBound = dtoRange.startBound,
                     endBound = dtoRange.endBound,
-                    rawValue = dtoRange.rawValue,
+                    useRawValue = dtoRange.rawValue,
                     result = dtoRange.result
                 }).ToList() ?? new(0);
             }
@@ -75,12 +77,58 @@ namespace umi3d.cdk.userCapture.animation
 
             public readonly List<Range> ranges;
 
+            public Range? lastRangeWithin;
+
             public struct Range
             {
                 public float startBound;
                 public float endBound;
                 public float result;
-                public bool rawValue;
+                public bool useRawValue;
+
+                public readonly bool Contains(in float value)
+                {
+                    return startBound <= value && value <= endBound;
+                }
+
+                public readonly float GetOutput(in float value)
+                {
+                    return useRawValue ? value : result;
+                }
+            }
+
+            /// <summary>
+            ///  Applies range parameter settings.
+            /// </summary>
+            /// <param name="parameter"></param>
+            /// <param name="value"></param>
+            /// <returns></returns>
+            public float ApplyRanges(in float value)
+            {
+                if (lastRangeWithin.HasValue)
+                {
+                    Range range = lastRangeWithin.Value;
+                    if (range.Contains(value))
+                        return range.GetOutput(value);
+                    else
+                        lastRangeWithin = null;
+                }
+
+                if (value < MinRange)
+                    return value;
+
+                if (value > MaxRange)
+                    return value;
+
+                foreach (Range range in ranges)
+                {
+                    if (range.Contains(value))
+                    {
+                        lastRangeWithin = range;
+                        return range.GetOutput(value);
+                    }
+                }
+                return value;
             }
 
             #region Optimization
@@ -209,21 +257,13 @@ namespace umi3d.cdk.userCapture.animation
         /// <returns></returns>
         private IEnumerator UpdateParametersRoutine(ISkeleton skeleton)
         {
-            Vector3 previousPosition = Vector3.zero;
             Dictionary<string, object> previousValues = new();
 
             while (skeleton != null)
             {
                 var lastFrame = skeleton.LastFrame;
-                if (lastFrame == null)
+                if (lastFrame == null || lastFrame.speed == null)
                 {
-                    UnityEngine.Debug.Log("No frame");
-                    yield return null;
-                    continue;
-                }
-                if (lastFrame.speed == null)
-                {
-                    UnityEngine.Debug.Log("No Speed");
                     yield return null;
                     continue;
                 }
@@ -251,7 +291,7 @@ namespace umi3d.cdk.userCapture.animation
                         {
                             if (parameter.ranges.Count > 0 && typeKey == UMI3DAnimatorParameterType.Float)
                             {
-                                valueParameter = ApplyRanges(parameter, (float)valueParameter);
+                                valueParameter = parameter.ApplyRanges((float)valueParameter);
                             }
 
                             if (!inited || valueParameter != previousValues[parameter.parameterName])
@@ -265,32 +305,6 @@ namespace umi3d.cdk.userCapture.animation
 
                 yield return null;
             }
-        }
-
-        /// <summary>
-        ///  Applies range parameter settings.
-        /// </summary>
-        /// <param name="parameter"></param>
-        /// <param name="value"></param>
-        /// <returns></returns>
-        private float ApplyRanges(SkeletonAnimationParameter parameter, float value)
-        {
-            if (value < parameter.MinRange)
-                return value;
-
-            if (value > parameter.MaxRange)
-                return value;
-
-            foreach (var range in parameter.ranges)
-            {
-                if (range.startBound <= value && value <= range.endBound)
-                {
-                    if (!range.rawValue)
-                        value = range.result;
-                    return value;
-                }
-            }
-            return value;
         }
 
         /// <summary>
