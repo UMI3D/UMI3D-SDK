@@ -70,7 +70,7 @@ namespace umi3d.edk.binding
 
         protected void Init()
         {
-            umi3dServerService.OnUserJoin.AddListener(DispatchBindings);
+            umi3dServerService.OnUserActive.AddListener(DispatchBindings);
             umi3dServerService.OnUserMissing.AddListener(CleanBindings);
             umi3dServerService.OnUserLeave.AddListener(CleanBindings);
         }
