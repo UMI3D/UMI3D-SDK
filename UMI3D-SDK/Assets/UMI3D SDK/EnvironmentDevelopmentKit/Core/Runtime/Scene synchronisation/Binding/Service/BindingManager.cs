@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections.Generic;
 using System.Linq;
 
@@ -44,6 +45,11 @@ namespace umi3d.edk.binding
         private readonly IUMI3DServer umi3dServerService;
         private readonly IUMI3DEnvironmentManager umi3dEnvironmentService;
 
+        /// <summary>
+        /// Set of users that already got the binding entities on the scene
+        /// </summary>
+        private HashSet<UMI3DUser> usersWithBindingsReceived = new();
+
         public BindingManager() : base()
         {
             umi3dServerService = UMI3DServer.Instance;
@@ -54,7 +60,7 @@ namespace umi3d.edk.binding
         public BindingManager(IUMI3DServer umi3dServerService) : base()
         {
             this.umi3dServerService = umi3dServerService;
-            this.umi3dEnvironmentService= UMI3DEnvironment.Instance;
+            this.umi3dEnvironmentService = UMI3DEnvironment.Instance;
             Init();
         }
 
@@ -65,6 +71,8 @@ namespace umi3d.edk.binding
         protected void Init()
         {
             umi3dServerService.OnUserJoin.AddListener(DispatchBindings);
+            umi3dServerService.OnUserMissing.AddListener(CleanBindings);
+            umi3dServerService.OnUserLeave.AddListener(CleanBindings);
         }
 
         /// <summary>
@@ -73,6 +81,9 @@ namespace umi3d.edk.binding
         /// <param name="user"></param>
         protected virtual void DispatchBindings(UMI3DUser user)
         {
+            if (usersWithBindingsReceived.Contains(user))
+                return;
+
             if (bindings.GetValue().Count > 0)
             {
                 Transaction t = new() { reliable = true };
@@ -85,6 +96,16 @@ namespace umi3d.edk.binding
                 }
                 t.Dispatch();
             }
+
+            usersWithBindingsReceived.Add(user);
+        }
+
+        protected virtual void CleanBindings(UMI3DUser user)
+        {
+            if (!usersWithBindingsReceived.Contains(user))
+                return;
+
+            usersWithBindingsReceived.Remove(user);
         }
 
         #endregion Initialization
@@ -333,7 +354,6 @@ namespace umi3d.edk.binding
                             operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
                             operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
                         }
-
                     }
                     else if (bindingOnNode is MultiBinding existingMultiBinding // the binding is inside a multibinding
                             && bindingToRemove is AbstractSingleBinding singleBindingToRemove
@@ -497,7 +517,6 @@ namespace umi3d.edk.binding
             }
             else // some users have specific values
             {
-
                 users
                     .Where((u) => bindings.GetValue(u).ContainsKey(nodeId))
                     .GroupBy(u => bindings.GetValue(u)[nodeId])
