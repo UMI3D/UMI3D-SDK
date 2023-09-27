@@ -74,7 +74,7 @@ namespace umi3d.edk.userCapture.animation
             /// </summary>
             public bool rawValue;
 
-            public SkeletonAnimationParameterDto.RangeDto ToDto()
+            public readonly SkeletonAnimationParameterDto.RangeDto ToDto()
             {
                 return new SkeletonAnimationParameterDto.RangeDto()
                 {
