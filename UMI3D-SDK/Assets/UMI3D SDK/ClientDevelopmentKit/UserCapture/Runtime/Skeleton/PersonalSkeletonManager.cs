@@ -72,15 +72,10 @@ namespace umi3d.cdk.userCapture
         private readonly ILoadingManager environmentLoaderService;
         private readonly ILateRoutineService lateRoutineService;
 
-        public PersonalSkeletonManager()
-        {
-            environmentManager = UMI3DEnvironmentLoader.Instance;
-            environmentLoaderService = UMI3DEnvironmentLoader.Instance;
-            lateRoutineService = CoroutineManager.Instance;
-            Init();
-        }
+        public PersonalSkeletonManager() : this(UMI3DEnvironmentLoader.Instance, UMI3DEnvironmentLoader.Instance, CoroutineManager.Instance)
+        { }
 
-        public PersonalSkeletonManager(IEnvironmentManager environmentManager, ILoadingManager environmentLoaderService, ILateRoutineService lateRoutineService)
+        public PersonalSkeletonManager(IEnvironmentManager environmentManager, ILoadingManager environmentLoaderService, ILateRoutineService lateRoutineService) : base()
         {
             this.environmentManager = environmentManager;
             this.environmentLoaderService = environmentLoaderService;
@@ -100,6 +95,7 @@ namespace umi3d.cdk.userCapture
 
         private void InitPersonalSkeleton()
         {
+            computeRoutine = null;
             if (environmentManager == null || environmentManager.gameObject == null || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
             {
                 lateRoutineService.AttachLateRoutine(WhileUntilTheHanlderExist());
