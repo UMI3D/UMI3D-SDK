@@ -15,8 +15,11 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System;
 using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common;
 
 namespace umi3d.edk.collaboration.emotes
@@ -32,14 +35,16 @@ namespace umi3d.edk.collaboration.emotes
         /// <param name="emoteId">Emote to trigger UMI3D id.</param>
         /// <param name="sendingUser">Sending emote user.</param>
         /// <param name="trigger">True for triggering, false to interrupt.</param>
-        public void DispatchEmoteTrigger(UMI3DUser sendingUser, ulong emoteId, bool trigger);
+        void DispatchEmoteTrigger(UMI3DUser sendingUser, ulong emoteId, bool trigger);
 
         /// <summary>
         /// Emote configuration for the environment for each user.
         /// </summary>
-        public IDictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; }
+        IDictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; }
 
-        public event Action<(UMI3DUser sendingUser, ulong emoteId, bool isTrigger)> EmoteTriggered;
+        bool AutoLoadAnimations { get; set; }
+
+        event Action<(UMI3DUser sendingUser, ulong emoteId, bool isTrigger)> EmoteTriggered;
     }
 
     /// <summary>
@@ -51,16 +56,19 @@ namespace umi3d.edk.collaboration.emotes
 
         #region Dependency Injection
 
+        private readonly IUMI3DServer umi3dServerService;
         private readonly IUMI3DEnvironmentManager umi3dEnvironmentService;
 
-        public EmoteDispatcher() : base()
+        public EmoteDispatcher() : this(UMI3DEnvironment.Instance, UMI3DServer.Instance)
         {
-            umi3dEnvironmentService = UMI3DEnvironment.Instance;
         }
 
-        public EmoteDispatcher(IUMI3DEnvironmentManager umi3dEnvironmentService) : base()
+        public EmoteDispatcher(IUMI3DEnvironmentManager umi3dEnvironmentService, IUMI3DServer umi3dServer) : base()
         {
             this.umi3dEnvironmentService = umi3dEnvironmentService;
+            this.umi3dServerService = umi3dServer;
+
+            Init();
         }
 
         #endregion Dependency Injection
@@ -71,6 +79,57 @@ namespace umi3d.edk.collaboration.emotes
         public IDictionary<ulong, UMI3DEmotesConfig> EmotesConfigs { get; protected set; } = new Dictionary<ulong, UMI3DEmotesConfig>();
 
         public event Action<(UMI3DUser sendingUser, ulong emoteId, bool isTrigger)> EmoteTriggered;
+
+        public bool AutoLoadAnimations { get; set; } = true;
+
+        protected void Init()
+        {
+            umi3dServerService.OnUserActive.AddListener(LoadEmotesAnimations);
+            umi3dServerService.OnUserLeave.AddListener(CleanEmotesAnimations);
+            umi3dServerService.OnUserMissing.AddListener(CleanEmotesAnimations);
+        }
+
+        protected virtual void LoadEmotesAnimations(UMI3DUser user)
+        {
+            if (!AutoLoadAnimations)
+                return;
+
+            var operations = (from otherUser in umi3dServerService.Users()
+                              where otherUser.Id() != user.Id() && EmotesConfigs.ContainsKey(otherUser.Id())
+                              from emote in EmotesConfigs[otherUser.Id()].IncludedEmotes
+                              let anim = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractAnimation>(emote.Id())
+                              where anim != null
+                              let op = anim.GetLoadEntity(new() { user })
+                              where op is not null
+                              select op).ToList();
+
+            if (operations.Count == 0)
+                return;
+
+            Transaction t = new() { reliable = true };
+            t.AddIfNotNull(operations);
+            t.Dispatch();
+        }
+
+        private void CleanEmotesAnimations(UMI3DUser user)
+        {
+            if (!AutoLoadAnimations || !EmotesConfigs.ContainsKey(user.Id()))
+                return;
+
+            var operations = (from emote in EmotesConfigs[user.Id()].IncludedEmotes
+                              let anim = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractAnimation>(emote.Id())
+                              where anim != null
+                              let op = anim.GetDeleteEntity()
+                              where op is not null
+                              select op).ToList();
+
+            if (operations.Count == 0)
+                return;
+
+            Transaction t = new() { reliable = true };
+            t.AddIfNotNull(operations);
+            t.Dispatch();
+        }
 
         /// <summary>
         /// Request the other browsers than the user's one to trigger/interrupt the emote of the corresponding id.

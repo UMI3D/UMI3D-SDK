@@ -45,7 +45,9 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void SetUp()
         {
             umi3dServerMock = new();
-            umi3dServerMock.Setup(x => x.OnUserJoin).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserActive).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserMissing).Returns(new UMI3DUserEvent());
 
             umi3dEnvironmentServiceMock = new();
 
