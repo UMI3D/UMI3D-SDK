@@ -47,7 +47,7 @@ namespace umi3d.edk
                 onUserChangedUrlEvent?.Invoke(user, webViewId, url);
             } catch(Exception ex)
             {
-                Debug.LogError(ex);
+                Debug.LogException(ex);
             }
         }
     }
