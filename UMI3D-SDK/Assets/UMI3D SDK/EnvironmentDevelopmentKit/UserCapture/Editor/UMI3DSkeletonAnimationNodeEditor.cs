@@ -65,7 +65,7 @@ namespace umi3d.edk.userCapture.animation.editor
                     {
                         foreach (var range in parameter.ranges)
                         {
-                            EditorGUILayout.LabelField($"   - [{range.startBound};{range.endBound} -> {(range.rawValue ? "Raw" : range.result)}");
+                            EditorGUILayout.LabelField($"   - [{range.startBound};{range.endBound}] -> {(range.rawValue ? "Raw" : range.result)}");
                         }
                     }
                     else

@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 
@@ -114,10 +116,6 @@ namespace umi3d.edk.userCapture.pose
         {
             foreach (var overrider in register.PoseOverriderFields)
             {
-                overrider.PoseOverriderContainer.Id();
-                if (PoseOverriderContainers.Select(x => x.id).Contains(overrider.PoseOverriderContainer.Id()))
-                    continue;
-
                 if (!overrider.Model.TryGetComponent<UMI3DPoseOverriderAnimation>(out _))
                 {
                     overrider.Model.gameObject.AddComponent<UMI3DPoseOverriderAnimation>()
@@ -125,6 +123,9 @@ namespace umi3d.edk.userCapture.pose
                 }
 
                 overrider.Init();
+                overrider.PoseOverriderContainer.Id();
+                if (PoseOverriderContainers.Select(x => x.id).Contains(overrider.PoseOverriderContainer.Id()))
+                    continue;
 
                 PoseOverriderContainers.Add((UMI3DPoseOverridersContainerDto)overrider.PoseOverriderContainer.ToEntityDto());
             }

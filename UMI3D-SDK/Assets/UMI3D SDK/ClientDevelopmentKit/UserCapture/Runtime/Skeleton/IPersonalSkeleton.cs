@@ -33,6 +33,11 @@ namespace umi3d.cdk.userCapture
         Vector3 worldSize { get; }
 
         /// <summary>
+        /// Skeleton Initialization.
+        /// </summary>
+        public void SelfInit();
+
+        /// <summary>
         /// Write a tracking frame from all <see cref="IWritableSubskeleton"/>.
         /// </summary>
         /// <param name="option"></param>

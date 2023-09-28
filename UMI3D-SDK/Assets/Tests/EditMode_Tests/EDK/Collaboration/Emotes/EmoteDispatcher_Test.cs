@@ -25,6 +25,7 @@ namespace EditMode_Tests.Collaboration.Emotes.EDK
     public class EmoteDispatcher_Test
     {
         private Mock<IUMI3DEnvironmentManager> umi3dEnvironmentMock;
+        private Mock<IUMI3DServer> umi3dServerMock;
         private EmoteDispatcher emoteDispatcher;
 
         private void CleanSingletons()
@@ -42,9 +43,14 @@ namespace EditMode_Tests.Collaboration.Emotes.EDK
         [SetUp]
         public void SetUp()
         {
-            umi3dEnvironmentMock = new Mock<IUMI3DEnvironmentManager>();
+            umi3dEnvironmentMock = new();
+            umi3dServerMock = new();
 
-            emoteDispatcher = new EmoteDispatcher(umi3dEnvironmentMock.Object);
+            umi3dServerMock.Setup(x => x.OnUserActive).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserMissing).Returns(new UMI3DUserEvent());
+
+            emoteDispatcher = new EmoteDispatcher(umi3dEnvironmentMock.Object, umi3dServerMock.Object);
         }
 
         [TearDown]
