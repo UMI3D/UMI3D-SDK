@@ -97,6 +97,8 @@ namespace umi3d.common
 
         public const uint VolumeUserTransit = 10100;
 
+        public const uint WebViewUrlRequest = 10200;
+
     }
 
     /// <summary>

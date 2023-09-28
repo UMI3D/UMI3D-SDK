@@ -50,6 +50,9 @@ namespace umi3d.cdk
             get => _url;
             set
             {
+                if (!canUrlBeForced)
+                    return;
+
                 if (_url != value)
                 {
                     _url = value;
@@ -94,6 +97,22 @@ namespace umi3d.cdk
             }
         }
 
+        private bool _canUrlBeForced;
+        /// <summary>
+        /// Can <see cref="url"/> be forced by the server.
+        /// </summary>
+        public bool canUrlBeForced
+        {
+            get => _canUrlBeForced;
+            set
+            {
+                if (_canUrlBeForced != value)
+                {
+                    _canUrlBeForced = value;
+                }
+            }
+        }
+
         #endregion
 
         #region Methods
@@ -107,8 +126,11 @@ namespace umi3d.cdk
         }
 
         protected abstract void OnUrlChanged(string url);
+
         protected abstract void OnSizeChanged(Vector2 size);
+
         protected abstract void OnTextureSizeChanged(Vector2 size);
+
         protected abstract void OnCanInteractChanged(bool canInteract);
 
         #endregion

@@ -32,13 +32,11 @@ namespace umi3d.edk
         [SerializeField, Tooltip("Can users interact with the webview ?")]
         private bool canInteract = true;
 
-
         /// <summary>
         /// Webview size.
         /// </summary>
         [SerializeField, Tooltip("Webview size")]
         private Vector2 size = new Vector2(1.280f, .720f);
-
 
         /// <summary>
         /// Webview texture dimensions.
@@ -52,6 +50,12 @@ namespace umi3d.edk
         [SerializeField, Tooltip("Url to load on clients")]
         private string url = string.Empty;
 
+        /// <summary>
+        /// If set to false, when <see cref="url"/> is set, the value will be ignored by the browser.
+        /// </summary>
+        [SerializeField, Tooltip("Url to load on clients")]
+        private bool canUrlBeForced = true;
+
         #endregion
 
         #region Async properties
@@ -63,6 +67,8 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<Vector2> _objectTextureSize;
 
         private UMI3DAsyncProperty<string> _objectUrl;
+
+        private UMI3DAsyncProperty<bool> _objectCanUrlBeForced;
 
 
         /// <summary>
@@ -80,11 +86,15 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAsyncProperty<Vector2> objectTextureSize { get { Register(); return _objectTextureSize; } protected set => _objectTextureSize = value; }
 
-
         /// <summary>
         /// Async property to change <see cref="url"/> property.
         /// </summary>
         public UMI3DAsyncProperty<string> objectUrl { get { Register(); return _objectUrl; } protected set => _objectUrl = value; }
+
+        /// <summary>
+        /// Async property to change <see cref="canUrlBeForced"/> property.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectCanUrlBeForced { get { Register(); return _objectCanUrlBeForced; } protected set => _objectCanUrlBeForced = value; }
 
         #endregion
 
@@ -101,11 +111,13 @@ namespace umi3d.edk
             objectSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewSize, size, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
+            objectCanUrlBeForced = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanUrlBeForced, canUrlBeForced);
 
             objectCanInteract.OnValueChanged += (b) => canInteract = b;
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
             objectSize.OnValueChanged += (s) => size = s;
             objectUrl.OnValueChanged += (u) => url = u;
+            objectCanUrlBeForced.OnValueChanged += (b) => canUrlBeForced = b;
         }
 
         /// <summary>
@@ -118,7 +130,8 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(objectSize.GetValue(user))
                 + UMI3DSerializer.Write(objectTextureSize.GetValue(user))
                 + UMI3DSerializer.Write(objectUrl.GetValue(user))
-                + UMI3DSerializer.Write(objectCanInteract.GetValue(user));
+                + UMI3DSerializer.Write(objectCanInteract.GetValue(user))
+                + UMI3DSerializer.Write(objectCanUrlBeForced.GetValue(user));
         }
 
         /// <summary>
@@ -142,6 +155,7 @@ namespace umi3d.edk
             webViewDto.size = objectSize.GetValue(user).Dto();
             webViewDto.textureSize = objectTextureSize.GetValue(user).Dto();
             webViewDto.url = objectUrl.GetValue(user);
+            webViewDto.canUrlBeForced = objectCanUrlBeForced.GetValue(user);
         }
 
         #endregion

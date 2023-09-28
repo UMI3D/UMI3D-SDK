@@ -78,6 +78,9 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.WebViewUrl:
                     webView.url = dto.url = (string)data.property.value;
                     break;
+                case UMI3DPropertyKeys.WebViewCanUrlBeForced:
+                    webView.canUrlBeForced = dto.canUrlBeForced = (bool)data.property.value;
+                    break;
                 default:
                     return false;
             }
@@ -114,6 +117,9 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.WebViewUrl:
                     webView.url = dto.url = UMI3DSerializer.Read<string>(data.container);
+                    break;
+                case UMI3DPropertyKeys.WebViewCanUrlBeForced:
+                    webView.canUrlBeForced = dto.canUrlBeForced = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 default:
                     return false;

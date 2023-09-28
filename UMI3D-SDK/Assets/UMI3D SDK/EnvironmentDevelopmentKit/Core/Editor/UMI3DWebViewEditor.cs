@@ -27,6 +27,7 @@ namespace umi3d.edk.editor
         private SerializedProperty size;
         private SerializedProperty textureSize;
         private SerializedProperty url;
+        private SerializedProperty canBeForced;
 
         protected override void OnEnable()
         {
@@ -36,6 +37,7 @@ namespace umi3d.edk.editor
             size = serializedObject.FindProperty("size");
             textureSize = serializedObject.FindProperty("textureSize");
             url = serializedObject.FindProperty("url");
+            canBeForced = serializedObject.FindProperty("canUrlBeForced");
         }
 
         public override void OnInspectorGUI()
@@ -46,6 +48,7 @@ namespace umi3d.edk.editor
 
             EditorGUILayout.PropertyField(url);
             EditorGUILayout.PropertyField(canInteract);
+            EditorGUILayout.PropertyField(canBeForced);
 
             EditorGUILayout.Space();
 
