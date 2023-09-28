@@ -12,10 +12,15 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.edk
 {
+    /// <summary>
+    /// Class to handle <see cref="WebViewUrlChangedRequestDto"/> from browsers
+    /// </summary>
     public class WebViewManager : Singleton<WebViewManager>
     {
         /// <summary>
@@ -27,11 +32,23 @@ namespace umi3d.edk
 
         }
 
-        public readonly WebViewEvent OnUserChangedUrlEvent = new WebViewEvent();
+        public readonly WebViewEvent onUserChangedUrlEvent = new WebViewEvent();
 
+        /// <summary>
+        /// Notify the manager a <see cref="WebViewUrlChangedRequestDto"/> was received.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="webViewId"></param>
+        /// <param name="url"></param>
         public void OnUserChangedUrl(UMI3DUser user, ulong webViewId, string url)
         {
-            OnUserChangedUrlEvent?.Invoke(user, webViewId, url);
+            try
+            {
+                onUserChangedUrlEvent?.Invoke(user, webViewId, url);
+            } catch(Exception ex)
+            {
+                Debug.LogError(ex);
+            }
         }
     }
 }
