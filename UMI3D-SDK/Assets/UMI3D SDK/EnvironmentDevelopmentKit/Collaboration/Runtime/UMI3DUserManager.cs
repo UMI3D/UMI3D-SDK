@@ -23,7 +23,6 @@ using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
 using UnityEngine;
-using static umi3d.common.NotificationDto;
 
 namespace umi3d.edk.collaboration
 {
@@ -34,9 +33,9 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Contain the users connected to the scene.
         /// </summary>
-        private readonly Dictionary<ulong, UMI3DCollaborationUser> users = new Dictionary<ulong, UMI3DCollaborationUser>();
-        private readonly Dictionary<ulong, UMI3DCollaborationUser> lostUsers = new Dictionary<ulong, UMI3DCollaborationUser>();
-        private readonly Dictionary<string, UMI3DCollaborationUser> guidMap = new Dictionary<string, UMI3DCollaborationUser>();
+        private readonly Dictionary<ulong, UMI3DCollaborationAbstractUser> users = new();
+        private readonly Dictionary<ulong, UMI3DCollaborationAbstractUser> lostUsers = new();
+        private readonly Dictionary<string, UMI3DCollaborationAbstractUser> guidMap = new();
         private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
 
         private readonly List<string> oldTokenOfUpdatedUser = new List<string>();
@@ -85,7 +84,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
-        public UMI3DCollaborationUser GetUser(ulong id)
+        public UMI3DCollaborationAbstractUser GetUser(ulong id)
         {
             lock (users)
             {
@@ -96,7 +95,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with a ForgeNetworkingRemastered Id.
         /// </summary>
-        public UMI3DCollaborationUser GetUserByNetworkId(uint id)
+        public UMI3DCollaborationAbstractUser GetUserByNetworkId(uint id)
         {
             lock (forgeMap)
             {
@@ -161,7 +160,7 @@ namespace umi3d.edk.collaboration
             {
                 lock (users)
                 {
-                    return users.Values.ToList();
+                    return users.Values.Where(u => u is UMI3DCollaborationUser).Select(u => u as UMI3DCollaborationUser).ToList();
                 }
             }
         }
@@ -233,7 +232,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public void ConnectionClose(UMI3DCollaborationUser user, uint networkId)
+        public void ConnectionClose(UMI3DCollaborationAbstractUser user, uint networkId)
         {
             if (user.networkPlayer.NetworkId == networkId)
                 user?.SetStatus(StatusType.MISSING);
@@ -272,11 +271,11 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="LoginDto">Login of the user.</param>
         /// <param name="onUserCreated">Callback called when the user has been created.</param>
-        public void CreateUser(RegisterIdentityDto LoginDto, Action<UMI3DCollaborationUser, bool> onUserCreated)
+        public void CreateUser(RegisterIdentityDto LoginDto, Action<UMI3DCollaborationAbstractUser, bool> onUserCreated)
         {
             UMI3DLogger.Log($"CreateUser() begins", scope);
 
-            UMI3DCollaborationUser user;
+            UMI3DCollaborationAbstractUser user;
             bool reconnection = false;
             if (guidMap.ContainsKey(LoginDto.guid))
             {
@@ -293,7 +292,11 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                user = new UMI3DCollaborationUser(LoginDto);
+                user = 
+                    LoginDto.isServer ?
+                        new UMI3DServerUser(LoginDto) :
+                        new UMI3DCollaborationUser(LoginDto);
+
                 UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
                 lock (users)
                 {
@@ -388,7 +391,7 @@ namespace umi3d.edk.collaboration
             {
                 case UMI3DOperationKeys.UserMicrophoneStatus:
                     if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
-                        tr.AddIfNotNull(users[dto.id].microphoneStatus.SetValue(dto.value));
+                        tr.AddIfNotNull((users[dto.id] as UMI3DCollaborationUser)?.microphoneStatus.SetValue(dto.value));
 
                     if (tr.Count() > 0 && user.Id() != dto.id)
                     {
@@ -398,12 +401,12 @@ namespace umi3d.edk.collaboration
 
                 case UMI3DOperationKeys.UserAvatarStatus:
                     if (users.ContainsKey(dto.id) && (!dto.value || (user.Id() == dto.id)))
-                        tr.AddIfNotNull(users[dto.id].avatarStatus.SetValue(dto.value));
+                        tr.AddIfNotNull((users[dto.id] as UMI3DCollaborationUser)?.avatarStatus.SetValue(dto.value));
                     break;
 
                 case UMI3DOperationKeys.UserAttentionStatus:
                     if (users.ContainsKey(dto.id) && user.Id() == dto.id)
-                        tr.AddIfNotNull(users[dto.id].attentionRequired.SetValue(dto.value));
+                        tr.AddIfNotNull((users[dto.id] as UMI3DCollaborationUser)?.attentionRequired.SetValue(dto.value));
                     break;
 
                 case UMI3DOperationKeys.MuteAllMicrophoneStatus:
@@ -438,7 +441,7 @@ namespace umi3d.edk.collaboration
                     value = UMI3DSerializer.Read<bool>(container);
 
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
-                        tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
+                        tr.AddIfNotNull((users[id] as UMI3DCollaborationUser)?.microphoneStatus.SetValue(value));
 
                     if (tr.Count() > 0 && user.Id() != id)
                     {
@@ -450,14 +453,14 @@ namespace umi3d.edk.collaboration
                     id = UMI3DSerializer.Read<ulong>(container);
                     value = UMI3DSerializer.Read<bool>(container);
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
-                        tr.AddIfNotNull(users[id].avatarStatus.SetValue(value));
+                        tr.AddIfNotNull((users[id] as UMI3DCollaborationUser)?.avatarStatus.SetValue(value));
                     break;
 
                 case UMI3DOperationKeys.UserAttentionStatus:
                     id = UMI3DSerializer.Read<ulong>(container);
                     value = UMI3DSerializer.Read<bool>(container);
                     if (users.ContainsKey(id) && id == user.Id())
-                        tr.AddIfNotNull(users[id].attentionRequired.SetValue(value));
+                        tr.AddIfNotNull((users[id] as UMI3DCollaborationUser)?.attentionRequired.SetValue(value));
                     break;
 
                 case UMI3DOperationKeys.MuteAllMicrophoneStatus:

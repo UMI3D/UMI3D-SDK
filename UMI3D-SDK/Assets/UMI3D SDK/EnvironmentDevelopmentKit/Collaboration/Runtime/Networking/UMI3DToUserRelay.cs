@@ -237,8 +237,8 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         protected ulong GetCurrentDelay(NetworkingPlayer from, NetworkingPlayer to)
         {
-            UMI3DCollaborationUser user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
-            UMI3DCollaborationUser user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
+            UMI3DCollaborationAbstractUser user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
+            UMI3DCollaborationAbstractUser user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
             float dist = Vector3.Distance(user1.CurrentTrackingFrame.position.Struct(), user2.CurrentTrackingFrame.position.Struct());
             float coeff = 0f;
             if (dist > startProximityAt && dist < proximityCutout)
