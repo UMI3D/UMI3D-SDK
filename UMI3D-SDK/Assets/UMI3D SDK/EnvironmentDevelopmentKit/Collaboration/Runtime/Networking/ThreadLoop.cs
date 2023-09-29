@@ -17,7 +17,6 @@ limitations under the License.
 using UnityEngine;
 using System.Threading;
 using System;
-using umi3d.common.userCapture.tracking;
 
 namespace umi3d.edk.collaboration
 {
