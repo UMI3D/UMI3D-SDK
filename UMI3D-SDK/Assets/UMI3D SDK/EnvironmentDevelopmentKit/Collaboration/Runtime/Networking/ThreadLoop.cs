@@ -24,7 +24,7 @@ namespace umi3d.edk.collaboration
     {
         protected bool running { get; private set; } = false;
         private Thread sendAvatarFramesThread = null;
-        private int millisecondsTimeOut;
+        private int millisecondsTimeOut = 200;
         protected int MillisecondsTimeOut
         {
             get => millisecondsTimeOut;
