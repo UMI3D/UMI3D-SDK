@@ -155,7 +155,7 @@ namespace umi3d.edk.collaboration
 
         protected List<UMI3DUser> RelayRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable, DataChannelTypes dataChannel)
         {
-            ulong now = UMI3DCollaborationServer.ForgeServer.time;
+            ulong now = UMI3DCollaborationServer.ForgeServer.Time;
 
             List<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
             List<UMI3DUser> result = targetHashSet?.Select(p => p as UMI3DUser).ToList();

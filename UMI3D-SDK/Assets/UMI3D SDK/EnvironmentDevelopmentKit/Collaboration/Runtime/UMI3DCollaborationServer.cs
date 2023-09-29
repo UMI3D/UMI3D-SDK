@@ -213,17 +213,6 @@ namespace umi3d.edk.collaboration
 
             if (collaborativeModule == null)
                 collaborativeModule = UMI3DSerializerModuleUtils.GetModules().ToList();
-
-            //new List<UMI3DSerializerModule>() {
-            //new UMI3DSerializerBasicModules(),
-            //new UMI3DSerializerStringModules(),
-            //new UMI3DSerializerVectorModules(),
-            //new UMI3DSerializerAnimationModules(),
-            //new UMI3DSerializerShaderModules(),
-            //new UMI3DUserCaptureBindingSerializerModule(),
-            //new UMI3DEmotesSerializerModule(),
-            //new UMI3DEnvironmentSerializerCollaborationModule(),
-            //new common.collaboration.UMI3DCollaborationSerializerModule() };
             
             UMI3DSerializer.AddModule(collaborativeModule);
 
@@ -232,7 +221,6 @@ namespace umi3d.edk.collaboration
 
             httpPort = (ushort)FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
-            //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
             UMI3DHttp.Destroy();
             http = new UMI3DHttp(httpPort);

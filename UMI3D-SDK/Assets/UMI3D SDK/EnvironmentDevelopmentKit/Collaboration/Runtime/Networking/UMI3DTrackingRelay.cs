@@ -16,7 +16,6 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common.collaboration;
-using umi3d.common.userCapture;
 using umi3d.common;
 using UnityEngine;
 using System.Threading;
@@ -28,10 +27,11 @@ using umi3d.common.userCapture.tracking;
 
 namespace umi3d.edk.collaboration.tracking
 {
-    public class UMI3DTrackingRelay : UMI3DRelay<UserTrackingFrameDto>
+    public class UMI3DTrackingRelay : UMI3DToUserRelay<UserTrackingFrameDto>
     {
-        public UMI3DTrackingRelay(UMI3DForgeServer server) : base(server)
+        public UMI3DTrackingRelay(IForgeServer server) : base(server)
         {
+            dataChannel = DataChannelTypes.Tracking;
         }
 
         /// <inheritdoc/>
@@ -45,232 +45,276 @@ namespace umi3d.edk.collaboration.tracking
         }
     }
 
-
-    public abstract class UMI3DRelay<T> where T : class
+    public abstract class ThreadLoop
     {
-
-        #region Fields
-        UMI3DForgeServer server;
-
-        /// <summary>
-        /// Stores all <see cref="T"/> received from all <see cref="UnityEngine.NetworkPlayer"/>.
-        /// </summary>
-        Dictionary<NetworkingPlayer, T> framesPerPlayer = new Dictionary<NetworkingPlayer, T>();
-
-        /// <summary>
-        /// Collection used to prevent sending the same <see cref="UserTrackingFrameDto"/> twice to the same <see cref="NetworkPlayer"/>.
-        /// </summary>
-        Dictionary<NetworkingPlayer, Dictionary<NetworkingPlayer, T>> lastFrameSentToAPlayer = new Dictionary<NetworkingPlayer, Dictionary<NetworkingPlayer, T>>();
-
-        /// <summary>
-        /// Thread used to send trackingFrames.
-        /// </summary>
-        private Thread sendAvatarFramesThread;
-
-        /// <summary>
-        /// If true, all <see cref="T"/> of <see cref="framesPerPlayer"/> must be sent to everyone.
-        /// </summary>
-        private bool forceSendtrackingFrames = false;
-
-        bool running = false;
-
-        #endregion
-
-        public UMI3DRelay(UMI3DForgeServer server)
+        protected bool running { get; private set; } = false;
+        private Thread sendAvatarFramesThread = null;
+        private int millisecondsTimeOut;
+        protected int MillisecondsTimeOut
         {
-            this.server = server;
-            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u => RemoveUserFrame((u as UMI3DCollaborationUser).networkPlayer));
-            InitTrackingFrameThread();
-        }
-
-        /// <summary>
-        /// Set last frame for a player
-        /// </summary>
-        /// <param name="from">the player</param>
-        /// <param name="frame">last frame</param>
-        public void SetFrame(NetworkingPlayer from, T frame)
-        {
-            lock (framesPerPlayer)
+            get => millisecondsTimeOut;
+            set
             {
-                framesPerPlayer[from] = frame;
+                if(value > 0)
+                    millisecondsTimeOut = value;
             }
         }
 
-        public void RemoveUserFrame(NetworkingPlayer player) 
+        protected void StartLoop()
         {
-            lock (framesPerPlayer)
-            {
-                if (player != null && framesPerPlayer.ContainsKey(player))
-                {
-                    framesPerPlayer.Remove(player);
-                    lastFrameSentToAPlayer.Remove(player);
-                }
-            }
+            OnLoopStart();
+            sendAvatarFramesThread = new Thread(new ThreadStart(Looper));
+            sendAvatarFramesThread.Start();
         }
 
-        ulong GetTime()
+        protected void StopLoop()
         {
-            return server.time;
-        }
-
-        private void InitTrackingFrameThread()
-        {
-            UMI3DCollaborationServer.Instance.OnServerStart.AddListener(() => {
-                sendAvatarFramesThread = new Thread(new ThreadStart(SendTrackingFramesLoop));
-                sendAvatarFramesThread.Start();
-            });
-
-            UMI3DCollaborationServer.Instance.OnServerStop.AddListener(() => {
-                running = false;
-                sendAvatarFramesThread = null;
-            });
-
-            QuittingManager.OnApplicationIsQuitting.AddListener(() => {
-                running = false;
-                sendAvatarFramesThread = null;
-            });
-
-#if UNITY_EDITOR
-            Application.quitting += () =>
-            {
-                running = false;
-                sendAvatarFramesThread = null;
-            };
-#endif
-
-            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener((user) =>
-            {
-                lock (framesPerPlayer)
-                {
-                    var player = framesPerPlayer.Keys.ToList().Find(p => p.NetworkId == user.Id());
-
-                    if (player != null && framesPerPlayer.ContainsKey(player))
-                        framesPerPlayer.Remove(player);
-                }
-            });
-
-            UMI3DCollaborationServer.Instance.OnUserActive.AddListener((user) => forceSendtrackingFrames = true);
+            running = false;
+            sendAvatarFramesThread = null;
         }
 
         /// <summary>
         /// Sends <see cref="UserTrackingFrameDto"/> every tick.
         /// </summary>
-        private void SendTrackingFramesLoop()
+        private void Looper()
         {
             running = true;
             while (running)
             {
                 try
                 {
-                    SendTrackingFrames();
+                    Update();
                 }
                 catch (Exception e)
                 {
                     Debug.LogException(e);
                 }
 
-                Thread.Sleep(200);
+                Thread.Sleep(MillisecondsTimeOut);
             }
+            OnLoopStop();
         }
 
-        /// <summary>
-        /// Sends <see cref="UserTrackingFrameDto"/> to every player if they should received them.
-        /// </summary>
-        private void SendTrackingFrames()
+        protected abstract void Update();
+        protected virtual void OnLoopStart() { }
+        protected virtual void OnLoopStop() { }
+    }
+
+    public abstract class UMI3DRelay<To,Source,Frame> : ThreadLoop where To : class where Source : class where Frame : class
+    {
+        protected readonly object framesPerSourceLock = new();
+        protected readonly object lastFrameSentToLock = new();
+
+        protected Dictionary<Source, Frame> framesPerSource = new();
+        protected Dictionary<To, Dictionary<Source, Frame>> lastFrameSentTo = new();
+
+        public void RemoveSource(Source source)
+        {
+            lock(framesPerSourceLock)
+                framesPerSource.Remove(source);
+            lock(lastFrameSentToLock)
+                lastFrameSentTo.Select(k => k.Value).ForEach(d =>d.Remove(source));
+        }
+
+        public void RemoveTo(To to)
+        {
+            lock (lastFrameSentToLock)
+                lastFrameSentTo.Remove(to);
+        }
+
+        public void Clear()
+        {
+            lock (framesPerSourceLock)
+                framesPerSource.Clear();
+            lock (lastFrameSentToLock)
+                lastFrameSentTo.Clear();
+        }
+
+        public void SetFrame(Source source, Frame frame) {
+            if(source != null)
+                framesPerSource[source] = frame;
+        }
+
+        protected abstract IEnumerable<To> GetTargets();
+        protected abstract ulong GetTime();
+        protected abstract void Send(To to, List<Frame> frames, bool force);
+
+        public bool forceSendToAll;
+
+        protected UMI3DRelay()
+        {
+            UMI3DCollaborationServer.Instance.OnServerStart.AddListener(() => {
+                StartLoop();
+            });
+
+            UMI3DCollaborationServer.Instance.OnServerStop.AddListener(() => {
+                StopLoop();
+            });
+
+            QuittingManager.OnApplicationIsQuitting.AddListener(() => {
+                StopLoop();
+            });
+
+#if UNITY_EDITOR
+            Application.quitting += () =>
+            {
+                StopLoop();
+            };
+#endif
+        }
+
+        protected override void Update()
         {
             ulong time = GetTime(); //introduce wrong time. TB tested with frame.timestep
 
-            KeyValuePair<NetworkingPlayer, T>[] _framesPerPlayer;
-            lock (framesPerPlayer)
-            {
-                var r = new System.Random();
-                _framesPerPlayer = framesPerPlayer.OrderBy(s => r.Next()).ToArray();
-            }
-            foreach (var avatarFrameEntry in _framesPerPlayer)
-            {
-                UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(avatarFrameEntry.Key.NetworkId);
+            KeyValuePair<Source,Frame>[] _framesPerSource;
 
-                if (user == null)
+
+            var r = new System.Random();
+            lock (framesPerSourceLock)
+                _framesPerSource = framesPerSource.OrderBy(s => r.Next()).ToArray();
+
+            var targets = GetTargets();
+            foreach(var target in targets)
+            {
+                if (target != null)
                     continue;
 
-                (List<T> frames, bool force) = GetTrackingFrameToSend(user, time, _framesPerPlayer);
+                (List<Frame> frames, bool force) = GetFramesToSend(target, time, _framesPerSource);
 
                 if (frames.Count == 0)
                     continue;
 
-                server.RelayBinaryDataTo((int)DataChannelTypes.Tracking, avatarFrameEntry.Key, GetMessage(frames), force || forceSendtrackingFrames);
+                Send(target, frames, forceSendToAll || force);
             }
 
-            if (forceSendtrackingFrames)
-                forceSendtrackingFrames = false;
-
+            if (forceSendToAll)
+                forceSendToAll = false;
         }
 
-        abstract protected byte[] GetMessage(List<T> frames);
+
+        protected virtual (List<Frame> frames, bool force) GetFramesToSend(To to, ulong time, KeyValuePair<Source, Frame>[] framesPerSource)
+        {
+            List<Frame> frames = new();
+            lock (lastFrameSentToLock)
+            {
+                if (!lastFrameSentTo.ContainsKey(to))
+                    lastFrameSentTo.Add(to, new Dictionary<Source, Frame>());
+
+                foreach (var kFrame in framesPerSource)
+                {
+                    if (!lastFrameSentTo[to].ContainsKey(kFrame.Key) || lastFrameSentTo[to][kFrame.Key] != kFrame.Value)
+                    {
+                        lastFrameSentTo[to][kFrame.Key] = kFrame.Value;
+                        frames.Add(kFrame.Value);
+                    }
+                }
+            }
+            return (frames, false);
+        }
+    }
+
+    public abstract class UMI3DToUserRelay<Frame> : UMI3DRelay<UMI3DCollaborationUser, NetworkingPlayer, Frame> where Frame : class
+    {
+        IForgeServer server;
+        protected DataChannelTypes dataChannel = DataChannelTypes.Data;
+
+        protected UMI3DToUserRelay(IForgeServer server) : base()
+        {
+            this.server = server;
+
+            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u => 
+            {
+                if (u is UMI3DCollaborationUser uc)
+                {
+                    RemoveTo(uc);
+                    RemoveSource(uc.networkPlayer);
+                }
+            });
+
+            UMI3DCollaborationServer.Instance.OnUserActive.AddListener((user) => forceSendToAll = true);
+        }
+
+        protected override IEnumerable<UMI3DCollaborationUser> GetTargets()
+        {
+            var r = new System.Random();
+            return UMI3DCollaborationServer.Collaboration.Users.OrderBy(s => r.Next());
+        }
+
+        protected override ulong GetTime()
+        {
+            return server.Time;
+        }
+
+        protected override void Send(UMI3DCollaborationUser to, List<Frame> frames, bool force)
+        {
+            server.RelayBinaryDataTo((int)dataChannel, to.networkPlayer, GetMessage(frames), force);
+        }
+
+        abstract protected byte[] GetMessage(List<Frame> frames);
 
         /// <summary>
         /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
         /// </summary>
         /// <param name="to"></param>
-        private (List<T>, bool) GetTrackingFrameToSend(UMI3DCollaborationUser user, ulong time, KeyValuePair<NetworkingPlayer, T>[] framesPerPlayer)
+        protected override (List<Frame> frames, bool force) GetFramesToSend(UMI3DCollaborationUser user, ulong time, KeyValuePair<NetworkingPlayer, Frame>[] framesPerSource)
         {
             bool forceRelay = false;
-            NetworkingPlayer to = user?.networkPlayer;
 
-            List<T> frames = new List<T>();
+            List<Frame> frames = new List<Frame>();
 
-            if (to == null || user == null)
+            if (user == null)
                 return (frames, false);
 
-            KeyValuePair<NetworkingPlayer, T>[] userFrameMap = null;
+            KeyValuePair<NetworkingPlayer, Frame>[] userFrameMap = null;
             RelayVolume relayVolume;
             if (user is UMI3DCollaborationUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
             {
                 var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationUser).ToList();
-                userFrameMap = framesPerPlayer.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
+                userFrameMap = framesPerSource.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
                 forceRelay = true;
             }
             else
             {
-                userFrameMap = framesPerPlayer;
+                userFrameMap = framesPerSource;
             }
 
             foreach (var other in userFrameMap)
             {
-                if (to == other.Key)
+                if (user.networkPlayer == other.Key)
                     continue;
 
-                if (forceSendtrackingFrames || forceRelay)
+                if (forceSendToAll || forceRelay)
                 {
                     frames.Add(other.Value);
                 }
-                else if (ShouldRelay((int)(int)DataChannelTypes.Tracking, to, other.Key, time, BeardedManStudios.Forge.Networking.Receivers.Target))
+                else if (ShouldRelay((int)(int)DataChannelTypes.Tracking, user.networkPlayer, other.Key, time, BeardedManStudios.Forge.Networking.Receivers.Target))
                 {
 
-                    if (!lastFrameSentToAPlayer.ContainsKey(to))
+                    if (!lastFrameSentTo.ContainsKey(user))
                     {
-                        lastFrameSentToAPlayer.Add(to, new Dictionary<NetworkingPlayer, T>());
+                        lastFrameSentTo.Add(user, new());
                     }
 
-                    if (!lastFrameSentToAPlayer[to].ContainsKey(other.Key))
+                    if (!lastFrameSentTo[user].ContainsKey(other.Key))
                     {
-                        lastFrameSentToAPlayer[to][other.Key] = other.Value;
+                        lastFrameSentTo[user][other.Key] = other.Value;
                         frames.Add(other.Value);
-                        RememberRelay(to, other.Key, time);
+                        RememberRelay(user.networkPlayer, other.Key, time);
                     }
                     else
                     {
-                        if (lastFrameSentToAPlayer[to][other.Key] != other.Value)
+                        if (lastFrameSentTo[user][other.Key] != other.Value)
                         {
                             frames.Add(other.Value);
-                            lastFrameSentToAPlayer[to][other.Key] = other.Value;
-                            RememberRelay(to, other.Key, time);
+                            lastFrameSentTo[user][other.Key] = other.Value;
+                            RememberRelay(user.networkPlayer, other.Key, time);
                         }
                     }
                 }
             }
 
-            return (frames, forceSendtrackingFrames);
+            return (frames, forceSendToAll);
         }
 
 
@@ -445,7 +489,4 @@ namespace umi3d.edk.collaboration.tracking
 
         #endregion
     }
-
-
-
 }

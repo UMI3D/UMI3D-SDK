@@ -34,11 +34,12 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
+
     /// <summary>
     /// Environment Forge server, handling most of the transactions to the browsers.
     /// </summary>
     /// The Forge server handles UDP messaging.
-    public class UMI3DForgeServer : UMI3DForgeSocketBase
+    public class UMI3DForgeServer : UMI3DForgeSocketBase, IForgeServer
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -67,8 +68,7 @@ namespace umi3d.edk.collaboration
         UMI3DTrackingRelay trackingRelay;
 
         object timeLock = new object();
-        public ulong time
-        {
+        public ulong Time {
             get
             {
                 lock (timeLock)
