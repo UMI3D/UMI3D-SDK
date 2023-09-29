@@ -71,7 +71,6 @@ namespace umi3d.edk.editor
         /// <inheritdoc/>
         public override void OnInspectorGUI()
         {
-
             float filedWidth = EditorGUIUtility.fieldWidth;
             float labelWidth = EditorGUIUtility.labelWidth;
             EditorGUIUtility.fieldWidth = 0;

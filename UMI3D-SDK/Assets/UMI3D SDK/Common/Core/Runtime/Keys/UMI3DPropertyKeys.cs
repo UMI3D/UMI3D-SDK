@@ -288,5 +288,15 @@ namespace umi3d.common
 
         #endregion
 
+        #region WebView
+        //17000-17999
+        public const uint WebViewCanInteract = 17001;
+        public const uint WebViewSize = 17002;
+        public const uint WebViewTextureSize = 17003;
+        public const uint WebViewUrl = 17004;
+        public const uint WebViewCanUrlBeForced = 17005;
+
+        #endregion
+
     }
 }

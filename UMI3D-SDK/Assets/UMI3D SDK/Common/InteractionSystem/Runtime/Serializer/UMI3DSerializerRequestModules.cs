@@ -20,6 +20,7 @@ namespace umi3d.common.interaction
                 true when typeof(T) == typeof(NotificationCallbackDto) => true,
                 true when typeof(T) == typeof(ToolProjectedDto) => true,
                 true when typeof(T) == typeof(ToolReleasedDto) => true,
+                true when typeof(T) == typeof(WebViewUrlChangedRequestDto) => true,
                 _ => null,
             };
         }
@@ -105,6 +106,11 @@ namespace umi3d.common.interaction
                     bytable = UMI3DSerializer.Write(UMI3DOperationKeys.ToolReleased)
                         + UMI3DSerializer.Write(c.toolId)
                         + UMI3DSerializer.Write(c.boneType);
+                    return true;
+                case WebViewUrlChangedRequestDto c:
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.WebViewUrlRequest)
+                       + UMI3DSerializer.Write(c.webViewId)
+                       + UMI3DSerializer.Write(c.url);
                     return true;
             }
             bytable = null;
