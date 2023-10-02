@@ -115,6 +115,11 @@ namespace umi3d.cdk.userCapture.pose
                         UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
                         return new MagnitudePoseCondition(magnitudeConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
+                case DirectionConditionDto directionConditionDto:
+                    {
+                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(directionConditionDto.TargetNodeId);
+                        return new DirectionPoseCondition(directionConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
+                    }
                 case BoneRotationConditionDto boneRotationConditionDto:
                     {
                         return new BoneRotationPoseCondition(boneRotationConditionDto, skeletonService.PersonalSkeleton.TrackedSubskeleton);
