@@ -24,5 +24,11 @@ namespace umi3d.common.userCapture.pose
     public class DirectionConditionDto : AbstractPoseConditionDto
     {
         public Vector3Dto Direction { get; set; }
+
+        public uint BoneId { get; set; }
+
+        public float Threshold { get; set; }
+
+        public ulong TargetNodeId {  get; set; }
     }
 }
