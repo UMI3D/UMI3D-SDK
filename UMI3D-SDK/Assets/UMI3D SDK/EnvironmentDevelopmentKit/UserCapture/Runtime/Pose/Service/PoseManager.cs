@@ -116,12 +116,6 @@ namespace umi3d.edk.userCapture.pose
         {
             foreach (var overrider in register.PoseOverriderFields)
             {
-                if (!overrider.Model.TryGetComponent<UMI3DPoseOverriderAnimation>(out _))
-                {
-                    overrider.Model.gameObject.AddComponent<UMI3DPoseOverriderAnimation>()
-                                                    .Init(overrider.PoseOverriderContainer);
-                }
-
                 overrider.Init();
                 overrider.PoseOverriderContainer.Id();
                 if (PoseOverriderContainers.Select(x => x.id).Contains(overrider.PoseOverriderContainer.Id()))
