@@ -98,6 +98,7 @@ namespace umi3d.cdk.userCapture.pose
             if (poseOverridersContainerProcessors.TryGetValue(container.NodeId, out IPoseOverridersContainerProcessor unit))
             {
                 unit.ConditionsValidated -= ApplyPoseOverride;
+                unit.ConditionsInvalided -= StopPoseOverride;
                 unit.StopWatchNonInteractionalConditions();
                 poseOverridersContainerProcessors.Remove(container.NodeId);
             }
