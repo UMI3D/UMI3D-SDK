@@ -396,7 +396,7 @@ namespace umi3d.edk.binding
             {
                 var targetUsers = users is not null ? users : umi3dServerService.Users();
 
-                var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(bindingToRemove.boundNodeId)).ToList();
+                var usersWithValues = targetUsers.Where((u) => bindings.GetValue(u).ContainsKey(bindingToRemove.boundNodeId)).ToList();
 
                 if (usersWithValues.Count > 0)
                 {
