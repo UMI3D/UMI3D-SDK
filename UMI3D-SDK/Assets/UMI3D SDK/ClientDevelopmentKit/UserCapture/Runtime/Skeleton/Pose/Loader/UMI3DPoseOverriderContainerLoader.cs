@@ -65,7 +65,7 @@ namespace umi3d.cdk.userCapture.pose
                 throw new System.ArgumentNullException(nameof(poseOverriderContainerDto));
 
             var container = LoadContainer(poseOverriderContainerDto);
-            environmentService.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container).NotifyLoaded();
+            environmentService.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container, () => Delete(poseOverriderContainerDto.id)).NotifyLoaded();
         }
 
         /// <summary>
@@ -99,6 +99,12 @@ namespace umi3d.cdk.userCapture.pose
                                         .Select(x => LoadPoseCondition(x))
                                         .Where(x => x is not null)
                                         .ToArray());
+        }
+
+        public virtual void Delete(ulong id)
+        {
+            PoseOverridersContainer container = environmentService.GetEntityObject<PoseOverridersContainer>(id);
+            poseService.RemovePoseOverriders(container);
         }
 
         /// <summary>

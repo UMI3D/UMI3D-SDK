@@ -36,6 +36,18 @@ namespace umi3d.cdk
         public UnityEvent OnLeaving { get; } = new UnityEvent();
         public UnityEvent OnLeavingEnvironment { get; } = new UnityEvent();
 
+        public UnityEvent OnNewToken { get; } = new UnityEvent();
+        public UnityEvent OnConnectionLost { get; } = new UnityEvent();
+        public UnityEvent OnRedirectionStarted { get; } = new UnityEvent();
+        public UnityEvent OnRedirectionAborted { get; } = new UnityEvent();
+        public UnityEvent OnRedirection { get; } = new UnityEvent();
+        public UnityEvent OnReconnect { get; } = new UnityEvent();
+
+        public UnityEvent OnConnectionCheck { get; } = new UnityEvent();
+        public UnityEvent OnConnectionRetreived { get; } = new UnityEvent();
+
+        public bool IsRedirectionInProgress { get; protected set; } = false;
+
         protected UMI3DTransactionDispatcher _transactionDispatcher;
         public static UMI3DTransactionDispatcher transactionDispatcher
         {

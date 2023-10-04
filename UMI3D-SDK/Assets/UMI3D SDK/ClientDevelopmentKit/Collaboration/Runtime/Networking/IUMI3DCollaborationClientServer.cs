@@ -15,23 +15,23 @@ limitations under the License.
 */
 
 using umi3d.common;
-using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
     public interface IUMI3DCollaborationClientServer : IUMI3DClientServer
     {
+        /// <summary>
+        /// Name of the environment currently connected to.
+        /// </summary>
         string environementName { get; }
-        bool IsRedirectionInProgress { get; }
-        UnityEvent OnConnectionCheck { get; }
-        UnityEvent OnConnectionLost { get; }
-        UnityEvent OnConnectionRetreived { get; }
+
         OnForceLogoutEvent OnForceLogoutMessage { get; }
-        UnityEvent OnNewToken { get; }
-        UnityEvent OnReconnect { get; }
-        UnityEvent OnRedirection { get; }
-        UnityEvent OnRedirectionAborted { get; }
-        UnityEvent OnRedirectionStarted { get; }
+
+        /// <summary>
+        /// True if a redirection is currently happening.
+        /// </summary>
+        bool IsRedirectionInProgress { get; }
+
         StatusType status { get; set; }
         string worldName { get; }
 

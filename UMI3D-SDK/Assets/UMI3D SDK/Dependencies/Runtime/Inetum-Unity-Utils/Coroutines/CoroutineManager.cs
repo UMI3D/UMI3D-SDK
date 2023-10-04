@@ -108,14 +108,14 @@ namespace inetum.unityUtils
         /// <inheritdoc/>
         public virtual Coroutine AttachCoroutine(IEnumerator coroutine, bool isPersistent = false)
         {
-            logger.Assert(coroutine != null, $"Coroutine null when trying to {nameof(AttachCoroutine)}.");
+            logger.Assert(coroutine != null, "Issue", $"Coroutine null when trying to {nameof(AttachCoroutine)}.");
 
             LazyInitialisationCoroutineManager();
             LazyInitialisationPersistentCoroutineManager();
             
             ICoroutineService routineService = isPersistent ? persistentCoroutineManagerMono : coroutineManagerMono;
             var resRoutine = routineService.AttachCoroutine(coroutine);
-            logger.Assert(resRoutine != null, $"resRoutine null when trying to attache. Is persistent coroutine: {isPersistent}");
+            logger.Assert(resRoutine != null, "Issue", $"resRoutine null when trying to attache. Is persistent coroutine: {isPersistent}");
 
             coroutines.Add(resRoutine, isPersistent);
             return resRoutine;
@@ -124,7 +124,7 @@ namespace inetum.unityUtils
         /// <inheritdoc/>
         public virtual void DetachCoroutine(Coroutine coroutine)
         {
-            logger.Assert(coroutine != null, $"Coroutine null when trying to {nameof(DetachCoroutine)}.");
+            logger.Assert(coroutine != null, "Issue", $"Coroutine null when trying to {nameof(DetachCoroutine)}.");
 
             LazyInitialisationCoroutineManager();
             LazyInitialisationPersistentCoroutineManager();
@@ -140,7 +140,7 @@ namespace inetum.unityUtils
 
         public virtual IEnumerator AttachLateRoutine(IEnumerator routine, bool isPersistent = false)
         {
-            logger.Assert(routine != null, $"Coroutine null when trying to {nameof(AttachLateRoutine)}.");
+            logger.Assert(routine != null, "Issue", $"Coroutine null when trying to {nameof(AttachLateRoutine)}.");
 
             LazyInitialisationCoroutineManager();
             LazyInitialisationPersistentCoroutineManager();
@@ -152,7 +152,7 @@ namespace inetum.unityUtils
 
         public virtual void DetachLateRoutine(IEnumerator routine)
         {
-            logger.Assert(routine != null, $"Coroutine null when trying to {nameof(DetachLateRoutine)}.");
+            logger.Assert(routine != null, "Issue", $"Coroutine null when trying to {nameof(DetachLateRoutine)}.");
 
             LazyInitialisationCoroutineManager();
             LazyInitialisationPersistentCoroutineManager();

@@ -34,7 +34,7 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="nodeId"></param>
         /// <param name="poseActivationMode"></param>
-        void TryActivatePoseOverriders(ulong nodeId, PoseActivationMode poseActivationMode);
+        bool TryActivatePoseOverriders(ulong nodeId, PoseActivationMode poseActivationMode);
 
         /// <summary>
         /// Sets the related pose to the overrider Dto, in the poseSkeleton
