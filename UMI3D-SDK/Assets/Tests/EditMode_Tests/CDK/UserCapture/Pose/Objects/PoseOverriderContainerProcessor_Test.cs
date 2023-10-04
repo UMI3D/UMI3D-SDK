@@ -85,41 +85,41 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         #endregion PoseOverridersContainerProcessor
 
-        #region StartWatchNonInteractionalConditions
+        #region StartWatchActivationConditions
 
         [Test]
-        public void StartWatchNonInteractionalConditions()
+        public void StartWatchActivationConditions()
         {
             // given
             coroutineServiceMock.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
 
             // when
-            processor.StartWatchNonInteractionalConditions();
+            processor.StartWatchActivationConditions();
 
             // then
             Assert.IsTrue(processor.IsWatching);
         }
 
-        #endregion StartWatchNonInteractionalConditions
+        #endregion StartWatchActivationConditions
 
-        #region StopWatchNonInteractionalConditions
+        #region StopWatchActivationConditions
 
         [Test]
-        public void StopWatchNonInteractionalConditions()
+        public void StopWatchActivationConditions()
         {
             // given
             coroutineServiceMock.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
             coroutineServiceMock.Setup(x => x.DetachCoroutine(It.IsAny<Coroutine>()));
-            processor.StartWatchNonInteractionalConditions();
+            processor.StartWatchActivationConditions();
 
             // when
-            processor.StopWatchNonInteractionalConditions();
+            processor.StopWatchActivationConditions();
 
             // then
             Assert.IsFalse(processor.IsWatching);
         }
 
-        #endregion StopWatchNonInteractionalConditions
+        #endregion StopWatchActivationConditions
 
         #region TryActivate
 

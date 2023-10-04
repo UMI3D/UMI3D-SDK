@@ -18,6 +18,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         private Mock<IEnvironmentManager> environmentLoaderServiceMock;
         private Mock<ILoadingManager> loadingManagerMock;
         private Mock<ISkeletonManager> skeletonManagerServiceMock;
+        private Mock<IUMI3DClientServer> clientServerServiceMock;
 
         private Mock<IUMI3DUserCaptureLoadingParameters> userCaptureLoadingParametersMock;
 
@@ -30,9 +31,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonManagerServiceMock = new Mock<ISkeletonManager>();
             loadingManagerMock = new();
             userCaptureLoadingParametersMock = new();
+            clientServerServiceMock = new();
+            clientServerServiceMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
+            clientServerServiceMock.Setup(x => x.OnRedirection).Returns(new UnityEngine.Events.UnityEvent());
 
             loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(userCaptureLoadingParametersMock.Object);
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object);
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object, clientServerServiceMock.Object);
         }
 
         [TearDown]
@@ -82,7 +86,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             if (PoseManager.Exists)
                 PoseManager.Destroy();
 
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object)
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object, clientServerServiceMock.Object)
             {
                 Poses = GeneratePoseDictionary()
             };
