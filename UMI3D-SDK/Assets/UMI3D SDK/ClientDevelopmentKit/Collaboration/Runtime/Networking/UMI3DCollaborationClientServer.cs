@@ -57,23 +57,11 @@ namespace umi3d.cdk.collaboration
 
         public static Func<MultiProgress> EnvironmentProgress = null;
 
-        public UnityEvent OnNewToken { get; } = new UnityEvent();
-        public UnityEvent OnConnectionLost { get; } = new UnityEvent();
-        public UnityEvent OnRedirectionStarted { get; } = new UnityEvent();
-        public UnityEvent OnRedirectionAborted { get; } = new UnityEvent();
-        public UnityEvent OnRedirection { get; } = new UnityEvent();
-        public UnityEvent OnReconnect { get; } = new UnityEvent();
-
-        public UnityEvent OnConnectionCheck { get; } = new UnityEvent();
-        public UnityEvent OnConnectionRetreived { get; } = new UnityEvent();
-
         static public OnProgressEvent onProgress = new OnProgressEvent();
 
         public OnForceLogoutEvent OnForceLogoutMessage { get; } = new OnForceLogoutEvent();
 
         public ClientIdentifierApi Identifier;
-
-        public bool IsRedirectionInProgress { get; protected set; } = false;
 
         public StatusType status
         {

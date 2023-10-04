@@ -15,7 +15,9 @@ limitations under the License.
 */
 
 using System.Threading.Tasks;
+
 using umi3d.common;
+
 using UnityEngine.Events;
 
 namespace umi3d.cdk
@@ -23,16 +25,50 @@ namespace umi3d.cdk
     public interface IUMI3DClientServer
     {
         bool AuthorizationInHeader { get; }
+
+        /// <summary>
+        /// Triggered when the browser logout of the environment on purpose.
+        /// </summary>
         UnityEvent OnLeaving { get; }
+
+        /// <summary>
+        /// Triggered when the browser logout of the environment, purposefully or not.
+        /// </summary>
         UnityEvent OnLeavingEnvironment { get; }
+
+        UnityEvent OnConnectionCheck { get; }
+
+        UnityEvent OnConnectionLost { get; }
+
+        UnityEvent OnConnectionRetreived { get; }
+
+        UnityEvent OnNewToken { get; }
+
+        UnityEvent OnReconnect { get; }
+
+        /// <summary>
+        /// Triggered when a connection to a new environment occurs.
+        /// </summary>
+        UnityEvent OnRedirection { get; }
+
+        UnityEvent OnRedirectionAborted { get; }
+
+        UnityEvent OnRedirectionStarted { get; }
+
         UMI3DVersion.Version version { get; }
 
         object GetHttpClient();
+
         double GetRoundTripLAtency();
+
         ulong GetTime();
+
         ulong GetUserId();
+
         Task<bool> TryAgainOnHttpFail(RequestFailedArgument argument);
+
         void SendTracking(AbstractBrowserRequestDto dto);
+
         void _SendRequest(AbstractBrowserRequestDto dto, bool reliable);
     }
 }
