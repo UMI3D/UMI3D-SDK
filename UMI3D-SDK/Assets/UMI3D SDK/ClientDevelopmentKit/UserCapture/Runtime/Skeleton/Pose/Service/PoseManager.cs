@@ -105,12 +105,12 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void TryActivatePoseOverriders(ulong nodeId, PoseActivationMode poseActivationMode)
+        public bool TryActivatePoseOverriders(ulong nodeId, PoseActivationMode poseActivationMode)
         {
-            if (poseOverridersContainerProcessors.TryGetValue(nodeId, out IPoseOverridersContainerProcessor unit))
-            {
-                unit.TryActivate(poseActivationMode);
-            }
+            if (!poseOverridersContainerProcessors.TryGetValue(nodeId, out IPoseOverridersContainerProcessor unit))
+                return false;
+
+            return unit.TryActivate(poseActivationMode);
         }
 
         /// <inheritdoc/>
