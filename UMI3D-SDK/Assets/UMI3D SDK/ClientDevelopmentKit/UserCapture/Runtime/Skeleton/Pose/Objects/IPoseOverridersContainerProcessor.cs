@@ -42,12 +42,12 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Start to check all overriders
         /// </summary>
-        void StartWatchNonInteractionalConditions();
+        void StartWatchActivationConditions();
 
         /// <summary>
         /// Stops the check of fall the overriders
         /// </summary>
-        void StopWatchNonInteractionalConditions();
+        void StopWatchActivationConditions();
 
         /// <summary>
         /// Active poses that listens to this activation mode.

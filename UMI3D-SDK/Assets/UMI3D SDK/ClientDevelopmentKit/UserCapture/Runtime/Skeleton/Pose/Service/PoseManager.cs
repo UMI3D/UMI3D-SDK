@@ -16,6 +16,8 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 
@@ -39,25 +41,28 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// All pose condition processors indexed by related node id.
         /// </summary>
-        protected Dictionary<ulong, IPoseOverridersContainerProcessor> poseOverridersContainerProcessors = new Dictionary<ulong, IPoseOverridersContainerProcessor>();
+        protected readonly Dictionary<ulong, IPoseOverridersContainerProcessor> poseOverridersContainerProcessors = new Dictionary<ulong, IPoseOverridersContainerProcessor>();
+
+        private readonly List<PoseOverridersContainer> containers = new();
 
         #region Dependency Injection
 
         private readonly ISkeletonManager skeletonManager;
         private readonly ILoadingManager loadingManager;
+        private readonly IUMI3DClientServer clientServerService;
 
-        public PoseManager()
-        {
-            skeletonManager = PersonalSkeletonManager.Instance;
-            loadingManager = UMI3DEnvironmentLoader.Instance;
-            Poses.Add(UMI3DGlobalID.EnvironementId, new List<SkeletonPose>());
-        }
+        public PoseManager() : this(PersonalSkeletonManager.Instance, UMI3DEnvironmentLoader.Instance, UMI3DClientServer.Instance)
+        { }
 
-        public PoseManager(ISkeletonManager skeletonManager, ILoadingManager loadingManager)
+        public PoseManager(ISkeletonManager skeletonManager, ILoadingManager loadingManager, IUMI3DClientServer clientServerService)
         {
             this.skeletonManager = skeletonManager;
             this.loadingManager = loadingManager;
+            this.clientServerService = clientServerService;
             Poses.Add(UMI3DGlobalID.EnvironementId, new List<SkeletonPose>());
+
+            clientServerService.OnLeaving.AddListener(() => { containers.ToArray().ForEach(x => RemovePoseOverriders(x)); });
+            clientServerService.OnRedirection.AddListener(() => { containers.ToArray().ForEach(x => RemovePoseOverriders(x)); });
         }
 
         #endregion Dependency Injection
@@ -80,10 +85,15 @@ namespace umi3d.cdk.userCapture.pose
             if (container == null)
                 throw new System.ArgumentNullException(nameof(container));
 
+            if (containers.Contains(container))
+                return;
+
             if (poseOverridersContainerProcessors.ContainsKey(container.NodeId))
                 return;
 
-            PoseOverridersContainerProcessor unit = new PoseOverridersContainerProcessor(container);
+            containers.Add(container);
+
+            PoseOverridersContainerProcessor unit = new (container);
             unit.ConditionsValidated += ApplyPoseOverride;
             unit.ConditionsInvalided += StopPoseOverride;
             poseOverridersContainerProcessors.Add(container.NodeId, unit);
@@ -95,13 +105,15 @@ namespace umi3d.cdk.userCapture.pose
             if (container == null)
                 throw new System.ArgumentNullException(nameof(container));
 
-            if (poseOverridersContainerProcessors.TryGetValue(container.NodeId, out IPoseOverridersContainerProcessor unit))
-            {
-                unit.ConditionsValidated -= ApplyPoseOverride;
-                unit.ConditionsInvalided -= StopPoseOverride;
-                unit.StopWatchNonInteractionalConditions();
-                poseOverridersContainerProcessors.Remove(container.NodeId);
-            }
+            if (!containers.Contains(container)
+                || !poseOverridersContainerProcessors.TryGetValue(container.NodeId, out IPoseOverridersContainerProcessor unit))
+                return;
+            
+            unit.ConditionsValidated -= ApplyPoseOverride;
+            unit.ConditionsInvalided -= StopPoseOverride;
+            unit.StopWatchActivationConditions();
+            poseOverridersContainerProcessors.Remove(container.NodeId);
+            containers.Remove(container);
         }
 
         /// <inheritdoc/>
