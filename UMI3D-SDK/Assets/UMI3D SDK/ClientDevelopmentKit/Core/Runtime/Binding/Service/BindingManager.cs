@@ -34,26 +34,41 @@ namespace umi3d.cdk.binding
         private readonly ILateRoutineService routineService;
         private readonly IUMI3DClientServer clientServer;
 
-        public BindingManager() : base()
-        {
-            routineService = CoroutineManager.Instance;
-            clientServer = UMI3DClientServer.Instance;
-        }
+        public BindingManager() : this(CoroutineManager.Instance, UMI3DClientServer.Instance)
+        { }
 
-        public BindingManager(ILateRoutineService coroutineService, IUMI3DClientServer clientServer)
+        public BindingManager(ILateRoutineService coroutineService, IUMI3DClientServer clientServer) : base()
         {
             this.routineService = coroutineService;
             this.clientServer = clientServer;
+            Init();
         }
 
         #endregion dependency injection
+
+        private void Init()
+        {
+            clientServer.OnLeavingEnvironment.AddListener(Reset);
+            clientServer.OnRedirection.AddListener(Reset);
+        }
+
+        private void Reset()
+        {
+            AreBindingsActivated = true;
+            foreach (ulong bindingNodeId in bindings.Keys.ToList())
+            {
+                RemoveBinding(bindingNodeId);
+            }
+            bindings.Clear();
+            bindingExecutionQueue = new AbstractBinding[0];
+        }
 
         /// <inheritdoc/>
         public virtual bool AreBindingsActivated { get; private set; } = true;
 
         /// <inheritdoc/>
         public virtual IReadOnlyDictionary<ulong, AbstractBinding> Bindings => bindings;
-        protected Dictionary<ulong, AbstractBinding> bindings = new();
+        protected readonly Dictionary<ulong, AbstractBinding> bindings = new();
 
         protected AbstractBinding[] bindingExecutionQueue = new AbstractBinding[0];
 

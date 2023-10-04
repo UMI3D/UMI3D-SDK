@@ -53,6 +53,8 @@ namespace PlayMode_Tests.Core.Binding.CDK
         {
             mockLateRoutineService = new Mock<ILateRoutineService>();
             mockClientServer = new Mock<IUMI3DClientServer>();
+            mockClientServer.Setup(x => x.OnRedirection).Returns(new UnityEvent());
+            mockClientServer.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
             mockBindingManager = new Mock<BindingManager>(mockLateRoutineService.Object, mockClientServer.Object);
             mockBindingManager.CallBase = true;
         }
