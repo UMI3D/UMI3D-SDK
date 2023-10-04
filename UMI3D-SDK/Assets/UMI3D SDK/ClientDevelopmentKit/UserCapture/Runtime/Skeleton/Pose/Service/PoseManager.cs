@@ -59,13 +59,26 @@ namespace umi3d.cdk.userCapture.pose
             this.skeletonManager = skeletonManager;
             this.loadingManager = loadingManager;
             this.clientServerService = clientServerService;
-            Poses.Add(UMI3DGlobalID.EnvironementId, new List<SkeletonPose>());
-
-            clientServerService.OnLeaving.AddListener(() => { containers.ToArray().ForEach(x => RemovePoseOverriders(x)); });
-            clientServerService.OnRedirection.AddListener(() => { containers.ToArray().ForEach(x => RemovePoseOverriders(x)); });
+            
+            Init();
         }
 
         #endregion Dependency Injection
+
+        private void Init()
+        {
+            Poses.Add(UMI3DGlobalID.EnvironementId, new List<SkeletonPose>());
+            clientServerService.OnLeaving.AddListener(Reset);
+            clientServerService.OnRedirection.AddListener(Reset);
+        }
+
+        private void Reset()
+        {
+            StopAllPoses();
+            containers.ToArray().ForEach(x => RemovePoseOverriders(x));
+            Poses.Clear();
+            Poses.Add(UMI3DGlobalID.EnvironementId, new List<SkeletonPose>());
+        }
 
         public void InitLocalPoses()
         {
