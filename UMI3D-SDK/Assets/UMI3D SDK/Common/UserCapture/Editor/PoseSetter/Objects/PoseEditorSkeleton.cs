@@ -1,5 +1,5 @@
-/*
-Copy 2019 - 2023 Inetum
+﻿/*
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,36 +13,26 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if UNITY_EDITOR
 
-using inetum.unityUtils;
-using UnityEngine;
+#if UNITY_EDITOR
+using System.Collections.Generic;
 
 namespace umi3d.common.userCapture.pose.editor
 {
     /// <summary>
-    /// A class used to tag the bones to work with the pose setter tool
+    /// Wrapper for skeleton being edited in the <see cref="PoseEditorWindow"/>.
     /// </summary>
-    public class PoseSetterBoneComponent : MonoBehaviour
+    public class PoseEditorSkeleton
     {
         /// <summary>
-        /// If the bone is the root of the pose
+        /// Pose setter bone components collection defining each bone.
         /// </summary>
-        [EditorReadOnly] public bool isRoot;
-        /// <summary>
-        /// If the bone is selected
-        /// </summary>
-        [EditorReadOnly] public bool isSelected;
+        public List<PoseSetterBoneComponent> boneComponents = new();
 
         /// <summary>
-        /// The type of the bone 
+        /// Pose currently edited.
         /// </summary>
-        [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))] uint boneType;
-
-        /// <summary>
-        /// Accessor for the bone type
-        /// </summary>
-        public uint BoneType { get => boneType; }
+        public UMI3DPose_so currentPose;
     }
 }
 #endif

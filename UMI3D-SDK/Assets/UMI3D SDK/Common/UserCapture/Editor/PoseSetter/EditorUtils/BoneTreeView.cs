@@ -139,7 +139,7 @@ namespace umi3d.common.userCapture
                     if (newValue != item.data.isRoot)
                     {
                         item.data.isRoot = newValue;
-                        item.data.RootChanged?.Invoke(new BoolChangeData { boneTreeElements = item.data, itemID = item.id, boolValue = newValue });
+                        item.data.RootChanged?.Invoke(new BoneTreeElement.ChangeData { boneTreeElements = item.data, itemID = item.id, boolValue = newValue });
                     }
                 }
             }
