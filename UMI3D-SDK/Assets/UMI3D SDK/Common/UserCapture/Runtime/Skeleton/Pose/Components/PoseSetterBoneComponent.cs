@@ -34,10 +34,6 @@ namespace umi3d.edk.userCapture.pose.editor
         /// If the bone is selected
         /// </summary>
         [EditorReadOnly] public bool isSelected;
-        /// <summary>
-        /// If the bone can be saved
-        /// </summary>
-        [EditorReadOnly] public bool isSavable = true;
 
         /// <summary>
         /// The type of the bone 

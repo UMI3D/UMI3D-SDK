@@ -26,23 +26,19 @@ namespace umi3d.common.userCapture
 {
     public class BoneTreeElement : TreeElement
     {
-        public UnityEvent<BoolChangeData> onIsRootChanged = new();
-        public UnityEvent<BoolChangeData> onIsSelectedChanged = new();
+        public UnityEvent<BoolChangeData> RootChanged = new();
 
-
-        public BoneTreeElement(bool isRoot, bool isSeledcted) 
+        public BoneTreeElement(bool isRoot) 
         { 
-            this.isRoot = isRoot; 
-            this.isSelected = isSeledcted;  
+            this.isRoot = isRoot;  
         }
 
         public bool isRoot = false;
-        public bool isSelected = false;
     }
 
     public struct BoolChangeData
     {
-        public BoneTreeElement boneTreeEleements;
+        public BoneTreeElement boneTreeElements;
         public bool boolValue;
         public int itemID;
     }
