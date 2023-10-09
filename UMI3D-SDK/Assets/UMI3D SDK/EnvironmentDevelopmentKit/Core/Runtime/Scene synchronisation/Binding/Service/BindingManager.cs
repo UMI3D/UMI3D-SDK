@@ -255,7 +255,7 @@ namespace umi3d.edk.binding
                     });
 
                 // users with no binding receive the added binding
-                users.Except(usersWithValues).ForEach(user =>
+                targetUsers.Except(usersWithValues).ForEach(user =>
                 {
                     bindings.Add(user, binding.boundNodeId, binding);
                     operations.Add(binding.GetLoadEntity(new() { user }));
