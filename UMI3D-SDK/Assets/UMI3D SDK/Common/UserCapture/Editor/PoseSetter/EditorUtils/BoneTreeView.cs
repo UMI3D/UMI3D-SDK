@@ -59,7 +59,10 @@ namespace umi3d.common.userCapture
         /// <param name="id">bone id of the looked for boneElement</param>
         public void UpdateSingleIsRootToggleWithNoSkeletonUpdate_ById(bool value, uint id)
         {
-            elements.Find(e => e.id == id).data.isRoot = value;
+            var element = elements.Find(e => e.id == id);
+            if (element is null)
+                return;
+            element.data.isRoot = value;
         }
 
         private MultiColumnHeaderState headerState;
@@ -91,18 +94,6 @@ namespace umi3d.common.userCapture
                     maxWidth = 120,
                     autoResize = true,
                     allowToggleVisibility = true
-                },
-                new MultiColumnHeaderState.Column
-                {
-                    headerContent = new GUIContent("IsSelected"),
-                    headerTextAlignment = TextAlignment.Center,
-                    sortedAscending = true,
-                    sortingArrowAlignment = TextAlignment.Right,
-                    width = 60,
-                    minWidth = 60,
-                    maxWidth = 120,
-                    autoResize = true,
-                    allowToggleVisibility = true
                 }
             };
 
@@ -113,8 +104,8 @@ namespace umi3d.common.userCapture
         protected override TreeViewItem BuildRoot()
         {
             // TODO --> Build a real hierarchy
-            TreeViewItem<BoneTreeElement> root = new TreeViewItem<BoneTreeElement>(0, -1, "Root", new BoneTreeElement(false, false));
-            TreeViewItem<BoneTreeElement> skeletonRoot = new TreeViewItem<BoneTreeElement>(0, 0, "Root", new BoneTreeElement(false, false));
+            TreeViewItem<BoneTreeElement> root = new TreeViewItem<BoneTreeElement>(0, -1, "Root", new BoneTreeElement(false));
+            TreeViewItem<BoneTreeElement> skeletonRoot = new TreeViewItem<BoneTreeElement>(0, 0, "Root", new BoneTreeElement(false));
 
             root.AddChild(skeletonRoot);
 
@@ -148,33 +139,10 @@ namespace umi3d.common.userCapture
                     if (newValue != item.data.isRoot)
                     {
                         item.data.isRoot = newValue;
-                        item.data.onIsRootChanged?.Invoke(new BoolChangeData { boneTreeEleements = item.data, itemID = item.id, boolValue = newValue });
-                    }
-                }
-                else if (col == 2)
-                {
-                    Rect toggleRect = new Rect(cellRect.center.x - 8f, cellRect.y, 16f, cellRect.height);
-                    bool newValue = EditorGUI.ToggleLeft(toggleRect, GUIContent.none, item.data.isSelected);
-                    if (newValue != item.data.isSelected)
-                    {
-                        item.data.isSelected = newValue;
-                        item.data.onIsSelectedChanged?.Invoke(new BoolChangeData { boneTreeEleements = item.data, itemID = item.id, boolValue = newValue });
-                        ResetEveryOtherSelectedToFalse(item.id);
+                        item.data.RootChanged?.Invoke(new BoneTreeElement.ChangeData { boneTreeElements = item.data, itemID = item.id, boolValue = newValue });
                     }
                 }
             }
-        }
-
-        private void ResetEveryOtherSelectedToFalse(int ignoreId)
-        {
-            elements.ForEach(e =>
-            {
-                if (e.data.isSelected && e.id != ignoreId)
-                {
-                    e.data.isSelected = false;
-                    e.data.onIsSelectedChanged?.Invoke(new BoolChangeData { itemID = e.id, boolValue = false });
-                }
-            });
         }
     }
 
