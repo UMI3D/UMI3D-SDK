@@ -559,7 +559,6 @@ namespace umi3d.cdk.collaboration
 
         private async void Join(MultiProgress progress)
         {
-            //UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             libraryProgress.SetAsCompleted();
             Progress PostJoinProgress = new Progress(2, "Joining Environment");
             MultiProgress EnterProgress = new MultiProgress("Entering Environment");
