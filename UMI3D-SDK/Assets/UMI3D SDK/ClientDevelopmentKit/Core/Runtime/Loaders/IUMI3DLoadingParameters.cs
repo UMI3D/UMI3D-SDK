@@ -31,6 +31,8 @@ namespace umi3d.cdk
         Material skyboxMaterial { get; }
         KHR_lights_punctualLoader khr_lights_punctualLoader { get; }
 
+        bool IsBrowserImmersive { get; }
+
     }
 
     public interface IUMI3DAbstractLoadingParameters

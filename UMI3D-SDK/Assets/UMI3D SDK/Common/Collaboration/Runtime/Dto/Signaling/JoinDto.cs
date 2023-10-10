@@ -33,5 +33,10 @@ namespace umi3d.common.collaboration.dto.signaling
         /// User size scale relative to the environment.
         /// </summary>
         public Vector3Dto userSize { get; set; }
+
+        /// <summary>
+        /// True if the browser uses immersive display.
+        /// </summary>
+        public bool isBrowserImmersive { get; set; }
     }
 }

@@ -50,7 +50,7 @@ namespace umi3d.edk
         /// <summary>
         /// Does the user have an immersive device?
         /// </summary>
-        public bool hasImmersiveDevice { get; protected set; } = true;
+        public bool HasImmersiveBrowser { get; protected set; } = true;
 
         /// <summary>
         /// UMI3D status of the object. 

@@ -186,19 +186,21 @@ namespace umi3d.edk.collaboration
 
         static object joinLock = new object();
 
-        public async Task JoinDtoReception(Vector3Dto userSize, PoseDto[] userPoses)
+        public async Task JoinDtoReception(JoinDto joinDto)
         {
             lock (joinLock)
             {
                 UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
 
-                if (this.userSize.GetValue() == userSize)
+                HasImmersiveBrowser = joinDto.isBrowserImmersive;
+
+                if (this.userSize.GetValue() == joinDto.userSize)
                     UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
                 else
-                    this.userSize.SetValue(userSize);
+                    this.userSize.SetValue(joinDto.userSize);
             }
-            if (poseManagerService == null) poseManagerService = PoseManager.Instance;
-            poseManagerService.RegisterUserCustomPose(userId, userPoses);
+            poseManagerService ??= PoseManager.Instance;
+            poseManagerService.RegisterUserCustomPose(userId, joinDto.clientLocalPoses);
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);

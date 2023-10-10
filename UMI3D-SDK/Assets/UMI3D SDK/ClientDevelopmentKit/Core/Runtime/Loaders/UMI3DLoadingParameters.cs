@@ -102,6 +102,9 @@ namespace umi3d.cdk
 
         protected AbstractLoader loader;
 
+        [SerializeField, Tooltip("True if the browser uses an immersive display.")]
+        private bool isBrowserImmersive;
+        public bool IsBrowserImmersive => isBrowserImmersive;
 
         public virtual void Init()
         {
