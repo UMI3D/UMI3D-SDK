@@ -561,7 +561,7 @@ namespace umi3d.cdk.collaboration
         {
             //UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             libraryProgress.SetAsCompleted();
-            Progress PostJoinProgress = new Progress(2, "Joinning Environment");
+            Progress PostJoinProgress = new Progress(2, "Joining Environment");
             MultiProgress EnterProgress = new MultiProgress("Entering Environment");
             progress.Add(PostJoinProgress);
             progress.Add(EnterProgress);
@@ -580,7 +580,7 @@ namespace umi3d.cdk.collaboration
             {
                 PostJoinProgress.AddComplete();
                 EnterDto enter = await HttpClient.SendPostJoin(joinDto);
-                PostJoinProgress.AddAndSetStatus("Joinned Environment");
+                PostJoinProgress.AddAndSetStatus("Joined Environment");
                 isConnecting = false;
                 isConnected = true;
                 await EnterScene(enter, EnterProgress);
