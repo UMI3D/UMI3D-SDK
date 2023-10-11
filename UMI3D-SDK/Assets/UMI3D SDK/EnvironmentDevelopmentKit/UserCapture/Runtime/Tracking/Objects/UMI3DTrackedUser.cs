@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.userCapture.tracking;
 
@@ -30,5 +31,10 @@ namespace umi3d.edk.userCapture.tracking
         /// User's tracking current state description
         /// </summary>
         public UserTrackingFrameDto CurrentTrackingFrame;
+
+        /// <summary>
+        /// Bones that are associated with a controller.
+        /// </summary>
+        public List<uint> BonesWithController;
     }
 }

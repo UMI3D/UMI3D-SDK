@@ -15,13 +15,9 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.userCapture;
-using umi3d.common.userCapture.pose;
-using umi3d.edk.userCapture;
 using umi3d.edk.userCapture.pose;
 using umi3d.edk.userCapture.tracking;
 
@@ -39,6 +35,7 @@ namespace umi3d.edk.collaboration
 
         /// <inheritdoc/>
         protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }
+
         /// <summary>
         /// The unique user login.
         /// </summary>
@@ -74,7 +71,6 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string token => identityDto.localToken;
 
-
         public UMI3DForgeServer forgeServer;
 
         /// <summary>
@@ -88,6 +84,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAudioPlayer videoPlayer;
 
         #region audioSettings
+
         public UMI3DAsyncProperty<int> audioFrequency;
         public UMI3DAsyncProperty<bool> microphoneStatus;
         public UMI3DAsyncProperty<bool> attentionRequired;
@@ -97,6 +94,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<bool> audioUseMumble;
         public UMI3DAsyncProperty<string> audioPassword;
         public UMI3DAsyncProperty<string> audioLogin;
+
         #endregion audioSettings
 
         /// <summary>
@@ -115,7 +113,6 @@ namespace umi3d.edk.collaboration
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
 
-          
             userId = identity is not null && identity.userId != 0 ? UMI3DEnvironment.Register(this, identity.userId) : Id();
 
             audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
@@ -184,21 +181,24 @@ namespace umi3d.edk.collaboration
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
         }
 
-        static object joinLock = new object();
+        private static object joinLock = new object();
 
-        public async Task JoinDtoReception(Vector3Dto userSize, PoseDto[] userPoses)
+        public async Task JoinDtoReception(JoinDto joinDto)
         {
             lock (joinLock)
             {
-                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+                HasImmersiveDevice = joinDto.hasImmersiveDevice;
+                HasHeadMountedDisplay = joinDto.hasHeadMountedDisplay;
+                BonesWithController = joinDto.bonesWithController;
 
-                if (this.userSize.GetValue() == userSize)
+                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+                if (this.userSize.GetValue() == joinDto.userSize)
                     UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
                 else
-                    this.userSize.SetValue(userSize);
+                    this.userSize.SetValue(joinDto.userSize);
             }
-            if (poseManagerService == null) poseManagerService = PoseManager.Instance;
-            poseManagerService.RegisterUserCustomPose(userId, userPoses);
+            poseManagerService ??= PoseManager.Instance;
+            poseManagerService.RegisterUserCustomPose(userId, joinDto.clientLocalPoses);
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
@@ -226,7 +226,6 @@ namespace umi3d.edk.collaboration
             if (!isSame)
                 UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);
         }
-
 
         public virtual UserConnectionDto ToUserConnectionDto()
         {
