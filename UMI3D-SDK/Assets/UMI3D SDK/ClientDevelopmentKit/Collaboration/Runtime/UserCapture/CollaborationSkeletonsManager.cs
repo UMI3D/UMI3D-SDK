@@ -109,14 +109,12 @@ namespace umi3d.cdk.collaboration.userCapture
         private readonly ILateRoutineService routineService;
         private readonly ISkeletonManager personalSkeletonManager;
 
-        public CollaborationSkeletonsManager() : base()
+        public CollaborationSkeletonsManager() : this(collaborationClientServer: UMI3DCollaborationClientServer.Instance,
+                                                        collaborativeLoader: UMI3DCollaborationEnvironmentLoader.Instance,
+                                                        collaborativeEnvironmentManagementService: UMI3DCollaborationEnvironmentLoader.Instance,
+                                                        routineService: CoroutineManager.Instance,
+                                                        personalSkeletonManager: PersonalSkeletonManager.Instance)
         {
-            collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
-            collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
-            collaborativeEnvironmentManagementService = UMI3DCollaborationEnvironmentLoader.Instance;
-            routineService = CoroutineManager.Instance;
-            personalSkeletonManager = PersonalSkeletonManager.Instance;
-            Init();
         }
 
         public CollaborationSkeletonsManager(IUMI3DCollaborationClientServer collaborationClientServer,
