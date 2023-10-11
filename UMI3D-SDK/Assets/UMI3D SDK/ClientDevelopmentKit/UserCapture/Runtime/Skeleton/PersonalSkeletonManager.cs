@@ -26,7 +26,7 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// User's skeleton manager.
     /// </summary>
-    public class PersonalSkeletonManager : Singleton<PersonalSkeletonManager>, ISkeletonManager
+    public class PersonalSkeletonManager : Singleton<PersonalSkeletonManager>, ISkeletonManager, IPersonalSkeletonManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
@@ -89,7 +89,8 @@ namespace umi3d.cdk.userCapture
         {
             environmentLoaderService.onEnvironmentLoaded.AddListener(() =>
             {
-                if (IsPersonalSkeletonNull) InitPersonalSkeleton();
+                if (_skeleton == null)
+                    InitPersonalSkeleton();
             });
         }
 
@@ -105,7 +106,21 @@ namespace umi3d.cdk.userCapture
             PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
             _skeleton.SkeletonHierarchy = StandardHierarchy;
             PersonalSkeleton.SelfInit();
+            StartCompute();
+        }
+
+        public void StartCompute()
+        {
             computeRoutine ??= lateRoutineService.AttachLateRoutine(ComputeCoroutine());
+        }
+
+        public void StopCompute()
+        {
+            if (computeRoutine == null)
+                return;
+
+            lateRoutineService.DetachLateRoutine(computeRoutine);
+            computeRoutine = null;
         }
 
         IEnumerator WhileUntilTheHanlderExist()
@@ -125,8 +140,7 @@ namespace umi3d.cdk.userCapture
                 PersonalSkeleton.Compute();
                 yield return null;
             }
-            lateRoutineService.DetachLateRoutine(computeRoutine);
-            computeRoutine = null;
+            StopCompute();
         }
     }
 }
