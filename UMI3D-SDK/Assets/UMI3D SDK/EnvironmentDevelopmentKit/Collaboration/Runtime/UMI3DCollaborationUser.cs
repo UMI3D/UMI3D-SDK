@@ -187,8 +187,8 @@ namespace umi3d.edk.collaboration
         {
             lock (joinLock)
             {
-                hasImmersiveBrowser = joinDto.isBrowserPurelyVirtual;
-                HasImmersiveDisplay = joinDto.hasImmersiveDisplay;
+                HasImmersiveDevice = joinDto.hasImmersiveDevice;
+                HasHeadMountedDisplay = joinDto.hasHeadMountedDisplay;
                 BonesWithController = joinDto.bonesWithController;
 
                 UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);

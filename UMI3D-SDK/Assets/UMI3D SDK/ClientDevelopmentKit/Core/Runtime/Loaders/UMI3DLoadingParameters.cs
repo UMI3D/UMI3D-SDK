@@ -103,12 +103,12 @@ namespace umi3d.cdk
         protected AbstractLoader loader;
 
         [SerializeField, Tooltip("True if the browser uses purely Virtual Reality and not any form of Mixed Reality.")]
-        private bool isBrowserPurelyVirtual;
-        public bool IsBrowserPurelyVirtual => isBrowserPurelyVirtual;
+        private bool hasImmersiveDevice;
+        public bool HasImmersiveDevice => hasImmersiveDevice;
 
-        [SerializeField, Tooltip("True if the browser uses an immersive display.")]
-        private bool hasImmersiveDisplay;
-        public bool HasImmersiveDisplay => hasImmersiveDisplay;
+        [SerializeField, Tooltip("True if the browser uses a head mounted display.")]
+        private bool hasHeadMountedDisplay;
+        public bool HasHeadMountedDisplay => hasHeadMountedDisplay;
 
         public virtual void Init()
         {

@@ -50,12 +50,12 @@ namespace umi3d.edk
         /// <summary>
         /// True if the user's browser is using purely virtual immersion and not any form of Mixed Reality.
         /// </summary>
-        public bool hasImmersiveBrowser { get; protected set; } = true;
+        public bool HasImmersiveDevice { get; protected set; } = true;
 
         /// <summary>
         /// Does the user have an immersive display on their device.
         /// </summary>
-        public bool HasImmersiveDisplay { get; protected set; } = true;
+        public bool HasHeadMountedDisplay { get; protected set; } = true;
         
         /// <summary>
         /// UMI3D status of the object. 

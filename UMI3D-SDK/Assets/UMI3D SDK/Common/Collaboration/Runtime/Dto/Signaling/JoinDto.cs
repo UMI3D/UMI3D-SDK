@@ -37,12 +37,12 @@ namespace umi3d.common.collaboration.dto.signaling
         /// <summary>
         /// True if the browser uses purely virtual immersion and not any form of Mixed Reality.
         /// </summary>
-        public bool isBrowserPurelyVirtual { get; set; }
+        public bool hasImmersiveDevice { get; set; }
 
         /// <summary>
         /// True if the browser uses immersive display.
         /// </summary>
-        public bool hasImmersiveDisplay { get; set; }
+        public bool hasHeadMountedDisplay { get; set; }
 
         /// <summary>
         /// BoneType of bones with controllers on browser. <br/>

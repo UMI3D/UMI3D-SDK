@@ -34,12 +34,12 @@ namespace umi3d.cdk
         /// <summary>
         /// True if the browser uses purely Virtual Reality and not any form of Mixed Reality
         /// </summary>
-        bool IsBrowserPurelyVirtual { get; }
+        bool HasImmersiveDevice { get; }
 
         /// <summary>
         /// True if the browser uses an immersive display.
         /// </summary>
-        bool HasImmersiveDisplay { get; }
+        bool HasHeadMountedDisplay { get; }
     }
 
     public interface IUMI3DAbstractLoadingParameters
