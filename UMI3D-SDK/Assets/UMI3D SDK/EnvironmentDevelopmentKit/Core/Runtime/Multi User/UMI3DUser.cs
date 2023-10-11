@@ -48,9 +48,9 @@ namespace umi3d.edk
 
         #region session
         /// <summary>
-        /// Does the user have an immersive device?
+        /// True if the user's browser is using purely virtual immersion and not any form of Mixed Reality.
         /// </summary>
-        public bool HasImmersiveBrowser { get; protected set; } = true;
+        public bool hasImmersiveBrowser { get; protected set; } = true;
 
         /// <summary>
         /// UMI3D status of the object. 
