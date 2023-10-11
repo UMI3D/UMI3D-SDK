@@ -24,5 +24,6 @@ namespace umi3d.cdk.userCapture
     {
         IReadOnlyList<IUMI3DPoseData> ClientPoses { get; }
         IUMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition { get; }
+        IList<uint> BonesWithControllers { get; }
     }
 }

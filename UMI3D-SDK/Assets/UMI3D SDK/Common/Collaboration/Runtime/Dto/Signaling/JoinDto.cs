@@ -35,8 +35,19 @@ namespace umi3d.common.collaboration.dto.signaling
         public Vector3Dto userSize { get; set; }
 
         /// <summary>
+        /// True if the browser uses purely virtual immersion and not any form of Mixed Reality.
+        /// </summary>
+        public bool isBrowserPurelyVirtual { get; set; }
+
+        /// <summary>
         /// True if the browser uses immersive display.
         /// </summary>
-        public bool isBrowserImmersive { get; set; }
+        public bool hasImmersiveDisplay { get; set; }
+
+        /// <summary>
+        /// BoneType of bones with controllers on browser. <br/>
+        /// E.g. BoneType.ViewPoint for Desktop, BoneType.LeftHand and BoneType.RightHand for most VR devices.
+        /// </summary>
+        public List<uint> bonesWithController { get; set; }
     }
 }

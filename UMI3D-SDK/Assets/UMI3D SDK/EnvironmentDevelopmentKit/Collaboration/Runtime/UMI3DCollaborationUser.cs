@@ -187,10 +187,11 @@ namespace umi3d.edk.collaboration
         {
             lock (joinLock)
             {
+                hasImmersiveBrowser = joinDto.isBrowserPurelyVirtual;
+                HasImmersiveDisplay = joinDto.hasImmersiveDisplay;
+                BonesWithController = joinDto.bonesWithController;
+
                 UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
-
-                HasImmersiveBrowser = joinDto.isBrowserImmersive;
-
                 if (this.userSize.GetValue() == joinDto.userSize)
                     UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
                 else

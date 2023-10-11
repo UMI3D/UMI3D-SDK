@@ -14,8 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -36,5 +39,16 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Specific poses defined by the browser.")]
         private List<UMI3DPose_so> clientPoses = new List<UMI3DPose_so>();
         public IReadOnlyList<IUMI3DPoseData> ClientPoses => clientPoses.Cast<IUMI3DPoseData>().ToList();
+
+        [SerializeField, Tooltip("List of bones that possess a controller.")]
+        private List<BoneWrapper> bonesWithController = new();
+        public IList<uint> BonesWithControllers => bonesWithController.Select(x=>x.bone).ToList();
+
+        [Serializable]
+        private class BoneWrapper
+        {
+            [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))]
+            public uint bone;
+        }
     }
 }

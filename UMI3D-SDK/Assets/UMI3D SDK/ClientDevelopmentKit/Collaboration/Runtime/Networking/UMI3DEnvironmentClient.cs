@@ -574,7 +574,9 @@ namespace umi3d.cdk.collaboration
             {
                 clientLocalPoses = PoseManager.Instance.localPoses.ToList(),
                 userSize = PersonalSkeletonManager.Instance.PersonalSkeleton.Transform.localScale.Dto(),
-                isBrowserImmersive = UMI3DEnvironmentLoader.Instance.LoadingParameters.IsBrowserImmersive
+                hasImmersiveDisplay = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDisplay,
+                bonesWithController = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.BonesWithControllers.ToList(),
+                isBrowserPurelyVirtual = UMI3DEnvironmentLoader.Instance.LoadingParameters.IsBrowserPurelyVirtual,
             };
             try
             {
