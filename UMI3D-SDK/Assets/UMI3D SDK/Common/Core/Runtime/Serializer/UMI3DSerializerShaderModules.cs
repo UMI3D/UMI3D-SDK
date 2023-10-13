@@ -139,7 +139,7 @@ namespace umi3d.common
             var result = GetType(value);
             return new UMI3DShaderPropertyDto()
             {
-                collectionType = result.type,
+                collectionType = result.collection,
                 value = value,
                 type = result.type,
                 size = result.size
@@ -152,7 +152,7 @@ namespace umi3d.common
             var result = GetType(value);
             return new UMI3DShaderPropertyDto()
             {
-                collectionType = result.type,
+                collectionType = result.collection,
                 value = value,
                 type = result.type,
                 size = result.size
