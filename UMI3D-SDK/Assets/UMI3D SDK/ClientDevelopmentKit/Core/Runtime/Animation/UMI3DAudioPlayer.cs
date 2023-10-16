@@ -364,5 +364,14 @@ namespace umi3d.cdk
 
             return mode;
         }
+
+        /// <summary>
+        /// When set to true, makes the audio loop.
+        /// </summary>
+        /// <param name="b"></param>
+        public void SetLoopValue(bool b)
+        {
+            audioSource.loop = b;
+        }
     }
 }
