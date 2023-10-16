@@ -106,6 +106,10 @@ namespace umi3d.cdk
                     {
                         (value.entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
                     }
+                    else if (dto is UMI3DAudioPlayerDto)
+                    {
+                        (value.entity.Object as UMI3DAudioPlayer).SetLoopValue(dto.looping);
+                    }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
                     dto.startTime = (ulong)(long)value.property.value;
@@ -152,6 +156,10 @@ namespace umi3d.cdk
                     if (dto is UMI3DVideoPlayerDto)
                     {
                         (value.entity.Object as UMI3DVideoPlayer).SetLoopValue(dto.looping);
+                    }
+                    else if (dto is UMI3DAudioPlayerDto)
+                    {
+                        (value.entity.Object as UMI3DAudioPlayer).SetLoopValue(dto.looping);
                     }
                     break;
                 case UMI3DPropertyKeys.AnimationStartTime:
