@@ -24,8 +24,6 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk
 {
-    public class ProgressValueUpdate : UnityEvent<float> { }
-    public class ProgressStateUpdate : UnityEvent<string> { }
     //$"Load resources {(loadedResources / resourcesToLoad * 100).ToString("N2")} %"
 
 
@@ -33,9 +31,9 @@ namespace umi3d.cdk
     {
         public DebugProgress(string state) : base(state)
         {
-            OnCompleteUpdated.AddListener(i => Debug());
-            OnFailedUpdated.AddListener(i => Debug());
-            OnStatusUpdated.AddListener(i => Debug());
+            OnCompleteUpdated += i => Debug();
+            OnFailedUpdated += i => Debug();
+            OnStatusUpdated += i => Debug();
 
         }
     }
@@ -54,8 +52,8 @@ namespace umi3d.cdk
         public MultiProgress(string state) : base(0, state)
         {
             progressList = new List<Progress>();
-            OnCompleteUpdated.AddListener(i => OnStatusUpdated.Invoke(currentState));
-            OnFailedUpdated.AddListener(i => OnStatusUpdated.Invoke(currentState));
+            OnCompleteUpdated += i => OnStatusUpdated.Invoke(currentState);
+            OnFailedUpdated += i => OnStatusUpdated.Invoke(currentState);
         }
 
         bool ForcedFailed = false;
@@ -146,9 +144,9 @@ namespace umi3d.cdk
         {
             GetStatus(out float completed, out float failed, out string state);
             progressList.Add(item);
-            item.OnCompleteUpdated.AddListener(OnComplete);
-            item.OnFailedUpdated.AddListener(OnFailed);
-            item.OnStatusUpdated.AddListener(OnStatus);
+            item.OnCompleteUpdated += OnComplete;
+            item.OnFailedUpdated += OnFailed;
+            item.OnStatusUpdated += OnStatus;
             if(item.ResumeAfterFail == null)
                 item.ResumeAfterFail = ResumeAfterFail;
             NotifyUpdate(completed, failed, state);
@@ -164,9 +162,9 @@ namespace umi3d.cdk
             progressList.AddRange(items);
             foreach (Progress item in items)
             {
-                item.OnCompleteUpdated.AddListener(OnComplete);
-                item.OnFailedUpdated.AddListener(OnFailed);
-                item.OnStatusUpdated.AddListener(OnStatus);
+                item.OnCompleteUpdated += OnComplete;
+                item.OnFailedUpdated += OnFailed;
+                item.OnStatusUpdated += OnStatus;
                 if (item.ResumeAfterFail == null)
                     item.ResumeAfterFail = ResumeAfterFail;
             }
@@ -178,9 +176,9 @@ namespace umi3d.cdk
             GetStatus(out float completed, out float failed, out string state);
             foreach (Progress item in progressList)
             {
-                item.OnCompleteUpdated.RemoveListener(OnComplete);
-                item.OnFailedUpdated.RemoveListener(OnFailed);
-                item.OnStatusUpdated.RemoveListener(OnStatus);
+                item.OnCompleteUpdated -= OnComplete;
+                item.OnFailedUpdated -= OnFailed;
+                item.OnStatusUpdated -= OnStatus;
                 if (item.ResumeAfterFail == ResumeAfterFail)
                     item.ResumeAfterFail = null;
             }
@@ -198,9 +196,9 @@ namespace umi3d.cdk
         {
             GetStatus(out float completed, out float failed, out string state);
             progressList.Insert(index, item);
-            item.OnCompleteUpdated.AddListener(OnComplete);
-            item.OnFailedUpdated.AddListener(OnFailed);
-            item.OnStatusUpdated.AddListener(OnStatus);
+            item.OnCompleteUpdated += OnComplete;
+            item.OnFailedUpdated += OnFailed;
+            item.OnStatusUpdated += OnStatus;
             if (item.ResumeAfterFail == null)
                 item.ResumeAfterFail = ResumeAfterFail;
             NotifyUpdate(completed, failed, state);
@@ -211,9 +209,9 @@ namespace umi3d.cdk
             GetStatus(out float completed, out float failed, out string state);
             var r = progressList.Remove(item);
 
-            item.OnCompleteUpdated.RemoveListener(OnComplete);
-            item.OnFailedUpdated.RemoveListener(OnFailed);
-            item.OnStatusUpdated.RemoveListener(OnStatus);
+            item.OnCompleteUpdated -= OnComplete;
+            item.OnFailedUpdated -= OnFailed;
+            item.OnStatusUpdated -= OnStatus;
             if (item.ResumeAfterFail == ResumeAfterFail)
                 item.ResumeAfterFail = null;
             NotifyUpdate(completed, failed, state);
@@ -225,9 +223,9 @@ namespace umi3d.cdk
             GetStatus(out float completed, out float failed, out string state);
             foreach (Progress item in progressList)
             {
-                item.OnCompleteUpdated.RemoveListener(OnComplete);
-                item.OnFailedUpdated.RemoveListener(OnFailed);
-                item.OnStatusUpdated.RemoveListener(OnStatus);
+                item.OnCompleteUpdated -= OnComplete;
+                item.OnFailedUpdated -= OnFailed;
+                item.OnStatusUpdated -= OnStatus;
                 if (item.ResumeAfterFail == ResumeAfterFail)
                     item.ResumeAfterFail = null;
             }
@@ -239,9 +237,9 @@ namespace umi3d.cdk
         {
             GetStatus(out float completed, out float failed, out string state);
             var item = progressList[index];
-            item.OnCompleteUpdated.RemoveListener(OnComplete);
-            item.OnFailedUpdated.RemoveListener(OnFailed);
-            item.OnStatusUpdated.RemoveListener(OnStatus);
+            item.OnCompleteUpdated -= OnComplete;
+            item.OnFailedUpdated -= OnFailed;
+            item.OnStatusUpdated -= OnStatus;
             if (item.ResumeAfterFail == ResumeAfterFail)
                 item.ResumeAfterFail = null;
             progressList.RemoveAt(index);
@@ -324,17 +322,17 @@ namespace umi3d.cdk
         /// <summary>
         /// Invoked when a task is completed.
         /// </summary>
-        public ProgressValueUpdate OnCompleteUpdated = new ProgressValueUpdate();
+        public Action<float> OnCompleteUpdated;
 
         /// <summary>
         /// Invoked when a task fails.
         /// </summary>
-        public ProgressValueUpdate OnFailedUpdated = new ProgressValueUpdate();
+        public Action<float> OnFailedUpdated;
 
         /// <summary>
         /// Invoked when a task status change.
         /// </summary>
-        public ProgressStateUpdate OnStatusUpdated = new ProgressStateUpdate();
+        public Action<string> OnStatusUpdated;
 
         #endregion progressEvents
 
