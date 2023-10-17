@@ -76,6 +76,22 @@ namespace umi3d.edk.userCapture.pose
                 foreach (var register in registers)
                     Register(register);
 
+
+                // more overriders from monos in scene
+                var overridersMonos = UnityEngine.Object.FindObjectsOfType<UMI3DPoseOverrider>()
+                                                                                    .GroupBy(x=>x.relativeNode.Id())
+                                                                                    .ToDictionary(g=>g.Key, 
+                                                                                                  g=>g.Cast<IUMI3DPoseOverriderData>());
+
+
+                foreach (var (nodeId, overriders) in overridersMonos)
+                {
+                    var container = new UMI3DPoseOverriderContainer(nodeId, overriders);
+                    container.Init(nodeId);
+
+                    PoseOverriderContainers.Add((UMI3DPoseOverridersContainerDto)container.ToEntityDto());
+                }
+
                 posesInitialized = true;
             }
         }
