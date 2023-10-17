@@ -14,7 +14,10 @@
         "UMI3D.EDK.Collaboration",
         "UMI3D.EDK.UserCapture",
         "UMI3D.EDK.Core",
-        "TestUtils"
+        "TestUtils",
+        "UMI3D.Common.InteractionSystem",
+        "UMI3D.CDK.InteractionSystem",
+        "UMI3D.EDK.InteractionSystem"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
