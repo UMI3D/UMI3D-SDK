@@ -112,7 +112,7 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        private IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
+        protected virtual IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
         {
             switch (dto)
             {
