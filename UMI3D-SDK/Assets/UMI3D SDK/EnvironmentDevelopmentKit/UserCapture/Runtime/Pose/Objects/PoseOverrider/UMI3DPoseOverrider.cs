@@ -32,7 +32,22 @@ namespace umi3d.common.userCapture.pose
         [SerializeField]
         public UMI3DPose_so pose;
 
-        public IUMI3DPoseData Pose => pose;
+        private IUMI3DPoseData _pose;
+
+        public IUMI3DPoseData Pose
+        {
+            get
+            {
+                if (_pose == null)
+                    _pose = pose;
+
+                return _pose;
+            }
+            set
+            {
+                _pose = value;
+            }
+        }
 
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
