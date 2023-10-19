@@ -559,9 +559,8 @@ namespace umi3d.cdk.collaboration
 
         private async void Join(MultiProgress progress)
         {
-            //UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             libraryProgress.SetAsCompleted();
-            Progress PostJoinProgress = new Progress(2, "Joinning Environment");
+            Progress PostJoinProgress = new Progress(2, "Joining Environment");
             MultiProgress EnterProgress = new MultiProgress("Entering Environment");
             progress.Add(PostJoinProgress);
             progress.Add(EnterProgress);
@@ -575,12 +574,15 @@ namespace umi3d.cdk.collaboration
             {
                 clientLocalPoses = PoseManager.Instance.localPoses.ToList(),
                 userSize = PersonalSkeletonManager.Instance.PersonalSkeleton.Transform.localScale.Dto(),
+                hasHeadMountedDisplay = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasHeadMountedDisplay,
+                bonesWithController = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.BonesWithControllers.ToList(),
+                hasImmersiveDevice = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice,
             };
             try
             {
                 PostJoinProgress.AddComplete();
                 EnterDto enter = await HttpClient.SendPostJoin(joinDto);
-                PostJoinProgress.AddAndSetStatus("Joinned Environment");
+                PostJoinProgress.AddAndSetStatus("Joined Environment");
                 isConnecting = false;
                 isConnected = true;
                 await EnterScene(enter, EnterProgress);

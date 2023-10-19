@@ -65,7 +65,7 @@ namespace umi3d.cdk.userCapture.pose
                 throw new System.ArgumentNullException(nameof(poseOverriderContainerDto));
 
             var container = LoadContainer(poseOverriderContainerDto);
-            environmentService.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container).NotifyLoaded();
+            environmentService.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container, () => Delete(poseOverriderContainerDto.id)).NotifyLoaded();
         }
 
         /// <summary>
@@ -101,12 +101,18 @@ namespace umi3d.cdk.userCapture.pose
                                         .ToArray());
         }
 
+        public virtual void Delete(ulong id)
+        {
+            PoseOverridersContainer container = environmentService.GetEntityObject<PoseOverridersContainer>(id);
+            poseService.RemovePoseOverriders(container);
+        }
+
         /// <summary>
         /// Instantiate a <see cref="IPoseCondition"/> from a  <see cref="AbstractPoseConditionDto"/>.
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        private IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
+        protected virtual IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
         {
             switch (dto)
             {
@@ -114,6 +120,11 @@ namespace umi3d.cdk.userCapture.pose
                     {
                         UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
                         return new MagnitudePoseCondition(magnitudeConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
+                    }
+                case DirectionConditionDto directionConditionDto:
+                    {
+                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(directionConditionDto.TargetNodeId);
+                        return new DirectionPoseCondition(directionConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case BoneRotationConditionDto boneRotationConditionDto:
                     {

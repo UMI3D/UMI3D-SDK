@@ -102,6 +102,13 @@ namespace umi3d.cdk
 
         protected AbstractLoader loader;
 
+        [SerializeField, Tooltip("True if the browser uses purely Virtual Reality and not any form of Mixed Reality.")]
+        private bool hasImmersiveDevice;
+        public bool HasImmersiveDevice => hasImmersiveDevice;
+
+        [SerializeField, Tooltip("True if the browser uses a head mounted display.")]
+        private bool hasHeadMountedDisplay;
+        public bool HasHeadMountedDisplay => hasHeadMountedDisplay;
 
         public virtual void Init()
         {
@@ -117,6 +124,7 @@ namespace umi3d.cdk
             .SetNext(new UMI3DUINodeLoader())
             .SetNext(new BindingLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
+            .SetNext(new WebViewLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
             ;

@@ -22,6 +22,7 @@ using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.emotes;
 using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.interaction;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.emotes;
@@ -346,7 +347,12 @@ namespace umi3d.edk.collaboration
                             EmoteDispatcher.Instance.DispatchEmoteTrigger(user, emoteRequest.emoteId, emoteRequest.shouldTrigger);
                         });
                         break;
-
+                    case WebViewUrlChangedRequestDto webViewRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            WebViewManager.Instance.OnUserChangedUrl(user, webViewRequest.webViewId, webViewRequest.url);
+                        });
+                        break;
                     default:
                         MainThreadManager.Run(() =>
                         {
@@ -410,7 +416,15 @@ namespace umi3d.edk.collaboration
                             EmoteDispatcher.Instance.DispatchEmoteTrigger(user, emoteToTriggerId, trigger);
                         });
                         break;
+                    case UMI3DOperationKeys.WebViewUrlRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            ulong webViewId = UMI3DSerializer.Read<ulong>(container);
+                            string url = UMI3DSerializer.Read<string>(container);
 
+                            WebViewManager.Instance.OnUserChangedUrl(user, webViewId, url);
+                        });
+                        break;
                     default:
                         MainThreadManager.Run(() =>
                         {

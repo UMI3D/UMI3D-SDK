@@ -53,9 +53,9 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// If true, the processor tries to auto-check environmental pose overriders.
         /// </summary>
-        public bool IsWatching => isWatching;
+        public bool IsWatching => isWatchingActivation;
 
-        private bool isWatching;
+        private bool isWatchingActivation;
 
         /// <summary>
         /// All the overriders  which ca only be considered if they an interaction occurs
@@ -70,7 +70,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Coroutines that keep track of pose overriders end.
         /// </summary>
-        private Dictionary<PoseOverrider, Coroutine> watchConditionsCoroutines = new();
+        private readonly Dictionary<PoseOverrider, Coroutine> watchEndOfConditionsCoroutines = new();
 
         #region Dependency Injection
 
@@ -88,7 +88,7 @@ namespace umi3d.cdk.userCapture.pose
             nonInteractionalPoseOverriders.AddRange(poseOverriderContainer.PoseOverriders.Except(interactionalPoseOverriders));
 
             if (nonInteractionalPoseOverriders.Count > 0)
-                StartWatchNonInteractionalConditions();
+                StartWatchActivationConditions();
         }
 
         public PoseOverridersContainerProcessor(PoseOverridersContainer overriderContainer)
@@ -101,26 +101,26 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Start to check all overriders
         /// </summary>
-        public void StartWatchNonInteractionalConditions()
+        public void StartWatchActivationConditions()
         {
-            if (!IsWatching)
-            {
-                isWatching = true;
-                regularActivationCheckRoutine = coroutineService.AttachCoroutine(RegularActivationCheckRoutine());
-            }
+            if (IsWatching)
+                return;
+
+            isWatchingActivation = true;
+            regularActivationCheckRoutine = coroutineService.AttachCoroutine(RegularActivationCheckRoutine());
         }
 
         /// <summary>
         /// Stops the check of fall the overriders
         /// </summary>
-        public void StopWatchNonInteractionalConditions()
+        public void StopWatchActivationConditions()
         {
-            if (IsWatching)
-            {
-                coroutineService.DetachCoroutine(regularActivationCheckRoutine);
-                regularActivationCheckRoutine = null;
-                isWatching = false;
-            }
+            if (!IsWatching)
+                return;
+
+            coroutineService.DetachCoroutine(regularActivationCheckRoutine);
+            regularActivationCheckRoutine = null;
+            isWatchingActivation = false;
         }
 
         /// <summary>
@@ -137,7 +137,7 @@ namespace umi3d.cdk.userCapture.pose
                 {
                     poseOverrider.IsActive = true;
                     ConditionsValidated?.Invoke(poseOverrider);
-                    StartWatchConditions(poseOverrider);
+                    StartWatchEndOfConditions(poseOverrider);
                     return true;
                 }
             }
@@ -169,41 +169,36 @@ namespace umi3d.cdk.userCapture.pose
                     {
                         poseOverrider.IsActive = true;
                         ConditionsValidated?.Invoke(poseOverrider);
-                        StartWatchConditions(poseOverrider);
+                        StartWatchEndOfConditions(poseOverrider);
                     }
                 }
             }
-            if (regularActivationCheckRoutine != null)
-            {
-                coroutineService.DetachCoroutine(regularActivationCheckRoutine);
-                regularActivationCheckRoutine = null;
-            }
-            isWatching = false;
+            StopWatchActivationConditions();
         }
 
         /// <summary>
         /// Start to watch for a pose overrider end.
         /// </summary>
         /// <param name="poseOverrider"></param>
-        private void StartWatchConditions(PoseOverrider poseOverrider)
+        private void StartWatchEndOfConditions(PoseOverrider poseOverrider)
         {
             if (poseOverrider == null || !poseOverrider.IsActive)
                 return;
 
             var coroutine = coroutineService.AttachCoroutine(WatchConditionsRoutine(poseOverrider));
-            watchConditionsCoroutines.Add(poseOverrider, coroutine);
+            watchEndOfConditionsCoroutines.Add(poseOverrider, coroutine);
         }
 
         /// <summary>
         /// Stop to watch for a pose overrider end.
         /// </summary>
         /// <param name="poseOverrider"></param>
-        private void StopWatchConditions(PoseOverrider poseOverrider)
+        private void StopWatchEndOfConditions(PoseOverrider poseOverrider)
         {
-            watchConditionsCoroutines.TryGetValue(poseOverrider, out Coroutine coroutine);
+            watchEndOfConditionsCoroutines.TryGetValue(poseOverrider, out Coroutine coroutine);
             if (coroutine != null)
             {
-                watchConditionsCoroutines.Remove(poseOverrider);
+                watchEndOfConditionsCoroutines.Remove(poseOverrider);
                 coroutineService.DetachCoroutine(coroutine);
             }
         }
@@ -223,7 +218,7 @@ namespace umi3d.cdk.userCapture.pose
             poseOverrider.IsActive = false;
             ConditionsInvalided?.Invoke(poseOverrider);
 
-            StopWatchConditions(poseOverrider);
+            StopWatchEndOfConditions(poseOverrider);
         }
 
         /// <summary>

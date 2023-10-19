@@ -16,10 +16,9 @@ limitations under the License.
 #if UNITY_EDITOR
 
 using inetum.unityUtils;
-using umi3d.common.userCapture;
 using UnityEngine;
 
-namespace umi3d.edk.userCapture.pose.editor
+namespace umi3d.common.userCapture.pose.editor
 {
     /// <summary>
     /// A class used to tag the bones to work with the pose setter tool
@@ -34,10 +33,6 @@ namespace umi3d.edk.userCapture.pose.editor
         /// If the bone is selected
         /// </summary>
         [EditorReadOnly] public bool isSelected;
-        /// <summary>
-        /// If the bone can be saved
-        /// </summary>
-        [EditorReadOnly] public bool isSavable = true;
 
         /// <summary>
         /// The type of the bone 

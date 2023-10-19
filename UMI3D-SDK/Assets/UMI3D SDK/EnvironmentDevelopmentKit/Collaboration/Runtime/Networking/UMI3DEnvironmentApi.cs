@@ -34,12 +34,13 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
+
     /// <summary>
     /// Environment API to handle HTTP requests.
     /// </summary>
-    public class UMI3DEnvironmentApi : IHttpApi
+    public class UMI3DEnvironmentApi : UMI3DAbstractEnvironmentApi
     {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
+        
 
         public UMI3DEnvironmentApi()
         { }
@@ -75,34 +76,6 @@ namespace umi3d.edk.collaboration
             {
                 UnityEngine.Debug.LogException(ex);
             }
-        }
-
-        /// <summary>
-        /// POST "/register"
-        /// Register a user.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpPost(UMI3DNetworkingKeys.register, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
-        public async void Register(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
-        {
-            UMI3DLogger.Log($"Register", scope);
-            HttpListenerResponse res = e.Response;
-
-            byte[] bytes = ReadObject(e.Request);
-
-            RegisterIdentityDto dto;
-
-            try
-            {
-                dto = UMI3DDtoSerializer.FromBson(bytes) as RegisterIdentityDto;
-            }
-            catch
-            {
-                dto = UMI3DDtoSerializer.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
-            }
-
-            await UMI3DCollaborationServer.Instance.Register(dto);
         }
 
         /// <summary>
@@ -475,7 +448,7 @@ namespace umi3d.edk.collaboration
                     try
                     {
                         JoinDto join = dto as JoinDto;
-                        await user.JoinDtoReception(join.userSize, join.clientLocalPoses.ToArray());
+                        await user.JoinDtoReception(join);
 
                         e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
                         await UMI3DCollaborationServer.NotifyUserJoin(user);
@@ -737,61 +710,5 @@ namespace umi3d.edk.collaboration
 
 
         #endregion
-
-        #region utils
-        private void ReadDto(HttpListenerRequest request, Action<UMI3DDto> action)
-        {
-            byte[] bytes = default(byte[]);
-            using (var memstream = new MemoryStream())
-            {
-                byte[] buffer = new byte[512];
-                int bytesRead = default(int);
-                while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
-                    memstream.Write(buffer, 0, bytesRead);
-                bytes = memstream.ToArray();
-            }
-            action.Invoke(UMI3DDtoSerializer.FromBson(bytes));
-        }
-
-        private byte[] ReadObject(HttpListenerRequest request)
-        {
-            byte[] bytes = default(byte[]);
-            using (var memstream = new MemoryStream())
-            {
-                byte[] buffer = new byte[512];
-                int bytesRead = default(int);
-                while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
-                    memstream.Write(buffer, 0, bytesRead);
-                bytes = memstream.ToArray();
-                return bytes;
-            }
-        }
-
-        private void Return404(HttpListenerResponse response, string description = "This file does not exist :(")
-        {
-            response.ContentType = "text/html";
-            response.ContentEncoding = Encoding.UTF8;
-            response.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotFound;
-            response.StatusDescription = description;
-            response.WriteContent(Encoding.UTF8.GetBytes("404 :("));
-            UMI3DLogger.LogError($"404 {description}", scope);
-        }
-
-        private void ReturnNotImplemented(HttpListenerResponse response, string description = "This method isn't implemented now :(")
-        {
-            response.ContentType = "text/html";
-            response.ContentEncoding = Encoding.UTF8;
-            response.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotImplemented;
-            response.StatusDescription = description;
-            UMI3DLogger.LogError($"501 {description}", scope);
-        }
-
-        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
-        {
-            return UMI3DCollaborationServer.IsAuthenticated(request, allowOldToken);
-        }
-        #endregion
-
-
     }
 }

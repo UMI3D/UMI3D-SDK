@@ -99,7 +99,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                                             .Returns(container)
                                             .Verifiable();
 
-            environmentServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseOverridersContainer>(), null))
+            environmentServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseOverridersContainer>(), It.IsAny<Action>()))
                                   .Returns(new UMI3DEntityInstance(() => { }))
                                   .Verifiable();
 
@@ -108,7 +108,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             // Then
             poseOverriderContainerLoaderMock.Verify(x => x.LoadContainer(dto));
-            environmentServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseOverridersContainer>(), null), Times.Once());
+            environmentServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseOverridersContainer>(), It.IsAny<Action>()), Times.Once());
         }
 
 

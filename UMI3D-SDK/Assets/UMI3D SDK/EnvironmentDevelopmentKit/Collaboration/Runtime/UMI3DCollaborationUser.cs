@@ -17,7 +17,6 @@ limitations under the License.
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.userCapture.pose;
 using umi3d.edk.userCapture.pose;
 
 namespace umi3d.edk.collaboration
@@ -41,7 +40,6 @@ namespace umi3d.edk.collaboration
             onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
 
             userSize = new UMI3DAsyncProperty<Vector3Dto>(userId, UMI3DPropertyKeys.UserSize, new());
-
         }
 
         /// <summary>
@@ -55,6 +53,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAudioPlayer videoPlayer;
 
         #region audioSettings
+
         public UMI3DAsyncProperty<int> audioFrequency;
         public UMI3DAsyncProperty<bool> microphoneStatus;
         public UMI3DAsyncProperty<bool> attentionRequired;
@@ -64,6 +63,7 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<bool> audioUseMumble;
         public UMI3DAsyncProperty<string> audioPassword;
         public UMI3DAsyncProperty<string> audioLogin;
+
         #endregion audioSettings
 
         public UMI3DAsyncProperty<bool> avatarStatus;
@@ -109,6 +109,11 @@ namespace umi3d.edk.collaboration
             };
 
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
+        }
+
+        public void NotifyUpdate()
+        {
+            UMI3DCollaborationServer.Collaboration.NotifyUserStatusChanged(this);
         }
 
         public virtual UserConnectionDto ToUserConnectionDto()
@@ -179,19 +184,22 @@ namespace umi3d.edk.collaboration
             return _user;
         }
 
-        public async Task JoinDtoReception(Vector3Dto userSize, PoseDto[] userPoses)
+        public async Task JoinDtoReception(JoinDto joinDto)
         {
             lock (joinLock)
             {
-                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+                HasImmersiveDevice = joinDto.hasImmersiveDevice;
+                HasHeadMountedDisplay = joinDto.hasHeadMountedDisplay;
+                BonesWithController = joinDto.bonesWithController;
 
-                if (this.userSize.GetValue() == userSize)
+                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+                if (this.userSize.GetValue() == joinDto.userSize)
                     UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
                 else
-                    this.userSize.SetValue(userSize);
+                    this.userSize.SetValue(joinDto.userSize);
             }
-            if (poseManagerService == null) poseManagerService = PoseManager.Instance;
-            poseManagerService.RegisterUserCustomPose(userId, userPoses);
+            poseManagerService ??= PoseManager.Instance;
+            poseManagerService.RegisterUserCustomPose(userId, joinDto.clientLocalPoses);
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);

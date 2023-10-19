@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.collaboration.userCapture.pose;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common;
@@ -90,7 +91,7 @@ namespace umi3d.cdk.collaboration
             userList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
 
             PoseManager.Instance.Poses = dto.poses.ToDictionary(x => x.Key, x => x.Value.Select(p=> new SkeletonPose(p, isCustom: x.Key != UMI3DGlobalID.EnvironementId)).ToList() as IList<SkeletonPose>);
-            poseLoader ??= new UMI3DPoseOverriderContainerLoader();
+            poseLoader ??= new UMI3DCollaborationPoseOverriderContainerLoader();
 
             onEnvironmentLoaded.AddListener(LoadPoses);
             void LoadPoses()

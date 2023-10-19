@@ -31,6 +31,15 @@ namespace umi3d.cdk
         Material skyboxMaterial { get; }
         KHR_lights_punctualLoader khr_lights_punctualLoader { get; }
 
+        /// <summary>
+        /// True if the browser uses purely Virtual Reality and not any form of Mixed Reality
+        /// </summary>
+        bool HasImmersiveDevice { get; }
+
+        /// <summary>
+        /// True if the browser uses an immersive display.
+        /// </summary>
+        bool HasHeadMountedDisplay { get; }
     }
 
     public interface IUMI3DAbstractLoadingParameters

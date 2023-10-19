@@ -27,22 +27,22 @@ namespace umi3d.common.userCapture.pose
         NONE,
 
         /// <summary>
-        /// The pose require a trigger interaction from the user.
+        /// The pose requires a trigger interaction from the user.
         /// </summary>
         TRIGGER,
 
         /// <summary>
-        /// The pose require a release interaction from the user.
+        /// The pose requires a release interaction from the user.
         /// </summary>
         RELEASE,
 
         /// <summary>
-        /// The pose require a hover interaction from the user.
+        /// The pose requires a entering a hover interaction from the user.
         /// </summary>
         HOVER_ENTER,
 
         /// <summary>
-        /// The pose require exiting a hover interaction from the user.
+        /// The pose requires exiting a hover interaction from the user.
         /// </summary>
         HOVER_EXIT
     }

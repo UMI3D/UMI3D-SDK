@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 using System.Collections;
-
+using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.edk.binding;
 using umi3d.edk.userCapture.binding;
@@ -29,6 +29,8 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DAudioBridger : inetum.unityUtils.SingleBehaviour<UMI3DAudioBridger>
     {
+        #region Fields
+
         public Transform parent;
 
         /// <summary>
@@ -39,12 +41,56 @@ namespace umi3d.edk.collaboration
 
         public bool Spacialized
         {
-            get => _Spacialized; set
+            get => _Spacialized;
+            set
             {
                 _Spacialized = value;
                 UpdateSpacial();
             }
         }
+
+        [SerializeField, Tooltip("Attenuation maximum distance, if spatialized")]
+        private float _AttenuationMaxDistance = 15;
+
+        public float AttenuationMaxDistance
+        {
+            get => _AttenuationMaxDistance;
+            set
+            {
+                _AttenuationMaxDistance = value;
+                UpdateSpacial();
+            }
+        }
+
+        [SerializeField, Tooltip("Attenuation mode, if spatialized")]
+        private AudioRolloffMode _AttenuationMode = AudioRolloffMode.Logarithmic;
+
+        public AudioRolloffMode AttenuationMode
+        {
+            get => _AttenuationMode;
+            set
+            {
+                _AttenuationMode = value;
+                UpdateSpacial();
+            }
+        }
+
+        [SerializeField, Tooltip("Attenuation curve, if spatialized and animation mode set to custom")]
+        private AnimationCurve _AttenuationCurve = new();
+
+        public AnimationCurve AttenuationCurve
+        {
+            get => _AttenuationCurve;
+            set
+            {
+                _AttenuationCurve = value;
+                UpdateSpacial();
+            }
+        }
+
+        #endregion
+
+        #region Methods
 
         private void Start()
         {
@@ -82,6 +128,16 @@ namespace umi3d.edk.collaboration
                 user.audioPlayer = audioSourceNode.gameObject.AddComponent<UMI3DAudioPlayer>();
                 user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
                 user.audioPlayer.ObjectNode.SetValue(audioSourceNode);
+                user.audioPlayer.ObjectVolumeMaxDistance.SetValue(AttenuationMaxDistance);
+                var attenuation = AttenuationMode switch
+                {
+                    AudioRolloffMode.Linear => AudioSourceCurveMode.Linear,
+                    AudioRolloffMode.Custom => AudioSourceCurveMode.Custom,
+                    AudioRolloffMode.Logarithmic => AudioSourceCurveMode.Logarithmic,
+                    _ => AudioSourceCurveMode.Logarithmic
+                };
+                user.audioPlayer.ObjectVolumeAttenuationMode.SetValue(attenuation);
+                user.audioPlayer.ObjectVolumeCustomCurve.SetValue(AttenuationCurve);
 
                 tr.AddIfNotNull(audioSourceNode.GetLoadEntity());
                 tr.AddIfNotNull(user.audioPlayer.GetLoadEntity());
@@ -127,16 +183,25 @@ namespace umi3d.edk.collaboration
 
         private void UpdateSpacial()
         {
+            var tr = new Transaction() { reliable = true };
+
+            var attenuation = AttenuationMode switch
+            {
+                AudioRolloffMode.Linear => AudioSourceCurveMode.Linear,
+                AudioRolloffMode.Custom => AudioSourceCurveMode.Custom,
+                AudioRolloffMode.Logarithmic => AudioSourceCurveMode.Logarithmic,
+                _ => AudioSourceCurveMode.Logarithmic
+            };
+
             foreach (UMI3DCollaborationUser user in UMI3DEnvironment.GetEntities<UMI3DCollaborationUser>())
             {
-                SetEntityProperty op = user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0);
-                if (op != null)
-                {
-                    var tr = new Transaction() { reliable = true };
-                    tr.AddIfNotNull(op);
-                    UMI3DServer.Dispatch(tr);
-                }
+                tr.AddIfNotNull(user.audioPlayer.ObjectSpacialBlend.SetValue(Spacialized ? 1 : 0));
+                tr.AddIfNotNull(user.audioPlayer.ObjectVolumeAttenuationMode.SetValue(attenuation));
+                tr.AddIfNotNull(user.audioPlayer.ObjectVolumeMaxDistance.SetValue(AttenuationMaxDistance));
+                tr.AddIfNotNull(user.audioPlayer.ObjectVolumeCustomCurve.SetValue(AttenuationCurve));
             }
+
+            tr.Dispatch();
         }
 
         private void RemoveAudioSource(UMI3DCollaborationUser user)
@@ -150,5 +215,7 @@ namespace umi3d.edk.collaboration
             t.Dispatch();
             UnityEngine.Object.Destroy(audioSource.gameObject);
         }
+
+        #endregion
     }
 }

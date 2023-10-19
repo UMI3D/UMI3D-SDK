@@ -229,7 +229,7 @@ namespace umi3d.edk.binding
             {
                 var targetUsers = users is not null ? users : umi3dServerService.Users();
 
-                var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(binding.boundNodeId)).ToList();
+                var usersWithValues = targetUsers.Where((u) => bindings.GetValue(u).ContainsKey(binding.boundNodeId)).ToList();
 
                 // for each group of users that has the same binding on the node, update existing binding
                 usersWithValues
@@ -255,7 +255,7 @@ namespace umi3d.edk.binding
                     });
 
                 // users with no binding receive the added binding
-                users.Except(usersWithValues).ForEach(user =>
+                targetUsers.Except(usersWithValues).ForEach(user =>
                 {
                     bindings.Add(user, binding.boundNodeId, binding);
                     operations.Add(binding.GetLoadEntity(new() { user }));
@@ -396,7 +396,7 @@ namespace umi3d.edk.binding
             {
                 var targetUsers = users is not null ? users : umi3dServerService.Users();
 
-                var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(bindingToRemove.boundNodeId)).ToList();
+                var usersWithValues = targetUsers.Where((u) => bindings.GetValue(u).ContainsKey(bindingToRemove.boundNodeId)).ToList();
 
                 if (usersWithValues.Count > 0)
                 {
@@ -517,7 +517,9 @@ namespace umi3d.edk.binding
             }
             else // some users have specific values
             {
-                users
+                var targetUsers = users is not null ? users : umi3dServerService.Users();
+
+                targetUsers
                     .Where((u) => bindings.GetValue(u).ContainsKey(nodeId))
                     .GroupBy(u => bindings.GetValue(u)[nodeId])
                     .ForEach(userGroup =>
