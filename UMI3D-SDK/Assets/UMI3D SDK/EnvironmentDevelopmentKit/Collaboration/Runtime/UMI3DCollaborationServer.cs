@@ -52,8 +52,12 @@ namespace umi3d.edk.collaboration
         [SerializeField, ReadOnly]
         private bool useIp = false;
         private UMI3DHttp http;
+        private UMI3DHttp _httpForWC;
+        private UMI3DHttp httpForWC => _httpForWC ?? http;
 
         public static UMI3DHttp HttpServer => Exists ? Instance.http : null;
+
+        public static UMI3DHttp HttpServerForWorldController => Exists ? Instance.httpForWC : null;
 
         private UMI3DForgeServer forgeServer;
 
@@ -101,6 +105,13 @@ namespace umi3d.edk.collaboration
         public bool useRandomHttpPort;
         [EditorReadOnly]
         public ushort httpPort;
+
+        [EditorReadOnly]
+        public bool useWorldControllerSpecificHttpPort;
+        [EditorReadOnly]
+        public bool useRandomPortForWorldController;
+        [EditorReadOnly]
+        public ushort httpPortForWorldController;
 
         [EditorReadOnly]
         [Tooltip("URL of the default resources server. Set to this HttpUrl if empty")]
@@ -197,7 +208,7 @@ namespace umi3d.edk.collaboration
         {
             base.OnDestroy();
             if (!Exists)
-                UMI3DHttp.Destroy();
+                http.Dispose();
         }
 
         /// <inheritdoc/>
@@ -232,11 +243,17 @@ namespace umi3d.edk.collaboration
 
             httpPort = (ushort)FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
+            httpPortForWorldController = (ushort)FreeTcpPort(useRandomPortForWorldController ? 0 : httpPortForWorldController);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
-            UMI3DHttp.Destroy();
+            http?.Dispose();
+            _httpForWC?.Dispose();
+
             http = new UMI3DHttp(httpPort);
-            UMI3DHttp.Instance.AddRoot(new UMI3DEnvironmentApi());
+            _httpForWC = useWorldControllerSpecificHttpPort ? new UMI3DHttp(httpPortForWorldController) : null;
+
+            http.AddRoot(new UMI3DEnvironmentApi());
+            httpForWC.AddRoot(new UMI3DEnvironmentFromWorldControllerApi());
 
             WorldController.Setup();
 

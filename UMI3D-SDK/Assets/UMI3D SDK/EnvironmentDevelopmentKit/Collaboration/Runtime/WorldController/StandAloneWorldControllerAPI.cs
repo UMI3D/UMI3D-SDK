@@ -52,7 +52,7 @@ namespace umi3d.worldController
         {
             worldName = UMI3DCollaborationEnvironment.Instance.environmentName;
             this.ip = edk.UMI3DServer.GetHttpUrl();
-            edk.collaboration.UMI3DHttp.Instance.AddRoot(new worldController.UMI3DStandAloneApi(this));
+            edk.collaboration.UMI3DCollaborationServer.HttpServer.AddRoot(new worldController.UMI3DStandAloneApi(this));
         }
 
         /// <inheritdoc/>
