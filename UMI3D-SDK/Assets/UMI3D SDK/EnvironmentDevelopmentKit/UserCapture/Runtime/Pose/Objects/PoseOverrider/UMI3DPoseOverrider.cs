@@ -124,7 +124,7 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         public Vector3 Direction;
 
-        [Header("- Direction condition")]
+        [Header("- Scale condition")]
         public bool HasScaleCondition;
 
         /// <summary>
