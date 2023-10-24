@@ -140,7 +140,6 @@ namespace umi3d.cdk
                             }
                             else
                             {
-                                Debug.Log(UMI3DClientServer.Instance.GetTime() + " - " + dto.startTime);
                                 (value.entity.Object as UMI3DAbstractAnimation).Start(ConvertStartTime(dto.startTime));
                             }
                         }
