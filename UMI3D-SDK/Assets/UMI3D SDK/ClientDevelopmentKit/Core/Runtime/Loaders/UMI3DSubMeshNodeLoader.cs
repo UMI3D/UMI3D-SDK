@@ -48,7 +48,7 @@ namespace umi3d.cdk
                 throw (new Umi3dException("nodeDto should not be null"));
             }
 
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId,data.tokens);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId, data.tokens);
             LoadSubModel(e, data.node, nodeDto);
         }
 
@@ -142,9 +142,14 @@ namespace umi3d.cdk
 
             for (int i = 0; i < renderersInfo.Length; i++)
             {
-                if (renderersInfo[i].renderer.gameObject == o)
+                var renderer = renderersInfo[i];
+
+                if (renderer.renderer == null)
+                    continue;
+
+                if (renderer.renderer.gameObject == o)
                 {
-                    renderersInfo[i].renderer = renderers.FirstOrDefault();
+                    renderer.renderer = renderers.FirstOrDefault();
                     break;
                 }
             }

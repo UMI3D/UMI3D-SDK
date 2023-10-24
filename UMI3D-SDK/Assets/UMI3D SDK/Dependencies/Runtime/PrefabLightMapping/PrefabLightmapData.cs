@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEditor;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine.SceneManagement;
 
@@ -77,10 +76,7 @@ public class PrefabLightmapData : MonoBehaviour
                 combinedLightmaps.Add(newlightmapdata);
 
                 counttotal += 1;
-
-
             }
-
         }
 
         var combinedLightmaps2 = new LightmapData[counttotal];
@@ -134,6 +130,12 @@ public class PrefabLightmapData : MonoBehaviour
         {
             var info = infos[i];
 
+            if (info.renderer == null)
+            {
+                Debug.LogError("[PrefabLightmapData] Null renderer at index " + i);
+                continue;
+            }
+
             info.renderer.lightmapIndex = lightmapOffsetIndex[info.lightmapIndex];
             info.renderer.lightmapScaleOffset = info.lightmapOffsetScale;
 
@@ -144,7 +146,6 @@ public class PrefabLightmapData : MonoBehaviour
                 if (mat[j] != null && Shader.Find(mat[j].shader.name) != null)
                     mat[j].shader = Shader.Find(mat[j].shader.name);
             }
-
         }
 
         for (int i = 0; i < lightsInfo.Length; i++)
@@ -261,7 +262,6 @@ public class PrefabLightmapData : MonoBehaviour
 
                     rendererInfos.Add(info);
                 }
-
             }
         }
 
@@ -273,7 +273,7 @@ public class PrefabLightmapData : MonoBehaviour
             lightInfo.light = l;
             lightInfo.lightmapBaketype = (int)l.lightmapBakeType;
 #if UNITY_2020_1_OR_NEWER
-            lightInfo.mixedLightingMode = (int)UnityEditor.Lightmapping.lightingSettings.mixedBakeMode;            
+            lightInfo.mixedLightingMode = (int)UnityEditor.Lightmapping.lightingSettings.mixedBakeMode;
 #elif UNITY_2018_1_OR_NEWER
             lightInfo.mixedLightingMode = (int)UnityEditor.LightmapEditorSettings.mixedBakeMode;
 #else
