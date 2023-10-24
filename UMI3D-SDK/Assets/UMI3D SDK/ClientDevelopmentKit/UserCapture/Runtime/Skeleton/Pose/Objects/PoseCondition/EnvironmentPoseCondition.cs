@@ -43,7 +43,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Validate the condition.
         /// </summary>
-        internal void Validate()
+        public void Validate()
         {
             dto.IsValidated = true;
         }
@@ -51,7 +51,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Invalidate the condition.
         /// </summary>
-        internal void Invalidate()
+        public void Invalidate()
         {
             dto.IsValidated = false;
         }
