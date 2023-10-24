@@ -12,10 +12,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using MainThreadDispatcher;
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -91,7 +89,7 @@ namespace umi3d.cdk
                             }
                             else
                             {
-                                (value.entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                                (value.entity.Object as UMI3DAbstractAnimation).Start(ConvertStartTime(dto.startTime));
                             }
                         }
                         else
@@ -142,7 +140,8 @@ namespace umi3d.cdk
                             }
                             else
                             {
-                                (value.entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                                Debug.Log(UMI3DClientServer.Instance.GetTime() + " - " + dto.startTime);
+                                (value.entity.Object as UMI3DAbstractAnimation).Start(ConvertStartTime(dto.startTime));
                             }
                         }
                         else
@@ -173,6 +172,25 @@ namespace umi3d.cdk
                     return await Task.FromResult(false);
             }
             return await Task.FromResult(true);
+        }
+
+        /// <summary>
+        /// Compute start time given from server time to star time from resource time.
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <returns></returns>
+        private float ConvertStartTime(ulong startTime)
+        {
+            ulong serverTime = UMI3DClientServer.Instance.GetTime();
+
+            if (startTime > serverTime)
+            {
+                return 0f;
+            }
+            else
+            {
+                return serverTime - startTime;
+            }
         }
 
         /// <summary>
