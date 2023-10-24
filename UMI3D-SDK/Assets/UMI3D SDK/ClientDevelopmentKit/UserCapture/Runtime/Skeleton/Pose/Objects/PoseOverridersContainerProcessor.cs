@@ -231,24 +231,24 @@ namespace umi3d.cdk.userCapture.pose
             float currentDuration = Time.time - startTime;
 
             var duration = poseOverrider.Duration;
+
+            // pose can be applied for a minimum duration
             if (duration.min.HasValue && currentDuration < duration.min)
                 return false;
 
-            if (poseOverrider.CheckConditions())
-            {
-                if (duration.max.HasValue && currentDuration > duration.max)
-                    return true;
+            // finish if pose conditions are not valid anymore
+            if (!poseOverrider.CheckConditions())
+                return true;
 
-                if (!duration.max.HasValue && duration.duration == 0) // infinite mode
-                    return false;
+            // pose can be stopped a max duration
+            if (duration.max.HasValue && currentDuration > duration.max)
+                return true;
 
-                if (!duration.max.HasValue && currentDuration > duration.duration)
-                    return true;
+            // if no max and condition validated and duration is set, duration is max
+            if (!duration.max.HasValue && duration.duration != default && currentDuration > duration.duration)
+                return true;
 
-                return false;
-            }
-
-            return true;
+            return false;
         }
     }
 }
