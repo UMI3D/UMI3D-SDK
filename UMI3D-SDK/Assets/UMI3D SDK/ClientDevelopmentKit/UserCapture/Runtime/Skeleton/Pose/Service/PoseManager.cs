@@ -49,15 +49,17 @@ namespace umi3d.cdk.userCapture.pose
 
         private readonly ISkeletonManager skeletonManager;
         private readonly ILoadingManager loadingManager;
+        private readonly IEnvironmentManager environmentManager;
         private readonly IUMI3DClientServer clientServerService;
 
-        public PoseManager() : this(PersonalSkeletonManager.Instance, UMI3DEnvironmentLoader.Instance, UMI3DClientServer.Instance)
+        public PoseManager() : this(PersonalSkeletonManager.Instance, UMI3DEnvironmentLoader.Instance, UMI3DEnvironmentLoader.Instance, UMI3DClientServer.Instance)
         { }
 
-        public PoseManager(ISkeletonManager skeletonManager, ILoadingManager loadingManager, IUMI3DClientServer clientServerService)
+        public PoseManager(ISkeletonManager skeletonManager, ILoadingManager loadingManager, IEnvironmentManager environmentManager, IUMI3DClientServer clientServerService)
         {
             this.skeletonManager = skeletonManager;
             this.loadingManager = loadingManager;
+            this.environmentManager = environmentManager;
             this.clientServerService = clientServerService;
             
             Init();
@@ -174,6 +176,17 @@ namespace umi3d.cdk.userCapture.pose
         public void StopAllPoses()
         {
             skeletonManager.PersonalSkeleton.PoseSubskeleton.StopAllPoses();
+        }
+
+        /// <inheritdoc/>
+        public void ChangeEnvironmentPoseCondition(ulong poseConditionId, bool shouldBeValidated)
+        {
+            EnvironmentPoseCondition condition = environmentManager.GetEntityObject<EnvironmentPoseCondition>(poseConditionId);
+
+            if (shouldBeValidated)
+                condition.Validate();
+            else
+                condition.Invalidate();
         }
     }
 }

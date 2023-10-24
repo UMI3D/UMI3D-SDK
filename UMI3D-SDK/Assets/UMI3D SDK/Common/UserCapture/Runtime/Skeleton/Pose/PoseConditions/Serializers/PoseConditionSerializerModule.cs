@@ -31,7 +31,8 @@ namespace umi3d.common.userCapture.pose
             DIRECTION_CONDITION,
             NOT_CONDITION,
             USER_SCALE_CONDITION,
-            SCALE_CONDITION
+            SCALE_CONDITION,
+            ENVIRONMENT_CONDITION
         }
 
         public bool? IsCountable<T>()
@@ -45,7 +46,9 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(NotConditionDto) => true,
                 true when typeof(T) == typeof(UserScaleConditionDto) => true,
                 true when typeof(T) == typeof(ScaleConditionDto) => true,
+                true when typeof(T) == typeof(EnvironmentPoseConditionDto) => true,
                 true when typeof(T) == typeof(AbstractPoseConditionDto) => true,
+                true when typeof(T) == typeof(ValidateEnvironmentPoseConditionDto) => true,
 
                 _ => null
             };
@@ -99,6 +102,11 @@ namespace umi3d.common.userCapture.pose
                                     ReadConditionDTO(container, out readable, out NotConditionDto notConditionDto);
                                     poseConditionDto = notConditionDto;
                                     break;
+
+                                case (int)PoseConditionSerializingIndex.ENVIRONMENT_CONDITION:
+                                    ReadConditionDTO(container, out readable, out EnvironmentPoseConditionDto environmentPoseConditionDto);
+                                    poseConditionDto = environmentPoseConditionDto;
+                                    break;
                             }
 
                             if (poseConditionDto != null)
@@ -109,6 +117,28 @@ namespace umi3d.common.userCapture.pose
                         }
 
                         result = default;
+                        return false;
+                    }
+
+                case true when typeof(T) == typeof(ValidateEnvironmentPoseConditionDto):
+                    {
+                        readable = UMI3DSerializer.TryRead(container, out ulong id);
+                        readable &= UMI3DSerializer.TryRead(container, out bool shouldBeValidated);
+
+                        if (readable)
+                        {
+                            ValidateEnvironmentPoseConditionDto environmentPoseCondition = new()
+                            {
+                                Id = id,
+                                ShouldBeValidated = shouldBeValidated
+                            };
+                            result = (T)Convert.ChangeType(environmentPoseCondition, typeof(T));
+                            readable = true;
+                            return true;
+                        }
+
+                        result = default;
+                        readable = false;
                         return false;
                     }
 
@@ -263,6 +293,28 @@ namespace umi3d.common.userCapture.pose
                         readable = false;
                         return false;
                     }
+
+                case true when typeof(T) == typeof(EnvironmentPoseConditionDto):
+                    {
+                        readable = UMI3DSerializer.TryRead(container, out ulong id);
+                        readable &= UMI3DSerializer.TryRead(container, out bool isValidated);
+
+                        if (readable)
+                        {
+                            EnvironmentPoseConditionDto environmentPoseCondition = new()
+                            {
+                                Id = id,
+                                IsValidated = isValidated
+                            };
+                            result = (T)Convert.ChangeType(environmentPoseCondition, typeof(T));
+                            readable = true;
+                            return true;
+                        }
+
+                        result = default;
+                        readable = false;
+                        return false;
+                    }
             }
             result = default;
             readable = false;
@@ -312,6 +364,17 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.SCALE_CONDITION)
                         + UMI3DSerializer.Write(scaleConditionDto.Scale)
                         + UMI3DSerializer.Write(scaleConditionDto.TargetId);
+                    break;
+
+                case EnvironmentPoseConditionDto environmentPoseConditionDto:
+                    bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.ENVIRONMENT_CONDITION)
+                        + UMI3DSerializer.Write(environmentPoseConditionDto.Id)
+                        + UMI3DSerializer.Write(environmentPoseConditionDto.IsValidated);
+                    break;
+
+                case ValidateEnvironmentPoseConditionDto validateEnvironmentPoseConditionDto:
+                    bytable = UMI3DSerializer.Write(validateEnvironmentPoseConditionDto.Id)
+                        + UMI3DSerializer.Write(validateEnvironmentPoseConditionDto.ShouldBeValidated);
                     break;
 
                 default:
