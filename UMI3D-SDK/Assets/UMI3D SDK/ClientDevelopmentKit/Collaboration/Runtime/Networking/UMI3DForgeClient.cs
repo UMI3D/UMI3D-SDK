@@ -22,6 +22,7 @@ using System.Threading.Tasks;
 using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.interaction;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.pose;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.networking;
@@ -532,6 +533,12 @@ namespace umi3d.cdk.collaboration
                         CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
                     });
                     break;
+                case ValidateEnvironmentPoseConditionDto validateEnvironmentPoseCondition:
+                    MainThreadManager.Run(() =>
+                    {
+                        PoseManager.Instance.ChangeEnvironmentPoseCondition(validateEnvironmentPoseCondition.Id, validateEnvironmentPoseCondition.ShouldBeValidated);
+                    });
+                    break;
                 default:
                     return false;
             }
@@ -673,6 +680,23 @@ namespace umi3d.cdk.collaboration
                         CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
                     });
                     break;
+                case UMI3DOperationKeys.ValidatePoseConditionRequest:
+                    {
+                        ulong id = UMI3DSerializer.Read<ulong>(container);
+                        bool shouldBeValidated = UMI3DSerializer.Read<bool>(container);
+                        ValidateEnvironmentPoseConditionDto validateEnvironmentPoseConditionDto = new()
+                        {
+                            Id = id,
+                            ShouldBeValidated = shouldBeValidated,
+                        };
+
+                        MainThreadManager.Run(() =>
+                        {
+                            PoseManager.Instance.ChangeEnvironmentPoseCondition(validateEnvironmentPoseConditionDto.Id, validateEnvironmentPoseConditionDto.ShouldBeValidated);
+                        });
+                        break;
+                    }
+
                 default:
                     return false;
             }

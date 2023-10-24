@@ -87,6 +87,7 @@ namespace umi3d.common
         public const uint ParameterSettingRequest = 10009;
         public const uint ToolProjected = 10010;
         public const uint ToolReleased = 10011;
+
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
         public const uint NotificationCallback = 10014;
@@ -94,6 +95,8 @@ namespace umi3d.common
         public const uint UserTrackingBone = 10016;
 
         public const uint EmoteRequest = 10020;
+
+        public const uint ValidatePoseConditionRequest = 10030;
 
         public const uint VolumeUserTransit = 10100;
 

@@ -66,5 +66,11 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="overrider"></param>
         void RemovePoseOverriders(PoseOverridersContainer overrider);
+
+        /// <summary>
+        /// Validate/Invalidate an <see cref="EnvironmentPoseCondition"/>.
+        /// </summary>
+        /// <param name="requestDto"></param>
+        void ChangeEnvironmentPoseCondition(ulong poseConditionId, bool shouldValidate);
     }
 }
