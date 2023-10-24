@@ -52,8 +52,8 @@ namespace umi3d.cdk
         public MultiProgress(string state) : base(0, state)
         {
             progressList = new List<Progress>();
-            OnCompleteUpdated += i => OnStatusUpdated.Invoke(currentState);
-            OnFailedUpdated += i => OnStatusUpdated.Invoke(currentState);
+            OnCompleteUpdated += i => OnStatusUpdated?.Invoke(currentState);
+            OnFailedUpdated += i => OnStatusUpdated?.Invoke(currentState);
         }
 
         bool ForcedFailed = false;
@@ -117,11 +117,11 @@ namespace umi3d.cdk
         void NotifyUpdate(float completed, float failed, string state)
         {
             if (completed != this.completed)
-                OnCompleteUpdated.Invoke(this.completed);
+                OnCompleteUpdated?.Invoke(this.completed);
             if (failed != this.failed)
-                OnFailedUpdated.Invoke(this.failed);
+                OnFailedUpdated?.Invoke(this.failed);
             if (state != this.currentState)
-                OnStatusUpdated.Invoke(this.currentState);
+                OnStatusUpdated?.Invoke(this.currentState);
         }
 
         void GetStatus(out float completed, out float failed, out string state)
@@ -246,9 +246,9 @@ namespace umi3d.cdk
             NotifyUpdate(completed, failed, state);
         }
 
-        void OnComplete(float c) { OnCompleteUpdated.Invoke(completed); }
-        void OnFailed(float f) { OnFailedUpdated.Invoke(failed); }
-        void OnStatus(string s) { OnStatusUpdated.Invoke(currentState); }
+        void OnComplete(float c) { OnCompleteUpdated?.Invoke(completed); }
+        void OnFailed(float f) { OnFailedUpdated?.Invoke(failed); }
+        void OnStatus(string s) { OnStatusUpdated?.Invoke(currentState); }
 
         /// <summary>
         /// Indicate directly that all processes have failed.
@@ -391,28 +391,28 @@ namespace umi3d.cdk
         /// <summary>
         /// Add a completed task.
         /// </summary>
-        public virtual void AddComplete() { started = true; completed += 1; OnCompleteUpdated.Invoke(completed); }
+        public virtual void AddComplete() { started = true; completed += 1; OnCompleteUpdated?.Invoke(completed); }
 
         /// <summary>
         /// Add a failed task.
         /// </summary>
-        public virtual async Task<bool> AddFailed(Exception e) { started = true; failed += 1; OnFailedUpdated.Invoke(failed); return await (ResumeAfterFail?.Invoke(e) ?? Task.FromResult( true)); }
+        public virtual async Task<bool> AddFailed(Exception e) { started = true; failed += 1; OnFailedUpdated?.Invoke(failed); return await (ResumeAfterFail?.Invoke(e) ?? Task.FromResult( true)); }
 
         /// <summary>
         /// Set directly the current <paramref name="status"/> of the progress.
         /// </summary>
         /// <param name="status"></param>
-        public virtual void SetStatus(string status) { currentState = status; OnStatusUpdated.Invoke(currentState); }
+        public virtual void SetStatus(string status) { currentState = status; OnStatusUpdated?.Invoke(currentState); }
 
         /// <summary>
         /// Indicate directly that the progress has failed.
         /// </summary>
-        public virtual void SetAsFailed() { started = true; if (total == 0) total = 1; failed = total - completed; OnFailedUpdated.Invoke(failed); }
+        public virtual void SetAsFailed() { started = true; if (total == 0) total = 1; failed = total - completed; OnFailedUpdated?.Invoke(failed); }
         
         /// <summary>
         /// Indicate directly that the progress was completed.
         /// </summary>
-        public virtual void SetAsCompleted() { started = true; if (total == 0) total = 1; completed = total - failed; OnCompleteUpdated.Invoke(completed); }
+        public virtual void SetAsCompleted() { started = true; if (total == 0) total = 1; completed = total - failed; OnCompleteUpdated?.Invoke(completed); }
 
         /// <summary>
         /// Set the number of task in this process.
@@ -429,7 +429,7 @@ namespace umi3d.cdk
         /// Add one more task to be processed to the process and set a specific <paramref name="status"/>.
         /// </summary>
         /// <param name="status"></param>
-        public virtual void AddAndSetStatus(string status) { completed += 1; currentState = status; OnStatusUpdated.Invoke(currentState); OnCompleteUpdated.Invoke(completed); }
+        public virtual void AddAndSetStatus(string status) { completed += 1; currentState = status; OnStatusUpdated?.Invoke(currentState); OnCompleteUpdated?.Invoke(completed); }
 
 
         public override string ToString()
