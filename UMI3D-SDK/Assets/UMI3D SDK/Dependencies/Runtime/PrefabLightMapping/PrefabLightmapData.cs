@@ -132,7 +132,7 @@ public class PrefabLightmapData : MonoBehaviour
 
             if (info.renderer == null)
             {
-                Debug.LogError("[PrefabLightmapDat] Null renderer at index " + i);
+                Debug.LogError("[PrefabLightmapData] Null renderer at index " + i);
                 continue;
             }
 
