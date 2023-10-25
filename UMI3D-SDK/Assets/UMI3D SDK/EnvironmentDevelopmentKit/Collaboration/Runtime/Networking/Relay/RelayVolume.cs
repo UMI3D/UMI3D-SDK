@@ -138,16 +138,16 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <returns></returns>
-        protected List<UMI3DCollaborationUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
+        protected List<UMI3DCollaborationAbstractUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
         {
             switch (receiverSetting)
             {
                 case Receivers.All:
-                    return new List<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users);
+                    return new List<UMI3DCollaborationAbstractUser>(UMI3DCollaborationServer.Collaboration.Users);
                 case Receivers.Others:
-                    return new List<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
+                    return new List<UMI3DCollaborationAbstractUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
                 case Receivers.Target:
-                    return new List<UMI3DCollaborationUser>() { target as UMI3DCollaborationUser };
+                    return new List<UMI3DCollaborationAbstractUser>() { target as UMI3DCollaborationUser };
                 default:
                     return null;
             }
@@ -157,7 +157,7 @@ namespace umi3d.edk.collaboration
         {
             ulong now = UMI3DCollaborationServer.ForgeServer.Time;
 
-            List<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
+            List<UMI3DCollaborationAbstractUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
             List<UMI3DUser> result = targetHashSet?.Select(p => p as UMI3DUser).ToList();
 
             if (targetHashSet != null)

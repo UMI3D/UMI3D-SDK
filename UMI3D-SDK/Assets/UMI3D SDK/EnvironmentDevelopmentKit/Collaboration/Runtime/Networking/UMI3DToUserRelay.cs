@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace umi3d.edk.collaboration
 {
-    public abstract class UMI3DToUserRelay<Frame> : UMI3DRelay<UMI3DCollaborationUser, NetworkingPlayer, Frame> where Frame : class
+    public abstract class UMI3DToUserRelay<Frame> : UMI3DRelay<UMI3DCollaborationAbstractUser, NetworkingPlayer, Frame> where Frame : class
     {
         IForgeServer server;
         protected DataChannelTypes dataChannel = DataChannelTypes.Data;
@@ -44,7 +44,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Instance.OnUserActive.AddListener((user) => forceSendToAll = true);
         }
 
-        protected override IEnumerable<UMI3DCollaborationUser> GetTargets()
+        protected override IEnumerable<UMI3DCollaborationAbstractUser> GetTargets()
         {
             var r = new System.Random();
             return UMI3DCollaborationServer.Collaboration.Users.OrderBy(s => r.Next());
@@ -55,7 +55,7 @@ namespace umi3d.edk.collaboration
             return server.Time;
         }
 
-        protected override void Send(UMI3DCollaborationUser to, List<Frame> frames, bool force)
+        protected override void Send(UMI3DCollaborationAbstractUser to, List<Frame> frames, bool force)
         {
             server.RelayBinaryDataTo((int)dataChannel, to.networkPlayer, GetMessage(frames), force);
         }
@@ -66,7 +66,7 @@ namespace umi3d.edk.collaboration
         /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
         /// </summary>
         /// <param name="to"></param>
-        protected override (List<Frame> frames, bool force) GetFramesToSend(UMI3DCollaborationUser user, ulong time, KeyValuePair<NetworkingPlayer, Frame>[] framesPerSource)
+        protected override (List<Frame> frames, bool force) GetFramesToSend(UMI3DCollaborationAbstractUser user, ulong time, KeyValuePair<NetworkingPlayer, Frame>[] framesPerSource)
         {
             bool forceRelay = false;
 

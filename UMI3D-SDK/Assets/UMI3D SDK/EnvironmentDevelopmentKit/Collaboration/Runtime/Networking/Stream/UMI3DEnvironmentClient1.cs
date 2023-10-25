@@ -38,6 +38,8 @@ namespace umi3d.cdk.collaboration
 
         private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
 
+        public GlTFEnvironmentDto environement { get; private set; }
+
         /// <summary>
         /// Is the client connected to the environment server?
         /// </summary>
@@ -65,6 +67,8 @@ namespace umi3d.cdk.collaboration
         /// Computed version of the environment
         /// </summary>
         public readonly UMI3DVersion.Version version;
+
+        private readonly UMI3DWorldControllerClient1 worldControllerClient;
 
         static public UnityEvent EnvironementJoinned = new UnityEvent();
         static public UnityEvent EnvironementLoaded = new UnityEvent();
@@ -129,8 +133,7 @@ namespace umi3d.cdk.collaboration
                         if (UserDto.answerDto.status != value)
                         {
                             UserDto.answerDto.status = value;
-                            //HttpClient.SendPostUpdateStatusAsync(UserDto.answerDto.status);
-                            //TODO
+                            HttpClient.SendPostUpdateStatusAsync(UserDto.answerDto.status);
                         }
                     }
                     else
@@ -199,7 +202,7 @@ namespace umi3d.cdk.collaboration
         public UserInfo UserDto = new UserInfo();
 
 
-        public UMI3DEnvironmentClient1(EnvironmentConnectionDto connectionDto)
+        public UMI3DEnvironmentClient1(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient1 worldControllerClient)
         {
             this.isJoinning = false;
             this.isConnecting = false;
@@ -207,6 +210,7 @@ namespace umi3d.cdk.collaboration
             this.disconected = false;
             this.connectionDto = connectionDto;
             this.version = new UMI3DVersion.Version(connectionDto.version);
+            this.worldControllerClient = worldControllerClient;
 
             lastTokenUpdate = default;
             HttpClient = new HttpClient1(this);
@@ -238,7 +242,7 @@ namespace umi3d.cdk.collaboration
             ForgeClient.natServerPort = connectionDto.forgeNatServerPort;
 
             var Auth = new common.collaboration.UMI3DAuthenticator(GetLocalToken);
-            //SetToken(worldControllerClient.Identity.localToken); TODo
+            SetToken(worldControllerClient.Identity.localToken);
             JoinForge(Auth);
 
 
@@ -335,7 +339,7 @@ namespace umi3d.cdk.collaboration
 
         private void GetLocalToken(Action<string> callback)
         {
-            //callback?.Invoke(worldControllerClient.Identity.localToken);
+            callback?.Invoke(worldControllerClient.Identity.localToken);
         }
 
 
@@ -448,81 +452,10 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         private async void UpdateIdentity(UserConnectionDto user)
         {
-            //?????
+
+            UnityEngine.Debug.Log("UpdateIdentity " + user);
             await Task.CompletedTask;
-            //try
-            //{
-            //    //UMI3DLogger.Log($"UpdateIdentity {user.id}", scope | DebugScope.Connection);
-            //    UserDto.Set(user);
-            //    //Identity.userId = user.id;
-            //    bool Ok = true;
-            //    bool librariesUpdated = UserDto.answerDto.librariesUpdated;
 
-            //    //UMI3DLogger.Log($"Somthing to update {UserDto.formdto != null} {!UserDto.answerDto.librariesUpdated} ", scope | DebugScope.Connection);
-
-            //    //if (!UserDto.answerDto.librariesUpdated)
-            //    //{
-            //    //    LibrariesDto LibrariesDto = await HttpClient.SendGetLibraries();
-
-            //    //    // UMI3DLogger.Log($"Ask to download Libraries", scope | DebugScope.Connection);
-            //    //    bool b = await UMI3DCollaborationClientServer.Instance.Identifier.ShouldDownloadLibraries(
-            //    //        UMI3DResourcesManager.LibrariesToDownload(LibrariesDto)
-            //    //        );
-
-            //    //    if (!b)
-            //    //    {
-            //    //        Ok = false;
-            //    //        //UMI3DLogger.Log($"libraries Dowload aborted", scope | DebugScope.Connection);
-            //    //    }
-            //    //    else
-            //    //    {
-            //    //        try
-            //    //        {
-            //    //            await UMI3DResourcesManager.DownloadLibraries(LibrariesDto, worldControllerClient.name, libraryProgress);
-            //    //            librariesUpdated = true;
-            //    //        }
-            //    //        catch (Exception e)
-            //    //        {
-            //    //            UMI3DLogger.LogException(e, scope);
-            //    //            Ok = false;
-            //    //        }
-            //    //    }
-            //    //    while (!librariesUpdated && Ok)
-            //    //        await UMI3DAsyncManager.Yield();
-            //    //    UserDto.answerDto.librariesUpdated = librariesUpdated;
-            //    //}
-
-
-            //    if (Ok)
-            //    {
-            //        //UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
-            //        if (UserDto.formdto != null)
-            //        {
-            //            FormAnswerDto param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.formdto);
-            //            UserDto.answerDto.parameters = param;
-            //            await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
-            //        }
-            //        else
-            //        {
-            //            await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
-            //        }
-            //    }
-            //    else
-            //    {
-            //        UMI3DCollaborationClientServer.Logout();
-            //    }
-            //}
-            //catch (UMI3DAsyncManagerException)
-            //{
-            //    //This exeception is thrown only when app is stopping.
-            //}
-            //catch (Exception e)
-            //{
-            //    if (e is Umi3dNetworkingException n && n.errorCode == 401)
-            //        UMI3DCollaborationClientServer.ReceivedLogoutMessage("You are not authorized to proceed further.");
-            //    else
-            //        UMI3DCollaborationClientServer.Logout();
-            //}
         }
 
         private IEnumerator OnNewTokenNextFrame()
@@ -566,17 +499,9 @@ namespace umi3d.cdk.collaboration
         {
             UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
             useDto = enter.usedDto;
-            GlTFEnvironmentDto environement = await HttpClient.SendGetEnvironment();
-
-            //UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
-            //await (UMI3DEnvironmentLoader.Instance.Load(environement, LoadProgress));
-            //UpdateProgress.AddComplete();
-            //UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
-            //UMI3DNavigation.Instance.currentNav.Teleport(new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
-            //EnvironementLoaded.Invoke();
-            //UserDto.answerDto.status = statusToBeSet;
-            //UMI3DCollaborationClientServer.transactionPending = await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
-            //UpdateProgress.AddComplete();
+            environement = await HttpClient.SendGetEnvironment();
+            UserDto.answerDto.status = statusToBeSet;
+            await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
         }
 
         /// <summary>

@@ -80,15 +80,20 @@ namespace umi3d.worldController
                 return;
             }
 
+            UnityEngine.Debug.Log($"User is {dto.isServer}");
+
             if (dto is FormConnectionAnswerDto _dto && _dto.formAnswerDto == null)
             {
                 dto = new ConnectionDto()
                 {
                     gate = _dto.gate,
                     globalToken = _dto.globalToken,
-                    libraryPreloading = _dto.libraryPreloading
+                    libraryPreloading = _dto.libraryPreloading,
+                    isServer = _dto.isServer
                 };
             }
+
+            UnityEngine.Debug.Log($"User is {dto.isServer}");
 
             bool finished = false;
             UMI3DDto result = null;
@@ -114,6 +119,7 @@ namespace umi3d.worldController
         {
             try
             {
+                UnityEngine.Debug.Log($"User is {dto.isServer}");
                 UMI3DDto res = await api.Connect(dto);
                 callback?.Invoke(res);
             }

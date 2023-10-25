@@ -15,9 +15,14 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking;
+using System.Threading;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.userCapture.pose;
+using umi3d.edk.userCapture.pose;
 using umi3d.edk.userCapture.tracking;
+using UnityEngine.Video;
 
 namespace umi3d.edk.collaboration
 {
@@ -79,7 +84,7 @@ namespace umi3d.edk.collaboration
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
 
-          
+
             userId = identity is not null && identity.userId != 0 ? UMI3DEnvironment.Register(this, identity.userId) : Id();
 
             status = StatusType.CREATED;
@@ -128,6 +133,46 @@ namespace umi3d.edk.collaboration
                 status = this.status
             };
             return status;
+        }
+
+        public virtual UserConnectionDto ToUserConnectionDto()
+        {
+            var source = ToUserDto(this);
+            var connectionInformation = new UserConnectionDto()
+            {
+                id = source.id,
+                login = source.login,
+                status = source.status,
+
+                audioSourceId = source.audioSourceId,
+                audioFrequency = source.audioFrequency,
+                videoSourceId = source.videoSourceId,
+                networkId = source.networkId,
+
+                microphoneStatus = source.microphoneStatus,
+                avatarStatus = source.avatarStatus,
+                attentionRequired = source.attentionRequired,
+
+                audioChannel = source.audioChannel,
+                audioServerUrl = source.audioServerUrl,
+                audioLogin = source.audioLogin,
+                audioUseMumble = source.audioUseMumble,
+
+                onStartSpeakingAnimationId = source.onStartSpeakingAnimationId,
+                onStopSpeakingAnimationId = source.onStopSpeakingAnimationId,
+                language = source.language,
+            };
+
+            return connectionInformation;
+        }
+        public virtual UserDto ToUserDto(UMI3DUser user)
+        {
+            var _user = new UserDto
+            {
+                id = Id(),
+                status = status,
+            };
+            return _user;
         }
     }
 }

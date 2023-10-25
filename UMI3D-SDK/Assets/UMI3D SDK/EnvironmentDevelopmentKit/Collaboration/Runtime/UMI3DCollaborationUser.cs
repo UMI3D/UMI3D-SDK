@@ -116,7 +116,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Collaboration.NotifyUserStatusChanged(this);
         }
 
-        public virtual UserConnectionDto ToUserConnectionDto()
+        public override UserConnectionDto ToUserConnectionDto()
         {
             var source = ToUserDto(this);
             var connectionInformation = new UserConnectionDto()
@@ -152,7 +152,7 @@ namespace umi3d.edk.collaboration
             return connectionInformation;
         }
 
-        public virtual UserDto ToUserDto(UMI3DUser user)
+        public override UserDto ToUserDto(UMI3DUser user)
         {
             var _user = new UserDto
             {

@@ -98,7 +98,7 @@ namespace umi3d.edk.collaboration
             var targets = GetTargets();
             foreach(var target in targets)
             {
-                if (target != null)
+                if (target == null)
                     continue;
 
                 (List<Frame> frames, bool force) = GetFramesToSend(target, time, _framesPerSource);

@@ -110,7 +110,7 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
-        public (UMI3DCollaborationUser user, bool oldToken) GetUserByToken(string authorization)
+        public (UMI3DCollaborationAbstractUser user, bool oldToken) GetUserByToken(string authorization)
         {
             if (authorization.StartsWith(UMI3DNetworkingKeys.bearer))
             {
@@ -120,11 +120,11 @@ namespace umi3d.edk.collaboration
             return (null, false);
         }
 
-        private (UMI3DCollaborationUser user, bool oldToken) GetUserByNakedToken(string token)
+        private (UMI3DCollaborationAbstractUser user, bool oldToken) GetUserByNakedToken(string token)
         {
             lock (users)
             {
-                foreach (UMI3DCollaborationUser u in users.Values)
+                foreach (UMI3DCollaborationAbstractUser u in users.Values)
                 {
                     if (u.token == token)
                         return (u, true);
@@ -137,12 +137,12 @@ namespace umi3d.edk.collaboration
             return (null, false);
         }
 
-        public (UMI3DCollaborationUser user, bool oldToken, bool oldUser) GetUserByNakedTokenForConnection(string token)
+        public (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser) GetUserByNakedTokenForConnection(string token)
         {
-            (UMI3DCollaborationUser user, bool oldToken) connected = GetUserByNakedToken(token);
+            (UMI3DCollaborationAbstractUser user, bool oldToken) connected = GetUserByNakedToken(token);
             if (connected.oldToken || connected.user != null)
                 return (connected.user, connected.oldToken, false);
-            foreach (UMI3DCollaborationUser user in lostUsers.Values)
+            foreach (UMI3DCollaborationAbstractUser user in lostUsers.Values)
             {
                 if (user.token == token)
                     return (user, true, true);
@@ -154,13 +154,13 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return all UMI3D users.
         /// </summary>
-        public IEnumerable<UMI3DCollaborationUser> Users
+        public IEnumerable<UMI3DCollaborationAbstractUser> Users
         {
             get
             {
                 lock (users)
                 {
-                    return users.Values.Where(u => u is UMI3DCollaborationUser).Select(u => u as UMI3DCollaborationUser).ToList();
+                    return users.Values.Where(u => u is UMI3DCollaborationAbstractUser).Select(u => u as UMI3DCollaborationAbstractUser).ToList();
                 }
             }
         }
@@ -215,7 +215,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Instance.NotifyUnregistered(user);
         }
 
-        public void reconnectUser(UMI3DCollaborationUser user)
+        public void reconnectUser(UMI3DCollaborationAbstractUser user)
         {
             lock (users)
             {
@@ -238,10 +238,10 @@ namespace umi3d.edk.collaboration
                 user?.SetStatus(StatusType.MISSING);
         }
 
-        public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationUser, bool> onUserCreated)
+        public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationAbstractUser, bool> onUserCreated)
         {
-            (UMI3DCollaborationUser user, bool oldToken, bool oldUser) res = GetUserByNakedTokenForConnection(token);
-            UMI3DCollaborationUser user = res.user;
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser) res = GetUserByNakedTokenForConnection(token);
+            UMI3DCollaborationAbstractUser user = res.user;
             UMI3DLogger.Log($"Connect User {user != null} {res}", scope);
             if (user != null)
             {
@@ -292,12 +292,12 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                user = 
+                user =
                     LoginDto.isServer ?
                         new UMI3DServerUser(LoginDto) :
                         new UMI3DCollaborationUser(LoginDto);
 
-                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
+                UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock [{user.GetType()}]", scope);
                 lock (users)
                 {
                     users.Add(user.Id(), user);
