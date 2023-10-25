@@ -15,14 +15,9 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking;
-using System.Threading;
-using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.userCapture.pose;
-using umi3d.edk.userCapture.pose;
 using umi3d.edk.userCapture.tracking;
-using UnityEngine.Video;
 
 namespace umi3d.edk.collaboration
 {

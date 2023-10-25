@@ -48,6 +48,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
     public override IEntity ToEntityDto(UMI3DUser user)
     {
+        UnityEngine.Debug.Log("hello");
         return dto;
     }
 
