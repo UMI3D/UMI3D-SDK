@@ -52,9 +52,8 @@ namespace umi3d.cdk.userCapture.pose
             this.skeletonService = skeletonService;
             this.poseService = poseService;
         }
-        #endregion
 
-
+        #endregion Dependencies Injection
 
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
@@ -134,6 +133,12 @@ namespace umi3d.cdk.userCapture.pose
                     {
                         UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(scaleConditionDto.TargetId);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
+                    }
+                case EnvironmentPoseConditionDto environmentPoseConditionDto:
+                    {
+                        EnvironmentPoseCondition environmentPoseCondition = new(environmentPoseConditionDto);
+                        environmentService.RegisterEntity(environmentPoseConditionDto.Id, environmentPoseConditionDto, environmentPoseCondition).NotifyLoaded();
+                        return environmentPoseCondition;
                     }
 
                 default:

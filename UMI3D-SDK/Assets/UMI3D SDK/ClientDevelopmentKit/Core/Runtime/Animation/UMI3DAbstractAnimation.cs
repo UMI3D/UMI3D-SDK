@@ -15,7 +15,6 @@ limitations under the License.
 using MainThreadDispatcher;
 using System;
 using System.Collections;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -91,7 +90,7 @@ namespace umi3d.cdk
                             }
                             else
                             {
-                                (value.entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                                (value.entity.Object as UMI3DAbstractAnimation).Start(ConvertStartTime(dto.startTime));
                             }
                         }
                         else
@@ -142,7 +141,7 @@ namespace umi3d.cdk
                             }
                             else
                             {
-                                (value.entity.Object as UMI3DAbstractAnimation).Start(UMI3DClientServer.Instance.GetTime() - dto.startTime);
+                                (value.entity.Object as UMI3DAbstractAnimation).Start(ConvertStartTime(dto.startTime));
                             }
                         }
                         else
@@ -176,6 +175,25 @@ namespace umi3d.cdk
         }
 
         /// <summary>
+        /// Compute start time given from server time to star time from resource time.
+        /// </summary>
+        /// <param name="startTime"></param>
+        /// <returns></returns>
+        private float ConvertStartTime(ulong startTime)
+        {
+            ulong serverTime = UMI3DClientServer.Instance.GetTime();
+
+            if (startTime > serverTime)
+            {
+                return 0f;
+            }
+            else
+            {
+                return serverTime - startTime;
+            }
+        }
+
+        /// <summary>
         /// DTO local copy.
         /// </summary>
         protected UMI3DAbstractAnimationDto dto { get; set; }
@@ -202,7 +220,7 @@ namespace umi3d.cdk
                 if (dto.startTime == default)
                     UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
                 else
-                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
+                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(ConvertStartTime(dto.startTime)));
             }
 #endif
         }

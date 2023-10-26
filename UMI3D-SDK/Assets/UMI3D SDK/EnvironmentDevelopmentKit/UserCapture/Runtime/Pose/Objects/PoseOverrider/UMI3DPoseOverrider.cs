@@ -20,6 +20,7 @@ using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.edk;
+using umi3d.edk.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
@@ -54,6 +55,12 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         [SerializeReference, HideInInspector]
         public AbstractPoseConditionDto[] poseConditions;
+
+        /// <summary>
+        /// Poses conditions validated by the environment.
+        /// </summary>
+        [HideInInspector]
+        public List<UMI3DEnvironmentPoseCondition> environmentPoseConditions = new();
 
         public IReadOnlyList<AbstractPoseConditionDto> PoseConditions => GetPoseConditions().ToList();
 
@@ -124,7 +131,7 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         public Vector3 Direction;
 
-        [Header("- Direction condition")]
+        [Header("- Scale condition")]
         public bool HasScaleCondition;
 
         /// <summary>
@@ -150,6 +157,8 @@ namespace umi3d.common.userCapture.pose
         public virtual AbstractPoseConditionDto[] GetPoseConditions()
         {
             List<AbstractPoseConditionDto> copy = new();
+
+            copy.AddRange(environmentPoseConditions.Select(x => x.ToEntityDto() as AbstractPoseConditionDto));
 
             if (HasMagnitudeCondition)
             {

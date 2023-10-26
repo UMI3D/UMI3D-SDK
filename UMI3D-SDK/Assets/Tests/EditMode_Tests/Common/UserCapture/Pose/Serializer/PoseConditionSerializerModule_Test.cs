@@ -51,7 +51,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         #region Pose Conditions
 
         [Test]
-        public void ReadMagnitudeCondition()
+        public void Read_MagnitudeCondition()
         {
             MagnitudeConditionDto magnitudeConditionDto = new MagnitudeConditionDto()
             {
@@ -70,7 +70,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         }
 
         [Test]
-        public void ReadBoneRotationCondition()
+        public void Read_BoneRotationCondition()
         {
             BoneRotationConditionDto boneRotationConditionDto = new BoneRotationConditionDto()
             {
@@ -93,7 +93,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         }
 
         [Test]
-        public void ReadDirectionCondition()
+        public void Read_DirectionCondition()
         {
             DirectionConditionDto directionConditionDto = new DirectionConditionDto()
             {
@@ -112,7 +112,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         }
 
         [Test]
-        public void ReadUserScaleCondition()
+        public void Read_UserScaleCondition()
         {
             UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto()
             {
@@ -129,7 +129,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         }
 
         [Test]
-        public void ReadScaleCondition()
+        public void Read_ScaleCondition()
         {
             ScaleConditionDto scaleConditionDto = new ScaleConditionDto()
             {
@@ -143,6 +143,27 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
             Assert.IsTrue((result as ScaleConditionDto).Scale.X == scaleConditionDto.Scale.X);
+            Assert.IsTrue((result as ScaleConditionDto).Scale.Y == scaleConditionDto.Scale.Y);
+            Assert.IsTrue((result as ScaleConditionDto).Scale.Z == scaleConditionDto.Scale.Z);
+        }
+
+        [Test]
+        public void Read_EnvironmentPoseCondition()
+        {
+            EnvironmentPoseConditionDto environmentConditionDto = new ()
+            {
+                Id = 10005uL,
+                IsValidated = true,
+            };
+
+            poseConditionSerializerModule.Write(environmentConditionDto, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+
+            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
+            Assert.IsTrue(readable);
+            Assert.AreEqual(environmentConditionDto.Id, (result as EnvironmentPoseConditionDto).Id);
+            Assert.AreEqual(environmentConditionDto.IsValidated, (result as EnvironmentPoseConditionDto).IsValidated);
         }
 
         #endregion Pose Conditions
@@ -150,7 +171,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         #region Multy Conditions
 
         [Test]
-        public void ReadRangeCondition()
+        public void Read_RangeCondition()
         {
             RangeConditionDto rangeConditionDto = new RangeConditionDto()
             {
@@ -171,7 +192,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         }
 
         [Test]
-        public void ReadNotCondition()
+        public void Read_NotCondition()
         {
             NotConditionDto notConditionDto = new NotConditionDto()
             {
