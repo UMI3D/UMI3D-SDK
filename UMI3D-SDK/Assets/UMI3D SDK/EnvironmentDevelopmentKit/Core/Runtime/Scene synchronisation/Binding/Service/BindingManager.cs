@@ -181,8 +181,6 @@ namespace umi3d.edk.binding
 
             if (users == null) // all users have same value
             {
-                HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
-
                 if (bindings.GetValue().ContainsKey(binding.boundNodeId)) //if a binding is already added on that node, upgrade binding
                 {
                     var existingBinding = bindings.GetValue(binding.boundNodeId);
@@ -195,41 +193,21 @@ namespace umi3d.edk.binding
                     }
 
                     // replace existing binding by a new upgraded one
-                    operations.Add(existingBinding.GetDeleteEntity(targetUsers));
+                    operations.Add(existingBinding.GetDeleteEntity());
 
                     var multiBindingResult = UpgradeBinding(existingBinding, binding);
-
-                    if (users is not null) // need to set value for some users only
-                    {
-                        foreach (UMI3DUser user in targetUsers)
-                            bindings.SetValue(user, binding.boundNodeId, multiBindingResult);
-                    }
-                    else
-                    {
-                        bindings.SetValue(binding.boundNodeId, multiBindingResult);
-                    }
-                    operations.Add(multiBindingResult.GetLoadEntity(targetUsers));
+                    bindings.SetValue(binding.boundNodeId, multiBindingResult);
+                    operations.Add(multiBindingResult.GetLoadEntity());
                 }
                 else //users should receive the added binding
                 {
-                    if (users is not null)
-                    {
-                        foreach (UMI3DUser user in users)
-                            bindings.Add(user, binding.boundNodeId, binding);
-                    }
-                    else
-                    {
-                        bindings.Add(binding.boundNodeId, binding);
-                    }
-
-                    operations.Add(binding.GetLoadEntity(targetUsers));
+                    bindings.Add(binding.boundNodeId, binding);
+                    operations.Add(binding.GetLoadEntity());
                 }
             }
             else // some users have different values
             {
-                var targetUsers = users is not null ? users : umi3dServerService.Users();
-
-                var usersWithValues = targetUsers.Where((u) => bindings.GetValue(u).ContainsKey(binding.boundNodeId)).ToList();
+                var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(binding.boundNodeId)).ToList();
 
                 // for each group of users that has the same binding on the node, update existing binding
                 usersWithValues
@@ -255,7 +233,7 @@ namespace umi3d.edk.binding
                     });
 
                 // users with no binding receive the added binding
-                targetUsers.Except(usersWithValues).ForEach(user =>
+                users.Except(usersWithValues).ForEach(user =>
                 {
                     bindings.Add(user, binding.boundNodeId, binding);
                     operations.Add(binding.GetLoadEntity(new() { user }));
@@ -328,8 +306,6 @@ namespace umi3d.edk.binding
 
             if (users == null) // all users have same value
             {
-                HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
-
                 if (bindings.GetValue().ContainsKey(bindingToRemove.boundNodeId))
                 {
                     var bindingOnNode = bindings.GetValue()[bindingToRemove.boundNodeId];
@@ -345,7 +321,7 @@ namespace umi3d.edk.binding
                             foreach (UMI3DUser user in users)
                                 bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
                         }
-                        operations.Add(bindingToRemove.GetDeleteEntity(targetUsers));
+                        operations.Add(bindingToRemove.GetDeleteEntity());
 
                         if (syncServerTransform)
                         {
@@ -359,20 +335,13 @@ namespace umi3d.edk.binding
                             && bindingToRemove is AbstractSingleBinding singleBindingToRemove
                             && existingMultiBinding.bindings.Contains(singleBindingToRemove))
                     {
-                        operations.Add(existingMultiBinding.GetDeleteEntity(targetUsers));
+                        operations.Add(existingMultiBinding.GetDeleteEntity());
 
                         var newBinding = DowngradeBinding(existingMultiBinding, singleBindingToRemove);
 
-                        operations.Add(newBinding.GetLoadEntity(targetUsers)); // a binding remains on node
-                        if (targetUsers is null) // target is all users
-                        {
-                            bindings.SetValue(newBinding.boundNodeId, newBinding);
-                        }
-                        else // target is a fraction of all the users
-                        {
-                            foreach (UMI3DUser user in users)
-                                bindings.SetValue(user, newBinding.boundNodeId, newBinding);
-                        }
+                        operations.Add(newBinding.GetLoadEntity()); // a binding remains on node
+
+                        bindings.SetValue(newBinding.boundNodeId, newBinding);
 
                         if (syncServerTransform)
                         {
@@ -394,9 +363,7 @@ namespace umi3d.edk.binding
             }
             else // users may have different values
             {
-                var targetUsers = users is not null ? users : umi3dServerService.Users();
-
-                var usersWithValues = targetUsers.Where((u) => bindings.GetValue(u).ContainsKey(bindingToRemove.boundNodeId)).ToList();
+                var usersWithValues = users.Where((u) => bindings.GetValue(u).ContainsKey(bindingToRemove.boundNodeId)).ToList();
 
                 if (usersWithValues.Count > 0)
                 {
@@ -495,8 +462,6 @@ namespace umi3d.edk.binding
             var operations = new List<Operation>();
             if (users == null) // all users have same value
             {
-                HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
-
                 if (!bindings.GetValue().ContainsKey(nodeId))
                 {
                     UMI3DLogger.LogWarning($"Cannot remove bindings on node {nodeId}. Not on node and not in multibinding for any user.", DEBUG_SCOPE);
@@ -505,7 +470,7 @@ namespace umi3d.edk.binding
 
                 var bindingToDelete = bindings.GetValue()[nodeId];
 
-                operations.Add(bindingToDelete.GetDeleteEntity(targetUsers));
+                operations.Add(bindingToDelete.GetDeleteEntity());
 
                 if (syncServerTransform)
                 {
@@ -517,9 +482,7 @@ namespace umi3d.edk.binding
             }
             else // some users have specific values
             {
-                var targetUsers = users is not null ? users : umi3dServerService.Users();
-
-                targetUsers
+                users
                     .Where((u) => bindings.GetValue(u).ContainsKey(nodeId))
                     .GroupBy(u => bindings.GetValue(u)[nodeId])
                     .ForEach(userGroup =>
@@ -571,16 +534,11 @@ namespace umi3d.edk.binding
 
             if (users == null)
             {
-                if (users is not null)
-                    foreach (var user in users)
-                        operations.Add(node.objectParentId.SetValue(user, newparent));
-                else
-                    operations.Add(node.objectParentId.SetValue(newparent));
+                operations.Add(node.objectParentId.SetValue(newparent));
             }
             else
             {
-                var targetUsers = users is not null ? users : umi3dServerService.Users();
-                foreach (UMI3DUser user in targetUsers)
+                foreach (UMI3DUser user in users)
                     operations.Add(node.objectParentId.SetValue(user, newparent));
             }
             return operations;

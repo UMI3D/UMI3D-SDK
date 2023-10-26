@@ -33,7 +33,8 @@ namespace TestUtils.UserCapture
         public static UMI3DSkeletonHierarchy CreateTestHierarchy()
         {
             HierarchyDefinitionLocal hierarchyDef = new();
-            hierarchyDef.Relations.Add(new(BoneType.Chest, BoneType.None, Vector3.zero));
+            hierarchyDef.Relations.Add(new(BoneType.Hips, BoneType.None, Vector3.zero));
+            hierarchyDef.Relations.Add(new(BoneType.Chest, BoneType.Hips, Vector3.zero));
             hierarchyDef.Relations.Add(new(BoneType.Spine, BoneType.Chest, Vector3.zero));
             hierarchyDef.Relations.Add(new(BoneType.LeftForearm, BoneType.Chest, Vector3.zero));
             return new UMI3DSkeletonHierarchy(hierarchyDef);
