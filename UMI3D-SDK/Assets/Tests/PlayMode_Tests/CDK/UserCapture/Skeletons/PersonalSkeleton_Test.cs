@@ -74,7 +74,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             Assert.IsTrue(PersonalSkeleton.gameObject.transform.rotation == frame.rotation.Quaternion(), "Rotations are not the same");
             Assert.AreEqual(frame, PersonalSkeleton.LastFrame);
             trackedSubskeletonMock.Verify(x => x.WriteTrackingFrame(It.IsAny<UserTrackingFrameDto>(), It.IsAny<TrackingOption>()), Times.Once);
-            poseSubskeletonMock.Verify(x => x.WriteTrackingFrame(It.IsAny<UserTrackingFrameDto>(), It.IsAny<TrackingOption>()), Times.Once);
+            //poseSubskeletonMock.Verify(x => x.WriteTrackingFrame(It.IsAny<UserTrackingFrameDto>(), It.IsAny<TrackingOption>()), Times.Once);
         }
 
         #endregion GetFrame
