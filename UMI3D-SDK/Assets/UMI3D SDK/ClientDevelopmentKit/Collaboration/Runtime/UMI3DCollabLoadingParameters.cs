@@ -84,6 +84,7 @@ namespace umi3d.cdk.collaboration
             .SetNext(new CollaborationBindingLoader())
             .SetNext(notificationLoader.GetNotificationLoader())
             .SetNext(new WebViewLoader())
+            .SetNext(new DistantEnvironmentLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
             ;
