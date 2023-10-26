@@ -350,9 +350,9 @@ namespace umi3d.edk.binding
                         if (syncServerTransform)
                         {
                             var node = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
-                            operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
-                            operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
-                            operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
+                            operations.Add(node.objectPosition.SetValue(node.transform.localPosition, true));
+                            operations.Add(node.objectRotation.SetValue(node.transform.localRotation, true));
+                            operations.Add(node.objectScale.SetValue(node.transform.localScale, true));
                         }
                     }
                     else if (bindingOnNode is MultiBinding existingMultiBinding // the binding is inside a multibinding
@@ -377,9 +377,9 @@ namespace umi3d.edk.binding
                         if (syncServerTransform)
                         {
                             var node = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
-                            operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
-                            operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
-                            operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
+                            operations.Add(node.objectPosition.SetValue(node.transform.localPosition, true));
+                            operations.Add(node.objectRotation.SetValue(node.transform.localRotation, true));
+                            operations.Add(node.objectScale.SetValue(node.transform.localScale, true));
                         }
                     }
                     else
@@ -413,9 +413,9 @@ namespace umi3d.edk.binding
                             bindings.Remove(user, bindingToRemove.boundNodeId); // no binding left on node
                             if (syncServerTransform)
                             {
-                                ops.Add(node.objectPosition.SetValue(user, node.objectPosition.GetValue(user), true));
-                                ops.Add(node.objectRotation.SetValue(user, node.objectRotation.GetValue(user), true));
-                                ops.Add(node.objectScale.SetValue(user, node.objectScale.GetValue(user), true));
+                                ops.Add(node.objectPosition.SetValue(user, node.transform.localPosition, true));
+                                ops.Add(node.objectRotation.SetValue(user, node.transform.localRotation, true));
+                                ops.Add(node.objectScale.SetValue(user, node.transform.localScale, true));
                             }
                         }
                         operations.Add(bindingToRemove.GetDeleteEntity(usersWithSameBinding.ToHashSet()));
@@ -445,9 +445,9 @@ namespace umi3d.edk.binding
                         if (syncServerTransform)
                         {
                             var node = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractNode>(bindingToRemove.boundNodeId);
-                            operations.Add(node.objectPosition.SetValue(node.objectPosition.GetValue(), true));
-                            operations.Add(node.objectRotation.SetValue(node.objectRotation.GetValue(), true));
-                            operations.Add(node.objectScale.SetValue(node.objectScale.GetValue(), true));
+                            operations.Add(node.objectPosition.SetValue(node.transform.localPosition, true));
+                            operations.Add(node.objectRotation.SetValue(node.transform.localRotation, true));
+                            operations.Add(node.objectScale.SetValue(node.transform.localScale, true));
                         }
                     }
                 }
