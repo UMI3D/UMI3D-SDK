@@ -12,6 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Threading.Tasks;
@@ -219,7 +220,7 @@ namespace umi3d.cdk
                 if (dto.startTime == default)
                     UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrame());
                 else
-                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(UMI3DClientServer.Instance.GetTime() - dto.startTime));
+                    UnityMainThreadDispatcher.Instance().Enqueue(StartNextFrameAt(ConvertStartTime(dto.startTime)));
             }
 #endif
         }
