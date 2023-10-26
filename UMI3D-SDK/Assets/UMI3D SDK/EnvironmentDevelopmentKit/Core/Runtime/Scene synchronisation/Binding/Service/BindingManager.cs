@@ -179,7 +179,7 @@ namespace umi3d.edk.binding
 
             List<Operation> operations = new();
 
-            if (!bindings.isAsync) // all users have same value
+            if (users == null) // all users have same value
             {
                 HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
 
@@ -326,7 +326,7 @@ namespace umi3d.edk.binding
 
             List<Operation> operations = new();
 
-            if (!bindings.isAsync) // all users have same value
+            if (users == null) // all users have same value
             {
                 HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
 
@@ -493,7 +493,7 @@ namespace umi3d.edk.binding
         public virtual IReadOnlyList<Operation> RemoveAllBindings(ulong nodeId, IEnumerable<UMI3DUser> users = null, bool syncServerTransform = true)
         {
             var operations = new List<Operation>();
-            if (!bindings.isAsync) // all users have same value
+            if (users == null) // all users have same value
             {
                 HashSet<UMI3DUser> targetUsers = users is not null ? new(users) : null;
 
@@ -569,7 +569,7 @@ namespace umi3d.edk.binding
             var node = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractNode>(binding.boundNodeId);
             node.transform.SetParent(newparent.transform, true);
 
-            if (!bindings.isAsync)
+            if (users == null)
             {
                 if (users is not null)
                     foreach (var user in users)
