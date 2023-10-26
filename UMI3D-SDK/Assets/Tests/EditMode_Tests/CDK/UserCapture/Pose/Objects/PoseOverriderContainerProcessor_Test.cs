@@ -48,13 +48,13 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                     {
                         poseConditions = new AbstractPoseConditionDto[0],
                         poseIndexInPoseManager = 1,
-                        activationMode = (ushort)PoseActivationMode.NONE
+                        activationMode = (ushort)PoseActivationMode.AUTO
                     },
                     new PoseOverriderDto()
                     {
                         poseConditions = new AbstractPoseConditionDto[0],
                         poseIndexInPoseManager = 2,
-                        activationMode = (ushort)PoseActivationMode.HOVER_ENTER
+                        activationMode = (ushort)PoseActivationMode.ON_REQUEST
                     }
                 }
             };
@@ -127,11 +127,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void TryActivate()
         {
             // given
-            PoseActivationMode mode = PoseActivationMode.HOVER_ENTER;
             coroutineServiceMock.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
 
             // when
-            bool success = processor.TryActivate(mode);
+            bool success = processor.Activate();
 
             //then
             Assert.IsTrue(success);
@@ -141,12 +140,11 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void TryActivate_AlreadyActivated()
         {
             // given
-            PoseActivationMode mode = PoseActivationMode.HOVER_ENTER;
             coroutineServiceMock.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
-            processor.TryActivate(mode);
+            processor.Activate();
 
             // when
-            bool success = processor.TryActivate(mode);
+            bool success = processor.Activate();
 
             //then
             Assert.IsFalse(success);
@@ -156,23 +154,9 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void TryActivate_Environmental()
         {
             // given
-            PoseActivationMode mode = PoseActivationMode.NONE;
 
             // when
-            bool success = processor.TryActivate(mode);
-
-            //then
-            Assert.IsFalse(success);
-        }
-
-        [Test]
-        public void TryActivate_NotCorrectMode()
-        {
-            // given
-            PoseActivationMode mode = PoseActivationMode.HOVER_EXIT;
-
-            // when
-            bool success = processor.TryActivate(mode);
+            bool success = processor.Activate();
 
             //then
             Assert.IsFalse(success);

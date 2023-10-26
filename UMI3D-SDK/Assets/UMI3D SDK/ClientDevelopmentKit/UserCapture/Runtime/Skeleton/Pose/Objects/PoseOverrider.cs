@@ -29,7 +29,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// If true, the pose overrider is currently applied.
         /// </summary>
-        public bool IsActive { get; set; }
+        public bool IsApplied { get; set; }
 
         public PoseOverrider(PoseOverriderDto dto, IPoseCondition[] poseConditions)
         {
@@ -70,7 +70,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// State if the pose require user's cursor interaction to be applied.
         /// </summary>
-        public bool IsInteractional => ActivationMode != (ushort)PoseActivationMode.NONE;
+        public bool IsInteractional => ActivationMode != (ushort)PoseActivationMode.AUTO;
 
         /// <summary>
         /// Check if pose conditions are met.

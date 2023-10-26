@@ -57,6 +57,13 @@ namespace umi3d.edk.userCapture.pose
 
         public ulong NodeId { get; private set; }
 
+        public void Activate(UMI3DUser user)
+        {
+            Transaction t = new(true);
+            t.AddIfNotNull(new ActivatePoseOverriderRequest(Id()) { users = new () { user } });
+            t.Dispatch();
+        }
+
         public void Init(ulong nodeId = 0)
         {
             UpdateOverridersDtos(nodeId);

@@ -141,7 +141,7 @@ namespace umi3d.common.userCapture.pose
 
         #endregion Pose condition access
 
-        public PoseOverriderDto ToDto(int poseIndexInPoseManager)
+        public virtual PoseOverriderDto ToDto(int poseIndexInPoseManager)
         {
             return new PoseOverriderDto()
             {

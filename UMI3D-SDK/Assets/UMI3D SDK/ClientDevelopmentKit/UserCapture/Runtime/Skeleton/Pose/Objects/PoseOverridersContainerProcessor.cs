@@ -40,6 +40,8 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         private PoseOverridersContainer poseOverriderContainer;
 
+        public ulong PoseOverriderId => poseOverriderContainer.Id;
+
         /// <summary>
         /// Sends a signal when the condition become validated
         /// </summary>
@@ -80,7 +82,7 @@ namespace umi3d.cdk.userCapture.pose
         {
             this.poseOverriderContainer = overriderContainer ?? throw new System.ArgumentNullException();
             interactionalPoseOverriders = poseOverriderContainer.PoseOverriders
-                                                .Where(pod => pod.ActivationMode != (ushort)PoseActivationMode.NONE)
+                                                .Where(pod => pod.ActivationMode != (ushort)PoseActivationMode.AUTO)
                                                 .ToList();
 
             this.coroutineService = coroutineService ?? CoroutineManager.Instance;
@@ -126,16 +128,16 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Active poses that listens to this activation mode.
         /// </summary>
-        public bool TryActivate(PoseActivationMode mode)
+        public bool Activate()
         {
             foreach (PoseOverrider poseOverrider in interactionalPoseOverriders)
             {
-                if (poseOverrider.IsActive)
+                if (poseOverrider.IsApplied)
                     continue;
 
-                if (poseOverrider.ActivationMode == (ushort)mode && poseOverrider.CheckConditions())
+                if (poseOverrider.ActivationMode == (ushort)PoseActivationMode.ON_REQUEST && poseOverrider.CheckConditions())
                 {
-                    poseOverrider.IsActive = true;
+                    poseOverrider.IsApplied = true;
                     ConditionsValidated?.Invoke(poseOverrider);
                     StartWatchEndOfConditions(poseOverrider);
                     return true;
@@ -165,9 +167,9 @@ namespace umi3d.cdk.userCapture.pose
                 for (int i = 0; i < nonInteractionalPoseOverriders.Count; i++)
                 {
                     var poseOverrider = nonInteractionalPoseOverriders[i];
-                    if (!poseOverrider.IsActive && poseOverrider.CheckConditions())
+                    if (!poseOverrider.IsApplied && poseOverrider.CheckConditions())
                     {
-                        poseOverrider.IsActive = true;
+                        poseOverrider.IsApplied = true;
                         ConditionsValidated?.Invoke(poseOverrider);
                         StartWatchEndOfConditions(poseOverrider);
                     }
@@ -182,7 +184,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <param name="poseOverrider"></param>
         private void StartWatchEndOfConditions(PoseOverrider poseOverrider)
         {
-            if (poseOverrider == null || !poseOverrider.IsActive)
+            if (poseOverrider == null || !poseOverrider.IsApplied)
                 return;
 
             var coroutine = coroutineService.AttachCoroutine(WatchConditionsRoutine(poseOverrider));
@@ -211,11 +213,11 @@ namespace umi3d.cdk.userCapture.pose
         private IEnumerator WatchConditionsRoutine(PoseOverrider poseOverrider)
         {
             float startTime = Time.time;
-            while (poseOverrider.IsActive && !IsProcessorFinished(poseOverrider, startTime))
+            while (poseOverrider.IsApplied && !IsProcessorFinished(poseOverrider, startTime))
             {
                 yield return new WaitForSeconds(seconds: CHECK_PERIOD);
             }
-            poseOverrider.IsActive = false;
+            poseOverrider.IsApplied = false;
             ConditionsInvalided?.Invoke(poseOverrider);
 
             StopWatchEndOfConditions(poseOverrider);

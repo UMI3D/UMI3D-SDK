@@ -14,21 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.common.collaboration.userCapture.pose
 {
-    /// <summary>
-    /// How the pose could be activated by the user.
-    /// </summary>
-    public enum PoseActivationMode : ushort
+    public class ActivatePoseOverriderRequestDto : AbstractOperationDto
     {
-        /// <summary>
-        /// The pose does not require a request to be activated
-        /// </summary>
-        AUTO,
-
-        /// <summary>
-        /// The pose requires an activation from the environment.
-        /// </summary>
-        ON_REQUEST
+        private ulong PoseOverriderContainerId { get; set; }
     }
 }

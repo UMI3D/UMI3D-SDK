@@ -172,12 +172,14 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             // Given
             UMI3DPoseOverridersContainerDto dto = new()
             {
+                id = 1005uL,
                 poseOverriderDtos = new PoseOverriderDto[]
                 {
                     new()
                     {
+                      
                         poseIndexInPoseManager = 1,
-                        activationMode = (ushort)PoseActivationMode.NONE
+                        activationMode = (ushort)PoseActivationMode.AUTO
                     },
                 },
                 relatedNodeId = 1006uL
@@ -193,7 +195,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
             poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<SkeletonPose>(), false));
             // When
-            TestDelegate action = () => poseManager.TryActivatePoseOverriders(dto.relatedNodeId, PoseActivationMode.NONE);
+            TestDelegate action = () => poseManager.ActivatePoseOverrider(dto.id);
 
             // Then
             Assert.DoesNotThrow(() => action());
@@ -223,7 +225,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             var dto = new PoseOverriderDto()
             {
                 poseIndexInPoseManager = 1,
-                activationMode = (ushort)PoseActivationMode.NONE
+                activationMode = (ushort)PoseActivationMode.AUTO
             };
             PoseOverrider overrider = new PoseOverrider(dto, new IPoseCondition[0]);
 
@@ -266,7 +268,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             var dto = new PoseOverriderDto()
             {
                 poseIndexInPoseManager = 1,
-                activationMode = (ushort)PoseActivationMode.NONE
+                activationMode = (ushort)PoseActivationMode.AUTO
             };
             PoseOverrider overrider = new PoseOverrider(dto, new IPoseCondition[0]);
 

@@ -24,6 +24,8 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public interface IPoseOverridersContainerProcessor
     {
+        ulong PoseOverriderId { get; }
+
         /// <summary>
         /// If true, the processor tries to auto-check environmental pose overriders.
         /// </summary>
@@ -52,6 +54,6 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Active poses that listens to this activation mode.
         /// </summary>
-        bool TryActivate(PoseActivationMode mode);
+        bool Activate();
     }
 }

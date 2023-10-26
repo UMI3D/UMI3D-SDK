@@ -16,19 +16,8 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
-    /// <summary>
-    /// How the pose could be activated by the user.
-    /// </summary>
-    public enum PoseActivationMode : ushort
+    public class ActivatePoseOverriderDto : AbstractOperationDto
     {
-        /// <summary>
-        /// The pose does not require a request to be activated
-        /// </summary>
-        AUTO,
-
-        /// <summary>
-        /// The pose requires an activation from the environment.
-        /// </summary>
-        ON_REQUEST
+        public ulong PoseOverriderId { get; set; }
     }
 }

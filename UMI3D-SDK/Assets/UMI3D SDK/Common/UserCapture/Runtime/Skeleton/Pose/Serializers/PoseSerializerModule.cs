@@ -43,6 +43,7 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(PoseDto) => true,
                 true when typeof(T) == typeof(PoseOverriderDto) => true,
                 true when typeof(T) == typeof(DurationDto) => true,
+                true when typeof(T) == typeof(ActivatePoseOverriderDto) => true,
 
                 _ => null
             };
@@ -160,6 +161,25 @@ namespace umi3d.common.userCapture.pose
                         }
                         break;
                     }
+
+                case true when typeof(T) == typeof(ActivatePoseOverriderDto):
+                    {
+                        readable = UMI3DSerializer.TryRead(container, out ulong poseOverriderId);
+
+                        if (readable)
+                        {
+                            ActivatePoseOverriderDto activatePoseOverriderDto = new()
+                            {
+                                PoseOverriderId = poseOverriderId
+                            };
+
+                            result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(ActivatePoseOverriderDto));
+                            return true;
+                        }
+                        break;
+                    }
+
+
             }
             result = default(T);
             readable = false;
@@ -312,6 +332,11 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write(durationDto.duration)
                         + UMI3DSerializer.Write(durationDto.min)
                         + UMI3DSerializer.Write(durationDto.max);
+                    break;
+
+                case ActivatePoseOverriderDto activatePoseOverriderDto:
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.ActivatePoseOverriderRequest)
+                        + UMI3DSerializer.Write(activatePoseOverriderDto.PoseOverriderId);
                     break;
 
                 default:

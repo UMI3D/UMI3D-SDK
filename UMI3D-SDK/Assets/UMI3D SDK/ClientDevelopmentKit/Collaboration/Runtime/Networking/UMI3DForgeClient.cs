@@ -665,21 +665,32 @@ namespace umi3d.cdk.collaboration
                     CollaborationSkeletonsManager.Instance.ShouldSendTracking = sendTracking;
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
-                    ulong userID = UMI3DSerializer.Read<ulong>(container);
-                    int indexInList = UMI3DSerializer.Read<int>(container);
-                    bool stopPose = UMI3DSerializer.Read<bool>(container);
-                    ApplyPoseDto playPoseDto = new ApplyPoseDto
                     {
-                        userID = userID,
-                        indexInList = indexInList,
-                        stopPose = stopPose
-                    };
+                        ulong userID = UMI3DSerializer.Read<ulong>(container);
+                        int indexInList = UMI3DSerializer.Read<int>(container);
+                        bool stopPose = UMI3DSerializer.Read<bool>(container);
+                        ApplyPoseDto playPoseDto = new ApplyPoseDto
+                        {
+                            userID = userID,
+                            indexInList = indexInList,
+                            stopPose = stopPose
+                        };
 
-                    MainThreadManager.Run(() =>
+                        MainThreadManager.Run(() =>
+                        {
+                            CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
+                        });
+                        break;
+                    }
+                case UMI3DOperationKeys.ActivatePoseOverriderRequest:
                     {
-                        CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
-                    });
-                    break;
+                        ulong poseOverriderId = UMI3DSerializer.Read<ulong>(container);
+                        MainThreadManager.Run(() =>
+                        {
+                            PoseManager.Instance.ActivatePoseOverrider(poseOverriderId);
+                        });
+                        break;
+                    }
                 case UMI3DOperationKeys.ValidatePoseConditionRequest:
                     {
                         ulong id = UMI3DSerializer.Read<ulong>(container);
