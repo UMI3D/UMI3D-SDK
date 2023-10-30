@@ -233,5 +233,10 @@ namespace umi3d.cdk
         {
             progress = frame;
         }
+
+        /// <inheritdoc/>
+        public override void Clear()
+        {
+        }
     }
 }

@@ -373,5 +373,10 @@ namespace umi3d.cdk
         {
             audioSource.loop = b;
         }
+
+        /// <inheritdoc/>
+        public override void Clear()
+        {
+        }
     }
 }

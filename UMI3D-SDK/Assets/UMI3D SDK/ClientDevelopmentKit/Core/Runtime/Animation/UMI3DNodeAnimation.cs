@@ -208,7 +208,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value) 
+        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value)
             => Task.FromResult(false);
 
         private bool UpdateChain(UMI3DNodeAnimationDto dto, SetEntityPropertyDto property)
@@ -255,6 +255,11 @@ namespace umi3d.cdk
 
         /// <inheritdoc/>
         public override void SetProgress(long frame)
+        {
+        }
+
+        /// <inheritdoc/>
+        public override void Clear()
         {
         }
     }
