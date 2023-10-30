@@ -39,7 +39,7 @@ namespace umi3d.cdk
         }
 
         public UMI3DNodeLoader(IEnvironmentManager environmentManager,
-                               ILoadingManager loadingManager) 
+                               ILoadingManager loadingManager)
             : base(environmentManager, loadingManager)
         {
         }
@@ -198,7 +198,7 @@ namespace umi3d.cdk
                 return true;
 
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d;
-            if (dto == null) 
+            if (dto == null)
                 return false;
             switch (data.property.property)
             {
@@ -637,8 +637,8 @@ namespace umi3d.cdk
             IResourcesLoader loader = loadingManager.AbstractLoadingParameters.SelectLoader(ext);
             if (loader != null)
             {
-               var o = await UMI3DResourcesManager.LoadFile( id,fileToLoad,loader);
-               CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
+                var o = await UMI3DResourcesManager.LoadFile(id, fileToLoad, loader);
+                CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
             }
         }
 
@@ -759,7 +759,7 @@ namespace umi3d.cdk
                 {
                     if (!mesh.mesh.isReadable)
                     {
-                        UnityEngine.Debug.Log($"Mesh is not readable. GameObject: {mesh.gameObject.name}. No mesh collider will be add.");
+                        Debug.LogWarning($"Mesh is not readable. GameObject: {mesh.gameObject.name}. No mesh collider will be add.");
                     }
                     if (mesh.mesh.isReadable)
                     {

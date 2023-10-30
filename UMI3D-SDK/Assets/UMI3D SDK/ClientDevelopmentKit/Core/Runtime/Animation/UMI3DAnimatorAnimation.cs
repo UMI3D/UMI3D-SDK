@@ -145,7 +145,7 @@ namespace umi3d.cdk
             if (!started)
                 return 0;
             if (IsPaused)
-                return lastPauseTime/Duration;
+                return lastPauseTime / Duration;
 
             var progress = animator.GetCurrentAnimatorStateInfo(0).normalizedTime;
             if (progress >= 1)
@@ -173,7 +173,7 @@ namespace umi3d.cdk
         /// </summary>
         public void Play()
         {
-            if (!started) 
+            if (!started)
                 Start();
             Play(IsPaused ? lastPauseTime : 0);
         }
@@ -222,13 +222,13 @@ namespace umi3d.cdk
         public override void OnEnd()
         {
             started = false;
-            
+
             if (trackingAnimationCoroutine != null)
             {
                 coroutineService.DetachCoroutine(trackingAnimationCoroutine);
                 trackingAnimationCoroutine = null;
             }
-                
+
             base.OnEnd();
         }
 
@@ -283,7 +283,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AnimationStateName:
                     dto.stateName = (string)value.property.value;
                     break;
-                
+
                 case UMI3DPropertyKeys.AnimationAnimatorNormalizedTime:
                     dto.normalizedTime = (float)value.property.value;
                     break;
@@ -318,7 +318,7 @@ namespace umi3d.cdk
             return true;
         }
 
-       
+
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             if (await base.SetUMI3DProperty(value)) return true;
@@ -419,7 +419,7 @@ namespace umi3d.cdk
             UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeId, (n) =>
             {
                 node = n as UMI3DNodeInstance;
-                if(node is not null)
+                if (node is not null)
                     animator = node.gameObject.GetComponentInChildren<Animator>();
                 if (animator != null && dto.playing)
                     Start();
@@ -457,5 +457,9 @@ namespace umi3d.cdk
 
         #endregion Setter
 
+        /// <inheritdoc/>
+        public override void Clear()
+        {
+        }
     }
 }

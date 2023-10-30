@@ -37,7 +37,7 @@ namespace umi3d.cdk
 
         public static void Clear()
         {
-            UMI3DEnvironmentLoader.Entities()?.Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v?.Clean());
+            //UMI3DEnvironmentLoader.Entities()?.Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v?.Clean());
         }
 
         /// <summary>
@@ -81,11 +81,11 @@ namespace umi3d.cdk
 #endif
         }
 
-            /// <summary>
-            /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
-            /// <param name="onFinish"></param>
-            /// </summary>
-            public static async Task LoadVideoPlayers()
+        /// <summary>
+        /// Creates, one by one, <see cref="UMI3DVideoPlayer"/> for all <see cref="UMI3DVideoPlayerDto"/> queued in <see cref="videoPlayersToLoad"/>.
+        /// <param name="onFinish"></param>
+        /// </summary>
+        public static async Task LoadVideoPlayers()
         {
             if (videoPlayersToLoad.Count > 0)
                 await LoadVideoPlayersCoroutine();
@@ -112,7 +112,7 @@ namespace umi3d.cdk
                 UMI3DVideoPlayerDto videoPlayer = videoPlayersToLoad.Dequeue();
 
                 var player = new UMI3DVideoPlayer(videoPlayer);
-                UMI3DEnvironmentLoader.RegisterEntityInstance(player.Id, videoPlayer, player).NotifyLoaded();
+                UMI3DEnvironmentLoader.RegisterEntityInstance(player.Id, videoPlayer, player, player.Clear).NotifyLoaded();
                 player.Init();
 
                 while (!player.isPrepared && !player.preparationFailed)
