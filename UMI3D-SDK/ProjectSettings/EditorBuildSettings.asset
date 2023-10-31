@@ -20,4 +20,6 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Tests/PlayMode_Tests/TestScenes/TESTSCENE_CDK_Base.unity
     guid: 51e795ce6e1f54245b13b7d5f6ac7bc0
-  m_configObjects: {}
+  m_configObjects:
+    com.unity.addressableassets: {fileID: 11400000, guid: 241283797b5423f4888ca215e4be339b,
+      type: 2}
