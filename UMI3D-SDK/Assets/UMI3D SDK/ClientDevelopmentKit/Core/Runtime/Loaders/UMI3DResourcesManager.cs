@@ -1210,7 +1210,7 @@ namespace umi3d.cdk
                 }
             }
 
-            public class SubmodelData
+            private class SubmodelData
             {
                 private string RefByName;
                 private List<int> RefByIndex;
