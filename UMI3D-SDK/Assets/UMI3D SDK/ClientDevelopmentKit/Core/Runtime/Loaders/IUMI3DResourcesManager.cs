@@ -25,12 +25,12 @@ namespace umi3d.cdk
     public interface IUMI3DResourcesManager
     {
         Transform CacheTransform { get; }
-        void AddSubModels(string modelUrlInCache, UMI3DResourcesManager.SubmodelDataCollection nodes);
+        void AddSubModels(string fileUrl, string libraryKey, UMI3DResourcesManager.SubmodelDataCollection nodes);
         void ClearCache(List<UMI3DResourcesManager.Library> exceptLibraries = null);
-        void GetSubModel(string modelUrlInCache, string subModelName, List<int> indexes, List<string> names, Action<object> callback);
-        Transform GetSubModelNow(string modelUrlInCache, string subModelName, List<int> indexes, List<string> names);
-        Transform GetSubModelRoot(string modelUrlInCache);
-        bool IsSubModelsSetFor(string modelUrlInCach);
+        void GetSubModel(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names, Action<object> callback);
+        Transform GetSubModelNow(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names);
+        Transform GetSubModelRoot(string fileUrl, string librayKey);
+        bool IsSubModelsSetFor(string fileUrl, string libraryKey);
         string SetAuthorisationWithParameter(string fileUrl, string authorization);
         List<string> _LibrariesToDownload(List<AssetLibraryDto> assetLibraries);
         Task<object> _LoadFile(ulong id, FileDto file, IResourcesLoader loader);

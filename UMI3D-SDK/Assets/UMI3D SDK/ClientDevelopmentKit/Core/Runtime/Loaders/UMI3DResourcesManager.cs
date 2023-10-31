@@ -357,7 +357,6 @@ namespace umi3d.cdk
 
             public ObjectData(string url, string extension, string authorization, ulong entityId, Library library)
             {
-                Debug.Log(entityId);
                 value = null;
                 entityIds = new HashSet<ulong>() { entityId };
                 libraryIds = new HashSet<Library>() { library };
@@ -476,7 +475,6 @@ namespace umi3d.cdk
 
                     if (ObjectValue.libraryIds.Count() == 0)
                     {
-
                         if (subModelsCache.ContainsKey(ObjectValue.url))
                         {
                             NsubModelsCache.Add(ObjectValue.url, subModelsCache[ObjectValue.url]);
@@ -501,13 +499,17 @@ namespace umi3d.cdk
             {
                 item.Destroy();
             }
+
             NsubModelsCache.Clear();
+
+            LightmapSettings.lightmaps = new LightmapData[0];
 
             Resources.UnloadUnusedAssets();
 
             StopAllCoroutines();
             libraries = new Dictionary<Library, KeyValuePair<DataFile, HashSet<ulong>>>();
             LoadLocalLib();
+
         }
 
         private void HardReset()
@@ -931,7 +933,7 @@ namespace umi3d.cdk
                             SetData(dt, directoryPath);
                         }
                         progress.SetAsCompleted();
-                        UnityEngine.Debug.Log($"{assetLibrary.id} {assetLibrary.version} already in scene");
+                        UMI3DLogger.Log($"{assetLibrary.id} {assetLibrary.version} already in scene.", scope);
                         return;
                     }
                     catch (Exception e)
@@ -1047,7 +1049,7 @@ namespace umi3d.cdk
             progress.SetTotal(list.files.Count);
             foreach (string name in list.files)
             {
-                UnityEngine.Debug.Log($"add file {name} {directoryPath}");
+                UMI3DLogger.Log($"add file {name} {directoryPath}", scope);
                 try
                 {
                     string path = null;
@@ -1101,7 +1103,7 @@ namespace umi3d.cdk
 
             var bytes = await UMI3DClientServer.GetFile(url, !UMI3DClientServer.Instance.AuthorizationInHeader);
 
-            UnityEngine.Debug.Log($"<color=green>{directoryPath} {filePath}</color>");
+            UMI3DLogger.Log($"<color=green>{directoryPath} {filePath}</color>", scope);
 
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
@@ -1242,28 +1244,40 @@ namespace umi3d.cdk
             }
         }
 
-        public bool IsSubModelsSetFor(string modelUrlInCach)
+        private string FindMatchingObjectDataUrl(string fileUrl, string libraryKey)
         {
-            return subModelsCache.ContainsKey(modelUrlInCach);
-        }
-
-        public void AddSubModels(string modelUrlInCache, SubmodelDataCollection nodes)
-        {
-            subModelsCache[modelUrlInCache] = nodes;
-        }
-
-        public async void GetSubModel(string modelUrlInCache, string subModelName, List<int> indexes, List<string> names, Action<object> callback)
-        {
-            if (IsSubModelsSetFor(modelUrlInCache))
+            var library = Library.GetLibrary(libraryKey);
+            Match matchUrl = ObjectData.rx.Match(fileUrl);
+            ObjectData objectData = CacheCollection.Find((o) =>
             {
-                callback.Invoke(GetSubModelNow(modelUrlInCache, subModelName, indexes, names).gameObject);
+                return o.MatchUrl(matchUrl, fileUrl, library);
+            });
+
+            return (objectData != null) ? objectData.url : fileUrl;
+        }
+
+        public bool IsSubModelsSetFor(string fileUrl, string libraryKey)
+        {
+            return subModelsCache.ContainsKey(FindMatchingObjectDataUrl(fileUrl, libraryKey));
+        }
+
+        public void AddSubModels(string fileUrl, string libraryKey, SubmodelDataCollection nodes)
+        {
+            subModelsCache[FindMatchingObjectDataUrl(fileUrl, libraryKey)] = nodes;
+        }
+
+        public async void GetSubModel(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names, Action<object> callback)
+        {
+            if (IsSubModelsSetFor(fileUrl, libraryKey))
+            {
+                callback.Invoke(GetSubModelNow(fileUrl, libraryKey, subModelName, indexes, names).gameObject);
             }
             else
             {
-                Match matchUrl = ObjectData.rx.Match(modelUrlInCache);
+                Match matchUrl = ObjectData.rx.Match(fileUrl);
                 ObjectData objectData = CacheCollection.Find((o) =>
                 {
-                    return o.MatchUrl(matchUrl, modelUrlInCache);
+                    return o.MatchUrl(matchUrl, fileUrl);
                 });
 
                 if (objectData == null)
@@ -1272,17 +1286,18 @@ namespace umi3d.cdk
                 while (objectData.state != ObjectData.Estate.Loaded)
                     await UMI3DAsyncManager.Yield();
 
-                GetSubModel(modelUrlInCache, subModelName, indexes, names, (obj) => { callback.Invoke(obj); });
+                GetSubModel(fileUrl, libraryKey, subModelName, indexes, names, (obj) => { callback.Invoke(obj); });
             }
         }
 
-        public Transform GetSubModelNow(string modelUrlInCache, string subModelName, List<int> indexes, List<string> names)
+        public Transform GetSubModelNow(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names)
         {
-            return subModelsCache[modelUrlInCache].Get(subModelName, indexes, names);
+            return subModelsCache[FindMatchingObjectDataUrl(fileUrl, libraryKey)].Get(subModelName, indexes, names);
         }
-        public Transform GetSubModelRoot(string modelUrlInCache)
+
+        public Transform GetSubModelRoot(string fileUrl, string libraryKey)
         {
-            return subModelsCache[modelUrlInCache].root;
+            return subModelsCache[FindMatchingObjectDataUrl(fileUrl, libraryKey)].root;
         }
 
         #endregion
