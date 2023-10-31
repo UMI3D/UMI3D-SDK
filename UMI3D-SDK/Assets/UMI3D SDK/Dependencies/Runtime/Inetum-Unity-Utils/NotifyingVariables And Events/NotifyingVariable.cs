@@ -37,7 +37,7 @@ namespace inetum.unityUtils
             add
             { 
                 valueChanged += value;
-                value(oldField, field);
+                value?.Invoke(oldField, field);
             }
             remove
             {
