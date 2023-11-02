@@ -223,7 +223,7 @@ namespace umi3d.cdk.userCapture.animation
         protected (uint umi3dBoneType, Transform transform)[] FindBonesTransform(Animator animator)
         {
             return (from relationUMI3D in (loadingManager.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition.Relations
-                    let relationUnity = (umi3dBoneType: relationUMI3D.Bonetype, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(relationUMI3D.Bonetype))
+                    let relationUnity = (umi3dBoneType: relationUMI3D.boneType, unityBoneContainer: BoneTypeConvertingExtensions.ConvertToBoneType(relationUMI3D.boneType))
                     where relationUnity.unityBoneContainer.HasValue
                     let relationTransform = (relationUnity.umi3dBoneType, transform: animator.GetBoneTransform(relationUnity.unityBoneContainer.Value))
                     where relationTransform.transform != null

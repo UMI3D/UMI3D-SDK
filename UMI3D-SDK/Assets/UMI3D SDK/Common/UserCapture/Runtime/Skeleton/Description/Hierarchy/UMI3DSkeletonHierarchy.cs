@@ -20,6 +20,8 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
+    using BoneRelation = IUMI3DSkeletonHierarchyDefinition.BoneRelation;
+
     /// <summary>
     /// UMI3D hierarchy of bones.
     /// </summary>
@@ -29,90 +31,137 @@ namespace umi3d.common.userCapture.description
 
         public UMI3DSkeletonHierarchy(IUMI3DSkeletonHierarchyDefinition definition)
         {
-            if (definition == null) //empty hierarchy has at least a hips
+            if (definition == null || definition.Relations.Count == 0) //empty hierarchy has at least a hips
             {
-                relations.Add(BoneType.Hips, new() { boneTypeParent = BoneType.None, relativePosition = Vector3.zero });
+                relations.Add(BoneType.Hips, new() { boneType = BoneType.None, relativePosition = Vector3.zero });
                 return;
             }
 
-            foreach (var relation in definition.Relations)
+            var relationGroupings = definition.Relations.GroupBy(x => x.parentBoneType).ToDictionary(x => x.Key, x => x.ToList());
+
+            // find root
+            uint rootBoneType = FindRoots(definition);
+
+            // create hierarchy of nodes
+            root = CreateHierarchyNode(BoneType.None, rootBoneType, relationGroupings[rootBoneType]);
+            relations.Add(rootBoneType, root);
+
+            UMI3DSkeletonHierarchyNode CreateHierarchyNode(uint parentBoneType, uint boneType, List<BoneRelation> relationGroup)
             {
-                if (relations.ContainsKey(relation.Bonetype))
+                List<UMI3DSkeletonHierarchyNode> children = new();
+                foreach (var childRelation in relationGroup)
                 {
-                    UMI3DLogger.LogWarning($"Hierarchy already contains a bone of type {BoneTypeHelper.GetBoneName(relation.Bonetype)}. Skipping relation.", DEBUG_SCOPE);
-                    continue;
+                    UMI3DSkeletonHierarchyNode childNode;
+                    if (relationGroupings.ContainsKey(childRelation.boneType)) // child has its own relations
+                    {
+                        childNode = CreateHierarchyNode(childRelation.parentBoneType, childRelation.boneType, relationGroupings[childRelation.boneType]);
+                    }
+                    else // child is a leaf
+                    {
+                        childNode = new UMI3DSkeletonHierarchyNode()
+                        {
+                            boneTypeParent = childRelation.parentBoneType,
+                            boneType = childRelation.boneType,
+                            relativePosition = childRelation.relativePosition.Struct(),
+                            children = new()
+                        };
+                    }
+
+                    relations.Add(childRelation.boneType, childNode);
+                    children.Add(childNode);
                 }
-                relations.Add(relation.Bonetype, new UMI3DSkeletonHierarchyNode { boneTypeParent = relation.BonetypeParent, relativePosition = relation.RelativePosition });
+
+                return new UMI3DSkeletonHierarchyNode()
+                {
+                    boneTypeParent = parentBoneType,
+                    boneType = boneType,
+                    relativePosition = definition.Relations.FirstOrDefault(x => x.boneType == boneType).relativePosition?.Struct() ?? Vector3.zero,
+                    children = children,
+                };
             }
         }
 
-        public struct UMI3DSkeletonHierarchyNode
+        private uint FindRoots(IUMI3DSkeletonHierarchyDefinition definition)
         {
+            List<uint> childNodes = definition.Relations.Select(x => x.boneType).ToList(); // bones that are children of other bones
+
+            List<uint> roots = definition.Relations.Where(x => x.parentBoneType == BoneType.None).Select(x => x.boneType).ToList();
+
+            if (roots.Count == 0)
+                roots = definition.Relations.Where(x=>!childNodes.Contains(x.parentBoneType)).Select(x=>x.parentBoneType).ToList(); // roots are node that children of no other bones
+
+            if (roots.Count == 0)
+            {
+                throw new System.ArgumentException("Hierarchy definition has no root. It may be empty or cyclical.", nameof(definition));
+            }
+            if (roots.Count > 1)
+            {
+                throw new System.ArgumentException("Hierarchy definition contains several roots. Please ensure it has only one root.", nameof(definition));
+            }
+
+            return roots.First();
+        }
+
+        public class UMI3DSkeletonHierarchyNode
+        {
+            /// <summary>
+            /// UMI3D bone type of the parent bone. 0 if no parent bone.
+            /// </summary>
+            public uint boneType;
+
             /// <summary>
             /// UMI3D bone type of the parent bone. 0 if no parent bone.
             /// </summary>
             public uint boneTypeParent;
 
             /// <summary>
+            /// UMI3D bone type of children bones
+            /// </summary>
+            public List<UMI3DSkeletonHierarchyNode> children;
+
+            /// <summary>
             /// Relative position of the bone relative to it's parent position.
             /// </summary>
             public Vector3 relativePosition;
-
-            public static implicit operator (uint boneTypeParent, Vector3 relativePosition)(UMI3DSkeletonHierarchyNode node)
-            {
-                return (node.boneTypeParent, node.relativePosition);
-            }
         }
 
         /// <summary>
         /// Cache of the hierarchy.
         /// </summary>
         private readonly Dictionary<uint, UMI3DSkeletonHierarchyNode> relations = new();
+
         /// <summary>
         /// UMI3D hierarchy nodes, indexed by bone types.
         /// </summary>
         public IReadOnlyDictionary<uint, UMI3DSkeletonHierarchyNode> Relations => relations;
+
+        private UMI3DSkeletonHierarchyNode root;
+        public UMI3DSkeletonHierarchyNode Root => root;
 
         /// <summary>
         /// Create a hierarchy of transform according to the UMI3DHierarchy.
         /// </summary>
         /// <param name="root"></param>
         /// <returns></returns>
-        public virtual IEnumerable<(uint umi3dBoneType, Transform boneTransform)> Generate(Transform root)
+        public virtual IDictionary<uint, Transform> Generate(Transform root)
         {
-            Dictionary<uint, bool> hasBeenCreated = new();
-            foreach (var bone in Relations.Keys)
-                hasBeenCreated[bone] = false;
-
             Dictionary<uint, Transform> hierarchy = new();
 
             var boneNames = BoneTypeHelper.GetBoneNames();
 
-            foreach (uint bone in Relations.Keys)
+            CreateNode(root.gameObject, Root);
+
+            void CreateNode(GameObject parentGo, UMI3DSkeletonHierarchyNode node)
             {
-                if (!hasBeenCreated[bone])
-                    CreateNode(bone);
+                var go = new GameObject(boneNames[node.boneType]);
+                hierarchy.Add(node.boneType, go.transform);
+                go.transform.SetParent(parentGo.transform);
+                go.transform.localPosition = node.relativePosition;
+                foreach (var child in node.children)
+                    CreateNode(go, child);
             }
 
-            void CreateNode(uint bone)
-            {
-                var go = new GameObject(boneNames[bone]);
-                hierarchy[bone] = go.transform;
-                if (bone != BoneType.Hips) // root
-                {
-                    if (!hasBeenCreated[Relations[bone].boneTypeParent])
-                        CreateNode(Relations[bone].boneTypeParent);
-                    go.transform.SetParent(hierarchy[Relations[bone].boneTypeParent]);
-                }
-                else
-                {
-                    go.transform.SetParent(root);
-                }
-                go.transform.localPosition = Relations[bone].relativePosition;
-                hasBeenCreated[bone] = true;
-            }
-
-            return hierarchy.Select(x => (umi3dBoneType: x.Key, boneTransform: x.Value)).ToArray();
+            return hierarchy;
         }
     }
 }
