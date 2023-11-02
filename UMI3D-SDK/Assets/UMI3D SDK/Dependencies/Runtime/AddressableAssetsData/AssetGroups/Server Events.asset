@@ -12,7 +12,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: bbb281ee3bf0b054c82ac2347e9e782c, type: 3}
   m_Name: Server Events
   m_EditorClassIdentifier: 
-  m_GroupName: Packed Assets
+  m_GroupName: Server Events
   m_Data:
     m_SerializedData: []
   m_GUID: ec74268639760514cb8e5edf394d765c
