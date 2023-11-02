@@ -156,8 +156,8 @@ namespace umi3d.cdk.userCapture.animation
             {
                 skeletonMapper.Mappings = skeletonMapper.GetComponentsInChildren<SkeletonMappingLinkMarker>()
                                                             .Select(x => x.ToSkeletonMapping())
-                                                            .ToArray();
-                if (skeletonMapper.Mappings.Length > 0)
+                                                            .ToList();
+                if (skeletonMapper.Mappings.Count > 0)
                 {
                     var root = skeletonMapper.Mappings.FirstOrDefault(x => x.BoneType == BoneType.Hips)?.Link.Compute();
 
@@ -210,7 +210,7 @@ namespace umi3d.cdk.userCapture.animation
             // create link for each rig. May be improved with distance analysis for more complex links
             skeletonMapper.Mappings = (from bone in boneUnityMapping
                                        where bone.transform != null
-                                       select new SkeletonMapping(bone.umi3dBoneType, new GameNodeLink(bone.transform))).ToArray();
+                                       select new SkeletonMapping(bone.umi3dBoneType, new GameNodeLink(bone.transform))).ToList();
 
             return skeletonMapper;
         }
