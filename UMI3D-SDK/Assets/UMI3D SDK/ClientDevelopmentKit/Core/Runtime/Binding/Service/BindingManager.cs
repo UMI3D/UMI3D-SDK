@@ -117,8 +117,15 @@ namespace umi3d.cdk.binding
                 if (bindings.Count != bindingExecutionQueue.Length)
                     ReorderQueue();
 
-                foreach (var binding in bindingExecutionQueue)
+                foreach (AbstractBinding binding in bindingExecutionQueue)
                 {
+                    if (binding.BoundTransform == null)
+                    {
+                        UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                        RemoveBinding(bindings.First(x => x.Value.Equals(binding)).Key);
+                        continue;
+                    }
+
                     binding.Apply(out bool success);
                     if (!success)
                         break;

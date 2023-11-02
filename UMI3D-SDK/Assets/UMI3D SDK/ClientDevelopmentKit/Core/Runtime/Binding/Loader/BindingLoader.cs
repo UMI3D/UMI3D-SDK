@@ -68,6 +68,9 @@ namespace umi3d.cdk.binding
         {
             var dto = value.dto as BindingDto;
 
+            if (environmentManager.TryGetEntityInstance(dto.id) != null)
+                return;
+
             await environmentLoaderService.WaitUntilEntityLoaded(dto.boundNodeId, null);
 
             AbstractBinding binding = await LoadData(dto.boundNodeId, dto.data);
