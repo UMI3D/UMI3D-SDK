@@ -607,6 +607,11 @@ namespace umi3d.cdk
             loaded = true;
         }
 
+        public async Task InstantiateNodes(List<GlTFSceneDto> scenes)
+        {
+            await _InstantiateNodes(scenes, null);
+        }
+
         /// <summary>
         /// Load scenes 
         /// </summary>
@@ -619,7 +624,8 @@ namespace umi3d.cdk
             await Task.WhenAll(scenes.Select(async scene =>
             {
                 Progress progress1 = new Progress(0, $"Load scene {scene.name}");
-                progress.Add(progress1);
+                if(progress != null)
+                    progress.Add(progress1);
                 await sceneLoader.LoadGlTFScene(scene, progress1);
 
             }));
@@ -627,7 +633,8 @@ namespace umi3d.cdk
             await Task.WhenAll(scenes.Select(async scene =>
             {
                 Progress progress1 = new Progress(2, $"Generate scene {scene.name}");
-                progress.Add(progress1);
+                if (progress != null)
+                    progress.Add(progress1);
                 progress1.AddComplete();
                 var node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;

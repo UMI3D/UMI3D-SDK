@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -167,13 +168,21 @@ namespace umi3d.cdk
         {
 #if UNITY_EDITOR
             var tasks = nodes
-                .Select(n => CreateNode(n))
+                .Select(n =>
+                {
+                    UnityEngine.Debug.Log($"{n}");
+                    var res = CreateNode(n);
+                    UnityEngine.Debug.Log($"{n} {res.dto} {n == res.dto}");
+                    return res;
+                })
                 .Select(async node =>
                 {
                     var dto = node.dto as GlTFNodeDto;
                     progress.AddTotal();
                     try
                     {
+                        nodes.Debug();
+                        UnityEngine.Debug.Log($"{node.dto} | {dto} {dto?.extensions} {dto?.extensions?.umi3d} | {node} {node?.gameObject}");
                         await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.extensions.umi3d, node.gameObject));
 
                         ReadLightingExtensions(dto, node.gameObject);
@@ -191,7 +200,7 @@ namespace umi3d.cdk
                     catch (Exception e)
                     {
                         UMI3DLogger.LogException(e, scope);
-                        UMI3DLogger.LogError($"Failed to read Umi3d extension [{dto.name}]", scope);
+                        UMI3DLogger.LogError($"Failed to read Umi3d extension [{dto?.name}]", scope);
                         if (!await progress.AddFailed(e))
                             throw;
                     }
