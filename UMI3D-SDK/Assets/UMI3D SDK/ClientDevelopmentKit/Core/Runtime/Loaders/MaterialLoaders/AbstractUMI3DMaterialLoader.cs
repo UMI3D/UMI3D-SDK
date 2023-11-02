@@ -116,7 +116,7 @@ namespace umi3d.cdk
             }
         }
 
-        [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto texureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
+        [System.Obsolete("This is an obsolete method, you should use LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)")]
         protected static async void LoadTextureInMaterial(ulong id, TextureDto textureDto, string materialKey, Material mat)
         {
             if (textureDto == null || textureDto.variants == null || textureDto.variants.Count < 1) return;
