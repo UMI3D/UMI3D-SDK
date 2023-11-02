@@ -77,13 +77,12 @@ namespace PlayMode_Tests.UserCapture.Description.Common
         {
             // GIVEN
 
-            List<UMI3DSkeletonHierarchyDefinition.BoneRelation> boneRelations = new()
+            List<IUMI3DSkeletonHierarchyDefinition.BoneRelation> boneRelations = new()
             {
-                new(BoneType.Hips, BoneType.None, Vector3.one),
-                new(BoneType.Spine, BoneType.Hips, Vector3.one),
-                new(BoneType.Head, BoneType.Hips, Vector3.one),
-                new(BoneType.LeftAnkle, BoneType.Head, Vector3.one),
-                new(BoneType.LeftAnkle, BoneType.RightAnkle, Vector3.one),
+                new() { parentBoneType = BoneType.None, boneType = BoneType.Hips, relativePosition = Vector3.zero.Dto() },
+                new() { parentBoneType = BoneType.Hips, boneType = BoneType.Chest, relativePosition = Vector3.zero.Dto() },
+                new() { parentBoneType = BoneType.Chest, boneType = BoneType.Spine, relativePosition = Vector3.zero.Dto() },
+                new() { parentBoneType = BoneType.Chest, boneType = BoneType.LeftForearm, relativePosition = Vector3.zero.Dto() }
             };
 
 
@@ -94,7 +93,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             UMI3DSkeletonHierarchy hierarchy = new(definition.Object);
 
             // THEN
-            Assert.AreEqual(boneRelations.Select(x=>x.Bonetype).Distinct().Count(), hierarchy.Relations.Count);
+            Assert.AreEqual(boneRelations.Select(x=>x.boneType).Distinct().Count(), hierarchy.Relations.Count);
         }
 
         #endregion UMI3DSkeletonHierarchy
@@ -107,12 +106,12 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             // GIVEN
             Transform root = rootGo.transform;
 
-            List<UMI3DSkeletonHierarchyDefinition.BoneRelation> boneRelations = new()
+            List<IUMI3DSkeletonHierarchyDefinition.BoneRelation> boneRelations = new()
             {
-                new(BoneType.Hips, BoneType.None, Vector3.one),
-                new(BoneType.Spine, BoneType.Hips, Vector3.one),
-                new(BoneType.Head, BoneType.Hips, Vector3.one),
-                new(BoneType.LeftAnkle, BoneType.Head, Vector3.one),
+                new() { parentBoneType = BoneType.None, boneType = BoneType.Hips, relativePosition = Vector3.zero.Dto() },
+                new() { parentBoneType = BoneType.Hips, boneType = BoneType.Chest, relativePosition = Vector3.zero.Dto() },
+                new() { parentBoneType = BoneType.Chest, boneType = BoneType.Spine, relativePosition = Vector3.zero.Dto() },
+                new() { parentBoneType = BoneType.Chest, boneType = BoneType.LeftForearm, relativePosition = Vector3.zero.Dto() }
             };
             Mock<IUMI3DSkeletonHierarchyDefinition> definition = new Mock<IUMI3DSkeletonHierarchyDefinition>();
             definition.Setup(x => x.Relations).Returns(boneRelations);
@@ -123,11 +122,11 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             var hierarchyGenerated = hierarchy.Generate(root);
 
             // THEN
-            Assert.AreEqual(boneRelations.Count, hierarchyGenerated.Count());
+            Assert.AreEqual(boneRelations.Count(), hierarchyGenerated.Count());
             
             foreach (var node in hierarchyGenerated)
             {
-                Assert.AreEqual(BoneTypeHelper.GetBoneName(node.umi3dBoneType), node.boneTransform.name);
+                Assert.AreEqual(BoneTypeHelper.GetBoneName(node.Key), node.Value.name);
             }
         }
 

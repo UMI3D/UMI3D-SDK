@@ -282,11 +282,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             poseSubskeleton.StartPose(poses, false);
 
-            HierarchyDefinitionLocal hierarchyDef = new();
-            hierarchyDef.Relations.Add(new(BoneType.Chest, BoneType.None, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.Spine, BoneType.LeftToeBase, Vector3.zero));
-
-            UMI3DSkeletonHierarchy hierarchy = new UMI3DSkeletonHierarchy(hierarchyDef);
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
             // When
             TestDelegate action = () => poseSubskeleton.GetPose(hierarchy);
