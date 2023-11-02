@@ -2,6 +2,7 @@
     "name": "inetum.unityUtils.editor",
     "rootNamespace": "",
     "references": [
+        "Unity.Addressables",
         "inetum.unityUtils"
     ],
     "includePlatforms": [
