@@ -479,15 +479,18 @@ namespace umi3d.cdk.collaboration
             };
             try
             {
+
                 EnterDto enter = await HttpClient.SendPostJoin(joinDto);
                 isConnecting = false;
                 isConnected = true;
                 await EnterScene(enter);
+                UnityEngine.Debug.Log($"Entered");
             }
             catch (Exception e)
             {
                 UMI3DLogger.LogException(e, scope);
-               // UMI3DCollaborationClientServer.Logout();
+                UnityEngine.Debug.Log($"Fail enter");
+                // UMI3DCollaborationClientServer.Logout();
             }
             finally
             {

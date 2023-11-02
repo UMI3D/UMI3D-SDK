@@ -1,3 +1,4 @@
+using inetum.unityUtils;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -41,9 +42,9 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         base.InitDefinition(id);
 
         dto = new DistantEnvironmentDto();
-
-        if (!serverUrl.IsNullOrEmpty())
-            Restart();
+        UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
+        //if (!serverUrl.IsNullOrEmpty())
+        //    Restart();
     }
 
     public override IEntity ToEntityDto(UMI3DUser user)
@@ -60,6 +61,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
     async Task _Start()
     {
+        Id();
         UnityEngine.Debug.Log("start");
         media = new MediaDto()
         {
@@ -70,7 +72,15 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         if (await wcClient.Connect())
         {
             nvClient = await wcClient.ConnectToEnvironment();
+
+            while (!nvClient.IsConnected() || nvClient.environement == null)
+                await Task.Yield();
+
+            UnityEngine.Debug.Log($"{nvClient != null} {dto != null}");
             dto.environmentDto = nvClient.environement;
+            UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
+            if (dto.environmentDto?.scenes != null)
+                dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
         }
     }
 
