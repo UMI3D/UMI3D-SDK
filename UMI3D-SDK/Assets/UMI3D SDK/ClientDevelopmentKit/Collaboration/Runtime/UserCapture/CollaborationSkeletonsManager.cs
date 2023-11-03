@@ -106,7 +106,6 @@ namespace umi3d.cdk.collaboration.userCapture
         private readonly IUMI3DCollaborationClientServer collaborationClientServerService;
         private readonly ILoadingManager collaborativeLoaderService;
         private readonly ICollaborationEnvironmentManager collaborativeEnvironmentManagementService;
-        private readonly IPoseManager poseManager;
         private readonly ILateRoutineService routineService;
         private readonly ISkeletonManager personalSkeletonManager;
 
@@ -115,7 +114,6 @@ namespace umi3d.cdk.collaboration.userCapture
             collaborationClientServerService = UMI3DCollaborationClientServer.Instance;
             collaborativeLoaderService = UMI3DCollaborationEnvironmentLoader.Instance;
             collaborativeEnvironmentManagementService = UMI3DCollaborationEnvironmentLoader.Instance;
-            poseManager = PoseManager.Instance;
             routineService = CoroutineManager.Instance;
             personalSkeletonManager = PersonalSkeletonManager.Instance;
             Init();
@@ -124,14 +122,12 @@ namespace umi3d.cdk.collaboration.userCapture
         public CollaborationSkeletonsManager(IUMI3DCollaborationClientServer collaborationClientServer,
                                             ILoadingManager collaborativeLoader,
                                             ICollaborationEnvironmentManager collaborativeEnvironmentManagementService,
-                                            IPoseManager poseManager,
                                             ISkeletonManager personalSkeletonManager,
                                             ILateRoutineService routineService) : base()
         {
             this.collaborationClientServerService = collaborationClientServer;
             this.collaborativeLoaderService = collaborativeLoader;
             this.personalSkeletonManager = personalSkeletonManager;
-            this.poseManager = poseManager;
             this.routineService = routineService;
             this.collaborativeEnvironmentManagementService = collaborativeEnvironmentManagementService;
             Init();
@@ -217,7 +213,7 @@ namespace umi3d.cdk.collaboration.userCapture
             var trackedSkeletonPrefab = (collaborativeLoaderService.AbstractLoadingParameters as IUMI3DCollabLoadingParameters).CollabTrackedSkeleton;
             var trackedSkeleton = UnityEngine.Object.Instantiate(trackedSkeletonPrefab, cs.transform).GetComponent<TrackedSubskeleton>();
 
-            var poseSkeleton = new PoseSubskeleton(poseManager);
+            var poseSkeleton = new PoseSubskeleton();
 
             cs.Init(trackedSkeleton, poseSkeleton);
 
@@ -405,7 +401,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Pose
 
-        public virtual void ApplyPoseRequest(ApplyPoseDto playPoseDto)
+        public virtual void ApplyPoseRequest(PlayPoseClipDto playPoseDto)
         {
             if (!Skeletons.TryGetValue(playPoseDto.userID, out ISkeleton skeleton))
             {
@@ -413,19 +409,14 @@ namespace umi3d.cdk.collaboration.userCapture
                 return;
             }
 
-            if (!poseManager.Poses.ContainsKey(playPoseDto.userID))
+            UMI3DEntityInstance entity = UMI3DCollaborationEnvironmentLoader.instance.TryGetEntityInstance(playPoseDto.poseId);
+            if (entity == null)
             {
-                UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. User ID not found in pose manager.", scope);
+                UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. Pose {playPoseDto.poseId} not found.", scope);
                 return;
             }
 
-            if (playPoseDto.indexInList >= poseManager.Poses[playPoseDto.userID].Count)
-            {
-                UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. Pose ID {playPoseDto.indexInList} invalid.", scope);
-                return;
-            }
-
-            SkeletonPose pose = poseManager.Poses[playPoseDto.userID][playPoseDto.indexInList];
+            PoseClip pose = entity.Object as PoseClip;
 
             if (playPoseDto.stopPose)
                 skeleton.PoseSubskeleton.StopPose(pose);

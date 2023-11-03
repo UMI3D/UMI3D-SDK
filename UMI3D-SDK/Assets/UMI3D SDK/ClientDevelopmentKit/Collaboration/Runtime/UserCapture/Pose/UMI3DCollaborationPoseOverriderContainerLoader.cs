@@ -22,7 +22,7 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.collaboration.userCapture.pose
 {
-    public class UMI3DCollaborationPoseOverriderContainerLoader : UMI3DPoseOverriderContainerLoader
+    public class UMI3DCollaborationPoseOverriderContainerLoader : PoseAnimatorLoader
     {
         private readonly IEnvironmentManager environmentService;
 

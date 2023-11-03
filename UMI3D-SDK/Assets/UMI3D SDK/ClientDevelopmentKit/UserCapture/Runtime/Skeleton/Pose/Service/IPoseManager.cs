@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture.pose;
-
 namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
@@ -25,22 +22,10 @@ namespace umi3d.cdk.userCapture.pose
     public interface IPoseManager
     {
         /// <summary>
-        /// Poses based on an user id (0 for environment) and their id.
-        /// </summary>
-        IDictionary<ulong, IList<SkeletonPose>> Poses { get; set; }
-
-        /// <summary>
-        /// Activate all poses that listen to this mode.
-        /// </summary>
-        /// <param name="nodeId"></param>
-        /// <param name="poseActivationMode"></param>
-        bool ActivatePoseOverrider(ulong poseOverriderId);
-
-        /// <summary>
         /// Sets the related pose to the overrider Dto, in the poseSkeleton
         /// </summary>
         /// <param name="poseOverriderDto"></param>
-        void ApplyPoseOverride(PoseOverrider poseOverrider);
+        void PlayPoseClip(PoseClip poseClip);
 
         /// <summary>
         /// Stops all poses
@@ -52,20 +37,7 @@ namespace umi3d.cdk.userCapture.pose
         /// Stops the related pose to the overriderDto, in the poseSkeleton
         /// </summary>
         /// <param name="poseOverriderDto"></param>
-        void StopPoseOverride(PoseOverrider poseOverrider);
-
-        /// <summary>
-        /// Allows to add a pose handler unit at runtime
-        /// </summary>
-        /// <param name="overrider"></param>
-        /// <param name="unit"></param>
-        void AddPoseOverriders(PoseOverridersContainer overrider);
-
-        /// <summary>
-        /// Allows to remove a pose handler unit at runtime
-        /// </summary>
-        /// <param name="overrider"></param>
-        void RemovePoseOverriders(PoseOverridersContainer overrider);
+        void StopPoseClip(PoseClip poseClip);
 
         /// <summary>
         /// Validate/Invalidate an <see cref="EnvironmentPoseCondition"/>.

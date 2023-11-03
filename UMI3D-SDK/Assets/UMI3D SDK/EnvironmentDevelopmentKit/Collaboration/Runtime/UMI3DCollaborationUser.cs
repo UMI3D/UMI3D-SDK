@@ -197,8 +197,7 @@ namespace umi3d.edk.collaboration
                 else
                     this.userSize.SetValue(joinDto.userSize);
             }
-            poseManagerService ??= PoseManager.Instance;
-            poseManagerService.RegisterUserCustomPose(userId, joinDto.clientLocalPoses);
+
             await UMI3DAsyncManager.Yield();
 
             UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);

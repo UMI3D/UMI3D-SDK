@@ -25,34 +25,34 @@ namespace umi3d.edk.userCapture.pose
     public interface IPoseManager
     {
         /// <summary>
-        /// Returns all the pose containers of the scene 
+        /// Returns all the pose containers of the scene
         /// </summary>
-        IList<UMI3DPoseOverridersContainerDto> PoseOverriderContainers { get; }
+        IList<UMI3DPoseAnimator> PoseAnimators { get; }
 
         /// <summary>
         /// Returns all the pose stored for every users in the experience
         /// </summary>
-        IDictionary<ulong, IList<PoseDto>> Poses { get; }
+        IDictionary<ulong, IList<PoseClip>> Poses { get; }
 
         /// <summary>
         /// Register poses that are designed for the environment.
         /// Put them in standard format.
         /// </summary>
         /// <param name="register">Register that has the poses.</param>
-        void RegisterEnvironmentPoses(IPosesRegister register);
+        PoseClip RegisterEnvironmentPose(IUMI3DPoseData poseResource);
 
         /// <summary>
         /// Register pose overriders that are designed for the environment.
         /// Generate all the needed pose overriders containers.
         /// </summary>
         /// <param name="register">Register that has the pose overriders.</param>
-        void RegisterPoseOverriders(IPoseOverridersRegister register);
+        void RegisterPoseOverrider(UMI3DPoseAnimator overrider);
 
         /// <summary>
         /// Register poses that are designed for each browser.
         /// </summary>
         /// <param name="userId">User id of the browser sending custom poses.</param>
         /// <param name="poseDtos">Poses to register.</param>
-        void RegisterUserCustomPose(ulong userId, IEnumerable<PoseDto> poseDtos);
+        PoseClip RegisterUserCustomPose(ulong userId, IUMI3DPoseData poseResource);
     }
 }

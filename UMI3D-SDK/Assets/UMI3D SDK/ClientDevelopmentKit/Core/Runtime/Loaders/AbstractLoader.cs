@@ -257,4 +257,66 @@ namespace umi3d.cdk
         /// <returns></returns>
         public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value);
     }
+
+    public abstract class AbstractLoader<T> : AbstractLoader where T : UMI3DDto
+    {
+
+        public abstract void Load(T dto);
+
+        public abstract void Delete(ulong id);
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is T;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            switch (value.dto)
+            {
+                case T dto:
+                    Load(dto);
+                    break;
+            }
+
+            return Task.CompletedTask;
+        }
+    }
+
+    public abstract class AbstractLoader<DtoType, LoadedType> : AbstractLoader where DtoType : UMI3DDto
+    {
+
+        public abstract LoadedType Load(DtoType dto);
+
+        public abstract void Delete(ulong id);
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is DtoType;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            switch (value.dto)
+            {
+                case DtoType dto:
+                    Load(dto);
+                    break;
+            }
+
+            return Task.CompletedTask;
+        }
+    }
 }

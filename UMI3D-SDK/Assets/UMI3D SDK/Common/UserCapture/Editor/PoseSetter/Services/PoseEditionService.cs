@@ -74,7 +74,7 @@ namespace umi3d.common.userCapture.pose.editor
         /// </summary>
         /// <param name="skeleton"></param>
         /// <param name="boneDto"></param>
-        public void UpdateBoneRotation(PoseEditorSkeleton skeleton, BonePoseDto bonePoseDto)
+        public void UpdateBoneRotation(PoseEditorSkeleton skeleton, PoseAnchorDto bonePoseDto)
         {
             PoseSetterBoneComponent bone_component = skeleton.boneComponents.Find(bc => bc.BoneType == bonePoseDto.bone);
             if (bone_component == null)

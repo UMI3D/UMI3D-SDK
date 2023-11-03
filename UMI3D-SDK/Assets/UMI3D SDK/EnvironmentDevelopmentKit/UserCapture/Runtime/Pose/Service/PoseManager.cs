@@ -17,7 +17,6 @@ limitations under the License.
 using inetum.unityUtils;
 
 using System.Collections.Generic;
-using System.Linq;
 
 using umi3d.common;
 using umi3d.common.userCapture.pose;
@@ -36,32 +35,36 @@ namespace umi3d.edk.userCapture.pose
             Init();
         }
 
-        public PoseManager(IPosesRegister poseContainer, IPoseOverridersRegister poseOverriderFieldContainer) : base()
-        {
-            Init();
-        }
-
         #endregion Dependency Injection
 
         /// <summary>
         /// A bool to make sure the initialisation only occurs once
         /// </summary>
-        private bool posesInitialized = false;
+        private bool initialized = false;
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public IDictionary<ulong, IList<PoseDto>> Poses => poses;
+        public IDictionary<ulong, IList<PoseClip>> Poses => poses;
 
-        private readonly Dictionary<ulong, IList<PoseDto>> poses = new();
-
-        /// <inheritdoc/>
-        public IList<UMI3DPoseOverridersContainerDto> PoseOverriderContainers { get; private set; } = new List<UMI3DPoseOverridersContainerDto>();
+        private readonly Dictionary<ulong, IList<PoseClip>> poses = new();
 
         /// <inheritdoc/>
-        public void RegisterUserCustomPose(ulong userId, IEnumerable<PoseDto> poseDtos)
+        public IList<UMI3DPoseAnimator> PoseAnimators { get; private set; } = new List<UMI3DPoseAnimator>();
+
+        /// <inheritdoc/>
+        public PoseClip RegisterUserCustomPose(ulong userId, IUMI3DPoseData poseResource)
         {
-            Poses.Add(userId, poseDtos.ToList());
+            PoseClip poseToAdd = new(poseResource);
+            poseToAdd.Id(); // register
+            if (poses.ContainsKey(userId))
+            {
+                if (!poses[userId].Contains(poseToAdd))
+                    poses[userId].Add(poseToAdd);
+            }
+            else
+                poses.Add(userId, new List<PoseClip>() { poseToAdd });
+            return poseToAdd;
         }
 
         /// <summary>
@@ -69,76 +72,41 @@ namespace umi3d.edk.userCapture.pose
         /// </summary>
         private void Init()
         {
-            if (posesInitialized == false)
+            if (!initialized)
             {
-                var registers = UnityEngine.Object.FindObjectsOfType<UMI3DPosesRegister>();
-
-                foreach (var register in registers)
-                    Register(register);
-
-
-                // more overriders from monos in scene
-                var overridersMonos = UnityEngine.Object.FindObjectsOfType<UMI3DPoseOverrider>()
-                                                                                    .GroupBy(x=>x.relativeNode.Id())
-                                                                                    .ToDictionary(g=>g.Key, 
-                                                                                                  g=>g.Cast<IUMI3DPoseOverriderData>());
-
-
-                foreach (var (nodeId, overriders) in overridersMonos)
+                foreach (var overrider in UnityEngine.Object.FindObjectsOfType<UMI3DPoseAnimator>())
                 {
-                    var container = new UMI3DPoseOverriderContainer(nodeId, overriders);
-                    container.Init(nodeId);
-
-                    PoseOverriderContainers.Add((UMI3DPoseOverridersContainerDto)container.ToEntityDto());
+                    overrider.Id(); // register
+                    if (!PoseAnimators.Contains(overrider))
+                        PoseAnimators.Add(overrider);
                 }
 
-                posesInitialized = true;
+                initialized = true;
             }
         }
 
-        private void Register(UMI3DPosesRegister register)
+        public PoseClip RegisterEnvironmentPose(IUMI3DPoseData poseResource)
         {
-            RegisterEnvironmentPoses(register);
-            RegisterPoseOverriders(register);
-        }
+            var pose = new PoseClip(poseResource); ;
+            pose.Id(); // register
 
-        private int lastAttributedIndex = 0;
-
-        /// <summary>
-        /// Take pose in scriptables object format and put them in posedto format
-        /// </summary>
-        public void RegisterEnvironmentPoses(IPosesRegister register)
-        {
-            foreach (var pose in register.EnvironmentPoses)
+            if (poses.ContainsKey(UMI3DGlobalID.EnvironementId))
             {
-                PoseDto poseDto = pose.ToDto();
-                poseDto.index = lastAttributedIndex++;
-                pose.Index = poseDto.index;
-
-                if (poses.ContainsKey(UMI3DGlobalID.EnvironementId))
-                {
-                    if (!poses[UMI3DGlobalID.EnvironementId].Contains(poseDto))
-                        poses[UMI3DGlobalID.EnvironementId].Add(poseDto);
-                }
-                else
-                    poses.Add(UMI3DGlobalID.EnvironementId, new List<PoseDto>() { poseDto });
+                if (!poses[UMI3DGlobalID.EnvironementId].Contains(pose))
+                    poses[UMI3DGlobalID.EnvironementId].Add(pose);
             }
+            else
+                poses.Add(UMI3DGlobalID.EnvironementId, new List<PoseClip>() { pose });
+
+            return pose;
         }
 
-        /// <summary>
-        /// Take pose overriders fields to generate all the needed pose overriders containers
-        /// </summary>
-        public void RegisterPoseOverriders(IPoseOverridersRegister register)
+        public void RegisterPoseOverrider(UMI3DPoseAnimator overrider)
         {
-            foreach (var overrider in register.PoseOverriderFields)
-            {
-                overrider.Init();
-                overrider.PoseOverriderContainer.Id();
-                if (PoseOverriderContainers.Select(x => x.id).Contains(overrider.PoseOverriderContainer.Id()))
-                    continue;
+            if (overrider == null)
+                throw new System.ArgumentNullException(nameof(overrider));
 
-                PoseOverriderContainers.Add((UMI3DPoseOverridersContainerDto)overrider.PoseOverriderContainer.ToEntityDto());
-            }
+            PoseAnimators.Add(overrider);
         }
     }
 }

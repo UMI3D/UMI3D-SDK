@@ -184,7 +184,7 @@ namespace umi3d.cdk.userCapture.animation
             SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
 
             // umi3d default anchor is hips
-            skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, position = animator.rootPosition.Dto(), rotation = animator.rootRotation.Dto() };
+            skeletonMapper.BoneAnchor = new PoseAnchorDto() { bone = BoneType.Hips, position = animator.rootPosition.Dto(), rotation = animator.rootRotation.Dto() };
 
             // map animator unity bones to umi3d ones
             var boneUnityMapping = FindBonesTransform(animator);

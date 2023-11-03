@@ -163,5 +163,64 @@ namespace umi3d.common.userCapture.description
 
             return hierarchy;
         }
+
+        public (uint root, IDictionary<uint, uint[]>) Tree
+        {
+            get
+            {
+                if (!isTreeComputed)
+                    ToTree();
+
+                return computedTree;
+            }
+        }
+
+        private (uint root, IDictionary<uint, uint[]>) computedTree;
+        private bool isTreeComputed;
+
+        private (uint root, IDictionary<uint, uint[]>) ToTree()
+        {
+            uint rootBone = relations.First(x => x.Value.boneTypeParent == BoneType.None).Key;
+
+            List<(uint bone, uint[] children)> tree = new();
+
+            AddChildrenToTree(rootBone, tree);
+
+            void AddChildrenToTree(uint bone, List<(uint bone, uint[] children)> tree)
+            {
+                uint[] children = relations.Where(b => b.Value.boneTypeParent == bone).Select(x => x.Key).ToArray();
+                tree.Add((bone, children));
+
+                foreach (var child in children)
+                    AddChildrenToTree(child, tree);
+            }
+
+            isTreeComputed = true;
+            computedTree = (rootBone, tree.ToDictionary(x=>x.bone, x=>x.children));
+            return computedTree;
+        }
+
+        public IDictionary<uint, Vector4Dto> ToLocalRotations(IDictionary<uint, Vector4Dto> rotations)
+        {
+            Dictionary<uint, Vector4Dto> computed = new();
+
+            var (root, relations) = Tree;
+
+            computed.Add(root, rotations[root]);
+
+            ComputeChildrenRotations(root);
+
+            void ComputeChildrenRotations(uint bone)
+            {
+                foreach(var childBone in relations[bone])
+                {
+                    var childLocalRotation = (UnityEngine.Quaternion.Inverse(computed[bone].Quaternion()) * rotations[childBone].Quaternion()).Dto();
+                    computed.Add(childBone, childLocalRotation);
+                    ComputeChildrenRotations(childBone);
+                }
+            }
+
+            return computed;
+        }
     }
 }

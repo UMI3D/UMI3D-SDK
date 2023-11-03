@@ -21,14 +21,12 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.interaction;
-using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.collaboration.dto.voip;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
@@ -527,7 +525,7 @@ namespace umi3d.cdk.collaboration
                         CollaborationSkeletonsManager.Instance.ShouldSendTracking = sendingTracking.activeSending;
                     });
                     break;
-                case ApplyPoseDto playPoseDto:
+                case PlayPoseClipDto playPoseDto:
                     MainThreadManager.Run(() =>
                     {
                         CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
@@ -667,12 +665,12 @@ namespace umi3d.cdk.collaboration
                 case UMI3DOperationKeys.PlayPoseRequest:
                     {
                         ulong userID = UMI3DSerializer.Read<ulong>(container);
-                        int indexInList = UMI3DSerializer.Read<int>(container);
+                        ulong poseId = UMI3DSerializer.Read<ulong>(container);
                         bool stopPose = UMI3DSerializer.Read<bool>(container);
-                        ApplyPoseDto playPoseDto = new ApplyPoseDto
+                        PlayPoseClipDto playPoseDto = new PlayPoseClipDto
                         {
                             userID = userID,
-                            indexInList = indexInList,
+                            poseId = poseId,
                             stopPose = stopPose
                         };
 
@@ -682,12 +680,12 @@ namespace umi3d.cdk.collaboration
                         });
                         break;
                     }
-                case UMI3DOperationKeys.ActivatePoseOverriderRequest:
+                case UMI3DOperationKeys.ActivatePoseAnimatorRequest:
                     {
                         ulong poseOverriderId = UMI3DSerializer.Read<ulong>(container);
                         MainThreadManager.Run(() =>
                         {
-                            PoseManager.Instance.ActivatePoseOverrider(poseOverriderId);
+                            PoseManager.Instance.ActivatePoseAnimator(poseOverriderId);
                         });
                         break;
                     }

@@ -277,7 +277,7 @@ namespace umi3d.common.userCapture.pose.editor
 
         private void SavePose()
         {
-            poseEditor.SavePose( pose_name_field.value, pose_path_field.value, generate_overrider_toggle.value);
+            poseEditor.SavePose( pose_name_field.value, pose_path_field.value);
         }
 
         private void LoadPose()

@@ -539,34 +539,30 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 
         #endregion SyncBoneFPS
 
-        #region SyncBoneFPS
+        #region ApplyPoseRequest
 
-        [Test]
+        [Test, TestOf(nameof(CollaborationSkeletonsManager.ApplyPoseRequest))]
         public void ApplyPoseRequest_Start()
         {
             // given
             ulong userId = 1005uL;
-            var poses = new Dictionary<ulong, IList<SkeletonPose>>()
-            {
-                { userId, new List<SkeletonPose>(2) { new SkeletonPose(null), new SkeletonPose(null) } },
-            };
-            poseManagerMock.Setup(x => x.Poses).Returns(poses);
+            var poses = new List<PoseClip>(2) { new PoseClip(null), new PoseClip(null) };
 
             collaborativeSkeletonManagerMock.CallBase = false;
-            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<ApplyPoseDto>())).CallBase();
+            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<PlayPoseClipDto>())).CallBase();
 
             var poseSkeletonMock = new Mock<IPoseSubskeleton>();
-            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSkeletonMock.Object);
 
             var skeletons = new Dictionary<ulong, ISkeleton>(1) { { userId, skeletonMock.Object } };
             collaborativeSkeletonManagerMock.Setup(x => x.Skeletons).Returns(skeletons);
-            var playPoseDto = new ApplyPoseDto()
+            var playPoseDto = new PlayPoseClipDto()
             {
                 userID = userId,
-                indexInList = 1,
+                poseId = 1,
                 stopPose = false
             };
 
@@ -574,7 +570,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeSkeletonManager.ApplyPoseRequest(playPoseDto);
 
             // then
-            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<SkeletonPose>(), It.IsAny<bool>()));
+            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), It.IsAny<bool>()));
         }
 
         [Test]
@@ -582,27 +578,23 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
         {
             // given
             ulong userId = 1005uL;
-            var poses = new Dictionary<ulong, IList<SkeletonPose>>()
-            {
-                { userId, new List<SkeletonPose>(2) { new SkeletonPose(null), new SkeletonPose(null) } },
-            };
-            poseManagerMock.Setup(x => x.Poses).Returns(poses);
+            var poses = new List<PoseClip>(2) { new PoseClip(null), new PoseClip(null) };
 
             collaborativeSkeletonManagerMock.CallBase = false;
-            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<ApplyPoseDto>())).CallBase();
+            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<PlayPoseClipDto>())).CallBase();
 
             var poseSkeletonMock = new Mock<IPoseSubskeleton>();
-            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSkeletonMock.Object);
 
             var skeletons = new Dictionary<ulong, ISkeleton>(1) { { userId, skeletonMock.Object } };
             collaborativeSkeletonManagerMock.Setup(x => x.Skeletons).Returns(skeletons);
-            var playPoseDto = new ApplyPoseDto()
+            var playPoseDto = new PlayPoseClipDto()
             {
                 userID = userId,
-                indexInList = 1,
+                poseId = 1,
                 stopPose = true
             };
 
@@ -610,9 +602,9 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeSkeletonManager.ApplyPoseRequest(playPoseDto);
 
             // then
-            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
         }
 
-        #endregion SyncBoneFPS
+        #endregion ApplyPoseRequest
     }
 }

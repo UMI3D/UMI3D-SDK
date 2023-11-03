@@ -26,21 +26,21 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// List of poses that are currently applied on the subskeleton.
         /// </summary>
-        IReadOnlyList<SkeletonPose> AppliedPoses { get; }
+        IReadOnlyList<PoseClip> AppliedPoses { get; }
 
         /// <summary>
         /// Set poses for the calculation of the next tracking frame
         /// </summary>
         /// <param name="posesToAdd">Poses to start to apply</param>
         /// <param name="isOverriding">If true, all previous poses will be stopped.</param>
-        void StartPose(IEnumerable<SkeletonPose> posesToAdd, bool isOverriding = false);
+        void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false);
 
         /// <summary>
         /// Set a pose for the calculation of the next tracking frame
         /// </summary>
         /// <param name="posesToAdd">Poses to start to apply</param>
         /// <param name="isOverriding">If true, all previous poses will be stopped.</param>
-        void StartPose(SkeletonPose poseToAdd, bool isOverriding = false);
+        void StartPose(PoseClip poseToAdd, bool isOverriding = false);
 
         /// <summary>
         /// Remove all poses from computation.
@@ -51,24 +51,24 @@ namespace umi3d.cdk.userCapture.pose
         /// Remove poses from computation.
         /// </summary>
         /// <param name="posesToStopIds">Ids of poses to stop</param>
-        void StopPose(IEnumerable<int> posesToStopIds);
+        void StopPose(IEnumerable<ulong> posesToStopIds);
 
         /// <summary>
         /// Remove poses from computation.
         /// </summary>
         /// <param name="posesToStopIds">Poses to stop</param>
-        void StopPose(IEnumerable<SkeletonPose> posesToStop);
+        void StopPose(IEnumerable<PoseClip> posesToStop);
 
         /// <summary>
         /// Remove a pose from computation.
         /// </summary>
         /// <param name="posesToStopIds">Id of the pose to stop</param>
-        void StopPose(int poseToStopId);
+        void StopPose(ulong poseToStopId);
 
         /// <summary>
         /// Remove a pose from computation.
         /// </summary>
         /// <param name="posesToStopIds">Pose to stop</param>
-        void StopPose(SkeletonPose poseToStop);
+        void StopPose(PoseClip poseToStop);
     }
 }

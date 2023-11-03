@@ -14,19 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using umi3d.cdk.collaboration.userCapture.pose;
-using umi3d.cdk.userCapture;
-using umi3d.cdk.userCapture.pose;
 using umi3d.common;
 using umi3d.common.collaboration.dto;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.userCapture;
-using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -90,26 +84,11 @@ namespace umi3d.cdk.collaboration
 
             userList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
 
-            PoseManager.Instance.Poses = dto.poses.ToDictionary(x => x.Key, x => x.Value.Select(p=> new SkeletonPose(p, isCustom: x.Key != UMI3DGlobalID.EnvironementId)).ToList() as IList<SkeletonPose>);
-            poseLoader ??= new UMI3DCollaborationPoseOverriderContainerLoader();
-
-            onEnvironmentLoaded.AddListener(LoadPoses);
-            void LoadPoses()
-            {
-                dto.poseOverriderContainers.ForEach(x =>
-                {
-                   poseLoader.LoadContainer(x);
-                });
-                onEnvironmentLoaded.RemoveListener(LoadPoses);
-            }
-
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
 
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
         }
-
-        private UMI3DPoseOverriderContainerLoader poseLoader;
 
         /// <summary>
         /// Called when a user starts to speak.
@@ -174,8 +153,6 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(data.property.property, data.entity, data.property.value);
-                case UMI3DPropertyKeys.Poses:
-                    return UpdatePoses(data.entity);
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
                     return UpdateUser(data.property.property, data.entity, (ulong)(long)data.property.value);
@@ -218,10 +195,7 @@ namespace umi3d.cdk.collaboration
                         string value = UMI3DSerializer.Read<string>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
-                case UMI3DPropertyKeys.Poses:
-                    {
-                        return UpdatePoses(data.entity);
-                    }
+
 
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
@@ -308,26 +282,7 @@ namespace umi3d.cdk.collaboration
             return user?.UpdateUser(property, value) ?? false;
         }
 
-        private bool UpdatePoses(UMI3DEntityInstance entityInstance)
-        {
-            switch (entityInstance.dto)
-            {
-                case SetEntityDictionaryAddPropertyDto addPropertyDto:
-                    {
-                        PoseManager.Instance.Poses.Add((ulong)addPropertyDto.key, 
-                                                        ((List<PoseDto>)addPropertyDto.value).Select(poseDto=>new cdk.userCapture.pose.SkeletonPose(poseDto)).ToList());
-                        return true;
-                    }
 
-                case SetEntityDictionaryRemovePropertyDto removePropertyDto:
-                    {
-                        PoseManager.Instance.Poses.Remove((ulong)removePropertyDto.key);
-                        return true;
-                    }
-            }
-
-            return false;
-        }
 
         private void InsertUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
         {

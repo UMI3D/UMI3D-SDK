@@ -40,13 +40,13 @@ namespace umi3d.common.userCapture.description
         private uint levelOfArticulation;
 
         [HideInInspector]
-        public BonePoseDto BoneAnchor
+        public PoseAnchorDto BoneAnchor
         {
             get
             {
                 if (boneAnchor == null && anchor != null)
                 {
-                    boneAnchor = new BonePoseDto()
+                    boneAnchor = new PoseAnchorDto()
                     {
                         bone = anchor.BoneType,
                         position = anchor.transform.position.Dto(),
@@ -62,7 +62,7 @@ namespace umi3d.common.userCapture.description
             }
         }
 
-        private BonePoseDto boneAnchor;
+        private PoseAnchorDto boneAnchor;
 
         [HideInInspector]
         public IList<SkeletonMapping> Mappings
@@ -102,7 +102,7 @@ namespace umi3d.common.userCapture.description
             {
                 if (anchor != null)
                 {
-                    BoneAnchor = new BonePoseDto()
+                    BoneAnchor = new PoseAnchorDto()
                     {
                         bone = anchor.BoneType,
                         position = anchor.transform.position.Dto(),
