@@ -33,6 +33,7 @@ namespace umi3d.edk.collaboration.userCapture.pose
 
         public UMI3DInteractable interactable;
 
+        /// <inheritdoc/>
         public override AbstractPoseConditionDto[] GetPoseConditions()
         {
             AbstractPoseConditionDto[] baseCopy = base.GetPoseConditions();

@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using umi3d.common.userCapture.description;
 
 namespace umi3d.common.userCapture.pose
 {
@@ -24,6 +23,7 @@ namespace umi3d.common.userCapture.pose
     /// </summary>
     public class PoseAnimationSerializerModule : UMI3DSerializerModule
     {
+        /// <inheritdoc/>
         public bool? IsCountable<T>()
         {
             return true switch
@@ -31,13 +31,14 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(PoseClipDto) => true,
                 true when typeof(T) == typeof(PoseAnimatorDto) => true,
                 true when typeof(T) == typeof(DurationDto) => true,
-                true when typeof(T) == typeof(ActivatePoseAnimatorDto) => true,
+                true when typeof(T) == typeof(TryActivatePoseAnimatorDto) => true,
                 true when typeof(T) == typeof(PlayPoseClipDto) => true,
 
                 _ => null
             };
         }
 
+        /// <inheritdoc/>
         public bool Read<T>(ByteContainer container, out bool readable, out T result)
         {
             switch (true)
@@ -77,7 +78,7 @@ namespace umi3d.common.userCapture.pose
                             PoseAnimatorDto poseOverriderDto = new ()
                             {
                                 id = id,
-                                poseId = poseId,
+                                poseClipId = poseId,
                                 relatedNodeId = relativeNodeId,
                                 poseConditions = poseConditionDtos,
                                 duration = durationDto,
@@ -114,18 +115,18 @@ namespace umi3d.common.userCapture.pose
                         break;
                     }
 
-                case true when typeof(T) == typeof(ActivatePoseAnimatorDto):
+                case true when typeof(T) == typeof(TryActivatePoseAnimatorDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out ulong poseOverriderId);
 
                         if (readable)
                         {
-                            ActivatePoseAnimatorDto activatePoseOverriderDto = new()
+                            TryActivatePoseAnimatorDto activatePoseOverriderDto = new()
                             {
                                 PoseAnimatorId = poseOverriderId
                             };
 
-                            result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(ActivatePoseAnimatorDto));
+                            result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(TryActivatePoseAnimatorDto));
                             return true;
                         }
                         break;
@@ -155,6 +156,7 @@ namespace umi3d.common.userCapture.pose
             return false;
         }
 
+        /// <inheritdoc/>
         public bool Write<T>(T value, out Bytable bytable, params object[] parameters)
         {
             switch (value)
@@ -166,7 +168,7 @@ namespace umi3d.common.userCapture.pose
 
                 case PoseAnimatorDto poseOverriderDto:
                     bytable = UMI3DSerializer.Write(poseOverriderDto.id)
-                        + UMI3DSerializer.Write(poseOverriderDto.poseId)
+                        + UMI3DSerializer.Write(poseOverriderDto.poseClipId)
                         + UMI3DSerializer.Write(poseOverriderDto.relatedNodeId)
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.isInterpolable)
@@ -181,7 +183,7 @@ namespace umi3d.common.userCapture.pose
                         + UMI3DSerializer.Write(durationDto.max);
                     break;
 
-                case ActivatePoseAnimatorDto activatePoseOverriderDto:
+                case TryActivatePoseAnimatorDto activatePoseOverriderDto:
                     bytable = UMI3DSerializer.Write(UMI3DOperationKeys.ActivatePoseAnimatorRequest)
                         + UMI3DSerializer.Write(activatePoseOverriderDto.PoseAnimatorId);
                     break;

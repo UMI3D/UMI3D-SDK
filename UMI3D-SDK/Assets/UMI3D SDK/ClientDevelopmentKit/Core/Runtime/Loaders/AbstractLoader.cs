@@ -55,7 +55,7 @@ namespace umi3d.cdk
         public SetEntityPropertyDto property;
         public List<CancellationToken> tokens;
 
-        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity) : this(property,entity,new())
+        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity) : this(property, entity, new())
         { }
 
         public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity, List<CancellationToken> tokens)
@@ -260,8 +260,7 @@ namespace umi3d.cdk
 
     public abstract class AbstractLoader<T> : AbstractLoader where T : UMI3DDto
     {
-
-        public abstract void Load(T dto);
+        public abstract Task Load(T dto);
 
         public abstract void Delete(ulong id);
 
@@ -287,12 +286,28 @@ namespace umi3d.cdk
 
             return Task.CompletedTask;
         }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>>
+        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            return Task.FromResult(false);
+        }
     }
+
 
     public abstract class AbstractLoader<DtoType, LoadedType> : AbstractLoader where DtoType : UMI3DDto
     {
-
-        public abstract LoadedType Load(DtoType dto);
+        public abstract Task<LoadedType> Load(DtoType dto);
 
         public abstract void Delete(ulong id);
 
@@ -317,6 +332,22 @@ namespace umi3d.cdk
             }
 
             return Task.CompletedTask;
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>>
+        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            return Task.FromResult(false);
+        }
+
+        /// <summary>
+        /// <inheritdoc/>
+        /// </summary>
+        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            return Task.FromResult(false);
         }
     }
 }

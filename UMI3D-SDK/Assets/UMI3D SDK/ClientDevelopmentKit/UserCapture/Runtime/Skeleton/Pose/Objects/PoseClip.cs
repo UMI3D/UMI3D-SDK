@@ -42,6 +42,9 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public List<BoneDto> Bones => dto.pose.bones;
 
+        /// <summary>
+        /// Description of the pose animation.
+        /// </summary>
         public PoseDto Pose => dto.pose;
 
         public PoseClip(PoseClipDto dto)

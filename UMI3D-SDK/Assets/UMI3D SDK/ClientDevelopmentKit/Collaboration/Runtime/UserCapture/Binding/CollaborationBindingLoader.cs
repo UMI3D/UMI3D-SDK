@@ -66,8 +66,6 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
-                        await Task.Delay(5_000);
-                        
                         var skeleton = skeletonService.Skeletons[riggedBoneBinding.userId];
                         if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
@@ -75,7 +73,6 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                             return null;
                         }
                         UMI3DNodeInstance boundNode = (UMI3DNodeInstance)await environmentLoaderService.WaitUntilEntityLoaded(boundNodeId, null);
-                        await Task.Delay(5_000);
 
                         Transform rig = boundNode.transform.GetComponentsInChildren<Transform>().Where(t => t.name == riggedBoneBinding.rigName).FirstOrDefault();
                         if (rig == null)

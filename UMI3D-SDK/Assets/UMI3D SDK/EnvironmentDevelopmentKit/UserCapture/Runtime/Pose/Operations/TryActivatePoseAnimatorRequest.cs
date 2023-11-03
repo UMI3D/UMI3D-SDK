@@ -22,24 +22,29 @@ namespace umi3d.edk.userCapture.pose
     /// <summary>
     /// Request to activate a pose animator.
     /// </summary>
-    public class ActivatePoseAnimatorRequest : Operation
+    public class TryActivatePoseAnimatorRequest : Operation
     {
-        public ulong poseOverriderId;
+        /// <summary>
+        /// UMI3D id of the pose animator to try to activate.
+        /// </summary>
+        public ulong poseAnimatorId;
 
-        public ActivatePoseAnimatorRequest(ulong poseOverriderId)
+        public TryActivatePoseAnimatorRequest(ulong poseAnimatorId)
         {
-            this.poseOverriderId = poseOverriderId;
+            this.poseAnimatorId = poseAnimatorId;
         }
 
+        /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(GetOperationKey())
-                + UMI3DSerializer.Write(poseOverriderId);
+                + UMI3DSerializer.Write(poseAnimatorId);
         }
 
+        /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            ActivatePoseAnimatorDto dto = CreateDto();
+            TryActivatePoseAnimatorDto dto = CreateDto();
             WriteProperties(dto, user.Id());
             return dto;
         }
@@ -53,14 +58,14 @@ namespace umi3d.edk.userCapture.pose
             return UMI3DOperationKeys.ActivatePoseAnimatorRequest;
         }
 
-        protected virtual ActivatePoseAnimatorDto CreateDto()
+        protected virtual TryActivatePoseAnimatorDto CreateDto()
         {
-            return new ActivatePoseAnimatorDto();
+            return new TryActivatePoseAnimatorDto();
         }
 
-        protected virtual void WriteProperties(ActivatePoseAnimatorDto dto, ulong userID)
+        protected virtual void WriteProperties(TryActivatePoseAnimatorDto dto, ulong userID)
         {
-            dto.PoseAnimatorId = poseOverriderId;
+            dto.PoseAnimatorId = poseAnimatorId;
         }
     }
 }

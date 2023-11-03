@@ -89,7 +89,6 @@ namespace umi3d.cdk.userCapture.binding
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton", DEBUG_SCOPE);
                             return null;
                         }
-
                         return new BoneBinding(boneBindingDataDto, boundNode.transform, personnalSkeletonService.PersonalSkeleton);
                     }
                 default:

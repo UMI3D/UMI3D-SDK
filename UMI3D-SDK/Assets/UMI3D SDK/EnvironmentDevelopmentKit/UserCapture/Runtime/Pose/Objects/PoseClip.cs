@@ -22,8 +22,14 @@ using umi3d.edk.core;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Pose animation.
+    /// </summary>
     public class PoseClip : AbstractLoadableEntity
     {
+        /// <summary>
+        /// Pose animation description.
+        /// </summary>
         public IUMI3DPoseData poseResource;
 
         public PoseClip(IUMI3DPoseData poseResource)
@@ -41,6 +47,7 @@ namespace umi3d.edk.userCapture.pose
         /// </summary>
         public IList<BoneDto> Bones => poseResource.Bones;
 
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new PoseClipDto()

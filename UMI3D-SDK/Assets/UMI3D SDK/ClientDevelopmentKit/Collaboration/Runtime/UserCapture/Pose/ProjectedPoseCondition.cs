@@ -20,6 +20,9 @@ using umi3d.common.collaboration.userCapture.pose.dto;
 
 namespace umi3d.cdk.collaboration.userCapture.pose
 {
+    /// <summary>
+    /// Pose condition that is true when an interactable is projected.
+    /// </summary>
     public class ProjectedPoseCondition : IPoseCondition
     {
         private ProjectedPoseConditionDto dto;
@@ -35,6 +38,7 @@ namespace umi3d.cdk.collaboration.userCapture.pose
             interactable.onRelease.AddListener(() => isProjected = false);
         }
 
+        /// <inheritdoc/>
         public bool Check()
         {
             return isProjected;

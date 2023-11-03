@@ -55,13 +55,17 @@ namespace umi3d.common.userCapture.pose
         }
 
         private PoseClip poseClip;
+
+        /// <summary>
+        /// Pose animation controlled by the pose animator.
+        /// </summary>
         public PoseClip PoseClip
         {
             get
             {
                 if (poseClip == null)
                 {
-                    poseClip = Pose == null ? null : new PoseClip(Pose);
+                    poseClip = Pose == null ? null : poseService.RegisterEnvironmentPose(Pose);
                 }
 
                 return poseClip;
@@ -71,7 +75,6 @@ namespace umi3d.common.userCapture.pose
                 poseClip = value;
             }
         }
-
 
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
@@ -85,6 +88,9 @@ namespace umi3d.common.userCapture.pose
         [HideInInspector]
         public List<UMI3DEnvironmentPoseCondition> environmentPoseConditions = new();
 
+        /// <summary>
+        /// Condition that must be satisfied to activate the pose animator.
+        /// </summary>
         public IReadOnlyList<AbstractPoseConditionDto> PoseConditions => GetPoseConditions().ToList();
 
         [System.Serializable]
@@ -164,13 +170,24 @@ namespace umi3d.common.userCapture.pose
 
         #endregion Pose condition access
 
+        #region Dependencies
+
+        private IPoseManager poseService;
+
+        private void Start()
+        {
+            poseService = PoseManager.Instance;
+        }
+
+        #endregion Dependencies
+
         public virtual PoseAnimatorDto ToDto()
         {
             return new PoseAnimatorDto()
             {
                 id = Id(),
                 relatedNodeId = relativeNode.Id(),
-                poseId = poseClip.Id(),
+                poseClipId = PoseClip.Id(),
                 poseConditions = GetPoseConditions(),
                 duration = duration.ToDto(),
                 isInterpolable = interpolable,
@@ -179,6 +196,7 @@ namespace umi3d.common.userCapture.pose
             };
         }
 
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();

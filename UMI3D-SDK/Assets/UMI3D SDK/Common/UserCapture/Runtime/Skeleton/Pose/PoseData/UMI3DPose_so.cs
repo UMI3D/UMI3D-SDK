@@ -26,7 +26,7 @@ namespace umi3d.common.userCapture.pose
     /// <summary>
     /// Scriptable object to contains data for a pose.
     /// </summary>
-    [Serializable]
+    [Serializable, CreateAssetMenu(menuName ="UMI3D/UserCapture/Pose")]
     public class UMI3DPose_so : ScriptableObject, IJsonSerializer, IUMI3DPoseData
     {
         #region Fields

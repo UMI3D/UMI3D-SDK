@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Linq;
 using System.Threading.Tasks;
+
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 
@@ -34,23 +35,22 @@ namespace umi3d.cdk.userCapture.pose
         #region Dependencies Injection
 
         private readonly IEnvironmentManager environmentService;
+        private readonly ILoadingManager loadingService;
         private readonly ISkeletonManager skeletonService;
-        private readonly IPoseManager poseService;
 
-        public PoseAnimatorLoader()
+        public PoseAnimatorLoader() : this(environmentService: UMI3DEnvironmentLoader.Instance,
+                                           loadingService: UMI3DEnvironmentLoader.Instance,
+                                           skeletonService: PersonalSkeletonManager.Instance)
         {
-            environmentService = UMI3DEnvironmentLoader.Instance;
-            skeletonService = PersonalSkeletonManager.Instance;
-            poseService = PoseManager.Instance;
         }
 
         public PoseAnimatorLoader(IEnvironmentManager environmentService,
-                                                 ISkeletonManager skeletonService,
-                                                 IPoseManager poseService)
+                                  ILoadingManager loadingService,
+                                  ISkeletonManager skeletonService)
         {
             this.environmentService = environmentService;
-            this.skeletonService = skeletonService;
-            this.poseService = poseService;
+            this.loadingService = loadingService;
+            this.skeletonService = skeletonService; ;
         }
 
         #endregion Dependencies Injection
@@ -58,21 +58,25 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
         /// </summary>
-        public override PoseAnimator Load(PoseAnimatorDto dto)
+        public override async Task<PoseAnimator> Load(PoseAnimatorDto dto)
         {
             if (dto == null)
                 throw new System.ArgumentNullException(nameof(dto));
 
-            PoseAnimator poseAnimator = new (dto, dto.poseConditions
-                                                                .Select(x => LoadPoseCondition(x))
-                                                                .Where(x => x is not null)
-                                                                .ToArray());
+            IPoseCondition[] poseConditions = await Task.WhenAll(dto.poseConditions
+                                                                .Select(x => LoadPoseCondition(x)));
+
+            UMI3DEntityInstance poseClipInstance = await loadingService.WaitUntilEntityLoaded(dto.poseClipId, null);
+            PoseClip poseClip = (PoseClip)poseClipInstance.Object;
+
+            PoseAnimator poseAnimator = new(dto, poseClip, poseConditions.Where(x => x is not null).ToArray());
 
             environmentService.RegisterEntity(dto.id, dto, poseAnimator, () => Delete(dto.id)).NotifyLoaded();
 
             return poseAnimator;
         }
 
+        /// <inheritdoc/>
         public override void Delete(ulong id)
         {
             PoseAnimator animator = environmentService.GetEntityObject<PoseAnimator>(id);
@@ -84,18 +88,18 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        protected virtual IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
+        protected virtual async Task<IPoseCondition> LoadPoseCondition(AbstractPoseConditionDto dto)
         {
             switch (dto)
             {
                 case MagnitudeConditionDto magnitudeConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
+                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(magnitudeConditionDto.TargetNodeId, null);
                         return new MagnitudePoseCondition(magnitudeConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case DirectionConditionDto directionConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(directionConditionDto.TargetNodeId);
+                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(directionConditionDto.TargetNodeId, null);
                         return new DirectionPoseCondition(directionConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case BoneRotationConditionDto boneRotationConditionDto:
@@ -104,7 +108,7 @@ namespace umi3d.cdk.userCapture.pose
                     }
                 case ScaleConditionDto scaleConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(scaleConditionDto.TargetId);
+                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(scaleConditionDto.TargetId, null);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
                     }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
@@ -115,7 +119,7 @@ namespace umi3d.cdk.userCapture.pose
                     }
 
                 default:
-                    return null;
+                    return await Task.FromResult<IPoseCondition>(null);
             }
         }
 

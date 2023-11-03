@@ -16,9 +16,7 @@ limitations under the License.
 
 
 #if UNITY_EDITOR
-using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.pose;
-using umi3d.edk.editor;
 
 using UnityEditor;
 
@@ -37,7 +35,6 @@ namespace umi3d.edk.userCapture.pose.editor
         private SerializedProperty composableField;
 
         private SerializedProperty activationModeField;
-        private SerializedProperty poseConditionsField;
 
         private SerializedProperty hasMagnitudeConditionField;
         private SerializedProperty magnitudeField;
@@ -53,7 +50,7 @@ namespace umi3d.edk.userCapture.pose.editor
         private readonly Color magnitudeSphereColor = Color.red;
         private readonly Color magnitudeHandlesColor = Color.magenta;
 
-        protected void OnEnable()
+        protected virtual void OnEnable()
         {
             poseSOField = serializedObject.FindProperty("pose_so");
             durationField = serializedObject.FindProperty("duration");
@@ -75,9 +72,8 @@ namespace umi3d.edk.userCapture.pose.editor
             targetScaleField = serializedObject.FindProperty("TargetScale");
         }
 
-        public override void OnInspectorGUI()
+        protected virtual void OnInspectorGUIInternal()
         {
-
             EditorGUILayout.PropertyField(poseSOField);
             EditorGUILayout.PropertyField(durationField);
 
@@ -96,6 +92,11 @@ namespace umi3d.edk.userCapture.pose.editor
 
             EditorGUILayout.PropertyField(hasScaleConditionField);
             EditorGUILayout.PropertyField(targetScaleField);
+        }
+
+        public override void OnInspectorGUI()
+        {
+            OnInspectorGUIInternal();
 
             serializedObject.ApplyModifiedProperties();
         }

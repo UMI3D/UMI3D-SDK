@@ -20,7 +20,10 @@ using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture.pose
 {
-    public class PoseClipLoader : AbstractLoader<PoseClipDto>, IEntity
+    /// <summary>
+    /// Loader for <see cref="PoseClip"/>.
+    /// </summary>
+    public class PoseClipLoader : AbstractLoader<PoseClipDto, PoseClip>, IEntity
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture | DebugScope.Loading;
 
@@ -43,25 +46,19 @@ namespace umi3d.cdk.userCapture.pose
 
         #endregion Dependencies Injection
 
-        public override void Load(PoseClipDto dto)
+        /// <inheritdoc/>
+        public override Task<PoseClip> Load(PoseClipDto dto)
         {
             PoseClip pose = new PoseClip(dto);
 
             environmentService.RegisterEntity(dto.id, dto, pose, () => Delete(dto.id)).NotifyLoaded();
+
+            return Task.FromResult(pose);
         }
 
+        /// <inheritdoc/>
         public override void Delete(ulong id)
         {
-        }
-
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
-        {
-            return Task.FromResult(false);
-        }
-
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
-        {
-            return Task.FromResult(false);
         }
     }
 }

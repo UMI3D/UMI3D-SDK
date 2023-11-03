@@ -35,14 +35,15 @@ namespace umi3d.cdk.userCapture.pose
         public bool IsApplied { get; set; }
 
         /// <summary>
-        /// The is a server pose, so this is its index in the list of poses of the user 0
+        /// UMI3D id of the pose animator.
         /// </summary>
         public ulong Id => dto.id;
 
         /// <summary>
-        /// The is a server pose, so this is its index in the list of poses of the user 0
+        /// Pose clip associated to this animator;
         /// </summary>
-        public ulong PoseId => dto.poseId;
+        public PoseClip PoseClip => poseClip;
+        private PoseClip poseClip;
 
         public ulong RelativeNodeId => dto.relatedNodeId;
 
@@ -96,17 +97,24 @@ namespace umi3d.cdk.userCapture.pose
         #region Dependency Injection
 
         private readonly ICoroutineService coroutineService;
+        private readonly IPoseManager poseService;
 
-        public PoseAnimator(PoseAnimatorDto dto, IPoseCondition[] poseConditions) : this(dto, poseConditions, CoroutineManager.Instance)
+        public PoseAnimator(PoseAnimatorDto dto, PoseClip poseClip, IPoseCondition[] poseConditions) : this(dto,
+                                                                                         poseClip,
+                                                                                         poseConditions,
+                                                                                         poseService: PoseManager.Instance,
+                                                                                         coroutineService: CoroutineManager.Instance)
         {
         }
 
-        public PoseAnimator(PoseAnimatorDto poseAnimatorDto, IPoseCondition[] poseConditions, ICoroutineService coroutineService)
+        public PoseAnimator(PoseAnimatorDto poseAnimatorDto, PoseClip poseClip, IPoseCondition[] poseConditions, IPoseManager poseService, ICoroutineService coroutineService)
         {
             this.dto = poseAnimatorDto ?? throw new System.ArgumentNullException(nameof(poseAnimatorDto));
             this.PoseConditions = poseConditions ?? new IPoseCondition[0];
+            this.poseClip = poseClip;
 
             this.coroutineService = coroutineService;
+            this.poseService = poseService;
 
             if (ActivationMode == (ushort)PoseAnimatorActivationMode.AUTO)
                 StartWatchActivationConditions();
@@ -161,21 +169,40 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Active poses that listens to this activation mode.
         /// </summary>
-        public bool Activate()
+        public bool TryActivate()
         {
             if (IsApplied)
                 return false;
 
             if (ActivationMode == (ushort)PoseAnimatorActivationMode.ON_REQUEST && CheckConditions())
             {
-                IsApplied = true;
-                ConditionsValidated?.Invoke();
-                StartWatchEndOfConditions();
+                Apply();
                 return true;
             }
-            
 
             return false;
+        }
+
+        /// <summary>
+        /// Apply the pose on the pose subskeleton.
+        /// </summary>
+        private void Apply()
+        {
+            IsApplied = true;
+            poseService.PlayPoseClip(poseClip);
+            ConditionsValidated?.Invoke();
+            StartWatchEndOfConditions();
+        }
+
+        /// <summary>
+        /// Stop the application of the pose on the pose subskeleton.
+        /// </summary>
+        private void EndApply()
+        {
+            IsApplied = false;
+            poseService.StopPoseClip(poseClip);
+            ConditionsInvalided?.Invoke();
+            StopWatchEndOfConditions();
         }
 
         private Coroutine regularActivationCheckRoutine;
@@ -197,11 +224,7 @@ namespace umi3d.cdk.userCapture.pose
 
                 // check to enable/disable auto-watched poses (nonInteractional)
                 if (!IsApplied && CheckConditions())
-                {
-                    IsApplied = true;
-                    ConditionsValidated?.Invoke();
-                    StartWatchEndOfConditions();
-                }
+                    Apply();
             }
             StopWatchActivationConditions();
         }
@@ -243,10 +266,7 @@ namespace umi3d.cdk.userCapture.pose
             {
                 yield return new WaitForSeconds(seconds: CHECK_PERIOD);
             }
-            IsApplied = false;
-            ConditionsInvalided?.Invoke();
-
-            StopWatchEndOfConditions();
+            EndApply();
         }
 
         /// <summary>

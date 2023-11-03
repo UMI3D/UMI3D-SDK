@@ -37,7 +37,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             // GIVEN
             PoseAnimatorDto dto = new();
 
-            PoseAnimator poseOverrider = new PoseAnimator(dto, new IPoseCondition[0]);
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+
+            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, new IPoseCondition[0]);
 
             // WHEN
             bool check = poseOverrider.CheckConditions();
@@ -61,7 +64,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             conditions.ForEach(x => x.Setup(c => c.Check()).Returns(true).Verifiable());
 
-            PoseAnimator poseOverrider = new PoseAnimator(dto, conditions.Select(x => x.Object).ToArray());
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+
+            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, conditions.Select(x => x.Object).ToArray());
 
             // WHEN
             bool check = poseOverrider.CheckConditions();
@@ -86,7 +92,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             conditions[0..2].ForEach(x => x.Setup(c => c.Check()).Returns(true).Verifiable());
             conditions[2].Setup(x => x.Check()).Returns(false);
-            PoseAnimator poseOverrider = new PoseAnimator(dto, conditions.Select(x => x.Object).ToArray());
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+
+            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, conditions.Select(x => x.Object).ToArray());
 
             // WHEN
             bool check = poseOverrider.CheckConditions();
@@ -100,17 +109,21 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         private PoseAnimator poseAnimator;
         private Mock<ICoroutineService> coroutineServiceMock;
+        private Mock<IPoseManager> poseServiceMock;
 
         #region Test SetUp
 
         [SetUp]
         public void SetUp()
         {
-            coroutineServiceMock = new Mock<ICoroutineService>();
+            coroutineServiceMock = new ();
+            poseServiceMock = new ();
             PoseAnimatorDto dto = new PoseAnimatorDto()
             {
             };
-            poseAnimator = new PoseAnimator(dto, new IPoseCondition[0], coroutineServiceMock.Object);
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+            poseAnimator = new PoseAnimator(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
 
         }
 
@@ -123,9 +136,11 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // GIVEN
             PoseAnimatorDto dto = null;
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
 
             // WHEN
-            TestDelegate action = () => new PoseAnimator(dto, new IPoseCondition[0], coroutineServiceMock.Object);
+            TestDelegate action = () => new PoseAnimator(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
 
             // THEN
             Assert.Throws<ArgumentNullException>(() => action());
@@ -180,10 +195,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             {
                 activationMode = (ushort)PoseAnimatorActivationMode.ON_REQUEST
             };
-            poseAnimator = new PoseAnimator(dto, new IPoseCondition[0], coroutineServiceMock.Object);
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+            poseAnimator = new PoseAnimator(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
 
             // when
-            bool success = poseAnimator.Activate();
+            bool success = poseAnimator.TryActivate();
 
             //then
             Assert.IsTrue(success);
@@ -194,10 +211,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // given
             coroutineServiceMock.Setup(x => x.AttachCoroutine(It.IsAny<IEnumerator>(), false));
-            poseAnimator.Activate();
+            poseAnimator.TryActivate();
 
             // when
-            bool success = poseAnimator.Activate();
+            bool success = poseAnimator.TryActivate();
 
             //then
             Assert.IsFalse(success);
@@ -209,7 +226,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             // given
 
             // when
-            bool success = poseAnimator.Activate();
+            bool success = poseAnimator.TryActivate();
 
             //then
             Assert.IsFalse(success);

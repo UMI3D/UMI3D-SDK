@@ -25,7 +25,7 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Id the corresponding node in the scene
         /// </summary>
-        public ulong poseId { get; set; }
+        public ulong poseClipId { get; set; }
 
         /// <summary>
         /// Id the corresponding node in the scene

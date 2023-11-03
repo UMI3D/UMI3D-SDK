@@ -59,7 +59,7 @@ namespace umi3d.cdk.userCapture.pose
         {
             PoseAnimator poseAnimator = environmentManager.GetEntityObject<PoseAnimator>(poseAnimatorId);
 
-            return poseAnimator.Activate();
+            return poseAnimator.TryActivate();
         }
 
         /// <inheritdoc/>

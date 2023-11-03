@@ -17,7 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 
 using System.Collections.Generic;
-
+using System.Linq;
 using umi3d.common;
 using umi3d.common.userCapture.pose;
 
@@ -30,27 +30,32 @@ namespace umi3d.edk.userCapture.pose
     {
         #region Dependency Injection
 
-        public PoseManager() : base()
+        private readonly IUMI3DServer umi3dServerService;
+
+        public PoseManager() : this(umi3dServerService: UMI3DServer.Instance)
         {
+        }
+
+        public PoseManager(IUMI3DServer umi3dServerService) : base()
+        {
+            this.umi3dServerService = umi3dServerService;
+
             Init();
         }
 
         #endregion Dependency Injection
 
         /// <summary>
-        /// A bool to make sure the initialisation only occurs once
+        /// <inheritdoc/>
         /// </summary>
-        private bool initialized = false;
+        public IDictionary<ulong, IList<PoseClip>> PoseClipsByUser => poses;
 
         /// <summary>
         /// <inheritdoc/>
         /// </summary>
-        public IDictionary<ulong, IList<PoseClip>> Poses => poses;
+        public IReadOnlyList<PoseClip> PoseClips => poses.Values.SelectMany(x => x).ToList();
 
         private readonly Dictionary<ulong, IList<PoseClip>> poses = new();
-
-        /// <inheritdoc/>
-        public IList<UMI3DPoseAnimator> PoseAnimators { get; private set; } = new List<UMI3DPoseAnimator>();
 
         /// <inheritdoc/>
         public PoseClip RegisterUserCustomPose(ulong userId, IUMI3DPoseData poseResource)
@@ -67,24 +72,7 @@ namespace umi3d.edk.userCapture.pose
             return poseToAdd;
         }
 
-        /// <summary>
-        /// Inits all the poses and pose overriders to make them ready for dto server-client exchanges
-        /// </summary>
-        private void Init()
-        {
-            if (!initialized)
-            {
-                foreach (var overrider in UnityEngine.Object.FindObjectsOfType<UMI3DPoseAnimator>())
-                {
-                    overrider.Id(); // register
-                    if (!PoseAnimators.Contains(overrider))
-                        PoseAnimators.Add(overrider);
-                }
-
-                initialized = true;
-            }
-        }
-
+        /// <inheritdoc/>
         public PoseClip RegisterEnvironmentPose(IUMI3DPoseData poseResource)
         {
             var pose = new PoseClip(poseResource); ;
@@ -101,12 +89,46 @@ namespace umi3d.edk.userCapture.pose
             return pose;
         }
 
-        public void RegisterPoseOverrider(UMI3DPoseAnimator overrider)
-        {
-            if (overrider == null)
-                throw new System.ArgumentNullException(nameof(overrider));
+        #region Lifecycle
 
-            PoseAnimators.Add(overrider);
+        /// <summary>
+        /// Inits all the poses and pose overriders to make them ready for dto server-client exchanges
+        /// </summary>
+        private void Init()
+        {
+            umi3dServerService.OnUserActive.AddListener(DispatchPoseClips);
+            umi3dServerService.OnUserMissing.AddListener(CleanPoseClips);
+            umi3dServerService.OnUserLeave.AddListener(CleanPoseClips);
         }
+
+        /// <summary>
+        /// Send pose clip to a new user.
+        /// </summary>
+        /// <param name="user"></param>
+        private void DispatchPoseClips(UMI3DUser user)
+        {
+            if (poses.Count == 0)
+                return;
+
+            Transaction t = new() { reliable = true };
+            foreach (var poseClip in PoseClips)
+            {
+                t.AddIfNotNull(poseClip.GetLoadEntity(new() { user }));
+            }
+            t.Dispatch();
+        }
+
+        /// <summary>
+        /// Delete pose clips of old user.
+        /// </summary>
+        /// <param name="user"></param>
+        private void CleanPoseClips(UMI3DUser user)
+        {
+            if (!PoseClipsByUser.ContainsKey(user.Id()))
+                return;
+            PoseClipsByUser.Remove(user.Id());
+        }
+
+        #endregion Lifecycle
     }
 }

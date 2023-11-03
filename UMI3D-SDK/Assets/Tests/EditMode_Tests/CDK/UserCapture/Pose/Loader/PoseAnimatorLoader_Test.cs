@@ -32,6 +32,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
     public class PoseAnimatorLoader_Test
     {
         private Mock<IEnvironmentManager> environmentServiceMock;
+        private Mock<ILoadingManager> loadingServiceMock;
         private Mock<ISkeletonManager> skeletonServiceMock;
         private Mock<IPoseManager> poseServiceMock;
 
@@ -42,11 +43,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [SetUp]
         public void Setup()
         {
-            environmentServiceMock = new Mock<IEnvironmentManager>();
-            skeletonServiceMock = new Mock<ISkeletonManager>();
-            poseServiceMock = new Mock<IPoseManager>();
+            environmentServiceMock = new ();
+            loadingServiceMock = new ();
+            skeletonServiceMock = new ();
+            poseServiceMock = new ();
 
-            PoseAnimatorLoader = new PoseAnimatorLoader(environmentServiceMock.Object, skeletonServiceMock.Object, poseServiceMock.Object);
+            PoseAnimatorLoader = new PoseAnimatorLoader(environmentServiceMock.Object, loadingServiceMock.Object, skeletonServiceMock.Object);
         }
 
         [TearDown]
@@ -65,7 +67,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseAnimatorDto overriderDto = null;
 
             // When
-            TestDelegate action = () => PoseAnimatorLoader.Load(overriderDto);
+            TestDelegate action = async () => await PoseAnimatorLoader.Load(overriderDto);
 
             // Then
             Assert.Throws<ArgumentNullException>(() => action());
@@ -83,8 +85,11 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 poseConditions = new AbstractPoseConditionDto[0],
             };
 
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
             Mock<ICoroutineService> coroutineServiceMock = new();
-            PoseAnimator container = new(dto, new IPoseCondition[0], coroutineServiceMock.Object);
+            Mock<IPoseManager> poseServiceMock = new();
+            PoseAnimator container = new(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
 
             environmentServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
                                   .Returns(new UMI3DEntityInstance(() => { }))
@@ -98,7 +103,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         }
 
         [Test]
-        public void Load_Conditions()
+        public async void Load_Conditions()
         {
             // Given
 
@@ -133,11 +138,11 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
 
             // When
-            PoseAnimator poseAnimator = PoseAnimatorLoader.Load(dto);
+            PoseAnimator poseAnimator = await PoseAnimatorLoader.Load(dto);
 
             // Then
             Assert.AreEqual(dto.id, poseAnimator.Id);
-            Assert.AreEqual(dto.poseId, poseAnimator.PoseId);
+            Assert.AreEqual(dto.poseClipId, poseAnimator.PoseClip.Id);
             Assert.AreEqual(dto.relatedNodeId, poseAnimator.RelativeNodeId);
             Assert.AreEqual(dto.duration, poseAnimator.Duration);
             Assert.AreEqual(dto.isComposable, poseAnimator.IsComposable);

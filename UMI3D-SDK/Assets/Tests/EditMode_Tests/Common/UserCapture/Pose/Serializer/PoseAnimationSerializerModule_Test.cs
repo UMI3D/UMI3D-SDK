@@ -96,7 +96,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             {
                 id = 10005uL,
                 relatedNodeId = 1006uL,
-                poseId = 11025uL,
+                poseClipId = 11025uL,
                 poseConditions = new AbstractPoseConditionDto[]
                 {
                     new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
@@ -116,7 +116,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             Assert.IsTrue(readable);
 
             Assert.AreEqual(poseAnimatorDto.id, result.id);
-            Assert.AreEqual(poseAnimatorDto.poseId, result.poseId);
+            Assert.AreEqual(poseAnimatorDto.poseClipId, result.poseClipId);
             Assert.AreEqual(poseAnimatorDto.relatedNodeId, result.relatedNodeId);
 
 

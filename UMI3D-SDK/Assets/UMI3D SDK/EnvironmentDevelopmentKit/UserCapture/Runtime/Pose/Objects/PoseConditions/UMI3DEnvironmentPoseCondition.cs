@@ -30,6 +30,7 @@ namespace umi3d.edk.userCapture.pose
         /// </summary>
         public bool isValidated;
 
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new EnvironmentPoseConditionDto()

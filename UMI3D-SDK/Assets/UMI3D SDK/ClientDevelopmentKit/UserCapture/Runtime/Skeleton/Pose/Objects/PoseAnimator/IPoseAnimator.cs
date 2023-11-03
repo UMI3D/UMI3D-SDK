@@ -31,6 +31,11 @@ namespace umi3d.cdk.userCapture.pose
         bool IsWatching { get; }
 
         /// <summary>
+        /// Pose clip associated to this animator;
+        /// </summary>
+        PoseClip PoseClip { get; }
+
+        /// <summary>
         /// Sends a signal when the condition become validated
         /// </summary>
         event Action ConditionsInvalided;
@@ -53,6 +58,6 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Active poses that listens to this activation mode.
         /// </summary>
-        bool Activate();
+        bool TryActivate();
     }
 }

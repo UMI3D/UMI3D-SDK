@@ -22,21 +22,19 @@ namespace umi3d.cdk.userCapture.pose
     public interface IPoseManager
     {
         /// <summary>
-        /// Sets the related pose to the overrider Dto, in the poseSkeleton
+        /// Sets the related pose in the poseSkeleton
         /// </summary>
-        /// <param name="poseOverriderDto"></param>
+        /// <param name="poseClip"></param>
         void PlayPoseClip(PoseClip poseClip);
 
         /// <summary>
         /// Stops all poses
         /// </summary>
-        /// <param name="poseOverriderDto"></param>
         void StopAllPoses();
 
         /// <summary>
-        /// Stops the related pose to the overriderDto, in the poseSkeleton
+        /// Stops the related pose in the poseSkeleton
         /// </summary>
-        /// <param name="poseOverriderDto"></param>
         void StopPoseClip(PoseClip poseClip);
 
         /// <summary>
