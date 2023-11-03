@@ -22,12 +22,10 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.interaction;
-using umi3d.edk.userCapture;
 using UnityEngine.Events;
 using WebSocketSharp;
 using WebSocketSharp.Net;
@@ -40,9 +38,7 @@ namespace umi3d.edk.collaboration
     /// Environment API to handle HTTP requests.
     /// </summary>
     public class UMI3DEnvironmentApi : UMI3DAbstractEnvironmentApi
-    {
-        
-
+    {      
         public UMI3DEnvironmentApi()
         { }
 
@@ -419,15 +415,28 @@ namespace umi3d.edk.collaboration
                         (res) => { result = res; finished = true; },
                         () => { finished = true; }
                     ));
+
                 while (!finished) System.Threading.Thread.Sleep(1);
-                e.Response.WriteContent(result.ToBson());
+
+                e.Response.WriteContent(result?.ToBson() ?? new byte[0]);
             }
             UMI3DLogger.Log($"End Get Environment {user?.Id()}", scope);
         }
 
         private IEnumerator _GetEnvironment(UMI3DEnvironment environment, UMI3DUser user, Action<GlTFEnvironmentDto> callback, Action error)
         {
-            callback.Invoke(environment.ToDto(user));
+            try
+            {
+                callback.Invoke(environment.ToDto(user));
+            }
+            catch (Exception ex)
+            {
+                UMI3DLogger.LogError("Error while getting environment", scope);
+                UMI3DLogger.LogException(ex, scope);
+
+                error?.Invoke();
+            }
+
             yield return null;
         }
 

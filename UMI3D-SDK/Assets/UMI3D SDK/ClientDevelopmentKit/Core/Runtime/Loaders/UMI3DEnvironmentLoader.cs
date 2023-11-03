@@ -33,7 +33,7 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
-    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>, IEnvironmentManager , ILoadingManager, INavMeshManager
+    public class UMI3DEnvironmentLoader : inetum.unityUtils.Singleton<UMI3DEnvironmentLoader>, IEnvironmentManager, ILoadingManager, INavMeshManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
@@ -497,9 +497,8 @@ namespace umi3d.cdk
             if (UMI3DVideoPlayerLoader.HasVideoToLoad)
             {
                 endProgress.SetStatus("Loading videos");
-                Debug.Log("wait for video");
+
                 await UMI3DVideoPlayerLoader.LoadVideoPlayers();
-                Debug.Log("wait for video end");
             }
             endProgress.AddComplete();
 

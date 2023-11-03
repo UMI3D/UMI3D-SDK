@@ -299,5 +299,10 @@ namespace umi3d.cdk
             else
                 AnimationEnded?.Invoke();
         }
+
+        /// <summary>
+        /// Defines what to clear when this object is deleted.
+        /// </summary>
+        public abstract void Clear();
     }
 }

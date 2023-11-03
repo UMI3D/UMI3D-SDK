@@ -192,8 +192,9 @@ namespace umi3d.cdk
         /// <returns></returns>
         private GameObject SetSubObjectsReferences(GameObject goInCache, UMI3DMeshNodeDto dto, Vector3 rotationOffsetByLoader)
         {
-            string url = loadingManager.AbstractLoadingParameters.ChooseVariant(dto.mesh.variants).url;
-            if (!resourcesManager.IsSubModelsSetFor(url))
+            FileDto file = loadingManager.AbstractLoadingParameters.ChooseVariant(dto.mesh.variants);
+
+            if (!resourcesManager.IsSubModelsSetFor(file.url, file.libraryKey))
             {
                 var copy = GameObject.Instantiate(goInCache, resourcesManager.CacheTransform);// goInCache.transform.parent);
                 foreach (LODGroup lodgroup in copy.GetComponentsInChildren<LODGroup>())
@@ -203,12 +204,13 @@ namespace umi3d.cdk
                 subObjectsReferences.SetRoot(copy.transform);
 
                 SetSubObjectsReferencesAux(copy.transform, copy.transform, rotationOffsetByLoader, subObjectsReferences);
-                resourcesManager.AddSubModels(url, subObjectsReferences);
+
+                resourcesManager.AddSubModels(file.url, file.libraryKey, subObjectsReferences);
                 return copy;
             }
             else
             {
-                return resourcesManager.GetSubModelRoot(url).gameObject;
+                return resourcesManager.GetSubModelRoot(file.url, file.libraryKey).gameObject;
             }
         }
 

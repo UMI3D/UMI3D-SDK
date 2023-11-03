@@ -23,9 +23,9 @@ namespace TestUtils.UserCapture
 {
     public class HierarchyDefinitionLocal : IUMI3DSkeletonHierarchyDefinition
     {
-        public IList<UMI3DSkeletonHierarchyDefinition.BoneRelation> Relations => relations;
+        public IList<IUMI3DSkeletonHierarchyDefinition.BoneRelation> Relations => relations;
 
-        private readonly List<UMI3DSkeletonHierarchyDefinition.BoneRelation> relations = new();
+        private readonly List<IUMI3DSkeletonHierarchyDefinition.BoneRelation> relations = new();
     }
 
     public static class HierarchyTestHelper
@@ -33,9 +33,9 @@ namespace TestUtils.UserCapture
         public static UMI3DSkeletonHierarchy CreateTestHierarchy()
         {
             HierarchyDefinitionLocal hierarchyDef = new();
-            hierarchyDef.Relations.Add(new(BoneType.Chest, BoneType.None, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.Spine, BoneType.Chest, Vector3.zero));
-            hierarchyDef.Relations.Add(new(BoneType.LeftForearm, BoneType.Chest, Vector3.zero));
+            hierarchyDef.Relations.Add(new() { parentBoneType = BoneType.Hips, boneType = BoneType.Chest , relativePosition = Vector3.zero.Dto() });
+            hierarchyDef.Relations.Add(new() { parentBoneType = BoneType.Chest, boneType = BoneType.Spine , relativePosition = Vector3.zero.Dto() });
+            hierarchyDef.Relations.Add(new() { parentBoneType = BoneType.Chest, boneType = BoneType.LeftForearm , relativePosition = Vector3.zero.Dto() });
             return new UMI3DSkeletonHierarchy(hierarchyDef);
         }
     }

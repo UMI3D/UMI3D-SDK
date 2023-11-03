@@ -12,6 +12,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections;
 using umi3d.common;
 using UnityEngine;
@@ -30,6 +31,7 @@ namespace umi3d.cdk
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
         private VideoPlayer videoPlayer;
+        private GameObject videoPlayerGameObject;
         private Material mat;
         private RenderTexture renderTexture;
 
@@ -56,7 +58,7 @@ namespace umi3d.cdk
         public override bool IsPlaying() => videoPlayer.isPlaying;
 
         public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
-        { 
+        {
         }
 
         /// <inheritdoc/>
@@ -79,7 +81,7 @@ namespace umi3d.cdk
             mat.mainTexture = renderTexture;
 
             // create unity VideoPlayer
-            var videoPlayerGameObject = new GameObject("video");
+            videoPlayerGameObject = new GameObject("video");
             videoPlayerGameObject.transform.SetParent(UMI3DResourcesManager.Instance.transform);
             videoPlayer = videoPlayerGameObject.AddComponent<VideoPlayer>();
 
@@ -125,9 +127,16 @@ namespace umi3d.cdk
             }
         }
 
+        [Obsolete("Use Clear() instead")]
         public void Clean()
         {
+            Clear();
+        }
+
+        public override void Clear()
+        {
             videoPlayer.Stop();
+            GameObject.Destroy(videoPlayerGameObject);
         }
 
         private async void VideoPlayer_errorReceived(VideoPlayer source, string message)

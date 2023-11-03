@@ -17,6 +17,7 @@ limitations under the License.
 using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
+using System.Linq;
 using TestUtils.UserCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
@@ -61,14 +62,14 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             }
 
             skeletonMapper.BoneAnchor = new BonePoseDto();
-            skeletonMapper.Mappings = mappings.ToArray();
+            skeletonMapper.Mappings = mappings.ToList();
 
             // WHEN
             var result = skeletonMapper.GetPose(hierarchy);
 
             // THEN
             Assert.AreEqual(skeletonMapper.BoneAnchor.bone, result.boneAnchor.bone);
-            Assert.AreEqual(skeletonMapper.Mappings.Length, result.bones.Count);
+            Assert.AreEqual(skeletonMapper.Mappings.Count, result.bones.Count);
         }
 
         #endregion GetPose

@@ -26,6 +26,24 @@ namespace umi3d.common.userCapture.description
         /// <summary>
         /// Collection of relation between a bone and its parent.
         /// </summary>
-        IList<UMI3DSkeletonHierarchyDefinition.BoneRelation> Relations { get; }
+        IList<BoneRelation> Relations { get; }
+
+        public struct BoneRelation
+        {
+            /// <summary>
+            /// Bone type in UMI3D standards.
+            /// </summary>
+            public uint boneType;
+
+            /// <summary>
+            /// Parent bone in the hierarchy.
+            /// </summary>
+            public uint parentBoneType;
+
+            /// <summary>
+            /// The position of the current bone type relative to its parent.
+            /// </summary>
+            public Vector3Dto relativePosition;
+        }
     }
 }

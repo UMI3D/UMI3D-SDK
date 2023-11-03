@@ -60,7 +60,7 @@ namespace umi3d.cdk
                 var modelDto = (GlTFNodeDto)modelNodeInstance.dto;
                 UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(subDto.id);
 
-                string modelInCache = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants).url;
+                FileDto file = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants);
 
                 var rootDto = (UMI3DMeshNodeDto)modelDto.extensions.umi3d;
                 GameObject instance = null;
@@ -69,7 +69,7 @@ namespace umi3d.cdk
                 {
                     string sub = subDto.subModelName;
 
-                    UMI3DResourcesManager.Instance.GetSubModel(modelInCache, sub, subDto.subModelHierachyIndexes, subDto.subModelHierachyNames, (o) =>
+                    UMI3DResourcesManager.Instance.GetSubModel(file.url, file.libraryKey, sub, subDto.subModelHierachyIndexes, subDto.subModelHierachyNames, (o) =>
                     {
                         instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
 
