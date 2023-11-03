@@ -24,6 +24,7 @@ using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.Common
 {
+    [TestFixture, TestOf(nameof(PoseAnimationSerializerModule))]
     public class PoseAnimationSerializerModule_Test
     {
         private PoseAnimationSerializerModule poseSerializerModule;
@@ -53,7 +54,11 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             // GIVEN
             PoseDto poseDto = new PoseDto()
             {
-                bones = GetTestBonePoseDtoSample(),
+                bones = new List<BoneDto>
+            {
+                new BoneDto() {boneType = 1u, rotation = Vector4Dto.one },
+                new BoneDto() {boneType = 15u, rotation = Vector4Dto.one }
+            },
                 anchor = new PoseAnchorDto() { bone = 24u, position = Vector3Dto.zero, rotation = Vector4Dto.one }
             };
             PoseClipDto poseClipDto = new PoseClipDto()
@@ -84,22 +89,19 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
         #region Read Pose Animator
 
-        private List<BoneDto> GetTestBonePoseDtoSample()
-        {
-            return new List<BoneDto>
-            {
-                new BoneDto() {boneType = 1u, rotation = Vector4Dto.one },
-                new BoneDto() {boneType = 15u, rotation = Vector4Dto.one }
-            };
-        }
-
         [Test]
         public void Read_PoseAnimatorDto()
         {
             PoseAnimatorDto poseAnimatorDto = new PoseAnimatorDto()
             {
                 id = 10005uL,
-                poseConditions = GetConditionsTestSet(),
+                relatedNodeId = 1006uL,
+                poseId = 11025uL,
+                poseConditions = new AbstractPoseConditionDto[]
+                {
+                    new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
+                    new DirectionConditionDto() { Direction = Vector3.one.Dto() },
+                },
                 duration = new DurationDto() { duration = 24, max = 12, min = 2 },
                 isInterpolable = true,
                 isComposable = false,
@@ -114,22 +116,17 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             Assert.IsTrue(readable);
 
             Assert.AreEqual(poseAnimatorDto.id, result.id);
-            Assert.IsTrue((result.poseConditions[0] as UserScaleConditionDto).Scale.Struct()
-                == (poseAnimatorDto.poseConditions[0] as UserScaleConditionDto).Scale.Struct());
-            Assert.IsTrue((result.poseConditions[1] as DirectionConditionDto).Direction.Struct()
-                == (poseAnimatorDto.poseConditions[1] as DirectionConditionDto).Direction.Struct());
+            Assert.AreEqual(poseAnimatorDto.poseId, result.poseId);
+            Assert.AreEqual(poseAnimatorDto.relatedNodeId, result.relatedNodeId);
+
 
             Assert.AreEqual(poseAnimatorDto.duration.duration, result.duration.duration);
             Assert.AreEqual(poseAnimatorDto.isInterpolable, result.isInterpolable);
             Assert.AreEqual(poseAnimatorDto.isComposable, result.isComposable);
-        }
 
-        private AbstractPoseConditionDto[] GetConditionsTestSet()
-        {
-            return new AbstractPoseConditionDto[]{
-                new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
-                new DirectionConditionDto() { Direction = Vector3.one.Dto() },
-            };
+            Assert.AreEqual(poseAnimatorDto.activationMode, result.activationMode);
+
+            Assert.AreEqual(poseAnimatorDto.poseConditions.Length, result.poseConditions.Length);
         }
 
         #endregion Read Pose Animator
