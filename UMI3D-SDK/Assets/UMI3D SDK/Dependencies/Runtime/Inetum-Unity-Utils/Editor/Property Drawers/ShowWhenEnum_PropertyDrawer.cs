@@ -17,7 +17,6 @@ using System;
 using System.Reflection;
 using UnityEditor;
 using UnityEngine;
-using UnityEngine.AddressableAssets;
 
 namespace inetum.unityUtils.editor
 {
@@ -25,18 +24,19 @@ namespace inetum.unityUtils.editor
     public class ShowWhenEnum_PropertyDrawer : PropertyDrawer
     {
         bool showField = true;
+        PropertyDrawer propertyDrawer;
 
         public override float GetPropertyHeight(SerializedProperty property, GUIContent label)
         {
             if (showField)
             {
-                if (fieldInfo.FieldType.IsSubclassOf(typeof(AssetReference)) && TryGetOriginalPropertyDrawer(out PropertyDrawer propertyDrawer))
+                if (propertyDrawer == null && !TryGetOriginalPropertyDrawer(out propertyDrawer))
                 {
-                    return propertyDrawer.GetPropertyHeight(property, label);
+                    return EditorGUI.GetPropertyHeight(property);
                 }
                 else
                 {
-                    return EditorGUI.GetPropertyHeight(property);
+                    return propertyDrawer.GetPropertyHeight(property, label);
                 }
             }
             else
@@ -72,13 +72,13 @@ namespace inetum.unityUtils.editor
 
             if (showField)
             {
-                if (fieldInfo.FieldType.IsSubclassOf(typeof(AssetReference)) && TryGetOriginalPropertyDrawer(out PropertyDrawer propertyDrawer))
+                if (propertyDrawer == null && !TryGetOriginalPropertyDrawer(out propertyDrawer))
                 {
-                    propertyDrawer.OnGUI(position, property, label);
+                    EditorGUI.PropertyField(position, property, label, true);
                 }
                 else
                 {
-                    EditorGUI.PropertyField(position, property, label, true);
+                    propertyDrawer.OnGUI(position, property, label);
                 }
             }
         }
