@@ -73,7 +73,7 @@ namespace umi3d.cdk.userCapture.binding
             
             if (parentBone is null)
             {
-                UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                UMI3DLogger.LogWarning($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
                 success = false;
                 return;
             }

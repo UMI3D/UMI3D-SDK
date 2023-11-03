@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace umi3d.common.userCapture.description
@@ -33,13 +34,13 @@ namespace umi3d.common.userCapture.description
             /// <summary>
             /// Bone type in UMI3D standards.
             /// </summary>
-            [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
+            [ConstEnum(typeof(BoneType), typeof(uint))]
             public uint Bonetype;
 
             /// <summary>
             /// Parent bone in the hierarchy.
             /// </summary>
-            [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Parent bone in the hierarchy.")]
+            [ConstEnum(typeof(BoneType), typeof(uint))]
             public uint BonetypeParent;
 
             /// <summary>
@@ -62,6 +63,6 @@ namespace umi3d.common.userCapture.description
         [SerializeField, Tooltip("Collection of relation between a bone and its parent. Declare the hierarchy.")]
         private List<BoneRelation> BoneRelations = new List<BoneRelation>();
 
-        public IList<BoneRelation> Relations => BoneRelations;
+        public IList<IUMI3DSkeletonHierarchyDefinition.BoneRelation> Relations => BoneRelations.Select(x=>new IUMI3DSkeletonHierarchyDefinition.BoneRelation() { boneType = x.Bonetype, parentBoneType = x.BonetypeParent, relativePosition = x.RelativePosition.Dto()}).ToList();
     }
 }
