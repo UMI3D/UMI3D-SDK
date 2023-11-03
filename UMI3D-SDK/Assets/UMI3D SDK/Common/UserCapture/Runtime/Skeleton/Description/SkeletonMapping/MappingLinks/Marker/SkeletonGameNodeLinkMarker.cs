@@ -29,8 +29,16 @@ namespace umi3d.common.userCapture.description
         [Tooltip("Game node from which to generate the link.")]
         public GameObject node;
 
+        private void Start()
+        {
+            if (node == null)
+                node = gameObject;
+        }
+
         public override ISkeletonMappingLink ToLink()
         {
+            if (node == null)
+                node = gameObject;
             return new GameNodeLink(node.transform);
         }
     }

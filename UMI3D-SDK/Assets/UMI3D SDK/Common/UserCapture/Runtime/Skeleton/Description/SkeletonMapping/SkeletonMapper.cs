@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -28,10 +30,67 @@ namespace umi3d.common.userCapture.description
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
 
-        public BonePoseDto BoneAnchor;
-        public List<SkeletonMapping> Mappings = new();
+        [SerializeField]
+        private SkeletonMappingLinkMarker anchor;
 
-        private Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
+        [SerializeField]
+        private List<SkeletonMappingLinkMarker> mappingMarkers = new();
+
+        [SerializeField, ConstEnum(typeof(LevelOfArticulation), typeof(uint))]
+        private uint levelOfArticulation;
+
+        [HideInInspector]
+        public BonePoseDto BoneAnchor
+        {
+            get
+            {
+                if (boneAnchor == null && anchor != null)
+                {
+                    boneAnchor = new BonePoseDto()
+                    {
+                        bone = anchor.BoneType,
+                        position = anchor.transform.position.Dto(),
+                        rotation = anchor.transform.rotation.Dto()
+                    };
+                }
+
+                return boneAnchor;
+            }
+            set
+            {
+                boneAnchor = value;
+            }
+        }
+
+        private BonePoseDto boneAnchor;
+
+        [HideInInspector]
+        public IList<SkeletonMapping> Mappings
+        {
+            get
+            {
+                if (mappings == null && mappingMarkers.Count == 0)
+                    RetrieveMappings();
+                return mappings;
+            }
+            set
+            {
+                mappings = value.ToList();
+            }
+        }
+
+        private List<SkeletonMapping> mappings;
+
+        private readonly Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
+
+        public void RetrieveMappings()
+        {
+            mappingMarkers = GetComponentsInChildren<SkeletonMappingLinkMarker>().ToList();
+            mappings = new();
+            foreach (var marker in mappingMarkers)
+                if (levelOfArticulation == LevelOfArticulation.NONE || marker.LevelOfArticulation <= levelOfArticulation)
+                    mappings.Add(marker.ToSkeletonMapping());
+        }
 
         /// <summary>
         /// Get pose of the bone using mappings.
@@ -40,7 +99,21 @@ namespace umi3d.common.userCapture.description
         public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             if (BoneAnchor == null)
-                UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
+            {
+                if (anchor != null)
+                {
+                    BoneAnchor = new BonePoseDto()
+                    {
+                        bone = anchor.BoneType,
+                        position = anchor.transform.position.Dto(),
+                        rotation = anchor.transform.rotation.Dto()
+                    };
+                    if (mappingMarkers.Count == 0 && Mappings.Count == 0)
+                        RetrieveMappings();
+                }
+                else
+                    UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
+            }
 
             computedMap.Clear();
 
@@ -88,7 +161,7 @@ namespace umi3d.common.userCapture.description
             var bone = mapping.GetPose();
 
             // look for potential parents
-            SkeletonMapping parentMapping = Mappings.Find(m => m.BoneType == relation.boneTypeParent);
+            SkeletonMapping parentMapping = mappings.Find(m => m.BoneType == relation.boneTypeParent);
 
             SubSkeletonBoneDto subBone = new() { boneType = boneType };
             if (parentMapping == default || parentMapping.BoneType == BoneType.None) // bone has no parent
