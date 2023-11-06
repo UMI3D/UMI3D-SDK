@@ -152,6 +152,16 @@ namespace umi3d.common.userCapture.pose
 
         public UMI3DNode relativeNode;
 
+        public UMI3DNode RelativeNode
+        {
+            get
+            {
+                if (relativeNode == null)
+                    relativeNode = GetComponent<UMI3DNode>();
+                return relativeNode;
+            }
+        }
+
         [Header("- Direction condition")]
         public bool HasDirectionCondition;
 
@@ -186,7 +196,7 @@ namespace umi3d.common.userCapture.pose
             return new PoseAnimatorDto()
             {
                 id = Id(),
-                relatedNodeId = relativeNode.Id(),
+                relatedNodeId = RelativeNode.Id(),
                 poseClipId = PoseClip.Id(),
                 poseConditions = GetPoseConditions(),
                 duration = duration.ToDto(),
@@ -214,7 +224,7 @@ namespace umi3d.common.userCapture.pose
                 {
                     Magnitude = Magnitude,
                     BoneOrigin = BoneOrigin,
-                    TargetNodeId = relativeNode.Id()
+                    TargetNodeId = RelativeNode.Id()
                 });
             }
             if (HasDirectionCondition)
