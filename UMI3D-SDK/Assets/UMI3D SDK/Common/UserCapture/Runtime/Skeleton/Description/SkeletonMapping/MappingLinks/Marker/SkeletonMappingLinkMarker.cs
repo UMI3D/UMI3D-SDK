@@ -30,6 +30,12 @@ namespace umi3d.common.userCapture.description
         [inetum.unityUtils.ConstEnum(typeof(BoneType), typeof(uint))]
         public uint BoneType;
 
+        /// <summary>
+        /// Level of articulation of that link.
+        /// </summary>
+        [inetum.unityUtils.ConstEnum(typeof(LevelOfArticulation), typeof(uint))]
+        public uint LevelOfArticulation;
+
         public abstract ISkeletonMappingLink ToLink();
 
         public SkeletonMapping ToSkeletonMapping()

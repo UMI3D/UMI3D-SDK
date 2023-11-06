@@ -100,7 +100,7 @@ namespace umi3d.cdk.userCapture.animation
             animator.cullingMode = AnimatorCullingMode.AlwaysAnimate; // required for applying movements on your body when you're not looking at it
 
             // get skeleton mapper from model or create one
-            ISkeletonMapper skeletonMapper = GetSkeletonMapper(skeletonNodeDto, animator);
+            ISkeletonMapper skeletonMapper = RetrieveSkeletonMapper(skeletonNodeDto, animator);
             if (skeletonMapper == null) // failed infinding/adding skeletonMapper
             {
                 UMI3DLogger.LogWarning($"No skeleton mapper was provided for skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId} and cannot auto-extract from animator failed.", DEBUG_SCOPE);
@@ -149,23 +149,20 @@ namespace umi3d.cdk.userCapture.animation
         /// <param name="skeletonNodeDto"></param>
         /// <param name="animator"></param>
         /// <returns></returns>
-        protected ISkeletonMapper GetSkeletonMapper(SkeletonAnimationNodeDto skeletonNodeDto, Animator animator)
+        protected ISkeletonMapper RetrieveSkeletonMapper(SkeletonAnimationNodeDto skeletonNodeDto, Animator animator)
         {
             // if the designer added a skeleton mapper, uses its links
-            if (animator.gameObject.TryGetComponent(out SkeletonMapper skeletonMapper))
+            SkeletonMapper skeletonMapper = animator.gameObject.GetComponentInChildren<SkeletonMapper>();
+            if (skeletonMapper != null)
             {
-                skeletonMapper.Mappings = skeletonMapper.GetComponentsInChildren<SkeletonMappingLinkMarker>()
-                                                            .Select(x => x.ToSkeletonMapping())
-                                                            .ToList();
-                if (skeletonMapper.Mappings.Count > 0)
+                if (skeletonMapper.Mappings.Count == 0)
                 {
-                    var root = skeletonMapper.Mappings.FirstOrDefault(x => x.BoneType == BoneType.Hips)?.Link.Compute();
-
-                    skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, position = root?.position.Dto(), rotation = root?.rotation.Dto() };
+                    UMI3DLogger.LogWarning($"Error when getting Skeleton Mapper. SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but no mapping could be retrieved.", DEBUG_SCOPE);
+                    return null;
                 }
-                else
+                if (skeletonMapper.BoneAnchor == null)
                 {
-                    UMI3DLogger.LogWarning($"SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but no mapping could be retrieved.", DEBUG_SCOPE);
+                    UMI3DLogger.LogWarning($"Error when getting Skeleton Mapper. SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but an anchor is missing.", DEBUG_SCOPE);
                     return null;
                 }
             }
@@ -271,7 +268,8 @@ namespace umi3d.cdk.userCapture.animation
                     var (position, rotation, scale) = animatorBoneInfos[animatorRigNames];
 
                     boneTransform.name = animatorRigNames;
-                    boneTransform.SetLocalPositionAndRotation(position, rotation);
+                    boneTransform.localPosition = position;
+                    boneTransform.localRotation = rotation;
                     boneTransform.localScale = scale;
                 }
                 else // case that occurs if the umi3d bone is not found in animator hierarchy, lift children up and delete parent.
