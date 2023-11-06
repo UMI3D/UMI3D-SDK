@@ -271,7 +271,8 @@ namespace umi3d.cdk.userCapture.animation
                     var (position, rotation, scale) = animatorBoneInfos[animatorRigNames];
 
                     boneTransform.name = animatorRigNames;
-                    boneTransform.SetLocalPositionAndRotation(position, rotation);
+                    boneTransform.localPosition = position;
+                    boneTransform.localRotation = rotation;
                     boneTransform.localScale = scale;
                 }
                 else // case that occurs if the umi3d bone is not found in animator hierarchy, lift children up and delete parent.
