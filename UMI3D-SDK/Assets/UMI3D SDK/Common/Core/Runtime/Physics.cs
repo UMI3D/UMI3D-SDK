@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -25,6 +26,19 @@ namespace umi3d.common
     public class Physics : MonoBehaviour
     {
         /// <summary>
+        /// Size of the raycast hit buffer.
+        /// </summary>
+        const int size = 100;
+        /// <summary>
+        /// Raycast hit buffer.
+        /// </summary>
+        static RaycastHit[] hits = new RaycastHit[size];
+        /// <summary>
+        /// Distance comparer.
+        /// </summary>
+        static Comparer<RaycastHit> comparer = Comparer<RaycastHit>.Create(Comparison);
+
+        /// <summary>
         /// Returns all the hits from a raycast algorithm, sorted by their distance.
         /// </summary>
         /// <param name="ray">Position and direction combined as a ray.</param>
@@ -32,9 +46,15 @@ namespace umi3d.common
         /// <param name="layerMask">Layermask concerned by the raycasting.</param>
         /// <param name="queryTriggerInteraction"></param>
         /// <returns></returns>
-        public static RaycastHit[] RaycastAll(Ray ray, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static (RaycastHit[] hits, int hitCount) RaycastAll(Ray ray, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
-            return Sort(UnityEngine.Physics.RaycastAll(ray, maxDistance, layerMask, queryTriggerInteraction));
+            int hitCount = UnityEngine.Physics.RaycastNonAlloc(ray, hits, maxDistance, layerMask, queryTriggerInteraction);
+            Array.Sort(hits, 0, hitCount, comparer);
+            if (hitCount < size)
+            {
+                Array.Clear(hits, hitCount, size - hitCount);
+            }
+            return (hits, hitCount);
         }
 
         /// <summary>
@@ -46,23 +66,15 @@ namespace umi3d.common
         /// <param name="layerMask">Layermask concerned by the raycasting.</param>
         /// <param name="queryTriggerInteraction"></param>
         /// <returns></returns>
-        public static RaycastHit[] RaycastAll(Vector3 origin, Vector3 direction, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
+        public static (RaycastHit[] hits, int hitCount) RaycastAll(Vector3 origin, Vector3 direction, float maxDistance = Mathf.Infinity, int layerMask = UnityEngine.Physics.DefaultRaycastLayers, QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.UseGlobal)
         {
-            return Sort(UnityEngine.Physics.RaycastAll(origin, direction, maxDistance, layerMask, queryTriggerInteraction));
-        }
-
-        /// <summary>
-        /// Sort the raycast hits from the closest to the farthest.
-        /// </summary>
-        /// <param name="array">Array of raycast hits.</param>
-        /// <returns>Sorted array of raycastHits</returns>
-        private static RaycastHit[] Sort(RaycastHit[] array)
-        {
-            var l = new List<RaycastHit>();
-            foreach (RaycastHit r in array)
-                l.Add(r);
-            l.Sort(Comparison);
-            return l.ToArray();
+            int hitCount = UnityEngine.Physics.RaycastNonAlloc(origin, direction, hits, maxDistance, layerMask, queryTriggerInteraction);
+            Array.Sort(hits, 0, hitCount, comparer);
+            if (hitCount < size)
+            {
+                Array.Clear(hits, hitCount, size - hitCount);
+            }
+            return (hits, hitCount);
         }
 
         /// <summary>
