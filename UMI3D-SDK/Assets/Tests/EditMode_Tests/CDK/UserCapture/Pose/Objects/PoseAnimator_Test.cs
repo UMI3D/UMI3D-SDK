@@ -35,7 +35,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void CheckConditions_NoCondition()
         {
             // GIVEN
-            PoseAnimatorDto dto = new();
+            PoseAnimatorDto dto = new()
+            {
+                activationMode = (ushort)PoseAnimatorActivationMode.ON_REQUEST
+            };
 
             PoseClipDto poseClipDto = new PoseClipDto();
             PoseClip poseClip = new(poseClipDto);

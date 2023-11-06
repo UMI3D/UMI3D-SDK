@@ -685,7 +685,7 @@ namespace umi3d.cdk.collaboration
                         ulong poseOverriderId = UMI3DSerializer.Read<ulong>(container);
                         MainThreadManager.Run(() =>
                         {
-                            PoseManager.Instance.ActivatePoseAnimator(poseOverriderId);
+                            PoseManager.Instance.TryActivatePoseAnimator(poseOverriderId);
                         });
                         break;
                     }

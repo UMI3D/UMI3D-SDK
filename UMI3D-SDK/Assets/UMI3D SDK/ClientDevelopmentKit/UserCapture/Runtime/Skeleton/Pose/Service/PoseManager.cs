@@ -55,7 +55,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public bool ActivatePoseAnimator(ulong poseAnimatorId)
+        public bool TryActivatePoseAnimator(ulong poseAnimatorId)
         {
             PoseAnimator poseAnimator = environmentManager.GetEntityObject<PoseAnimator>(poseAnimatorId);
 

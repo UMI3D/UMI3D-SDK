@@ -71,6 +71,9 @@ namespace umi3d.cdk.userCapture.pose
 
             PoseAnimator poseAnimator = new(dto, poseClip, poseConditions.Where(x => x is not null).ToArray());
 
+            if (poseAnimator.ActivationMode == (ushort)PoseAnimatorActivationMode.AUTO)
+                poseAnimator.StartWatchActivationConditions();
+
             environmentService.RegisterEntity(dto.id, dto, poseAnimator, () => Delete(dto.id)).NotifyLoaded();
 
             return poseAnimator;

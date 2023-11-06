@@ -115,9 +115,6 @@ namespace umi3d.cdk.userCapture.pose
 
             this.coroutineService = coroutineService;
             this.poseService = poseService;
-
-            if (ActivationMode == (ushort)PoseAnimatorActivationMode.AUTO)
-                StartWatchActivationConditions();
         }
 
         #endregion Dependency Injection
@@ -169,7 +166,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Active poses that listens to this activation mode.
         /// </summary>
-        public bool TryActivate()
+        public virtual bool TryActivate()
         {
             if (IsApplied)
                 return false;
