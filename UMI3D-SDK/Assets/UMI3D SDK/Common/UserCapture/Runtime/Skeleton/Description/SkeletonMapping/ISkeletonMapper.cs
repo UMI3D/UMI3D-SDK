@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common.userCapture.pose;
 
 namespace umi3d.common.userCapture.description
@@ -23,6 +24,10 @@ namespace umi3d.common.userCapture.description
     /// </summary>
     public interface ISkeletonMapper
     {
+        IList<SkeletonMapping> Mappings { get; set; }
+
+        BonePoseDto BoneAnchor { get; set; }
+
         /// <summary>
         /// Get pose of the bone using mappings.
         /// </summary>
