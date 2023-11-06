@@ -53,8 +53,6 @@ namespace umi3d.common.userCapture.pose.editor
         Button symmetry_from_left_button;
         Button symmetry_from_right_button;
 
-        Toggle generate_overrider_toggle;
-
         CustomObjectField skeleton_object_field;
         Button reset_skeleton;
 
@@ -157,7 +155,6 @@ namespace umi3d.common.userCapture.pose.editor
             pose_name_field = root.Q<TextField>("name");
             pose_path_field = root.Q<TextField>("path");
             save_button = root.Q<Button>("save");
-            generate_overrider_toggle = root.Q<Toggle>("GeneratePoseOverriderToggle");
 
             symmetry_dropdown = root.Q<DropdownField>("symmetry_dropdown");
             symmetry_from_left_button = root.Q<Button>("btn_from_left");
@@ -170,7 +167,6 @@ namespace umi3d.common.userCapture.pose.editor
             Assert.IsNotNull(pose_path_field);
             Assert.IsNotNull(skeleton_object_field);
             Assert.IsNotNull(so_field);
-            Assert.IsNotNull(generate_overrider_toggle);
             Assert.IsNotNull(symmetry_dropdown);
             Assert.IsNotNull(symmetry_from_left_button);
             Assert.IsNotNull(symmetry_from_right_button);
@@ -277,7 +273,7 @@ namespace umi3d.common.userCapture.pose.editor
 
         private void SavePose()
         {
-            poseEditor.SavePose( pose_name_field.value, pose_path_field.value);
+            poseEditor.SavePose(pose_name_field.value, pose_path_field.value);
         }
 
         private void LoadPose()
