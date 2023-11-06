@@ -27,9 +27,13 @@ using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
 using inetum.unityUtils;
+using AsImpL;
+using static UnityEditor.Progress;
+using System.ComponentModel;
 
 namespace umi3d.cdk
 {
+
     /// <summary>
     /// Loader for <see cref="UMI3DEnvironmentDto"/>.
     /// </summary>
@@ -37,13 +41,7 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        /// <summary>
-        /// Index of any 3D object loaded.
-        /// </summary>
-        private readonly Dictionary<ulong, UMI3DEntityInstance> entities = new Dictionary<ulong, UMI3DEntityInstance>();
-        private readonly Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>> entitywaited = new Dictionary<ulong, List<(Action<UMI3DEntityInstance>, Action)>>();
-        private readonly HashSet<ulong> entityToBeLoaded = new HashSet<ulong>();
-        private readonly HashSet<ulong> entityFailedToBeLoaded = new HashSet<ulong>();
+        private readonly UMI3DEntities entitiesCollection = new UMI3DEntities();
 
         public UMI3DEnvironmentLoader() : base()
         {
@@ -92,8 +90,6 @@ namespace umi3d.cdk
         public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
             if (!Exists) return;
-            if (Instance.entitywaited == null) return;
-
             Instance.WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
         }
 
@@ -107,116 +103,29 @@ namespace umi3d.cdk
         /// <param name="entityFailedToLoad"></para
         public virtual void WaitUntilEntityLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
-            if (Instance.entitywaited == null) return;
-            UMI3DEntityInstance node = TryGetEntityInstance(id);
-            if (node != null && node.IsLoaded)
-            {
-                entityLoaded?.Invoke(node);
-            }
-            else
-            {
-                if (Instance.entitywaited.ContainsKey(id))
-                    Instance.entitywaited[id].Add((entityLoaded, entityFailedToLoad));
-                else
-                    Instance.entitywaited[id] = new List<(Action<UMI3DEntityInstance>, Action)>() { (entityLoaded, entityFailedToLoad) };
-            }
-
-            return;
+            if (entitiesCollection == null) return;
+            entitiesCollection.WaitUntilEntityLoaded(id,entityLoaded,entityFailedToLoad);
         }
 
         public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id, List<CancellationToken> tokens)
         {
             if (!Exists)
                 throw new Umi3dException("EnvironmentLoader does not exist");
-
-            if (Instance.entitywaited == null)
-                throw new Umi3dException("Entity waited to be loaded does not exist");
-
             return await Instance.WaitUntilEntityLoaded(id, tokens);
         }
 
-        public virtual async Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong id, List<CancellationToken> tokens)
+        public virtual Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong id, List<CancellationToken> tokens)
         {
-            if (entitywaited == null)
+            if (entitiesCollection == null)
                 throw new Umi3dException("Entity waited to be loaded does not exist");
-
-            UMI3DEntityInstance node = TryGetEntityInstance(id);
-            if (node != null && node.IsLoaded)
-            {
-                return (node);
-            }
-            UMI3DEntityInstance loaded = null;
-            bool error = false;
-            bool finished = false;
-
-            Action<UMI3DEntityInstance> entityLoaded = (e) => { loaded = e; finished = true; };
-            Action entityFailedToLoad = () => { error = true; finished = true; };
-
-            WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
-
-            while (!finished)
-                await UMI3DAsyncManager.Yield(tokens);
-            if (error)
-                throw new Umi3dException($"Failed to load entity. Entity id: {id}.");
-
-            return loaded;
-        }
-
-        private static bool NotifyEntityToBeLoaded(ulong id)
-        {
-            return Exists && Instance.entityToBeLoaded.Add(id);
-        }
-
-        private static bool IsEntityToBeLoaded(ulong id)
-        {
-            return Exists && Instance.entityToBeLoaded.Contains(id);
-        }
-        private static bool IsEntityToFailedBeLoaded(ulong id)
-        {
-            return Exists && Instance.entityFailedToBeLoaded.Contains(id);
-        }
-
-        private static bool RemoveEntityToFailedBeLoaded(ulong id)
-        {
-            return Exists && Instance.entityFailedToBeLoaded.Remove(id);
-        }
-
-        private static void NotifyEntityLoad(ulong id)
-        {
-            if (Exists)
-            {
-                UMI3DEntityInstance node = GetEntity(id);
-                if (node != null)
-                {
-                    if (Instance.entitywaited.ContainsKey(id))
-                    {
-                        Instance.entitywaited[id].ForEach(a => a.Item1?.Invoke(node));
-                        Instance.entitywaited.Remove(id);
-                    }
-                    Instance.entityToBeLoaded.Remove(id);
-                }
-            }
-        }
-
-        private static void NotifyEntityFailedToLoad(ulong id)
-        {
-            if (Exists)
-            {
-                if (Instance.entitywaited.ContainsKey(id))
-                {
-                    Instance.entitywaited[id].ForEach(a => a.Item2?.Invoke());
-                    Instance.entitywaited.Remove(id);
-                }
-                Instance.entityToBeLoaded.Remove(id);
-                Instance.entityFailedToBeLoaded.Add(id);
-            }
+            return entitiesCollection.WaitUntilEntityLoaded(id, tokens);
         }
 
         /// <summary>
         /// Return a list of all registered entities.
         /// </summary>
         /// <returns></returns>
-        public static List<UMI3DEntityInstance> Entities() { return Exists ? Instance.entities.Values.ToList() : null; }
+        public static List<UMI3DEntityInstance> Entities() { return Exists ? Instance.entitiesCollection.Entities() : null; }
 
         /// <summary>
         /// Get an entity with an id.
@@ -224,7 +133,7 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
         [Obsolete("Use GetEntityInstance or GetEntityObject<T> instead.")]
-        public static UMI3DEntityInstance GetEntity(ulong id) { return id != 0 && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] : null; }
+        public static UMI3DEntityInstance GetEntity(ulong id) { return id != 0 && Exists ? Instance.GetEntityInstance(id) : null; }
 
         /// <summary>
         /// Get an entity with an id.
@@ -233,12 +142,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual UMI3DEntityInstance GetEntityInstance(ulong id)
         {
-            if (id == 0 || !entities.ContainsKey(id))
-                throw new ArgumentException(message: $"Entity {id} does not exist.");
-            else if (entities[id] != null)
-                return entities[id];
-            else
-                throw new Umi3dException($"Entity {id} is referenced but is null.");
+            return entitiesCollection.GetEntityInstance(id);
         }
 
         /// <summary>
@@ -248,14 +152,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public virtual UMI3DEntityInstance TryGetEntityInstance(ulong id)
         {
-            if (id == 0)
-                throw new ArgumentException(message: $"Entity {id} does not exist.");
-            else if (!entities.ContainsKey(id))
-                return null;
-            else if (entities[id] != null)
-                return entities[id];
-            else
-                throw new Umi3dException($"Entity {id} is referenced but is null.");
+            return entitiesCollection.TryGetEntityInstance(id);
         }
 
         /// <summary>
@@ -277,7 +174,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public static UMI3DNodeInstance GetNode(ulong id) { return id != 0 && Exists && Instance.entities.ContainsKey(id) ? Instance.entities[id] as UMI3DNodeInstance : null; }
+        public static UMI3DNodeInstance GetNode(ulong id) { return id != 0 && Exists ? Instance.entitiesCollection.GetNode(id) : null; }
 
         /// <summary>
         /// Get a node with an id.
@@ -296,14 +193,14 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="collider">collider.</param>
         /// <returns></returns>
-        public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).colliders.Any(c => c == collider)).Key : 0; }
+        public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entitiesCollection.GetNodeID(collider) : 0; }
 
         /// <summary>
         /// Get node id associated to <paramref name="t"/>.
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static ulong GetNodeID(Transform t) { return Exists ? Instance.entities.Where(k => k.Value is UMI3DNodeInstance).FirstOrDefault(k => (k.Value as UMI3DNodeInstance).transform == t).Key : 0; }
+        public static ulong GetNodeID(Transform t) { return Exists ? Instance.entitiesCollection.GetNodeID(t) : 0; }
 
         /// <summary>
         /// Register a node instance.
@@ -314,27 +211,9 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static UMI3DNodeInstance RegisterNodeInstance(ulong id, UMI3DDto dto, GameObject instance, Action delete = null)
         {
-            UMI3DNodeInstance node = null;
-            if (!Exists || instance == null)
-            {
+            if (!Exists)
                 return null;
-            }
-            else if (Instance.entities.ContainsKey(id))
-            {
-                node = Instance.entities[id] as UMI3DNodeInstance;
-                if (node == null)
-                    throw new Exception($"id:{id} found but the value was of type {Instance.entities[id].GetType()}");
-                if (node.gameObject != instance)
-                    UnityEngine.Object.Destroy(instance);
-                return node;
-            }
-            else
-            {
-                node = new UMI3DNodeInstance(() => NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
-                Instance.entities.Add(id, node);
-            }
-
-            return node;
+            return Instance.entitiesCollection.RegisterNodeInstance(id, dto, instance, delete);
         }
 
         /// <summary>
@@ -364,16 +243,7 @@ namespace umi3d.cdk
             if (!Exists)
                 throw new Umi3dException("Cannot register entity. Loader does not exist.");
 
-            else if (entities.ContainsKey(id))
-                node = entities[id];
-
-            else
-            {
-                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = objectInstance, Delete = delete };
-                entities.Add(id, node);
-            }
-
-            return node;
+            return entitiesCollection.RegisterEntity(id, dto, objectInstance, delete);
         }
 
         /// <summary>
@@ -539,9 +409,9 @@ namespace umi3d.cdk
         {
             List<(ReflectionProbe probe, int id)> probeList = new List<(ReflectionProbe, int)>();
 
-            foreach (var entity in entities)
+            foreach (var entity in entitiesCollection.Entities())
             {
-                if (entity.Value.dto is GlTFSceneDto && entity.Value is UMI3DNodeInstance scene)
+                if (entity.dto is GlTFSceneDto && entity is UMI3DNodeInstance scene)
                 {
                     foreach (var probe in scene.gameObject.GetComponentsInChildren<ReflectionProbe>())
                     {
@@ -635,7 +505,7 @@ namespace umi3d.cdk
                 if (progress != null)
                     progress.Add(progress1);
                 progress1.AddComplete();
-                var node = entities[scene.extensions.umi3d.id] as UMI3DNodeInstance;
+                var node = GetNodeInstance(scene.extensions.umi3d.id);
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
                 await sceneLoader.ReadUMI3DExtension(new ReadUMI3DExtensionData(umi3dScene, node.gameObject));
                 progress1.AddComplete();
@@ -720,30 +590,12 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         private async Task _LoadEntity(ByteContainer container)
         {
-            List<ulong> ids = UMI3DSerializer.ReadList<ulong>(container);
-            ids.ForEach(id => NotifyEntityToBeLoaded(id));
+            await entitiesCollection._LoadEntity(container, _LoadEntityTask);
+        }
 
-            try
-            {
-                var load = await UMI3DClientServer.GetEntity(ids);
-
-                await Task.WhenAll(
-                    load.entities.Select(async item =>
-                    {
-                        if (item is MissingEntityDto missing)
-                        {
-                            NotifyEntityFailedToLoad(missing.id);
-                            UMI3DLogger.Log($"Get entity [{missing.id}] failed : {missing.reason}", scope);
-                        }
-                        else
-                            await LoadEntity(item, container.tokens);
-                    }));
-
-            }
-            catch (Exception e)
-            {
-                UMI3DLogger.LogException(e, scope);
-            }
+        private Task _LoadEntityTask(IEntity item, List<CancellationToken> tokens)
+        {
+            return LoadEntity(item, tokens);
         }
 
         /// <summary>
@@ -753,41 +605,10 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         public static async Task DeleteEntity(ulong entityId, List<CancellationToken> tokens)
         {
-            if (Instance.entities.ContainsKey(entityId))
-            {
-                UMI3DEntityInstance entity = Instance.entities[entityId];
-
-                if (entity.Object is UMI3DAbstractAnimation animation)
-                {
-                    animation.Stop();
-                }
-
-                if (entity is UMI3DNodeInstance)
-                {
-                    var node = entity as UMI3DNodeInstance;
-                    node.ClearBeforeDestroy();
-                    UnityEngine.Object.Destroy(node.gameObject);
-                }
-                Instance.entities[entityId].Delete?.Invoke();
-                Instance.entities.Remove(entityId);
-            }
-            else if (UMI3DResourcesManager.isKnowedLibrary(entityId))
-            {
+            if (UMI3DResourcesManager.isKnowedLibrary(entityId))
                 UMI3DResourcesManager.UnloadLibrary(entityId);
-            }
-            else if (UMI3DEnvironmentLoader.IsEntityToBeLoaded(entityId))
-            {
-                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, tokens);
-                await DeleteEntity(entityId, tokens);
-            }
-            else if (UMI3DEnvironmentLoader.IsEntityToFailedBeLoaded(entityId))
-            {
-                UMI3DEnvironmentLoader.RemoveEntityToFailedBeLoaded(entityId);
-            }
             else
-            {
-                UMI3DLogger.LogError($"Entity [{entityId}] To Destroy Not Found And Not in Entities to be loaded", scope);
-            }
+                await Instance.entitiesCollection.DeleteEntity(entityId, tokens);
         }
 
         /// <summary>
@@ -797,10 +618,8 @@ namespace umi3d.cdk
         {
             Instance.entityFilters.Clear();
 
-            foreach (ulong entity in Instance.entities.ToList().Select(p => { return p.Key; }))
-            {
-                DeleteEntity(entity, null);
-            }
+            Instance.entitiesCollection.Clear();
+
             if (clearCache)
                 UMI3DResourcesManager.Instance.ClearCache();
 
@@ -811,10 +630,7 @@ namespace umi3d.cdk
         {
             UMI3DVideoPlayerLoader.Clear();
 
-            entities.Clear();
-            entitywaited.Clear();
-            entityToBeLoaded.Clear();
-            Instance.entityFailedToBeLoaded.Clear();
+            Instance.entitiesCollection.InternalClear();
 
             isEnvironmentLoaded = false;
 
