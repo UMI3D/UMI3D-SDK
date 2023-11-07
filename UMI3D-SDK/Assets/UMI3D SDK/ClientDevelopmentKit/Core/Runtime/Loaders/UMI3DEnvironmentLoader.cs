@@ -49,6 +49,7 @@ namespace umi3d.cdk
             nodeLoader = new GlTFNodeLoader();
 
             onEnvironmentLoaded.AddListener(() => InterpolationRoutine());
+            DeclareNewEnvironment(0);
         }
 
         public UMI3DEnvironmentLoader(Material baseMaterial, IUMI3DAbstractLoadingParameters parameters)
@@ -78,6 +79,12 @@ namespace umi3d.cdk
         /// For backwards compatibility only.
         [Obsolete("Use ICoroutineManager instead")]
         public static Coroutine StartCoroutine(IEnumerator enumerator) => CoroutineManager.Instance.AttachCoroutine(enumerator);
+
+
+        public static void DeclareNewEnvironment(ulong id)
+        {
+            Instance.entitiesCollection[id] = new(id);
+        }
 
         /// <summary>
         /// Call a callback when an entity is registerd.
