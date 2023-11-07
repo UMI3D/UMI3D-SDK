@@ -450,9 +450,9 @@ namespace umi3d.edk.collaboration
         [HttpPost(UMI3DNetworkingKeys.join, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
         public void JoinEnvironment(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            var user = GetUserFor(e.Request) as UMI3DCollaborationUser;
+            var user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Join environment {user?.Id()}", scope);
-            bool finished = false;
+            bool finished = user == null;
             if (user != null)
                 ReadDto(e.Request, (dto) =>
                 {
@@ -460,11 +460,14 @@ namespace umi3d.edk.collaboration
                     {
                         try
                         {
+                            var collabUSer = user as UMI3DCollaborationUser;
                             JoinDto join = dto as JoinDto;
-                            await user.JoinDtoReception(join);
+                            if (collabUSer != null)
+                                await collabUSer.JoinDtoReception(join);
 
                             e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
-                            await UMI3DCollaborationServer.NotifyUserJoin(user);
+                            if (collabUSer != null)
+                                await UMI3DCollaborationServer.NotifyUserJoin(collabUSer);
                         }
                         catch (Exception ex)
                         {

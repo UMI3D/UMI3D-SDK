@@ -232,7 +232,7 @@ namespace umi3d.edk.collaboration
 
             httpPort = (ushort)FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
-            httpPortForWorldController = (ushort)FreeTcpPort(useRandomPortForWorldController ? 0 : httpPortForWorldController);
+            httpPortForWorldController = useWorldControllerSpecificHttpPort ? (ushort)FreeTcpPort(useRandomPortForWorldController ? 0 : httpPortForWorldController) : httpPort;
 
             http?.Dispose();
             _httpForWC?.Dispose();
@@ -566,7 +566,7 @@ namespace umi3d.edk.collaboration
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
-            foreach (UMI3DCollaborationUser user in UMI3DCollaborationServer.Collaboration.Users)
+            foreach (UMI3DCollaborationUser user in UMI3DCollaborationServer.Collaboration.Users.Where(u => u is UMI3DCollaborationUser))
             {
                 switch (user.status)
                 {
