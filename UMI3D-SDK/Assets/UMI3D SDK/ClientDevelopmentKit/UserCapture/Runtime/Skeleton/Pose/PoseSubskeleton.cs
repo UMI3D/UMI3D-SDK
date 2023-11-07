@@ -217,10 +217,12 @@ namespace umi3d.cdk.userCapture.pose
         {
             foreach (ulong poseId in trackingFrame.poses)
             {
-                PoseClip pose = environmentManagerService.GetEntityObject<PoseClip>(poseId);
+                //at load, could receive tracking frame without having the pose
+                UMI3DEntityInstance poseClipEntityInstance = environmentManagerService.TryGetEntityInstance(poseId);
+                PoseClip poseClip = poseClipEntityInstance?.Object as PoseClip;
 
-                if (!appliedPoses.Contains(pose))
-                    StartPose(pose);
+                if (poseClipEntityInstance is not null && !appliedPoses.Contains(poseClip))
+                    StartPose(poseClip);
             }
         }
 

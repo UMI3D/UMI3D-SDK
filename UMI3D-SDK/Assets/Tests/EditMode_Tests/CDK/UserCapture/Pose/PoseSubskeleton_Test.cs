@@ -338,8 +338,8 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 new (new () { id=1006uL, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
             };
 
-            environmentServiceMock.Setup(x => x.GetEntityObject<PoseClip>(poseClips[0].Id)).Returns(poseClips[0]);
-            environmentServiceMock.Setup(x => x.GetEntityObject<PoseClip>(poseClips[1].Id)).Returns(poseClips[1]);
+            environmentServiceMock.Setup(x => x.TryGetEntityInstance(poseClips[0].Id)).Returns(new UMI3DEntityInstance(() => { }) { Object=poseClips[0] });
+            environmentServiceMock.Setup(x => x.TryGetEntityInstance(poseClips[1].Id)).Returns(new UMI3DEntityInstance(() => { }) { Object = poseClips[1] });
 
 
             UserTrackingFrameDto frame = new()
@@ -347,6 +347,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 poses = new() { poseClips[0].Id },
                 userId = 1005uL
             };
+
 
 
             // When
