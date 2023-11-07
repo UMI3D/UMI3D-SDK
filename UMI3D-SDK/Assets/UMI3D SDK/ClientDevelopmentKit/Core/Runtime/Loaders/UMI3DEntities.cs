@@ -21,12 +21,16 @@ using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using System.Threading;
+using umi3d.cdk.utils.extrapolation;
+using umi3d.common.utils.serialization;
 
 namespace umi3d.cdk
 {
     public class UMI3DEntities
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
+
+        public readonly ulong EnvironmentId;
 
         /// <summary>
         /// Index of any 3D object loaded.
@@ -238,7 +242,7 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DNodeInstance(() => NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
+                node = new UMI3DNodeInstance(EnvironmentId, () => NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
                 entities.Add(id, node);
             }
 
@@ -260,7 +264,7 @@ namespace umi3d.cdk
 
             else
             {
-                node = new UMI3DEntityInstance(() => NotifyEntityLoad(id)) { dto = dto, Object = objectInstance, Delete = delete };
+                node = new UMI3DEntityInstance(node.EnvironmentId, () => NotifyEntityLoad(id)) { dto = dto, Object = objectInstance, Delete = delete };
                 entities.Add(id, node);
             }
 
@@ -327,7 +331,7 @@ namespace umi3d.cdk
             }
             else if (IsEntityToBeLoaded(entityId))
             {
-                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, tokens);
+                var e = await WaitUntilEntityLoaded(entityId, tokens);
                 await DeleteEntity(entityId, tokens);
             }
             else if (IsEntityToFailedBeLoaded(entityId))
@@ -345,6 +349,8 @@ namespace umi3d.cdk
         /// </summary>
         public void Clear()
         {
+            entityFilters.Clear();
+
             foreach (ulong entity in entities.ToList().Select(p => { return p.Key; }))
             {
                 DeleteEntity(entity, null);
@@ -359,6 +365,118 @@ namespace umi3d.cdk
             entitywaited.Clear();
             entityToBeLoaded.Clear();
             entityFailedToBeLoaded.Clear();
+        }
+
+
+        private readonly Dictionary<ulong, Dictionary<ulong, IExtrapolator>> entityFilters = new Dictionary<ulong, Dictionary<ulong, IExtrapolator>>();
+
+        public UMI3DEntities(ulong environmentId)
+        {
+            this.EnvironmentId = environmentId;
+        }
+
+        public async void InterpolationRoutine(Action<SetUMI3DPropertyData> SimulatedSetEntity)
+        {
+                foreach (ulong entityId in entityFilters.Keys)
+                {
+                    foreach (ulong property in entityFilters[entityId].Keys)
+                    {
+                        UMI3DEntityInstance node = GetEntityInstance(entityId);
+                        IExtrapolator extrapolator = entityFilters[entityId][property];
+
+                        extrapolator.ComputeExtrapolatedValue();
+
+                        var entityPropertyDto = new SetEntityPropertyDto()
+                        {
+                            entityId = entityId,
+                            property = property,
+                            value = extrapolator.ExtrapolatedValue.ToSerializable()
+                        };
+                        //SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
+                        SimulatedSetEntity(new SetUMI3DPropertyData(EnvironmentId, entityPropertyDto, node));
+                    }
+                }
+        }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
+        /// <param name="node">Node on which the dto should be applied.</param>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public bool SetEntity(SetUMI3DPropertyData data)
+        {
+            if (entityFilters.ContainsKey(data.property.entityId) && entityFilters[data.property.entityId].ContainsKey(data.property.property))
+            {
+                entityFilters[data.property.entityId][data.property.property].AddMeasure(data.property.value.Deserialize());
+                return true;
+            }
+            return false;
+        }
+
+        /// <summary>
+        /// Handle SetEntityPropertyDto operation.
+        /// </summary>
+        /// <param name="node">Node on which the dto should be applied.</param>
+        /// <param name="dto">Set operation to handle.</param>
+        /// <returns></returns>
+        public async Task<bool> SetEntity(ulong entityId, SetUMI3DPropertyContainerData data, Func<ReadUMI3DPropertyData,Task<bool>> ReadValueEntity)
+        {
+            if (entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(data.propertyKey))
+            {
+                var value = new ReadUMI3DPropertyData(EnvironmentId, data.propertyKey, data.container);
+                await ReadValueEntity(value);
+                entityFilters[entityId][data.propertyKey].AddMeasure(value.result.Deserialize());
+                return true;
+            }
+            return false;
+        }
+
+        public bool StartInterpolation(UMI3DEntityInstance node, ulong entityId, ulong propertyKey, object startValue, List<CancellationToken> tokens)
+        {
+            if (!entityFilters.ContainsKey(entityId))
+            {
+                entityFilters.Add(entityId, new Dictionary<ulong, IExtrapolator>());
+            }
+
+            if (!entityFilters[entityId].ContainsKey(propertyKey))
+            {
+                IExtrapolator newExtrapolator;
+                if (propertyKey == UMI3DPropertyKeys.Rotation)
+                    newExtrapolator = new QuaternionLinearDelayedExtrapolator();
+                else
+                    newExtrapolator = new Vector3LinearDelayedExtrapolator();
+
+                entityFilters[entityId].Add(propertyKey, newExtrapolator);
+
+                newExtrapolator.AddMeasure(startValue);
+
+                var entityPropertyDto = new SetEntityPropertyDto()
+                {
+                    entityId = entityId,
+                    property = propertyKey,
+                    value = startValue.ToSerializable()
+                };
+                return SetEntity(new SetUMI3DPropertyData(EnvironmentId ,entityPropertyDto, node, tokens));
+            }
+            return false;
+        }
+
+        public bool StopInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, object stopValue, List<CancellationToken> tokens)
+        {
+            if (entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(property))
+            {
+                entityFilters[entityId].Remove(property);
+                var entityPropertyDto = new SetEntityPropertyDto()
+                {
+                    entityId = entityId,
+                    property = property,
+                    value = stopValue.ToSerializable()
+                };
+
+                return SetEntity(new SetUMI3DPropertyData(EnvironmentId, entityPropertyDto, node, tokens));
+            }
+            return false;
         }
 
     }

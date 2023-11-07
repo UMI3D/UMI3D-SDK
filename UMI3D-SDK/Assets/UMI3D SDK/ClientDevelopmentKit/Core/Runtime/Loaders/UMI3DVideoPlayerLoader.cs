@@ -31,9 +31,9 @@ namespace umi3d.cdk
         /// <summary>
         /// List of video players to load.
         /// </summary>
-        public static Queue<UMI3DVideoPlayerDto> videoPlayersToLoad = new Queue<UMI3DVideoPlayerDto>();
+        public static Queue<(ulong,UMI3DVideoPlayerDto)> videoPlayersToLoad = new Queue<(ulong, UMI3DVideoPlayerDto)>();
 
-        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0 || UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).Any(v => (v != null && !(v.isPrepared || v.preparationFailed)));
+        public static bool HasVideoToLoad => videoPlayersToLoad.Count > 0 || UMI3DEnvironmentLoader.AllEntities().Select(e => e?.Object as UMI3DVideoPlayer).Any(v => (v != null && !(v.isPrepared || v.preparationFailed)));
 
         public static void Clear()
         {
@@ -47,17 +47,17 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="videoPlayer"></param>
         [Obsolete("Use LoadVideoPlayer instead.")]
-        public static void LoadVideo(UMI3DVideoPlayerDto videoPlayer)
+        public static void LoadVideo(ulong environmentId, UMI3DVideoPlayerDto videoPlayer)
         {
             UMI3DVideoPlayer player;
 #if UNITY_ANDROID
             player = null;
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
-                videoPlayersToLoad.Enqueue(videoPlayer);
+                videoPlayersToLoad.Enqueue((environmentId,videoPlayer));
             else
-                player = new UMI3DVideoPlayer(videoPlayer);
+                player = new UMI3DVideoPlayer(environmentId, videoPlayer);
 #else
-            player = new UMI3DVideoPlayer(videoPlayer);
+            player = new UMI3DVideoPlayer(environmentId, videoPlayer);
 #endif      
             player?.Init();
         }
@@ -68,16 +68,16 @@ namespace umi3d.cdk
         /// <see cref="LoadVideoPlayers()"/> must be call to really create the videoPlayers, otherwise they are instanciated directly.
         /// </summary>
         /// <param name="videoPlayer"></param>
-        public static UMI3DVideoPlayer LoadVideoPlayer(UMI3DVideoPlayerDto videoPlayer)
+        public static UMI3DVideoPlayer LoadVideoPlayer(ulong environmentId, UMI3DVideoPlayerDto videoPlayer)
         {
 #if UNITY_ANDROID
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
-                videoPlayersToLoad.Enqueue(videoPlayer);
+                videoPlayersToLoad.Enqueue((value.environmentId, videoPlayer));
             else
-                return new UMI3DVideoPlayer(videoPlayer);
+                return new UMI3DVideoPlayer((value.environmentId, videoPlayer));
             return null;
 #else
-            return new UMI3DVideoPlayer(videoPlayer);
+            return new UMI3DVideoPlayer(environmentId, videoPlayer);
 #endif
         }
 
@@ -109,10 +109,10 @@ namespace umi3d.cdk
             {
                 await UMI3DAsyncManager.Delay(100);
 
-                UMI3DVideoPlayerDto videoPlayer = videoPlayersToLoad.Dequeue();
+                var videoPlayer = videoPlayersToLoad.Dequeue();
 
-                var player = new UMI3DVideoPlayer(videoPlayer);
-                UMI3DEnvironmentLoader.RegisterEntityInstance(player.Id, videoPlayer, player, player.Clear).NotifyLoaded();
+                var player = new UMI3DVideoPlayer(videoPlayer.Item1, videoPlayer.Item2);
+                UMI3DEnvironmentLoader.RegisterEntityInstance(videoPlayer.Item1, player.Id, videoPlayer.Item2, player, player.Clear).NotifyLoaded();
                 player.Init();
 
                 while (!player.isPrepared && !player.preparationFailed)

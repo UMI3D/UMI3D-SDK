@@ -179,9 +179,9 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void ChangeEnvironmentPoseCondition(ulong poseConditionId, bool shouldBeValidated)
+        public void ChangeEnvironmentPoseCondition(ulong environmentId, ulong poseConditionId, bool shouldBeValidated)
         {
-            EnvironmentPoseCondition condition = environmentManager.GetEntityObject<EnvironmentPoseCondition>(poseConditionId);
+            EnvironmentPoseCondition condition = environmentManager.GetEntityObject<EnvironmentPoseCondition>(environmentId, poseConditionId);
 
             if (shouldBeValidated)
                 condition.Validate();

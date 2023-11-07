@@ -79,7 +79,7 @@ namespace EditMode_Tests.Collaboration.UserCaptureExtension.Pose.Common
             serializerModule.Write(projectedPoseCondition, out Bytable data);
 
             // when
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
             serializerModule.Read(byteContainer, out bool readable, out ProjectedPoseConditionDto result);
 
             // then

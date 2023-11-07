@@ -32,7 +32,7 @@ namespace umi3d.cdk
         /// <param name="id">UMI3D id of the animation.</param>
         /// <returns></returns>
         [Obsolete("Use UMI3DEnvironmentLoader.Instance.GetEntity<UMI3DAbstractAnimation> instead.")]
-        public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
+        public static UMI3DAbstractAnimation Get(ulong environmentId, ulong id) { return UMI3DEnvironmentLoader.GetEntity(environmentId, id)?.Object as UMI3DAbstractAnimation; }
 
         /// <summary>
         /// Is the animation currently playing?
@@ -202,9 +202,11 @@ namespace umi3d.cdk
         /// Animation UMI3D id.
         /// </summary>
         public ulong Id => dto.id;
+        public ulong EnvironmentId { get; protected set; }
 
-        public UMI3DAbstractAnimation(UMI3DAbstractAnimationDto dto)
+        public UMI3DAbstractAnimation(ulong environementId, UMI3DAbstractAnimationDto dto)
         {
+            this.EnvironmentId = environementId;
             this.dto = dto;
         }
 
@@ -253,7 +255,7 @@ namespace umi3d.cdk
         /// </summary>
         public async void Destroy()
         {
-            await UMI3DEnvironmentLoader.DeleteEntity(dto.id, null);
+            await UMI3DEnvironmentLoader.DeleteEntity(EnvironmentId, dto.id, null);
         }
 
         /// <summary>

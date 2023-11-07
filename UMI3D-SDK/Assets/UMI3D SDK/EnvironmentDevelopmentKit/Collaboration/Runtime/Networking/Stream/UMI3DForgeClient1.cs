@@ -44,6 +44,8 @@ namespace umi3d.cdk.collaboration
 
         private bool useDto => environmentClient?.useDto ?? false;
 
+        public ulong EnvironmentId => environmentClient?.environmentId ?? 0;
+
         private bool pingReceived = false;
         private bool CheckForBandWidthRunning = false;
 
@@ -389,7 +391,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame);
+                var container = new ByteContainer(EnvironmentId, frame);
                 uint TransactionId = UMI3DSerializer.Read<uint>(container);
                 switch (TransactionId)
                 {
@@ -444,7 +446,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame);
+                var container = new ByteContainer(EnvironmentId, frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);

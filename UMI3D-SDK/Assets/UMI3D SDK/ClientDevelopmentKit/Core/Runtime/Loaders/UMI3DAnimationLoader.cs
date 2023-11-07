@@ -36,17 +36,17 @@ namespace umi3d.cdk
         {
             UMI3DAbstractAnimation animationInstance = value.dto switch
             {
-                UMI3DAnimationDto anim => new UMI3DAnimation(anim),
-                UMI3DAnimatorAnimationDto anim => new UMI3DAnimatorAnimation(anim),
-                UMI3DNodeAnimationDto anim => new UMI3DNodeAnimation(anim),
-                UMI3DVideoPlayerDto anim => UMI3DVideoPlayerLoader.LoadVideoPlayer(anim),
-                UMI3DAudioPlayerDto anim => new UMI3DAudioPlayer(anim),
+                UMI3DAnimationDto anim => new UMI3DAnimation(value.environmentId, anim),
+                UMI3DAnimatorAnimationDto anim => new UMI3DAnimatorAnimation(value.environmentId, anim),
+                UMI3DNodeAnimationDto anim => new UMI3DNodeAnimation(value.environmentId, anim),
+                UMI3DVideoPlayerDto anim => UMI3DVideoPlayerLoader.LoadVideoPlayer(value.environmentId, anim),
+                UMI3DAudioPlayerDto anim => new UMI3DAudioPlayer(value.environmentId, anim),
                 _ => null
             };
 
             if (animationInstance is not null)
             {
-                UMI3DEnvironmentLoader.Instance.RegisterEntity(animationInstance.Id, value.dto, animationInstance, animationInstance.Clear).NotifyLoaded();
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, animationInstance.Id, value.dto, animationInstance, animationInstance.Clear).NotifyLoaded();
                 animationInstance.Init();
             }
             return Task.CompletedTask;

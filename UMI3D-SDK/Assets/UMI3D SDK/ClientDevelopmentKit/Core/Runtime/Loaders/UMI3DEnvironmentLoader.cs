@@ -41,7 +41,7 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        private readonly UMI3DEntities entitiesCollection = new UMI3DEntities();
+        private readonly Dictionary<ulong, UMI3DEntities> entitiesCollection = new();
 
         public UMI3DEnvironmentLoader() : base()
         {
@@ -87,10 +87,10 @@ namespace umi3d.cdk
         /// <param name="id"></param>
         /// <param name="entityLoaded"></param>
         /// <param name="entityFailedToLoad"></param>
-        public static void WaitForAnEntityToBeLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
+        public static void WaitForAnEntityToBeLoaded(ulong environmentid, ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
             if (!Exists) return;
-            Instance.WaitUntilEntityLoaded(id, entityLoaded, entityFailedToLoad);
+            Instance.WaitUntilEntityLoaded(environmentid, id, entityLoaded, entityFailedToLoad);
         }
 
         /// <summary>
@@ -101,31 +101,38 @@ namespace umi3d.cdk
         /// <param name="id"></param>
         /// <param name="entityLoaded"></param>
         /// <param name="entityFailedToLoad"></para
-        public virtual void WaitUntilEntityLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
+        public virtual void WaitUntilEntityLoaded(ulong environmentid, ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null)
         {
             if (entitiesCollection == null) return;
-            entitiesCollection.WaitUntilEntityLoaded(id,entityLoaded,entityFailedToLoad);
+            entitiesCollection[environmentid].WaitUntilEntityLoaded(id,entityLoaded,entityFailedToLoad);
         }
 
-        public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong id, List<CancellationToken> tokens)
+        public static async Task<UMI3DEntityInstance> WaitForAnEntityToBeLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens)
         {
             if (!Exists)
                 throw new Umi3dException("EnvironmentLoader does not exist");
-            return await Instance.WaitUntilEntityLoaded(id, tokens);
+            return await Instance.WaitUntilEntityLoaded(environmentid, id, tokens);
         }
 
-        public virtual Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong id, List<CancellationToken> tokens)
+        public virtual Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens)
         {
             if (entitiesCollection == null)
                 throw new Umi3dException("Entity waited to be loaded does not exist");
-            return entitiesCollection.WaitUntilEntityLoaded(id, tokens);
+            return entitiesCollection[environmentid].WaitUntilEntityLoaded(id, tokens);
         }
+
+
+        /// <summary>
+        /// Return a list of all registered entities in every environment.
+        /// </summary>
+        /// <returns></returns>
+        public static List<UMI3DEntityInstance> AllEntities() { return Exists ? Instance.entitiesCollection.SelectMany(e => e.Value.Entities()).ToList() : null; }
 
         /// <summary>
         /// Return a list of all registered entities.
         /// </summary>
         /// <returns></returns>
-        public static List<UMI3DEntityInstance> Entities() { return Exists ? Instance.entitiesCollection.Entities() : null; }
+        public static List<UMI3DEntityInstance> Entities(ulong environmentid) { return Exists ? Instance.entitiesCollection[environmentid].Entities() : null; }
 
         /// <summary>
         /// Get an entity with an id.
@@ -133,16 +140,16 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
         [Obsolete("Use GetEntityInstance or GetEntityObject<T> instead.")]
-        public static UMI3DEntityInstance GetEntity(ulong id) { return id != 0 && Exists ? Instance.GetEntityInstance(id) : null; }
+        public static UMI3DEntityInstance GetEntity(ulong environmentid, ulong id) { return id != 0 && Exists ? Instance.GetEntityInstance(environmentid, id) : null; }
 
         /// <summary>
         /// Get an entity with an id.
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public virtual UMI3DEntityInstance GetEntityInstance(ulong id)
+        public virtual UMI3DEntityInstance GetEntityInstance(ulong environmentid, ulong id)
         {
-            return entitiesCollection.GetEntityInstance(id);
+            return entitiesCollection[environmentid].GetEntityInstance(id);
         }
 
         /// <summary>
@@ -150,9 +157,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public virtual UMI3DEntityInstance TryGetEntityInstance(ulong id)
+        public virtual UMI3DEntityInstance TryGetEntityInstance(ulong environmentid, ulong id)
         {
-            return entitiesCollection.TryGetEntityInstance(id);
+            return entitiesCollection[environmentid].TryGetEntityInstance(id);
         }
 
         /// <summary>
@@ -160,9 +167,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public virtual T GetEntityObject<T>(ulong id) where T : class
+        public virtual T GetEntityObject<T>(ulong environmentid, ulong id) where T : class
         {
-            var entity = GetEntityInstance(id);
+            var entity = GetEntityInstance(environmentid, id);
             if (entity.Object is T objEntity)
                 return objEntity;
             else
@@ -174,16 +181,16 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
-        public static UMI3DNodeInstance GetNode(ulong id) { return id != 0 && Exists ? Instance.entitiesCollection.GetNode(id) : null; }
+        public static UMI3DNodeInstance GetNode(ulong environmentid, ulong id) { return id != 0 && Exists ? Instance.entitiesCollection[environmentid].GetNode(id) : null; }
 
         /// <summary>
         /// Get a node with an id.
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns>Node instance or null if node does not exist.</returns>
-        public virtual UMI3DNodeInstance GetNodeInstance(ulong id)
+        public virtual UMI3DNodeInstance GetNodeInstance(ulong environmentid, ulong id)
         {
-            if (GetEntityInstance(id) is not UMI3DNodeInstance node)
+            if (GetEntityInstance(environmentid, id) is not UMI3DNodeInstance node)
                 throw new Umi3dException($"Entity {id} is not an UMI3DNodeInstance.");
             return node;
         }
@@ -193,14 +200,14 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="collider">collider.</param>
         /// <returns></returns>
-        public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entitiesCollection.GetNodeID(collider) : 0; }
+        public static ulong GetNodeID(ulong environmentid, Collider collider) { return Exists ? Instance.entitiesCollection[environmentid].GetNodeID(collider) : 0; }
 
         /// <summary>
         /// Get node id associated to <paramref name="t"/>.
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static ulong GetNodeID(Transform t) { return Exists ? Instance.entitiesCollection.GetNodeID(t) : 0; }
+        public static ulong GetNodeID(ulong environmentid, Transform t) { return Exists ? Instance.entitiesCollection[environmentid].GetNodeID(t) : 0; }
 
         /// <summary>
         /// Register a node instance.
@@ -209,11 +216,11 @@ namespace umi3d.cdk
         /// <param name="dto">dto of the node.</param>
         /// <param name="instance">gameobject of the node.</param>
         /// <returns></returns>
-        public static UMI3DNodeInstance RegisterNodeInstance(ulong id, UMI3DDto dto, GameObject instance, Action delete = null)
+        public static UMI3DNodeInstance RegisterNodeInstance(ulong environmentid, ulong id, UMI3DDto dto, GameObject instance, Action delete = null)
         {
             if (!Exists)
                 return null;
-            return Instance.entitiesCollection.RegisterNodeInstance(id, dto, instance, delete);
+            return Instance.entitiesCollection[environmentid].RegisterNodeInstance(id, dto, instance, delete);
         }
 
         /// <summary>
@@ -223,12 +230,12 @@ namespace umi3d.cdk
         /// <param name="dto">dto of the node.</param>
         /// <returns></returns>
         [Obsolete("Use Instance.RegisterEntity() instead")]
-        public static UMI3DEntityInstance RegisterEntityInstance(ulong id, UMI3DDto dto, object Object, Action delete = null)
+        public static UMI3DEntityInstance RegisterEntityInstance(ulong environmentid, ulong id, UMI3DDto dto, object Object, Action delete = null)
         {
             if (!Exists)
                 return null;
             else
-                return Instance.RegisterEntity(id, dto, Object, delete);
+                return Instance.RegisterEntity(environmentid, id, dto, Object, delete);
         }
 
         /// <summary>
@@ -237,13 +244,12 @@ namespace umi3d.cdk
         /// <param name="id">unique id of the node.</param>
         /// <param name="dto">dto of the node.</param>
         /// <returns></returns>
-        public virtual UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null)
+        public virtual UMI3DEntityInstance RegisterEntity(ulong environmentid, ulong id, UMI3DDto dto, object objectInstance, Action delete = null)
         {
-            UMI3DEntityInstance node = null;
             if (!Exists)
                 throw new Umi3dException("Cannot register entity. Loader does not exist.");
 
-            return entitiesCollection.RegisterEntity(id, dto, objectInstance, delete);
+            return entitiesCollection[environmentid].RegisterEntity(id, dto, objectInstance, delete);
         }
 
         /// <summary>
@@ -327,6 +333,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public async Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress)
         {
+            ulong mainEnvironmentId = 0;
             Progress downloadingProgress = new Progress(0, "Downloading");
             Progress ReadingDataProgress = new Progress(2, "Reading Data");
             MultiProgress loadingProgress = new MultiProgress("Loading");
@@ -344,7 +351,7 @@ namespace umi3d.cdk
             isEnvironmentLoaded = false;
 
             environment = dto;
-            RegisterEntityInstance(UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
+            RegisterEntity(mainEnvironmentId, UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
             //
             // Load resources
             //
@@ -356,9 +363,9 @@ namespace umi3d.cdk
             //
             // Instantiate nodes
             //
-            await ReadUMI3DExtension(dto, null);
+            await ReadUMI3DExtension(mainEnvironmentId, dto, null);
             ReadingDataProgress.AddComplete();
-            await InstantiateNodes(loadingProgress);
+            await InstantiateNodes(mainEnvironmentId, loadingProgress);
 
             endProgress.AddComplete();
             await UMI3DAsyncManager.Delay(200);
@@ -375,7 +382,7 @@ namespace umi3d.cdk
             endProgress.SetStatus("Rendering Probes");
             if (QualitySettings.realtimeReflectionProbes)
             {
-                await RenderProbes();
+                await RenderProbes(mainEnvironmentId);
             }
             else
             {
@@ -405,11 +412,11 @@ namespace umi3d.cdk
         /// Renders all <see cref="ReflectionProbe"/> set to <see cref=" ReflectionProbeMode.Realtime"/> 
         /// and <see cref="ReflectionProbeRefreshMode.OnAwake"/> of the environment.
         /// </summary>
-        private async Task RenderProbes()
+        private async Task RenderProbes(ulong environmentid)
         {
             List<(ReflectionProbe probe, int id)> probeList = new List<(ReflectionProbe, int)>();
 
-            foreach (var entity in entitiesCollection.Entities())
+            foreach (var entity in entitiesCollection[environmentid].Entities())
             {
                 if (entity.dto is GlTFSceneDto && entity is UMI3DNodeInstance scene)
                 {
@@ -470,15 +477,15 @@ namespace umi3d.cdk
         /// <summary>
         /// Load the environment's resources
         /// </summary>
-        private async Task InstantiateNodes(MultiProgress progress)
+        private async Task InstantiateNodes(ulong environmentid, MultiProgress progress)
         {
-            await _InstantiateNodes(environment.scenes, progress);
+            await _InstantiateNodes(environmentid, environment.scenes, progress);
             loaded = true;
         }
 
-        public async Task InstantiateNodes(List<GlTFSceneDto> scenes)
+        public async Task InstantiateNodes(ulong environmentid, List<GlTFSceneDto> scenes)
         {
-            await _InstantiateNodes(scenes, null);
+            await _InstantiateNodes(environmentid, scenes, null);
         }
 
         /// <summary>
@@ -486,7 +493,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="scenes">scenes to loads</param>
         /// <returns></returns>
-        private async Task _InstantiateNodes(List<GlTFSceneDto> scenes, MultiProgress progress)
+        private async Task _InstantiateNodes(ulong environmentid, List<GlTFSceneDto> scenes, MultiProgress progress)
         {
 
             //Load scenes without hierarchy
@@ -495,7 +502,7 @@ namespace umi3d.cdk
                 Progress progress1 = new Progress(0, $"Load scene {scene.name}");
                 if(progress != null)
                     progress.Add(progress1);
-                await sceneLoader.LoadGlTFScene(scene, progress1);
+                await sceneLoader.LoadGlTFScene(environmentid,scene, progress1);
 
             }));
             //Organize scenes
@@ -505,9 +512,9 @@ namespace umi3d.cdk
                 if (progress != null)
                     progress.Add(progress1);
                 progress1.AddComplete();
-                var node = GetNodeInstance(scene.extensions.umi3d.id);
+                var node = GetNodeInstance(environmentid, scene.extensions.umi3d.id);
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                await sceneLoader.ReadUMI3DExtension(new ReadUMI3DExtensionData(umi3dScene, node.gameObject));
+                await sceneLoader.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentid,umi3dScene, node.gameObject));
                 progress1.AddComplete();
                 node.gameObject.SetActive(umi3dScene.active);
             }));
@@ -520,9 +527,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        public static async Task LoadEntity(IEntity entity, List<CancellationToken> tokens)
+        public static async Task LoadEntity(ulong environmentid, IEntity entity, List<CancellationToken> tokens)
         {
-            if (Exists) await Instance._LoadEntity(entity, tokens);
+            if (Exists) await Instance._LoadEntity(environmentid, entity, tokens);
         }
 
         public static async Task LoadEntity(ByteContainer container)
@@ -536,24 +543,24 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entity"></param>
         /// <param name="performed"></param>
-        private async Task _LoadEntity(IEntity entity, List<CancellationToken> tokens)
+        private async Task _LoadEntity(ulong environmentId, IEntity entity, List<CancellationToken> tokens)
         {
             try
             {
                 switch (entity)
                 {
                     case GlTFSceneDto scene:
-                        await _InstantiateNodes(new List<GlTFSceneDto>() { scene }, new MultiProgress("Load Entity"));
+                        await _InstantiateNodes(environmentId, new List<GlTFSceneDto>() { scene }, new MultiProgress("Load Entity"));
                         break;
                     case GlTFNodeDto node:
-                        await nodeLoader.LoadNodes(new List<GlTFNodeDto>() { node }, new Progress(0, "Load Entity"));
+                        await nodeLoader.LoadNodes(environmentId, new List<GlTFNodeDto>() { node }, new Progress(0, "Load Entity"));
                         break;
                     case AssetLibraryDto library:
                         await UMI3DResourcesManager.DownloadLibrary(library, UMI3DClientServer.Media.name, new MultiProgress("Load Entity"));
                         await UMI3DResourcesManager.LoadLibrary(library.libraryId);
                         break;
                     case AbstractEntityDto dto:
-                        await AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto, tokens));
+                        await AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentId, dto, tokens));
                         break;
                     case GlTFMaterialDto matDto:
                         AbstractParameters.SelectMaterialLoader(matDto).LoadMaterialFromExtension(matDto, (m) =>
@@ -564,11 +571,11 @@ namespace umi3d.cdk
                             //register the material
                             if (m == null)
                             {
-                                RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, new List<Material>()).NotifyLoaded();
+                                RegisterEntity(environmentId,((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, new List<Material>()).NotifyLoaded();
                             }
                             else
                             {
-                                RegisterEntityInstance(((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
+                                RegisterEntity(environmentId,((AbstractEntityDto)matDto.extensions.umi3d).id, matDto, m).NotifyLoaded();
                             }
                         });
                         break;
@@ -590,12 +597,18 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         private async Task _LoadEntity(ByteContainer container)
         {
-            await entitiesCollection._LoadEntity(container, _LoadEntityTask);
+            Task InternalLoadEntityTask(IEntity item, List<CancellationToken> tokens)
+            {
+                return LoadEntity(container.environmentId, item, tokens);
+            }
+
+            await entitiesCollection[container.environmentId]._LoadEntity(container, InternalLoadEntityTask);
         }
 
-        private Task _LoadEntityTask(IEntity item, List<CancellationToken> tokens)
+
+        private Task _LoadEntityTask(ulong environmentid, IEntity item, List<CancellationToken> tokens)
         {
-            return LoadEntity(item, tokens);
+            return LoadEntity(environmentid, item, tokens);
         }
 
         /// <summary>
@@ -603,12 +616,12 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="entityId"></param>
         /// <param name="performed"></param>
-        public static async Task DeleteEntity(ulong entityId, List<CancellationToken> tokens)
+        public static async Task DeleteEntity(ulong environmentid, ulong entityId, List<CancellationToken> tokens)
         {
             if (UMI3DResourcesManager.isKnowedLibrary(entityId))
                 UMI3DResourcesManager.UnloadLibrary(entityId);
             else
-                await Instance.entitiesCollection.DeleteEntity(entityId, tokens);
+                await Instance.entitiesCollection[environmentid].DeleteEntity(entityId, tokens);
         }
 
         /// <summary>
@@ -616,8 +629,6 @@ namespace umi3d.cdk
         /// </summary>
         public static void Clear(bool clearCache = true)
         {
-            Instance.entityFilters.Clear();
-
             Instance.entitiesCollection.Clear();
 
             if (clearCache)
@@ -630,7 +641,8 @@ namespace umi3d.cdk
         {
             UMI3DVideoPlayerLoader.Clear();
 
-            Instance.entitiesCollection.InternalClear();
+            foreach(var entity in Instance.entitiesCollection)
+                entity.Value.InternalClear();
 
             isEnvironmentLoaded = false;
 
@@ -643,7 +655,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="node"></param>
-        public virtual async Task ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node)
+        public virtual async Task ReadUMI3DExtension(ulong environmentId, GlTFEnvironmentDto dto, GameObject node)
         {
             UMI3DEnvironmentDto extension = dto?.extensions?.umi3d;
             if (extension != null)
@@ -654,7 +666,7 @@ namespace umi3d.cdk
                     LoadDefaultMaterial(extension.defaultMaterial);
                 }
                 foreach (PreloadedSceneDto scene in extension.preloadedScenes)
-                    await AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, node));
+                    await AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentId, scene, node));
                 RenderSettings.ambientMode = (AmbientMode)extension.ambientType;
                 RenderSettings.ambientSkyColor = extension.skyColor.Struct();
                 RenderSettings.ambientEquatorColor = extension.horizontalColor.Struct();
@@ -830,13 +842,13 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static async Task SetEntity(SetEntityPropertyDto dto, List<CancellationToken> tokens)
+        public static async Task SetEntity(ulong environmentId, SetEntityPropertyDto dto, List<CancellationToken> tokens)
         {
             if (!Exists) return;
             try
             {
-                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.entityId, tokens);
-                if (!await SetEntity(new SetUMI3DPropertyData(dto, e, tokens)))
+                var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, dto.entityId, tokens);
+                if (!await SetEntity(environmentId, new SetUMI3DPropertyData(environmentId, dto, e, tokens)))
                     UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + dto.entityId + "   propKey : " + dto.property, scope);
             }
             catch (Exception e)
@@ -850,11 +862,11 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static async Task SetEntity(uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
+        public static async Task SetEntity(ulong environmentId, uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
         {
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(entityId, container.tokens);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, entityId, container.tokens);
 
-            if (!await SetEntity(entityId, new SetUMI3DPropertyContainerData(e, operationId, propertyKey, container)))
+            if (!await SetEntity(environmentId, entityId, new SetUMI3DPropertyContainerData(environmentId, e, operationId, propertyKey, container)))
                 UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
 
         }
@@ -865,13 +877,10 @@ namespace umi3d.cdk
         /// <param name="node">Node on which the dto should be applied.</param>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static async Task<bool> SetEntity(SetUMI3DPropertyData data)
+        public static async Task<bool> SetEntity(ulong environmentId, SetUMI3DPropertyData data)
         {
-            if (Instance.entityFilters.ContainsKey(data.property.entityId) && Instance.entityFilters[data.property.entityId].ContainsKey(data.property.property))
-            {
-                Instance.entityFilters[data.property.entityId][data.property.property].AddMeasure(data.property.value.Deserialize());
+            if (instance.entitiesCollection[environmentId].SetEntity(data))
                 return true;
-            }
             else
             {
                 if (await SetUMI3DProperty(data)) return true;
@@ -886,15 +895,10 @@ namespace umi3d.cdk
         /// <param name="node">Node on which the dto should be applied.</param>
         /// <param name="dto">Set operation to handle.</param>
         /// <returns></returns>
-        public static async Task<bool> SetEntity(ulong entityId, SetUMI3DPropertyContainerData data)
+        public static async Task<bool> SetEntity(ulong environmentId, ulong entityId, SetUMI3DPropertyContainerData data)
         {
-            if (Instance.entityFilters.ContainsKey(entityId) && Instance.entityFilters[entityId].ContainsKey(data.propertyKey))
-            {
-                var value = new ReadUMI3DPropertyData(data.propertyKey, data.container);
-                await ReadValueEntity(value);
-                Instance.entityFilters[entityId][data.propertyKey].AddMeasure(value.result.Deserialize());
+            if (await Instance.entitiesCollection[environmentId].SetEntity(entityId,data, ReadValueEntity))
                 return true;
-            }
             else
             {
                 if (await SetUMI3DProperty(data)) return true;
@@ -911,11 +915,11 @@ namespace umi3d.cdk
         }
 
 
-        private static async Task<bool> SimulatedSetEntity(SetUMI3DPropertyData data)
+        private static async void SimulatedSetEntity(SetUMI3DPropertyData data)
         {
-            if (await SetUMI3DProperty(data)) return true;
-            if (UMI3DEnvironmentLoader.Exists && await UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(data)) return true;
-            return await AbstractParameters.SetUMI3DProperty(data);
+            if (await SetUMI3DProperty(data)) return;
+            if (UMI3DEnvironmentLoader.Exists && await UMI3DEnvironmentLoader.Instance.sceneLoader.SetUMI3DProperty(data)) return;
+            await AbstractParameters.SetUMI3DProperty(data);
         }
 
 
@@ -924,7 +928,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">MultiSetEntityPropertyDto with the ids list to mofify</param>
         /// <returns></returns>
-        public static async Task<bool> SetMultiEntity(MultiSetEntityPropertyDto dto, List<CancellationToken> tokens)
+        public static async Task<bool> SetMultiEntity(ulong environmentId, MultiSetEntityPropertyDto dto, List<CancellationToken> tokens)
         {
             if (!Exists) return false;
             foreach (ulong id in dto.entityIds)
@@ -938,8 +942,8 @@ namespace umi3d.cdk
                         value = dto.value
                     };
 
-                    var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, tokens);
-                    await SetEntity(new SetUMI3DPropertyData(entityPropertyDto, e));
+                    var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, id, tokens);
+                    await SetEntity(environmentId, new SetUMI3DPropertyData(environmentId, entityPropertyDto, e));
 
                 }
                 catch (Exception e)
@@ -956,7 +960,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto">MultiSetEntityPropertyDto with the ids list to mofify</param>
         /// <returns></returns>
-        public static async Task<bool> SetMultiEntity(ByteContainer container)
+        public static async Task<bool> SetMultiEntity(ulong environmentId, ByteContainer container)
         {
             if (!Exists) return false;
             List<ulong> idList = UMI3DSerializer.ReadList<ulong>(container);
@@ -967,10 +971,10 @@ namespace umi3d.cdk
             {
                 try
                 {
-                    var e = await WaitForAnEntityToBeLoaded(id, container.tokens);
+                    var e = await WaitForAnEntityToBeLoaded(environmentId, id, container.tokens);
 
                     var newContainer = new ByteContainer(container);
-                    if (!await SetEntity(id, new SetUMI3DPropertyContainerData(e, operationId, propertyKey, newContainer)))
+                    if (!await SetEntity(environmentId, id, new SetUMI3DPropertyContainerData(environmentId, e, operationId, propertyKey, newContainer)))
                         UMI3DLogger.LogWarning($"A SetUMI3DProperty failed to match any loader {id} {operationId} {propertyKey} {newContainer}", scope | DebugScope.Bytes);
 
                 }
@@ -986,47 +990,28 @@ namespace umi3d.cdk
         #region interpolation
 
 
-
-        private readonly Dictionary<ulong, Dictionary<ulong, IExtrapolator>> entityFilters = new Dictionary<ulong, Dictionary<ulong, IExtrapolator>>();
-
         protected async void InterpolationRoutine()
         {
             while (UMI3DClientServer.Exists && UMI3DClientServer.Instance.GetUserId() != 0)
             {
-                foreach (ulong entityId in Instance.entityFilters.Keys)
-                {
-                    foreach (ulong property in Instance.entityFilters[entityId].Keys)
-                    {
-                        UMI3DEntityInstance node = UMI3DEnvironmentLoader.GetEntity(entityId);
-                        IExtrapolator extrapolator = Instance.entityFilters[entityId][property];
-
-                        extrapolator.ComputeExtrapolatedValue();
-
-                        var entityPropertyDto = new SetEntityPropertyDto()
-                        {
-                            entityId = entityId,
-                            property = property,
-                            value = extrapolator.ExtrapolatedValue.ToSerializable()
-                        };
-                        //SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node));
-                        Task.FromResult(SimulatedSetEntity(new SetUMI3DPropertyData(entityPropertyDto, node)));
-                    }
-                }
-
+                foreach (var entities in entitiesCollection.Values)
+                    entities.InterpolationRoutine(SimulatedSetEntity);
                 await UMI3DAsyncManager.Yield();
             }
         }
 
+
+
         /// <summary>
         /// Handle StartInterpolationPropertyDto operation.
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public static async Task<bool> StartInterpolation(StartInterpolationPropertyDto dto, List<CancellationToken> tokens)
+        public static async Task<bool> StartInterpolation(ulong environmentId, StartInterpolationPropertyDto dto, List<CancellationToken> tokens)
         {
             if (!Exists) return false;
-            var e = await WaitForAnEntityToBeLoaded(dto.entityId, tokens);
-            return await Instance.StartInterpolation(e, dto.entityId, dto.property, dto.startValue, tokens);
+            var e = await WaitForAnEntityToBeLoaded(environmentId, dto.entityId, tokens);
+            return Instance.entitiesCollection[environmentId].StartInterpolation(e, dto.entityId, dto.property, dto.startValue, tokens);
         }
 
         /// <summary>
@@ -1034,89 +1019,43 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public static async Task<bool> StartInterpolation(ByteContainer container)
+        public static async Task<bool> StartInterpolation(ulong environmentId, ByteContainer container)
         {
             if (!Exists) return false;
             ulong entityId = UMI3DSerializer.Read<ulong>(container);
             uint propertyKey = UMI3DSerializer.Read<uint>(container);
-            var e = await WaitForAnEntityToBeLoaded(entityId, container.tokens);
+            var e = await WaitForAnEntityToBeLoaded(environmentId, entityId, container.tokens);
 
-            var value = new ReadUMI3DPropertyData(propertyKey, container);
+            var value = new ReadUMI3DPropertyData(environmentId, propertyKey, container);
             await ReadValueEntity(value);
-            return await Instance.StartInterpolation(e, entityId, propertyKey, value.result.Deserialize(), container.tokens);
+            return Instance.entitiesCollection[environmentId].StartInterpolation(e, entityId, propertyKey, value.result.Deserialize(), container.tokens);
         }
 
-        protected async Task<bool> StartInterpolation(UMI3DEntityInstance node, ulong entityId, ulong propertyKey, object startValue, List<CancellationToken> tokens)
-        {
-            if (!entityFilters.ContainsKey(entityId))
-            {
-                entityFilters.Add(entityId, new Dictionary<ulong, IExtrapolator>());
-            }
 
-            if (!entityFilters[entityId].ContainsKey(propertyKey))
-            {
-                IExtrapolator newExtrapolator;
-                if (propertyKey == UMI3DPropertyKeys.Rotation)
-                    newExtrapolator = new QuaternionLinearDelayedExtrapolator();
-                else
-                    newExtrapolator = new Vector3LinearDelayedExtrapolator();
-
-                entityFilters[entityId].Add(propertyKey, newExtrapolator);
-
-                newExtrapolator.AddMeasure(startValue);
-
-                var entityPropertyDto = new SetEntityPropertyDto()
-                {
-                    entityId = entityId,
-                    property = propertyKey,
-                    value = startValue.ToSerializable()
-                };
-                return await SetEntity(new SetUMI3DPropertyData(entityPropertyDto, node, tokens));
-            }
-            return false;
-        }
 
         /// <summary>
         /// Handle StopInterpolationPropertyDto operation.
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public static async Task<bool> StopInterpolation(StopInterpolationPropertyDto dto, List<CancellationToken> tokens)
+        public static async Task<bool> StopInterpolation(ulong environmentId, StopInterpolationPropertyDto dto, List<CancellationToken> tokens)
         {
             if (!Exists) return false;
-            var e = await WaitForAnEntityToBeLoaded(dto.entityId, tokens);
-            await Instance.StopInterpolation(e, dto.entityId, dto.property, dto.stopValue, tokens);
+            var e = await WaitForAnEntityToBeLoaded(environmentId, dto.entityId, tokens);
+            Instance.entitiesCollection[environmentId].StopInterpolation(e, dto.entityId, dto.property, dto.stopValue, tokens);
             return true;
         }
 
-        public static async Task<bool> StopInterpolation(ByteContainer container)
+        public static async Task<bool> StopInterpolation(ulong environmentId, ByteContainer container)
         {
             if (!Exists) return false;
             ulong entityId = UMI3DSerializer.Read<ulong>(container);
             uint propertyKey = UMI3DSerializer.Read<uint>(container);
-            var e = await WaitForAnEntityToBeLoaded(entityId, container.tokens);
+            var e = await WaitForAnEntityToBeLoaded(environmentId, entityId, container.tokens);
 
-            var value = new ReadUMI3DPropertyData(propertyKey, container);
+            var value = new ReadUMI3DPropertyData(environmentId, propertyKey, container);
             await ReadValueEntity(value);
-            return await Instance.StopInterpolation(e, entityId, propertyKey, value.result.Deserialize(), container.tokens);
-        }
-
-
-        protected async Task<bool> StopInterpolation(UMI3DEntityInstance node, ulong entityId, uint property, object stopValue, List<CancellationToken> tokens)
-        {
-            if (entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(property))
-            {
-                Instance.entityFilters[entityId].Remove(property);
-                var entityPropertyDto = new SetEntityPropertyDto()
-                {
-                    entityId = entityId,
-                    property = property,
-                    value = stopValue.ToSerializable()
-                };
-
-                return await SetEntity(new SetUMI3DPropertyData(entityPropertyDto, node, tokens));
-            }
-            return false;
+            return Instance.entitiesCollection[environmentId].StopInterpolation(e, entityId, propertyKey, value.result.Deserialize(), container.tokens);
         }
 
         #endregion

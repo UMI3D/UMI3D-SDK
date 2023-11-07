@@ -243,7 +243,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             };
             Mock<UMI3DAbstractAnimation> mockAnimation = new(mockDto);
 
-            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(emote.AnimationId)).Returns(mockAnimation.Object);
+            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, emote.AnimationId)).Returns(mockAnimation.Object);
 
             // WHEN
             emoteManagerService.PlayEmote(emote);
@@ -322,7 +322,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             UMI3DAnimatorAnimationDto mockDto = new UMI3DAnimatorAnimationDto();
             Mock<UMI3DAbstractAnimation> mockAnimation = new(mockDto);
 
-            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId)).Returns(mockAnimation.Object);
+            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, playingEmote.AnimationId)).Returns(mockAnimation.Object);
 
             // WHEN
             emoteManagerService.PlayEmote(playingEmote);

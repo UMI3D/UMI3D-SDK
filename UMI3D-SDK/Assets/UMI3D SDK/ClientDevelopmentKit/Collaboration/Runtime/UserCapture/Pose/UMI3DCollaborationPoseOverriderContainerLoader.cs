@@ -38,18 +38,18 @@ namespace umi3d.cdk.collaboration.userCapture.pose
             this.environmentService = environmentService;
         }
 
-        protected override IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
+        protected override IPoseCondition LoadPoseCondition(ulong environmentId,AbstractPoseConditionDto dto)
         {
             switch (dto)
             {
                 case ProjectedPoseConditionDto projectedPoseConditionDto:
                     {
-                        Interactable interactable = environmentService.GetEntityObject<Interactable>(projectedPoseConditionDto.interactableId);
+                        Interactable interactable = environmentService.GetEntityObject<Interactable>(environmentId,projectedPoseConditionDto.interactableId);
                         return new ProjectedPoseCondition(projectedPoseConditionDto, interactable);
                     }
                 default:
                     {
-                        return base.LoadPoseCondition(dto);
+                        return base.LoadPoseCondition(environmentId, dto);
                     }
             }
         }

@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="finished"></param>
-        public async Task LoadGlTFScene(GlTFSceneDto dto, Progress progress)
+        public async Task LoadGlTFScene(ulong environmentId, GlTFSceneDto dto, Progress progress)
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
@@ -44,6 +44,7 @@ namespace umi3d.cdk
                 progress.AddComplete();
                 var go = new GameObject(dto.name);
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.RegisterNodeInstance(
+                    environmentId,
                     dto.extensions.umi3d.id,
                     dto,
                     go,
@@ -54,11 +55,11 @@ namespace umi3d.cdk
                             UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
                     });
 
-                go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
+                go.transform.SetParent(UMI3DLoadingHandler.Instance.transform);
                 //Load Materials and then Nodes
-                LoadSceneMaterials(dto);
+                LoadSceneMaterials(environmentId, dto);
                 
-                await UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, progress);
+                await UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(environmentId, dto.nodes, progress);
                 progress.AddComplete();
                 node.NotifyLoaded();
             }
@@ -89,7 +90,7 @@ namespace umi3d.cdk
                 await Task.WhenAll(sceneDto.otherEntities.Select(
                     async entity =>
                     {
-                       await  UMI3DEnvironmentLoader.LoadEntity(entity, data.tokens);
+                       await  UMI3DEnvironmentLoader.LoadEntity(data.environmentId, entity, data.tokens);
                     }));
             }
 
@@ -217,7 +218,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        public void LoadSceneMaterials(GlTFSceneDto dto)
+        public void LoadSceneMaterials(ulong environmentId, GlTFSceneDto dto)
         {
             foreach (GlTFMaterialDto material in dto.materials)
             {
@@ -232,11 +233,11 @@ namespace umi3d.cdk
                         //register the material
                         if (m == null)
                         {
-                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, new List<Material>()).NotifyLoaded();
+                            UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, ((AbstractEntityDto)material.extensions.umi3d).id, material, new List<Material>()).NotifyLoaded();
                         }
                         else
                         {
-                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m).NotifyLoaded();
+                            UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, ((AbstractEntityDto)material.extensions.umi3d).id, material, m).NotifyLoaded();
                         }
                     }
                     );

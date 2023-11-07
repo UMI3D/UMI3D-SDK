@@ -29,7 +29,8 @@ public class DistantEnvironmentLoader : AbstractLoader
             try
             {
                 distantDto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
-                await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.environmentDto.scenes);
+                //Id of the distant environment is the id of the DistantEnvironmentDto
+                await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id,distantDto.environmentDto.scenes);
             }
             catch (Exception e)
             {

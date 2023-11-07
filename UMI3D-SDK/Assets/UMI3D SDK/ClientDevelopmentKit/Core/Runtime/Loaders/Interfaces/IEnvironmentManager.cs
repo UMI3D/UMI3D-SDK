@@ -27,14 +27,14 @@ namespace umi3d.cdk
 
         Transform transform { get; }
 
-        T GetEntityObject<T>(ulong id) where T : class;
+        T GetEntityObject<T>(ulong environmentid, ulong id) where T : class;
 
-        UMI3DEntityInstance GetEntityInstance(ulong id);
+        UMI3DEntityInstance GetEntityInstance(ulong environmentid, ulong id);
 
-        UMI3DNodeInstance GetNodeInstance(ulong id);
+        UMI3DNodeInstance GetNodeInstance(ulong environmentid, ulong id);
 
-        UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
+        UMI3DEntityInstance RegisterEntity(ulong environmentid, ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
 
-        UMI3DEntityInstance TryGetEntityInstance(ulong id);
+        UMI3DEntityInstance TryGetEntityInstance(ulong environmentid, ulong id);
     }
 }

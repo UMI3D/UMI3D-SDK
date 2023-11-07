@@ -44,7 +44,7 @@ namespace EditMode_Tests
         {
             Assert.IsTrue(UMI3DSerializer.IsCountable<T>() == expectedIsCountable, $"Expected Is Countable is {expectedIsCountable} while method return {!expectedIsCountable}");
             var bytable = UMI3DSerializer.Write(value);
-            var result = UMI3DSerializer.ReadDictionary<T,L>(new ByteContainer(0, bytable.ToBytes()));
+            var result = UMI3DSerializer.ReadDictionary<T,L>(new ByteContainer(0, 0, bytable.ToBytes()));
             Assert.IsTrue(result.Count == value.Count, "Object deserialization failed.");
             foreach( var p in result.Zip(value,(a,b) => (a,b)))
             {

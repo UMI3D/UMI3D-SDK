@@ -55,18 +55,18 @@ namespace umi3d.cdk.collaboration.userCapture.binding
         #endregion DependencyInjection
 
         /// <inheritdoc/>
-        protected override async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override async Task<AbstractBinding> LoadData(ulong environmentId, ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case NodeBindingDataDto
                     or MultiBindingDataDto:
                     {
-                        return await base.LoadData(boundNodeId, dto);
+                        return await base.LoadData(environmentId, boundNodeId, dto);
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
-                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(environmentId, boundNodeId);
                         var skeleton = skeletonService.Skeletons[riggedBoneBinding.userId];
                         if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
@@ -84,7 +84,7 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(environmentId, boundNodeId);
                         var skeleton = skeletonService.Skeletons[boneBindingDataDto.userId];
                         if (!skeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {

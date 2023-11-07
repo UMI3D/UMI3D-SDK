@@ -105,8 +105,8 @@ namespace umi3d.cdk
                                 extension.overridedMaterials.Insert(((SetEntityListAddPropertyDto)data.property).index, (MaterialOverrideDto)addProperty.value);
                                 if (extension.applyCustomMaterial)
                                 {
-                                    var node = environmentManager.GetNodeInstance(data.property.entityId);
-                                    SetMaterialOverided(extension, environmentManager.GetNodeInstance(data.property.entityId));
+                                    var node = environmentManager.GetNodeInstance(data.environmentId, data.property.entityId);
+                                    SetMaterialOverided(extension, environmentManager.GetNodeInstance(data.environmentId, data.property.entityId));
                                 }
                             }
                             //       
@@ -118,7 +118,7 @@ namespace umi3d.cdk
                                 RevertOneOverrider((UMI3DNodeInstance)data.entity, (MaterialOverrideDto)removeProperty.value);
                                 extension.overridedMaterials.RemoveAt(removeProperty.index);
 
-                                SetMaterialOverided(extension, environmentManager.GetNodeInstance(data.property.entityId)); // necessary if multiples overriders override the same removed material
+                                SetMaterialOverided(extension, environmentManager.GetNodeInstance(data.environmentId, data.property.entityId)); // necessary if multiples overriders override the same removed material
 
                             }
                             else
@@ -139,7 +139,7 @@ namespace umi3d.cdk
                                 bool shouldAdd = ((MaterialOverrideDto)changeProperty.value).addMaterialIfNotExists;
 
                                 //Apply new overrider (Apply again the list from the new element to then end of the list)
-                                var node = environmentManager.GetNodeInstance(data.property.entityId);
+                                var node = environmentManager.GetNodeInstance(data.environmentId, data.property.entityId);
                                 UnityMainThreadDispatcher.Instance().StartCoroutine(ApplyMaterialOverrider(propertValue.newMaterialId, propertValue.overridedMaterialsId, node, () =>
                                 {
                                     for (int i = changeProperty.index + 1; i < extension.overridedMaterials.Count; i++)
@@ -466,7 +466,7 @@ namespace umi3d.cdk
 
         protected virtual void RevertOneOverrider(UMI3DNodeInstance entity, MaterialOverrideDto matToRemoveDto)
         {
-            var matToRemove = environmentManager.GetEntityObject<Material>(matToRemoveDto.newMaterialId);
+            var matToRemove = environmentManager.GetEntityObject<Material>(entity.EnvironmentId, matToRemoveDto.newMaterialId);
             if (matToRemove == null) return;
             foreach (Renderer renderer in GetChildRenderersWhithoutOtherModel(entity))
             {
@@ -506,12 +506,12 @@ namespace umi3d.cdk
 
         protected IEnumerator ApplyMaterialOverrider(ulong newMatId, List<string> listToOverride, UMI3DNodeInstance node, Action callback = null, bool addIfNotExists = false)
         {
-            UMI3DEntityInstance matEntity = environmentManager.TryGetEntityInstance(newMatId);
+            UMI3DEntityInstance matEntity = environmentManager.TryGetEntityInstance(node.EnvironmentId, newMatId);
             if (matEntity == null) UMI3DLogger.LogWarning("Material not found : " + newMatId + " , that should not happen", scope);
 
             while (matEntity == null)
             {
-                matEntity = environmentManager.TryGetEntityInstance(newMatId);
+                matEntity = environmentManager.TryGetEntityInstance(node.EnvironmentId, newMatId);
 
                 yield return new WaitForSeconds(0.2f);
             }
@@ -552,7 +552,7 @@ namespace umi3d.cdk
             {
                 if (node.renderers != null && node.renderers.Count > 0)
                     return node.renderers;
-                List<Renderer> modelMeshs = UMI3DEnvironmentLoader.GetNode(((SubModelDto)((GlTFNodeDto)node.dto).extensions.umi3d).modelId).renderers;
+                List<Renderer> modelMeshs = UMI3DEnvironmentLoader.GetNode(node.EnvironmentId, ((SubModelDto)((GlTFNodeDto)node.dto).extensions.umi3d).modelId).renderers;
 
                 //    Renderer[] childRenderers = node.gameObject.GetComponentsInChildren<Renderer>();
                 node.renderers = node.gameObject.GetComponentsInChildren<Renderer>().Where((r) => modelMeshs.Contains(r)).ToList();

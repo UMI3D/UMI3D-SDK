@@ -152,9 +152,9 @@ namespace umi3d.cdk
         /// <param name="node">node to load.</param>
         /// <param name="finished">Callback called when the node is loaded.</param>
         /// <returns></returns>
-        public async Task LoadNode(GlTFNodeDto node)
+        public async Task LoadNode(ulong environmentId,GlTFNodeDto node)
         {
-            await LoadNodes(new List<GlTFNodeDto>() { node }, new Progress(0,"Load Node"));
+            await LoadNodes(environmentId, new List<GlTFNodeDto>() { node }, new Progress(0,"Load Node"));
         }
 
         /// <summary>
@@ -164,14 +164,14 @@ namespace umi3d.cdk
         /// <param name="finished">Callback called when all nodes are loaded.</param>
         /// <param name="LoadedNodesCount">Action called each time a node is loaded with the count of all loaded node in parameter.</param>
         /// <returns></returns>
-        public async Task LoadNodes(IEnumerable<GlTFNodeDto> nodes, Progress progress)
+        public async Task LoadNodes(ulong enviornmentId ,IEnumerable<GlTFNodeDto> nodes, Progress progress)
         {
 #if UNITY_EDITOR
             var tasks = nodes
                 .Select(n =>
                 {
                     UnityEngine.Debug.Log($"{n}");
-                    var res = CreateNode(n);
+                    var res = CreateNode(enviornmentId, n);
                     UnityEngine.Debug.Log($"{n} {res.dto} {n == res.dto}");
                     return res;
                 })
@@ -183,7 +183,7 @@ namespace umi3d.cdk
                     {
                         nodes.Debug();
                         UnityEngine.Debug.Log($"{node.dto} | {dto} {dto?.extensions} {dto?.extensions?.umi3d} | {node} {node?.gameObject}");
-                        await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.extensions.umi3d, node.gameObject));
+                        await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(enviornmentId, dto.extensions.umi3d, node.gameObject));
 
                         ReadLightingExtensions(dto, node.gameObject);
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
@@ -250,10 +250,10 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        private UMI3DNodeInstance CreateNode(GlTFNodeDto dto)
+        private UMI3DNodeInstance CreateNode(ulong environmentId,GlTFNodeDto dto)
         {
             var go = new GameObject(dto.name);
-            return UMI3DEnvironmentLoader.RegisterNodeInstance(dto.extensions.umi3d.id, dto, go);
+            return UMI3DEnvironmentLoader.RegisterNodeInstance(environmentId, dto.extensions.umi3d.id, dto, go);
         }
 
         /// <summary>

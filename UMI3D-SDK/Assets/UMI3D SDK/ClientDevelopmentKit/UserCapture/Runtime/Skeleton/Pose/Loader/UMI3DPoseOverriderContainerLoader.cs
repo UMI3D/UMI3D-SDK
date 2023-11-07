@@ -58,13 +58,13 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
         /// </summary>
-        public virtual void Load(UMI3DPoseOverridersContainerDto poseOverriderContainerDto)
+        public virtual void Load(ulong environmentId, UMI3DPoseOverridersContainerDto poseOverriderContainerDto)
         {
             if (poseOverriderContainerDto == null)
                 throw new System.ArgumentNullException(nameof(poseOverriderContainerDto));
 
-            var container = LoadContainer(poseOverriderContainerDto);
-            environmentService.RegisterEntity(poseOverriderContainerDto.id, poseOverriderContainerDto, container, () => Delete(poseOverriderContainerDto.id)).NotifyLoaded();
+            var container = LoadContainer(environmentId, poseOverriderContainerDto);
+            environmentService.RegisterEntity(environmentId, poseOverriderContainerDto.id, poseOverriderContainerDto, container, () => Delete(environmentId, poseOverriderContainerDto.id)).NotifyLoaded();
         }
 
         /// <summary>
@@ -72,12 +72,12 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="poseOverriderContainerDto"></param>
         /// <returns></returns>
-        public virtual PoseOverridersContainer LoadContainer(UMI3DPoseOverridersContainerDto poseOverriderContainerDto)
+        public virtual PoseOverridersContainer LoadContainer(ulong environmentId, UMI3DPoseOverridersContainerDto poseOverriderContainerDto)
         {
             if (poseOverriderContainerDto == null)
                 throw new System.ArgumentNullException(nameof(poseOverriderContainerDto));
 
-            var poseOverriders = poseOverriderContainerDto.poseOverriderDtos.Select(x => LoadPoseOverrider(x)).ToArray();
+            var poseOverriders = poseOverriderContainerDto.poseOverriderDtos.Select(x => LoadPoseOverrider(environmentId, x)).ToArray();
             PoseOverridersContainer container = new PoseOverridersContainer(poseOverriderContainerDto, poseOverriders);
             poseService.AddPoseOverriders(container);
             return container;
@@ -88,21 +88,21 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        public virtual PoseOverrider LoadPoseOverrider(PoseOverriderDto dto)
+        public virtual PoseOverrider LoadPoseOverrider(ulong environmentId, PoseOverriderDto dto)
         {
             if (dto == null)
                 throw new System.ArgumentNullException(nameof(dto));
 
             return new PoseOverrider(dto,
                                      dto.poseConditions
-                                        .Select(x => LoadPoseCondition(x))
+                                        .Select(x => LoadPoseCondition(environmentId, x))
                                         .Where(x => x is not null)
                                         .ToArray());
         }
 
-        public virtual void Delete(ulong id)
+        public virtual void Delete(ulong environmentId, ulong id)
         {
-            PoseOverridersContainer container = environmentService.GetEntityObject<PoseOverridersContainer>(id);
+            PoseOverridersContainer container = environmentService.GetEntityObject<PoseOverridersContainer>(environmentId, id);
             poseService.RemovePoseOverriders(container);
         }
 
@@ -111,18 +111,18 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        protected virtual IPoseCondition LoadPoseCondition(AbstractPoseConditionDto dto)
+        protected virtual IPoseCondition LoadPoseCondition(ulong environmentId, AbstractPoseConditionDto dto)
         {
             switch (dto)
             {
                 case MagnitudeConditionDto magnitudeConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(magnitudeConditionDto.TargetNodeId);
+                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(environmentId, magnitudeConditionDto.TargetNodeId);
                         return new MagnitudePoseCondition(magnitudeConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case DirectionConditionDto directionConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(directionConditionDto.TargetNodeId);
+                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(environmentId, directionConditionDto.TargetNodeId);
                         return new DirectionPoseCondition(directionConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case BoneRotationConditionDto boneRotationConditionDto:
@@ -131,13 +131,13 @@ namespace umi3d.cdk.userCapture.pose
                     }
                 case ScaleConditionDto scaleConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(scaleConditionDto.TargetId);
+                        UMI3DNodeInstance targetNodeInstance = environmentService.GetNodeInstance(environmentId, scaleConditionDto.TargetId);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
                     }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
                     {
                         EnvironmentPoseCondition environmentPoseCondition = new(environmentPoseConditionDto);
-                        environmentService.RegisterEntity(environmentPoseConditionDto.Id, environmentPoseConditionDto, environmentPoseCondition).NotifyLoaded();
+                        environmentService.RegisterEntity(environmentId, environmentPoseConditionDto.Id, environmentPoseConditionDto, environmentPoseCondition).NotifyLoaded();
                         return environmentPoseCondition;
                     }
 
@@ -162,7 +162,7 @@ namespace umi3d.cdk.userCapture.pose
             switch (value.dto)
             {
                 case UMI3DPoseOverridersContainerDto overriderContainerDto:
-                    Load(overriderContainerDto);
+                    Load(value.environmentId, overriderContainerDto);
                     break;
             }
 
@@ -178,7 +178,7 @@ namespace umi3d.cdk.userCapture.pose
             {
                 case UMI3DPropertyKeys.ActivePoseOverrider:
 
-                    Load(value.entity.dto as UMI3DPoseOverridersContainerDto);
+                    Load(value.environmentId, value.entity.dto as UMI3DPoseOverridersContainerDto);
                     return Task.FromResult(true);
             }
 
@@ -195,7 +195,7 @@ namespace umi3d.cdk.userCapture.pose
                 case UMI3DPropertyKeys.ActivePoseOverrider:
                     ulong id = UMI3DSerializer.Read<ulong>(value.container);
                     PoseOverriderDto[] dtos = UMI3DSerializer.ReadArray<PoseOverriderDto>(value.container);
-                    Load(new UMI3DPoseOverridersContainerDto() { id = id, poseOverriderDtos = dtos });
+                    Load(value.environmentId, new UMI3DPoseOverridersContainerDto() { id = id, poseOverriderDtos = dtos });
                     return Task.FromResult(true);
             }
 

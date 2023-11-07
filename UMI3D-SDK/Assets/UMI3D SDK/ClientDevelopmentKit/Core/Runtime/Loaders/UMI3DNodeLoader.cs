@@ -67,7 +67,7 @@ namespace umi3d.cdk
 
             if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
             {
-                SetCollider(nodeDto.id, environmentManager.GetNodeInstance(nodeDto.id), nodeDto.colliderDto);
+                SetCollider(nodeDto.id, environmentManager.GetNodeInstance(data.environmentId, nodeDto.id), nodeDto.colliderDto);
             }
 
             if (nodeDto.xBillboard || nodeDto.yBillboard)
@@ -75,26 +75,26 @@ namespace umi3d.cdk
                 Billboard b = data.node.AddComponent<Billboard>();
                 b.X = nodeDto.xBillboard;
                 b.Y = nodeDto.yBillboard;
-                data.node.gameObject.GetComponent<Billboard>().glTFNodeDto = environmentManager.GetNodeInstance(nodeDto.id).dto as GlTFNodeDto;
+                data.node.gameObject.GetComponent<Billboard>().glTFNodeDto = environmentManager.GetNodeInstance(data.environmentId, nodeDto.id).dto as GlTFNodeDto;
             }
 
             if (nodeDto.lodDto != null)
             {
-                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, data.node));
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(data.environmentId, nodeDto.lodDto, data.node));
             }
 
             if (nodeDto.skinnedRendererLinks != null)
             {
                 foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
                 {
-                    BindSkinnedMeshBone(link.Key, link.Value, data.node.transform, 300);
+                    BindSkinnedMeshBone(data.environmentId, link.Key, link.Value, data.node.transform, 300);
                 }
             }
         }
 
-        private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
+        private void BindSkinnedMeshBone(ulong environmentId,ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
-            loadingManager.WaitUntilEntityLoaded(skinMeshEntityId, e =>
+            loadingManager.WaitUntilEntityLoaded(environmentId, skinMeshEntityId, e =>
             {
                 if (e is UMI3DNodeInstance nodeI)
                 {
@@ -131,7 +131,7 @@ namespace umi3d.cdk
             skmr.bones = tab;
         }
 
-        private IEnumerator LoadLod(UMI3DLodDto dto, GameObject node)
+        private IEnumerator LoadLod(ulong environmentId, UMI3DLodDto dto, GameObject node)
         {
             LODGroup lg = node.GetOrAddComponent<LODGroup>();
             var ls = new List<LOD>();
@@ -142,7 +142,7 @@ namespace umi3d.cdk
                 foreach (ulong id in lod.nodes)
                 {
                     UMI3DNodeInstance n = null;
-                    loadingManager.WaitUntilEntityLoaded(id, e =>
+                    loadingManager.WaitUntilEntityLoaded(environmentId, id, e =>
                     {
                         n = e as UMI3DNodeInstance;
                     });
@@ -334,7 +334,7 @@ namespace umi3d.cdk
                         }
                         else if (!dto.colliderDto.isMeshCustom)
                         {
-                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(data.environmentId, dto.id));
 
                         }
                     }
@@ -352,7 +352,7 @@ namespace umi3d.cdk
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
                             //SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
-                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(data.environmentId, dto.id));
                         }
                     }
                     break;
@@ -561,7 +561,7 @@ namespace umi3d.cdk
                         }
                         else if (!dto.colliderDto.isMeshCustom)
                         {
-                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(data.environmentId, dto.id));
 
                         }
                     }
@@ -579,7 +579,7 @@ namespace umi3d.cdk
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
                             //SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
-                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(data.environmentId, dto.id));
                         }
                     }
                     break;

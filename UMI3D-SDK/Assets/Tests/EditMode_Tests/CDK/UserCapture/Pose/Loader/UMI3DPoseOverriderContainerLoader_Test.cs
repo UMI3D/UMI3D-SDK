@@ -68,7 +68,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             UMI3DPoseOverridersContainerDto overriderDto = null;
 
             // When
-            TestDelegate action = () => PoseOverriderContainerLoader.Load(overriderDto);
+            TestDelegate action = () => PoseOverriderContainerLoader.Load(0, overriderDto);
 
             // Then
             Assert.Throws<ArgumentNullException>(() => action());
@@ -93,22 +93,22 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             };
 
             poseOverriderContainerLoaderMock.CallBase = false;
-            poseOverriderContainerLoaderMock.Setup(x => x.Load(dto)).CallBase();
+            poseOverriderContainerLoaderMock.Setup(x => x.Load(0, dto)).CallBase();
             var container = new PoseOverridersContainer(dto, new PoseOverrider[0]);
-            poseOverriderContainerLoaderMock.Setup(x => x.LoadContainer(dto))
+            poseOverriderContainerLoaderMock.Setup(x => x.LoadContainer(0, dto))
                                             .Returns(container)
                                             .Verifiable();
 
-            environmentServiceMock.Setup(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseOverridersContainer>(), It.IsAny<Action>()))
-                                  .Returns(new UMI3DEntityInstance(() => { }))
+            environmentServiceMock.Setup(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseOverridersContainer>(), It.IsAny<Action>()))
+                                  .Returns(new UMI3DEntityInstance(0, () => { }))
                                   .Verifiable();
 
             // When
-            PoseOverriderContainerLoader.Load(dto);
+            PoseOverriderContainerLoader.Load(0, dto);
 
             // Then
-            poseOverriderContainerLoaderMock.Verify(x => x.LoadContainer(dto));
-            environmentServiceMock.Verify(x => x.RegisterEntity(dto.id, dto, It.IsAny<PoseOverridersContainer>(), It.IsAny<Action>()), Times.Once());
+            poseOverriderContainerLoaderMock.Verify(x => x.LoadContainer(0, dto));
+            environmentServiceMock.Verify(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseOverridersContainer>(), It.IsAny<Action>()), Times.Once());
         }
 
 
@@ -124,7 +124,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             UMI3DPoseOverridersContainerDto overriderDto = null;
 
             // When
-            TestDelegate action = () => PoseOverriderContainerLoader.LoadContainer(overriderDto);
+            TestDelegate action = () => PoseOverriderContainerLoader.LoadContainer(0, overriderDto);
 
             // Then
             Assert.Throws<ArgumentNullException>(() => action());
@@ -149,19 +149,19 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             };
 
             poseOverriderContainerLoaderMock.CallBase = false;
-            poseOverriderContainerLoaderMock.Setup(x => x.LoadContainer(dto)).CallBase();
+            poseOverriderContainerLoaderMock.Setup(x => x.LoadContainer(0, dto)).CallBase();
             var poseOverrider = new PoseOverrider(dto.poseOverriderDtos[0], new IPoseCondition[0]);
-            poseOverriderContainerLoaderMock.Setup(x => x.LoadPoseOverrider(dto.poseOverriderDtos[0]))
+            poseOverriderContainerLoaderMock.Setup(x => x.LoadPoseOverrider(0, dto.poseOverriderDtos[0]))
                                             .Returns(poseOverrider)
                                             .Verifiable();
 
             poseServiceMock.Setup(x => x.AddPoseOverriders(It.IsAny<PoseOverridersContainer>())).Verifiable();
 
             // When
-            PoseOverridersContainer container = PoseOverriderContainerLoader.LoadContainer(dto);
+            PoseOverridersContainer container = PoseOverriderContainerLoader.LoadContainer(0, dto);
 
             // Then
-            poseOverriderContainerLoaderMock.Verify(x => x.LoadPoseOverrider(dto.poseOverriderDtos[0]));
+            poseOverriderContainerLoaderMock.Verify(x => x.LoadPoseOverrider(0, dto.poseOverriderDtos[0]));
             poseServiceMock.Verify(x => x.AddPoseOverriders(It.IsAny<PoseOverridersContainer>()), Times.Once());
             Assert.AreEqual(dto.id, container.Id);
             Assert.AreEqual(dto.relatedNodeId, container.NodeId);
@@ -179,7 +179,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseOverriderDto overriderDto = null;
 
             // When
-            TestDelegate action = () => PoseOverriderContainerLoader.LoadPoseOverrider(overriderDto);
+            TestDelegate action = () => PoseOverriderContainerLoader.LoadPoseOverrider(0, overriderDto);
 
             // Then
             Assert.Throws<ArgumentNullException>(() => action());
@@ -197,7 +197,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             };
 
             // When
-            PoseOverrider overrider = PoseOverriderContainerLoader.LoadPoseOverrider(dto);
+            PoseOverrider overrider = PoseOverriderContainerLoader.LoadPoseOverrider(0, dto);
 
             // Then
             Assert.AreEqual(dto.poseIndexInPoseManager, overrider.PoseIndexInPoseManager);
@@ -232,7 +232,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             var nodeInstance = new Mock<UMI3DNodeInstance>(new Action(() => { }));
             var go = new GameObject("magnitudePoseNode");
             nodeInstance.Setup(x => x.transform).Returns(go.transform);
-            environmentServiceMock.Setup(x => x.GetNodeInstance(It.IsAny<ulong>())).Returns(nodeInstance.Object);
+            environmentServiceMock.Setup(x => x.GetNodeInstance(0, It.IsAny<ulong>())).Returns(nodeInstance.Object);
 
             var skeletonMock = new Mock<IPersonalSkeleton>();
             var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
@@ -240,7 +240,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
             
             // When
-            PoseOverrider overrider = PoseOverriderContainerLoader.LoadPoseOverrider(dto);
+            PoseOverrider overrider = PoseOverriderContainerLoader.LoadPoseOverrider(0, dto);
 
             // Then
             Assert.AreEqual(dto.poseIndexInPoseManager, overrider.PoseIndexInPoseManager);
@@ -260,7 +260,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // Given
             UMI3DPoseOverridersContainerDto dto = new();
-            ReadUMI3DExtensionData extensionData = new(dto);
+            ReadUMI3DExtensionData extensionData = new(0, dto);
 
             // When
             bool canReadResult = PoseOverriderContainerLoader.CanReadUMI3DExtension(extensionData);
@@ -274,7 +274,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // GIVEN
             UMI3DDto dto = new();
-            ReadUMI3DExtensionData extensionData = new(dto);
+            ReadUMI3DExtensionData extensionData = new(0, dto);
 
             // WHEN
             bool canReadResult = PoseOverriderContainerLoader.CanReadUMI3DExtension(extensionData);
@@ -292,16 +292,16 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // given
             UMI3DPoseOverridersContainerDto dto = new();
-            ReadUMI3DExtensionData extensionData = new(dto);
+            ReadUMI3DExtensionData extensionData = new(0, dto);
             poseOverriderContainerLoaderMock.CallBase = false;
-            poseOverriderContainerLoaderMock.Setup(x => x.Load(dto)).Verifiable();
+            poseOverriderContainerLoaderMock.Setup(x => x.Load(0, dto)).Verifiable();
             poseOverriderContainerLoaderMock.Setup(x => x.ReadUMI3DExtension(extensionData)).CallBase();
             
             // when
             await PoseOverriderContainerLoader.ReadUMI3DExtension(extensionData);
 
             // then
-            poseOverriderContainerLoaderMock.Verify(x => x.Load(dto));
+            poseOverriderContainerLoaderMock.Verify(x => x.Load(0, dto));
             
         }
 
@@ -314,7 +314,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // given
             var poseOverriderDto = new UMI3DPoseOverridersContainerDto();
-            UMI3DEntityInstance entityInstance = new(() => { })
+            UMI3DEntityInstance entityInstance = new(0, () => { })
             {
                 dto = poseOverriderDto
             };
@@ -323,9 +323,9 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 property = UMI3DPropertyKeys.ActivePoseOverrider,
             };
 
-            SetUMI3DPropertyData setData = new(propertyDto, entityInstance);
+            SetUMI3DPropertyData setData = new(0, propertyDto, entityInstance);
             poseOverriderContainerLoaderMock.CallBase = false;
-            poseOverriderContainerLoaderMock.Setup(x => x.Load(poseOverriderDto)).Verifiable();
+            poseOverriderContainerLoaderMock.Setup(x => x.Load(0, poseOverriderDto)).Verifiable();
             poseOverriderContainerLoaderMock.Setup(x => x.SetUMI3DProperty(setData)).CallBase();
 
             // when
@@ -333,7 +333,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             // then
             Assert.IsTrue(success);
-            poseOverriderContainerLoaderMock.Verify(x => x.Load(poseOverriderDto));
+            poseOverriderContainerLoaderMock.Verify(x => x.Load(0, poseOverriderDto));
         }
 
         [Test]
@@ -341,7 +341,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // given
             var poseOverriderDto = new UMI3DDto();
-            UMI3DEntityInstance entityInstance = new(() => { })
+            UMI3DEntityInstance entityInstance = new(0, () => { })
             {
                 dto = poseOverriderDto
             };
@@ -350,7 +350,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 property = 0uL,
             };
 
-            SetUMI3DPropertyData setData = new(propertyDto, entityInstance);
+            SetUMI3DPropertyData setData = new(0, propertyDto, entityInstance);
             poseOverriderContainerLoaderMock.CallBase = false;
             poseOverriderContainerLoaderMock.Setup(x => x.SetUMI3DProperty(setData)).CallBase();
 

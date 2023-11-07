@@ -39,13 +39,13 @@ namespace umi3d.cdk.interaction
         {
             var dto = value.dto as InteractableDto;
 
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,value.tokens);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(value.environmentId, dto.nodeId,value.tokens);
 
             if (e is UMI3DNodeInstance nodeI)
             {
                 value.node = nodeI.gameObject;
-                Interactable interactable = value.node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(dto);
-                UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
+                Interactable interactable = value.node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(value.environmentId, dto);
+                UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId,dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
             }
             else
                 throw (new Umi3dException($"Entity [{dto.nodeId}] is not a node"));
@@ -65,9 +65,9 @@ namespace umi3d.cdk.interaction
                     dto.notifySubObject = (bool)value.property.value;
                     break;
                 case UMI3DPropertyKeys.InteractableNodeId:
-                    RemoveInteractableOnNode(dto);
+                    RemoveInteractableOnNode(value.environmentId, dto);
                     dto.nodeId = (ulong)(long)value.property.value;
-                    setInteractableOnNode(dto);
+                    setInteractableOnNode(value.environmentId, dto);
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:
                     dto.hasPriority = (bool)value.property.value;
@@ -101,9 +101,9 @@ namespace umi3d.cdk.interaction
                     dto.notifySubObject = UMI3DSerializer.Read<bool>(value.container);
                     break;
                 case UMI3DPropertyKeys.InteractableNodeId:
-                    RemoveInteractableOnNode(dto);
+                    RemoveInteractableOnNode(value.environmentId, dto);
                     dto.nodeId = UMI3DSerializer.Read<ulong>(value.container);
-                    setInteractableOnNode(dto);
+                    setInteractableOnNode(value.environmentId, dto);
                     break;
                 case UMI3DPropertyKeys.InteractableHasPriority:
                     dto.hasPriority = UMI3DSerializer.Read<bool>(value.container);
@@ -155,9 +155,9 @@ namespace umi3d.cdk.interaction
         /// Remove the interactable on the scene graph.
         /// </summary>
         /// <param name="dto">Interactable to remove dto</param>
-        private static void RemoveInteractableOnNode(InteractableDto dto)
+        private static void RemoveInteractableOnNode(ulong environmentId, InteractableDto dto)
         {
-            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
+            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(environmentId, dto.nodeId);
             InteractableContainer interactable = node.gameObject.GetComponent<InteractableContainer>();
             if (interactable != null)
                 GameObject.Destroy(interactable);
@@ -167,12 +167,12 @@ namespace umi3d.cdk.interaction
         /// Set the interactable on the scene graph.
         /// </summary>
         /// <param name="dto">Interactable to add dto</param>
-        private static void setInteractableOnNode(InteractableDto dto)
+        private static void setInteractableOnNode(ulong environmentId, InteractableDto dto)
         {
-            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(dto.nodeId);
-            var interactable = UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as Interactable;
+            UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(environmentId, dto.nodeId);
+            var interactable = UMI3DEnvironmentLoader.GetEntity(environmentId, dto.id)?.Object as Interactable;
             if (interactable == null)
-                interactable = new Interactable(dto);
+                interactable = new Interactable(environmentId, dto);
             node.gameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
         }
     }

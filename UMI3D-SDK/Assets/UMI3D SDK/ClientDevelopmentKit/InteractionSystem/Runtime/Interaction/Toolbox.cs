@@ -43,7 +43,7 @@ namespace umi3d.cdk.interaction
             return instances[id] as Toolbox;
         }
 
-        public Toolbox(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto, parent) { }
+        public Toolbox(ulong environmentId, AbstractToolDto abstractDto, Toolbox parent) : base(environmentId, abstractDto, parent) { }
 
         /// <summary>
         /// Tools within the toolbox.

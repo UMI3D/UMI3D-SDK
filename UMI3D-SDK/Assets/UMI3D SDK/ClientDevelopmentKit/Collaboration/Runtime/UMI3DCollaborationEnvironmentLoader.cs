@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration.userCapture.pose;
@@ -80,15 +81,15 @@ namespace umi3d.cdk.collaboration
         }
 
         ///<inheritdoc/>
-        public override async Task ReadUMI3DExtension(GlTFEnvironmentDto _dto, GameObject node)
+        public override async Task ReadUMI3DExtension(ulong environmentId, GlTFEnvironmentDto _dto, GameObject node)
         {
-            await base.ReadUMI3DExtension(_dto, node);
+            await base.ReadUMI3DExtension(environmentId, _dto, node);
 
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
             if (dto == null) 
                 return;
 
-            userList = dto.userList.Select(u => new UMI3DUser(u)).ToList();
+            userList = dto.userList.Select(u => new UMI3DUser(environmentId, u)).ToList();
 
             PoseManager.Instance.Poses = dto.poses.ToDictionary(x => x.Key, x => x.Value.Select(p=> new SkeletonPose(p, isCustom: x.Key != UMI3DGlobalID.EnvironementId)).ToList() as IList<SkeletonPose>);
             poseLoader ??= new UMI3DCollaborationPoseOverriderContainerLoader();
@@ -98,7 +99,7 @@ namespace umi3d.cdk.collaboration
             {
                 dto.poseOverriderContainers.ForEach(x =>
                 {
-                   poseLoader.LoadContainer(x);
+                   poseLoader.LoadContainer(environmentId,x);
                 });
                 onEnvironmentLoaded.RemoveListener(LoadPoses);
             }
@@ -121,30 +122,31 @@ namespace umi3d.cdk.collaboration
             if (isSpeaking)
             {
                 if (user != null && user.onStartSpeakingAnimationId != 0)
-                    StartAnim(user.onStartSpeakingAnimationId);
+                    StartAnim(0,user.onStartSpeakingAnimationId);
             }
             else
             {
                 if (user != null && user.onStopSpeakingAnimationId != 0)
-                    StartAnim(user.onStopSpeakingAnimationId);
+                    StartAnim(0,user.onStopSpeakingAnimationId);
             }
         }
 
-        private async void StartAnim(ulong id)
+        private async void StartAnim(ulong environmentId,ulong id)
         {
-            var anim = UMI3DAbstractAnimation.Get(id);
+            var anim = UMI3DAbstractAnimation.Get(environmentId, id);
 
             if (anim != null)
             {
                 await anim.SetUMI3DProperty(
                     new SetUMI3DPropertyData(
+                        environmentId,
                         new SetEntityPropertyDto()
                         {
                             entityId = id,
                             property = UMI3DPropertyKeys.AnimationPlaying,
                             value = true
                         },
-                        GetEntity(id)
+                        GetEntity(environmentId,id)
                     )
                 );
                 anim.Start();
@@ -162,7 +164,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.UserList:
                     var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-                    return SetUserList(dto, data.property);
+                    return SetUserList(data.environmentId, dto, data.property);
 
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
@@ -241,23 +243,23 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
+        private bool SetUserList(ulong environmentId, UMI3DCollaborationEnvironmentDto dto, SetEntityPropertyDto property)
         {
             if (dto == null) return false;
 
             switch (property)
             {
                 case SetEntityListAddPropertyDto add:
-                    InsertUser(dto, add.index, add.value as UserDto);
+                    InsertUser(environmentId, dto, add.index, add.value as UserDto);
                     break;
                 case SetEntityListRemovePropertyDto rem:
                     RemoveUserAt(dto, rem.index);
                     break;
                 case SetEntityListPropertyDto set:
-                    ReplaceUser(dto, set.index, set.value as UserDto);
+                    ReplaceUser(environmentId, dto, set.index, set.value as UserDto);
                     break;
                 default:
-                    ReplaceAllUser(dto, property.value as List<UserDto>);
+                    ReplaceAllUser(environmentId, dto, property.value as List<UserDto>);
                     break;
             }
             return true;
@@ -285,16 +287,16 @@ namespace umi3d.cdk.collaboration
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
-                    InsertUser(dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
+                    InsertUser(container.environmentId, dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     RemoveUserAt(dto, UMI3DSerializer.Read<int>(container));
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
-                    ReplaceUser(dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
+                    ReplaceUser(container.environmentId, dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
                     break;
                 default:
-                    ReplaceAllUser(dto, UMI3DSerializer.ReadList<UserDto>(container));
+                    ReplaceAllUser(container.environmentId, dto, UMI3DSerializer.ReadList<UserDto>(container));
                     break;
             }
             return true;
@@ -329,13 +331,13 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
-        private void InsertUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
+        private void InsertUser(ulong environmentId,UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
         {
             if (userList.Exists((user) => user.id == userDto.id)) return;
 
             if (index >= 0 && index <= UserList.Count)
             {
-                userList.Insert(index, new UMI3DUser(userDto));
+                userList.Insert(index, new UMI3DUser(environmentId, userDto));
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
             }
@@ -363,7 +365,7 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        private void ReplaceUser(UMI3DCollaborationEnvironmentDto dto, int index, UserDto userNew)
+        private void ReplaceUser(ulong environmentId, UMI3DCollaborationEnvironmentDto dto, int index, UserDto userNew)
         {
             if (index < 0 || index > UserList.Count) return;
 
@@ -379,13 +381,13 @@ namespace umi3d.cdk.collaboration
                 if (userReadyListUpdated)
                     OnUpdateJoinnedUserList?.Invoke();
             }
-            else if (index == UserList.Count) InsertUser(dto, index, userNew);
+            else if (index == UserList.Count) InsertUser(environmentId, dto, index, userNew);
         }
 
-        private void ReplaceAllUser(UMI3DCollaborationEnvironmentDto dto, List<UserDto> usersNew)
+        private void ReplaceAllUser(ulong environmentId, UMI3DCollaborationEnvironmentDto dto, List<UserDto> usersNew)
         {
             foreach (UMI3DUser user in UserList) user.Destroy();
-            userList = usersNew.Select(u => new UMI3DUser(u)).ToList();
+            userList = usersNew.Select(u => new UMI3DUser(environmentId, u)).ToList();
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
         }

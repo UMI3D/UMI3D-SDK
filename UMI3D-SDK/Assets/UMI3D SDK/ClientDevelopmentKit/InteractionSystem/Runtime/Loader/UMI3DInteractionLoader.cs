@@ -42,7 +42,7 @@ namespace umi3d.cdk.interaction
         {
             var dto = value.dto as AbstractInteractionDto;
 
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId, dto.id, dto, null).NotifyLoaded();
 
         }
 

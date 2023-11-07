@@ -79,7 +79,7 @@ namespace umi3d.worldController
 
         public async void OnMessage(ulong timeStep, int groupId, byte[] bytes)
         {
-            var b = new ByteContainer(timeStep, bytes);
+            var b = new ByteContainer(0,timeStep, bytes);
             uint id = UMI3DSerializer.Read<uint>(b);
             switch (id)
             {

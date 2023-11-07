@@ -98,7 +98,7 @@ namespace umi3d.cdk
                         }
 
                         foreach (PreloadedSceneDto scene in scenesToLoad)
-                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, null, value.tokens));
+                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(value.environmentId, scene, null, value.tokens));
 
                         foreach (PreloadedSceneDto scene in scenesToUnload)
                             Unload(scene, null);
@@ -146,7 +146,7 @@ namespace umi3d.cdk
                         }
 
                         foreach (PreloadedSceneDto scene in scenesToLoad)
-                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, value.tokens));
+                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(value.environmentId, scene, value.tokens));
 
                         foreach (PreloadedSceneDto scene in scenesToUnload)
                             Unload(scene, null);

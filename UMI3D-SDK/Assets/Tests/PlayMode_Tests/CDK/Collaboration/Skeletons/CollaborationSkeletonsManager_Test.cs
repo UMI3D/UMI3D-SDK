@@ -122,7 +122,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             // GIVEN
             ulong userId = 1005uL;
             UserDto userDto = new UserDto() { id = userId };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
@@ -154,7 +154,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             // GIVEN
             ulong userId = 1005uL;
             UserDto userDto = new UserDto() { id = userId };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
 
@@ -187,7 +187,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             // GIVEN
             ulong userId = 1005uL;
             UserDto userDto = new UserDto() { id = userId };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             GameObject go = new GameObject("Skeleton created");
@@ -216,7 +216,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
 
@@ -247,7 +247,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
@@ -281,7 +281,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
@@ -311,7 +311,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(0, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();

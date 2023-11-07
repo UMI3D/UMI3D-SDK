@@ -24,6 +24,8 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DEntityInstance
     {
+        public readonly ulong EnvironmentId;
+
         /// <summary>
         /// Local copy of the received DTO.
         /// </summary>
@@ -44,10 +46,12 @@ namespace umi3d.cdk
         /// </summary>
         private Action LoadedCallback;
 
-        public UMI3DEntityInstance(Action loadedCallback)
+        public UMI3DEntityInstance(ulong environmentId, Action loadedCallback)
         {
             if (loadedCallback == null)
                 throw new Umi3dException("No instance should be created without loadedCallback");
+
+            this.EnvironmentId = environmentId;
 
             this.LoadedCallback = loadedCallback;
         }

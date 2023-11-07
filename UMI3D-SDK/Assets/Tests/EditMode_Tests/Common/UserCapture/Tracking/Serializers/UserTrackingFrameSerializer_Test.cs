@@ -85,7 +85,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
                 dto.customPosesIndexes.Add(rng.Next());
 
             serializer.Write(dto, out Bytable bytable);
-            ByteContainer byteContainer = new ByteContainer(1, bytable.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, bytable.ToBytes());
 
             // WHEN
             serializer.Read(byteContainer, out bool readable, out UserTrackingFrameDto result);

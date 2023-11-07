@@ -39,7 +39,7 @@ namespace umi3d.cdk.menu.interaction
         /// Set up the menu for the toolbox.
         /// </summary>
         /// <param name="tool"></param>
-        public async void Setup(Toolbox toolbox)
+        public async void Setup(ulong environmentId, Toolbox toolbox)
         {
             this.toolbox = toolbox;
             Name = toolbox.name;
@@ -59,7 +59,7 @@ namespace umi3d.cdk.menu.interaction
             foreach(var interation in toolbox.interactions)
             {
                 var inter = await interation;
-                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, toolbox.id));
+                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter,environmentId, toolbox.id));
             }
         }
     }

@@ -71,7 +71,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         wcClient = new UMI3DWorldControllerClient1(media);
         if (await wcClient.Connect())
         {
-            nvClient = await wcClient.ConnectToEnvironment();
+            nvClient = await wcClient.ConnectToEnvironment(dto.id);
 
             while (!nvClient.IsConnected() || nvClient.environement == null)
                 await Task.Yield();

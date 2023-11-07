@@ -36,7 +36,7 @@ namespace umi3d.cdk
         public UnityEvent onResourcesLoaded { get; }
         public UnityEvent onEnvironmentLoaded { get; }
 
-        Task ReadUMI3DExtension(GlTFEnvironmentDto dto, GameObject node);
+        Task ReadUMI3DExtension(ulong environmentId, GlTFEnvironmentDto dto, GameObject node);
 
         Material GetBaseMaterial();
 
@@ -44,8 +44,8 @@ namespace umi3d.cdk
 
         Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress);
 
-        void WaitUntilEntityLoaded(ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null);
+        void WaitUntilEntityLoaded(ulong environmentid, ulong id, Action<UMI3DEntityInstance> entityLoaded, Action entityFailedToLoad = null);
 
-        Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong id, List<CancellationToken> tokens);
+        Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens);
     }
 }

@@ -36,6 +36,11 @@ namespace umi3d.cdk.volumes
         /// </summary>
         public ulong id;
 
+        /// <summary>
+        /// UMI3D id of the cell.
+        /// </summary>
+        public ulong environmentId;
+
         /// <inheritdoc/>
         public override void GetBase(System.Action<Mesh> onsuccess, float angleLimit)
         {
@@ -54,6 +59,8 @@ namespace umi3d.cdk.volumes
         {
             return id;
         }
+
+        public override ulong EnvironmentId() => environmentId;
 
         /// <inheritdoc/>
         public override bool IsInside(Vector3 point, Space relativeTo)

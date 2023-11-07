@@ -61,7 +61,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(bonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
@@ -87,7 +87,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(anchorBonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
@@ -114,7 +114,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             };
             poseSerializerModule.Write(nodeAnchoredBonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
@@ -142,7 +142,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(floorAnchoredBonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out BonePoseDto result);
             Assert.IsTrue(readable);
@@ -171,7 +171,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseDto result);
@@ -212,7 +212,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseOverriderDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseOverriderDto result);
             Assert.IsTrue(readable);
@@ -254,7 +254,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(duration, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out DurationDto result);
             Assert.IsTrue(readable);
