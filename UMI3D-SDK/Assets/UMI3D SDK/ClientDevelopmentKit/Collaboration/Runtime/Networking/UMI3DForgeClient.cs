@@ -456,7 +456,7 @@ namespace umi3d.cdk.collaboration
                     bool waitforreparenting = true;
                     MainThreadManager.Run(async () =>
                     {
-                        UMI3DNavigation.SetFrame(frame);
+                        UMI3DNavigation.SetFrame(0, frame);
                         await UMI3DAsyncManager.Yield();
                         waitforreparenting = false;
                     });
@@ -466,7 +466,7 @@ namespace umi3d.cdk.collaboration
                 case NavigateDto navigate:
                     MainThreadManager.Run(() =>
                     {
-                        StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                        StartCoroutine(UMI3DNavigation.Navigate(0, navigate));
                     });
 
                     break;
@@ -564,7 +564,7 @@ namespace umi3d.cdk.collaboration
                         var nav = new NavigateDto() { position = pos };
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            StartCoroutine(UMI3DNavigation.Navigate(0, nav));
                         });
                     }
                     break;
@@ -575,7 +575,7 @@ namespace umi3d.cdk.collaboration
                         var nav = new TeleportDto() { position = pos, rotation = rot };
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            StartCoroutine(UMI3DNavigation.Navigate(0, nav));
 
                         });
                     }
@@ -596,7 +596,7 @@ namespace umi3d.cdk.collaboration
                         {
                             try
                             {
-                                UMI3DNavigation.SetFrame(frame);
+                                UMI3DNavigation.SetFrame(0, frame);
                             }
                             catch (Exception e)
                             {

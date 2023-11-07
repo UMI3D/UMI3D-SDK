@@ -203,7 +203,7 @@ namespace umi3d.cdk.collaboration
         public UserInfo UserDto = new UserInfo();
 
 
-        public UMI3DEnvironmentClient1(ulong environmentID,EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient1 worldControllerClient)
+        public UMI3DEnvironmentClient1(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient1 worldControllerClient)
         {
             this.environmentId = environmentId;
             this.isJoinning = false;

@@ -184,7 +184,7 @@ namespace umi3d.cdk.interaction
             else
             {
                 AbstractInteractionDto[] interactions = tool.interactionsLoaded.ToArray();
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id, hoveredObjectId);
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, tool.environmentId, interactions, tool.id, hoveredObjectId);
                 associatedInputs.Add(tool.id, inputs);
             }
 
@@ -256,7 +256,7 @@ namespace umi3d.cdk.interaction
             else
             {
                 var interaction = new AbstractInteractionDto[] { abstractInteractionDto };
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interaction, tool.id, GetCurrentHoveredId());
+                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, tool.environmentId, interaction, tool.id, GetCurrentHoveredId());
                 if (associatedInputs.ContainsKey(tool.id))
                 {
                     associatedInputs[tool.id] = associatedInputs[tool.id].Concat(inputs).ToArray();

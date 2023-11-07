@@ -200,14 +200,14 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="collider">collider.</param>
         /// <returns></returns>
-        public static ulong GetNodeID(ulong environmentid, Collider collider) { return Exists ? Instance.entitiesCollection[environmentid].GetNodeID(collider) : 0; }
+        public static ulong GetNodeID(Collider collider) { return Exists ? Instance.entitiesCollection.Select( e => e.Value.GetNodeID(collider)).FirstOrDefault( id => id != 0) : 0; }
 
         /// <summary>
         /// Get node id associated to <paramref name="t"/>.
         /// </summary>
         /// <param name="t"></param>
         /// <returns></returns>
-        public static ulong GetNodeID(ulong environmentid, Transform t) { return Exists ? Instance.entitiesCollection[environmentid].GetNodeID(t) : 0; }
+        public static ulong GetNodeID(Transform t) { return Exists ? Instance.entitiesCollection.Select(e => e.Value.GetNodeID(t)).FirstOrDefault(id => id != 0) : 0; }
 
         /// <summary>
         /// Register a node instance.

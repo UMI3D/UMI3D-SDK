@@ -46,14 +46,14 @@ namespace umi3d.cdk
             currentNav.Activate();
         }
 
-        public static void SetFrame(FrameRequestDto frameRequest)
+        public static void SetFrame(ulong environmentId, FrameRequestDto frameRequest)
         {
             UnityEngine.Debug.LogError("Need to handle rescaling");
             if (Exists && Instance.currentNav != null)
             {
                 onUpdateFrameDelegate?.Invoke(frameRequest.FrameId);
 
-                Instance.currentNav.UpdateFrame(frameRequest);
+                Instance.currentNav.UpdateFrame(environmentId, frameRequest);
 
                 var fConfirmation = new FrameConfirmationDto()
                 {
@@ -68,17 +68,17 @@ namespace umi3d.cdk
         /// Move the user acording to a <see cref="NavigateDto"/>.
         /// </summary>
         /// <param name="dto"></param>
-        public static IEnumerator Navigate(NavigateDto dto)
+        public static IEnumerator Navigate(ulong environmentId, NavigateDto dto)
         {
             if (Exists && Instance.currentNav != null)
             {
                 switch (dto)
                 {
                     case TeleportDto teleportDto:
-                        Instance.currentNav.Teleport(teleportDto);
+                        Instance.currentNav.Teleport(environmentId, teleportDto);
                         break;
                     default:
-                        Instance.currentNav.Navigate(dto);
+                        Instance.currentNav.Navigate(environmentId, dto);
                         break;
                 }
             }
