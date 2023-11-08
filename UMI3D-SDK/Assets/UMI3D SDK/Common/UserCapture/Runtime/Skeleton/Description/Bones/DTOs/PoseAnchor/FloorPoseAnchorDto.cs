@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.common.userCapture.description
 {
     [System.Serializable]
     public class FloorPoseAnchorDto : PoseAnchorDto

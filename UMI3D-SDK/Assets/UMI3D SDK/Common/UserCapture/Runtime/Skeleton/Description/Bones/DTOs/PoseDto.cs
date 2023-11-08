@@ -15,9 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.userCapture.description;
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.common.userCapture.description
 {
     /// <summary>
     /// Description of a hierarchy with rotations.

@@ -4,6 +4,7 @@ using System;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
