@@ -15,9 +15,8 @@ limitations under the License.
 */
 
 using System;
-using umi3d.common.userCapture.description;
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.common.userCapture.description
 {
     /// <summary>
     /// Serializer for <see cref="PoseDto"/> and <see cref="PoseAnchorDto"/>.

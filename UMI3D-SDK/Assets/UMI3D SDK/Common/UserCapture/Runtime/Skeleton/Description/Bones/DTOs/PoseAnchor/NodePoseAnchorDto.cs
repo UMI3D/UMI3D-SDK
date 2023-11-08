@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.common.userCapture.description
 {
     public class NodePoseAnchorDto : PoseAnchorDto
     {

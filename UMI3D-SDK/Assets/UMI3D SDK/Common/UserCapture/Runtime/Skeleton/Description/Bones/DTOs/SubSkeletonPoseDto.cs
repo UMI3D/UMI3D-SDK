@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 
-namespace umi3d.common.userCapture.pose
+namespace umi3d.common.userCapture.description
 {
     public class SubSkeletonPoseDto : UMI3DDto
     {
