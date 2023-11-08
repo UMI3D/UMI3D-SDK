@@ -28,6 +28,6 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Where the pose starts on the skeleotn
         /// </summary>
-        public BonePoseDto boneAnchor { get; set; }
+        public PoseAnchorDto boneAnchor { get; set; }
     }
 }

@@ -23,6 +23,7 @@ using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.Common
 {
+    [TestFixture, TestOf(nameof(PoseConditionSerializerModule))]
     public class PoseConditionSerializerModule_Test
     {
         private PoseConditionSerializerModule poseConditionSerializerModule = null;

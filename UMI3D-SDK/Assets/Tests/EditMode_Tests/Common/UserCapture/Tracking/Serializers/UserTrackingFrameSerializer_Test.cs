@@ -76,13 +76,9 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
             for (int i = 0; i < nbTrackedbones; i++)
                 dto.trackedBones.Add(new ControllerDto() { position = new() });
 
-            dto.environmentPosesIndexes = new(nbServerPoses);
+            dto.poses = new(nbServerPoses);
             for (int i = 0; i < nbServerPoses; i++)
-                dto.environmentPosesIndexes.Add(rng.Next());
-
-            dto.customPosesIndexes = new(nbUserPoses);
-            for (int i = 0; i < nbServerPoses; i++)
-                dto.customPosesIndexes.Add(rng.Next());
+                dto.poses.Add((ulong)rng.Next());
 
             serializer.Write(dto, out Bytable bytable);
             ByteContainer byteContainer = new ByteContainer(1, bytable.ToBytes());
@@ -102,13 +98,9 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
             for (var i = 0; i < dto.trackedBones.Count; i++)
                 Assert.AreEqual(dto.trackedBones[i].boneType, result.trackedBones[i].boneType);
 
-            Assert.AreEqual(dto.environmentPosesIndexes.Count, result.environmentPosesIndexes.Count);
-            for (var i = 0; i < dto.environmentPosesIndexes.Count; i++)
-                Assert.AreEqual(dto.environmentPosesIndexes[i], result.environmentPosesIndexes[i]);
-
-            Assert.AreEqual(dto.customPosesIndexes.Count, result.customPosesIndexes.Count);
-            for (var i = 0; i < dto.customPosesIndexes.Count; i++)
-                Assert.AreEqual(dto.customPosesIndexes[i], result.customPosesIndexes[i]);
+            Assert.AreEqual(dto.poses.Count, result.poses.Count);
+            for (var i = 0; i < dto.poses.Count; i++)
+                Assert.AreEqual(dto.poses[i], result.poses[i]);
         }
 
         #endregion WriteRead

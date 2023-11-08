@@ -61,7 +61,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
                 mappings.Enqueue(mappingMock.Object);
             }
 
-            skeletonMapper.BoneAnchor = new BonePoseDto();
+            skeletonMapper.BoneAnchor = new PoseAnchorDto();
             skeletonMapper.Mappings = mappings.ToList();
 
             // WHEN

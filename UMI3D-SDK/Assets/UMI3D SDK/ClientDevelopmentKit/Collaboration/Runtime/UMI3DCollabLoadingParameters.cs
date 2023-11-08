@@ -24,7 +24,6 @@ using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
-using umi3d.cdk.collaboration.userCapture.pose;
 
 namespace umi3d.cdk.collaboration
 {
@@ -78,7 +77,8 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DSubMeshNodeLoader())
             .SetNext(new UMI3DVolumeLoader())
             .SetNext(new UMI3DUINodeLoader())
-            .SetNext(new UMI3DCollaborationPoseOverriderContainerLoader())
+            .SetNext(new PoseClipLoader())
+            .SetNext(new PoseAnimatorLoader())
             .SetNext(new emotes.UMI3DEmotesConfigLoader())
             .SetNext(new emotes.UMI3DEmoteLoader())
             .SetNext(new CollaborationBindingLoader())

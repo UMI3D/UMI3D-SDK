@@ -36,33 +36,33 @@ namespace umi3d.cdk.userCapture.pose
 
         #region Dependency Injection
 
-        private readonly IPoseManager poseManagerService;
+        private readonly IEnvironmentManager environmentManagerService;
 
-        public PoseSubskeleton()
+        public PoseSubskeleton() : this(environmentManagerService: UMI3DEnvironmentLoader.Instance)
         {
-            poseManagerService = PoseManager.Instance;
         }
 
-        public PoseSubskeleton(IPoseManager poseManager)
+        public PoseSubskeleton(IEnvironmentManager environmentManagerService)
         {
-            this.poseManagerService = poseManager;
+            this.environmentManagerService = environmentManagerService;
         }
 
         #endregion Dependency Injection
 
         /// <inheritdoc/>
-        public IReadOnlyList<SkeletonPose> AppliedPoses => appliedPoses;
-        protected List<SkeletonPose> appliedPoses = new();
+        public IReadOnlyList<PoseClip> AppliedPoses => appliedPoses;
+
+        protected List<PoseClip> appliedPoses = new();
 
         public int Priority => PRIORITY;
 
         private const int PRIORITY = 100;
 
         /// <inheritdoc/>
-        public void StartPose(IEnumerable<SkeletonPose> posesToAdd, bool isOverriding = false)
+        public void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false)
         {
             if (posesToAdd == null)
-                throw new ArgumentNullException(nameof(posesToAdd), $"Cannot start pose.");
+                throw new ArgumentNullException(nameof(posesToAdd), $"Cannot start poses.");
 
             if (isOverriding)
                 StopAllPoses();
@@ -71,7 +71,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void StartPose(SkeletonPose poseToAdd, bool isOverriding = false)
+        public void StartPose(PoseClip poseToAdd, bool isOverriding = false)
         {
             if (poseToAdd == null)
                 throw new ArgumentNullException(nameof(poseToAdd), $"Cannot start pose.");
@@ -83,7 +83,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void StopPose(IEnumerable<SkeletonPose> posesToStop)
+        public void StopPose(IEnumerable<PoseClip> posesToStop)
         {
             if (posesToStop == null)
                 return;
@@ -92,7 +92,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void StopPose(SkeletonPose poseToStop)
+        public void StopPose(PoseClip poseToStop)
         {
             if (poseToStop == null)
                 return;
@@ -101,15 +101,15 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void StopPose(IEnumerable<int> posesToStopIds)
+        public void StopPose(IEnumerable<ulong> posesToStopIds)
         {
-            StopPose(posesToStopIds.Select(poseId => appliedPoses.Find(x => x.Index == poseId)));
+            StopPose(posesToStopIds.Select(poseId => appliedPoses.Find(x => x.Id == poseId)));
         }
 
         /// <inheritdoc/>
-        public void StopPose(int poseToStopId)
+        public void StopPose(ulong poseToStopId)
         {
-            StopPose(appliedPoses.Find(x => x.Index == poseToStopId));
+            StopPose(appliedPoses.Find(x => x.Id == poseToStopId));
         }
 
         /// <inheritdoc/>
@@ -143,7 +143,6 @@ namespace umi3d.cdk.userCapture.pose
             return poseDto;
         }
 
-
         private Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
 
         /// <summary>
@@ -155,7 +154,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private (BoneDto bone, SubSkeletonBoneDto subBone) GetBonePose(UMI3DSkeletonHierarchy hierarchy, BoneDto boneDto, SkeletonPose pose)
+        private (BoneDto bone, SubSkeletonBoneDto subBone) GetBonePose(UMI3DSkeletonHierarchy hierarchy, BoneDto boneDto, PoseClip pose)
         {
             if (boneDto == null)
                 throw new ArgumentNullException(nameof(boneDto));
@@ -172,7 +171,7 @@ namespace umi3d.cdk.userCapture.pose
 
             var parentBone = pose.Bones.Find(b => b.boneType == relation.boneTypeParent);
 
-            SubSkeletonBoneDto subBone = new() { boneType= boneType };
+            SubSkeletonBoneDto subBone = new() { boneType = boneType };
             if (parentBone == default || parentBone.boneType == BoneType.None) // bone has no parent
             {
                 subBone.localRotation = boneDto.rotation;
@@ -198,70 +197,32 @@ namespace umi3d.cdk.userCapture.pose
             if (trackingFrame is null)
                 throw new ArgumentNullException(nameof(trackingFrame));
 
-            StartUserCustomPoses(trackingFrame);
-
-            StartEnvironmentPoses(trackingFrame);
+            StartPoses(trackingFrame);
 
             // remove not activated poses
-            int nbObjToRemove = appliedPoses.Count - (trackingFrame.customPosesIndexes.Count + trackingFrame.environmentPosesIndexes.Count);
+            int nbObjToRemove = appliedPoses.Count - trackingFrame.poses.Count;
             if (nbObjToRemove > 0)
             {
-                Queue<SkeletonPose> posesToRemove = new Queue<SkeletonPose>(nbObjToRemove);
+                Queue<PoseClip> posesToRemove = new Queue<PoseClip>(nbObjToRemove);
                 appliedPoses.ForEach(pose =>
                 {
-                    if (!trackingFrame.customPosesIndexes.Contains(pose.Index) && !trackingFrame.environmentPosesIndexes.Contains(pose.Index))
+                    if (!trackingFrame.poses.Contains(pose.Id))
                         posesToRemove.Enqueue(pose);
                 });
                 StopPose(posesToRemove);
             }
         }
 
-        private void StartUserCustomPoses(UserTrackingFrameDto trackingFrame)
+        private void StartPoses(UserTrackingFrameDto trackingFrame)
         {
-            if (trackingFrame.customPosesIndexes.Count > 0)
+            foreach (ulong poseId in trackingFrame.poses)
             {
-                if (poseManagerService.Poses.TryGetValue(trackingFrame.userId, out IList<SkeletonPose> userPoses))
-                {
-                    foreach (var poseIndex in trackingFrame.customPosesIndexes)
-                    {
-                        if (poseIndex <= 0 || poseIndex >= userPoses.Count)
-                        {
-                            UMI3DLogger.LogWarning($"Cannot apply custom pose of user {trackingFrame.userId}. Invalid pose index {poseIndex}.", DEBUG_SCOPE);
-                            continue;
-                        }
+                //at load, could receive tracking frame without having the pose
+                UMI3DEntityInstance poseClipEntityInstance = environmentManagerService.TryGetEntityInstance(poseId);
+                PoseClip poseClip = poseClipEntityInstance?.Object as PoseClip;
 
-                        var pose = userPoses[poseIndex];
-
-                        if (!appliedPoses.Contains(pose))
-                            StartPose(pose);
-                    }
-                }
-                else
-                {
-                    UMI3DLogger.LogWarning($"Cannot apply custom pose of user {trackingFrame.userId}. User's custom poses not found.", DEBUG_SCOPE);
-                }
-            }
-        }
-
-        private void StartEnvironmentPoses(UserTrackingFrameDto trackingFrame)
-        {
-            foreach (var poseIndex in trackingFrame.environmentPosesIndexes)
-            {
-                if (!poseManagerService.Poses.TryGetValue(UMI3DGlobalID.EnvironementId, out IList<SkeletonPose> userPoses))
-                {
-                    UMI3DLogger.LogWarning($"Cannot apply environment pose for user {trackingFrame.userId}. Environment poses not found.", DEBUG_SCOPE);
-                    continue;
-                }
-                if (poseIndex <= 0 || poseIndex >= userPoses.Count)
-                {
-                    UMI3DLogger.LogWarning($"Cannot apply environment pose for user {trackingFrame.userId}. Invalid pose index {poseIndex}.", DEBUG_SCOPE);
-                    continue;
-                }
-
-                var pose = userPoses[poseIndex];
-
-                if (!appliedPoses.Contains(pose))
-                    StartPose(pose);
+                if (poseClipEntityInstance is not null && !appliedPoses.Contains(poseClip))
+                    StartPose(poseClip);
             }
         }
 
@@ -271,19 +232,11 @@ namespace umi3d.cdk.userCapture.pose
             if (trackingFrame == null)
                 throw new ArgumentNullException(nameof(trackingFrame));
 
-            trackingFrame.customPosesIndexes ??= new();
-            trackingFrame.environmentPosesIndexes ??= new();
+            trackingFrame.poses ??= new(appliedPoses.Count);
 
             appliedPoses.ForEach((pose) =>
             {
-                if (pose.IsCustom)
-                {
-                    trackingFrame.customPosesIndexes.Add(pose.Index);
-                }
-                else
-                {
-                    trackingFrame.environmentPosesIndexes.Add(pose.Index);
-                }
+                trackingFrame.poses.Add(pose.Id);
             });
         }
     }

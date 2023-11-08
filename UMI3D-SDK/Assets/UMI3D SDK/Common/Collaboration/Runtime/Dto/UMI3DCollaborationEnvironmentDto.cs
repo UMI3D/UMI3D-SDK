@@ -13,9 +13,9 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 using System.Collections.Generic;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.userCapture.pose;
 
 namespace umi3d.common.collaboration.dto
 {
@@ -27,19 +27,5 @@ namespace umi3d.common.collaboration.dto
         /// Users initialized through this list are added/deleted through transactions
         /// when they connect/disconnect.
         public List<UserDto> userList { get; set; }
-
-        /// <summary>
-        /// A dictionary that contains all the poses already loaded in the environment
-        /// key : user Id 
-        /// value : list of all the poses of this user
-        /// </summary>
-        public Dictionary<ulong, List<PoseDto>> poses { get; set; }
-
-        /// <summary>
-        /// A dictionary that contains all the poses already loaded in the environment
-        /// key : user Id 
-        /// value : list of all the poses of this user
-        /// </summary>
-        public List<UMI3DPoseOverridersContainerDto> poseOverriderContainers { get; set; } = new();
     }
 }
