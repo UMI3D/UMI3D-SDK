@@ -20,8 +20,6 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
 {
-    public class GlobalToolEvent : UnityEvent<GlobalTool> { }
-
     /// <summary>
     /// Direct instanciation of <see cref="AbstractTool"/>.
     /// </summary>

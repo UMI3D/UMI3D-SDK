@@ -13,19 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using inetum.unityUtils;
 using UnityEngine;
 
-namespace inetum.unityUtils
+namespace umi3d.cdk.interaction
 {
-    public class EventT_SO<T> : ScriptableObject
+    [CreateAssetMenu(fileName = "New GlobalTool Event", menuName = "Utils/Events/GlobalTool Event")]
+    public class EventGlobalTool : EventT_SO<GlobalTool>
     {
-#if UNITY_EDITOR
-
-        [SerializeField, Tooltip("Add a description to this ScriptableObject"), TextArea]
-        string description;
-
-#endif
-
-        public NotifyingVariable<T> variable = new();
+        
     }
 }

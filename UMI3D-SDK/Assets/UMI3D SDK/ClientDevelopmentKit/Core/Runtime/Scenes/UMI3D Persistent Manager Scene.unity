@@ -160,6 +160,30 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     address: 
+  globalToolCreated:
+    loadingSource: 0
+    reference:
+      m_AssetGUID: b831c86afe0781a4bbaf05d6382aa722
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    address: 
+  globalToolUpdated:
+    loadingSource: 0
+    reference:
+      m_AssetGUID: 2e1813167964a424785c7b0255b02468
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    address: 
+  globalToolDeleted:
+    loadingSource: 0
+    reference:
+      m_AssetGUID: 665e2cf9402f1694b873b9df3886b74d
+      m_SubObjectName: 
+      m_SubObjectType: 
+      m_EditorAssetChanged: 0
+    address: 
 --- !u!4 &457544246
 Transform:
   m_ObjectHideFlags: 0
