@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.menu;
@@ -29,7 +30,7 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public class GlobalToolMenuManager : inetum.unityUtils.SingleBehaviour<GlobalToolMenuManager>
     {
-        public MenuAsset menuAsset;
+        public SerializedAddressable<MenuAsset> menuAssetAddressable;
 
         /// <summary>
         /// Menus needing to be stored into menuAsset.menu but missing their parent (not recieved yet).
@@ -40,6 +41,7 @@ namespace umi3d.cdk.interaction
 
         private void Start()
         {
+            menuAssetAddressable.LoadAssetAsync();
             UMI3DGlobalToolLoader.SubscribeToGlobalToolCreation(OnToolCreation);
             UMI3DGlobalToolLoader.SubscribeToGlobalToolUpdate(OnToolUpdate);
             UMI3DGlobalToolLoader.SubscribeToGlobalToolDelete(OnToolDelete);
@@ -75,8 +77,11 @@ namespace umi3d.cdk.interaction
                 }
                 else
                 {
-                    menuAsset.menu.Add(tbmenu);
-                    tbmenu.parent = menuAsset.menu;
+                    menuAssetAddressable.NowOrLater(menuAsset =>
+                    {
+                        menuAsset.menu.Add(tbmenu);
+                        tbmenu.parent = menuAsset.menu;
+                    });
                     toolboxIdToMenu.Add(dto.id, tbmenu);
                 }
 
@@ -119,8 +124,11 @@ namespace umi3d.cdk.interaction
                 }
                 else
                 {
-                    menuAsset.menu.Add(menu);
-                    menu.parent = menuAsset.menu;
+                    menuAssetAddressable.NowOrLater(menuAsset =>
+                    {
+                        menuAsset.menu.Add(menu);
+                        menu.parent = menuAsset.menu;
+                    });
                 }
             }
         }
