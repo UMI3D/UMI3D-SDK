@@ -14,13 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
+using inetum.unityUtils;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
-using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
 {
@@ -31,37 +29,24 @@ namespace umi3d.cdk.interaction
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
 
-        #region CRUD events
-        private static readonly GlobalToolEvent onGlobalToolCreation = new GlobalToolEvent();
-        private static readonly GlobalToolEvent onGlobalToolUpdate = new GlobalToolEvent();
-        private static readonly GlobalToolEvent onGlobalToolDelete = new GlobalToolEvent();
+        static SerializedAddressable<EventGlobalTool> globalToolCreated = new();
+        static SerializedAddressable<EventGlobalTool> globalToolUpdated = new();
+        static SerializedAddressable<EventGlobalTool> globalToolDeleted = new();
 
-        public static void SubscribeToGlobalToolCreation(UnityAction<GlobalTool> callback)
+        public UMI3DGlobalToolLoader()
         {
-            onGlobalToolCreation.AddListener(callback);
-        }
-        public static void UnsubscribeToGlobalToolCreation(UnityAction<GlobalTool> callback)
-        {
-            onGlobalToolCreation.RemoveListener(callback);
-        }
-        public static void SubscribeToGlobalToolUpdate(UnityAction<GlobalTool> callback)
-        {
-            onGlobalToolUpdate.AddListener(callback);
-        }
-        public static void UnsubscribeToGlobalToolUpdate(UnityAction<GlobalTool> callback)
-        {
-            onGlobalToolUpdate.RemoveListener(callback);
-        }
-        public static void SubscribeToGlobalToolDelete(UnityAction<GlobalTool> callback)
-        {
-            onGlobalToolDelete.AddListener(callback);
-        }
-        public static void UnsubscribeToGlobalToolDelete(UnityAction<GlobalTool> callback)
-        {
-            onGlobalToolDelete.RemoveListener(callback);
-        }
+            globalToolCreated.loadingSource = LoadingSourceEnum.Address;
+            globalToolCreated.address = "umi3d_globalTool_created_event";
+            globalToolCreated.LoadAssetAsync();
 
-        #endregion
+            globalToolUpdated.loadingSource = LoadingSourceEnum.Address;
+            globalToolUpdated.address = "umi3d_globalTool_updated_event";
+            globalToolUpdated.LoadAssetAsync();
+
+            globalToolDeleted.loadingSource = LoadingSourceEnum.Address;
+            globalToolDeleted.address = "umi3d_globalTool_deleted_event";
+            globalToolDeleted.LoadAssetAsync();
+        }
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
@@ -85,14 +70,25 @@ namespace umi3d.cdk.interaction
 
             if (dto is ToolboxDto toolbox)
             {
-                var tool = new Toolbox(dto, parent);
+                var tool = new Toolbox(toolbox, parent);
+                globalToolCreated.NowOrLater(evt =>
+                {
+                    evt.variable.value = tool;
+                });
+
                 var subTools = new Stack<GlobalToolDto>(toolbox.tools);
-                onGlobalToolCreation?.Invoke(tool);
                 while (subTools.Count > 0)
+                {
                     await ReadUMI3DExtension(subTools.Pop(), tool);
+                }
             }
             else
-                onGlobalToolCreation?.Invoke(new GlobalTool(dto, parent));
+            {
+                globalToolCreated.NowOrLater(evt =>
+                {
+                    evt.variable.value = new GlobalTool(dto, parent);
+                });
+            }
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
@@ -104,7 +100,10 @@ namespace umi3d.cdk.interaction
 
             if (await base.SetUMI3DProperty(data))
             {
-                onGlobalToolUpdate.Invoke(GlobalTool.GetGlobalTool(dto.id));
+                globalToolUpdated.NowOrLater(evt =>
+                {
+                    evt.variable.value = GlobalTool.GetGlobalTool(dto.id);
+                });
                 return true;
             }
 
@@ -148,7 +147,10 @@ namespace umi3d.cdk.interaction
                                 await ReadUMI3DExtension(t, null);
                             break;
                     }
-                    onGlobalToolUpdate?.Invoke(tb);
+                    globalToolUpdated.NowOrLater(evt =>
+                    {
+                        evt.variable.value = tb;
+                    });
                     return true;
                 default:
                     return false;
@@ -203,7 +205,10 @@ namespace umi3d.cdk.interaction
                                 await ReadUMI3DExtension(t, null);
                             break;
                     }
-                    onGlobalToolUpdate?.Invoke(tb);
+                    globalToolUpdated.NowOrLater(evt =>
+                    {
+                        evt.variable.value = tb;
+                    });
                     return true;
                 //todo
                 default:
@@ -221,7 +226,10 @@ namespace umi3d.cdk.interaction
         {
             var t = GlobalTool.GetGlobalTool(tool.id);
             t.Delete();
-            onGlobalToolDelete?.Invoke(t);
+            globalToolDeleted.NowOrLater(evt =>
+            {
+                evt.variable.value = t;
+            });
         }
 
         /// <summary>

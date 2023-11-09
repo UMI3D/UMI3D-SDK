@@ -1,6 +1,8 @@
 {
     "name": "UMI3D.CDK.InteractionSystem",
+    "rootNamespace": "",
     "references": [
+        "GUID:84651a3751eca9349aac36a66bba901b",
         "GUID:29a403b1410bc9e44b9b0cbcfde58e71",
         "GUID:8537d47cf9ea6504d84cf56365c6d93b",
         "GUID:6e34c4b4c3202a14eb95e0a784041765",

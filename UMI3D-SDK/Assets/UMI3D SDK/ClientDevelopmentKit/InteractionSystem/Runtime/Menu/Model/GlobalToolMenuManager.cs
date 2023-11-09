@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.menu;
@@ -29,7 +30,10 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public class GlobalToolMenuManager : inetum.unityUtils.SingleBehaviour<GlobalToolMenuManager>
     {
-        public MenuAsset menuAsset;
+        public SerializedAddressable<MenuAsset> menuAssetAddressable;
+        public SerializedAddressable<EventGlobalTool> globalToolCreated;
+        public SerializedAddressable<EventGlobalTool> globalToolUpdated;
+        public SerializedAddressable<EventGlobalTool> globalToolDeleted;
 
         /// <summary>
         /// Menus needing to be stored into menuAsset.menu but missing their parent (not recieved yet).
@@ -38,18 +42,52 @@ namespace umi3d.cdk.interaction
 
         private readonly Dictionary<ulong, AbstractMenuItem> toolboxIdToMenu = new Dictionary<ulong, AbstractMenuItem>();
 
-        private void Start()
+        protected override void Awake()
         {
-            UMI3DGlobalToolLoader.SubscribeToGlobalToolCreation(OnToolCreation);
-            UMI3DGlobalToolLoader.SubscribeToGlobalToolUpdate(OnToolUpdate);
-            UMI3DGlobalToolLoader.SubscribeToGlobalToolDelete(OnToolDelete);
+            base.Awake();
+            menuAssetAddressable.LoadAssetAsync();
+            globalToolCreated.LoadAssetAsync();
+            globalToolUpdated.LoadAssetAsync();
+            globalToolDeleted.LoadAssetAsync();
+        }
+
+        private void OnEnable()
+        {
+            globalToolCreated.NowOrLater(evt =>
+            {
+                evt.variable.valueChanged += OnToolCreation;
+            });
+            globalToolUpdated.NowOrLater(evt =>
+            {
+                evt.variable.valueChanged += OnToolUpdate;
+            });
+            globalToolDeleted.NowOrLater(evt =>
+            {
+                evt.variable.valueChanged += OnToolDelete;
+            });
+        }
+
+        private void OnDisable()
+        {
+            globalToolCreated.NowOrLater(evt =>
+            {
+                evt.variable.valueChanged -= OnToolCreation;
+            });
+            globalToolUpdated.NowOrLater(evt =>
+            {
+                evt.variable.valueChanged -= OnToolUpdate;
+            });
+            globalToolDeleted.NowOrLater(evt =>
+            {
+                evt.variable.valueChanged -= OnToolDelete;
+            });
         }
 
         /// <summary>
         /// Triggered when a tool is created.
         /// </summary>
         /// <param name="tool"></param>
-        private void OnToolCreation(GlobalTool tool)
+        private void OnToolCreation(GlobalTool oldTool, GlobalTool tool)
         {
             if (tool is Toolbox)
             {
@@ -75,8 +113,11 @@ namespace umi3d.cdk.interaction
                 }
                 else
                 {
-                    menuAsset.menu.Add(tbmenu);
-                    tbmenu.parent = menuAsset.menu;
+                    menuAssetAddressable.NowOrLater(menuAsset =>
+                    {
+                        menuAsset.menu.Add(tbmenu);
+                        tbmenu.parent = menuAsset.menu;
+                    });
                     toolboxIdToMenu.Add(dto.id, tbmenu);
                 }
 
@@ -119,8 +160,11 @@ namespace umi3d.cdk.interaction
                 }
                 else
                 {
-                    menuAsset.menu.Add(menu);
-                    menu.parent = menuAsset.menu;
+                    menuAssetAddressable.NowOrLater(menuAsset =>
+                    {
+                        menuAsset.menu.Add(menu);
+                        menu.parent = menuAsset.menu;
+                    });
                 }
             }
         }
@@ -129,7 +173,7 @@ namespace umi3d.cdk.interaction
         /// Triggered when a tool is updated.
         /// </summary>
         /// <param name="tool"></param>
-        private void OnToolUpdate(GlobalTool tool)
+        private void OnToolUpdate(GlobalTool oldTool, GlobalTool tool)
         {
             if (tool is Toolbox)
             {
@@ -147,7 +191,7 @@ namespace umi3d.cdk.interaction
         /// Triggered when a tool is deleted.
         /// </summary>
         /// <param name="tool"></param>
-        private void OnToolDelete(GlobalTool tool)
+        private void OnToolDelete(GlobalTool oldTool, GlobalTool tool)
         {
             if (tool is Toolbox)
             {
