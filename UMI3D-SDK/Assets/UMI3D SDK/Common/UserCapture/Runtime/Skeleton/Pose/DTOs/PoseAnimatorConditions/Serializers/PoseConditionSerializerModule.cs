@@ -127,7 +127,9 @@ namespace umi3d.common.userCapture.pose
 
                 case true when typeof(T) == typeof(ValidateEnvironmentPoseConditionDto):
                     {
-                        readable = UMI3DSerializer.TryRead(container, out ulong id);
+                        readable = UMI3DSerializer.TryRead(container, out uint key);
+                        readable &= key == UMI3DOperationKeys.ValidatePoseConditionRequest;
+                        readable &= UMI3DSerializer.TryRead(container, out ulong id);
                         readable &= UMI3DSerializer.TryRead(container, out bool shouldBeValidated);
 
                         if (readable)
@@ -387,7 +389,8 @@ namespace umi3d.common.userCapture.pose
                     break;
 
                 case ValidateEnvironmentPoseConditionDto validateEnvironmentPoseConditionDto:
-                    bytable = UMI3DSerializer.Write(validateEnvironmentPoseConditionDto.Id)
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.ValidatePoseConditionRequest)
+                        + UMI3DSerializer.Write(validateEnvironmentPoseConditionDto.Id)
                         + UMI3DSerializer.Write(validateEnvironmentPoseConditionDto.ShouldBeValidated);
                     break;
 
