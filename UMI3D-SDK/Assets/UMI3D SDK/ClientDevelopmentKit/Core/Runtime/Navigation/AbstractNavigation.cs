@@ -53,7 +53,17 @@ namespace umi3d.cdk
         /// <param name="data"></param>
         public abstract void UpdateFrame(FrameRequestDto data);
 
+        /// <summary>
+        /// Get data on current movements of the user.
+        /// </summary>
+        /// <returns></returns>
+        public abstract NavigationData GetNavigationData();
 
-        public abstract (Vector3Dto speed,bool jumping, bool crouching) GetNaviagtionData();
+        public struct NavigationData
+        {
+            public Vector3Dto speed;
+            public bool jumping;
+            public bool crouching;
+        }
     }
 }
