@@ -27,6 +27,11 @@ MonoBehaviour:
       Tool Menu.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
+  - m_GUID: dd40b33b821185b43981ba3fa8d7100c
+    m_Address: Assets/UMI3D SDK/ClientDevelopmentKit/Core/Runtime/Scenes/UMI3D Launcher
+      Scene.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
   m_ReadOnly: 0
   m_Settings: {fileID: 11400000, guid: bccc125c86736a54ea23d53a682ccc01, type: 2}
   m_SchemaSet:
