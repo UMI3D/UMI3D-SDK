@@ -298,6 +298,7 @@ namespace umi3d.cdk.collaboration.userCapture
                     var navigationData = navigation.GetNavigationData();
 
                     frame.speed = navigationData.speed;
+                    frame.grounded = navigationData.grounded;
                     frame.jumping = navigationData.jumping;
                     frame.crouching = navigationData.crouching;
 

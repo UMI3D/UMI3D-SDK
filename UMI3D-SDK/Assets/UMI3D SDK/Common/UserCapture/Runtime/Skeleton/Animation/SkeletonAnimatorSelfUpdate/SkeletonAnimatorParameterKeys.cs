@@ -72,5 +72,10 @@ namespace umi3d.common.userCapture.animation
         /// State if the avatar is jumping.
         /// </summary>
         CROUCH,
+
+        /// <summary>
+        /// State if the avatar is on groubd.
+        /// </summary>
+        GROUNDED
     }
 }

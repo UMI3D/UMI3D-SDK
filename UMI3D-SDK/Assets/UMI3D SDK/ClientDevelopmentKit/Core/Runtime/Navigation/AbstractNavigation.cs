@@ -62,6 +62,7 @@ namespace umi3d.cdk
         public struct NavigationData
         {
             public Vector3Dto speed;
+            public bool grounded;
             public bool jumping;
             public bool crouching;
         }
