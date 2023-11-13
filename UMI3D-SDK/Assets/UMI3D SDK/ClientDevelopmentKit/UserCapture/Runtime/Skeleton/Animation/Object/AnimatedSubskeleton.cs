@@ -351,7 +351,7 @@ namespace umi3d.cdk.userCapture.animation
             if (newValue == 0f && previousValue != 0f) // avoid slow movement persistance
                 return true;
 
-            var den = previousValue == 0 ? 1f : previousValue;
+            float den = previousValue == 0 ? 1f : Mathf.Abs(previousValue);
 
             if (Mathf.Abs(newValue - previousValue) / den > threshold)
                 return true;
