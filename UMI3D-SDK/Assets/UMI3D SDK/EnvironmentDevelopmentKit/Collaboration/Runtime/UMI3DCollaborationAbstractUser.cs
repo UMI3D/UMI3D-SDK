@@ -28,7 +28,7 @@ namespace umi3d.edk.collaboration
     {
         protected const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
 
-        protected RegisterIdentityDto identityDto;
+        public RegisterIdentityDto identityDto { get; set; }
 
         /// <inheritdoc/>
         protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }

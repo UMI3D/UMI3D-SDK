@@ -33,12 +33,57 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
+    /// <summary>
+    /// Resources Server API to handle HTTP requests.
+    /// </summary>
+    public class UMI3DResourcesServerApi : UMI3DAbstractEnvironmentApi
+    {
+        private UMI3DCollaborationAbstractUser GetUserFor(HttpListenerRequest request)
+        {
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(request);
+            return c.user;
+        }
+
+        /// <summary>
+        ///// POST "LocalData/key/:param"
+        ///// </summary>
+        ///// <param name="sender"></param>
+        ///// <param name="e">Represents the event data for the HTTP request event</param>
+        ///// <param name="uriparam"></param>
+        [HttpPost(UMI3DNetworkingKeys.resources_server_register, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public async void RegisterUser(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DServerUser user = GetUserFor(e.Request) as UMI3DServerUser;
+            if (user == null)
+                return;
+
+            HttpListenerResponse res = e.Response;
+
+            byte[] bytes = ReadObject(e.Request);
+
+            RegisterIdentityDto dto;
+
+            try
+            {
+                dto = UMI3DDtoSerializer.FromBson(bytes) as RegisterIdentityDto;
+            }
+            catch
+            {
+                dto = UMI3DDtoSerializer.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
+            }
+
+            await UMI3DCollaborationServer.Instance.Register(dto);
+
+        }
+
+
+    }
 
     /// <summary>
     /// Environment API to handle HTTP requests.
     /// </summary>
     public class UMI3DEnvironmentApi : UMI3DAbstractEnvironmentApi
-    {      
+    {
         public UMI3DEnvironmentApi()
         { }
 
@@ -47,7 +92,7 @@ namespace umi3d.edk.collaboration
 
         private UMI3DCollaborationAbstractUser GetUserFor(HttpListenerRequest request)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken) c = UMI3DCollaborationServer.GetUserFor(request);
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(request);
             return c.user;
         }
 
@@ -163,7 +208,7 @@ namespace umi3d.edk.collaboration
         [HttpPost(UMI3DNetworkingKeys.logout, WebServiceMethodAttribute.Security.PrivateAllowOldToken, WebServiceMethodAttribute.Type.Method)]
         public void Logout(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken) c = UMI3DCollaborationServer.GetUserFor(e.Request);
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(e.Request);
             if (c.user != null)
             {
                 UMI3DLogger.Log($"Logout {c.user.Id()}", scope);
@@ -186,7 +231,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpGet(UMI3DNetworkingKeys.libraries, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        [HttpGet(UMI3DNetworkingKeys.libraries, WebServiceMethodAttribute.Security.PrivateAllowResourcesOnly, WebServiceMethodAttribute.Type.Method)]
         public void GetLibraries(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             UMI3DUser user = GetUserFor(e.Request);
@@ -230,7 +275,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpGet(UMI3DNetworkingKeys.privateFiles, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Directory)]
+        [HttpGet(UMI3DNetworkingKeys.privateFiles, WebServiceMethodAttribute.Security.PrivateAllowResourcesOnly, WebServiceMethodAttribute.Type.Directory)]
         public void GetPrivateFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.privateFiles.Length);
@@ -259,7 +304,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpGet(UMI3DNetworkingKeys.directory, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Directory)]
+        [HttpGet(UMI3DNetworkingKeys.directory, WebServiceMethodAttribute.Security.PrivateAllowResourcesOnly, WebServiceMethodAttribute.Type.Directory)]
         public void GetDirectory(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
@@ -302,7 +347,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="sender"></param>
         /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpGet(UMI3DNetworkingKeys.directory_zip, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Directory)]
+        [HttpGet(UMI3DNetworkingKeys.directory_zip, WebServiceMethodAttribute.Security.PrivateAllowResourcesOnly, WebServiceMethodAttribute.Type.Directory)]
         public void GetDirectoryAsZip(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string directory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory_zip.Length);

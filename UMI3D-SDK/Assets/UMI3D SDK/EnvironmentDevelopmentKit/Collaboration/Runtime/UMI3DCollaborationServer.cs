@@ -176,8 +176,14 @@ namespace umi3d.edk.collaboration
             return dto;
         }
 
-        public async Task Register(RegisterIdentityDto identityDto)
+        public async Task Register(RegisterIdentityDto identityDto, bool resourcesOnly = false)
         {
+            if (resourcesOnly)
+            {
+                UMI3DCollaborationServer.Collaboration.CreateUserResourcesOnly(identityDto);
+                return;
+            }
+
             UMI3DLogger.Log($"User to be Created {identityDto.login} {identityDto.guid} {identityDto.userId} {identityDto.localToken}", scope);
             UMI3DCollaborationServer.Collaboration.CreateUser(identityDto, UserRegisteredCallback);
             await Task.CompletedTask;
@@ -437,12 +443,12 @@ namespace umi3d.edk.collaboration
 
         #region security
 
-        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request, bool allowOldToken = false)
+        public static bool IsAuthenticated(WebSocketSharp.Net.HttpListenerRequest request, bool allowOldToken = false, bool allowResourceOnly = false)
         {
             if (!Exists)
                 return false;
-            (UMI3DCollaborationAbstractUser user, bool oldToken) c = GetUserFor(request);
-            if (c.user == null && !(c.oldToken && allowOldToken))
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourceOnly) c = GetUserFor(request);
+            if (c.user == null && !(c.oldToken && allowOldToken) && !(c.resourceOnly && allowResourceOnly))
             {
                 return false;
             }
@@ -459,12 +465,12 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public static (UMI3DCollaborationAbstractUser user, bool oldToken) GetUserFor(WebSocketSharp.Net.HttpListenerRequest request)
+        public static (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) GetUserFor(WebSocketSharp.Net.HttpListenerRequest request)
         {
             string authorization = request.Headers[UMI3DNetworkingKeys.Authorization];
             if (authorization == null)
             {
-                return (null, false);
+                return (null, false, false);
             }
             else
             {

@@ -34,6 +34,7 @@ namespace umi3d.edk.collaboration
         /// Contain the users connected to the scene.
         /// </summary>
         private readonly Dictionary<ulong, UMI3DCollaborationAbstractUser> users = new();
+        private readonly Dictionary<string, DateTime> resourcesOnlyUsers = new();
         private readonly Dictionary<ulong, UMI3DCollaborationAbstractUser> lostUsers = new();
         private readonly Dictionary<string, UMI3DCollaborationAbstractUser> guidMap = new();
         private readonly Dictionary<uint, ulong> forgeMap = new Dictionary<uint, ulong>();
@@ -110,44 +111,44 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
         /// </summary>
-        public (UMI3DCollaborationAbstractUser user, bool oldToken) GetUserByToken(string authorization)
+        public (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) GetUserByToken(string authorization)
         {
             if (authorization.StartsWith(UMI3DNetworkingKeys.bearer))
             {
                 string token = authorization.Remove(0, UMI3DNetworkingKeys.bearer.Length);
                 return GetUserByNakedToken(token);
             }
-            return (null, false);
+            return (null, false, true);
         }
 
-        private (UMI3DCollaborationAbstractUser user, bool oldToken) GetUserByNakedToken(string token)
+        private (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) GetUserByNakedToken(string token)
         {
             lock (users)
             {
                 foreach (UMI3DCollaborationAbstractUser u in users.Values)
                 {
                     if (u.token == token)
-                        return (u, true);
+                        return (u, true, false);
                 }
                 if (oldTokenOfUpdatedUser.Contains(token))
                 {
-                    return (null, true);
+                    return (null, true, false);
                 }
             }
-            return (null, false);
+            return (null, false, false);
         }
 
-        public (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser) GetUserByNakedTokenForConnection(string token)
+        public (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser, bool resourcesOnly) GetUserByNakedTokenForConnection(string token)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken) connected = GetUserByNakedToken(token);
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) connected = GetUserByNakedToken(token);
             if (connected.oldToken || connected.user != null)
-                return (connected.user, connected.oldToken, false);
+                return (connected.user, connected.oldToken, false, connected.resourcesOnly);
             foreach (UMI3DCollaborationAbstractUser user in lostUsers.Values)
             {
                 if (user.token == token)
-                    return (user, true, true);
+                    return (user, true, true, false);
             }
-            return (null, false, false);
+            return (null, false, false, false);
 
         }
 
@@ -240,7 +241,7 @@ namespace umi3d.edk.collaboration
 
         public void ConnectUser(NetworkingPlayer player, string token, Action<bool> acceptUser, Action<UMI3DCollaborationAbstractUser, bool> onUserCreated)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser) res = GetUserByNakedTokenForConnection(token);
+            (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser, bool resourcesOnly) res = GetUserByNakedTokenForConnection(token);
             UMI3DCollaborationAbstractUser user = res.user;
             UMI3DLogger.Log($"Connect User {user != null} {res}", scope);
             if (user != null)
@@ -264,6 +265,12 @@ namespace umi3d.edk.collaboration
             }
             else
                 acceptUser(false);
+        }
+
+
+        public void CreateUserResourcesOnly(RegisterIdentityDto LoginDto)
+        {
+            resourcesOnlyUsers[LoginDto.headerToken] = DateTime.UtcNow + TimeSpan.FromHours(1);
         }
 
         /// <summary>

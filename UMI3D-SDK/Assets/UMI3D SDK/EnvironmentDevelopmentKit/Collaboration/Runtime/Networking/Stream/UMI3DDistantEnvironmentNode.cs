@@ -1,4 +1,6 @@
 using inetum.unityUtils;
+using PlasticGui.Configuration.CloudEdition.Welcome;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -6,18 +8,27 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration;
 using umi3d.common;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.interaction;
 using umi3d.edk;
 using umi3d.edk.collaboration;
 using UnityEngine;
+using UnityEngine.Networking;
 using WebSocketSharp;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using umi3d.common.userCapture.tracking;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
+
+    public string ResourceServerUrl { get; set; }
     protected DistantEnvironmentDto dto;
     [SerializeField]
     private string serverUrl;
 
-    MediaDto media = null;
+    public MediaDto media { get; private set; } = null;
     UMI3DWorldControllerClient1 wcClient = null;
     UMI3DEnvironmentClient1 nvClient = null;
 
@@ -30,11 +41,11 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         }
     }
 
-
     private void Start()
     {
         UMI3DCollaborationServer.Instance.OnServerStart.AddListener(Restart);
         UMI3DCollaborationServer.Instance.OnServerStop.AddListener(async () => await _Stop());
+
     }
 
     protected override void InitDefinition(ulong id)
@@ -57,6 +68,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         await _Stop();
         await _Start();
+        UMI3DCollaborationServer.Instance.OnUserCreated.AddListener(OnUserCreated);
     }
 
     async Task _Start()
@@ -79,13 +91,15 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             UnityEngine.Debug.Log($"{nvClient != null} {dto != null}");
             dto.environmentDto = nvClient.environement;
             UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
-            if (dto.environmentDto?.scenes != null)
-                dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
+            //if (dto.environmentDto?.scenes != null)
+            //    dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
+            ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
         }
     }
 
     async Task _Stop()
     {
+        UMI3DCollaborationServer.Instance.OnUserCreated.RemoveListener(OnUserCreated);
         if (nvClient != null)
         {
             await nvClient.Logout();
@@ -93,8 +107,15 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         }
     }
 
-} 
-
+    async void OnUserCreated(UMI3DUser user)
+    {
+        if (user is UMI3DCollaborationUser cuser)
+        {
+            var dto = cuser.identityDto;
+            await nvClient.HttpClient.SendPostRegisterDistantUser(dto);
+        }
+    }
+}
 
 public abstract class UMI3DAbstractDistantEnvironmentNode : MonoBehaviour, UMI3DLoadableEntity
 {

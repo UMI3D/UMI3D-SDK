@@ -35,6 +35,8 @@ namespace umi3d.common
         public const string connect = "/connect";
         public const string renew_connect = "/renew_connect";
 
+        public const string resources_server_register = "/rs/server";
+
         //RESOURCES
         public const string libraries = "/libraries";
         public const string files = "/file/";
@@ -50,6 +52,9 @@ namespace umi3d.common
         public const string entity = "/environment/entity";
         public const string scene = "/environment/scene";
         public const string playerCount = "/environment/player_count";
+
+        //RESOURCES SERVER
+        //public const string register = "/resourcesServer/register";
 
         //Prefix
         public const string websocketProtocol = "echo-protocol";

@@ -77,6 +77,17 @@ namespace umi3d.cdk.collaboration
 
         #region user
 
+        public async Task<PendingTransactionDto> SendPostRegisterDistantUser(RegisterIdentityDto identity, Func<RequestFailedArgument1, bool> shouldTryAgain = null)
+        {
+            PendingTransactionDto result = null;
+            UMI3DLogger.Log($"Send PostRegisterDistantUser", scope | DebugScope.Connection);
+            using (UnityWebRequest uwr = await _PostRequest(HeaderToken, httpUrl + UMI3DNetworkingKeys.resources_server_register, null, identity.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+
+            }
+            return result;
+        }
+
         /// <summary>
         /// Connect to a media
         /// </summary>
