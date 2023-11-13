@@ -41,7 +41,7 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
-        private readonly Dictionary<ulong, UMI3DEntities> entitiesCollection = new();
+        private Dictionary<ulong, UMI3DEntities> entitiesCollection = new();
 
         public UMI3DEnvironmentLoader() : base()
         {
@@ -637,6 +637,8 @@ namespace umi3d.cdk
         public static void Clear(bool clearCache = true)
         {
             Instance.entitiesCollection.Clear();
+            DeclareNewEnvironment(0);
+
 
             if (clearCache)
                 UMI3DResourcesManager.Instance.ClearCache();
