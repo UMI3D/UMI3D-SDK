@@ -177,6 +177,7 @@ namespace umi3d.edk.userCapture.animation
                         SkeletonAnimatorParameterKeys.SPEED_X_Z => 0f,
                         SkeletonAnimatorParameterKeys.JUMP => false,
                         SkeletonAnimatorParameterKeys.CROUCH => false,
+                        SkeletonAnimatorParameterKeys.GROUNDED => false,
                         _ => 0
                     };
                     animation.objectParameters.Add(parameter.parameterName, defaultValue);
