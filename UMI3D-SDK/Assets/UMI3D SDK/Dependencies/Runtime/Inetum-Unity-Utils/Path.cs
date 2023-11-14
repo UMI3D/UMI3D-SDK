@@ -18,10 +18,20 @@ using System;
 
 namespace inetum.unityUtils
 {
-    public class Path
+    public static class Path
     {
+        public static readonly char[] charsToTrim =
+        {
+            System.IO.Path.DirectorySeparatorChar,
+            System.IO.Path.AltDirectorySeparatorChar
+        };
+
         /// <summary>
         /// Combine two paths but instead of throwing an exception when one path is null or empty it returns the other.
+        /// 
+        /// <para>
+        /// Throw an ArgumentNullException when the two paths are null or empty.
+        /// </para>
         /// </summary>
         /// <param name="path1"></param>
         /// <param name="path2"></param>
@@ -29,12 +39,6 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static string Combine(string path1, string path2)
         {
-            char[] charsToTrim = 
-            { 
-                System.IO.Path.DirectorySeparatorChar, 
-                System.IO.Path.AltDirectorySeparatorChar 
-            };
-
             var path1Trimmed = path1.Trim().TrimEnd(charsToTrim);
             var path2Trimmed = path2.Trim().TrimStart(charsToTrim);
 
@@ -56,11 +60,21 @@ namespace inetum.unityUtils
             }
         }
 
+        /// <summary>
+        /// Combine an array of string but instead of throwing an exception when one path is null or empty it keeps combining with the other paths.
+        /// 
+        /// <para>
+        /// Throw an ArgumentNullException when the array is null or empty.
+        /// </para>
+        /// </summary>
+        /// <param name="paths"></param>
+        /// <returns></returns>
+        /// <exception cref="ArgumentNullException"></exception>
         public static string Combine(params string[] paths)
         {
             if (paths == null || paths.Length == 0)
             {
-                return null;
+                throw new ArgumentNullException($"{nameof(paths)}", $"Try to combine to empty paths.");
             }
 
             string result = paths[0];
