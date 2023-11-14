@@ -20,6 +20,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
 using UnityEngine;
@@ -118,7 +119,7 @@ namespace umi3d.edk.collaboration
                 string token = authorization.Remove(0, UMI3DNetworkingKeys.bearer.Length);
                 return GetUserByNakedToken(token);
             }
-            return (null, false, true);
+            return (null, false, false);
         }
 
         private (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) GetUserByNakedToken(string token)
@@ -133,6 +134,16 @@ namespace umi3d.edk.collaboration
                 if (oldTokenOfUpdatedUser.Contains(token))
                 {
                     return (null, true, false);
+                }
+                foreach (var t in resourcesOnlyUsers.Keys)
+                {
+                    UnityEngine.Debug.Log($"{token} == {t} {t == token}");
+                }
+
+                if (resourcesOnlyUsers.ContainsKey(token))
+                {
+                    UnityEngine.Debug.Log("r only");
+                    return (null, false, true);
                 }
             }
             return (null, false, false);
@@ -270,7 +281,7 @@ namespace umi3d.edk.collaboration
 
         public void CreateUserResourcesOnly(RegisterIdentityDto LoginDto)
         {
-            resourcesOnlyUsers[LoginDto.headerToken] = DateTime.UtcNow + TimeSpan.FromHours(1);
+            resourcesOnlyUsers[LoginDto.localToken] = DateTime.UtcNow + TimeSpan.FromHours(1);
         }
 
         /// <summary>

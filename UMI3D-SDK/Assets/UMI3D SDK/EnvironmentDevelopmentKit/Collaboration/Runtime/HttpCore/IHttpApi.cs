@@ -27,5 +27,5 @@ public interface IHttpApi
     /// <param name="request"></param>
     /// <param name="allowOldToken"></param>
     /// <returns></returns>
-    bool isAuthenticated(HttpListenerRequest request, bool allowOldToken);
+    bool isAuthenticated(HttpListenerRequest request, bool allowOldToken, bool allowResourceOnly);
 }

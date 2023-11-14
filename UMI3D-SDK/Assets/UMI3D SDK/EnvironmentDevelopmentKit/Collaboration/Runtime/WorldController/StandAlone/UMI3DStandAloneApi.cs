@@ -190,7 +190,7 @@ namespace umi3d.worldController
         }
         #endregion
 
-        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
+        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken, bool allowResourceOnly)
         {
             throw new NotImplementedException();
         }

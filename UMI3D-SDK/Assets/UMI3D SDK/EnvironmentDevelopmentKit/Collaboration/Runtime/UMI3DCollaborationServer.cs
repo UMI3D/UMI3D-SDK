@@ -248,6 +248,8 @@ namespace umi3d.edk.collaboration
 
             http.AddRoot(new UMI3DEnvironmentApi());
             httpForWC.AddRoot(new UMI3DEnvironmentFromWorldControllerApi());
+            http.AddRoot(new UMI3DResourcesServerApi());
+            UnityEngine.Debug.Log("Add it only when needed on its port");
 
             WorldController.Setup();
 
