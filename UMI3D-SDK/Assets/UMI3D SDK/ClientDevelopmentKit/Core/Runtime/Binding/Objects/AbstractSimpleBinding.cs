@@ -87,7 +87,7 @@ namespace umi3d.cdk.binding
             }
             else if (SyncPosition)
             {
-                boundTransform.position = parentTransform.position + OffSetPosition;
+                boundTransform.position = parentTransform.position + parentTransform.rotation * OffSetPosition;
             }
             else if (SyncRotation)
             {

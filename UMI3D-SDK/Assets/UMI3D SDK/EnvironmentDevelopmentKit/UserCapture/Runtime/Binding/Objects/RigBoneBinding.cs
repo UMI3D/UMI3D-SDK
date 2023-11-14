@@ -30,6 +30,11 @@ namespace umi3d.edk.userCapture.binding
         /// </summary>
         public string rigName = "";
 
+        /// <summary>
+        /// Specifying the need to use the initial rotation in the binding.
+        /// </summary>
+        public bool ApplyOriginalRotation = false;
+
         public RigBoneBinding(ulong boundNodeId, string rigName, ulong userId, uint boneType) : base(boundNodeId, userId, boneType)
         {
             this.rigName = rigName;
@@ -58,7 +63,9 @@ namespace umi3d.edk.userCapture.binding
 
                 syncPosition = syncPosition,
                 syncRotation = syncRotation,
-                syncScale = syncScale
+                syncScale = syncScale, 
+
+                ApplyOriginalRotation = ApplyOriginalRotation
             };
 
             BindingDto bindingDto = new BindingDto()
