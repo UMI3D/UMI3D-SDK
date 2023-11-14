@@ -94,6 +94,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             //if (dto.environmentDto?.scenes != null)
             //    dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
+            dto.resourcesUrl = ResourceServerUrl;
         }
     }
 

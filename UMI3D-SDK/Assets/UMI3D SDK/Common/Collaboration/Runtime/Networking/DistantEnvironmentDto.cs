@@ -8,5 +8,6 @@ namespace umi3d.common
     public class DistantEnvironmentDto : AbstractEntityDto, IEntity
     {
         public GlTFEnvironmentDto environmentDto { get; set; }
+        public string resourcesUrl { get; set; }
     }
 }

@@ -28,7 +28,7 @@ public class DistantEnvironmentLoader : AbstractLoader
             UnityEngine.Debug.Log($"Read a distant Environment Start {distantDto != null} {distantDto?.environmentDto != null} {distantDto?.environmentDto?.scenes != null}");
             try
             {
-                UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id);
+                UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
                 await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id,distantDto.environmentDto.scenes);
             }

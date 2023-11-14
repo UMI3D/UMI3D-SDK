@@ -49,7 +49,6 @@ namespace umi3d.cdk
             nodeLoader = new GlTFNodeLoader();
 
             onEnvironmentLoaded.AddListener(() => InterpolationRoutine());
-            DeclareNewEnvironment(0);
         }
 
         public UMI3DEnvironmentLoader(Material baseMaterial, IUMI3DAbstractLoadingParameters parameters)
@@ -81,9 +80,14 @@ namespace umi3d.cdk
         public static Coroutine StartCoroutine(IEnumerator enumerator) => CoroutineManager.Instance.AttachCoroutine(enumerator);
 
 
-        public static void DeclareNewEnvironment(ulong id)
+        public static void DeclareNewEnvironment(ulong id, string url)
         {
-            Instance.entitiesCollection[id] = new(id);
+            Instance.entitiesCollection[id] = new(id,url);
+        }
+
+        public IReadOnlyList<string> GetResourcesUrls()
+        {
+            return entitiesCollection?.Values?.Select(v => v.ReourcesUrl).ToList();
         }
 
         /// <summary>
@@ -341,6 +345,8 @@ namespace umi3d.cdk
         public async Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress)
         {
             ulong mainEnvironmentId = 0;
+            DeclareNewEnvironment(mainEnvironmentId, UMI3DClientServer.Environement.resourcesUrl);
+
             Progress downloadingProgress = new Progress(0, "Downloading");
             Progress ReadingDataProgress = new Progress(2, "Reading Data");
             MultiProgress loadingProgress = new MultiProgress("Loading");
@@ -637,8 +643,6 @@ namespace umi3d.cdk
         public static void Clear(bool clearCache = true)
         {
             Instance.entitiesCollection.Clear();
-            DeclareNewEnvironment(0);
-
 
             if (clearCache)
                 UMI3DResourcesManager.Instance.ClearCache();

@@ -281,16 +281,19 @@ namespace umi3d.cdk
 
             private bool MatchServerUrl()
             {
-                if (UMI3DClientServer.Environement == null)
-                    return false;
+                foreach (var _url in UMI3DEnvironmentLoader.Instance.GetResourcesUrls())
+                {
+                    //if (UMI3DClientServer.Environement == null)
+                    //    return false;
 
-                string url = UMI3DClientServer.Environement.resourcesUrl + '/';
+                    string url = _url + '/';
 
-                if (url == this.url) return true;
+                    if (url == this.url) return true;
 
-                Match b = rx.Match(url);
-                if (a.Success && b.Success)
-                    return a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
+                    Match b = rx.Match(url);
+                    if (a.Success && b.Success)
+                        return a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
+                }
                 return false;
             }
 

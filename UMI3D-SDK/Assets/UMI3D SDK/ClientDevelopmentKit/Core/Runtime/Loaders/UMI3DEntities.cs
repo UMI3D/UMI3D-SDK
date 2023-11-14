@@ -31,6 +31,7 @@ namespace umi3d.cdk
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public readonly ulong EnvironmentId;
+        public readonly string ReourcesUrl;
 
         /// <summary>
         /// Index of any 3D object loaded.
@@ -370,9 +371,10 @@ namespace umi3d.cdk
 
         private readonly Dictionary<ulong, Dictionary<ulong, IExtrapolator>> entityFilters = new Dictionary<ulong, Dictionary<ulong, IExtrapolator>>();
 
-        public UMI3DEntities(ulong environmentId)
+        public UMI3DEntities(ulong environmentId, string url)
         {
             this.EnvironmentId = environmentId;
+            this.ReourcesUrl = url;
         }
 
         public async void InterpolationRoutine(Action<SetUMI3DPropertyData> SimulatedSetEntity)
