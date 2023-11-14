@@ -32,6 +32,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     UMI3DWorldControllerClient1 wcClient = null;
     UMI3DEnvironmentClient1 nvClient = null;
 
+    UMI3DAsyncProperty<object> lastTransactionAsync;
+
     public string ServerUrl
     {
         get => serverUrl; set
@@ -52,10 +54,18 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         base.InitDefinition(id);
 
+        lastTransactionAsync = new UMI3DAsyncProperty<object>(id, UMI3DPropertyKeys.DistantEnvironment, null);
         dto = new DistantEnvironmentDto();
         UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
         //if (!serverUrl.IsNullOrEmpty())
         //    Restart();
+    }
+
+    public void OnData(object data)
+    {
+        var op = lastTransactionAsync.SetValue(data);
+        var t = op.ToTransaction(true);
+        t.Dispatch();
     }
 
     public override IEntity ToEntityDto(UMI3DUser user)
@@ -80,7 +90,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             name = "other server",
             url = ServerUrl
         };
-        wcClient = new UMI3DWorldControllerClient1(media);
+        wcClient = new UMI3DWorldControllerClient1(media,this);
         if (await wcClient.Connect())
         {
             nvClient = await wcClient.ConnectToEnvironment();
@@ -95,6 +105,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             //    dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             dto.resourcesUrl = ResourceServerUrl;
+            dto.useDto = nvClient.useDto;
         }
     }
 

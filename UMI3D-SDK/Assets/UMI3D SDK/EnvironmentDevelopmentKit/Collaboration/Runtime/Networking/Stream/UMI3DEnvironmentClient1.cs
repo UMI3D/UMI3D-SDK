@@ -41,6 +41,7 @@ namespace umi3d.cdk.collaboration
         public GlTFEnvironmentDto environement { get; private set; }
         public ulong environmentId { get; private set; }
 
+        public UMI3DDistantEnvironmentNode node => worldControllerClient.node;
         /// <summary>
         /// Is the client connected to the environment server?
         /// </summary>
@@ -216,7 +217,7 @@ namespace umi3d.cdk.collaboration
 
             lastTokenUpdate = default;
             HttpClient = new HttpClient1(this);
-            needToGetFirstConnectionInfo = true;
+
         }
 
         /// <summary>

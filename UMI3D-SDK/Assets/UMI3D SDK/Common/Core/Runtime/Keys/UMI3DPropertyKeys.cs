@@ -89,6 +89,8 @@ namespace umi3d.common
         public const uint LineStartWidth = 3012;
         public const uint LineEndWidth = 3013;
 
+        public const uint DistantEnvironment = 3014;
+
         public const uint IsTraversable = 3020;
         public const uint IsPartOfNavmesh = 3021;
 

@@ -38,6 +38,7 @@ namespace umi3d.cdk.collaboration
         private string globalToken;
         private UMI3DEnvironmentClient1 environment;
         private PrivateIdentityDto privateIdentity;
+        public readonly UMI3DDistantEnvironmentNode node;
 
         /// <summary>
         /// Called to create a new Public Identity for this client.
@@ -70,24 +71,25 @@ namespace umi3d.cdk.collaboration
             return isConnected;
         }
 
-        public UMI3DWorldControllerClient1(MediaDto media)
+        public UMI3DWorldControllerClient1(MediaDto media, UMI3DDistantEnvironmentNode node)
         {
+            this.node = node;
             this.media = media;
             isConnecting = false;
             isConnected = false;
             privateIdentity = null;
         }
 
-        public UMI3DWorldControllerClient1(MediaDto media, GateDto gate) : this(media)
+        public UMI3DWorldControllerClient1(MediaDto media, GateDto gate, UMI3DDistantEnvironmentNode node) : this(media, node)
         {
             this.gate = gate;
         }
 
-        public UMI3DWorldControllerClient1(RedirectionDto redirection) : this(redirection.media, redirection.gate)
+        public UMI3DWorldControllerClient1(RedirectionDto redirection, UMI3DDistantEnvironmentNode node) : this(redirection.media, redirection.gate,node)
         {
         }
 
-        public UMI3DWorldControllerClient1(RedirectionDto redirection, string globalToken) : this(redirection)
+        public UMI3DWorldControllerClient1(RedirectionDto redirection, string globalToken, UMI3DDistantEnvironmentNode node) : this(redirection, node)
         {
             this.globalToken = globalToken;
         }
@@ -158,9 +160,9 @@ namespace umi3d.cdk.collaboration
         public UMI3DWorldControllerClient1 Redirection(RedirectionDto redirection)
         {
             if (media.url == redirection.media.url)
-                return new UMI3DWorldControllerClient1(redirection, globalToken);
+                return new UMI3DWorldControllerClient1(redirection, globalToken, node);
             else
-                return new UMI3DWorldControllerClient1(redirection);
+                return new UMI3DWorldControllerClient1(redirection, node);
         }
 
         public async Task<UMI3DEnvironmentClient1> ConnectToEnvironment()

@@ -371,6 +371,7 @@ namespace umi3d.cdk.collaboration
                     case TransactionDto transaction:
                         MainThreadManager.Run(async () =>
                         {
+                            environmentClient.node.OnData(frame);
                             UMI3DLogger.Log($"On Frame", scope);
                             //await UMI3DClientServer.transactionDispatcher.PerformTransaction(transaction);
                             //if(UMI3DCollaborationClientServer.transactionPending != null)
@@ -396,6 +397,7 @@ namespace umi3d.cdk.collaboration
                     case UMI3DOperationKeys.Transaction:
                         MainThreadManager.Run(async () =>
                         {
+                            environmentClient.node.OnData(frame);
                             UMI3DLogger.Log($"On Frame", scope);
 
                         });
