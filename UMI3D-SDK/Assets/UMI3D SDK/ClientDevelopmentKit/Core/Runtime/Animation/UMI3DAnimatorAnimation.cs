@@ -192,9 +192,14 @@ namespace umi3d.cdk
                 IsPaused = true;
                 return;
             }
-            animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
+            
+            if (dto.stateName != string.Empty) // an empty state name corresponds to a self-caring animator.
+            {
+                animator.Play(dto.stateName, layer: 0, normalizedTime: nTime);
+                trackingAnimationCoroutine ??= coroutineService.AttachCoroutine(TrackEnd());
+            }
+                
             IsPaused = false;
-            trackingAnimationCoroutine ??= coroutineService.AttachCoroutine(TrackEnd());
             UMI3DClientServer.Instance.OnLeavingEnvironment.AddListener(StopTracking);
         }
 
