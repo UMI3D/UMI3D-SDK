@@ -30,6 +30,6 @@ namespace umi3d.common.userCapture.binding
         /// <summary>
         /// Specifying the need to use the initial rotation in the binding.
         /// </summary>
-        public bool ApplyOriginalRotation { get; set; }
+        public bool applyOriginalRotation { get; set; }
     }
 }

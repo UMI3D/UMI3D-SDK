@@ -45,9 +45,9 @@ namespace umi3d.cdk.userCapture.binding
         public string RigName => RigBoneBindingDataDto.rigName;
 
         /// <summary>
-        /// See <see cref="RigBoneBindingDataDto.ApplyOriginalRotation"/>.
+        /// See <see cref="RigBoneBindingDataDto.applyOriginalRotation"/>.
         /// </summary>
-        public bool ApplyOriginalRotation => RigBoneBindingDataDto.ApplyOriginalRotation;
+        public bool ApplyOriginalRotation => RigBoneBindingDataDto.applyOriginalRotation;
 
 
         #endregion DTO Access

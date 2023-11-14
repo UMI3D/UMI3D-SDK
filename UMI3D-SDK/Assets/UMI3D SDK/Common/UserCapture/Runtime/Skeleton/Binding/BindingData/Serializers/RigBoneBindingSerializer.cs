@@ -43,6 +43,7 @@ namespace umi3d.common.userCapture.binding
             readable &= UMI3DSerializer.TryRead(container, out bool bindToController);
 
             readable &= UMI3DSerializer.TryRead(container, out string rigName);
+            readable &= UMI3DSerializer.TryRead(container, out bool applyOriginalRotation);
 
             result = readable ?
                 new RigBoneBindingDataDto()
@@ -59,7 +60,8 @@ namespace umi3d.common.userCapture.binding
                     partialFit = partialFit,
                     priority = priority,
                     rigName = rigName,
-                    bindToController = bindToController
+                    bindToController = bindToController,
+                    applyOriginalRotation = applyOriginalRotation
                 }
                 : default;
 
@@ -86,7 +88,8 @@ namespace umi3d.common.userCapture.binding
                         + UMI3DSerializer.Write(rigBindingDataDto.boneType)
                         + UMI3DSerializer.Write(rigBindingDataDto.bindToController)
 
-                        + UMI3DSerializer.Write(rigBindingDataDto.rigName);
+                        + UMI3DSerializer.Write(rigBindingDataDto.rigName)
+                        + UMI3DSerializer.Write(rigBindingDataDto.applyOriginalRotation);
         }
     }
 }
