@@ -81,7 +81,7 @@ namespace umi3d.cdk.binding
         {
             if (SyncPosition && SyncRotation)
             {
-                Quaternion rotation = parentTransform.rotation * /*originalRotationOffset **/ OffSetRotation;
+                Quaternion rotation = parentTransform.rotation * originalRotationOffset * OffSetRotation;
                 Vector3 position = parentTransform.position + AnchorPosition + parentTransform.rotation * (OffSetPosition - AnchorPosition);
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
