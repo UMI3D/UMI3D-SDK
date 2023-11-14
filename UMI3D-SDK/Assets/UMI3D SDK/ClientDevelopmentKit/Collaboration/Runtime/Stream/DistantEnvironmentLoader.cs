@@ -16,6 +16,8 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     public override UMI3DVersion.VersionCompatibility version => _version;
 
+    static Dictionary<ulong, DistantEnvironmentDto> distantEnvironments = new();
+
     public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
     {
         return data.dto is DistantEnvironmentDto;
@@ -28,6 +30,7 @@ public class DistantEnvironmentLoader : AbstractLoader
             UnityEngine.Debug.Log($"Read a distant Environment Start {distantDto != null} {distantDto?.environmentDto != null} {distantDto?.environmentDto?.scenes != null}");
             try
             {
+                distantEnvironments[distantDto.id] = distantDto;
                 UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
                 await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id,distantDto.environmentDto.scenes);
@@ -42,11 +45,26 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
     {
+        if (value.entity.dto is DistantEnvironmentDto v && value.property.property == UMI3DPropertyKeys.DistantEnvironment)
+        {
+            var obj = value.property.value;
+            UnityEngine.Debug.Log("Need To forward transaction");
+        }
+
         return Task.FromResult(false);
     }
 
     public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
     {
+        if (value.entity.dto is DistantEnvironmentDto v && value.propertyKey == UMI3DPropertyKeys.DistantEnvironment)
+        {
+            var obj = value.container;
+
+
+            UnityEngine.Debug.Log("Need To forward transaction");
+
+        }
+
         return Task.FromResult(false);
     }
 }
