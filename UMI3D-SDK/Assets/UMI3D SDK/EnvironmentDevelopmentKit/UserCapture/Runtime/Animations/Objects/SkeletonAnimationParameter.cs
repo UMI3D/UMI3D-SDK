@@ -47,7 +47,7 @@ namespace umi3d.edk.userCapture.animation
         /// </summary>
         [SerializeField, Tooltip("Ranges to clamp value to a constant result when in an interval. " +
             "If no range is defined, the parameter value is directly given to the animator.")]
-        public List<Range> ranges;
+        public List<Range> ranges = new();
 
         /// <summary>
         ///  Ranges to clamp value to a constant result when in an interval.

@@ -295,11 +295,12 @@ namespace umi3d.cdk.collaboration.userCapture
                     var frame = PersonalSkeleton.GetFrame(option);
                     frame.userId = PersonalSkeleton.UserId;
 
-                    (Vector3Dto speed, bool jumping, bool crouching) = navigation.GetNaviagtionData();
+                    var navigationData = navigation.GetNavigationData();
 
-                    frame.speed = speed;
-                    frame.jumping = jumping;
-                    frame.crouching = crouching;
+                    frame.speed = navigationData.speed;
+                    frame.grounded = navigationData.grounded;
+                    frame.jumping = navigationData.jumping;
+                    frame.crouching = navigationData.crouching;
 
                     if (frame != null && PersonalSkeleton.UserId != 0)
                         collaborationClientServerService.SendTracking(frame);

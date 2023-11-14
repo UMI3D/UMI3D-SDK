@@ -62,6 +62,11 @@ namespace umi3d.common.userCapture.tracking
         public Vector3Dto speed { get; set; }
 
         /// <summary>
+        /// True if user is on ground.
+        /// </summary>
+        public bool grounded { get; set; }
+
+        /// <summary>
         /// True if user is jumping.
         /// </summary>
         public bool jumping { get; set; }
