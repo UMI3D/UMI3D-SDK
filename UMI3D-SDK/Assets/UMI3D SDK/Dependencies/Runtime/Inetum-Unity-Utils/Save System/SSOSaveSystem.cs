@@ -20,13 +20,63 @@ namespace inetum.unityUtils.saveSystem
     /// <summary>
     /// 
     /// </summary>
-    [CreateAssetMenu(fileName = "New SSO Save System", menuName = "Utils/Save System/SSO Save System")]
-    public class SSOSaveSystem : ScriptableObject
+    // Copy past the line below in a sub class to create a save system.
+    //[CreateAssetMenu(fileName = "New SSO Save System", menuName = "Utils/Save System/SSO Save System")]
+    public class SSOSaveSystem<T> : ScriptableObject
+        where T : SerializableScriptableObject
     {
         /// <summary>
         /// Name of the file.
         /// </summary>
         public string saveFilename;
         public SSOSave saveData = new();
+
+        string backupFilename;
+
+        private void OnValidate()
+        {
+            backupFilename = $"{saveFilename}_backup";
+        }
+
+        /// <summary>
+        /// Load the data from disk at <see cref="saveFilename"/>.
+        /// </summary>
+        /// <returns></returns>
+        public bool LoadSaveDataFromDisk()
+        {
+            if (FileManager.LoadFromFile(saveFilename, out var json))
+            {
+                saveData.LoadFromJson(json);
+                return true;
+            }
+            else if (FileManager.LoadFromFile(backupFilename, out json))
+            {
+                saveData.LoadFromJson(json);
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
+        /// Save the data to disk at <see cref="saveFilename"/>.
+        /// </summary>
+        /// <param name="data"></param>
+        public void SaveDataToDisk((T sso, int amount)[] data)
+        {
+            saveData.ssoStacks.Clear();
+            foreach (var datum in data)
+            {
+                saveData.ssoStacks.Add(new(datum.sso, datum.amount));
+            }
+
+            if (FileManager.MoveFile(saveFilename, backupFilename))
+            {
+                if (FileManager.WriteToFile(saveFilename, saveData.ToJson()))
+                {
+                    Debug.Log("Save successful");
+                }
+            }
+        }
     }
 }

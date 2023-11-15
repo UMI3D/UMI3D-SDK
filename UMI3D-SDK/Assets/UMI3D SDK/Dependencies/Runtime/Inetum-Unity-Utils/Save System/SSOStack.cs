@@ -31,5 +31,11 @@ namespace inetum.unityUtils.saveSystem
             this.guid = guid;
             this.amount = amount;
         }
+
+        public SSOStack(SerializableScriptableObject sso, int amount)
+        {
+            this.guid = sso.Guid;
+            this.amount = amount;
+        }
     }
 }
