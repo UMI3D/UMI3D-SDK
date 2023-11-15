@@ -48,10 +48,12 @@ namespace inetum.unityUtils
             }
             if (string.IsNullOrEmpty(path1Trimmed))
             {
+                UnityEngine.Debug.LogError($"{nameof(path1)} is null or empty.");
                 return path2;
             }
             else if (string.IsNullOrEmpty(path2Trimmed))
             {
+                UnityEngine.Debug.LogError($"{nameof(path2)} is null or empty.");
                 return path1;
             }
             else
