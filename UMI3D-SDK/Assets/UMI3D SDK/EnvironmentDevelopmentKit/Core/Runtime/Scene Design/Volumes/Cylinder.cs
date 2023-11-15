@@ -68,7 +68,7 @@ namespace umi3d.edk.volume
         public void OnDrawGizmos()
         {
             Gizmos.color = Color.cyan;
-            Mesh cylinder = GeometryTools.GetCylinder(this.transform.position, this.transform.rotation, this.transform.localScale, radius_inspector, height_inspector);
+            Mesh cylinder = GeometryTools.GetCylinder(this.transform.position, this.transform.rotation, this.transform.lossyScale, radius_inspector, height_inspector);
             Gizmos.DrawWireMesh(cylinder);
             if (Application.isPlaying)
                 Destroy(cylinder);
