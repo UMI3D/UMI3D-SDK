@@ -29,21 +29,21 @@ namespace umi3d.cdk.interaction
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
 
-        static SerializedAddressable<EventGlobalTool> globalToolCreated = new();
-        static SerializedAddressable<EventGlobalTool> globalToolUpdated = new();
-        static SerializedAddressable<EventGlobalTool> globalToolDeleted = new();
+        static SerializedAddressableT<EventGlobalTool> globalToolCreated = new();
+        static SerializedAddressableT<EventGlobalTool> globalToolUpdated = new();
+        static SerializedAddressableT<EventGlobalTool> globalToolDeleted = new();
 
         public UMI3DGlobalToolLoader()
         {
-            globalToolCreated.loadingSource = LoadingSourceEnum.Address;
+            globalToolCreated.loadingSource = AddressableLoadingSourceEnum.Address;
             globalToolCreated.address = "umi3d_globalTool_created_event";
             globalToolCreated.LoadAssetAsync();
 
-            globalToolUpdated.loadingSource = LoadingSourceEnum.Address;
+            globalToolUpdated.loadingSource = AddressableLoadingSourceEnum.Address;
             globalToolUpdated.address = "umi3d_globalTool_updated_event";
             globalToolUpdated.LoadAssetAsync();
 
-            globalToolDeleted.loadingSource = LoadingSourceEnum.Address;
+            globalToolDeleted.loadingSource = AddressableLoadingSourceEnum.Address;
             globalToolDeleted.address = "umi3d_globalTool_deleted_event";
             globalToolDeleted.LoadAssetAsync();
         }

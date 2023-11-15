@@ -30,10 +30,10 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public class GlobalToolMenuManager : inetum.unityUtils.SingleBehaviour<GlobalToolMenuManager>
     {
-        public SerializedAddressable<MenuAsset> menuAssetAddressable;
-        public SerializedAddressable<EventGlobalTool> globalToolCreated;
-        public SerializedAddressable<EventGlobalTool> globalToolUpdated;
-        public SerializedAddressable<EventGlobalTool> globalToolDeleted;
+        public SerializedAddressableT<MenuAsset> menuAssetAddressable;
+        public SerializedAddressableT<EventGlobalTool> globalToolCreated;
+        public SerializedAddressableT<EventGlobalTool> globalToolUpdated;
+        public SerializedAddressableT<EventGlobalTool> globalToolDeleted;
 
         /// <summary>
         /// Menus needing to be stored into menuAsset.menu but missing their parent (not recieved yet).

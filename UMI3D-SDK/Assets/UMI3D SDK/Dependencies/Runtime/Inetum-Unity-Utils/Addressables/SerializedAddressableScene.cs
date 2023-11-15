@@ -17,20 +17,21 @@ using System;
 using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
+using UnityEngine.ResourceManagement.ResourceProviders;
 
 namespace inetum.unityUtils
 {
     /// <summary>
-    /// A <see cref="SerializedAddressable"/> is a container for asset that can be load via the Addressables package.
+    /// A <see cref="SerializedAddressable"/> for scene.
     /// </summary>
     [Serializable]
-    public struct SerializedAddressable
+    public struct SerializedAddressableScene 
     {
         [Tooltip("Choose how you want to load the asset")]
         public AddressableLoadingSourceEnum loadingSource;
 
         [ShowWhenEnum(nameof(loadingSource), new[] { (int)AddressableLoadingSourceEnum.Reference })]
-        public AssetReference reference;
+        public AssetReferenceScene reference;
         [ShowWhenEnum(nameof(loadingSource), new[] { (int)AddressableLoadingSourceEnum.Address })]
         public string address;
 
@@ -38,7 +39,7 @@ namespace inetum.unityUtils
         /// The <see cref="AsyncOperationHandle"/> set when the load method is called.
         /// </summary>
         [HideInInspector]
-        public AsyncOperationHandle operationHandler;
+        public AsyncOperationHandle<SceneInstance> operationHandler;
 
         /// <summary>
         /// Whether or not the handler has been set.
@@ -55,34 +56,6 @@ namespace inetum.unityUtils
             }
         }
 
-        /// <summary>
-        /// Load the asset in an asynchronous way.
-        /// </summary>
-        /// <exception cref="SerializedAddressableException"></exception>
-        public AsyncOperationHandle LoadAssetAsync<T>()
-        {
-            switch (loadingSource)
-            {
-                case AddressableLoadingSourceEnum.Reference:
-                    if (reference.RuntimeKeyIsValid())
-                    {
-                        operationHandler = reference.LoadAssetAsync<T>();
-                    }
-                    else
-                    {
-                        throw new SerializedAddressableException($"Reference for type [{typeof(T).Name}] has an invalid RuntimeKey");
-                    }
-                    break;
-                case AddressableLoadingSourceEnum.Address:
-                    operationHandler = Addressables.LoadAssetAsync<T>(address);
-                    break;
-                default:
-                    break;
-            }
-
-            return operationHandler;
-        }
-
         public AsyncOperationHandle LoadSceneAsync()
         {
             switch (loadingSource)
@@ -94,7 +67,7 @@ namespace inetum.unityUtils
                     }
                     else
                     {
-                        throw new SerializedAddressableException($"Reference has an invalid RuntimeKey");
+                        throw new SerializedAddressableException($"Reference for scene has an invalid RuntimeKey");
                     }
                     break;
                 case AddressableLoadingSourceEnum.Address:
@@ -107,11 +80,12 @@ namespace inetum.unityUtils
             return operationHandler;
         }
 
-        public void Release()
+        public void UnloadSceneAsync()
         {
+
             if (operationHandler.IsValid())
             {
-                Addressables.Release(operationHandler);
+                Addressables.UnloadSceneAsync(operationHandler);
             }
         }
     }

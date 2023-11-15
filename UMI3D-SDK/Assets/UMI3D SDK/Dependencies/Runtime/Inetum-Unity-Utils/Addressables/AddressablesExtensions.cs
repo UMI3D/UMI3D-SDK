@@ -36,15 +36,15 @@ namespace inetum.unityUtils
         /// <param name="parent"></param>
         /// <param name="instantiateInWorldSpace"></param>
         /// <returns></returns>
-        public static AsyncOperationHandle<GameObject> InstantiateAsync(this SerializedAddressable<GameObject> addressable, Transform parent = null, bool instantiateInWorldSpace = false)
+        public static AsyncOperationHandle<GameObject> InstantiateAsync(this SerializedAddressableT<GameObject> addressable, Transform parent = null, bool instantiateInWorldSpace = false)
         {
             AsyncOperationHandle<GameObject> result;
             switch (addressable.loadingSource)
             {
-                case LoadingSourceEnum.Reference:
+                case AddressableLoadingSourceEnum.Reference:
                     result = addressable.reference.InstantiateAsync(parent, instantiateInWorldSpace);
                     break;
-                case LoadingSourceEnum.Address:
+                case AddressableLoadingSourceEnum.Address:
                     result = Addressables.InstantiateAsync(addressable.address, parent, instantiateInWorldSpace);
                     break;
                 default:
@@ -59,7 +59,7 @@ namespace inetum.unityUtils
         /// Release a gameObject and decrease the unity loading and instantiating count.
         /// </summary>
         /// <param name="addressable"></param>
-        public static void ReleaseInstance(this SerializedAddressable<GameObject> addressable)
+        public static void ReleaseInstance(this SerializedAddressableT<GameObject> addressable)
         {
             if (addressable.IsHandlerValid)
             {
@@ -73,7 +73,7 @@ namespace inetum.unityUtils
         /// <typeparam name="T"></typeparam>
         /// <param name="addressable"></param>
         /// <param name="operation"></param>
-        public static void NowOrLater<T>(this SerializedAddressable<T> addressable, Action<T> operation)
+        public static void NowOrLater<T>(this SerializedAddressableT<T> addressable, Action<T> operation)
             where T : UnityEngine.Object
         {
             addressable.operationHandler.NowOrLater(operation);

@@ -22,14 +22,19 @@ MonoBehaviour:
       Manager Scene.unity
     m_ReadOnly: 0
     m_SerializedLabels: []
-  - m_GUID: 054b4cbfd5506b746a9b00925195a4a2
-    m_Address: Assets/UMI3D SDK/ClientDevelopmentKit/Core/Runtime/Menu/ScriptableObjects/Global
-      Tool Menu.asset
-    m_ReadOnly: 0
-    m_SerializedLabels: []
   - m_GUID: dd40b33b821185b43981ba3fa8d7100c
     m_Address: Assets/UMI3D SDK/ClientDevelopmentKit/Core/Runtime/Scenes/UMI3D Launcher
       Scene.unity
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 53126aea99e7e7641955a95e06b5312e
+    m_Address: Assets/UMI3D SDK/ClientDevelopmentKit/Core/Runtime/Scenes/SceneModels/UMI3D
+      Launcher.asset
+    m_ReadOnly: 0
+    m_SerializedLabels: []
+  - m_GUID: 7ace555ae72d9004ea10f0af19e0951f
+    m_Address: Assets/UMI3D SDK/ClientDevelopmentKit/Core/Runtime/Scenes/SceneModels/UMI3D
+      Persistent Manager.asset
     m_ReadOnly: 0
     m_SerializedLabels: []
   m_ReadOnly: 0

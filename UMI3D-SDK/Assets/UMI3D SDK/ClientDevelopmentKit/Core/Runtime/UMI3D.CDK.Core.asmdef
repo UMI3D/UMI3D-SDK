@@ -1,5 +1,6 @@
 {
     "name": "UMI3D.CDK.Core",
+    "rootNamespace": "",
     "references": [
         "GUID:6e34c4b4c3202a14eb95e0a784041765",
         "GUID:215efa65361782e41b5e3fac87a2c7e3",
@@ -16,16 +17,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "noEngineReferences": false,
     "versionDefines": [
         {
-
             "name": "com.unity.render-pipelines.universal",
-
             "expression": "0.0",
-
             "define": "USING_URP"
-
         }
-    ]
+    ],
+    "noEngineReferences": false
 }

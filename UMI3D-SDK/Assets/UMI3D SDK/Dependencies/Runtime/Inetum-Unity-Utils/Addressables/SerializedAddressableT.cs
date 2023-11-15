@@ -20,17 +20,15 @@ using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace inetum.unityUtils
 {
-    /// <summary>
-    /// A <see cref="SerializedAddressable"/> is a container for asset that can be load via the Addressables package.
-    /// </summary>
     [Serializable]
-    public struct SerializedAddressable
+    public struct SerializedAddressableT<T>
+        where T: UnityEngine.Object
     {
         [Tooltip("Choose how you want to load the asset")]
         public AddressableLoadingSourceEnum loadingSource;
 
         [ShowWhenEnum(nameof(loadingSource), new[] { (int)AddressableLoadingSourceEnum.Reference })]
-        public AssetReference reference;
+        public AssetReferenceT<T> reference;
         [ShowWhenEnum(nameof(loadingSource), new[] { (int)AddressableLoadingSourceEnum.Address })]
         public string address;
 
@@ -38,7 +36,7 @@ namespace inetum.unityUtils
         /// The <see cref="AsyncOperationHandle"/> set when the load method is called.
         /// </summary>
         [HideInInspector]
-        public AsyncOperationHandle operationHandler;
+        public AsyncOperationHandle<T> operationHandler;
 
         /// <summary>
         /// Whether or not the handler has been set.
@@ -59,14 +57,14 @@ namespace inetum.unityUtils
         /// Load the asset in an asynchronous way.
         /// </summary>
         /// <exception cref="SerializedAddressableException"></exception>
-        public AsyncOperationHandle LoadAssetAsync<T>()
+        public AsyncOperationHandle<T> LoadAssetAsync()
         {
             switch (loadingSource)
             {
                 case AddressableLoadingSourceEnum.Reference:
                     if (reference.RuntimeKeyIsValid())
                     {
-                        operationHandler = reference.LoadAssetAsync<T>();
+                        operationHandler = reference.LoadAssetAsync();
                     }
                     else
                     {
@@ -75,30 +73,6 @@ namespace inetum.unityUtils
                     break;
                 case AddressableLoadingSourceEnum.Address:
                     operationHandler = Addressables.LoadAssetAsync<T>(address);
-                    break;
-                default:
-                    break;
-            }
-
-            return operationHandler;
-        }
-
-        public AsyncOperationHandle LoadSceneAsync()
-        {
-            switch (loadingSource)
-            {
-                case AddressableLoadingSourceEnum.Reference:
-                    if (reference.RuntimeKeyIsValid())
-                    {
-                        operationHandler = reference.LoadSceneAsync();
-                    }
-                    else
-                    {
-                        throw new SerializedAddressableException($"Reference has an invalid RuntimeKey");
-                    }
-                    break;
-                case AddressableLoadingSourceEnum.Address:
-                    operationHandler = Addressables.LoadSceneAsync(address);
                     break;
                 default:
                     break;
