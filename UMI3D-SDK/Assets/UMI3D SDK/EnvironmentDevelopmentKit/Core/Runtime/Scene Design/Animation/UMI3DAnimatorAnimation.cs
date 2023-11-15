@@ -32,10 +32,12 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Node where the animator can be found on.")]
         private UMI3DNode node = null;
         /// <summary>
-        /// Aniumation state's name in the animator controller.
+        /// Animation state's name in the animator controller.
         /// </summary>
-        [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller.")]
-        private string stateName = "";
+        /// An empty state name corresponds to a self-caring animator.
+        [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller. \n" +
+                                                 "An empty state name corresponds to a self-caring animator.")]
+        private string stateName = string.Empty;
         
         /// <summary>
         /// Animation normalized time at start. 
