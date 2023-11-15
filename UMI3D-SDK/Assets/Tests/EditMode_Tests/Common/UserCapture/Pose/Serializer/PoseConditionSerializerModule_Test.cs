@@ -113,23 +113,6 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         }
 
         [Test]
-        public void Read_UserScaleCondition()
-        {
-            UserScaleConditionDto userScaleConditinoDto = new UserScaleConditionDto()
-            {
-                Scale = Vector3.one.Dto(),
-            };
-
-            poseConditionSerializerModule.Write(userScaleConditinoDto, out Bytable data);
-
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
-
-            poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
-            Assert.IsTrue(readable);
-            Assert.IsTrue((result as UserScaleConditionDto).Scale.X == userScaleConditinoDto.Scale.X);
-        }
-
-        [Test]
         public void Read_ScaleCondition()
         {
             ScaleConditionDto scaleConditionDto = new ScaleConditionDto()
@@ -207,8 +190,8 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
 
-            Assert.IsTrue(((result as NotConditionDto).Conditions[0] as UserScaleConditionDto).Scale.X
-                == (notConditionDto.Conditions[0] as UserScaleConditionDto).Scale.X);
+            Assert.IsTrue(((result as NotConditionDto).Conditions[0] as ScaleConditionDto).Scale.X
+                == (notConditionDto.Conditions[0] as ScaleConditionDto).Scale.X);
             Assert.IsTrue(((result as NotConditionDto).Conditions[1] as DirectionConditionDto).Direction.X
                 == (notConditionDto.Conditions[1] as DirectionConditionDto).Direction.X);
         }
@@ -216,7 +199,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         private AbstractPoseConditionDto[] GetConditionsTestSet()
         {
             return new AbstractPoseConditionDto[]{
-                new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
+                new ScaleConditionDto() { Scale = Vector3.one.Dto() },
                 new DirectionConditionDto() { Direction = Vector3.one.Dto() }
             };
         }

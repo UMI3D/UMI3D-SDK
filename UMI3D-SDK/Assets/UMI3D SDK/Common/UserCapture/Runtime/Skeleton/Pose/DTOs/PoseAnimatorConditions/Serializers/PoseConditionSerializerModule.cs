@@ -33,7 +33,6 @@ namespace umi3d.common.userCapture.pose
             BONE_ROTATION_CONDITION,
             DIRECTION_CONDITION,
             NOT_CONDITION,
-            USER_SCALE_CONDITION,
             SCALE_CONDITION,
             ENVIRONMENT_CONDITION
         }
@@ -48,7 +47,6 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(BoneRotationConditionDto) => true,
                 true when typeof(T) == typeof(DirectionConditionDto) => true,
                 true when typeof(T) == typeof(NotConditionDto) => true,
-                true when typeof(T) == typeof(UserScaleConditionDto) => true,
                 true when typeof(T) == typeof(ScaleConditionDto) => true,
                 true when typeof(T) == typeof(EnvironmentPoseConditionDto) => true,
                 true when typeof(T) == typeof(AbstractPoseConditionDto) => true,
@@ -86,11 +84,6 @@ namespace umi3d.common.userCapture.pose
                                 case (int)PoseConditionSerializingIndex.DIRECTION_CONDITION:
                                     ReadPoseConditionDTO(container, out readable, out DirectionConditionDto directionConditionDto);
                                     poseConditionDto = directionConditionDto;
-                                    break;
-
-                                case (int)PoseConditionSerializingIndex.USER_SCALE_CONDITION:
-                                    ReadPoseConditionDTO(container, out readable, out UserScaleConditionDto userScaleConditinoDto);
-                                    poseConditionDto = userScaleConditinoDto;
                                     break;
 
                                 case (int)PoseConditionSerializingIndex.SCALE_CONDITION:
@@ -230,24 +223,6 @@ namespace umi3d.common.userCapture.pose
                         return false;
                     }
 
-                case true when typeof(T) == typeof(UserScaleConditionDto):
-                    {
-                        readable = UMI3DSerializer.TryRead(container, out Vector3Dto scale);
-
-                        if (readable)
-                        {
-                            var userScaleConditionDto = new UserScaleConditionDto()
-                            {
-                                Scale = scale
-                            };
-                            result = (T)Convert.ChangeType(userScaleConditionDto, typeof(T));
-                            return true;
-                        }
-
-                        result = default;
-                        return false;
-                    }
-
                 case true when typeof(T) == typeof(ScaleConditionDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out Vector3Dto scale);
@@ -369,11 +344,6 @@ namespace umi3d.common.userCapture.pose
                 case NotConditionDto notConditionDto:
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.NOT_CONDITION)
                         + UMI3DSerializer.WriteCollection(notConditionDto.Conditions);
-                    break;
-
-                case UserScaleConditionDto userScaleConditionDto:
-                    bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.USER_SCALE_CONDITION)
-                        + UMI3DSerializer.Write(userScaleConditionDto.Scale);
                     break;
 
                 case ScaleConditionDto scaleConditionDto:

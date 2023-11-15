@@ -99,7 +99,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                 poseClipId = 11025uL,
                 poseConditions = new AbstractPoseConditionDto[]
                 {
-                    new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
+                    new ScaleConditionDto() { Scale = Vector3.one.Dto() },
                     new DirectionConditionDto() { Direction = Vector3.one.Dto() },
                 },
                 duration = new DurationDto() { duration = 24, max = 12, min = 2 },

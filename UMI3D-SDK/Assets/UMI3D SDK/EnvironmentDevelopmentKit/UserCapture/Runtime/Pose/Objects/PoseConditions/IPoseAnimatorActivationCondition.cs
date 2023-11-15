@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,16 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture.pose
+using umi3d.common.userCapture.pose;
+
+namespace umi3d.edk.userCapture.pose
 {
     /// <summary>
-    /// <inheritdoc/><br/>
-    /// A condition to check the scale of the user
+    /// Condition to validate the activation of a pose animator.
     /// </summary>
-    [System.Serializable]
-    public class UserScaleConditionDto : AbstractPoseConditionDto
+    public interface IPoseAnimatorActivationCondition
     {
-        public Vector3Dto Scale { get; set; }
+        public AbstractPoseConditionDto ToDto();
     }
 }
-
