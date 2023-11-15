@@ -136,19 +136,12 @@ namespace umi3d.common.userCapture.pose
         public PoseAnimatorActivationMode activationMode;
 
         /// <summary>
-        /// Poses conditions validated by the environment.
+        /// Poses conditions that can not be serialized.
         /// </summary>
-        [HideInInspector]
-        public List<UMI3DEnvironmentPoseCondition> EnvironmentActivationConditions = new();
+        private List<IPoseAnimatorActivationCondition> unserializableActivationConditions = new();
 
-        public IReadOnlyList<AbstractBrowserPoseAnimatorActivationCondition> BrowserActivationConditions
-        {
-            get => activationConditions.Select(x => BrowserPoseAnimatorActivationConditionField.ToCondition(x)).ToList();
-            set
-            {
-                activationConditions = value?.Select(x => BrowserPoseAnimatorActivationConditionField.ToField(x)).ToList();
-            }
-        }
+        private IReadOnlyList<AbstractBrowserPoseAnimatorActivationCondition> SerializableActivationConditions
+            => activationConditions.Select(x => BrowserPoseAnimatorActivationConditionField.ToCondition(x)).ToList();
 
         /// <summary>
         /// Used for serialization and editor access. Prefer to use <see cref="UMI3DPoseAnimator.ActivationsConditions"/>.
@@ -161,7 +154,25 @@ namespace umi3d.common.userCapture.pose
         /// Pose animator activation conditions, all of them should be validated for the animator to be activated.
         /// </summary>
         public IReadOnlyList<IPoseAnimatorActivationCondition> ActivationsConditions
-            => EnvironmentActivationConditions.Cast<IPoseAnimatorActivationCondition>().Union(BrowserActivationConditions).ToList();
+        {
+            get => unserializableActivationConditions.Union(SerializableActivationConditions).ToList();
+            set
+            {
+                activationConditions.Clear();
+                unserializableActivationConditions.Clear();
+
+                if (value == null)
+                    return;
+
+                foreach (var condition in value)
+                {
+                    if (condition is AbstractBrowserPoseAnimatorActivationCondition serializedCondition)
+                        activationConditions.Add(BrowserPoseAnimatorActivationConditionField.ToField(serializedCondition));
+                    else if (condition != null)
+                        unserializableActivationConditions.Add(condition);
+                }
+            }
+        }
 
         #region Dependencies
 

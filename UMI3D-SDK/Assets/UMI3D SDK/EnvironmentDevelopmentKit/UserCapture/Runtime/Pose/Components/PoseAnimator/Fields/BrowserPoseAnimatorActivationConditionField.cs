@@ -76,7 +76,7 @@ namespace umi3d.common.userCapture.pose
                     break;
 
                 default:
-                    break;
+                    return null;
             }
 
             return field;

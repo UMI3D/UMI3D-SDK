@@ -155,24 +155,24 @@ namespace EditMode_Tests.UserCapture.Pose.Common
         #region Multy Conditions
 
         [Test]
-        public void Read_RangeCondition()
+        public void Read_OrCondition()
         {
-            RangeConditionDto rangeConditionDto = new RangeConditionDto()
+            OrConditionDto orConditionDto = new OrConditionDto()
             {
-                ConditionA = new MagnitudeConditionDto() { Magnitude = 12, BoneOrigin = 53, TargetNodeId = 15 },
-                ConditionB = new ScaleConditionDto() { Scale = Vector3.one.Dto() }
+                ConditionsA = new AbstractPoseConditionDto[] { new MagnitudeConditionDto() { Magnitude = 12, BoneOrigin = 53, TargetNodeId = 15 } },
+                ConditionsB = new AbstractPoseConditionDto[] { new ScaleConditionDto() { Scale = Vector3.one.Dto() } }
             };
 
-            poseConditionSerializerModule.Write(rangeConditionDto, out Bytable data);
+            poseConditionSerializerModule.Write(orConditionDto, out Bytable data);
 
             ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(((result as RangeConditionDto).ConditionA as MagnitudeConditionDto).Magnitude
-                == (rangeConditionDto.ConditionA as MagnitudeConditionDto).Magnitude);
-            Assert.IsTrue(((result as RangeConditionDto).ConditionB as ScaleConditionDto).Scale.X
-                == (rangeConditionDto.ConditionB as ScaleConditionDto).Scale.X);
+            Assert.IsTrue(((result as OrConditionDto).ConditionsA[0] as MagnitudeConditionDto).Magnitude
+                == (orConditionDto.ConditionsA[0] as MagnitudeConditionDto).Magnitude);
+            Assert.IsTrue(((result as OrConditionDto).ConditionsB[0] as ScaleConditionDto).Scale.X
+                == (orConditionDto.ConditionsB[0] as ScaleConditionDto).Scale.X);
         }
 
         [Test]
