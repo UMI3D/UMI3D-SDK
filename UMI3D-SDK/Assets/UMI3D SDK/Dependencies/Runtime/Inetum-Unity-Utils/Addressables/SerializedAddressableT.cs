@@ -39,6 +39,25 @@ namespace inetum.unityUtils
         public AsyncOperationHandle<T> operationHandler;
 
         /// <summary>
+        /// Whether or not this <see cref="SerializedAddressableT{T}"/> has enough informations to load its asset.
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                switch (loadingSource)
+                {
+                    case AddressableLoadingSourceEnum.Reference:
+                        return reference.RuntimeKeyIsValid();
+                    case AddressableLoadingSourceEnum.Address:
+                        return !string.IsNullOrEmpty(address);
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether or not the handler has been set.
         /// 
         /// <para>

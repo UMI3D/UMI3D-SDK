@@ -18,6 +18,7 @@ using UnityEngine;
 using UnityEngine.AddressableAssets;
 using UnityEngine.ResourceManagement.AsyncOperations;
 using UnityEngine.ResourceManagement.ResourceProviders;
+using UnityEngine.SceneManagement;
 
 namespace inetum.unityUtils
 {
@@ -42,6 +43,25 @@ namespace inetum.unityUtils
         public AsyncOperationHandle<SceneInstance> operationHandler;
 
         /// <summary>
+        /// Whether or not this <see cref="SerializedAddressableT{T}"/> has enough informations to load its asset.
+        /// </summary>
+        public bool IsValid
+        {
+            get
+            {
+                switch (loadingSource)
+                {
+                    case AddressableLoadingSourceEnum.Reference:
+                        return reference.RuntimeKeyIsValid();
+                    case AddressableLoadingSourceEnum.Address:
+                        return !string.IsNullOrEmpty(address);
+                    default:
+                        return false;
+                }
+            }
+        }
+
+        /// <summary>
         /// Whether or not the handler has been set.
         /// 
         /// <para>
@@ -56,14 +76,14 @@ namespace inetum.unityUtils
             }
         }
 
-        public AsyncOperationHandle LoadSceneAsync()
+        public AsyncOperationHandle<SceneInstance> LoadSceneAsync(LoadSceneMode loadMode = LoadSceneMode.Single, bool activateOnLoad = true)
         {
             switch (loadingSource)
             {
                 case AddressableLoadingSourceEnum.Reference:
                     if (reference.RuntimeKeyIsValid())
                     {
-                        operationHandler = reference.LoadSceneAsync();
+                        operationHandler = reference.LoadSceneAsync(loadMode, activateOnLoad);
                     }
                     else
                     {
@@ -71,7 +91,7 @@ namespace inetum.unityUtils
                     }
                     break;
                 case AddressableLoadingSourceEnum.Address:
-                    operationHandler = Addressables.LoadSceneAsync(address);
+                    operationHandler = Addressables.LoadSceneAsync(address, loadMode, activateOnLoad);
                     break;
                 default:
                     break;
