@@ -70,7 +70,7 @@ namespace umi3d.cdk.binding
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
-            originalRotationOffset = boundTransform.rotation;
+            originalRotationOffset = Quaternion.identity; //boundTransform.rotation;
         }
 
         /// <summary>
