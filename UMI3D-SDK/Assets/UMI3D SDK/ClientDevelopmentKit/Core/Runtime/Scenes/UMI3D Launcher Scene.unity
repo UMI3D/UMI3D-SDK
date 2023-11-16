@@ -160,14 +160,15 @@ MonoBehaviour:
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     address: 
-  nextScene:
-    loadingSource: 0
+  nextScenes:
+  - loadingSource: 0
     reference:
       m_AssetGUID: 7ace555ae72d9004ea10f0af19e0951f
       m_SubObjectName: 
       m_SubObjectType: 
       m_EditorAssetChanged: 0
     address: 
+  loadMode: 0
 --- !u!4 &1642782678
 Transform:
   m_ObjectHideFlags: 0

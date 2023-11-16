@@ -33,24 +33,16 @@ namespace umi3d.cdk.scene.sceneModel
         public SerializedAddressableScene scene;
         public SceneTypeEnum type;
         [HideInInspector]
-        public NotifyingVariable<UnityEngine.SceneManagement.Scene> unityScene = new();
+        public NotifyingVariable<UnityEngine.SceneManagement.Scene?> unityScene = new();
 
         public bool IsLoaded
         {
             get
             {
-                return unityScene.value.isLoaded;
+                return unityScene.value.HasValue 
+                    ? unityScene.value.Value.isLoaded
+                    : false;
             }
-        }
-
-        private void OnEnable()
-        {
-            UnityEngine.Debug.Log($"OnEnable {IsLoaded}");
-        }
-
-        private void OnDisable()
-        {
-            UnityEngine.Debug.Log($"OnDisable {IsLoaded}");
         }
     }
 }
