@@ -192,10 +192,10 @@ namespace umi3d.cdk.collaboration
         {
             if (await base._SetUMI3DProperty(data)) return true;
             if (data.entity == null) return false;
-
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.UserList:
+                    MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log("USerlist 3"));
                     var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
                     return SetUserList(dto, data.operationId, data.propertyKey, data.container);
 

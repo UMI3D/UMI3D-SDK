@@ -1,3 +1,4 @@
+using BeardedManStudios.Forge.Networking.Unity;
 using inetum.unityUtils;
 using Microsoft.SqlServer.Server;
 using System;
@@ -12,6 +13,7 @@ using UnityEngine;
 
 public class DistantEnvironmentLoader : AbstractLoader
 {
+    private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
     UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.7", "*");
 
     public override UMI3DVersion.VersionCompatibility version => _version;
@@ -30,10 +32,13 @@ public class DistantEnvironmentLoader : AbstractLoader
             UnityEngine.Debug.Log($"Read a distant Environment Start {distantDto != null} {distantDto?.environmentDto != null} {distantDto?.environmentDto?.scenes != null}");
             try
             {
-                distantEnvironments[distantDto.id] = distantDto;
-                UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
+                distantEnvironments[distantDto.environmentID] = distantDto;
+                UnityEngine.Debug.LogError(distantDto.environmentID+" "+distantDto.resourcesUrl);
+                UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.environmentID, distantDto.resourcesUrl);
+                var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, null);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
-                await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id,distantDto.environmentDto.scenes);
+                await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.environmentID, distantDto.environmentDto.scenes);
+                e.NotifyLoaded();
             }
             catch (Exception e)
             {
@@ -45,9 +50,9 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
     {
-        if (value.entity.dto is DistantEnvironmentDto v && value.property.property == UMI3DPropertyKeys.DistantEnvironment)
+        if (value.property.property == UMI3DPropertyKeys.DistantEnvironment)
         {
-            var obj = value.property.value;
+            var obj = value.property.value as BinaryDto;
             UnityEngine.Debug.Log("Need To forward transaction");
             return Task.FromResult(true);
         }
@@ -55,17 +60,43 @@ public class DistantEnvironmentLoader : AbstractLoader
         return Task.FromResult(false);
     }
 
-    public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+    public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
     {
-        if (value.entity.dto is DistantEnvironmentDto v && value.propertyKey == UMI3DPropertyKeys.DistantEnvironment)
+        //UnityEngine.Debug.Log($"Hello {value?.entity?.dto} {value.entity.dto is DistantEnvironmentDto} {value.propertyKey} {value.propertyKey == UMI3DPropertyKeys.DistantEnvironment}");
+        if (value.propertyKey == UMI3DPropertyKeys.DistantEnvironment)
         {
-            var obj = value.container;
-
-
-            UnityEngine.Debug.Log("Need To forward transaction");
-            return Task.FromResult(true);
+            _SetUMI3DProperty(value);
+            return true;
         }
 
-        return Task.FromResult(false);
+        return false;
+    }
+
+    async void _SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+    {
+        await Task.Yield();
+        var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
+
+        MainThreadManager.Run(async () =>
+        {
+            //UnityEngine.Debug.Log($"Need To forward transaction {obj.data.Length} {obj.groupId}=={UMI3DOperationKeys.Transaction} {obj.environmentid}");
+
+            ByteContainer container = new ByteContainer(obj.environmentid, value.container.timeStep, obj.data);
+            uint TransactionId = UMI3DSerializer.Read<uint>(container);
+            try
+            {
+                await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
+            }
+            catch (ArgumentException ae)
+            {
+                // HACK
+            }
+            catch (Exception ex)
+            {
+                UMI3DLogger.LogError("Error while performing transaction", scope);
+                UMI3DLogger.LogException(ex, scope);
+            }
+
+        });
     }
 }

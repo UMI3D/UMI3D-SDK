@@ -170,9 +170,7 @@ namespace umi3d.cdk
             var tasks = nodes
                 .Select(n =>
                 {
-                    UnityEngine.Debug.Log($"{n}");
                     var res = CreateNode(enviornmentId, n);
-                    UnityEngine.Debug.Log($"{n} {res.dto} {n == res.dto}");
                     return res;
                 })
                 .Select(async node =>
@@ -181,8 +179,6 @@ namespace umi3d.cdk
                     progress.AddTotal();
                     try
                     {
-                        nodes.Debug();
-                        UnityEngine.Debug.Log($"{node.dto} | {dto} {dto?.extensions} {dto?.extensions?.umi3d} | {node} {node?.gameObject}");
                         await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(enviornmentId, dto.extensions.umi3d, node.gameObject));
 
                         ReadLightingExtensions(dto, node.gameObject);

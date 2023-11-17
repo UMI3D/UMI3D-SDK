@@ -32,7 +32,7 @@ namespace umi3d.common.collaboration
         /// <param name="sender">the corresponding NetWorker</param>
         protected override void _ReadBinary(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"Message on {frame.GroupId}"));
+            //UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"Message on {frame.GroupId}"));
             //Dispatches the frame to the appropriated listener
             switch (frame.GroupId)
             {

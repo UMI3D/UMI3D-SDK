@@ -23,6 +23,7 @@ using UnityEngine;
 using System.Threading;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common.utils.serialization;
+using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
@@ -424,8 +425,10 @@ namespace umi3d.cdk
         /// <returns></returns>
         public async Task<bool> SetEntity(ulong entityId, SetUMI3DPropertyContainerData data, Func<ReadUMI3DPropertyData,Task<bool>> ReadValueEntity)
         {
+            //UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"SetEntity {entityId}  {entityFilters.ContainsKey(entityId)} && {entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(data.propertyKey)}"));
             if (entityFilters.ContainsKey(entityId) && entityFilters[entityId].ContainsKey(data.propertyKey))
             {
+
                 var value = new ReadUMI3DPropertyData(EnvironmentId, data.propertyKey, data.container);
                 await ReadValueEntity(value);
                 entityFilters[entityId][data.propertyKey].AddMeasure(value.result.Deserialize());

@@ -152,7 +152,6 @@ namespace umi3d.common.collaboration
         {
             try
             {
-                UnityEngine.Debug.Log($"Message from server on {frame.GroupId}");
                 //Checks if the message is comming from the server or from an accepted player
                 if (!player.Accepted && !player.IsHost)
                     return;

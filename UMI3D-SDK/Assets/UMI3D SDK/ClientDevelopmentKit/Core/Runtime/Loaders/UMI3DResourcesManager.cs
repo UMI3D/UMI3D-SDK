@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using umi3d.common;
@@ -283,16 +284,16 @@ namespace umi3d.cdk
             {
                 foreach (var _url in UMI3DEnvironmentLoader.Instance.GetResourcesUrls())
                 {
-                    //if (UMI3DClientServer.Environement == null)
-                    //    return false;
-
                     string url = _url + '/';
 
                     if (url == this.url) return true;
 
                     Match b = rx.Match(url);
                     if (a.Success && b.Success)
-                        return a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
+                        if (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value 
+                            && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) 
+                            && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value))
+                            return true;
                 }
                 return false;
             }
@@ -304,6 +305,7 @@ namespace umi3d.cdk
                     useServerAuthorization = true;
                     return UMI3DClientServer.getAuthorization();
                 }
+                UnityEngine.Debug.Log("Do not match Server url");
                 useServerAuthorization = false;
                 if (authorization.IsNullOrEmpty()) return null;
                 return "Basic" + System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));

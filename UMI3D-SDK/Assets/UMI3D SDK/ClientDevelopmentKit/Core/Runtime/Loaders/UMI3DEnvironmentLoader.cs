@@ -30,6 +30,7 @@ using inetum.unityUtils;
 using AsImpL;
 using static UnityEditor.Progress;
 using System.ComponentModel;
+using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
@@ -878,7 +879,6 @@ namespace umi3d.cdk
         public static async Task SetEntity(ulong environmentId, uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
         {
             var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, entityId, container.tokens);
-
             if (!await SetEntity(environmentId, entityId, new SetUMI3DPropertyContainerData(environmentId, e, operationId, propertyKey, container)))
                 UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
 
@@ -910,6 +910,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static async Task<bool> SetEntity(ulong environmentId, ulong entityId, SetUMI3DPropertyContainerData data)
         {
+           // UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"SetEntityProperty {environmentId} {entityId}"));
             if (await Instance.entitiesCollection[environmentId].SetEntity(entityId,data, ReadValueEntity))
                 return true;
             else

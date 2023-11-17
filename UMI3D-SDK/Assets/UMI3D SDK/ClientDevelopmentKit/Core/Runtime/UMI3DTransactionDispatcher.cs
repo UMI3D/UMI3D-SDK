@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -181,7 +182,6 @@ namespace umi3d.cdk
         public async Task PerformOperation(ByteContainer container)
         {
             uint operationId = UMI3DSerializer.Read<uint>(container);
-
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
