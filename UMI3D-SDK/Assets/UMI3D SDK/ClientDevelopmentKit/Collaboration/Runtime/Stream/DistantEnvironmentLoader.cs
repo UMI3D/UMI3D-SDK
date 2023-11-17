@@ -49,6 +49,7 @@ public class DistantEnvironmentLoader : AbstractLoader
         {
             var obj = value.property.value;
             UnityEngine.Debug.Log("Need To forward transaction");
+            return Task.FromResult(true);
         }
 
         return Task.FromResult(false);
@@ -62,7 +63,7 @@ public class DistantEnvironmentLoader : AbstractLoader
 
 
             UnityEngine.Debug.Log("Need To forward transaction");
-
+            return Task.FromResult(true);
         }
 
         return Task.FromResult(false);

@@ -19,6 +19,7 @@ using WebSocketSharp;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using umi3d.common.userCapture.tracking;
+using BeardedManStudios.Forge.Networking.Frame;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
@@ -61,9 +62,20 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         //    Restart();
     }
 
-    public void OnData(object data)
+
+
+    public void OnData(Binary data)
     {
-        var op = lastTransactionAsync.SetValue(data);
+        var bin = new BinaryDto
+        {
+            data = data.StreamData.byteArr,
+            groupId = data.GroupId
+        };
+
+        if (bin.data == null || bin.data.Length <= 0)
+            return;
+
+        var op = lastTransactionAsync.SetValue(bin);
         var t = op.ToTransaction(true);
         t.Dispatch();
     }
