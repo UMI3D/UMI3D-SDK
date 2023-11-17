@@ -62,8 +62,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             var bin = new BinaryDto
             {
                 data = new byte[1] {0},
-                groupId = 0,
-                environmentid = Id()
+                groupId = 0
             };
 
             //if (bin.data == null || bin.data.Length <= 0)
@@ -94,8 +93,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         var bin = new BinaryDto
         {
             data = data.StreamData.byteArr,
-            groupId = data.GroupId,
-            environmentid = Id()
+            groupId = data.GroupId
         };
 
         if (bin.data == null || bin.data.Length <= 0)
@@ -144,7 +142,6 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             dto.resourcesUrl = ResourceServerUrl;
             dto.useDto = nvClient.useDto;
-            dto.environmentID = Id();
         }
     }
 
