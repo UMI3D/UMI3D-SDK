@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.ComponentModel;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -255,6 +256,7 @@ namespace umi3d.common
             var b = new BinaryDto();
 
             b.groupId = UMI3DSerializer.Read<int>(container);
+            b.environmentid = UMI3DSerializer.Read<ulong>(container);
             b.data = UMI3DSerializer.ReadArray<byte>(container);
             readable = true;
             result = b;
@@ -265,6 +267,7 @@ namespace umi3d.common
         public bool Write(BinaryDto value, out Bytable bytable, params object[] parameters)
         {
             bytable = UMI3DSerializer.Write(value.groupId);
+            bytable += UMI3DSerializer.Write(value.environmentid);
             bytable += UMI3DSerializer.WriteCollection(value.data ?? new byte[0]);
             return true;
         }

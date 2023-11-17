@@ -24,6 +24,8 @@ using BeardedManStudios.Forge.Networking.Frame;
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
 
+    public bool SendTransaction;
+
     public string ResourceServerUrl { get; set; }
     protected DistantEnvironmentDto dto;
     [SerializeField]
@@ -51,12 +53,35 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
     }
 
+    private void Update()
+    {
+        if (SendTransaction)
+        {
+            SendTransaction = false;
+
+            var bin = new BinaryDto
+            {
+                data = new byte[1] {0},
+                groupId = 0,
+                environmentid = Id()
+            };
+
+            //if (bin.data == null || bin.data.Length <= 0)
+            //    return;
+
+            var op = lastTransactionAsync.SetValue(bin);
+            var t = op.ToTransaction(true);
+            t.Dispatch();
+        }
+    }
+
     protected override void InitDefinition(ulong id)
     {
         base.InitDefinition(id);
 
-        lastTransactionAsync = new UMI3DAsyncProperty<object>(id, UMI3DPropertyKeys.DistantEnvironment, null);
+        lastTransactionAsync = new UMI3DAsyncProperty<object>(Id(), UMI3DPropertyKeys.DistantEnvironment, null);
         dto = new DistantEnvironmentDto();
+        dto.id = id;
         UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
         //if (!serverUrl.IsNullOrEmpty())
         //    Restart();
@@ -69,7 +94,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         var bin = new BinaryDto
         {
             data = data.StreamData.byteArr,
-            groupId = data.GroupId
+            groupId = data.GroupId,
+            environmentid = Id()
         };
 
         if (bin.data == null || bin.data.Length <= 0)
@@ -118,6 +144,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             dto.resourcesUrl = ResourceServerUrl;
             dto.useDto = nvClient.useDto;
+            dto.environmentID = Id();
         }
     }
 
@@ -211,6 +238,7 @@ public abstract class UMI3DAbstractDistantEnvironmentNode : MonoBehaviour, UMI3D
         if (objectId == 0 && UMI3DEnvironment.Exists)
         {
             objectId = UMI3DEnvironment.Register(this);
+            UnityEngine.Debug.Log(objectId);
             InitDefinition(objectId);
             inited = true;
         }
