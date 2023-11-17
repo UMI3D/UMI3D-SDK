@@ -23,38 +23,87 @@ namespace inetum.unityUtils
     {
         static UMI3DLogger logger = new(mainTag: nameof(AOHStack<T>));
 
+        internal class AOHCount
+        {
+            public int aohValidCount;
+            public int aohUndoneCount;
+
+            public AOHCount(int stackLength)
+            {
+                aohValidCount = stackLength;
+                aohUndoneCount = stackLength;
+            }
+        }
+
+        internal class AOHEvent
+        {
+            public Action<AsyncOperationHandle<T>[]> _allCompleted = default;
+            public bool allCompletedHasBeenRaised = false;
+            public Action<AsyncOperationHandle<T>[]> _atLeastOneCompleted = default;
+            public bool atLeastOneCompletedHasBeenRaised = false;
+        }
+
         /// <summary>
-        /// Event raised when 
+        /// Event raised when all <see cref="AsyncOperationHandle{TObject}"/> are done.
         /// </summary>
-        public event Action<AsyncOperationHandle<T>[]> completed
+        public event Action<AsyncOperationHandle<T>[]> allCompleted
         {
             add
             {
-                if (hasBeenCompleted)
+                if (AllAOHAreCompleted)
                 {
                     value?.Invoke(stack);
                 }
                 else
                 {
-                    _completed += value;
+                    aohEvent._allCompleted += value;
                 }
             }
             remove
             {
-                _completed -= value;
+                aohEvent._allCompleted -= value;
             }
         }
-        event Action<AsyncOperationHandle<T>[]> _completed;
+        
+        /// <summary>
+        /// Event raised when at least one <see cref="AsyncOperationHandle{TObject}"/> are done.
+        /// </summary>
+        public event Action<AsyncOperationHandle<T>[]> atLeastOneCompleted
+        {
+            add
+            {
+                if (AtLeastOneAOHIsCompleted)
+                {
+                    value?.Invoke(stack);
+                }
+                else
+                {
+                    aohEvent._atLeastOneCompleted += value;
+                }
+            }
+            remove
+            {
+                aohEvent._atLeastOneCompleted -= value;
+            }
+        }
 
         AsyncOperationHandle<T>[] stack;
-        int aohCount;
+        AOHEvent aohEvent;
+        AOHCount count;
 
-
-        bool hasBeenCompleted
+        public bool AllAOHAreCompleted
         {
             get
             {
-                return aohCount == 0;
+                return count.aohUndoneCount == 0;
+            }
+        }
+
+        public bool AtLeastOneAOHIsCompleted
+        {
+            get
+            {
+                return count.aohUndoneCount <= count.aohValidCount - 1;
             }
         }
 
@@ -66,67 +115,68 @@ namespace inetum.unityUtils
             }
 
             this.stack = stack;
-            this.aohCount = stack.Length;
-            this._completed = default;
+            this.count = new(stack.Length);
+            this.aohEvent = new();
 
             var aohStack = this;
             foreach (var aoh in stack)
             {
+                if (!aoh.IsValid())
+                {
+                    count.aohValidCount--;
+                }
+
                 if (aoh.IsValid() && !aoh.IsDone)
                 {
                     aoh.Completed += _ =>
                     {
-                        if (aohStack.CheckIfAllAOHAreCompleted())
+                        aohStack.count.aohUndoneCount--;
+                        if (aohStack.AtLeastOneAOHIsCompleted)
                         {
-                            aohStack.RaiseCompleted();
+                            aohStack.RaiseAtLeastOneCompleted();
+                        }
+                        if (aohStack.AllAOHAreCompleted)
+                        {
+                            aohStack.RaiseAllCompleted();
                         }
                     };
                 }
                 else
                 {
-                    aohCount--;
+                    count.aohUndoneCount--;
                 }
             }
 
-            if (aohCount == 0)
+            if (AtLeastOneAOHIsCompleted)
             {
-                RaiseCompleted();
+                RaiseAtLeastOneCompleted();
+            }
+            if (AllAOHAreCompleted)
+            {
+                RaiseAllCompleted();
             }
         }
 
-        bool CheckIfAllAOHAreCompleted()
+        void RaiseAllCompleted()
         {
-            return aohCount == 0;
-
-            UnityEngine.Debug.Log($"message");
-            if (hasBeenCompleted)
-            {
-                return true;
-            }
-
-            foreach (var aoh in stack)
-            {
-                if (aoh.IsValid() && !aoh.IsDone)
-                {
-                    logger.Default(nameof(CheckIfAllAOHAreCompleted), "false");
-                    return false;
-                }
-            }
-
-            logger.Default(nameof(CheckIfAllAOHAreCompleted), "true");
-            return true;
-        }
-
-        void RaiseCompleted()
-        {
-            if (hasBeenCompleted)
+            if (aohEvent.allCompletedHasBeenRaised)
             {
                 return;
             }
 
-            hasBeenCompleted = true;
-            this._completed?.Invoke(stack);
-            UnityEngine.Debug.Log($"raise");
+            aohEvent.allCompletedHasBeenRaised = true;
+            aohEvent._allCompleted?.Invoke(stack);
+        }
+
+        void RaiseAtLeastOneCompleted()
+        {
+            if (aohEvent.atLeastOneCompletedHasBeenRaised)
+            {
+                return;
+            }
+
+            aohEvent.atLeastOneCompletedHasBeenRaised = true;
+            aohEvent._atLeastOneCompleted?.Invoke(stack);
         }
     }
 }

@@ -56,7 +56,7 @@ namespace umi3d.cdk.scene.sceneController
                 allScenesHandlers[0] = currentScene.operationHandler;
                 Array.Copy(nextScenesHandlers, 0, allScenesHandlers, 1, nextScenesHandlers.Length);
 
-                AOHUtils.WhenAll(allScenesHandlers).completed += SceneModelsLoaded;
+                AOHUtils.WhenAll(SceneModelsLoaded, allScenesHandlers);
             }
             else
             {
@@ -66,7 +66,6 @@ namespace umi3d.cdk.scene.sceneController
 
         private void SceneModelsLoaded(AsyncOperationHandle<Scene_VM>[] opHandles)
         {
-            UnityEngine.Debug.Log($"load sm");
             AsyncOperationHandle<Scene_VM> currentOH = opHandles[0];
 
             AsyncOperationHandle<SceneInstance>[] scenesHandlers = new AsyncOperationHandle<SceneInstance>[opHandles.Length - 1];
@@ -84,7 +83,7 @@ namespace umi3d.cdk.scene.sceneController
                 });
             }
 
-            AOHUtils.WhenAll(scenesHandlers).completed += ScenesLoaded;
+            AOHUtils.WhenAll(ScenesLoaded, scenesHandlers);
         }
 
         private void ScenesLoaded(AsyncOperationHandle<SceneInstance>[] opHandles)
@@ -107,19 +106,5 @@ namespace umi3d.cdk.scene.sceneController
             }
             SAUtils.ReleaseAll(nextScenes);
         }
-
-        //protected virtual void NextSceneVMLoaded(AsyncOperationHandle<Scene_VM> opHandle)
-        //{
-        //    opHandle.NowOrLater(sceneVM =>
-        //    {
-        //        if (sceneVM.scene.IsValid)
-        //        {
-        //            sceneVM.scene.LoadSceneAsync(loadMode).NowOrLater(scene =>
-        //            {
-        //                sceneVM.unityScene.value = scene.Scene;
-        //            });
-        //        }
-        //    });
-        //}
     }
 }

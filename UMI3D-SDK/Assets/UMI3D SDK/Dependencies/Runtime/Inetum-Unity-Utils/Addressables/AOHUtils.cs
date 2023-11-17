@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace inetum.unityUtils
@@ -22,9 +23,11 @@ namespace inetum.unityUtils
     /// </summary>
     public static class AOHUtils
     {
-        public static AOHStack<T> WhenAll<T>(params AsyncOperationHandle<T>[] stack)
+        public static AOHStack<T> WhenAll<T>(Action<AsyncOperationHandle<T>[]> allCompleted, params AsyncOperationHandle<T>[] stack)
         {
-            return new AOHStack<T>(stack);
+            var result = new AOHStack<T>(stack);
+            result.allCompleted += allCompleted;
+            return result;
         }
     }
 }
