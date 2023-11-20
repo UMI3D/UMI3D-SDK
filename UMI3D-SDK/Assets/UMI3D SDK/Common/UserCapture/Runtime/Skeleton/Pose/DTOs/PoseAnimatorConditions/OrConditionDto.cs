@@ -16,11 +16,14 @@ limitations under the License.
 
 namespace umi3d.common.userCapture.pose
 {
+    /// <summary>
+    /// Condition true when all conditions in one of the lists are true.
+    /// </summary>
     [System.Serializable]
-    public class RangeConditionDto : AbstractPoseConditionDto
+    public class OrConditionDto : AbstractPoseConditionDto
     {
-        public AbstractPoseConditionDto ConditionA { get; set; }
+        public AbstractPoseConditionDto[] ConditionsA { get; set; }
 
-        public AbstractPoseConditionDto ConditionB { get; set; }
+        public AbstractPoseConditionDto[] ConditionsB { get; set; }
     }
 }

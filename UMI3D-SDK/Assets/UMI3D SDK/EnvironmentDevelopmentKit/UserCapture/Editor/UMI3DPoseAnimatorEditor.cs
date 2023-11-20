@@ -16,6 +16,9 @@ limitations under the License.
 
 
 #if UNITY_EDITOR
+using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common.userCapture.pose;
 
 using UnityEditor;
@@ -36,16 +39,7 @@ namespace umi3d.edk.userCapture.pose.editor
 
         private SerializedProperty activationModeField;
 
-        private SerializedProperty hasMagnitudeConditionField;
-        private SerializedProperty magnitudeField;
-        private SerializedProperty boneOriginField;
-        private SerializedProperty relativeNodeField;
-
-        private SerializedProperty hasDirectionConditionField;
-        private SerializedProperty directionField;
-
-        private SerializedProperty hasScaleConditionField;
-        private SerializedProperty targetScaleField;
+        private SerializedProperty activationConditionsField;
 
         private readonly Color magnitudeSphereColor = Color.red;
         private readonly Color magnitudeHandlesColor = Color.magenta;
@@ -60,16 +54,7 @@ namespace umi3d.edk.userCapture.pose.editor
 
             activationModeField = serializedObject.FindProperty("activationMode");
 
-            hasMagnitudeConditionField = serializedObject.FindProperty("HasMagnitudeCondition");
-            magnitudeField = serializedObject.FindProperty("Magnitude");
-            boneOriginField = serializedObject.FindProperty("BoneOrigin");
-            relativeNodeField = serializedObject.FindProperty("relativeNode");
-
-            hasDirectionConditionField = serializedObject.FindProperty("HasDirectionCondition");
-            directionField = serializedObject.FindProperty("Direction");
-
-            hasScaleConditionField = serializedObject.FindProperty("HasScaleCondition");
-            targetScaleField = serializedObject.FindProperty("TargetScale");
+            activationConditionsField = serializedObject.FindProperty("activationConditions");
         }
 
         protected virtual void OnInspectorGUIInternal()
@@ -82,16 +67,7 @@ namespace umi3d.edk.userCapture.pose.editor
 
             EditorGUILayout.PropertyField(activationModeField);
 
-            EditorGUILayout.PropertyField(hasMagnitudeConditionField);
-            EditorGUILayout.PropertyField(magnitudeField);
-            EditorGUILayout.PropertyField(boneOriginField);
-            EditorGUILayout.PropertyField(relativeNodeField);
-
-            EditorGUILayout.PropertyField(hasDirectionConditionField);
-            EditorGUILayout.PropertyField(directionField);
-
-            EditorGUILayout.PropertyField(hasScaleConditionField);
-            EditorGUILayout.PropertyField(targetScaleField);
+            EditorGUILayout.PropertyField(activationConditionsField);
         }
 
         public override void OnInspectorGUI()
@@ -103,27 +79,42 @@ namespace umi3d.edk.userCapture.pose.editor
 
         public void OnSceneGUI()
         {
-            if (hasMagnitudeConditionField.boolValue)
+            UMI3DPoseAnimator animator = target as UMI3DPoseAnimator;
+            if (animator == null)
+                return;
+
+
+            MagnitudeCondition t = null;
+            foreach (var conditionField in animator.activationConditions)
             {
-                var t = target as UMI3DPoseAnimator;
-                Handles.color = magnitudeSphereColor;
-
-                Transform targetTransform = t.relativeNode == null ? t.transform : t.relativeNode.transform;
-
-                var capPos = targetTransform.position + t.Magnitude * Vector3.forward;
-                t.Magnitude = Handles.ScaleValueHandle(t.Magnitude,
-                                                                    capPos,
-                                                                    Quaternion.identity,
-                                                                    0.25f,
-                                                                    Handles.SphereHandleCap,
-                                                                    1f);
-
-                Handles.color = magnitudeHandlesColor;
-                Handles.DrawWireDisc(targetTransform.position, Vector3.up, t.Magnitude);
-                Handles.DrawWireDisc(targetTransform.position, Vector3.right, t.Magnitude);
-                Handles.DrawWireDisc(targetTransform.position, Vector3.forward, t.Magnitude);
-                Handles.DrawDottedLine(targetTransform.position, capPos, 5);
+                if (conditionField.conditionType == BrowserPoseAnimatorActivationConditionField.ConditionType.MAGNITUDE)
+                {
+                    t = conditionField.magnitudeCondition;
+                    break;
+                }
             }
+            if (t == null)
+                return;
+
+
+            Handles.color = magnitudeSphereColor;
+
+            Transform targetTransform = t.RelativeNode == null ? animator.transform : t.RelativeNode.transform;
+
+            var capPos = targetTransform.position + t.Distance * Vector3.forward;
+            t.Distance = Handles.ScaleValueHandle(t.Distance,
+                                                                capPos,
+                                                                Quaternion.identity,
+                                                                0.25f,
+                                                                Handles.SphereHandleCap,
+                                                                1f);
+
+            Handles.color = magnitudeHandlesColor;
+            Handles.DrawWireDisc(targetTransform.position, Vector3.up, t.Distance);
+            Handles.DrawWireDisc(targetTransform.position, Vector3.right, t.Distance);
+            Handles.DrawWireDisc(targetTransform.position, Vector3.forward, t.Distance);
+            Handles.DrawDottedLine(targetTransform.position, capPos, 5);
+            
 
         }
     }
