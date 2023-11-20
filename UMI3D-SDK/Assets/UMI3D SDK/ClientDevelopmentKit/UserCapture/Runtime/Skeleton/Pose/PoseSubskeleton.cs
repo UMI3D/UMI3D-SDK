@@ -82,7 +82,10 @@ namespace umi3d.cdk.userCapture.pose
             if (isOverriding)
                 StopAllPoses();
 
-            appliedPoses.Add(poseToAdd);
+            if (!appliedPoses.Contains(poseToAdd))
+                appliedPoses.Add(poseToAdd);
+            else
+                UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already playing.", DebugScope.CDK | DebugScope.UserCapture);
         }
 
         /// <inheritdoc/>

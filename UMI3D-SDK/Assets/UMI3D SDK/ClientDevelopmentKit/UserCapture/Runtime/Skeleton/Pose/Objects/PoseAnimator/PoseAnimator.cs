@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -44,6 +45,16 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public PoseClip PoseClip => poseClip;
         private PoseClip poseClip;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.pose"/>.
+        /// </summary>
+        public PoseAnchorDto Anchor => dto.anchor;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.isAnchored"/>.
+        /// </summary>
+        public bool IsAnchored => dto.isAnchored;
 
         public ulong RelativeNodeId => dto.relatedNodeId;
 
@@ -186,7 +197,7 @@ namespace umi3d.cdk.userCapture.pose
         private void Apply()
         {
             IsApplied = true;
-            poseService.PlayPoseClip(poseClip);
+            poseService.PlayPoseClip(poseClip, Anchor);
             ConditionsValidated?.Invoke();
             StartWatchEndOfConditions();
         }
@@ -221,7 +232,9 @@ namespace umi3d.cdk.userCapture.pose
 
                 // check to enable/disable auto-watched poses (nonInteractional)
                 if (!IsApplied && CheckConditions())
+                {
                     Apply();
+                }
             }
             StopWatchActivationConditions();
         }

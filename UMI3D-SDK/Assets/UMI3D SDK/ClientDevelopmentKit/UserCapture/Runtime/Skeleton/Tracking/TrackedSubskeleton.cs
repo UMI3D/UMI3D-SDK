@@ -20,15 +20,28 @@ using umi3d.common;
 using System.Linq;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
-using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
 using umi3d.cdk.utils.extrapolation;
+using System.Threading.Tasks;
 
 namespace umi3d.cdk.userCapture.tracking
 {
     public class TrackedSubskeleton : MonoBehaviour, ITrackedSubskeleton
     {
+        #region Dependencies Injection
+
+        private ILoadingManager loadingService;
+        private ISkeleton skeleton;
+
+        private void Awake()
+        {
+            this.loadingService = UMI3DEnvironmentLoader.Instance;
+            skeleton = this.transform.parent.GetComponent<AbstractSkeleton>();
+        }
+
+        #endregion Dependencies Injection
+
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
         public List<IController> controllers = new List<IController>();
@@ -56,7 +69,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         private int GetPriority()
         {
-            AbstractSkeleton skeleton = this.transform.parent.GetComponent<AbstractSkeleton>();
+            //AbstractSkeleton skeleton = this.transform.parent.GetComponent<AbstractSkeleton>();
             UserTrackingFrameDto frame;
 
             if (skeleton is PersonalSkeleton)
@@ -402,6 +415,92 @@ namespace umi3d.cdk.userCapture.tracking
             {
                 animator.SetLookAtWeight(0);
             }
+        }
+
+
+        private Dictionary<uint, AbstractSimulatedTracker> simulatedTrackers = new();
+        private List<IController> savedControllers = new();
+
+        public async Task StartTrackerSimulation(PoseAnchorDto poseAnchor)
+        {
+            switch (poseAnchor)
+            {
+                case NodePoseAnchorDto nodePose:
+                    UMI3DNodeInstance nodeReference = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(UMI3DGlobalID.EnvironmentId, nodePose.node, null);
+
+                    NodeAnchoredSimulatedTracker nodeTracker = new GameObject("NodeTracker" + nodePose.node).AddComponent<NodeAnchoredSimulatedTracker>();
+                    nodeTracker.Init(nodeReference, nodePose.bone, nodePose.position.Struct(), nodePose.rotation.Quaternion());
+
+                    simulatedTrackers.Add(nodePose.bone, nodeTracker);
+                    ReplaceController(nodeTracker.distantController, true);
+
+                    break;
+
+                case BonePoseAnchorDto bonePose:
+                    if (skeleton.Bones.TryGetValue(bonePose.otherBone, out ISkeleton.Transformation boneReference))
+                    {
+                        BoneAnchoredSimulatedTracker boneTracker = new GameObject("BoneTracker" + bonePose.otherBone).AddComponent<BoneAnchoredSimulatedTracker>();
+                        boneTracker.Init(boneReference, bonePose.bone, bonePose.position.Struct(), bonePose.rotation.Quaternion());
+
+                        simulatedTrackers.Add(bonePose.bone, boneTracker);
+                        ReplaceController(boneTracker.distantController, true);
+                    }
+                    else
+                    {
+                        await Task.Run(() => UMI3DLogger.LogWarning("Bone not found for applying BonePoseAnchor.", DebugScope.CDK | DebugScope.UserCapture));
+                    }
+
+                    break;
+
+                case FloorPoseAnchorDto floorPose:
+                    await Task.Run(() => UMI3DLogger.LogWarning("FloorAnchor is not yet implemented.", DebugScope.CDK | DebugScope.UserCapture));
+                    break;
+
+                default:
+                    // case when anchor does not require any tracker simulation
+                    break;
+            }
+        }
+
+        public void StopTrackerSimulation(PoseAnchorDto poseAnchor)
+        {
+            if (simulatedTrackers.TryGetValue(poseAnchor.bone, out AbstractSimulatedTracker simulatedTracker))
+            {
+                GameObject.Destroy(simulatedTracker.gameObject);
+                simulatedTrackers.Remove(poseAnchor.bone);
+            }
+            else
+            {
+                UMI3DLogger.LogWarning("No SimulatedTracked found for this PoseAnchor", DebugScope.CDK | DebugScope.UserCapture);
+                return;
+            }
+
+
+            IController savedController = savedControllers.Find(c => c.boneType == poseAnchor.bone);
+            if (savedController != null)
+            {
+                ReplaceController(savedController);
+            }
+            else
+            {
+                IController controller = controllers.Find(c => c.boneType == poseAnchor.bone);
+                controllers.Remove(controller);
+            }
+        }
+
+        public void ReplaceController(IController newController, bool saveOldController = false)
+        {
+            IController oldController = controllers.Find(c => c.boneType == newController.boneType);
+
+            if (oldController != null)
+            {
+                controllers.Remove(oldController);
+
+                if (saveOldController)
+                    savedControllers.Add(oldController);
+            }
+
+            controllers.Add(newController);
         }
 
         #endregion Ik

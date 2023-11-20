@@ -4,6 +4,7 @@ using System;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
+using umi3d.common;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
@@ -68,8 +69,9 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Mock<PoseAnimator> poseAnimatorMock = new (dto, new PoseClip(new()), new IPoseCondition[0]);
 
             poseAnimatorMock.Setup(x=>x.TryActivate()).Returns(true);
-            environmentServiceMock.Setup(x => x.GetEntityObject<PoseAnimator>(0,dto.id)).Returns(poseAnimatorMock.Object);
-
+            PoseAnimator pA = poseAnimatorMock.Object;
+            environmentServiceMock.Setup(x => x.TryGetEntity(UMI3DGlobalID.EnvironmentId, dto.id, out pA)).Returns(true);
+            
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);

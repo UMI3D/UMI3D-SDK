@@ -32,6 +32,10 @@ namespace umi3d.edk.userCapture.pose.editor
     public class UMI3DPoseAnimatorEditor : Editor
     {
         private SerializedProperty poseSOField;
+
+        private SerializedProperty isAnchoredField;
+        private SerializedProperty anchoringParametersField;
+
         private SerializedProperty durationField;
 
         private SerializedProperty interpolableField;
@@ -47,6 +51,10 @@ namespace umi3d.edk.userCapture.pose.editor
         protected virtual void OnEnable()
         {
             poseSOField = serializedObject.FindProperty("pose_so");
+
+            isAnchoredField = serializedObject.FindProperty("isAnchored");
+            anchoringParametersField = serializedObject.FindProperty("anchoringParameters");
+
             durationField = serializedObject.FindProperty("duration");
 
             interpolableField = serializedObject.FindProperty("interpolable");
@@ -60,6 +68,11 @@ namespace umi3d.edk.userCapture.pose.editor
         protected virtual void OnInspectorGUIInternal()
         {
             EditorGUILayout.PropertyField(poseSOField);
+
+            EditorGUILayout.PropertyField(isAnchoredField);
+            if (isAnchoredField.boolValue)
+                EditorGUILayout.PropertyField(anchoringParametersField);
+
             EditorGUILayout.PropertyField(durationField);
 
             EditorGUILayout.PropertyField(interpolableField);

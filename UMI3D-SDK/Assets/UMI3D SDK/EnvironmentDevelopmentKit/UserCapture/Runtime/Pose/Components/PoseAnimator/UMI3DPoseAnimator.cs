@@ -16,9 +16,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-
+using umi3d.common.userCapture.description;
 using umi3d.edk;
 using umi3d.edk.core;
 using umi3d.edk.userCapture.pose;
@@ -48,7 +50,9 @@ namespace umi3d.common.userCapture.pose
             get
             {
                 if (pose == null)
-                    pose = pose_so;
+                {
+                    pose = new UMI3DPoseResource(pose_so);
+                }
 
                 return pose;
             }
@@ -80,6 +84,52 @@ namespace umi3d.common.userCapture.pose
             }
         }
 
+        [Space(5)]
+        [Tooltip("Specifying if the pose is relative to another object.")]
+        public bool isAnchored;
+
+        public PoseAnchoringParameters anchoringParameters = new();
+
+        [Serializable]
+        public class PoseAnchoringParameters
+        {
+            [Tooltip("Defining the type of object for the pose anchor.")]
+            public PoseAnchoringType anchoringType;
+
+            [Tooltip("Specifying the Node which serves as reference for the pose.")]
+            public UMI3DNode anchoringNode;
+
+            [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Specifying the BoneType which serves as reference for the pose.")]
+            public uint anchoringBone;
+
+            [System.Serializable]
+            public struct OffsetData
+            {
+                public Vector3 position;
+                public Quaternion rotation;
+            }
+
+            [Tooltip("The relative position & rotation of the pose.")]
+            public OffsetData anchoringOffset;
+
+            public PoseAnchorDto ToPoseAnchorDto(uint rootBone)
+            {
+                PoseAnchorDto anchorDto = anchoringType switch
+                {
+                    PoseAnchoringType.Node => new NodePoseAnchorDto() { node = anchoringNode != null ? anchoringNode.Id() : default },
+                    PoseAnchoringType.Bone => new BonePoseAnchorDto() { otherBone = anchoringBone },
+                    PoseAnchoringType.Floor => new FloorPoseAnchorDto() { },
+                    _ => new PoseAnchorDto()
+                };
+                anchorDto.bone = rootBone;
+                anchorDto.position = anchoringOffset.position.Dto();
+                anchorDto.rotation = anchoringOffset.rotation.Dto();
+
+                return anchorDto;
+            }
+        }
+
+
         [System.Serializable]
         public struct Duration
         {
@@ -104,6 +154,7 @@ namespace umi3d.common.userCapture.pose
             }
         }
 
+        [Space(5)]
         [Tooltip("Expected duration of the pose animation.")]
         public Duration duration;
 
@@ -191,6 +242,8 @@ namespace umi3d.common.userCapture.pose
             {
                 id = Id(),
                 relatedNodeId = RelativeNode.Id(),
+                isAnchored = isAnchored,
+                anchor = anchoringParameters.ToPoseAnchorDto(PoseClip.poseResource.Anchor.bone),
                 poseClipId = PoseClip.Id(),
                 poseConditions = ActivationsConditions.Select(x => x.ToDto()).ToArray(),
                 duration = duration.ToDto(),

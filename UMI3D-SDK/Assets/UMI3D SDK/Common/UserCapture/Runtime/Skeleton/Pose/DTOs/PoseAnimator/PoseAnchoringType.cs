@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -14,33 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture.description;
-using UnityEngine;
-
 namespace umi3d.common.userCapture.pose
 {
     /// <summary>
-    /// Describes a skeleton pose.
+    /// 
     /// </summary>
-    public interface IUMI3DPoseData
+    [System.Serializable]
+    public enum PoseAnchoringType
     {
         /// <summary>
-        /// The bone that anchor the pose
+        /// 
         /// </summary>
-        PoseAnchorDto Anchor { get; }
+        Node,
 
         /// <summary>
-        /// All the bones that describe the pose
+        /// 
         /// </summary>
-        IList<BoneDto> Bones { get; }
+        Bone,
 
         /// <summary>
-        /// Transforms the Object to its DTO counterpart
+        /// 
         /// </summary>
-        /// <returns></returns>
-        PoseDto ToPoseDto();
-
-        PoseDto ToPoseDto(PoseAnchoringType anchoringType, ulong poseRelativeNodeId, uint poseRelativeBone, Vector3 posOffset, Quaternion rotOffset);
+        Floor
     }
 }

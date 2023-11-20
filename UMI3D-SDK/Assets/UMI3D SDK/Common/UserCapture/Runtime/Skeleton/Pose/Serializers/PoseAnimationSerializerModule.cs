@@ -51,7 +51,7 @@ namespace umi3d.common.userCapture.pose
 
                         if (readable)
                         {
-                            PoseClipDto poseDto = new ()
+                            PoseClipDto poseDto = new()
                             {
                                 id = id,
                                 pose = pose
@@ -65,8 +65,9 @@ namespace umi3d.common.userCapture.pose
                 case true when typeof(T) == typeof(PoseAnimatorDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out ulong id);
-                        readable = UMI3DSerializer.TryRead(container, out ulong poseId);
-                        readable = UMI3DSerializer.TryRead(container, out ulong relativeNodeId);
+                        readable &= UMI3DSerializer.TryRead(container, out ulong poseId);
+                        readable &= UMI3DSerializer.TryRead(container, out bool isAnchored);
+                        readable &= UMI3DSerializer.TryRead(container, out ulong relativeNodeId);
                         readable &= UMI3DSerializer.TryRead(container, out DurationDto durationDto);
                         readable &= UMI3DSerializer.TryRead(container, out bool interpolable);
                         readable &= UMI3DSerializer.TryRead(container, out ushort activationMode);
@@ -76,10 +77,11 @@ namespace umi3d.common.userCapture.pose
 
                         if (readable)
                         {
-                            PoseAnimatorDto poseOverriderDto = new ()
+                            PoseAnimatorDto poseOverriderDto = new()
                             {
                                 id = id,
                                 poseClipId = poseId,
+                                isAnchored = isAnchored,
                                 relatedNodeId = relativeNodeId,
                                 poseConditions = poseConditionDtos,
                                 duration = durationDto,
@@ -170,6 +172,7 @@ namespace umi3d.common.userCapture.pose
                 case PoseAnimatorDto poseOverriderDto:
                     bytable = UMI3DSerializer.Write(poseOverriderDto.id)
                         + UMI3DSerializer.Write(poseOverriderDto.poseClipId)
+                        + UMI3DSerializer.Write(poseOverriderDto.isAnchored)
                         + UMI3DSerializer.Write(poseOverriderDto.relatedNodeId)
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.isInterpolable)
