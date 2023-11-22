@@ -28,7 +28,12 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// If true, the condition is validated.
         /// </summary>
-        public bool isValidated;
+        private readonly UMI3DAsyncProperty<bool> isValidated;
+
+        public UMI3DEnvironmentPoseCondition(bool isValidated = false)
+        {
+            this.isValidated = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.ValidationEnvironmentPoseCondition, isValidated);
+        }
 
         /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
@@ -36,7 +41,7 @@ namespace umi3d.edk.userCapture.pose
             return new EnvironmentPoseConditionDto()
             {
                 Id = Id(),
-                IsValidated = isValidated
+                IsValidated = isValidated.GetValue(user)
             };
         }
 
@@ -50,10 +55,10 @@ namespace umi3d.edk.userCapture.pose
         /// <returns>Request to validate condition.</returns>
         public ValidateEnvironmentPoseCondition Validate(UMI3DUser user)
         {
-            if (isValidated)
+            if (isValidated.GetValue(user))
                 return null;
 
-            isValidated = true;
+            isValidated.SetValue(user, true);
             return new ValidateEnvironmentPoseCondition(Id(), true)
             {
                 users = new() { user }
@@ -66,10 +71,10 @@ namespace umi3d.edk.userCapture.pose
         /// <returns>Request to invalidate condition.</returns>
         public ValidateEnvironmentPoseCondition Invalidate(UMI3DUser user)
         {
-            if (!isValidated)
+            if (!isValidated.GetValue(user))
                 return null;
 
-            isValidated = false;
+            isValidated.SetValue(user, false);
             return new ValidateEnvironmentPoseCondition(Id(), false)
             {
                 users = new() { user }
