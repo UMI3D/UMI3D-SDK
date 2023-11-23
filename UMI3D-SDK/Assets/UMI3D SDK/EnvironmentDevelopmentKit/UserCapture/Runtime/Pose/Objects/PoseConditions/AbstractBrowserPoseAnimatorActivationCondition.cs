@@ -56,13 +56,20 @@ namespace umi3d.edk.userCapture.pose
         [Tooltip("Maximum distance between the bone and the related node.")]
         public float Distance;
 
+        /// <summary>
+        /// Compare only distance on the XY plane.
+        /// </summary>
+        [Tooltip("Compare only distance on the XY plane.")]
+        public bool IgnoreHeight;
+
         public override AbstractPoseConditionDto ToDto()
         {
             return new MagnitudeConditionDto()
             {
                 Magnitude = Distance,
                 BoneOrigin = Bone,
-                TargetNodeId = RelativeNode.Id()
+                TargetNodeId = RelativeNode.Id(),
+                IgnoreHeight = IgnoreHeight
             };
         }
     }

@@ -110,13 +110,46 @@ namespace umi3d.edk.userCapture.pose.editor
                                                                 1f);
 
             Handles.color = magnitudeHandlesColor;
-            Handles.DrawWireDisc(targetTransform.position, Vector3.up, t.Distance);
-            Handles.DrawWireDisc(targetTransform.position, Vector3.right, t.Distance);
-            Handles.DrawWireDisc(targetTransform.position, Vector3.forward, t.Distance);
-            Handles.DrawDottedLine(targetTransform.position, capPos, 5);
-            
 
+            var previousZtest = Handles.zTest;
+            Handles.zTest = UnityEngine.Rendering.CompareFunction.LessEqual;
+
+            DrawMagnitudeZone(targetTransform, t);
+
+            Handles.zTest = previousZtest;
+            Handles.DrawDottedLine(targetTransform.position, capPos, 5);
         }
+
+        private void DrawMagnitudeZone(Transform targetTransform, MagnitudeCondition t)
+        {
+            Handles.DrawWireDisc(targetTransform.position, Vector3.up, t.Distance);
+
+            if (t.IgnoreHeight) // create a nearly infinite cylinder
+            {
+                for (int i = 0; i < NUMBER_OF_CYLINDER_LINES; i++)
+                {
+                    float angle = 2 * Mathf.PI * i / NUMBER_OF_CYLINDER_LINES;
+                    Vector3 pos = t.Distance * (Mathf.Cos(angle) * Vector3.forward + Mathf.Sin(angle) * Vector3.left);
+                    Handles.DrawDottedLine(targetTransform.position + pos + Vector3.up * Y_LIMIT,
+                                           targetTransform.position + pos - Vector3.up * Y_LIMIT, DASH_SIZE);
+                }
+            }
+            else // create a sphere by rotating disks
+            {
+                Handles.color = magnitudeHandlesColor * new Color(1, 1, 1, 0.5f);
+                for (int i = 0; i < NUMBER_OF_DISK_LINES; i++)
+                {
+                    float angle = 2 * Mathf.PI * i / NUMBER_OF_DISK_LINES;
+                    Vector3 normal = t.Distance * (Mathf.Cos(angle) * Vector3.forward + Mathf.Sin(angle) * Vector3.left);
+                    Handles.DrawWireDisc(targetTransform.position, normal, t.Distance);
+                }
+            }
+        }
+
+        const float Y_LIMIT = 20;
+        const float DASH_SIZE = 2;
+        const int NUMBER_OF_CYLINDER_LINES = 32;
+        const int NUMBER_OF_DISK_LINES = 12;
     }
 }
 #endif
