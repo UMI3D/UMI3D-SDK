@@ -14,24 +14,27 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using System.Linq;
-
 using umi3d.common.userCapture.pose;
-
-using UnityEditor;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Pose condition true when the contained condition is false.
+    /// </summary>
     public class NotPoseCondition : IPoseAnimatorActivationCondition
     {
-        public IEnumerable<IPoseAnimatorActivationCondition> conditionsToNegate = new List<IPoseAnimatorActivationCondition>();
+        public IPoseAnimatorActivationCondition conditionToNegate;
+
+        public NotPoseCondition(IPoseAnimatorActivationCondition conditionToNegate)
+        {
+            this.conditionToNegate = conditionToNegate;
+        }
 
         public AbstractPoseConditionDto ToDto()
         {
             return new NotConditionDto()
             {
-                Conditions = conditionsToNegate.Select(x => x.ToDto()).ToArray()
+                Condition = conditionToNegate.ToDto()
             };
         }
     }

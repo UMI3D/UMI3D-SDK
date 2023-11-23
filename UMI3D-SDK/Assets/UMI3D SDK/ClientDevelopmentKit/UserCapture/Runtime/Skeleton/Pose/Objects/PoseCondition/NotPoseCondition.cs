@@ -15,8 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture.pose
@@ -28,26 +26,18 @@ namespace umi3d.cdk.userCapture.pose
     {
         protected readonly NotConditionDto notConditionDto;
 
-        public readonly IReadOnlyList<IPoseCondition> conditions;
+        public readonly IPoseCondition condition;
 
-        public NotPoseCondition(NotConditionDto dto, IEnumerable<IPoseCondition> conditions)
+        public NotPoseCondition(NotConditionDto dto, IPoseCondition condition)
         {
             this.notConditionDto = dto ?? throw new ArgumentNullException(nameof(dto));
-            this.conditions = conditions?.ToList() ?? throw new ArgumentNullException(nameof(conditions)); ;
+            this.condition = condition;
         }
 
         /// <inheritdoc/>
         public bool Check()
         {
-            if (conditions.Count == 0)
-                return true;
-
-            foreach (var condition in conditions)
-            {
-                if (!condition.Check())
-                    return true;
-            }
-            return false;
+            return !(condition?.Check() ?? false);
         }
     }
 }

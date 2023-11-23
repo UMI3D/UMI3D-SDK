@@ -14,9 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using System.Linq;
-
 using umi3d.common.userCapture.pose;
 
 namespace umi3d.edk.userCapture.pose
@@ -28,51 +25,19 @@ namespace umi3d.edk.userCapture.pose
     {
         public AbstractPoseConditionDto ToDto();
 
-        #region operators
-
-        #region OR
-
-        public static OrPoseCondition operator |(IPoseAnimatorActivationCondition conditionA, IPoseAnimatorActivationCondition conditionB)
+        public static IPoseAnimatorActivationCondition operator &(IPoseAnimatorActivationCondition conditionA, IPoseAnimatorActivationCondition conditionB)
         {
-            return new OrPoseCondition()
-            {
-                conditionsA = new IPoseAnimatorActivationCondition[] { conditionA },
-                conditionsB = new IPoseAnimatorActivationCondition[] { conditionB }
-            };
+            return new AndPoseCondition(conditionA, conditionB);
         }
 
-        public static OrPoseCondition operator |(IEnumerable<IPoseAnimatorActivationCondition> conditionsA, IPoseAnimatorActivationCondition conditionB)
+        public static IPoseAnimatorActivationCondition operator |(IPoseAnimatorActivationCondition conditionA, IPoseAnimatorActivationCondition conditionB)
         {
-            return new OrPoseCondition()
-            {
-                conditionsA = conditionsA,
-                conditionsB = new IPoseAnimatorActivationCondition[] { conditionB }
-            };
+            return new OrPoseCondition(conditionA, conditionB);
         }
 
-        public static OrPoseCondition operator |(IPoseAnimatorActivationCondition conditionA, IEnumerable<IPoseAnimatorActivationCondition> conditionsB)
+        public static IPoseAnimatorActivationCondition operator !(IPoseAnimatorActivationCondition condition)
         {
-            return new OrPoseCondition()
-            {
-                conditionsA = new IPoseAnimatorActivationCondition[] { conditionA },
-                conditionsB = conditionsB
-            };
+            return new NotPoseCondition(condition);
         }
-
-        #endregion OR
-
-        #region NOT
-
-        public static NotPoseCondition operator !(IPoseAnimatorActivationCondition condition)
-        {
-            return new NotPoseCondition()
-            {
-                conditionsToNegate = new IPoseAnimatorActivationCondition[] { condition }
-            };
-        }
-
-        #endregion NOT
-
-        #endregion operators
     }
 }

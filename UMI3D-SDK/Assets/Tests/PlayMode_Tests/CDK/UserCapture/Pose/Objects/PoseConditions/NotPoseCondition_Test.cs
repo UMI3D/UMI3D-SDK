@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using NUnit.Framework;
-using System.Collections.Generic;
 using umi3d.cdk.userCapture.pose;
 
 namespace PlayMode_Tests.UserCapture.Pose.CDK
@@ -24,12 +23,12 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
     public class NotPoseCondition_Test
     {
         [Test]
-        public void Check_Empty()
+        public void Check_Null()
         {
             // GIVEN
-            List<IPoseCondition> conditions = new();
+            IPoseCondition condition = null;
 
-            NotPoseCondition notPoseCondition = new(new(), conditions);
+            NotPoseCondition notPoseCondition = new(new(), condition);
 
             // WHEN
             bool success = notPoseCondition.Check();
@@ -42,26 +41,9 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
         public void Check_False()
         {
             // GIVEN
-            List<IPoseCondition> conditions = new() { new DummyTestPoseCondition() { isValid = false } };
+            IPoseCondition condition = new DummyTestPoseCondition() { isValid = false };
 
-            NotPoseCondition notPoseCondition = new(new(), conditions);
-
-            // WHEN
-            bool success = notPoseCondition.Check();
-
-            // THEN
-            Assert.IsTrue(success);
-        }
-
-        [Test]
-        public void Check_FalseMany()
-        {
-            // GIVEN
-            List<IPoseCondition> conditions = new() { new DummyTestPoseCondition() { isValid = true },
-                                                                      new DummyTestPoseCondition() { isValid = true },
-                                                                      new DummyTestPoseCondition() { isValid = false }};
-
-            NotPoseCondition notPoseCondition = new(new(), conditions);
+            NotPoseCondition notPoseCondition = new(new(), condition);
 
             // WHEN
             bool success = notPoseCondition.Check();
@@ -74,26 +56,9 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
         public void Check_True()
         {
             // GIVEN
-            List<IPoseCondition> conditions = new() { new DummyTestPoseCondition() { isValid = true } };
+            IPoseCondition condition = new DummyTestPoseCondition() { isValid = true };
 
-            NotPoseCondition notPoseCondition = new(new(), conditions);
-
-            // WHEN
-            bool success = notPoseCondition.Check();
-
-            // THEN
-            Assert.IsFalse(success);
-        }
-
-        [Test]
-        public void Check_TrueMany()
-        {
-            // GIVEN
-            List<IPoseCondition> conditions = new() { new DummyTestPoseCondition() { isValid = true },
-                                                                      new DummyTestPoseCondition() { isValid = true },
-                                                                      new DummyTestPoseCondition() { isValid = true }};
-
-            NotPoseCondition notPoseCondition = new(new(), conditions);
+            NotPoseCondition notPoseCondition = new(new(), condition);
 
             // WHEN
             bool success = notPoseCondition.Check();

@@ -14,27 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using System.Linq;
-
 using umi3d.common.userCapture.pose;
-
-using UnityEditor;
 
 namespace umi3d.edk.userCapture.pose
 {
+    /// <summary>
+    /// Pose condition true when one of the two contained condition is true.
+    /// </summary>
     public class OrPoseCondition : IPoseAnimatorActivationCondition
     {
-        public IEnumerable<IPoseAnimatorActivationCondition> conditionsA = new List<IPoseAnimatorActivationCondition>();
+        public IPoseAnimatorActivationCondition conditionA;
 
-        public IEnumerable<IPoseAnimatorActivationCondition> conditionsB = new List<IPoseAnimatorActivationCondition>();
+        public IPoseAnimatorActivationCondition conditionB;
+
+        public OrPoseCondition(IPoseAnimatorActivationCondition conditionA, IPoseAnimatorActivationCondition conditionB)
+        {
+            this.conditionA = conditionA;
+            this.conditionB = conditionB;
+        }
 
         public AbstractPoseConditionDto ToDto()
         {
             return new OrConditionDto()
             {
-                ConditionsA = conditionsA.Select(x => x.ToDto()).ToArray(),
-                ConditionsB = conditionsB.Select(x => x.ToDto()).ToArray(),
+                ConditionA = conditionA.ToDto(),
+                ConditionB = conditionB.ToDto()
             };
         }
     }
