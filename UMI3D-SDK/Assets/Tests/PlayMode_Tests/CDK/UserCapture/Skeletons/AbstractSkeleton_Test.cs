@@ -149,7 +149,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
             animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
           
-            var poseDto = new SubSkeletonPoseDto
+            var poseDto = new SubSkeletonPoseDto()
 
             {
                 bones = new List<SubSkeletonBoneDto>

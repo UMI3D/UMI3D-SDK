@@ -16,9 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Data;
 using System.Linq;
 using System.Threading.Tasks;
@@ -107,7 +105,7 @@ namespace umi3d.cdk
             switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.Position:
-                    node.transform.localPosition = (dto.position =  UMI3DSerializer.Read<Vector3Dto>(value.container)).Struct();
+                    node.transform.localPosition = (dto.position = UMI3DSerializer.Read<Vector3Dto>(value.container)).Struct();
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Rotation:
@@ -115,7 +113,7 @@ namespace umi3d.cdk
                     node.SendOnPoseUpdated();
                     break;
                 case UMI3DPropertyKeys.Scale:
-                     node.transform.localScale = (dto.scale = UMI3DSerializer.Read<Vector3Dto>(value.container)).Struct();
+                    node.transform.localScale = (dto.scale = UMI3DSerializer.Read<Vector3Dto>(value.container)).Struct();
                     node.SendOnPoseUpdated();
                     break;
                 default:
@@ -166,6 +164,8 @@ namespace umi3d.cdk
         /// <returns></returns>
         public async Task LoadNodes(ulong enviornmentId ,IEnumerable<GlTFNodeDto> nodes, Progress progress)
         {
+            progress.SetTotal(progress.total + nodes.Count());
+
 #if UNITY_EDITOR
             var tasks = nodes
                 .Select(n =>
@@ -176,7 +176,7 @@ namespace umi3d.cdk
                 .Select(async node =>
                 {
                     var dto = node.dto as GlTFNodeDto;
-                    progress.AddTotal();
+
                     try
                     {
                         await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(enviornmentId, dto.extensions.umi3d, node.gameObject));
@@ -211,33 +211,33 @@ namespace umi3d.cdk
                 nodes
                 .Select(n => CreateNode(n))
                 .Select(async node =>
+                {
+                    var dto = node.dto as GlTFNodeDto;
+
+                    try
                     {
-                        var dto = node.dto as GlTFNodeDto;
-                        progress.AddTotal();
-                        try
-                        {
-                            await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.extensions.umi3d, node.gameObject));
+                        await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(dto.extensions.umi3d, node.gameObject));
 
-                            ReadLightingExtensions(dto, node.gameObject);
-                            // Important: all nodes in the scene must be registred before to handle hierarchy. 
-                            // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
-                            node.transform.localPosition = dto.position.Struct();
-                            node.transform.localRotation = dto.rotation.Quaternion();
-                            node.transform.localScale = dto.scale.Struct();
+                        ReadLightingExtensions(dto, node.gameObject);
+                        // Important: all nodes in the scene must be registred before to handle hierarchy. 
+                        // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
+                        node.transform.localPosition = dto.position.Struct();
+                        node.transform.localRotation = dto.rotation.Quaternion();
+                        node.transform.localScale = dto.scale.Struct();
 
-                            node.SendOnPoseUpdated();
-                            node.NotifyLoaded();
+                        node.SendOnPoseUpdated();
+                        node.NotifyLoaded();
 
-                            progress.AddComplete();
-                        }
-                        catch (Exception e)
-                        {
-                            UMI3DLogger.LogException(e, scope);
-                            UMI3DLogger.LogError($"Failed to read Umi3d extension [{dto.name}]", scope);
-                            if (!await progress.AddFailed(e))
-                                throw;
-                        }
-                    }));
+                        progress.AddComplete();
+                    }
+                    catch (Exception e)
+                    {
+                        UMI3DLogger.LogException(e, scope);
+                        UMI3DLogger.LogError($"Failed to read Umi3d extension [{dto.name}]", scope);
+                        if (!await progress.AddFailed(e))
+                            throw;
+                    }
+                }));
 #endif
         }
 

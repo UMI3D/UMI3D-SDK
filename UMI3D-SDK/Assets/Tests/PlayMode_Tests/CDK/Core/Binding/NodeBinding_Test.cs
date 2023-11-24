@@ -83,7 +83,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetPosition = offSetPosition.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -113,7 +113,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetPosition = offSetPosition.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -158,7 +158,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetRotation = offsetRotation.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -190,7 +190,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetRotation = offsetRotation.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -236,7 +236,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetScale = offSetScale.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -267,7 +267,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetPosition = offSetScale.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 

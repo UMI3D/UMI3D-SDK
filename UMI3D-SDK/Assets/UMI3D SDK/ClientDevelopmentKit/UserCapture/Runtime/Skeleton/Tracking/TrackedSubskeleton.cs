@@ -52,6 +52,8 @@ namespace umi3d.cdk.userCapture.tracking
 
         public int Priority => GetPriority();
 
+        public ulong EnvironmentId { get ; set; }
+
         private int GetPriority()
         {
             AbstractSkeleton skeleton = this.transform.parent.GetComponent<AbstractSkeleton>();

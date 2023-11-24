@@ -68,7 +68,7 @@ namespace umi3d.common.userCapture.pose.editor
                                                              .ToList();
 
                 Vector4Dto rootRotation = r.transform.rotation.Dto();
-                BonePoseDto bonePoseDto = CreateBoneAnchor(rootRotation, r);
+                PoseAnchorDto bonePoseDto = CreateBoneAnchor(rootRotation, r);
                 bonesToSave.RemoveAt(0);
 
                 try
@@ -126,35 +126,21 @@ namespace umi3d.common.userCapture.pose.editor
         }
 
 
-        private BonePoseDto CreateBoneAnchor(Vector4Dto rootRotation, PoseSetterBoneComponent r)
+        private PoseAnchorDto CreateBoneAnchor(Vector4Dto rootRotation, PoseSetterBoneComponent r)
         {
-            var bonePoseDto = new BonePoseDto()
+            var bonePoseDto = new PoseAnchorDto()
             {
                 bone = r.BoneType,
                 position = r.transform.position.Dto(),
                 rotation = rootRotation
             };
-            return new NodeAnchoredBonePoseDto()
+            return new NodePoseAnchorDto()
             {
                 bone = bonePoseDto.bone,
                 position = bonePoseDto.position,
                 rotation = bonePoseDto.rotation
             };
         }
-
-        public void CreatePoseOverrider(string name, string parentPath, UMI3DPose_so pose_So)
-        {
-            UMI3DPoseOverrider_so poseOverrider = (UMI3DPoseOverrider_so)ScriptableObject.CreateInstance(typeof(UMI3DPoseOverrider_so));
-            poseOverrider.pose = pose_So;
-            poseOverrider.name = name;
-
-            string path = System.IO.Path.ChangeExtension(System.IO.Path.Combine(parentPath, poseOverrider.name), ".asset");
-            AssetDatabase.CreateAsset(poseOverrider, path);
-            AssetDatabase.SaveAssets();
-            EditorUtility.SetDirty(poseOverrider);
-        }
-
-
     }
 }
 #endif

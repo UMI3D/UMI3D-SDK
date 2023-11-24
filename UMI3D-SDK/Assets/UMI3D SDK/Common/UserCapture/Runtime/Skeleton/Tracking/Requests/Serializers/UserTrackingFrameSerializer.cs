@@ -38,13 +38,13 @@ namespace umi3d.common.userCapture.tracking
                     && UMI3DSerializer.TryRead(container, out Vector3Dto position)
                     && UMI3DSerializer.TryRead(container, out Vector4Dto rotation)
                     && UMI3DSerializer.TryRead(container, out Vector3Dto speed)
+                    && UMI3DSerializer.TryRead(container, out bool grounded)
                     && UMI3DSerializer.TryRead(container, out bool jumping)
                     && UMI3DSerializer.TryRead(container, out bool crouching)
                     )
                 {
                     List<ControllerDto> trackedBones = UMI3DSerializer.ReadList<ControllerDto>(container);
-                    List<int> playerServerPoses = UMI3DSerializer.ReadList<int>(container);
-                    List<int> playerUserPoses = UMI3DSerializer.ReadList<int>(container);
+                    List<ulong> poses = UMI3DSerializer.ReadList<ulong>(container);
 
                     if (trackedBones != default)
                     {
@@ -56,15 +56,14 @@ namespace umi3d.common.userCapture.tracking
                             position = position,
                             rotation = rotation,
 
+                            grounded = grounded,
                             speed = speed,
                             jumping = jumping,
                             crouching = crouching,
 
                             trackedBones = trackedBones,
 
-                            environmentPosesIndexes = playerServerPoses,
-
-                            customPosesIndexes = playerUserPoses
+                            poses = poses
                         };
                         readable = true;
                         result = (T)Convert.ChangeType(trackingFrame, typeof(T));
@@ -88,11 +87,11 @@ namespace umi3d.common.userCapture.tracking
                     + UMI3DSerializer.Write(c.position)
                     + UMI3DSerializer.Write(c.rotation)
                     + UMI3DSerializer.Write(c.speed)
+                    + UMI3DSerializer.Write(c.grounded)
                     + UMI3DSerializer.Write(c.jumping)
                     + UMI3DSerializer.Write(c.crouching)
                     + UMI3DSerializer.WriteCollection(c.trackedBones)
-                    + UMI3DSerializer.WriteCollection(c.environmentPosesIndexes)
-                    + UMI3DSerializer.WriteCollection(c.customPosesIndexes);
+                    + UMI3DSerializer.WriteCollection(c.poses);
                 return true;
             }
 

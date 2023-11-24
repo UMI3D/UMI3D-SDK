@@ -27,6 +27,11 @@ namespace umi3d.common.userCapture.tracking
     public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
         /// <summary>
+        /// Id of the environment or distant environment
+        /// </summary>
+        public ulong environmentId { get; set; }
+
+        /// <summary>
         /// User id of the tracked user
         /// </summary>
         public ulong userId { get; set; }
@@ -41,9 +46,10 @@ namespace umi3d.common.userCapture.tracking
         /// </summary>
         public List<ControllerDto> trackedBones { get; set; }
 
-        public List<int> environmentPosesIndexes { get; set; } = new List<int>();
-
-        public List<int> customPosesIndexes { get; set; } = new List<int>();
+        /// <summary>
+        /// Applied pose clip Ids.
+        /// </summary>
+        public List<ulong> poses { get; set; } = new ();
 
         /// <summary>
         /// Current position of the user.
@@ -55,9 +61,24 @@ namespace umi3d.common.userCapture.tracking
         /// </summary>
         public Vector4Dto rotation { get; set; }
 
-
+        /// <summary>
+        /// Speed of the user.
+        /// </summary>
         public Vector3Dto speed { get; set; }
+
+        /// <summary>
+        /// True if user is on ground.
+        /// </summary>
+        public bool grounded { get; set; }
+
+        /// <summary>
+        /// True if user is jumping.
+        /// </summary>
         public bool jumping { get; set; }
+
+        /// <summary>
+        /// True if user is crouching.
+        /// </summary>
         public bool crouching { get; set; }
 
     }

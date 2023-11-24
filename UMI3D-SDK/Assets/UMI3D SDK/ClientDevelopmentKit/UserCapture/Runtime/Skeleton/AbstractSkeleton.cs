@@ -94,6 +94,8 @@ namespace umi3d.cdk.userCapture
         protected UserTrackingFrameDto lastFrame;
         public UserTrackingFrameDto LastFrame => lastFrame;
 
+        public ulong EnvironmentId { get; set; }
+
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>
@@ -183,7 +185,7 @@ namespace umi3d.cdk.userCapture
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
                     ComputeBonePosition(boneRelation.boneTypeParent);
 
-                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * 0.5f);
+                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f/1.8f));
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
                 Bones[boneType].Rotation = (Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation).normalized;
                 alreadyComputedBonesCache[boneType] = true;

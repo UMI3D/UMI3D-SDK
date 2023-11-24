@@ -23,13 +23,14 @@ namespace umi3d.edk.userCapture.pose
     /// <summary>
     /// Pose condition that is validated by the environment.
     /// </summary>
-    public class UMI3DEnvironmentPoseCondition : AbstractLoadableEntity
+    public class UMI3DEnvironmentPoseCondition : AbstractLoadableEntity, IPoseAnimatorActivationCondition
     {
         /// <summary>
         /// If true, the condition is validated.
         /// </summary>
         public bool isValidated;
 
+        /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new EnvironmentPoseConditionDto()
@@ -40,6 +41,8 @@ namespace umi3d.edk.userCapture.pose
         }
 
         public IEntity ToEntityDto() => ToEntityDto(null);
+
+        public AbstractPoseConditionDto ToDto() => (AbstractPoseConditionDto)ToEntityDto(null);
 
         /// <summary>
         /// Validate the condition.

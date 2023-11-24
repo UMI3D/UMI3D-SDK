@@ -26,5 +26,10 @@ namespace umi3d.common.userCapture.binding
         /// Name of the rig
         /// </summary>
         public string rigName { get; set; }
+
+        /// <summary>
+        /// Specifying the need to use the initial rotation in the binding.
+        /// </summary>
+        public bool applyOriginalRotation { get; set; }
     }
 }

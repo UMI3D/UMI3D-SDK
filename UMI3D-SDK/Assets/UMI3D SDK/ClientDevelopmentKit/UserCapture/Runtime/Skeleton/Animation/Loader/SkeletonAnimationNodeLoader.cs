@@ -126,7 +126,7 @@ namespace umi3d.cdk.userCapture.animation
 
                 // create subSkeleton and add it to a skeleton
                 AnimatedSubskeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
-                AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
+                AttachToSkeleton(environmentId, skeletonNodeDto.userId, animationSubskeleton);
             });
             nodeInstance.Delete = () => Delete(skeletonNodeDto.userId);
 
@@ -184,7 +184,7 @@ namespace umi3d.cdk.userCapture.animation
             SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
 
             // umi3d default anchor is hips
-            skeletonMapper.BoneAnchor = new BonePoseDto() { bone = BoneType.Hips, position = animator.rootPosition.Dto(), rotation = animator.rootRotation.Dto() };
+            skeletonMapper.BoneAnchor = new PoseAnchorDto() { bone = BoneType.Hips, position = animator.rootPosition.Dto(), rotation = animator.rootRotation.Dto() };
 
             // map animator unity bones to umi3d ones
             var boneUnityMapping = FindBonesTransform(animator);
@@ -296,7 +296,7 @@ namespace umi3d.cdk.userCapture.animation
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="animatedSubskeleton"></param>
-        protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton animatedSubskeleton)
+        protected virtual void AttachToSkeleton(ulong environment, ulong userId, AnimatedSubskeleton animatedSubskeleton)
         {
             var skeleton = personnalSkeletonService.PersonalSkeleton;
 

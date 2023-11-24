@@ -204,9 +204,9 @@ namespace umi3d.cdk
         public ulong Id => dto.id;
         public ulong EnvironmentId { get; protected set; }
 
-        public UMI3DAbstractAnimation(ulong environementId, UMI3DAbstractAnimationDto dto)
+        public UMI3DAbstractAnimation(ulong environmentId, UMI3DAbstractAnimationDto dto)
         {
-            this.EnvironmentId = environementId;
+            this.EnvironmentId = environmentId;
             this.dto = dto;
         }
 

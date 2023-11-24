@@ -279,8 +279,9 @@ namespace umi3d.cdk.userCapture.animation
                         (uint)SkeletonAnimatorParameterKeys.SPEED_Z => (UMI3DAnimatorParameterType.Float, lastFrame.speed.Z),
                         (uint)SkeletonAnimatorParameterKeys.SPEED_ABS_Z => (UMI3DAnimatorParameterType.Float, Mathf.Abs(lastFrame.speed.Z)),
                         (uint)SkeletonAnimatorParameterKeys.SPEED_X_Z => (UMI3DAnimatorParameterType.Float, Vector3.ProjectOnPlane(lastFrame.speed.Struct(), Vector3.up).magnitude),
-                        (uint)SkeletonAnimatorParameterKeys.JUMP => (UMI3DAnimatorParameterType.Bool, (object)lastFrame.jumping),
+                        (uint)SkeletonAnimatorParameterKeys.GROUNDED => (UMI3DAnimatorParameterType.Bool, (object)lastFrame.grounded),
                         (uint)SkeletonAnimatorParameterKeys.CROUCH => (UMI3DAnimatorParameterType.Bool, (object)lastFrame.crouching),
+                        (uint)SkeletonAnimatorParameterKeys.JUMP => (UMI3DAnimatorParameterType.Bool, (object)lastFrame.jumping),
                         _ => default
                     };
 
@@ -351,7 +352,7 @@ namespace umi3d.cdk.userCapture.animation
             if (newValue == 0f && previousValue != 0f) // avoid slow movement persistance
                 return true;
 
-            var den = previousValue == 0 ? 1f : previousValue;
+            float den = previousValue == 0 ? 1f : Mathf.Abs(previousValue);
 
             if (Mathf.Abs(newValue - previousValue) / den > threshold)
                 return true;

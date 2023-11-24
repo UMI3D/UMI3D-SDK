@@ -24,6 +24,8 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public interface IWritableSubskeleton : ISubskeleton
     {
+        ulong EnvironmentId { get; set; }
+
         /// <summary>
         /// Update the position of this subskeleton according to the received <paramref name="trackingFrame"/>.
         /// </summary>

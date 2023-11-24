@@ -1,11 +1,9 @@
 using Moq;
 using NUnit.Framework;
 using System;
-using System.Collections.Generic;
 using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
-using umi3d.common;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
@@ -15,8 +13,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
     public class PoseManager_Test
     {
         private PoseManager poseManager;
-        private Mock<IEnvironmentManager> environmentLoaderServiceMock;
-        private Mock<ILoadingManager> loadingManagerMock;
+        private Mock<IEnvironmentManager> environmentServiceMock;
         private Mock<ISkeletonManager> skeletonManagerServiceMock;
         private Mock<IUMI3DClientServer> clientServerServiceMock;
 
@@ -27,334 +24,148 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [SetUp]
         public void Setup()
         {
-            environmentLoaderServiceMock = new Mock<IEnvironmentManager>();
-            skeletonManagerServiceMock = new Mock<ISkeletonManager>();
-            loadingManagerMock = new();
+            ClearSingletons();
+
+            environmentServiceMock = new ();
+            skeletonManagerServiceMock = new ();
             userCaptureLoadingParametersMock = new();
             clientServerServiceMock = new();
             clientServerServiceMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
             clientServerServiceMock.Setup(x => x.OnRedirection).Returns(new UnityEngine.Events.UnityEvent());
 
-            loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(userCaptureLoadingParametersMock.Object);
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object, environmentLoaderServiceMock.Object, clientServerServiceMock.Object);
+            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentServiceMock.Object, clientServerServiceMock.Object);
         }
 
         [TearDown]
         public void TearDown()
         {
             poseManager = null;
+            
+            ClearSingletons();
+        }
 
+        private void ClearSingletons()
+        {
             if (PoseManager.Exists)
                 PoseManager.Destroy();
         }
 
         #endregion SetUp
 
-        #region InitLocalPoses
+        #region TryActivatePoseAnimator
 
         [Test]
-        public void InitLocalPoses()
+        public void TryActivatePoseAnimator()
         {
-            // GIVEN
-            var poseDataMock = new Mock<IUMI3DPoseData>();
-            poseDataMock.Setup(x => x.ToDto()).Returns(new PoseDto());
-            userCaptureLoadingParametersMock.Setup(x => x.ClientPoses).Returns(new List<IUMI3DPoseData>()
+            // Given
+            PoseAnimatorDto dto = new()
             {
-                poseDataMock.Object,
-                poseDataMock.Object,
-                poseDataMock.Object,
-                poseDataMock.Object,
-                poseDataMock.Object,
-                poseDataMock.Object,
-            });
-
-            // WHEN
-            poseManager.InitLocalPoses();
-
-            // THEN
-            Assert.AreEqual(userCaptureLoadingParametersMock.Object.ClientPoses.Count, poseManager.localPoses.Length);
-        }
-
-        #endregion InitLocalPoses
-
-        #region Poses
-
-        [Test]
-        public void Poses()
-        {
-            // Given
-            if (PoseManager.Exists)
-                PoseManager.Destroy();
-
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, loadingManagerMock.Object, environmentLoaderServiceMock.Object, clientServerServiceMock.Object)
-            {
-                Poses = GeneratePoseDictionary()
-            };
-
-            // When
-            var poses = poseManager.Poses;
-
-            // Then
-            Assert.AreEqual(2, poses[0][0].Bones.Count);
-            Assert.AreEqual(2, poses[1][0].Bones.Count);
-            Assert.AreEqual(4, poses[1][2].Bones.Count);
-        }
-
-        #endregion Poses
-
-        #region AddPoseOverriders
-
-        [Test]
-        public void AddPoseOverriders_Null()
-        {
-            // Given
-            PoseOverridersContainer overrider = null;
-
-            // When
-            TestDelegate action = () => poseManager.AddPoseOverriders(overrider);
-
-            // Then
-            Assert.Throws<ArgumentNullException>(() => action());
-        }
-
-        [Test]
-        public void AddPoseOverriders()
-        {
-            // Given
-            UMI3DPoseOverridersContainerDto dto = new();
-            PoseOverridersContainer overrider = new(dto, new PoseOverrider[0]);
-
-            // When
-            TestDelegate action = () => poseManager.AddPoseOverriders(overrider);
-
-            // Then
-            Assert.DoesNotThrow(() => action());
-        }
-
-        #endregion AddPoseOverriders
-
-        #region RemovePoseOverriders
-
-        [Test]
-        public void RemovePoseOverriders_Null()
-        {
-            // Given
-            PoseOverridersContainer overrider = null;
-
-            // When
-            TestDelegate action = () => poseManager.RemovePoseOverriders(overrider);
-
-            // Then
-            Assert.Throws<ArgumentNullException>(() => action());
-        }
-
-        [Test]
-        public void RemovePoseOverriders()
-        {
-            // Given
-            UMI3DPoseOverridersContainerDto dto = new();
-            PoseOverridersContainer overrider = new(dto, new PoseOverrider[0]);
-
-            // When
-            TestDelegate action = () => poseManager.RemovePoseOverriders(overrider);
-
-            // Then
-            Assert.DoesNotThrow(() => action());
-        }
-
-        #endregion RemovePoseOverriders
-
-        #region TryActivatePoseOverriders
-
-        [Test]
-        public void TryActivatePoseOverriders()
-        {
-            // Given
-            UMI3DPoseOverridersContainerDto dto = new()
-            {
-                poseOverriderDtos = new PoseOverriderDto[]
-                {
-                    new()
-                    {
-                        poseIndexInPoseManager = 1,
-                        activationMode = (ushort)PoseActivationMode.NONE
-                    },
-                },
+                id = 1005uL,
+                activationMode = (ushort)PoseAnimatorActivationMode.ON_REQUEST,
                 relatedNodeId = 1006uL
             };
-            PoseOverridersContainer overrider = new(dto, new PoseOverrider[0]);
 
-            poseManager.AddPoseOverriders(overrider);
-            poseManager.Poses.Add(dto.relatedNodeId, new List<SkeletonPose>() { new SkeletonPose(new PoseDto() { index = 1 }) });
+            Mock<PoseAnimator> poseAnimatorMock = new (dto, new PoseClip(new()), new IPoseCondition[0]);
+
+            poseAnimatorMock.Setup(x=>x.TryActivate()).Returns(true);
+            environmentServiceMock.Setup(x => x.GetEntityObject<PoseAnimator>(0,dto.id)).Returns(poseAnimatorMock.Object);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<SkeletonPose>(), false));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false));
             // When
-            TestDelegate action = () => poseManager.TryActivatePoseOverriders(dto.relatedNodeId, PoseActivationMode.NONE);
+            bool result = false;
+            TestDelegate action = () => result = poseManager.TryActivatePoseAnimator(0,dto.id);
 
             // Then
             Assert.DoesNotThrow(() => action());
+            Assert.IsTrue(result);
         }
 
-        #endregion TryActivatePoseOverriders
+        #endregion TryActivatePoseAnimator
 
-        #region ApplyPoseOverride
+        #region PlayPoseClip
 
         [Test]
-        public void ApplyPoseOverride_Null()
+        public void PlayPoseClip_Null()
         {
             // Given
-            PoseOverrider overrider = null;
+            PoseClip poseClip = null;
 
             // When
-            TestDelegate action = () => poseManager.ApplyPoseOverride(overrider);
+            TestDelegate action = () => poseManager.PlayPoseClip(poseClip);
 
             // Then
             Assert.Throws<ArgumentNullException>(() => action());
         }
 
         [Test]
-        public void ApplyPoseOverride()
+        public void PlayPoseClip()
         {
             // Given
-            var dto = new PoseOverriderDto()
+            PoseClipDto dto = new()
             {
-                poseIndexInPoseManager = 1,
-                activationMode = (ushort)PoseActivationMode.NONE
+                id = 1005uL,
+                pose = new PoseDto() { }
             };
-            PoseOverrider overrider = new PoseOverrider(dto, new IPoseCondition[0]);
-
-            poseManager.Poses[UMI3DGlobalID.EnvironementId].Add(new SkeletonPose(new PoseDto() { index = 1 }));
+            PoseClip poseClip = new PoseClip(dto);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<SkeletonPose>(), false));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false));
 
             // When
-            poseManager.ApplyPoseOverride(overrider);
+            poseManager.PlayPoseClip(poseClip);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<SkeletonPose>(), false), Times.Once());
+            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false), Times.Once());
         }
 
-        #endregion ApplyPoseOverride
+        #endregion PlayPoseClip
 
-        #region StopPoseOverride
+        #region StopPoseClip
 
         [Test]
-        public void StopPoseOverride_Null()
+        public void StopPoseClip_Null()
         {
             // Given
-            PoseOverrider overrider = null;
+            PoseClip poseClip = null;
 
             // When
-            TestDelegate action = () => poseManager.StopPoseOverride(overrider);
+            TestDelegate action = () => poseManager.StopPoseClip(poseClip);
 
             // Then
             Assert.Throws<ArgumentNullException>(() => action());
         }
 
         [Test]
-        public void StopPoseOverride()
+        public void StopPoseClip()
         {
             // Given
-            var dto = new PoseOverriderDto()
+            PoseClipDto dto = new()
             {
-                poseIndexInPoseManager = 1,
-                activationMode = (ushort)PoseActivationMode.NONE
+                id = 1005uL,
+                pose = new PoseDto() { }
             };
-            PoseOverrider overrider = new PoseOverrider(dto, new IPoseCondition[0]);
-
-            poseManager.Poses[UMI3DGlobalID.EnvironementId].Add(new SkeletonPose(new PoseDto() { index = 1 }));
+            PoseClip poseClip = new PoseClip(dto);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSubskeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
 
             // When
-            poseManager.StopPoseOverride(overrider);
+            poseManager.StopPoseClip(poseClip);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StopPose(It.IsAny<SkeletonPose>()), Times.Once());
+            poseSubskeletonMock.Verify(x => x.StopPose(It.IsAny<PoseClip>()), Times.Once());
         }
 
-        #endregion StopPoseOverride
-
-        #region Utils
-
-        private Dictionary<ulong, IList<SkeletonPose>> GeneratePoseDictionary()
-        {
-            Dictionary<ulong, IList<SkeletonPose>> allPoses = new Dictionary<ulong, IList<SkeletonPose>>()
-            {
-                {0,
-                    new List<SkeletonPose>()
-                    {
-                        new SkeletonPose(
-                            new PoseDto()
-                            {
-                                bones = new List<BoneDto>()
-                                {
-                                    new BoneDto(),
-                                    new BoneDto()
-                                }
-                            }),
-                        new SkeletonPose(
-                            new PoseDto()
-                            {
-                                bones = new List<BoneDto>()
-                                {
-                                    new BoneDto(),
-                                    new BoneDto()
-                                }
-                            }),
-                    }
-                },
-                {1,
-                    new List<SkeletonPose>()
-                    {
-                        new SkeletonPose(
-                            new PoseDto()
-                            {
-                                bones = new List<BoneDto>()
-                                {
-                                    new BoneDto(),
-                                    new BoneDto()
-                                }
-                            }),
-                        new SkeletonPose(
-                            new PoseDto()
-                            {
-                                bones = new List<BoneDto>()
-                                {
-                                    new BoneDto(),
-                                    new BoneDto()
-                                }
-                            }),
-                        new SkeletonPose(
-                            new PoseDto()
-                            {
-                                bones = new List<BoneDto>()
-                                {
-                                    new BoneDto(),
-                                    new BoneDto(),
-                                    new BoneDto(),
-                                    new BoneDto()
-                                }
-                            }),
-                    }
-                },
-            };
-
-            return allPoses;
-        }
-
-        #endregion Utils
+        #endregion StopPoseClip
     }
 }

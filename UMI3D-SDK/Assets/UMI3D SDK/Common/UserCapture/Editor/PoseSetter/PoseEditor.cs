@@ -40,14 +40,12 @@ namespace umi3d.common.userCapture.pose.editor
             poseSaverService.CreatePose(skeleton);
         }
 
-        public void SavePose(string poseName, string path, bool createOverrider = false)
+        public void SavePose(string poseName, string path)
         {
             if (skeleton.boneComponents.Where(bc => bc.isRoot).Count() == 0)
                 poseEditionService.ResetRoot(skeleton);
 
             poseSaverService.SavePose(skeleton, path, poseName, out bool success);
-            if (success && createOverrider)
-                poseSaverService.CreatePoseOverrider($"{poseName}_overrider", path, skeleton.currentPose);
         }
 
         public void LoadPose(UMI3DPose_so pose, out bool success)

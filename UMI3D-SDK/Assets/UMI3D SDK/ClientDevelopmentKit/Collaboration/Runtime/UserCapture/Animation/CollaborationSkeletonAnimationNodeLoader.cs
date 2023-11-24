@@ -53,16 +53,16 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
         #endregion Dependency Injection
 
-        protected override void AttachToSkeleton(ulong userId, AnimatedSubskeleton animatedSubskeleton)
+        protected override void AttachToSkeleton(ulong environment, ulong userId, AnimatedSubskeleton animatedSubskeleton)
         {
             // personnal skeleton is targeted
             if (clientServer.GetUserId() == userId)
             {
-                base.AttachToSkeleton(userId, animatedSubskeleton);
+                base.AttachToSkeleton(environment, userId, animatedSubskeleton);
                 return;
             }
 
-            var skeleton = collaborativeSkeletonsmanager.TryGetSkeletonById(userId);
+            var skeleton = collaborativeSkeletonsmanager.TryGetSkeletonById(environment, userId);
             if (skeleton != null)
             {
                 skeleton.AddSubskeleton(animatedSubskeleton);

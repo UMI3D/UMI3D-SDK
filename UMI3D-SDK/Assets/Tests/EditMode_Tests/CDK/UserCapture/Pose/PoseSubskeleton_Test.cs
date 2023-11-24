@@ -20,11 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using TestUtils.UserCapture;
+using umi3d.cdk;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
+using UnityEditor;
 using UnityEngine;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
@@ -34,7 +36,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
     {
         private PoseSubskeleton poseSubskeleton = null;
 
-        private Mock<IPoseManager> poseManagerServiceMock;
+        private Mock<IEnvironmentManager> environmentServiceMock;
 
         #region SetUp
 
@@ -47,9 +49,8 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [SetUp]
         public void SetUp()
         {
-            poseManagerServiceMock = new Mock<IPoseManager>();
-
-            poseSubskeleton = new PoseSubskeleton(poseManagerServiceMock.Object);
+            environmentServiceMock = new();
+            poseSubskeleton = new PoseSubskeleton(0,environmentServiceMock.Object);
         }
 
         [TearDown]
@@ -72,7 +73,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StartPose_Null()
         {
             // given
-            List<SkeletonPose> poses = null;
+            List<PoseClip> poses = null;
 
             // when
             TestDelegate action = () => poseSubskeleton.StartPose(poses, true);
@@ -85,7 +86,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StartPose_Empty()
         {
             // given
-            List<SkeletonPose> poses = new();
+            List<PoseClip> poses = new();
 
             // when
             TestDelegate action = () => poseSubskeleton.StartPose(poses, true);
@@ -99,7 +100,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StartPose_One()
         {
             // GIVEN
-            var pose = new SkeletonPose(new PoseDto(), true);
+            var pose = new PoseClip(new());
 
             // WHEN
             poseSubskeleton.StartPose(pose, true);
@@ -113,10 +114,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StartPose_Many()
         {
             // GIVEN
-            var poses = new List<SkeletonPose>()
+            var poses = new List<PoseClip>()
             {
-                new SkeletonPose(new PoseDto(), true),
-                new SkeletonPose(new PoseDto()),
+                new (new ()),
+                new (new ()),
             };
 
             // WHEN
@@ -134,7 +135,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StopPose_Null()
         {
             // GIVEN
-            SkeletonPose pose = null;
+            PoseClip pose = null;
 
             // WHEN
             poseSubskeleton.StopPose(pose);
@@ -147,7 +148,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StopPose_Empty()
         {
             // GIVEN
-            List<SkeletonPose> pose = new();
+            List<PoseClip> pose = new();
 
             // WHEN
             poseSubskeleton.StopPose(pose);
@@ -160,7 +161,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StopPose_One()
         {
             // GIVEN
-            var pose = new SkeletonPose(new PoseDto(), true);
+            var pose = new PoseClip(new());
 
             poseSubskeleton.StartPose(pose, true);
 
@@ -175,11 +176,11 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StopPose_Many()
         {
             // GIVEN
-            var poses = new List<SkeletonPose>()
+            var poses = new List<PoseClip>()
             {
-                new SkeletonPose(new PoseDto(), true),
-                new SkeletonPose(new PoseDto()),
-                new SkeletonPose(new PoseDto()),
+                new (new ()),
+                new (new ()),
+                new (new ()),
             };
 
             var posesToStop = poses.ToArray()[0..2];
@@ -201,10 +202,10 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void StopAllPoses_All()
         {
             // GIVEN
-            var poses = new List<SkeletonPose>()
+            var poses = new List<PoseClip>()
             {
-                new SkeletonPose(new PoseDto(), true),
-                new SkeletonPose(new PoseDto()),
+                new (new ()),
+                new (new ()),
             };
 
             poseSubskeleton.StartPose(poses, false);
@@ -233,20 +234,23 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Assert.AreEqual(0, result.bones.Count);
         }
 
-        [Test]
+        [Test, TestOf(nameof(PoseSubskeleton.GetPose))]
         public void GetPose()
         {
             // Given
-            var poses = new List<SkeletonPose>()
+            var poses = new List<PoseClip>()
             {
-                new SkeletonPose(new PoseDto()
+                new PoseClip(new ()
                 {
-                    bones = new()
+                    pose = new()
+                    {
+                                            bones = new()
                     {
                         new() { boneType = BoneType.Chest, rotation = new() },
                         new() { boneType = BoneType.Spine, rotation = new() },
                     }
-                }, true),
+                    }
+                }),
             };
 
             poseSubskeleton.StartPose(poses, false);
@@ -267,17 +271,20 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void GetPose_InvalidHierarchy()
         {
             // Given
-            var poses = new List<SkeletonPose>()
+            var poses = new List<PoseClip>()
             {
-                new SkeletonPose(new PoseDto()
+                new PoseClip(new ()
                 {
-                    bones = new()
+                    pose = new()
+                    {
+                                            bones = new()
                     {
                         new() { boneType = BoneType.Chest, rotation = new() },
                         new() { boneType = BoneType.Spine, rotation = new() },
                         new() { boneType = 120u, rotation = new() },
                     }
-                }, true),
+                    }
+                }),
             };
 
             poseSubskeleton.StartPose(poses, false);
@@ -321,29 +328,33 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Assert.Throws<ArgumentNullException>(() => action());
         }
 
-        [Test]
+        [Test, TestOf(nameof(PoseSubskeleton.UpdateBones))]
         public void UpdateBones()
         {
             // Given
-            var poses = new List<SkeletonPose>()
+            List<PoseClip> poseClips = new ()
             {
-                new SkeletonPose(new PoseDto() { index=0, bones=new() { new() { boneType=BoneType.Chest } }, boneAnchor=new()}, true),
-                new SkeletonPose(new PoseDto() { index=1, bones=new() { new() { boneType=BoneType.Chest } }, boneAnchor=new()}, true),
+                new (new () { id=1005uL, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
+                new (new () { id=1006uL, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
             };
+
+            environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[0].Id)).Returns(new UMI3DEntityInstance(0, () => { }) { Object=poseClips[0] });
+            environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[1].Id)).Returns(new UMI3DEntityInstance(0, () => { }) { Object = poseClips[1] });
+
 
             UserTrackingFrameDto frame = new()
             {
-                customPosesIndexes = new() { 1, 2 },
+                poses = new() { poseClips[0].Id },
                 userId = 1005uL
             };
 
-            poseManagerServiceMock.Setup(x => x.Poses).Returns(new Dictionary<ulong, IList<SkeletonPose>>() { { frame.userId, poses } });
+
 
             // When
             poseSubskeleton.UpdateBones(frame);
 
             // Then
-            Assert.AreEqual(1, poseSubskeleton.AppliedPoses.Count);
+            Assert.AreEqual(frame.poses.Count, poseSubskeleton.AppliedPoses.Count);
         }
 
         #endregion UpdateBones
@@ -363,14 +374,14 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Assert.Throws<ArgumentNullException>(() => action());
         }
 
-        [Test]
+        [Test, TestOf(nameof(PoseSubskeleton.WriteTrackingFrame))]
         public void WriteTrackingFrame()
         {
             // given
-            var poses = new List<SkeletonPose>()
+            var poses = new List<PoseClip>()
             {
-                new SkeletonPose(new PoseDto() { index=0, bones=new() { new() { boneType=BoneType.Chest } }, boneAnchor=new()}, true),
-                new SkeletonPose(new PoseDto() { index=1, bones=new() { new() { boneType=BoneType.Chest } }, boneAnchor=new()}, false),
+                new (new () { id=0, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
+                new (new () { id=1, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
             };
 
             poseSubskeleton.StartPose(poses, true);
@@ -381,8 +392,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeleton.WriteTrackingFrame(frame, null);
 
             // then
-            Assert.AreEqual(poses.Where(x => x.IsCustom).Count(), frame.customPosesIndexes.Count);
-            Assert.AreEqual(poses.Where(x => !x.IsCustom).Count(), frame.environmentPosesIndexes.Count);
+            Assert.AreEqual(poses.Count(), frame.poses.Count);
         }
 
         #endregion WriteTrackingFrame

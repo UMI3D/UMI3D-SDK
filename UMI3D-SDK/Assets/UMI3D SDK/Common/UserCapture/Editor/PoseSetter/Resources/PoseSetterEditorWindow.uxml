@@ -50,7 +50,6 @@
                     <ui:VisualElement name="PathContainer">
                         <ui:TextField picking-mode="Ignore" label="Save Path" name="path" text="Assets/" value="Assets/" tooltip="Relative path where to register ther pose." />
                     </ui:VisualElement>
-                    <ui:Toggle label="Generate pose overrider" name="GeneratePoseOverriderToggle" tooltip="If true, also generate a pose overrider for this pose." />
                     <ui:VisualElement name="SaveButtonContainer" style="width: 100%; align-items: flex-end;">
                         <ui:Button text="Save" display-tooltip-when-elided="true" name="save" tooltip="Save pose to a scriptable object." class="Buttons" style="justify-content: flex-end; width: 20%; flex-direction: row; align-items: auto; visibility: visible;" />
                     </ui:VisualElement>

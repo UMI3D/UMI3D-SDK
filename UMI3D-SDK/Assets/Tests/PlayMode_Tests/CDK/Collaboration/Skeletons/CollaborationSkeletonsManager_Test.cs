@@ -133,11 +133,11 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(userList);
 
             // WHEN
-            var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, skeletonGo.transform, hierarchy);
+            var skeleton = collaborativeSkeletonManager.CreateSkeleton(0,userId, skeletonGo.transform, hierarchy);
 
             // THEN
             Assert.IsNotNull(skeleton);
-            Assert.AreEqual(userId, skeleton.UserId);
+            Assert.AreEqual(0,userId, skeleton.UserId);
 
             Assert.Greater(skeleton.Bones.Count, 0);
             Assert.IsNotNull(skeleton.SkeletonHierarchy);
@@ -166,7 +166,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(userList);
 
             // WHEN
-            var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, null, hierarchy);
+            var skeleton = collaborativeSkeletonManager.CreateSkeleton(0, userId, null, hierarchy);
 
             // THEN
             Assert.IsNotNull(skeleton);
@@ -193,7 +193,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject go = new GameObject("Skeleton created");
             collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(userList);
             // WHEN
-            Action action = () => { _ = collaborativeSkeletonManager.CreateSkeleton(userId, go.transform, null); };
+            Action action = () => { _ = collaborativeSkeletonManager.CreateSkeleton(0, userId, go.transform, null); };
 
             // THEN
             Assert.Throws<System.ArgumentNullException>(() => action());
@@ -228,10 +228,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(0, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton(userId);
+            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton((0,userId));
 
             // then
             Assert.AreEqual(resultSkeleton.UserId, userId);
@@ -258,10 +258,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(0, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton(userId + 1);
+            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton((0, userId + 1));
 
             // then
             Assert.IsNull(resultSkeleton);
@@ -292,10 +292,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(0, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            ISkeleton resultSkeleton = collaborativeSkeletonManager.TryGetSkeletonById(userId + 1);
+            ISkeleton resultSkeleton = collaborativeSkeletonManager.TryGetSkeletonById(0, userId + 1);
 
             // then
             Assert.IsNull(resultSkeleton);
@@ -322,10 +322,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(0, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton(userId + 1);
+            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton((0, userId + 1));
 
             // then
             Assert.IsNull(resultSkeleton);
@@ -413,10 +413,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             skeletonMock1.Setup(x => x.UpdateBones(frame1));
             skeletonMock2.Setup(x => x.UpdateBones(frame2));
 
-            Dictionary<ulong, ISkeleton> dictSkeletons = new()
+            Dictionary<(ulong,ulong), ISkeleton> dictSkeletons = new()
             {
-                { frame1.userId, skeletonMock1.Object},
-                { frame2.userId, skeletonMock2.Object },
+                { (0,frame1.userId), skeletonMock1.Object},
+                { (0, frame2.userId), skeletonMock2.Object },
             };
 
             var mockRoutine = new Mock<IEnumerator>();
@@ -539,42 +539,38 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 
         #endregion SyncBoneFPS
 
-        #region SyncBoneFPS
+        #region ApplyPoseRequest
 
-        [Test]
+        [Test, TestOf(nameof(CollaborationSkeletonsManager.ApplyPoseRequest))]
         public void ApplyPoseRequest_Start()
         {
             // given
             ulong userId = 1005uL;
-            var poses = new Dictionary<ulong, IList<SkeletonPose>>()
-            {
-                { userId, new List<SkeletonPose>(2) { new SkeletonPose(null), new SkeletonPose(null) } },
-            };
-            poseManagerMock.Setup(x => x.Poses).Returns(poses);
+            var poses = new List<PoseClip>(2) { new PoseClip(null), new PoseClip(null) };
 
             collaborativeSkeletonManagerMock.CallBase = false;
-            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<ApplyPoseDto>())).CallBase();
+            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(0,It.IsAny<PlayPoseClipDto>())).CallBase();
 
             var poseSkeletonMock = new Mock<IPoseSubskeleton>();
-            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSkeletonMock.Object);
 
-            var skeletons = new Dictionary<ulong, ISkeleton>(1) { { userId, skeletonMock.Object } };
+            var skeletons = new Dictionary<(ulong, ulong), ISkeleton>(1) { { (0, userId), skeletonMock.Object } };
             collaborativeSkeletonManagerMock.Setup(x => x.Skeletons).Returns(skeletons);
-            var playPoseDto = new ApplyPoseDto()
+            var playPoseDto = new PlayPoseClipDto()
             {
                 userID = userId,
-                indexInList = 1,
+                poseId = 1,
                 stopPose = false
             };
 
             // when
-            collaborativeSkeletonManager.ApplyPoseRequest(playPoseDto);
+            collaborativeSkeletonManager.ApplyPoseRequest(0,playPoseDto);
 
             // then
-            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<SkeletonPose>(), It.IsAny<bool>()));
+            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), It.IsAny<bool>()));
         }
 
         [Test]
@@ -582,37 +578,33 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
         {
             // given
             ulong userId = 1005uL;
-            var poses = new Dictionary<ulong, IList<SkeletonPose>>()
-            {
-                { userId, new List<SkeletonPose>(2) { new SkeletonPose(null), new SkeletonPose(null) } },
-            };
-            poseManagerMock.Setup(x => x.Poses).Returns(poses);
+            var poses = new List<PoseClip>(2) { new PoseClip(null), new PoseClip(null) };
 
             collaborativeSkeletonManagerMock.CallBase = false;
-            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<ApplyPoseDto>())).CallBase();
+            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(0, It.IsAny<PlayPoseClipDto>())).CallBase();
 
             var poseSkeletonMock = new Mock<IPoseSubskeleton>();
-            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSkeletonMock.Object);
 
-            var skeletons = new Dictionary<ulong, ISkeleton>(1) { { userId, skeletonMock.Object } };
+            var skeletons = new Dictionary<(ulong,ulong), ISkeleton>(1) { { (0, userId), skeletonMock.Object } };
             collaborativeSkeletonManagerMock.Setup(x => x.Skeletons).Returns(skeletons);
-            var playPoseDto = new ApplyPoseDto()
+            var playPoseDto = new PlayPoseClipDto()
             {
                 userID = userId,
-                indexInList = 1,
+                poseId = 1,
                 stopPose = true
             };
 
             // when
-            collaborativeSkeletonManager.ApplyPoseRequest(playPoseDto);
+            collaborativeSkeletonManager.ApplyPoseRequest(0, playPoseDto);
 
             // then
-            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<SkeletonPose>()));
+            poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
         }
 
-        #endregion SyncBoneFPS
+        #endregion ApplyPoseRequest
     }
 }

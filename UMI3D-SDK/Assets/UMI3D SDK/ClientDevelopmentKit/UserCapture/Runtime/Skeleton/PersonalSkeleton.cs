@@ -38,13 +38,14 @@ namespace umi3d.cdk.userCapture
 
         protected void Start()
         {
-            PoseSubskeleton = new PoseSubskeleton();
+            PoseSubskeleton = new PoseSubskeleton(0);
 
             //Init(trackedSkeleton, PoseSubskeleton);
         }
 
         public void SelfInit()
         {
+           
             Init(trackedSkeleton, PoseSubskeleton);
         }
 
