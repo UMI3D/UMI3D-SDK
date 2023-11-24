@@ -168,6 +168,7 @@ namespace umi3d.common.userCapture.pose
                         readable = UMI3DSerializer.TryRead(container, out float magnitude);
                         readable &= UMI3DSerializer.TryRead(container, out uint boneOrigin);
                         readable &= UMI3DSerializer.TryRead(container, out ulong targetObjectId);
+                        readable &= UMI3DSerializer.TryRead(container, out bool ignoreHeight);
 
                         if (readable)
                         {
@@ -175,7 +176,8 @@ namespace umi3d.common.userCapture.pose
                             {
                                 TargetNodeId = targetObjectId,
                                 BoneOrigin = boneOrigin,
-                                Magnitude = magnitude
+                                Magnitude = magnitude,
+                                IgnoreHeight = ignoreHeight
                             };
                             result = (T)Convert.ChangeType(magnitudeConditionDto, typeof(T));
                             return true;
@@ -339,7 +341,8 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write((int)PoseConditionSerializingIndex.MAGNITUDE_CONDITION)
                         + UMI3DSerializer.Write(magnitudeConditionDto.Magnitude)
                         + UMI3DSerializer.Write(magnitudeConditionDto.BoneOrigin)
-                        + UMI3DSerializer.Write(magnitudeConditionDto.TargetNodeId);
+                        + UMI3DSerializer.Write(magnitudeConditionDto.TargetNodeId)
+                        + UMI3DSerializer.Write(magnitudeConditionDto.IgnoreHeight);
                     break;
 
                 case BoneRotationConditionDto boneRotationConditionDto:

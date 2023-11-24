@@ -115,6 +115,71 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             Assert.IsFalse(success);
         }
 
+        [Test]
+        public void Check_IgnoreHeight_CloseEnough()
+        {
+            // GIVEN
+            MagnitudeConditionDto dto = new()
+            {
+                BoneOrigin = BoneType.Chest,
+                Magnitude = 1,
+                TargetNodeId = 1005ul,
+                IgnoreHeight = true
+            };
+
+            TrackedSubskeletonBone trackedBone = boneGo.AddComponent<TrackedSubskeletonBone>();
+            trackedBone.boneType = BoneType.Chest;
+            Dictionary<uint, TrackedSubskeletonBone> bones = new()
+            {
+                { BoneType.Chest,  trackedBone }
+            };
+            var trackedSkeletonMock = new Mock<ITrackedSubskeleton>();
+            trackedSkeletonMock.Setup(x => x.TrackedBones).Returns(bones);
+
+            MagnitudePoseCondition poseCondition = new(dto, nodeGo.transform, trackedSkeletonMock.Object);
+
+            boneGo.transform.position = new Vector3(0.25f, 5f, 0.25f) ;
+            nodeGo.transform.position = Vector3.zero;
+
+            // WHEN
+            bool success = poseCondition.Check();
+
+            // THEN
+            Assert.IsTrue(success);
+        }
+
+        [Test]
+        public void Check_IgnoreHeight_NotCloseEnough()
+        {
+            // GIVEN
+            MagnitudeConditionDto dto = new()
+            {
+                BoneOrigin = BoneType.Chest,
+                Magnitude = 1,
+                TargetNodeId = 1005ul,
+            };
+
+            TrackedSubskeletonBone trackedBone = boneGo.AddComponent<TrackedSubskeletonBone>();
+            trackedBone.boneType = BoneType.Chest;
+            Dictionary<uint, TrackedSubskeletonBone> bones = new()
+            {
+                { BoneType.Chest,  trackedBone }
+            };
+            var trackedSkeletonMock = new Mock<ITrackedSubskeleton>();
+            trackedSkeletonMock.Setup(x => x.TrackedBones).Returns(bones);
+
+            MagnitudePoseCondition poseCondition = new(dto, nodeGo.transform, trackedSkeletonMock.Object);
+
+            boneGo.transform.position = Vector3.one * 3f;
+            nodeGo.transform.position = Vector3.zero;
+
+            // WHEN
+            bool success = poseCondition.Check();
+
+            // THEN
+            Assert.IsFalse(success);
+        }
+
         #endregion Check
     }
 }
