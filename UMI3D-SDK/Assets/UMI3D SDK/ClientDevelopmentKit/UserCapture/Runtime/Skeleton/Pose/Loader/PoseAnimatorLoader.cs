@@ -114,16 +114,22 @@ namespace umi3d.cdk.userCapture.pose
                         UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(scaleConditionDto.TargetId, null);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
                     }
+                case AndConditionDto andConditionDto:
+                    {
+                        IPoseCondition conditionA = await LoadPoseCondition(andConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(andConditionDto.ConditionB);
+                        return new AndPoseCondition(andConditionDto, conditionA, conditionB);
+                    }
                 case OrConditionDto orConditionDto:
                     {
-                        IPoseCondition[] conditionsA = await Task.WhenAll(orConditionDto.ConditionsA.Select(async dto => await LoadPoseCondition(dto)));
-                        IPoseCondition[] conditionsB = await Task.WhenAll(orConditionDto.ConditionsB.Select(async dto => await LoadPoseCondition(dto)));
-                        return new OrPoseCondition(orConditionDto, conditionsA, conditionsB);
+                        IPoseCondition conditionA = await LoadPoseCondition(orConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(orConditionDto.ConditionB);
+                        return new OrPoseCondition(orConditionDto, conditionA, conditionB);
                     }
                 case NotConditionDto notConditionDto:
                     {
-                        IPoseCondition[] conditions = await Task.WhenAll(notConditionDto.Conditions.Select(async dto => await LoadPoseCondition(dto)));
-                        return new NotPoseCondition(notConditionDto, conditions);
+                        IPoseCondition condition = await LoadPoseCondition(notConditionDto.Condition);
+                        return new NotPoseCondition(notConditionDto, condition);
                     }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
                     {

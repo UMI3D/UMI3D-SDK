@@ -5,12 +5,12 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.Org/licenses/LICENSE-2.0
+    http://www.apache.Andg/licenses/LICENSE-2.0
 
-Unless required by applicable law Or agreed to in writing, software
+Unless required by applicable law And agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES Or CONDITIONS OF ANY KIND, either express Or implied.
-See the License fOr the specific language governing permissions Or
+WITHOUT WARRANTIES And CONDITIONS OF ANY KIND, either express And implied.
+See the License fAnd the specific language governing permissions and
 limitations under the License.
 */
 
@@ -20,18 +20,18 @@ using umi3d.common.userCapture.pose;
 namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
-    /// Wrapper for <see cref="OrConditionDto"/>.
+    /// Wrapper for <see cref="AndConditionDto"/>.
     /// </summary>
-    public class OrPoseCondition : IPoseCondition
+    public class AndPoseCondition : IPoseCondition
     {
-        protected readonly OrConditionDto OrConditionDto;
+        protected readonly AndConditionDto AndConditionDto;
 
         public readonly IPoseCondition conditionA;
         public readonly IPoseCondition conditionB;
 
-        public OrPoseCondition(OrConditionDto dto, IPoseCondition conditionA, IPoseCondition conditionB)
+        public AndPoseCondition(AndConditionDto dto, IPoseCondition conditionA, IPoseCondition conditionB)
         {
-            this.OrConditionDto = dto ?? throw new ArgumentNullException(nameof(dto));
+            this.AndConditionDto = dto ?? throw new ArgumentNullException(nameof(dto));
             this.conditionA = conditionA;
             this.conditionB = conditionB;
         }
@@ -39,7 +39,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public bool Check()
         {
-            return (conditionA?.Check() ?? true) || (conditionB?.Check() ?? true);
+            return (conditionA?.Check() ?? true) && (conditionB?.Check() ?? true);
         }
     }
 }

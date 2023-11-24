@@ -14,30 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using umi3d.common.userCapture.pose;
 
-namespace umi3d.cdk.userCapture.pose
+namespace umi3d.edk.userCapture.pose
 {
     /// <summary>
-    /// Wrapper for <see cref="NotConditionDto"/>.
+    /// Pose condition true when the contained condition is false.
     /// </summary>
-    public class NotPoseCondition : IPoseCondition
+    public class NotPoseCondition : IPoseAnimatorActivationCondition
     {
-        protected readonly NotConditionDto notConditionDto;
+        public IPoseAnimatorActivationCondition conditionToNegate;
 
-        public readonly IPoseCondition condition;
-
-        public NotPoseCondition(NotConditionDto dto, IPoseCondition condition)
+        public NotPoseCondition(IPoseAnimatorActivationCondition conditionToNegate)
         {
-            this.notConditionDto = dto ?? throw new ArgumentNullException(nameof(dto));
-            this.condition = condition;
+            this.conditionToNegate = conditionToNegate;
         }
 
-        /// <inheritdoc/>
-        public bool Check()
+        public AbstractPoseConditionDto ToDto()
         {
-            return !(condition?.Check() ?? false);
+            return new NotConditionDto()
+            {
+                Condition = conditionToNegate.ToDto()
+            };
         }
     }
 }
