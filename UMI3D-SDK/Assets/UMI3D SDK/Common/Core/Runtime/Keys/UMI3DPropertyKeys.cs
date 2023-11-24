@@ -205,7 +205,7 @@ namespace umi3d.common
         public const uint AnimationEmote = 11007;
 
         public const uint Poses = 11008;
-        public const uint AllPoseOverriderContainers = 11009;
+        public const uint ValidationEnvironmentPoseCondition = 11009;
         #endregion
 
         #region notification

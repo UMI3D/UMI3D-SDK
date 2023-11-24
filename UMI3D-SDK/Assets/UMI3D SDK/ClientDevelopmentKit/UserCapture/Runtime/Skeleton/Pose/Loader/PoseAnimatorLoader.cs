@@ -114,16 +114,22 @@ namespace umi3d.cdk.userCapture.pose
                         UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(environmentId, scaleConditionDto.TargetId, null);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
                     }
+                case AndConditionDto andConditionDto:
+                    {
+                        IPoseCondition conditionA = await LoadPoseCondition(environmentId, andConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(environmentId, andConditionDto.ConditionB);
+                        return new AndPoseCondition(andConditionDto, conditionA, conditionB);
+                    }
                 case OrConditionDto orConditionDto:
                     {
-                        IPoseCondition[] conditionsA = await Task.WhenAll(orConditionDto.ConditionsA.Select(async dto => await LoadPoseCondition(environmentId, dto)));
-                        IPoseCondition[] conditionsB = await Task.WhenAll(orConditionDto.ConditionsB.Select(async dto => await LoadPoseCondition(environmentId, dto)));
-                        return new OrPoseCondition(orConditionDto, conditionsA, conditionsB);
+                        IPoseCondition conditionA = await LoadPoseCondition(environmentId, orConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(environmentId, orConditionDto.ConditionB);
+                        return new OrPoseCondition(orConditionDto, conditionA, conditionB);
                     }
                 case NotConditionDto notConditionDto:
                     {
-                        IPoseCondition[] conditions = await Task.WhenAll(notConditionDto.Conditions.Select(async dto => await LoadPoseCondition(environmentId, dto)));
-                        return new NotPoseCondition(notConditionDto, conditions);
+                        IPoseCondition condition = await LoadPoseCondition(environmentId, notConditionDto.Condition);
+                        return new NotPoseCondition(notConditionDto, condition);
                     }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
                     {

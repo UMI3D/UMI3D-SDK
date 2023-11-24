@@ -19,8 +19,8 @@ using umi3d.cdk.userCapture.pose;
 
 namespace PlayMode_Tests.UserCapture.Pose.CDK
 {
-    [TestFixture, TestOf(nameof(OrPoseCondition))]
-    public class OrPoseCondition_Test
+    [TestFixture, TestOf(nameof(AndPoseCondition))]
+    public class AndPoseCondition_Test
     {
         [Test]
         public void Check_FalseFalse()
@@ -29,10 +29,10 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = new DummyTestPoseCondition() { isValid = false };
             IPoseCondition conditionB = new DummyTestPoseCondition() { isValid = false };
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
             Assert.IsFalse(success);
@@ -45,13 +45,13 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = new DummyTestPoseCondition() { isValid = false };
             IPoseCondition conditionB = new DummyTestPoseCondition() { isValid = true };
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
-            Assert.IsTrue(success);
+            Assert.IsFalse(success);
         }
 
         [Test]
@@ -61,13 +61,13 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = new DummyTestPoseCondition() { isValid = false };
             IPoseCondition conditionB = null;
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
-            Assert.IsTrue(success);
+            Assert.IsFalse(success);
         }
 
         [Test]
@@ -77,13 +77,13 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = new DummyTestPoseCondition() { isValid = true };
             IPoseCondition conditionB = new DummyTestPoseCondition() { isValid = false };
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
-            Assert.IsTrue(success);
+            Assert.IsFalse(success);
         }
 
         [Test]
@@ -93,10 +93,10 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = new DummyTestPoseCondition() { isValid = true };
             IPoseCondition conditionB = new DummyTestPoseCondition() { isValid = true };
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
             Assert.IsTrue(success);
@@ -109,10 +109,10 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = new DummyTestPoseCondition() { isValid = true };
             IPoseCondition conditionB = null;
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
             Assert.IsTrue(success);
@@ -125,13 +125,13 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = null;
             IPoseCondition conditionB = new DummyTestPoseCondition() { isValid = false };
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
-            Assert.IsTrue(success);
+            Assert.IsFalse(success);
         }
 
         [Test]
@@ -141,10 +141,10 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = null;
             IPoseCondition conditionB = new DummyTestPoseCondition() { isValid = true };
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
             Assert.IsTrue(success);
@@ -157,23 +157,13 @@ namespace PlayMode_Tests.UserCapture.Pose.CDK
             IPoseCondition conditionA = null;
             IPoseCondition conditionB = null;
 
-            OrPoseCondition orPoseCondition = new(new(), conditionA, conditionB);
+            AndPoseCondition AndPoseCondition = new(new(), conditionA, conditionB);
 
             // WHEN
-            bool success = orPoseCondition.Check();
+            bool success = AndPoseCondition.Check();
 
             // THEN
             Assert.IsTrue(success);
-        }
-    }
-
-    internal class DummyTestPoseCondition : IPoseCondition
-    {
-        public bool isValid;
-
-        public bool Check()
-        {
-            return isValid;
         }
     }
 }

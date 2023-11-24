@@ -51,6 +51,12 @@ namespace umi3d.cdk.userCapture.pose
             if (trackedSkeleton.TrackedBones.TryGetValue(magnitudeConditionDto.BoneOrigin, out TrackedSubskeletonBone bone))
                 bonePosition = bone.transform.position;
 
+            if (magnitudeConditionDto.IgnoreHeight)
+            {
+                targetPosition = Vector3.ProjectOnPlane(targetPosition, Vector3.up);
+                bonePosition = Vector3.ProjectOnPlane(bonePosition, Vector3.up);
+            }
+
             return Vector3.Distance(targetPosition, bonePosition) < magnitudeConditionDto.Magnitude;
         }
     }

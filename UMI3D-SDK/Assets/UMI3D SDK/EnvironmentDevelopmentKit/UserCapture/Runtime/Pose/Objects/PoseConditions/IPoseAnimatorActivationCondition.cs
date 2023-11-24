@@ -24,5 +24,20 @@ namespace umi3d.edk.userCapture.pose
     public interface IPoseAnimatorActivationCondition
     {
         public AbstractPoseConditionDto ToDto();
+
+        public static IPoseAnimatorActivationCondition operator &(IPoseAnimatorActivationCondition conditionA, IPoseAnimatorActivationCondition conditionB)
+        {
+            return new AndPoseCondition(conditionA, conditionB);
+        }
+
+        public static IPoseAnimatorActivationCondition operator |(IPoseAnimatorActivationCondition conditionA, IPoseAnimatorActivationCondition conditionB)
+        {
+            return new OrPoseCondition(conditionA, conditionB);
+        }
+
+        public static IPoseAnimatorActivationCondition operator !(IPoseAnimatorActivationCondition condition)
+        {
+            return new NotPoseCondition(condition);
+        }
     }
 }
