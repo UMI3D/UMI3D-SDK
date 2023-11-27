@@ -439,7 +439,16 @@ namespace inetum.unityUtils.editor
                 {
                     string folderName = path[(path.LastIndexOf("/") + 1)..];
                     string tmpPath = Path.Combine(Application.dataPath, @$"EXCLUDED/__TMP_UPDATE_HELPER_SAVE_{folderName}");
-                    Directory.Move(path, tmpPath); // import in project to use API
+                    try
+                    {
+                        Directory.Move(path, tmpPath); // import in project to use API
+                    }
+                    catch (Exception e)
+                    {
+                        UnityEngine.Debug.LogError($"{path}, {tmpPath}");
+                        UnityEngine.Debug.LogException(e);
+                        //throw e;
+                    }
                     return @$"Assets/EXCLUDED/__TMP_UPDATE_HELPER_SAVE_{folderName}";
                 }).ToArray();
 
