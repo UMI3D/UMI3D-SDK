@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -13,17 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+
 namespace umi3d.common.userCapture.pose
 {
     /// <summary>
-    /// Condition true when the nested condition is false.
+    /// Condition true when both of the nested conditions are true.
     /// </summary>
-    [System.Serializable]
-    public class NotConditionDto : AbstractPoseConditionDto
+    public class AndConditionDto : AbstractPoseConditionDto
     {
-        /// <summary>
-        /// List of conditions to be false
-        /// </summary>
-        public AbstractPoseConditionDto Condition { get; set; }
+        public AbstractPoseConditionDto ConditionA { get; set; }
+
+        public AbstractPoseConditionDto ConditionB { get; set; }
     }
 }

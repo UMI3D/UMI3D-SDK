@@ -16,12 +16,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.edk;
 using umi3d.edk.core;
 using umi3d.edk.userCapture.pose;
+
 using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
@@ -31,7 +32,10 @@ namespace umi3d.common.userCapture.pose
     /// </summary>
     public class UMI3DPoseAnimator : AbstractLoadableComponentEntity, UMI3DLoadableEntity
     {
-        [SerializeField]
+        /// <summary>
+        /// Pose resource in UMI3D standard. Field used for serialization and in-editor setting.
+        /// </summary>
+        [SerializeField, Tooltip("Pose resource in UMI3DStandard.")]
         public UMI3DPose_so pose_so;
 
         private IUMI3DPoseData pose;
@@ -76,23 +80,6 @@ namespace umi3d.common.userCapture.pose
             }
         }
 
-        /// <summary>
-        /// The different condition that are needed for the overrider to get activated
-        /// </summary>
-        [SerializeReference, HideInInspector]
-        public AbstractPoseConditionDto[] poseConditions;
-
-        /// <summary>
-        /// Poses conditions validated by the environment.
-        /// </summary>
-        [HideInInspector]
-        public List<UMI3DEnvironmentPoseCondition> environmentPoseConditions = new();
-
-        /// <summary>
-        /// Condition that must be satisfied to activate the pose animator.
-        /// </summary>
-        public IReadOnlyList<AbstractPoseConditionDto> PoseConditions => GetPoseConditions().ToList();
-
         [System.Serializable]
         public struct Duration
         {
@@ -127,30 +114,8 @@ namespace umi3d.common.userCapture.pose
         [Tooltip("Can the pose animation be composed with another pose animation?")]
         public bool composable;
 
-        [Tooltip("How the pose animator could be activated by the user.")]
-        public PoseAnimatorActivationMode activationMode;
-
-        // HACK: Workaround not to fix pose setter
-
-        #region Pose condition access
-
-        [Space(10)]
-        [Header("Pose conditions")]
-        [Header("- Magnitude condition")]
-        public bool HasMagnitudeCondition;
-
-        /// <summary>
-        /// distance
-        /// </summary>
-        public float Magnitude;
-
-        /// <summary>
-        /// bone id
-        /// </summary>
-        [ConstEnum(typeof(BoneType), typeof(uint))]
-        public uint BoneOrigin;
-
-        public UMI3DNode relativeNode;
+        [SerializeField, Tooltip("Related node. If unset, target is current node.")]
+        private UMI3DNode relativeNode;
 
         public UMI3DNode RelativeNode
         {
@@ -160,25 +125,54 @@ namespace umi3d.common.userCapture.pose
                     relativeNode = GetComponent<UMI3DNode>();
                 return relativeNode;
             }
+            set
+            { relativeNode = value; }
         }
 
-        [Header("- Direction condition")]
-        public bool HasDirectionCondition;
+        #region Activation
+
+        [Space(10), Header("Activation")]
+        [Tooltip("How the pose animator could be activated by the user.")]
+        public PoseAnimatorActivationMode activationMode;
 
         /// <summary>
-        /// distance
+        /// Poses conditions that can not be serialized.
         /// </summary>
-        public Vector3 Direction;
+        private List<IPoseAnimatorActivationCondition> unserializableActivationConditions = new();
 
-        [Header("- Scale condition")]
-        public bool HasScaleCondition;
+        private IReadOnlyList<AbstractBrowserPoseAnimatorActivationCondition> SerializableActivationConditions
+            => activationConditions.Select(x => BrowserPoseAnimatorActivationConditionField.ToCondition(x)).ToList();
 
         /// <summary>
-        /// distance
+        /// Used for serialization and editor access. Prefer to use <see cref="UMI3DPoseAnimator.ActivationsConditions"/>.
         /// </summary>
-        public Vector3 TargetScale;
+        public List<BrowserPoseAnimatorActivationConditionField> activationConditions = new();
 
-        #endregion Pose condition access
+        #endregion Activation
+
+        /// <summary>
+        /// Pose animator activation conditions, all of them should be validated for the animator to be activated.
+        /// </summary>
+        public IReadOnlyList<IPoseAnimatorActivationCondition> ActivationsConditions
+        {
+            get => unserializableActivationConditions.Union(SerializableActivationConditions).ToList();
+            set
+            {
+                activationConditions.Clear();
+                unserializableActivationConditions.Clear();
+
+                if (value == null)
+                    return;
+
+                foreach (var condition in value)
+                {
+                    if (condition is AbstractBrowserPoseAnimatorActivationCondition serializedCondition)
+                        activationConditions.Add(BrowserPoseAnimatorActivationConditionField.ToField(serializedCondition));
+                    else if (condition != null)
+                        unserializableActivationConditions.Add(condition);
+                }
+            }
+        }
 
         #region Dependencies
 
@@ -198,7 +192,7 @@ namespace umi3d.common.userCapture.pose
                 id = Id(),
                 relatedNodeId = RelativeNode.Id(),
                 poseClipId = PoseClip.Id(),
-                poseConditions = GetPoseConditions(),
+                poseConditions = ActivationsConditions.Select(x => x.ToDto()).ToArray(),
                 duration = duration.ToDto(),
                 isInterpolable = interpolable,
                 isComposable = composable,
@@ -210,38 +204,6 @@ namespace umi3d.common.userCapture.pose
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return ToDto();
-        }
-
-        public virtual AbstractPoseConditionDto[] GetPoseConditions()
-        {
-            List<AbstractPoseConditionDto> copy = new();
-
-            copy.AddRange(environmentPoseConditions.Select(x => x.ToEntityDto() as AbstractPoseConditionDto));
-
-            if (HasMagnitudeCondition)
-            {
-                copy.Add(new MagnitudeConditionDto()
-                {
-                    Magnitude = Magnitude,
-                    BoneOrigin = BoneOrigin,
-                    TargetNodeId = RelativeNode.Id()
-                });
-            }
-            if (HasDirectionCondition)
-            {
-                copy.Add(new DirectionConditionDto()
-                {
-                    Direction = Direction.Dto()
-                });
-            }
-            if (HasScaleCondition)
-            {
-                copy.Add(new ScaleConditionDto()
-                {
-                    Scale = TargetScale.Dto()
-                });
-            }
-            return copy.ToArray();
         }
     }
 }

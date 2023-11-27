@@ -119,6 +119,7 @@ namespace umi3d.cdk
 
         public virtual void Init(UMI3DWebViewDto dto)
         {
+            canUrlBeForced = dto.canUrlBeForced;
             url = dto.url;
             size = dto.size.Struct();
             textureSize = dto.textureSize.Struct();

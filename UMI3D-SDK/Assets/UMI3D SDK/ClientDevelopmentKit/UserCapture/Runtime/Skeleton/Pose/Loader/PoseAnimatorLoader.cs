@@ -114,6 +114,23 @@ namespace umi3d.cdk.userCapture.pose
                         UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(scaleConditionDto.TargetId, null);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
                     }
+                case AndConditionDto andConditionDto:
+                    {
+                        IPoseCondition conditionA = await LoadPoseCondition(andConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(andConditionDto.ConditionB);
+                        return new AndPoseCondition(andConditionDto, conditionA, conditionB);
+                    }
+                case OrConditionDto orConditionDto:
+                    {
+                        IPoseCondition conditionA = await LoadPoseCondition(orConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(orConditionDto.ConditionB);
+                        return new OrPoseCondition(orConditionDto, conditionA, conditionB);
+                    }
+                case NotConditionDto notConditionDto:
+                    {
+                        IPoseCondition condition = await LoadPoseCondition(notConditionDto.Condition);
+                        return new NotPoseCondition(notConditionDto, condition);
+                    }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
                     {
                         EnvironmentPoseCondition environmentPoseCondition = new(environmentPoseConditionDto);
