@@ -15,6 +15,7 @@ limitations under the License.
 */
 using inetum.unityUtils;
 using System;
+using System.Linq;
 using umi3d.cdk.scene.sceneModel;
 using umi3d.debug;
 using UnityEngine;
@@ -26,7 +27,7 @@ namespace umi3d.cdk.scene.sceneController
 {
     public class SceneLoader : MonoBehaviour
     {
-        UMI3DLogger logger = new();
+        UMI3DLogger logger = new(mainTag: nameof(SceneLoader));
 
         [SerializeField, Tooltip("The current scene.")]
         protected SerializedAddressableT<Scene_VM> currentScene = default;
@@ -42,7 +43,6 @@ namespace umi3d.cdk.scene.sceneController
         protected virtual void Awake()
         {
             logger.MainContext = this;
-            logger.MainTag = $"{nameof(SceneLoader)}-{gameObject.scene.name}";
 
             if (currentScene.IsValid)
             {
@@ -51,16 +51,23 @@ namespace umi3d.cdk.scene.sceneController
 
             if (nextScenes != null && nextScenes.Length > 0)
             {
+                var areAllValid = nextScenes.All(scene =>
+                {
+                    return scene.IsValid;
+                });
+
+                if (!areAllValid)
+                {
+                    logger.Error($"{gameObject.scene.name}", $"next scenes are not valid.");
+                    return;
+                }
+
                 AsyncOperationHandle<Scene_VM>[] nextScenesHandlers = SAUtils.LoadAllAssetAsync(nextScenes);
                 AsyncOperationHandle<Scene_VM>[] allScenesHandlers = new AsyncOperationHandle<Scene_VM>[nextScenesHandlers.Length + 1];
                 allScenesHandlers[0] = currentScene.operationHandler;
                 Array.Copy(nextScenesHandlers, 0, allScenesHandlers, 1, nextScenesHandlers.Length);
 
                 AOHUtils.WhenAll(SceneModelsLoaded, allScenesHandlers);
-            }
-            else
-            {
-                logger.Error($"{nameof(Awake)}", $"next scenes are not valid.");
             }
         }
 
@@ -72,7 +79,7 @@ namespace umi3d.cdk.scene.sceneController
             for (int i = 1; i < opHandles.Length; i++)
             {
                 var nextOH = opHandles[i];
-                 
+
                 nextOH.NowOrLater(sceneVM =>
                 {
                     scenesHandlers[i - 1] = sceneVM.scene.LoadSceneAsync(LoadSceneMode.Additive);
