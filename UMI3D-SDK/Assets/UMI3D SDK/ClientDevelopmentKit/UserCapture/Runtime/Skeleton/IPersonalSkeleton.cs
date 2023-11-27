@@ -35,7 +35,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Skeleton Initialization.
         /// </summary>
-        public void SelfInit();
+        public void Init();
 
         /// <summary>
         /// Write a tracking frame from all <see cref="IWritableSubskeleton"/>.
