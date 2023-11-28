@@ -32,7 +32,7 @@ namespace umi3d.cdk
         /// <param name="id">UMI3D id of the animation.</param>
         /// <returns></returns>
         [Obsolete("Use UMI3DEnvironmentLoader.Instance.GetEntity<UMI3DAbstractAnimation> instead.")]
-        public static UMI3DAbstractAnimation Get(ulong environmentId, ulong id) { return UMI3DEnvironmentLoader.GetEntity(environmentId, id)?.Object as UMI3DAbstractAnimation; }
+        public static UMI3DAbstractAnimation Get(ulong environmentId, ulong id) { return UMI3DEnvironmentLoader.Instance.TryGetEntityInstance(environmentId, id)?.Object as UMI3DAbstractAnimation; }
 
         /// <summary>
         /// Is the animation currently playing?

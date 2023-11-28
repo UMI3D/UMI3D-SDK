@@ -60,7 +60,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Audio player attached to the user.
         /// </summary>
-        public UMI3DAudioPlayer audioplayer => UMI3DAudioPlayer.Get(EnvironmentId, dto.audioSourceId);
+        public UMI3DAudioPlayer audioplayer => dto.audioSourceId != 0 ? UMI3DAudioPlayer.Get(EnvironmentId, dto.audioSourceId) : null;
         /// <summary>
         /// See <see cref="UserDto.videoSourceId"/>.
         /// </summary>
