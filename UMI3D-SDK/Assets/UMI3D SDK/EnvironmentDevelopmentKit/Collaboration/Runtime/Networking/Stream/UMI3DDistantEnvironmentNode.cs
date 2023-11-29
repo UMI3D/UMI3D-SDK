@@ -104,6 +104,12 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         t.Dispatch();
     }
 
+    public void OnAvatarData(BeardedManStudios.Forge.Networking.NetworkingPlayer player, List<UserTrackingFrameDto> data)
+    {
+        data.ForEach(t => t.environmentId = Id());
+        UMI3DCollaborationServer.ForgeServer.trackingRelay.SetFrame(player, data);
+    }
+
     public override IEntity ToEntityDto(UMI3DUser user)
     {
         UnityEngine.Debug.Log("hello");

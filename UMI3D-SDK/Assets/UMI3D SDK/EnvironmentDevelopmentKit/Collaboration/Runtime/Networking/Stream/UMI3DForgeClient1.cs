@@ -26,6 +26,7 @@ using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.collaboration.dto.voip;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
+using umi3d.edk.collaboration.tracking;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -51,7 +52,6 @@ namespace umi3d.cdk.collaboration
         /// 
         /// </summary>
         private UDPClient client;
-
 
         public bool IsConnected => client != null && client.IsConnected;
 
@@ -439,10 +439,12 @@ namespace umi3d.cdk.collaboration
             {
                 if (UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr) is UMI3DDtoListDto<UserTrackingFrameDto> frames)
                 {
-                    MainThreadManager.Run(() =>
+                    MainThreadManager.Run(async () =>
                     {
-                        UMI3DLogger.Log($"On T Frame", scope);
+
                         //CollaborationSkeletonsManager.Instance.UpdateSkeleton(frames.values);
+                        await Task.Yield();
+                        environmentClient.node.OnAvatarData(player,frames.values);
                     });
                 }
             }
@@ -452,10 +454,10 @@ namespace umi3d.cdk.collaboration
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);
-                    MainThreadManager.Run(() =>
+                    MainThreadManager.Run(async () =>
                     {
-                        UMI3DLogger.Log($"On T Frame", scope);
-                        //CollaborationSkeletonsManager.Instance.UpdateSkeleton(frames);
+                        await Task.Yield();
+                        environmentClient.node.OnAvatarData(player, frames);
                     });
                 }
                 catch (Exception e)

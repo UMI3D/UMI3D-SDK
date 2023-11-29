@@ -18,24 +18,34 @@ using System.Collections.Generic;
 using umi3d.common.collaboration;
 using umi3d.common;
 using umi3d.common.userCapture.tracking;
+using System.Linq;
+using BeardedManStudios.Forge.Networking;
 
 namespace umi3d.edk.collaboration.tracking
 {
-    public class UMI3DTrackingRelay : UMI3DToUserRelay<UserTrackingFrameDto>
+    public class UMI3DTrackingRelay : UMI3DToUserRelay<List<UserTrackingFrameDto>>
     {
+
         public UMI3DTrackingRelay(IForgeServer server) : base(server)
         {
             dataChannel = DataChannelTypes.Tracking;
         }
 
         /// <inheritdoc/>
-        protected override byte[] GetMessage(List<UserTrackingFrameDto> frames)
+        protected override byte[] GetMessage(List<List<UserTrackingFrameDto>> frames)
         {
+            var _frames = frames.SelectMany(x => x).ToList();
             if (UMI3DEnvironment.Instance.useDto)
-                return (new UMI3DDtoListDto<UserTrackingFrameDto>() { values = frames }).ToBson();
+                return (new UMI3DDtoListDto<UserTrackingFrameDto>() { values = _frames }).ToBson();
             else
-                return UMI3DSerializer.WriteCollection(frames).ToBytes();
+                return UMI3DSerializer.WriteCollection(_frames).ToBytes();
 
+        }
+
+
+        public void SetFrame(NetworkingPlayer source, UserTrackingFrameDto frame)
+        {
+            SetFrame(source, new List<UserTrackingFrameDto>() { frame });
         }
     }
 }

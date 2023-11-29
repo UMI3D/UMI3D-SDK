@@ -579,7 +579,7 @@ namespace umi3d.edk.collaboration
         protected override void _Dispatch(Transaction transaction)
         {
             base._Dispatch(transaction);
-            foreach (UMI3DCollaborationUser user in UMI3DCollaborationServer.Collaboration.Users.Where(u => u is UMI3DCollaborationUser))
+            foreach (UMI3DCollaborationAbstractUser user in UMI3DCollaborationServer.Collaboration.Users.Where(u => u is UMI3DCollaborationAbstractUser))
             {
                 switch (user.status)
                 {
@@ -608,14 +608,14 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        private void SendTransaction(UMI3DCollaborationUser user, Transaction transaction)
+        private void SendTransaction(UMI3DCollaborationAbstractUser user, Transaction transaction)
         {
             (byte[], bool) c = UMI3DEnvironment.Instance.useDto ? transaction.ToBson(user) : transaction.ToBytes(user);
             if (c.Item2)
                 ForgeServer.SendData(user.networkPlayer, c.Item1, transaction.reliable);
         }
 
-        private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
+        private readonly Dictionary<UMI3DCollaborationAbstractUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationAbstractUser, Transaction>();
 
         public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
         {
@@ -624,9 +624,9 @@ namespace umi3d.edk.collaboration
 
         private void Update()
         {
-            foreach (KeyValuePair<UMI3DCollaborationUser, Transaction> kp in TransactionToBeSend.ToList())
+            foreach (KeyValuePair<UMI3DCollaborationAbstractUser, Transaction> kp in TransactionToBeSend.ToList())
             {
-                UMI3DCollaborationUser user = kp.Key;
+                UMI3DCollaborationAbstractUser user = kp.Key;
                 Transaction transaction = kp.Value;
                 if (user.status == StatusType.NONE)
                 {
