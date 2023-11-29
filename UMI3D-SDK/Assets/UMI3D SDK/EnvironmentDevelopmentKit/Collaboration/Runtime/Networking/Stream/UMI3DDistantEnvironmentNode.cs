@@ -116,6 +116,12 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         return dto;
     }
 
+
+    public Task<LoadEntityDto> GetEntity(IEnumerable<ulong> ids)
+    {
+        return nvClient.GetEntity(0,ids.ToList());
+    }
+
     async void Restart()
     {
         await _Stop();

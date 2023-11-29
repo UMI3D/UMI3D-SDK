@@ -561,6 +561,7 @@ namespace umi3d.cdk
         {
             try
             {
+                UnityEngine.Debug.Log(entity);
                 switch (entity)
                 {
                     case GlTFSceneDto scene:
@@ -613,10 +614,12 @@ namespace umi3d.cdk
         {
             Task InternalLoadEntityTask(IEntity item, List<CancellationToken> tokens)
             {
+                UnityEngine.Debug.Log("_LoadEntity Lambda");
                 return LoadEntity(container.environmentId, item, tokens);
             }
-
+            UnityEngine.Debug.Log("_LoadEntity A");
             await entitiesCollection[container.environmentId]._LoadEntity(container, InternalLoadEntityTask);
+            UnityEngine.Debug.Log("_LoadEntity B");
         }
 
 

@@ -548,10 +548,10 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <inheritdoc/>
-        public async Task<LoadEntityDto> GetEntity(List<ulong> ids)
+        public async Task<LoadEntityDto> GetEntity(ulong environmentId, List<ulong> ids)
         {
             //UMI3DLogger.Log($"GetEntity {ids.ToString<ulong>()}", scope);
-            var dto = new EntityRequestDto() { entitiesId = ids };
+            var dto = new EntityRequestDto() { environmentId = environmentId, entitiesId = ids };
             return await HttpClient.SendPostEntity(dto);
         }
     }

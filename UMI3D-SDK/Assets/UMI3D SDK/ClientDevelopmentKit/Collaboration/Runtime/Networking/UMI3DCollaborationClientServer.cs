@@ -388,7 +388,7 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <inheritdoc/>
-        protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
+        protected override async Task<LoadEntityDto> _GetEntity(ulong environmentId, List<ulong> ids)
         {
             List<ulong> idsToSend = new List<ulong>();
             foreach (ulong id in ids)
@@ -409,7 +409,7 @@ namespace umi3d.cdk.collaboration
             try
             {
                 result = idsToSend.Count > 0 ?
-                    await (environmentClient?.GetEntity(idsToSend) ?? Task.FromResult<LoadEntityDto>(null))
+                    await (environmentClient?.GetEntity(environmentId, idsToSend) ?? Task.FromResult<LoadEntityDto>(null))
                     : new LoadEntityDto() { entities = new List<IEntity>() };
             }
             finally

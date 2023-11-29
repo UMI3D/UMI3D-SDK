@@ -285,7 +285,7 @@ namespace umi3d.cdk
 
             try
             {
-                var load = await UMI3DClientServer.GetEntity(ids);
+                var load = await UMI3DClientServer.GetEntity(container.environmentId, ids);
 
                 await Task.WhenAll(
                     load.entities.Select(async item =>

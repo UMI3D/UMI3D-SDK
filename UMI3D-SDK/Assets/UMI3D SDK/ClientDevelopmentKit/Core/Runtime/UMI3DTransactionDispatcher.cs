@@ -185,6 +185,7 @@ namespace umi3d.cdk
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
+                    UnityEngine.Debug.Log("Load entity");
                     await UMI3DEnvironmentLoader.LoadEntity(container);
                     break;
                 case UMI3DOperationKeys.DeleteEntity:

@@ -544,6 +544,41 @@ namespace umi3d.edk.collaboration
 
                 var entityDto = dto as EntityRequestDto;
 
+                var _node = (entityDto.environmentId != 0) ? UMI3DEnvironment.GetEntityIfExist<UMI3DDistantEnvironmentNode>(entityDto.environmentId) : (null,false,false);
+                UMI3DDistantEnvironmentNode node = _node.found && _node.exist ? _node.entity : null;
+
+                if(node != null)
+                {
+                    LoadEntityDto result = null;
+                    bool finished = false;
+                    bool ok = true;
+                    UnityMainThreadDispatcher.Instance().Enqueue(
+                        async () =>
+                        {
+                            try
+                            {
+                                result = await node.GetEntity(entityDto.entitiesId);
+                            }
+                            catch 
+                            {
+                                ok = false;
+                            }
+                            finished = true;
+                        });
+                    while (!finished) System.Threading.Thread.Sleep(1);
+                    if (ok)
+                    {
+                        e.Response.WriteContent(result.ToBson());
+                    }
+                    else
+                    {
+                        Return404(e.Response, "Internal Error");
+                    }
+                    finished2 = true;
+                    return;
+                }
+
+
                 IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = entityDto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
                 IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
                 IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();

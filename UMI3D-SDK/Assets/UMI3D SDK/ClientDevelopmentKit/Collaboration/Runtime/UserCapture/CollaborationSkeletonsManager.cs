@@ -261,6 +261,9 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames)
         {
+
+            UnityEngine.Debug.Log("Received T frame");
+
             if (frames is null)
                 throw new ArgumentNullException(nameof(frames));
 
@@ -268,7 +271,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 return;
 
             foreach (var frame in frames)
-                UpdateSkeleton(frame);
+                    UpdateSkeleton(frame);
         }
 
         public virtual void UpdateSkeleton(UserTrackingFrameDto frame)
