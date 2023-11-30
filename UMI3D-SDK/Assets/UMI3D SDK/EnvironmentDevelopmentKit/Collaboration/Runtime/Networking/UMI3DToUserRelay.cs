@@ -34,7 +34,7 @@ namespace umi3d.edk.collaboration
 
             UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u => 
             {
-                if (u is UMI3DCollaborationUser uc)
+                if (u is UMI3DCollaborationAbstractUser uc)
                 {
                     RemoveTo(uc);
                     RemoveSource(uc.networkPlayer);
@@ -47,7 +47,7 @@ namespace umi3d.edk.collaboration
         protected override IEnumerable<UMI3DCollaborationAbstractUser> GetTargets()
         {
             var r = new System.Random();
-            return UMI3DCollaborationServer.Collaboration.Users.OrderBy(s => r.Next());
+            return UMI3DCollaborationServer.Collaboration.Users.Where(u => u.networkPlayer != null).OrderBy(s => r.Next());
         }
 
         protected override ulong GetTime()
@@ -77,9 +77,9 @@ namespace umi3d.edk.collaboration
 
             KeyValuePair<NetworkingPlayer, Frame>[] userFrameMap = null;
             RelayVolume relayVolume;
-            if (user is UMI3DCollaborationUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
+            if (user is UMI3DCollaborationAbstractUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
             {
-                var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationUser).ToList();
+                var users = relayVolume.RelayTrackingRequest(null, null, user, Receivers.Others).Select(u => u as UMI3DCollaborationAbstractUser).ToList();
                 userFrameMap = framesPerSource.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
                 forceRelay = true;
             }

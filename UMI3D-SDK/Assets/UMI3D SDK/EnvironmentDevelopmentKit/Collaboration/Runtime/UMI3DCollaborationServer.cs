@@ -195,7 +195,7 @@ namespace umi3d.edk.collaboration
         }
 
 
-        internal void UpdateStatus(UMI3DCollaborationUser user, StatusDto dto)
+        internal void UpdateStatus(UMI3DCollaborationAbstractUser user, StatusDto dto)
         {
             user.SetStatus(dto.status);
         }
@@ -286,7 +286,7 @@ namespace umi3d.edk.collaboration
             user.SetStatus(StatusType.REGISTERED);
             if (!reconnection)
             {
-                if(user is UMI3DCollaborationUser collaborationUser)
+                if(user is UMI3DCollaborationAbstractUser collaborationUser)
                     WorldController.NotifyUserRegister(collaborationUser);
                 UMI3DLogger.Log($"User Registered", scope);
                 OnUserRegistered.Invoke(user);
@@ -326,9 +326,10 @@ namespace umi3d.edk.collaboration
         /// Create new peers connection for a new user
         /// </summary>
         /// <param name="user"></param>
-        public static async Task NotifyUserJoin(UMI3DCollaborationUser user)
+        public static async Task NotifyUserJoin(UMI3DCollaborationAbstractUser user)
         {
             user.hasJoined = true;
+            if(user is  UMI3DCollaborationUser)
             Collaboration.UserJoin(user);
             MainThreadManager.Run(async () =>
             {
@@ -343,7 +344,7 @@ namespace umi3d.edk.collaboration
         /// <param name="user">user that join</param>
         public async Task NotifyUserJoin(UMI3DUser user)
         {
-            if (user is UMI3DCollaborationUser _user)
+            if (user is UMI3DCollaborationAbstractUser _user)
                 await WorldController.NotifyUserJoin(_user);
             OnUserJoin.Invoke(user);
         }
@@ -489,7 +490,7 @@ namespace umi3d.edk.collaboration
 
         #endregion
 
-        public static void Logout(UMI3DCollaborationUser user, bool notifiedByUser = true)
+        public static void Logout(UMI3DCollaborationAbstractUser user, bool notifiedByUser = true)
         {
             if (user == null)
                 return;
@@ -506,15 +507,16 @@ namespace umi3d.edk.collaboration
             MainThreadManager.Run(() => Instance._Logout(user));
         }
 
-        private void _Logout(UMI3DCollaborationUser user)
+        private void _Logout(UMI3DCollaborationAbstractUser user)
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
-            RemoveUserAudio(user);
+            if(user is UMI3DCollaborationUser cUser)
+            RemoveUserAudio(cUser);
             WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
 
-        public void NotifyUnregistered(UMI3DCollaborationUser user)
+        public void NotifyUnregistered(UMI3DCollaborationAbstractUser user)
         {
             UMI3DLogger.Log($"Unregistered {user.login} {user.Id()}", scope);
             WorldController.NotifyUserUnregister(user);
@@ -537,11 +539,11 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void LookForMissing(UMI3DUser user)
         {
-            if (user is UMI3DCollaborationUser _user && _user?.networkPlayer?.NetworkId != null)
+            if (user is UMI3DCollaborationAbstractUser _user && _user?.networkPlayer?.NetworkId != null)
                 UnityMainThreadDispatcher.Instance().Enqueue(_lookForMissing(_user, _user.networkPlayer.NetworkId));
         }
 
-        private IEnumerator _lookForMissing(UMI3DCollaborationUser user, uint networkId)
+        private IEnumerator _lookForMissing(UMI3DCollaborationAbstractUser user, uint networkId)
         {
             UMI3DLogger.Log($"look For missing", scope);
             if (user == null) yield break;
@@ -563,7 +565,7 @@ namespace umi3d.edk.collaboration
             Logout(user, false);
         }
 
-        public virtual void Ping(UMI3DCollaborationUser user)
+        public virtual void Ping(UMI3DCollaborationAbstractUser user)
         {
             UMI3DLogger.Log($"Ping {user.Id()} {user.login}", scope);
             try
@@ -617,7 +619,7 @@ namespace umi3d.edk.collaboration
 
         private readonly Dictionary<UMI3DCollaborationAbstractUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationAbstractUser, Transaction>();
 
-        public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
+        public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationAbstractUser user) => new PendingTransactionDto()
         {
             areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user)))
         };
@@ -648,15 +650,15 @@ namespace umi3d.edk.collaboration
         public override void NotifyUserStatusChanged(UMI3DUser user, StatusType status)
         {
             base.NotifyUserStatusChanged(user, status);
-            if (user is UMI3DCollaborationUser cUser)
+            if (user is UMI3DCollaborationAbstractUser cUser)
                 Collaboration.SetLastUpdate(cUser);
-            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
+            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationAbstractUser);
         }
 
         /// <inheritdoc/>
         public override void NotifyUserChanged(UMI3DUser user)
         {
-            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationUser);
+            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationAbstractUser);
         }
 
         public override HashSet<UMI3DUser> UserSet()

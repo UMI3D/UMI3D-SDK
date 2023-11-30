@@ -65,7 +65,7 @@ namespace umi3d.worldController
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserJoin(UMI3DCollaborationUser user)
+        public override Task NotifyUserJoin(UMI3DCollaborationAbstractUser user)
         {
             return Task.CompletedTask;
         }
@@ -138,19 +138,19 @@ namespace umi3d.worldController
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
+        public override Task NotifyUserUnregister(UMI3DCollaborationAbstractUser user)
         {
             return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
+        public override Task NotifyUserLeave(UMI3DCollaborationAbstractUser user)
         {
             return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserRegister(UMI3DCollaborationUser user)
+        public override Task NotifyUserRegister(UMI3DCollaborationAbstractUser user)
         {
             return Task.CompletedTask;
         }

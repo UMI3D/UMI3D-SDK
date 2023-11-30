@@ -43,17 +43,17 @@ namespace umi3d.edk.collaboration
         private readonly List<string> oldTokenOfUpdatedUser = new List<string>();
 
 
-        private UMI3DAsyncListProperty<UMI3DCollaborationUser> _objectUserList;
+        private UMI3DAsyncListProperty<UMI3DCollaborationAbstractUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
 
-        public void SetLastUpdate(UMI3DCollaborationUser user) { if (users.ContainsValue(user)) SetLastUpdate(); }
+        public void SetLastUpdate(UMI3DCollaborationAbstractUser user) { if (users.ContainsValue(user)) SetLastUpdate(); }
 
         private void SetLastUpdate() { lastUpdate = DateTime.UtcNow; }
-        public UMI3DAsyncListProperty<UMI3DCollaborationUser> objectUserList
+        public UMI3DAsyncListProperty<UMI3DCollaborationAbstractUser> objectUserList
         {
             get
             {
-                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto(user) : (object)u);
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationAbstractUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationAbstractUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto(user) : (object)u);
                 return _objectUserList;
             }
         }
@@ -172,7 +172,7 @@ namespace umi3d.edk.collaboration
             {
                 lock (users)
                 {
-                    return users.Values.Where(u => u is UMI3DCollaborationAbstractUser).Select(u => u as UMI3DCollaborationAbstractUser).ToList();
+                    return users.Values.ToList();
                 }
             }
         }
@@ -192,7 +192,7 @@ namespace umi3d.edk.collaboration
         /// logout a user
         /// </summary>
         /// <param name="user"></param>
-        public async void Logout(UMI3DCollaborationUser user, bool notifiedByUser)
+        public async void Logout(UMI3DCollaborationAbstractUser user, bool notifiedByUser)
         {
             UMI3DLogger.Log($"logout {user.Id()} {user.networkPlayer.NetworkId} {notifiedByUser}", scope);
             UnityMainThreadDispatcher.Instance().Enqueue(RemoveUserOnLeave(user));
@@ -335,7 +335,7 @@ namespace umi3d.edk.collaboration
         /// Notify that a user ended connection and join.
         /// </summary>
         /// <param name="user"></param>
-        public void UserJoin(UMI3DCollaborationUser user)
+        public void UserJoin(UMI3DCollaborationAbstractUser user)
         {
             UnityMainThreadDispatcher.Instance().Enqueue(AddUserOnJoin(user));
         }
@@ -344,13 +344,13 @@ namespace umi3d.edk.collaboration
         /// Notify a user status change.
         /// </summary>
         /// <param name="user"></param>
-        public void NotifyUserStatusChanged(UMI3DCollaborationUser user)
+        public void NotifyUserStatusChanged(UMI3DCollaborationAbstractUser user)
         {
-            if (user != null)
+            if (user != null && user is UMI3DCollaborationUser)
                 UnityMainThreadDispatcher.Instance().Enqueue(UpdateUser(user));
         }
 
-        private IEnumerator AddUserOnJoin(UMI3DCollaborationUser user)
+        private IEnumerator AddUserOnJoin(UMI3DCollaborationAbstractUser user)
         {
             yield return new WaitForFixedUpdate();
             objectUserList.Add(user);
@@ -362,7 +362,7 @@ namespace umi3d.edk.collaboration
             UMI3DServer.Dispatch(tr);
         }
 
-        private IEnumerator RemoveUserOnLeave(UMI3DCollaborationUser user)
+        private IEnumerator RemoveUserOnLeave(UMI3DCollaborationAbstractUser user)
         {
             yield return new WaitForFixedUpdate();
             SetEntityProperty op = objectUserList.Remove(user);
@@ -375,7 +375,7 @@ namespace umi3d.edk.collaboration
             UMI3DServer.Dispatch(tr);
         }
 
-        private IEnumerator UpdateUser(UMI3DCollaborationUser user)
+        private IEnumerator UpdateUser(UMI3DCollaborationAbstractUser user)
         {
             yield return new WaitForFixedUpdate();
 

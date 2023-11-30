@@ -511,8 +511,8 @@ namespace umi3d.edk.collaboration
                                 await collabUSer.JoinDtoReception(join);
 
                             e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
-                            if (collabUSer != null)
-                                await UMI3DCollaborationServer.NotifyUserJoin(collabUSer);
+                            
+                            await UMI3DCollaborationServer.NotifyUserJoin(user);
                         }
                         catch (Exception ex)
                         {
@@ -541,82 +541,94 @@ namespace umi3d.edk.collaboration
             bool finished2 = false;
             ReadDto(e.Request, (dto) =>
             {
-
-                var entityDto = dto as EntityRequestDto;
-
-                var _node = (entityDto.environmentId != 0) ? UMI3DEnvironment.GetEntityIfExist<UMI3DDistantEnvironmentNode>(entityDto.environmentId) : (null,false,false);
-                UMI3DDistantEnvironmentNode node = _node.found && _node.exist ? _node.entity : null;
-
-                if(node != null)
+                try
                 {
-                    LoadEntityDto result = null;
-                    bool finished = false;
-                    bool ok = true;
-                    UnityMainThreadDispatcher.Instance().Enqueue(
-                        async () =>
-                        {
-                            try
-                            {
-                                result = await node.GetEntity(entityDto.entitiesId);
-                            }
-                            catch 
-                            {
-                                ok = false;
-                            }
-                            finished = true;
-                        });
-                    while (!finished) System.Threading.Thread.Sleep(1);
-                    if (ok)
+                    var entityDto = dto as EntityRequestDto;
+
+                    var _node = (entityDto.environmentId != 0) ? UMI3DEnvironment.GetEntityIfExist<UMI3DDistantEnvironmentNode>(entityDto.environmentId) : (null, false, false);
+                    UMI3DDistantEnvironmentNode node = _node.found && _node.exist ? _node.entity : null;
+                    UMI3DLogger.Log($"Post Entity {node != null} {entityDto.environmentId} {UMI3DEnvironment.GetEntityIfExist<UMI3DEntity>(entityDto.environmentId).GetType()}", scope);
+                    if (node != null)
                     {
-                        e.Response.WriteContent(result.ToBson());
+                        LoadEntityDto result = null;
+                        bool finished = false;
+                        bool ok = true;
+                        UnityMainThreadDispatcher.Instance().Enqueue(
+                            async () =>
+                            {
+                                try
+                                {
+                                    UMI3DLogger.Log($"Post Entity {entityDto.entitiesId.ToString<ulong>()}", scope);
+                                    result = await node.GetEntity(entityDto.entitiesId);
+                                    UMI3DLogger.Log($"Post Entity received", scope);
+                                }
+                                catch
+                                {
+                                    ok = false;
+                                }
+                                finished = true;
+                            });
+                        while (!finished) System.Threading.Thread.Sleep(1);
+                        if (ok)
+                        {
+                            e.Response.WriteContent(result.ToBson());
+                        }
+                        else
+                        {
+                            Return404(e.Response, "Internal Error");
+                        }
+                        finished2 = true;
+                        return;
+                    }
+
+
+                    IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = entityDto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
+                    IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
+                    IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
+                    IEnumerable<ulong> entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
+
+                    if (entities != null)
+                    {
+                        LoadEntityDto result = null;
+                        bool finished = false;
+                        bool ok = true;
+                        UnityMainThreadDispatcher.Instance().Enqueue(
+                            _GetEnvironment(
+                                entities, user,
+                                (res) =>
+                                {
+                                    result = res;
+                                    result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
+                                    result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
+                                    finished = true;
+                                },
+                                () => { ok = false; finished = true; }
+                            ));
+                        while (!finished) System.Threading.Thread.Sleep(1);
+                        if (ok)
+                        {
+                            e.Response.WriteContent(result.ToBson());
+                        }
+                        else
+                        {
+                            Return404(e.Response, "Internal Error");
+                        }
                     }
                     else
                     {
                         Return404(e.Response, "Internal Error");
                     }
                     finished2 = true;
-                    return;
                 }
-
-
-                IEnumerable<(ulong id, (UMI3DLoadableEntity entity, bool exist, bool found))> Allentities = entityDto.entitiesId.Select(id => (id, UMI3DEnvironment.GetEntityIfExist<UMI3DLoadableEntity>(id)));
-                IEnumerable<(ulong id, UMI3DLoadableEntity entity)> entities = Allentities.Where(el => el.Item2.found && el.Item2.exist)?.Select(el2 => (el2.id, el2.Item2.entity)) ?? new List<(ulong id, UMI3DLoadableEntity entity)>();
-                IEnumerable<ulong> oldentities = Allentities.Where(el => el.Item2.found && !el.Item2.exist)?.Select(el2 => el2.id) ?? new List<ulong>();
-                IEnumerable<ulong> entitiesNotFound = Allentities.Where(el => !el.Item2.found)?.Select(el2 => el2.id) ?? new List<ulong>();
-
-                if (entities != null)
+                catch(Exception ex)
                 {
-                    LoadEntityDto result = null;
-                    bool finished = false;
-                    bool ok = true;
-                    UnityMainThreadDispatcher.Instance().Enqueue(
-                        _GetEnvironment(
-                            entities, user,
-                            (res) =>
-                            {
-                                result = res;
-                                result.entities.AddRange(oldentities.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.Unregistered }));
-                                result.entities.AddRange(entitiesNotFound.Select(el => new MissingEntityDto() { id = el, reason = MissingEntityDtoReason.NotFound }));
-                                finished = true;
-                            },
-                            () => { ok = false; finished = true; }
-                        ));
-                    while (!finished) System.Threading.Thread.Sleep(1);
-                    if (ok)
-                    {
-                        e.Response.WriteContent(result.ToBson());
-                    }
-                    else
-                    {
-                        Return404(e.Response, "Internal Error");
-                    }
-                }
-                else
-                {
+                    UnityEngine.Debug.LogException(ex);
                     Return404(e.Response, "Internal Error");
+                    finished2 = true;
                 }
-                finished2 = true;
-            });
+                }
+            
+            );
             while (!finished2) System.Threading.Thread.Sleep(1);
         }
 

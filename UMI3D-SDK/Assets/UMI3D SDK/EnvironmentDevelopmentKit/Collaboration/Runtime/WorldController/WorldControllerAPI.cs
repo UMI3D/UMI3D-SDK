@@ -25,10 +25,10 @@ namespace umi3d.worldController
     /// </summary>
     public abstract class WorldControllerAPI : ScriptableObject, IWorldController_Environment
     {
-        public abstract Task NotifyUserJoin(UMI3DCollaborationUser user);
-        public abstract Task NotifyUserLeave(UMI3DCollaborationUser user);
-        public abstract Task NotifyUserRegister(UMI3DCollaborationUser user);
-        public abstract Task NotifyUserUnregister(UMI3DCollaborationUser user);
+        public abstract Task NotifyUserJoin(UMI3DCollaborationAbstractUser user);
+        public abstract Task NotifyUserLeave(UMI3DCollaborationAbstractUser user);
+        public abstract Task NotifyUserRegister(UMI3DCollaborationAbstractUser user);
+        public abstract Task NotifyUserUnregister(UMI3DCollaborationAbstractUser user);
 
         public virtual void Setup() { }
 
