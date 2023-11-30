@@ -592,7 +592,7 @@ namespace umi3d.cdk
 
                         if (loader != null)
                         {
-                            await LoadFile(pair.entityIds.First(), pair, loader);
+                            await LoadFile(pair.entityIds.FirstOrDefault(), pair, loader);
 
                         }
                     }
