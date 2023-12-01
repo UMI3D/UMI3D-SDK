@@ -54,80 +54,78 @@ namespace umi3d.common.userCapture.description
             return GetBoneNames().ContainsKey(bone) ? BoneNames[bone] : "Custom bone";
         }
 
-        public static uint GetSymmetricBoneType(uint boneType)
+        public static IReadOnlyDictionary<uint, uint> Symmetries => symmetries;
+
+        private static readonly Dictionary<uint, uint> symmetries = new Dictionary<uint, uint>()
         {
-            return boneType switch
-            {
-                // LEFT -> RIGHT
-                BoneType.LeftHip => BoneType.RightHip,
-                BoneType.LeftKnee => BoneType.RightKnee,
-                BoneType.LeftAnkle => BoneType.RightAnkle,
-                BoneType.LeftToeBase => BoneType.RightToeBase,
+                { BoneType.LeftHip , BoneType.RightHip },
+                { BoneType.LeftKnee , BoneType.RightKnee },
+                { BoneType.LeftAnkle , BoneType.RightAnkle },
+                { BoneType.LeftToeBase , BoneType.RightToeBase },
 
+                { BoneType.LeftShoulder , BoneType.RightShoulder },
+                { BoneType.LeftUpperArm , BoneType.RightUpperArm },
+                { BoneType.LeftForearm , BoneType.RightForearm },
+                { BoneType.LeftHand , BoneType.RightHand },
 
-                BoneType.LeftShoulder => BoneType.RightShoulder,
-                BoneType.LeftUpperArm => BoneType.RightUpperArm,
-                BoneType.LeftForearm => BoneType.RightForearm,
-                BoneType.LeftHand => BoneType.RightHand,
+                { BoneType.LeftThumbProximal , BoneType.RightThumbProximal },
+                { BoneType.LeftThumbIntermediate , BoneType.RightThumbIntermediate },
+                { BoneType.LeftThumbDistal , BoneType.RightThumbDistal },
 
+                { BoneType.LeftIndexProximal , BoneType.RightIndexProximal },
+                { BoneType.LeftIndexIntermediate , BoneType.RightIndexIntermediate },
+                { BoneType.LeftIndexDistal , BoneType.RightIndexDistal },
 
-                BoneType.LeftThumbProximal => BoneType.RightThumbProximal,
-                BoneType.LeftThumbIntermediate => BoneType.RightThumbIntermediate,
-                BoneType.LeftThumbDistal => BoneType.RightThumbDistal,
+                { BoneType.LeftMiddleProximal , BoneType.RightMiddleProximal },
+                { BoneType.LeftMiddleIntermediate , BoneType.RightMiddleIntermediate },
+                { BoneType.LeftMiddleDistal , BoneType.RightLittleDistal },
 
-                BoneType.LeftIndexProximal => BoneType.RightIndexProximal,
-                BoneType.LeftIndexIntermediate => BoneType.RightIndexIntermediate,
-                BoneType.LeftIndexDistal => BoneType.RightIndexDistal,
+                { BoneType.LeftRingProximal , BoneType.RightRingProximal },
+                { BoneType.LeftRingIntermediate , BoneType.RightRingIntermediate },
+                { BoneType.LeftRingDistal , BoneType.RightRingDistal },
 
-                BoneType.LeftMiddleProximal => BoneType.RightMiddleProximal,
-                BoneType.LeftMiddleIntermediate => BoneType.RightMiddleIntermediate,
-                BoneType.LeftMiddleDistal => BoneType.RightLittleDistal,
-
-                BoneType.LeftRingProximal => BoneType.RightRingProximal,
-                BoneType.LeftRingIntermediate => BoneType.RightRingIntermediate,
-                BoneType.LeftRingDistal => BoneType.RightRingDistal,
-
-                BoneType.LeftLittleProximal => BoneType.RightLittleProximal,
-                BoneType.LeftLittleIntermediate => BoneType.RightLittleIntermediate,
-                BoneType.LeftLittleDistal => BoneType.RightLittleDistal,
-
+                { BoneType.LeftLittleProximal , BoneType.RightLittleProximal },
+                { BoneType.LeftLittleIntermediate , BoneType.RightLittleIntermediate },
+                { BoneType.LeftLittleDistal , BoneType.RightLittleDistal },
 
                 // RIGHT -> LEFT
-                BoneType.RightHip => BoneType.LeftHip,
-                BoneType.RightKnee => BoneType.LeftKnee,
-                BoneType.RightAnkle => BoneType.LeftAnkle,
-                BoneType.RightToeBase => BoneType.LeftToeBase,
+                { BoneType.RightHip , BoneType.LeftHip },
+                { BoneType.RightKnee , BoneType.LeftKnee },
+                { BoneType.RightAnkle , BoneType.LeftAnkle },
+                { BoneType.RightToeBase , BoneType.LeftToeBase },
 
+                { BoneType.RightShoulder , BoneType.LeftShoulder },
+                { BoneType.RightUpperArm , BoneType.LeftUpperArm },
+                { BoneType.RightForearm , BoneType.LeftForearm },
+                { BoneType.RightHand , BoneType.LeftHand },
 
-                BoneType.RightShoulder => BoneType.LeftShoulder,
-                BoneType.RightUpperArm => BoneType.LeftUpperArm,
-                BoneType.RightForearm => BoneType.LeftForearm,
-                BoneType.RightHand => BoneType.LeftHand,
+                { BoneType.RightThumbProximal , BoneType.LeftThumbProximal },
+                { BoneType.RightThumbIntermediate , BoneType.LeftThumbIntermediate },
+                { BoneType.RightThumbDistal , BoneType.LeftThumbDistal },
 
+                { BoneType.RightIndexProximal , BoneType.LeftIndexProximal },
+                { BoneType.RightIndexIntermediate , BoneType.LeftIndexIntermediate },
+                { BoneType.RightIndexDistal , BoneType.LeftIndexDistal },
 
-                BoneType.RightThumbProximal => BoneType.LeftThumbProximal,
-                BoneType.RightThumbIntermediate => BoneType.LeftThumbIntermediate,
-                BoneType.RightThumbDistal => BoneType.LeftThumbDistal,
+                { BoneType.RightMiddleProximal , BoneType.LeftMiddleProximal },
+                { BoneType.RightMiddleIntermediate , BoneType.LeftMiddleIntermediate },
+                { BoneType.RightMiddleDistal , BoneType.LeftLittleDistal },
 
-                BoneType.RightIndexProximal => BoneType.LeftIndexProximal,
-                BoneType.RightIndexIntermediate => BoneType.LeftIndexIntermediate,
-                BoneType.RightIndexDistal => BoneType.LeftIndexDistal,
+                { BoneType.RightRingProximal , BoneType.LeftRingProximal },
+                { BoneType.RightRingIntermediate , BoneType.LeftRingIntermediate },
+                { BoneType.RightRingDistal , BoneType.LeftRingDistal },
 
-                BoneType.RightMiddleProximal => BoneType.LeftMiddleProximal,
-                BoneType.RightMiddleIntermediate => BoneType.LeftMiddleIntermediate,
-                BoneType.RightMiddleDistal => BoneType.LeftLittleDistal,
+                { BoneType.RightLittleProximal , BoneType.LeftLittleProximal },
+                { BoneType.RightLittleIntermediate , BoneType.LeftLittleIntermediate },
+                { BoneType.RightLittleDistal , BoneType.LeftLittleDistal },
+        };
 
-                BoneType.RightRingProximal => BoneType.LeftRingProximal,
-                BoneType.RightRingIntermediate => BoneType.LeftRingIntermediate,
-                BoneType.RightRingDistal => BoneType.LeftRingDistal,
+        public static uint GetSymmetricBoneType(uint boneType)
+        {
+            if (symmetries.ContainsKey(boneType))
+                return default;
 
-                BoneType.RightLittleProximal => BoneType.LeftLittleProximal,
-                BoneType.RightLittleIntermediate => BoneType.LeftLittleIntermediate,
-                BoneType.RightLittleDistal => BoneType.LeftLittleDistal,
-
-                // DEFAULT
-                _ => boneType
-            };
+            else return symmetries[boneType];
         }
     }
 }
