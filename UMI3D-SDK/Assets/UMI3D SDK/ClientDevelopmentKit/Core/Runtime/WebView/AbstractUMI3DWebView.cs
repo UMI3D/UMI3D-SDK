@@ -23,14 +23,14 @@ namespace umi3d.cdk
     {
         #region Fields
 
-        private bool _canInteract;
+        private bool _canInteract = true;
 
         /// <summary>
         /// Can user interact with webview.
         /// </summary>
         public bool canInteract
         {
-            get => canInteract;
+            get => _canInteract;
             set
             {
                 if (_canInteract != value)
@@ -41,7 +41,8 @@ namespace umi3d.cdk
             }
         }
 
-        private string _url;
+        private string _url = string.Empty;
+
         /// <summary>
         /// Web view url
         /// </summary>
@@ -57,13 +58,14 @@ namespace umi3d.cdk
                 {
                     _url = value;
 
-                    if(!string.IsNullOrEmpty(_url))
+                    if (!string.IsNullOrEmpty(_url))
                         OnUrlChanged(value);
                 }
             }
         }
 
-        private Vector2 _size;
+        private Vector2 _size = Vector2.zero;
+
         /// <summary>
         /// Webview size.
         /// </summary>
@@ -80,7 +82,8 @@ namespace umi3d.cdk
             }
         }
 
-        private Vector2 _textureSize;
+        private Vector2 _textureSize = Vector2.zero;
+
         /// <summary>
         /// Webview texture dimension.
         /// </summary>
@@ -97,7 +100,8 @@ namespace umi3d.cdk
             }
         }
 
-        private bool _canUrlBeForced;
+        private bool _canUrlBeForced = true;
+
         /// <summary>
         /// Can <see cref="url"/> be forced by the server.
         /// </summary>
@@ -124,6 +128,8 @@ namespace umi3d.cdk
             size = dto.size.Struct();
             textureSize = dto.textureSize.Struct();
             canInteract = dto.canInteract;
+
+            OnCanInteractChanged(canInteract);
         }
 
         protected abstract void OnUrlChanged(string url);
