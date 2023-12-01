@@ -133,9 +133,14 @@ namespace umi3d.cdk.userCapture.pose
                     }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
                     {
-                        EnvironmentPoseCondition environmentPoseCondition = new(environmentPoseConditionDto);
-                        environmentService.RegisterEntity(environmentPoseConditionDto.Id, environmentPoseConditionDto, environmentPoseCondition).NotifyLoaded();
-                        return environmentPoseCondition;
+                        var instance = environmentService.TryGetEntityInstance(environmentPoseConditionDto.Id);
+                        if (instance == null)
+                        {
+                            instance = environmentService.RegisterEntity(environmentPoseConditionDto.Id, environmentPoseConditionDto, new EnvironmentPoseCondition(environmentPoseConditionDto));
+                            instance.NotifyLoaded();
+                        }
+                        
+                        return (EnvironmentPoseCondition)instance.Object;
                     }
 
                 default:
