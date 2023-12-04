@@ -58,6 +58,8 @@ namespace umi3d.common.userCapture.description
 
         private static readonly Dictionary<uint, uint> symmetries = new Dictionary<uint, uint>()
         {
+                { BoneType.LeftEye , BoneType.RightEye },
+
                 { BoneType.LeftHip , BoneType.RightHip },
                 { BoneType.LeftKnee , BoneType.RightKnee },
                 { BoneType.LeftAnkle , BoneType.RightAnkle },
@@ -89,6 +91,8 @@ namespace umi3d.common.userCapture.description
                 { BoneType.LeftLittleDistal , BoneType.RightLittleDistal },
 
                 // RIGHT -> LEFT
+                { BoneType.RightEye , BoneType.LeftHip },
+
                 { BoneType.RightHip , BoneType.LeftHip },
                 { BoneType.RightKnee , BoneType.LeftKnee },
                 { BoneType.RightAnkle , BoneType.LeftAnkle },
