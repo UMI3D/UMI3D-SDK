@@ -122,8 +122,8 @@ namespace umi3d.common.userCapture.description
 
         public static uint GetSymmetricBoneType(uint boneType)
         {
-            if (symmetries.ContainsKey(boneType))
-                return default;
+            if (!symmetries.ContainsKey(boneType))
+                return boneType;
 
             else return symmetries[boneType];
         }
