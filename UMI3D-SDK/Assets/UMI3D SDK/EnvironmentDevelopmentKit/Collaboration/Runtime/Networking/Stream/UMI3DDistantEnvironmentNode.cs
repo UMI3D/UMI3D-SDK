@@ -35,7 +35,27 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     UMI3DWorldControllerClient1 wcClient = null;
     UMI3DEnvironmentClient1 nvClient = null;
 
-    UMI3DAsyncProperty<object> lastTransactionAsync;
+    UMI3DAsyncListProperty<BinaryDto> lastTransactionAsync;
+
+    int refresh = 60000;
+    bool run = false;
+
+    async void Loop()
+    {
+        if (run) return;
+        run = true;
+
+        while (run)
+        {
+            await UMI3DAsyncManager.Delay(refresh);
+
+            if (!nvClient.IsConnected() || nvClient.environement == null)
+                continue;
+
+            dto.environmentDto = nvClient.environement;
+            lastTransactionAsync.SetValue(new());
+        }
+    }
 
     public string ServerUrl
     {
@@ -50,43 +70,18 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         UMI3DCollaborationServer.Instance.OnServerStart.AddListener(Restart);
         UMI3DCollaborationServer.Instance.OnServerStop.AddListener(async () => await _Stop());
-
-    }
-
-    private void Update()
-    {
-        if (SendTransaction)
-        {
-            SendTransaction = false;
-
-            var bin = new BinaryDto
-            {
-                data = new byte[1] {0},
-                groupId = 0
-            };
-
-            //if (bin.data == null || bin.data.Length <= 0)
-            //    return;
-
-            var op = lastTransactionAsync.SetValue(bin);
-            var t = op.ToTransaction(true);
-            t.Dispatch();
-        }
     }
 
     protected override void InitDefinition(ulong id)
     {
         base.InitDefinition(id);
 
-        lastTransactionAsync = new UMI3DAsyncProperty<object>(Id(), UMI3DPropertyKeys.DistantEnvironment, null);
+        lastTransactionAsync = new UMI3DAsyncListProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironment, new());
         dto = new DistantEnvironmentDto();
         dto.id = id;
-        UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
         //if (!serverUrl.IsNullOrEmpty())
         //    Restart();
     }
-
-
 
     public void OnData(Binary data)
     {
@@ -99,7 +94,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         if (bin.data == null || bin.data.Length <= 0)
             return;
 
-        var op = lastTransactionAsync.SetValue(bin);
+        var op = lastTransactionAsync.Add(bin);
         var t = op.ToTransaction(true);
         t.Dispatch();
     }
@@ -107,25 +102,27 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     public void OnAvatarData(BeardedManStudios.Forge.Networking.NetworkingPlayer player, List<UserTrackingFrameDto> data)
     {
         data.ForEach(t => t.environmentId = Id());
-        UMI3DCollaborationServer.ForgeServer.trackingRelay.SetFrame(player, data);    
+        UMI3DCollaborationServer.ForgeServer.trackingRelay.SetFrame(player, data);
     }
 
     public override IEntity ToEntityDto(UMI3DUser user)
     {
         UnityEngine.Debug.Log("hello");
+        dto.binaries = lastTransactionAsync.GetValue(user);
         return dto;
     }
 
 
     public Task<LoadEntityDto> GetEntity(IEnumerable<ulong> ids)
     {
-        return nvClient.GetEntity(0,ids.ToList());
+        return nvClient.GetEntity(0, ids.ToList());
     }
 
     async void Restart()
     {
         await _Stop();
         await _Start();
+
         UMI3DCollaborationServer.Instance.OnUserCreated.AddListener(OnUserCreated);
     }
 
@@ -138,7 +135,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             name = "other server",
             url = ServerUrl
         };
-        wcClient = new UMI3DWorldControllerClient1(media,this);
+        wcClient = new UMI3DWorldControllerClient1(media, this);
         if (await wcClient.Connect())
         {
             nvClient = await wcClient.ConnectToEnvironment();
@@ -154,6 +151,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             dto.resourcesUrl = ResourceServerUrl;
             dto.useDto = nvClient.useDto;
+
+            Loop();
         }
     }
 
@@ -165,6 +164,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             await nvClient.Logout();
             wcClient.Logout();
         }
+        run = false;
     }
 
     async void OnUserCreated(UMI3DUser user)

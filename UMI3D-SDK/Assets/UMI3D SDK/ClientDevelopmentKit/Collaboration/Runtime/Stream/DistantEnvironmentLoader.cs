@@ -4,11 +4,13 @@ using Microsoft.SqlServer.Server;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d;
 using umi3d.cdk;
 using umi3d.common;
+using umi3d.common.collaboration.dto.signaling;
 using UnityEngine;
 
 public class DistantEnvironmentLoader : AbstractLoader
@@ -27,13 +29,13 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
     {
-        if(value.dto is DistantEnvironmentDto distantDto)
+        if (value.dto is DistantEnvironmentDto distantDto)
         {
             UnityEngine.Debug.Log($"Read a distant Environment Start {distantDto != null} {distantDto?.environmentDto != null} {distantDto?.environmentDto?.scenes != null}");
             try
             {
                 distantEnvironments[distantDto.id] = distantDto;
-                UnityEngine.Debug.LogError(distantDto.id+" "+distantDto.resourcesUrl);
+                UnityEngine.Debug.LogError(distantDto.id + " " + distantDto.resourcesUrl);
                 UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
                 var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, null);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
@@ -41,6 +43,10 @@ public class DistantEnvironmentLoader : AbstractLoader
                 await UMI3DEnvironmentLoader.Instance.ReadUMI3DExtension(distantDto.id, distantDto.environmentDto, null);
 
                 await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id, distantDto.environmentDto.scenes);
+
+                foreach (var item in distantDto.binaries)
+                    await ReadBinaryDto(item, 0, distantDto);
+
                 e.NotifyLoaded();
             }
             catch (Exception e)
@@ -77,29 +83,60 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     async void _SetUMI3DProperty(SetUMI3DPropertyContainerData value, DistantEnvironmentDto dto)
     {
+        int index;
+        BinaryDto obj;
         await Task.Yield();
-        var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
-
-        MainThreadManager.Run(async () =>
+        switch (value.operationId)
         {
-            //UnityEngine.Debug.Log($"Need To forward transaction {obj.data.Length} {obj.groupId}=={UMI3DOperationKeys.Transaction} {obj.environmentid}");
+            case UMI3DOperationKeys.SetEntityListAddProperty:
+                index = UMI3DSerializer.Read<int>(value.container);
+                obj = UMI3DSerializer.Read<BinaryDto>(value.container);
+                MainThreadManager.Run(async () =>
+                {
+                    await ReadBinaryDto(obj, value.container.timeStep, dto);
+                });
+                break;
+            case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                // RemoveUserAt(container.environmentId, dto, UMI3DSerializer.Read<int>(container));
+                break;
+            case UMI3DOperationKeys.SetEntityListProperty:
+                index = UMI3DSerializer.Read<int>(value.container);
+                obj = UMI3DSerializer.Read<BinaryDto>(value.container);
+                MainThreadManager.Run(async () =>
+                {
+                    await ReadBinaryDto(obj, value.container.timeStep, dto);
+                });
+                break;
+            default:
+                var list = UMI3DSerializer.ReadList<BinaryDto>(value.container);
+                MainThreadManager.Run(async () =>
+                {
+                    foreach (var item in list)
+                        await ReadBinaryDto(item, value.container.timeStep, dto);
+                });
+                break;
+        }
+    }
 
-            ByteContainer container = new ByteContainer(dto.id, value.container.timeStep, obj.data);
-            uint TransactionId = UMI3DSerializer.Read<uint>(container);
-            try
-            {
-                await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
-            }
-            catch (ArgumentException ae)
-            {
-                // HACK
-            }
-            catch (Exception ex)
-            {
-                UMI3DLogger.LogError("Error while performing transaction", scope);
-                UMI3DLogger.LogException(ex, scope);
-            }
 
-        });
+
+    async Task ReadBinaryDto(BinaryDto obj, ulong timeStep, DistantEnvironmentDto dto)
+    {
+        ByteContainer container = new ByteContainer(dto.id, timeStep, obj.data);
+        uint TransactionId = UMI3DSerializer.Read<uint>(container);
+        try
+        {
+            await UMI3DClientServer.transactionDispatcher.PerformTransaction(container);
+        }
+        catch (ArgumentException ae)
+        {
+            // HACK
+        }
+        catch (Exception ex)
+        {
+            UMI3DLogger.LogError("Error while performing transaction", scope);
+            UMI3DLogger.LogException(ex, scope);
+        }
+
     }
 }

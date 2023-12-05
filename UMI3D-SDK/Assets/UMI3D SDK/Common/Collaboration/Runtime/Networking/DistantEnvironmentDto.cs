@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 namespace umi3d.common
 {
     /// <summary>
@@ -10,5 +11,7 @@ namespace umi3d.common
         public GlTFEnvironmentDto environmentDto { get; set; }
         public string resourcesUrl { get; set; }
         public bool useDto { get; set; }
+
+        public List<BinaryDto> binaries { get; set; }
     }
 }
