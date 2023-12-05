@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using umi3d.common;
 
 namespace umi3d.cdk.userCapture.pose
 {
@@ -23,6 +24,8 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
+        private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
+
         #region Dependency Injection
 
         private readonly ISkeletonManager skeletonManager;
@@ -57,7 +60,11 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public bool TryActivatePoseAnimator(ulong poseAnimatorId)
         {
-            PoseAnimator poseAnimator = environmentManager.GetEntityObject<PoseAnimator>(poseAnimatorId);
+            if (!environmentManager.TryGetEntity(poseAnimatorId, out PoseAnimator poseAnimator))
+            {
+                UMI3DLogger.LogWarning($"Unable to try to activate pose animator {poseAnimatorId}. Entity {poseAnimatorId} not found.", DEBUG_SCOPE);
+                return false;
+            }
 
             return poseAnimator.TryActivate();
         }
@@ -89,8 +96,12 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public void ChangeEnvironmentPoseCondition(ulong poseConditionId, bool shouldBeValidated)
         {
-            EnvironmentPoseCondition condition = environmentManager.GetEntityObject<EnvironmentPoseCondition>(poseConditionId);
-
+            if (!environmentManager.TryGetEntity(poseConditionId, out EnvironmentPoseCondition condition))
+            {
+                UMI3DLogger.LogWarning($"Unable to change environment pose condition {poseConditionId} to {shouldBeValidated}. Entity {poseConditionId} not found.", DEBUG_SCOPE);
+                return;
+            }
+            
             if (shouldBeValidated)
                 condition.Validate();
             else
