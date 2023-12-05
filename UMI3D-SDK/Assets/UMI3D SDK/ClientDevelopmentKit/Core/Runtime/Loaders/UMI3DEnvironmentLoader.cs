@@ -263,6 +263,27 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
+        public virtual bool TryGetEntity<T>(ulong id, out T entity) where T : class
+        {
+            entity = null;
+            if (id == 0)
+                throw new ArgumentException(message: $"Entity {id} does not exist.");
+            else if (!entities.ContainsKey(id))
+                return false;
+            else if (entities[id] != null)
+            {
+                entity = entities[id].Object as T;
+                return true;
+            }
+            else
+                throw new Umi3dException($"Entity {id} is referenced but is null.");
+        }
+
+        /// <summary>
+        /// Get an entity with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns></returns>
         public virtual T GetEntityObject<T>(ulong id) where T : class
         {
             var entity = GetEntityInstance(id);
