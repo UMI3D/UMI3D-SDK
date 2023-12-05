@@ -75,9 +75,9 @@ namespace umi3d.cdk.binding
 
             AbstractBinding binding = await LoadData(value.environmentId, dto.boundNodeId, dto.data);
 
-            bindingManagementService.AddBinding(dto.boundNodeId, binding);
+            bindingManagementService.AddBinding(value.environmentId,dto.boundNodeId, binding);
 
-            void onDelete() { bindingManagementService.RemoveBinding(dto.boundNodeId); }
+            void onDelete() { bindingManagementService.RemoveBinding(value.environmentId,dto.boundNodeId); }
             environmentManager.RegisterEntity(value.environmentId, dto.id, dto, null, onDelete).NotifyLoaded();
         }
 

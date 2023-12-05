@@ -561,7 +561,6 @@ namespace umi3d.cdk
         {
             try
             {
-                UnityEngine.Debug.Log(entity);
                 switch (entity)
                 {
                     case GlTFSceneDto scene:
@@ -614,12 +613,10 @@ namespace umi3d.cdk
         {
             Task InternalLoadEntityTask(IEntity item, List<CancellationToken> tokens)
             {
-                UnityEngine.Debug.Log("_LoadEntity Lambda");
                 return LoadEntity(container.environmentId, item, tokens);
             }
-            UnityEngine.Debug.Log("_LoadEntity A");
             await entitiesCollection[container.environmentId]._LoadEntity(container, InternalLoadEntityTask);
-            UnityEngine.Debug.Log("_LoadEntity B");
+
         }
 
 
@@ -675,7 +672,7 @@ namespace umi3d.cdk
         public virtual async Task ReadUMI3DExtension(ulong environmentId, GlTFEnvironmentDto dto, GameObject node)
         {
             UMI3DEnvironmentDto extension = dto?.extensions?.umi3d;
-            if (extension != null)
+            if (extension != null && environmentId == 0)
             {
                 if (extension.defaultMaterial != null && extension.defaultMaterial.variants != null && extension.defaultMaterial.variants.Count > 0)
                 {

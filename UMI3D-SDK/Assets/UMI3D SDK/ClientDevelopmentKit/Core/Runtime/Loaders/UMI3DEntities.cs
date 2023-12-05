@@ -285,10 +285,7 @@ namespace umi3d.cdk
 
             try
             {
-                UnityEngine.Debug.Log($"getEntity send entity {container.environmentId}");
-
                 var load = await UMI3DClientServer.GetEntity(container.environmentId, ids);
-                UnityEngine.Debug.Log($"getEntity return entity {container.environmentId}");
                 await Task.WhenAll(
                     load.entities.Select(async item =>
                     {
@@ -300,7 +297,6 @@ namespace umi3d.cdk
                         else
                             await loadEntityTask(item, container.tokens);
                     }));
-
             }
             catch (Exception e)
             {

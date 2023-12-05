@@ -66,7 +66,12 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
-                        var skeleton = skeletonService.Skeletons[(environmentId,riggedBoneBinding.userId)];
+                        if (!skeletonService.Skeletons.ContainsKey((environmentId, riggedBoneBinding.userId)))
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - ({environmentId},{riggedBoneBinding.userId}). Skeleton does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+                        var skeleton = skeletonService.Skeletons[(environmentId, riggedBoneBinding.userId)];
                         if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
@@ -85,7 +90,12 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
-                        var skeleton = skeletonService.Skeletons[(environmentId,boneBindingDataDto.userId)];
+                        if (!skeletonService.Skeletons.ContainsKey((environmentId, boneBindingDataDto.userId)))
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - ({environmentId},{boneBindingDataDto.userId}). Skeleton does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+                        var skeleton = skeletonService.Skeletons[(environmentId, boneBindingDataDto.userId)];
                         if (!skeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);

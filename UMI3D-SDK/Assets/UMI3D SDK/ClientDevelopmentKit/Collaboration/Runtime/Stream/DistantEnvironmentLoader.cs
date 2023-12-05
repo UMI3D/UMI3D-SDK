@@ -37,6 +37,9 @@ public class DistantEnvironmentLoader : AbstractLoader
                 UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
                 var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, null);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
+
+                await UMI3DEnvironmentLoader.Instance.ReadUMI3DExtension(distantDto.id, distantDto.environmentDto, null);
+
                 await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id, distantDto.environmentDto.scenes);
                 e.NotifyLoaded();
             }

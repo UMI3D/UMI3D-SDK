@@ -112,7 +112,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
             environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             collaborativeSkeletonManager.Setup(x => x.Skeletons).Returns(new Dictionary<(ulong, ulong), ISkeleton>() { { (0, userId), skeletonMock.Object } });
 
@@ -121,7 +121,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);
@@ -149,14 +149,14 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
             environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);
@@ -189,7 +189,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
             environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object); ;
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             collaborativeSkeletonManager.Setup(x => x.Skeletons).Returns(new Dictionary<(ulong, ulong), ISkeleton>() { { (0, userId), skeletonMock.Object } });
 
@@ -198,7 +198,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);

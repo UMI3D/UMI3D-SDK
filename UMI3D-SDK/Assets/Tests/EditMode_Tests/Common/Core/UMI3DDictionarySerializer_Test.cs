@@ -53,6 +53,25 @@ namespace EditMode_Tests
             }
         }
 
+
+
+        [Test]
+        public void TestDictionary()
+        {
+            Dictionary<(int, int), int> value = new()
+            {
+                { (0,1), 3 },
+                 { (0,2), 4 },
+                  { (1,1), 5 }
+            };
+            Assert.IsTrue(value.ContainsKey((0, 1)), $"values does not contain {(0, 1)}");
+            Assert.IsTrue(value.ContainsKey((0, 2)), $"values does not contain {(0, 2)}");
+            Assert.IsTrue(value.ContainsKey((1, 1)), $"values does not contain {(1, 1)}");
+            Assert.AreEqual(value[(0, 1)], 3, $"values does not match for {(0, 1)}");
+            Assert.AreEqual(value[(0, 2)], 4, $"values does not match for {(0, 2)}");
+            Assert.AreEqual(value[(1, 1)], 5, $"values does not match for {(1, 1)}");
+        }
+
         [Test]
         public void WriteReadDictionnary()
         {

@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
@@ -46,8 +47,8 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        public IReadOnlyList<UMI3DUser> UserList => userList;
-        private List<UMI3DUser> userList = new();
+        public IReadOnlyList<UMI3DUser> UserList => userList.SelectMany(kp => kp.Value).ToList();
+        private Dictionary<ulong,List<UMI3DUser>> userList = new();
 
         public event Action OnUpdateUserList;
 
@@ -83,7 +84,18 @@ namespace umi3d.cdk.collaboration
             if (dto == null) 
                 return;
 
-            userList = dto.userList.Select(u => new UMI3DUser(environmentId, u)).ToList();
+            if (userList != null)
+            {
+                if (userList.ContainsKey(environmentId))
+                {
+                    userList[environmentId].ForEach(u => u.Destroy());
+                    userList.Remove(environmentId);
+                }
+            }
+            else
+                userList = new();
+
+            userList[environmentId] = dto.userList.Select(u => new UMI3DUser(environmentId, u)).ToList();
 
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
@@ -226,7 +238,7 @@ namespace umi3d.cdk.collaboration
                     InsertUser(environmentId, dto, add.index, add.value as UserDto);
                     break;
                 case SetEntityListRemovePropertyDto rem:
-                    RemoveUserAt(dto, rem.index);
+                    RemoveUserAt(environmentId, dto, rem.index);
                     break;
                 case SetEntityListPropertyDto set:
                     ReplaceUser(environmentId, dto, set.index, set.value as UserDto);
@@ -263,7 +275,7 @@ namespace umi3d.cdk.collaboration
                     InsertUser(container.environmentId, dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
                     break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                    RemoveUserAt(dto, UMI3DSerializer.Read<int>(container));
+                    RemoveUserAt(container.environmentId, dto, UMI3DSerializer.Read<int>(container));
                     break;
                 case UMI3DOperationKeys.SetEntityListProperty:
                     ReplaceUser(container.environmentId, dto, UMI3DSerializer.Read<int>(container), UMI3DSerializer.Read<UserDto>(container));
@@ -287,11 +299,14 @@ namespace umi3d.cdk.collaboration
 
         private void InsertUser(ulong environmentId,UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
         {
-            if (userList.Exists((user) => user.id == userDto.id)) return;
+            if (!userList.ContainsKey(environmentId))
+                userList[environmentId] = new();
 
-            if (index >= 0 && index <= UserList.Count)
+            if (userList[environmentId].Exists((user) => user.id == userDto.id)) return;
+
+            if (index >= 0 && index <= userList[environmentId].Count)
             {
-                userList.Insert(index, new UMI3DUser(environmentId, userDto));
+                userList[environmentId].Insert(index, new UMI3DUser(environmentId, userDto));
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
             }
@@ -301,14 +316,14 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        private void RemoveUserAt(UMI3DCollaborationEnvironmentDto dto, int index)
+        private void RemoveUserAt(ulong environmentId, UMI3DCollaborationEnvironmentDto dto, int index)
         {
             if (UserList.Count <= index) return;
 
             if (index >= 0 && index < UserList.Count)
             {
                 UMI3DUser Olduser = UserList[index];
-                userList.RemoveAt(index);
+                userList[environmentId].RemoveAt(index);
                 Olduser.Destroy();
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
@@ -340,8 +355,19 @@ namespace umi3d.cdk.collaboration
 
         private void ReplaceAllUser(ulong environmentId, UMI3DCollaborationEnvironmentDto dto, List<UserDto> usersNew)
         {
-            foreach (UMI3DUser user in UserList) user.Destroy();
-            userList = usersNew.Select(u => new UMI3DUser(environmentId, u)).ToList();
+            if (userList != null)
+            {
+                if (userList.ContainsKey(environmentId))
+                {
+                    userList[environmentId].ForEach(u => u.Destroy());
+                    userList.Remove(environmentId);
+                }
+            }
+            else
+                userList = new();
+
+            userList[environmentId] = usersNew.Select(u => new UMI3DUser(environmentId, u)).ToList();
+
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
         }

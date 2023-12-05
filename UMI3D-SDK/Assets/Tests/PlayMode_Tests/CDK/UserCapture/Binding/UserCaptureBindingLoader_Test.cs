@@ -103,7 +103,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
             environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
@@ -112,7 +112,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);
@@ -133,7 +133,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             var extensionData = new ReadUMI3DExtensionData(0, dto);
 
             var entityFake = new UMI3DEntityInstance(0, () => { });
-            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL, new System.Action(() => { }));
             var nodeGameObject = new GameObject("Node to bind");
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
@@ -146,14 +146,14 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);
