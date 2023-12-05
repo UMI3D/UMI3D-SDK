@@ -37,8 +37,8 @@ namespace umi3d.edk.userCapture.pose
         {
             return new OrConditionDto()
             {
-                ConditionA = conditionA.ToDto(),
-                ConditionB = conditionB.ToDto()
+                ConditionA = conditionA?.ToDto(),
+                ConditionB = conditionB?.ToDto()
             };
         }
     }
