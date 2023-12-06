@@ -76,7 +76,7 @@ namespace umi3d.edk.collaboration.murmur
         public async Task<string> AddServer()
         {
 
-            var www = UnityWebRequest.Post(url + "/servers/", "");
+            var www = UnityWebRequest.PostWwwForm(url + "/servers/", "");
             await Send(www);
             return RequestToString(www);
         }
@@ -90,7 +90,7 @@ namespace umi3d.edk.collaboration.murmur
         //POST /servers/:serverid/start Start server
         public async Task<string> StartServer(int server)
         {
-            var www = UnityWebRequest.Post(url + "/servers/" + server + "/start", "");
+            var www = UnityWebRequest.PostWwwForm(url + "/servers/" + server + "/start", "");
             await Send(www);
             return RequestToString(www);
         }
@@ -98,7 +98,7 @@ namespace umi3d.edk.collaboration.murmur
         //POST /servers/:serverid/stop Stop server
         public async Task<string> StopServer(int server)
         {
-            var www = UnityWebRequest.Post(url + "/servers/" + server + "/stop", "");
+            var www = UnityWebRequest.PostWwwForm(url + "/servers/" + server + "/stop", "");
             await Send(www);
             return RequestToString(www);
         }
