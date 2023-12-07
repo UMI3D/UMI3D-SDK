@@ -18,7 +18,6 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.cdk.utils.extrapolation;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.utils.serialization;
@@ -27,10 +26,6 @@ using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
 using inetum.unityUtils;
-using AsImpL;
-using static UnityEditor.Progress;
-using System.ComponentModel;
-using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {

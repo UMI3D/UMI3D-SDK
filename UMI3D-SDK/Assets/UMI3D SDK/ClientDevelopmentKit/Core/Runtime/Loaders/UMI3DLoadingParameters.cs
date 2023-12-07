@@ -151,8 +151,6 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            UnityEngine.Debug.Log("SetUMI3DProperty");
-
             var b = await GetLoader().Handle(data);
             if (AnchorLoader != null)
                 await AnchorLoader.Handle(data);

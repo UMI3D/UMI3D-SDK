@@ -244,7 +244,7 @@ namespace umi3d.cdk
             }
             else
             {
-                node = new UMI3DNodeInstance(EnvironmentId, () => NotifyEntityLoad(id)) { gameObject = instance, dto = dto, Delete = delete };
+                node = new UMI3DNodeInstance(EnvironmentId, () => NotifyEntityLoad(id), id) { gameObject = instance, dto = dto, Delete = delete };
                 entities.Add(id, node);
             }
 
@@ -266,7 +266,7 @@ namespace umi3d.cdk
 
             else
             {
-                node = new UMI3DEntityInstance(EnvironmentId, () => NotifyEntityLoad(id)) { dto = dto, Object = objectInstance, Delete = delete };
+                node = new UMI3DEntityInstance(EnvironmentId, () => NotifyEntityLoad(id), id) { dto = dto, Object = objectInstance, Delete = delete };
                 entities.Add(id, node);
             }
 

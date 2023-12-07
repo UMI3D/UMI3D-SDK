@@ -81,7 +81,7 @@ namespace umi3d.cdk.collaboration
             await base.ReadUMI3DExtension(environmentId, _dto, node);
 
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-            if (dto == null) 
+            if (dto == null)
                 return;
 
             if (userList != null)
@@ -208,7 +208,6 @@ namespace umi3d.cdk.collaboration
                         string value = UMI3DSerializer.Read<string>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
-
 
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
