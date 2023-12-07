@@ -13,19 +13,28 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System.Collections.Generic;
 using UnityEngine;
 
-namespace inetum.unityUtils
+namespace inetum.unityUtils.saveSystem
 {
-    public class EventT_SO<T> : ScriptableObject
+    /// <summary>
+    /// A data container that can be save to a file.<br/>
+    /// Can be considered as a save file structure or format.
+    /// </summary>
+    [System.Serializable]
+    public class SSOSave
     {
-#if UNITY_EDITOR
+        public List<SSOStack> ssoStacks = new();
 
-        [SerializeField, Tooltip("Add a description to this ScriptableObject"), TextArea]
-        string description;
+        public string ToJson()
+        {
+            return JsonUtility.ToJson(this);
+        }
 
-#endif
-
-        public NotifyingVariable<T> variable = new();
+        public void LoadFromJson(string json)
+        {
+            JsonUtility.FromJsonOverwrite(json, this);
+        }
     }
 }

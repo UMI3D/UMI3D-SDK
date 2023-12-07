@@ -13,19 +13,19 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
+using UnityEngine.AddressableAssets;
 
 namespace inetum.unityUtils
 {
-    public class EventT_SO<T> : ScriptableObject
+    /// <summary>
+    /// An <see cref="AssetReference"/> that accept only scenes.
+    /// </summary>
+    [System.Serializable]
+    public class AssetReferenceScene : AssetReference
     {
-#if UNITY_EDITOR
-
-        [SerializeField, Tooltip("Add a description to this ScriptableObject"), TextArea]
-        string description;
-
-#endif
-
-        public NotifyingVariable<T> variable = new();
+        public override bool ValidateAsset(string path)
+        {
+            return path.EndsWith(".unity");
+        }
     }
 }

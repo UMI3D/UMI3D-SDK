@@ -13,19 +13,21 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
+using System;
+using UnityEngine.ResourceManagement.AsyncOperations;
 
 namespace inetum.unityUtils
 {
-    public class EventT_SO<T> : ScriptableObject
+    /// <summary>
+    /// <see cref="AsyncOperationHandle{TResult}"/> utils.
+    /// </summary>
+    public static class AOHUtils
     {
-#if UNITY_EDITOR
-
-        [SerializeField, Tooltip("Add a description to this ScriptableObject"), TextArea]
-        string description;
-
-#endif
-
-        public NotifyingVariable<T> variable = new();
+        public static AOHStack<T> WhenAll<T>(Action<AsyncOperationHandle<T>[]> allCompleted, params AsyncOperationHandle<T>[] stack)
+        {
+            var result = new AOHStack<T>(stack);
+            result.allCompleted += allCompleted;
+            return result;
+        }
     }
 }

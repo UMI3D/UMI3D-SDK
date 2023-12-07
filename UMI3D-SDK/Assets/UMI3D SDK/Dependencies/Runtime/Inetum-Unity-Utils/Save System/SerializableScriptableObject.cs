@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -15,17 +15,29 @@ limitations under the License.
 */
 using UnityEngine;
 
-namespace inetum.unityUtils
+namespace inetum.unityUtils.saveSystem
 {
-    public class EventT_SO<T> : ScriptableObject
-    {
+	public class SerializableScriptableObject : ScriptableObject
+	{
+        [SerializeField, HideInInspector] 
+		private string _guid;
+		/// <summary>
+		/// Guid used to save this piece of date.
+		/// </summary>
+		public string Guid
+        {
+            get
+            {
+                return _guid;
+            }
+        }
+
 #if UNITY_EDITOR
-
-        [SerializeField, Tooltip("Add a description to this ScriptableObject"), TextArea]
-        string description;
-
+		void OnValidate()
+		{
+			var path = UnityEditor.AssetDatabase.GetAssetPath(this);
+			_guid = UnityEditor.AssetDatabase.AssetPathToGUID(path);
+		}
 #endif
-
-        public NotifyingVariable<T> variable = new();
-    }
+	}
 }

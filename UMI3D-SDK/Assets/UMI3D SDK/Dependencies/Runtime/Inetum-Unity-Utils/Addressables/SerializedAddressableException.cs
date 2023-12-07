@@ -13,19 +13,16 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using UnityEngine;
+using System;
 
 namespace inetum.unityUtils
 {
-    public class EventT_SO<T> : ScriptableObject
+    public class SerializedAddressableException : Exception
     {
-#if UNITY_EDITOR
+        public SerializedAddressableException(string message) : base(message)
+        { }
 
-        [SerializeField, Tooltip("Add a description to this ScriptableObject"), TextArea]
-        string description;
-
-#endif
-
-        public NotifyingVariable<T> variable = new();
+        public SerializedAddressableException(string message, Exception innerException) : base(message, innerException)
+        { }
     }
 }
