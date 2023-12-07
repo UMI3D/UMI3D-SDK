@@ -36,5 +36,7 @@ namespace umi3d.cdk
         UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
 
         UMI3DEntityInstance TryGetEntityInstance(ulong id);
+
+        bool TryGetEntity<T>(ulong id, out T entity) where T : class;
     }
 }
