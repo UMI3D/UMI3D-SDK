@@ -25,6 +25,7 @@ namespace umi3d.edk
         UMI3DUserEvent OnUserAway { get; }
         UMI3DUserEvent OnUserCreated { get; }
         UMI3DUserEvent OnUserJoin { get; }
+        UMI3DUserEvent OnUserRefreshed { get; }
         UMI3DUserEvent OnUserLeave { get; }
         UMI3DUserEvent OnUserMissing { get; }
         UMI3DUserEvent OnUserReady { get; }
@@ -32,6 +33,7 @@ namespace umi3d.edk
         UMI3DUserEvent OnUserRegistered { get; }
         UMI3DUserEvent OnUserUnregistered { get; }
 
+        void NotifyUserRefreshed(UMI3DUser user);
         void NotifyUserChanged(UMI3DUser user);
         void NotifyUserStatusChanged(UMI3DUser user, StatusType status);
         float ReturnServerTime();
