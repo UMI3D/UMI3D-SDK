@@ -458,6 +458,10 @@ namespace umi3d.cdk.interaction
                     break;
             }
             result.Name = dto.name;
+            if (dto is AbstractParameterDto parameterDto)
+            {
+                result.isDisplayer = parameterDto.isDisplayer;
+            }
             //icon;
             return (result, requestDto);
         }
