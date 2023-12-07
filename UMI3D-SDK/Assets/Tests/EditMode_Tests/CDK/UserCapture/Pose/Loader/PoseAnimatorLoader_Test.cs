@@ -89,7 +89,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             PoseClipDto poseClipDto = new PoseClipDto() { id = 15593uL };
             PoseClip poseClip = new(poseClipDto);
-            UMI3DEntityInstance instance = new UMI3DEntityInstance(0, () => { })
+            UMI3DEntityInstance instance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 Object = poseClip
             };
@@ -102,7 +102,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseAnimator container = new(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
 
             environmentServiceMock.Setup(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
-                                  .Returns(new UMI3DEntityInstance(0, () => { }))
+                                  .Returns(new UMI3DEntityInstance(0, () => { }, 0))
                                   .Verifiable();
 
             // When
@@ -159,12 +159,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
 
             environmentServiceMock.Setup(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
-                                 .Returns(new UMI3DEntityInstance(0, () => { }))
+                                 .Returns(new UMI3DEntityInstance(0, () => { }, 0))
                                  .Verifiable();
 
             
             PoseClip poseClip = new(poseClipDto);
-            UMI3DEntityInstance instance = new UMI3DEntityInstance(0, () => { })
+            UMI3DEntityInstance instance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 Object = poseClip
             };

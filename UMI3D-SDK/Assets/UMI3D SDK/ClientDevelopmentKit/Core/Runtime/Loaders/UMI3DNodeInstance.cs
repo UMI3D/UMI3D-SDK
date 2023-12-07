@@ -123,7 +123,7 @@ namespace umi3d.cdk
         /// </summary>
         public Scene scene;
 
-        public UMI3DNodeInstance(ulong environmentId, Action loadedCallback, ulong id) : base(environmentId, loadedCallback, id)
+        public UMI3DNodeInstance(ulong environmentId, Action loadedCallback, ulong id = 0) : base(environmentId, loadedCallback, id)
         {
         }
 

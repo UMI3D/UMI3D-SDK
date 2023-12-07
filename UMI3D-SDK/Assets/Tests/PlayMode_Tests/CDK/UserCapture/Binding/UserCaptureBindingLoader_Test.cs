@@ -91,8 +91,8 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var extensionData = new ReadUMI3DExtensionData(0, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { });
-            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(0, () => { }, 0);
+            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL, new System.Action(() => { }),0);
             var nodeGameObject = new GameObject("Node to bind");
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
@@ -132,8 +132,8 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var extensionData = new ReadUMI3DExtensionData(0, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { });
-            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL, new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(0, () => { }, 0);
+            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL, new System.Action(() => { }), 0);
             var nodeGameObject = new GameObject("Node to bind");
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 

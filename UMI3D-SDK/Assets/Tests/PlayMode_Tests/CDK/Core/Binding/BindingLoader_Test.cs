@@ -119,7 +119,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             var extensionData = new ReadUMI3DExtensionData(0,dto);
 
-            var entityFake = new UMI3DEntityInstance(0,() => { }); 
+            var entityFake = new UMI3DEntityInstance(0,() => { }, 0); 
             var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL,new System.Action(() => { }));
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
@@ -151,7 +151,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             var extensionData = new ReadUMI3DExtensionData(0, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { });
+            var entityFake = new UMI3DEntityInstance(0, () => { }, 0);
             var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL, new System.Action(() => { }));
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));

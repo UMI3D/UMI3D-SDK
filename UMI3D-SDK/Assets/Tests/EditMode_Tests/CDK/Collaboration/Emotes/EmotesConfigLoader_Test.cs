@@ -91,7 +91,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 emotes = new()
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = dto
             };
@@ -122,7 +122,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = true
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DDto()
             };
@@ -146,7 +146,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = new UMI3DEmotesConfigDto()
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = setEntityDto.value as UMI3DEmotesConfigDto
             };

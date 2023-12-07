@@ -48,7 +48,7 @@ namespace umi3d.cdk
 
         public ulong Id { get; private set; }
 
-        public UMI3DEntityInstance(ulong environmentId, Action loadedCallback, ulong id)
+        public UMI3DEntityInstance(ulong environmentId, Action loadedCallback, ulong id = 0)
         {
             if (loadedCallback == null)
                 throw new Umi3dException("No instance should be created without loadedCallback");

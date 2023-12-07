@@ -68,7 +68,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             var data = new ReadUMI3DExtensionData(0, emoteDto);
 
-            environmentManagerMock.Setup(x => x.RegisterEntity(0, It.IsAny<ulong>(), It.IsAny<UMI3DEmoteDto>(), null, null)).Returns(new UMI3DNodeInstance(0, () => { }));
+            environmentManagerMock.Setup(x => x.RegisterEntity(0, It.IsAny<ulong>(), It.IsAny<UMI3DEmoteDto>(), null, null)).Returns(new UMI3DNodeInstance(0, () => { }, 0));
 
             // WHEN
             await emoteLoader.ReadUMI3DExtension(data);
@@ -125,7 +125,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = true
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DDto()
             };
@@ -149,7 +149,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = value
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DEmoteDto()
             };
@@ -174,7 +174,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = value
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DEmoteDto()
             };
