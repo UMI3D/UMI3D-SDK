@@ -1,25 +1,16 @@
-using inetum.unityUtils;
-using PlasticGui.Configuration.CloudEdition.Welcome;
-using System;
-using System.Collections;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration;
 using umi3d.common;
-using umi3d.common.collaboration.dto.networking;
-using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.interaction;
 using umi3d.edk;
 using umi3d.edk.collaboration;
 using UnityEngine;
-using UnityEngine.Networking;
 using WebSocketSharp;
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using umi3d.common.userCapture.tracking;
 using BeardedManStudios.Forge.Networking.Frame;
+using System.ComponentModel;
+using System.Threading;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
@@ -94,9 +85,69 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         if (bin.data == null || bin.data.Length <= 0)
             return;
 
+        //Log(data);
+
         var op = lastTransactionAsync.Add(bin);
-        var t = op.ToTransaction(true);
+        var t = op.ToTransaction(data.IsReliable);
         t.Dispatch();
+    }
+
+    async void Log(Binary data)
+    {
+        await Task.Yield();
+        ByteContainer container = new ByteContainer(0, 0, data.StreamData.byteArr);
+        uint TransactionId = UMI3DSerializer.Read<uint>(container);
+        UnityEngine.Debug.Log(PerformTransaction(container));
+    }
+
+    public string PerformTransaction(ByteContainer container)
+    {
+        string s = "Transaction" + System.Environment.NewLine;
+        int i = 0;
+        foreach (ByteContainer c in UMI3DSerializer.ReadIndexesList(container))
+        {
+            s += PerformOperation(c, i++);
+        }
+        return s;
+    }
+
+    public string PerformOperation(ByteContainer container, int i)
+    {
+        string s = $" - Operation {i}" + System.Environment.NewLine + "    -> ";
+        uint operationId = UMI3DSerializer.Read<uint>(container);
+        switch (operationId)
+        {
+            case UMI3DOperationKeys.LoadEntity:
+                s += ("Load entity");
+                break;
+            case UMI3DOperationKeys.DeleteEntity:
+                {
+                    ulong entityId = UMI3DSerializer.Read<ulong>(container);
+                    s += ($"Load entity {entityId}");
+                    break;
+                }
+            case UMI3DOperationKeys.MultiSetEntityProperty:
+                s += ("Multi SetEntityProperty");
+                break;
+            case UMI3DOperationKeys.StartInterpolationProperty:
+                s += ("StartInterpolationProperty");
+                break;
+            case UMI3DOperationKeys.StopInterpolationProperty:
+                s += ("StopInterpolationProperty");
+                break;
+
+            default:
+                if (UMI3DOperationKeys.SetEntityProperty <= operationId && operationId <= UMI3DOperationKeys.SetEntityMatrixProperty)
+                {
+                    ulong entityId = UMI3DSerializer.Read<ulong>(container);
+                    uint propertyKey = UMI3DSerializer.Read<uint>(container);
+                    s += ($"SetEntityProperty {operationId} {entityId} {propertyKey}");
+                }
+                else
+                    s += ($"Other");
+                break;
+        }
+        return s;
     }
 
     public void OnAvatarData(BeardedManStudios.Forge.Networking.NetworkingPlayer player, List<UserTrackingFrameDto> data)
@@ -107,9 +158,15 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
     public override IEntity ToEntityDto(UMI3DUser user)
     {
-        UnityEngine.Debug.Log("hello");
-        dto.binaries = lastTransactionAsync.GetValue(user);
-        return dto;
+        var nDto = new DistantEnvironmentDto()
+        {
+            id = dto.id,
+            environmentDto = dto.environmentDto,
+            resourcesUrl = dto.resourcesUrl,
+            binaries = lastTransactionAsync.GetValue(user).ToList()
+        };
+
+        return nDto;
     }
 
 
