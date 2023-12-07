@@ -1,5 +1,6 @@
 {
     "name": "UMI3D.CDK.Core",
+    "rootNamespace": "",
     "references": [
         "GUID:6e34c4b4c3202a14eb95e0a784041765",
         "GUID:215efa65361782e41b5e3fac87a2c7e3",
@@ -7,7 +8,8 @@
         "GUID:a42927d1d4a3b4cda9b076a7adecb9cc",
         "GUID:339cc51f8f5f946a99be775bcfa83f2e",
         "GUID:b7e5df3ab8d2c5c43aae26836d504c61",
-        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b"
+        "GUID:d0bf4ea2ef3a7c74e9160b8995fd902b",
+        "GUID:6055be8ebefd69e48b49212b09b47b2f"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
@@ -16,16 +18,12 @@
     "precompiledReferences": [],
     "autoReferenced": true,
     "defineConstraints": [],
-    "noEngineReferences": false,
     "versionDefines": [
         {
-
             "name": "com.unity.render-pipelines.universal",
-
             "expression": "0.0",
-
             "define": "USING_URP"
-
         }
-    ]
+    ],
+    "noEngineReferences": false
 }
