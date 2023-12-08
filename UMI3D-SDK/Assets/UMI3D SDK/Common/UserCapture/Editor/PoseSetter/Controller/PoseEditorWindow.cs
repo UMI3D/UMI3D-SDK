@@ -58,9 +58,22 @@ namespace umi3d.common.userCapture.pose.editor
         Button reset_skeleton;
 
         private DropdownField hand_closure_dropdown;
+
+        private class SliderMemory
+        {
+            public float lastLeftValue;
+            public float lastRightValue;
+        }
+
         private Slider thumb_slider;
+        private readonly SliderMemory thumbSliderMemory = new();
+
         private Slider index_slider;
+        private readonly SliderMemory indexSliderMemory = new();
+
         private Slider medial_group_slider;
+        private readonly SliderMemory medialGroupSliderMemory = new();
+
 
         //Bones
         IMGUIContainer bone_container;
@@ -250,11 +263,6 @@ namespace umi3d.common.userCapture.pose.editor
             hand_closure_dropdown.choices.Add(BoneTypeHelper.GetBoneName(BoneType.LeftHand));
             hand_closure_dropdown.value = BoneTypeHelper.GetBoneName(BoneType.RightHand);
 
-            thumb_slider.value = 0; // to fill correctly
-            index_slider.value = 0; // to fill correctly
-            medial_group_slider.value = 0; // to fill correctly
-
-
             hand_closure_dropdown.RegisterValueChangedCallback((changeEvent) => SetHandClosureHand(changeEvent.newValue));
             thumb_slider.RegisterValueChangedCallback((changeEvent) => SetThumbClosure(changeEvent.newValue));
             index_slider.RegisterValueChangedCallback((changeEvent) => SetIndexClosure(changeEvent.newValue));
@@ -342,21 +350,39 @@ namespace umi3d.common.userCapture.pose.editor
         private void SetHandClosureHand(string handName)
         {
             handClosureBoneType = BoneTypeHelper.GetBoneNames().First(x => x.Value == handName).Key;
+
+            thumb_slider.value = (handClosureBoneType == BoneType.RightHand) ? thumbSliderMemory.lastRightValue : thumbSliderMemory.lastLeftValue;
+            index_slider.value = (handClosureBoneType == BoneType.RightHand) ? indexSliderMemory.lastRightValue : indexSliderMemory.lastLeftValue;
+            medial_group_slider.value = (handClosureBoneType == BoneType.RightHand) ? medialGroupSliderMemory.lastRightValue : medialGroupSliderMemory.lastLeftValue;
         }
 
         private void SetThumbClosure(float rate)
         {
+            if (handClosureBoneType == BoneType.RightHand)
+                thumbSliderMemory.lastRightValue = rate;
+            else
+                thumbSliderMemory.lastLeftValue = rate;
+
             poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.THUMB, rate);
         }
 
         private void SetIndexClosure(float rate)
         {
-            poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.INDEX, rate);
+            if (handClosureBoneType == BoneType.RightHand)
+                indexSliderMemory.lastRightValue = rate;
+            else
+                indexSliderMemory.lastLeftValue = rate;
 
+            poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.INDEX, rate);
         }
 
         private void SetMedialGroupClosure(float rate)
         {
+            if (handClosureBoneType == BoneType.RightHand)
+                medialGroupSliderMemory.lastRightValue = rate;
+            else
+                medialGroupSliderMemory.lastLeftValue = rate;
+
             poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.MEDIAL_GROUP, rate);
         }
 
