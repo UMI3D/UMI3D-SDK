@@ -18,6 +18,7 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Linq;
+using umi3d.common.userCapture.description;
 using UnityEditor;
 using UnityEditor.IMGUI.Controls;
 using UnityEngine;
@@ -55,6 +56,11 @@ namespace umi3d.common.userCapture.pose.editor
 
         CustomObjectField skeleton_object_field;
         Button reset_skeleton;
+
+        private DropdownField hand_closure_dropdown;
+        private Slider thumb_slider;
+        private Slider index_slider;
+        private Slider medial_group_slider;
 
         //Bones
         IMGUIContainer bone_container;
@@ -130,8 +136,9 @@ namespace umi3d.common.userCapture.pose.editor
             BindButtons();
             pose_name_field.RegisterValueChangedCallback((changeEvent) => UpdateSaveButtonAvailability(changeEvent.newValue));
             SetOnGUIContainer();
-            InitObjectField();
-            FillDropDownFields();
+            InitSkeletonField();
+            FillSymmetryDropdownField();
+            FillHandClosure();
         }
 
         /// <summary>
@@ -161,6 +168,11 @@ namespace umi3d.common.userCapture.pose.editor
             symmetry_from_right_button = root.Q<Button>("btn_from_right");
             reset_skeleton = root.Q<Button>("reset_skeleton");
 
+            hand_closure_dropdown = root.Q<DropdownField>("HandClosureDropdown");
+            thumb_slider = root.Q<Slider>("thumb_slider");
+            index_slider = root.Q<Slider>("index_slider");
+            medial_group_slider = root.Q<Slider>("medial_group_slider");
+
             bone_container = root.Q<IMGUIContainer>("bone_container");
 
             Assert.IsNotNull(pose_name_field);
@@ -173,6 +185,10 @@ namespace umi3d.common.userCapture.pose.editor
             Assert.IsNotNull(save_button);
             Assert.IsNotNull(load_button);
             Assert.IsNotNull(reset_skeleton);
+            Assert.IsNotNull(hand_closure_dropdown);
+            Assert.IsNotNull(thumb_slider);
+            Assert.IsNotNull(index_slider);
+            Assert.IsNotNull(medial_group_slider);
             Assert.IsNotNull(bone_container);
         }
 
@@ -180,7 +196,7 @@ namespace umi3d.common.userCapture.pose.editor
         /// Inits the objects fields to be able to filter the drag n dropped files 
         /// Also it sets up the change value event to make sure that when de files are changed the tool updates
         /// </summary>
-        private void InitObjectField()
+        private void InitSkeletonField()
         {
             skeleton_object_field.Init(typeof(GameObject));
             // TODO ==> add a call back where you make sure to clean all the roots and the savable and the selected on the skeleton
@@ -217,7 +233,7 @@ namespace umi3d.common.userCapture.pose.editor
             };
         }
 
-        private void FillDropDownFields()
+        private void FillSymmetryDropdownField()
         {
             symmetry_dropdown.choices.RemoveAt(0);
             Enum.GetNames(typeof(SymmetryTarget)).ForEach(name =>
@@ -225,6 +241,24 @@ namespace umi3d.common.userCapture.pose.editor
                 symmetry_dropdown.choices.Add(name);
             });
             symmetry_dropdown.value = symmetry_dropdown.choices[0];
+        }
+
+        private void FillHandClosure()
+        {
+            hand_closure_dropdown.choices.Clear();
+            hand_closure_dropdown.choices.Add(BoneTypeHelper.GetBoneName(BoneType.RightHand));
+            hand_closure_dropdown.choices.Add(BoneTypeHelper.GetBoneName(BoneType.LeftHand));
+            hand_closure_dropdown.value = BoneTypeHelper.GetBoneName(BoneType.RightHand);
+
+            thumb_slider.value = 0; // to fill correctly
+            index_slider.value = 0; // to fill correctly
+            medial_group_slider.value = 0; // to fill correctly
+
+
+            hand_closure_dropdown.RegisterValueChangedCallback((changeEvent) => SetHandClosureHand(changeEvent.newValue));
+            thumb_slider.RegisterValueChangedCallback((changeEvent) => SetThumbClosure(changeEvent.newValue));
+            index_slider.RegisterValueChangedCallback((changeEvent) => SetIndexClosure(changeEvent.newValue));
+            medial_group_slider.RegisterValueChangedCallback((changeEvent) => SetMedialGroupClosure(changeEvent.newValue));
         }
 
         /// <summary>
@@ -301,6 +335,29 @@ namespace umi3d.common.userCapture.pose.editor
 
             SymmetryTarget target = Enum.Parse<SymmetryTarget>(symmetry_dropdown.value);
             poseEditor.ApplySymmetry(isLeft, target);
+        }
+
+        private uint handClosureBoneType = BoneType.RightHand;
+
+        private void SetHandClosureHand(string handName)
+        {
+            handClosureBoneType = BoneTypeHelper.GetBoneNames().First(x => x.Value == handName).Key;
+        }
+
+        private void SetThumbClosure(float rate)
+        {
+            poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.THUMB, rate);
+        }
+
+        private void SetIndexClosure(float rate)
+        {
+            poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.INDEX, rate);
+
+        }
+
+        private void SetMedialGroupClosure(float rate)
+        {
+            poseEditor.CloseFinger(handClosureBoneType, HandClosureGroup.MEDIAL_GROUP, rate);
         }
 
         #endregion

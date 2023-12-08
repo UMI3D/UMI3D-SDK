@@ -14,28 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#if UNITY_EDITOR
-using System.Collections.Generic;
-using UnityEngine;
 
+#if UNITY_EDITOR
 namespace umi3d.common.userCapture.pose.editor
 {
-    /// <summary>
-    /// Wrapper for skeleton being edited in the <see cref="PoseEditorWindow"/>.
-    /// </summary>
-    public class PoseEditorSkeleton
+    public enum HandClosureGroup : int
     {
-        public GameObject root;
-
-        /// <summary>
-        /// Pose setter bone components collection defining each bone.
-        /// </summary>
-        public List<PoseSetterBoneComponent> boneComponents = new();
-
-        /// <summary>
-        /// Pose currently edited.
-        /// </summary>
-        public UMI3DPose_so currentPose;
+        THUMB,
+        INDEX,
+        MEDIAL_GROUP
     }
 }
 #endif
