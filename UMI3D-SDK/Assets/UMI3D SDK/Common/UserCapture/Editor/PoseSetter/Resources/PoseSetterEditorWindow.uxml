@@ -81,13 +81,14 @@
                         </ui:ScrollView>
                     </ui:IMGUIContainer>
                 </ui:VisualElement>
-                <ui:VisualElement name="AngleControls" class="EditorParts" style="display: none;">
+                <ui:VisualElement name="ClosureControlsContainer" class="EditorParts" style="display: flex;">
                     <ui:VisualElement name="TitleContainer">
-                        <ui:Label text="Rotation Controls" display-tooltip-when-elided="true" class="Titles" />
+                        <ui:Label text="Hand closure" display-tooltip-when-elided="true" class="Titles" />
                     </ui:VisualElement>
-                    <ui:Slider picking-mode="Ignore" label="x_rot" value="0" high-value="180" name="x_rot_slider" low-value="-180" />
-                    <ui:Slider picking-mode="Ignore" label="y_rot" value="0" high-value="180" name="y_rot_slider" low-value="-180" />
-                    <ui:Slider picking-mode="Ignore" label="z_rot" value="0" high-value="180" name="z_rot_slider" low-value="-180" />
+                    <ui:DropdownField label="Hand" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="HandClosureDropdown" />
+                    <ui:Slider picking-mode="Ignore" label="Thumb" value="0" high-value="1" name="thumb_slider" low-value="0" />
+                    <ui:Slider picking-mode="Ignore" label="Index" value="0" high-value="1" name="index_slider" low-value="0" />
+                    <ui:Slider picking-mode="Ignore" label="Others" value="0" high-value="1" name="medial_group_slider" low-value="0" />
                 </ui:VisualElement>
             </ui:VisualElement>
         </ui:VisualElement>

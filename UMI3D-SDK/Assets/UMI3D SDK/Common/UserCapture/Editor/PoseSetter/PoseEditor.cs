@@ -25,6 +25,8 @@ namespace umi3d.common.userCapture.pose.editor
         private readonly PoseEditorSkeleton skeleton;
         public PoseEditorSkeleton Skeleton => skeleton;
 
+        private readonly HandClosureSkeleton handClosureSkeleton;
+
         private readonly PoseEditionService poseEditionService;
         private readonly PoseSaverService poseSaverService;
 
@@ -32,7 +34,8 @@ namespace umi3d.common.userCapture.pose.editor
         {
             this.poseEditionService = new();
             this.poseSaverService = new();
-            this.skeleton = new PoseEditorSkeleton();
+            this.skeleton = new();
+            this.handClosureSkeleton = new();
         }
 
         public void CreatePose()
@@ -78,7 +81,7 @@ namespace umi3d.common.userCapture.pose.editor
 
         public void UpdateSkeletonGameObject(GameObject value)
         {
-            poseEditionService.UpdateSkeletonGameObject(skeleton, value);
+            poseEditionService.UpdateSkeletonGameObject(skeleton, handClosureSkeleton, value);
         }
 
         public void UpdateIsRoot(uint boneType, bool isRoot)
@@ -86,6 +89,10 @@ namespace umi3d.common.userCapture.pose.editor
             poseEditionService.ChangeIsRoot(skeleton, boneType, isRoot);
         }
 
+        public void CloseFinger(uint handBoneType, HandClosureGroup fingerGroup, float closureRate)
+        {
+            poseEditionService.CloseFinger(skeleton, handClosureSkeleton, handBoneType, fingerGroup, closureRate);
+        }
     }
 }
 #endif
