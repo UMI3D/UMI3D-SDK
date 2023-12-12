@@ -90,25 +90,36 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
     {
-        //UnityEngine.Debug.Log($"Hello {value?.entity?.dto} {value.entity.dto is DistantEnvironmentDto} {value.propertyKey} {value.propertyKey == UMI3DPropertyKeys.DistantEnvironment}");
-        if (value.propertyKey == UMI3DPropertyKeys.DistantEnvironmentReliable && value?.entity.dto is DistantEnvironmentDto dto)
+        if (value?.entity.dto is not DistantEnvironmentDto dto)
+            return false;
+        switch (value.propertyKey)
         {
-            _SetUMI3DProperty(value, dto);
-            return true;
+            case UMI3DPropertyKeys.DistantEnvironmentReliable:
+                SetUmi3dPropertyList(value, dto);
+                break;
+            case UMI3DPropertyKeys.DistantEnvironmentUnreliable:
+                var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
+                MainThreadManager.Run(async () =>
+                {
+                    await ReadBinaryDto(obj, dto);
+                });
+                break;
+
+            case UMI3DPropertyKeys.DistantEnvironmentResourceUrl:
+                var url = UMI3DSerializer.Read<string>(value.container);
+                distantEnvironments[dto.id].resourcesUrl = url;
+                break;
+            case UMI3DPropertyKeys.DistantEnvironmentUseDto:
+                var use = UMI3DSerializer.Read<bool>(value.container);
+                distantEnvironments[dto.id].useDto = use;
+                break;
+            default:
+                return false;
         }
-        if (value.propertyKey == UMI3DPropertyKeys.DistantEnvironmentUnreliable && value?.entity.dto is DistantEnvironmentDto _dto)
-        {
-            var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
-            MainThreadManager.Run(async () =>
-            {
-                await ReadBinaryDto(obj, _dto);
-            });
-            return true;
-        }
-        return false;
+        return true;
     }
 
-    async void _SetUMI3DProperty(SetUMI3DPropertyContainerData value, DistantEnvironmentDto dto)
+    void SetUmi3dPropertyList(SetUMI3DPropertyContainerData value, DistantEnvironmentDto dto)
     {
         int index;
         BinaryDto obj;

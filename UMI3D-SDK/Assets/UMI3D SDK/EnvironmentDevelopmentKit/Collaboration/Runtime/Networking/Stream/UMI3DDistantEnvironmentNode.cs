@@ -19,7 +19,6 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     public bool SendTransaction;
 
     public string ResourceServerUrl { get; set; }
-    protected DistantEnvironmentDto dto;
     [SerializeField]
     private string serverUrl;
 
@@ -29,6 +28,9 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
     UMI3DAsyncListProperty<BinaryDto> lastTransactionsAsync;
     UMI3DAsyncProperty<BinaryDto> lastTransactionAsync;
+    UMI3DAsyncProperty<GlTFEnvironmentDto> environmentDto;
+    UMI3DAsyncProperty<string> resourcesUrl;
+    UMI3DAsyncProperty<bool> useDto;
 
     int refresh = 60000;
     int reconnection = 60000;
@@ -54,7 +56,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             if (!nvClient.IsConnected() || nvClient.environement == null)
                 continue;
 
-            dto.environmentDto = nvClient.environement;
+            environmentDto.SetValue( nvClient.environement);
             lastTransactionAsync.SetValue(new());
         }
     }
@@ -79,11 +81,10 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         base.InitDefinition(id);
 
         lastTransactionsAsync = new UMI3DAsyncListProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironmentReliable, new());
-        lastTransactionAsync = new UMI3DAsyncProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironmentUnreliable, new());
-        dto = new DistantEnvironmentDto();
-        dto.id = id;
-        //if (!serverUrl.IsNullOrEmpty())
-        //    Restart();
+        lastTransactionAsync = new UMI3DAsyncProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironmentUnreliable, null);
+        environmentDto = new UMI3DAsyncProperty<GlTFEnvironmentDto>(Id(), 0, null);
+        resourcesUrl = new UMI3DAsyncProperty<string>(Id(), UMI3DPropertyKeys.DistantEnvironmentResourceUrl, null);
+        useDto = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.DistantEnvironmentUseDto, false);
     }
 
     public void OnData(Binary data)
@@ -103,7 +104,6 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         var op = (data.IsReliable) ? lastTransactionsAsync.Add(bin) : lastTransactionAsync.SetValue(bin);
         var t = op.ToTransaction(data.IsReliable);
         t.Dispatch();
-
     }
 
     async void Log(Binary data)
@@ -168,21 +168,15 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         data.ForEach(t => t.environmentId = Id());
         UMI3DCollaborationServer.ForgeServer.trackingRelay.SetFrame(player, data);
-        //foreach(var tk in data)
-        //if (dto.environmentDto.extensions.umi3d is UMI3DCollaborationEnvironmentDto _dto && !_dto.userList.Any(u => u.id == tk.userId))
-        //{
-        //    _dto.userList = 
-
-        //}
     }
 
     public override IEntity ToEntityDto(UMI3DUser user)
     {
         var nDto = new DistantEnvironmentDto()
         {
-            id = dto.id,
-            environmentDto = dto.environmentDto,
-            resourcesUrl = dto.resourcesUrl,
+            id = Id(),
+            environmentDto = environmentDto.GetValue(user),
+            resourcesUrl = resourcesUrl.GetValue(user),
             binaries = lastTransactionsAsync.GetValue(user).ToList()
         };
 
@@ -226,14 +220,14 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             while (!nvClient.IsConnected() || nvClient.environement == null)
                 await Task.Yield();
 
-            UnityEngine.Debug.Log($"{nvClient != null} {dto != null}");
-            dto.environmentDto = nvClient.environement;
-            UnityEngine.Debug.Log($"ENV {dto.environmentDto != null}");
+            environmentDto.SetValue(nvClient.environement);
             //if (dto.environmentDto?.scenes != null)
             //    dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
-            dto.resourcesUrl = ResourceServerUrl;
-            dto.useDto = nvClient.useDto;
+            resourcesUrl.SetValue(ResourceServerUrl);
+            useDto.SetValue(nvClient.useDto);
+            
+            GetLoadEntity().ToTransaction(true).Dispatch();
 
             return true;
         }
