@@ -31,15 +31,24 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     UMI3DAsyncProperty<BinaryDto> lastTransactionAsync;
 
     int refresh = 60000;
+    int reconnection = 60000;
     bool run = false;
 
     async void Loop()
     {
         if (run) return;
-        //run = true;
-
+        run = true;
         while (run)
         {
+            if(!wcClient.IsConnected())
+            {
+                UnityEngine.Debug.Log("connect");
+                await Connect();
+                //return;
+                await UMI3DAsyncManager.Delay(reconnection);
+                continue;
+            }
+
             await UMI3DAsyncManager.Delay(refresh);
 
             if (!nvClient.IsConnected() || nvClient.environement == null)
@@ -194,7 +203,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         UMI3DCollaborationServer.Instance.OnUserCreated.AddListener(OnUserCreated);
     }
 
-    async Task _Start()
+    Task _Start()
     {
         Id();
         UnityEngine.Debug.Log("start");
@@ -204,6 +213,12 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             url = ServerUrl
         };
         wcClient = new UMI3DWorldControllerClient1(media, this);
+        Loop();
+        return Task.CompletedTask;
+    }
+
+    async Task<bool> Connect()
+    {
         if (await wcClient.Connect())
         {
             nvClient = await wcClient.ConnectToEnvironment();
@@ -220,8 +235,9 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             dto.resourcesUrl = ResourceServerUrl;
             dto.useDto = nvClient.useDto;
 
-            Loop();
+            return true;
         }
+        return false;
     }
 
     async Task _Stop()
