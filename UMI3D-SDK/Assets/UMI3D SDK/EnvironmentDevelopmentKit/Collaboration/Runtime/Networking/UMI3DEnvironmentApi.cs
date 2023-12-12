@@ -22,6 +22,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
@@ -464,8 +465,14 @@ namespace umi3d.edk.collaboration
                 while (!finished) System.Threading.Thread.Sleep(1);
 
                 e.Response.WriteContent(result?.ToBson() ?? new byte[0]);
+                NotifyRefresh(user);
             }
             UMI3DLogger.Log($"End Get Environment {user?.Id()}", scope);
+        }
+
+        private async void NotifyRefresh(UMI3DUser user) {
+            await Task.Yield();
+            UMI3DServer.Instance.NotifyUserRefreshed(user);
         }
 
         private IEnumerator _GetEnvironment(UMI3DEnvironment environment, UMI3DUser user, Action<GlTFEnvironmentDto> callback, Action error)

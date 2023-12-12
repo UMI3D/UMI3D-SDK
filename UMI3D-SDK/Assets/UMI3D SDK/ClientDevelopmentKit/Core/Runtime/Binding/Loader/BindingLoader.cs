@@ -111,7 +111,7 @@ namespace umi3d.cdk.binding
             {
                 case RigNodeBindingDataDto nodeBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(environmentId, boundNodeId);
+                        UMI3DNodeInstance node = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, boundNodeId, null) as UMI3DNodeInstance;
                         if (node is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
@@ -135,7 +135,7 @@ namespace umi3d.cdk.binding
                     }
                 case NodeBindingDataDto nodeBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(environmentId, boundNodeId);
+                        UMI3DNodeInstance node = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, boundNodeId, null) as UMI3DNodeInstance;
                         if (node is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
@@ -153,7 +153,7 @@ namespace umi3d.cdk.binding
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(environmentId, boundNodeId);
+                        UMI3DNodeInstance boundNode  = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, boundNodeId, null) as UMI3DNodeInstance;
 
                         var tasks = multiBindingDataDto.Bindings.Select(x => LoadData(environmentId, boundNodeId, x));
                         var bindings = await Task.WhenAll(tasks);

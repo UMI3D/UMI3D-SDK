@@ -171,27 +171,35 @@ namespace umi3d.cdk.collaboration.userCapture
 
         private void UpdateSkeletons(IEnumerable<UMI3DUser> users)
         {
-            List<(ulong,ulong)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
-            readyUserIdList.Remove((0,collaborationClientServerService.GetUserId()));
-
-            var joinedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
-            var deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();
-
-            foreach (var userId in deletedUsersId)
+            try
             {
-                if (Skeletons.TryGetValue(userId, out var skeleton) && skeleton is CollaborativeSkeleton collabSkeleton)
+                UnityEngine.Debug.Log($" user {users.ToString<UMI3DUser>(u => $"{u.EnvironmentId} {u.id.ToString()}")}");
+                List<(ulong, ulong)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
+                readyUserIdList.Remove((0, collaborationClientServerService.GetUserId()));
+
+                var joinedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
+                var deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();
+
+                foreach (var userId in deletedUsersId)
                 {
-                    UnityEngine.Object.Destroy(collabSkeleton.gameObject);
-                    skeletons.Remove(userId);
+                    if (Skeletons.TryGetValue(userId, out var skeleton) && skeleton is CollaborativeSkeleton collabSkeleton)
+                    {
+                        UnityEngine.Object.Destroy(collabSkeleton.gameObject);
+                        skeletons.Remove(userId);
+                    }
+                }
+
+                foreach (var userId in joinedUsersId)
+                {
+                    if (userId.Item1 != 0 || userId.Item2 != collaborationClientServerService.GetUserId())
+                    {
+                        CreateSkeleton(userId.Item1, userId.Item2, CollabSkeletonsScene.transform, StandardHierarchy);
+                    }
                 }
             }
-
-            foreach (var userId in joinedUsersId)
+            catch(Exception e)
             {
-                if (userId.Item1 != 0 || userId.Item2 != collaborationClientServerService.GetUserId())
-                {
-                    CreateSkeleton(userId.Item1,userId.Item2, CollabSkeletonsScene.transform, StandardHierarchy);
-                }
+                UnityEngine.Debug.LogException(e);
             }
         }
 

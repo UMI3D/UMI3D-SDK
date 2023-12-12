@@ -365,6 +365,8 @@ namespace umi3d.cdk.collaboration
             else
                 userList = new();
 
+            UnityEngine.Debug.Log($"{environmentId} {usersNew.ToString(u => u.id.ToString())}");
+
             userList[environmentId] = usersNew.Select(u => new UMI3DUser(environmentId, u)).ToList();
 
             OnUpdateUserList?.Invoke();

@@ -45,10 +45,22 @@ public class DistantEnvironmentLoader : AbstractLoader
                 await UMI3DEnvironmentLoader.Instance.ReadUMI3DExtension(distantDto.id, distantDto.environmentDto, null);
 
                 await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id, distantDto.environmentDto.scenes);
+                MainThreadManager.Run(async () =>
+                {
+                    foreach (var item in distantDto.binaries)
+                    {
+                        try
+                        {
+                            Log(item);
+                            await ReadBinaryDto(item, 0, distantDto);
+                        }
+                        catch (Exception ex)
+                        {
+                            UnityEngine.Debug.LogException(ex);
+                        }
+                    }
+                });
 
-                foreach (var item in distantDto.binaries)
-                    await ReadBinaryDto(item, 0, distantDto);
-                
                 e.NotifyLoaded();
             }
             catch (Exception e)
@@ -60,7 +72,13 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
     {
-        if (value.property.property == UMI3DPropertyKeys.DistantEnvironment)
+        if (value.property.property == UMI3DPropertyKeys.DistantEnvironmentReliable)
+        {
+            var obj = value.property.value as BinaryDto;
+            UnityEngine.Debug.Log("Need To forward transaction");
+            return Task.FromResult(true);
+        }
+        if (value.property.property == UMI3DPropertyKeys.DistantEnvironmentUnreliable)
         {
             var obj = value.property.value as BinaryDto;
             UnityEngine.Debug.Log("Need To forward transaction");
@@ -73,12 +91,20 @@ public class DistantEnvironmentLoader : AbstractLoader
     public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
     {
         //UnityEngine.Debug.Log($"Hello {value?.entity?.dto} {value.entity.dto is DistantEnvironmentDto} {value.propertyKey} {value.propertyKey == UMI3DPropertyKeys.DistantEnvironment}");
-        if (value.propertyKey == UMI3DPropertyKeys.DistantEnvironment && value?.entity.dto is DistantEnvironmentDto dto)
+        if (value.propertyKey == UMI3DPropertyKeys.DistantEnvironmentReliable && value?.entity.dto is DistantEnvironmentDto dto)
         {
             _SetUMI3DProperty(value, dto);
             return true;
         }
-
+        if (value.propertyKey == UMI3DPropertyKeys.DistantEnvironmentUnreliable && value?.entity.dto is DistantEnvironmentDto _dto)
+        {
+            var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
+            MainThreadManager.Run(async () =>
+            {
+                await ReadBinaryDto(obj, value.container.timeStep, _dto);
+            });
+            return true;
+        }
         return false;
     }
 
@@ -142,7 +168,7 @@ public class DistantEnvironmentLoader : AbstractLoader
 
     async void Log(BinaryDto data)
     {
-        await Task.Yield();
+       // await Task.Yield();
         ByteContainer container = new ByteContainer(0, 0, data.data);
         uint TransactionId = UMI3DSerializer.Read<uint>(container);
         UnityEngine.Debug.Log( PerformTransaction(container));

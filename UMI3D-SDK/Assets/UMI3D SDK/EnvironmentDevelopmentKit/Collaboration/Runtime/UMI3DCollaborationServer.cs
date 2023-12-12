@@ -652,6 +652,13 @@ namespace umi3d.edk.collaboration
             }
         }
 
+
+        public override void NotifyUserRefreshed(UMI3DUser user)
+        {
+            Collaboration.NotifyUserStatusChanged(user as UMI3DCollaborationAbstractUser);
+            base.NotifyUserRefreshed(user);
+        }
+
         /// <summary>
         /// Call To Notify a user status change.
         /// </summary>

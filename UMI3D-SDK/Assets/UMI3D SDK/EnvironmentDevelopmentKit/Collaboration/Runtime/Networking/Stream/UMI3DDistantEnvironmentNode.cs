@@ -11,6 +11,7 @@ using umi3d.common.userCapture.tracking;
 using BeardedManStudios.Forge.Networking.Frame;
 using System.ComponentModel;
 using System.Threading;
+using umi3d.common.collaboration.dto;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
@@ -26,7 +27,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     UMI3DWorldControllerClient1 wcClient = null;
     UMI3DEnvironmentClient1 nvClient = null;
 
-    UMI3DAsyncListProperty<BinaryDto> lastTransactionAsync;
+    UMI3DAsyncListProperty<BinaryDto> lastTransactionsAsync;
+    UMI3DAsyncProperty<BinaryDto> lastTransactionAsync;
 
     int refresh = 60000;
     bool run = false;
@@ -34,7 +36,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     async void Loop()
     {
         if (run) return;
-        run = true;
+        //run = true;
 
         while (run)
         {
@@ -67,7 +69,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         base.InitDefinition(id);
 
-        lastTransactionAsync = new UMI3DAsyncListProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironment, new());
+        lastTransactionsAsync = new UMI3DAsyncListProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironmentReliable, new());
+        lastTransactionAsync = new UMI3DAsyncProperty<BinaryDto>(Id(), UMI3DPropertyKeys.DistantEnvironmentUnreliable, new());
         dto = new DistantEnvironmentDto();
         dto.id = id;
         //if (!serverUrl.IsNullOrEmpty())
@@ -84,12 +87,13 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
         if (bin.data == null || bin.data.Length <= 0)
             return;
+        if (data.IsReliable)
+            Log(data);
 
-        //Log(data);
-
-        var op = lastTransactionAsync.Add(bin);
+        var op = (data.IsReliable) ? lastTransactionsAsync.Add(bin) : lastTransactionAsync.SetValue(bin);
         var t = op.ToTransaction(data.IsReliable);
         t.Dispatch();
+
     }
 
     async void Log(Binary data)
@@ -154,6 +158,12 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         data.ForEach(t => t.environmentId = Id());
         UMI3DCollaborationServer.ForgeServer.trackingRelay.SetFrame(player, data);
+        //foreach(var tk in data)
+        //if (dto.environmentDto.extensions.umi3d is UMI3DCollaborationEnvironmentDto _dto && !_dto.userList.Any(u => u.id == tk.userId))
+        //{
+        //    _dto.userList = 
+
+        //}
     }
 
     public override IEntity ToEntityDto(UMI3DUser user)
@@ -163,7 +173,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             id = dto.id,
             environmentDto = dto.environmentDto,
             resourcesUrl = dto.resourcesUrl,
-            binaries = lastTransactionAsync.GetValue(user).ToList()
+            binaries = lastTransactionsAsync.GetValue(user).ToList()
         };
 
         return nDto;
