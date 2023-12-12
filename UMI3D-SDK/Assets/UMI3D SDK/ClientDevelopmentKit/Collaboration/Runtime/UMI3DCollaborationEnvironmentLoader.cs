@@ -55,7 +55,7 @@ namespace umi3d.cdk.collaboration
         public IReadOnlyList<UMI3DUser> JoinnedUserList => UserList.Where(u => u.status >= StatusType.AWAY || (UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId())).ToList();
         public event Action OnUpdateJoinnedUserList;
 
-        private ulong lastTimeUserMessageListReceived = 0;
+        private Dictionary<ulong,ulong> lastTimeUserMessageListReceived = new();
 
         public UMI3DUser GetClientUser()
         {
@@ -185,7 +185,7 @@ namespace umi3d.cdk.collaboration
             {
                 case UMI3DPropertyKeys.UserList:
                     var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
-                    return SetUserList(dto, data.operationId, data.propertyKey, data.container);
+                    return SetUserList(data.environmentId, dto, data.operationId, data.propertyKey, data.container);
 
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
@@ -255,13 +255,13 @@ namespace umi3d.cdk.collaboration
         /// <param name="dto"></param>
         /// <param name="property"></param>
         /// <returns></returns>
-        private bool SetUserList(UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
+        private bool SetUserList(ulong environmentId, UMI3DCollaborationEnvironmentDto dto, uint operationId, uint propertyKey, ByteContainer container)
         {
             if (dto == null) return false;
 
-            if (lastTimeUserMessageListReceived < container.timeStep)
+            if (!lastTimeUserMessageListReceived.ContainsKey(environmentId) || lastTimeUserMessageListReceived[environmentId] < container.timeStep)
             {
-                lastTimeUserMessageListReceived = container.timeStep;
+                lastTimeUserMessageListReceived[environmentId] = container.timeStep;
             }
             else
             {
@@ -377,7 +377,7 @@ namespace umi3d.cdk.collaboration
         {
             base.InternalClear();
 
-            lastTimeUserMessageListReceived = 0;
+            lastTimeUserMessageListReceived.Clear();
         }
     }
 }
