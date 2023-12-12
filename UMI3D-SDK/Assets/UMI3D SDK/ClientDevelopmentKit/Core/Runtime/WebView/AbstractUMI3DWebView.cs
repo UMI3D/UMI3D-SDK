@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -117,6 +118,26 @@ namespace umi3d.cdk
             }
         }
 
+        /// <summary>
+        /// if true, will use <see cref="whiteList"/> to determine which domains are allowed.
+        /// </summary>
+        public bool useWhiteList { get; set; } = false;
+
+        /// <summary>
+        /// Authorized domains.
+        /// </summary>
+        public List<string> whiteList { get; set; } = new List<string>();
+
+        /// <summary>
+        /// If true, will use <see cref="useBlackList"/> to determine which domains are prohibited.
+        /// </summary>
+        public bool useBlackList { get; set; } = false;
+
+        /// <summary>
+        /// Not authorized domains.
+        /// </summary>
+        public List<string> blackList { get; set; } = new List<string>();
+
         #endregion
 
         #region Methods
@@ -124,6 +145,12 @@ namespace umi3d.cdk
         public virtual void Init(UMI3DWebViewDto dto)
         {
             canUrlBeForced = dto.canUrlBeForced;
+
+            useWhiteList = dto.useWhiteList;
+            whiteList = dto.whiteList;
+            useBlackList = dto.useBlackList;
+            blackList = dto.blackList;
+
             url = dto.url;
             size = dto.size.Struct();
             textureSize = dto.textureSize.Struct();
