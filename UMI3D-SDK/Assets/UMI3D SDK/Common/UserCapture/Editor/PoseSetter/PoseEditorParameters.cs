@@ -22,7 +22,7 @@ namespace umi3d.common.userCapture.pose.editor
     public static class PoseEditorParameters
     {
         public static readonly string SKELETON_PREFAB_PATH = @"Assets/UMI3D SDK/Common/UserCapture/Editor/PoseSetter/SkeletonForPoseSetter.prefab";
-        public static readonly string POSE_FORMAT_EXTENSION = "json";
+        public static readonly string POSE_FORMAT_EXTENSION = "umi3dpose";
 
         public const string DEFAULT_POSE_NAME = "NewPose";
         public const string DEFAULT_UNSAVED_POSE_NAME = "Unsaved Pose";
