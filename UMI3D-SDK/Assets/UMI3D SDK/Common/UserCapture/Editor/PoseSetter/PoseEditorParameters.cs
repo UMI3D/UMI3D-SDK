@@ -14,25 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-#if UNITY_EDITOR
-using System.Collections.Generic;
-using UnityEngine;
-
 namespace umi3d.common.userCapture.pose.editor
 {
     /// <summary>
-    /// Wrapper for skeleton being edited in the <see cref="PoseEditorWindow"/>.
+    /// Global parameters for pose editor
     /// </summary>
-    public class PoseEditorSkeleton
+    public static class PoseEditorParameters
     {
-        public GameObject root;
+        public static readonly string SKELETON_PREFAB_PATH = @"Assets/UMI3D SDK/Common/UserCapture/Editor/PoseSetter/SkeletonForPoseSetter.prefab";
+        public static readonly string POSE_FORMAT_EXTENSION = "json";
 
-        /// <summary>
-        /// Pose setter bone components collection defining each bone.
-        /// </summary>
-        public List<PoseSetterBoneComponent> boneComponents = new();
-
-        public uint anchor = BoneType.Hips;
+        public const string DEFAULT_POSE_NAME = "NewPose";
+        public const string DEFAULT_UNSAVED_POSE_NAME = "Unsaved Pose";
     }
 }
-#endif
