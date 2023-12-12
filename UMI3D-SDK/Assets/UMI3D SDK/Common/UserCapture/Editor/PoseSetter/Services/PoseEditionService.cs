@@ -218,10 +218,18 @@ namespace umi3d.common.userCapture.pose.editor
 
         #region CloseHand
 
+        /// <summary>
+        ///  Close a fingers group on the pose skeleton using a hand closure skeleton equipped with an animator
+        /// </summary>
+        /// <param name="skeleton"></param>
+        /// <param name="handClosureSkeleton"></param>
+        /// <param name="handBoneType">Hand that is closed</param>
+        /// <param name="fingerGroup">Fingers group closed</param>
+        /// <param name="closureRate">Closure rate between 0 and 1</param>
         public void CloseFinger(PoseEditorSkeleton skeleton, HandClosureSkeleton handClosureSkeleton, uint handBoneType, HandClosureGroup fingerGroup, float closureRate)
         {
-            int chosenLayer = (int)fingerGroup + 1;
-            int[] otherLayers = Enumerable.Range(0, 4).Where(x => x != chosenLayer).ToArray(); // others layers on animator. 4 in total (default + 3 groups)
+            int chosenLayer = (int)fingerGroup + 1; // skip default layer
+            int[] otherLayers = Enumerable.Range(0, handClosureSkeleton.handClosureAnimator.layerCount).Where(x => x != chosenLayer).ToArray(); // others layers on animator. 4 in total (default + 3 groups)
             foreach (int layer in otherLayers)
             {
                 handClosureSkeleton.handClosureAnimator.SetLayerWeight(layer, 0);
@@ -253,6 +261,13 @@ namespace umi3d.common.userCapture.pose.editor
             }
         }
 
+        /// <summary>
+        /// Copy the finger movement from the handClosureSkeleton to the edited pose skeleton.
+        /// </summary>
+        /// <param name="skeleton"></param>
+        /// <param name="handClosureSkeleton"></param>
+        /// <param name="rootRightFingerBoneType"></param>
+        /// <param name="isOnLeftHand"></param>
         private void CopyFingerMovement(PoseEditorSkeleton skeleton, HandClosureSkeleton handClosureSkeleton, uint rootRightFingerBoneType, bool isOnLeftHand)
         {
             PoseSetterBoneComponent handRoot, handClosureRoot;
