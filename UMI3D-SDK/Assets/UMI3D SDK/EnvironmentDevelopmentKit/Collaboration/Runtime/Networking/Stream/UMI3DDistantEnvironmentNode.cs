@@ -82,7 +82,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         var bin = new BinaryDto
         {
             data = data.StreamData.byteArr,
-            groupId = data.GroupId
+            groupId = data.GroupId,
+            timestep = data.TimeStep
         };
 
         if (bin.data == null || bin.data.Length <= 0)

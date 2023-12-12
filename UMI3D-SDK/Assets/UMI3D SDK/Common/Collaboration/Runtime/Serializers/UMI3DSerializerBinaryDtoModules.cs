@@ -36,6 +36,7 @@ namespace umi3d.common
             var b = new BinaryDto();
 
             b.groupId = UMI3DSerializer.Read<int>(container);
+            b.timestep = UMI3DSerializer.Read<ulong>(container);
             b.data = UMI3DSerializer.ReadArray<byte>(container);
             readable = true;
             result = b;
@@ -46,6 +47,7 @@ namespace umi3d.common
         public bool Write(BinaryDto value, out Bytable bytable, params object[] parameters)
         {
             bytable = UMI3DSerializer.Write(value.groupId);
+            bytable += UMI3DSerializer.Write(value.timestep);
             bytable += UMI3DSerializer.WriteCollection(value.data ?? new byte[0]);
             return true;
         }

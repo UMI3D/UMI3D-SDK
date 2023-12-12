@@ -52,7 +52,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                         try
                         {
                             Log(item);
-                            await ReadBinaryDto(item, 0, distantDto);
+                            await ReadBinaryDto(item, distantDto);
                         }
                         catch (Exception ex)
                         {
@@ -101,7 +101,7 @@ public class DistantEnvironmentLoader : AbstractLoader
             var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
             MainThreadManager.Run(async () =>
             {
-                await ReadBinaryDto(obj, value.container.timeStep, _dto);
+                await ReadBinaryDto(obj, _dto);
             });
             return true;
         }
@@ -119,7 +119,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 obj = UMI3DSerializer.Read<BinaryDto>(value.container);
                 MainThreadManager.Run(async () =>
                 {
-                    await ReadBinaryDto(obj, value.container.timeStep, dto);
+                    await ReadBinaryDto(obj, dto);
                 });
                 break;
             case UMI3DOperationKeys.SetEntityListRemoveProperty:
@@ -130,7 +130,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 obj = UMI3DSerializer.Read<BinaryDto>(value.container);
                 MainThreadManager.Run(async () =>
                 {
-                    await ReadBinaryDto(obj, value.container.timeStep, dto);
+                    await ReadBinaryDto(obj, dto);
                 });
                 break;
             default:
@@ -138,7 +138,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 MainThreadManager.Run(async () =>
                 {
                    foreach (var item in list)
-                        await ReadBinaryDto(item, value.container.timeStep, dto);
+                        await ReadBinaryDto(item, dto);
                 });
                 break;
         }
@@ -146,10 +146,10 @@ public class DistantEnvironmentLoader : AbstractLoader
 
 
 
-    async Task ReadBinaryDto(BinaryDto obj, ulong timeStep, DistantEnvironmentDto dto)
+    async Task ReadBinaryDto(BinaryDto obj, DistantEnvironmentDto dto)
     {
         //Log(obj);
-        ByteContainer container = new ByteContainer(dto.id, timeStep, obj.data);
+        ByteContainer container = new ByteContainer(dto.id, obj.timestep, obj.data);
         uint TransactionId = UMI3DSerializer.Read<uint>(container);
         try
         {
