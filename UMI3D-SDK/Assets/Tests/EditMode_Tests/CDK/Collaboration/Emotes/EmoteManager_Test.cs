@@ -218,7 +218,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             Emote emote = new Emote()
             {
-                EnvironmentId = 0L,
+                environmentId = 0L,
                 icon = null,
                 available = true,
                 dto = new UMI3DEmoteDto()

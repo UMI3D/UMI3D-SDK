@@ -281,7 +281,7 @@ namespace umi3d.cdk.collaboration.emotes
         private void StartPlayMode(Emote emote)
         {
             playingEmote = emote;
-            playingEmoteAnimation = environmentManager.GetEntityObject<UMI3DAbstractAnimation>(emote.EnvironmentId,playingEmote.AnimationId);
+            playingEmoteAnimation = environmentManager.GetEntityObject<UMI3DAbstractAnimation>(emote.environmentId,playingEmote.AnimationId);
             playingEmoteAnimation.AnimationEnded += StopEmote;
         }
 
