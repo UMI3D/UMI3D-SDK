@@ -127,24 +127,16 @@ namespace umi3d.edk.collaboration
             lock (users)
             {
                 foreach (UMI3DCollaborationAbstractUser u in users.Values)
-                {
                     if (u.token == token)
                         return (u, true, false);
-                }
+                
                 if (oldTokenOfUpdatedUser.Contains(token))
-                {
                     return (null, true, false);
-                }
-                foreach (var t in resourcesOnlyUsers.Keys)
-                {
-                    UnityEngine.Debug.Log($"{token} == {t} {t == token}");
-                }
+                
 
                 if (resourcesOnlyUsers.ContainsKey(token))
-                {
-                    UnityEngine.Debug.Log("r only");
                     return (null, false, true);
-                }
+                
             }
             return (null, false, false);
         }
@@ -152,13 +144,14 @@ namespace umi3d.edk.collaboration
         public (UMI3DCollaborationAbstractUser user, bool oldToken, bool oldUser, bool resourcesOnly) GetUserByNakedTokenForConnection(string token)
         {
             (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) connected = GetUserByNakedToken(token);
+
             if (connected.oldToken || connected.user != null)
                 return (connected.user, connected.oldToken, false, connected.resourcesOnly);
+
             foreach (UMI3DCollaborationAbstractUser user in lostUsers.Values)
-            {
                 if (user.token == token)
                     return (user, true, true, false);
-            }
+            
             return (null, false, false, false);
 
         }
