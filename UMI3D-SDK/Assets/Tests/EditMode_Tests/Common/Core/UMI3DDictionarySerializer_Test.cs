@@ -44,13 +44,32 @@ namespace EditMode_Tests
         {
             Assert.IsTrue(UMI3DSerializer.IsCountable<T>() == expectedIsCountable, $"Expected Is Countable is {expectedIsCountable} while method return {!expectedIsCountable}");
             var bytable = UMI3DSerializer.Write(value);
-            var result = UMI3DSerializer.ReadDictionary<T,L>(new ByteContainer(0, bytable.ToBytes()));
+            var result = UMI3DSerializer.ReadDictionary<T,L>(new ByteContainer(0, 0, bytable.ToBytes()));
             Assert.IsTrue(result.Count == value.Count, "Object deserialization failed.");
             foreach( var p in result.Zip(value,(a,b) => (a,b)))
             {
                 Assert.AreEqual(p.a.Key, p.b.Key, $"values does not match {p.a.Key} => {p.b.Key}");
                 Assert.AreEqual(p.a.Value, p.b.Value, $"values does not match {p.a.Value} => {p.b.Value}");
             }
+        }
+
+
+
+        [Test]
+        public void TestDictionary()
+        {
+            Dictionary<(int, int), int> value = new()
+            {
+                { (0,1), 3 },
+                 { (0,2), 4 },
+                  { (1,1), 5 }
+            };
+            Assert.IsTrue(value.ContainsKey((0, 1)), $"values does not contain {(0, 1)}");
+            Assert.IsTrue(value.ContainsKey((0, 2)), $"values does not contain {(0, 2)}");
+            Assert.IsTrue(value.ContainsKey((1, 1)), $"values does not contain {(1, 1)}");
+            Assert.AreEqual(value[(0, 1)], 3, $"values does not match for {(0, 1)}");
+            Assert.AreEqual(value[(0, 2)], 4, $"values does not match for {(0, 2)}");
+            Assert.AreEqual(value[(1, 1)], 5, $"values does not match for {(1, 1)}");
         }
 
         [Test]

@@ -71,8 +71,19 @@ namespace umi3d.edk.binding
         protected void Init()
         {
             umi3dServerService.OnUserActive.AddListener(DispatchBindings);
+            umi3dServerService.OnUserRefreshed.AddListener(ReDispatchBindings);
             umi3dServerService.OnUserMissing.AddListener(CleanBindings);
             umi3dServerService.OnUserLeave.AddListener(CleanBindings);
+        }
+
+
+        protected virtual void ReDispatchBindings(UMI3DUser user)
+        {
+            if (usersWithBindingsReceived.Contains(user))
+            {
+                usersWithBindingsReceived.Remove(user);
+                DispatchBindings(user);
+            }
         }
 
         /// <summary>

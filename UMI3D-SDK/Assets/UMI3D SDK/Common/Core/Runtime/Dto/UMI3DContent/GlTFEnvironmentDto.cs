@@ -21,7 +21,6 @@ namespace umi3d.common
     [System.Serializable]
     public class GlTFEnvironmentDto : AbstractEntityDto
     {
-
         public GlTFAsset asset { get; set; } = new GlTFAsset();
 
         public List<GlTFSceneDto> scenes { get; set; } = new List<GlTFSceneDto>();

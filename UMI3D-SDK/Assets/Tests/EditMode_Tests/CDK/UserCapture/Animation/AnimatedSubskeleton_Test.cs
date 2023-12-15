@@ -90,9 +90,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             foreach (var anim in animationsDtos)
             {
-                mockAnimations.Add(anim.Key, new Mock<UMI3DAnimatorAnimation>(anim.Value, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object));
+                mockAnimations.Add(anim.Key, new Mock<UMI3DAnimatorAnimation>(MockBehavior.Default, 0UL, anim.Value, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object));
                 mockAnimations[anim.Key].Setup(x => x.IsPlaying()).Returns(anim.Value.playing);
-                environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(anim.Key)).Returns(mockAnimations[anim.Key].Object);
+                environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, anim.Key)).Returns(mockAnimations[anim.Key].Object);
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
@@ -119,12 +119,12 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
                 id = animId,
                 playing = true
             };
-            var mockAnimation = new Mock<UMI3DAnimatorAnimation>(animDto, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object);
+            var mockAnimation = new Mock<UMI3DAnimatorAnimation>(MockBehavior.Default, 0UL,animDto, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object);
             mockAnimation.Setup(x => x.IsPlaying()).Returns(true);
 
             mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
 
-            environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(animId)).Returns(mockAnimation.Object);
+            environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, animId)).Returns(mockAnimation.Object);
 
             animatedSubskeleton = new AnimatedSubskeleton(mockSkeletonMapper.Object, new UMI3DAnimatorAnimation[] { mockAnimation.Object }, 0, new SkeletonAnimationParameterDto[0],
                                                         mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object); 
@@ -155,9 +155,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             foreach (var anim in animationsDtos)
             {
-                mockAnimations.Add(anim.Key, new Mock<UMI3DAnimatorAnimation>(anim.Value, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object));
+                mockAnimations.Add(anim.Key, new Mock<UMI3DAnimatorAnimation>(MockBehavior.Default, 0UL, anim.Value, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object));
                 mockAnimations[anim.Key].Setup(x => x.IsPlaying()).Returns(anim.Value.playing);
-                environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(anim.Key)).Returns(mockAnimations[anim.Key].Object);
+                environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, anim.Key)).Returns(mockAnimations[anim.Key].Object);
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);
@@ -191,9 +191,9 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
 
             foreach (var anim in animationsDtos)
             {
-                mockAnimations.Add(anim.Key, new Mock<UMI3DAnimatorAnimation>(anim.Value, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object));
+                mockAnimations.Add(anim.Key, new Mock<UMI3DAnimatorAnimation>(MockBehavior.Default, 0UL, anim.Value, mockCoroutineService.Object, mockUnityMainThreadDispatcher.Object));
                 mockAnimations[anim.Key].Setup(x => x.IsPlaying()).Returns(anim.Value.playing);
-                environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(anim.Key)).Returns(mockAnimations[anim.Key].Object);
+                environmentLoaderService.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, anim.Key)).Returns(mockAnimations[anim.Key].Object);
             }
 
             mockSkeletonMapper.Setup(x => x.GetPose(hierarchy)).Returns(targetPose);

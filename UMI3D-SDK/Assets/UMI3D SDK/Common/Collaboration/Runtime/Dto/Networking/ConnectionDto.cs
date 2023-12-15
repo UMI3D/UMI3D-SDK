@@ -47,5 +47,7 @@ namespace umi3d.common.collaboration.dto.networking
         /// If false : the client to connect normaly. <br/>
         /// If true : the client ask only for the library it will need in a later connection.
         public bool libraryPreloading { get; set; }
+
+        public bool isServer { get; set; }
     }
 }

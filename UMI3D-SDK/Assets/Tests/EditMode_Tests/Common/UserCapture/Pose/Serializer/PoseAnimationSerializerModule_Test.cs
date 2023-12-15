@@ -69,7 +69,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseClipDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseClipDto result);
@@ -110,7 +110,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseAnimatorDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnimatorDto result);
             Assert.IsTrue(readable);
@@ -145,7 +145,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(duration, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out DurationDto result);
             Assert.IsTrue(readable);

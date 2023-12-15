@@ -58,15 +58,15 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Init the IDs, inits the overriders, registers this entity to the environnement loader
         /// </summary>
-        public override async Task<PoseAnimator> Load(PoseAnimatorDto dto)
+        public override async Task<PoseAnimator> Load(ulong environmentId, PoseAnimatorDto dto)
         {
             if (dto == null)
                 throw new System.ArgumentNullException(nameof(dto));
 
             IPoseCondition[] poseConditions = await Task.WhenAll(dto.poseConditions
-                                                                .Select(x => LoadPoseCondition(x)));
+                                                                .Select(x => LoadPoseCondition(environmentId, x)));
 
-            UMI3DEntityInstance poseClipInstance = await loadingService.WaitUntilEntityLoaded(dto.poseClipId, null);
+            UMI3DEntityInstance poseClipInstance = await loadingService.WaitUntilEntityLoaded(environmentId, dto.poseClipId, null);
             PoseClip poseClip = (PoseClip)poseClipInstance.Object;
 
             PoseAnimator poseAnimator = new(dto, poseClip, poseConditions.Where(x => x is not null).ToArray());
@@ -74,15 +74,15 @@ namespace umi3d.cdk.userCapture.pose
             if (poseAnimator.ActivationMode == (ushort)PoseAnimatorActivationMode.AUTO)
                 poseAnimator.StartWatchActivationConditions();
 
-            environmentService.RegisterEntity(dto.id, dto, poseAnimator, () => Delete(dto.id)).NotifyLoaded();
+            environmentService.RegisterEntity(environmentId, dto.id, dto, poseAnimator, () => Delete(environmentId, dto.id)).NotifyLoaded();
 
             return poseAnimator;
         }
 
         /// <inheritdoc/>
-        public override void Delete(ulong id)
+        public override void Delete(ulong environmentId, ulong id)
         {
-            PoseAnimator animator = environmentService.GetEntityObject<PoseAnimator>(id);
+            PoseAnimator animator = environmentService.GetEntityObject<PoseAnimator>(environmentId, id);
             animator.Clear();
         }
 
@@ -91,18 +91,18 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="dto"></param>
         /// <returns></returns>
-        protected virtual async Task<IPoseCondition> LoadPoseCondition(AbstractPoseConditionDto dto)
+        protected virtual async Task<IPoseCondition> LoadPoseCondition(ulong environmentId, AbstractPoseConditionDto dto)
         {
             switch (dto)
             {
                 case MagnitudeConditionDto magnitudeConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(magnitudeConditionDto.TargetNodeId, null);
+                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(environmentId, magnitudeConditionDto.TargetNodeId, null);
                         return new MagnitudePoseCondition(magnitudeConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case DirectionConditionDto directionConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(directionConditionDto.TargetNodeId, null);
+                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(environmentId, directionConditionDto.TargetNodeId, null);
                         return new DirectionPoseCondition(directionConditionDto, targetNodeInstance.transform, skeletonService.PersonalSkeleton.TrackedSubskeleton);
                     }
                 case BoneRotationConditionDto boneRotationConditionDto:
@@ -111,32 +111,32 @@ namespace umi3d.cdk.userCapture.pose
                     }
                 case ScaleConditionDto scaleConditionDto:
                     {
-                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(scaleConditionDto.TargetId, null);
+                        UMI3DNodeInstance targetNodeInstance = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(environmentId, scaleConditionDto.TargetId, null);
                         return new ScalePoseCondition(scaleConditionDto, targetNodeInstance.transform);
                     }
                 case AndConditionDto andConditionDto:
                     {
-                        IPoseCondition conditionA = await LoadPoseCondition(andConditionDto.ConditionA);
-                        IPoseCondition conditionB = await LoadPoseCondition(andConditionDto.ConditionB);
+                        IPoseCondition conditionA = await LoadPoseCondition(environmentId, andConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(environmentId, andConditionDto.ConditionB);
                         return new AndPoseCondition(andConditionDto, conditionA, conditionB);
                     }
                 case OrConditionDto orConditionDto:
                     {
-                        IPoseCondition conditionA = await LoadPoseCondition(orConditionDto.ConditionA);
-                        IPoseCondition conditionB = await LoadPoseCondition(orConditionDto.ConditionB);
+                        IPoseCondition conditionA = await LoadPoseCondition(environmentId, orConditionDto.ConditionA);
+                        IPoseCondition conditionB = await LoadPoseCondition(environmentId, orConditionDto.ConditionB);
                         return new OrPoseCondition(orConditionDto, conditionA, conditionB);
                     }
                 case NotConditionDto notConditionDto:
                     {
-                        IPoseCondition condition = await LoadPoseCondition(notConditionDto.Condition);
+                        IPoseCondition condition = await LoadPoseCondition(environmentId, notConditionDto.Condition);
                         return new NotPoseCondition(notConditionDto, condition);
                     }
                 case EnvironmentPoseConditionDto environmentPoseConditionDto:
                     {
-                        var instance = environmentService.TryGetEntityInstance(environmentPoseConditionDto.Id);
+                        var instance = environmentService.TryGetEntityInstance(environmentId, environmentPoseConditionDto.Id);
                         if (instance == null)
                         {
-                            instance = environmentService.RegisterEntity(environmentPoseConditionDto.Id, environmentPoseConditionDto, new EnvironmentPoseCondition(environmentPoseConditionDto));
+                            instance = environmentService.RegisterEntity(environmentId, environmentPoseConditionDto.Id, environmentPoseConditionDto, new EnvironmentPoseCondition(environmentPoseConditionDto));
                             instance.NotifyLoaded();
                         }
                         

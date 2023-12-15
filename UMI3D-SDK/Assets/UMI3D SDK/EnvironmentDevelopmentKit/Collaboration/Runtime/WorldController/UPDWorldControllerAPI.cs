@@ -79,7 +79,7 @@ namespace umi3d.worldController
 
         public async void OnMessage(ulong timeStep, int groupId, byte[] bytes)
         {
-            var b = new ByteContainer(timeStep, bytes);
+            var b = new ByteContainer(0,timeStep, bytes);
             uint id = UMI3DSerializer.Read<uint>(b);
             switch (id)
             {
@@ -108,24 +108,24 @@ namespace umi3d.worldController
         }
 
 
-        public override Task NotifyUserJoin(UMI3DCollaborationUser user)
+        public override Task NotifyUserJoin(UMI3DCollaborationAbstractUser user)
         {
             forgeClient.Send(new WorldControllerUserJoinMessage(user.login).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
+        public override Task NotifyUserUnregister(UMI3DCollaborationAbstractUser user)
         {
             forgeClient.Send(new WorldControllerUserLeaveMessage(user.login).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
+        public override Task NotifyUserLeave(UMI3DCollaborationAbstractUser user)
         {
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserRegister(UMI3DCollaborationUser user)
+        public override Task NotifyUserRegister(UMI3DCollaborationAbstractUser user)
         {
             return Task.CompletedTask;
         }

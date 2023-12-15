@@ -68,17 +68,17 @@ namespace umi3d.cdk.binding
         {
             var dto = value.dto as BindingDto;
 
-            if (environmentManager.TryGetEntityInstance(dto.id) != null)
+            if (environmentManager.TryGetEntityInstance(value.environmentId,dto.id) != null)
                 return;
 
-            await environmentLoaderService.WaitUntilEntityLoaded(dto.boundNodeId, null);
+            await environmentLoaderService.WaitUntilEntityLoaded(value.environmentId, dto.boundNodeId, null);
 
-            AbstractBinding binding = await LoadData(dto.boundNodeId, dto.data);
+            AbstractBinding binding = await LoadData(value.environmentId, dto.boundNodeId, dto.data);
 
-            bindingManagementService.AddBinding(dto.boundNodeId, binding);
+            bindingManagementService.AddBinding(value.environmentId,dto.boundNodeId, binding);
 
-            void onDelete() { bindingManagementService.RemoveBinding(dto.boundNodeId); }
-            environmentManager.RegisterEntity(dto.id, dto, null, onDelete).NotifyLoaded();
+            void onDelete() { bindingManagementService.RemoveBinding(value.environmentId,dto.boundNodeId); }
+            environmentManager.RegisterEntity(value.environmentId, dto.id, dto, null, onDelete).NotifyLoaded();
         }
 
         /// <inheritdoc/>
@@ -105,13 +105,13 @@ namespace umi3d.cdk.binding
         /// <param name="boundNodeId"></param>
         /// <param name="dto"></param>
         /// <returns></returns>
-        protected virtual async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected virtual async Task<AbstractBinding> LoadData(ulong environmentId, ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case RigNodeBindingDataDto nodeBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance node = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, boundNodeId, null) as UMI3DNodeInstance;
                         if (node is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
@@ -124,7 +124,7 @@ namespace umi3d.cdk.binding
                             return null;
                         }
 
-                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
+                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
                         if (parentNode is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.parentNodeId}. Parent node does not exist.", DEBUG_SCOPE);
@@ -135,14 +135,14 @@ namespace umi3d.cdk.binding
                     }
                 case NodeBindingDataDto nodeBindingDataDto:
                     {
-                        UMI3DNodeInstance node = environmentManager.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance node = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, boundNodeId, null) as UMI3DNodeInstance;
                         if (node is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId}. Node does not exist.", DEBUG_SCOPE);
                             return null;
                         }
 
-                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
+                        var parentNode = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, nodeBindingDataDto.parentNodeId, null) as UMI3DNodeInstance;
                         if (parentNode is null)
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind node {boundNodeId} on parent node {nodeBindingDataDto.parentNodeId}. Parent node does not exist.", DEBUG_SCOPE);
@@ -153,9 +153,9 @@ namespace umi3d.cdk.binding
                     }
                 case MultiBindingDataDto multiBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentManager.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode  = await environmentLoaderService.WaitUntilEntityLoaded(environmentId, boundNodeId, null) as UMI3DNodeInstance;
 
-                        var tasks = multiBindingDataDto.Bindings.Select(x => LoadData(boundNodeId, x));
+                        var tasks = multiBindingDataDto.Bindings.Select(x => LoadData(environmentId, boundNodeId, x));
                         var bindings = await Task.WhenAll(tasks);
 
                         var simpleBindings = bindings.Select(x => x as AbstractSimpleBinding)

@@ -36,27 +36,27 @@ namespace umi3d.cdk.interaction
         private static readonly GlobalToolEvent onGlobalToolUpdate = new GlobalToolEvent();
         private static readonly GlobalToolEvent onGlobalToolDelete = new GlobalToolEvent();
 
-        public static void SubscribeToGlobalToolCreation(UnityAction<GlobalTool> callback)
+        public static void SubscribeToGlobalToolCreation(UnityAction<ulong,GlobalTool> callback)
         {
             onGlobalToolCreation.AddListener(callback);
         }
-        public static void UnsubscribeToGlobalToolCreation(UnityAction<GlobalTool> callback)
+        public static void UnsubscribeToGlobalToolCreation(UnityAction<ulong,GlobalTool> callback)
         {
             onGlobalToolCreation.RemoveListener(callback);
         }
-        public static void SubscribeToGlobalToolUpdate(UnityAction<GlobalTool> callback)
+        public static void SubscribeToGlobalToolUpdate(UnityAction<ulong,GlobalTool> callback)
         {
             onGlobalToolUpdate.AddListener(callback);
         }
-        public static void UnsubscribeToGlobalToolUpdate(UnityAction<GlobalTool> callback)
+        public static void UnsubscribeToGlobalToolUpdate(UnityAction<ulong, GlobalTool> callback)
         {
             onGlobalToolUpdate.RemoveListener(callback);
         }
-        public static void SubscribeToGlobalToolDelete(UnityAction<GlobalTool> callback)
+        public static void SubscribeToGlobalToolDelete(UnityAction<ulong, GlobalTool> callback)
         {
             onGlobalToolDelete.AddListener(callback);
         }
-        public static void UnsubscribeToGlobalToolDelete(UnityAction<GlobalTool> callback)
+        public static void UnsubscribeToGlobalToolDelete(UnityAction<ulong, GlobalTool> callback)
         {
             onGlobalToolDelete.RemoveListener(callback);
         }
@@ -70,7 +70,7 @@ namespace umi3d.cdk.interaction
 
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
-            return ReadUMI3DExtension(value.dto as GlobalToolDto, null);
+            return ReadUMI3DExtension(value.environmentId, value.dto as GlobalToolDto, null);
         }
 
         /// <summary>
@@ -78,21 +78,21 @@ namespace umi3d.cdk.interaction
         /// <br/> Part of the bytes networking workflow.
         /// </summary>
         /// <param name="dto">Tool dto</param>
-        private static async Task ReadUMI3DExtension(GlobalToolDto dto, Toolbox parent)
+        private static async Task ReadUMI3DExtension(ulong environmentId, GlobalToolDto dto, Toolbox parent)
         {
             if (GlobalTool.GetGlobalTools().Exists(t => t.id == dto.id))
                 return;
 
             if (dto is ToolboxDto toolbox)
             {
-                var tool = new Toolbox(dto, parent);
+                var tool = new Toolbox(environmentId, dto, parent);
                 var subTools = new Stack<GlobalToolDto>(toolbox.tools);
-                onGlobalToolCreation?.Invoke(tool);
+                onGlobalToolCreation?.Invoke(environmentId, tool);
                 while (subTools.Count > 0)
-                    await ReadUMI3DExtension(subTools.Pop(), tool);
+                    await ReadUMI3DExtension(environmentId, subTools.Pop(), tool);
             }
             else
-                onGlobalToolCreation?.Invoke(new GlobalTool(dto, parent));
+                onGlobalToolCreation?.Invoke(environmentId,new GlobalTool(environmentId, dto, parent));
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
@@ -104,7 +104,7 @@ namespace umi3d.cdk.interaction
 
             if (await base.SetUMI3DProperty(data))
             {
-                onGlobalToolUpdate.Invoke(GlobalTool.GetGlobalTool(dto.id));
+                onGlobalToolUpdate.Invoke(data.environmentId, GlobalTool.GetGlobalTool(dto.id));
                 return true;
             }
 
@@ -127,11 +127,11 @@ namespace umi3d.cdk.interaction
                                 UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
                                 return false;
                             }
-                            await ReadUMI3DExtension(value, null);
+                            await ReadUMI3DExtension(data.environmentId, value, null);
                             break;
                         case SetEntityListRemovePropertyDto rem:
                             int i = rem.index;
-                            RemoveTool(tb.tools[i]);
+                            RemoveTool(data.environmentId, tb.tools[i]);
                             list.RemoveAt(i);
                             break;
                         case SetEntityListPropertyDto set:
@@ -141,14 +141,14 @@ namespace umi3d.cdk.interaction
                             break;
                         default:
                             foreach (GlobalToolDto t in list)
-                                RemoveTool(t);
+                                RemoveTool(data.environmentId, t);
                             list.Clear();
                             list.AddRange(data.property.value as List<GlobalToolDto>);
                             foreach (GlobalToolDto t in list)
-                                await ReadUMI3DExtension(t, null);
+                                await ReadUMI3DExtension(data.environmentId, t, null);
                             break;
                     }
-                    onGlobalToolUpdate?.Invoke(tb);
+                    onGlobalToolUpdate?.Invoke(data.environmentId,tb);
                     return true;
                 default:
                     return false;
@@ -182,11 +182,11 @@ namespace umi3d.cdk.interaction
                                 UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
                                 return false;
                             }
-                            await ReadUMI3DExtension(value, null);
+                            await ReadUMI3DExtension(data.environmentId, value, null);
                             break;
                         case UMI3DOperationKeys.SetEntityListRemoveProperty:
                             int i = UMI3DSerializer.Read<int>(data.container);
-                            RemoveTool(tb.tools[i]);
+                            RemoveTool(data.environmentId, tb.tools[i]);
                             list.RemoveAt(i);
                             break;
                         case UMI3DOperationKeys.SetEntityListProperty:
@@ -196,14 +196,14 @@ namespace umi3d.cdk.interaction
                             break;
                         default:
                             foreach (GlobalToolDto t in list)
-                                RemoveTool(t);
+                                RemoveTool(data.environmentId, t);
                             list.Clear();
                             list.AddRange(UMI3DSerializer.ReadList<GlobalToolDto>(data.container));
                             foreach (GlobalToolDto t in list)
-                                await ReadUMI3DExtension(t, null);
+                                await ReadUMI3DExtension(data.environmentId, t, null);
                             break;
                     }
-                    onGlobalToolUpdate?.Invoke(tb);
+                    onGlobalToolUpdate?.Invoke(data.environmentId, tb);
                     return true;
                 //todo
                 default:
@@ -217,11 +217,11 @@ namespace umi3d.cdk.interaction
         /// Remove a <see cref="GlobalTool"/>.
         /// </summary>
         /// <param name="tool">Tool to remove dto</param>
-        public static void RemoveTool(GlobalToolDto tool)
+        public static void RemoveTool(ulong environmentId,GlobalToolDto tool)
         {
             var t = GlobalTool.GetGlobalTool(tool.id);
             t.Delete();
-            onGlobalToolDelete?.Invoke(t);
+            onGlobalToolDelete?.Invoke(environmentId, t);
         }
 
         /// <summary>

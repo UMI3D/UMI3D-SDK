@@ -23,6 +23,8 @@ namespace umi3d.common
     /// </summary>
     public class ByteContainer
     {
+        public ulong environmentId { get; private set; }
+
         public ulong timeStep { get; private set; }
 
         /// <summary>
@@ -42,16 +44,17 @@ namespace umi3d.common
 
         public List<CancellationToken> tokens;
 
-        private ByteContainer()
+        private ByteContainer(ulong environmentId)
         {
             tokens = new();
+            this.environmentId = environmentId;
         }
 
-        public ByteContainer(Binary frame) : this(frame.TimeStep, frame.StreamData.byteArr)
+        public ByteContainer(ulong environmentId, Binary frame) : this(environmentId, frame.TimeStep, frame.StreamData.byteArr)
         {
         }
 
-        public ByteContainer(ulong timeStep, byte[] bytes) : this()
+        public ByteContainer(ulong environmentId, ulong timeStep, byte[] bytes) : this(environmentId)
         {
             this.timeStep = timeStep;
             this.bytes = bytes;
@@ -59,7 +62,7 @@ namespace umi3d.common
             length = bytes.Length;
         }
 
-        public ByteContainer(ByteContainer container) : this()
+        public ByteContainer(ByteContainer container) : this(container.environmentId)
         {
 
             this.bytes = container.bytes;
@@ -77,15 +80,17 @@ namespace umi3d.common
 
     public class DtoContainer
     {
+        public ulong environmentId { get; private set; }
         public AbstractOperationDto operation;
         public List<CancellationToken> tokens;
 
-        private DtoContainer()
+        private DtoContainer(ulong environmentId)
         {
             tokens = new();
+            this.environmentId = environmentId;
         }
 
-        public DtoContainer(AbstractOperationDto operation) : this()
+        public DtoContainer(ulong environmentId, AbstractOperationDto operation) : this(environmentId)
         {
             this.operation = operation;
         }

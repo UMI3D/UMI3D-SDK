@@ -27,6 +27,12 @@ namespace umi3d.cdk.interaction
     /// </summary>
     public abstract class AbstractTool
     {
+
+        /// <summary>
+        /// Environment Id.
+        /// </summary>
+        public readonly ulong environmentId;
+
         /// <summary>
         /// Tool Id.
         /// </summary>
@@ -61,9 +67,9 @@ namespace umi3d.cdk.interaction
         /// Contained tools.
         /// </summary>
         public List<ulong> interactionsId => abstractDto.interactions;
-        public List<Task<AbstractInteractionDto>> interactions => abstractDto.interactions.Select(inta => UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(inta,null)).Select(async node => (await node).dto as AbstractInteractionDto).ToList();
+        public List<Task<AbstractInteractionDto>> interactions => abstractDto.interactions.Select(inta => UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, inta,null)).Select(async node => (await node).dto as AbstractInteractionDto).ToList();
 
-        public List<AbstractInteractionDto> interactionsLoaded => abstractDto.interactions.Select(UMI3DEnvironmentLoader.GetEntity).Select(node => node.dto as AbstractInteractionDto).ToList();
+        public List<AbstractInteractionDto> interactionsLoaded => abstractDto.interactions.Select(id => UMI3DEnvironmentLoader.GetEntity(environmentId,id)).Select(node => node.dto as AbstractInteractionDto).ToList();
 
         // could be removed if unity project version is 2020.1 or newer 
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
@@ -117,10 +123,10 @@ namespace umi3d.cdk.interaction
             UMI3DClientServer.SendRequest(releasedDto, true);
         }
 
-        protected AbstractTool(AbstractToolDto abstractDto)
+        protected AbstractTool(ulong environmentId, AbstractToolDto abstractDto)
         {
             this.abstractDto = abstractDto;
-
+            this.environmentId = environmentId;
         }
 
         /// <summary>
@@ -133,8 +139,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public virtual void Destroy()
         {
-            if (InteractionMapper.Instance.IsToolSelected(id))
-                InteractionMapper.Instance.ReleaseTool(id, new RequestedByEnvironment());
+            if (InteractionMapper.Instance.IsToolSelected(environmentId,id))
+                InteractionMapper.Instance.ReleaseTool(environmentId,id, new RequestedByEnvironment());
         }
     }
 }

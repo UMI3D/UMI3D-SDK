@@ -72,7 +72,7 @@ namespace EditMode_Tests.Core.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0,1, data.ToBytes());
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
@@ -107,7 +107,7 @@ namespace EditMode_Tests.Core.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0,1, data.ToBytes());
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
@@ -153,7 +153,7 @@ namespace EditMode_Tests.Core.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0,1, data.ToBytes());
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
@@ -199,7 +199,7 @@ namespace EditMode_Tests.Core.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0,1, data.ToBytes());
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 

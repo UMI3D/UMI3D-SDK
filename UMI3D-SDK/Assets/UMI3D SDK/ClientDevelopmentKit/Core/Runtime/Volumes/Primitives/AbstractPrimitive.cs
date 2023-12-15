@@ -24,6 +24,10 @@ namespace umi3d.cdk.volumes
     public abstract class AbstractPrimitive : AbstractVolumeCell
     {
         public ulong? id = null;
+        public ulong Environmentid;
+
+        public override ulong EnvironmentId() => Environmentid;
+
         public override ulong Id()
         {
             if (id == null)
@@ -52,7 +56,7 @@ namespace umi3d.cdk.volumes
                 if (rootNodeId != value)
                 {
                     rootNodeId = value;
-                    rootNode = UMI3DEnvironmentLoader.GetNode(rootNodeId)?.transform;
+                    rootNode = UMI3DEnvironmentLoader.GetNode(EnvironmentId(),rootNodeId)?.transform;
                 }
             }
         }

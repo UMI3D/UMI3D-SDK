@@ -66,9 +66,9 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 iconResource = new umi3d.common.ResourceDto()
             };
 
-            var data = new ReadUMI3DExtensionData(emoteDto);
+            var data = new ReadUMI3DExtensionData(0, emoteDto);
 
-            environmentManagerMock.Setup(x => x.RegisterEntity(It.IsAny<ulong>(), It.IsAny<UMI3DEmoteDto>(), null, null)).Returns(new UMI3DNodeInstance(() => { }));
+            environmentManagerMock.Setup(x => x.RegisterEntity(0, It.IsAny<ulong>(), It.IsAny<UMI3DEmoteDto>(), null, null)).Returns(new UMI3DNodeInstance(0, () => { }, 0));
 
             // WHEN
             await emoteLoader.ReadUMI3DExtension(data);
@@ -87,7 +87,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             // GIVEN
             var emoteDto = new UMI3DEmoteDto();
 
-            var data = new ReadUMI3DExtensionData(emoteDto);
+            var data = new ReadUMI3DExtensionData(0, emoteDto);
 
             // WHEN
             var canRead = emoteLoader.CanReadUMI3DExtension(data);
@@ -102,7 +102,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             // GIVEN
             var dto = new UMI3DDto();
 
-            var data = new ReadUMI3DExtensionData(dto);
+            var data = new ReadUMI3DExtensionData(0, dto);
 
             // WHEN
             var canRead = emoteLoader.CanReadUMI3DExtension(data);
@@ -125,12 +125,12 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = true
             };
 
-            var entityInstance = new UMI3DEntityInstance(() => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DDto()
             };
 
-            var data = new SetUMI3DPropertyData(setEntityDto, entityInstance);
+            var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
             var success = await emoteLoader.SetUMI3DProperty(data);
@@ -149,12 +149,12 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = value
             };
 
-            var entityInstance = new UMI3DEntityInstance(() => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DEmoteDto()
             };
 
-            var data = new SetUMI3DPropertyData(setEntityDto, entityInstance);
+            var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
             var success = await emoteLoader.SetUMI3DProperty(data);
@@ -174,12 +174,12 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 value = value
             };
 
-            var entityInstance = new UMI3DEntityInstance(() => { })
+            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
             {
                 dto = new UMI3DEmoteDto()
             };
 
-            var data = new SetUMI3DPropertyData(setEntityDto, entityInstance);
+            var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
             var success = await emoteLoader.SetUMI3DProperty(data);
@@ -205,9 +205,9 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             Bytable data = UMI3DSerializer.Write(dto);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
-            var readUMI3DPropertyData = new ReadUMI3DPropertyData(
+            var readUMI3DPropertyData = new ReadUMI3DPropertyData(0,
                                                                 propertyKey: UMI3DPropertyKeys.ActiveEmote,
                                                                 container: byteContainer);
 
@@ -250,9 +250,9 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             Bytable data = UMI3DSerializer.Write(dto);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
-            var readUMI3DPropertyData = new ReadUMI3DPropertyData(
+            var readUMI3DPropertyData = new ReadUMI3DPropertyData(0,
                                                                 propertyKey: propertyKey,
                                                                 container: byteContainer);
 

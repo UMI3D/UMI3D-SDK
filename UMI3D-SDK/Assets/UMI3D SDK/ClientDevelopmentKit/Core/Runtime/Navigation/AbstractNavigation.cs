@@ -38,20 +38,20 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="data"></param>
         /// <seealso cref="Teleport(TeleportDto)"/>
-        public abstract void Navigate(NavigateDto data);
+        public abstract void Navigate(ulong environmentId, NavigateDto data);
 
         /// <summary>
         /// Apply teleport request from server.
         /// </summary>
         /// <param name="data"></param>
         /// <seealso cref="Navigate(NavigateDto)"/>
-        public abstract void Teleport(TeleportDto data);
+        public abstract void Teleport(ulong environmentId, TeleportDto data);
 
         /// <summary>
         /// Apply FrameRequestDto request from server.
         /// </summary>
         /// <param name="data"></param>
-        public abstract void UpdateFrame(FrameRequestDto data);
+        public abstract void UpdateFrame(ulong environmentId, FrameRequestDto data);
 
         /// <summary>
         /// Get data on current movements of the user.

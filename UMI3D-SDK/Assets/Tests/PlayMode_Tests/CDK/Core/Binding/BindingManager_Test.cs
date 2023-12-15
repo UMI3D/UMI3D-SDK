@@ -96,7 +96,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             var initialSize = bindingManager.Bindings.Count;
 
             // WHEN
-            bindingManager.AddBinding(1005uL, null);
+            bindingManager.AddBinding(0uL,1005uL, null);
 
             // THEN
             Assert.AreEqual(initialSize, bindingManager.Bindings.Count);
@@ -109,7 +109,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             mockBindingManager.CallBase = false;
             mockBindingManager.Setup(x => x.Bindings).CallBase();
             mockBindingManager.Setup(x => x.AreBindingsActivated).Returns(false);
-            mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
+            mockBindingManager.Setup(x => x.AddBinding(0uL, It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
 
             GameObject go = new GameObject();
             var nodeBindingDto = new NodeBindingDataDto() { parentNodeId = 1005uL, priority = 10 };
@@ -119,7 +119,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             mockLateRoutineService.Setup(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false));
 
             // WHEN
-            bindingManager.AddBinding(1005uL, binding);
+            bindingManager.AddBinding(0uL, 1005uL, binding);
 
             // THEN
             mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false), Times.Never());
@@ -136,7 +136,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             mockBindingManager.CallBase = false;
             mockBindingManager.Setup(x => x.Bindings).CallBase();
             mockBindingManager.Setup(x => x.AreBindingsActivated).Returns(true);
-            mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
+            mockBindingManager.Setup(x => x.AddBinding(0uL, It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
 
             GameObject go = new GameObject();
             var nodeBindingDto = new NodeBindingDataDto() { parentNodeId = 1005uL, priority = 10 };
@@ -146,7 +146,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             mockClientServer.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
 
             // WHEN
-            bindingManager.AddBinding(1005uL, binding);
+            bindingManager.AddBinding(0uL, 1005uL, binding);
 
             // THEN
             mockLateRoutineService.Verify(x => x.AttachLateRoutine(It.IsAny<IEnumerator>(), false), Times.Once());
@@ -167,17 +167,17 @@ namespace PlayMode_Tests.Core.Binding.CDK
         {
             // GIVEN
             var go = new GameObject();
-            Dictionary<ulong, AbstractBinding> mockBindingsDict = new() { { boundNodeId, new NodeBinding(null, go.transform, null) } };
+            Dictionary<(ulong,ulong), AbstractBinding> mockBindingsDict = new() { { (0uL, boundNodeId), new NodeBinding(null, go.transform, null) } };
 
             mockBindingManager.CallBase = false;
-            mockBindingManager.Setup(x => x.RemoveBinding(It.IsAny<ulong>())).CallBase();
+            mockBindingManager.Setup(x => x.RemoveBinding(0uL, It.IsAny<ulong>())).CallBase();
             mockBindingManager.Setup(x => x.Bindings).Returns(mockBindingsDict);
 
             var otherBoundNodeId = boundNodeId + 5;
             var initialSize = mockBindingsDict.Count;
 
             // WHEN
-            bindingManager.RemoveBinding(otherBoundNodeId);
+            bindingManager.RemoveBinding(0uL, otherBoundNodeId);
 
             // THEN
             mockLateRoutineService.Verify(x => x.DetachLateRoutine(It.IsAny<IEnumerator>()), Times.Never());
@@ -198,17 +198,17 @@ namespace PlayMode_Tests.Core.Binding.CDK
             NodeBinding nodeBinding = new NodeBinding(dto, go.transform, null);
 
             mockBindingManager.CallBase = false;
-            mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
-            mockBindingManager.Setup(x => x.RemoveBinding(It.IsAny<ulong>())).CallBase();
+            mockBindingManager.Setup(x => x.AddBinding(0uL, It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
+            mockBindingManager.Setup(x => x.RemoveBinding(0uL, It.IsAny<ulong>())).CallBase();
             mockBindingManager.Setup(x => x.Bindings).CallBase();
 
-            bindingManager.AddBinding(boundNodeId, nodeBinding);
+            bindingManager.AddBinding(0uL, boundNodeId, nodeBinding);
 
             int initialSize = bindingManager.Bindings.Count;
             mockLateRoutineService.Setup(x => x.DetachLateRoutine(It.IsAny<IEnumerator>()));
 
             // WHEN
-            bindingManager.RemoveBinding(boundNodeId);
+            bindingManager.RemoveBinding(0uL, boundNodeId);
 
             // THEN
             Assert.AreEqual(initialSize - 1, bindingManager.Bindings.Count);
@@ -240,7 +240,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             mockBindingManager.Setup(x => x.Bindings).CallBase();
             mockBindingManager.Setup(x => x.BindingApplicationRoutine()).CallBase();
             mockBindingManager.Setup(x => x.AreBindingsActivated).Returns(true);
-            mockBindingManager.Setup(x => x.AddBinding(It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
+            mockBindingManager.Setup(x => x.AddBinding(0uL, It.IsAny<ulong>(), It.IsAny<AbstractBinding>())).CallBase();
             mockClientServer.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
 
             Queue<Mock<NodeBinding>> mockNodeBindings = new Queue<Mock<NodeBinding>>();
@@ -255,7 +255,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 bool success = true;
                 mockNodeBinding.Setup(x => x.Apply(out success)).Callback(() => { executionTracker.Enqueue(v.id); success = true; });
                 mockNodeBindings.Enqueue(mockNodeBinding);
-                bindingManager.AddBinding(v.id, mockNodeBinding.Object);
+                bindingManager.AddBinding(0uL, v.id, mockNodeBinding.Object);
             }
 
             // WHEN

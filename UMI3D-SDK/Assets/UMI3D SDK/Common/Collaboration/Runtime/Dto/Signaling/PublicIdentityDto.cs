@@ -37,5 +37,10 @@ namespace umi3d.common.collaboration.dto.signaling
         /// Public name attributed to the user and that should be displayed on browsers.
         /// </summary>
         public string displayName { get; set; } = null;
+
+        /// <summary>
+        /// Is this client a server itself
+        /// </summary>
+        public bool isServer { get; set; } = false;
     }
 }

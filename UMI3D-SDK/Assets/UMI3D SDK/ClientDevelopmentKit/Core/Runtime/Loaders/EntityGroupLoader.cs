@@ -43,7 +43,7 @@ namespace umi3d.cdk
             var dto = value.dto as EntityGroupDto;
             if(dto == null)
                 throw (new Umi3dException("dto should be an EntityGroupDto"));
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId, dto.id, dto, null).NotifyLoaded();
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
@@ -60,7 +60,7 @@ namespace umi3d.cdk
                         {
                             SetEntityPropertyDto np = value.property.Copy();
                             np.entityId = e;
-                            await UMI3DEnvironmentLoader.SetEntity(np,value.tokens);
+                            await UMI3DEnvironmentLoader.SetEntity(value.environmentId, np,value.tokens);
                         }
                         break;
                 }
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                     default:
                         foreach (ulong e in groupDto.entitiesId)
                         {
-                            await UMI3DEnvironmentLoader.SetEntity(value.operationId, e, value.propertyKey, new ByteContainer(value.container));
+                            await UMI3DEnvironmentLoader.SetEntity(value.environmentId, value.operationId, e, value.propertyKey, new ByteContainer(value.container));
                         }
                         break;
                 }

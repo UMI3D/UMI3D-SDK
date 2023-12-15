@@ -63,7 +63,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(magnitudeConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
@@ -82,7 +82,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(boneRotationConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
@@ -103,7 +103,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(directionConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0,  1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
@@ -122,7 +122,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(scaleConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
@@ -142,7 +142,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(environmentConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
@@ -165,7 +165,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(orConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
@@ -185,7 +185,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Write(notConditionDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);

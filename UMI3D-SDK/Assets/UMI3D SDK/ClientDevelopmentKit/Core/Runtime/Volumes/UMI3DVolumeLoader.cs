@@ -42,13 +42,13 @@ namespace umi3d.cdk.volumes
             switch (dto)
             {
                 case AbstractPrimitiveDto prim:
-                    var p = await VolumePrimitiveManager.CreatePrimitive(prim);
-                    UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, p, () => VolumePrimitiveManager.DeletePrimitive(dto.id));
+                    var p = await VolumePrimitiveManager.CreatePrimitive(value.environmentId, prim);
+                    UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, dto.id, dto, p, () => VolumePrimitiveManager.DeletePrimitive(dto.id));
 
                     break;
                 case OBJVolumeDto obj:
-                    var objVolume = await ExternalVolumeDataManager.Instance.CreateOBJVolume(obj);
-                    UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, objVolume, () => ExternalVolumeDataManager.Instance.DeleteOBJVolume(dto.id));
+                    var objVolume = await ExternalVolumeDataManager.Instance.CreateOBJVolume(value.environmentId, obj);
+                    UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, dto.id, dto, objVolume, () => ExternalVolumeDataManager.Instance.DeleteOBJVolume(dto.id));
 
                     break;
                 default:

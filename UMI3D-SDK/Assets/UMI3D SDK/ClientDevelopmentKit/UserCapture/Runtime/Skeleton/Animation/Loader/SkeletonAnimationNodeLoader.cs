@@ -82,12 +82,12 @@ namespace umi3d.cdk.userCapture.animation
 
             await base.ReadUMI3DExtension(data);
 
-            await Load(data.dto as SkeletonAnimationNodeDto);
+            await Load(data.environmentId, data.dto as SkeletonAnimationNodeDto);
         }
 
-        public async Task Load(SkeletonAnimationNodeDto skeletonNodeDto)
+        public async Task Load(ulong environmentId, SkeletonAnimationNodeDto skeletonNodeDto)
         {
-            UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
+            UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(environmentId, skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
 
             // a skeleton node should contain an animator
             Animator animator = nodeInstance.gameObject.GetComponentInChildren<Animator>();
@@ -120,13 +120,13 @@ namespace umi3d.cdk.userCapture.animation
                 Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
                 foreach (var id in skeletonNodeDto.relatedAnimationsId)
                 {
-                    var instance = await loadingManager.WaitUntilEntityLoaded(id, null);
+                    var instance = await loadingManager.WaitUntilEntityLoaded(environmentId, id, null);
                     animations.Enqueue(instance.Object as UMI3DAnimatorAnimation);
                 }
 
                 // create subSkeleton and add it to a skeleton
                 AnimatedSubskeleton animationSubskeleton = new(skeletonMapper, animations.ToArray(), skeletonNodeDto.priority, skeletonNodeDto.animatorSelfTrackedParameters);
-                AttachToSkeleton(skeletonNodeDto.userId, animationSubskeleton);
+                AttachToSkeleton(environmentId, skeletonNodeDto.userId, animationSubskeleton);
             });
             nodeInstance.Delete = () => Delete(skeletonNodeDto.userId);
 
@@ -296,7 +296,7 @@ namespace umi3d.cdk.userCapture.animation
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="animatedSubskeleton"></param>
-        protected virtual void AttachToSkeleton(ulong userId, AnimatedSubskeleton animatedSubskeleton)
+        protected virtual void AttachToSkeleton(ulong environment, ulong userId, AnimatedSubskeleton animatedSubskeleton)
         {
             var skeleton = personnalSkeletonService.PersonalSkeleton;
 

@@ -39,7 +39,7 @@ namespace umi3d.cdk.menu.interaction
         /// Set up the menu for the global tool.
         /// </summary>
         /// <param name="tool"></param>
-        public async void Setup(GlobalTool tool)
+        public async void Setup(ulong environmentId,GlobalTool tool)
         {
             RemoveAll();
             this.tool = tool;
@@ -60,7 +60,7 @@ namespace umi3d.cdk.menu.interaction
             foreach(var interaction in tool.interactions)
             {
                 var inter = await interaction;
-                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id));
+                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter,environmentId, tool.id));
             }
         }
     }

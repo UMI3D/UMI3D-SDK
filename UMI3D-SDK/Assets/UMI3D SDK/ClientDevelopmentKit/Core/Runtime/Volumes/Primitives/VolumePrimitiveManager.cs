@@ -67,9 +67,9 @@ namespace umi3d.cdk.volumes
             onPrimitiveDelete.RemoveListener(callback);
         }
 
-        public static async Task<AbstractVolumeCell> CreatePrimitive(AbstractPrimitiveDto dto)
+        public static async Task<AbstractVolumeCell> CreatePrimitive(ulong environmentId, AbstractPrimitiveDto dto)
         {
-            Matrix4x4 localToWorldMatrix = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId)?.transform.localToWorldMatrix ?? Matrix4x4.identity;
+            Matrix4x4 localToWorldMatrix = UMI3DEnvironmentLoader.GetNode(environmentId, dto.rootNodeId)?.transform.localToWorldMatrix ?? Matrix4x4.identity;
 
             switch (dto)
             {

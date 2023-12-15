@@ -58,11 +58,11 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public bool TryActivatePoseAnimator(ulong poseAnimatorId)
+        public bool TryActivatePoseAnimator(ulong environmentId, ulong poseAnimatorId)
         {
-            if (!environmentManager.TryGetEntity(poseAnimatorId, out PoseAnimator poseAnimator))
+            if (!environmentManager.TryGetEntity(environmentId, poseAnimatorId, out PoseAnimator poseAnimator))
             {
-                UMI3DLogger.LogWarning($"Unable to try to activate pose animator {poseAnimatorId}. Entity {poseAnimatorId} not found.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Unable to try to activate pose animator {environmentId} {poseAnimatorId}. Entity {poseAnimatorId} not found.", DEBUG_SCOPE);
                 return false;
             }
 
@@ -94,14 +94,10 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void ChangeEnvironmentPoseCondition(ulong poseConditionId, bool shouldBeValidated)
+        public void ChangeEnvironmentPoseCondition(ulong environmentId, ulong poseConditionId, bool shouldBeValidated)
         {
-            if (!environmentManager.TryGetEntity(poseConditionId, out EnvironmentPoseCondition condition))
-            {
-                UMI3DLogger.LogWarning($"Unable to change environment pose condition {poseConditionId} to {shouldBeValidated}. Entity {poseConditionId} not found.", DEBUG_SCOPE);
-                return;
-            }
-            
+            EnvironmentPoseCondition condition = environmentManager.GetEntityObject<EnvironmentPoseCondition>(environmentId, poseConditionId);
+
             if (shouldBeValidated)
                 condition.Validate();
             else

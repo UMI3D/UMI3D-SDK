@@ -47,17 +47,17 @@ namespace umi3d.cdk.userCapture.pose
         #endregion Dependencies Injection
 
         /// <inheritdoc/>
-        public override Task<PoseClip> Load(PoseClipDto dto)
+        public override Task<PoseClip> Load(ulong environmentId, PoseClipDto dto)
         {
             PoseClip pose = new PoseClip(dto);
 
-            environmentService.RegisterEntity(dto.id, dto, pose, () => Delete(dto.id)).NotifyLoaded();
+            environmentService.RegisterEntity(environmentId, dto.id, dto, pose, () => Delete(environmentId, dto.id)).NotifyLoaded();
 
             return Task.FromResult(pose);
         }
 
         /// <inheritdoc/>
-        public override void Delete(ulong id)
+        public override void Delete(ulong environmentId, ulong id)
         {
         }
     }

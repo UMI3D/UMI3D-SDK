@@ -41,7 +41,7 @@ namespace umi3d.cdk
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
         [Obsolete("Use EnvironmentLoader.Instance.GetEntityObject<UMI3DAnimatorAnimation>() instead.")]
-        public static new UMI3DAnimatorAnimation Get(ulong id) => UMI3DAbstractAnimation.Get(id) as UMI3DAnimatorAnimation;
+        public static new UMI3DAnimatorAnimation Get(ulong environmentId, ulong id) => UMI3DAbstractAnimation.Get(environmentId, id) as UMI3DAnimatorAnimation;
         /// <summary>
         /// DTO local copy.
         /// </summary>
@@ -95,15 +95,16 @@ namespace umi3d.cdk
         private ICoroutineService coroutineService;
         private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto) : base(dto)
+        public UMI3DAnimatorAnimation(ulong environmentId, UMI3DAnimatorAnimationDto dto) : base(environmentId, dto)
         {
             coroutineService = CoroutineManager.Instance;
             unityMainThreadDispatcher = UnityMainThreadDispatcherManager.Instance;
         }
 
-        public UMI3DAnimatorAnimation(UMI3DAnimatorAnimationDto dto,
+        public UMI3DAnimatorAnimation(ulong environmentId, 
+                                      UMI3DAnimatorAnimationDto dto,
                                       ICoroutineService coroutineService,
-                                      IUnityMainThreadDispatcher unityMainThreadDispatcher) : base(dto)
+                                      IUnityMainThreadDispatcher unityMainThreadDispatcher) : base(environmentId, dto)
         {
             this.coroutineService = coroutineService;
             this.unityMainThreadDispatcher = unityMainThreadDispatcher;
@@ -118,7 +119,7 @@ namespace umi3d.cdk
         {
             base.Init();
 
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeId,
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId, dto.nodeId,
                 (n) =>
                 {
                     unityMainThreadDispatcher.Enqueue(() =>
@@ -421,7 +422,7 @@ namespace umi3d.cdk
         /// <param name="nodeId"></param>
         private void SetNode(ulong nodeId)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeId, (n) =>
+            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId, nodeId, (n) =>
             {
                 node = n as UMI3DNodeInstance;
                 if (node is not null)

@@ -138,16 +138,16 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <returns></returns>
-        protected List<UMI3DCollaborationUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
+        protected List<UMI3DCollaborationAbstractUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
         {
             switch (receiverSetting)
             {
                 case Receivers.All:
-                    return new List<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users);
+                    return new List<UMI3DCollaborationAbstractUser>(UMI3DCollaborationServer.Collaboration.Users);
                 case Receivers.Others:
-                    return new List<UMI3DCollaborationUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
+                    return new List<UMI3DCollaborationAbstractUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
                 case Receivers.Target:
-                    return new List<UMI3DCollaborationUser>() { target as UMI3DCollaborationUser };
+                    return new List<UMI3DCollaborationAbstractUser>() { target as UMI3DCollaborationAbstractUser };
                 default:
                     return null;
             }
@@ -155,14 +155,14 @@ namespace umi3d.edk.collaboration
 
         protected List<UMI3DUser> RelayRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable, DataChannelTypes dataChannel)
         {
-            ulong now = UMI3DCollaborationServer.ForgeServer.time;
+            ulong now = UMI3DCollaborationServer.ForgeServer.Time;
 
-            List<UMI3DCollaborationUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
+            List<UMI3DCollaborationAbstractUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
             List<UMI3DUser> result = targetHashSet?.Select(p => p as UMI3DUser).ToList();
 
             if (targetHashSet != null)
             {
-                foreach (UMI3DCollaborationUser user in targetHashSet)
+                foreach (UMI3DCollaborationAbstractUser user in targetHashSet)
                 {
                     if (ShouldRelay(sender, user, dataChannel, now))
                     {
@@ -183,7 +183,7 @@ namespace umi3d.edk.collaboration
         /// <param name="channel"></param>
         /// <param name="now"></param>
         /// <returns></returns>
-        protected bool ShouldRelay(UMI3DAbstractNode sender, UMI3DCollaborationUser to, DataChannelTypes channel, ulong now)
+        protected bool ShouldRelay(UMI3DAbstractNode sender, UMI3DCollaborationAbstractUser to, DataChannelTypes channel, ulong now)
         {
             if (to.status != common.StatusType.ACTIVE)
                 return false;
@@ -238,7 +238,7 @@ namespace umi3d.edk.collaboration
                                 float dist = 0f;
                                 if (channel == DataChannelTypes.Tracking)
                                 {
-                                    //UMI3DCollaborationUser userSender = UMI3DCollaborationServer.Collaboration.GetUser((sender as UMI3DAvatarNode).userId);
+                                    //UMI3DCollaborationAbstractUser userSender = UMI3DCollaborationServer.Collaboration.GetUser((sender as UMI3DAvatarNode).userId);
                                     dist = Vector3.Distance(to.CurrentTrackingFrame.position.Struct(), sender.objectPosition.GetValue(to));
                                 }
                                 else
@@ -281,7 +281,7 @@ namespace umi3d.edk.collaboration
         /// <param name="to"></param>
         /// <param name="channel"></param>
         /// <param name="now"></param>
-        protected void RememberRelay(UMI3DAbstractNode sender, UMI3DCollaborationUser to, DataChannelTypes channel, ulong now)
+        protected void RememberRelay(UMI3DAbstractNode sender, UMI3DCollaborationAbstractUser to, DataChannelTypes channel, ulong now)
         {
             Dictionary<ulong, Dictionary<ulong, ulong>> relayMemory = GetRelayMemory(channel);
 

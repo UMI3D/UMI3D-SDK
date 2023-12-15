@@ -55,9 +55,9 @@ namespace umi3d.cdk.binding
         private void Reset()
         {
             AreBindingsActivated = true;
-            foreach (ulong bindingNodeId in bindings.Keys.ToList())
+            foreach ((ulong, ulong) bindingNodeId in bindings.Keys.ToList())
             {
-                RemoveBinding(bindingNodeId);
+                RemoveBinding(bindingNodeId.Item1,bindingNodeId.Item2);
             }
             bindings.Clear();
             bindingExecutionQueue = new AbstractBinding[0];
@@ -67,8 +67,8 @@ namespace umi3d.cdk.binding
         public virtual bool AreBindingsActivated { get; private set; } = true;
 
         /// <inheritdoc/>
-        public virtual IReadOnlyDictionary<ulong, AbstractBinding> Bindings => bindings;
-        protected readonly Dictionary<ulong, AbstractBinding> bindings = new();
+        public virtual IReadOnlyDictionary<(ulong, ulong), AbstractBinding> Bindings => bindings;
+        protected readonly Dictionary<(ulong,ulong), AbstractBinding> bindings = new();
 
         protected AbstractBinding[] bindingExecutionQueue = new AbstractBinding[0];
 
@@ -102,14 +102,15 @@ namespace umi3d.cdk.binding
         }
 
         /// <inheritdoc/>
-        public virtual void AddBinding(ulong boundNodeId, AbstractBinding binding)
+        public virtual void AddBinding(ulong environmentId, ulong boundNodeId, AbstractBinding binding)
         {
+            UnityEngine.Debug.Log($"Add binding {environmentId}-{boundNodeId}->{binding?.BoundTransform}");
             if (binding is null)
                 return;
 
             if (binding is not null)
             {
-                bindings[boundNodeId] = binding;
+                bindings[(environmentId, boundNodeId)] = binding;
                 ReorderQueue();
             }
 
@@ -137,7 +138,9 @@ namespace umi3d.cdk.binding
                     if (binding.BoundTransform == null)
                     {
                         UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
-                        RemoveBinding(bindings.First(x => x.Value.Equals(binding)).Key);
+                        var env = bindings.FirstOrDefault(kp => kp.Value.Equals(binding));
+                        if(env.Value != null)
+                            RemoveBinding(env.Key.Item1,env.Key.Item2);
                         continue;
                     }
 
@@ -158,11 +161,12 @@ namespace umi3d.cdk.binding
         }
 
         /// <inheritdoc/>
-        public virtual void RemoveBinding(ulong boundNodeId)
+        public virtual void RemoveBinding(ulong environmentId, ulong boundNodeId)
         {
-            if (bindings.ContainsKey(boundNodeId))
+            var key = (environmentId, boundNodeId);
+            if (bindings.ContainsKey(key))
             {
-                bindings.Remove(boundNodeId);
+                bindings.Remove(key);
                 ReorderQueue();
 
                 if (bindings.Count == 0 && bindingRoutine is not null)
@@ -173,7 +177,7 @@ namespace umi3d.cdk.binding
             }
             else
             {
-                UMI3DLogger.LogWarning($"Cannot remove bindings on node {boundNodeId}. Node has no binding.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Cannot remove bindings on node ({environmentId},{boundNodeId}). Node has no binding.", DEBUG_SCOPE);
             }
         }
     }

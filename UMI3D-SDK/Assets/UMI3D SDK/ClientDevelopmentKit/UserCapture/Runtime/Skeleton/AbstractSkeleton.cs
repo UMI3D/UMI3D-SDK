@@ -94,6 +94,8 @@ namespace umi3d.cdk.userCapture
         protected UserTrackingFrameDto lastFrame;
         public UserTrackingFrameDto LastFrame => lastFrame;
 
+        public ulong EnvironmentId { get; set; }
+
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>

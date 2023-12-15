@@ -163,12 +163,12 @@ namespace umi3d.cdk.interaction
                     else if (index < dto.interactions.Count)
                         dto.interactions.Insert(index, value);
                     else return false;
-                    tool.Added(UMI3DEnvironmentLoader.GetEntity(value).dto as AbstractInteractionDto); break;
+                    tool.Added(UMI3DEnvironmentLoader.GetEntity(container.environmentId,value).dto as AbstractInteractionDto); break;
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
                     index = UMI3DSerializer.Read<int>(container);
                     if (index < dto.interactions.Count)
                     {
-                        AbstractInteractionDto removed = UMI3DEnvironmentLoader.GetEntity(dto.interactions[index]).dto as AbstractInteractionDto;
+                        AbstractInteractionDto removed = UMI3DEnvironmentLoader.GetEntity(container.environmentId,dto.interactions[index]).dto as AbstractInteractionDto;
                         dto.interactions.RemoveAt(index);
                         tool.Removed(removed);
                     }

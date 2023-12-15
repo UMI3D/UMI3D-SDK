@@ -100,7 +100,7 @@ namespace umi3d.cdk
                 {
                     if (o is GameObject g)
                     {
-                        await CallbackAfterLoadingForMesh(g, meshDto, data.node.transform, offset, null);
+                        await CallbackAfterLoadingForMesh(data.environmentId, g, meshDto, data.node.transform, offset, null);
                     }
                     else if (o is (GameObject go, Scene scene))
                     {
@@ -111,7 +111,7 @@ namespace umi3d.cdk
                             transforms.Add(go.transform.GetChild(i).gameObject);
                         }*/
 
-                        await CallbackAfterLoadingForMesh(go, meshDto, data.node.transform, offset, scene);
+                        await CallbackAfterLoadingForMesh(data.environmentId, go, meshDto, data.node.transform, offset, scene);
 
                         /*foreach (var goo in transforms.ToArray())
                         {
@@ -261,7 +261,7 @@ namespace umi3d.cdk
             }
         }
 
-        private async Task CallbackAfterLoadingForMesh(GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, object data)
+        private async Task CallbackAfterLoadingForMesh(ulong environmentId,GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, object data)
         {
             var modelTracker = parent.gameObject.AddComponent<ModelTracker>();
             GameObject root = null;
@@ -276,7 +276,7 @@ namespace umi3d.cdk
             }
 
             GameObject instance = null;
-            UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(dto.id);
+            UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(environmentId, dto.id);
 
             instance = GameObject.Instantiate(root, parent, true);
 

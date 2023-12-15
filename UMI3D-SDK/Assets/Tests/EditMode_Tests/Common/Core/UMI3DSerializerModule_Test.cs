@@ -44,7 +44,7 @@ namespace EditMode_Tests
         (bool readable, T result) WriteRead<T>(T value)
         {
             var bytable = UMI3DSerializer.Write(value);
-            bool readable = UMI3DSerializer.TryRead<T>(new ByteContainer(0,bytable.ToBytes()), out T result);
+            bool readable = UMI3DSerializer.TryRead<T>(new ByteContainer(0,0,bytable.ToBytes()), out T result);
             return (readable, result);
         }
 

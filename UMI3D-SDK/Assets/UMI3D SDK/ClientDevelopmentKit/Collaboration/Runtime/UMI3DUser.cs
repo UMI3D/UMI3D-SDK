@@ -60,7 +60,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Audio player attached to the user.
         /// </summary>
-        public UMI3DAudioPlayer audioplayer => UMI3DAudioPlayer.Get(dto.audioSourceId);
+        public UMI3DAudioPlayer audioplayer => dto.audioSourceId != 0 ? UMI3DAudioPlayer.Get(EnvironmentId, dto.audioSourceId) : null;
         /// <summary>
         /// See <see cref="UserDto.videoSourceId"/>.
         /// </summary>
@@ -68,7 +68,9 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Video player attached to the user.
         /// </summary>
-        public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
+        public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(EnvironmentId, dto.videoSourceId);
+
+        public readonly ulong EnvironmentId;
 
         /// <summary>
         /// See <see cref="UserDto.microphoneStatus"/>.
@@ -146,16 +148,17 @@ namespace umi3d.cdk.collaboration
 
         public bool isClient => id == UMI3DCollaborationClientServer.Instance.GetUserId();
 
-        public UMI3DUser(UserDto user)
+        public UMI3DUser(ulong environmentId, UserDto user)
         {
             dto = user;
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+            this.EnvironmentId = environmentId;
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(EnvironmentId, dto.id, dto, null).NotifyLoaded();
             OnNewUser.Invoke(this);
         }
 
         public void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id,null);
+            UMI3DEnvironmentLoader.DeleteEntity(EnvironmentId, dto.id,null);
             OnRemoveUser.Invoke(this);
         }
 

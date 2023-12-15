@@ -23,6 +23,8 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public interface IPoseSubskeleton : IWritableSubskeleton
     {
+
+
         /// <summary>
         /// List of poses that are currently applied on the subskeleton.
         /// </summary>

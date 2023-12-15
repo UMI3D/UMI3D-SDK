@@ -41,6 +41,6 @@ namespace umi3d.cdk.userCapture.pose
         /// Validate/Invalidate an <see cref="EnvironmentPoseCondition"/>.
         /// </summary>
         /// <param name="requestDto"></param>
-        void ChangeEnvironmentPoseCondition(ulong poseConditionId, bool shouldValidate);
+        void ChangeEnvironmentPoseCondition(ulong environmentId, ulong poseConditionId, bool shouldBeValidated);
     }
 }

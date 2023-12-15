@@ -35,11 +35,12 @@ using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
+
     /// <summary>
     /// Environment Forge server, handling most of the transactions to the browsers.
     /// </summary>
     /// The Forge server handles UDP messaging.
-    public class UMI3DForgeServer : UMI3DForgeSocketBase
+    public class UMI3DForgeServer : UMI3DForgeSocketBase, IForgeServer
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -65,11 +66,10 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public ushort connectionPort;
 
-        UMI3DTrackingRelay trackingRelay;
+        public UMI3DTrackingRelay trackingRelay { get; private set; }
 
         object timeLock = new object();
-        public ulong time
-        {
+        public ulong Time {
             get
             {
                 lock (timeLock)
@@ -96,7 +96,7 @@ namespace umi3d.edk.collaboration
         /// <param name="natServerPort"></param>
         /// <param name="maxNbPlayer"></param>
         /// <returns></returns>
-        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64)
+        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64, UMI3DTrackingRelay relay = null )
         {
             UMI3DForgeServer server = new GameObject("UMI3DForgeServer").AddComponent<UMI3DForgeServer>();
             server.ip = ip;
@@ -107,7 +107,7 @@ namespace umi3d.edk.collaboration
             server.natServerPort = natServerPort;
             server.maxNbPlayer = maxNbPlayer;
             server.connectionPort = connectionPort;
-            server.trackingRelay = new UMI3DTrackingRelay(server);
+            server.trackingRelay = relay ?? new UMI3DTrackingRelay(server);
 
             return server;
         }
@@ -200,7 +200,7 @@ namespace umi3d.edk.collaboration
                 UMI3DLogger.Log($"Player [{player.NetworkId}] timeout", scope);
             });
             playerCount = server.Players.Count;
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationAbstractUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user != null)
             {
                 MainThreadManager.Run(() =>
@@ -255,7 +255,7 @@ namespace umi3d.edk.collaboration
                 UMI3DLogger.Log($"Player [{player.NetworkId}] disconected", scope);
             });
             playerCount = server.Players.Count;
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationAbstractUser user = UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(player.NetworkId);
             if (user != null)
             {
                 MainThreadManager.Run(() =>
@@ -270,7 +270,7 @@ namespace umi3d.edk.collaboration
         protected override void OnSignalingFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
             var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationAbstractUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (dto is StatusDto sts)
             {
                 MainThreadManager.Run(() =>
@@ -294,7 +294,7 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationAbstractUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
 
@@ -363,7 +363,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame);
+                var container = new ByteContainer(0,frame);
                 uint id = UMI3DSerializer.Read<uint>(container);
                 switch (id)
                 {
@@ -445,7 +445,7 @@ namespace umi3d.edk.collaboration
             if (!UMI3DCollaborationServer.Exists)
                 return;
 
-            UMI3DCollaborationUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DCollaborationAbstractUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null) return;
 
 
@@ -462,12 +462,15 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame);
+                var container = new ByteContainer(0, frame);
                 trackingFrame = UMI3DSerializer.Read<UserTrackingFrameDto>(container);
+
             }
 
             if (trackingFrame == null)
                 return;
+
+            trackingFrame.environmentId = 0;
 
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(
                 () => UMI3DTrackingManager.Instance.OnAvatarFrameReceived(trackingFrame, server.Time.Timestep));

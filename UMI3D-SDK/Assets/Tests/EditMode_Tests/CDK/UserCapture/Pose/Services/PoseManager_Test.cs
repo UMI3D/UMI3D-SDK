@@ -68,7 +68,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Mock<PoseAnimator> poseAnimatorMock = new (dto, new PoseClip(new()), new IPoseCondition[0]);
 
             poseAnimatorMock.Setup(x=>x.TryActivate()).Returns(true);
-            environmentServiceMock.Setup(x => x.GetEntityObject<PoseAnimator>(dto.id)).Returns(poseAnimatorMock.Object);
+            environmentServiceMock.Setup(x => x.GetEntityObject<PoseAnimator>(0,dto.id)).Returns(poseAnimatorMock.Object);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
@@ -77,7 +77,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false));
             // When
             bool result = false;
-            TestDelegate action = () => result = poseManager.TryActivatePoseAnimator(dto.id);
+            TestDelegate action = () => result = poseManager.TryActivatePoseAnimator(0,dto.id);
 
             // Then
             Assert.DoesNotThrow(() => action());

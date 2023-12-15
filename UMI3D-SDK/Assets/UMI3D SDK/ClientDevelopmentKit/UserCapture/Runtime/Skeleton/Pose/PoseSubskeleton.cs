@@ -38,13 +38,14 @@ namespace umi3d.cdk.userCapture.pose
 
         private readonly IEnvironmentManager environmentManagerService;
 
-        public PoseSubskeleton() : this(environmentManagerService: UMI3DEnvironmentLoader.Instance)
+        public PoseSubskeleton(ulong environmentId) : this(environmentId:environmentId,environmentManagerService: UMI3DEnvironmentLoader.Instance)
         {
         }
 
-        public PoseSubskeleton(IEnvironmentManager environmentManagerService)
+        public PoseSubskeleton(ulong environmentId, IEnvironmentManager environmentManagerService)
         {
             this.environmentManagerService = environmentManagerService;
+            EnvironmentId = environmentId;
         }
 
         #endregion Dependency Injection
@@ -55,6 +56,8 @@ namespace umi3d.cdk.userCapture.pose
         protected List<PoseClip> appliedPoses = new();
 
         public int Priority => PRIORITY;
+
+        public ulong EnvironmentId { get ; set ; }
 
         private const int PRIORITY = 100;
 
@@ -218,7 +221,7 @@ namespace umi3d.cdk.userCapture.pose
             foreach (ulong poseId in trackingFrame.poses)
             {
                 //at load, could receive tracking frame without having the pose
-                UMI3DEntityInstance poseClipEntityInstance = environmentManagerService.TryGetEntityInstance(poseId);
+                UMI3DEntityInstance poseClipEntityInstance = environmentManagerService.TryGetEntityInstance(EnvironmentId, poseId);
                 PoseClip poseClip = poseClipEntityInstance?.Object as PoseClip;
 
                 if (poseClipEntityInstance is not null && !appliedPoses.Contains(poseClip))

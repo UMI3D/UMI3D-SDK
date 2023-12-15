@@ -47,7 +47,7 @@ namespace umi3d.cdk
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as NotificationDto;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId, dto.id, dto, null).NotifyLoaded();
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)

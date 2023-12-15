@@ -19,6 +19,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using umi3d.common;
@@ -281,16 +282,19 @@ namespace umi3d.cdk
 
             private bool MatchServerUrl()
             {
-                if (UMI3DClientServer.Environement == null)
-                    return false;
+                foreach (var _url in UMI3DEnvironmentLoader.Instance.GetResourcesUrls())
+                {
+                    string url = _url + '/';
 
-                string url = UMI3DClientServer.Environement.resourcesUrl + '/';
+                    if (url == this.url) return true;
 
-                if (url == this.url) return true;
-
-                Match b = rx.Match(url);
-                if (a.Success && b.Success)
-                    return a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value);
+                    Match b = rx.Match(url);
+                    if (a.Success && b.Success)
+                        if (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value 
+                            && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) 
+                            && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value))
+                            return true;
+                }
                 return false;
             }
 
@@ -301,6 +305,7 @@ namespace umi3d.cdk
                     useServerAuthorization = true;
                     return UMI3DClientServer.getAuthorization();
                 }
+
                 useServerAuthorization = false;
                 if (authorization.IsNullOrEmpty()) return null;
                 return "Basic" + System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
@@ -587,7 +592,7 @@ namespace umi3d.cdk
 
                         if (loader != null)
                         {
-                            await LoadFile(pair.entityIds.First(), pair, loader);
+                            await LoadFile(pair.entityIds.FirstOrDefault(), pair, loader);
 
                         }
                     }
@@ -950,7 +955,7 @@ namespace umi3d.cdk
                 var dto = await deserializer.FromBson(bytes);
                 progress1.AddComplete();
                 string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
-                UnityEngine.Debug.Log($"add to {assetDirectoryPath}");
+                
                 if (dto is FileListDto)
                 {
                     if (!Directory.Exists(directoryPath))

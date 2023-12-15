@@ -36,14 +36,14 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
-        public static new UMI3DAudioPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAudioPlayer; }
+        public static new UMI3DAudioPlayer Get(ulong environmentId, ulong id) { return UMI3DAbstractAnimation.Get(environmentId, id) as UMI3DAudioPlayer; }
         /// <summary>
         /// Audio source in Unity.
         /// </summary>
         public AudioSource audioSource { get; private set; }
 
 
-        public UMI3DAudioPlayer(UMI3DAudioPlayerDto dto) : base(dto)
+        public UMI3DAudioPlayer(ulong environmentId,UMI3DAudioPlayerDto dto) : base(environmentId, dto)
         {
         }
 
@@ -61,7 +61,7 @@ namespace umi3d.cdk
             if (dto.nodeID == 0)
                 UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, UMI3DEnvironmentLoader.Instance.gameObject));
             else
-                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeID, e => UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, (e as UMI3DNodeInstance).gameObject)));
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId,dto.nodeID, e => UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, (e as UMI3DNodeInstance).gameObject)));
         }
 
         private async void _InitPlayer(UMI3DAudioPlayerDto dto, GameObject gameObject)

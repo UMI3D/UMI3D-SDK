@@ -36,7 +36,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         private readonly List<AbstractMenuItem> menuToStoreInMenuAsset = new List<AbstractMenuItem>();
 
-        private readonly Dictionary<ulong, AbstractMenuItem> toolboxIdToMenu = new Dictionary<ulong, AbstractMenuItem>();
+        private readonly Dictionary<(ulong,ulong), AbstractMenuItem> toolboxIdToMenu = new Dictionary<(ulong, ulong), AbstractMenuItem>();
 
         private void Start()
         {
@@ -49,35 +49,35 @@ namespace umi3d.cdk.interaction
         /// Triggered when a tool is created.
         /// </summary>
         /// <param name="tool"></param>
-        private void OnToolCreation(GlobalTool tool)
+        private void OnToolCreation(ulong environmentId,GlobalTool tool)
         {
             if (tool is Toolbox)
             {
                 var tbmenu = new ToolboxMenu();
-                tbmenu.Setup(tool as Toolbox);
+                tbmenu.Setup(environmentId,tool as Toolbox);
 
                 var dto = tool.dto as ToolboxDto;
 
                 if (tool.isInsideToolbox)
                 {
-                    if (toolboxIdToMenu.ContainsKey(tool.parent.id))
+                    if (toolboxIdToMenu.ContainsKey((tool.parent.environmentId,tool.parent.id)))
                     {
-                        var parentMenu = toolboxIdToMenu[tool.parent.id] as ToolboxMenu;
+                        var parentMenu = toolboxIdToMenu[(tool.parent.environmentId, tool.parent.id)] as ToolboxMenu;
                         parentMenu.Add(tbmenu);
                         tbmenu.parent = parentMenu;
-                        toolboxIdToMenu.Add(dto.id, tbmenu);
+                        toolboxIdToMenu.Add((environmentId,dto.id), tbmenu);
                     }
                     else
                     {
                         menuToStoreInMenuAsset.Add(tbmenu);
-                        toolboxIdToMenu.Add(dto.id, tbmenu);
+                        toolboxIdToMenu.Add((environmentId, dto.id), tbmenu);
                     }
                 }
                 else
                 {
                     menuAsset.menu.Add(tbmenu);
                     tbmenu.parent = menuAsset.menu;
-                    toolboxIdToMenu.Add(dto.id, tbmenu);
+                    toolboxIdToMenu.Add((environmentId, dto.id), tbmenu);
                 }
 
                 foreach (AbstractMenuItem menu in menuToStoreInMenuAsset.ToList())
@@ -102,13 +102,13 @@ namespace umi3d.cdk.interaction
             else
             {
                 var menu = new GlobalToolMenu();
-                menu.Setup(tool);
+                menu.Setup(environmentId, tool);
                 var dto = tool.dto as GlobalToolDto;
                 if (tool.isInsideToolbox)
                 {
-                    if (toolboxIdToMenu.ContainsKey(tool.parent.id))
+                    if (toolboxIdToMenu.ContainsKey((tool.parent.environmentId, tool.parent.id)))
                     {
-                        var parentMenu = toolboxIdToMenu[tool.parent.id] as ToolboxMenu;
+                        var parentMenu = toolboxIdToMenu[(tool.parent.environmentId, tool.parent.id)] as ToolboxMenu;
                         parentMenu.Add(menu);
                         menu.parent = parentMenu;
                     }
@@ -129,17 +129,17 @@ namespace umi3d.cdk.interaction
         /// Triggered when a tool is updated.
         /// </summary>
         /// <param name="tool"></param>
-        private void OnToolUpdate(GlobalTool tool)
+        private void OnToolUpdate(ulong environmentId, GlobalTool tool)
         {
             if (tool is Toolbox)
             {
-                var tbmenu = toolboxIdToMenu[tool.id] as ToolboxMenu;
-                tbmenu.Setup(tool as Toolbox);
+                var tbmenu = toolboxIdToMenu[(environmentId, tool.id)] as ToolboxMenu;
+                tbmenu.Setup(environmentId, tool as Toolbox);
             }
             else
             {
-                var gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
-                gtmenu.Setup(tool);
+                var gtmenu = toolboxIdToMenu[(environmentId, tool.id)] as GlobalToolMenu;
+                gtmenu.Setup(environmentId, tool);
             }
         }
 
@@ -147,16 +147,16 @@ namespace umi3d.cdk.interaction
         /// Triggered when a tool is deleted.
         /// </summary>
         /// <param name="tool"></param>
-        private void OnToolDelete(GlobalTool tool)
+        private void OnToolDelete(ulong environmentId, GlobalTool tool)
         {
             if (tool is Toolbox)
             {
-                var tbmenu = toolboxIdToMenu[tool.id] as ToolboxMenu;
+                var tbmenu = toolboxIdToMenu[(environmentId, tool.id)] as ToolboxMenu;
                 tbmenu.parent.Remove(tbmenu);
             }
             else
             {
-                var gtmenu = toolboxIdToMenu[tool.id] as GlobalToolMenu;
+                var gtmenu = toolboxIdToMenu[(environmentId, tool.id)] as GlobalToolMenu;
                 gtmenu.parent.Remove(gtmenu);
             }
         }
@@ -180,7 +180,7 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         /// <exception cref="System.NotImplementedException"></exception>
         /// <exception cref="System.Exception"></exception>
-        public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong toolId)
+        public static AbstractMenuItem GetMenuForInteraction(AbstractInteractionDto interactionDto, ulong environmentId, ulong toolId)
         {
             var icon2DTex = new Texture2D(0, 0);
             LoadTExture(icon2DTex, interactionDto);
@@ -193,7 +193,8 @@ namespace umi3d.cdk.interaction
                     interaction = evt,
                     hold = evt.hold,
                     Name = evt.name,
-                    toolId = toolId
+                    toolId = toolId,
+                    environmentId = environmentId
                 };
 
                 eventMenuItem.Subscribe((val) =>
@@ -242,6 +243,7 @@ namespace umi3d.cdk.interaction
                     icon2D = icon2DTex,
                     Name = form.name,
                     toolId = toolId,
+                    environmentId = environmentId,
                     interaction = form
                 };
 

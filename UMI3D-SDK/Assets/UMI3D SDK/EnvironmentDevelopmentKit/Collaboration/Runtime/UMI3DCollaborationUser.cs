@@ -14,64 +14,33 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using BeardedManStudios.Forge.Networking;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.userCapture.pose;
-using umi3d.edk.userCapture.tracking;
 
 namespace umi3d.edk.collaboration
 {
-    /// <summary>
-    /// <see cref="UMI3DTrackedUser"/> in a collaborative context, with authentication, sound and video streaming etc...
-    /// </summary>
-    public class UMI3DCollaborationUser : UMI3DTrackedUser
+    public class UMI3DCollaborationUser : UMI3DCollaborationAbstractUser
     {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.User;
+        public UMI3DCollaborationUser(RegisterIdentityDto identity) : base(identity)
+        {
+            audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
+            microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);
+            avatarStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAvatarStatus, true);
+            attentionRequired = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAttentionRequired, false);
 
-        private RegisterIdentityDto identityDto;
-        private IPoseManager poseManagerService;
+            audioChannel = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioChannel, null);
+            audioServerUrl = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioServer, null);
+            audioUseMumble = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
+            audioPassword = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioPassword, null);
+            audioLogin = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioLogin, null);
 
-        /// <inheritdoc/>
-        protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }
+            onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
+            onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
 
-        /// <summary>
-        /// The unique user login.
-        /// </summary>
-        public string login => identityDto.login;
-
-        /// <summary>
-        /// The unique user display Name.
-        /// </summary>
-        public string displayName => identityDto.displayName ?? login ?? userId.ToString();
-
-        /// <summary>
-        /// The unique user login.
-        /// </summary>
-        public string guid => identityDto.guid;
-
-        /// <summary>
-        /// The unique user login.
-        /// </summary>
-        public byte[] metadata => identityDto.metaData;
-
-        /// <summary>
-        /// Language used by user.
-        /// </summary>
-        public string language = string.Empty;
-
-        /// <summary>
-        /// Current id for ForgeNetworkingRemastered
-        /// </summary>
-        public NetworkingPlayer networkPlayer { get; set; }
-
-        /// <summary>
-        /// The user token
-        /// </summary>
-        public string token => identityDto.localToken;
-
-        public UMI3DForgeServer forgeServer;
+            userSize = new UMI3DAsyncProperty<Vector3Dto>(userId, UMI3DPropertyKeys.UserSize, new());
+        }
 
         /// <summary>
         /// Audio source from the user.
@@ -97,11 +66,6 @@ namespace umi3d.edk.collaboration
 
         #endregion audioSettings
 
-        /// <summary>
-        /// Room object used to relay data
-        /// </summary>
-        public ICollaborationRoom RelayRoom;
-
         public UMI3DAsyncProperty<bool> avatarStatus;
 
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStartSpeakingAnimationId;
@@ -109,46 +73,12 @@ namespace umi3d.edk.collaboration
 
         public UMI3DAsyncProperty<Vector3Dto> userSize;
 
-        public UMI3DCollaborationUser(RegisterIdentityDto identity)
+        static object joinLock = new object();
+        private IPoseManager poseManagerService;
+
+        public override void InitConnection(UMI3DForgeServer connection)
         {
-            this.identityDto = identity ?? new RegisterIdentityDto();
-
-            userId = identity is not null && identity.userId != 0 ? UMI3DEnvironment.Register(this, identity.userId) : Id();
-
-            audioFrequency = new UMI3DAsyncProperty<int>(userId, UMI3DPropertyKeys.UserAudioFrequency, 12000);
-            microphoneStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserMicrophoneStatus, false);
-            avatarStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAvatarStatus, true);
-            attentionRequired = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAttentionRequired, false);
-
-            audioChannel = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioChannel, null);
-            audioServerUrl = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioServer, null);
-            audioUseMumble = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
-            audioPassword = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioPassword, null);
-            audioLogin = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioLogin, null);
-
-            onStartSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStartSpeakingAnimationId, null, (v, u) => v?.Id());
-            onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
-
-            userSize = new UMI3DAsyncProperty<Vector3Dto>(userId, UMI3DPropertyKeys.UserSize, new());
-
-            status = StatusType.CREATED;
-            UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
-        }
-
-        /// <summary>
-        /// Update the identity of the user.
-        /// </summary>
-        /// <param name="identity"></param>
-        public void Update(RegisterIdentityDto identity)
-        {
-            ulong id = Id();
-            this.identityDto = identity ?? new RegisterIdentityDto();
-            userId = id;
-        }
-
-        public void InitConnection(UMI3DForgeServer connection)
-        {
-            this.forgeServer = connection;
+            base.InitConnection(connection);
 
             var source = ToUserDto(this);
             var ucDto = new UserConnectionAnswerDto()
@@ -177,38 +107,8 @@ namespace umi3d.edk.collaboration
 
                 librariesUpdated = !UMI3DEnvironment.UseLibrary()
             };
-            //RenewToken();
+
             SetStatus(UMI3DCollaborationServer.Instance.Identifier.UpdateIdentity(this, ucDto));
-        }
-
-        private static object joinLock = new object();
-
-        public async Task JoinDtoReception(JoinDto joinDto)
-        {
-            lock (joinLock)
-            {
-                HasImmersiveDevice = joinDto.hasImmersiveDevice;
-                HasHeadMountedDisplay = joinDto.hasHeadMountedDisplay;
-                BonesWithController = joinDto.bonesWithController;
-
-                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
-                if (this.userSize.GetValue() == joinDto.userSize)
-                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
-                else
-                    this.userSize.SetValue(joinDto.userSize);
-            }
-
-            await UMI3DAsyncManager.Yield();
-
-            UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
-        }
-
-        /// <summary>
-        /// Remove a user fom the environment.
-        /// </summary>
-        public void Logout()
-        {
-            UMI3DEnvironment.Remove(this);
         }
 
         public void NotifyUpdate()
@@ -216,17 +116,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Collaboration.NotifyUserStatusChanged(this);
         }
 
-        /// <inheritdoc/>
-        public override void SetStatus(StatusType status)
-        {
-            bool isSame = status == this.status;
-            UMI3DLogger.Log($"Set Status {Id()} {status} {isSame}", scope);
-            base.SetStatus(status);
-            if (!isSame)
-                UMI3DCollaborationServer.Instance.NotifyUserStatusChanged(this, status);
-        }
-
-        public virtual UserConnectionDto ToUserConnectionDto()
+        public override UserConnectionDto ToUserConnectionDto()
         {
             var source = ToUserDto(this);
             var connectionInformation = new UserConnectionDto()
@@ -262,7 +152,7 @@ namespace umi3d.edk.collaboration
             return connectionInformation;
         }
 
-        public virtual UserDto ToUserDto(UMI3DUser user)
+        public override UserDto ToUserDto(UMI3DUser user)
         {
             var _user = new UserDto
             {
@@ -294,13 +184,24 @@ namespace umi3d.edk.collaboration
             return _user;
         }
 
-        public virtual StatusDto ToStatusDto()
+        public async Task JoinDtoReception(JoinDto joinDto)
         {
-            var status = new StatusDto
+            lock (joinLock)
             {
-                status = this.status
-            };
-            return status;
+                HasImmersiveDevice = joinDto.hasImmersiveDevice;
+                HasHeadMountedDisplay = joinDto.hasHeadMountedDisplay;
+                BonesWithController = joinDto.bonesWithController;
+
+                UMI3DLogger.Log("PoseManager.JoinDtoReception before " + userId, scope);
+                if (this.userSize.GetValue() == joinDto.userSize)
+                    UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
+                else
+                    this.userSize.SetValue(joinDto.userSize);
+            }
+
+            await UMI3DAsyncManager.Yield();
+
+            UMI3DLogger.Log("PoseManager.JoinDtoReception end " + userId, scope);
         }
     }
 }

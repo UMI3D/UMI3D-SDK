@@ -21,26 +21,28 @@ namespace umi3d.cdk
 {
     public class ReadUMI3DExtensionData
     {
+        public ulong environmentId { get; protected set; }
         public UMI3DDto dto;
         public GameObject node;
         public List<CancellationToken> tokens;
 
-        public ReadUMI3DExtensionData(UMI3DDto dto) : this(dto, null, new())
+        public ReadUMI3DExtensionData(ulong environmentId, UMI3DDto dto) : this(environmentId, dto, null, new())
         {
         }
 
-        public ReadUMI3DExtensionData(UMI3DDto dto, List<CancellationToken> tokens) : this(dto, null, tokens)
+        public ReadUMI3DExtensionData(ulong environmentId, UMI3DDto dto, List<CancellationToken> tokens) : this(environmentId, dto, null, tokens)
         {
         }
 
-        public ReadUMI3DExtensionData(UMI3DDto dto, GameObject node) : this(dto, node, new())
+        public ReadUMI3DExtensionData(ulong environmentId, UMI3DDto dto, GameObject node) : this(environmentId, dto, node, new())
         { }
 
-        public ReadUMI3DExtensionData(UMI3DDto dto, GameObject node, List<CancellationToken> tokens)
+        public ReadUMI3DExtensionData(ulong environmentId, UMI3DDto dto, GameObject node, List<CancellationToken> tokens)
         {
             this.dto = dto;
             this.node = node;
             this.tokens = tokens;
+            this.environmentId = environmentId;
         }
 
         public override string ToString()
@@ -51,15 +53,17 @@ namespace umi3d.cdk
 
     public class SetUMI3DPropertyData
     {
+        public ulong environmentId { get; protected set; }
         public UMI3DEntityInstance entity;
         public SetEntityPropertyDto property;
         public List<CancellationToken> tokens;
 
-        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity) : this(property, entity, new())
+        public SetUMI3DPropertyData(ulong environmentId, SetEntityPropertyDto property, UMI3DEntityInstance entity) : this(environmentId, property,entity,new())
         { }
 
-        public SetUMI3DPropertyData(SetEntityPropertyDto property, UMI3DEntityInstance entity, List<CancellationToken> tokens)
+        public SetUMI3DPropertyData(ulong environmentId, SetEntityPropertyDto property, UMI3DEntityInstance entity, List<CancellationToken> tokens)
         {
+            this.environmentId = environmentId;
             this.entity = entity;
             this.property = property;
             this.tokens = tokens;
@@ -74,14 +78,16 @@ namespace umi3d.cdk
 
     public class SetUMI3DPropertyContainerData
     {
+        public ulong environmentId { get; protected set; }
         public UMI3DEntityInstance entity;
         public uint operationId;
         public uint propertyKey;
         public ByteContainer container;
         public List<CancellationToken> tokens => container?.tokens;
 
-        public SetUMI3DPropertyContainerData(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public SetUMI3DPropertyContainerData(ulong environmentId,UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
         {
+            this.environmentId = environmentId;
             this.entity = entity;
             this.operationId = operationId;
             this.propertyKey = propertyKey;
@@ -96,12 +102,14 @@ namespace umi3d.cdk
 
     public class ReadUMI3DPropertyData
     {
+        public ulong environmentId { get; protected set; }
         public uint propertyKey;
         public ByteContainer container;
         public object result;
 
-        public ReadUMI3DPropertyData(uint propertyKey, ByteContainer container)
+        public ReadUMI3DPropertyData(ulong environmentId, uint propertyKey, ByteContainer container)
         {
+            this.environmentId = environmentId;
             this.propertyKey = propertyKey;
             this.container = container;
             result = null;
@@ -260,7 +268,7 @@ namespace umi3d.cdk
 
     public abstract class AbstractLoader<T> : AbstractLoader where T : UMI3DDto
     {
-        public abstract Task Load(T dto);
+        public abstract Task Load(ulong environmentId, T dto);
 
         public abstract void Delete(ulong id);
 
@@ -280,7 +288,7 @@ namespace umi3d.cdk
             switch (value.dto)
             {
                 case T dto:
-                    Load(dto);
+                    Load(value.environmentId,dto);
                     break;
             }
 
@@ -307,9 +315,9 @@ namespace umi3d.cdk
 
     public abstract class AbstractLoader<DtoType, LoadedType> : AbstractLoader where DtoType : UMI3DDto
     {
-        public abstract Task<LoadedType> Load(DtoType dto);
+        public abstract Task<LoadedType> Load(ulong environmnetId, DtoType dto);
 
-        public abstract void Delete(ulong id);
+        public abstract void Delete(ulong environmentId, ulong id);
 
         /// <summary>
         /// <inheritdoc/>
@@ -327,7 +335,7 @@ namespace umi3d.cdk
             switch (value.dto)
             {
                 case DtoType dto:
-                    Load(dto);
+                    Load(value.environmentId, dto);
                     break;
             }
 

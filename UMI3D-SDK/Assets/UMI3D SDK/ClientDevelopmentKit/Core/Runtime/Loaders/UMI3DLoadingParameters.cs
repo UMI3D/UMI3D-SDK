@@ -23,6 +23,7 @@ using umi3d.cdk.volumes;
 using umi3d.cdk.binding;
 using umi3d.common;
 using UnityEngine;
+using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {

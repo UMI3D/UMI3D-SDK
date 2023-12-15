@@ -56,18 +56,18 @@ namespace umi3d.cdk.userCapture.binding
         #endregion DependencyInjection
 
         /// <inheritdoc/>
-        protected override async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override async Task<AbstractBinding> LoadData(ulong environmentId, ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case NodeBindingDataDto
                      or MultiBindingDataDto:
                     {
-                        return await base.LoadData(boundNodeId, dto);
+                        return await base.LoadData(environmentId, boundNodeId, dto);
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
-                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(environmentId, boundNodeId);
                         if (!personnalSkeletonService.PersonalSkeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
@@ -83,7 +83,7 @@ namespace umi3d.cdk.userCapture.binding
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
-                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(boundNodeId);
+                        UMI3DNodeInstance boundNode = environmentService.GetNodeInstance(environmentId, boundNodeId);
                         if (!personnalSkeletonService.PersonalSkeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton", DEBUG_SCOPE);

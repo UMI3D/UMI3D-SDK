@@ -83,7 +83,7 @@ namespace umi3d.cdk
             line.startWidth = lineDto.startWidth;
             line.positionCount = lineDto.positions.Count();
             line.SetPositions(lineDto.positions.ConvertAll<Vector3>(v => v.Struct()).ToArray());
-            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(lineDto.id);
+            UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(data.environmentId, lineDto.id);
             if (nodeInstance != null)
                 nodeInstance.renderers = new List<Renderer>() { line };
             SetMaterialOverided(lineDto, nodeInstance);

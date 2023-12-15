@@ -26,9 +26,9 @@ namespace umi3d.cdk.collaboration.userCapture
     public interface ICollaborationSkeletonsManager : ISkeletonManager
     {
         /// <summary>
-        /// Collection of all skeletons indexed by user id.
+        /// Collection of all skeletons indexed by environment id and user id.
         /// </summary>
-        IReadOnlyDictionary<ulong, ISkeleton> Skeletons { get; }
+        IReadOnlyDictionary<(ulong,ulong), ISkeleton> Skeletons { get; }
 
         /// <summary>
         /// Scene where <see cref="CollaborativeSkeleton"/> are put.
@@ -38,9 +38,10 @@ namespace umi3d.cdk.collaboration.userCapture
         /// <summary>
         /// Try to get a skeleton from a <paramref name="userId"/>.
         /// </summary>
+        /// <param name="environmentId">Environment Id</param>
         /// <param name="userId">User UMI3D id.</param>
         /// <returns>Return null if no skeleton is found.</returns>
-        ISkeleton TryGetSkeletonById(ulong userId);
+        ISkeleton TryGetSkeletonById(ulong environmentId, ulong userId);
 
         /// <summary>
         /// Frequency of bone sending indexed by bone id.

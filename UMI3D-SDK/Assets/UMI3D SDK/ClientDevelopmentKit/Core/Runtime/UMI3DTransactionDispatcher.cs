@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
 using System.ComponentModel;
 using System.Linq;
@@ -41,11 +42,11 @@ namespace umi3d.cdk
         /// <returns></returns>
         ///  A transaction is composed of a set of operations to be performed on entities (e.g Scenes, Nodes, Materials).
         ///  Operations should be applied in the same order as stored in the transaction.
-        public async Task PerformTransaction(TransactionDto transaction)
+        public async Task PerformTransaction(ulong environmentId,TransactionDto transaction)
         {
             int _transaction = count++;
             int opCount = 0;
-            foreach (var operation in transaction.operations.Select(o => new DtoContainer(o)))
+            foreach (var operation in transaction.operations.Select(o => new DtoContainer(environmentId,o)))
             {
                 bool performed = false;
                 var ErrorTime = Time.time + secondBeforeError;
@@ -148,23 +149,23 @@ namespace umi3d.cdk
                 case LoadEntityDto load:
                     await Task.WhenAll(load.entities.Select(async entity =>
                     {
-                        await UMI3DEnvironmentLoader.LoadEntity(entity, operation.tokens);
+                        await UMI3DEnvironmentLoader.LoadEntity(operation.environmentId, entity, operation.tokens);
                     }));
                     break;
                 case DeleteEntityDto delete:
-                    await UMI3DEnvironmentLoader.DeleteEntity(delete.entityId, operation.tokens);
+                    await UMI3DEnvironmentLoader.DeleteEntity(operation.environmentId, delete.entityId, operation.tokens);
                     break;
                 case SetEntityPropertyDto set:
-                    await UMI3DEnvironmentLoader.SetEntity(set, operation.tokens);
+                    await UMI3DEnvironmentLoader.SetEntity(operation.environmentId, set, operation.tokens);
                     break;
                 case MultiSetEntityPropertyDto multiSet:
-                    await UMI3DEnvironmentLoader.SetMultiEntity(multiSet, operation.tokens);
+                    await UMI3DEnvironmentLoader.SetMultiEntity(operation.environmentId, multiSet, operation.tokens);
                     break;
                 case StartInterpolationPropertyDto interpolationStart:
-                    await UMI3DEnvironmentLoader.StartInterpolation(interpolationStart, operation.tokens);
+                    await UMI3DEnvironmentLoader.StartInterpolation(operation.environmentId, interpolationStart, operation.tokens);
                     break;
                 case StopInterpolationPropertyDto interpolationStop:
-                    await UMI3DEnvironmentLoader.StopInterpolation(interpolationStop, operation.tokens);
+                    await UMI3DEnvironmentLoader.StopInterpolation(operation.environmentId, interpolationStop, operation.tokens);
                     break;
                 default:
                     if (!await OperationDto(operation))
@@ -181,7 +182,6 @@ namespace umi3d.cdk
         public async Task PerformOperation(ByteContainer container)
         {
             uint operationId = UMI3DSerializer.Read<uint>(container);
-
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
@@ -190,17 +190,17 @@ namespace umi3d.cdk
                 case UMI3DOperationKeys.DeleteEntity:
                     {
                         ulong entityId = UMI3DSerializer.Read<ulong>(container);
-                        await UMI3DEnvironmentLoader.DeleteEntity(entityId, container.tokens);
+                        await UMI3DEnvironmentLoader.DeleteEntity(container.environmentId, entityId, container.tokens);
                         break;
                     }
                 case UMI3DOperationKeys.MultiSetEntityProperty:
-                    await UMI3DEnvironmentLoader.SetMultiEntity(container);
+                    await UMI3DEnvironmentLoader.SetMultiEntity(container.environmentId, container);
                     break;
                 case UMI3DOperationKeys.StartInterpolationProperty:
-                    await UMI3DEnvironmentLoader.StartInterpolation(container);
+                    await UMI3DEnvironmentLoader.StartInterpolation(container.environmentId, container);
                     break;
                 case UMI3DOperationKeys.StopInterpolationProperty:
-                    await UMI3DEnvironmentLoader.StopInterpolation(container);
+                    await UMI3DEnvironmentLoader.StopInterpolation(container.environmentId, container);
                     break;
 
                 default:
@@ -208,7 +208,7 @@ namespace umi3d.cdk
                     {
                         ulong entityId = UMI3DSerializer.Read<ulong>(container);
                         uint propertyKey = UMI3DSerializer.Read<uint>(container);
-                        await UMI3DEnvironmentLoader.SetEntity(operationId, entityId, propertyKey, container);
+                        await UMI3DEnvironmentLoader.SetEntity(container.environmentId, operationId, entityId, propertyKey, container);
                     }
                     else if (!await Operation(operationId, container))
                         await UMI3DEnvironmentLoader.AbstractParameters.UnknownOperationHandler(operationId, container);

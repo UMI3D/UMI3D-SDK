@@ -260,13 +260,13 @@ namespace umi3d.common
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 if (!TryRead(SubContainer, out T v)) break;
                 result.Add(v);
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 if (TryRead(SubContainer, out T v))
                     result.Add(v);
             }
@@ -331,12 +331,12 @@ namespace umi3d.common
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 yield return SubContainer;
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 yield return SubContainer;
             }
             yield break;

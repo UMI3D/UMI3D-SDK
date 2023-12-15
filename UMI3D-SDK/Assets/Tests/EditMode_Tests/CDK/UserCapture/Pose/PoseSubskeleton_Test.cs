@@ -50,7 +50,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         public void SetUp()
         {
             environmentServiceMock = new();
-            poseSubskeleton = new PoseSubskeleton(environmentServiceMock.Object);
+            poseSubskeleton = new PoseSubskeleton(0,environmentServiceMock.Object);
         }
 
         [TearDown]
@@ -338,8 +338,8 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 new (new () { id=1006uL, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
             };
 
-            environmentServiceMock.Setup(x => x.TryGetEntityInstance(poseClips[0].Id)).Returns(new UMI3DEntityInstance(() => { }) { Object=poseClips[0] });
-            environmentServiceMock.Setup(x => x.TryGetEntityInstance(poseClips[1].Id)).Returns(new UMI3DEntityInstance(() => { }) { Object = poseClips[1] });
+            environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[0].Id)).Returns(new UMI3DEntityInstance(0, () => { }, 0) { Object=poseClips[0] });
+            environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[1].Id)).Returns(new UMI3DEntityInstance(0, () => { }, 0) { Object = poseClips[1] });
 
 
             UserTrackingFrameDto frame = new()

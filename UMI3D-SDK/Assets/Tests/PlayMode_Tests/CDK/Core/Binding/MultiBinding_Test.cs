@@ -94,7 +94,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 }
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             Stack<NodeBinding> bindings = new();
             
@@ -147,7 +147,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 }
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             Stack<NodeBinding> bindings = new();
 
@@ -207,7 +207,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 }
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             Stack<NodeBinding> bindings = new();
 
@@ -271,14 +271,14 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             var dto = new MultiBindingDataDto() { Bindings = bindingDataDtos.ToArray() };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
 
             Queue<NodeBinding> bindings = new();
             List<NodeBindingDataDto> callBackCache = new();
 
             foreach (var bindingDataDto in dto.Bindings.OrderByDescending(x=>x.priority))
             {
-                var bindingMock = new Mock<NodeBinding>(bindingDataDto as NodeBindingDataDto, go.transform, parentNodeMock.Object);
+                var bindingMock = new Mock<NodeBinding>( bindingDataDto as NodeBindingDataDto, go.transform, parentNodeMock.Object);
                 bool successLocal = true; // is lazy evaluated and put as the result of the mocked method
                 bindingMock
                     .Setup(x => x.Apply(out successLocal))

@@ -40,7 +40,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
-        public static new UMI3DVideoPlayer Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DVideoPlayer; }
+        public static new UMI3DVideoPlayer Get(ulong environmentId, ulong id) { return UMI3DAbstractAnimation.Get(environmentId,id) as UMI3DVideoPlayer; }
 
         /// <summary>
         /// Has the VideoPlayer successfully prepared the content to be played ?
@@ -57,7 +57,7 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public override bool IsPlaying() => videoPlayer.isPlaying;
 
-        public UMI3DVideoPlayer(UMI3DVideoPlayerDto dto) : base(dto)
+        public UMI3DVideoPlayer(ulong environmentId, UMI3DVideoPlayerDto dto) : base(environmentId, dto)
         {
         }
 
@@ -71,7 +71,7 @@ namespace umi3d.cdk
             renderTexture.Create();
             renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
 
-            mat = UMI3DEnvironmentLoader.GetEntity(dto.materialId).Object as Material;
+            mat = UMI3DEnvironmentLoader.GetEntity(EnvironmentId,dto.materialId).Object as Material;
             if (mat == null)
             {
                 UMI3DLogger.LogWarning("Material not found to display video", scope);
@@ -120,7 +120,7 @@ namespace umi3d.cdk
             if (dto.audioId != 0)
             {
                 videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.audioId, (e) =>
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId, dto.audioId, (e) =>
                 {
                     UMI3DAnimationManager.StartCoroutine(SetAudioSource(dto, e));
                 });
@@ -251,7 +251,7 @@ namespace umi3d.cdk
                 if ((dto as UMI3DVideoPlayerDto).audioId != 0)
                 {
                     videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded((dto as UMI3DVideoPlayerDto).audioId, (e) =>
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId,(dto as UMI3DVideoPlayerDto).audioId, (e) =>
                     {
                         UMI3DAnimationManager.StartCoroutine(ReSetAudioSource(dto as UMI3DVideoPlayerDto, e, time));
                     });

@@ -35,6 +35,8 @@ namespace umi3d.cdk.collaboration.emotes
         /// </summary>
         public virtual ulong AnimationId => dto.animationId;
 
+        public ulong environmentId;
+
         /// <summary>
         /// Icon of the emote in the UI
         /// </summary>
