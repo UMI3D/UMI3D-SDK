@@ -35,7 +35,6 @@ public class DistantEnvironmentLoader : AbstractLoader
             try
             {
                 distantEnvironments[distantDto.id] = distantDto;
-                UnityEngine.Debug.LogError(distantDto.id + " " + distantDto.resourcesUrl);
                 UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
                 var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, null);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
@@ -51,7 +50,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                     {
                         try
                         {
-                            Log(item);
+                            //Log(item);
                             await ReadBinaryDto(item, distantDto);
                         }
                         catch (Exception ex)
