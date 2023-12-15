@@ -16,6 +16,7 @@ limitations under the License.
 
 #if UNITY_EDITOR
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace umi3d.common.userCapture.pose.editor
 {
@@ -24,15 +25,14 @@ namespace umi3d.common.userCapture.pose.editor
     /// </summary>
     public class PoseEditorSkeleton
     {
+        public GameObject root;
+
         /// <summary>
         /// Pose setter bone components collection defining each bone.
         /// </summary>
         public List<PoseSetterBoneComponent> boneComponents = new();
 
-        /// <summary>
-        /// Pose currently edited.
-        /// </summary>
-        public UMI3DPose_so currentPose;
+        public uint anchor = BoneType.Hips;
     }
 }
 #endif

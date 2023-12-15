@@ -34,7 +34,7 @@ namespace umi3d.edk.userCapture.pose
         {
             return new NotConditionDto()
             {
-                Condition = conditionToNegate.ToDto()
+                Condition = conditionToNegate?.ToDto()
             };
         }
     }

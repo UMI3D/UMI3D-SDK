@@ -300,7 +300,10 @@ namespace umi3d.common
         public const uint WebViewTextureSize = 17003;
         public const uint WebViewUrl = 17004;
         public const uint WebViewCanUrlBeForced = 17005;
-
+        public const uint WebViewUseWhileList = 17006;
+        public const uint WebViewWhileList = 17007;
+        public const uint WebViewUseBlackList = 17008;
+        public const uint WebViewBlackList = 17009;
         #endregion
 
     }

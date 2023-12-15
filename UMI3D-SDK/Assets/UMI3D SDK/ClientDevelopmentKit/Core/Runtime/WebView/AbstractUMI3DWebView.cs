@@ -11,6 +11,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -23,14 +24,14 @@ namespace umi3d.cdk
     {
         #region Fields
 
-        private bool _canInteract;
+        private bool _canInteract = true;
 
         /// <summary>
         /// Can user interact with webview.
         /// </summary>
         public bool canInteract
         {
-            get => canInteract;
+            get => _canInteract;
             set
             {
                 if (_canInteract != value)
@@ -41,7 +42,8 @@ namespace umi3d.cdk
             }
         }
 
-        private string _url;
+        private string _url = string.Empty;
+
         /// <summary>
         /// Web view url
         /// </summary>
@@ -57,13 +59,14 @@ namespace umi3d.cdk
                 {
                     _url = value;
 
-                    if(!string.IsNullOrEmpty(_url))
+                    if (!string.IsNullOrEmpty(_url))
                         OnUrlChanged(value);
                 }
             }
         }
 
-        private Vector2 _size;
+        private Vector2 _size = Vector2.zero;
+
         /// <summary>
         /// Webview size.
         /// </summary>
@@ -80,7 +83,8 @@ namespace umi3d.cdk
             }
         }
 
-        private Vector2 _textureSize;
+        private Vector2 _textureSize = Vector2.zero;
+
         /// <summary>
         /// Webview texture dimension.
         /// </summary>
@@ -97,7 +101,8 @@ namespace umi3d.cdk
             }
         }
 
-        private bool _canUrlBeForced;
+        private bool _canUrlBeForced = true;
+
         /// <summary>
         /// Can <see cref="url"/> be forced by the server.
         /// </summary>
@@ -113,16 +118,45 @@ namespace umi3d.cdk
             }
         }
 
+        /// <summary>
+        /// if true, will use <see cref="whiteList"/> to determine which domains are allowed.
+        /// </summary>
+        public bool useWhiteList { get; set; } = false;
+
+        /// <summary>
+        /// Authorized domains.
+        /// </summary>
+        public List<string> whiteList { get; set; } = new List<string>();
+
+        /// <summary>
+        /// If true, will use <see cref="useBlackList"/> to determine which domains are prohibited.
+        /// </summary>
+        public bool useBlackList { get; set; } = false;
+
+        /// <summary>
+        /// Not authorized domains.
+        /// </summary>
+        public List<string> blackList { get; set; } = new List<string>();
+
         #endregion
 
         #region Methods
 
         public virtual void Init(UMI3DWebViewDto dto)
         {
+            canUrlBeForced = dto.canUrlBeForced;
+
+            useWhiteList = dto.useWhiteList;
+            whiteList = dto.whiteList;
+            useBlackList = dto.useBlackList;
+            blackList = dto.blackList;
+
             url = dto.url;
             size = dto.size.Struct();
             textureSize = dto.textureSize.Struct();
             canInteract = dto.canInteract;
+
+            OnCanInteractChanged(canInteract);
         }
 
         protected abstract void OnUrlChanged(string url);

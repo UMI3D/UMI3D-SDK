@@ -174,6 +174,16 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">unique id of the entity.</param>
         /// <returns></returns>
+        public virtual bool TryGetEntity<T>(ulong environmentid, ulong id, out T entity) where T : class
+        {
+            return entitiesCollection[environmentid].TryGetEntity<T>(id, out entity);
+        }
+
+        /// <summary>
+        /// Get an entity with an id.
+        /// </summary>
+        /// <param name="id">unique id of the entity.</param>
+        /// <returns></returns>
         public virtual T GetEntityObject<T>(ulong environmentid, ulong id) where T : class
         {
             var entity = GetEntityInstance(environmentid, id);

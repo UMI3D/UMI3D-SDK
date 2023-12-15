@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using umi3d.common;
@@ -26,7 +27,7 @@ namespace umi3d.cdk.userCapture
     /// <summary>
     /// User's skeleton manager.
     /// </summary>
-    public class PersonalSkeletonManager : Singleton<PersonalSkeletonManager>, ISkeletonManager
+    public class PersonalSkeletonManager : Singleton<PersonalSkeletonManager>, ISkeletonManager, IPersonalSkeletonManager
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.UserCapture;
 
@@ -36,14 +37,11 @@ namespace umi3d.cdk.userCapture
             get
             {
                 if (_skeleton == null)
-                {
-                    InitPersonalSkeleton();
-                    return _skeleton;
-                }
-                else
-                    return _skeleton;
+                    _skeleton = GetPersonalSkeleton();
+                
+                return _skeleton;
             }
-            protected set => _skeleton = (PersonalSkeleton)value;
+            protected set => SetPersonalSkeleton((PersonalSkeleton)value);
         }
 
         /// <inheritdoc/>
@@ -87,46 +85,71 @@ namespace umi3d.cdk.userCapture
 
         protected virtual void Init()
         {
-            environmentLoaderService.onEnvironmentLoaded.AddListener(() =>
+            environmentLoaderService.onEnvironmentLoaded.AddListener(delegate
             {
-                if (IsPersonalSkeletonNull) InitPersonalSkeleton();
+                lateRoutineService.AttachLateRoutine(WaitUntilPersonalSkeletonAvailable(SetPersonalSkeleton));
             });
         }
 
-        private void InitPersonalSkeleton()
+        private void SetPersonalSkeleton(PersonalSkeleton personalSkeleton)
         {
-            computeRoutine = null;
-            if (environmentManager == null || environmentManager.gameObject == null || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
-            {
-                lateRoutineService.AttachLateRoutine(WhileUntilTheHanlderExist());
+            if (_skeleton == personalSkeleton)
                 return;
-            }
 
-            PersonalSkeleton = environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>();
+            _skeleton = personalSkeleton;
             _skeleton.SkeletonHierarchy = StandardHierarchy;
-            PersonalSkeleton.SelfInit();
+            _skeleton.Init();
+            computeRoutine = null;
+            StartCompute();
+        }
+
+        private PersonalSkeleton GetPersonalSkeleton()
+        {
+            if (_skeleton != null)
+                return _skeleton;
+
+            // wait for access to personal skeleton
+            if (environmentManager.gameObject == null // EnvironmentLoadingHandler is not in scene
+                || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
+                return null;
+
+            SetPersonalSkeleton(environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>());
+            return _skeleton;
+        }
+
+        public void StartCompute()
+        {
             computeRoutine ??= lateRoutineService.AttachLateRoutine(ComputeCoroutine());
         }
 
-        IEnumerator WhileUntilTheHanlderExist()
+        public void StopCompute()
         {
-            while (environmentManager == null || environmentManager.gameObject == null || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
+            if (computeRoutine == null)
+                return;
+
+            lateRoutineService.DetachLateRoutine(computeRoutine);
+            computeRoutine = null;
+        }
+
+        IEnumerator WaitUntilPersonalSkeletonAvailable(Action<PersonalSkeleton> callback)
+        {
+            while (environmentManager.gameObject == null  // EnvironmentLoadingHandler is not in scene
+                || environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>() == null)
             {
                 yield return null;
             }
 
-            InitPersonalSkeleton();
+            callback?.Invoke(environmentManager.gameObject.GetComponentInChildren<PersonalSkeleton>());
         }
 
         private IEnumerator ComputeCoroutine()
         {
             while (PersonalSkeleton != null)
             {
-                PersonalSkeleton.Compute();
+                _skeleton.Compute();
                 yield return null;
             }
-            lateRoutineService.DetachLateRoutine(computeRoutine);
-            computeRoutine = null;
+            StopCompute();
         }
     }
 }
