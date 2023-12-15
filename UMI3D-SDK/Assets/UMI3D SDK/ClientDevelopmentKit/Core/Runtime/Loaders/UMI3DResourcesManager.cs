@@ -305,7 +305,7 @@ namespace umi3d.cdk
                     useServerAuthorization = true;
                     return UMI3DClientServer.getAuthorization();
                 }
-                UnityEngine.Debug.Log("Do not match Server url");
+
                 useServerAuthorization = false;
                 if (authorization.IsNullOrEmpty()) return null;
                 return "Basic" + System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
@@ -955,7 +955,7 @@ namespace umi3d.cdk
                 var dto = await deserializer.FromBson(bytes);
                 progress1.AddComplete();
                 string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
-                UnityEngine.Debug.Log($"add to {assetDirectoryPath}");
+                
                 if (dto is FileListDto)
                 {
                     if (!Directory.Exists(directoryPath))
