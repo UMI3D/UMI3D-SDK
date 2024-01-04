@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using NUnit.Framework;
+using System;
+using System.Linq;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using UnityEngine;
@@ -26,17 +28,23 @@ namespace EditMode_Tests.UserCapture.Description.Common
     {
         #region GetBoneName
 
-        [Test]
-        public void GetBoneName_Test([Random(1, 70, 100)] int bonetype)
+        private const uint BONETYPE_MAX = 58u;
+
+        [Test, TestOf(nameof(BoneTypeHelper.GetBoneName))]
+        public void GetBoneName([NUnit.Framework.Range(0u, BONETYPE_MAX)] uint boneType)
         {
             // GIVEN
 
             // WHEN
-            string name = BoneTypeHelper.GetBoneName((uint)bonetype);
+            string name = BoneTypeHelper.GetBoneName(boneType);
 
             // THEN
-            switch ((uint)bonetype)
+            switch (boneType)
             {
+                case BoneType.None:
+                    Assert.IsTrue(name.Equals("None"));
+                    break;
+
                 case BoneType.Hips:
                     Assert.IsTrue(name.Equals("Hips"));
                     break;
@@ -276,5 +284,36 @@ namespace EditMode_Tests.UserCapture.Description.Common
         }
 
         #endregion GetBoneName
+
+        #region GetBoneNames
+        [Test, TestOf(nameof(BoneTypeHelper.GetBoneNames))]
+        public void GetBoneNames()
+        {
+            // given
+
+            // when
+            var boneNames = BoneTypeHelper.GetBoneNames();
+
+            // then
+            Assert.AreEqual(BONETYPE_MAX + 1, boneNames.Count);
+        }
+        #endregion
+
+        #region GetSymmetricBoneType
+        [Test, TestOf(nameof(BoneTypeHelper.GetSymmetricBoneType))]
+        public void GetSymmetricBoneType([NUnit.Framework.Range(0u, BONETYPE_MAX)] uint boneType)
+        {
+            // given
+
+            // when
+            uint symmetricBoneType = BoneTypeHelper.GetSymmetricBoneType(boneType);
+
+            // then
+            if (BoneTypeHelper.Symmetries.ContainsKey(boneType))
+                Assert.AreEqual(BoneTypeHelper.Symmetries[boneType], symmetricBoneType);
+            else
+                Assert.AreEqual(boneType, symmetricBoneType);
+        }
+        #endregion
     }
 }
