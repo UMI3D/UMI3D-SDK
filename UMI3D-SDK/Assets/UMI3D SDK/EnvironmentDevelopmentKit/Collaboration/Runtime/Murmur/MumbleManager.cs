@@ -38,6 +38,8 @@ namespace umi3d.edk.collaboration.murmur
 
         int localRoomIndex = 0;
 
+        public string GetGUID() => guid;
+
         class Room
         {
             public int roomId;
@@ -55,7 +57,7 @@ namespace umi3d.edk.collaboration.murmur
                 this.name = name;
             }
         }
-        class User
+        public class User
         {
             public int id;
             public string userId;
@@ -82,14 +84,14 @@ namespace umi3d.edk.collaboration.murmur
 
         List<Room> roomList;
         Room defaultRoom;
-        List<User> userList;
+        public List<User> userList;
 
         bool refreshing = false;
         bool running = false;
         float RefreshTime = 0;
         const float MaxRefreshTimeSecond = 30f;
 
-        public static MumbleManager Create(string ip,string http = null, string guid = null)
+        public static MumbleManager Create(string ip, string http = null, string guid = null)
         {
             if (string.IsNullOrEmpty(ip))
                 return null;
@@ -134,7 +136,7 @@ namespace umi3d.edk.collaboration.murmur
                 await Refresh();
         }
 
-        private MumbleManager(string ip,string http, string guid = null)
+        private MumbleManager(string ip, string http, string guid = null)
         {
             this.guid = guid;
             this.ip = ip;
@@ -146,14 +148,14 @@ namespace umi3d.edk.collaboration.murmur
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
         }
 
-        private string GenerateUserName(UMI3DCollaborationUser user, string userID)
+        public string GenerateUserName(UMI3DCollaborationUser user, string userID)
         {
-            return RemoveSpace(@"User_" +user.displayName+"_"+ userID + @"_[" + guid + @"]");
+            return RemoveSpace(@"User_" + user.displayName + "_" + userID + @"_[" + guid + @"]");
         }
 
-        string RemoveSpace(string value)
+        public string RemoveSpace(string value)
         {
-            return new string( value.Where(c => !Char.IsWhiteSpace(c)).ToArray());
+            return new string(value.Where(c => !Char.IsWhiteSpace(c)).ToArray());
         }
 
         private string GenerateRoomName(int i)
@@ -291,7 +293,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async void CreateUser(User user)
+        public async void CreateUser(User user)
         {
             await WaitWhileRefreshing();
             try
@@ -375,7 +377,7 @@ namespace umi3d.edk.collaboration.murmur
         public List<Operation> AddUser(UMI3DCollaborationUser user, int room = -1)
         {
             var userId = System.Guid.NewGuid().ToString();
-            var _user = new User(userId, GenerateUserName(user,userId));
+            var _user = new User(userId, GenerateUserName(user, userId));
             _user.password = System.Guid.NewGuid().ToString();
             userList.Add(_user);
 
@@ -391,7 +393,7 @@ namespace umi3d.edk.collaboration.murmur
             return ops;
         }
 
-        private Operation ToPrivate(UMI3DCollaborationUser user, Operation op)
+        public Operation ToPrivate(UMI3DCollaborationUser user, Operation op)
         {
             if (op == null) return null;
 
@@ -444,6 +446,11 @@ namespace umi3d.edk.collaboration.murmur
             }
             roomList.Clear();
             userList.Clear();
+        }
+
+        public string GetDefaultRoomName()
+        {
+            return defaultRoom.name;
         }
     }
 }
