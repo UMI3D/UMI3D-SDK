@@ -30,6 +30,10 @@ namespace umi3d.edk.collaboration
 
         public RegisterIdentityDto identityDto { get; set; }
 
+        public UMI3DAsyncProperty<string> audioChannel;
+        public UMI3DAsyncProperty<string> audioServerUrl;
+        public UMI3DAsyncProperty<bool> audioUseMumble;
+
         /// <inheritdoc/>
         protected override ulong userId { get => identityDto.userId; set => identityDto.userId = value; }
         /// <summary>
@@ -83,6 +87,11 @@ namespace umi3d.edk.collaboration
             userId = identity is not null && identity.userId != 0 ? UMI3DEnvironment.Register(this, identity.userId) : Id();
 
             status = StatusType.CREATED;
+
+            audioChannel = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioChannel, null);
+            audioServerUrl = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioServer, null);
+            audioUseMumble = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
+
             UMI3DLogger.Log($"<color=magenta>new User {Id()} {login}</color>", scope);
         }
 
@@ -166,6 +175,10 @@ namespace umi3d.edk.collaboration
             {
                 id = Id(),
                 status = status,
+
+                audioChannel = audioChannel.GetValue(user),
+                audioServerUrl = audioServerUrl.GetValue(user),
+                audioUseMumble = audioUseMumble.GetValue(user),
             };
             return _user;
         }

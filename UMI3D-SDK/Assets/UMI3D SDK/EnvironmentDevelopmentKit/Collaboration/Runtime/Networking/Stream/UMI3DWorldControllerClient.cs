@@ -27,16 +27,16 @@ using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
-    public class UMI3DWorldControllerClient1
+    public class UMI3DWorldControllerClient
     {
         private readonly MediaDto media;
         public string name => media?.name;
 
         private readonly GateDto gate;
         private string globalToken;
-        private UMI3DEnvironmentClient1 environment;
+        private UMI3DEnvironmentClient environment;
         private PrivateIdentityDto privateIdentity;
         public readonly UMI3DDistantEnvironmentNode node;
 
@@ -71,7 +71,7 @@ namespace umi3d.cdk.collaboration
             return isConnected;
         }
 
-        public UMI3DWorldControllerClient1(MediaDto media, UMI3DDistantEnvironmentNode node)
+        public UMI3DWorldControllerClient(MediaDto media, UMI3DDistantEnvironmentNode node)
         {
             this.node = node;
             this.media = media;
@@ -80,16 +80,16 @@ namespace umi3d.cdk.collaboration
             privateIdentity = null;
         }
 
-        public UMI3DWorldControllerClient1(MediaDto media, GateDto gate, UMI3DDistantEnvironmentNode node) : this(media, node)
+        public UMI3DWorldControllerClient(MediaDto media, GateDto gate, UMI3DDistantEnvironmentNode node) : this(media, node)
         {
             this.gate = gate;
         }
 
-        public UMI3DWorldControllerClient1(RedirectionDto redirection, UMI3DDistantEnvironmentNode node) : this(redirection.media, redirection.gate,node)
+        public UMI3DWorldControllerClient(RedirectionDto redirection, UMI3DDistantEnvironmentNode node) : this(redirection.media, redirection.gate,node)
         {
         }
 
-        public UMI3DWorldControllerClient1(RedirectionDto redirection, string globalToken, UMI3DDistantEnvironmentNode node) : this(redirection, node)
+        public UMI3DWorldControllerClient(RedirectionDto redirection, string globalToken, UMI3DDistantEnvironmentNode node) : this(redirection, node)
         {
             this.globalToken = globalToken;
         }
@@ -135,7 +135,7 @@ namespace umi3d.cdk.collaboration
             {
                 UnityEngine.Debug.Log($"Is server is {dto.isServer}");
 
-                UMI3DDto answerDto = await HttpClient1.Connect(dto, media.url);
+                UMI3DDto answerDto = await HttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
                 {
                     Connected(identity);
@@ -179,20 +179,20 @@ namespace umi3d.cdk.collaboration
             });
         }
 
-        public UMI3DWorldControllerClient1 Redirection(RedirectionDto redirection)
+        public UMI3DWorldControllerClient Redirection(RedirectionDto redirection)
         {
             if (media.url == redirection.media.url)
-                return new UMI3DWorldControllerClient1(redirection, globalToken, node);
+                return new UMI3DWorldControllerClient(redirection, globalToken, node);
             else
-                return new UMI3DWorldControllerClient1(redirection, node);
+                return new UMI3DWorldControllerClient(redirection, node);
         }
 
-        public async Task<UMI3DEnvironmentClient1> ConnectToEnvironment()
+        public async Task<UMI3DEnvironmentClient> ConnectToEnvironment()
         {
             if (environment != null)
                 await environment.Logout(false);
 
-            environment = new UMI3DEnvironmentClient1(privateIdentity.connectionDto, this);
+            environment = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this);
             if (environment.Connect())
                 return environment;
             else

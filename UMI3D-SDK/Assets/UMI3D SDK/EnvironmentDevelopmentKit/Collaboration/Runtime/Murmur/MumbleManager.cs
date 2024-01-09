@@ -130,6 +130,26 @@ namespace umi3d.edk.collaboration.murmur
             defaultRoom = _CreateRoom();
         }
 
+
+        public void SwitchDefaultRoom(string name)
+        {
+            if(name == null)
+                name = roomList.FirstOrDefault()?.name;
+            
+            var room = roomList.FirstOrDefault(r => r.name == name) ?? _CreateRoom(name);
+            if (room == null)
+                return;
+
+            var old = defaultRoom;
+            defaultRoom = room;
+            if (old == defaultRoom)
+                return;
+
+            
+            //switch all user
+
+        }
+
         public async void RefreshAsync()
         {
             if (!refreshing)
@@ -326,11 +346,10 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-
-        private Room _CreateRoom()
+        private Room _CreateRoom(string name = null)
         {
             var roomId = localRoomIndex++;
-            var name = GenerateRoomName(roomId);
+            name = name ?? GenerateRoomName(roomId);
             var room = new Room(roomId, name);
             roomList.Add(room);
             CreateRoom(room);
@@ -372,6 +391,17 @@ namespace umi3d.edk.collaboration.murmur
         {
             foreach (var room in rooms)
                 DeleteRoom(room);
+        }
+
+
+        public List<Operation> AddUser(UMI3DServerUser user, int room = -1)
+        {
+            var ops = new List<Operation>();
+            ops.Add(user.audioServerUrl.SetValue(ip));
+            ops.Add(user.audioUseMumble.SetValue(true));
+            ops.AddRange(SwitchUserRoom(user, room));
+
+            return ops;
         }
 
         public List<Operation> AddUser(UMI3DCollaborationUser user, int room = -1)
@@ -421,7 +451,7 @@ namespace umi3d.edk.collaboration.murmur
         }
 
 
-        public List<Operation> SwitchUserRoom(UMI3DCollaborationUser user, int roomId = -1)
+        public List<Operation> SwitchUserRoom(UMI3DCollaborationAbstractUser user, int roomId = -1)
         {
             var ops = new List<Operation>();
 

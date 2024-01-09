@@ -29,17 +29,17 @@ using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.tracking;
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Client for the Forge server, handling most of the transactions coming from the environment.
     /// </summary>
     /// The Forge client retrieve all the UDP messages sent by the Forge server.
-    public class UMI3DForgeClient1 : UMI3DForgeSocketBase
+    public class UMI3DForgeClient : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        private UMI3DEnvironmentClient1 environmentClient;
+        private UMI3DEnvironmentClient environmentClient;
 
         private uint Me => environmentClient?.UserDto.answerDto.networkId ?? 0;
 
@@ -81,9 +81,9 @@ namespace umi3d.cdk.collaboration
         /// <param name="natServerHost"></param>
         /// <param name="natServerPort"></param>
         /// <returns></returns>
-        public static UMI3DForgeClient1 Create(UMI3DEnvironmentClient1 environmentClient, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
+        public static UMI3DForgeClient Create(UMI3DEnvironmentClient environmentClient, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
         {
-            UMI3DForgeClient1 client = new GameObject("UMI3DForgeClient").AddComponent<UMI3DForgeClient1>();
+            UMI3DForgeClient client = new GameObject("UMI3DForgeClient").AddComponent<UMI3DForgeClient>();
             client.environmentClient = environmentClient;
             client.ip = ip;
             client.port = port;
@@ -340,12 +340,12 @@ namespace umi3d.cdk.collaboration
                     data = sample.Take(length).ToArray(),
                     senderId = Me
                 };
-                voice = new Binary(client.Time.Timestep, false, dto.ToBson(), Receivers.All, MessageGroupIds.VOIP, false);
+                voice = new Binary(client.Time.Timestep, false, dto.ToBson(), BeardedManStudios.Forge.Networking.Receivers.All, MessageGroupIds.VOIP, false);
             }
             else
             {
                 Bytable bytable = UMI3DSerializer.Write(Me) + UMI3DSerializer.WriteCollection(sample.Take(length));
-                voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), Receivers.All, MessageGroupIds.VOIP, false);
+                voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), BeardedManStudios.Forge.Networking.Receivers.All, MessageGroupIds.VOIP, false);
             }
             client.Send(voice);
         }
@@ -508,7 +508,7 @@ namespace umi3d.cdk.collaboration
                 bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
                 bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-                var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
+                var bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.All, channel, isTcp);
                 client.Send(bin, isReliable);
             }
         }

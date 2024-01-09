@@ -18,7 +18,7 @@ using inetum.unityUtils;
 using System;
 using UnityEngine.Networking;
 
-namespace umi3d.cdk
+namespace umi3d.common
 {
     /// <summary>
     /// Class to be sent to try to send a request again.
