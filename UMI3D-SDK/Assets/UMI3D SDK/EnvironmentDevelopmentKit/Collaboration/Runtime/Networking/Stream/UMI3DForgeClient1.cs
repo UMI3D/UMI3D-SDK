@@ -29,7 +29,7 @@ using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.tracking;
 using UnityEngine;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Client for the Forge server, handling most of the transactions coming from the environment.
@@ -340,12 +340,12 @@ namespace umi3d.cdk.collaboration
                     data = sample.Take(length).ToArray(),
                     senderId = Me
                 };
-                voice = new Binary(client.Time.Timestep, false, dto.ToBson(), Receivers.All, MessageGroupIds.VOIP, false);
+                voice = new Binary(client.Time.Timestep, false, dto.ToBson(), BeardedManStudios.Forge.Networking.Receivers.All, MessageGroupIds.VOIP, false);
             }
             else
             {
                 Bytable bytable = UMI3DSerializer.Write(Me) + UMI3DSerializer.WriteCollection(sample.Take(length));
-                voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), Receivers.All, MessageGroupIds.VOIP, false);
+                voice = new Binary(client.Time.Timestep, false, bytable.ToBytes(), BeardedManStudios.Forge.Networking.Receivers.All, MessageGroupIds.VOIP, false);
             }
             client.Send(voice);
         }
@@ -508,7 +508,7 @@ namespace umi3d.cdk.collaboration
                 bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
                 bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-                var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
+                var bin = new Binary(timestep, isTcpClient, data, BeardedManStudios.Forge.Networking.Receivers.All, channel, isTcp);
                 client.Send(bin, isReliable);
             }
         }

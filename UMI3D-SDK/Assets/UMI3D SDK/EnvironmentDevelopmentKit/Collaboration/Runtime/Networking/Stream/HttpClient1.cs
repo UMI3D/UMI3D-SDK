@@ -27,8 +27,9 @@ using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Networking;
 using umi3d.common;
+using umi3d.common.collaboration;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Send HTTP requests to the environment server.

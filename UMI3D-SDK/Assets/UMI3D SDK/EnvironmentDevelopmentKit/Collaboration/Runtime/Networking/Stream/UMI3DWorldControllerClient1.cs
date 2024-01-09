@@ -27,7 +27,7 @@ using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
     public class UMI3DWorldControllerClient1
     {

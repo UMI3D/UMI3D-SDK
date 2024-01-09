@@ -20,15 +20,13 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Networking;
-using UnityEngine.XR;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.common.collaboration
 {
 
 

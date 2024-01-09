@@ -25,7 +25,7 @@ using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
 
-namespace umi3d.cdk.collaboration
+namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Client for the UMI3D environment server, handles the connection to environments.
