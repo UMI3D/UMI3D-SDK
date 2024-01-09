@@ -297,8 +297,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DLogger.Log($"User Created", scope);
             user.SetStatus(StatusType.CREATED);
-            if (user is UMI3DCollaborationUser collaborationUser)
-                AddUserAudio(collaborationUser);
+            AddUserAudio(user);
             if (!reconnection)
             {
                 OnUserCreated.Invoke(user);
@@ -311,14 +310,19 @@ namespace umi3d.edk.collaboration
             forgeServer.SendSignalingMessage(user.networkPlayer, user.ToStatusDto());
         }
 
-        private void AddUserAudio(UMI3DCollaborationUser user)
+        private void AddUserAudio(UMI3DCollaborationAbstractUser user)
         {
             if (mumbleManager == null)
                 return;
-            List<Operation> op = mumbleManager.AddUser(user);
+            if (user is UMI3DCollaborationUser collaborationUser)
+            {
+                List<Operation> op = mumbleManager.AddUser(collaborationUser);
             var t = new Transaction() { reliable = true };
             t.AddIfNotNull(op);
             t.Dispatch();
+        }
+            else if (user is UMI3DServerUser serv)
+                mumbleManager.AddUser(serv);
         }
 
 
@@ -401,6 +405,12 @@ namespace umi3d.edk.collaboration
             }
             if (mumbleManager != null)
                 mumbleManager.Delete();
+
+            if (forgeServer != null)
+            {
+                GameObject.Destroy(forgeServer.gameObject);
+                forgeServer = null;
+            }
         }
 
         private async void Clear()
@@ -414,6 +424,12 @@ namespace umi3d.edk.collaboration
             }
             if (mumbleManager != null)
                 mumbleManager.Delete();
+
+            if (forgeServer != null)
+            {
+                GameObject.Destroy(forgeServer.gameObject);
+                forgeServer = null;
+            }
         }
 
         public static void Stop()

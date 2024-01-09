@@ -30,9 +30,7 @@ namespace umi3d.edk.collaboration
             avatarStatus = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAvatarStatus, true);
             attentionRequired = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAttentionRequired, false);
 
-            audioChannel = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioChannel, null);
-            audioServerUrl = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioServer, null);
-            audioUseMumble = new UMI3DAsyncProperty<bool>(userId, UMI3DPropertyKeys.UserAudioUseMumble, false);
+
             audioPassword = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioPassword, null);
             audioLogin = new UMI3DAsyncProperty<string>(userId, UMI3DPropertyKeys.UserAudioLogin, null);
 
@@ -58,9 +56,6 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<bool> microphoneStatus;
         public UMI3DAsyncProperty<bool> attentionRequired;
 
-        public UMI3DAsyncProperty<string> audioChannel;
-        public UMI3DAsyncProperty<string> audioServerUrl;
-        public UMI3DAsyncProperty<bool> audioUseMumble;
         public UMI3DAsyncProperty<string> audioPassword;
         public UMI3DAsyncProperty<string> audioLogin;
 

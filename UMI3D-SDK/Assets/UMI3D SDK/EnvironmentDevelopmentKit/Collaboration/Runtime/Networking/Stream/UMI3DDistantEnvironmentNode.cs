@@ -55,8 +55,12 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
             if (!nvClient.IsConnected() || nvClient.environement == null)
                 continue;
-
-            environmentDto.SetValue( nvClient.environement);
+            var manager = UMI3DCollaborationServer.MumbleManager;
+            if (nvClient.UserDto.answerDto.audioUseMumble && manager != null && manager.ip == nvClient.UserDto.answerDto.audioServerUrl)
+            {
+                manager.SwitchDefaultRoom(nvClient.UserDto.answerDto.audioChannel);
+            }
+            environmentDto.SetValue(nvClient.environement);
             lastTransactionAsync.SetValue(new());
         }
     }
