@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
+using umi3d.common;
 
 namespace umi3d.cdk
 {
