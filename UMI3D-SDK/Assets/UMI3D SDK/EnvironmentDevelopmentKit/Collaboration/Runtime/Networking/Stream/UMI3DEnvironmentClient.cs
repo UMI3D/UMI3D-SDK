@@ -32,7 +32,7 @@ namespace umi3d.edk.collaboration
     /// </summary>
     /// The Environment Client singlely handles all that is connection and creates 
     /// an <see cref="umi3d.cdk.collaboration.HttpClient"/> and a <see cref="UMI3DForgeClient"/> to handle other messages.
-    public class UMI3DEnvironmentClient1
+    public class UMI3DEnvironmentClient
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -70,7 +70,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public readonly UMI3DVersion.Version version;
 
-        private readonly UMI3DWorldControllerClient1 worldControllerClient;
+        private readonly UMI3DWorldControllerClient worldControllerClient;
 
         static public UnityEvent EnvironementJoinned = new UnityEvent();
         static public UnityEvent EnvironementLoaded = new UnityEvent();
@@ -88,12 +88,12 @@ namespace umi3d.edk.collaboration
         /// <summary>
         /// Handles HTTP requests before connection or to retrieve DTOs.
         /// </summary>
-        public HttpClient1 HttpClient { get; private set; }
+        public HttpClient HttpClient { get; private set; }
 
         /// <summary>
         /// Handles most of the transaction-related message after connection.
         /// </summary>
-        public UMI3DForgeClient1 ForgeClient { get; private set; }
+        public UMI3DForgeClient ForgeClient { get; private set; }
 
         public ulong TimeStep => ForgeClient.GetNetWorker().Time.Timestep;
 
@@ -204,7 +204,7 @@ namespace umi3d.edk.collaboration
         public UserInfo UserDto = new UserInfo();
 
 
-        public UMI3DEnvironmentClient1(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient1 worldControllerClient)
+        public UMI3DEnvironmentClient(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient)
         {
             this.environmentId = environmentId;
             this.isJoinning = false;
@@ -216,7 +216,7 @@ namespace umi3d.edk.collaboration
             this.worldControllerClient = worldControllerClient;
 
             lastTokenUpdate = default;
-            HttpClient = new HttpClient1(this);
+            HttpClient = new HttpClient(this);
 
         }
 
@@ -236,7 +236,7 @@ namespace umi3d.edk.collaboration
             isConnecting = true;
             disconected = false;
 
-            ForgeClient = UMI3DForgeClient1.Create(this);
+            ForgeClient = UMI3DForgeClient.Create(this);
             ForgeClient.ip = connectionDto.forgeHost;
             ForgeClient.port = connectionDto.forgeServerPort;
             ForgeClient.masterServerHost = connectionDto.forgeMasterServerHost;

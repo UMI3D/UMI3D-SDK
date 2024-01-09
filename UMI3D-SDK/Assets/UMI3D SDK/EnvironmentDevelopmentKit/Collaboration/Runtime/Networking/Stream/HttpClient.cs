@@ -14,19 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Networking;
-using umi3d.common;
 using umi3d.common.collaboration;
 
 namespace umi3d.edk.collaboration
@@ -35,9 +28,9 @@ namespace umi3d.edk.collaboration
     /// Send HTTP requests to the environment server.
     /// </summary>
     /// Usually used before connection or to retrieve DTOs.
-    public class HttpClient1 : AbstractHttpClient<UMI3DEnvironmentClient1>
+    public class HttpClient : AbstractHttpClient<UMI3DEnvironmentClient>
     {
-        public HttpClient1(UMI3DEnvironmentClient1 environmentClient) : base(environmentClient)
+        public HttpClient(UMI3DEnvironmentClient environmentClient) : base(environmentClient)
         {
         }
 

@@ -35,11 +35,11 @@ namespace umi3d.edk.collaboration
     /// Client for the Forge server, handling most of the transactions coming from the environment.
     /// </summary>
     /// The Forge client retrieve all the UDP messages sent by the Forge server.
-    public class UMI3DForgeClient1 : UMI3DForgeSocketBase
+    public class UMI3DForgeClient : UMI3DForgeSocketBase
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        private UMI3DEnvironmentClient1 environmentClient;
+        private UMI3DEnvironmentClient environmentClient;
 
         private uint Me => environmentClient?.UserDto.answerDto.networkId ?? 0;
 
@@ -81,9 +81,9 @@ namespace umi3d.edk.collaboration
         /// <param name="natServerHost"></param>
         /// <param name="natServerPort"></param>
         /// <returns></returns>
-        public static UMI3DForgeClient1 Create(UMI3DEnvironmentClient1 environmentClient, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
+        public static UMI3DForgeClient Create(UMI3DEnvironmentClient environmentClient, string ip = "127.0.0.1", ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941)
         {
-            UMI3DForgeClient1 client = new GameObject("UMI3DForgeClient").AddComponent<UMI3DForgeClient1>();
+            UMI3DForgeClient client = new GameObject("UMI3DForgeClient").AddComponent<UMI3DForgeClient>();
             client.environmentClient = environmentClient;
             client.ip = ip;
             client.port = port;
