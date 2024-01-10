@@ -162,7 +162,7 @@ namespace umi3d.cdk
         /// <param name="finished">Callback called when all nodes are loaded.</param>
         /// <param name="LoadedNodesCount">Action called each time a node is loaded with the count of all loaded node in parameter.</param>
         /// <returns></returns>
-        public async Task LoadNodes(ulong enviornmentId ,IEnumerable<GlTFNodeDto> nodes, Progress progress)
+        public async Task LoadNodes(ulong environmentId ,IEnumerable<GlTFNodeDto> nodes, Progress progress)
         {
             progress.SetTotal(progress.total + nodes.Count());
 
@@ -170,7 +170,7 @@ namespace umi3d.cdk
             var tasks = nodes
                 .Select(n =>
                 {
-                    var res = CreateNode(enviornmentId, n);
+                    var res = CreateNode(environmentId, n);
                     return res;
                 })
                 .Select(async node =>
@@ -179,7 +179,7 @@ namespace umi3d.cdk
 
                     try
                     {
-                        await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(enviornmentId, dto.extensions.umi3d, node.gameObject));
+                        await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentId, dto.extensions.umi3d, node.gameObject));
 
                         ReadLightingExtensions(dto, node.gameObject);
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
@@ -209,14 +209,14 @@ namespace umi3d.cdk
 #else
             await Task.WhenAll(
                 nodes
-                .Select(n => CreateNode(enviornmentId, n))
+                .Select(n => CreateNode(environmentId, n))
                 .Select(async node =>
                 {
                     var dto = node.dto as GlTFNodeDto;
 
                     try
                     {
-                        await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(enviornmentId, dto.extensions.umi3d, node.gameObject));
+                        await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentId, dto.extensions.umi3d, node.gameObject));
 
                         ReadLightingExtensions(dto, node.gameObject);
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
