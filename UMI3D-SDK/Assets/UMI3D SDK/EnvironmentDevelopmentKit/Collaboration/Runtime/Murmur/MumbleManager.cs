@@ -131,7 +131,7 @@ namespace umi3d.edk.collaboration.murmur
         }
 
 
-        public void SwitchDefaultRoom(string name)
+        public void SwitchDefaultRoom(string name, IEnumerable<UMI3DCollaborationAbstractUser> users, bool force = false)
         {
             if(name == null)
                 name = roomList.FirstOrDefault()?.name;
@@ -145,8 +145,9 @@ namespace umi3d.edk.collaboration.murmur
             if (old == defaultRoom)
                 return;
 
-            
-            //switch all user
+            foreach(var user in users)
+                if (force || user.audioChannel.GetValue(user) == old.name)
+                    SwitchUserRoom(user); 
 
         }
 
