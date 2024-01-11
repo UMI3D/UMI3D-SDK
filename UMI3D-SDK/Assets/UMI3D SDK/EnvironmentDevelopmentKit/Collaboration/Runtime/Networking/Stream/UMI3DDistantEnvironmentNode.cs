@@ -58,7 +58,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             var manager = UMI3DCollaborationServer.MumbleManager;
             if (nvClient.UserDto.answerDto.audioUseMumble && manager != null && manager.ip == nvClient.UserDto.answerDto.audioServerUrl)
             {
-                manager.SwitchDefaultRoom(nvClient.UserDto.answerDto.audioChannel);
+                manager.SwitchDefaultRoom(nvClient.UserDto.answerDto.audioChannel, UMI3DCollaborationServer.Collaboration.Users);
             }
             environmentDto.SetValue(nvClient.environement);
             lastTransactionAsync.SetValue(new());
@@ -253,6 +253,11 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         if (user is UMI3DCollaborationUser cuser)
         {
+            while (run && nvClient == null)
+                await Task.Yield();
+            if (!run || user is null || cuser.status != StatusType.NONE)
+                return;
+
             var dto = cuser.identityDto;
             await nvClient.HttpClient.SendPostRegisterDistantUser(dto);
         }

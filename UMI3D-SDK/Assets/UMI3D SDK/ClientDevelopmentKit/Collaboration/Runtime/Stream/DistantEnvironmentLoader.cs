@@ -41,25 +41,27 @@ public class DistantEnvironmentLoader : AbstractLoader
 
                 UMI3DEnvironmentLoader.Instance.RegisterEntity(distantDto.id, UMI3DGlobalID.EnvironementId, distantDto.environmentDto, null).NotifyLoaded();
 
-                await UMI3DEnvironmentLoader.Instance.ReadUMI3DExtension(distantDto.id, distantDto.environmentDto, null);
-
-                await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id, distantDto.environmentDto.scenes);
-                MainThreadManager.Run(async () =>
+                if (distantDto.environmentDto != null)
                 {
-                    foreach (var item in distantDto.binaries)
-                    {
-                        try
-                        {
-                            //Log(item);
-                            await ReadBinaryDto(item, distantDto);
-                        }
-                        catch (Exception ex)
-                        {
-                            UnityEngine.Debug.LogException(ex);
-                        }
-                    }
-                });
+                    await UMI3DEnvironmentLoader.Instance.ReadUMI3DExtension(distantDto.id, distantDto.environmentDto, null);
 
+                    await UMI3DEnvironmentLoader.Instance.InstantiateNodes(distantDto.id, distantDto.environmentDto.scenes);
+                    MainThreadManager.Run(async () =>
+                    {
+                        foreach (var item in distantDto.binaries)
+                        {
+                            try
+                            {
+                                //Log(item);
+                                await ReadBinaryDto(item, distantDto);
+                            }
+                            catch (Exception ex)
+                            {
+                                UnityEngine.Debug.LogException(ex);
+                            }
+                        }
+                    });
+                }
                 e.NotifyLoaded();
             }
             catch (Exception e)
