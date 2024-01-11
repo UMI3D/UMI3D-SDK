@@ -57,7 +57,7 @@ namespace umi3d.cdk
         }
 
 
-        protected virtual void _UrlToObject2(string url, string extension, string authorization, Action<object> callback, Action<Umi3dException> failCallback, string pathIfObjectInBundle = "")
+        protected virtual void _UrlToObject2(string url, string extension, string authorization, Action<object> callback, Action<common.Umi3dException> failCallback, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
             if (!url.Contains("http")) url = "file://" + url;

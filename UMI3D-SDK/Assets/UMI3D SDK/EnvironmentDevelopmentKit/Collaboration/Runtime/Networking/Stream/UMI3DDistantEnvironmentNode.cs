@@ -253,6 +253,11 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         if (user is UMI3DCollaborationUser cuser)
         {
+            while (run && nvClient == null)
+                await Task.Yield();
+            if (!run || user is null || cuser.status != StatusType.NONE)
+                return;
+
             var dto = cuser.identityDto;
             await nvClient.HttpClient.SendPostRegisterDistantUser(dto);
         }
