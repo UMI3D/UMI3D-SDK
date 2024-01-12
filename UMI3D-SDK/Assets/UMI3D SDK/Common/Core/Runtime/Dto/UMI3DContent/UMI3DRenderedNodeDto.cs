@@ -42,6 +42,10 @@ namespace umi3d.common
         /// </summary>
         public bool receiveShadow { get; set; }
 
+        /// <summary>
+        /// Specify the values of blendshapes in SkinMesh. On Model, it will be applied on each SkinnedMeshRenderer that has blendShapes, On SubModel, it will be applied on the current entity.
+        /// </summary>
+        public List<float> blendShapesValues { get; set; } = null;
     }
 
 }

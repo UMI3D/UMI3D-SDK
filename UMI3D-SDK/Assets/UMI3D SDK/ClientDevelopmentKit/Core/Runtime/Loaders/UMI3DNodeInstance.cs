@@ -123,6 +123,11 @@ namespace umi3d.cdk
         /// </summary>
         public Scene scene;
 
+        /// <summary>
+        /// The list of SkinnedMeshRenderer that contains blend shapes. empty if empty node, contains 1 or 0 element if submodel node, n elements for UMI3DModel.
+        /// </summary>
+        public List<SkinnedMeshRenderer> skmToUpdateWithBlendShapes = new();
+
         public UMI3DNodeInstance(ulong environmentId, Action loadedCallback, ulong id = 0) : base(environmentId, loadedCallback, id)
         {
         }

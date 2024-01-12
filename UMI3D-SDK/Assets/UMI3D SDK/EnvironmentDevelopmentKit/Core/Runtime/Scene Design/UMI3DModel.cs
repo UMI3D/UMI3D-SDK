@@ -123,6 +123,36 @@ namespace umi3d.edk
                         }
                     }
                 }
+
+                var skmr = GetComponent<SkinnedMeshRenderer>();
+                if (skmr != null && skmr.sharedMesh.blendShapeCount > 0)
+                {
+                    for (int i = 0; i < skmr.sharedMesh.blendShapeCount; i++)
+                    {
+                        blendShapesValues.Add(skmr.GetBlendShapeWeight(i));
+                    }
+                    objectBlendShapesValues.SetValue(blendShapesValues);
+
+                }
+            }
+            else
+            {
+                SkinnedMeshRenderer[] skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
+                List<GameObjectInfo> result = new();
+                this.GetChildrenWhithoutOtherModel(transform, new GameObjectInfo(gameObject), result);
+                Debug.LogError("Model : skme count " + result.Count);
+                foreach (var skmr in skinnedMeshRenderers)
+                {
+                    if (skmr.sharedMesh.blendShapeCount > 0)
+                    {
+                        for (int i = 0; i < skmr.sharedMesh.blendShapeCount; i++)
+                        {
+                            blendShapesValues.Add(skmr.GetBlendShapeWeight(i));
+                        }
+                        objectBlendShapesValues.SetValue(blendShapesValues);
+                        break;
+                    }
+                }
             }
 
             objectModel = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Model, model, (r, u) => r?.ToDto());

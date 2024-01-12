@@ -203,8 +203,43 @@ namespace umi3d.cdk
                     {
                         return false;
                     }
-
                     break;
+
+                case UMI3DPropertyKeys.BlendShapeValues:
+                    if (data.property is SetEntityPropertyDto entityDto)
+                    {
+                        var node = data.entity as UMI3DNodeInstance;
+                        extension.blendShapesValues = (List<float>)entityDto.value;
+                        foreach (SkinnedMeshRenderer skmr in node.skmToUpdateWithBlendShapes)
+                        {
+                            for (int i = 0; i < skmr.sharedMesh.blendShapeCount; i++)
+                            {
+                                if (i >= extension.blendShapesValues.Count)
+                                    break;
+
+                                skmr.SetBlendShapeWeight(i, extension.blendShapesValues[i]);
+                            }
+                        }
+                    }
+                    else if (data.property is SetEntityListPropertyDto entityListDto)
+                    {
+                        var node = data.entity as UMI3DNodeInstance;
+                        int index = entityListDto.index;
+                        foreach (SkinnedMeshRenderer skmr in node.skmToUpdateWithBlendShapes)
+                        {
+                            if (index < skmr.sharedMesh.blendShapeCount && index > -1)
+                            {
+                                skmr.SetBlendShapeWeight(index, (float)entityListDto.value);
+                                extension.blendShapesValues[index] = (float)entityListDto.value;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
+                    break;
+
                 default:
                     return false;
             }
@@ -365,6 +400,39 @@ namespace umi3d.cdk
                         return false;
                     }
 
+                    break;
+                case UMI3DPropertyKeys.BlendShapeValues:
+                    if (data.operationId == UMI3DOperationKeys.SetEntityProperty)
+                    {
+                        extension.blendShapesValues = UMI3DSerializer.ReadList<float>(data.container);
+                        foreach (SkinnedMeshRenderer skmr in node.skmToUpdateWithBlendShapes)
+                        {
+                            for (int i = 0; i < skmr.sharedMesh.blendShapeCount; i++)
+                            {
+                                if (i >= extension.blendShapesValues.Count)
+                                    break;
+
+                                skmr.SetBlendShapeWeight(i, extension.blendShapesValues[i]);
+                            }
+                        }
+                    }
+                    else if (data.operationId == UMI3DOperationKeys.SetEntityListProperty)
+                    {
+                        index = UMI3DSerializer.Read<int>(data.container);
+                        float weightValue = UMI3DSerializer.Read<float>(data.container);
+                        Debug.Log(node.skmToUpdateWithBlendShapes.Count);
+                        foreach (SkinnedMeshRenderer skmr in node.skmToUpdateWithBlendShapes)
+                        {
+                            if (index < skmr.sharedMesh.blendShapeCount && index > -1)
+                            {
+                                skmr.SetBlendShapeWeight(index, weightValue);
+                            }
+                        }
+                    }
+                    else
+                    {
+                        return false;
+                    }
                     break;
                 default:
                     return false;
