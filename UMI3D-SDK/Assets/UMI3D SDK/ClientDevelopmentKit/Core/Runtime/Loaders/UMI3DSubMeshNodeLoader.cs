@@ -113,8 +113,7 @@ namespace umi3d.cdk
                         nodeInstance.IsTraversable = subDto.isTraversable;
                         nodeInstance.IsPartOfNavmesh = subDto.isPartOfNavmesh;
 
-                        var shapeCount = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>()?.sharedMesh?.blendShapeCount;
-                        Debug.LogError(shapeCount);
+                        int? shapeCount = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>()?.sharedMesh?.blendShapeCount;
                         if (shapeCount != null && shapeCount > 0)
                         {
                             SkinnedMeshRenderer skm = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
