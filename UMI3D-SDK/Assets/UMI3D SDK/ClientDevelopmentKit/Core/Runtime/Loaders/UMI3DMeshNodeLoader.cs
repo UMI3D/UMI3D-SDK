@@ -317,10 +317,41 @@ namespace umi3d.cdk
             SetCollider(dto.id, nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
             SetLightMap(instance, nodeInstance);
+            SetBlendShapeRef(instance, nodeInstance, dto);
+
 
             nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
             nodeInstance.IsTraversable = dto.isTraversable;
         }
+
+        private void SetBlendShapeRef(GameObject instance, UMI3DNodeInstance nodeInstance, UMI3DMeshNodeDto dto, bool setValue = true)
+        {
+            IEnumerable<Renderer> childrenSkinnedMesh = GetChildRenderersWhithoutOtherModel(nodeInstance).Where(s => s is SkinnedMeshRenderer);
+            foreach (var skinnedMesh in childrenSkinnedMesh)
+            {
+                SkinnedMeshRenderer skm = (skinnedMesh as SkinnedMeshRenderer);
+                if (skm.sharedMesh.blendShapeCount > 0 && !nodeInstance.skmToUpdateWithBlendShapes.Contains(skm))
+                {
+
+                    nodeInstance.skmToUpdateWithBlendShapes.Add(skm);
+
+                    //Set value
+                    if (setValue)
+                        try
+                        {
+                            for (int i = 0; i < skm.sharedMesh.blendShapeCount; i++)
+                            {
+                                skm.SetBlendShapeWeight(i, dto.blendShapesValues[i]);
+                            }
+                        }
+                        catch (Exception e)
+                        {
+                            Debug.LogError("Cannot apply blendshape values. " + e);
+                        }
+                }
+            }
+        }
+
 
         /// <summary>
         /// If the node has a <see cref="PrefabLightmapData"/>, makes sure to refresh once its references are updated.

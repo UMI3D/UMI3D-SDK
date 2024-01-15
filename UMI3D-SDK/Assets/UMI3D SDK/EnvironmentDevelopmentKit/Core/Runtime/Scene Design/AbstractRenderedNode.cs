@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
+using System.Linq;
 
 namespace umi3d.edk
 {
@@ -47,6 +48,9 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Should the object receive shadows from other objects?")]
         protected bool receiveShadow = true;
 
+        [SerializeField, EditorReadOnly, Tooltip("Values of blendShapes on skinnedMeshRenderer")]
+        protected List<float> blendShapesValues = new();
+
         #region properties
         /// <summary>
         /// See <see cref="overrideModelMaterials"/>
@@ -64,6 +68,10 @@ namespace umi3d.edk
         /// See <see cref="receiveShadow"/>
         /// </summary>
         public UMI3DAsyncProperty<bool> objectReceiveShadow { get { Register(); return _objectReceiveShadow; } protected set => _objectReceiveShadow = value; }
+        /// <summary>
+        /// See <see cref="blendShapesValues"/>
+        /// </summary>
+        public UMI3DAsyncListProperty<float> objectBlendShapesValues { get { Register(); return _objectblendShapesValues; } protected set => _objectblendShapesValues = value; }
         #endregion properties
 
         #region asyncproperties
@@ -83,6 +91,10 @@ namespace umi3d.edk
         /// See <see cref="receiveShadow"/>
         /// </summary>
         protected UMI3DAsyncProperty<bool> _objectReceiveShadow;
+        /// <summary>
+        /// See <see cref="blendShapesValues"/>
+        /// </summary>
+        protected UMI3DAsyncListProperty<float> _objectblendShapesValues;
         #endregion asyncproperties
 
         /// <inheritdoc/>
@@ -103,6 +115,8 @@ namespace umi3d.edk
             objectReceiveShadow = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ReceiveShadow, receiveShadow);
             objectReceiveShadow.OnValueChanged += v => castShadow = v;
 
+            objectBlendShapesValues = new UMI3DAsyncListProperty<float>(objectId, UMI3DPropertyKeys.BlendShapeValues, this.blendShapesValues, null, (a, b) => { return a.GetHashCode().Equals(b.GetHashCode()); });
+            objectBlendShapesValues.OnValueChanged += value => blendShapesValues = value;
         }
 
         /// <inheritdoc/>
@@ -122,6 +136,9 @@ namespace umi3d.edk
 
             meshDto.applyCustomMaterial = overrideModelMaterials;
             meshDto.overridedMaterials = objectMaterialOverriders.GetValue(user).ConvertAll((mat) => mat.ToDto());
+            
+            meshDto.blendShapesValues = objectBlendShapesValues.GetValue(user);
+
         }
 
         /// <inheritdoc/>
@@ -131,7 +148,9 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(objectReceiveShadow.GetValue(user))
                 + UMI3DSerializer.Write(objectCastShadow.GetValue(user))
                 + UMI3DSerializer.Write(objectActive.GetValue(user))
-                + UMI3DSerializer.WriteCollection(objectMaterialOverriders.GetValue(user));
+                + UMI3DSerializer.WriteCollection(objectMaterialOverriders.GetValue(user))
+                + UMI3DSerializer.WriteCollection(objectBlendShapesValues.GetValue(user));
+
         }
     }
 }

@@ -97,6 +97,7 @@ namespace umi3d.common
         public const uint IsTraversable = 3020;
         public const uint IsPartOfNavmesh = 3021;
 
+        public const uint BlendShapeValues = 3030;
         #endregion
 
         #region KHR_light
