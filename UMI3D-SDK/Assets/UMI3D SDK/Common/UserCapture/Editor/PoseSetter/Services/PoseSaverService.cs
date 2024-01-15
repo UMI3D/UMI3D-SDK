@@ -51,6 +51,7 @@ namespace umi3d.common.userCapture.pose.editor
 
             foreach (PoseSetterBoneComponent rootBoneComponent in roots)
             {
+                Quaternion originalRootRotation = rootBoneComponent.transform.rotation;
                 rootBoneComponent.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
 
                 PoseDto poseDto = new PoseDto
@@ -75,6 +76,8 @@ namespace umi3d.common.userCapture.pose.editor
                                         };
                                     }).ToList()
                 };
+
+                rootBoneComponent.transform.rotation = originalRootRotation; // put back rotation before saving
 
                 string savePath = filePath;
                 if (roots.Count() > 1)
