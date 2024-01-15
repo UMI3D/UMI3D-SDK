@@ -910,10 +910,8 @@ namespace umi3d.cdk
 
         private async Task DownloadResources(AssetLibraryDto assetLibrary, string application, MultiProgress progress)
         {
-            Progress progress1 = new Progress(3, $"Retreiving Data for library {assetLibrary.libraryId}");
             Progress progress2 = new Progress(0, $"Downloading library {assetLibrary.libraryId}");
             Progress progress3 = new Progress(1, $"Storring library {assetLibrary.libraryId}");
-            progress.Add(progress1);
             progress.Add(progress2);
             progress.Add(progress3);
 
@@ -921,7 +919,6 @@ namespace umi3d.cdk
 
             try
             {
-                progress1.AddComplete();
                 var applications = new List<string>() { application };
                 librariesMap[assetLibrary.id] = lib;
                 string directoryPath = Path.Combine(Application.persistentDataPath, libraryFolder, assetLibrary.libraryId, assetLibrary.version);
@@ -948,29 +945,22 @@ namespace umi3d.cdk
                     RemoveLibrary(lib);
                 }
 
-                UMI3DLocalAssetDirectoryDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
+                UMI3DLocalAssetFilesDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
 
-                var bytes = await UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), false);
-                progress1.AddComplete();
-                var dto = await deserializer.FromBson(bytes);
-                progress1.AddComplete();
                 string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
                 
-                if (dto is FileListDto)
-                {
-                    if (!Directory.Exists(directoryPath))
-                        Directory.CreateDirectory(directoryPath);
-                    var data = await
-                        DownloadFiles(
-                            lib,
-                            directoryPath,
-                            assetDirectoryPath,
-                            applications,
-                            dto as FileListDto,
-                            progress2
-                            );
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+                var data = await
+                    DownloadFiles(
+                        lib,
+                        directoryPath,
+                        assetDirectoryPath,
+                        applications,
+                        variant.files,
+                        progress2
+                        );
                     SetData(data, directoryPath);
-                }
                 progress3.AddComplete();
             }
             catch (Exception e)

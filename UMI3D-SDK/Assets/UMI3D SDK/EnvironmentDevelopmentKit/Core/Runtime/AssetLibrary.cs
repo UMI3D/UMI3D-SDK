@@ -16,6 +16,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
@@ -70,11 +71,11 @@ namespace umi3d.edk
                 libraryId = id,
                 id = Id(),
                 version = version, 
-                variants = new List<UMI3DLocalAssetDirectoryDto>()
+                variants = new List<UMI3DLocalAssetFilesDto>()
             };
             foreach (UMI3DLocalAssetDirectory variant in variants)
             {
-                dto.variants.Add(variant.ToDto());
+                dto.variants.Add(variant.ToFileDto());
             }
             dto.baseUrl = UMI3DServer.GetHttpUrl() + UMI3DNetworkingKeys.directory;
             return dto;
@@ -86,7 +87,7 @@ namespace umi3d.edk
             return UMI3DSerializer.Write(id)
                 + UMI3DSerializer.Write(Id())
                 + UMI3DSerializer.Write(version)
-                + UMI3DSerializer.WriteCollection(variants.Select(v => v.ToDto()));
+                + UMI3DSerializer.WriteCollection(variants.Select(v => v.ToFileDto()));
         }
 
         /// <inheritdoc/>
@@ -175,13 +176,29 @@ namespace umi3d.edk
         [ConstEnum(typeof(UMI3DAssetFormat), typeof(string))]
         public List<string> formats = new List<string>();
 
-        public UMI3DLocalAssetDirectoryDto ToDto()
+        public UMI3DLocalAssetDirectoryDto ToDirectoryDto()
         {
             return new UMI3DLocalAssetDirectoryDto() { 
             name = name,
             path = path,
             metrics = metrics.ToDto(),
             formats = formats,
+            };
+        }
+
+        public UMI3DLocalAssetFilesDto ToFileDto()
+        {
+            var directoryPath = inetum.unityUtils.Path.Combine(Application.dataPath, UMI3DServer.dataPath, path);
+            return new UMI3DLocalAssetFilesDto()
+            {
+                name = name,
+                files = new FileListDto()
+                {
+                    baseUrl = path,
+                    files = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories).Select(f => f.Replace(directoryPath, "")).ToList(),
+                },
+                metrics = metrics.ToDto(),
+                formats = formats,
             };
         }
 
