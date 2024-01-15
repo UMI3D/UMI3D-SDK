@@ -55,7 +55,7 @@ namespace umi3d.common.userCapture.pose.editor
             if (!success)
                 return;
 
-            poseEditionService.ResetAllBones(skeleton);
+            ResetSkeleton(skeleton.root);
 
             PoseSetterBoneComponent root_boneComponent = skeleton.boneComponents.Find(bc => bc.BoneType == pose.anchor.bone);
             root_boneComponent.isRoot = true;
