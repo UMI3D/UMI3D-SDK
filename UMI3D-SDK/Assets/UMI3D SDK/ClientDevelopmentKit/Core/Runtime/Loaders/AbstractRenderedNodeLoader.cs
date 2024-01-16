@@ -420,7 +420,6 @@ namespace umi3d.cdk
                     {
                         index = UMI3DSerializer.Read<int>(data.container);
                         float weightValue = UMI3DSerializer.Read<float>(data.container);
-                        Debug.Log(node.skmToUpdateWithBlendShapes.Count);
                         foreach (SkinnedMeshRenderer skmr in node.skmToUpdateWithBlendShapes)
                         {
                             if (index < skmr.sharedMesh.blendShapeCount && index > -1)
