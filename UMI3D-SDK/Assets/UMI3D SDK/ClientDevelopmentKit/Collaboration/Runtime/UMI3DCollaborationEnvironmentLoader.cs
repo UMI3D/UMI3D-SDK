@@ -113,12 +113,12 @@ namespace umi3d.cdk.collaboration
             if (isSpeaking)
             {
                 if (user != null && user.onStartSpeakingAnimationId != 0)
-                    StartAnim(0,user.onStartSpeakingAnimationId);
+                    StartAnim(UMI3DGlobalID.EnvironmentId,user.onStartSpeakingAnimationId);
             }
             else
             {
                 if (user != null && user.onStopSpeakingAnimationId != 0)
-                    StartAnim(0,user.onStopSpeakingAnimationId);
+                    StartAnim(UMI3DGlobalID.EnvironmentId,user.onStopSpeakingAnimationId);
             }
         }
 
@@ -137,7 +137,7 @@ namespace umi3d.cdk.collaboration
                             property = UMI3DPropertyKeys.AnimationPlaying,
                             value = true
                         },
-                        GetEntity(environmentId,id)
+                        GetEntityInstance(environmentId,id)
                     )
                 );
                 anim.Start();
