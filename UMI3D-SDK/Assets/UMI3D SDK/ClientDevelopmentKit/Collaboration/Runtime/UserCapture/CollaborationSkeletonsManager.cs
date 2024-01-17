@@ -163,8 +163,8 @@ namespace umi3d.cdk.collaboration.userCapture
         private void InitSkeletons()
         {
             PersonalSkeleton.UserId = collaborationClientServerService.GetUserId();
-            PersonalSkeleton.EnvironmentId = 0;
-            skeletons[(0,PersonalSkeleton.UserId)] = PersonalSkeleton;
+            PersonalSkeleton.EnvironmentId = UMI3DGlobalID.EnvironmentId;
+            skeletons[(UMI3DGlobalID.EnvironmentId,PersonalSkeleton.UserId)] = PersonalSkeleton;
         }
 
         private void UpdateSkeletons(IEnumerable<UMI3DUser> users)
@@ -173,7 +173,7 @@ namespace umi3d.cdk.collaboration.userCapture
             {
                 UnityEngine.Debug.Log($" user {users.ToString<UMI3DUser>(u => $"{u.EnvironmentId} {u.id.ToString()}")}");
                 List<(ulong, ulong)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
-                readyUserIdList.Remove((0, collaborationClientServerService.GetUserId()));
+                readyUserIdList.Remove((UMI3DGlobalID.EnvironmentId, collaborationClientServerService.GetUserId()));
 
                 var joinedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
                 var deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();

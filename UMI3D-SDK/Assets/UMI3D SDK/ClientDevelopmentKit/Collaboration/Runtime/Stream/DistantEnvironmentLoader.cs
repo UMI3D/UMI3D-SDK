@@ -39,7 +39,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, null);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
 
-                UMI3DEnvironmentLoader.Instance.RegisterEntity(distantDto.id, UMI3DGlobalID.EnvironementId, distantDto.environmentDto, null).NotifyLoaded();
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(distantDto.id, UMI3DGlobalID.EnvironmentId, distantDto.environmentDto, null).NotifyLoaded();
 
                 if (distantDto.environmentDto != null)
                 {

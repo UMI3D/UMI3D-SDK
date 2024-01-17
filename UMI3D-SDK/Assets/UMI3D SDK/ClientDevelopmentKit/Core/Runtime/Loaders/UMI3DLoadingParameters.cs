@@ -282,7 +282,7 @@ namespace umi3d.cdk
                 IResourcesLoader loader = SelectLoader(ext);
                 if (loader != null)
                 {
-                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironmentId, fileToLoad, loader);
                     var tex = (Texture2D)o;
                     if (tex != null)
                     {

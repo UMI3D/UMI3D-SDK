@@ -391,7 +391,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                var container = new ByteContainer(UMI3DGlobalID.EnvironementId, frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame);
                 uint TransactionId = UMI3DSerializer.Read<uint>(container);
                 switch (TransactionId)
                 {
@@ -450,7 +450,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
-                var container = new ByteContainer(UMI3DGlobalID.EnvironementId, frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);

@@ -24,7 +24,7 @@ namespace umi3d.common.userCapture.pose
     {
         /// <summary>
         /// Id of the user to apply the pose to. 
-        /// Specify <see cref="UMI3DGlobalID.EnvironementId"/> to set an environment pose.
+        /// Specify <see cref="UMI3DGlobalID.EnvironmentId"/> to set an environment pose.
         /// </summary>
         public ulong userID { get; set; }
 
