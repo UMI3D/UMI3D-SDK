@@ -388,7 +388,7 @@ namespace umi3d.cdk.collaboration
                     case TransactionDto transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(0, transaction);
+                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(UMI3DGlobalID.EnvironementId, transaction);
                             if(UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
@@ -405,7 +405,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(0, frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironementId, frame);
                 uint TransactionId = UMI3DSerializer.Read<uint>(container);
                 switch (TransactionId)
                 {
@@ -767,7 +767,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(0, frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironementId, frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);
