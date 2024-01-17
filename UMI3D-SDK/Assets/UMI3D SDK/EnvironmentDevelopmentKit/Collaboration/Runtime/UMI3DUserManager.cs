@@ -53,7 +53,7 @@ namespace umi3d.edk.collaboration
         {
             get
             {
-                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationAbstractUser>(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationAbstractUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto(user) : (object)u);
+                if (_objectUserList == null) _objectUserList = new UMI3DAsyncListProperty<UMI3DCollaborationAbstractUser>(UMI3DGlobalID.EnvironmentId, UMI3DPropertyKeys.UserList, new List<UMI3DCollaborationAbstractUser>(), (u, user) => UMI3DEnvironment.Instance.useDto ? u.ToUserDto(user) : (object)u);
                 return _objectUserList;
             }
         }

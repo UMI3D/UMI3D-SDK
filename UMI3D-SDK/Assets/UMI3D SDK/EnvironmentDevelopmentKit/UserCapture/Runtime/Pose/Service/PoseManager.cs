@@ -78,13 +78,13 @@ namespace umi3d.edk.userCapture.pose
             var pose = new PoseClip(poseResource); ;
             pose.Id(); // register
 
-            if (poses.ContainsKey(UMI3DGlobalID.EnvironementId))
+            if (poses.ContainsKey(UMI3DGlobalID.EnvironmentId))
             {
-                if (!poses[UMI3DGlobalID.EnvironementId].Contains(pose))
-                    poses[UMI3DGlobalID.EnvironementId].Add(pose);
+                if (!poses[UMI3DGlobalID.EnvironmentId].Contains(pose))
+                    poses[UMI3DGlobalID.EnvironmentId].Add(pose);
             }
             else
-                poses.Add(UMI3DGlobalID.EnvironementId, new List<PoseClip>() { pose });
+                poses.Add(UMI3DGlobalID.EnvironmentId, new List<PoseClip>() { pose });
 
             return pose;
         }

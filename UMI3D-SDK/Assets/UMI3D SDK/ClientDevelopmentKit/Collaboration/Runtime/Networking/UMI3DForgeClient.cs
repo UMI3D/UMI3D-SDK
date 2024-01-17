@@ -388,7 +388,7 @@ namespace umi3d.cdk.collaboration
                     case TransactionDto transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(UMI3DGlobalID.EnvironementId, transaction);
+                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(UMI3DGlobalID.EnvironmentId, transaction);
                             if(UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
@@ -405,7 +405,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(UMI3DGlobalID.EnvironementId, frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame);
                 uint TransactionId = UMI3DSerializer.Read<uint>(container);
                 switch (TransactionId)
                 {
@@ -455,7 +455,7 @@ namespace umi3d.cdk.collaboration
                     bool waitforreparenting = true;
                     MainThreadManager.Run(async () =>
                     {
-                        UMI3DNavigation.SetFrame(0, frame);
+                        UMI3DNavigation.SetFrame(UMI3DGlobalID.EnvironmentId, frame);
                         await UMI3DAsyncManager.Yield();
                         waitforreparenting = false;
                     });
@@ -465,7 +465,7 @@ namespace umi3d.cdk.collaboration
                 case NavigateDto navigate:
                     MainThreadManager.Run(() =>
                     {
-                        StartCoroutine(UMI3DNavigation.Navigate(0, navigate));
+                        StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, navigate));
                     });
 
                     break;
@@ -563,7 +563,7 @@ namespace umi3d.cdk.collaboration
                         var nav = new NavigateDto() { position = pos };
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DNavigation.Navigate(0, nav));
+                            StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, nav));
                         });
                     }
                     break;
@@ -574,7 +574,7 @@ namespace umi3d.cdk.collaboration
                         var nav = new TeleportDto() { position = pos, rotation = rot };
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DNavigation.Navigate(0, nav));
+                            StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, nav));
 
                         });
                     }
@@ -595,7 +595,7 @@ namespace umi3d.cdk.collaboration
                         {
                             try
                             {
-                                UMI3DNavigation.SetFrame(0, frame);
+                                UMI3DNavigation.SetFrame(UMI3DGlobalID.EnvironmentId, frame);
                             }
                             catch (Exception e)
                             {
@@ -702,7 +702,7 @@ namespace umi3d.cdk.collaboration
 
                         MainThreadManager.Run(() =>
                         {
-                            PoseManager.Instance.ChangeEnvironmentPoseCondition(0, validateEnvironmentPoseConditionDto.Id, validateEnvironmentPoseConditionDto.ShouldBeValidated);
+                            PoseManager.Instance.ChangeEnvironmentPoseCondition(UMI3DGlobalID.EnvironmentId, validateEnvironmentPoseConditionDto.Id, validateEnvironmentPoseConditionDto.ShouldBeValidated);
                         });
                         break;
                     }
@@ -767,7 +767,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(UMI3DGlobalID.EnvironementId, frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);

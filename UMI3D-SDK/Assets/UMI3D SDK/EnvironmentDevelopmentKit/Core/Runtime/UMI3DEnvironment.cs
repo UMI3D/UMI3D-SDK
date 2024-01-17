@@ -105,7 +105,7 @@ namespace umi3d.edk
         {
             var env = new GlTFEnvironmentDto
             {
-                id = UMI3DGlobalID.EnvironementId
+                id = UMI3DGlobalID.EnvironmentId
             };
             env.scenes.AddRange(scenes.Where(s => s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
@@ -178,7 +178,7 @@ namespace umi3d.edk
 
         private void InitDefinition()
         {
-            ulong id = UMI3DGlobalID.EnvironementId;
+            ulong id = UMI3DGlobalID.EnvironmentId;
 
             objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, 0, defaultStartPosition);
             objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, 0, Quaternion.Euler(defaultStartOrientation));

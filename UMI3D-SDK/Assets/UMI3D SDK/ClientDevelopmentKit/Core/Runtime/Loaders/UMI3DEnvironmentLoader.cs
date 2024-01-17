@@ -350,8 +350,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public async Task Load(GlTFEnvironmentDto dto, MultiProgress LoadProgress)
         {
-            ulong mainEnvironmentId = 0;
-            DeclareNewEnvironment(mainEnvironmentId, UMI3DClientServer.Environement.resourcesUrl);
+            DeclareNewEnvironment(UMI3DGlobalID.EnvironmentId, UMI3DClientServer.Environement.resourcesUrl);
 
             Progress downloadingProgress = new Progress(0, "Downloading");
             Progress ReadingDataProgress = new Progress(2, "Reading Data");
@@ -370,7 +369,7 @@ namespace umi3d.cdk
             isEnvironmentLoaded = false;
 
             environment = dto;
-            RegisterEntity(mainEnvironmentId, UMI3DGlobalID.EnvironementId, dto, null).NotifyLoaded();
+            RegisterEntity(UMI3DGlobalID.EnvironmentId, UMI3DGlobalID.EnvironmentId, dto, null).NotifyLoaded();
             //
             // Load resources
             //
@@ -382,9 +381,9 @@ namespace umi3d.cdk
             //
             // Instantiate nodes
             //
-            await ReadUMI3DExtension(mainEnvironmentId, dto, null);
+            await ReadUMI3DExtension(UMI3DGlobalID.EnvironmentId, dto, null);
             ReadingDataProgress.AddComplete();
-            await InstantiateNodes(mainEnvironmentId, loadingProgress);
+            await InstantiateNodes(UMI3DGlobalID.EnvironmentId, loadingProgress);
 
             endProgress.AddComplete();
             await UMI3DAsyncManager.Delay(200);
@@ -401,7 +400,7 @@ namespace umi3d.cdk
             endProgress.SetStatus("Rendering Probes");
             if (QualitySettings.realtimeReflectionProbes)
             {
-                await RenderProbes(mainEnvironmentId);
+                await RenderProbes(UMI3DGlobalID.EnvironmentId);
             }
             else
             {
@@ -710,7 +709,7 @@ namespace umi3d.cdk
             IResourcesLoader loader = AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
-                var mat = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                var mat = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironmentId, fileToLoad, loader);
                 SetBaseMaterial((Material)mat);
             }
         }

@@ -32,6 +32,6 @@ namespace umi3d.common
         /// <summary>
         /// Reserved UMI3D id for the environment.
         /// </summary>
-        public const ulong EnvironementId = 100002;
+        public const ulong EnvironmentId = 100002;
     }
 }
