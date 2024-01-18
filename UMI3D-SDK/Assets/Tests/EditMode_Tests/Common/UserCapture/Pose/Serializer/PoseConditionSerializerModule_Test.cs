@@ -169,10 +169,9 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
-            Assert.IsTrue(((result as OrConditionDto).ConditionA as MagnitudeConditionDto).Magnitude
-                == (orConditionDto.ConditionA as MagnitudeConditionDto).Magnitude);
-            Assert.IsTrue(((result as OrConditionDto).ConditionB as ScaleConditionDto).Scale.X
-                == (orConditionDto.ConditionB as ScaleConditionDto).Scale.X);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(((result as OrConditionDto).ConditionA as MagnitudeConditionDto).Magnitude, (orConditionDto.ConditionA as MagnitudeConditionDto).Magnitude);
+            Assert.AreEqual(((result as OrConditionDto).ConditionB as ScaleConditionDto).Scale.X, (orConditionDto.ConditionB as ScaleConditionDto).Scale.X);
         }
 
         [Test]
@@ -189,11 +188,8 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseConditionSerializerModule.Read(byteContainer, out bool readable, out AbstractPoseConditionDto result);
             Assert.IsTrue(readable);
-
-            Assert.IsTrue(((result as NotConditionDto).Condition as ScaleConditionDto).Scale.X
-                == (notConditionDto.Condition as ScaleConditionDto).Scale.X);
-            Assert.IsTrue(((result as NotConditionDto).Condition as DirectionConditionDto).Direction.X
-                == (notConditionDto.Condition as DirectionConditionDto).Direction.X);
+            Assert.IsNotNull(result);
+            Assert.AreEqual(((result as NotConditionDto).Condition as DirectionConditionDto).Direction.X, (notConditionDto.Condition as DirectionConditionDto).Direction.X);
         }
 
         #endregion Multy Conditions

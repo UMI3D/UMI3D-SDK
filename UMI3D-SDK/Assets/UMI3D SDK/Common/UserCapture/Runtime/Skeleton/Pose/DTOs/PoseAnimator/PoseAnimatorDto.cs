@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.userCapture.description;
+
 namespace umi3d.common.userCapture.pose
 {
     /// <summary>
@@ -26,6 +28,16 @@ namespace umi3d.common.userCapture.pose
         /// Id the corresponding node in the scene
         /// </summary>
         public ulong poseClipId { get; set; }
+
+        /// <summary>
+        /// True if the pose to play has an anchor.
+        /// </summary>
+        public bool isAnchored { get; set; }
+
+        /// <summary>
+        /// Constraints applied to override the default pose anchor.
+        /// </summary>
+        public PoseAnchorDto anchor { get; set; }
 
         /// <summary>
         /// Id the corresponding node in the scene

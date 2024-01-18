@@ -33,11 +33,6 @@ namespace umi3d.cdk.userCapture.pose
         public ulong Id => dto.id;
 
         /// <summary>
-        /// See <see cref="PoseClipDto.pose"/>.
-        /// </summary>
-        public PoseAnchorDto Anchor => dto.pose.anchor;
-
-        /// <summary>
         /// See <see cref="PoseDto.bones"/>.
         /// </summary>
         public List<BoneDto> Bones => dto.pose.bones;

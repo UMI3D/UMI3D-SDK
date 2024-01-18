@@ -1,4 +1,4 @@
-﻿/*
+/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -19,19 +19,22 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class Tracker : MonoBehaviour
+    public abstract class AbstractSimulatedTracker : Tracker, ISimulatedTracker
     {
-        [EditorReadOnly,SerializeField, ConstEnum(typeof(common.userCapture.BoneType), typeof(uint))]
-        protected uint boneType;
+        uint ISimulatedTracker.Bonetype => Bonetype;
 
-        public uint Bonetype => boneType;
+        public Vector3 PositionOffset => positionOffset;
+        protected Vector3 positionOffset;
 
-        public bool isActif = true;
+        public Quaternion RotationOffset => rotationOffset;
+        protected Quaternion rotationOffset;
 
-        public bool isOverrider = true;
-
-        protected void Awake()
+        protected void Init(uint bonetype, Vector3 posOffset, Quaternion rotOffset)
         {
+            this.boneType = bonetype;
+            this.positionOffset = posOffset;
+            this.rotationOffset = rotOffset;
+
             distantController = new DistantController()
             {
                 boneType = boneType,
@@ -42,15 +45,7 @@ namespace umi3d.cdk.userCapture.tracking
             };
         }
 
-        protected virtual void Update()
-        {
-            distantController.position = transform.position;
-            distantController.rotation = transform.rotation;
-            distantController.isActif = isActif;
-            distantController.isOverrider = isOverrider;
-        }
-
-        public DistantController distantController { get; protected set; }
-
+        void ISimulatedTracker.SimulatePosition() => this.SimulatePosition();
+        protected abstract void SimulatePosition();
     }
 }
