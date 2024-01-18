@@ -49,8 +49,8 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public bool isRunning { get; protected set; } = false;
 
-        [SerializeField, EditorReadOnly]
-        private bool useLoopback = false;
+        [EditorReadOnly]
+        public bool useLoopback = false;
 
         [SerializeField, ReadOnly]
         private bool useIp = false;
