@@ -237,7 +237,14 @@ namespace umi3d.edk.collaboration
         {
             UMI3DUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Get Libraries {user?.Id()}", scope);
-            e.Response.WriteContent(UMI3DEnvironment.Instance.ToLibrariesDto(user).ToBson());
+            var isFinished = false;
+
+            UnityMainThreadDispatcher.Instance().Enqueue(() =>
+            {
+                e.Response.WriteContent(UMI3DEnvironment.Instance.ToLibrariesDto(user).ToBson());
+                isFinished = true;
+            });
+            while (!isFinished) System.Threading.Thread.Sleep(1);
         }
 
         /// <summary>
