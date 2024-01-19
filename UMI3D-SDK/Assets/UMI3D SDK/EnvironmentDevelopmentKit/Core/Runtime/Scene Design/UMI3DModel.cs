@@ -140,7 +140,6 @@ namespace umi3d.edk
                 SkinnedMeshRenderer[] skinnedMeshRenderers = gameObject.GetComponentsInChildren<SkinnedMeshRenderer>();
                 List<GameObjectInfo> result = new();
                 this.GetChildrenWhithoutOtherModel(transform, new GameObjectInfo(gameObject), result);
-                Debug.LogError("Model : skme count " + result.Count);
                 foreach (var skmr in skinnedMeshRenderers)
                 {
                     if (skmr.sharedMesh.blendShapeCount > 0)

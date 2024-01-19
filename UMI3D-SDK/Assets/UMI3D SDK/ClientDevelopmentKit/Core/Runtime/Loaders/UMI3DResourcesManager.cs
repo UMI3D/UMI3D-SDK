@@ -269,7 +269,7 @@ namespace umi3d.cdk
                 return (!string.IsNullOrEmpty(fileRelativePath)
                                 && library != null
                                 && libraryIds.Any(lib => lib == library))
-                                && match.Groups[3].Captures[0].Value.Contains(fileRelativePath);
+                                && match.Groups[3].Captures[0].Value.Contains(fileRelativePath.Replace("\\", "/"));
             }
 
             bool MatchUrlUrl(Match matchA, Match matchB)

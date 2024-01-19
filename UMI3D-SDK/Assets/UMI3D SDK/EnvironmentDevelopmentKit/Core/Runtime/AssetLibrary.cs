@@ -194,7 +194,7 @@ namespace umi3d.edk
                 name = name,
                 files = new FileListDto()
                 {
-                    baseUrl = path,
+                    baseUrl = inetum.unityUtils.Path.Combine(UMI3DServer.GetResourcesUrl(), "file", path),
                     files = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories).Select(f => f.Replace(directoryPath, "")).ToList(),
                 },
                 metrics = metrics.ToDto(),

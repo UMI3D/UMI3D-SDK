@@ -48,6 +48,9 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Should the object receive shadows from other objects?")]
         protected bool receiveShadow = true;
 
+        /// <summary>
+        /// The values of blend shapes in SkinnedMeshRenderer. empty if no blend shape.
+        /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Values of blendShapes on skinnedMeshRenderer")]
         protected List<float> blendShapesValues = new();
 
