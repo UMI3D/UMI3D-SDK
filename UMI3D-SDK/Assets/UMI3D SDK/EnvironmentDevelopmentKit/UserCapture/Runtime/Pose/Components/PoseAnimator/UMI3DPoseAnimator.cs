@@ -51,6 +51,8 @@ namespace umi3d.common.userCapture.pose
             {
                 if (pose == null)
                 {
+                    if (pose_so == null)
+                        return null;
                     pose = new UMI3DPoseResource(pose_so);
                 }
 
