@@ -154,7 +154,7 @@ namespace umi3d.cdk.userCapture
 
             //very naive : for now, we consider the tracked hips as the computer hips
             Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
-            Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
+            Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation * Bones[BoneType.Hips].LocalRotation : Quaternion.identity;
 
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
@@ -224,10 +224,7 @@ namespace umi3d.cdk.userCapture
 
                     foreach (var b in bones)
                     {
-                        if (b.boneType == BoneType.Hips)
-                            continue;
                         // if a bone rotation has already been registered, erase it
-
                         if (Bones.ContainsKey(b.boneType))
                             Bones[b.boneType].LocalRotation = b.localRotation.Quaternion();
                         else
