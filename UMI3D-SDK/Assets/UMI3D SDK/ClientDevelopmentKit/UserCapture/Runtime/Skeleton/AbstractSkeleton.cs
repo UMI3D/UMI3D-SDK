@@ -162,30 +162,30 @@ namespace umi3d.cdk.userCapture
             foreach (uint boneType in Bones.Keys)
             {
                 if (!alreadyComputedBonesCache[boneType])
-                    ComputeBonePosition(boneType);
+                    ComputeBoneTransform(boneType);
             }
 
             return this;
         }
 
         /// <summary>
-        /// Cache for bottom-up recursive <see cref="ComputeBonePosition(uint)"/> method.
+        /// Cache for bottom-up recursive <see cref="ComputeBoneTransform(uint)"/> method.
         /// Speeding up computations.
         /// </summary>
         private Dictionary<uint, bool> alreadyComputedBonesCache = new();
 
         /// <summary>
-        /// Compute the final position of each bone, and their parents recursively if not already computed
+        /// Compute the final position and rotation of each bone, and their parents recursively if not already computed
         /// </summary>
         /// <param name="boneType"></param>
-        private void ComputeBonePosition(uint boneType)
+        private void ComputeBoneTransform(uint boneType)
         {
             if (!alreadyComputedBonesCache[boneType]
                 && SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
                 && boneRelation.boneTypeParent != BoneType.None)
             {
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
-                    ComputeBonePosition(boneRelation.boneTypeParent);
+                    ComputeBoneTransform(boneRelation.boneTypeParent);
 
                 Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f/SKELETON_STANDARD_SIZE));
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
