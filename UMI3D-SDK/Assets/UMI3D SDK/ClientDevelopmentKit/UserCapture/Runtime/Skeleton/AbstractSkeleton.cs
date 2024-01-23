@@ -153,7 +153,7 @@ namespace umi3d.cdk.userCapture
                 alreadyComputedBonesCache[boneType] = false;
 
             //very naive : for now, we consider the tracked hips as the computer hips
-            Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position + hipsDisplacement : Vector3.zero;
             Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation * Bones[BoneType.Hips].LocalRotation : Quaternion.identity;
 
             alreadyComputedBonesCache[BoneType.Hips] = true;
@@ -173,6 +173,7 @@ namespace umi3d.cdk.userCapture
         /// Speeding up computations.
         /// </summary>
         private Dictionary<uint, bool> alreadyComputedBonesCache = new();
+        private Vector3 hipsDisplacement = Vector3.zero;
 
         /// <summary>
         /// Compute the final position and rotation of each bone, and their parents recursively if not already computed
@@ -193,6 +194,8 @@ namespace umi3d.cdk.userCapture
                 alreadyComputedBonesCache[boneType] = true;
             }
         }
+
+        private readonly Vector3 ExtractXZVector = Vector3.forward + Vector3.right;
 
         /// <summary>
         /// Get all final bone rotation, based on subskeletons. Lastest subskeleton has lowest priority.
@@ -217,10 +220,16 @@ namespace umi3d.cdk.userCapture
             lock (SubskeletonsLock)
                 foreach (var skeleton in Subskeletons)
                 {
-                    List<SubSkeletonBoneDto> bones = skeleton.GetPose(hierarchy)?.bones;
+                    var pose = skeleton.GetPose(hierarchy);
+                    
 
-                    if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
+                    if (pose is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                         continue;
+
+                    List<SubSkeletonBoneDto> bones = pose.bones;
+
+                    if (pose.boneAnchor?.bone == BoneType.Hips)
+                        hipsDisplacement = Vector3.Scale(HipsAnchor.rotation * pose.boneAnchor.position.Struct(), ExtractXZVector);
 
                     foreach (var b in bones)
                     {
