@@ -169,6 +169,7 @@ namespace umi3d.cdk.collaboration.emotes
                     {
                         available = emoteConfigDto.allAvailableByDefault || emoteDtoInConfig.available,
                         icon = DefaultIcon,
+                        environmentId = UMI3DGlobalID.EnvironmentId,
                         dto = emoteDtoInConfig
                     };
                     if (emoteDtoInConfig.iconResource is not null
