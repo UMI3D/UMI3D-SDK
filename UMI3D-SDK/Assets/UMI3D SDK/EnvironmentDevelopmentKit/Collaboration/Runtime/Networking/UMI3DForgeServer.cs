@@ -470,7 +470,7 @@ namespace umi3d.edk.collaboration
             if (trackingFrame == null)
                 return;
 
-            trackingFrame.environmentId = 0;
+            trackingFrame.environmentId = UMI3DGlobalID.EnvironmentId;
 
             MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(
                 () => UMI3DTrackingManager.Instance.OnAvatarFrameReceived(trackingFrame, server.Time.Timestep));
