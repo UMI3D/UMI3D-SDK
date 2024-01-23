@@ -44,7 +44,8 @@ namespace umi3d.common.userCapture.description
         {
             get
             {
-                if (boneAnchor == null && anchor != null)
+                if ((boneAnchor == null && anchor != null) 
+                    || boneAnchor.position.Struct() != anchor.transform.position)
                 {
                     boneAnchor = new PoseAnchorDto()
                     {
