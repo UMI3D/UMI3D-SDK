@@ -102,6 +102,8 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
+        private const float SKELETON_STANDARD_SIZE = 1.8f;
+
         #endregion Fields
 
         public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
@@ -185,7 +187,7 @@ namespace umi3d.cdk.userCapture
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
                     ComputeBonePosition(boneRelation.boneTypeParent);
 
-                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f/1.8f));
+                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f/SKELETON_STANDARD_SIZE));
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
                 Bones[boneType].Rotation = (Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation).normalized;
                 alreadyComputedBonesCache[boneType] = true;
