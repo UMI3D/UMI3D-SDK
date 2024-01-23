@@ -114,6 +114,9 @@ namespace umi3d.cdk.userCapture.animation
             foreach (var renderer in nodeInstance.gameObject.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
 
+            // scale the subskeleton to fit the scale of the user
+            nodeInstance.transform.localScale = personnalSkeletonService.PersonalSkeleton.worldSize;
+
             _ = Task.Run(async () => // task is required to load asynchronously while not blocking the loading process
             {
                 // get animation related to the skeleton node
