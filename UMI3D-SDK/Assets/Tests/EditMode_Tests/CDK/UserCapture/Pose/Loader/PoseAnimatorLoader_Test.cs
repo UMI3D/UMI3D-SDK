@@ -68,7 +68,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseAnimatorDto overriderDto = null;
 
             // When
-            TestDelegate action = () => PoseAnimatorLoader.Load(0, overriderDto).Wait();
+            TestDelegate action = () => PoseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, overriderDto).Wait();
 
             // Then
             Assert.Throws<AggregateException>(() => action());
@@ -89,27 +89,27 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             PoseClipDto poseClipDto = new PoseClipDto() { id = 15593uL };
             PoseClip poseClip = new(poseClipDto);
-            UMI3DEntityInstance instance = new UMI3DEntityInstance(0, () => { }, 0)
+            UMI3DEntityInstance instance = new UMI3DEntityInstance(UMI3DGlobalID.EnvironmentId, () => { }, 0)
             {
                 Object = poseClip
             };
 
-            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(0, poseClip.Id, null)).Returns(Task.FromResult(instance));
+            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(UMI3DGlobalID.EnvironmentId, poseClip.Id, null)).Returns(Task.FromResult(instance));
 
 
             Mock<ICoroutineService> coroutineServiceMock = new();
             Mock<IPoseManager> poseServiceMock = new();
             PoseAnimator container = new(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
 
-            environmentServiceMock.Setup(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
-                                  .Returns(new UMI3DEntityInstance(0, () => { }, 0))
+            environmentServiceMock.Setup(x => x.RegisterEntity(UMI3DGlobalID.EnvironmentId, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
+                                  .Returns(new UMI3DEntityInstance(UMI3DGlobalID.EnvironmentId, () => { }, 0))
                                   .Verifiable();
 
             // When
-            await PoseAnimatorLoader.Load(0, dto);
+            await PoseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, dto);
 
             // Then
-            environmentServiceMock.Verify(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()), Times.Once());
+            environmentServiceMock.Verify(x => x.RegisterEntity(UMI3DGlobalID.EnvironmentId, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()), Times.Once());
         }
 
         [Test]
@@ -143,36 +143,35 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 },
             };
 
-
-            Mock<UMI3DNodeInstance> nodeInstanceMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            Mock<UMI3DNodeInstance> nodeInstanceMock = new Mock<UMI3DNodeInstance>(UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), nodeId);
 
             GameObject go = new ("magnitudePoseNode");
-            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(0, nodeId, null)).Returns(Task.FromResult(nodeInstanceMock.Object as UMI3DEntityInstance));
-            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(0, nodeId, null)).Returns(Task.FromResult(nodeInstanceMock.Object as UMI3DEntityInstance));
+            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(UMI3DGlobalID.EnvironmentId, nodeId, null)).Returns(Task.FromResult(nodeInstanceMock.Object as UMI3DEntityInstance));
+            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(UMI3DGlobalID.EnvironmentId, nodeId, null)).Returns(Task.FromResult(nodeInstanceMock.Object as UMI3DEntityInstance));
 
             nodeInstanceMock.Setup(x => x.transform).Returns(go.transform);
-            environmentServiceMock.Setup(x => x.GetNodeInstance(0, It.IsAny<ulong>())).Returns(nodeInstanceMock.Object);
+            environmentServiceMock.Setup(x => x.GetNodeInstance(UMI3DGlobalID.EnvironmentId, It.IsAny<ulong>())).Returns(nodeInstanceMock.Object);
 
             var skeletonMock = new Mock<IPersonalSkeleton>();
             var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(skeletonMock.Object);
             skeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
 
-            environmentServiceMock.Setup(x => x.RegisterEntity(0, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
-                                 .Returns(new UMI3DEntityInstance(0, () => { }, 0))
+            environmentServiceMock.Setup(x => x.RegisterEntity(UMI3DGlobalID.EnvironmentId, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()))
+                                 .Returns(new UMI3DEntityInstance(UMI3DGlobalID.EnvironmentId, () => { }, poseClipDto.id))
                                  .Verifiable();
 
             
             PoseClip poseClip = new(poseClipDto);
-            UMI3DEntityInstance instance = new UMI3DEntityInstance(0, () => { }, 0)
+            UMI3DEntityInstance instance = new UMI3DEntityInstance(UMI3DGlobalID.EnvironmentId, () => { }, poseClipDto.id)
             {
                 Object = poseClip
             };
 
-            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(0, poseClip.Id, null)).Returns(Task.FromResult(instance));
+            loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded(UMI3DGlobalID.EnvironmentId, poseClip.Id, null)).Returns(Task.FromResult(instance));
 
             // When
-            PoseAnimator poseAnimator = await PoseAnimatorLoader.Load(0, dto);
+            PoseAnimator poseAnimator = await PoseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, dto);
 
             // Then
             Assert.AreEqual(dto.id, poseAnimator.Id);
@@ -197,7 +196,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             {
                 activationMode = (ushort)PoseAnimatorActivationMode.ON_REQUEST
             };
-            ReadUMI3DExtensionData extensionData = new(0, dto);
+            ReadUMI3DExtensionData extensionData = new(UMI3DGlobalID.EnvironmentId, dto);
 
             // When
             bool canReadResult = PoseAnimatorLoader.CanReadUMI3DExtension(extensionData);
@@ -211,7 +210,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             // GIVEN
             UMI3DDto dto = new();
-            ReadUMI3DExtensionData extensionData = new(0, dto);
+            ReadUMI3DExtensionData extensionData = new(UMI3DGlobalID.EnvironmentId, dto);
 
             // WHEN
             bool canReadResult = PoseAnimatorLoader.CanReadUMI3DExtension(extensionData);
