@@ -636,10 +636,15 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         public static async Task DeleteEntity(ulong environmentid, ulong entityId, List<CancellationToken> tokens)
         {
+            await Instance.DeleteEntityInstance(environmentid, entityId, tokens);
+        }
+
+        public async Task DeleteEntityInstance(ulong environmentId, ulong entityId, List<CancellationToken> tokens = null)
+        {
             if (UMI3DResourcesManager.isKnowedLibrary(entityId))
                 UMI3DResourcesManager.UnloadLibrary(entityId);
             else
-                await Instance.entitiesCollection[environmentid].DeleteEntity(entityId, tokens);
+                await entitiesCollection[environmentId].DeleteEntity(entityId, tokens);
         }
 
         /// <summary>
