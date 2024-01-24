@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
@@ -23,7 +24,7 @@ namespace umi3d.cdk.userCapture.pose
     /// <summary>
     /// Browser representation of a pose.
     /// </summary>
-    public class PoseClip
+    public class PoseClip : IBrowserEntity
     {
         private PoseClipDto dto;
 
