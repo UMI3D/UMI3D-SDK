@@ -153,7 +153,7 @@ namespace umi3d.cdk
                     }));
                     break;
                 case DeleteEntityDto delete:
-                    await UMI3DEnvironmentLoader.DeleteEntity(operation.environmentId, delete.entityId, operation.tokens);
+                    await UMI3DEnvironmentLoader.Instance.DeleteEntityInstance(operation.environmentId, delete.entityId, operation.tokens);
                     break;
                 case SetEntityPropertyDto set:
                     await UMI3DEnvironmentLoader.SetEntity(operation.environmentId, set, operation.tokens);
@@ -190,7 +190,7 @@ namespace umi3d.cdk
                 case UMI3DOperationKeys.DeleteEntity:
                     {
                         ulong entityId = UMI3DSerializer.Read<ulong>(container);
-                        await UMI3DEnvironmentLoader.DeleteEntity(container.environmentId, entityId, container.tokens);
+                        await UMI3DEnvironmentLoader.Instance.DeleteEntityInstance(container.environmentId, entityId, container.tokens);
                         break;
                     }
                 case UMI3DOperationKeys.MultiSetEntityProperty:
