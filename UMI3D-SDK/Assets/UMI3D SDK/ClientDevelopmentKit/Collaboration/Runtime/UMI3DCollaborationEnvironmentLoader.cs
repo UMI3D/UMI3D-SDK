@@ -88,15 +88,21 @@ namespace umi3d.cdk.collaboration
             {
                 if (userList.ContainsKey(environmentId))
                 {
-                    userList[environmentId].ForEach(u => u.Destroy());
+                    userList[environmentId].ForEach(u => DeleteEntityInstance(u.EnvironmentId, u.id));
                     userList.Remove(environmentId);
                 }
             }
             else
                 userList = new();
 
-            userList[environmentId] = dto.userList.Select(u => new UMI3DUser(environmentId, u)).ToList();
+            var users = dto.userList.Select(u => (dto: u, entity: new UMI3DUser(environmentId, u)));
 
+            userList[environmentId] = users.Select(u => u.entity).ToList();
+            users.ForEach(u =>
+            {
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(UMI3DGlobalID.EnvironmentId, u.entity.id, u.dto, u.entity, () => { UMI3DUser.OnRemoveUser.Invoke(u.entity); }).NotifyLoaded();
+                UMI3DUser.OnNewUser.Invoke(u.entity);
+            });
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
 
@@ -323,7 +329,7 @@ namespace umi3d.cdk.collaboration
             {
                 UMI3DUser Olduser = UserList[index];
                 userList[environmentId].RemoveAt(index);
-                Olduser.Destroy();
+                DeleteEntityInstance(Olduser.EnvironmentId, Olduser.id);
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
             }
@@ -358,14 +364,20 @@ namespace umi3d.cdk.collaboration
             {
                 if (userList.ContainsKey(environmentId))
                 {
-                    userList[environmentId].ForEach(u => u.Destroy());
+                    userList[environmentId].ForEach(u => DeleteEntityInstance(u.EnvironmentId, u.id, null));
                     userList.Remove(environmentId);
                 }
             }
             else
                 userList = new();
 
-            userList[environmentId] = usersNew.Select(u => new UMI3DUser(environmentId, u)).ToList();
+            var users = usersNew.Select(u => (dto: u, entity: new UMI3DUser(environmentId, u)));
+            userList[environmentId] = users.Select(u => u.entity).ToList();
+            users.ForEach(u =>
+            {
+                UMI3DEnvironmentLoader.Instance.RegisterEntity(UMI3DGlobalID.EnvironmentId, u.entity.id, u.dto, u.entity, () => { UMI3DUser.OnRemoveUser.Invoke(u.entity); }).NotifyLoaded();
+                UMI3DUser.OnNewUser.Invoke(u.entity);
+            });
 
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();
