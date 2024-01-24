@@ -419,14 +419,11 @@ namespace umi3d.cdk.collaboration.userCapture
                 return;
             }
 
-            UMI3DEntityInstance entity = UMI3DCollaborationEnvironmentLoader.instance.TryGetEntityInstance(environmentId, playPoseDto.poseId);
-            if (entity == null)
+            if (!collaborativeEnvironmentManagementService.TryGetEntity(environmentId, playPoseDto.poseId, out PoseClip pose))
             {
                 UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. Pose {playPoseDto.poseId} not found.", scope);
                 return;
             }
-
-            PoseClip pose = entity.Object as PoseClip;
 
             if (playPoseDto.stopPose)
                 skeleton.PoseSubskeleton.StopPose(pose);
