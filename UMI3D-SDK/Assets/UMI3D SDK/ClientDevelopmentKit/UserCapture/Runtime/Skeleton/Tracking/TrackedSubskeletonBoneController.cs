@@ -49,7 +49,7 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
-        public bool isActif { get; set; }
+        public bool isActive { get; set; }
 
         uint IController.boneType => boneType;
 
