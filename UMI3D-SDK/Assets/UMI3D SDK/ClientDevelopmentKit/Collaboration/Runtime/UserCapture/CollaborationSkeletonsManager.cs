@@ -171,7 +171,6 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             try
             {
-                UnityEngine.Debug.Log($" user {users.ToString<UMI3DUser>(u => $"{u.EnvironmentId} {u.id.ToString()}")}");
                 List<(ulong, ulong)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
                 readyUserIdList.Remove((UMI3DGlobalID.EnvironmentId, collaborationClientServerService.GetUserId()));
 
