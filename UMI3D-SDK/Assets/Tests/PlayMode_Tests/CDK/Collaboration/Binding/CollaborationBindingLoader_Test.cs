@@ -18,6 +18,7 @@ using Moq;
 using NUnit.Framework;
 using PlayMode_Tests.UserCapture.Binding.CDK;
 using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using umi3d.cdk;
 using umi3d.cdk.binding;
@@ -25,6 +26,7 @@ using umi3d.cdk.collaboration;
 using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.cdk.userCapture;
+using umi3d.common;
 using umi3d.common.dto.binding;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
@@ -85,6 +87,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
         public override async void ReadUMI3DExtension_MultiBinding()
         {
             // GIVEN
+            ulong environmentId = UMI3DGlobalID.EnvironmentId;
             uint targetBoneType = BoneType.Chest;
             ulong userId = 2005uL;
             var dto = new BindingDto()
@@ -98,30 +101,30 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
                 }
             };
 
-            var extensionData = new ReadUMI3DExtensionData(0, dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { });
-            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(environmentId, () => { }, dto.id);
+            var nodeMock = new Mock<UMI3DNodeInstance>(environmentId, new System.Action(() => { }), dto.boundNodeId);
             var nodeGameObject = new GameObject("Node to bind");
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new() } });
             
-            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(0, dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
+            environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
-            collaborativeSkeletonManager.Setup(x => x.Skeletons).Returns(new Dictionary<(ulong, ulong), ISkeleton>() { { (0, userId), skeletonMock.Object } });
+            collaborativeSkeletonManager.Setup(x => x.WaitForSkeleton(environmentId, userId, It.IsAny<List<CancellationToken>>())).Returns(Task.FromResult(skeletonMock.Object));
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);
@@ -131,6 +134,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
         public override async void ReadUMI3DExtension_NodeBinding()
         {
             // GIVEN
+            ulong environmentId = UMI3DGlobalID.EnvironmentId;
             var dto = new BindingDto()
             {
                 id = 1005uL,
@@ -138,25 +142,25 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
                 data = new NodeBindingDataDto() { parentNodeId = 1008uL }
             };
 
-            var extensionData = new ReadUMI3DExtensionData(0, dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { });
-            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(environmentId, () => { }, dto.id);
+            var nodeMock = new Mock<UMI3DNodeInstance>(environmentId, new System.Action(() => { }), dto.boundNodeId);
             var nodeGameObject = new GameObject("Node to bind");
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
-            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(0, dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
+            environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);
@@ -166,6 +170,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
         public override async void ReadUMI3DExtension_BoneBinding()
         {
             // GIVEN
+            ulong environmentId = UMI3DGlobalID.EnvironmentId;
             uint targetBoneType = BoneType.Chest;
             ulong userId = 2005uL;
             var dto = new BindingDto()
@@ -175,30 +180,30 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
                 data = new BoneBindingDataDto() { userId = userId, boneType = targetBoneType }
             };
 
-            var extensionData = new ReadUMI3DExtensionData(0, dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { });
-            var nodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(environmentId, () => { }, dto.id);
+            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, environmentId, new System.Action(() => { }), dto.boundNodeId);
             var nodeGameObject = new GameObject("Node to bind");
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new() } });
 
-            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(0, dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object); ;
+            loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
+            environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.boundNodeId)).Returns(nodeMock.Object); ;
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
-            collaborativeSkeletonManager.Setup(x => x.Skeletons).Returns(new Dictionary<(ulong, ulong), ISkeleton>() { { (0, userId), skeletonMock.Object } });
+            collaborativeSkeletonManager.Setup(x => x.WaitForSkeleton(environmentId, userId, It.IsAny<List<CancellationToken>>())).Returns(Task.FromResult(skeletonMock.Object));
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // teardown
             Object.Destroy(nodeGameObject);

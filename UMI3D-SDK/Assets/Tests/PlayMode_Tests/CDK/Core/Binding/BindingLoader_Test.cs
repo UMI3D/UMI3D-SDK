@@ -78,8 +78,10 @@ namespace PlayMode_Tests.Core.Binding.CDK
         public void CanReadUMI3DExtension()
         {
             // GIVEN
+            ulong environmentId = 0uL;
+
             var dto = new BindingDto();
-            var extensionData = new ReadUMI3DExtensionData(0,dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId, dto);
 
             // WHEN
             var canReadResult = bindingLoader.CanReadUMI3DExtension(extensionData);
@@ -92,8 +94,10 @@ namespace PlayMode_Tests.Core.Binding.CDK
         public void CanReadUMI3DExtension_InvalidDto()
         {
             // GIVEN
+            ulong environmentId = 0uL;
+
             var dto = new UMI3DDto();
-            var extensionData = new ReadUMI3DExtensionData(0,dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId, dto);
 
             // WHEN
             var canReadResult = bindingLoader.CanReadUMI3DExtension(extensionData);
@@ -110,6 +114,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         public virtual async void ReadUMI3DExtension_NodeBinding()
         {
             // GIVEN
+            ulong environmentId = 0uL;
             var dto = new BindingDto()
             {
                 id = 1005uL,
@@ -117,31 +122,32 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 data = new NodeBindingDataDto() { parentNodeId = 1008uL }
             };
 
-            var extensionData = new ReadUMI3DExtensionData(0,dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId,dto);
 
-            var entityFake = new UMI3DEntityInstance(0,() => { }, 0); 
-            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL,new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(environmentId,() => { }, dto.id); 
+            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, environmentId, new System.Action(() => { }), dto.boundNodeId);
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(0,dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentManagerMock.Setup(x => x.RegisterEntity(0,dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId,dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
+            environmentManagerMock.Setup(x => x.RegisterEntity(environmentId,dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
            
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
         [Test]
         public virtual async void ReadUMI3DExtension_MultiBinding()
         {
             // GIVEN
+            ulong environmentId = 0uL;
             var dto = new BindingDto()
             {
                 id = 1005uL,
@@ -149,25 +155,25 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 data = new MultiBindingDataDto() { Bindings = new AbstractSimpleBindingDataDto[] { new NodeBindingDataDto() { parentNodeId = 1008uL } } }
             };
 
-            var extensionData = new ReadUMI3DExtensionData(0, dto);
+            var extensionData = new ReadUMI3DExtensionData(environmentId, dto);
 
-            var entityFake = new UMI3DEntityInstance(0, () => { }, 0);
-            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0uL, new System.Action(() => { }));
+            var entityFake = new UMI3DEntityInstance(environmentId, () => { }, dto.id);
+            var nodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, environmentId, new System.Action(() => { }), dto.boundNodeId);
 
             nodeMock.Setup(x => x.transform).Returns(default(UnityEngine.Transform));
 
-            loadingManagerMock.Setup(x => x.WaitUntilEntityLoaded(0, dto.id, null)).Returns(Task.FromResult(entityFake));
-            environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
-            environmentManagerMock.Setup(x => x.GetNodeInstance(0, dto.boundNodeId)).Returns(nodeMock.Object);
+            loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
+            environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.boundNodeId)).Returns(nodeMock.Object);
 
-            bindingManagementServiceMock.Setup(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
             await bindingLoader.ReadUMI3DExtension(extensionData);
 
             // THEN
-            environmentManagerMock.Verify(x => x.RegisterEntity(0, dto.id, dto, null, It.IsAny<System.Action>()));
-            bindingManagementServiceMock.Verify(x => x.AddBinding(0uL, dto.boundNodeId, It.IsAny<AbstractBinding>()));
+            environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
+            bindingManagementServiceMock.Verify(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
         }
 
         #endregion ReadUMI3DExtension
