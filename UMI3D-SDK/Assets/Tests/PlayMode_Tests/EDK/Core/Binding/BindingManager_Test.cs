@@ -23,6 +23,7 @@ using UnityEngine.SceneManagement;
 
 namespace PlayMode_Tests.Core.Binding.EDK
 {
+    [TestFixture, TestOf(typeof(BindingManager))]
     public class BindingManager_Test
     {
         protected BindingManager bindingManager;
@@ -36,7 +37,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void OneTimeSetup()
         {
             SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BASE);
-            SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BINDINGS, LoadSceneMode.Additive);
+
             // Destroy used singletons preventively here
             ClearSingletons();
         }
@@ -48,6 +49,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
             umi3dServerMock.Setup(x => x.OnUserActive).Returns(new UMI3DUserEvent());
             umi3dServerMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
             umi3dServerMock.Setup(x => x.OnUserMissing).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserRefreshed).Returns(new UMI3DUserEvent());
 
             umi3dEnvironmentServiceMock = new();
 
@@ -58,12 +60,6 @@ namespace PlayMode_Tests.Core.Binding.EDK
         public void TearDown()
         {
             ClearSingletons();
-        }
-
-        [OneTimeTearDown]
-        public void OneTimeTearDown()
-        {
-            SceneManager.UnloadSceneAsync(PlayModeTestHelper.TEST_SCENE_EDK_BINDINGS);
         }
 
         private void ClearSingletons()
@@ -116,7 +112,7 @@ namespace PlayMode_Tests.Core.Binding.EDK
 
         #region AddBinding
 
-        [Test]
+        [Test, TestOf(nameof(BindingManager.AddBinding))]
         public void AddBinding()
         {
             // GIVEN
