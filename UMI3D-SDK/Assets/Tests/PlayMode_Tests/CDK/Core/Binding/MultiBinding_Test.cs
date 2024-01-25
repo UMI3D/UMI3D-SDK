@@ -94,7 +94,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 }
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }), 0uL);
 
             Stack<NodeBinding> bindings = new();
             
@@ -147,7 +147,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 }
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }), 0uL);
 
             Stack<NodeBinding> bindings = new();
 
@@ -207,7 +207,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 }
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }), 0uL);
 
             Stack<NodeBinding> bindings = new();
 
@@ -271,7 +271,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             var dto = new MultiBindingDataDto() { Bindings = bindingDataDtos.ToArray() };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, 0UL, new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), 0uL);
 
             Queue<NodeBinding> bindings = new();
             List<NodeBindingDataDto> callBackCache = new();
