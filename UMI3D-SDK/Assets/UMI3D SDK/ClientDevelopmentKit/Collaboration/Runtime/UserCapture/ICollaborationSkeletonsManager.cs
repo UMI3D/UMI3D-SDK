@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common.userCapture.tracking;
 
@@ -83,5 +85,14 @@ namespace umi3d.cdk.collaboration.userCapture
         /// </summary>
         /// <param name="frame"></param>
         void UpdateSkeleton(UserTrackingFrameDto frame);
+
+        /// <summary>
+        /// Wait for a collaborative skeleton to be instantiated.
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="userId"></param>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
+        Task<ISkeleton> WaitForSkeleton(ulong environmentId, ulong userId, List<CancellationToken> tokens = null);
     }
 }
