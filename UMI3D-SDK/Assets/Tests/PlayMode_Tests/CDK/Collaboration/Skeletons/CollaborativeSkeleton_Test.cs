@@ -45,7 +45,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
 
             poseSubskeletonMock = new Mock<IPoseSubskeleton>();
 
-            abstractSkeleton.Init(trackedSubskeletonMock.Object, poseSubskeletonMock.Object);
+            abstractSkeleton.Init(trackedSubskeletonMock.Object, poseSubskeletonMock.Object, unityMainThreadDispatcherMock.Object);
         }
 
         public override void TearDown()
