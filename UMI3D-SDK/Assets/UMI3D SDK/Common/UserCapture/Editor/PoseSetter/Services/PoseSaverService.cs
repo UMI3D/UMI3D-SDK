@@ -39,14 +39,17 @@ namespace umi3d.common.userCapture.pose.editor
         };
 
         /// <summary>
-        /// Saves a scriptable object at given path
+        /// Saves a .umi3dpose asset at given path.
+        /// </summary>
         /// --> if you got many root on your skeleton it wil generate a scriptable object per root
         /// --> keep in mind that its normal that is you add a parent root you delete all the children root a
         ///         and that when you add a children root it dosent touch the parent once, (this last feature has to be changed at somepoint)
-        /// </summary>
         public void SavePose(IEnumerable<PoseSetterBoneComponent> roots, string filePath, out bool success)
         {
-            if (filePath == string.Empty)
+            if (roots is null)
+                throw new System.ArgumentNullException(nameof(roots));
+
+            if (filePath is null || filePath == string.Empty)
                 filePath = Path.ChangeExtension(Path.Combine(DEFAULT_PATH, PoseEditorParameters.DEFAULT_POSE_NAME), PoseEditorParameters.POSE_FORMAT_EXTENSION);
 
             foreach (PoseSetterBoneComponent rootBoneComponent in roots)
@@ -82,7 +85,7 @@ namespace umi3d.common.userCapture.pose.editor
                 string savePath = filePath;
                 if (roots.Count() > 1)
                 {
-                    savePath = Path.ChangeExtension(savePath, "") + $"_from_{rootBoneComponent.BoneType}";
+                    savePath = Path.Combine(Path.GetDirectoryName(savePath), Path.GetFileNameWithoutExtension(savePath) + $"_from_{BoneTypeHelper.GetBoneName(rootBoneComponent.BoneType)}");
                     savePath = Path.ChangeExtension(savePath, PoseEditorParameters.POSE_FORMAT_EXTENSION);
                 }
 
@@ -106,21 +109,29 @@ namespace umi3d.common.userCapture.pose.editor
         }
 
         /// <summary>
-        /// Load one scriptable object and apply all bone pose to the current skeleton in scene view
+        /// Load one pose asset and apply all bone pose to the current skeleton in scene view
         /// </summary>
         public PoseDto LoadPose(string path, out bool success)
         {
+            success = false;
+
+            if (path is null)
+                throw new System.ArgumentNullException(nameof(path));
+
             try
             {
                 string fileContent = File.ReadAllText(path);
                 PoseDto pose = JsonConvert.DeserializeObject<PoseDto>(fileContent, serializationSettings);
+                
+                if (pose is null)
+                    return null;
+
                 success = true;
                 return pose;
             }
             catch (System.Exception e) when (e is IOException or JsonSerializationException)
             {
                 Debug.LogException(e);
-                success = false;
                 return null;
             }
         }

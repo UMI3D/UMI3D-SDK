@@ -61,16 +61,16 @@ namespace umi3d.common.userCapture.pose.editor
             root_boneComponent.isRoot = true;
             skeleton.anchor = pose.anchor.bone;
 
-            poseEditionService.UpdateBoneRotation(skeleton, pose.anchor);
+            poseEditionService.UpdateBoneRotation(skeleton, pose.anchor.bone, pose.anchor.rotation.Quaternion());
 
-            pose.bones.ForEach((bone) => poseEditionService.UpdateBoneRotation(skeleton, bone));
+            pose.bones.ForEach((bone) => poseEditionService.UpdateBoneRotation(skeleton, bone.boneType, bone.rotation.Quaternion()));
             success = true;
         }
 
         public void ResetSkeleton(GameObject skeletonRootGo)
         {
-            poseEditionService.ResetAllBones(skeleton);
-            poseEditionService.ResetSkeleton(skeleton, skeletonRootGo);
+            poseEditionService.RemoveAllRoots(skeleton);
+            poseEditionService.ResetSkeleton(skeleton);
         }
 
         public void ApplySymmetry(bool isLeft, SymmetryTarget target)
@@ -78,9 +78,9 @@ namespace umi3d.common.userCapture.pose.editor
             poseEditionService.ApplySymmetry(skeleton, isLeft, target);
         }
 
-        public void UpdateSkeletonGameObject(GameObject value)
+        public void InitSkeleton(GameObject skeletonGo)
         {
-            poseEditionService.UpdateSkeletonGameObject(skeleton, handClosureSkeleton, value);
+            poseEditionService.InitSkeleton(skeleton, handClosureSkeleton, skeletonGo);
         }
 
         public void UpdateIsRoot(uint boneType, bool isRoot)

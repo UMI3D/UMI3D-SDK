@@ -36,10 +36,19 @@ namespace umi3d.common.userCapture.pose.editor
         /// This should be called each time you change the skeleton prefab
         /// Reads all of the PoseSetterBineComponent which are not None Bones and add them in the treeView
         /// </summary>
-        /// <param name="value"></param>
-        public void UpdateSkeletonGameObject(PoseEditorSkeleton skeleton, HandClosureSkeleton handClosureSkeleton, GameObject value)
+        /// <param name="skeletonGo"></param>
+        public void InitSkeleton(PoseEditorSkeleton skeleton, HandClosureSkeleton handClosureSkeleton, GameObject skeletonGo)
         {
-            skeleton.root = value.GetComponentsInChildren<Transform>().FirstOrDefault(x => x.name == ROOT_NAME)?.gameObject;
+            if (skeleton == null)
+                throw new System.ArgumentNullException(nameof(skeleton));
+
+            if (handClosureSkeleton == null)
+                throw new System.ArgumentNullException(nameof(handClosureSkeleton));
+
+            if (skeletonGo == null)
+                throw new System.ArgumentNullException(nameof(skeletonGo));
+
+            skeleton.root = skeletonGo.GetComponentsInChildren<Transform>().FirstOrDefault(x => x.name == ROOT_NAME)?.gameObject;
 
             if (skeleton.root == null)
             {
@@ -51,16 +60,16 @@ namespace umi3d.common.userCapture.pose.editor
                                                             .Where(bc => bc.BoneType != BoneType.None)
                                                             .ToList();
 
-            handClosureSkeleton.handClosureAnimator = value.GetComponentsInChildren<Animator>().First(x => x.runtimeAnimatorController != null);
+            handClosureSkeleton.handClosureAnimator = skeletonGo.GetComponentsInChildren<Animator>().First(x => x.runtimeAnimatorController != null);
             handClosureSkeleton.root = handClosureSkeleton.handClosureAnimator.gameObject;
             handClosureSkeleton.boneComponents = handClosureSkeleton.root.GetComponentsInChildren<PoseSetterBoneComponent>()
                                                             .Where(bc => bc.BoneType != BoneType.None)
                                                             .ToList();
         }
 
-        public void ResetSkeleton(PoseEditorSkeleton skeleton, GameObject skeletonRoot)
+        public void ResetSkeleton(PoseEditorSkeleton skeleton)
         {
-            skeletonRoot.GetComponentsInChildren<PoseSetterBoneComponent>()
+            skeleton.root.GetComponentsInChildren<PoseSetterBoneComponent>()
                         .ForEach(bc =>
                         {
                             bc.transform.rotation = Quaternion.identity;
@@ -76,25 +85,12 @@ namespace umi3d.common.userCapture.pose.editor
         /// </summary>
         /// <param name="skeleton"></param>
         /// <param name="boneDto"></param>
-        public void UpdateBoneRotation(PoseEditorSkeleton skeleton, BoneDto boneDto)
+        public void UpdateBoneRotation(PoseEditorSkeleton skeleton, uint boneType, Quaternion rotation)
         {
-            PoseSetterBoneComponent bone_component = skeleton.boneComponents.Find(bc => bc.BoneType == boneDto.boneType);
+            PoseSetterBoneComponent bone_component = skeleton.boneComponents.Find(bc => bc.BoneType == boneType);
             if (bone_component == null)
                 return;
-            bone_component.transform.rotation = boneDto.rotation.Quaternion();
-        }
-
-        /// <summary>
-        /// Change the rotation of a bone that is an anchor.
-        /// </summary>
-        /// <param name="skeleton"></param>
-        /// <param name="boneDto"></param>
-        public void UpdateBoneRotation(PoseEditorSkeleton skeleton, PoseAnchorDto bonePoseDto)
-        {
-            PoseSetterBoneComponent bone_component = skeleton.boneComponents.Find(bc => bc.BoneType == bonePoseDto.bone);
-            if (bone_component == null)
-                return;
-            bone_component.transform.rotation = bonePoseDto.rotation.Quaternion();
+            bone_component.transform.rotation = rotation;
         }
 
         #endregion Rotations
@@ -122,11 +118,11 @@ namespace umi3d.common.userCapture.pose.editor
         /// <summary>
         /// Set all bones isRoot to false
         /// </summary>
-        public void ResetAllBones(PoseEditorSkeleton skeleton)
+        public void RemoveAllRoots(PoseEditorSkeleton skeleton)
         {
             skeleton.boneComponents.ForEach(bc =>
             {
-                if (bc.isRoot != false)
+                if (bc.isRoot)
                     bc.isRoot = false;
             });
         }
@@ -145,24 +141,24 @@ namespace umi3d.common.userCapture.pose.editor
         /// Change a root in the skeleton and the isRoot value of all child bones.
         /// </summary>
         /// <param name="boneComponent"></param>
-        /// <param name="value"></param>
-        public void UpdateRootOnSkeleton(PoseSetterBoneComponent boneComponent, bool value)
+        /// <param name="isRoot"></param>
+        private void UpdateRootOnSkeleton(PoseSetterBoneComponent boneComponent, bool isRoot)
         {
             Assert.IsNotNull(boneComponent);
 
             // Cleans children roots
-            boneComponent.GetComponentsInChildren<PoseSetterBoneComponent>()
-                         .Where(bc => bc.BoneType != BoneType.None)
-                         .ForEach(bc =>
-                         {
-                             if (value == true)
-                             {
-                                 if (bc.isRoot) // cannot be root if a parent is root
-                                     bc.isRoot = false;
-                             }
-                         });
+            if (isRoot)
+            {
+                boneComponent.GetComponentsInChildren<PoseSetterBoneComponent>()
+                     .Where(bc => bc.BoneType != BoneType.None)
+                     .ForEach(bc =>
+                     {
+                         if (bc.isRoot) // cannot be root if a parent is root
+                             bc.isRoot = false;
+                     });
+            }
 
-            boneComponent.isRoot = value;
+            boneComponent.isRoot = isRoot;
         }
 
         #endregion RootManagement
