@@ -274,8 +274,8 @@ namespace umi3d.common.userCapture.pose.editor
         {
             AssetDatabase.OpenAsset(AssetDatabase.LoadAssetAtPath<GameObject>(PoseEditorParameters.SKELETON_PREFAB_PATH));
 
-            skeleton = GetDefaultSkeleton();
-            poseEditor.UpdateSkeletonGameObject(skeleton);
+            skeletonGo = GetDefaultSkeleton();
+            poseEditor.InitSkeleton(skeletonGo);
             InitAnchorsTreeView();            
         }
 
@@ -331,7 +331,7 @@ namespace umi3d.common.userCapture.pose.editor
         #region Edition
 
         private uint handClosureBoneType = BoneType.RightHand;
-        private GameObject skeleton;
+        private GameObject skeletonGo;
 
         private void ChangeDisplayedPoseName(string newPoseName)
         {
@@ -351,7 +351,7 @@ namespace umi3d.common.userCapture.pose.editor
 
         private void ResetSkeleton()
         {
-            poseEditor.ResetSkeleton(skeleton);
+            poseEditor.ResetSkeleton(skeletonGo);
             AddUnsavedMark();
         }
 
