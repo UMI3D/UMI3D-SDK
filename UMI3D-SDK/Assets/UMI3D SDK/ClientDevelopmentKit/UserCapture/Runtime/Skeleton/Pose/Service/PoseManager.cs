@@ -88,7 +88,7 @@ namespace umi3d.cdk.userCapture.pose
 
             if (anchor != null)
                 skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(anchor);
-            else
+            else if (poseClip.Pose.anchor != null)
                 skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(poseClip.Pose.anchor);
             
             anchoredPoseClips.Add(poseClip, anchor);

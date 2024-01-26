@@ -323,7 +323,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             UMI3DAnimatorAnimationDto mockDto = new UMI3DAnimatorAnimationDto();
             Mock<UMI3DAbstractAnimation> mockAnimation = new(MockBehavior.Default,0UL ,mockDto);
 
-            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0, playingEmote.AnimationId)).Returns(mockAnimation.Object);
+            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(UMI3DGlobalID.EnvironmentId, playingEmote.AnimationId)).Returns(mockAnimation.Object);
 
             // WHEN
             emoteManagerService.PlayEmote(playingEmote);
