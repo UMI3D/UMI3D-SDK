@@ -22,6 +22,8 @@ using System.Linq;
 using System;
 using umi3d.edk.userCapture.tracking;
 using umi3d.edk.collaboration;
+using umi3d.edk;
+using Moq;
 
 namespace PlayMode_Tests.UserCapture.Tracking.EDK
 {
@@ -31,7 +33,10 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         protected UMI3DTrackingManager trackingManager;
         protected GameObject serverGo;
 
+        protected Mock<IUMI3DServer> serverServiceMock;
+
         protected float newFPSTracking = 18f;
+        private List<UMI3DUser> users;
 
         #region Test Setup
 
@@ -39,21 +44,31 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void OneTimeSetup()
         {
             SceneManager.LoadScene(PlayModeTestHelper.TEST_SCENE_EDK_BASE);
+            ClearSingletons();
         }
 
         [SetUp]
         public void Setup()
         {
-            trackingManager = UMI3DTrackingManager.Instance;
-            _ = UMI3DCollaborationEnvironment.Instance;
+            serverServiceMock = new();
+            trackingManager = new UMI3DTrackingManager(serverServiceMock.Object);
+            
             serverGo = new GameObject();
             UnityEngine.Object.Instantiate(serverGo);
-            serverGo.AddComponent<UMI3DCollaborationServer>();
 
-            for (int i = 0; i < UnityEngine.Random.Range(4,15); i++)
+            var usersMock = new List<Mock<UMI3DUser>> ()
             {
-                UMI3DCollaborationServer.Collaboration.CreateUser(new umi3d.common.collaboration.dto.signaling.RegisterIdentityDto() { guid = Guid.NewGuid().ToString(), login = i.ToString() }, (a, b) => { });
+                new Mock<UMI3DUser>(),
+                new Mock<UMI3DUser>(),
+                new Mock<UMI3DUser>(),
+            };
+            ulong i = 20000uL;
+            foreach (var userMock in usersMock)
+            {
+                userMock.Setup(x => x.Id()).Returns(i++);
             }
+            users = usersMock.Select(x=>x.Object).ToList();
+            serverServiceMock.Setup(x => x.Users()).Returns(users);
         }
 
         [TearDown] 
@@ -61,6 +76,13 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         {
             UnityEngine.Object.Destroy(serverGo);
             UMI3DTrackingManager.Destroy();
+            ClearSingletons();
+        }
+
+        public void ClearSingletons()
+        {
+            //if (UMI3DCollaborationServer.Exists)
+            //    UMI3DCollaborationServer.Destroy();
         }
 
         #endregion Test Setup
@@ -71,8 +93,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void SyncFPSTracking_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             for (int i = 0; i < users.Count(); i++)
             {
                 trackingManager.asyncFPS.Add(users[i].Id(), newFPSTracking);
@@ -90,8 +110,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void SyncFPSTracking_Async_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             for (int i = 0; i < users.Count(); i++)
             {
                 trackingManager.asyncFPS.Add(users[i].Id(), newFPSTracking);
@@ -115,7 +133,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void UpdateFPSTracking_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
 
             // WHEN
             trackingManager.UpdateFPSTracking(newFPSTracking);
@@ -129,8 +146,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void UpdateFPSTracking_Async_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randIndex = UnityEngine.Random.Range(0, users.Count);
 
             // WHEN
@@ -149,8 +164,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void UpdateBoneFPS_NewFPS_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randBonetype = (uint)UnityEngine.Random.Range(1, 59);
 
             // WHEN
@@ -170,8 +183,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void UpdateBoneFPS_NewFPS_Async_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randIndex = UnityEngine.Random.Range(0, users.Count);
             var randBonetype = (uint)UnityEngine.Random.Range(1, 59);
 
@@ -189,8 +200,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void UpdateBoneFPS_TrackingFPS_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randBonetype = (uint)UnityEngine.Random.Range(1, 59);
 
             for (int i = 0; i < users.Count(); i++)
@@ -214,8 +223,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void UpdateBoneFPS_TrackingFPS_Async_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randIndex = UnityEngine.Random.Range(0, users.Count);
             var randBonetype = (uint)UnityEngine.Random.Range(1, 59);
 
@@ -242,8 +249,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void SyncBoneFPS_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randBonetype = (uint)UnityEngine.Random.Range(minInclusive: 1, 59);
 
             for (int i = 0; i < users.Count(); i++)
@@ -266,8 +271,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void SyncBoneFPS_Async_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randIndex = UnityEngine.Random.Range(0, users.Count);
             var randBonetype = (uint)UnityEngine.Random.Range(1, 59);
 
@@ -293,8 +296,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void SyncAllBones_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randBonetype = (uint)UnityEngine.Random.Range(minInclusive: 1, 59);
 
             for (int i = 0; i < users.Count(); i++)
@@ -313,8 +314,6 @@ namespace PlayMode_Tests.UserCapture.Tracking.EDK
         public void SyncAllBones_Async_Test()
         {
             // GIVEN
-            List<UMI3DCollaborationAbstractUser> users = UMI3DCollaborationServer.Collaboration.Users.ToList();
-
             var randIndex = UnityEngine.Random.Range(0, users.Count);
             var randBonetype = (uint)UnityEngine.Random.Range(1, 59);
 

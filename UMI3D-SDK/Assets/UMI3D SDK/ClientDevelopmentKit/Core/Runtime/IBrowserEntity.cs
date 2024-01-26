@@ -14,24 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
+using umi3d.common;
 
-namespace umi3d.cdk.userCapture.tracking
+namespace umi3d.cdk
 {
-    public class DistantController : IController
+    /// <summary>
+    /// Loaded entity in browser.
+    /// </summary>
+    public interface IBrowserEntity
     {
-        public uint boneType { get; set; }
+        ulong Id { get; }
 
-        public Vector3 position { get; set; }
-
-        public Quaternion rotation { get; set; }
-
-        public bool isActive { get; set; }
-
-        public bool isOverrider { get; set; }
-
-        public void Destroy()
+        ulong EnvironmentId 
         {
+            get => UMI3DGlobalID.EnvironmentId; 
         }
     }
 }

@@ -156,7 +156,7 @@ namespace umi3d.cdk.userCapture.tracking
                     extrapolators[bone.boneType] = (new(), new(), vc);
                 }
 
-                vc.isActif = true;
+                vc.isActive = true;
                 if (extrapolators.ContainsKey(bone.boneType))
                 {
                     extrapolators[bone.boneType].PositionExtrapolator.AddMeasure(bone.position.Struct());
@@ -295,7 +295,7 @@ namespace umi3d.cdk.userCapture.tracking
             //clean controllers to destroy;
             foreach (var controller in controllersToDestroy)
             {
-                controller.isActif = false;
+                controller.isActive = false;
                 switch (controller.boneType)
                 {
                     case BoneType.LeftKnee:
@@ -357,13 +357,13 @@ namespace umi3d.cdk.userCapture.tracking
 
         private void SetControl(IController controller, HumanBodyBones goal)
         {
-            if (controller.isActif)
+            if (controller.isActive)
                 animator.SetBoneLocalRotation(goal, controller.rotation);
         }
 
         private void SetGoal(IController controller, AvatarIKGoal goal)
         {
-            if (controller.isActif)
+            if (controller.isActive)
             {
                 animator.SetIKPosition(goal, controller.position);
 
@@ -392,7 +392,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         private void SetHint(IController controller, AvatarIKHint hint)
         {
-            if (controller.isActif)
+            if (controller.isActive)
             {
                 animator.SetIKHintPosition(hint, controller.position);
                 animator.SetIKHintPositionWeight(hint, 0.6f);
@@ -405,7 +405,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         private void LookAt(IController controller)
         {
-            if (controller.isActif)
+            if (controller.isActive)
             {
                 var pos = controller.boneType == BoneType.Head ? controller.position + controller.rotation * Vector3.forward : controller.position;
                 animator.SetLookAtPosition(pos);

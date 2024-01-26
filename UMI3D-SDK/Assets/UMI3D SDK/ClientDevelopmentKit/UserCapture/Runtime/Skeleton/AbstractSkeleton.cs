@@ -23,7 +23,6 @@ using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
-using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
 using UnityEngine;
@@ -106,8 +105,21 @@ namespace umi3d.cdk.userCapture
 
         #endregion Fields
 
+        #region DI
+
+        protected IUnityMainThreadDispatcher UnityMainThreadDispatcherService { get; private set; }
+
+        public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton, IUnityMainThreadDispatcher mainThreadDispatcher)
+        {
+            UnityMainThreadDispatcherService = mainThreadDispatcher;
+            Init(trackedSkeleton, poseSkeleton);
+        }
+
+        #endregion DI
+
         public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
         {
+            UnityMainThreadDispatcherService ??= UnityMainThreadDispatcherManager.Instance;
             this._trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
@@ -126,8 +138,11 @@ namespace umi3d.cdk.userCapture
             Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
             Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
 
+            // wait to add PoseSubskeleton until we received at least one frame
             StartCoroutine(InitPoseSubskeleton());
         }
+
+
 
         private IEnumerator InitPoseSubskeleton()
         {
@@ -271,7 +286,7 @@ namespace umi3d.cdk.userCapture
 
             lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
             {
-                UnityMainThreadDispatcherManager.Instance.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.AddSorted(animatedSubskeleton); } });
+                UnityMainThreadDispatcherService.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.AddSorted(animatedSubskeleton); } });
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
@@ -288,7 +303,12 @@ namespace umi3d.cdk.userCapture
                 animatedSubskeleton.StopParameterSelfUpdate();
 
             if (subskeletons.Contains(animatedSubskeleton))
-                subskeletons.Remove(animatedSubskeleton);
+            {
+                lock (SubskeletonsLock)
+                {
+                    UnityMainThreadDispatcherService.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.Remove(animatedSubskeleton); } });
+                }
+            }
         }
     }
 }

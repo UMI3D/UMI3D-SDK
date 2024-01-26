@@ -104,7 +104,6 @@ namespace umi3d.cdk.binding
         /// <inheritdoc/>
         public virtual void AddBinding(ulong environmentId, ulong boundNodeId, AbstractBinding binding)
         {
-            UnityEngine.Debug.Log($"Add binding {environmentId}-{boundNodeId}->{binding?.BoundTransform}");
             if (binding is null)
                 return;
 

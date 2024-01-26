@@ -19,6 +19,8 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -171,7 +173,6 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             try
             {
-                UnityEngine.Debug.Log($" user {users.ToString<UMI3DUser>(u => $"{u.EnvironmentId} {u.id.ToString()}")}");
                 List<(ulong, ulong)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
                 readyUserIdList.Remove((UMI3DGlobalID.EnvironmentId, collaborationClientServerService.GetUserId()));
 
@@ -238,6 +239,35 @@ namespace umi3d.cdk.collaboration.userCapture
             skeletons[(environmentId,userId)] = cs;
             CollaborativeSkeletonCreated?.Invoke(userId);
             return cs;
+        }
+
+        /// <inheritdoc/>
+        /// In the same way than EnvironmentLaoder.WaitForEntityToBeLoaded, risk of waiting infinitely.
+        public virtual async Task<ISkeleton> WaitForSkeleton(ulong environmentId, ulong userId, List<CancellationToken> tokens = null)
+        {
+            if (Skeletons.TryGetValue((environmentId, userId), out ISkeleton skeleton))
+                return skeleton;
+
+            void WaitSkeletonCreation(ulong createdSkeletonUserId)
+            {
+                if (createdSkeletonUserId != userId)
+                    return;
+
+                if (Skeletons.TryGetValue((environmentId, userId), out ISkeleton c))
+                {
+                    skeleton = c;
+                    CollaborativeSkeletonCreated -= WaitSkeletonCreation;
+                }
+            };
+            CollaborativeSkeletonCreated += WaitSkeletonCreation;
+            
+            while (skeleton == null)
+                await UMI3DAsyncManager.Yield(tokens);
+
+            if (skeleton == null)
+                UMI3DLogger.LogWarning($"Impossible to get skeleton of user ({environmentId},{userId}). Skeleton does not exist.", scope);
+
+            return skeleton;
         }
 
         #endregion LifeCycle
@@ -419,14 +449,11 @@ namespace umi3d.cdk.collaboration.userCapture
                 return;
             }
 
-            UMI3DEntityInstance entity = UMI3DCollaborationEnvironmentLoader.instance.TryGetEntityInstance(environmentId, playPoseDto.poseId);
-            if (entity == null)
+            if (!collaborativeEnvironmentManagementService.TryGetEntity(environmentId, playPoseDto.poseId, out PoseClip pose))
             {
                 UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. Pose {playPoseDto.poseId} not found.", scope);
                 return;
             }
-
-            PoseClip pose = entity.Object as PoseClip;
 
             if (playPoseDto.stopPose)
                 skeleton.PoseSubskeleton.StopPose(pose);

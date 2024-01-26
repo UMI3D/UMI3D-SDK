@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture.tracking
                 boneType = boneType,
                 position = transform.position,
                 rotation = transform.rotation,
-                isActif = isActif,
+                isActive = isActif,
                 isOverrider = isOverrider
             };
         }

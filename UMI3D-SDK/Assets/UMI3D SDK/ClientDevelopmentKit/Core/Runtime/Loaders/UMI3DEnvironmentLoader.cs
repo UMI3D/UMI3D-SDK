@@ -128,6 +128,12 @@ namespace umi3d.cdk
             return entitiesCollection[environmentid].WaitUntilEntityLoaded(id, tokens);
         }
 
+        public virtual async Task<UMI3DNodeInstance> WaitUntilNodeInstanceLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens)
+        {
+            UMI3DEntityInstance nodeInstance = await WaitUntilEntityLoaded(environmentid, id, tokens);
+            return nodeInstance == null ? null : (UMI3DNodeInstance)nodeInstance;
+        }
+
 
         /// <summary>
         /// Return a list of all registered entities in every environment.
@@ -636,10 +642,15 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         public static async Task DeleteEntity(ulong environmentid, ulong entityId, List<CancellationToken> tokens)
         {
+            await Instance.DeleteEntityInstance(environmentid, entityId, tokens);
+        }
+
+        public async Task DeleteEntityInstance(ulong environmentId, ulong entityId, List<CancellationToken> tokens = null)
+        {
             if (UMI3DResourcesManager.isKnowedLibrary(entityId))
                 UMI3DResourcesManager.UnloadLibrary(entityId);
             else
-                await Instance.entitiesCollection[environmentid].DeleteEntity(entityId, tokens);
+                await entitiesCollection[environmentId].DeleteEntity(entityId, tokens);
         }
 
         /// <summary>

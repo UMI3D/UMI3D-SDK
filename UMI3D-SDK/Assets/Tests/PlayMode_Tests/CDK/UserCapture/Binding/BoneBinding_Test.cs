@@ -25,6 +25,8 @@ using umi3d.common.userCapture.binding;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.TestTools;
+using TestUtils.UserCapture;
+using TestUtils;
 
 namespace PlayMode_Tests.UserCapture.Binding.CDK
 {
@@ -106,9 +108,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             // THEN
             Assert.IsTrue(succes);
-            Assert.AreEqual(parentGo.transform.position + offSetPosition, go.transform.position);
-            Assert.AreEqual(previousRotation, go.transform.rotation);
-            Assert.AreEqual(previousScale, go.transform.localScale);
+            AssertUnityStruct.AreEqual(parentGo.transform.position + parentGo.transform.rotation * offSetPosition, go.transform.position);
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
         }
 
         [UnityTest]
@@ -154,9 +156,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(succes);
-                Assert.AreEqual(parentGo.transform.position + offSetPosition, go.transform.position);
-                Assert.AreEqual(previousRotation, go.transform.rotation);
-                Assert.AreEqual(previousScale, go.transform.localScale);
+                AssertUnityStruct.AreEqual(parentGo.transform.position + parentGo.transform.rotation * offSetPosition, go.transform.position);
+                AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+                AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
 
                 yield return null;
             }
@@ -190,7 +192,6 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             BoneBinding binding = new(dto, go.transform, skeletonBoneMock.Object);
 
             var previousPosition = go.transform.position;
-            var previousRotation = go.transform.rotation;
             var previousScale = go.transform.localScale;
 
             // WHEN
@@ -198,9 +199,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             // THEN
             Assert.IsTrue(success);
-            Assert.AreEqual(previousPosition, go.transform.position);
-            Assert.IsTrue(parentGo.transform.rotation * previousRotation * offsetRotation == go.transform.rotation);
-            Assert.AreEqual(previousScale, go.transform.localScale);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position);
+            AssertUnityStruct.AreEqual(parentGo.transform.rotation * offsetRotation, go.transform.rotation);
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
         }
 
         [UnityTest]
@@ -227,7 +228,6 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             BoneBinding binding = new(dto, go.transform, skeletonBoneMock.Object);
 
             var previousPosition = go.transform.position;
-            var previousRotation = go.transform.rotation;
             var previousScale = go.transform.localScale;
 
             int numberOfFrames = 10;
@@ -245,9 +245,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(success);
-                Assert.AreEqual(previousPosition, go.transform.position);
-                Assert.IsTrue(parentGo.transform.rotation * previousRotation * offsetRotation == go.transform.rotation);
-                Assert.AreEqual(previousScale, go.transform.localScale);
+                AssertUnityStruct.AreEqual(previousPosition, go.transform.position);
+                AssertUnityStruct.AreEqual(parentGo.transform.rotation * offsetRotation, go.transform.rotation);
+                AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
 
                 yield return null;
             }
@@ -289,9 +289,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             // THEN
             Assert.IsTrue(succes);
-            Assert.AreEqual(previousPosition, go.transform.position);
-            Assert.AreEqual(previousRotation, go.transform.rotation);
-            Assert.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position);
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+            AssertUnityStruct.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
         }
 
         [UnityTest]
@@ -336,9 +336,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(success);
-                Assert.AreEqual(previousPosition, go.transform.position);
-                Assert.AreEqual(previousRotation, go.transform.rotation);
-                Assert.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
+                AssertUnityStruct.AreEqual(previousPosition, go.transform.position);
+                AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+                AssertUnityStruct.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
 
                 yield return null;
             }

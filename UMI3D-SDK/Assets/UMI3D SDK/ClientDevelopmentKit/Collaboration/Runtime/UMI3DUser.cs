@@ -152,14 +152,6 @@ namespace umi3d.cdk.collaboration
         {
             dto = user;
             this.EnvironmentId = environmentId;
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(EnvironmentId, dto.id, dto, null).NotifyLoaded();
-            OnNewUser.Invoke(this);
-        }
-
-        public void Destroy()
-        {
-            UMI3DEnvironmentLoader.DeleteEntity(EnvironmentId, dto.id,null);
-            OnRemoveUser.Invoke(this);
         }
 
         /// <summary>

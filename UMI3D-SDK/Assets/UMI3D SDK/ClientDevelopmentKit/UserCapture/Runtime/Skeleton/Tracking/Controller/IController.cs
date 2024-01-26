@@ -22,7 +22,7 @@ namespace umi3d.cdk.userCapture.tracking
 {
     public interface IController
     {
-        public bool isActif { set; get; }
+        public bool isActive { set; get; }
 
         public void Destroy();
 

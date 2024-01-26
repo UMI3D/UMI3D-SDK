@@ -31,7 +31,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public Quaternion rotation => transform.rotation;
 
-        public bool isActif { get; set; }
+        public bool isActive { get; set; }
 
         public void Destroy()
         {
