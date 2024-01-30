@@ -17,6 +17,8 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
@@ -67,16 +69,6 @@ namespace umi3d.cdk.userCapture.pose
         /// How long the pose should last [Not Implemented]
         /// </summary>
         public DurationDto Duration => dto.duration;
-
-        /// <summary>
-        /// If the pose can be interpolated
-        /// </summary>
-        public bool IsInterpolable => dto.isInterpolable;
-
-        /// <summary>
-        /// If the pose can be added to  other poses
-        /// </summary>
-        public bool IsComposable => dto.isComposable;
 
         /// <summary>
         /// How the pose is activated.
@@ -197,7 +189,11 @@ namespace umi3d.cdk.userCapture.pose
         private void Apply()
         {
             IsApplied = true;
-            poseService.PlayPoseClip(poseClip, Anchor);
+            poseService.PlayPoseClip(poseClip, new PosePlayer.PlayingParameters()
+            {
+                isAnchored = Anchor != null,
+                anchor = Anchor
+            });
             ConditionsValidated?.Invoke();
             StartWatchEndOfConditions();
         }
@@ -308,5 +304,7 @@ namespace umi3d.cdk.userCapture.pose
 
             return false;
         }
+
+        
     }
 }

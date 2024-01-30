@@ -39,6 +39,16 @@ namespace umi3d.cdk.userCapture.pose
         public List<BoneDto> Bones => dto.pose.bones;
 
         /// <summary>
+        /// See <see cref="PoseClipDto.isComposable"/>.
+        /// </summary>
+        public bool IsComposable => dto.isComposable;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.isInterpolable"/>.
+        /// </summary>
+        public bool IsInterpolable => dto.isInterpolable;
+
+        /// <summary>
         /// Description of the pose animation.
         /// </summary>
         public PoseDto Pose => dto.pose;

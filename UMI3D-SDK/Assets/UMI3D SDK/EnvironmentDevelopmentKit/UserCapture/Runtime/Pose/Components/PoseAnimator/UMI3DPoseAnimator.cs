@@ -160,13 +160,6 @@ namespace umi3d.common.userCapture.pose
         [Tooltip("Expected duration of the pose animation.")]
         public Duration duration;
 
-        [Tooltip("Can the pose animation be interpolated when it is applied?")]
-        [HideInInspector]
-        public bool interpolable;
-
-        [Tooltip("Can the pose animation be composed with another pose animation?")]
-        public bool composable;
-
         [SerializeField, Tooltip("Related node. If unset, target is current node.")]
         private UMI3DNode relativeNode;
 
@@ -249,8 +242,6 @@ namespace umi3d.common.userCapture.pose
                 poseClipId = PoseClip.Id(),
                 poseConditions = ActivationsConditions.Select(x => x.ToDto()).ToArray(),
                 duration = duration.ToDto(),
-                isInterpolable = interpolable,
-                isComposable = composable,
                 activationMode = (ushort)activationMode
             };
         }

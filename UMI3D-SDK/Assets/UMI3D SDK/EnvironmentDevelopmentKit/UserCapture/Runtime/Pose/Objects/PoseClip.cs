@@ -47,13 +47,25 @@ namespace umi3d.edk.userCapture.pose
         /// </summary>
         public IList<BoneDto> Bones => poseResource.Bones;
 
+        /// <summary>
+        /// See <see cref="PoseClipDto.isComposable"/>.
+        /// </summary>
+        public bool IsComposable = true;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.isInterpolable"/>.
+        /// </summary>
+        public bool IsInterpolable = true;
+
         /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
             return new PoseClipDto()
             {
                 id = Id(),
-                pose = poseResource.ToPoseDto()
+                pose = poseResource.ToPoseDto(),
+                isInterpolable = IsInterpolable,
+                isComposable = IsComposable,
             };
         }
 

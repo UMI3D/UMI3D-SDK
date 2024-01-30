@@ -53,14 +53,7 @@ namespace umi3d.common.userCapture.pose
         /// How long the pose should last [Not Implemented]
         /// </summary>
         public DurationDto duration { get; set; }
-        /// <summary>
-        /// If the pose can be interpolated
-        /// </summary>
-        public bool isInterpolable { get; set; }
-        /// <summary>
-        /// If the pose can be added to  other poses
-        /// </summary>
-        public bool isComposable { get; set; }
+
         /// <summary>
         /// How the pose is activated.
         /// </summary>
