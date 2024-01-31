@@ -178,8 +178,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Assert.AreEqual(dto.poseClipId, poseAnimator.PoseClip.Id);
             Assert.AreEqual(dto.relatedNodeId, poseAnimator.RelativeNodeId);
             Assert.AreEqual(dto.duration, poseAnimator.Duration);
-            Assert.AreEqual(dto.isComposable, poseAnimator.IsComposable);
-            Assert.AreEqual(dto.isInterpolable, poseAnimator.IsInterpolable);
             Assert.AreEqual(dto.activationMode, poseAnimator.ActivationMode);
             Assert.AreEqual(dto.poseConditions.Length, poseAnimator.PoseConditions.Length);
         }

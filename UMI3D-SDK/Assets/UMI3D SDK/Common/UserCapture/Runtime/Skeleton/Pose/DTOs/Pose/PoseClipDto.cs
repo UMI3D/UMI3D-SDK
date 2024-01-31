@@ -27,5 +27,15 @@ namespace umi3d.common.userCapture.pose
         /// Pose description for the animation.
         /// </summary>
         public PoseDto pose { get; set; }
+
+        /// <summary>
+        /// If the pose can be interpolated
+        /// </summary>
+        public bool isInterpolable { get; set; }
+
+        /// <summary>
+        /// If the pose can be added to  other poses
+        /// </summary>
+        public bool isComposable { get; set; }
     }
 }

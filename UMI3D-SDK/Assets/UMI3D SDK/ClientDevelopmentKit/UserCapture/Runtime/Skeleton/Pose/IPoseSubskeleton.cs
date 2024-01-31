@@ -23,8 +23,6 @@ namespace umi3d.cdk.userCapture.pose
     /// </summary>
     public interface IPoseSubskeleton : IWritableSubskeleton
     {
-
-
         /// <summary>
         /// List of poses that are currently applied on the subskeleton.
         /// </summary>
@@ -35,14 +33,14 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="posesToAdd">Poses to start to apply</param>
         /// <param name="isOverriding">If true, all previous poses will be stopped.</param>
-        void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false);
+        void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, PosePlayer.PlayingParameters parameters = null);
 
         /// <summary>
         /// Set a pose for the calculation of the next tracking frame
         /// </summary>
         /// <param name="posesToAdd">Poses to start to apply</param>
         /// <param name="isOverriding">If true, all previous poses will be stopped.</param>
-        void StartPose(PoseClip poseToAdd, bool isOverriding = false);
+        void StartPose(PoseClip poseToAdd, bool isOverriding = false, PosePlayer.PlayingParameters parameters = null);
 
         /// <summary>
         /// Remove all poses from computation.

@@ -103,8 +103,6 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                     new DirectionConditionDto() { Direction = Vector3.one.Dto() },
                 },
                 duration = new DurationDto() { duration = 24, max = 12, min = 2 },
-                isInterpolable = true,
-                isComposable = false,
                 activationMode = 0,
             };
 
@@ -121,8 +119,6 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
 
             Assert.AreEqual(poseAnimatorDto.duration.duration, result.duration.duration);
-            Assert.AreEqual(poseAnimatorDto.isInterpolable, result.isInterpolable);
-            Assert.AreEqual(poseAnimatorDto.isComposable, result.isComposable);
 
             Assert.AreEqual(poseAnimatorDto.activationMode, result.activationMode);
 

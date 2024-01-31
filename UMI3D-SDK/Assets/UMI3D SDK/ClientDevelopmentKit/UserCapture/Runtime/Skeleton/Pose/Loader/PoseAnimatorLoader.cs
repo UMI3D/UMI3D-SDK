@@ -29,7 +29,7 @@ namespace umi3d.cdk.userCapture.pose
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture | DebugScope.Loading;
 
-        private static readonly UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.7", "*");
+        private static readonly UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.8", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region Dependencies Injection
@@ -69,7 +69,8 @@ namespace umi3d.cdk.userCapture.pose
             UMI3DEntityInstance poseClipInstance = await loadingService.WaitUntilEntityLoaded(environmentId, dto.poseClipId, null);
             PoseClip poseClip = (PoseClip)poseClipInstance.Object;
 
-            PoseAnimator poseAnimator = new(dto, poseClip, poseConditions.Where(x => x is not null).ToArray());
+            PoseAnimator poseAnimator = new PoseAnimator(dto, poseClip, poseConditions.Where(x => x is not null).ToArray());
+
 
             if (poseAnimator.ActivationMode == (ushort)PoseAnimatorActivationMode.AUTO)
                 poseAnimator.StartWatchActivationConditions();

@@ -76,7 +76,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void PlayPoseClip(PoseClip poseClip, PoseAnchorDto anchor = null)
+        public void PlayPoseClip(PoseClip poseClip, PosePlayer.PlayingParameters parameters = null)
         {
             if (poseClip == null)
                 throw new System.ArgumentNullException(nameof(poseClip));
@@ -84,14 +84,14 @@ namespace umi3d.cdk.userCapture.pose
             if (skeletonManager.PersonalSkeleton.PoseSubskeleton.AppliedPoses.Contains(poseClip))
                 return;
 
-            skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip);
+            skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip, parameters: parameters);
 
-            if (anchor != null)
-                skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(anchor);
+            if (parameters != null && parameters.isAnchored)
+                skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(parameters.anchor);
             else if (poseClip.Pose.anchor != null)
                 skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(poseClip.Pose.anchor);
             
-            anchoredPoseClips.Add(poseClip, anchor);
+            anchoredPoseClips.Add(poseClip, parameters?.anchor);
         }
 
         /// <inheritdoc/>

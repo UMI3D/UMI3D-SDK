@@ -223,7 +223,7 @@ namespace umi3d.cdk.collaboration.userCapture
             var trackedSkeleton = UnityEngine.Object.Instantiate(trackedSkeletonPrefab, cs.transform).GetComponent<TrackedSubskeleton>();
             trackedSkeleton.EnvironmentId = environmentId;
 
-            var poseSkeleton = new PoseSubskeleton(environmentId);
+            var poseSkeleton = new PoseSubskeleton(environmentId, parentSkeleton: cs, environmentManagerService: collaborativeEnvironmentManagementService);
 
             cs.Init(trackedSkeleton, poseSkeleton);
 

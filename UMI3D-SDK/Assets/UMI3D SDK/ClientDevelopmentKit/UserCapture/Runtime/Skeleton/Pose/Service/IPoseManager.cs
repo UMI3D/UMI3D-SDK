@@ -26,8 +26,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Sets the related pose in the poseSkeleton
         /// </summary>
-        /// <param name="poseClip"></param>
-        void PlayPoseClip(PoseClip poseClip, PoseAnchorDto poseAnchorDto = null);
+        void PlayPoseClip(PoseClip poseClip, PosePlayer.PlayingParameters parameters = null);
 
         /// <summary>
         /// Stops all poses
