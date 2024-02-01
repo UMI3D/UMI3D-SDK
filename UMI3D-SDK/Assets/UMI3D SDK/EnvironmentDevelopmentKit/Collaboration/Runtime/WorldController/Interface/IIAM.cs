@@ -62,7 +62,7 @@ namespace umi3d.worldController
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<List<LibrariesDto>> GetLibraries(User user);
+        Task<List<AssetLibraryDto>> GetLibraries(User user);
 
         /// <summary>
         /// Update user credential
