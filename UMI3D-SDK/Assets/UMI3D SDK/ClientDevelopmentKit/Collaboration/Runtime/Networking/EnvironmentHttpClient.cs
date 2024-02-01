@@ -34,9 +34,9 @@ namespace umi3d.cdk.collaboration
     /// Send HTTP requests to the environment server.
     /// </summary>
     /// Usually used before connection or to retrieve DTOs.
-    public class HttpClient : AbstractHttpClient<UMI3DEnvironmentClient>
+    public class EnvironmentHttpClient : AbstractHttpClient<UMI3DEnvironmentClient>
     {
-        public HttpClient(UMI3DEnvironmentClient environmentClient) : base(environmentClient)
+        public EnvironmentHttpClient(UMI3DEnvironmentClient environmentClient) : base(environmentClient)
         {
         }
 
@@ -75,6 +75,5 @@ namespace umi3d.cdk.collaboration
                 throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
             }
         }
-
     }
 }
