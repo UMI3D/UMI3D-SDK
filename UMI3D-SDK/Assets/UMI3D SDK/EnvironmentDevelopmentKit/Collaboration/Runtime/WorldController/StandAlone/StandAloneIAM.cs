@@ -74,9 +74,9 @@ namespace umi3d.worldController
             return await Task.FromResult(environment);
         }
 
-        public virtual async Task<List<LibrariesDto>> GetLibraries(User user)
+        public virtual async Task<List<AssetLibraryDto>> GetLibraries(User user)
         {
-            return await Task.FromResult<List<LibrariesDto>>(null);
+            return await Task.FromResult<List<AssetLibraryDto>>(null);
         }
 
         public virtual async Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
