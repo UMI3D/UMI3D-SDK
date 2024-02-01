@@ -77,7 +77,7 @@ namespace umi3d.edk
             {
                 dto.variants.Add(variant.ToFileDto());
             }
-            dto.baseUrl = UMI3DServer.GetHttpUrl() + UMI3DNetworkingKeys.directory;
+            dto.baseUrl = UMI3DServer.GetResourcesUrl();
             return dto;
         }
 
@@ -194,7 +194,7 @@ namespace umi3d.edk
                 name = name,
                 files = new FileListDto()
                 {
-                    baseUrl = inetum.unityUtils.Path.Combine(UMI3DServer.GetResourcesUrl(), "file", path),
+                    baseUrl = inetum.unityUtils.Path.Combine("file", path),
                     files = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories).Select(f => f.Replace(directoryPath, "")).ToList(),
                 },
                 metrics = metrics.ToDto(),
