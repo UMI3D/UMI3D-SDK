@@ -15,14 +15,16 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.common;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
-using umi3d.common.userCapture.pose;
 using umi3d.common.utils;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation
@@ -46,6 +48,10 @@ namespace umi3d.cdk.userCapture.animation
         public virtual IReadOnlyList<UMI3DAnimatorAnimation> Animations => animations;
 
         private readonly List<UMI3DAnimatorAnimation> animations;
+
+        public bool IsInterpolable { get; protected set; }
+
+        public ISubskeletonDescriptionInterpolationPlayer SkeletonAnimationPlayer { get; protected set; }
 
         /// <inheritdoc/>
         public virtual IReadOnlyList<SkeletonAnimationParameter> SelfUpdatedAnimatorParameters => selfUpdatedAnimatorParameters;
@@ -180,11 +186,13 @@ namespace umi3d.cdk.userCapture.animation
         private readonly ICoroutineService coroutineService;
         private readonly IUnityMainThreadDispatcher unityMainThreadDispatcher;
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, IEnumerable<UMI3DAnimatorAnimation> animations, int priority, IEnumerable<SkeletonAnimationParameterDto> selfUpdatedAnimatorParameters,
+        public AnimatedSubskeleton(SkeletonAnimationNodeDto dto, ISubskeletonDescriptionInterpolationPlayer player, ISkeletonMapper mapper, IEnumerable<UMI3DAnimatorAnimation> animations, IEnumerable<SkeletonAnimationParameterDto> selfUpdatedAnimatorParameters,
                                     ICoroutineService coroutineService, IUnityMainThreadDispatcher unityMainThreadDispatcher)
         {
             Mapper = mapper;
-            Priority = priority;
+            Priority = dto.priority;
+            SkeletonAnimationPlayer = player;
+            IsInterpolable = dto.IsInterpolable;
             this.animations = animations?.ToList() ?? throw new System.ArgumentNullException();
             this.selfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToList() ?? new(0);
             this.coroutineService = coroutineService;
@@ -193,10 +201,12 @@ namespace umi3d.cdk.userCapture.animation
 
         #endregion Dependency Injection
 
-        public AnimatedSubskeleton(ISkeletonMapper mapper, IEnumerable<UMI3DAnimatorAnimation> animations, int priority = 0, IEnumerable<SkeletonAnimationParameterDto> selfUpdatedAnimatorParameters = null)
+        public AnimatedSubskeleton(SkeletonAnimationNodeDto dto, ISubskeletonDescriptionInterpolationPlayer player, ISkeletonMapper mapper, IEnumerable<UMI3DAnimatorAnimation> animations, IEnumerable<SkeletonAnimationParameterDto> selfUpdatedAnimatorParameters = null)
         {
             Mapper = mapper;
-            Priority = priority;
+            Priority = dto.priority;
+            SkeletonAnimationPlayer = player;
+            IsInterpolable = dto.IsInterpolable;
             this.animations = animations?.ToList() ?? throw new System.ArgumentNullException();
             this.selfUpdatedAnimatorParameters = selfUpdatedAnimatorParameters?.Select(dto => new SkeletonAnimationParameter(dto)).ToList() ?? new(0);
             coroutineService = CoroutineManager.Instance;
@@ -209,14 +219,32 @@ namespace umi3d.cdk.userCapture.animation
         /// <returns></returns>
         public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
-            foreach (var anim in Animations)
+            UMI3DAnimatorAnimation playingAnimation = null;
+
+            foreach (UMI3DAnimatorAnimation anim in Animations)
             {
-                if (anim?.IsPlaying() ?? false)
+                if (anim == null)
+                    continue;
+
+                if (anim.IsPlaying())
                 {
-                    return Mapper.GetPose(hierarchy);
+                    playingAnimation = anim;
+                    break;
                 }
             }
-            return null;
+
+            if (playingAnimation != null)
+            {
+                if (!SkeletonAnimationPlayer.IsPlaying)
+                    SkeletonAnimationPlayer.Play();
+            }
+            else
+            {
+                if (SkeletonAnimationPlayer.IsPlaying && !SkeletonAnimationPlayer.IsEnding)
+                    SkeletonAnimationPlayer.End();
+            }
+
+            return SkeletonAnimationPlayer.GetPose(hierarchy); ;
         }
 
         #region ParameterSelfUpdate

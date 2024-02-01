@@ -63,24 +63,42 @@ namespace umi3d.cdk.userCapture.pose
 
         private const int PRIORITY = 100;
 
-        private Dictionary<PoseClip, PosePlayer> posePlayers = new();
+        private readonly Dictionary<PoseClip, PosePlayingControllers> posePlayingControllers = new();
 
-        private PosePlayer CreatePosePlayer(PoseClip poseClip)
+        private class PosePlayingControllers
         {
-            PosePlayer posePlayer = new PosePlayer(poseClip, parentSkeleton);
-            posePlayers.Add(posePlayer.PoseClip, posePlayer);
+            public ISubskeletonDescriptionInterpolationPlayer Player;
+            public PoseAnchorDto Anchor;
+        }
+
+        private SubskeletonDescriptionInterpolationPlayer AddPoseClip(PoseClip poseClip, PoseAnchorDto anchor = null)
+        {
+            SubskeletonDescriptionInterpolationPlayer posePlayer = new (poseClip, poseClip.IsInterpolable, parentSkeleton);
+            PosePlayingControllers posePlayingData = new()
+            {
+                Player = posePlayer,
+                Anchor = anchor
+            };
+            posePlayingControllers[poseClip] = posePlayingData;
             return posePlayer;
         }
 
-        private void DeletePosePlayer(PosePlayer posePlayer)
+        private void RemovePoseClip(PoseClip poseClip)
         {
-            if (posePlayer.IsPlaying)
-                posePlayer.EndPoseClip(true);
-            posePlayers.Remove(posePlayer.PoseClip);
+            if (!posePlayingControllers.TryGetValue(poseClip, out PosePlayingControllers playingControllers))
+                return;
+
+            if (playingControllers.Player.IsPlaying)
+                playingControllers.Player.End(true);
+
+            if (playingControllers.Anchor != null)
+                parentSkeleton.TrackedSubskeleton.StopTrackerSimulation(playingControllers.Anchor);
+
+            posePlayingControllers.Remove(poseClip);
         }
 
         /// <inheritdoc/>
-        public void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, PosePlayer.PlayingParameters parameters = null)
+        public void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, PoseAnchorDto anchorToForce = null)
         {
             if (posesToAdd == null)
                 throw new ArgumentNullException(nameof(posesToAdd), $"Cannot start poses.");
@@ -89,11 +107,11 @@ namespace umi3d.cdk.userCapture.pose
                 StopAllPoses();
 
             foreach (PoseClip poseClip in posesToAdd)
-                StartPose(poseClip, parameters: parameters);
+                StartPose(poseClip, parameters: parameters, anchorToForce: anchorToForce);
         }
 
         /// <inheritdoc/>
-        public void StartPose(PoseClip poseToAdd, bool isOverriding = false, PosePlayer.PlayingParameters parameters = null)
+        public void StartPose(PoseClip poseToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, PoseAnchorDto anchorToForce = null)
         {
             if (poseToAdd == null)
                 throw new ArgumentNullException(nameof(poseToAdd), $"Cannot start pose.");
@@ -105,10 +123,13 @@ namespace umi3d.cdk.userCapture.pose
             {
                 appliedPoses.Add(poseToAdd);
 
-                if (!posePlayers.TryGetValue(poseToAdd, out PosePlayer posePlayer))
-                    posePlayer = CreatePosePlayer(poseToAdd);
+                SubskeletonDescriptionInterpolationPlayer player = AddPoseClip(poseToAdd, anchorToForce ?? poseToAdd.Pose.anchor);
 
-                posePlayer.PlayPoseClip(parameters);
+                player.Play(parameters);
+
+                PoseAnchorDto anchor = posePlayingControllers[poseToAdd].Anchor;
+                if (anchor != null)
+                   parentSkeleton.TrackedSubskeleton.StartTrackerSimulation(anchor);
             }
             else
                 UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already playing.", DebugScope.CDK | DebugScope.UserCapture);
@@ -129,11 +150,14 @@ namespace umi3d.cdk.userCapture.pose
             if (poseToStop == null)
                 return;
 
-            if (!posePlayers.TryGetValue(poseToStop, out PosePlayer posePlayer))
+            if (!posePlayingControllers.TryGetValue(poseToStop, out PosePlayingControllers posePlayer))
                 return;
 
-            posePlayer.EndPoseClip();
+            posePlayer.Player.End();
             appliedPoses.Remove(poseToStop);
+
+            if (posePlayer.Anchor != null)
+                parentSkeleton.TrackedSubskeleton.StopTrackerSimulation(posePlayer.Anchor);
         }
 
         /// <inheritdoc/>
@@ -163,20 +187,20 @@ namespace umi3d.cdk.userCapture.pose
             Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
 
             // merge poses from pose players
-            foreach (PosePlayer posePlayer in posePlayers.Values)
+            foreach (var (poseClip, posePlayingController) in posePlayingControllers)
             {
-                if (!posePlayer.IsPlaying)
+                if (!posePlayingController.Player.IsPlaying)
                     continue;
 
-                SubSkeletonPoseDto subSkeletonPose = posePlayer.GetPose(hierarchy);
+                SubSkeletonPoseDto subSkeletonPose = posePlayingController.Player.GetPose(hierarchy);
                 Dictionary<uint, SubSkeletonBoneDto> subskeletonBonePose = subSkeletonPose.bones.ToDictionary(x => x.boneType, y => y);
 
-                foreach (BoneDto bone in posePlayer.PoseClip.Bones)
+                foreach (BoneDto bone in poseClip.Bones)
                 {
                     bonePoses[bone.boneType] = subskeletonBonePose[bone.boneType];
                 }
 
-                if (!posePlayer.PoseClip.IsComposable)
+                if (!poseClip.IsComposable)
                     break;
             }
 

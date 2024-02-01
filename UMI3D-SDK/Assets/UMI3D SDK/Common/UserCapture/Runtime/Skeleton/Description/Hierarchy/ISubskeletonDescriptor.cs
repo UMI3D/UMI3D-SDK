@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,18 +14,15 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using umi3d.common.userCapture.pose;
 
 namespace umi3d.common.userCapture.description
 {
-    /// <summary>
-    /// Mapper between any skeleton hiearchy and the UMI3D one.
-    /// </summary>
-    public interface ISkeletonMapper : ISubskeletonDescriptor
+    public interface ISubskeletonDescriptor
     {
-        IList<SkeletonMapping> Mappings { get; set; }
-
-        PoseAnchorDto BoneAnchor { get; set; }
+        /// <summary>
+        /// Get the skeleton pose based on the position of this subskeleton.
+        /// </summary>
+        /// <returns></returns>
+        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
     }
 }

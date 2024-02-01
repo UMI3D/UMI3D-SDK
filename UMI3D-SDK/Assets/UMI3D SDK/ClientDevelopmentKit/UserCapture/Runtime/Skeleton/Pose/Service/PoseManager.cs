@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System.Collections.Generic;
 using System.Linq;
 
 using umi3d.common;
@@ -29,8 +28,6 @@ namespace umi3d.cdk.userCapture.pose
     public class PoseManager : Singleton<PoseManager>, IPoseManager
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
-
-        private Dictionary<PoseClip, PoseAnchorDto> anchoredPoseClips = new();
 
         #region Dependency Injection
 
@@ -76,7 +73,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void PlayPoseClip(PoseClip poseClip, PosePlayer.PlayingParameters parameters = null)
+        public void PlayPoseClip(PoseClip poseClip, PoseAnchorDto anchorToForce = null, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
         {
             if (poseClip == null)
                 throw new System.ArgumentNullException(nameof(poseClip));
@@ -84,14 +81,7 @@ namespace umi3d.cdk.userCapture.pose
             if (skeletonManager.PersonalSkeleton.PoseSubskeleton.AppliedPoses.Contains(poseClip))
                 return;
 
-            skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip, parameters: parameters);
-
-            if (parameters != null && parameters.isAnchored)
-                skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(parameters.anchor);
-            else if (poseClip.Pose.anchor != null)
-                skeletonManager.PersonalSkeleton.TrackedSubskeleton.StartTrackerSimulation(poseClip.Pose.anchor);
-            
-            anchoredPoseClips.Add(poseClip, parameters?.anchor);
+            skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip, parameters: parameters, anchorToForce: anchorToForce);
         }
 
         /// <inheritdoc/>
@@ -104,12 +94,6 @@ namespace umi3d.cdk.userCapture.pose
                 return;
 
             skeletonManager.PersonalSkeleton.PoseSubskeleton.StopPose(poseClip);
-
-            if (anchoredPoseClips.TryGetValue(poseClip, out PoseAnchorDto anchor))
-            {
-                skeletonManager.PersonalSkeleton.TrackedSubskeleton.StopTrackerSimulation(anchor);
-                anchoredPoseClips.Remove(poseClip);
-            }
         }
 
         /// <inheritdoc/>

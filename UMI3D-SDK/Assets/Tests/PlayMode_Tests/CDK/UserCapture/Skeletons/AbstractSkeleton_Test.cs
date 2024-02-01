@@ -25,7 +25,9 @@ using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
@@ -114,12 +116,12 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
+            Mock<IAnimatedSubskeleton> animatedSkeletonMock = new();
             animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
 
             animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(new SubSkeletonPoseDto());
 
-            List<AnimatedSubskeleton> animatedSubskeletons = new()
+            List<IAnimatedSubskeleton> animatedSubskeletons = new()
             {
                 animatedSkeletonMock.Object,
                 animatedSkeletonMock.Object
@@ -148,7 +150,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
+            Mock<IAnimatedSubskeleton> animatedSkeletonMock = new();
             animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
           
             var poseDto = new SubSkeletonPoseDto()
@@ -166,7 +168,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(poseDto);
 
-            List<AnimatedSubskeleton> animatedSubskeletons = new()
+            List<IAnimatedSubskeleton> animatedSubskeletons = new()
             {
                 animatedSkeletonMock.Object,
                 animatedSkeletonMock.Object
@@ -275,9 +277,9 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             unityMainThreadDispatcherMock.Setup(x => x.Enqueue(It.IsAny<System.Action>())).Callback<System.Action>(r => r()); // callback allow the nested code to be run also
 
             // nb : mocking AnimatedSkeleton conflicts with the IComparable interface default implementation in ISubskeleton
-            var newSubskeleton1 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 2, null, null, null);
-            var newSubskeleton2 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 1, null, null, null);
-            var newSubskeleton3 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 3, null, null, null);
+            var newSubskeleton1 = new AnimatedSubskeleton(new() { priority = 2 }, null, null, new List<UMI3DAnimatorAnimation>(), null, null, null);
+            var newSubskeleton2 = new AnimatedSubskeleton(new() { priority = 1 }, null, null, new List<UMI3DAnimatorAnimation>(), null, null, null);
+            var newSubskeleton3 = new AnimatedSubskeleton(new() { priority = 3 }, null, null, new List<UMI3DAnimatorAnimation>(), null, null, null);
             abstractSkeleton.AddSubskeleton(newSubskeleton1);
             abstractSkeleton.AddSubskeleton(newSubskeleton2);
 
@@ -322,13 +324,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         public IEnumerator RemoveSubskeleton_AnimatedSubskeleton()
         {
             // given
-            var newSubskeletonMock = new Mock<AnimatedSubskeleton>(null,
-                new List<UMI3DAnimatorAnimation>(0),
-                0,
-                new umi3d.common.userCapture.animation.SkeletonAnimationParameterDto[1] { new() },
-                null,
-                null
-                );
+            var newSubskeletonMock = new Mock<IAnimatedSubskeleton>();
+            
             newSubskeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
             unityMainThreadDispatcherMock.Setup(x => x.Enqueue(It.IsAny<System.Action>())).Callback<System.Action>(r => r()); // callback allow the nested code to be run also
 

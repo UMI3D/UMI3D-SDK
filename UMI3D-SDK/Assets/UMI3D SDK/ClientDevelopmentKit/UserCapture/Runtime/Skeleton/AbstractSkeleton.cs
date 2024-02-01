@@ -15,8 +15,10 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections;
 using System.Collections.Generic;
+
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -25,6 +27,7 @@ using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -143,7 +146,6 @@ namespace umi3d.cdk.userCapture
         }
 
 
-
         private IEnumerator InitPoseSubskeleton()
         {
             while (this.lastFrame == null)
@@ -173,7 +175,7 @@ namespace umi3d.cdk.userCapture
 
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
-            // better use normal recusive computations then.
+            // better use normal recursive computations then.
             foreach (uint boneType in Bones.Keys)
             {
                 if (!alreadyComputedBonesCache[boneType])
@@ -203,7 +205,7 @@ namespace umi3d.cdk.userCapture
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
                     ComputeBoneTransform(boneRelation.boneTypeParent);
 
-                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f/SKELETON_STANDARD_SIZE));
+                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f / SKELETON_STANDARD_SIZE));
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
                 Bones[boneType].Rotation = (Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation).normalized;
                 alreadyComputedBonesCache[boneType] = true;
@@ -236,7 +238,7 @@ namespace umi3d.cdk.userCapture
                 foreach (var skeleton in Subskeletons)
                 {
                     var pose = skeleton.GetPose(hierarchy);
-                    
+
 
                     if (pose is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                         continue;
