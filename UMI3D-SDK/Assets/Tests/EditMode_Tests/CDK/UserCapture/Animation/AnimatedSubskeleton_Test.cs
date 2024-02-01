@@ -39,7 +39,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
     {
         private Mock<ISkeletonMapper> mockSkeletonMapper;
         private Mock<IEnvironmentManager> mockEnvironmentLoaderService;
-        private Mock<ISkeletonAnimationPlayer> mockSkeletonAnimationPlayer;
+        private Mock<ISubskeletonDescriptionInterpolationPlayer> mockSkeletonAnimationPlayer;
         private Mock<ICoroutineService> mockCoroutineService;
         private Mock<IUnityMainThreadDispatcher> mockUnityMainThreadDispatcher;
         private AnimatedSubskeleton animatedSubskeleton;
@@ -54,7 +54,7 @@ namespace EditMode_Tests.UserCapture.Animation.CDK
             mockCoroutineService = new Mock<ICoroutineService>();
             mockUnityMainThreadDispatcher = new Mock<IUnityMainThreadDispatcher>();
 
-            mockSkeletonAnimationPlayer = new Mock<ISkeletonAnimationPlayer>();
+            mockSkeletonAnimationPlayer = new Mock<ISubskeletonDescriptionInterpolationPlayer>();
 
             SkeletonAnimationNodeDto dto = new();
 
