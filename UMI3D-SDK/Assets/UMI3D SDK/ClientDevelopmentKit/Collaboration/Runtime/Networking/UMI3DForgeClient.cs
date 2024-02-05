@@ -226,7 +226,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void Stop()
         {
-            if (client != null) client.Disconnect(true);
+            if (client != null) client.Disconnect(false);
             client = null;
 
             if (networkManagerComponent?.Networker != null)
