@@ -32,11 +32,11 @@ namespace umi3d.common.collaboration
 
 
 
-        /// <summary>
-        /// Send HTTP requests to the environment server.
-        /// </summary>
-        /// Usually used before connection or to retrieve DTOs.
-        public abstract class AbstractHttpClient<T>
+    /// <summary>
+    /// Send HTTP requests to the environment server.
+    /// </summary>
+    /// Usually used before connection or to retrieve DTOs.
+    public abstract class AbstractHttpClient<T>
     {
         protected const DebugScope scope = DebugScope.Common | DebugScope.Collaboration | DebugScope.Networking;
 
@@ -203,7 +203,7 @@ namespace umi3d.common.collaboration
                     && obj.TryGetValue("B", out JToken tokenB)
                     && obj.TryGetValue("A", out JToken tokenA))
                 {
-                    return  new Color(tokenR.ToObject<float>(), tokenG.ToObject<float>(), tokenB.ToObject<float>(), tokenA.ToObject<float>());
+                    return new Color(tokenR.ToObject<float>(), tokenG.ToObject<float>(), tokenB.ToObject<float>(), tokenA.ToObject<float>());
                 }
 
                 if (obj.TryGetValue("X", out JToken tokenX)
@@ -212,10 +212,10 @@ namespace umi3d.common.collaboration
                     if (obj.TryGetValue("Z", out JToken tokenZ))
                     {
                         if (obj.TryGetValue("W", out JToken tokenW))
-                            return  new Vector4(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>(), tokenW.ToObject<float>());
-                        return  new Vector3(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>());
+                            return new Vector4(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>(), tokenW.ToObject<float>());
+                        return new Vector3(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>());
                     }
-                    return  new Vector2(tokenX.ToObject<float>(), tokenY.ToObject<float>());
+                    return new Vector2(tokenX.ToObject<float>(), tokenY.ToObject<float>());
                 }
                 UnityEngine.Debug.LogError($"Missing case. {obj}");
                 return null;
@@ -372,7 +372,7 @@ namespace umi3d.common.collaboration
                 try
                 {
                     var b = uwr?.downloadHandler.data;
-                    if(b != null)
+                    if (b != null)
                     {
                         result = UMI3DDtoSerializer.FromBson<PendingTransactionDto>(b);
                     }
@@ -696,8 +696,8 @@ namespace umi3d.common.collaboration
 #endif
             {
                 return
-                    await instance?.Sub__GetRequest(www, date, HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount) 
-                    ?? throw new Umi3dNetworkingException(www, "Failed to get ");
+                    await (instance?.Sub__GetRequest(www, date, HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount)
+                    ?? throw new Umi3dNetworkingException(www, "Failed to get "));
 
             }
             return www;
@@ -705,7 +705,7 @@ namespace umi3d.common.collaboration
 
         protected virtual async Task<UnityWebRequest> Sub__GetRequest(UnityWebRequest www, DateTime date, string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
-                throw new Umi3dNetworkingException(www, "Failed to get ");
+            throw new Umi3dNetworkingException(www, "Failed to get ");
         }
 
         /// <summary>
@@ -741,8 +741,8 @@ namespace umi3d.common.collaboration
 #endif
             {
                 return
-                    await instance?.Sub_PostRequest(www, date, HeaderToken, url,contentType,bytes, ShouldTryAgain, UseCredential, headers, tryCount)
-                    ?? throw new Umi3dNetworkingException(www, "Failed to get ");
+                    await (instance?.Sub_PostRequest(www, date, HeaderToken, url, contentType, bytes, ShouldTryAgain, UseCredential, headers, tryCount)
+                    ?? throw new Umi3dNetworkingException(www, "Failed to get "));
 
             }
             return www;
@@ -750,8 +750,8 @@ namespace umi3d.common.collaboration
 
         protected virtual async Task<UnityWebRequest> Sub_PostRequest(UnityWebRequest www, DateTime date, string HeaderToken, string url, string contentType, byte[] bytes, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
-                UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(bytes));
-                throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
+            UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(bytes));
+            throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
         }
 
 

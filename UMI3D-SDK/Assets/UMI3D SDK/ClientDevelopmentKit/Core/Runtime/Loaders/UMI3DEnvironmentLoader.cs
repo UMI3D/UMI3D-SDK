@@ -658,6 +658,8 @@ namespace umi3d.cdk
         /// </summary>
         public static void Clear(bool clearCache = true)
         {
+            Instance.entitiesCollection.ForEach(ec => ec.Value?.Clear());
+
             Instance.entitiesCollection.Clear();
 
             if (clearCache)
