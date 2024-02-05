@@ -88,7 +88,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (userList.ContainsKey(environmentId))
                 {
-                    userList[environmentId].ForEach(u => DeleteEntityInstance(u.EnvironmentId, u.id));
+                    userList[environmentId].ForEach(u => { if (u != null) DeleteEntityInstance(u.EnvironmentId, u.id); });
                     userList.Remove(environmentId);
                 }
             }
@@ -386,6 +386,9 @@ namespace umi3d.cdk.collaboration
         protected override void InternalClear()
         {
             base.InternalClear();
+
+            userList.SelectMany(u => u.Value).ForEach(u => { if (u != null) DeleteEntityInstance(u.EnvironmentId, u.id); });
+            userList.Clear();
 
             lastTimeUserMessageListReceived.Clear();
         }
