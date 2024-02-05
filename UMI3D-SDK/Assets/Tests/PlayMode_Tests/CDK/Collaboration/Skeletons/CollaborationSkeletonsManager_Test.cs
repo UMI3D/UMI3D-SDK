@@ -578,7 +578,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeSkeletonManager.ApplyPoseRequest(UMI3DGlobalID.EnvironmentId,playPoseDto);
 
             // then
-            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), It.IsAny<bool>(), It.IsAny<PosePlayer.PlayingParameters>()));
+            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), It.IsAny<bool>(), It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
         }
 
         [Test]

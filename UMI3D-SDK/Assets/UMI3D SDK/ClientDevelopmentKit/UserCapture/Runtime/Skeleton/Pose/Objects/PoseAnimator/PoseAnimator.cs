@@ -189,11 +189,7 @@ namespace umi3d.cdk.userCapture.pose
         private void Apply()
         {
             IsApplied = true;
-            poseService.PlayPoseClip(poseClip, new PosePlayer.PlayingParameters()
-            {
-                isAnchored = Anchor != null,
-                anchor = Anchor
-            });
+            poseService.PlayPoseClip(poseClip, Anchor);
             ConditionsValidated?.Invoke();
             StartWatchEndOfConditions();
         }

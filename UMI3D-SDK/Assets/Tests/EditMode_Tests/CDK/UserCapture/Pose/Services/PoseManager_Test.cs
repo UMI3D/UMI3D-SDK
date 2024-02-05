@@ -78,7 +78,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             // When
             bool result = false;
             TestDelegate action = () => result = poseManager.TryActivatePoseAnimator(UMI3DGlobalID.EnvironmentId, dto.id);
@@ -122,7 +122,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
             trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
@@ -130,7 +130,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseManager.PlayPoseClip(poseClip);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()), Times.Once());
+            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
             trackedSubskeletonMock.Verify(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()), Times.Never());
         }
 
@@ -155,7 +155,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
             trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
@@ -163,8 +163,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseManager.PlayPoseClip(poseClip);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()), Times.Once());
-            trackedSubskeletonMock.Verify(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()), Times.Once());
+            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
         }
 
         [Test, TestOf(nameof(PoseManager.PlayPoseClip))]
@@ -184,17 +183,16 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
             trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
             PoseAnchorDto anchorDto = new();
             // When
-            poseManager.PlayPoseClip(poseClip, new PosePlayer.PlayingParameters() { isAnchored = true, anchor = anchorDto });
+            poseManager.PlayPoseClip(poseClip, anchorDto, null);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()), Times.Once());
-            trackedSubskeletonMock.Verify(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()), Times.Once());
+            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
         }
 
         [Test]
@@ -213,13 +211,13 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>() { poseClip });
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
 
             // When
             poseManager.PlayPoseClip(poseClip);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<PosePlayer.PlayingParameters>()), Times.Never());
+            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Never());
         }
 
         #endregion PlayPoseClip
