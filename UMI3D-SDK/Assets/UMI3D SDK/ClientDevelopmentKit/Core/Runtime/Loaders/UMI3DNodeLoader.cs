@@ -20,6 +20,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.utils.serialization;
 using UnityEngine;
 
 namespace umi3d.cdk
@@ -31,6 +32,25 @@ namespace umi3d.cdk
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
+        #region Dependency Injection
+
+        public UMI3DNodeLoader() : base()
+        {
+        }
+
+        public UMI3DNodeLoader(IEnvironmentManager environmentManager,
+                               ILoadingManager loadingManager)
+            : base(environmentManager, loadingManager)
+        {
+        }
+
+        #endregion Dependency Injection
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DNodeDto && base.CanReadUMI3DExtension(data);
+        }
+
         /// <summary>
         /// Load an umi3d node.
         /// </summary>
@@ -38,44 +58,43 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public override async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            await base.ReadUMI3DExtension(dto, node);
-            var nodeDto = dto as UMI3DNodeDto;
+            await base.ReadUMI3DExtension(data);
+            var nodeDto = data.dto as UMI3DNodeDto;
             if (nodeDto == null)
                 throw (new Umi3dException("nodeDto should not be null"));
 
             if (nodeDto.colliderDto != null && !(nodeDto is UMI3DMeshNodeDto))
             {
-                SetCollider(nodeDto.id, UMI3DEnvironmentLoader.GetNode(nodeDto.id), nodeDto.colliderDto);
+                SetCollider(nodeDto.id, environmentManager.GetNodeInstance(nodeDto.id), nodeDto.colliderDto);
             }
 
             if (nodeDto.xBillboard || nodeDto.yBillboard)
             {
-                Billboard b = node.AddComponent<Billboard>();
+                Billboard b = data.node.AddComponent<Billboard>();
                 b.X = nodeDto.xBillboard;
                 b.Y = nodeDto.yBillboard;
-                node.gameObject.GetComponent<Billboard>().glTFNodeDto = UMI3DEnvironmentLoader.GetNode(nodeDto.id).dto as GlTFNodeDto;
+                data.node.gameObject.GetComponent<Billboard>().glTFNodeDto = environmentManager.GetNodeInstance(nodeDto.id).dto as GlTFNodeDto;
             }
 
             if (nodeDto.lodDto != null)
             {
-                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, node));
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(LoadLod(nodeDto.lodDto, data.node));
             }
 
             if (nodeDto.skinnedRendererLinks != null)
             {
                 foreach (KeyValuePair<ulong, int> link in nodeDto.skinnedRendererLinks)
                 {
-                    BindSkinnedMeshBone(link.Key, link.Value, node.transform, 300);
+                    BindSkinnedMeshBone(link.Key, link.Value, data.node.transform, 300);
                 }
             }
-
         }
 
         private void BindSkinnedMeshBone(ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
-            UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(skinMeshEntityId, e =>
+            loadingManager.WaitUntilEntityLoaded(skinMeshEntityId, e =>
             {
                 if (e is UMI3DNodeInstance nodeI)
                 {
@@ -123,7 +142,7 @@ namespace umi3d.cdk
                 foreach (ulong id in lod.nodes)
                 {
                     UMI3DNodeInstance n = null;
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id, e =>
+                    loadingManager.WaitUntilEntityLoaded(id, e =>
                     {
                         n = e as UMI3DNodeInstance;
                     });
@@ -149,25 +168,25 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            var node = entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null) return false;
 
-            if (!node.updatePose && (property.property == UMI3DPropertyKeys.Position || property.property == UMI3DPropertyKeys.Rotation || property.property == UMI3DPropertyKeys.Scale))
+            if (!node.updatePose && (data.property.property == UMI3DPropertyKeys.Position || data.property.property == UMI3DPropertyKeys.Rotation || data.property.property == UMI3DPropertyKeys.Scale))
             {
                 var gltfDto = node.dto as GlTFNodeDto;
                 if (gltfDto == null) return false;
-                switch (property.property)
+                switch (data.property.property)
                 {
                     case UMI3DPropertyKeys.Position:
-                        gltfDto.position = (SerializableVector3)property.value;
+                        gltfDto.position = (Vector3Dto)data.property.value;
                         break;
                     case UMI3DPropertyKeys.Rotation:
-                        gltfDto.rotation = (SerializableVector4)property.value;
+                        gltfDto.rotation = (Vector4Dto)data.property.value;
                         break;
                     case UMI3DPropertyKeys.Scale:
-                        gltfDto.scale = (SerializableVector3)property.value;
+                        gltfDto.scale = (Vector3Dto)data.property.value;
                         break;
                     default:
                         break;
@@ -175,15 +194,17 @@ namespace umi3d.cdk
                 return true;
             }
 
-            if (base.SetUMI3DProperty(entity, property)) return true;
+            if (await base.SetUMI3DProperty(data))
+                return true;
 
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d;
-            if (dto == null) return false;
-            switch (property.property)
+            if (dto == null)
+                return false;
+            switch (data.property.property)
             {
                 case UMI3DPropertyKeys.XBillboard:
-                    dto.xBillboard = (bool)property.value;
-                    node.gameObject.GetOrAddComponent<Billboard>().X = (bool)property.value;
+                    dto.xBillboard = (bool)data.property.value;
+                    node.gameObject.GetOrAddComponent<Billboard>().X = (bool)data.property.value;
                     if (dto.xBillboard || dto.yBillboard)
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = true;
@@ -192,13 +213,13 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
                 case UMI3DPropertyKeys.YBillboard:
-                    dto.yBillboard = (bool)property.value;
-                    node.gameObject.GetOrAddComponent<Billboard>().Y = (bool)property.value;
+                    dto.yBillboard = (bool)data.property.value;
+                    node.gameObject.GetOrAddComponent<Billboard>().Y = (bool)data.property.value;
                     if (dto.xBillboard || dto.yBillboard)
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = true;
@@ -207,7 +228,7 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
@@ -215,12 +236,12 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.convex = (bool)property.value;
+                        dto.colliderDto.convex = (bool)data.property.value;
 
                         foreach (Collider item in node.colliders)
                         {
                             if (item is MeshCollider)
-                                (item as MeshCollider).convex = dto.colliderDto.convex = (bool)property.value;
+                                (item as MeshCollider).convex = dto.colliderDto.convex = (bool)data.property.value;
                         }
                     }
                     break;
@@ -229,21 +250,21 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderCenter = (SerializableVector3)property.value;
+                        dto.colliderDto.colliderCenter = (Vector3Dto)data.property.value;
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c != null && !(c is MeshCollider))
                         {
                             if (c is BoxCollider)
                             {
-                                (c as BoxCollider).center = (SerializableVector3)property.value;
+                                (c as BoxCollider).center = ((Vector3Dto)data.property.value).Struct();
                             }
                             else if (c is SphereCollider)
                             {
-                                (c as SphereCollider).center = (SerializableVector3)property.value;
+                                (c as SphereCollider).center = ((Vector3Dto)data.property.value).Struct();
                             }
                             else if (c is CapsuleCollider)
                             {
-                                (c as CapsuleCollider).center = (SerializableVector3)property.value;
+                                (c as CapsuleCollider).center = ((Vector3Dto)data.property.value).Struct();
                             }
                         }
                     }
@@ -252,15 +273,15 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderRadius = (float)(double)property.value;
+                        dto.colliderDto.colliderRadius = (float)(double)data.property.value;
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is SphereCollider)
                         {
-                            (c as SphereCollider).radius = (float)(double)property.value;
+                            (c as SphereCollider).radius = (float)(double)data.property.value;
                         }
                         if (c is CapsuleCollider)
                         {
-                            (c as CapsuleCollider).radius = (float)(double)property.value;
+                            (c as CapsuleCollider).radius = (float)(double)data.property.value;
                         }
                     }
                     break;
@@ -268,11 +289,11 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderBoxSize = (SerializableVector3)property.value;
+                        dto.colliderDto.colliderBoxSize = (Vector3Dto)data.property.value;
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is BoxCollider)
                         {
-                            (c as BoxCollider).size = (SerializableVector3)property.value;
+                            (c as BoxCollider).size = ((Vector3Dto)data.property.value).Struct();
                         }
                     }
                     break;
@@ -280,11 +301,11 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderHeight = (float)(double)property.value;
+                        dto.colliderDto.colliderHeight = (float)(double)data.property.value;
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
-                            (c as CapsuleCollider).height = (float)(double)property.value;
+                            (c as CapsuleCollider).height = (float)(double)data.property.value;
                         }
                     }
                     break;
@@ -292,11 +313,11 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderDirection = (DirectionalType)(Int64)property.value;
+                        dto.colliderDto.colliderDirection = (DirectionalType)(Int64)data.property.value;
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
-                            (c as CapsuleCollider).direction = (int)(DirectionalType)(Int64)property.value;
+                            (c as CapsuleCollider).direction = (int)(DirectionalType)(Int64)data.property.value;
                         }
                     }
                     break;
@@ -304,7 +325,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.isMeshCustom = (bool)property.value;
+                        dto.colliderDto.isMeshCustom = (bool)data.property.value;
                         //  Collider c = node.gameObject.GetComponent<Collider>();
                         if ((dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null) || !dto.colliderDto.isMeshCustom)
                         {
@@ -313,7 +334,7 @@ namespace umi3d.cdk
                         }
                         else if (!dto.colliderDto.isMeshCustom)
                         {
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
 
                         }
                     }
@@ -322,7 +343,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.customMeshCollider = (ResourceDto)property.value;
+                        dto.colliderDto.customMeshCollider = (ResourceDto)data.property.value;
                         // Collider c = node.gameObject.GetComponent<Collider>();
                         if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null)
                         {
@@ -331,7 +352,7 @@ namespace umi3d.cdk
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
                             //SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
                         }
                     }
                     break;
@@ -342,12 +363,12 @@ namespace umi3d.cdk
                         {
                             dto.colliderDto = new ColliderDto
                             {
-                                colliderType = (ColliderType)(Int64)property.value
+                                colliderType = (ColliderType)(Int64)data.property.value
                             };
                         }
                         else
                         {
-                            dto.colliderDto.colliderType = (ColliderType)(Int64)property.value;
+                            dto.colliderDto.colliderType = (ColliderType)(Int64)data.property.value;
 
                             SetCollider(dto.id, node, dto.colliderDto);
                         }
@@ -355,7 +376,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.HasCollider:
                     {
-                        if ((bool)property.value)
+                        if ((bool)data.property.value)
                         {
                             if (dto.colliderDto == null)
                                 dto.colliderDto = new ColliderDto();
@@ -375,25 +396,25 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            var node = entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null) return false;
 
-            if (!node.updatePose && (propertyKey == UMI3DPropertyKeys.Position || propertyKey == UMI3DPropertyKeys.Rotation || propertyKey == UMI3DPropertyKeys.Scale))
+            if (!node.updatePose && (data.propertyKey == UMI3DPropertyKeys.Position || data.propertyKey == UMI3DPropertyKeys.Rotation || data.propertyKey == UMI3DPropertyKeys.Scale))
             {
                 var gltfDto = node.dto as GlTFNodeDto;
                 if (gltfDto == null) return false;
-                switch (propertyKey)
+                switch (data.propertyKey)
                 {
                     case UMI3DPropertyKeys.Position:
-                        gltfDto.position = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                        gltfDto.position = UMI3DSerializer.Read<Vector3Dto>(data.container);
                         break;
                     case UMI3DPropertyKeys.Rotation:
-                        gltfDto.rotation = UMI3DNetworkingHelper.Read<SerializableVector4>(container);
+                        gltfDto.rotation = UMI3DSerializer.Read<Vector4Dto>(data.container);
                         break;
                     case UMI3DPropertyKeys.Scale:
-                        gltfDto.scale = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                        gltfDto.scale = UMI3DSerializer.Read<Vector3Dto>(data.container);
                         break;
                     default:
                         break;
@@ -401,14 +422,15 @@ namespace umi3d.cdk
                 return true;
             }
 
-            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
+            if (await base.SetUMI3DProperty(data))
+                return true;
 
             UMI3DNodeDto dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d;
             if (dto == null) return false;
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.XBillboard:
-                    dto.xBillboard = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.xBillboard = UMI3DSerializer.Read<bool>(data.container);
                     node.gameObject.GetOrAddComponent<Billboard>().X = dto.xBillboard;
                     if (dto.xBillboard || dto.yBillboard)
                     {
@@ -418,12 +440,12 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
                 case UMI3DPropertyKeys.YBillboard:
-                    dto.yBillboard = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.yBillboard = UMI3DSerializer.Read<bool>(data.container);
                     node.gameObject.GetOrAddComponent<Billboard>().Y = dto.yBillboard;
                     if (dto.xBillboard || dto.yBillboard)
                     {
@@ -433,7 +455,7 @@ namespace umi3d.cdk
                     else
                     {
                         node.gameObject.GetComponent<Billboard>().enabled = false;
-                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation;
+                        node.transform.localRotation = (node.dto as GlTFNodeDto).rotation.Quaternion();
                     }
                     break;
 
@@ -441,7 +463,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.convex = UMI3DNetworkingHelper.Read<bool>(container);
+                        dto.colliderDto.convex = UMI3DSerializer.Read<bool>(data.container);
 
                         foreach (Collider item in node.colliders)
                         {
@@ -455,21 +477,21 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderCenter = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                        dto.colliderDto.colliderCenter = UMI3DSerializer.Read<Vector3Dto>(data.container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c != null && !(c is MeshCollider))
                         {
                             if (c is BoxCollider)
                             {
-                                (c as BoxCollider).center = dto.colliderDto.colliderCenter;
+                                (c as BoxCollider).center = dto.colliderDto.colliderCenter.Struct();
                             }
                             else if (c is SphereCollider)
                             {
-                                (c as SphereCollider).center = dto.colliderDto.colliderCenter;
+                                (c as SphereCollider).center = dto.colliderDto.colliderCenter.Struct();
                             }
                             else if (c is CapsuleCollider)
                             {
-                                (c as CapsuleCollider).center = dto.colliderDto.colliderCenter;
+                                (c as CapsuleCollider).center = dto.colliderDto.colliderCenter.Struct();
                             }
                         }
                     }
@@ -478,7 +500,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderRadius = UMI3DNetworkingHelper.Read<float>(container);
+                        dto.colliderDto.colliderRadius = UMI3DSerializer.Read<float>(data.container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is SphereCollider)
                         {
@@ -494,11 +516,11 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderBoxSize = UMI3DNetworkingHelper.Read<SerializableVector3>(container);
+                        dto.colliderDto.colliderBoxSize = UMI3DSerializer.Read<Vector3Dto>(data.container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is BoxCollider)
                         {
-                            (c as BoxCollider).size = dto.colliderDto.colliderBoxSize;
+                            (c as BoxCollider).size = dto.colliderDto.colliderBoxSize.Struct();
                         }
                     }
                     break;
@@ -506,7 +528,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderHeight = UMI3DNetworkingHelper.Read<float>(container);
+                        dto.colliderDto.colliderHeight = UMI3DSerializer.Read<float>(data.container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
@@ -518,7 +540,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.colliderDirection = (DirectionalType)UMI3DNetworkingHelper.Read<int>(container);
+                        dto.colliderDto.colliderDirection = (DirectionalType)UMI3DSerializer.Read<int>(data.container);
                         Collider c = node.gameObject.GetComponent<Collider>();
                         if (c is CapsuleCollider)
                         {
@@ -530,7 +552,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.isMeshCustom = UMI3DNetworkingHelper.Read<bool>(container);
+                        dto.colliderDto.isMeshCustom = UMI3DSerializer.Read<bool>(data.container);
                         //  Collider c = node.gameObject.GetComponent<Collider>();
                         if ((dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null) || !dto.colliderDto.isMeshCustom)
                         {
@@ -539,7 +561,7 @@ namespace umi3d.cdk
                         }
                         else if (!dto.colliderDto.isMeshCustom)
                         {
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
 
                         }
                     }
@@ -548,7 +570,7 @@ namespace umi3d.cdk
                     {
                         if (dto.colliderDto == null)
                             dto.colliderDto = new ColliderDto();
-                        dto.colliderDto.customMeshCollider = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                        dto.colliderDto.customMeshCollider = UMI3DSerializer.Read<ResourceDto>(data.container);
                         // Collider c = node.gameObject.GetComponent<Collider>();
                         if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider != null)
                         {
@@ -557,7 +579,7 @@ namespace umi3d.cdk
                         else if (dto.colliderDto.isMeshCustom && dto.colliderDto.customMeshCollider == null)
                         {
                             //SetCustomCollider(node.gameObject, dto.colliderDto.customMeshCollider);
-                            RemoveColliders(UMI3DEnvironmentLoader.GetNode(dto.id));
+                            RemoveColliders(environmentManager.GetNodeInstance(dto.id));
                         }
                     }
                     break;
@@ -568,13 +590,13 @@ namespace umi3d.cdk
                         {
                             dto.colliderDto = new ColliderDto
                             {
-                                colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(container)
+                                colliderType = (ColliderType)UMI3DSerializer.Read<int>(data.container)
                             };
                             ;
                         }
                         else
                         {
-                            dto.colliderDto.colliderType = (ColliderType)UMI3DNetworkingHelper.Read<int>(container); ;
+                            dto.colliderDto.colliderType = (ColliderType)UMI3DSerializer.Read<int>(data.container); ;
 
                             SetCollider(dto.id, node, dto.colliderDto);
                         }
@@ -582,7 +604,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.HasCollider:
                     {
-                        if (UMI3DNetworkingHelper.Read<bool>(container))
+                        if (UMI3DSerializer.Read<bool>(data.container))
                         {
                             if (dto.colliderDto == null)
                                 dto.colliderDto = new ColliderDto();
@@ -607,16 +629,16 @@ namespace umi3d.cdk
         {
             if (resourceDto == null) return;
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(resourceDto.variants);  // Peut etre ameliore
+            FileDto fileToLoad = loadingManager.AbstractLoadingParameters.ChooseVariant(resourceDto.variants);  // Peut etre ameliore
             if (fileToLoad == null) return;
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = loadingManager.AbstractLoadingParameters.SelectLoader(ext);
             if (loader != null)
             {
-               var o = await UMI3DResourcesManager.LoadFile( id,fileToLoad,loader);
-               CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
+                var o = await UMI3DResourcesManager.LoadFile(id, fileToLoad, loader);
+                CallbackAfterLoadingCollider((GameObject)o, node.GetComponent<MeshCollider>());
             }
         }
 
@@ -648,7 +670,7 @@ namespace umi3d.cdk
 
         protected virtual void SetCollider(ulong id, UMI3DNodeInstance nodeInstance, ColliderDto dto)
         {
-            //UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(pid);// go.GetComponent<UMI3DNodeInstance>();
+            //UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(pid);// go.GetComponent<UMI3DNodeInstance>();
             GameObject go = nodeInstance.gameObject;
 
             //Remove old oliders
@@ -695,8 +717,8 @@ namespace umi3d.cdk
                     break;
                 case ColliderType.Box:
                     BoxCollider bc = go.AddComponent<BoxCollider>();
-                    bc.center = dto.colliderCenter;
-                    bc.size = dto.colliderBoxSize;
+                    bc.center = dto.colliderCenter.Struct();
+                    bc.size = dto.colliderBoxSize.Struct();
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(bc);
                     else
@@ -704,7 +726,7 @@ namespace umi3d.cdk
                     break;
                 case ColliderType.Sphere:
                     SphereCollider sc = go.AddComponent<SphereCollider>();
-                    sc.center = dto.colliderCenter;
+                    sc.center = dto.colliderCenter.Struct();
                     sc.radius = dto.colliderRadius;
                     if (nodeInstance != null)
                         nodeInstance.colliders.Add(sc);
@@ -713,7 +735,7 @@ namespace umi3d.cdk
                     break;
                 case ColliderType.Capsule:
                     CapsuleCollider cc = go.AddComponent<CapsuleCollider>();
-                    cc.center = dto.colliderCenter;
+                    cc.center = dto.colliderCenter.Struct();
                     cc.radius = dto.colliderRadius;
                     cc.height = dto.colliderHeight;
                     cc.direction = (int)dto.colliderDirection;
@@ -735,13 +757,20 @@ namespace umi3d.cdk
             {
                 try
                 {
-                    MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
-                    mc.sharedMesh = mesh.sharedMesh;
-                    mc.convex = dto.convex;
-                    if (nodeInstance != null)
-                        nodeInstance.colliders.Add(mc);
-                    else
-                        UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
+                    if (!mesh.mesh.isReadable)
+                    {
+                        Debug.LogWarning($"Mesh is not readable. GameObject: {mesh.gameObject.name}. No mesh collider will be add.");
+                    }
+                    if (mesh.mesh.isReadable)
+                    {
+                        MeshCollider mc = mesh.gameObject.AddComponent<MeshCollider>();
+                        mc.sharedMesh = mesh.sharedMesh;
+                        mc.convex = dto.convex;
+                        if (nodeInstance != null)
+                            nodeInstance.colliders.Add(mc);
+                        else
+                            UMI3DLogger.LogWarning("This object has no UMI3DNodeInstance yet. Collider is not registered", scope);
+                    }
                 }
                 catch (Exception e)
                 {

@@ -30,10 +30,10 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.StartInterpolationProperty)
-                + UMI3DNetworkingHelper.Write(entityId)
-                + UMI3DNetworkingHelper.Write(property)
-                + UMI3DNetworkingHelper.Write(startValue);
+            return UMI3DSerializer.Write(UMI3DOperationKeys.StartInterpolationProperty)
+                + UMI3DSerializer.Write(entityId)
+                + UMI3DSerializer.Write(property)
+                + UMI3DSerializer.Write(startValue);
 
         }
 

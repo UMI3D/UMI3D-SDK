@@ -22,39 +22,32 @@ namespace umi3d.edk
     /// Request from the server to get a locally stored data on a browser.
     /// </summary>
     /// It is similar to get a cookie on a traditional browser.
-    public class GetLocalInfoRequest : DispatchableRequest
+    public class GetLocalInfoRequest : Operation
     {
         /// <summary>
         /// Key of the locally stored data to access.
         /// </summary>
         public string key;
 
-        public GetLocalInfoRequest(string key, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
+        public GetLocalInfoRequest(string key)
         {
             this.key = key;
         }
 
-        protected virtual Bytable ToBytable()
+        public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.GetLocalInfoRequest)
-                + UMI3DNetworkingHelper.Write(key);
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBytes()
-        {
-            return ToBytable().ToBytes();
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBson()
-        {
-            GetLocalInfoRequestDto dto = CreateDto();
-            WriteProperties(dto);
-            return dto.ToBson();
+            return UMI3DSerializer.Write(UMI3DOperationKeys.GetLocalInfoRequest)
+                + UMI3DSerializer.Write(key);
         }
 
         protected virtual GetLocalInfoRequestDto CreateDto() { return new GetLocalInfoRequestDto(); }
         protected virtual void WriteProperties(GetLocalInfoRequestDto dto) { dto.key = key; }
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            GetLocalInfoRequestDto dto = CreateDto();
+            WriteProperties(dto);
+            return dto;
+        }
     }
 }

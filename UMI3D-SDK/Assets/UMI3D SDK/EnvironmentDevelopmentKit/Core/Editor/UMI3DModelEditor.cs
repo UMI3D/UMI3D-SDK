@@ -17,6 +17,7 @@ limitations under the License.
 #if UNITY_EDITOR
 
 using UnityEditor;
+using UnityEngine;
 
 namespace umi3d.edk.editor
 {
@@ -25,6 +26,7 @@ namespace umi3d.edk.editor
     public class UMI3DModelEditor : RenderedNodeEditor
     {
         private SerializedProperty variants;
+        private SerializedProperty updateSkinnedMeshRendererWhenOffscreen;
         private SerializedProperty areSubobjectsTracked;
         private SerializedProperty areSubobjectsMarked;
         private SerializedProperty isRightHanded;
@@ -34,18 +36,20 @@ namespace umi3d.edk.editor
         private readonly Editor _materialEditor = null;
         private readonly bool foldout;
 
+        private GUIStyle warningLabelStyle;
+
         /// <inheritdoc/>
         protected override void OnEnable()
         {
             base.OnEnable();
 
             variants = serializedObject.FindProperty("model.variants");
+            updateSkinnedMeshRendererWhenOffscreen = serializedObject.FindProperty("updateSkinnedMeshRendererWhenOffscreen");
             areSubobjectsTracked = serializedObject.FindProperty("areSubobjectsTracked");
             areSubobjectsMarked = serializedObject.FindProperty("areSubobjectsAlreadyMarked");
             isRightHanded = serializedObject.FindProperty("isRightHanded");
             isPartOfNavmesh = serializedObject.FindProperty("isPartOfNavmesh");
             isTraversable = serializedObject.FindProperty("isTraversable");
-
         }
 
         private void OnDisable()
@@ -61,7 +65,11 @@ namespace umi3d.edk.editor
 
             serializedObject.Update();
 
+            warningLabelStyle = new GUIStyle(GUI.skin.label);
+            warningLabelStyle.normal.textColor = Color.yellow;
+
             EditorGUILayout.PropertyField(variants, true);
+            EditorGUILayout.PropertyField(updateSkinnedMeshRendererWhenOffscreen);
             EditorGUILayout.PropertyField(areSubobjectsTracked);
             if (areSubobjectsTracked.boolValue)
             {
@@ -71,6 +79,13 @@ namespace umi3d.edk.editor
 
             EditorGUILayout.PropertyField(isTraversable);
             EditorGUILayout.PropertyField(isPartOfNavmesh);
+
+            if (isPartOfNavmesh.boolValue && !activeCollider.boolValue)
+            {
+                EditorGUI.indentLevel++;
+                EditorGUILayout.LabelField("Warning : model is part of navmesh but has no collider added by UMI3D.", warningLabelStyle);
+                EditorGUI.indentLevel--;
+            }
 
             serializedObject.ApplyModifiedProperties();
         }

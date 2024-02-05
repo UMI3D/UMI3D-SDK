@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System.Collections.Generic;
+using System.Threading;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -23,15 +25,15 @@ using UnityEngine;
 /// Helper that contains functions for <see cref="Task"/> with further security related to the application lifecycle. 
 /// </summary>
 /// Throw excepton if a task is launched while the application is not running or is stopping.
-public class UMI3DAsyncManager
+public static class UMI3DAsyncManager
 {
     /// <summary>
     /// Similar to <see cref="Task.Yield()"/> with security if the app is quitted in the meanwhile.
     /// </summary>
     /// <returns></returns>
-    public static async Task Yield()
+    public static async Task Yield(List<CancellationToken> tokens = null)
     {
-        ErrorIfQuitting();
+        ErrorIfQuitting(tokens);
         await Task.Yield();
     }
 
@@ -40,25 +42,39 @@ public class UMI3DAsyncManager
     /// </summary>
     /// <param name="milliseconds"></param>
     /// <returns></returns>
-    public static async Task Delay(int milliseconds)
+    public static async Task Delay(int milliseconds, List<CancellationToken> tokens = null)
     {
-        ErrorIfQuitting();
+        ErrorIfQuitting(tokens);
         await Task.Delay(milliseconds);
-        ErrorIfQuitting();
+        ErrorIfQuitting(tokens);
 
     }
 
-    private static void ErrorIfQuitting()
+    public static void TestTokens(this List<CancellationToken> tokens)
+    {
+        if (tokens != null)
+            foreach (var token in tokens)
+                token.ThrowIfCancellationRequested();
+    }
+
+    private static void ErrorIfQuitting(List<CancellationToken> tokens)
     {
         if (QuittingManager.ApplicationIsQuitting)
             throw new UMI3DAsyncManagerException("Application is quitting");
 #if UNITY_EDITOR
-        if (!Application.isPlaying)
+        try
         {
-            throw new UMI3DAsyncManagerException("Application is not playing");
+            if (!Application.isPlaying)
+            {
+                throw new UMI3DAsyncManagerException("Application is not playing");
+            }
+        }
+        catch(UnityException e)
+        {
+            UnityEngine.Debug.LogException(e);
         }
 #endif
-
+        TestTokens(tokens);
     }
 }
 public class UMI3DAsyncManagerException : System.Exception

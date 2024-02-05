@@ -68,5 +68,10 @@ namespace umi3d.cdk
                 LoadedCallback = null;
             }
         }
+
+        public override string ToString()
+        {
+            return $"UMI3DEntityInstance [{dto} : {Object}]";
+        }
     }
 }

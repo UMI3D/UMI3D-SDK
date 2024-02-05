@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.worldController
 {
@@ -27,7 +28,7 @@ namespace umi3d.worldController
         public bool LoadLibraryOnly;
         public GateDto gate;
         private readonly PrivateIdentityDto privateIdentity;
-        public string Token => privateIdentity.GlobalToken;
+        public string Token => privateIdentity.globalToken;
 
         public string localToken => privateIdentity.localToken;
         public string headearToken => privateIdentity.headerToken;
@@ -107,21 +108,21 @@ namespace umi3d.worldController
         private void SetPrivateIdentity(PrivateIdentityDto identity)
         {
             identity.connectionDto = privateIdentity.connectionDto;
-            identity.GlobalToken = privateIdentity.GlobalToken;
+            identity.globalToken = privateIdentity.globalToken;
             SetIdentity(identity);
         }
         #endregion
 
         public void Update(ConnectionDto connectionDto)
         {
-            privateIdentity.GlobalToken = connectionDto.globalToken;
+            privateIdentity.globalToken = connectionDto.globalToken;
             gate = connectionDto.gate;
             LoadLibraryOnly = connectionDto.libraryPreloading;
         }
 
         public void Set(string globalToken)
         {
-            privateIdentity.GlobalToken = globalToken;
+            privateIdentity.globalToken = globalToken;
         }
 
         public void Set(string localToken, string headerToken, string key)
@@ -131,7 +132,7 @@ namespace umi3d.worldController
             privateIdentity.key = headerToken;
         }
 
-        public void Set(common.ForgeConnectionDto connectionDto)
+        public void Set(common.EnvironmentConnectionDto connectionDto)
         {
             privateIdentity.connectionDto = connectionDto;
         }

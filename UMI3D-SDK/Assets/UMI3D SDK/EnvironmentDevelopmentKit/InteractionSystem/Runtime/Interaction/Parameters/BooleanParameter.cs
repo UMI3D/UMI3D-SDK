@@ -76,10 +76,10 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write(value);
+            return base.ToBytes(user)
+                + UMI3DSerializer.Write(value);
         }
 
         /// <inheritdoc/>
@@ -109,19 +109,19 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
-                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
-                    UMI3DNetworkingHelper.Read<bool>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
-                    onChange.Invoke(new ParameterEventContent<bool>(user, toolId, interactionId, hoverredId, boneType, value));
+                    uint parameterId = UMI3DSerializer.Read<uint>(container);
+                    UMI3DSerializer.Read<bool>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
+                    onChange.Invoke(new ParameterEventContent<bool>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, value));
                     if (value)
-                        onChangeTrue.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                        onChangeTrue.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     else
-                        onChangeFalse.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                        onChangeFalse.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

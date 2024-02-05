@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto;
 
 namespace umi3d.edk.collaboration
 {

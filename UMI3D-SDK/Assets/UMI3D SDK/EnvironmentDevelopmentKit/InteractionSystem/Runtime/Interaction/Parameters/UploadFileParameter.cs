@@ -138,20 +138,20 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
 
-                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DSerializer.Read<uint>(container);
                     if (UMI3DParameterKeys.StringUploadFile == parameterId)
                     {
-                        UMI3DNetworkingHelper.Read<bool>(container);
-                        value = UMI3DNetworkingHelper.Read<string>(container);
-                        List<string> exts = UMI3DNetworkingHelper.ReadList<string>(container);
-                        string fileId = UMI3DNetworkingHelper.Read<string>(container);
-                        //authorizedExtensions = UMI3DNetworkingHelper.ReadList<string>(container);
+                        UMI3DSerializer.Read<bool>(container);
+                        value = UMI3DSerializer.Read<string>(container);
+                        List<string> exts = UMI3DSerializer.ReadList<string>(container);
+                        string fileId = UMI3DSerializer.Read<string>(container);
+                        //authorizedExtensions = UMI3DSerializer.ReadList<string>(container);
                         //UnityEngine.UMI3DLogger.Log(value);
                         //if (System.IO.File.Exists(value))
                         //{
@@ -161,7 +161,7 @@ namespace umi3d.edk.interaction
                             if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
                             {
 
-                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, toolId, interactionId, hoverredId, boneType, (value, fileId)));
+                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, (value, fileId)));
                             }
                             else
                             {
@@ -195,11 +195,10 @@ namespace umi3d.edk.interaction
         protected virtual void OnChange(ParameterEventContent<(string, string)> responseContainer)
         {
             //RequestHttpUploadDto httpDto = new RequestHttpUploadDto();
-            var request = new UploadFileRequest(true, responseContainer.value.Item2, new HashSet<UMI3DUser>() { responseContainer.user });
+            var request = new UploadFileRequest(responseContainer.value.Item2) { users = new HashSet<UMI3DUser>() { responseContainer.user } };
             uploadTokens.Add(request.token, this);
 
-
-            UMI3DServer.Dispatch(request);
+            request.ToTransaction(true).Dispatch();
         }
 
         /// <summary>

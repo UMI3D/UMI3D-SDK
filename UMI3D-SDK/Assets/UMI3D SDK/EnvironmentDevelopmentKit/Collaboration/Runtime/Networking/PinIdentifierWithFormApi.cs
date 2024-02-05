@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using umi3d.edk.interaction;
 using UnityEngine;
@@ -35,9 +35,9 @@ namespace umi3d.edk.collaboration
         public UMI3DForm form;
 
         /// <inheritdoc/>
-        public override FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
+        public override ConnectionFormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
-            return form.ToDto(user) as FormDto;
+            return form.ToDto(user) as ConnectionFormDto;
         }
 
         /// <inheritdoc/>

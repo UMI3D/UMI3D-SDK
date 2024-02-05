@@ -63,7 +63,7 @@ namespace umi3d.cdk.utils.extrapolation
         /// <param name="time"></param>
         public virtual void AddMeasure(T measure, float time)
         {
-            if (time <= lastMessageTime)
+            if (time <= lastUpdateTime)
                 return;
 
             if (!isInited) //requires two measures to be inited
@@ -72,12 +72,12 @@ namespace umi3d.cdk.utils.extrapolation
                 isInited = true;
             }
 
-            lastEstimation = ExtrapolateState();
-            updateFrequency = 1f / (time - lastMessageTime);
+            lastEstimation = Extrapolate();
+            updateFrequency = 1f / (time - lastUpdateTime);
 
             Predict(measure, time);
             lastMeasure = measure;
-            lastMessageTime = time;
+            lastUpdateTime = time;
         }
 
         /// <summary>
@@ -97,7 +97,7 @@ namespace umi3d.cdk.utils.extrapolation
         public abstract void Predict(T measure, float time);
 
         /// <inheritdoc/>
-        public override bool IsInited() => isInited;
+        public override bool IsInited => isInited;
     }
 
     /// <summary>
@@ -110,15 +110,15 @@ namespace umi3d.cdk.utils.extrapolation
         public override void Predict(float measure, float time)
         {
             previous_prediction = prediction;
-            var t = 1f + (time - lastMessageTime) * updateFrequency;
+            var t = 1f + (time - lastUpdateTime) * updateFrequency;
             t = t > 0 ? t : 0;
             prediction = measure + (measure - lastMeasure) * t;
         }
 
         /// <inheritdoc/>
-        public override float ExtrapolateState()
+        public override float Extrapolate()
         {
-            var t = (Time.time - lastMessageTime) * updateFrequency;
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
             if (t > 0 && isInited && !lastEstimation.Equals(prediction))
                 return lastEstimation + (prediction - lastEstimation) * t;
             else
@@ -136,15 +136,15 @@ namespace umi3d.cdk.utils.extrapolation
         public override void Predict(Vector3 measure, float time)
         {
             previous_prediction = prediction;
-            var t = 1f + (time - lastMessageTime) * updateFrequency;
+            var t = 1f + (time - lastUpdateTime) * updateFrequency;
             t = t > 0 ? t : 0;
             prediction = Vector3.LerpUnclamped(measure, measure + (measure - lastMeasure), t);
         }
 
         /// <inheritdoc/>
-        public override Vector3 ExtrapolateState()
+        public override Vector3 Extrapolate()
         {
-            var t = (Time.time - lastMessageTime) * updateFrequency;
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
             if (t > 0 && isInited && !lastEstimation.Equals(prediction))
                 return Vector3.Lerp(lastEstimation, prediction, t);
             else
@@ -162,15 +162,15 @@ namespace umi3d.cdk.utils.extrapolation
         public override void Predict(Quaternion measure, float time)
         {
             previous_prediction = prediction;
-            var t = 1f + (time - lastMessageTime) * updateFrequency;
+            var t = 1f + (time - lastUpdateTime) * updateFrequency;
             t = t > 0 ? t : 0;
             prediction = Quaternion.LerpUnclamped(measure, measure * (measure * Quaternion.Inverse(lastMeasure)), t);
         }
 
         /// <inheritdoc/>
-        public override Quaternion ExtrapolateState()
+        public override Quaternion Extrapolate()
         {
-            var t = (Time.time - lastMessageTime) * updateFrequency;
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
             if (t > 0 && isInited && !lastEstimation.Equals(prediction))
                 return Quaternion.Lerp(lastEstimation, prediction, t);
             else

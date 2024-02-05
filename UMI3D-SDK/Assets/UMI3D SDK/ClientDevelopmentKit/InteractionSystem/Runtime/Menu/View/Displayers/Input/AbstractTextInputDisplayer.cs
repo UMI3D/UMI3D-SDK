@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine.Events;
@@ -22,7 +23,7 @@ namespace umi3d.cdk.menu.view
     /// <summary>
     /// Base class for <see cref="TextInputMenuItem"/> display.
     /// </summary>
-    public abstract class AbstractTextInputDisplayer : AbstractInputMenuItemDisplayer<string>, IObservable<string>
+    public abstract class AbstractTextInputDisplayer : AbstractInputMenuItemDisplayer<string>, common.IObservable<string>
     {
 
         protected TextInputMenuItem menuItem;
@@ -31,7 +32,7 @@ namespace umi3d.cdk.menu.view
         /// IObservable subscribers.
         /// </summary>
         /// <see cref="IObservable{T}"/>
-        private readonly List<UnityAction<string>> subscribers = new List<UnityAction<string>>();
+        private readonly List<Action<string>> subscribers = new List<Action<string>>();
         /// <summary>
         /// Get displayed value.
         /// </summary>
@@ -48,7 +49,7 @@ namespace umi3d.cdk.menu.view
         {
 
             menuItem.NotifyValueChange(newValue);
-            foreach (UnityAction<string> sub in subscribers)
+            foreach (Action<string> sub in subscribers)
             {
                 sub.Invoke(newValue);
             }
@@ -73,20 +74,22 @@ namespace umi3d.cdk.menu.view
         /// Subscribe a callback to the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public void Subscribe(UnityAction<string> callback)
+        public bool Subscribe(Action<string> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
         /// <summary>
         /// nsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public void UnSubscribe(UnityAction<string> callback)
+        public bool UnSubscribe(Action<string> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
 
         /// <summary>

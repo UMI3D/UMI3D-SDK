@@ -146,12 +146,12 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(Id())
-                + UMI3DNetworkingHelper.Write(priorityProperty.GetValue(user))
-                + UMI3DNetworkingHelper.Write(titleProperty.GetValue(user))
-                + UMI3DNetworkingHelper.Write(contentProperty.GetValue(user))
-                + UMI3DNetworkingHelper.Write(callbackProperty.GetValue(user))
-                + UMI3DNetworkingHelper.Write(durationProperty.GetValue(user))
+            return UMI3DSerializer.Write(Id())
+                + UMI3DSerializer.Write(priorityProperty.GetValue(user))
+                + UMI3DSerializer.Write(titleProperty.GetValue(user))
+                + UMI3DSerializer.Write(contentProperty.GetValue(user))
+                + UMI3DSerializer.Write(callbackProperty.GetValue(user))
+                + UMI3DSerializer.Write(durationProperty.GetValue(user))
                 + icon2dProperty.GetValue(user)?.ToByte()
                 + icon3dProperty.GetValue(user)?.ToByte();
         }
@@ -199,7 +199,7 @@ namespace umi3d.edk
         /// <param name="container">Callback value as a boolean</param>
         public void OnCallbackReceived(ByteContainer container)
         {
-            bool callback = UMI3DNetworkingHelper.Read<bool>(container);
+            bool callback = UMI3DSerializer.Read<bool>(container);
             CallbackTrigger.Invoke(callback);
         }
 

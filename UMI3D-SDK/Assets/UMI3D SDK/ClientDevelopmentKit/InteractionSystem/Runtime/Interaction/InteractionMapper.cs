@@ -188,7 +188,7 @@ namespace umi3d.cdk.interaction
             {
                 AbstractController controller = toolIdToController[toolId];
                 AbstractTool tool = GetTool(toolId);
-                if (tool.interactions.Count <= 0)
+                if (tool.interactionsId.Count <= 0)
                     ReleaseTool(tool.id, new ToolNeedToBeUpdated());
                 else
                     controller.Update(tool, releasable, reason);
@@ -214,7 +214,7 @@ namespace umi3d.cdk.interaction
         public override bool UpdateRemoveOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null)
         {
             AbstractTool tool = GetTool(toolId);
-            tool.interactions.Remove(abstractInteractionDto);
+            tool.interactionsId.Remove(abstractInteractionDto.id);
 
             foreach (AbstractController item in Controllers)
             {

@@ -30,17 +30,19 @@ namespace umi3d.edk.interaction
         /// </summary>
         public bool isPrivate = false;
 
+        public bool isDisplayer = false;
+
         /// <summary>
         /// Event when an interaction is performed on a parameter.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        /// <typeparam name="T">type of the parameter value.</typeparam>
         [System.Serializable]
         public class ParameterEvent<T> : UnityEvent<ParameterEventContent<T>> { }
 
         /// <summary>
         /// Parameter interaction Event content.
         /// </summary>
-        /// <typeparam name="T">Type of the parameter value.</typeparam>
+        /// <typeparam name="T">type of the parameter value.</typeparam>
         [System.Serializable]
         public class ParameterEventContent<T> : InteractionEventContent
         {
@@ -54,7 +56,7 @@ namespace umi3d.edk.interaction
                 this.value = value;
             }
 
-            public ParameterEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, T value) : base(user, toolId, id, hoveredObjectId, boneType)
+            public ParameterEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, T value) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.value = value;
             }
@@ -65,14 +67,18 @@ namespace umi3d.edk.interaction
         {
             base.WriteProperties(dto, user);
             if (dto is AbstractParameterDto parameter)
+            {
                 parameter.privateParameter = isPrivate;
+                parameter.isDisplayer = isDisplayer;
+            }
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write(isPrivate);
+            return base.ToBytes(user)
+                + UMI3DSerializer.Write(isPrivate)
+                + UMI3DSerializer.Write(isDisplayer);
         }
     }
 }

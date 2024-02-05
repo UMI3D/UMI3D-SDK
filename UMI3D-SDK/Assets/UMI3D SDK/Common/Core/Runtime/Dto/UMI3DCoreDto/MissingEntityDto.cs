@@ -24,16 +24,6 @@ namespace umi3d.common
         /// <summary>
         /// Reason why the entity is missing.
         /// </summary>
-        public MissingEntityDtoReason reason;
-    }
-
-    /// <summary>
-    /// Possible reasons for an entity to be missing.
-    /// </summary>
-    public enum MissingEntityDtoReason
-    {
-        NotFound,
-        Unregistered,
-        ServerInternalError
+        public MissingEntityDtoReason reason { get; set; }
     }
 }

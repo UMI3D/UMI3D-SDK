@@ -1,12 +1,10 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2023 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -28,6 +26,9 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DAudioPlayer : UMI3DAbstractAnimation
     {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Animation;
 
         /// <summary>
@@ -44,16 +45,25 @@ namespace umi3d.cdk
 
         public UMI3DAudioPlayer(UMI3DAudioPlayerDto dto) : base(dto)
         {
-            InitPlayer(dto);
+        }
+
+        /// <inheritdoc/>
+        public override bool IsPlaying() => audioSource.isPlaying;
+
+        /// <inheritdoc/>
+        public override void Init()
+        {
+            InitPlayer(dto as UMI3DAudioPlayerDto);
         }
 
         private void InitPlayer(UMI3DAudioPlayerDto dto)
         {
             if (dto.nodeID == 0)
-                UnityMainThreadDispatcher.Instance().Enqueue(()=>_InitPlayer(dto, UMI3DEnvironmentLoader.Instance.gameObject));
+                UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, UMI3DEnvironmentLoader.Instance.gameObject));
             else
-                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeID, e => UnityMainThreadDispatcher.Instance().Enqueue(()=>_InitPlayer(dto, (e as UMI3DNodeInstance).gameObject)));
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(dto.nodeID, e => UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, (e as UMI3DNodeInstance).gameObject)));
         }
+
         private async void _InitPlayer(UMI3DAudioPlayerDto dto, GameObject gameObject)
         {
             audioSource = gameObject.GetOrAddComponent<AudioSource>();
@@ -61,6 +71,11 @@ namespace umi3d.cdk
             audioSource.pitch = dto.pitch;
             audioSource.volume = dto.volume;
             audioSource.spatialBlend = dto.spatialBlend;
+            audioSource.maxDistance = dto.volumeMaxDistance;
+            SetVolumeAttenuationMode(dto.volumeAttenuationMode);
+
+            if (dto.volumeAttenuationCurve.keys.Count > 0)
+                audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, dto.volumeAttenuationCurve.Struct());
 
             if (dto.audioResource == null || dto.audioResource.variants == null || dto.audioResource.variants.Count < 1)
             {
@@ -68,12 +83,12 @@ namespace umi3d.cdk
                 return;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(dto.audioResource.variants);
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.audioResource.variants);
 
             string url = fileToLoad.url;
             string ext = fileToLoad.extension;
             string authorization = fileToLoad.authorization;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad, loader);
@@ -130,41 +145,58 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            if (base.SetUMI3DProperty(entity, property)) return true;
+            if (await base.SetUMI3DProperty(value)) return true;
             var ADto = dto as UMI3DAudioPlayerDto;
             if (ADto == null) return false;
 
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = (float)(double)property.value;
+                    audioSource.volume = ADto.volume = (float)(double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = (float)(double)property.value;
+                    audioSource.pitch = ADto.pitch = (float)(double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = (float)(double)property.value;
+                    audioSource.spatialBlend = ADto.spatialBlend = (float)(double)value.property.value;
+                    break;
+                case UMI3DPropertyKeys.VolumeMaxDistance:
+                    audioSource.maxDistance = ADto.spatialBlend = Mathf.Max((float)(double)value.property.value, 0);
+                    break;
+                case UMI3DPropertyKeys.VolumeAttenuationMode:
+                    var mode = (AudioSourceCurveMode)value.property.value;
+                    ADto.volumeAttenuationMode = mode;
+                    SetVolumeAttenuationMode(mode);
+                    break;
+                case UMI3DPropertyKeys.VolumeCustomCurve:
+                    if (audioSource.rolloffMode != AudioRolloffMode.Custom)
+                        UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
+
+                    var curve = (AnimationCurveDto)value.property.value;
+                    if (curve.keys.Count > 0)
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
+                    ADto.volumeAttenuationCurve = curve;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
-                    ADto.audioResource = (ResourceDto)property.value;
+                    ADto.audioResource = (ResourceDto)value.property.value;
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
                         return true;
                     }
-                    loadClip(fileToLoad, ADto);
+                    LoadClip(fileToLoad, ADto);
                     break;
                 case UMI3DPropertyKeys.AnimationNode:
                     AudioClip clip = audioSource?.clip;
                     GameObject g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
                     audioSource = null;
-                    ADto.nodeID = (ulong)(long)property.value;
+                    ADto.nodeID = (ulong)(long)value.property.value;
                     InitPlayer(ADto);
                     break;
                 default:
@@ -174,10 +206,10 @@ namespace umi3d.cdk
 
         }
 
-        async void loadClip(FileDto fileToLoad, UMI3DAudioPlayerDto ADto)
+        async void LoadClip(FileDto fileToLoad, UMI3DAudioPlayerDto ADto)
         {
             string ext = fileToLoad.extension;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.Parameters.SelectLoader(ext);
+            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
             {
                 var o = await UMI3DResourcesManager.LoadFile(ADto.id, fileToLoad, loader);
@@ -189,33 +221,52 @@ namespace umi3d.cdk
             }
         }
 
-         /// <inheritdoc/>
-        public override bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        /// <inheritdoc/>
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            if (base.SetUMI3DProperty(entity, operationId, propertyKey, container)) return true;
-            var ADto = entity.dto as UMI3DAudioPlayerDto;
-            switch (propertyKey)
+            if (await base.SetUMI3DProperty(value)) return true;
+            var ADto = value.entity.dto as UMI3DAudioPlayerDto;
+
+            switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.AnimationVolume:
-                    audioSource.volume = ADto.volume = UMI3DNetworkingHelper.Read<float>(container);
+                    audioSource.volume = ADto.volume = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationPitch:
-                    audioSource.pitch = ADto.pitch = UMI3DNetworkingHelper.Read<float>(container);
+                    audioSource.pitch = ADto.pitch = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.AnimationSpacialBlend:
-                    audioSource.spatialBlend = ADto.spatialBlend = UMI3DNetworkingHelper.Read<float>(container);
+                    audioSource.spatialBlend = ADto.spatialBlend = UMI3DSerializer.Read<float>(value.container);
+                    break;
+                case UMI3DPropertyKeys.VolumeMaxDistance:
+                    audioSource.maxDistance = ADto.spatialBlend = Mathf.Max(UMI3DSerializer.Read<float>(value.container), 0);
+                    break;
+                case UMI3DPropertyKeys.VolumeAttenuationMode:
+                    var mode = (AudioSourceCurveMode)UMI3DSerializer.Read<int>(value.container);
+                    ADto.volumeAttenuationMode = mode;
+                    SetVolumeAttenuationMode(mode);
+                    break;
+                case UMI3DPropertyKeys.VolumeCustomCurve:
+                    if (audioSource.rolloffMode != AudioRolloffMode.Custom)
+                        UMI3DLogger.LogWarning("Custom volume curve will not be used because audio source volume attenuation mode is not set to custom.", scope);
+
+                    var curve = UMI3DSerializer.Read<AnimationCurveDto>(value.container);
+                    if (curve.keys.Count > 0)
+                        audioSource.SetCustomCurve(AudioSourceCurveType.CustomRolloff, curve.Struct());
+
+                    ADto.volumeAttenuationCurve = curve;
                     break;
                 case UMI3DPropertyKeys.AnimationResource:
                     ResourceDto res = ADto.audioResource;
-                    ADto.audioResource = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    ADto.audioResource = UMI3DSerializer.Read<ResourceDto>(value.container);
                     if (ADto.audioResource == res) return true;
-                    FileDto fileToLoad = UMI3DEnvironmentLoader.Parameters.ChooseVariant(ADto.audioResource.variants);
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(ADto.audioResource.variants);
                     if (ADto.audioResource == null || ADto.audioResource.variants == null || ADto.audioResource.variants.Count < 1)
                     {
                         ADto.audioResource = null;
                         return true;
                     }
-                    loadClip(fileToLoad, ADto);
+                    LoadClip(fileToLoad, ADto);
 
                     break;
                 case UMI3DPropertyKeys.AnimationNode:
@@ -223,7 +274,7 @@ namespace umi3d.cdk
                     GameObject g = audioSource.gameObject;
                     GameObject.Destroy(audioSource);
                     audioSource = null;
-                    ADto.nodeID = UMI3DNetworkingHelper.Read<ulong>(container);
+                    ADto.nodeID = UMI3DSerializer.Read<ulong>(value.container);
                     InitPlayer(ADto);
                     break;
                 default:
@@ -233,7 +284,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public static bool ReadMyUMI3DProperty(ref object value, uint propertyKey, ByteContainer container) { return false; }
+        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value) { return Task.FromResult(false); }
 
         /// <inheritdoc/>
         public override void Start(float atTime)
@@ -244,7 +295,7 @@ namespace umi3d.cdk
             {
                 if (audioSource.clip != null)
                 {
-                    if(dto.looping)
+                    if (dto.looping)
                         atTime = atTime % audioSource.clip.length;
 
                     audioSource.Stop();
@@ -283,6 +334,49 @@ namespace umi3d.cdk
                 ulong now = UMI3DClientServer.Instance.GetTime();
                 Start(now - dto.startTime);
             }
+        }
+
+        /// <summary>
+        /// Setter for <see cref="audioSource.rolloffMode"/>.
+        /// </summary>
+        /// <param name="modeDto"></param>
+        /// <returns></returns>
+        private AudioRolloffMode SetVolumeAttenuationMode(AudioSourceCurveMode modeDto)
+        {
+            AudioRolloffMode mode;
+            switch (modeDto)
+            {
+                case AudioSourceCurveMode.Logarithmic:
+                    mode = AudioRolloffMode.Logarithmic;
+                    break;
+                case AudioSourceCurveMode.Linear:
+                    mode = AudioRolloffMode.Linear;
+                    break;
+                case AudioSourceCurveMode.Custom:
+                    mode = AudioRolloffMode.Custom;
+                    break;
+                default:
+                    mode = AudioRolloffMode.Logarithmic;
+                    UMI3DLogger.LogError("Audio source, volume attenuation mode not recognized : " + modeDto, scope);
+                    break;
+            }
+            audioSource.rolloffMode = mode;
+
+            return mode;
+        }
+
+        /// <summary>
+        /// When set to true, makes the audio loop.
+        /// </summary>
+        /// <param name="b"></param>
+        public void SetLoopValue(bool b)
+        {
+            audioSource.loop = b;
+        }
+
+        /// <inheritdoc/>
+        public override void Clear()
+        {
         }
     }
 }

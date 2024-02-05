@@ -24,27 +24,11 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for Abstract Anchor
     /// </summary>
-    public class UMI3DAbstractAnchorLoader
+    public abstract class UMI3DAbstractAnchorLoader : AbstractLoader
     {
-
-        public virtual async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            
-        }
-
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
-        {
-            return false;
-        }
-
-        public virtual bool SetUMI3DPorperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            return false;
-        }
-
-        public virtual bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
-        {
-            return false;
+            return data.dto is UMI3DAnchorDto;
         }
     }
 }

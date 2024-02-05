@@ -16,7 +16,8 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.collaboration;
 
 namespace umi3d.worldController
@@ -51,7 +52,7 @@ namespace umi3d.worldController
         {
             worldName = UMI3DCollaborationEnvironment.Instance.environmentName;
             this.ip = edk.UMI3DServer.GetHttpUrl();
-            edk.collaboration.UMI3DHttp.Instance.AddRoot(new worldController.UMI3DStandAloneApi(this));
+            edk.collaboration.UMI3DCollaborationServer.HttpServer.AddRoot(new worldController.UMI3DStandAloneApi(this));
         }
 
         /// <inheritdoc/>
@@ -73,11 +74,6 @@ namespace umi3d.worldController
             {
                 name = worldName,
                 url = ip,
-
-                versionMajor = UMI3DVersion.major,
-                versionMinor = UMI3DVersion.minor,
-                versionStatus = UMI3DVersion.status,
-                versionDate = UMI3DVersion.date,
 
                 icon2D = Icon2D.ToDto(),
                 icon3D = Icon3D.ToDto()

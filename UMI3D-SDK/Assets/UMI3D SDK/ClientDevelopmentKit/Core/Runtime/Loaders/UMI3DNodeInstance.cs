@@ -16,8 +16,10 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
+using UnityEngine.SceneManagement;
 
 namespace umi3d.cdk
 {
@@ -27,7 +29,7 @@ namespace umi3d.cdk
     public class UMI3DNodeInstance : UMI3DEntityInstance
     {
         public GameObject gameObject;
-        public Transform transform => gameObject.transform;
+        public virtual Transform transform => gameObject.transform;
 
         private bool isPartOfNavmesh = false;
 
@@ -76,6 +78,13 @@ namespace umi3d.cdk
 
         public void SendOnPoseUpdated() { OnPoseUpdated.Invoke(); }
 
+        public override string ToString()
+        {
+            if (dto is GlTFNodeDto gltf)
+                return $"UMI3DNodeInstance [{dto} : {gltf.name} : {gltf.extensions?.umi3d} : {Object} : {gameObject}]";
+            return $"UMI3DNodeInstance [{dto} : {Object} : {gameObject}]";
+        }
+
         public bool updatePose = true;
 
         private List<Renderer> _renderers;
@@ -109,6 +118,11 @@ namespace umi3d.cdk
         /// </summary>
         private List<UMI3DNodeInstance> _subNodeInstances;
 
+        /// <summary>
+        /// If this object is a Unity Scene Bundle.
+        /// </summary>
+        public Scene scene;
+
         public UMI3DNodeInstance(Action loadedCallback) : base(loadedCallback)
         {
         }
@@ -124,5 +138,20 @@ namespace umi3d.cdk
             set => _subNodeInstances = value;
         }
 
+        /// <summary>
+        /// Clean all loaded data before destroying <see cref="gameObject"/>.
+        /// </summary>
+        public virtual async void ClearBeforeDestroy()
+        {
+            if (scene != null && scene.isLoaded)
+            {
+                var op = SceneManager.UnloadSceneAsync(scene);
+
+                while (!op.isDone)
+                    await UMI3DAsyncManager.Yield();
+
+                LightProbes.TetrahedralizeAsync();
+            }
+        }
     }
 }

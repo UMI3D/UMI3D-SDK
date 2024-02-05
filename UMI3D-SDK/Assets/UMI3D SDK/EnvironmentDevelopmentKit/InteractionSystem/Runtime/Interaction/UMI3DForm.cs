@@ -41,7 +41,7 @@ namespace umi3d.edk.interaction
             {
             }
 
-            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType) : base(user, toolId, id, hoveredObjectId, boneType)
+            public FormEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
             }
         }
@@ -65,7 +65,7 @@ namespace umi3d.edk.interaction
             var dto = dto_ as FormDto;
             if (dto == null)
                 return;
-            dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).Where(f => f != null).ToList();
+            dto.fields = Fields.Select(f => f.Id()).ToList();
         }
 
         /// <inheritdoc/>
@@ -75,10 +75,10 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
-                + UMI3DNetworkingHelper.WriteIBytableCollection(Fields);
+            return base.ToBytes(user)
+                + UMI3DSerializer.WriteCollection(Fields);
         }
 
         /// <inheritdoc/>
@@ -96,17 +96,29 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (interactionId)
             {
                 case UMI3DOperationKeys.FormAnswer:
                     UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, UMI3DOperationKeys.ParameterSettingRequest, container);
-                    onFormCompleted.Invoke(new FormEventContent(user, toolId, interactionId, hoverredId, boneType));
+                    onFormCompleted.Invoke(new FormEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
             }
+        }
+
+        /// <summary>
+        /// Creates <see cref="ConnectionFormDto"/> from this.
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public ConnectionFormDto ToConnectionFormDto(UMI3DUser user)
+        {
+            ConnectionFormDto dto = new ConnectionFormDto();
+            dto.fields = Fields.Select(f => f.ToDto(user) as AbstractParameterDto).ToList();
+            return dto;
         }
     }
 }

@@ -28,6 +28,6 @@ namespace umi3d.common
         /// <summary>
         /// Operations to be executed by the device.
         /// </summary>
-        public List<AbstractOperationDto> operations = new List<AbstractOperationDto>();
+        public List<AbstractOperationDto> operations { get; set; } = new List<AbstractOperationDto>();
     }
 }

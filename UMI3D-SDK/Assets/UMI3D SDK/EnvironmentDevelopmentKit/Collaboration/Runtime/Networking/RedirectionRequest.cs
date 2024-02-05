@@ -15,45 +15,40 @@ limitations under the License.
 */
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
 
 namespace umi3d.edk.collaboration
 {
     /// <summary>
     /// Request to disconnect from an environment and connect to another.
     /// </summary>
-    public class RedirectionRequest : DispatchableRequest
+    public class RedirectionRequest : Operation
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Networking;
 
         public RedirectionDto redirection;
 
-        public RedirectionRequest(bool reliable, RedirectionDto redirection, HashSet<UMI3DUser> users = null) : base(reliable, users)
+        public RedirectionRequest(RedirectionDto redirection)
         {
             this.redirection = redirection;
         }
 
-        protected virtual Bytable ToBytable()
+        public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.RedirectionRequest)
-                + UMI3DNetworkingHelper.Write(redirection);
+            return UMI3DSerializer.Write(UMI3DOperationKeys.RedirectionRequest)
+                + UMI3DSerializer.Write(redirection);
         }
 
-        /// <inheritdoc/>
-        public override byte[] ToBytes()
-        {
-            return ToBytable().ToBytes();
-        }
 
-        /// <inheritdoc/>
-        public override byte[] ToBson()
-        {
-            RedirectionDto dto = CreateDto();
-            WriteProperties(dto);
-            return dto.ToBson();
-        }
 
         protected virtual RedirectionDto CreateDto() { return new RedirectionDto(); }
         protected virtual void WriteProperties(RedirectionDto dto) { dto.gate = redirection.gate; dto.media = redirection.media; }
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            RedirectionDto dto = CreateDto();
+            WriteProperties(dto);
+            return dto;
+        }
     }
 }

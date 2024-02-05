@@ -21,7 +21,7 @@ namespace umi3d.common
     /// <summary>
     /// Interface for Togglable objects.
     /// </summary>
-    public interface ITogglable
+    public interface ITogglable : IPublisher<bool>
     {
         /// <summary>
         /// Raise selection event.
@@ -32,19 +32,5 @@ namespace umi3d.common
         /// Raise deselection event.
         /// </summary>
         void Deselect();
-
-        /// <summary>
-        /// Subscribe a callback from the selection or deselection event.
-        /// </summary>
-        /// <param name="callback">Callback to subscribe</param>
-        /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        void Subscribe(UnityAction<bool> callback);
-
-        /// <summary>
-        /// Unsubscribe a callback from the selection or deselection event.
-        /// </summary>
-        /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{bool})"/>
-        void UnSubscribe(UnityAction<bool> callback);
     }
 }

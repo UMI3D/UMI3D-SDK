@@ -22,7 +22,7 @@ namespace umi3d.edk
     /// Request to a client for uploading a file.
     /// </summary>
     /// This request is used to allow a browser to upload a file to the server.
-    public class UploadFileRequest : DispatchableRequest
+    public class UploadFileRequest : Operation
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Networking;
 
@@ -35,34 +35,27 @@ namespace umi3d.edk
         /// </summary>
         public string fileId;
 
-        public UploadFileRequest(bool reliable, string fileId, HashSet<UMI3DUser> users = null) : base(reliable, users)
+        public UploadFileRequest(string fileId)
         {
             this.token = System.Guid.NewGuid().ToString();//.Replace('-','0');
             UMI3DLogger.LogWarning("token : " + this.token, scope);
             this.fileId = fileId;
         }
 
-        protected virtual Bytable ToBytable()
+        public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.UploadFileRequest)
-                + UMI3DNetworkingHelper.Write(token) + UMI3DNetworkingHelper.Write(fileId);
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBytes()
-        {
-            return ToBytable().ToBytes();
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBson()
-        {
-            RequestHttpUploadDto dto = CreateDto();
-            WriteProperties(dto);
-            return dto.ToBson();
+            return UMI3DSerializer.Write(UMI3DOperationKeys.UploadFileRequest)
+                + UMI3DSerializer.Write(token) + UMI3DSerializer.Write(fileId);
         }
 
         protected virtual RequestHttpUploadDto CreateDto() { return new RequestHttpUploadDto(); }
         protected virtual void WriteProperties(RequestHttpUploadDto dto) { dto.uploadToken = token; dto.fileId = fileId; }
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            RequestHttpUploadDto dto = CreateDto();
+            WriteProperties(dto);
+            return dto;
+        }
     }
 }

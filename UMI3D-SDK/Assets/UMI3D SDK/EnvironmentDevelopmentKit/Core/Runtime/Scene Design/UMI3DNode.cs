@@ -77,9 +77,9 @@ namespace umi3d.edk
         #region collider
 
         /// <summary>
-        /// Type of the collider generated in front end.
+        /// type of the collider generated in front end.
         /// </summary>
-        [SerializeField, EditorReadOnly, Tooltip("Type of the collider generated in front end.")]
+        [SerializeField, EditorReadOnly, Tooltip("type of the collider generated in front end.")]
         protected ColliderType colliderType = ColliderType.Mesh;
 
         /// <summary>
@@ -267,9 +267,9 @@ namespace umi3d.edk
             var dto = new GlTFNodeDto
             {
                 name = nodeName,
-                position = objectPosition.GetValue(user),
-                scale = objectScale.GetValue(user),
-                rotation = objectRotation.GetValue(user)
+                position = objectPosition.GetValue(user).Dto(),
+                scale = objectScale.GetValue(user).Dto(),
+                rotation = objectRotation.GetValue(user).Dto()
             };
             dto.extensions.umi3d = ToUMI3DNodeDto(user);
             dto.extensions.KHR_lights_punctual = objectLight.GetValue(user)?.ToDto(user);
@@ -342,8 +342,8 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(objectXBillboard.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectYBillboard.GetValue(user))
+                + UMI3DSerializer.Write(objectXBillboard.GetValue(user))
+                + UMI3DSerializer.Write(objectYBillboard.GetValue(user))
                 + ColliderToBytes(user)
                 + LodToBytes(user);
         }
@@ -405,15 +405,15 @@ namespace umi3d.edk
             switch (colliderType)
             {
                 case ColliderType.Box:
-                    res.colliderCenter = colliderCenter;
-                    res.colliderBoxSize = colliderBoxSize;
+                    res.colliderCenter = colliderCenter.Dto();
+                    res.colliderBoxSize = colliderBoxSize.Dto();
                     break;
                 case ColliderType.Sphere:
-                    res.colliderCenter = colliderCenter;
+                    res.colliderCenter = colliderCenter.Dto();
                     res.colliderRadius = colliderRadius;
                     break;
                 case ColliderType.Capsule:
-                    res.colliderCenter = colliderCenter;
+                    res.colliderCenter = colliderCenter.Dto();
                     res.colliderDirection = colliderDirection;
                     res.colliderHeight = colliderHeight;
                     res.colliderRadius = colliderRadius;
@@ -499,6 +499,66 @@ namespace umi3d.edk
                 }
             }
         }
+
+#if UNITY_EDITOR
+        private void OnDrawGizmosSelected()
+        {
+            if (hasCollider)
+            {
+                Gizmos.color = Color.green;
+                Gizmos.matrix = transform.localToWorldMatrix;
+
+                switch (colliderType)
+                {
+                    case ColliderType.Sphere:
+                        Gizmos.DrawWireSphere(colliderCenter, colliderRadius);
+                        break;
+                    case ColliderType.Box:
+                        Gizmos.DrawWireCube(colliderCenter, colliderBoxSize);
+                        break;
+                    case ColliderType.Capsule:
+
+                        Quaternion axis = Quaternion.identity;
+                        switch (colliderDirection)
+                        {
+                            case DirectionalType.X_Axis:
+                                axis = Quaternion.Euler(0, 0, 90);
+                                break;
+                            case DirectionalType.Z_Axis:
+                                axis = Quaternion.Euler(90, 0, 0);
+                                break;
+                            default:
+                                break;
+                        }
+
+                        Matrix4x4 angleMatrix = Matrix4x4.TRS(transform.position + transform.rotation * colliderCenter, transform.rotation * axis, UnityEditor.Handles.matrix.lossyScale);
+
+                        using (new UnityEditor.Handles.DrawingScope(angleMatrix))
+                        {
+                            UnityEditor.Handles.color = Gizmos.color;
+
+                            var pointOffset = (Mathf.Max(colliderHeight, 2f) - (colliderRadius * 2)) / 2;
+
+                            //draw sideways
+                            UnityEditor.Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.left, Vector3.back, -180, colliderRadius);
+                            UnityEditor.Handles.DrawLine(new Vector3(0, pointOffset, -colliderRadius), new Vector3(0, -pointOffset, -colliderRadius));
+                            UnityEditor.Handles.DrawLine(new Vector3(0, pointOffset, colliderRadius), new Vector3(0, -pointOffset, colliderRadius));
+                            UnityEditor.Handles.DrawWireArc(Vector3.down * pointOffset, Vector3.left, Vector3.back, 180, colliderRadius);
+                            //draw frontways
+                            UnityEditor.Handles.DrawWireArc(Vector3.up * pointOffset, Vector3.back, Vector3.left, 180, colliderRadius);
+                            UnityEditor.Handles.DrawLine(new Vector3(-colliderRadius, pointOffset, 0), new Vector3(-colliderRadius, -pointOffset, 0));
+                            UnityEditor.Handles.DrawLine(new Vector3(colliderRadius, pointOffset, 0), new Vector3(colliderRadius, -pointOffset, 0));
+                            UnityEditor.Handles.DrawWireArc(Vector3.down * pointOffset, Vector3.back, Vector3.left, -180, colliderRadius);
+                            //draw center
+                            UnityEditor.Handles.DrawWireDisc(Vector3.up * pointOffset, Vector3.up, colliderRadius);
+                            UnityEditor.Handles.DrawWireDisc(Vector3.down * pointOffset, Vector3.up, colliderRadius);
+
+                        }
+                        break;
+                }
+            }
+        }
+#endif
     }
 }
 

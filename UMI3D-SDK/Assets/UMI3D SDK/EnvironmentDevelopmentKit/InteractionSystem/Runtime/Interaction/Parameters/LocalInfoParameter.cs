@@ -91,15 +91,15 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write(appName)
-                + UMI3DNetworkingHelper.Write(serverName)
-                + UMI3DNetworkingHelper.Write(reason)
-                + UMI3DNetworkingHelper.Write(key)
-                + UMI3DNetworkingHelper.Write(readValue)
-                + UMI3DNetworkingHelper.Write(writeValue);
+            return base.ToBytes(user)
+                + UMI3DSerializer.Write(appName)
+                + UMI3DSerializer.Write(serverName)
+                + UMI3DSerializer.Write(reason)
+                + UMI3DSerializer.Write(key)
+                + UMI3DSerializer.Write(readValue)
+                + UMI3DSerializer.Write(writeValue);
         }
 
         /// <inheritdoc/>
@@ -124,7 +124,7 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             throw new System.NotImplementedException();
             //change user access authorization isn't supported after connexion.

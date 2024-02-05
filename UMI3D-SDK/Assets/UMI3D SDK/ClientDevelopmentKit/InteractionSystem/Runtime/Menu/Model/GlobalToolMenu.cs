@@ -48,7 +48,7 @@ namespace umi3d.cdk.menu.interaction
 
             if (tool.icon2D != null)
             {
-                FileDto icon2DFile = UMI3DEnvironmentLoader.Parameters.ChooseVariant(tool.icon2D.variants);
+                FileDto icon2DFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(tool.icon2D.variants);
 
                 if ((icon2DFile != null) && (icon2DFile.url != null) && (icon2DFile.url != ""))
                 {
@@ -57,7 +57,11 @@ namespace umi3d.cdk.menu.interaction
                 }
             }
 
-            tool.interactions.ForEach(inter => this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id)));
+            foreach(var interaction in tool.interactions)
+            {
+                var inter = await interaction;
+                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter, tool.id));
+            }
         }
     }
 }

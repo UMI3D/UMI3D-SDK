@@ -40,10 +40,18 @@ namespace umi3d.cdk
             Text text = node.GetOrAddComponent<Text>();
             text.alignment = dto.alignment.Convert();
             text.alignByGeometry = dto.alignByGeometry;
-            text.color = dto.color;
+            text.color = dto.color.Struct();
             text.fontSize = dto.fontSize;
             text.fontStyle = dto.fontStyle.Convert();
-            text.font = Resources.GetBuiltinResource<Font>(dto.font + ".ttf");
+
+            var font = Resources.GetBuiltinResource<Font>(dto.font + ".ttf");
+            if (font != default && font != null)
+                text.font = font;
+            else
+            {
+                text.font = Resources.GetBuiltinResource<Font>("Arial.ttf");
+            }
+
             text.horizontalOverflow = dto.horizontalOverflow.Convert();
             text.verticalOverflow = dto.verticalOverflow.Convert();
             text.lineSpacing = dto.lineSpacing;
@@ -80,7 +88,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.TextColor:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.color = dto.color = (SerializableColor)property.value;
+                        text.color = (dto.color = (ColorDto)property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.TextFont:
@@ -163,25 +171,25 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.Alignement:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.alignment = (dto.alignment = (TextAnchorType)UMI3DNetworkingHelper.Read<int>(container)).Convert();
+                        text.alignment = (dto.alignment = (TextAnchorType)UMI3DSerializer.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.AlignByGeometry:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.alignByGeometry = dto.alignByGeometry = UMI3DNetworkingHelper.Read<bool>(container);
+                        text.alignByGeometry = dto.alignByGeometry = UMI3DSerializer.Read<bool>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.TextColor:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.color = dto.color = UMI3DNetworkingHelper.Read<SerializableColor>(container);
+                        text.color = (dto.color = UMI3DSerializer.Read<ColorDto>(container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.TextFont:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        string fontName = UMI3DNetworkingHelper.Read<string>(container);
+                        string fontName = UMI3DSerializer.Read<string>(container);
                         text.font = Resources.GetBuiltinResource<Font>(fontName);
                         dto.font = fontName;
                     }
@@ -189,61 +197,61 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.FontSize:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.fontSize = dto.fontSize = UMI3DNetworkingHelper.Read<int>(container);
+                        text.fontSize = dto.fontSize = UMI3DSerializer.Read<int>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.FontStyle:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.fontStyle = (dto.fontStyle = (FontStyleType)UMI3DNetworkingHelper.Read<int>(container)).Convert();
+                        text.fontStyle = (dto.fontStyle = (FontStyleType)UMI3DSerializer.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.HorizontalOverflow:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.horizontalOverflow = (dto.horizontalOverflow = (HorizontalWrapType)UMI3DNetworkingHelper.Read<int>(container)).Convert();
+                        text.horizontalOverflow = (dto.horizontalOverflow = (HorizontalWrapType)UMI3DSerializer.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.VerticalOverflow:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.verticalOverflow = (dto.verticalOverflow = (VerticalWrapType)UMI3DNetworkingHelper.Read<int>(container)).Convert();
+                        text.verticalOverflow = (dto.verticalOverflow = (VerticalWrapType)UMI3DSerializer.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.LineSpacing:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.lineSpacing = dto.lineSpacing = UMI3DNetworkingHelper.Read<float>(container);
+                        text.lineSpacing = dto.lineSpacing = UMI3DSerializer.Read<float>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ResizeTextForBestFit:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.resizeTextForBestFit = dto.resizeTextForBestFit = UMI3DNetworkingHelper.Read<bool>(container);
+                        text.resizeTextForBestFit = dto.resizeTextForBestFit = UMI3DSerializer.Read<bool>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ResizeTextMaxSize:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.resizeTextMaxSize = dto.resizeTextMaxSize = UMI3DNetworkingHelper.Read<int>(container);
+                        text.resizeTextMaxSize = dto.resizeTextMaxSize = UMI3DSerializer.Read<int>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ResizeTextMinSize:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.resizeTextMinSize = dto.resizeTextMinSize = UMI3DNetworkingHelper.Read<int>(container);
+                        text.resizeTextMinSize = dto.resizeTextMinSize = UMI3DSerializer.Read<int>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.SupportRichText:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.supportRichText = dto.supportRichText = UMI3DNetworkingHelper.Read<bool>(container);
+                        text.supportRichText = dto.supportRichText = UMI3DSerializer.Read<bool>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.Text:
                     {
                         Text text = node.gameObject.GetOrAddComponent<Text>();
-                        text.text = dto.text = UMI3DNetworkingHelper.Read<string>(container);
+                        text.text = dto.text = UMI3DSerializer.Read<string>(container);
                     }
                     break;
                 default:

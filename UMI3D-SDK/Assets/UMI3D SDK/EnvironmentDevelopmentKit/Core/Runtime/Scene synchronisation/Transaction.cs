@@ -26,6 +26,24 @@ namespace umi3d.edk
     /// </summary>
     public class Transaction : IEnumerable<Operation>
     {
+
+
+        public Transaction() { }
+
+        public Transaction(bool reliable) : this()
+        {
+            this.reliable = reliable;
+        }
+
+        public Transaction(bool reliable, List<Operation> operations) : this(reliable)
+        {
+            Operations = operations;
+        }
+
+        public Transaction(List<Operation> operations) : this(false,operations) { }
+
+
+
         /// <summary>
         /// Reliable transactions are transactions for which receiving is ensuring.
         /// </summary>
@@ -64,8 +82,8 @@ namespace umi3d.edk
             IEnumerable<Operation> operation = Operations.Where((op) => { return op.users.Contains(user); });
             if (operation.Count() > 0)
             {
-                Bytable b = UMI3DNetworkingHelper.Write(UMI3DOperationKeys.Transaction)
-                    + UMI3DNetworkingHelper.WriteIBytableCollection(operation, user);
+                Bytable b = UMI3DSerializer.Write(UMI3DOperationKeys.Transaction)
+                    + UMI3DSerializer.WriteCollection(operation, user);
                 return (b.ToBytes(), true);
             }
             return (null, false);
@@ -124,6 +142,7 @@ namespace umi3d.edk
                         case SetEntityDictionaryRemoveProperty r:
                         case SetEntityListAddProperty al:
                         case SetEntityListRemoveProperty rl:
+                        case MultiSetEntityProperty msep:
                             newOperations.Add(op);
                             break;
 
@@ -310,7 +329,8 @@ namespace umi3d.edk
                             break;
 
                         default:
-                            throw new System.Exception($"Missing type {op.GetType()}");
+                            newOperations.Add(op);
+                            break;
                     }
                     lastOperation = op;
                 }
@@ -406,6 +426,7 @@ namespace umi3d.edk
         public void Dispatch()
         {
             if (Count() > 0) UMI3DServer.Dispatch(this);
+            else UMI3DLogger.LogWarning("Transaction does not have any operation and will be not be send",DebugScope.EDK);
         }
     }
 }

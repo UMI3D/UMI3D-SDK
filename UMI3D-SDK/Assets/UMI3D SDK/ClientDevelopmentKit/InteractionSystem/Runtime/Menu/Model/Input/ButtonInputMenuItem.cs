@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Events;
@@ -43,7 +44,7 @@ namespace umi3d.cdk.menu
         /// <summary>
         /// Subscribers on value change
         /// </summary>
-        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> subscribers = new List<Action<bool>>();
 
 
 
@@ -51,21 +52,23 @@ namespace umi3d.cdk.menu
         /// Subscribe a callback for button press.
         /// </summary>
         /// <param name="callback">Callback to invoke on button press</param>
-        public override void Subscribe(UnityAction<bool> callback)
+        public override bool Subscribe(Action<bool> callback)
         {
             if (!subscribers.Contains(callback))
             {
                 subscribers.Add(callback);
+                return true;
             }
+            return false;
         }
 
         /// <summary>
         /// Unsubscribe a callback from the value change.
         /// </summary>
         /// <param name="callback"></param>
-        public override void UnSubscribe(UnityAction<bool> callback)
+        public override bool UnSubscribe(Action<bool> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
 
         /// <summary>
@@ -97,7 +100,7 @@ namespace umi3d.cdk.menu
                 pressedState = !pressedState;
             }
 
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
             {
                 sub.Invoke(pressedState);
             }

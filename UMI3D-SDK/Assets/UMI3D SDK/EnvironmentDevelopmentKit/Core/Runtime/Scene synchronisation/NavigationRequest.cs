@@ -22,17 +22,24 @@ namespace umi3d.edk
     /// <summary>
     /// Request to move a user in the clients.
     /// </summary>
-    public class NavigationRequest : DispatchableRequest
+    public class NavigationRequest : Operation
     {
         /// <summary>
         /// New positon of the user.
         /// </summary>
-        public SerializableVector3 position;
+        public Vector3Dto position;
 
-        public NavigationRequest(Vector3 position, bool reliable, HashSet<UMI3DUser> users = null) : base(reliable, users)
+        public NavigationRequest(Vector3 position)
         {
-            this.position = position;
+            this.position = position.Dto();
 
+        }
+
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            NavigateDto dto = CreateDto();
+            WriteProperties(dto);
+            return dto;
         }
 
         /// <summary>
@@ -44,28 +51,16 @@ namespace umi3d.edk
             return UMI3DOperationKeys.NavigationRequest;
         }
 
-        protected virtual Bytable ToBytable()
-        {
-            if (position == null) position = new SerializableVector3();
-            return UMI3DNetworkingHelper.Write(GetOperationKey())
-                + UMI3DNetworkingHelper.Write(position);
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBytes()
-        {
-            return ToBytable().ToBytes();
-        }
-
-        /// <inheritdoc/>
-        public override byte[] ToBson()
-        {
-            NavigateDto dto = CreateDto();
-            WriteProperties(dto);
-            return dto.ToBson();
-        }
-
         protected virtual NavigateDto CreateDto() { return new NavigateDto(); }
         protected virtual void WriteProperties(NavigateDto dto) { dto.position = position; }
+
+
+
+        public override Bytable ToBytable(UMI3DUser user)
+        {
+            if (position == null) position = new Vector3Dto();
+            return UMI3DSerializer.Write(GetOperationKey())
+                + UMI3DSerializer.Write(position);
+        }
     }
 }

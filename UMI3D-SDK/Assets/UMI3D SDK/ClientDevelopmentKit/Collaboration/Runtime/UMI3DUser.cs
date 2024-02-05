@@ -15,9 +15,12 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
+using umi3d.common.userCapture;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -68,11 +71,6 @@ namespace umi3d.cdk.collaboration
         public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
 
         /// <summary>
-        /// Virtual representation of the user in the media.
-        /// </summary>
-        public UserAvatar avatar => UMI3DEnvironmentLoader.GetEntity(dto.id)?.Object as UserAvatar;
-
-        /// <summary>
         /// See <see cref="UserDto.microphoneStatus"/>.
         /// </summary>
         public bool microphoneStatus => dto.microphoneStatus;
@@ -80,6 +78,11 @@ namespace umi3d.cdk.collaboration
         /// See <see cref="UserDto.avatarStatus"/>.
         /// </summary>
         public bool avatarStatus => dto.avatarStatus;
+        /// <summary>
+        /// See <see cref="UserDto.userSize"/>.
+        /// </summary>
+        public Vector3Dto userSize => dto.userSize;
+
         /// <summary>
         /// See <see cref="UserDto.attentionRequired"/>.
         /// </summary>
@@ -146,13 +149,13 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser(UserDto user)
         {
             dto = user;
-            UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
             OnNewUser.Invoke(this);
         }
 
         public void Destroy()
         {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id);
+            UMI3DEnvironmentLoader.DeleteEntity(dto.id,null);
             OnRemoveUser.Invoke(this);
         }
 
@@ -163,7 +166,7 @@ namespace umi3d.cdk.collaboration
         public void Update(UserDto user)
         {
             bool statusUpdate = dto.status != user.status;
-            bool avatarUpdate = dto.avatarId != user.avatarId;
+            //bool avatarUpdate = dto.avatarId != user.avatarId;
             bool audioUpdate = dto.audioSourceId != user.audioSourceId;
             bool videoUpdate = dto.videoSourceId != user.videoSourceId;
             bool audioFrequencyUpdate = dto.audioFrequency != user.audioFrequency;
@@ -190,7 +193,7 @@ namespace umi3d.cdk.collaboration
             }
 
             if (statusUpdate) OnUserStatusUpdated.Invoke(this);
-            if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
+            //if (avatarUpdate) OnUserAvatarUpdated.Invoke(this);
             if (audioUpdate) OnUserAudioUpdated.Invoke(this);
             if (videoUpdate) OnUserVideoUpdated.Invoke(this);
             if (audioFrequencyUpdate) OnUserAudioFrequencyUpdated.Invoke(this);
@@ -232,7 +235,6 @@ namespace umi3d.cdk.collaboration
                     OnUserMicrophoneUseMumbleUpdated.Invoke(this);
                     return true;
 
-
                 case UMI3DPropertyKeys.UserAudioPassword:
                     audioPassword = (string)value;
                     OnUserMicrophoneIdentityUpdated.Invoke(this);
@@ -252,44 +254,58 @@ namespace umi3d.cdk.collaboration
                     dto.audioChannel = (string)value;
                     OnUserMicrophoneChannelUpdated.Invoke(this);
                     return true;
+
+                case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
+                    dto.onStartSpeakingAnimationId = (ulong)value;
+                    return true;
+
+                case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                    dto.onStopSpeakingAnimationId = (ulong)value;
+                    return true;
+
+                case UMI3DPropertyKeys.UserSize:
+                    dto.userSize = (Vector3Dto)value;
+                    return true;
+
+                default:
+                    return false;
             }
             return false;
         }
-
 
         public void SetMicrophoneStatus(bool microphoneStatus)
         {
             if (dto.microphoneStatus != microphoneStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus), true);
+                UMI3DClientServer.SendRequest(ConferenceRequest.GetChangeMicrophoneStatusRequest(id, microphoneStatus), true);
             }
         }
         public void SetAvatarStatus(bool avatarStatus)
         {
             if (dto.avatarStatus != avatarStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeAvatarStatusRequest(id, avatarStatus), true);
+                UMI3DClientServer.SendRequest(ConferenceRequest.GetChangeAvatarStatusRequest(id, avatarStatus), true);
             }
         }
         public void SetAttentionStatus(bool attentionStatus)
         {
             if (dto.attentionRequired != attentionStatus)
             {
-                UMI3DClientServer.SendData(ConferenceBrowserRequest.GetChangeAttentionStatusRequest(id, attentionStatus), true);
+                UMI3DClientServer.SendRequest(ConferenceRequest.GetChangeAttentionStatusRequest(id, attentionStatus), true);
             }
         }
 
         public static void MuteAllMicrophone()
         {
-            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllMicrophoneRequest(), true);
+            UMI3DClientServer.SendRequest(ConferenceRequest.GetMuteAllMicrophoneRequest(), true);
         }
         public static void MuteAllAvatar()
         {
-            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAvatarRequest(), true);
+            UMI3DClientServer.SendRequest(ConferenceRequest.GetMuteAllAvatarRequest(), true);
         }
         public static void MuteAllAttention()
         {
-            UMI3DClientServer.SendData(ConferenceBrowserRequest.GetMuteAllAttentionRequest(), true);
+            UMI3DClientServer.SendRequest(ConferenceRequest.GetMuteAllAttentionRequest(), true);
         }
 
         public override string ToString()

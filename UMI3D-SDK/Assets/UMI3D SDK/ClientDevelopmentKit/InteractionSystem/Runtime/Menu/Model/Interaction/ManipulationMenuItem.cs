@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -38,14 +39,14 @@ namespace umi3d.cdk.menu.interaction
         /// <summary>
         /// Toggle event subscribers.
         /// </summary>
-        private readonly List<UnityAction<bool>> subscribers = new List<UnityAction<bool>>();
+        private readonly List<Action<bool>> subscribers = new List<Action<bool>>();
 
         /// <summary>
         /// Raise deselection event.
         /// </summary>
         public void Deselect()
         {
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
             {
                 sub.Invoke(false);
             }
@@ -57,7 +58,7 @@ namespace umi3d.cdk.menu.interaction
         public override void Select()
         {
             base.Select();
-            foreach (UnityAction<bool> sub in subscribers)
+            foreach (Action<bool> sub in subscribers)
             {
                 sub.Invoke(true);
             }
@@ -67,20 +68,21 @@ namespace umi3d.cdk.menu.interaction
         /// Subscribe a callback from the selection or deselection event.
         /// </summary>
         /// <param name="callback">Callback to subscribe</param>
-        /// <see cref="UnSubscribe(UnityAction{bool})"/>
-        public void Subscribe(UnityAction<bool> callback)
+        /// <see cref="UnSubscribe(Action{bool})"/>
+        public bool Subscribe(Action<bool> callback)
         {
             subscribers.Add(callback);
+            return true;
         }
 
         /// <summary>
         /// Unsubscribe a callback from the selection or deselection event.
         /// </summary>
         /// <param name="callback">Callback to unsubscribe</param>
-        /// <see cref="Subscribe(UnityAction{bool})"/>
-        public void UnSubscribe(UnityAction<bool> callback)
+        /// <see cref="Subscribe(Action{bool})"/>
+        public bool UnSubscribe(Action<bool> callback)
         {
-            subscribers.Remove(callback);
+            return subscribers.Remove(callback);
         }
     }
 }

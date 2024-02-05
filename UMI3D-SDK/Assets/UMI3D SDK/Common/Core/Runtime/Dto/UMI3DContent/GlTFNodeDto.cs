@@ -27,33 +27,33 @@ namespace umi3d.common
         /// <summary>
         /// Description labelling the node.
         /// </summary>
-        public string name;
+        public string name { get; set; }
 
         /// <summary>
         /// Position of the node on the 3 axes.
         /// </summary>
         /// The position is given in a left-hand coordinate system, just like Unity does.
-        public SerializableVector3 position;
+        public Vector3Dto position { get; set; }
 
         /// <summary>
         /// Rotation of the node as a quaternion.
         /// </summary>
-        public SerializableVector4 rotation;
+        public Vector4Dto rotation { get; set; }
 
         /// <summary>
         /// Scale of the node.
         /// </summary>
         /// The scale is given in a left-hand coordinate system, just like Unity does.
-        public SerializableVector3 scale;
+        public Vector3Dto scale { get; set; }
 
         /// <summary>
         /// List of the node's children UMI3D id.
         /// </summary>
-        public List<int> children = null;
+        public List<int> children { get; set; } = null;
 
         /// <summary>
         /// glTF extensions available for that node.
         /// </summary>
-        public GlTFNodeExtensions extensions = new GlTFNodeExtensions();
+        public GlTFNodeExtensions extensions { get; set; } = new GlTFNodeExtensions();
     }
 }

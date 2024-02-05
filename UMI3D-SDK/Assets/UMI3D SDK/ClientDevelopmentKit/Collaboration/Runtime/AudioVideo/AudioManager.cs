@@ -26,6 +26,7 @@ namespace umi3d.cdk.collaboration
 {
 
     public class AudioUserIsSpeaking : UnityEvent<UMI3DUser, bool> { }
+    public class AudioUserData : UnityEvent<UMI3DUser, float[]> { }
 
     /// <summary>
     /// Manager for audio reading.
@@ -42,6 +43,7 @@ namespace umi3d.cdk.collaboration
         public readonly Dictionary<string, float> gainMemory = new Dictionary<string, float>();
 
         public AudioUserIsSpeaking OnUserSpeaking = new AudioUserIsSpeaking();
+        public AudioUserData OnAudioUserData = new AudioUserData();
 
         public void Setup(Dictionary<string, float> volumeMemory, Dictionary<string, float> gainMemory)
         {
@@ -131,6 +133,7 @@ namespace umi3d.cdk.collaboration
             if (volumeMemory.ContainsKey(user.login))
                 player.SetVolume(volumeMemory[user.login]);
             player.OnPlaying.AddListener(s => OnUserSpeaking.Invoke(user, s));
+            player.OnAudioSample = ((data,u) => OnAudioUserData.Invoke(user, data));
         }
 
         private void Start()

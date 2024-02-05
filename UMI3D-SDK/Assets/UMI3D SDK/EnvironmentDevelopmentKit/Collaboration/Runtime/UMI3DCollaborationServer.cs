@@ -27,8 +27,12 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
+using umi3d.edk.userCapture;
+using umi3d.common.userCapture;
 using UnityEngine;
 using UnityEngine.Events;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.edk.collaboration
 {
@@ -48,8 +52,12 @@ namespace umi3d.edk.collaboration
         [SerializeField, ReadOnly]
         private bool useIp = false;
         private UMI3DHttp http;
+        private UMI3DHttp _httpForWC;
+        private UMI3DHttp httpForWC => _httpForWC ?? http;
 
         public static UMI3DHttp HttpServer => Exists ? Instance.http : null;
+
+        public static UMI3DHttp HttpServerForWorldController => Exists ? Instance.httpForWC : null;
 
         private UMI3DForgeServer forgeServer;
 
@@ -99,6 +107,13 @@ namespace umi3d.edk.collaboration
         public ushort httpPort;
 
         [EditorReadOnly]
+        public bool useWorldControllerSpecificHttpPort;
+        [EditorReadOnly]
+        public bool useRandomPortForWorldController;
+        [EditorReadOnly]
+        public ushort httpPortForWorldController;
+
+        [EditorReadOnly]
         [Tooltip("URL of the default resources server. Set to this HttpUrl if empty")]
         /// <summary>
         /// URL of the default resources server. Set to this HttpUrl if empty.
@@ -139,12 +154,12 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
-        /// Get the <see cref="ForgeConnectionDto"/>.
+        /// Get the <see cref="EnvironmentConnectionDto"/>.
         /// </summary>
         /// <returns></returns>
-        public override ForgeConnectionDto ToDto()
+        public override EnvironmentConnectionDto ToDto()
         {
-            var dto = new ForgeConnectionDto
+            var dto = new EnvironmentConnectionDto
             {
                 name = UMI3DEnvironment.Instance.environmentName,
                 forgeHost = ip,
@@ -155,7 +170,8 @@ namespace umi3d.edk.collaboration
                 forgeNatServerHost = forgeNatServerHost,
                 forgeNatServerPort = forgeNatServerPort,
                 resourcesUrl = _GetResourcesUrl(),
-                authorizationInHeader = !IsResourceServerSetup
+                authorizationInHeader = !IsResourceServerSetup,
+                version = UMI3DVersion.version
             };
             return dto;
         }
@@ -167,7 +183,7 @@ namespace umi3d.edk.collaboration
             await Task.CompletedTask;
         }
 
-        Task<ForgeConnectionDto> IEnvironment.ToDto()
+        Task<EnvironmentConnectionDto> IEnvironment.ToDto()
         {
             return Task.FromResult(ToDto());
         }
@@ -178,10 +194,13 @@ namespace umi3d.edk.collaboration
             user.SetStatus(dto.status);
         }
 
-        private List<Umi3dNetworkingHelperModule> collaborativeModule;
+        private List<UMI3DSerializerModule> collaborativeModule;
 
         private void Start()
         {
+            Debug.Assert(Identifier != null, "Identifier cannot be null");
+            Debug.Assert(WorldController != null, "WorldController cannot be null");
+
             QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
         }
 
@@ -189,7 +208,7 @@ namespace umi3d.edk.collaboration
         {
             base.OnDestroy();
             if (!Exists)
-                UMI3DHttp.Destroy();
+                http.Dispose();
         }
 
         /// <inheritdoc/>
@@ -204,19 +223,37 @@ namespace umi3d.edk.collaboration
             mumbleManager = murmur.MumbleManager.Create(mumbleIp, mumbleHttpIp, guid);
 
             if (collaborativeModule == null)
-                collaborativeModule = new List<Umi3dNetworkingHelperModule>() { new UMI3DEnvironmentNetworkingCollaborationModule(), new common.collaboration.UMI3DCollaborationNetworkingModule() };
-            UMI3DNetworkingHelper.AddModule(collaborativeModule);
+                collaborativeModule = UMI3DSerializerModuleUtils.GetModules().ToList();
+
+            //new List<UMI3DSerializerModule>() {
+            //new UMI3DSerializerBasicModules(),
+            //new UMI3DSerializerStringModules(),
+            //new UMI3DSerializerVectorModules(),
+            //new UMI3DSerializerAnimationModules(),
+            //new UMI3DSerializerShaderModules(),
+            //new UMI3DUserCaptureBindingSerializerModule(),
+            //new UMI3DEmotesSerializerModule(),
+            //new UMI3DEnvironmentSerializerCollaborationModule(),
+            //new common.collaboration.UMI3DCollaborationSerializerModule() };
+            
+            UMI3DSerializer.AddModule(collaborativeModule);
 
             if (!useIp)
                 ip = GetLocalIPAddress();
 
             httpPort = (ushort)FreeTcpPort(useRandomHttpPort ? 0 : httpPort);
             forgePort = (ushort)FreeTcpPort(useRandomForgePort ? 0 : forgePort);
+            httpPortForWorldController = (ushort)FreeTcpPort(useRandomPortForWorldController ? 0 : httpPortForWorldController);
             //websocketPort = FreeTcpPort(useRandomWebsocketPort ? 0 : websocketPort);
 
-            UMI3DHttp.Destroy();
+            http?.Dispose();
+            _httpForWC?.Dispose();
+
             http = new UMI3DHttp(httpPort);
-            UMI3DHttp.Instance.AddRoot(new UMI3DEnvironmentApi());
+            _httpForWC = useWorldControllerSpecificHttpPort ? new UMI3DHttp(httpPortForWorldController) : null;
+
+            http.AddRoot(new UMI3DEnvironmentApi());
+            httpForWC.AddRoot(new UMI3DEnvironmentFromWorldControllerApi());
 
             WorldController.Setup();
 
@@ -355,7 +392,7 @@ namespace umi3d.edk.collaboration
         private void _Stop()
         {
             if (collaborativeModule != null)
-                UMI3DNetworkingHelper.RemoveModule(collaborativeModule);
+                UMI3DSerializer.RemoveModule(collaborativeModule);
             http?.Stop();
             forgeServer?.Stop();
             if (isRunning)
@@ -459,9 +496,14 @@ namespace umi3d.edk.collaboration
             if (user == null)
                 return;
             user.hasJoined = false;
-            (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
-            lock (user.networkPlayer.Networker.Players)
-                user.networkPlayer.Networker.Players.Remove(user.networkPlayer);
+
+            if (user.networkPlayer != null)
+            {
+                (user.networkPlayer.Networker as IServer).Disconnect(user.networkPlayer, true);
+                lock (user.networkPlayer.Networker.Players)
+                    user.networkPlayer.Networker.Players.Remove(user.networkPlayer);
+            }
+
             Collaboration.Logout(user, notifiedByUser);
             MainThreadManager.Run(() => Instance._Logout(user));
         }
@@ -531,7 +573,7 @@ namespace umi3d.edk.collaboration
                 user.networkPlayer?.Networker?.Ping();
             }
             catch { }
-            var sr = new StatusRequestDto { CurrentStatus = user.status };
+            var sr = new StatusRequestDto { status = user.status };
             ForgeServer.SendSignalingMessage(user.networkPlayer, sr);
         }
 
@@ -568,36 +610,6 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        /// <inheritdoc/>
-        protected override void _Dispatch(DispatchableRequest dispatchableRequest)
-        {
-            base._Dispatch(dispatchableRequest);
-            foreach (UMI3DUser u in dispatchableRequest.users)
-            {
-                if (u is UMI3DCollaborationUser user)
-                {
-                    if (user.status == StatusType.NONE)
-                    {
-                        continue;
-                    }
-
-                    if (user.status == StatusType.MISSING || user.status == StatusType.CREATED || user.status == StatusType.READY)
-                    {
-
-                        if (!DispatchableToBeSend.ContainsKey(user))
-                        {
-                            DispatchableToBeSend[user] = new List<DispatchableRequest>();
-                        }
-
-                        DispatchableToBeSend[user].Add(dispatchableRequest);
-                        continue;
-                    }
-
-                    SendNavigationRequest(user, dispatchableRequest);
-                }
-            }
-        }
-
         private void SendTransaction(UMI3DCollaborationUser user, Transaction transaction)
         {
             (byte[], bool) c = UMI3DEnvironment.Instance.useDto ? transaction.ToBson(user) : transaction.ToBytes(user);
@@ -605,19 +617,11 @@ namespace umi3d.edk.collaboration
                 ForgeServer.SendData(user.networkPlayer, c.Item1, transaction.reliable);
         }
 
-        private void SendNavigationRequest(UMI3DCollaborationUser user, DispatchableRequest dispatchableRequest)
-        {
-            byte[] data = UMI3DEnvironment.Instance.useDto ? dispatchableRequest.ToBson() : dispatchableRequest.ToBytes();
-            ForgeServer.SendData(user.networkPlayer, data, dispatchableRequest.reliable);
-        }
-
         private readonly Dictionary<UMI3DCollaborationUser, Transaction> TransactionToBeSend = new Dictionary<UMI3DCollaborationUser, Transaction>();
-        private readonly Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>> DispatchableToBeSend = new Dictionary<UMI3DCollaborationUser, List<DispatchableRequest>>();
 
         public PendingTransactionDto IsThereTransactionPending(UMI3DCollaborationUser user) => new PendingTransactionDto()
         {
-            areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user))),
-            areDispatchableRequestPending = (DispatchableToBeSend.ContainsKey(user) && DispatchableToBeSend[user].Any(o => o.users.Contains(user)))
+            areTransactionPending = (TransactionToBeSend.ContainsKey(user) && TransactionToBeSend[user].Any(o => o.users.Contains(user)))
         };
 
         private void Update()
@@ -635,20 +639,6 @@ namespace umi3d.edk.collaboration
                 transaction.Simplify();
                 SendTransaction(user, transaction);
                 TransactionToBeSend.Remove(user);
-            }
-            foreach (KeyValuePair<UMI3DCollaborationUser, List<DispatchableRequest>> kp in DispatchableToBeSend.ToList())
-            {
-                UMI3DCollaborationUser user = kp.Key;
-                List<DispatchableRequest> navigations = kp.Value;
-                if (user.status == StatusType.NONE)
-                {
-                    DispatchableToBeSend.Remove(user);
-                    continue;
-                }
-                if (user.status < StatusType.ACTIVE) continue;
-                foreach (var navigation in navigations)
-                    SendNavigationRequest(user, navigation);
-                DispatchableToBeSend.Remove(user);
             }
         }
 

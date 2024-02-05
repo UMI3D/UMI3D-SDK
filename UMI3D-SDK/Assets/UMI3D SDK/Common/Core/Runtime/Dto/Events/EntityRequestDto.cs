@@ -26,6 +26,6 @@ namespace umi3d.common
         /// <summary>
         /// Entities to load id.
         /// </summary>
-        public List<ulong> entitiesId;
+        public List<ulong> entitiesId { get; set; }
     }
 }

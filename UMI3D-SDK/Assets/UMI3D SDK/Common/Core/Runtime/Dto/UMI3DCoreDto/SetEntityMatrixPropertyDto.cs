@@ -24,11 +24,11 @@ namespace umi3d.common
         /// <summary>
         /// X position value of a matrix
         /// </summary>
-        public int X;
+        public int X { get; set; }
 
         /// <summary>
         /// Y position value of a matrix
         /// </summary>
-        public int Y;
+        public int Y { get; set; }
     }
 }

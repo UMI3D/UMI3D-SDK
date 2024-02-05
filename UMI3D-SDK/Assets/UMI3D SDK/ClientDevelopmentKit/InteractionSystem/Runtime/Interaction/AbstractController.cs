@@ -183,7 +183,7 @@ namespace umi3d.cdk.interaction
             }
             else
             {
-                AbstractInteractionDto[] interactions = tool.interactions.ToArray();
+                AbstractInteractionDto[] interactions = tool.interactionsLoaded.ToArray();
                 AbstractUMI3DInput[] inputs = projectionMemory.Project(this, interactions, tool.id, hoveredObjectId);
                 associatedInputs.Add(tool.id, inputs);
             }

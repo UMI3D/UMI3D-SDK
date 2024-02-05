@@ -19,6 +19,7 @@ using System;
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
+using static UnityEngine.Mesh;
 
 namespace umi3d.edk
 {
@@ -45,6 +46,11 @@ namespace umi3d.edk
         [HideInInspector] public string idGenerator = "{{pid}}_[{{name}}]";
 
         /// <summary>
+        /// Should the skinnedmeshrenderers always be updated?
+        /// </summary>
+        [Tooltip("Should the skinnedmeshrenderers always be updated?")]
+        public bool updateSkinnedMeshRendererWhenOffscreen = false;
+        /// <summary>
         /// Should the subobjects considered as seperated nodes?
         /// </summary>
         /// Should not be modified after init
@@ -67,7 +73,7 @@ namespace umi3d.edk
         /// <summary>
         /// Should this mesh be used for navmesh generation on the browser?
         /// </summary>
-        [Tooltip("Should this mesh be used for navmesh generation on the browser?")]
+        [Tooltip("Should this mesh be used for navmesh generation on the browser? The model should have a collider.")]
         public bool isPartOfNavmesh = false;
 
         /// <summary>
@@ -145,6 +151,8 @@ namespace umi3d.edk
             {
                 if (child.parent == null) continue;
 
+                UMI3DAbstractNode asbtractNode = null;
+
                 if (child.gameObject.GetComponent<UMI3DAbstractNode>() == null)
                 {
                     if (!areSubobjectsAlreadyMarked)
@@ -159,6 +167,8 @@ namespace umi3d.edk
 
                             subModel.objectCastShadow.SetValue(this.castShadow);
                             subModel.objectReceiveShadow.SetValue(this.receiveShadow);
+
+                            asbtractNode = subModel;
                         }
                         else if (child.gameObject.GetComponent<ReflectionProbe>() != null)
                         {
@@ -166,11 +176,32 @@ namespace umi3d.edk
                             subModel.parentModel = this;
                             subModel.subModelHierachyIndexes = child.getIndexes();
                             subModel.subModelHierachyNames = child.getNames();
+
+                            asbtractNode = subModel;
                         }
                         else
                         {
-                            child.gameObject.AddComponent<UMI3DNode>();
+                            if (child.gameObject.GetComponent<Canvas>() != null)
+                            {
+                                var canvas = child.gameObject.AddComponent<UICanvas>();
+                                canvas.Cascade();
+
+                                asbtractNode = canvas;
+                            }
+                            else if (child.gameObject.GetComponent<RectTransform>() != null)
+                            {
+
+                            }
+                            else
+                            {
+                                asbtractNode = child.gameObject.AddComponent<UMI3DNode>();
+                            }
                         }
+
+                    if (!child.gameObject.activeSelf)
+                    {
+                        asbtractNode?.objectActive.SetValue(false);
+                    }
                 }
                 else if (child.gameObject.GetComponent<UMI3DSubModel>() != null)
                 {
@@ -285,6 +316,7 @@ namespace umi3d.edk
             var meshDto = dto as UMI3DMeshNodeDto;
             meshDto.mesh = objectModel.GetValue(user).ToDto();
             //   meshDto.isSubHierarchyAllowedToBeModified = isSubHierarchyAllowedToBeModified;
+            meshDto.updateSkinnedMeshRendererWhenOffscreen = updateSkinnedMeshRendererWhenOffscreen;
             meshDto.areSubobjectsTracked = areSubobjectsTracked;
             meshDto.isRightHanded = !areSubobjectsTracked || isRightHanded;
             meshDto.idGenerator = idGenerator;
@@ -296,11 +328,12 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(areSubobjectsTracked)
-                + UMI3DNetworkingHelper.Write(!areSubobjectsTracked || isRightHanded)
-                + UMI3DNetworkingHelper.Write(idGenerator)
-                + UMI3DNetworkingHelper.Write(isPartOfNavmesh)
-                + UMI3DNetworkingHelper.Write(isTraversable)
+                + UMI3DSerializer.Write(areSubobjectsTracked)
+                + UMI3DSerializer.Write(updateSkinnedMeshRendererWhenOffscreen)
+                + UMI3DSerializer.Write(!areSubobjectsTracked || isRightHanded)
+                + UMI3DSerializer.Write(idGenerator)
+                + UMI3DSerializer.Write(isPartOfNavmesh)
+                + UMI3DSerializer.Write(isTraversable)
                 + objectModel.GetValue(user).ToByte();
         }
 

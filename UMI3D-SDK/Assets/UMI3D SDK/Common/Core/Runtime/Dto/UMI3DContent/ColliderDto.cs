@@ -25,49 +25,49 @@ namespace umi3d.common
     public class ColliderDto : UMI3DDto
     {
         /// <summary>
-        /// Type of the collider generated in front end.
+        /// type of the collider generated in front end.
         /// </summary>
-        public ColliderType colliderType = ColliderType.Mesh;
+        public ColliderType colliderType { get; set; } = ColliderType.Mesh;
 
         /// <summary>
         /// In case of a mesh collider, should it be convex ?
         /// </summary>
-        public bool convex = false;
+        public bool convex { get; set; } = false;
 
         /// <summary>
         /// Center of the collider for box, sphere and capsule collider
         /// </summary>
-        public SerializableVector3 colliderCenter;
+        public Vector3Dto colliderCenter { get; set; }
 
         /// <summary>
         /// The radius for sphere and capsule collider
         /// </summary>
-        public float colliderRadius = 1f;
+        public float colliderRadius { get; set; } = 1f;
 
         /// <summary>
         /// The box scale for boxCollider
         /// </summary>
-        public SerializableVector3 colliderBoxSize = Vector3.one;
+        public Vector3Dto colliderBoxSize { get; set; } = Vector3Dto.one;
 
         /// <summary>
         /// The height of le collider for capsule collider
         /// </summary>
-        public float colliderHeight = 1f;
+        public float colliderHeight { get; set; } = 1f;
 
         /// <summary>
         /// The collider direction for capsule collider
         /// </summary>
-        public DirectionalType colliderDirection = DirectionalType.Y_Axis;
+        public DirectionalType colliderDirection { get; set; } = DirectionalType.Y_Axis;
 
         /// <summary>
         /// true if un custom mesh is used for the MeshCollider
         /// </summary>
-        public bool isMeshCustom = false;
+        public bool isMeshCustom { get; set; } = false;
 
         /// <summary>
         /// Custom MeshCollider used if isMeshCustom
         /// </summary>
-        public ResourceDto customMeshCollider;
+        public ResourceDto customMeshCollider { get; set; }
 
     }
 }

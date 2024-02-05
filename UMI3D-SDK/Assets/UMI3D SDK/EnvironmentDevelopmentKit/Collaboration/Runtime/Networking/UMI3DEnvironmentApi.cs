@@ -22,11 +22,9 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.edk.interaction;
-using umi3d.edk.userCapture;
 using UnityEngine.Events;
 using WebSocketSharp;
 using WebSocketSharp.Net;
@@ -34,13 +32,12 @@ using WebSocketSharp.Server;
 
 namespace umi3d.edk.collaboration
 {
+
     /// <summary>
     /// Environment API to handle HTTP requests.
     /// </summary>
-    public class UMI3DEnvironmentApi : IHttpApi
-    {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
-
+    public class UMI3DEnvironmentApi : UMI3DAbstractEnvironmentApi
+    {      
         public UMI3DEnvironmentApi()
         { }
 
@@ -66,36 +63,15 @@ namespace umi3d.edk.collaboration
         {
             UMI3DCollaborationUser user = GetUserFor(e.Request);
             UMI3DLogger.Log($"Get Connection Information {user?.Id()}", scope);
-            var connectionInformation = user.ToUserConnectionDto();
-            e.Response.WriteContent(connectionInformation.ToBson());
-        }
-
-        /// <summary>
-        /// POST "/register"
-        /// Register a user.
-        /// </summary>
-        /// <param name="sender"></param>
-        /// <param name="e">Represents the event data for the HTTP request event</param>
-        [HttpPost(UMI3DNetworkingKeys.register, WebServiceMethodAttribute.Security.Public, WebServiceMethodAttribute.Type.Method)]
-        public async void Register(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
-        {
-            UMI3DLogger.Log($"Register", scope);
-            HttpListenerResponse res = e.Response;
-
-            byte[] bytes = ReadObject(e.Request);
-
-            RegisterIdentityDto dto;
-
             try
             {
-                dto = UMI3DDto.FromBson(bytes) as RegisterIdentityDto;
+                var connectionInformation = user.ToUserConnectionDto();
+                e.Response.WriteContent(connectionInformation.ToBson());
             }
-            catch
+            catch (Exception ex)
             {
-                dto = UMI3DDto.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
+                UnityEngine.Debug.LogException(ex);
             }
-
-            await UMI3DCollaborationServer.Instance.Register(dto);
         }
 
         /// <summary>
@@ -364,6 +340,7 @@ namespace umi3d.edk.collaboration
             if (content == null)
             {
                 Return404(response);
+                UMI3DLogger.LogError(file, scope);
                 return;
             }
             if (file.EndsWith(".html"))
@@ -434,15 +411,28 @@ namespace umi3d.edk.collaboration
                         (res) => { result = res; finished = true; },
                         () => { finished = true; }
                     ));
+
                 while (!finished) System.Threading.Thread.Sleep(1);
-                e.Response.WriteContent(result.ToBson());
+
+                e.Response.WriteContent(result?.ToBson() ?? new byte[0]);
             }
             UMI3DLogger.Log($"End Get Environment {user?.Id()}", scope);
         }
 
         private IEnumerator _GetEnvironment(UMI3DEnvironment environment, UMI3DUser user, Action<GlTFEnvironmentDto> callback, Action error)
         {
-            callback.Invoke(environment.ToDto(user));
+            try
+            {
+                callback.Invoke(environment.ToDto(user));
+            }
+            catch (Exception ex)
+            {
+                UMI3DLogger.LogError("Error while getting environment", scope);
+                UMI3DLogger.LogException(ex, scope);
+
+                error?.Invoke();
+            }
+
             yield return null;
         }
 
@@ -466,9 +456,9 @@ namespace umi3d.edk.collaboration
                 {
                     try
                     {
-                        var join = dto as JoinDto;
+                        JoinDto join = dto as JoinDto;
+                        await user.JoinDtoReception(join);
 
-                        await UMI3DEmbodimentManager.Instance.JoinDtoReception(user, join.userSize, join.trackedBonetypes);
                         e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
                         await UMI3DCollaborationServer.NotifyUserJoin(user);
                     }
@@ -562,7 +552,7 @@ namespace umi3d.edk.collaboration
                         }
                         catch (Exception ex)
                         {
-                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] Type : {e.Item2?.GetType()} {ex}", scope);
+                            UMI3DLogger.LogWarning($"An error occured while writting the entityDto [{e.Item1}] type : {e.Item2?.GetType()} {ex}", scope);
                             return new MissingEntityDto() { id = e.Item1, reason = MissingEntityDtoReason.ServerInternalError };
                         }
                     }).ToList(),
@@ -591,7 +581,7 @@ namespace umi3d.edk.collaboration
             {
                 UMI3DUser user = GetUserFor(e.Request);
                 UMI3DLogger.Log($"Get Scene {user?.Id()}", scope);
-                UMI3DScene scene = UMI3DEnvironment.GetEntity<UMI3DScene>(id);
+                UMI3DScene scene = UMI3DEnvironment.GetEntityInstance<UMI3DScene>(id);
                 if (scene == null)
                 {
                     Return404(e.Response, "UMI3DScene is missing !");
@@ -729,61 +719,5 @@ namespace umi3d.edk.collaboration
 
 
         #endregion
-
-        #region utils
-        private void ReadDto(HttpListenerRequest request, Action<UMI3DDto> action)
-        {
-            byte[] bytes = default(byte[]);
-            using (var memstream = new MemoryStream())
-            {
-                byte[] buffer = new byte[512];
-                int bytesRead = default(int);
-                while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
-                    memstream.Write(buffer, 0, bytesRead);
-                bytes = memstream.ToArray();
-            }
-            action.Invoke(UMI3DDto.FromBson(bytes));
-        }
-
-        private byte[] ReadObject(HttpListenerRequest request)
-        {
-            byte[] bytes = default(byte[]);
-            using (var memstream = new MemoryStream())
-            {
-                byte[] buffer = new byte[512];
-                int bytesRead = default(int);
-                while ((bytesRead = request.InputStream.Read(buffer, 0, buffer.Length)) > 0)
-                    memstream.Write(buffer, 0, bytesRead);
-                bytes = memstream.ToArray();
-                return bytes;
-            }
-        }
-
-        private void Return404(HttpListenerResponse response, string description = "This file does not exist :(")
-        {
-            response.ContentType = "text/html";
-            response.ContentEncoding = Encoding.UTF8;
-            response.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotFound;
-            response.StatusDescription = description;
-            response.WriteContent(Encoding.UTF8.GetBytes("404 :("));
-            UMI3DLogger.LogError($"404 {description}", scope);
-        }
-
-        private void ReturnNotImplemented(HttpListenerResponse response, string description = "This method isn't implemented now :(")
-        {
-            response.ContentType = "text/html";
-            response.ContentEncoding = Encoding.UTF8;
-            response.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotImplemented;
-            response.StatusDescription = description;
-            UMI3DLogger.LogError($"501 {description}", scope);
-        }
-
-        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
-        {
-            return UMI3DCollaborationServer.IsAuthenticated(request, allowOldToken);
-        }
-        #endregion
-
-
     }
 }

@@ -51,6 +51,12 @@ namespace umi3d.edk.collaboration
         public const string httpPortParam = Separator + "httpport";
 
         /// <summary>
+        /// Set the specific HTTP port for endpoint comming from a world controller.
+        /// </summary>
+        public const string wchttpPortParam = Separator + "worldControllerHttpport";
+        public const string wchttpPortParam2 = Separator + "wcHttpport";
+
+        /// <summary>
         /// Set the default ressource path.
         /// </summary>
         public const string resourcesDefaultUrlParam = Separator + "resourcesDefaultUrlParam";
@@ -136,6 +142,9 @@ namespace umi3d.edk.collaboration
         [Tooltip("Should the server be launched when this component is started?")]
         public bool LaunchServerOnStart = false;
 
+        public bool test = false;
+        public string[] arguments;
+
         /// <summary>
         /// Called when param <see cref="nameParam"/> is found.
         /// </summary>
@@ -190,6 +199,24 @@ namespace umi3d.edk.collaboration
             else
             {
                 UMI3DCollaborationServer.Instance.useRandomHttpPort = true;
+            }
+        }
+
+        /// <summary>
+        /// Called when param <see cref="wchttpPortParam"/> or <see cref="wchttpPortParam2"/> is found
+        /// </summary>
+        /// <param arg="arg">argument after parameter</param>
+        protected virtual void SetHttpPortForWorldController(string arg)
+        {
+            if (ushort.TryParse(arg, out ushort result))
+            {
+                UMI3DCollaborationServer.Instance.useRandomPortForWorldController = result == 0;
+                UMI3DCollaborationServer.Instance.useWorldControllerSpecificHttpPort = true;
+                UMI3DCollaborationServer.Instance.httpPortForWorldController = result;
+            }
+            else
+            {
+                UMI3DCollaborationServer.Instance.useWorldControllerSpecificHttpPort = false;
             }
         }
 
@@ -449,7 +476,19 @@ namespace umi3d.edk.collaboration
 
         protected virtual void Start()
         {
+#if UNITY_EDITOR
+            if (test)
+            {
+                _Start(arguments);
+                return;
+            }
+#endif
             string[] args = System.Environment.GetCommandLineArgs();
+            _Start(args);
+        }
+
+        protected virtual void _Start(string[] args)
+        {
             int length = args.Length;
             //Apply first config fileif it exists
             for (int i = 0; i < length; i++)
@@ -495,6 +534,12 @@ namespace umi3d.edk.collaboration
                 {
                     if (++i < length)
                         SetHttpPort(args[i]);
+                }
+                else if (args[i].Equals(wchttpPortParam, StringComparison.OrdinalIgnoreCase)
+                    || args[i].Equals(wchttpPortParam2, StringComparison.OrdinalIgnoreCase))
+                {
+                    if (++i < length)
+                        SetHttpPortForWorldController(args[i]);
                 }
                 else if (args[i].Equals(forgePortParam, StringComparison.OrdinalIgnoreCase))
                 {

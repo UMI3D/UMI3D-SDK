@@ -92,9 +92,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(UMI3DOperationKeys.SetEntityProperty)
-                + UMI3DNetworkingHelper.Write(entityId)
-                + UMI3DNetworkingHelper.WriteCollection(entities.GetValue(user).Select(e => e.Id()).ToList());
+            return UMI3DSerializer.Write(UMI3DOperationKeys.SetEntityProperty)
+                + UMI3DSerializer.Write(entityId)
+                + UMI3DSerializer.WriteCollection(entities.GetValue(user).Select(e => e.Id()).ToList());
         }
 
         public void Destroy()

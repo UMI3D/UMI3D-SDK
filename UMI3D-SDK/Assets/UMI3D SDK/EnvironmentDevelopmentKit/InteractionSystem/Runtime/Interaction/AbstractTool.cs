@@ -30,6 +30,7 @@ namespace umi3d.edk.interaction
     /// </summary>
     public abstract class AbstractTool : MonoBehaviour, UMI3DMediaEntity
     {
+        public event Action<ulong> onHasRegistered;
         #region properties
 
         /// <summary>
@@ -84,6 +85,7 @@ namespace umi3d.edk.interaction
             {
                 toolId = UMI3DEnvironment.Register(this);
                 InitDefinition(toolId);
+                onHasRegistered?.Invoke(toolId);
             }
         }
 
@@ -118,7 +120,7 @@ namespace umi3d.edk.interaction
             });
 
             toolId = id;
-            objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => UMI3DEnvironment.Instance.useDto ? i.ToDto(u) : (object)i);
+            objectInteractions = new UMI3DAsyncListProperty<AbstractInteraction>(toolId, UMI3DPropertyKeys.AbstractToolInteractions, Interactions, (i, u) => UMI3DEnvironment.Instance.useDto ? i.ToDto(u) : (object)i.Id());
             objectActive = new UMI3DAsyncProperty<bool>(toolId, UMI3DPropertyKeys.AbstractToolActive, Active);
             inited = true;
         }
@@ -258,20 +260,20 @@ namespace umi3d.edk.interaction
             dto.description = Display.description;
             dto.icon2D = Display.icon2D?.ToDto();
             dto.icon3D = Display.icon3D?.ToDto();
-            dto.interactions = objectInteractions.GetValue(user).Where(i => i != null).Select(i => i.ToDto(user)).ToList();
+            dto.interactions = objectInteractions.GetValue(user).Where(i => i != null).Select(i => i.Id()).ToList();
             dto.active = objectActive.GetValue(user);
         }
 
         /// <inheritdoc/>
         public virtual Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(Id())
-                + UMI3DNetworkingHelper.Write(Display.name)
-                + UMI3DNetworkingHelper.Write(Display.description)
+            return UMI3DSerializer.Write(Id())
+                + UMI3DSerializer.Write(Display.name)
+                + UMI3DSerializer.Write(Display.description)
                 + Display.icon2D?.ToByte()
                 + Display.icon3D?.ToByte()
-                + UMI3DNetworkingHelper.WriteIBytableCollection(objectInteractions.GetValue(user).Where(i => i != null), user)
-                + UMI3DNetworkingHelper.Write(objectActive.GetValue(user));
+                + UMI3DSerializer.WriteCollection(objectInteractions.GetValue(user).Where(i => i != null), user)
+                + UMI3DSerializer.Write(objectActive.GetValue(user));
         }
 
         /// <summary>

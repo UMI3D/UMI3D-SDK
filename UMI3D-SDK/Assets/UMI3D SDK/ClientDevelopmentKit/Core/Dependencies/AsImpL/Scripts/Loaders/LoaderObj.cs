@@ -94,7 +94,7 @@ namespace AsImpL
         protected override IEnumerator LoadModelFile(string absolutePath)
         {
             string url = absolutePath.Contains("//") ? absolutePath : "file:///" + absolutePath;
-            yield return LoadOrDownloadText(url,false);
+            yield return LoadOrDownloadText(url, false);
 
             if (objLoadingProgress.error || string.IsNullOrEmpty(loadedText))
             {
@@ -113,20 +113,31 @@ namespace AsImpL
         {
             string mtlPath;
             string basePath = GetDirName(absolutePath);
+
             if (absolutePath.Contains("//"))
             {
                 int pos;
+
                 // handle the special case of a PHP URL containing "...?...=model.obj"
                 if (absolutePath.Contains("?"))
                 {
-                    // in this case try to get the library path reading until last "=".
-                    pos = absolutePath.LastIndexOf('=');
+                    pos = absolutePath.LastIndexOf('?');
+                    int objPos = absolutePath.IndexOf(".obj");
+
+                    if (objPos < pos) // It means object name is set before parameters, multiple parameters not handled
+                    {
+                        mtlPath = absolutePath.Remove(absolutePath.LastIndexOf('/') + 1) + mtlLib + absolutePath.Substring(pos);
+                    }
+                    else
+                    {
+                        mtlPath = absolutePath.Remove(absolutePath.LastIndexOf('=') + 1) + mtlLib;
+                    }
                 }
                 else
                 {
                     pos = absolutePath.LastIndexOf('/');
+                    mtlPath = absolutePath.Remove(pos + 1) + mtlLib;
                 }
-                mtlPath = absolutePath.Remove(pos + 1) + mtlLib;
             }
             else
             {
@@ -395,7 +406,8 @@ namespace AsImpL
         /// </summary>
         protected override bool HasMaterialLibrary
         {
-            get {
+            get
+            {
                 return mtlLib != null;
             }
         }

@@ -1,4 +1,4 @@
-﻿// Copyright 2020 Andreas Atteneder
+﻿// Copyright 2020-2022 Andreas Atteneder
 //
 // Licensed under the Apache License, Version 2.0 (the "License");
 // you may not use this file except in compliance with the License.
@@ -14,9 +14,11 @@
 //
 
 using UnityEngine;
+using UnityEngine.Rendering;
 using Unity.Jobs;
 using System.Runtime.InteropServices;
 using UnityEngine.Profiling;
+using System.Threading.Tasks;
 
 namespace GLTFast {
 
@@ -25,16 +27,7 @@ namespace GLTFast {
     class PrimitiveCreateContext : PrimitiveCreateContextBase {
 
         public Mesh mesh;
-
-        /// TODO remove begin
-        public Vector3[] positions;
-        public Vector3[] normals;
-        public Vector2[] uvs0;
-        public Vector2[] uvs1;
-        public Vector4[] tangents;
-        public Color32[] colors32;
-        public Color[] colors;
-        /// TODO remove end
+        public VertexBufferConfigBase vertexData;
 
         public JobHandle jobHandle;
         public int[][] indices;
@@ -43,81 +36,101 @@ namespace GLTFast {
 
         public MeshTopology topology;
 
-        public override bool IsCompleted {
-            get {
-                return jobHandle.IsCompleted;
-            }  
-        }
+        public override bool IsCompleted => jobHandle.IsCompleted;
 
-        public override Primitive? CreatePrimitive() {
+        public override async Task<Primitive?> CreatePrimitive() {
             Profiler.BeginSample("CreatePrimitive");
-            Profiler.BeginSample("Job Complete");
             jobHandle.Complete();
-            Profiler.EndSample();
             var msh = new UnityEngine.Mesh();
-            if( positions.Length > 65536 ) {
-#if UNITY_2017_3_OR_NEWER
-                msh.indexFormat = UnityEngine.Rendering.IndexFormat.UInt32;
-#else
-                throw new System.Exception("Meshes with more than 65536 vertices are only supported from Unity 2017.3 onwards.");
-#endif
-            }
             msh.name = mesh.name;
-            Profiler.BeginSample("SetVertices");
-            msh.vertices = positions;
-            Profiler.EndSample();
+
+            vertexData.ApplyOnMesh(msh,defaultMeshUpdateFlags);
 
             Profiler.BeginSample("SetIndices");
-            msh.subMeshCount = indices.Length;
+            int indexCount = 0;
+            var allBounds = vertexData.bounds;
             for (int i = 0; i < indices.Length; i++) {
-                msh.SetIndices(indices[i],topology,i);
+                indexCount += indices[i].Length;
+            }
+            Profiler.BeginSample("SetIndexBufferParams");
+            msh.SetIndexBufferParams(indexCount,IndexFormat.UInt32); //TODO: UInt16 maybe?
+            Profiler.EndSample();
+            msh.subMeshCount = indices.Length;
+            indexCount = 0;
+            for (int i = 0; i < indices.Length; i++) {
+                Profiler.BeginSample("SetIndexBufferData");
+                msh.SetIndexBufferData(indices[i],0,indexCount,indices[i].Length,defaultMeshUpdateFlags);
+                Profiler.EndSample();
+                Profiler.BeginSample("SetSubMesh");
+                var subMeshDescriptor = new SubMeshDescriptor{
+                    indexStart = indexCount,
+                    indexCount = indices[i].Length,
+                    topology = topology,
+                    baseVertex = 0,
+                    firstVertex = 0,
+                    vertexCount = vertexData.vertexCount
+                };
+                if (allBounds.HasValue) {
+                    // Setting the submeshes' bounds to the overall bounds
+                    // Calculating the actual sub-mesh bounds (by iterating the verts referenced
+                    // by the sub-mesh indices) would be slow. Also, hardly any glTFs re-use
+                    // the same vertex buffer across primitives of a node (which is the
+                    // only way a mesh can have sub-meshes)
+                    subMeshDescriptor.bounds = allBounds.Value;
+                }
+                msh.SetSubMesh(i,subMeshDescriptor,defaultMeshUpdateFlags);
+                Profiler.EndSample();
+                indexCount += indices[i].Length;
             }
             Profiler.EndSample();
 
-            Profiler.BeginSample("SetUVs");
-            if(uvs0!=null) {
-                msh.uv = uvs0;
-            }
-            if(uvs1!=null) {
-                msh.uv2 = uvs1;
-            }
-            Profiler.EndSample();
-
-            Profiler.BeginSample("SetNormals");
-            if(normals!=null) {
-                msh.normals = normals;
-            } else
-            if( needsNormals && ( topology==MeshTopology.Triangles || topology==MeshTopology.Quads ) ) {
+            if(vertexData.calculateNormals) {
                 Profiler.BeginSample("RecalculateNormals");
                 msh.RecalculateNormals();
                 Profiler.EndSample();
             }
-            Profiler.EndSample();
-            Profiler.BeginSample("SetColor");
-            if (colors!=null) {
-                msh.colors = colors;
-            } else if(colors32!=null) {
-                msh.colors32 = colors32;
-            }
-            Profiler.EndSample();
-            Profiler.BeginSample("SetTangents");
-            if(tangents!=null) {
-                msh.tangents = tangents;
-            } else
-            if( needsTangents && uvs0!=null && (topology==MeshTopology.Triangles || topology==MeshTopology.Quads) ) {
+            if(vertexData.calculateTangents) {
                 Profiler.BeginSample("RecalculateTangents");
                 msh.RecalculateTangents();
                 Profiler.EndSample();
             }
+            
+            if (allBounds.HasValue) {
+                msh.bounds = allBounds.Value;
+            } else {
+                Profiler.BeginSample("RecalculateBounds");
+#if DEBUG
+                Debug.LogError("Bounds have to be recalculated (slow operation). Check if position accessors have proper min/max values");
+#endif
+                msh.RecalculateBounds();
+                Profiler.EndSample();
+            }
+
+#if GLTFAST_KEEP_MESH_DATA
+            Profiler.BeginSample("UploadMeshData");
+            msh.UploadMeshData(false);
             Profiler.EndSample();
+#else
+            /// Don't upload explicitely. Unity takes care of upload on demand/deferred
+
+            // Profiler.BeginSample("UploadMeshData");
+            // msh.UploadMeshData(true);
+            // Profiler.EndSample();
+#endif
+
+            if (morphTargetsContext != null) {
+                await morphTargetsContext.ApplyOnMeshAndDispose(msh);
+            }
 
             Profiler.BeginSample("Dispose");
             Dispose();
             Profiler.EndSample();
+
             Profiler.EndSample();
+
             return new Primitive(msh,materials);
         }
-
+        
         void Dispose() {
             if(calculatedIndicesHandle.IsAllocated) {
                 calculatedIndicesHandle.Free();

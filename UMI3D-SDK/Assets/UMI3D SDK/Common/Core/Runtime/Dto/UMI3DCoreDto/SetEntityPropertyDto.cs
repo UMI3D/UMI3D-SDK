@@ -27,48 +27,21 @@ namespace umi3d.common
         /// <summary>
         /// The unique identifier of the entity
         /// </summary>
-        public ulong entityId;
+        public ulong entityId { get; set; }
 
         /// <summary>
         /// The name of the modified property
         /// </summary>
-        public ulong property;
+        public ulong property { get; set; }
 
         /// <summary>
         /// The new value for the property
         /// </summary>
-        public object value;
+        public object value { get; set; }
 
-        /// <summary>
-        /// Make a Copy of a SetEntityPropertyDto or a class inheriting it.
-        /// </summary>
-        /// <returns></returns>
-        public SetEntityPropertyDto Copy()
+        public override string ToString()
         {
-            SetEntityPropertyDto dto = CreateDto();
-            CopyProperties(dto);
-            return dto;
-        }
-
-        /// <summary>
-        /// Create an empty Dto.
-        /// </summary>
-        /// <returns></returns>
-        protected virtual SetEntityPropertyDto CreateDto()
-        {
-            return new SetEntityPropertyDto();
-        }
-
-        /// <summary>
-        /// Copy the properties in a given SetEntityPropertyDto  or a class inheriting it.
-        /// </summary>
-        /// <param name="dto">The SetEntityPropertyDt to be completed</param>
-        /// <returns></returns>
-        protected virtual void CopyProperties(SetEntityPropertyDto dto)
-        {
-            dto.entityId = entityId;
-            dto.property = property;
-            dto.value = value;
+            return $"SetEntityPropertyDto {entityId} {property} {value}";
         }
     }
 }

@@ -23,7 +23,7 @@ namespace umi3d.edk
     /// File info for a <see cref="UMI3DResource"/>.
     /// </summary>
     [System.Serializable]
-    public class UMI3DResourceFile : IBytable
+    public class UMI3DResourceFile
     {
         public bool isLocalFile = false;
         public string domain = "";
@@ -33,7 +33,7 @@ namespace umi3d.edk
         public string extension;
         public bool isInBundle = false;
         public string pathIfInBundle = "";
-        public AssetMetricDto metrics;
+        public AssetMetric metrics = new AssetMetric();
 
         public bool isInLibrary = false;
         public AssetLibrary libraryKey = null;
@@ -46,9 +46,9 @@ namespace umi3d.edk
                 url = GetUrl(),
                 format = format,
                 extension = extension,
-                metrics = metrics,
+                metrics = metrics.ToDto(),
                 pathIfInBundle = isInBundle ? pathIfInBundle : null,
-                libraryKey = isInLibrary ? libraryKey?.id : null
+                libraryKey = isInLibrary ? libraryKey?.idVersion : null
             };
             return dto;
         }
@@ -56,20 +56,15 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToByte()
         {
-            return UMI3DNetworkingHelper.Write(GetUrl())
-                + UMI3DNetworkingHelper.Write(format)
-                + UMI3DNetworkingHelper.Write(extension)
-                + UMI3DNetworkingHelper.Write(metrics.resolution)
-                + UMI3DNetworkingHelper.Write(metrics.size)
-                + UMI3DNetworkingHelper.Write(isInBundle ? pathIfInBundle : null)
-                + UMI3DNetworkingHelper.Write(isInLibrary ? libraryKey?.id : null);
+            return UMI3DSerializer.Write(GetUrl())
+                + UMI3DSerializer.Write(format)
+                + UMI3DSerializer.Write(extension)
+                + UMI3DSerializer.Write(metrics.resolution)
+                + UMI3DSerializer.Write(metrics.size)
+                + UMI3DSerializer.Write(isInBundle ? pathIfInBundle : null)
+                + UMI3DSerializer.Write(isInLibrary ? libraryKey?.idVersion : null);
         }
 
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
-        {
-            return true;
-        }
 
         public string GetUrl()
         {
@@ -82,12 +77,6 @@ namespace umi3d.edk
                 return System.Uri.EscapeUriString(Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, path));
             else
                 return System.Uri.EscapeUriString(Path.Combine(domain, path));
-        }
-
-        /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
-        {
-            return ToByte();
         }
     }
 }

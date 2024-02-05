@@ -26,7 +26,7 @@ namespace umi3d.edk
     /// Manager for the UMI3D server.
     /// </summary>
     /// Management of users is performed by the server.
-    public class UMI3DServer : SingleBehaviour<UMI3DServer>
+    public class UMI3DServer : SingleBehaviour<UMI3DServer>, IUMI3DServer
     {
         /// <summary>
         /// IP of the UMI3D server.
@@ -122,11 +122,11 @@ namespace umi3d.edk
         }*/
 
         /// <summary>
-        /// Return a <see cref="ForgeConnectionDto"/> with essential info for connection. 
+        /// Return a <see cref="EnvironmentConnectionDto"/> with essential info for connection. 
         /// Warning : returns null.
         /// </summary>
         /// <returns></returns>
-        public virtual ForgeConnectionDto ToDto()
+        public virtual EnvironmentConnectionDto ToDto()
         {
             return null;
         }
@@ -209,20 +209,8 @@ namespace umi3d.edk
             if (Exists) Instance._Dispatch(transaction);
         }
 
-        /// <summary>
-        /// Send a <see cref="DispatchableRequest"/> to all clients.
-        /// </summary>
-        /// <param name="transaction"></param>
-        public static void Dispatch(DispatchableRequest dispatchableRequest)
-        {
-            if (Exists) Instance._Dispatch(dispatchableRequest);
-        }
-
         //? empty ?
         protected virtual void _Dispatch(Transaction transaction)
-        {
-        }
-        protected virtual void _Dispatch(DispatchableRequest dispatchable)
         {
         }
 
@@ -236,16 +224,16 @@ namespace umi3d.edk
         }
 
         #region session
-        public UMI3DUserEvent OnUserJoin = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserRegistered = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserCreated = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserRecreated = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserReady = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserAway = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserMissing = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserActive = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserLeave = new UMI3DUserEvent();
-        public UMI3DUserEvent OnUserUnregistered = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserJoin { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserRegistered { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserCreated { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserRecreated { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserReady { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserAway { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserMissing { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserActive { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserLeave { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserUnregistered { get; protected set; } = new UMI3DUserEvent();
         #endregion
     }
 }

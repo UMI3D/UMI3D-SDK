@@ -25,6 +25,6 @@ namespace umi3d.common
         /// <summary>
         /// Scene as a serialized glTF file with extensions.
         /// </summary>
-        public ResourceDto scene;
+        public ResourceDto scene { get; set; }
     }
 }

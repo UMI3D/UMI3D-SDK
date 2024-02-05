@@ -58,10 +58,10 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write(url);
+            return base.ToBytes(user)
+                + UMI3DSerializer.Write(url);
         }
 
         /// <inheritdoc/>
@@ -78,12 +78,12 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (interactionId)
             {
                 case UMI3DOperationKeys.LinkOpened:
-                    onLinkUsed.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType));
+                    onLinkUsed.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");

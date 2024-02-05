@@ -105,10 +105,10 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
             var nodeDto = dto as UMI3DSceneNodeDto;
             if (nodeDto == null) return;
-            nodeDto.position = objectPosition.GetValue(user);
-            nodeDto.scale = objectScale.GetValue(user);
-            nodeDto.rotation = objectRotation.GetValue(user);
-            nodeDto.LibrariesId = libraries.Select(l => { return l.id; }).ToList();
+            nodeDto.position = objectPosition.GetValue(user).Dto();
+            nodeDto.scale = objectScale.GetValue(user).Dto();
+            nodeDto.rotation = objectRotation.GetValue(user).Dto();
+            nodeDto.LibrariesId = libraries.Select(l => { return l.idVersion; }).ToList();
             nodeDto.otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(e => e.ToEntityDto(user)).ToList();
             nodeDto.otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(e => e.ToEntityDto(user)));
         }
@@ -124,14 +124,14 @@ namespace umi3d.edk
             Vector3 position = objectPosition.GetValue(user);
             Vector3 scale = objectScale.GetValue(user);
             Quaternion rotation = objectRotation.GetValue(user);
-            var LibrariesId = libraries.Select(l => { return l.id; }).ToList();
+            var LibrariesId = libraries.Select(l => { return l.idVersion; }).ToList();
 
             return
                 base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(position)
-                + UMI3DNetworkingHelper.Write(scale)
-                + UMI3DNetworkingHelper.Write(rotation)
-                + UMI3DNetworkingHelper.Write(LibrariesId)
+                + UMI3DSerializer.Write(position)
+                + UMI3DSerializer.Write(scale)
+                + UMI3DSerializer.Write(rotation)
+                + UMI3DSerializer.Write(LibrariesId)
                 + f;
         }
 
@@ -147,6 +147,11 @@ namespace umi3d.edk
         [HideInInspector]
         public List<ulong> animationIds = new List<ulong>();
 
+        /// <summary>
+        /// UMI3D ids of <see cref="UMI3DAbstractAnimation"/> that are required for the scene.
+        /// </summary>
+        [HideInInspector]
+        public List<ulong> poseOverriderContainerIds = new List<ulong>();
         /// <summary>
         /// <see cref="MaterialSO"/> that are required for the scene.
         /// </summary>
@@ -170,6 +175,7 @@ namespace umi3d.edk
             //Clear materials lists
             materialIds.Clear();
             animationIds.Clear();
+            poseOverriderContainerIds.Clear();
 
             materialIds.AddRange(PreloadedMaterials.Select(m => ((AbstractEntityDto)m.ToDto().extensions.umi3d).id));
             materialSOs.AddRange(PreloadedMaterials);
@@ -188,7 +194,6 @@ namespace umi3d.edk
 
                 //Add them to the glTF scene
                 scene.materials.AddRange(materials);
-                materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
 
                 //remember their ids
                 materialIds.AddRange(materials.Select(m => ((AbstractEntityDto)m.extensions.umi3d).id));
@@ -200,6 +205,8 @@ namespace umi3d.edk
                 //remember their ids
                 animationIds.AddRange(animations.Select(a => a.id));
             }
+
+            materialSOs = UMI3DEnvironment.GetEntities<MaterialSO>().ToList();
         }
 
         /// <inheritdoc/>

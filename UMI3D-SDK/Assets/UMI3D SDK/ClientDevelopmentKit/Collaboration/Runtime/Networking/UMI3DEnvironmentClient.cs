@@ -20,8 +20,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.pose;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using UnityEngine;
 using UnityEngine.Events;
@@ -60,7 +61,12 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Data for connection through the Forge server.
         /// </summary>
-        public readonly ForgeConnectionDto connectionDto;
+        public readonly EnvironmentConnectionDto connectionDto;
+
+        /// <summary>
+        /// Computed version of the environment
+        /// </summary>
+        public readonly UMI3DVersion.Version version;
 
         private readonly UMI3DWorldControllerClient worldControllerClient;
 
@@ -157,14 +163,14 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public class UserInfo
         {
-            public FormDto formdto;
+            public ConnectionFormDto formdto;
             public UserConnectionAnswerDto answerDto;
 
             public string AudioPassword;
 
             public UserInfo()
             {
-                formdto = new FormDto();
+                formdto = new ConnectionFormDto();
                 answerDto = new UserConnectionAnswerDto();
                 AudioPassword = null;
 
@@ -173,8 +179,32 @@ namespace umi3d.cdk.collaboration
             public void Set(UserConnectionDto dto)
             {
                 FormAnswerDto param = this.answerDto.parameters;
-                this.answerDto = new UserConnectionAnswerDto(dto)
+                this.answerDto = new UserConnectionAnswerDto()
                 {
+                    id = dto.id,
+                    login = dto.login,
+                    status = dto.status,
+
+                    audioSourceId = dto.audioSourceId,
+                    audioFrequency = dto.audioFrequency,
+                    videoSourceId = dto.videoSourceId,
+                    networkId = dto.networkId,
+
+                    microphoneStatus = dto.microphoneStatus,
+                    avatarStatus = dto.avatarStatus,
+                    attentionRequired = dto.attentionRequired,
+
+                    audioChannel = dto.audioChannel,
+                    audioServerUrl = dto.audioServerUrl,
+                    audioLogin = dto.audioLogin,
+                    audioUseMumble = dto.audioUseMumble,
+
+                    onStartSpeakingAnimationId = dto.onStartSpeakingAnimationId,
+                    onStopSpeakingAnimationId = dto.onStopSpeakingAnimationId,
+                    language = dto.language,
+
+                    librariesUpdated = dto.librariesUpdated,
+
                     parameters = param
                 };
                 this.formdto = dto.parameters;
@@ -188,18 +218,19 @@ namespace umi3d.cdk.collaboration
         public UserInfo UserDto = new UserInfo();
 
 
-        public UMI3DEnvironmentClient(ForgeConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient, MultiProgress progress)
+        public UMI3DEnvironmentClient(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient, MultiProgress progress)
         {
             this.isJoinning = false;
             this.isConnecting = false;
             this.isConnected = false;
             this.disconected = false;
             this.connectionDto = connectionDto;
+            this.version = new UMI3DVersion.Version(connectionDto.version);
             this.worldControllerClient = worldControllerClient;
 
             this.progress = progress;
             this.libraryProgress = new MultiProgress("Download libraries");
-            this.joinProgress = new MultiProgress("Joinning Environment");
+            this.joinProgress = new MultiProgress("Joining Environment");
             progress.Add(libraryProgress);
             progress.Add(joinProgress);
 
@@ -528,9 +559,8 @@ namespace umi3d.cdk.collaboration
 
         private async void Join(MultiProgress progress)
         {
-            //UMI3DLogger.Log($"Join {joinning} {connected}", scope | DebugScope.Connection);
             libraryProgress.SetAsCompleted();
-            Progress PostJoinProgress = new Progress(2, "Joinning Environment");
+            Progress PostJoinProgress = new Progress(2, "Joining Environment");
             MultiProgress EnterProgress = new MultiProgress("Entering Environment");
             progress.Add(PostJoinProgress);
             progress.Add(EnterProgress);
@@ -541,14 +571,17 @@ namespace umi3d.cdk.collaboration
 
             var joinDto = new JoinDto()
             {
-                trackedBonetypes = UMI3DClientUserTrackingBone.instances.Values.Select(trackingBone => new KeyValuePair<uint, bool>(trackingBone.boneType, trackingBone.isTracked)).ToDictionary(x => x.Key, x => x.Value),
-                userSize = UMI3DClientUserTracking.Instance.skeletonContainer.localScale,
+                clientLocalPoses = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses.Select(d => d.ToPoseDto()).ToList(),
+                userSize = PersonalSkeletonManager.Instance.PersonalSkeleton.Transform.localScale.Dto(),
+                hasHeadMountedDisplay = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasHeadMountedDisplay,
+                bonesWithController = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.BonesWithControllers.ToList(),
+                hasImmersiveDevice = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice,
             };
             try
             {
                 PostJoinProgress.AddComplete();
                 EnterDto enter = await HttpClient.SendPostJoin(joinDto);
-                PostJoinProgress.AddAndSetStatus("Joinned Environment");
+                PostJoinProgress.AddAndSetStatus("Joined Environment");
                 isConnecting = false;
                 isConnected = true;
                 await EnterScene(enter, EnterProgress);

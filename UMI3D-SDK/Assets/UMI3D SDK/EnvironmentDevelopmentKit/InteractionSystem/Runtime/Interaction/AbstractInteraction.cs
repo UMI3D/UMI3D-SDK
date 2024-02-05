@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using BeardedManStudios.Forge.Networking.Unity;
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -28,8 +29,10 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Abstract UMI3D interaction. Base class for all interactions.
     /// </summary>
-    public abstract class AbstractInteraction : MonoBehaviour, UMI3DMediaEntity, IBytable
+    public abstract class AbstractInteraction : MonoBehaviour, UMI3DLoadableEntity
     {
+
+        public event Action<ulong> onHasRegistered;
 
         /// <summary>
         /// Class for event rising on Interaction. 
@@ -52,6 +55,14 @@ namespace umi3d.edk.interaction
             /// </summary>
             public uint boneType { get; private set; }
             /// <summary>
+            /// The global position of the bone use to performe the interaction.
+            /// </summary>
+            public Vector3Dto bonePosition { get; private set; }
+            /// <summary>
+            /// The global rotation of the bone use to performe the interaction.
+            /// </summary>
+            public Vector4Dto boneRotation { get; private set; }
+            /// <summary>
             /// The id of the currently hoverred object.
             /// It will be always null for an Interaction inside a Tool.
             /// For an Interaction inside an Interactable, it could be the Id of the Interactable associated object, or the Id of a sub-object if Interaction.notifyHoverPosition == true.
@@ -73,24 +84,37 @@ namespace umi3d.edk.interaction
                 hoveredId = dto.hoveredObjectId;
                 toolId = dto.toolId;
                 interactionId = dto.id;
+                bonePosition = dto.bonePosition;
+                boneRotation = dto.boneRotation;
             }
 
-            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType)
+            public InteractionEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation)
             {
                 this.user = user;
                 this.boneType = boneType;
                 this.hoveredId = hoveredObjectId;
                 this.toolId = toolId;
                 this.interactionId = id;
+                this.bonePosition = bonePosition;
+                this.boneRotation = boneRotation;
             }
         }
 
         #region properties
+        public UMI3DAsyncProperty<UIRect> ObjectUIRect { get { Register(); return _objectUIRect; } protected set => _objectUIRect = value; }
+
+        private UMI3DAsyncProperty<UIRect> _objectUIRect;
+
+        /// <summary>
+        /// Link an ui rect to an interactable.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Check this box if a collider is attached to that node.")]
+        public UIRect UILink = null;
 
         /// <summary>
         /// Indicates if the interaction is part of another.
         /// </summary>
-        [HideInInspector] 
+        [HideInInspector]
         public bool IsSubInteraction = false;
 
         /// <summary>
@@ -126,6 +150,7 @@ namespace umi3d.edk.interaction
             {
                 interactionId = UMI3DEnvironment.Register(this);
                 InitDefinition(interactionId);
+                onHasRegistered?.Invoke(interactionId);
             }
         }
 
@@ -154,6 +179,9 @@ namespace umi3d.edk.interaction
             });
             interactionId = id;
             inited = true;
+
+            ObjectUIRect = new UMI3DAsyncProperty<UIRect>(id, UMI3DPropertyKeys.Interaction_UI_Link, UILink, null, (o, u) => o.Equals(u));
+
         }
 
         #endregion
@@ -177,7 +205,7 @@ namespace umi3d.edk.interaction
         /// <param name="request">Interaction request</param>
         public abstract void OnUserInteraction(UMI3DUser user, InteractionRequestDto request);
 
-        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container);
+        public abstract void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container);
 
         /// <summary>
         /// Convert interaction to Data Transfer Object for a given user. 
@@ -210,6 +238,7 @@ namespace umi3d.edk.interaction
             dto.icon3D = Display.icon3D.ToDto();
             dto.id = Id();
             dto.description = Display.description;
+            dto.uiLinkId = ObjectUIRect.GetValue(user)?.Id() ?? 0;
         }
 
         /// <summary>
@@ -223,28 +252,47 @@ namespace umi3d.edk.interaction
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        public virtual Bytable ToByte(UMI3DUser user)
+        public virtual Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DNetworkingHelper.Write(GetInteractionKey())
-                    + UMI3DNetworkingHelper.Write(Id())
-                    + UMI3DNetworkingHelper.Write(Display.name)
+            return UMI3DSerializer.Write(GetInteractionKey())
+                    + UMI3DSerializer.Write(Id())
+                    + UMI3DSerializer.Write(Display.name)
                     + Display.icon2D.ToByte()
                     + Display.icon3D.ToByte()
-                    + UMI3DNetworkingHelper.Write(Display.description);
+                    + UMI3DSerializer.Write(Display.description);
         }
 
         /// <inheritdoc/>
-        Bytable IBytable.ToBytableArray(params object[] parameters)
+        public Bytable ToBytableArray(params object[] parameters)
         {
             if (parameters.Length < 1)
-                return ToByte(null);
-            return ToByte(parameters[0] as UMI3DUser);
+                return ToBytes(null);
+            return ToBytes(parameters[0] as UMI3DUser);
         }
 
-        /// <inheritdoc/>
-        bool IBytable.IsCountable()
+        public LoadEntity GetLoadEntity(HashSet<UMI3DUser> users = null)
         {
-            return true;
+            var operation = new LoadEntity()
+            {
+                entities = new List<UMI3DLoadableEntity>() { this },
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+            };
+            return operation;
+        }
+
+        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        {
+            var operation = new DeleteEntity()
+            {
+                entityId = Id(),
+                users = users != null ? new HashSet<UMI3DUser>(users) : UMI3DServer.Instance.UserSetWhenHasJoined()
+            };
+            return operation;
+        }
+
+        public IEntity ToEntityDto(UMI3DUser user)
+        {
+            return ToDto(user);
         }
 
         #region filter

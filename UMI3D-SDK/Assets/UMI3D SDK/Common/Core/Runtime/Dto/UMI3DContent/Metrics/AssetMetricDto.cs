@@ -25,13 +25,11 @@ namespace umi3d.common
         /// <summary>
         /// Arbitrary level of resolution from low to higher resolution.
         /// </summary>
-        public int resolution = 1;
+        public int resolution { get; set; } = 1;
 
         /// <summary>
         /// File size in Mb.
         /// </summary>
-        public float size = 0f;
-
-        public AssetMetricDto() : base() { }
+        public float size { get; set; } = 0f;
     }
 }

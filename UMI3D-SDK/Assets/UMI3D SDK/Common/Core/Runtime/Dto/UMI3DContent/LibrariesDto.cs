@@ -29,6 +29,6 @@ namespace umi3d.common
         /// <summary>
         /// Libraries are package of assets that are loaded by a user at the connection, if they do not already possess it.
         /// </summary>
-        public List<AssetLibraryDto> libraries;
+        public List<AssetLibraryDto> libraries { get; set; }
     }
 }

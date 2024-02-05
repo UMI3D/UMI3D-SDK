@@ -192,7 +192,7 @@ namespace umi3d.edk
             var textDto = dto as UITextDto;
             textDto.alignment = Alignment.GetValue(user).Convert();
             textDto.alignByGeometry = AlignByGeometry.GetValue(user);
-            textDto.color = TextColor.GetValue(user);
+            textDto.color = TextColor.GetValue(user).Dto();
             textDto.font = TextFont.GetValue(user).name;
             textDto.fontSize = FontSize.GetValue(user);
             textDto.fontStyle = FontStyle.GetValue(user).Convert();
@@ -214,20 +214,20 @@ namespace umi3d.edk
             if (text != null && text.Length > 0 && text[text.Length - 1] == '\\') text += " ";
 
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write((int)Alignment.GetValue(user).Convert())
-                + UMI3DNetworkingHelper.Write(AlignByGeometry.GetValue(user))
-                + UMI3DNetworkingHelper.Write(TextColor.GetValue(user))
-                + UMI3DNetworkingHelper.Write(TextFont.GetValue(user).name)
-                + UMI3DNetworkingHelper.Write(FontSize.GetValue(user))
-                + UMI3DNetworkingHelper.Write((int)FontStyle.GetValue(user).Convert())
-                + UMI3DNetworkingHelper.Write((int)HorizontalOverflow.GetValue(user).Convert())
-                + UMI3DNetworkingHelper.Write(LineSpacing.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ResizeTextForBestFit.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ResizeTextMaxSize.GetValue(user))
-                + UMI3DNetworkingHelper.Write(ResizeTextMinSize.GetValue(user))
-                + UMI3DNetworkingHelper.Write(SupportRichText.GetValue(user))
-                + UMI3DNetworkingHelper.Write(text)
-                + UMI3DNetworkingHelper.Write((int)VerticalOverflow.GetValue(user).Convert());
+                + UMI3DSerializer.Write((int)Alignment.GetValue(user).Convert())
+                + UMI3DSerializer.Write(AlignByGeometry.GetValue(user))
+                + UMI3DSerializer.Write(TextColor.GetValue(user))
+                + UMI3DSerializer.Write(TextFont.GetValue(user).name)
+                + UMI3DSerializer.Write(FontSize.GetValue(user))
+                + UMI3DSerializer.Write((int)FontStyle.GetValue(user).Convert())
+                + UMI3DSerializer.Write((int)HorizontalOverflow.GetValue(user).Convert())
+                + UMI3DSerializer.Write(LineSpacing.GetValue(user))
+                + UMI3DSerializer.Write(ResizeTextForBestFit.GetValue(user))
+                + UMI3DSerializer.Write(ResizeTextMaxSize.GetValue(user))
+                + UMI3DSerializer.Write(ResizeTextMinSize.GetValue(user))
+                + UMI3DSerializer.Write(SupportRichText.GetValue(user))
+                + UMI3DSerializer.Write(text)
+                + UMI3DSerializer.Write((int)VerticalOverflow.GetValue(user).Convert());
         }
     }
 }

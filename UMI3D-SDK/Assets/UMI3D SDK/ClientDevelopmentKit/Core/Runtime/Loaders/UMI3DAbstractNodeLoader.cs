@@ -24,8 +24,36 @@ namespace umi3d.cdk
     /// <summary>
     /// Loader for <see cref="UMI3DAbstractNodeDto"/>.
     /// </summary>
-    public class UMI3DAbstractNodeLoader
+    public class UMI3DAbstractNodeLoader : AbstractLoader
     {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
+        #region Dependency Injection
+
+        protected readonly IEnvironmentManager environmentManager;
+        protected readonly ILoadingManager loadingManager;
+
+        public UMI3DAbstractNodeLoader() : base()
+        {
+            environmentManager = UMI3DEnvironmentLoader.Instance;
+            loadingManager = UMI3DEnvironmentLoader.Instance;
+        }
+
+        public UMI3DAbstractNodeLoader(IEnvironmentManager environmentManager,
+                                       ILoadingManager loadingManager)
+        {
+            this.environmentManager = environmentManager;
+            this.loadingManager = loadingManager;
+        }
+
+        #endregion Dependency Injection
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is UMI3DAbstractNodeDto;
+        }
+
         /// <summary>
         /// Load an abstract node dto.
         /// </summary>
@@ -33,29 +61,29 @@ namespace umi3d.cdk
         /// <param name="node">gameObject on which the abstract node will be loaded.</param>
         /// <param name="finished">Finish callback.</param>
         /// <param name="failed">error callback.</param>
-        public virtual async Task ReadUMI3DExtension(UMI3DDto dto, GameObject node)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            var nodeDto = dto as UMI3DAbstractNodeDto;
-            if (node == null)
+            var nodeDto = data.dto as UMI3DAbstractNodeDto;
+            if (data.node == null)
                 throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
-            
-            if (dto != null)
+
+            if (data.dto != null)
             {
                 if (nodeDto.pid != 0)
                 {
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.pid, e =>
+                    loadingManager.WaitUntilEntityLoaded(nodeDto.pid, e =>
                     {
                         if (e is UMI3DNodeInstance instance)
                         {
-                            var nodeInstance = UMI3DEnvironmentLoader.GetEntity(nodeDto.pid) as UMI3DNodeInstance;
+                            var nodeInstance = environmentManager.TryGetEntityInstance(nodeDto.pid) as UMI3DNodeInstance;
                             if ( nodeInstance != null && nodeInstance.mainInstance != null)
                             {
-                                node.transform.SetParent(nodeInstance.mainInstance.transform, false);
+                                data.node.transform.SetParent(nodeInstance.mainInstance.transform, false);
                             }
                             else
-                                node.transform.SetParent(instance.transform, false);
+                                data.node.transform.SetParent(instance.transform, false);
 
-                            ModelTracker modelTracker = node.GetComponentInParent<ModelTracker>();
+                            ModelTracker modelTracker = data.node.GetComponentInParent<ModelTracker>();
                             if(modelTracker != null && modelTracker.areSubObjectTracked)
                             {
                                 modelTracker.RebindAnimators();
@@ -66,14 +94,14 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    node.transform.SetParent(UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null, false);
+                    data.node.transform.SetParent(environmentManager.transform, false);
                 }
 
-                if (node.activeSelf != nodeDto.active)
-                    node.SetActive(nodeDto.active);
+                if (data.node.activeSelf != nodeDto.active)
+                    data.node.SetActive(nodeDto.active);
 
-                if (nodeDto.isStatic != node.isStatic)
-                    node.isStatic = nodeDto.isStatic;
+                if (nodeDto.isStatic != data.node.isStatic)
+                    data.node.isStatic = nodeDto.isStatic;
             }
         }
 
@@ -83,29 +111,29 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            var node = entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null) return false;
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
-            switch (property.property)
+            switch (data.property.property)
             {
                 case UMI3DPropertyKeys.Static:
-                    dto.isStatic = (bool)property.value;
+                    dto.isStatic = (bool)data.property.value;
                     if (dto.isStatic != node.gameObject.isStatic)
                         node.gameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
-                    dto.active = (bool)property.value;
+                    dto.active = (bool)data.property.value;
                     if (node.gameObject.activeSelf != dto.active)
                         node.gameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    ulong pid = dto.pid = (ulong)(long)property.value;
-                    UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                    ulong pid = dto.pid = (ulong)(long)data.property.value;
+                    UMI3DNodeInstance parent = environmentManager.GetNodeInstance(pid);
+                    node.transform.SetParent(parent != null ? parent.transform : environmentManager.transform);
                     if(parent != null)
                     {
                         ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();
@@ -122,18 +150,18 @@ namespace umi3d.cdk
             return true;
         }
 
-        public virtual bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.Active:
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    data.result = UMI3DSerializer.Read<bool>(data.container);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
+                    data.result = UMI3DSerializer.Read<ulong>(data.container);
                     break;
                 default:
                     return false;
@@ -147,29 +175,29 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value.</param>
         /// <returns></returns>
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            var node = entity as UMI3DNodeInstance;
+            var node = data.entity as UMI3DNodeInstance;
             if (node == null) return false;
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DAbstractNodeDto;
             if (dto == null) dto = (node.dto as GlTFSceneDto)?.extensions?.umi3d;
             if (dto == null) return false;
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.Static:
-                    dto.isStatic = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.isStatic = UMI3DSerializer.Read<bool>(data.container);
                     if (dto.isStatic != node.gameObject.isStatic)
                         node.gameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
-                    dto.active = UMI3DNetworkingHelper.Read<bool>(container);
+                    dto.active = UMI3DSerializer.Read<bool>(data.container);
                     if (node.gameObject.activeSelf != dto.active)
                         node.gameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
-                    ulong pid = dto.pid = UMI3DNetworkingHelper.Read<ulong>(container);
+                    ulong pid = dto.pid = UMI3DSerializer.Read<ulong>(data.container);
                     UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
-                    node.transform.SetParent(parent != null ? parent.transform : UMI3DEnvironmentLoader.Exists ? UMI3DEnvironmentLoader.Instance.transform : null);
+                    node.transform.SetParent(parent != null ? parent.transform : environmentManager.transform);
                     if (parent != null)
                     {
                         ModelTracker modelTracker = node.transform.GetComponentInParent<ModelTracker>();

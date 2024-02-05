@@ -24,17 +24,17 @@ namespace umi3d.common
         /// <summary>
         /// Video ressource to be played.
         /// </summary>
-        public ResourceDto videoResource;
+        public ResourceDto videoResource { get; set; }
 
         /// <summary>
         /// UMI3D id of the material on which the video texture is applied.
         /// </summary>
-        public ulong materialId;
+        public ulong materialId { get; set; }
 
         /// <summary>
         /// UMI3D id of the audio played during the video.
         /// </summary>
-        public ulong audioId;
+        public ulong audioId { get; set; }
 
     }
 }

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     /// <summary>
@@ -25,11 +27,22 @@ namespace umi3d.common
         /// <summary>
         /// Node where the animator can be found on.
         /// </summary>
-        public ulong nodeId = 0;
+        public ulong nodeId { get; set; } = 0;
 
         /// <summary>
         /// Animation state's name in the animator controller.
+        /// If Animator is handeling the state itself, stateName should be set at empty string. 
         /// </summary>
-        public string stateName = "";
+        public string stateName { get; set; } = "";
+
+        /// <summary>
+        /// Animation normalized time at start. 
+        /// </summary>
+        public float normalizedTime { get; set; } = 0f;
+
+        /// <summary>
+        /// Animator parameters.
+        /// </summary>
+        public Dictionary<string, object> parameters { get; set; } = new Dictionary<string, object>();
     }
 }

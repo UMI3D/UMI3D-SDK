@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System;
+using System.ComponentModel;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -26,46 +28,85 @@ namespace umi3d.cdk
     [CreateAssetMenu(fileName = "DefaultNotificationLoader", menuName = "UMI3D/Default Notification Loader")]
     public class NotificationLoader : ScriptableObject
     {
-        /// <summary>
-        /// Load a notification.
-        /// </summary>
-        /// <param name="dto"></param>
-        public virtual void Load(NotificationDto dto)
+        public virtual AbstractLoader GetNotificationLoader()
         {
+            return new InternalNotificationLoader();
+        }
+    }
+
+    public class InternalNotificationLoader : AbstractLoader
+    {
+        UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
+        public override UMI3DVersion.VersionCompatibility version => _version;
+
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is NotificationDto;
+        }
+
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            var dto = value.dto as NotificationDto;
             UMI3DEnvironmentLoader.RegisterEntityInstance(dto.id, dto, null).NotifyLoaded();
         }
 
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            var dto = entity.dto as NotificationDto;
+            var dto = value.entity.dto as NotificationDto;
             if (dto == null) return false;
-            switch (property.property)
+            switch (value.property.property)
             {
                 case UMI3DPropertyKeys.NotificationTitle:
-                    dto.title = (string)property.value;
+                    dto.title = (string)value.property.value;
                     break;
                 case UMI3DPropertyKeys.NotificationContent:
-                    dto.content = (string)property.value;
+                    dto.content = (string)value.property.value;
                     break;
                 case UMI3DPropertyKeys.NotificationDuration:
-                    dto.duration = (float)(Double)property.value;
+                    dto.duration = (float)(Double)value.property.value;
                     break;
                 case UMI3DPropertyKeys.NotificationIcon2D:
-                    dto.icon2D = (ResourceDto)property.value;
+                    dto.icon2D = (ResourceDto)value.property.value;
                     break;
                 case UMI3DPropertyKeys.NotificationIcon3D:
-                    dto.icon3D = (ResourceDto)property.value;
+                    dto.icon3D = (ResourceDto)value.property.value;
                     break;
                 case UMI3DPropertyKeys.NotificationObjectId:
                     var Odto = dto as NotificationOnObjectDto;
                     if (Odto == null) return false;
-                    Odto.objectId = (ulong)(long)property.value;
+                    Odto.objectId = (ulong)(long)value.property.value;
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            var dto = value.entity.dto as NotificationDto;
+            if (dto == null) return false;
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.NotificationTitle:
+                    dto.title = UMI3DSerializer.Read<string>(value.container);
+                    break;
+                case UMI3DPropertyKeys.NotificationContent:
+                    dto.content = UMI3DSerializer.Read<string>(value.container);
+                    break;
+                case UMI3DPropertyKeys.NotificationDuration:
+                    dto.duration = UMI3DSerializer.Read<float>(value.container);
+                    break;
+                case UMI3DPropertyKeys.NotificationIcon2D:
+                    dto.icon2D = UMI3DSerializer.Read<ResourceDto>(value.container);
+                    break;
+                case UMI3DPropertyKeys.NotificationIcon3D:
+                    dto.icon3D = UMI3DSerializer.Read<ResourceDto>(value.container);
+                    break;
+                case UMI3DPropertyKeys.NotificationObjectId:
+                    var Odto = dto as NotificationOnObjectDto;
+                    if (Odto == null) return false;
+                    Odto.objectId = UMI3DSerializer.Read<ulong>(value.container);
                     break;
                 default:
                     return false;
@@ -80,65 +121,27 @@ namespace umi3d.cdk
         /// <param name="propertyKey">UMI3D key of the property to update.</param>
         /// <param name="container">New value in a container.</param>
         /// <returns></returns>
-        public bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData value)
         {
-            switch (propertyKey)
+            switch (value.propertyKey)
             {
                 case UMI3DPropertyKeys.NotificationTitle:
-                    value = UMI3DNetworkingHelper.Read<string>(container);
+                    value.result = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationContent:
-                    value = UMI3DNetworkingHelper.Read<string>(container);
+                    value.result = UMI3DSerializer.Read<string>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationDuration:
-                    value = UMI3DNetworkingHelper.Read<float>(container);
+                    value.result = UMI3DSerializer.Read<float>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationIcon2D:
-                    value = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    value.result = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationIcon3D:
-                    value = UMI3DNetworkingHelper.Read<ResourceDto>(container);
+                    value.result = UMI3DSerializer.Read<ResourceDto>(value.container);
                     break;
                 case UMI3DPropertyKeys.NotificationObjectId:
-                    value = UMI3DNetworkingHelper.Read<ulong>(container);
-                    break;
-                default:
-                    return false;
-            }
-            return true;
-        }
-
-        /// <summary>
-        /// Update a property.
-        /// </summary>
-        /// <param name="entity">entity to be updated.</param>
-        /// <param name="property">property containing the new value.</param>
-        /// <returns></returns>
-        public virtual bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
-        {
-            var dto = entity.dto as NotificationDto;
-            if (dto == null) return false;
-            switch (propertyKey)
-            {
-                case UMI3DPropertyKeys.NotificationTitle:
-                    dto.title = UMI3DNetworkingHelper.Read<string>(container);
-                    break;
-                case UMI3DPropertyKeys.NotificationContent:
-                    dto.content = UMI3DNetworkingHelper.Read<string>(container);
-                    break;
-                case UMI3DPropertyKeys.NotificationDuration:
-                    dto.duration = UMI3DNetworkingHelper.Read<float>(container);
-                    break;
-                case UMI3DPropertyKeys.NotificationIcon2D:
-                    dto.icon2D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-                    break;
-                case UMI3DPropertyKeys.NotificationIcon3D:
-                    dto.icon3D = UMI3DNetworkingHelper.Read<ResourceDto>(container);
-                    break;
-                case UMI3DPropertyKeys.NotificationObjectId:
-                    var Odto = dto as NotificationOnObjectDto;
-                    if (Odto == null) return false;
-                    Odto.objectId = UMI3DNetworkingHelper.Read<ulong>(container);
+                    value.result = UMI3DSerializer.Read<ulong>(value.container);
                     break;
                 default:
                     return false;

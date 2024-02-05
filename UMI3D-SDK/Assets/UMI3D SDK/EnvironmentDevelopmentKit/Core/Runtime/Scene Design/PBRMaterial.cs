@@ -80,8 +80,8 @@ namespace umi3d.edk
             var extensions = new GlTFMaterialExtensions() { umi3d = textures.ToDto() };
             ((UMI3DMaterialDto)extensions.umi3d).shaderProperties = shaderProperties;
             ((UMI3DMaterialDto)extensions.umi3d).id = GetId();
-            extensions.KHR_texture_transform.offset = tilingOffset;
-            extensions.KHR_texture_transform.scale = tilingScale;
+            extensions.KHR_texture_transform.offset = tilingOffset.Dto();
+            extensions.KHR_texture_transform.scale = tilingScale.Dto();
             return new GlTFMaterialDto()
             {
                 alphaMode = alphaMode.ToString(),
@@ -89,12 +89,12 @@ namespace umi3d.edk
                 name = name,
                 pbrMetallicRoughness = new PBRMaterialDto()
                 {
-                    baseColorFactor = baseColorFactor,
+                    baseColorFactor = baseColorFactor.Dto(),
                     metallicFactor = metallicFactor,
                     roughnessFactor = roughnessFactor,
 
                 },
-                emissiveFactor = (Vector3)(Vector4)emissive,
+                emissiveFactor = ((Vector3)(Vector4)emissive).Dto(),
                 extensions = extensions
             };
         }
@@ -334,7 +334,7 @@ namespace umi3d.edk
             objectHeightTextureScale = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.HeightTextureScale, this.textures.heightTexture.scale, null, pCompare.FloatEquality);
             objectHeightTextureScale.OnValueChanged += (float f) => { textures.heightTexture.scale = f; };
 
-            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => new UMI3DShaderPropertyDto(o), null, (d) =>
+            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => UMI3DSerializerShaderModules.Create(o), null, (d) =>
             {
                 return new Dictionary<string, object>(d);
             });

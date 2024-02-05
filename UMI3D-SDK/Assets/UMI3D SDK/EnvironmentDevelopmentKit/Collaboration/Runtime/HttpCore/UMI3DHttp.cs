@@ -24,7 +24,7 @@ namespace umi3d.edk.collaboration
     /// <summary>
     /// Manager for the REST HTTP server.
     /// </summary>
-    public class UMI3DHttp : inetum.unityUtils.Singleton<UMI3DHttp>
+    public class UMI3DHttp : IDisposable
     {
 
         private readonly HttpServer httpsv;
@@ -47,42 +47,8 @@ namespace umi3d.edk.collaboration
 
             rootMapGET = new HttpRoutingUtil(typeof(HttpGet));
             rootMapPOST = new HttpRoutingUtil(typeof(HttpPost));
-
-            httpsv.OnGet += (object sender, HttpRequestEventArgs e) =>
-            {
-                if (!rootMapGET.TryProccessRequest(sender, e))
-                {
-                    string path = e.Request.RawUrl;
-                    WebSocketSharp.Net.HttpListenerResponse res = e.Response;
-                    if (path == "/")
-                        path += "index.html";
-
-                    byte[] content = httpsv.GetFile(path);
-                    if (content == null)
-                    {
-                        res.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotFound;
-                        return;
-                    }
-                    if (path.EndsWith(".html"))
-                    {
-                        res.ContentType = "text/html";
-                        res.ContentEncoding = Encoding.UTF8;
-                    }
-                    else if (path.EndsWith(".js"))
-                    {
-                        res.ContentType = "application/javascript";
-                        res.ContentEncoding = Encoding.UTF8;
-                    }
-                    res.WriteContent(content);
-                }
-            };
-
-            httpsv.OnPost += (object sender, HttpRequestEventArgs e) =>
-            {
-                if (!rootMapPOST.TryProccessRequest(sender, e))
-                {
-                }
-            };
+            httpsv.OnGet += OnGet;
+            httpsv.OnPost += OnPost;
 
             httpsv.Start();
             if (httpsv.IsListening)
@@ -90,6 +56,42 @@ namespace umi3d.edk.collaboration
                 Console.WriteLine("Listening on port {0}, and providing WebSocket services:", httpsv.Port);
                 foreach (string path in httpsv.WebSocketServices.Paths)
                     Console.WriteLine("- {0}", path);
+            }
+        }
+
+        private void OnPost(object sender, HttpRequestEventArgs e)
+        {
+            if (!rootMapPOST.TryProccessRequest(sender, e))
+            {
+            }
+        }
+
+        private void OnGet(object sender, HttpRequestEventArgs e)
+        {
+            if (!rootMapGET.TryProccessRequest(sender, e))
+            {
+                string path = e.Request.RawUrl;
+                WebSocketSharp.Net.HttpListenerResponse res = e.Response;
+                if (path == "/")
+                    path += "index.html";
+
+                byte[] content = httpsv.GetFile(path);
+                if (content == null)
+                {
+                    res.StatusCode = (int)WebSocketSharp.Net.HttpStatusCode.NotFound;
+                    return;
+                }
+                if (path.EndsWith(".html"))
+                {
+                    res.ContentType = "text/html";
+                    res.ContentEncoding = Encoding.UTF8;
+                }
+                else if (path.EndsWith(".js"))
+                {
+                    res.ContentType = "application/javascript";
+                    res.ContentEncoding = Encoding.UTF8;
+                }
+                res.WriteContent(content);
             }
         }
 
@@ -102,9 +104,16 @@ namespace umi3d.edk.collaboration
                 httpsv.Stop();
         }
 
-        protected override void _Destroy()
+        public void Dispose()
         {
             Stop();
+            if (httpsv != null)
+            {
+                httpsv.OnGet -= OnGet;
+                httpsv.OnPost -= OnPost;
+            }
+            rootMapGET = null;
+            rootMapPOST = null;
         }
     }
 }

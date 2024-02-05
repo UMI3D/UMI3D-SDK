@@ -21,8 +21,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
+using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration
@@ -99,16 +101,16 @@ namespace umi3d.cdk.collaboration
 
             try
             {
-                dto1 = UMI3DDto.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+                dto1 = UMI3DDtoSerializer.FromJson<PrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
             }
             catch (Exception)
             {
-                dto2 = UMI3DDto.FromJson<FakePrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+                dto2 = UMI3DDtoSerializer.FromJson<FakePrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
             }
 
-            ConnectionFormDto dto3 = UMI3DDto.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
+            ConnectionFormDto dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
 
-            if (dto1 != null && dto1?.GlobalToken != null && dto1?.connectionDto != null)
+            if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
                 return dto2.ToPrivateIdentity();
@@ -127,6 +129,95 @@ namespace umi3d.cdk.collaboration
             {
                 return objectType == typeof(AbstractParameterDto);
             }
+
+
+            public AbstractParameterDto ReadObjectArray(JObject obj, JToken tokenA)
+            {
+                switch (ReadObjectValue(obj))
+                {
+                    case Color col:
+                        return new EnumParameterDto<Color>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(objA => (Color)ReadObjectValue(objA as JObject)).ToList(),
+                            value = col
+                        };
+                    case Vector4 v4:
+                        return new EnumParameterDto<Vector4>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(objA => (Vector4)ReadObjectValue(objA as JObject)).ToList(),
+                            value = v4
+                        };
+                    case Vector3 v3:
+                        return new EnumParameterDto<Vector3>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(objA => (Vector3)ReadObjectValue(objA as JObject)).ToList(),
+                            value = v3
+                        };
+                    case Vector2 v2:
+                        return new EnumParameterDto<Vector2>()
+                        {
+                            possibleValues = tokenA.Values<object>().Select(objA => (Vector2)ReadObjectValue(objA as JObject)).ToList(),
+                            value = v2
+                        };
+                }
+                UnityEngine.Debug.LogError($"Missing case. {obj}");
+                return null;
+            }
+
+            public AbstractParameterDto ReadObject(JObject obj)
+            {
+                switch (ReadObjectValue(obj))
+                {
+                    case Color col:
+                        return new ColorParameterDto
+                        {
+                            value = col.Dto()
+                        };
+                    case Vector4 v4:
+                        return new Vector4ParameterDto
+                        {
+                            value = v4.Dto()
+                        };
+                    case Vector3 v3:
+                        return new Vector3ParameterDto
+                        {
+                            value = v3.Dto()
+                        };
+                    case Vector2 v2:
+                        return new Vector2ParameterDto
+                        {
+                            value = v2.Dto()
+                        };
+                }
+                UnityEngine.Debug.LogError($"Missing case. {obj}");
+                return null;
+            }
+
+            public object ReadObjectValue(JObject obj)
+            {
+                if (obj.TryGetValue("R", out JToken tokenR)
+                    && obj.TryGetValue("G", out JToken tokenG)
+                    && obj.TryGetValue("B", out JToken tokenB)
+                    && obj.TryGetValue("A", out JToken tokenA))
+                {
+                    return  new Color(tokenR.ToObject<float>(), tokenG.ToObject<float>(), tokenB.ToObject<float>(), tokenA.ToObject<float>());
+                }
+
+                if (obj.TryGetValue("X", out JToken tokenX)
+                    && obj.TryGetValue("Y", out JToken tokenY))
+                {
+                    if (obj.TryGetValue("Z", out JToken tokenZ))
+                    {
+                        if (obj.TryGetValue("W", out JToken tokenW))
+                            return  new Vector4(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>(), tokenW.ToObject<float>());
+                        return  new Vector3(tokenX.ToObject<float>(), tokenY.ToObject<float>(), tokenZ.ToObject<float>());
+                    }
+                    return  new Vector2(tokenX.ToObject<float>(), tokenY.ToObject<float>());
+                }
+                UnityEngine.Debug.LogError($"Missing case. {obj}");
+                return null;
+            }
+
 
             public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
             {
@@ -184,6 +275,16 @@ namespace umi3d.cdk.collaboration
                                     value = token.ToObject<int>()
                                 };
                             break;
+                        case JTokenType.Object:
+                            var obj = token.ToObject<object>() as JObject;
+                            if (isArray)
+                                dto = ReadObjectArray(obj, tokenA);
+                            else
+                                dto = ReadObject(obj);
+                            break;
+                        default:
+                            UnityEngine.Debug.LogError($"TODO Add Case for Color, Range or Vector 2 3 4. {token.Type}");
+                            break;
                     }
                 }
                 if (dto == null)
@@ -191,6 +292,8 @@ namespace umi3d.cdk.collaboration
 
                 if (jo.TryGetValue("privateParameter", out JToken tokenp))
                     dto.privateParameter = tokenp.ToObject<bool>();
+                if (jo.TryGetValue("isDisplayer", out JToken tokendisp))
+                    dto.isDisplayer = tokendisp.ToObject<bool>();
                 if (jo.TryGetValue("description", out JToken tokend))
                     dto.description = tokend.ToObject<string>();
                 if (jo.TryGetValue("id", out JToken tokeni))
@@ -221,8 +324,8 @@ namespace umi3d.cdk.collaboration
             {
                 return new PrivateIdentityDto()
                 {
-                    GlobalToken = GlobalToken,
-                    connectionDto = UMI3DDto.FromJson<ForgeConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
+                    globalToken = GlobalToken,
+                    connectionDto = UMI3DDtoSerializer.FromJson<EnvironmentConnectionDto>(connectionDto, Newtonsoft.Json.TypeNameHandling.None),
                     libraries = libraries,
                     localToken = localToken,
                     headerToken = headerToken,
@@ -268,7 +371,7 @@ namespace umi3d.cdk.collaboration
                     var b = uwr?.downloadHandler.data;
                     if(b != null)
                     {
-                        result = UMI3DDto.FromBson<PendingTransactionDto>(b);
+                        result = UMI3DDtoSerializer.FromBson<PendingTransactionDto>(b);
                     }
                 }
                 catch (Exception e)
@@ -355,7 +458,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
                 if (uwr?.downloadHandler.data == null) return null;
                 string json = System.Text.Encoding.UTF8.GetString(uwr.downloadHandler.data);
-                return UMI3DDto.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
+                return UMI3DDtoSerializer.FromJson<MediaDto>(json, Newtonsoft.Json.TypeNameHandling.None);
             }
         }
 

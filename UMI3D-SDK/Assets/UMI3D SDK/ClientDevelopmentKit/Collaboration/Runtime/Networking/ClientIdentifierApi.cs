@@ -32,7 +32,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>
-        public virtual async Task<FormAnswerDto> GetParameterDtos(FormDto parameter)
+        public virtual async Task<FormAnswerDto> GetParameterDtos(ConnectionFormDto parameter)
         {
             return await Task.FromResult(new FormAnswerDto()
             {

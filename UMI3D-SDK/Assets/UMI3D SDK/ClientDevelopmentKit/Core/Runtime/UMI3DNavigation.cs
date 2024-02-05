@@ -37,13 +37,31 @@ namespace umi3d.cdk
 
         public delegate void OnEmbarkVehicleDelegate(ulong vehicleId);
 
-        public static event OnEmbarkVehicleDelegate onEmbarkVehicleDelegate;
+        public static event OnEmbarkVehicleDelegate onUpdateFrameDelegate;
 
         // Start is called before the first frame update
         private void Start()
         {
             currentNav = navigations.FirstOrDefault();
             currentNav.Activate();
+        }
+
+        public static void SetFrame(FrameRequestDto frameRequest)
+        {
+            UnityEngine.Debug.LogError("Need to handle rescaling");
+            if (Exists && Instance.currentNav != null)
+            {
+                onUpdateFrameDelegate?.Invoke(frameRequest.FrameId);
+
+                Instance.currentNav.UpdateFrame(frameRequest);
+
+                var fConfirmation = new FrameConfirmationDto()
+                {
+                    userId = UMI3DClientServer.Instance.GetUserId()
+                };
+
+                UMI3DClientServer.SendRequest(fConfirmation, true);
+            }
         }
 
         /// <summary>
@@ -56,19 +74,6 @@ namespace umi3d.cdk
             {
                 switch (dto)
                 {
-                    case VehicleDto vehicleDto:
-                        onEmbarkVehicleDelegate?.Invoke(vehicleDto.VehicleId);
-
-                        Instance.currentNav.Embark(vehicleDto);
-
-                        var vConfirmation = new VehicleConfirmation()
-                        {
-                            embarkedUserId = UMI3DClientServer.Instance.GetUserId()
-                        };
-
-                        UMI3DClientServer.SendData(vConfirmation, true);
-
-                        break;
                     case TeleportDto teleportDto:
                         Instance.currentNav.Teleport(teleportDto);
                         break;

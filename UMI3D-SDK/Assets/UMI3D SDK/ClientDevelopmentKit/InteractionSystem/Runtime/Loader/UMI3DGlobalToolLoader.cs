@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
@@ -26,7 +27,7 @@ namespace umi3d.cdk.interaction
     /// <summary>
     /// Helper class that manages the loading of <see cref="GlobalTool"/> entities.
     /// </summary>
-    public static class UMI3DGlobalToolLoader
+    public class UMI3DGlobalToolLoader : UMI3DAbstractToolLoader
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Interaction | DebugScope.Loading;
 
@@ -62,18 +63,26 @@ namespace umi3d.cdk.interaction
 
         #endregion
 
+        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        {
+            return data.dto is GlobalToolDto;
+        }
+
+        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        {
+            return ReadUMI3DExtension(value.dto as GlobalToolDto, null);
+        }
+
         /// <summary>
         /// Reads the value of an <see cref="GlobalToolDto"/> and updates it.
         /// <br/> Part of the bytes networking workflow.
         /// </summary>
         /// <param name="dto">Tool dto</param>
-        /// <param name="finished">Callback on finished</param>
-        /// <param name="failed">Callback on failed</param>
-        public static async Task ReadUMI3DExtension(GlobalToolDto dto, Toolbox parent = null)
+        private static async Task ReadUMI3DExtension(GlobalToolDto dto, Toolbox parent)
         {
             if (GlobalTool.GetGlobalTools().Exists(t => t.id == dto.id))
                 return;
-            
+
             if (dto is ToolboxDto toolbox)
             {
                 var tool = new Toolbox(dto, parent);
@@ -86,42 +95,25 @@ namespace umi3d.cdk.interaction
                 onGlobalToolCreation?.Invoke(new GlobalTool(dto, parent));
         }
 
-        /// <summary>
-        /// Remove a <see cref="GlobalTool"/>.
-        /// </summary>
-        /// <param name="tool">Tool to remove dto</param>
-        public static void RemoveTool(GlobalToolDto tool)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            var t = GlobalTool.GetGlobalTool(tool.id);
-            t.Delete();
-            onGlobalToolDelete?.Invoke(t);
-        }
-
-        /// <summary>
-        /// Set the value of a <see cref="UMI3DEntityInstance"/> based on a received <see cref="SetEntityPropertyDto"/>.
-        /// </summary>
-        /// <param name="entity">Entity to update</param>
-        /// <param name="property">Operation dto</param>
-        /// <returns>True if the set operation was ssuccessful.</returns>
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
-        {
-            var dto = entity?.dto as GlobalToolDto;
+            var dto = data.entity?.dto as GlobalToolDto;
 
             if (dto == null)
                 return false;
 
-            if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, property))
+            if (await base.SetUMI3DProperty(data))
             {
                 onGlobalToolUpdate.Invoke(GlobalTool.GetGlobalTool(dto.id));
                 return true;
             }
 
-            switch (property.property)
+            switch (data.property.property)
             {
                 case UMI3DPropertyKeys.ToolboxTools:
                     var tb = Toolbox.GetToolbox(dto.id);
                     List<GlobalToolDto> list = tb.tools;
-                    switch (property)
+                    switch (data.property)
                     {
                         case SetEntityListAddPropertyDto add:
                             int ind = add.index;
@@ -135,7 +127,7 @@ namespace umi3d.cdk.interaction
                                 UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
                                 return false;
                             }
-                            ReadUMI3DExtension(value, null);
+                            await ReadUMI3DExtension(value, null);
                             break;
                         case SetEntityListRemovePropertyDto rem:
                             int i = rem.index;
@@ -151,9 +143,9 @@ namespace umi3d.cdk.interaction
                             foreach (GlobalToolDto t in list)
                                 RemoveTool(t);
                             list.Clear();
-                            list.AddRange(property.value as List<GlobalToolDto>);
+                            list.AddRange(data.property.value as List<GlobalToolDto>);
                             foreach (GlobalToolDto t in list)
-                                ReadUMI3DExtension(t, null);
+                                await ReadUMI3DExtension(t, null);
                             break;
                     }
                     onGlobalToolUpdate?.Invoke(tb);
@@ -163,33 +155,24 @@ namespace umi3d.cdk.interaction
             }
         }
 
-        /// <summary>
-        /// Set the value of a <see cref="UMI3DEntityInstance"/> based on a received <see cref="ByteContainer"/>. 
-        /// <br/> Part of the bytes networking workflow.
-        /// </summary>
-        /// <param name="entity">Entity to update</param>
-        /// <param name="operationId"></param>
-        /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
-        /// <param name="container">Received byte container</param>
-        /// <returns>True if property setting was successful</returns>
-        public static bool SetUMI3DProperty(UMI3DEntityInstance entity, uint operationId, uint propertyKey, ByteContainer container)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
-            var dto = entity?.dto as GlobalToolDto;
+            var dto = data.entity?.dto as GlobalToolDto;
             if (dto == null)
                 return false;
-            if (UMI3DAbstractToolLoader.SetUMI3DProperty(entity, operationId, propertyKey, container))
+            if (await base.SetUMI3DProperty(data))
                 return true;
 
-            switch (propertyKey)
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ToolboxTools:
                     var tb = Toolbox.GetToolbox(dto.id);
                     List<GlobalToolDto> list = tb.tools;
-                    switch (operationId)
+                    switch (data.operationId)
                     {
                         case UMI3DOperationKeys.SetEntityListAddProperty:
-                            int ind = UMI3DNetworkingHelper.Read<int>(container);
-                            GlobalToolDto value = UMI3DNetworkingHelper.Read<GlobalToolDto>(container);
+                            int ind = UMI3DSerializer.Read<int>(data.container);
+                            GlobalToolDto value = UMI3DSerializer.Read<GlobalToolDto>(data.container);
                             if (ind == list.Count)
                                 list.Add(value);
                             else if (ind < list.Count && ind >= 0)
@@ -199,25 +182,25 @@ namespace umi3d.cdk.interaction
                                 UMI3DLogger.LogWarning($"Add value ignore for {ind} in collection of size {list.Count}", scope);
                                 return false;
                             }
-                            ReadUMI3DExtension(value, null);
+                            await ReadUMI3DExtension(value, null);
                             break;
                         case UMI3DOperationKeys.SetEntityListRemoveProperty:
-                            int i = UMI3DNetworkingHelper.Read<int>(container);
+                            int i = UMI3DSerializer.Read<int>(data.container);
                             RemoveTool(tb.tools[i]);
                             list.RemoveAt(i);
                             break;
                         case UMI3DOperationKeys.SetEntityListProperty:
-                            int index = UMI3DNetworkingHelper.Read<int>(container);
-                            GlobalToolDto v = UMI3DNetworkingHelper.Read<GlobalToolDto>(container);
+                            int index = UMI3DSerializer.Read<int>(data.container);
+                            GlobalToolDto v = UMI3DSerializer.Read<GlobalToolDto>(data.container);
                             list[index] = v;
                             break;
                         default:
                             foreach (GlobalToolDto t in list)
                                 RemoveTool(t);
                             list.Clear();
-                            list.AddRange(UMI3DNetworkingHelper.ReadList<GlobalToolDto>(container));
+                            list.AddRange(UMI3DSerializer.ReadList<GlobalToolDto>(data.container));
                             foreach (GlobalToolDto t in list)
-                                ReadUMI3DExtension(t, null);
+                                await ReadUMI3DExtension(t, null);
                             break;
                     }
                     onGlobalToolUpdate?.Invoke(tb);
@@ -228,6 +211,19 @@ namespace umi3d.cdk.interaction
             }
         }
 
+
+
+        /// <summary>
+        /// Remove a <see cref="GlobalTool"/>.
+        /// </summary>
+        /// <param name="tool">Tool to remove dto</param>
+        public static void RemoveTool(GlobalToolDto tool)
+        {
+            var t = GlobalTool.GetGlobalTool(tool.id);
+            t.Delete();
+            onGlobalToolDelete?.Invoke(t);
+        }
+
         /// <summary>
         /// Reads the value of an unknown <see cref="object"/> based on a received <see cref="ByteContainer"/> and updates it.
         /// <br/> Part of the bytes networking workflow.
@@ -236,13 +232,13 @@ namespace umi3d.cdk.interaction
         /// <param name="propertyKey">Property to update key in <see cref="UMI3DPropertyKeys"/></param>
         /// <param name="container">Received byte container</param>
         /// <returns>True if property setting was successful</returns>
-        public static bool ReadUMI3DProperty(ref object value, uint propertyKey, ByteContainer container)
+        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
         {
-            if (UMI3DAbstractToolLoader.ReadUMI3DProperty(ref value, propertyKey, container)) return true;
-            switch (propertyKey)
+            if (await base.ReadUMI3DProperty(data)) return true;
+            switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ToolboxTools:
-                    value = UMI3DNetworkingHelper.ReadList<GlobalToolDto>(container);
+                    data.result = UMI3DSerializer.ReadList<GlobalToolDto>(data.container);
                     return true;
                 default:
                     return false;

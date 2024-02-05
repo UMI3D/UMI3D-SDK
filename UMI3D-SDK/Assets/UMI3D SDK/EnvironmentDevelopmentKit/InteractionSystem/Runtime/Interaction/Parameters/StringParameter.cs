@@ -66,10 +66,10 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override Bytable ToByte(UMI3DUser user)
+        public override Bytable ToBytes(UMI3DUser user)
         {
-            return base.ToByte(user)
-                + UMI3DNetworkingHelper.Write(value);
+            return base.ToBytes(user)
+                + UMI3DSerializer.Write(value);
         }
 
         /// <inheritdoc/>
@@ -96,18 +96,18 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.ParameterSettingRequest:
 
-                    uint parameterId = UMI3DNetworkingHelper.Read<uint>(container);
+                    uint parameterId = UMI3DSerializer.Read<uint>(container);
                     if (UMI3DParameterKeys.String == parameterId)
                     {
-                        UMI3DNetworkingHelper.Read<bool>(container);
-                        value = UMI3DNetworkingHelper.Read<string>(container);
-                        onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, value));
+                        UMI3DSerializer.Read<bool>(container);
+                        value = UMI3DSerializer.Read<string>(container);
+                        onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, value));
                     }
                     else
                     {

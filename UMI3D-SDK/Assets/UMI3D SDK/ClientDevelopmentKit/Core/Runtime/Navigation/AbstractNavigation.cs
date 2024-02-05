@@ -48,10 +48,23 @@ namespace umi3d.cdk
         public abstract void Teleport(TeleportDto data);
 
         /// <summary>
-        /// Apply teleport request from server.
+        /// Apply FrameRequestDto request from server.
         /// </summary>
         /// <param name="data"></param>
-        /// <seealso cref="Teleport(TeleportDto)"/>
-        public abstract void Embark(VehicleDto data);
+        public abstract void UpdateFrame(FrameRequestDto data);
+
+        /// <summary>
+        /// Get data on current movements of the user.
+        /// </summary>
+        /// <returns></returns>
+        public abstract NavigationData GetNavigationData();
+
+        public struct NavigationData
+        {
+            public Vector3Dto speed;
+            public bool grounded;
+            public bool jumping;
+            public bool crouching;
+        }
     }
 }

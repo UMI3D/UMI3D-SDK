@@ -16,7 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using umi3d.edk.interaction;
 using UnityEngine;
@@ -51,7 +51,7 @@ namespace umi3d.edk.collaboration
             {
                 foreach (ParameterSettingRequestDto dto in param.answers)
                 {
-                    AbstractInteraction interaction = UMI3DEnvironment.GetEntity<AbstractInteraction>(dto.id);
+                    AbstractInteraction interaction = UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(dto.id);
                     if (interaction is LocalInfoParameter local)
                         local.ChageUserLocalInfo(user, dto.parameter as LocalInfoRequestParameterValue);
                 }
@@ -63,7 +63,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         /// <param name="login">Login of the user.</param>
         /// <returns></returns>
-        public virtual FormDto GetParameterDtosFor(UMI3DCollaborationUser user)
+        public virtual ConnectionFormDto GetParameterDtosFor(UMI3DCollaborationUser user)
         {
             return null;
         }

@@ -60,6 +60,12 @@ namespace Mumble
             if (_pendingAudioVolume >= 0)
                 _audioSource.volume = _pendingAudioVolume;
             _pendingAudioVolume = -1f;
+
+            AudioSettings.OnAudioConfigurationChanged += (b) =>
+            {
+                if (_isPlaying)
+                    _audioSource.Play();
+            };
         }
         public string GetUsername()
         {
@@ -123,6 +129,7 @@ namespace Mumble
             }
         }
 
+        float[] monoSoundReceived;
         void OnAudioFilterRead(float[] data, int channels)
         {
             if (_mumbleClient == null || !_mumbleClient.ConnectionSetupFinished)
@@ -132,22 +139,41 @@ namespace Mumble
             {
                 return;
             }
-            //Debug.Log("Filter read for: " + GetUsername());
 
-            int numRead = _mumbleClient.LoadArrayWithVoiceData(Session, data, 0, data.Length);
+            int numRead;
+
+            if (channels == 1)
+            {
+                numRead = _mumbleClient.LoadArrayWithVoiceData(Session, data, 0, data.Length);
+            }
+            else
+            {
+                if (monoSoundReceived == null)
+                    monoSoundReceived = new float[data.Length / channels];
+
+                numRead = _mumbleClient.LoadArrayWithVoiceData(Session, monoSoundReceived, 0, monoSoundReceived.Length);
+
+                for (int i = 0; i < monoSoundReceived.Length; i++)
+                {
+                    for (int j = 0; j < channels; j++)
+                    {
+                        data[channels * i + j] = monoSoundReceived[i];
+                    }
+                }
+            }
+
             float percentUnderrun = 1f - numRead / data.Length;
 
             if (OnAudioSample != null)
                 OnAudioSample(data, percentUnderrun);
 
-            //Debug.Log("playing audio with avg: " + data.Average() + " and max " + data.Max());
             if (Gain == 1)
                 return;
 
             for (int i = 0; i < data.Length; i++)
                 data[i] = Mathf.Clamp(data[i] * Gain, -1f, 1f);
-            //Debug.Log("playing audio with avg: " + data.Average() + " and max " + data.Max());
         }
+
         public bool GetPositionData(out byte[] positionA, out byte[] positionB, out float distanceAB)
         {
             if (!_isPlaying)

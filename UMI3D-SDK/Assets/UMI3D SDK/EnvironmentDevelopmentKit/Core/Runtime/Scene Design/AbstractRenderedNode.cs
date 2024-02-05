@@ -128,10 +128,10 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(objectReceiveShadow.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectCastShadow.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
-                + UMI3DNetworkingHelper.WriteIBytableCollection(objectMaterialOverriders.GetValue(user));
+                + UMI3DSerializer.Write(objectReceiveShadow.GetValue(user))
+                + UMI3DSerializer.Write(objectCastShadow.GetValue(user))
+                + UMI3DSerializer.Write(objectActive.GetValue(user))
+                + UMI3DSerializer.WriteCollection(objectMaterialOverriders.GetValue(user));
         }
     }
 }

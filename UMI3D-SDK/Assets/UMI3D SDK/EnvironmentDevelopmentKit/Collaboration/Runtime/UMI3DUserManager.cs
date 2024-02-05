@@ -21,7 +21,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
-using umi3d.common.collaboration;
+using umi3d.common.collaboration.dto.signaling;
 using UnityEngine;
 using static umi3d.common.NotificationDto;
 
@@ -294,7 +294,6 @@ namespace umi3d.edk.collaboration
             else
             {
                 user = new UMI3DCollaborationUser(LoginDto);
-
                 UMI3DLogger.Log($"CreateUser() : {user.Id()} {user.login} new, create lock", scope);
                 lock (users)
                 {
@@ -379,7 +378,7 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequest dto)
+        public void CollaborationRequest(UMI3DUser user, ConferenceBrowserRequestDto dto)
         {
             var tr = new Transaction
             {
@@ -435,8 +434,8 @@ namespace umi3d.edk.collaboration
             switch (operationKey)
             {
                 case UMI3DOperationKeys.UserMicrophoneStatus:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
 
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].microphoneStatus.SetValue(value));
@@ -448,15 +447,15 @@ namespace umi3d.edk.collaboration
                     break;
 
                 case UMI3DOperationKeys.UserAvatarStatus:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
                     if (users.ContainsKey(id) && (!value || (user.Id() == id)))
                         tr.AddIfNotNull(users[id].avatarStatus.SetValue(value));
                     break;
 
                 case UMI3DOperationKeys.UserAttentionStatus:
-                    id = UMI3DNetworkingHelper.Read<ulong>(container);
-                    value = UMI3DNetworkingHelper.Read<bool>(container);
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
                     if (users.ContainsKey(id) && id == user.Id())
                         tr.AddIfNotNull(users[id].attentionRequired.SetValue(value));
                     break;
@@ -519,5 +518,7 @@ namespace umi3d.edk.collaboration
 
             return notif;
         }
+
+
     }
 }

@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -58,7 +60,10 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Contained tools.
         /// </summary>
-        public List<AbstractInteractionDto> interactions => abstractDto.interactions;
+        public List<ulong> interactionsId => abstractDto.interactions;
+        public List<Task<AbstractInteractionDto>> interactions => abstractDto.interactions.Select(inta => UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(inta,null)).Select(async node => (await node).dto as AbstractInteractionDto).ToList();
+
+        public List<AbstractInteractionDto> interactionsLoaded => abstractDto.interactions.Select(UMI3DEnvironmentLoader.GetEntity).Select(node => node.dto as AbstractInteractionDto).ToList();
 
         // could be removed if unity project version is 2020.1 or newer 
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }
@@ -98,7 +103,7 @@ namespace umi3d.cdk.interaction
                 boneType = boneType,
                 toolId = id
             };
-            UMI3DClientServer.SendData(projectedDto, true);
+            UMI3DClientServer.SendRequest(projectedDto, true);
         }
 
         public void onReleased(uint boneType)
@@ -109,7 +114,7 @@ namespace umi3d.cdk.interaction
                 boneType = boneType,
                 toolId = id
             };
-            UMI3DClientServer.SendData(releasedDto, true);
+            UMI3DClientServer.SendRequest(releasedDto, true);
         }
 
         protected AbstractTool(AbstractToolDto abstractDto)

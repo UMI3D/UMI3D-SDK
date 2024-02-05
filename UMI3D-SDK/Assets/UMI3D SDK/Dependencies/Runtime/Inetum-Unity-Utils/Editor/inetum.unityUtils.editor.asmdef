@@ -1,0 +1,19 @@
+{
+    "name": "inetum.unityUtils.editor",
+    "rootNamespace": "",
+    "references": [
+        "Unity.Addressables",
+        "inetum.unityUtils"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

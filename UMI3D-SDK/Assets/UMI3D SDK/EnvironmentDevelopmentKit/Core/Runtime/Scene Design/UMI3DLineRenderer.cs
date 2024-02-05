@@ -69,13 +69,13 @@ namespace umi3d.edk
         /// Color of the line.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Color of the start of the line.")]
-        protected SerializableColor startColor = Color.white;
+        protected ColorDto startColor = Color.white.Dto();
 
         /// <summary>
         /// Color of the line.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Color of the end of the line.")]
-        protected SerializableColor endColor = Color.white;
+        protected ColorDto endColor = Color.white.Dto();
 
         /// <summary>
         /// Line width on last point
@@ -151,10 +151,10 @@ namespace umi3d.edk
             objectLoop.OnValueChanged += b => loop = b;
             objectUseWorldSpace = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.LineUseWorldSpace, lineRenderer == null ? useWorldSpace : lineRenderer.useWorldSpace, (r, u) => r);
             objectUseWorldSpace.OnValueChanged += b => useWorldSpace = b;
-            objectStartColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineStartColor, lineRenderer == null ? (Color)startColor : lineRenderer.startColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c, u));
-            objectStartColor.OnValueChanged += c => startColor = c;
-            objectEndColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineEndColor, lineRenderer == null ? (Color)endColor : lineRenderer.endColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c, u));
-            objectEndColor.OnValueChanged += c => endColor = c;
+            objectStartColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineStartColor, lineRenderer == null ? startColor.Struct() : lineRenderer.startColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c, u));
+            objectStartColor.OnValueChanged += c => startColor = c.Dto();
+            objectEndColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.LineEndColor, lineRenderer == null ? endColor.Struct() : lineRenderer.endColor, (c, u) => ToUMI3DSerializable.ToSerializableColor(c, u));
+            objectEndColor.OnValueChanged += c => endColor = c.Dto();
 
             objectStartWidth = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LineStartWidth, lineRenderer == null ? startWidth : lineRenderer.startWidth, (f, u) => f);
             objectStartWidth.OnValueChanged += f => startWidth = f;
@@ -194,8 +194,8 @@ namespace umi3d.edk
         {
             base.WriteProperties(dto, user);
             var lineDto = dto as UMI3DLineDto;
-            lineDto.startColor = objectStartColor.GetValue(user);
-            lineDto.endColor = objectEndColor.GetValue(user);
+            lineDto.startColor = objectStartColor.GetValue(user).Dto();
+            lineDto.endColor = objectEndColor.GetValue(user).Dto();
             lineDto.loop = objectLoop.GetValue(user);
             lineDto.useWorldSpace = objectUseWorldSpace.GetValue(user);
             lineDto.startWidth = objectStartWidth.GetValue(user);
@@ -207,13 +207,13 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DNetworkingHelper.Write(startColor)
-                + UMI3DNetworkingHelper.Write(endColor)
-                + UMI3DNetworkingHelper.Write(loop)
-                + UMI3DNetworkingHelper.Write(useWorldSpace)
-                + UMI3DNetworkingHelper.Write(startWidth)
-                + UMI3DNetworkingHelper.Write(endWidth)
-                + UMI3DNetworkingHelper.Write(positions);
+                + UMI3DSerializer.Write(startColor)
+                + UMI3DSerializer.Write(endColor)
+                + UMI3DSerializer.Write(loop)
+                + UMI3DSerializer.Write(useWorldSpace)
+                + UMI3DSerializer.Write(startWidth)
+                + UMI3DSerializer.Write(endWidth)
+                + UMI3DSerializer.Write(positions);
         }
     }
 }

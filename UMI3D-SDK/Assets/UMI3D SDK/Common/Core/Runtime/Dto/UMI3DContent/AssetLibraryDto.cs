@@ -25,44 +25,32 @@ namespace umi3d.common
     /// The assets are stored locally. A same library could be used by several environments.
     public class AssetLibraryDto : UMI3DDto, IEntity
     {
+
         /// <summary>
         /// UMI3D id.
         /// </summary>
-        public ulong id;
+        public ulong id { get; set; }
 
         /// <summary>
         /// Id of the library. A unique name.
         /// </summary>
         /// Typically "com.compagny.application".
-        public string libraryId;
+        public string libraryId { get; set; }
 
         /// <summary>
         /// Base path of all URLs in the library.
         /// </summary>
-        public string baseUrl;
+        public string baseUrl { get; set; }
 
         /// <summary>
-        /// Last time the library has been updated.
+        /// Version of this library.
         /// </summary>
-        /// Note that when updating a library, this date should be updated manually. A "Now" button is available in the inspector to that purpose.
-        public string date;
-
-        /// <summary>
-        /// Culture informaton for date formatting.
-        /// </summary>
-        /// E.g. "FR-fr"
-        public string culture;
-
-        /// <summary>
-        /// Date format.
-        /// </summary>
-        /// E.g. "DDMMYYYY:HHmmss"
-        public string format;
+        public string version { get; set; }
 
         /// <summary>
         /// Directories where a stored all the variants of the library.
         /// </summary>
         /// A library can have several variants to propose better suited sets of assets, aiming at improving the experience on some devices.
-        public List<UMI3DLocalAssetDirectory> variants;
+        public List<UMI3DLocalAssetDirectoryDto> variants { get; set; }
     }
 }

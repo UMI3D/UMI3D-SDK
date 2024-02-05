@@ -83,18 +83,18 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.DynamicPixelsPerUnit:
                     {
                         CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
-                        canvasScaler.dynamicPixelsPerUnit = dto.dynamicPixelsPerUnit = UMI3DNetworkingHelper.Read<float>(container);
+                        canvasScaler.dynamicPixelsPerUnit = dto.dynamicPixelsPerUnit = UMI3DSerializer.Read<float>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ReferencePixelsPerUnit:
                     {
                         CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
-                        canvasScaler.referencePixelsPerUnit = dto.referencePixelsPerUnit = UMI3DNetworkingHelper.Read<float>(container);
+                        canvasScaler.referencePixelsPerUnit = dto.referencePixelsPerUnit = UMI3DSerializer.Read<float>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.OrderInLayer:
                     Canvas canvas = node.gameObject.GetOrAddComponent<Canvas>();
-                    canvas.sortingOrder = dto.orderInLayer = UMI3DNetworkingHelper.Read<int>(container);
+                    canvas.sortingOrder = dto.orderInLayer = UMI3DSerializer.Read<int>(container);
                     break;
                 default:
                     return false;

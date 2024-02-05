@@ -26,12 +26,8 @@ namespace umi3d.worldController
         public const uint RegisterUser = 1;
     }
 
-    public class WorldControllerMessage : IBytable
+    public class WorldControllerMessage
     {
-        public virtual bool IsCountable()
-        {
-            return true;
-        }
 
         public virtual uint messageId => 0;
 
@@ -42,7 +38,7 @@ namespace umi3d.worldController
 
         public virtual Bytable ToBytable()
         {
-            return UMI3DNetworkingHelper.Write(messageId) + GetMessage();
+            return UMI3DSerializer.Write(messageId) + GetMessage();
         }
 
         public Bytable ToBytableArray(params object[] parameters)
@@ -63,7 +59,7 @@ namespace umi3d.worldController
 
         protected override Bytable GetMessage()
         {
-            return UMI3DNetworkingHelper.Write(uid);
+            return UMI3DSerializer.Write(uid);
         }
     }
 

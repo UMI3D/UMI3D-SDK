@@ -26,31 +26,22 @@ namespace umi3d.common
         /// <summary>
         /// Should some material be overrided
         /// </summary>
-        public List<MaterialOverrideDto> overridedMaterials = null;
+        public List<MaterialOverrideDto> overridedMaterials { get; set; } = null;
 
         /// <summary>
         /// Should apply the overriders list
         /// </summary>
-        public bool applyCustomMaterial = false;
+        public bool applyCustomMaterial { get; set; } = false;
 
         /// <summary>
         /// State if object will be opaque to light.
         /// </summary>
-        public bool castShadow;
+        public bool castShadow { get; set; }
         /// <summary>
         /// State if object display shadow of other object.
         /// </summary>
-        public bool receiveShadow;
+        public bool receiveShadow { get; set; }
 
-        /// <summary>
-        /// Should some material be averrided
-        /// </summary>
-        [System.Serializable]
-        public class MaterialOverrideDto : UMI3DDto
-        {
-            public List<string> overridedMaterialsId; // List of names of mat or "ANY_mat" or "DEFAULT_mat"
-            public ulong newMaterialId;  // name of the umi3d entity (the id of the mat)
-            public bool addMaterialIfNotExists;
-        }
     }
+
 }

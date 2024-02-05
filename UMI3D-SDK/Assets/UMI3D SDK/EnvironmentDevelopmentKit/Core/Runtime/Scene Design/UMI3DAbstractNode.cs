@@ -241,7 +241,14 @@ namespace umi3d.edk
             objectImmersiveOnly.OnValueChanged += (bool b) => immersiveOnly = b;
 
             objectAnchor = new UMI3DAsyncProperty<UMI3DAnchorDto>(objectId, UMI3DPropertyKeys.Anchor, UMI3DAnchor?.ToDto());
-            objectAnchor.OnValueChanged += (UMI3DAnchorDto a) => { UMI3DAnchor.PositionOffset = a?.positionOffset; UMI3DAnchor.RotationOffset = a?.rotationOffset; UMI3DAnchor.ScaleOffset = a?.scaleOffset; };
+            objectAnchor.OnValueChanged += (UMI3DAnchorDto a) => {
+                if (a != null)
+                {
+                    UMI3DAnchor.PositionOffset = a.positionOffset.Struct();
+                    UMI3DAnchor.RotationOffset = a.rotationOffset.Quaternion();
+                    UMI3DAnchor.ScaleOffset = a.scaleOffset.Struct();
+                }
+            };
 
             inited = true;
         }
@@ -264,14 +271,14 @@ namespace umi3d.edk
         public virtual Bytable ToBytes(UMI3DUser user)
         {
             UMI3DAnchorDto anchor = objectAnchor.GetValue(user);
-            return UMI3DNetworkingHelper.Write(Id())
-                + UMI3DNetworkingHelper.Write(objectParentId.GetValue(user)?.Id() ?? 0)
-                + UMI3DNetworkingHelper.Write(objectActive.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectIsStatic.GetValue(user))
-                + UMI3DNetworkingHelper.Write(objectImmersiveOnly.GetValue(user))
-                + UMI3DNetworkingHelper.Write(anchor.positionOffset)
-                + UMI3DNetworkingHelper.Write(anchor.rotationOffset)
-                + UMI3DNetworkingHelper.Write(anchor.scaleOffset);
+            return UMI3DSerializer.Write(Id())
+                + UMI3DSerializer.Write(objectParentId.GetValue(user)?.Id() ?? 0)
+                + UMI3DSerializer.Write(objectActive.GetValue(user))
+                + UMI3DSerializer.Write(objectIsStatic.GetValue(user))
+                + UMI3DSerializer.Write(objectImmersiveOnly.GetValue(user))
+                + UMI3DSerializer.Write(anchor.positionOffset)
+                + UMI3DSerializer.Write(anchor.rotationOffset)
+                + UMI3DSerializer.Write(anchor.scaleOffset);
         }
 
 

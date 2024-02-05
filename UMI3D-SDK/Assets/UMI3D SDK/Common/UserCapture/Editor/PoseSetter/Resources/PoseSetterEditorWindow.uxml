@@ -1,0 +1,95 @@
+<ui:UXML xmlns:ui="UnityEngine.UIElements" xmlns:uie="UnityEditor.UIElements" xsi="http://www.w3.org/2001/XMLSchema-instance" engine="UnityEngine.UIElements" editor="UnityEditor.UIElements" noNamespaceSchemaLocation="../../../../../../../UIElementsSchema/UIElements.xsd" editor-extension-mode="False">
+    <Style src="project://database/Assets/UMI3D%20SDK/Common/UserCapture/Editor/PoseSetter/poseSetterStyle.uss?fileID=7433441132597879392&amp;guid=35ee429adc26a6a499e423892732884f&amp;type=3#poseSetterStyle" />
+    <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1">
+        <ui:VisualElement name="MainContainer" style="flex-grow: 0;">
+            <ui:VisualElement name="TitleContainer">
+                <ui:Label text="UMI3D Pose Editor" display-tooltip-when-elided="true" name="title_version" enable-rich-text="true" class="Titles" />
+            </ui:VisualElement>
+            <ui:VisualElement name="SkeletonReferenceContainer" class="EditorParts" style="flex-wrap: nowrap; justify-content: flex-start; align-items: stretch; flex-direction: row;">
+                <ui:VisualElement name="LabelContainer" style="align-items: flex-start; width: 50%;">
+                    <ui:Label text="Reference Skeleton" display-tooltip-when-elided="true" name="SkeletonObjectLabel" tooltip="Drag &amp; drop here the skeleton object used for poses" style="align-items: flex-start; -unity-font-style: bold;" />
+                </ui:VisualElement>
+                <ui:VisualElement name="ObjectContainer" style="align-items: flex-end; width: 50%;">
+                    <inetum.unityUtils.CustomObjectField focusable="true" name="object_field" tooltip="Place the root of a skeleton gameobject to edit it. A default one is provided in the SDK, look for  &apos;SkeletonForPoseSetter&apos;." style="width: auto; align-items: flex-end; flex-direction: row; justify-content: flex-end; position: relative; left: auto; right: auto;" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="CreateLoadContainer" style="display: none; flex-direction: row;">
+                <ui:VisualElement name="CreateContainer" class="SubEditorPart" style="flex-direction: row; flex-wrap: wrap; flex-grow: 0; align-items: stretch; justify-content: space-around;">
+                    <ui:VisualElement name="CreateTitle">
+                        <ui:Label text="New Pose" display-tooltip-when-elided="true" name="NewPoseLabel" class="Titles" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="CreateButtonContainer" style="align-items: center; width: 100%; justify-content: flex-start;">
+                        <ui:Button text="Create" display-tooltip-when-elided="true" name="CreateButton" focusable="true" tooltip="Create a new pose" class="Buttons" style="width: 59px; flex-direction: row; visibility: visible; align-items: stretch; left: auto; right: auto; justify-content: space-around; display: flex; height: 33px;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="LoadContainer" class="SubEditorPart" style="flex-direction: row; flex-wrap: wrap; flex-grow: 0; align-items: flex-start; display: flex;">
+                    <ui:VisualElement name="LoadTitle">
+                        <ui:Label text="Load Pose" display-tooltip-when-elided="true" class="Titles" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="LoadObjectContainer" style="min-width: auto; min-height: auto; flex-direction: row;">
+                        <ui:VisualElement name="LabelContainer" style="width: 50%;">
+                            <ui:Label text="Pose Object" display-tooltip-when-elided="true" style="flex-direction: row; flex-wrap: wrap;" />
+                        </ui:VisualElement>
+                        <ui:VisualElement name="ObjectContainer" style="width: 50%;">
+                            <inetum.unityUtils.CustomObjectField focusable="true" name="so_field" tooltip="Pose to edit" style="align-items: auto;" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                    <ui:VisualElement name="LoadButtonContainer" style="align-items: flex-end; width: 100%;">
+                        <ui:Button text="Load" display-tooltip-when-elided="true" name="load" focusable="true" tooltip="Load a pose" class="Buttons" style="width: 20%; flex-direction: row; visibility: visible; align-items: stretch; left: auto; right: auto; justify-content: flex-end; display: flex;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+            </ui:VisualElement>
+            <ui:VisualElement name="EditorContainer" style="display: none;">
+                <ui:VisualElement name="File" class="EditorParts" style="visibility: visible; display: flex;">
+                    <ui:VisualElement name="TitleContainer">
+                        <ui:Label text="File" display-tooltip-when-elided="true" class="Titles" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="NameContainer">
+                        <ui:TextField picking-mode="Ignore" label="Pose Name" name="name" is-delayed="false" tooltip="Name that will be given to the pose." />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="PathContainer">
+                        <ui:TextField picking-mode="Ignore" label="Save Path" name="path" text="Assets/" value="Assets/" tooltip="Relative path where to register ther pose." />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="SaveButtonContainer" style="width: 100%; align-items: flex-end;">
+                        <ui:Button text="Save" display-tooltip-when-elided="true" name="save" tooltip="Save pose to a scriptable object." class="Buttons" style="justify-content: flex-end; width: 20%; flex-direction: row; align-items: auto; visibility: visible;" />
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="Edition" class="EditorParts" style="visibility: visible; display: flex;">
+                    <ui:VisualElement name="TitleContainer">
+                        <ui:Label text="Edition" display-tooltip-when-elided="true" class="Titles" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="ResetButtonContainer">
+                        <ui:Button text="Reset to T-Pose" display-tooltip-when-elided="true" name="reset_skeleton" tooltip="Reset skeleton to a T-Pose." class="Buttons" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="SymmetryContainer" class="SubEditorPart" style="justify-content: space-around; align-items: stretch;">
+                        <ui:Label text="Symmetry" display-tooltip-when-elided="true" name="SymmetryTitle" class="Titles" />
+                        <ui:DropdownField label="Symmetry root bone" index="-1" choices="System.Collections.Generic.List`1[System.String]" name="symmetry_dropdown" tooltip="Only bones below the selected one will be suject to symmetry" />
+                        <ui:VisualElement name="SymmetryReferenceContainer" style="flex-direction: row; justify-content: center; flex-grow: 0; align-items: auto;">
+                            <ui:Button text="From Left" display-tooltip-when-elided="true" name="btn_from_left" tooltip="Symetry compared to LeftSide" class="Buttons" />
+                            <ui:Button text="From Right" display-tooltip-when-elided="true" name="btn_from_right" tooltip="Symetry compared to right side" class="Buttons" />
+                        </ui:VisualElement>
+                    </ui:VisualElement>
+                </ui:VisualElement>
+                <ui:VisualElement name="BoneList" class="EditorParts">
+                    <ui:VisualElement name="TitleContainer">
+                        <ui:Label text="Bones" display-tooltip-when-elided="true" class="Titles" />
+                    </ui:VisualElement>
+                    <ui:VisualElement name="search_bar" />
+                    <ui:IMGUIContainer name="BoneHirarchy" class="BoneArea" style="flex-grow: 1;">
+                        <ui:ScrollView scroll-deceleration-rate="0,135" elasticity="0,1" style="height: 150px;">
+                            <ui:IMGUIContainer name="bone_container" class="BoneArea" style="flex-grow: 1; height: 100px; min-height: 100px;" />
+                        </ui:ScrollView>
+                    </ui:IMGUIContainer>
+                </ui:VisualElement>
+                <ui:VisualElement name="AngleControls" class="EditorParts" style="display: none;">
+                    <ui:VisualElement name="TitleContainer">
+                        <ui:Label text="Rotation Controls" display-tooltip-when-elided="true" class="Titles" />
+                    </ui:VisualElement>
+                    <ui:Slider picking-mode="Ignore" label="x_rot" value="0" high-value="180" name="x_rot_slider" low-value="-180" />
+                    <ui:Slider picking-mode="Ignore" label="y_rot" value="0" high-value="180" name="y_rot_slider" low-value="-180" />
+                    <ui:Slider picking-mode="Ignore" label="z_rot" value="0" high-value="180" name="z_rot_slider" low-value="-180" />
+                </ui:VisualElement>
+            </ui:VisualElement>
+        </ui:VisualElement>
+    </ui:ScrollView>
+</ui:UXML>

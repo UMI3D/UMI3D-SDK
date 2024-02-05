@@ -33,15 +33,15 @@ namespace umi3d.common.utils.serialization
             switch (o)
             {
                 case Quaternion q:
-                    return (SerializableVector4)q;
+                    return q.Dto();
                 case Vector2 v:
-                    return (SerializableVector2)v;
+                    return v.Dto();
                 case Vector3 v:
-                    return (SerializableVector3)v;
+                    return v.Dto();
                 case Color c:
-                    return (SerializableColor)c;
+                    return c.Dto();
                 case Matrix4x4 m:
-                    return (SerializableMatrix4x4)m;
+                    return m.Dto();
                 default:
                     return o;
             }
@@ -56,16 +56,16 @@ namespace umi3d.common.utils.serialization
         {
             switch (o)
             {
-                case SerializableVector4 q:
-                    return (Quaternion)q;
-                case SerializableVector2 v:
-                    return (Vector2)v;
-                case SerializableVector3 v:
-                    return (Vector3)v;
-                case SerializableColor c:
-                    return (Color)c;
-                case SerializableMatrix4x4 m:
-                    return (Matrix4x4)m;
+                case Vector4Dto q:
+                    return q.Quaternion();
+                case Vector2Dto v:
+                    return v.Struct();
+                case Vector3Dto v:
+                    return v.Struct();
+                case ColorDto c:
+                    return c.Struct();
+                case Matrix4x4Dto m:
+                    return m.Struct();
                 default:
                     return o;
             }

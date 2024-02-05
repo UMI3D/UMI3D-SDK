@@ -27,6 +27,6 @@ namespace umi3d.common
         /// <summary>
         /// UMI3D ids of all the target entities of the oepration.
         /// </summary>
-        public List<ulong> entitiesId;
+        public List<ulong> entitiesId { get; set; }
     }
 }

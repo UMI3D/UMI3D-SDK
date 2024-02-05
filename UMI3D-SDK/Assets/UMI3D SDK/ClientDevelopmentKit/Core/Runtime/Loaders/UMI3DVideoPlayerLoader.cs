@@ -1,12 +1,9 @@
 ﻿/*
 Copyright 2019 - 2021 Inetum
-
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
-
     http://www.apache.org/licenses/LICENSE-2.0
-
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
 WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -40,7 +37,7 @@ namespace umi3d.cdk
 
         public static void Clear()
         {
-            UMI3DEnvironmentLoader.Entities().Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v.Clean());
+            //UMI3DEnvironmentLoader.Entities()?.Select(e => e?.Object as UMI3DVideoPlayer).ForEach(v => v?.Clean());
         }
 
         /// <summary>
@@ -49,15 +46,38 @@ namespace umi3d.cdk
         /// <see cref="LoadVideoPlayers()"/> must be call to really create the videoPlayers, otherwise they are instanciated directly.
         /// </summary>
         /// <param name="videoPlayer"></param>
+        [Obsolete("Use LoadVideoPlayer instead.")]
         public static void LoadVideo(UMI3DVideoPlayerDto videoPlayer)
+        {
+            UMI3DVideoPlayer player;
+#if UNITY_ANDROID
+            player = null;
+            if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
+                videoPlayersToLoad.Enqueue(videoPlayer);
+            else
+                player = new UMI3DVideoPlayer(videoPlayer);
+#else
+            player = new UMI3DVideoPlayer(videoPlayer);
+#endif      
+            player?.Init();
+        }
+
+        /// <summary>
+        /// Asks to load a <see cref="UMI3DVideoPlayer"/> from a <see cref="UMI3DVideoPlayerDto"/>. 
+        /// If the platform is Android and if <see cref="UMI3DEnvironmentLoader"/> is loading an environement,
+        /// <see cref="LoadVideoPlayers()"/> must be call to really create the videoPlayers, otherwise they are instanciated directly.
+        /// </summary>
+        /// <param name="videoPlayer"></param>
+        public static UMI3DVideoPlayer LoadVideoPlayer(UMI3DVideoPlayerDto videoPlayer)
         {
 #if UNITY_ANDROID
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
                 videoPlayersToLoad.Enqueue(videoPlayer);
             else
-                new UMI3DVideoPlayer(videoPlayer);
+                return new UMI3DVideoPlayer(videoPlayer);
+            return null;
 #else
-            new UMI3DVideoPlayer(videoPlayer);
+            return new UMI3DVideoPlayer(videoPlayer);
 #endif
         }
 
@@ -92,6 +112,8 @@ namespace umi3d.cdk
                 UMI3DVideoPlayerDto videoPlayer = videoPlayersToLoad.Dequeue();
 
                 var player = new UMI3DVideoPlayer(videoPlayer);
+                UMI3DEnvironmentLoader.RegisterEntityInstance(player.Id, videoPlayer, player, player.Clear).NotifyLoaded();
+                player.Init();
 
                 while (!player.isPrepared && !player.preparationFailed)
                     await UMI3DAsyncManager.Yield();

@@ -22,21 +22,10 @@ namespace umi3d.common
     public class GlTFEnvironmentDto : AbstractEntityDto
     {
 
-        public GlTFAsset asset = new GlTFAsset();
+        public GlTFAsset asset { get; set; } = new GlTFAsset();
 
-        public List<GlTFSceneDto> scenes = new List<GlTFSceneDto>();
+        public List<GlTFSceneDto> scenes { get; set; } = new List<GlTFSceneDto>();
 
-        public GlTFEnvironmentExtensions extensions = new GlTFEnvironmentExtensions();
-
-        public bool ShouldSerializescenes()
-        {
-            return scenes.Count > 0;
-        }
-
-        public int scene = -1;
-        public bool ShouldSerializescene()
-        {
-            return ShouldSerializescenes() && scene >= 0 && scene < scenes.Count;
-        }
+        public GlTFEnvironmentExtensions extensions { get; set; } = new GlTFEnvironmentExtensions();
     }
 }
