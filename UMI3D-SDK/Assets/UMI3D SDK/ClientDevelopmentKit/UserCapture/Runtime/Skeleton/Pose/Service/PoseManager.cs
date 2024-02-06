@@ -90,6 +90,9 @@ namespace umi3d.cdk.userCapture.pose
             if (poseClip == null)
                 throw new System.ArgumentNullException(nameof(poseClip));
 
+            if (skeletonManager?.PersonalSkeleton?.PoseSubskeleton == null)
+                return; // skeleton was deleted in the meanwhile
+
             if (!skeletonManager.PersonalSkeleton.PoseSubskeleton.AppliedPoses.Contains(poseClip))
                 return;
 

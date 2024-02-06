@@ -36,17 +36,20 @@ namespace umi3d.cdk.userCapture.pose
 
         private readonly IEnvironmentManager environmentManagerService;
         private readonly ISkeleton parentSkeleton;
+        private readonly ITrackerSimulator trackerSimulator;
 
         public PoseSubskeleton(ulong environmentId, ISkeleton parentSkeleton) : this(environmentId: environmentId,
-                                                                                       parentSkeleton: parentSkeleton,
-                                                                                       environmentManagerService: UMI3DEnvironmentLoader.Instance)
+                                                                                                               parentSkeleton: parentSkeleton,
+                                                                                                               environmentManagerService: UMI3DEnvironmentLoader.Instance,
+                                                                                                               trackerSimulator: TrackerSimulationManager.Instance.GetTrackerSimulator(parentSkeleton))
         {
         }
 
-        public PoseSubskeleton(ulong environmentId, ISkeleton parentSkeleton, IEnvironmentManager environmentManagerService)
+        public PoseSubskeleton(ulong environmentId, ISkeleton parentSkeleton, IEnvironmentManager environmentManagerService, ITrackerSimulator trackerSimulator)
         {
             this.environmentManagerService = environmentManagerService;
             this.parentSkeleton = parentSkeleton;
+            this.trackerSimulator = trackerSimulator;
             EnvironmentId = environmentId;
         }
 
@@ -92,7 +95,7 @@ namespace umi3d.cdk.userCapture.pose
                 playingControllers.Player.End(true);
 
             if (playingControllers.Anchor != null)
-                parentSkeleton.TrackedSubskeleton.StopTrackerSimulation(playingControllers.Anchor);
+                trackerSimulator.StopTrackerSimulation(playingControllers.Anchor);
 
             posePlayingControllers.Remove(poseClip);
         }
@@ -129,7 +132,7 @@ namespace umi3d.cdk.userCapture.pose
 
                 PoseAnchorDto anchor = posePlayingControllers[poseToAdd].Anchor;
                 if (anchor != null)
-                   parentSkeleton.TrackedSubskeleton.StartTrackerSimulation(anchor);
+                    trackerSimulator.StartTrackerSimulation(anchor);
             }
             else
                 UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already playing.", DebugScope.CDK | DebugScope.UserCapture);
@@ -157,7 +160,7 @@ namespace umi3d.cdk.userCapture.pose
             appliedPoses.Remove(poseToStop);
 
             if (posePlayer.Anchor != null)
-                parentSkeleton.TrackedSubskeleton.StopTrackerSimulation(posePlayer.Anchor);
+                trackerSimulator.StopTrackerSimulation(posePlayer.Anchor);
         }
 
         /// <inheritdoc/>

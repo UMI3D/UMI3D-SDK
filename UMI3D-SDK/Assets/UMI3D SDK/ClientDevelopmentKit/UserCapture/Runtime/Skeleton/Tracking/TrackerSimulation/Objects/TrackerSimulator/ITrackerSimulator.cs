@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,26 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
 using System.Threading.Tasks;
+
 using umi3d.common.userCapture.description;
-using umi3d.common.userCapture.tracking;
-using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public interface ITrackedSubskeleton : IWritableSubskeleton
+    /// <summary>
+    /// Manages tracker simulation for a skeleton.
+    /// </summary>
+    public interface ITrackerSimulator
     {
-        IDictionary<uint, float> BonesAsyncFPS { get; set; }
-        Camera ViewPoint { get; }
-        Transform Hips { get; }
-        IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones { get; }
-        IReadOnlyDictionary<uint, IController> Controllers { get; }
+        /// <summary>
+        /// Start anchoring through a tracker simulation.
+        /// </summary>
+        /// <param name="poseAnchor"></param>
+        /// <returns></returns>
+        Task StartTrackerSimulation(PoseAnchorDto poseAnchor);
 
-        void RemoveTracker(uint boneType);
-
-        UserTrackingBoneDto GetController(uint boneType);
-
-        void ReplaceController(IController newController, bool saveOldController = false);
+        /// <summary>
+        /// Stop anchoring through a tracker simulation.
+        /// </summary>
+        /// <param name="poseAnchor"></param>
+        /// <returns></returns
+        void StopTrackerSimulation(PoseAnchorDto poseAnchor);
     }
 }

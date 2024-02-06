@@ -44,7 +44,9 @@ namespace umi3d.cdk.userCapture.tracking
 
         public IDictionary<uint, float> BonesAsyncFPS { get; set; } = new Dictionary<uint, float>();
 
-        public List<IController> controllers = new List<IController>();
+        public IReadOnlyDictionary<uint, IController> Controllers => controllers;
+        private readonly Dictionary<uint, IController> controllers = new();
+
         private List<IController> controllersToDestroy = new();
 
         [SerializeField]
@@ -103,7 +105,7 @@ namespace umi3d.cdk.userCapture.tracking
 
             foreach (var tracker in GetComponentsInChildren<Tracker>())
             {
-                controllers.Add(tracker.distantController);
+                controllers.Add(tracker.BoneType, tracker.distantController);
             }
         }
 
@@ -122,7 +124,7 @@ namespace umi3d.cdk.userCapture.tracking
         {
             var dto = new SubSkeletonPoseDto() { bones = new(bones.Count) };
 
-            foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.Any(y => y.boneType == x.boneType)))
+            foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.ContainsKey(x.boneType)))
             {
                 //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 dto.bones.Add(bone.ToBoneDto());
@@ -143,7 +145,7 @@ namespace umi3d.cdk.userCapture.tracking
             receivedTypes.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
-                if (controllers.Find(c => c.boneType == bone.boneType) is not DistantController vc)
+                if (controllers.TryGetValue(bone.boneType, out IController controller) || controller is not DistantController vc)
                 {
                     vc = new DistantController
                     {
@@ -152,7 +154,7 @@ namespace umi3d.cdk.userCapture.tracking
                         position = bone.position.Struct(),
                         rotation = bone.rotation.Quaternion()
                     };
-                    controllers.Add(vc);
+                    ReplaceController(vc);
                     extrapolators[bone.boneType] = (new(), new(), vc);
                 }
 
@@ -172,7 +174,7 @@ namespace umi3d.cdk.userCapture.tracking
             }
 
             Queue<DistantController> controllersToRemove = new();
-            foreach (var c in controllers)
+            foreach (var c in controllers.Values)
             {
                 if (c is DistantController dc && !receivedTypes.Contains(c.boneType))
                 {
@@ -182,7 +184,7 @@ namespace umi3d.cdk.userCapture.tracking
                 }
             }
             foreach (var dc in controllersToRemove)
-                controllers.Remove(dc);
+                controllers.Remove(dc.boneType);
         }
 
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
@@ -192,7 +194,7 @@ namespace umi3d.cdk.userCapture.tracking
 
             trackingFrame.trackedBones = new(bones.Count);
 
-            foreach (var controller in controllers)
+            foreach (var controller in controllers.Values)
             {
                 trackingFrame.trackedBones.Add(controller.ToControllerDto());
             }
@@ -223,7 +225,7 @@ namespace umi3d.cdk.userCapture.tracking
 
             bones.ForEach(b => b.Value.positionComputed = false);
 
-            foreach (var controller in controllers)
+            foreach (var controller in controllers.Values)
             {
 
                 switch (controller.boneType)
@@ -417,114 +419,31 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
-        private struct SimulatedTrackingRecord
+        private readonly Dictionary<uint, IController> savedControllers = new();
+
+        public void RemoveTracker(uint boneType)
         {
-            public AbstractSimulatedTracker simulatedTracker;
-            public HashSet<PoseAnchorDto> registeredPoseAnchors;
-        }
-
-        private Dictionary<uint, SimulatedTrackingRecord> simulatedTrackingRecords = new();
-        private List<IController> savedControllers = new();
-
-        public async Task StartTrackerSimulation(PoseAnchorDto poseAnchor)
-        {
-            if (poseAnchor == null)
-                return;
-
-            if (simulatedTrackingRecords.TryGetValue(poseAnchor.bone, out SimulatedTrackingRecord trackingRecord))
-            {
-                trackingRecord.registeredPoseAnchors.Add(poseAnchor);
-                return;
-            }
-
-            AbstractSimulatedTracker tracker = null;
-            switch (poseAnchor)
-            {
-                case NodePoseAnchorDto nodePose:
-                    UMI3DNodeInstance nodeReference = (UMI3DNodeInstance)await loadingService.WaitUntilEntityLoaded(UMI3DGlobalID.EnvironmentId, nodePose.node, null);
-
-                    NodeAnchoredSimulatedTracker nodeTracker = new GameObject("NodeTracker" + nodePose.node).AddComponent<NodeAnchoredSimulatedTracker>();
-                    nodeTracker.Init(nodeReference, nodePose.bone, nodePose.position.Struct(), nodePose.rotation.Quaternion());
-                    tracker = nodeTracker;
-                    break;
-
-                case BonePoseAnchorDto bonePose:
-                    if (!skeleton.Bones.TryGetValue(bonePose.otherBone, out ISkeleton.Transformation boneReference))
-                    {
-                        await Task.Run(() => UMI3DLogger.LogWarning("Bone not found for applying BonePoseAnchor.", DebugScope.CDK | DebugScope.UserCapture));
-                        break;
-                    }
-                    
-                    BoneAnchoredSimulatedTracker boneTracker = new GameObject("BoneTracker" + bonePose.otherBone).AddComponent<BoneAnchoredSimulatedTracker>();
-                    boneTracker.Init(boneReference, bonePose.bone, bonePose.position.Struct(), bonePose.rotation.Quaternion());
-                    tracker = boneTracker;
-                    break;
-
-                case FloorPoseAnchorDto floorPose:
-                    await Task.Run(() => UMI3DLogger.LogWarning("FloorAnchor is not yet implemented.", DebugScope.CDK | DebugScope.UserCapture));
-                    return;
-
-                default:
-                    // case when anchor does not require any tracker simulation
-                    return;
-            }
-
-            trackingRecord = new()
-            {
-                simulatedTracker = tracker,
-                registeredPoseAnchors = new HashSet<PoseAnchorDto>() { poseAnchor },
-            };
-            simulatedTrackingRecords.Add(poseAnchor.bone, trackingRecord);
-
-            ReplaceController(tracker.distantController, true);
-        }
-
-        public void StopTrackerSimulation(PoseAnchorDto poseAnchor)
-        {
-            if (!simulatedTrackingRecords.TryGetValue(poseAnchor.bone, out SimulatedTrackingRecord simulatedTrackingRecord))
-            {
-                UMI3DLogger.LogWarning("No SimulatedTracked found for this PoseAnchor", DebugScope.CDK | DebugScope.UserCapture);
-                return;
-            }
-
-            simulatedTrackingRecord.registeredPoseAnchors.Remove(poseAnchor);
-
-            if (simulatedTrackingRecord.registeredPoseAnchors.Count > 0)
-                return;
-
-            DeleteSimulatedController(poseAnchor.bone, simulatedTrackingRecord.simulatedTracker);
-            simulatedTrackingRecords.Remove(poseAnchor.bone);
-        }
-
-        private void DeleteSimulatedController(uint boneType, AbstractSimulatedTracker simulatedTracker)
-        {
-            GameObject.Destroy(simulatedTracker.gameObject);
-            
-            IController savedController = savedControllers.Find(c => c.boneType == boneType);
-            if (savedController != null)
+            if (savedControllers.TryGetValue(boneType, out IController savedController))
             {
                 ReplaceController(savedController);
             }
             else
             {
-                IController controller = controllers.Find(c => c.boneType == boneType);
-                controllers.Remove(controller);
+                controllers.Remove(boneType);
             }
         }
 
         public void ReplaceController(IController newController, bool saveOldController = false)
         {
-            IController oldController = controllers.Find(c => c.boneType == newController.boneType);
-
-            if (oldController != null)
+            if (controllers.TryGetValue(newController.boneType, out IController oldController))
             {
-                controllers.Remove(oldController);
+                controllers.Remove(oldController.boneType);
 
                 if (saveOldController)
-                    savedControllers.Add(oldController);
+                    savedControllers.Add(oldController.boneType, oldController);
             }
 
-            controllers.Add(newController);
+            controllers.Add(newController.boneType, newController);
         }
 
         #endregion Ik

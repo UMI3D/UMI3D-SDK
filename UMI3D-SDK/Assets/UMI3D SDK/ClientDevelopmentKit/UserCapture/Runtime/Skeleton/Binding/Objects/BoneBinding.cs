@@ -27,6 +27,8 @@ namespace umi3d.cdk.userCapture.binding
     /// </summary>
     public class BoneBinding : AbstractSimpleBinding
     {
+        private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
+
         public BoneBinding(BoneBindingDataDto dto, Transform boundTransform, ISkeleton skeleton) : base(dto, boundTransform)
         {
             this.skeleton = skeleton;
@@ -46,6 +48,8 @@ namespace umi3d.cdk.userCapture.binding
         /// </summary>
         public uint BoneType => BoneBindingDataDto.boneType;
 
+        public bool BindToController => BoneBindingDataDto.bindToController;
+
         #endregion DTO Access
 
         /// <summary>
@@ -58,42 +62,40 @@ namespace umi3d.cdk.userCapture.binding
         {
             if (boundTransform == null) // node is destroyed
             {
-                UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
                 success = false;
                 return;
             }
 
-            ISkeleton.Transformation parentBoneTransform;
+            ISkeleton.Transformation parentBone;
 
-            if (BoneBindingDataDto.bindToController)
+            if (!BindToController)
             {
-                var controller = ((skeleton.TrackedSubskeleton as TrackedSubskeleton).controllers.Find(c => c.boneType == BoneType) as DistantController);
-
-                if (controller != null)
-                    parentBoneTransform = new()
-                    {
-                        Position = controller.position,
-                        Rotation = controller.rotation,
-                    };
-                else
+                parentBone = skeleton.Bones[BoneType];
+            }
+            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller) && controller is DistantController)
+            {
+                parentBone = new()
                 {
-                    UMI3DLogger.LogError($"No existing controller for {BoneType}. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
-                    success = false;
-                    return;
-                }
+                    Position = controller.position,
+                    Rotation = controller.rotation,
+                };
             }
             else
             {
-                if (!skeleton.Bones.TryGetValue(BoneType, out parentBoneTransform))
-                {
-                    UMI3DLogger.LogError($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
-                    success = false;
-                    return;
-                }
-
+                UMI3DLogger.LogWarning($"No existing controller for {BoneType}. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
+                success = false;
+                return;
             }
 
-            Compute((parentBoneTransform.Position, parentBoneTransform.Rotation, Vector3.one));
+            if (parentBone is null)
+            {
+                UMI3DLogger.LogWarning($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
+                success = false;
+                return;
+            }
+
+            Compute((parentBone.Position, parentBone.Rotation, Vector3.one));
             success = true;
         }
     }
