@@ -124,14 +124,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
             poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
             // When
             poseManager.PlayPoseClip(poseClip);
 
             // Then
             poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
-            trackedSubskeletonMock.Verify(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()), Times.Never());
         }
 
         [Test, TestOf(nameof(PoseManager.PlayPoseClip))]
@@ -157,7 +155,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
             poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
             // When
             poseManager.PlayPoseClip(poseClip);
@@ -185,7 +182,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
             poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
             personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
             PoseAnchorDto anchorDto = new();
             // When

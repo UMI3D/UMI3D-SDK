@@ -14,38 +14,45 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
     public abstract class AbstractSimulatedTracker : Tracker, ISimulatedTracker
     {
-        uint ISimulatedTracker.Bonetype => Bonetype;
-
         public Vector3 PositionOffset => positionOffset;
         protected Vector3 positionOffset;
 
         public Quaternion RotationOffset => rotationOffset;
         protected Quaternion rotationOffset;
 
-        protected void Init(uint bonetype, Vector3 posOffset, Quaternion rotOffset)
+        public event System.Action<ISimulatedTracker> Destroyed;
+
+        public IController Controller => distantController;
+
+        public GameObject GameObject => this.gameObject;
+
+        protected void Init(uint boneType, Vector3 posOffset, Quaternion rotOffset)
         {
-            this.boneType = bonetype;
+            this.boneType = boneType;
             this.positionOffset = posOffset;
             this.rotationOffset = rotOffset;
 
-            distantController = new DistantController()
-            {
-                boneType = boneType,
-                position = transform.position,
-                rotation = transform.rotation,
-                isActive = isActif,
-                isOverrider = isOverrider
-            };
+            CreateDistantController();
         }
 
-        void ISimulatedTracker.SimulatePosition() => this.SimulatePosition();
-        protected abstract void SimulatePosition();
+        public abstract (Vector3 position, Quaternion rotation) SimulatePosition();
+
+        protected override void Update()
+        {
+            (Vector3 position, Quaternion rotation) = SimulatePosition();
+            transform.SetPositionAndRotation(position, rotation);
+            base.Update();
+        }
+
+        protected void OnDestroy()
+        {
+            Destroyed?.Invoke(this);
+        }
     }
 }

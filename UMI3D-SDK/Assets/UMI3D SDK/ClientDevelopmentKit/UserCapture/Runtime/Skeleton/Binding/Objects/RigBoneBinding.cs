@@ -51,41 +51,5 @@ namespace umi3d.cdk.userCapture.binding
 
 
         #endregion DTO Access
-
-        /// <inheritdoc/>
-        public override void Apply(out bool success)
-        {
-            if (boundTransform == null) // node is destroyed
-            {
-                success = false;
-                return;
-            }
-
-            ISkeleton.Transformation parentBone = null;
-
-            if (!RigBoneBindingDataDto.bindToController)
-                parentBone = skeleton.Bones[BoneType];
-            else
-            {
-                var controller = ((skeleton.TrackedSubskeleton as TrackedSubskeleton).controllers.Find(c => c.boneType == BoneType) as DistantController);
-
-                if (controller != null)
-                    parentBone = new()
-                    {
-                        Position = controller.position,
-                        Rotation = controller.rotation,
-                    };
-            }
-            
-            if (parentBone is null)
-            {
-                UMI3DLogger.LogWarning($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
-                success = false;
-                return;
-            }
-
-            Compute((parentBone.Position, parentBone.Rotation, Vector3.one));
-            success = true;
-        }
     }
 }

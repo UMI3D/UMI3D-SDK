@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -22,22 +24,23 @@ namespace umi3d.cdk.userCapture.tracking
     {
         private ISkeleton.Transformation boneReference;
 
-        public void Init(ISkeleton.Transformation bone, uint bonetype, Vector3 posOffset, Quaternion rotOffset)
+        public void Init(ISkeleton.Transformation bone, uint boneType, Vector3 posOffset, Quaternion rotOffset)
         {
             this.boneReference = bone;
-            Init(bonetype, posOffset, rotOffset);
+            Init(boneType, posOffset, rotOffset);
         }
 
-        protected override void SimulatePosition()
+        public override (Vector3 position, Quaternion rotation) SimulatePosition()
         {
-            this.transform.rotation = boneReference.Rotation * this.rotationOffset;
-            this.transform.position = boneReference.Position + boneReference.Rotation * (this.positionOffset);
-        }
-
-        protected override void Update()
-        {
-            SimulatePosition();
-            base.Update();
+            if (boneReference == null)
+            {
+                UMI3DLogger.LogWarning($"Anchoring reference bone destroyed without destroying simulated tracker first. Destroying tracker.", DebugScope.CDK | DebugScope.UserCapture);
+                Destroy(this);
+                return default;
+            }
+            Vector3 position = boneReference.Position + boneReference.Rotation * positionOffset;
+            Quaternion rotation = boneReference.Rotation * rotationOffset;
+            return (position, rotation);
         }
     }
 }

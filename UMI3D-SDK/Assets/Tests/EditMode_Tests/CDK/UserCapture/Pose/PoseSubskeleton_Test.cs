@@ -40,6 +40,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         private Mock<IEnvironmentManager> environmentServiceMock;
         private Mock<ISkeleton> parentSkeletonMock;
+        private Mock<ITrackerSimulator> trackerSimulatorMock;
 
         #region SetUp
 
@@ -54,7 +55,8 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             environmentServiceMock = new();
             parentSkeletonMock = new();
-            poseSubskeleton = new PoseSubskeleton(0, parentSkeletonMock.Object, environmentServiceMock.Object);
+            trackerSimulatorMock = new();
+            poseSubskeleton = new PoseSubskeleton(0, parentSkeletonMock.Object, environmentServiceMock.Object, trackerSimulatorMock.Object);
         }
 
         [TearDown]
@@ -344,7 +346,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             Mock<ITrackedSubskeleton> trackedSubskeletonMock = new ();
             parentSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
+            trackerSimulatorMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
             environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[0].Id)).Returns(new UMI3DEntityInstance(0, () => { }, 0) { Object=poseClips[0] });
             environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[1].Id)).Returns(new UMI3DEntityInstance(0, () => { }, 0) { Object = poseClips[1] });
 
@@ -393,7 +395,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             Mock<ITrackedSubskeleton> trackedSubskeletonMock = new();
             parentSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackedSubskeletonMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
+            trackerSimulatorMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
             poseSubskeleton.StartPose(poses, true);
 
             UserTrackingFrameDto frame = new();

@@ -14,19 +14,25 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
+using umi3d.common;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public interface ISimulatedTracker
+    public class FloorAnchoredSimulatedTracker : AbstractSimulatedTracker
     {
-        uint Bonetype { get; }
+        private Transform floorReference;
 
-        Vector3 PositionOffset { get; }
+        public void Init(Transform floor, uint boneType, Vector3 posOffset, Quaternion rotOffset)
+        {
+            this.floorReference = floor;
+            Init(boneType, posOffset, rotOffset);
+        }
 
-        Quaternion RotationOffset { get; }
-
-        void SimulatePosition();
+        public override (Vector3 position, Quaternion rotation) SimulatePosition()
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }
