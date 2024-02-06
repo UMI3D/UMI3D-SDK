@@ -297,6 +297,9 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames)
         {
+            if (Application.isBatchMode)
+                return;
+
             if (frames is null)
                 throw new ArgumentNullException(nameof(frames));
 
