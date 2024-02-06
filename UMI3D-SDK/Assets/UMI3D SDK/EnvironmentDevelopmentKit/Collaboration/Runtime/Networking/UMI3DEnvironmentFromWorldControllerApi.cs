@@ -53,7 +53,7 @@ namespace umi3d.edk.collaboration
                 dto = UMI3DDtoSerializer.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
             }
 
-            await UMI3DCollaborationServer.Instance.Register(dto,true);
+            await UMI3DCollaborationServer.Instance.Register(dto);
         }
     }
 }

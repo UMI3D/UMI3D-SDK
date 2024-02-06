@@ -269,7 +269,7 @@ namespace umi3d.cdk
                 return (!string.IsNullOrEmpty(fileRelativePath)
                                 && library != null
                                 && libraryIds.Any(lib => lib == library))
-                                && match.Groups[3].Captures[0].Value.Contains(fileRelativePath);
+                                && match.Groups[3].Captures[0].Value.Contains(fileRelativePath.Replace("\\", "/"));
             }
 
             bool MatchUrlUrl(Match matchA, Match matchB)
@@ -837,14 +837,14 @@ namespace umi3d.cdk
         #endregion
         #region libraries download
 
-        public static List<string> LibrariesToDownload(LibrariesDto libraries)
+        public static List<string> LibrariesToDownload(List<AssetLibraryDto> libraries)
         {
-            return Instance._LibrariesToDownload(libraries.libraries);
+            return Instance._LibrariesToDownload(libraries);
         }
 
         public List<string> _LibrariesToDownload(List<AssetLibraryDto> assetLibraries)
         {
-            var toDownload = new List<string>();
+            var toDownload = new HashSet<string>();
             if (assetLibraries != null && assetLibraries.Count > 0)
             {
                 foreach (AssetLibraryDto assetLibrary in assetLibraries)
@@ -861,12 +861,12 @@ namespace umi3d.cdk
                     toDownload.Add(assetLibrary.libraryId);
                 }
             }
-            return toDownload;
+            return toDownload.ToList();
         }
 
-        public static async Task DownloadLibraries(LibrariesDto libraries, string applicationName, MultiProgress progress)
+        public static async Task DownloadLibraries(List<AssetLibraryDto> libraries, string applicationName, MultiProgress progress)
         {
-            await Instance.DownloadResources(libraries.libraries, applicationName, progress);
+            await Instance.DownloadResources(libraries, applicationName, progress);
         }
 
         private async Task DownloadResources(List<AssetLibraryDto> assetlibraries, string applicationName, MultiProgress progress)
@@ -910,10 +910,8 @@ namespace umi3d.cdk
 
         private async Task DownloadResources(AssetLibraryDto assetLibrary, string application, MultiProgress progress)
         {
-            Progress progress1 = new Progress(3, $"Retreiving Data for library {assetLibrary.libraryId}");
             Progress progress2 = new Progress(0, $"Downloading library {assetLibrary.libraryId}");
             Progress progress3 = new Progress(1, $"Storring library {assetLibrary.libraryId}");
-            progress.Add(progress1);
             progress.Add(progress2);
             progress.Add(progress3);
 
@@ -921,7 +919,6 @@ namespace umi3d.cdk
 
             try
             {
-                progress1.AddComplete();
                 var applications = new List<string>() { application };
                 librariesMap[assetLibrary.id] = lib;
                 string directoryPath = Path.Combine(Application.persistentDataPath, libraryFolder, assetLibrary.libraryId, assetLibrary.version);
@@ -948,29 +945,22 @@ namespace umi3d.cdk
                     RemoveLibrary(lib);
                 }
 
-                UMI3DLocalAssetDirectoryDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
+                UMI3DLocalAssetFilesDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
 
-                var bytes = await UMI3DClientServer.GetFile(Path.Combine(assetLibrary.baseUrl, variant.path), false);
-                progress1.AddComplete();
-                var dto = await deserializer.FromBson(bytes);
-                progress1.AddComplete();
                 string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
-                
-                if (dto is FileListDto)
-                {
-                    if (!Directory.Exists(directoryPath))
-                        Directory.CreateDirectory(directoryPath);
-                    var data = await
-                        DownloadFiles(
-                            lib,
-                            directoryPath,
-                            assetDirectoryPath,
-                            applications,
-                            dto as FileListDto,
-                            progress2
-                            );
-                    SetData(data, directoryPath);
-                }
+
+                if (!Directory.Exists(directoryPath))
+                    Directory.CreateDirectory(directoryPath);
+                var data = await
+                    DownloadFiles(
+                        lib,
+                        directoryPath,
+                        assetDirectoryPath,
+                        applications,
+                        Path.Combine(assetLibrary.baseUrl, variant.files.baseUrl),
+                        variant.files.files,
+                        progress2);
+                SetData(data, directoryPath);
                 progress3.AddComplete();
             }
             catch (Exception e)
@@ -1047,12 +1037,12 @@ namespace umi3d.cdk
 
         #endregion
         #region file downloading
-        private async Task<DataFile> DownloadFiles(Library key, string rootDirectoryPath, string directoryPath, List<string> applications, FileListDto list, Progress progress)
+        private async Task<DataFile> DownloadFiles(Library key, string rootDirectoryPath, string directoryPath, List<string> applications, string baseUrl, List<string> files, Progress progress)
         {
 
             var data = new DataFile(key, rootDirectoryPath, applications, DateTime.Now);
-            progress.SetTotal(list.files.Count);
-            foreach (string name in list.files)
+            progress.SetTotal(files.Count);
+            foreach (string name in files)
             {
                 UMI3DLogger.Log($"add file {name} {directoryPath}", scope);
                 try
@@ -1064,7 +1054,7 @@ namespace umi3d.cdk
                     path = Path.Combine(directoryPath, name);
                     path = System.Uri.UnescapeDataString(path);
                     dicPath = System.IO.Path.GetDirectoryName(path);
-                    url = Path.Combine(list.baseUrl, name);
+                    url = Path.Combine(baseUrl, name);
 
                     await DownloadFile(key, dicPath, path, url, name);
                     data.files.Add(new Data(url, path, name));

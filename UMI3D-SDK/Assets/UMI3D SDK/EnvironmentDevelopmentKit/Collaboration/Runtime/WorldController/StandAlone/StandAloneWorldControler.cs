@@ -130,7 +130,7 @@ namespace umi3d.worldController
 
                 await env.Register(user.RegisterIdentityDto());
             }
-            List<LibrariesDto> l = await IAM.GetLibraries(user);
+            List<AssetLibraryDto> l = await IAM.GetLibraries(user);
             PrivateIdentityDto privateId = user.PrivateIdentityDto();
             privateId.libraries = l;
             Debug.Log(privateId);

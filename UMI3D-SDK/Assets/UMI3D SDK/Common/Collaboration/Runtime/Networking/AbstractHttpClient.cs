@@ -321,7 +321,7 @@ namespace umi3d.common.collaboration
         {
             public string GlobalToken;
             public string connectionDto;
-            public List<LibrariesDto> libraries;
+            public List<AssetLibraryDto> libraries;
 
             public PrivateIdentityDto ToPrivateIdentity()
             {

@@ -45,7 +45,7 @@ namespace umi3d.cdk
     public interface IUMI3DAbstractLoadingParameters
     {
 
-        UMI3DLocalAssetDirectoryDto ChooseVariant(AssetLibraryDto assetLibrary);
+        UMI3DLocalAssetFilesDto ChooseVariant(AssetLibraryDto assetLibrary);
         FileDto ChooseVariant(List<FileDto> files);
         void LoadSkybox(ResourceDto skybox, SkyboxType type, float skyboxRotation, float skyboxExposure);
         Task ReadUMI3DExtension(ReadUMI3DExtensionData data);
