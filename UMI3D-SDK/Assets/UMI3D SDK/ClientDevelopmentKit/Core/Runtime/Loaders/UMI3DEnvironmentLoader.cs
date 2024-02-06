@@ -395,7 +395,7 @@ namespace umi3d.cdk
             await UMI3DAsyncManager.Delay(200);
 
             endProgress.AddComplete();
-            if (UMI3DVideoPlayerLoader.HasVideoToLoad)
+            if (UMI3DVideoPlayerLoader.HasVideoToLoad && !Application.isBatchMode)
             {
                 endProgress.SetStatus("Loading videos");
 
@@ -404,7 +404,7 @@ namespace umi3d.cdk
             endProgress.AddComplete();
 
             endProgress.SetStatus("Rendering Probes");
-            if (QualitySettings.realtimeReflectionProbes)
+            if (QualitySettings.realtimeReflectionProbes && !Application.isBatchMode)
             {
                 await RenderProbes(UMI3DGlobalID.EnvironmentId);
             }
