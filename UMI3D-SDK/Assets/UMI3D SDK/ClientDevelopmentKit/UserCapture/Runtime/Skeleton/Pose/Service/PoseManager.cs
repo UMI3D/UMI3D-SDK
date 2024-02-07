@@ -89,9 +89,6 @@ namespace umi3d.cdk.userCapture.pose
             if (poseClip == null)
                 throw new System.ArgumentNullException(nameof(poseClip));
 
-            if (skeletonManager.PersonalSkeleton.PoseSubskeleton.AppliedPoses.Contains(poseClip))
-                return;
-
             skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip, parameters: parameters, anchorToForce: anchorToForce);
         }
 
