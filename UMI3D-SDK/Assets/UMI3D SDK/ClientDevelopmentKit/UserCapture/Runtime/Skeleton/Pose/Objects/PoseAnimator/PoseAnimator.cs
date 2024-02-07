@@ -184,6 +184,23 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <summary>
+        /// Disable poses that listens to this activation mode.
+        /// </summary>
+        public virtual bool TryDeactivate()
+        {
+            if (!IsApplied)
+                return false;
+
+            if (ActivationMode == (ushort)PoseAnimatorActivationMode.ON_REQUEST && !CheckConditions())
+            {
+                EndApply();
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Apply the pose on the pose subskeleton.
         /// </summary>
         private void Apply()

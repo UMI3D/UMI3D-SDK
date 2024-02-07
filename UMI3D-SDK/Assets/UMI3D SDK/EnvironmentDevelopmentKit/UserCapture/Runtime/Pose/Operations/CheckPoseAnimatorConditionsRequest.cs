@@ -22,14 +22,21 @@ namespace umi3d.edk.userCapture.pose
     /// <summary>
     /// Request to activate a pose animator.
     /// </summary>
-    public class TryActivatePoseAnimatorRequest : Operation
+    public class CheckPoseAnimatorConditionsRequest : Operation
     {
         /// <summary>
         /// UMI3D id of the pose animator to try to activate.
         /// </summary>
         public ulong poseAnimatorId;
 
-        public TryActivatePoseAnimatorRequest(ulong poseAnimatorId)
+        /// <summary>
+        /// If true, the request will try to only activate the pose animator. <br/>
+        /// If false, the request will try to only deactivate the pose animator. <br/>
+        /// If null, the request ask for a check and activation/deactivation without knowing.
+        /// </summary>
+        public bool ShouldActivate = true;
+
+        public CheckPoseAnimatorConditionsRequest(ulong poseAnimatorId)
         {
             this.poseAnimatorId = poseAnimatorId;
         }
@@ -38,13 +45,14 @@ namespace umi3d.edk.userCapture.pose
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(GetOperationKey())
-                + UMI3DSerializer.Write(poseAnimatorId);
+                + UMI3DSerializer.Write(poseAnimatorId)
+                + UMI3DSerializer.Write(ShouldActivate);
         }
 
         /// <inheritdoc/>
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
-            TryActivatePoseAnimatorDto dto = CreateDto();
+            CheckPoseAnimatorConditionsRequestDto dto = CreateDto();
             WriteProperties(dto, user.Id());
             return dto;
         }
@@ -55,17 +63,18 @@ namespace umi3d.edk.userCapture.pose
         /// <returns></returns>
         protected virtual uint GetOperationKey()
         {
-            return UMI3DOperationKeys.ActivatePoseAnimatorRequest;
+            return UMI3DOperationKeys.CheckPoseAnimatorConditionsRequest;
         }
 
-        protected virtual TryActivatePoseAnimatorDto CreateDto()
+        protected virtual CheckPoseAnimatorConditionsRequestDto CreateDto()
         {
-            return new TryActivatePoseAnimatorDto();
+            return new CheckPoseAnimatorConditionsRequestDto();
         }
 
-        protected virtual void WriteProperties(TryActivatePoseAnimatorDto dto, ulong userID)
+        protected virtual void WriteProperties(CheckPoseAnimatorConditionsRequestDto dto, ulong userID)
         {
             dto.PoseAnimatorId = poseAnimatorId;
+            dto.ShouldActivate = ShouldActivate;
         }
     }
 }

@@ -681,12 +681,16 @@ namespace umi3d.cdk.collaboration
                         });
                         break;
                     }
-                case UMI3DOperationKeys.ActivatePoseAnimatorRequest:
+                case UMI3DOperationKeys.CheckPoseAnimatorConditionsRequest:
                     {
                         ulong poseOverriderId = UMI3DSerializer.Read<ulong>(container);
+                        bool shouldActivate = UMI3DSerializer.Read<bool>(container);
                         MainThreadManager.Run(() =>
                         {
-                            PoseManager.Instance.TryActivatePoseAnimator(container.environmentId, poseOverriderId);
+                            if (shouldActivate)
+                                PoseManager.Instance.TryActivatePoseAnimator(container.environmentId, poseOverriderId);
+                            else
+                                PoseManager.Instance.TryDeactivatePoseAnimator(container.environmentId, poseOverriderId);
                         });
                         break;
                     }
