@@ -32,7 +32,7 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(PoseClipDto) => true,
                 true when typeof(T) == typeof(PoseAnimatorDto) => true,
                 true when typeof(T) == typeof(DurationDto) => true,
-                true when typeof(T) == typeof(TryActivatePoseAnimatorDto) => true,
+                true when typeof(T) == typeof(CheckPoseAnimatorConditionsRequestDto) => true,
                 true when typeof(T) == typeof(PlayPoseClipDto) => true,
 
                 _ => null
@@ -118,18 +118,20 @@ namespace umi3d.common.userCapture.pose
                         break;
                     }
 
-                case true when typeof(T) == typeof(TryActivatePoseAnimatorDto):
+                case true when typeof(T) == typeof(CheckPoseAnimatorConditionsRequestDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out ulong poseOverriderId);
+                        readable = UMI3DSerializer.TryRead(container, out bool shouldActivate);
 
                         if (readable)
                         {
-                            TryActivatePoseAnimatorDto activatePoseOverriderDto = new()
+                            CheckPoseAnimatorConditionsRequestDto activatePoseOverriderDto = new()
                             {
-                                PoseAnimatorId = poseOverriderId
+                                PoseAnimatorId = poseOverriderId,
+                                ShouldActivate = shouldActivate
                             };
 
-                            result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(TryActivatePoseAnimatorDto));
+                            result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(CheckPoseAnimatorConditionsRequestDto));
                             return true;
                         }
                         break;
@@ -187,9 +189,10 @@ namespace umi3d.common.userCapture.pose
                         + UMI3DSerializer.Write(durationDto.max);
                     break;
 
-                case TryActivatePoseAnimatorDto activatePoseOverriderDto:
-                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.ActivatePoseAnimatorRequest)
-                        + UMI3DSerializer.Write(activatePoseOverriderDto.PoseAnimatorId);
+                case CheckPoseAnimatorConditionsRequestDto activatePoseOverriderDto:
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.CheckPoseAnimatorConditionsRequest)
+                        + UMI3DSerializer.Write(activatePoseOverriderDto.PoseAnimatorId)
+                        + UMI3DSerializer.Write(activatePoseOverriderDto.ShouldActivate);
                     break;
 
                 case PlayPoseClipDto playPoseAnimationDto:

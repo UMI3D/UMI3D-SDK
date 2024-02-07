@@ -57,8 +57,13 @@ namespace umi3d.cdk.userCapture.pose
         void StopWatchActivationConditions();
 
         /// <summary>
-        /// Active poses that listens to this activation mode.
+        /// Active poses that listens to this activation mode if conditions are met.
         /// </summary>
         bool TryActivate();
+
+        /// <summary>
+        /// Disable poses that listens to this activation mode if conditions are not met.
+        /// </summary>
+        bool TryDeactivate();
     }
 }

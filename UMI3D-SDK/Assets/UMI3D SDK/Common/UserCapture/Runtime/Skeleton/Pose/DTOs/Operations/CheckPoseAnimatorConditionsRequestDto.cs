@@ -19,11 +19,18 @@ namespace umi3d.common.userCapture.pose
     /// <summary>
     /// Request to trigger the activation a pose animator.
     /// </summary>
-    public class TryActivatePoseAnimatorDto : AbstractOperationDto
+    public class CheckPoseAnimatorConditionsRequestDto : AbstractOperationDto
     {
         /// <summary>
         /// UMI3D Id of the pose animator to activate.
         /// </summary>
         public ulong PoseAnimatorId { get; set; }
+
+        /// <summary>
+        /// If true, the request will try to only activate the pose animator. <br/>
+        /// If false, the request will try to only deactivate the pose animator. <br/>
+        /// If null, the request ask for a check and activation/deactivation without knowing.
+        /// </summary>
+        public bool ShouldActivate { get; set; }
     }
 }
