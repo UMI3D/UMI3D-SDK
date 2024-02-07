@@ -115,10 +115,7 @@ namespace umi3d.cdk.userCapture.tracking
         public void StopTrackerSimulation(PoseAnchorDto poseAnchor)
         {
             if (!simulatedTrackingRecords.TryGetValue(poseAnchor.bone, out SimulatedTrackingRecord simulatedTrackingRecord))
-            {
-                UMI3DLogger.LogWarning("No SimulatedTracked found for this PoseAnchor", DebugScope.CDK | DebugScope.UserCapture);
                 return;
-            }
 
             simulatedTrackingRecord.registeredPoseAnchors.Remove(poseAnchor);
 
