@@ -430,6 +430,7 @@ namespace umi3d.cdk.userCapture.tracking
             else
             {
                 controllers.Remove(boneType);
+                extrapolators.Remove(boneType);
             }
         }
 
@@ -440,7 +441,19 @@ namespace umi3d.cdk.userCapture.tracking
                 controllers.Remove(oldController.boneType);
 
                 if (saveOldController)
+                {
                     savedControllers.Add(oldController.boneType, oldController);
+                }
+
+                if (extrapolators.ContainsKey(newController.boneType))
+                {
+                    var extrapolatorRegister = extrapolators[newController.boneType];
+                    extrapolators[newController.boneType] = (extrapolatorRegister.PositionExtrapolator, extrapolatorRegister.RotationExtrapolator, newController);
+                }
+                else
+                {
+                    extrapolators.Add(newController.boneType, (new(), new(), newController));
+                }
             }
 
             controllers.Add(newController.boneType, newController);
