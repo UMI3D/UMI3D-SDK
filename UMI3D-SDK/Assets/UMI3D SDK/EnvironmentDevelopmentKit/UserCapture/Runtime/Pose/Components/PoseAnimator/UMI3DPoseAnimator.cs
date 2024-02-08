@@ -231,14 +231,14 @@ namespace umi3d.common.userCapture.pose
 
         #endregion Dependencies
 
-        public virtual PoseAnimatorDto ToDto()
+        public virtual PoseAnimatorDto ToDto(UMI3DUser user)
         {
             return new PoseAnimatorDto()
             {
                 id = Id(),
                 relatedNodeId = RelativeNode.Id(),
                 isAnchored = isAnchored,
-                anchor = anchoringParameters.ToPoseAnchorDto(PoseClip.poseResource.Anchor.bone),
+                anchor = anchoringParameters.ToPoseAnchorDto(PoseClip.PoseResource.GetValue(user).Anchor.bone),
                 poseClipId = PoseClip.Id(),
                 poseConditions = ActivationsConditions.Select(x => x.ToDto()).ToArray(),
                 duration = duration.ToDto(),
@@ -249,7 +249,7 @@ namespace umi3d.common.userCapture.pose
         /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
         {
-            return ToDto();
+            return ToDto(user);
         }
     }
 }
