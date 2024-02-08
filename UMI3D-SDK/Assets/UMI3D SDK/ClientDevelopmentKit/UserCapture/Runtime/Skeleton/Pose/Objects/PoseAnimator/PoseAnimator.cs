@@ -50,7 +50,11 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Pose clip associated to this animator;
         /// </summary>
-        public PoseClip PoseClip => poseClip;
+        public PoseClip PoseClip
+        {
+            get => poseClip;
+            internal set => poseClip = value;
+        }
         private PoseClip poseClip;
 
         /// <summary>

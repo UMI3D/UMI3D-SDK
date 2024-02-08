@@ -160,6 +160,10 @@ namespace umi3d.cdk.userCapture.pose
 
             switch (value.propertyKey)
             {
+                case UMI3DPropertyKeys.PoseAnimatorPoseClip:
+                    await SetPoseClip(value.environmentId, dto.id, UMI3DSerializer.Read<PoseClipDto>(value.container));
+                    break;
+
                 case UMI3DPropertyKeys.PoseAnimatorActivationMode:
                     SetActivationMode(value.environmentId, dto.id, UMI3DSerializer.Read<ushort>(value.container));
                     break;
@@ -193,6 +197,10 @@ namespace umi3d.cdk.userCapture.pose
 
             switch (value.property.property)
             {
+                case UMI3DPropertyKeys.PoseAnimatorPoseClip:
+                    await SetPoseClip(value.environmentId, dto.id, (PoseClipDto)value.property.value);
+                    break;
+
                 case UMI3DPropertyKeys.PoseAnimatorActivationMode:
                     SetActivationMode(value.environmentId, dto.id, (ushort)value.property.value);
                     break;
@@ -217,6 +225,18 @@ namespace umi3d.cdk.userCapture.pose
                     return await Task.FromResult(false);
             }
             return await Task.FromResult(true);
+        }
+
+        protected async Task SetPoseClip(ulong environmentId, ulong entityId, PoseClipDto poseClipDto)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            PoseClip poseClip = await loadingService.WaitUntilEntityLoaded<PoseClip>(environmentId, poseClipDto.id, null);
+
+            poseAnimator.Dto.poseClipId = poseClipDto.id;
+
+            poseAnimator.PoseClip = poseClip;
         }
 
         protected void SetActivationMode(ulong environmentId, ulong entityId, ushort activationMode)
@@ -270,7 +290,6 @@ namespace umi3d.cdk.userCapture.pose
 
             poseAnimator.PoseConditions = newPoseConditionsLoaded;
             poseAnimator.Dto.poseConditions = newPoseConditions;
-
         }
 
         #endregion PropertySetters

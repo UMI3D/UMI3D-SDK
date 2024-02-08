@@ -64,25 +64,29 @@ namespace umi3d.common.userCapture.pose
             }
         }
 
-        private PoseClip poseClip;
+        private UMI3DAsyncProperty<PoseClip> _PoseClip;
+
+        private PoseClip _poseClip
+        {
+            get
+            {
+                return Pose == null ? null : poseService.RegisterEnvironmentPose(Pose);
+            }
+        }
 
         /// <summary>
         /// Pose animation controlled by the pose animator.
         /// </summary>
-        public PoseClip PoseClip
+        public UMI3DAsyncProperty<PoseClip> PoseClip
         {
             get
             {
-                if (poseClip == null)
+                if (_PoseClip.GetValue() == null)
                 {
-                    poseClip = Pose == null ? null : poseService.RegisterEnvironmentPose(Pose);
+                    _PoseClip.SetValue(_poseClip);
                 }
 
-                return poseClip;
-            }
-            set
-            {
-                poseClip = value;
+                return _PoseClip;
             }
         }
 
@@ -204,11 +208,17 @@ namespace umi3d.common.userCapture.pose
 
         #region Dependencies
 
-        private IPoseManager poseService;
+        private IPoseManager _poseService;
 
-        private void Start()
+        private IPoseManager poseService
         {
-            poseService = PoseManager.Instance;
+            get
+            {
+                if (_poseService == null)
+                    _poseService = PoseManager.Instance;
+                return _poseService;
+            }
+            set => _poseService = value;
         }
 
         private void Awake()
@@ -218,6 +228,7 @@ namespace umi3d.common.userCapture.pose
 
         private void Init()
         {
+            _PoseClip = new UMI3DAsyncProperty<PoseClip>(Id(), UMI3DPropertyKeys.PoseAnimatorPoseClip, _poseClip);
             IsAnchored = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.PoseAnimatorUseAnchoring, isAnchored);
             AnchoringParameters = new UMI3DAsyncProperty<PoseAnchoringParameters>(Id(), UMI3DPropertyKeys.PoseAnimatorAnchoringParameters, anchoringParameters);
             PoseApplicationDuration = new UMI3DAsyncProperty<Duration>(Id(), UMI3DPropertyKeys.PoseAnimatorApplicationDuration, duration);
@@ -234,8 +245,8 @@ namespace umi3d.common.userCapture.pose
                 id = Id(),
                 relatedNodeId = RelativeNode.Id(),
                 isAnchored = IsAnchored.GetValue(user),
-                anchor = AnchoringParameters.GetValue(user).ToPoseAnchorDto(PoseClip.PoseResource.GetValue(user).Anchor.bone),
-                poseClipId = PoseClip.Id(),
+                anchor = AnchoringParameters.GetValue(user).ToPoseAnchorDto(PoseClip.GetValue(user).PoseResource.GetValue(user).Anchor.bone),
+                poseClipId = PoseClip.GetValue(user).Id(),
                 poseConditions = ActivationConditions.GetValue(user).Select(x => x.ToDto()).ToArray(),
                 duration = PoseApplicationDuration.GetValue(user).ToDto(),
                 activationMode = (ushort)ActivationMode.GetValue(user),
