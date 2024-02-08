@@ -68,7 +68,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        public IPoseCondition[] PoseConditions { get; private set; }
+        public IPoseCondition[] PoseConditions { get; internal set; }
 
         /// <summary>
         /// How long the pose should last [Not Implemented]

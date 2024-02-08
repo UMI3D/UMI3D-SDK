@@ -219,6 +219,7 @@ namespace umi3d.common
         public const uint PoseAnimatorActivationMode = 11014;
         public const uint PoseAnimatorUseAnchoring = 11015;
         public const uint PoseAnimatorAnchoringParameters = 11016;
+        public const uint PoseAnimatorActivationConditions = 11017;
         #endregion
 
         #region notification

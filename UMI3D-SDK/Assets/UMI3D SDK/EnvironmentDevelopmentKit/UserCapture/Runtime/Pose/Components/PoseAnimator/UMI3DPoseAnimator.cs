@@ -186,17 +186,13 @@ namespace umi3d.common.userCapture.pose
         private PoseAnimatorActivationMode activationMode;
         public UMI3DAsyncProperty<PoseAnimatorActivationMode> ActivationMode { get; protected set; }
 
-        /// <summary>
-        /// Poses conditions that can not be serialized.
-        /// </summary>
-        private List<IPoseAnimatorActivationCondition> unserializableActivationConditions = new();
-
         private IReadOnlyList<AbstractBrowserPoseAnimatorActivationCondition> SerializableActivationConditions
             => activationConditions.Select(x => BrowserPoseAnimatorActivationConditionField.ToCondition(x)).ToList();
 
         /// <summary>
-        /// Used for serialization and editor access. Prefer to use <see cref="UMI3DPoseAnimator.ActivationsConditions"/>.
+        /// Used for serialization and editor access. Prefer to use <see cref="UMI3DPoseAnimator.ActivationConditions"/>.
         /// </summary>
+        [Tooltip("Pose animator activation conditions, all of them should be validated for the animator to be activated."), EditorReadOnly]
         public List<BrowserPoseAnimatorActivationConditionField> activationConditions = new();
 
         #endregion Activation
@@ -204,26 +200,7 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Pose animator activation conditions, all of them should be validated for the animator to be activated.
         /// </summary>
-        public IReadOnlyList<IPoseAnimatorActivationCondition> ActivationsConditions
-        {
-            get => unserializableActivationConditions.Union(SerializableActivationConditions).ToList();
-            set
-            {
-                activationConditions.Clear();
-                unserializableActivationConditions.Clear();
-
-                if (value == null)
-                    return;
-
-                foreach (var condition in value)
-                {
-                    if (condition is AbstractBrowserPoseAnimatorActivationCondition serializedCondition)
-                        activationConditions.Add(BrowserPoseAnimatorActivationConditionField.ToField(serializedCondition));
-                    else if (condition != null)
-                        unserializableActivationConditions.Add(condition);
-                }
-            }
-        }
+        public UMI3DAsyncListProperty<IPoseAnimatorActivationCondition> ActivationConditions { get; protected set; }
 
         #region Dependencies
 
@@ -245,6 +222,7 @@ namespace umi3d.common.userCapture.pose
             AnchoringParameters = new UMI3DAsyncProperty<PoseAnchoringParameters>(Id(), UMI3DPropertyKeys.PoseAnimatorAnchoringParameters, anchoringParameters);
             PoseApplicationDuration = new UMI3DAsyncProperty<Duration>(Id(), UMI3DPropertyKeys.PoseAnimatorApplicationDuration, duration);
             ActivationMode = new UMI3DAsyncProperty<PoseAnimatorActivationMode>(Id(), UMI3DPropertyKeys.PoseAnimatorActivationMode, activationMode);
+            ActivationConditions = new UMI3DAsyncListProperty<IPoseAnimatorActivationCondition>(Id(), UMI3DPropertyKeys.PoseAnimatorActivationConditions, SerializableActivationConditions.Cast<IPoseAnimatorActivationCondition>().ToList());
         }
 
         #endregion Dependencies
@@ -258,7 +236,7 @@ namespace umi3d.common.userCapture.pose
                 isAnchored = IsAnchored.GetValue(user),
                 anchor = AnchoringParameters.GetValue(user).ToPoseAnchorDto(PoseClip.PoseResource.GetValue(user).Anchor.bone),
                 poseClipId = PoseClip.Id(),
-                poseConditions = ActivationsConditions.Select(x => x.ToDto()).ToArray(),
+                poseConditions = ActivationConditions.GetValue(user).Select(x => x.ToDto()).ToArray(),
                 duration = PoseApplicationDuration.GetValue(user).ToDto(),
                 activationMode = (ushort)ActivationMode.GetValue(user),
             };

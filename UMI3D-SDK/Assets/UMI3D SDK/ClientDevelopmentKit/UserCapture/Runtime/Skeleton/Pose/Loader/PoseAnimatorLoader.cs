@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
@@ -152,10 +153,10 @@ namespace umi3d.cdk.userCapture.pose
 
         #region PropertySetters
 
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             if (value.entity.dto is not PoseAnimatorDto dto)
-                return Task.FromResult(false);
+                return await Task.FromResult(false);
 
             switch (value.propertyKey)
             {
@@ -175,16 +176,20 @@ namespace umi3d.cdk.userCapture.pose
                     SetAnchoring(value.environmentId, dto.id, UMI3DSerializer.Read<PoseAnchorDto>(value.container));
                     break;
 
+                case UMI3DPropertyKeys.PoseAnimatorActivationConditions:
+                    await SetActivationConditions(value.environmentId, dto.id, UMI3DSerializer.ReadArray<AbstractPoseConditionDto>(value.container));
+                    break;
+
                 default:
-                    return Task.FromResult(false);
+                    return await Task.FromResult(false);
             }
-            return Task.FromResult(true);
+            return await Task.FromResult(true);
         }
 
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
             if (value.entity.dto is not PoseAnimatorDto dto)
-                return Task.FromResult(false);
+                return await Task.FromResult(false);
 
             switch (value.property.property)
             {
@@ -204,10 +209,14 @@ namespace umi3d.cdk.userCapture.pose
                     SetAnchoring(value.environmentId, dto.id, (PoseAnchorDto)(value.property.value));
                     break;
 
+                case UMI3DPropertyKeys.PoseAnimatorActivationConditions:
+                    await SetActivationConditions(value.environmentId, dto.id, (AbstractPoseConditionDto[])(value.property.value));
+                    break;
+
                 default:
-                    return Task.FromResult(false);
+                    return await Task.FromResult(false);
             }
-            return Task.FromResult(true);
+            return await Task.FromResult(true);
         }
 
         protected void SetActivationMode(ulong environmentId, ulong entityId, ushort activationMode)
@@ -249,6 +258,19 @@ namespace umi3d.cdk.userCapture.pose
                 return;
 
             poseAnimator.Dto.anchor = anchor;
+        }
+
+        protected async Task SetActivationConditions(ulong environmentId, ulong entityId, AbstractPoseConditionDto[] newPoseConditions)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            IPoseCondition[] newPoseConditionsLoaded = await Task.WhenAll(newPoseConditions
+                                                                .Select(x => LoadPoseCondition(environmentId, x)));
+
+            poseAnimator.PoseConditions = newPoseConditionsLoaded;
+            poseAnimator.Dto.poseConditions = newPoseConditions;
+
         }
 
         #endregion PropertySetters
