@@ -48,6 +48,8 @@ namespace umi3d.cdk
 
         Task<UMI3DEntityInstance> WaitUntilEntityLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens);
 
+        Task<T> WaitUntilEntityLoaded<T>(ulong environmentid, ulong id, List<CancellationToken> tokens) where T : class;
+
         Task<UMI3DNodeInstance> WaitUntilNodeInstanceLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens);
     }
 }

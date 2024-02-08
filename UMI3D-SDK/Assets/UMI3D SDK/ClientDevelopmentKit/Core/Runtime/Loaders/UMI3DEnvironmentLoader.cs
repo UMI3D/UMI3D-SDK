@@ -128,6 +128,12 @@ namespace umi3d.cdk
             return entitiesCollection[environmentid].WaitUntilEntityLoaded(id, tokens);
         }
 
+        public virtual async Task<T> WaitUntilEntityLoaded<T>(ulong environmentid, ulong id, List<CancellationToken> tokens) where T : class
+        {
+            UMI3DEntityInstance result = await entitiesCollection[environmentid].WaitUntilEntityLoaded(id, tokens);
+            return (T)result.Object;
+        }
+
         public virtual async Task<UMI3DNodeInstance> WaitUntilNodeInstanceLoaded(ulong environmentid, ulong id, List<CancellationToken> tokens)
         {
             UMI3DEntityInstance nodeInstance = await WaitUntilEntityLoaded(environmentid, id, tokens);
