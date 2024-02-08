@@ -145,8 +145,10 @@ namespace umi3d.cdk.userCapture.tracking
             receivedTypes.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
-                if (controllers.TryGetValue(bone.boneType, out IController controller) || controller is not DistantController vc)
+                if (!controllers.TryGetValue(bone.boneType, out IController controller) 
+                    || controller is not DistantController vc) // controllers from tracking frames should be handled as distant controllers
                 {
+                    // create controller from tracking frame
                     vc = new DistantController
                     {
                         boneType = bone.boneType,
