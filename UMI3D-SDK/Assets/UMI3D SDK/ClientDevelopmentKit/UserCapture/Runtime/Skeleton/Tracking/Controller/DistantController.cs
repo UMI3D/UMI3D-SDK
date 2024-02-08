@@ -18,6 +18,9 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
+    /// <summary>
+    /// Representation of a controller not bound to the current browser.
+    /// </summary>
     public class DistantController : IController
     {
         public uint boneType { get; set; }

@@ -145,8 +145,10 @@ namespace umi3d.cdk.userCapture.tracking
             receivedTypes.Clear();
             foreach (var bone in trackingFrame.trackedBones)
             {
-                if (controllers.TryGetValue(bone.boneType, out IController controller) || controller is not DistantController vc)
+                if (!controllers.TryGetValue(bone.boneType, out IController controller) 
+                    || controller is not DistantController vc) // controllers from tracking frames should be handled as distant controllers
                 {
+                    // create controller from tracking frame
                     vc = new DistantController
                     {
                         boneType = bone.boneType,
@@ -430,6 +432,7 @@ namespace umi3d.cdk.userCapture.tracking
             else
             {
                 controllers.Remove(boneType);
+                extrapolators.Remove(boneType);
             }
         }
 
@@ -440,7 +443,19 @@ namespace umi3d.cdk.userCapture.tracking
                 controllers.Remove(oldController.boneType);
 
                 if (saveOldController)
+                {
                     savedControllers.Add(oldController.boneType, oldController);
+                }
+
+                if (extrapolators.ContainsKey(newController.boneType))
+                {
+                    var extrapolatorRegister = extrapolators[newController.boneType];
+                    extrapolators[newController.boneType] = (extrapolatorRegister.PositionExtrapolator, extrapolatorRegister.RotationExtrapolator, newController);
+                }
+                else
+                {
+                    extrapolators.Add(newController.boneType, (new(), new(), newController));
+                }
             }
 
             controllers.Add(newController.boneType, newController);
