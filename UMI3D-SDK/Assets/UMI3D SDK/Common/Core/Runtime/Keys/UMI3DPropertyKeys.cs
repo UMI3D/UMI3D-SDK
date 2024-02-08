@@ -214,6 +214,11 @@ namespace umi3d.common
         public const uint PoseClipResource = 11010;
         public const uint PoseClipComposable = 11011;
         public const uint PoseClipInterpolable = 11012;
+
+        public const uint PoseAnimatorApplicationDuration= 11013;
+        public const uint PoseAnimatorActivationMode = 11014;
+        public const uint PoseAnimatorUseAnchoring = 11015;
+        public const uint PoseAnimatorAnchoringParameters = 11016;
         #endregion
 
         #region notification

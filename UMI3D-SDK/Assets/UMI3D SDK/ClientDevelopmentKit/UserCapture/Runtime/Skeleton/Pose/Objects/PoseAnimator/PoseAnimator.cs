@@ -33,6 +33,11 @@ namespace umi3d.cdk.userCapture.pose
         private PoseAnimatorDto dto;
 
         /// <summary>
+        /// DTO access for loader only.
+        /// </summary>
+        protected internal PoseAnimatorDto Dto => dto;
+
+        /// <summary>
         /// If true, the animator is applying its pose override.
         /// </summary>
         public bool IsApplied { get; set; }
