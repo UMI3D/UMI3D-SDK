@@ -347,8 +347,12 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Mock<ITrackedSubskeleton> trackedSubskeletonMock = new ();
             parentSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
             trackerSimulatorMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
-            environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[0].Id)).Returns(new UMI3DEntityInstance(0, () => { }, 0) { Object=poseClips[0] });
-            environmentServiceMock.Setup(x => x.TryGetEntityInstance(0, poseClips[1].Id)).Returns(new UMI3DEntityInstance(0, () => { }, 0) { Object = poseClips[1] });
+
+            PoseClip poseClip1 = poseClips[0];
+            PoseClip poseClip2 = poseClips[1];
+
+            environmentServiceMock.Setup(x => x.TryGetEntity<PoseClip>(0, poseClips[0].Id, out poseClip1)).Returns(true);
+            environmentServiceMock.Setup(x => x.TryGetEntity<PoseClip>(0, poseClips[1].Id, out poseClip2)).Returns(true);
 
 
             UserTrackingFrameDto frame = new()
@@ -356,8 +360,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 poses = new() { poseClips[0].Id },
                 userId = 1005uL
             };
-
-
 
             // When
             poseSubskeleton.UpdateBones(frame);
