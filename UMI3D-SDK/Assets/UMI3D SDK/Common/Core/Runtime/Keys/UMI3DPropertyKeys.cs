@@ -210,6 +210,10 @@ namespace umi3d.common
 
         public const uint Poses = 11008;
         public const uint ValidationEnvironmentPoseCondition = 11009;
+
+        public const uint PoseClipResource = 11010;
+        public const uint PoseClipComposable = 11011;
+        public const uint PoseClipInterpolable = 11012;
         #endregion
 
         #region notification

@@ -30,6 +30,7 @@ namespace umi3d.cdk.userCapture.pose
     public class PoseClip : IBrowserEntity, ISubskeletonDescriptor
     {
         private PoseClipDto dto;
+        protected internal PoseClipDto Dto => dto;
 
         /// <summary>
         /// See <see cref="PoseClipDto.id"/>.

@@ -61,7 +61,7 @@ namespace umi3d.edk.userCapture.pose
         public PoseClip RegisterUserCustomPose(ulong userId, IUMI3DPoseData poseResource)
         {
             PoseClip poseToAdd = new(poseResource);
-            poseToAdd.Id(); // register
+
             if (poses.ContainsKey(userId))
             {
                 if (!poses[userId].Contains(poseToAdd))
@@ -76,7 +76,6 @@ namespace umi3d.edk.userCapture.pose
         public PoseClip RegisterEnvironmentPose(IUMI3DPoseData poseResource)
         {
             var pose = new PoseClip(poseResource); ;
-            pose.Id(); // register
 
             if (poses.ContainsKey(UMI3DGlobalID.EnvironmentId))
             {
