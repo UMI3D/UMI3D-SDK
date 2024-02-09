@@ -72,9 +72,9 @@ namespace umi3d.cdk
         {
 #if UNITY_ANDROID
             if (!UMI3DEnvironmentLoader.Instance.isEnvironmentLoaded)
-                videoPlayersToLoad.Enqueue((value.environmentId, videoPlayer));
+                videoPlayersToLoad.Enqueue((environmentId, videoPlayer));
             else
-                return new UMI3DVideoPlayer((value.environmentId, videoPlayer));
+                return new UMI3DVideoPlayer(environmentId, videoPlayer);
             return null;
 #else
             return new UMI3DVideoPlayer(environmentId, videoPlayer);
