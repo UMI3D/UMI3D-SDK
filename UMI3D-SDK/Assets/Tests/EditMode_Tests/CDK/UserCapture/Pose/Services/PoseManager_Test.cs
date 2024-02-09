@@ -57,7 +57,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         #region TryActivatePoseAnimator
 
-        [Test]
+        [Test, TestOf(nameof(PoseManager.TryActivatePoseAnimator))]
         public void TryActivatePoseAnimator()
         {
             // Given
@@ -71,7 +71,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             Mock<PoseAnimator> poseAnimatorMock = new (dto, new PoseClip(new()), new IPoseCondition[0]);
 
             poseAnimatorMock.Setup(x=>x.TryActivate()).Returns(true);
-            PoseAnimator pA = poseAnimatorMock.Object;
+            IPoseAnimator pA = poseAnimatorMock.Object;
             environmentServiceMock.Setup(x => x.TryGetEntity(UMI3DGlobalID.EnvironmentId, dto.id, out pA)).Returns(true);
             
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
@@ -213,7 +213,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             poseManager.PlayPoseClip(poseClip);
 
             // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Never());
+            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
         }
 
         #endregion PlayPoseClip
