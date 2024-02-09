@@ -218,7 +218,7 @@ namespace umi3d.cdk.userCapture.tracking
         #region Ik
 
         /// <summary>
-        /// Called by OnAnimatorIK in TrackedAnimator
+        /// Called by OnAnimatorIK in TrackedAnimator, set all tracked bones as computed and positions IK hints.
         /// </summary>
         /// <param name="layerIndex"></param>
         private void HandleAnimatorIK(int layerIndex)

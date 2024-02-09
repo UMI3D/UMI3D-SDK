@@ -33,6 +33,10 @@ namespace umi3d.cdk.userCapture.tracking
         [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Bone type in UMI3D standards.")]
         public uint boneType;
 
+        /// <summary>
+        /// If true, the position of this bone is tracked even if it not associated to a controller.
+        /// </summary>
+        [Tooltip("If true, the position of this bone is tracked even if it not associated to a controller.")]
         public bool positionComputed;
 
         /// <summary>
