@@ -64,33 +64,40 @@ namespace umi3d.common.userCapture.pose
             }
         }
 
-        private PoseClip poseClip;
+        private UMI3DAsyncProperty<PoseClip> _PoseClip;
+
+        private PoseClip _poseClip
+        {
+            get
+            {
+                return Pose == null ? null : poseService.RegisterEnvironmentPose(Pose);
+            }
+        }
 
         /// <summary>
         /// Pose animation controlled by the pose animator.
         /// </summary>
-        public PoseClip PoseClip
+        public UMI3DAsyncProperty<PoseClip> PoseClip
         {
             get
             {
-                if (poseClip == null)
+                if (_PoseClip.GetValue() == null)
                 {
-                    poseClip = Pose == null ? null : poseService.RegisterEnvironmentPose(Pose);
+                    _PoseClip.SetValue(_poseClip);
                 }
 
-                return poseClip;
-            }
-            set
-            {
-                poseClip = value;
+                return _PoseClip;
             }
         }
 
         [Space(5)]
-        [Tooltip("Specifying if the pose is relative to another object.")]
-        public bool isAnchored;
+        [SerializeField, Tooltip("Specifying if the pose is relative to another object."), EditorReadOnly]
+        private bool isAnchored;
+        public UMI3DAsyncProperty<bool> IsAnchored { get; protected set; }
 
-        public PoseAnchoringParameters anchoringParameters = new();
+        [SerializeField, Tooltip("Specifying if the pose is relative to another object."), EditorReadOnly]
+        private PoseAnchoringParameters anchoringParameters = new();
+        public UMI3DAsyncProperty<PoseAnchoringParameters> AnchoringParameters { get; protected set; }
 
         [Serializable]
         public class PoseAnchoringParameters
@@ -157,8 +164,9 @@ namespace umi3d.common.userCapture.pose
         }
 
         [Space(5)]
-        [Tooltip("Expected duration of the pose animation.")]
-        public Duration duration;
+        [SerializeField, Tooltip("Expected duration of the pose animation."), EditorReadOnly]
+        private Duration duration;
+        public UMI3DAsyncProperty<Duration> PoseApplicationDuration { get; protected set; }
 
         [SerializeField, Tooltip("Related node. If unset, target is current node.")]
         private UMI3DNode relativeNode;
@@ -178,20 +186,17 @@ namespace umi3d.common.userCapture.pose
         #region Activation
 
         [Space(10), Header("Activation")]
-        [Tooltip("How the pose animator could be activated by the user.")]
-        public PoseAnimatorActivationMode activationMode;
-
-        /// <summary>
-        /// Poses conditions that can not be serialized.
-        /// </summary>
-        private List<IPoseAnimatorActivationCondition> unserializableActivationConditions = new();
+        [SerializeField, Tooltip("How the pose animator could be activated by the user."), EditorReadOnly]
+        private PoseAnimatorActivationMode activationMode;
+        public UMI3DAsyncProperty<PoseAnimatorActivationMode> ActivationMode { get; protected set; }
 
         private IReadOnlyList<AbstractBrowserPoseAnimatorActivationCondition> SerializableActivationConditions
             => activationConditions.Select(x => BrowserPoseAnimatorActivationConditionField.ToCondition(x)).ToList();
 
         /// <summary>
-        /// Used for serialization and editor access. Prefer to use <see cref="UMI3DPoseAnimator.ActivationsConditions"/>.
+        /// Used for serialization and editor access. Prefer to use <see cref="UMI3DPoseAnimator.ActivationConditions"/>.
         /// </summary>
+        [Tooltip("Pose animator activation conditions, all of them should be validated for the animator to be activated."), EditorReadOnly]
         public List<BrowserPoseAnimatorActivationConditionField> activationConditions = new();
 
         #endregion Activation
@@ -199,34 +204,36 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Pose animator activation conditions, all of them should be validated for the animator to be activated.
         /// </summary>
-        public IReadOnlyList<IPoseAnimatorActivationCondition> ActivationsConditions
-        {
-            get => unserializableActivationConditions.Union(SerializableActivationConditions).ToList();
-            set
-            {
-                activationConditions.Clear();
-                unserializableActivationConditions.Clear();
-
-                if (value == null)
-                    return;
-
-                foreach (var condition in value)
-                {
-                    if (condition is AbstractBrowserPoseAnimatorActivationCondition serializedCondition)
-                        activationConditions.Add(BrowserPoseAnimatorActivationConditionField.ToField(serializedCondition));
-                    else if (condition != null)
-                        unserializableActivationConditions.Add(condition);
-                }
-            }
-        }
+        public UMI3DAsyncListProperty<IPoseAnimatorActivationCondition> ActivationConditions { get; protected set; }
 
         #region Dependencies
 
-        private IPoseManager poseService;
+        private IPoseManager _poseService;
 
-        private void Start()
+        private IPoseManager poseService
         {
-            poseService = PoseManager.Instance;
+            get
+            {
+                if (_poseService == null)
+                    _poseService = PoseManager.Instance;
+                return _poseService;
+            }
+            set => _poseService = value;
+        }
+
+        private void Awake()
+        {
+            Init();
+        }
+
+        private void Init()
+        {
+            _PoseClip = new UMI3DAsyncProperty<PoseClip>(Id(), UMI3DPropertyKeys.PoseAnimatorPoseClip, _poseClip);
+            IsAnchored = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.PoseAnimatorUseAnchoring, isAnchored);
+            AnchoringParameters = new UMI3DAsyncProperty<PoseAnchoringParameters>(Id(), UMI3DPropertyKeys.PoseAnimatorAnchoringParameters, anchoringParameters);
+            PoseApplicationDuration = new UMI3DAsyncProperty<Duration>(Id(), UMI3DPropertyKeys.PoseAnimatorApplicationDuration, duration);
+            ActivationMode = new UMI3DAsyncProperty<PoseAnimatorActivationMode>(Id(), UMI3DPropertyKeys.PoseAnimatorActivationMode, activationMode);
+            ActivationConditions = new UMI3DAsyncListProperty<IPoseAnimatorActivationCondition>(Id(), UMI3DPropertyKeys.PoseAnimatorActivationConditions, SerializableActivationConditions.Cast<IPoseAnimatorActivationCondition>().ToList());
         }
 
         #endregion Dependencies
@@ -237,12 +244,12 @@ namespace umi3d.common.userCapture.pose
             {
                 id = Id(),
                 relatedNodeId = RelativeNode.Id(),
-                isAnchored = isAnchored,
-                anchor = anchoringParameters.ToPoseAnchorDto(PoseClip.PoseResource.GetValue(user).Anchor.bone),
-                poseClipId = PoseClip.Id(),
-                poseConditions = ActivationsConditions.Select(x => x.ToDto()).ToArray(),
-                duration = duration.ToDto(),
-                activationMode = (ushort)activationMode
+                isAnchored = IsAnchored.GetValue(user),
+                anchor = AnchoringParameters.GetValue(user).ToPoseAnchorDto(PoseClip.GetValue(user).PoseResource.GetValue(user).Anchor.bone),
+                poseClipId = PoseClip.GetValue(user).Id(),
+                poseConditions = ActivationConditions.GetValue(user).Select(x => x.ToDto()).ToArray(),
+                duration = PoseApplicationDuration.GetValue(user).ToDto(),
+                activationMode = (ushort)ActivationMode.GetValue(user),
             };
         }
 

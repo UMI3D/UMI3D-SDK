@@ -14,10 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
 using umi3d.common;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture.pose
@@ -149,20 +151,147 @@ namespace umi3d.cdk.userCapture.pose
             }
         }
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        #region PropertySetters
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
-            return Task.FromResult(false);
+            if (value.entity.dto is not PoseAnimatorDto dto)
+                return await Task.FromResult(false);
+
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.PoseAnimatorPoseClip:
+                    await SetPoseClip(value.environmentId, dto.id, UMI3DSerializer.Read<PoseClipDto>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorActivationMode:
+                    SetActivationMode(value.environmentId, dto.id, UMI3DSerializer.Read<ushort>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorApplicationDuration:
+                    SetPoseApplicationDuration(value.environmentId, dto.id, UMI3DSerializer.Read<DurationDto>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorUseAnchoring:
+                    SetUseAnchoring(value.environmentId, dto.id, UMI3DSerializer.Read<bool>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorAnchoringParameters:
+                    SetAnchoring(value.environmentId, dto.id, UMI3DSerializer.Read<PoseAnchorDto>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorActivationConditions:
+                    await SetActivationConditions(value.environmentId, dto.id, UMI3DSerializer.ReadArray<AbstractPoseConditionDto>(value.container));
+                    break;
+
+                default:
+                    return await Task.FromResult(false);
+            }
+            return await Task.FromResult(true);
         }
 
-        /// <summary>
-        /// <inheritdoc/>
-        /// </summary>
-        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            return Task.FromResult(false);
+            if (value.entity.dto is not PoseAnimatorDto dto)
+                return await Task.FromResult(false);
+
+            switch (value.property.property)
+            {
+                case UMI3DPropertyKeys.PoseAnimatorPoseClip:
+                    await SetPoseClip(value.environmentId, dto.id, (PoseClipDto)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorActivationMode:
+                    SetActivationMode(value.environmentId, dto.id, (ushort)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorApplicationDuration:
+                    SetPoseApplicationDuration(value.environmentId, dto.id, (DurationDto)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorUseAnchoring:
+                    SetUseAnchoring(value.environmentId, dto.id, (bool)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorAnchoringParameters:
+                    SetAnchoring(value.environmentId, dto.id, (PoseAnchorDto)(value.property.value));
+                    break;
+
+                case UMI3DPropertyKeys.PoseAnimatorActivationConditions:
+                    await SetActivationConditions(value.environmentId, dto.id, (AbstractPoseConditionDto[])(value.property.value));
+                    break;
+
+                default:
+                    return await Task.FromResult(false);
+            }
+            return await Task.FromResult(true);
         }
+
+        protected async Task SetPoseClip(ulong environmentId, ulong entityId, PoseClipDto poseClipDto)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            PoseClip poseClip = await loadingService.WaitUntilEntityLoaded<PoseClip>(environmentId, poseClipDto.id, null);
+
+            poseAnimator.Dto.poseClipId = poseClipDto.id;
+
+            poseAnimator.PoseClip = poseClip;
+        }
+
+        protected void SetActivationMode(ulong environmentId, ulong entityId, ushort activationMode)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            if (poseAnimator.Dto.activationMode == activationMode)
+                return;
+
+            poseAnimator.Dto.activationMode = activationMode;
+
+            if (activationMode == (ushort)PoseAnimatorActivationMode.AUTO && !poseAnimator.IsWatching)
+                poseAnimator.StartWatchActivationConditions();
+
+            if (activationMode != (ushort)PoseAnimatorActivationMode.AUTO && poseAnimator.IsWatching)
+                poseAnimator.StopWatchActivationConditions();
+        }
+
+        protected void SetPoseApplicationDuration(ulong environmentId, ulong entityId, DurationDto duration)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            poseAnimator.Dto.duration = duration;
+        }
+
+        protected void SetUseAnchoring(ulong environmentId, ulong entityId, bool isAnchored)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            poseAnimator.Dto.isAnchored = isAnchored;
+        }
+
+        protected void SetAnchoring(ulong environmentId, ulong entityId, PoseAnchorDto anchor)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            poseAnimator.Dto.anchor = anchor;
+        }
+
+        protected async Task SetActivationConditions(ulong environmentId, ulong entityId, AbstractPoseConditionDto[] newPoseConditions)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+                return;
+
+            IPoseCondition[] newPoseConditionsLoaded = await Task.WhenAll(newPoseConditions
+                                                                .Select(x => LoadPoseCondition(environmentId, x)));
+
+            poseAnimator.PoseConditions = newPoseConditionsLoaded;
+            poseAnimator.Dto.poseConditions = newPoseConditions;
+        }
+
+        #endregion PropertySetters
     }
 }
