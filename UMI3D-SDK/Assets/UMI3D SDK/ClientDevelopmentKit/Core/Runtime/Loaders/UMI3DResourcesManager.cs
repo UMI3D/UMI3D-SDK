@@ -1052,6 +1052,7 @@ namespace umi3d.cdk
                     string url = null;
 
                     path = Path.Combine(directoryPath, name);
+                    path = path.Replace('\\', '/');
                     path = System.Uri.UnescapeDataString(path);
                     dicPath = System.IO.Path.GetDirectoryName(path);
                     url = Path.Combine(baseUrl, name);
