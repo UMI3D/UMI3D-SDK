@@ -63,6 +63,12 @@ namespace umi3d.cdk.collaboration.userCapture.animation
 
         protected override void AttachToSkeleton(ISkeleton parentSkeleton, AnimatedSubskeleton animatedSubskeleton)
         {
+            if (parentSkeleton == personalSkeletonService.PersonalSkeleton)
+            {
+                base.AttachToSkeleton(parentSkeleton, animatedSubskeleton);
+                return;
+            }
+
             if (parentSkeleton != null)
                 parentSkeleton.AddSubskeleton(animatedSubskeleton);
             else
