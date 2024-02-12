@@ -234,6 +234,8 @@ namespace umi3d.cdk.collaboration
 
             networkManagerComponent?.Disconnect();
             networkManagerComponent = null;
+
+            UMI3DClientServer.transactionDispatcher = null;
         }
 
         #region signaling
@@ -388,8 +390,16 @@ namespace umi3d.cdk.collaboration
                     case TransactionDto transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(UMI3DGlobalID.EnvironmentId, transaction);
-                            if(UMI3DCollaborationClientServer.transactionPending != null)
+                            try
+                            {
+                                await UMI3DClientServer.transactionDispatcher?.PerformTransaction(UMI3DGlobalID.EnvironmentId, transaction);
+                            }
+                            catch (Exception e)
+                            {
+                                UnityEngine.Debug.LogException(e);
+                            }
+
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
 

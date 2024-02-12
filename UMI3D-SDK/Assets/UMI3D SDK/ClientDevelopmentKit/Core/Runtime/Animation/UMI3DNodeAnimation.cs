@@ -164,10 +164,17 @@ namespace umi3d.cdk
 
         async void PerformChain(OperationChain chain)
         {
-            if (chain.IsByte)
-                await UMI3DClientServer.transactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
-            else
-                await UMI3DClientServer.transactionDispatcher.PerformOperation(new DtoContainer(EnvironmentId, chain.operation));
+            try
+            {
+                if (chain.IsByte)
+                    await UMI3DClientServer.transactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
+                else
+                    await UMI3DClientServer.transactionDispatcher.PerformOperation(new DtoContainer(EnvironmentId, chain.operation));
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         /// <inheritdoc/>
