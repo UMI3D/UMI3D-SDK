@@ -14,6 +14,7 @@ limitations under the License.
 
 using System;
 using System.Collections;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 using UnityEngine.Video;
@@ -40,7 +41,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
-        public static new UMI3DVideoPlayer Get(ulong environmentId, ulong id) { return UMI3DAbstractAnimation.Get(environmentId,id) as UMI3DVideoPlayer; }
+        public static new UMI3DVideoPlayer Get(ulong environmentId, ulong id) { return UMI3DAbstractAnimation.Get(environmentId, id) as UMI3DVideoPlayer; }
 
         /// <summary>
         /// Has the VideoPlayer successfully prepared the content to be played ?
@@ -62,7 +63,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public override void Init()
+        public async override void Init()
         {
             var dto = this.dto as UMI3DVideoPlayerDto;
 
@@ -71,12 +72,15 @@ namespace umi3d.cdk
             renderTexture.Create();
             renderTexture.dimension = UnityEngine.Rendering.TextureDimension.Tex2D;
 
-            mat = UMI3DEnvironmentLoader.GetEntity(EnvironmentId,dto.materialId).Object as Material;
+            UMI3DEntityInstance entity = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId, dto.materialId, null);
+
+            mat = entity.Object as Material;
             if (mat == null)
             {
                 UMI3DLogger.LogWarning("Material not found to display video", scope);
                 return;
             }
+
             mat.DisableKeyword("_DISABLE_ALBEDO_MAP");
             mat.mainTexture = renderTexture;
 
@@ -102,8 +106,6 @@ namespace umi3d.cdk
             videoPlayer.isLooping = dto.looping;
             videoPlayer.Prepare();
             videoPlayer.errorReceived += VideoPlayer_errorReceived;
-
-
 
             if (dto.playing)
             {
@@ -251,7 +253,7 @@ namespace umi3d.cdk
                 if ((dto as UMI3DVideoPlayerDto).audioId != 0)
                 {
                     videoPlayer.audioOutputMode = VideoAudioOutputMode.AudioSource;
-                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId,(dto as UMI3DVideoPlayerDto).audioId, (e) =>
+                    UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId, (dto as UMI3DVideoPlayerDto).audioId, (e) =>
                     {
                         UMI3DAnimationManager.StartCoroutine(ReSetAudioSource(dto as UMI3DVideoPlayerDto, e, time));
                     });
@@ -340,6 +342,80 @@ namespace umi3d.cdk
         public override void SetProgress(long frame)
         {
             UMI3DAnimationManager.StartCoroutine(SetTime());
+        }
+
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            if (await base.SetUMI3DProperty(value)) return true;
+
+            if (dto is not UMI3DVideoPlayerDto videoDto)
+                return false;
+
+            switch (value.property.property)
+            {
+                case UMI3DPropertyKeys.AnimationResource:
+                    ResourceDto res = videoDto.videoResource;
+
+                    videoDto.videoResource = (ResourceDto)value.property.value;
+                    if (videoDto.videoResource == res) return true;
+
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(videoDto.videoResource.variants);
+                    if (videoDto.videoResource == null || videoDto.videoResource.variants == null || videoDto.videoResource.variants.Count < 1)
+                    {
+                        videoDto.videoResource = null;
+                        return true;
+                    }
+
+                    LoadVideo(fileToLoad, videoDto);
+
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        /// <inheritdoc/>
+        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            if (await base.SetUMI3DProperty(value)) return true;
+
+            var videoDto = value.entity.dto as UMI3DVideoPlayerDto;
+
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.AnimationResource:
+                    ResourceDto res = videoDto.videoResource;
+
+                    videoDto.videoResource = UMI3DSerializer.Read<ResourceDto>(value.container);
+                    if (videoDto.videoResource == res) return true;
+                    FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(videoDto.videoResource.variants);
+                    if (videoDto.videoResource == null || videoDto.videoResource.variants == null || videoDto.videoResource.variants.Count < 1)
+                    {
+                        videoDto.videoResource = null;
+                        return true;
+                    }
+
+                    LoadVideo(fileToLoad, videoDto);
+
+                    break;
+                default:
+                    return false;
+            }
+
+            return true;
+        }
+
+        private void LoadVideo(FileDto file, UMI3DVideoPlayerDto videoDto)
+        {
+            if (!UMI3DClientServer.Instance.AuthorizationInHeader)
+                videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(file.url, UMI3DClientServer.getAuthorization());
+            else
+                videoPlayer.url = file.url;
+
+            if (videoDto.playing)
+                videoPlayer.Play();
         }
     }
 }
