@@ -15,36 +15,35 @@ limitations under the License.
 */
 #if UNITY_EDITOR
 
+using ProtoBuf;
+using ProtoBuf.Meta;
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Text;
-using ProtoBuf;
-using ProtoBuf.Meta;
-using UnityEngine;
 using System.Reflection;
+using System.Text;
 using UnityEditor;
 using UnityEditor.Compilation;
+using UnityEngine;
 using Assembly = UnityEditor.Compilation.Assembly;
-using System.Linq;
 
-public class MumbleCompiler 
+public class MumbleCompiler
 {
-    const string plugginfloder = @"Assets\UMI3D SDK\ClientDevelopmentKit\Collaboration\Dependencies\Mumble-Unity/Plugins";
+    static string pluginPath;
 
     [MenuItem("Protobuf/Build model")]
     private static void BuildMyProtoModel()
     {
-
+        GetPath();
         RuntimeTypeModel typeModel = GetModel();
         typeModel.Compile("MyProtoModel", "MyProtoModel.dll");
 
-        if (!Directory.Exists(plugginfloder))
+        if (!Directory.Exists(pluginPath))
         {
-            Directory.CreateDirectory(plugginfloder);
+            Directory.CreateDirectory(pluginPath);
         }
 
-        File.Move("MyProtoModel.dll", plugginfloder+"/MyProtoModel.dll");
+        File.Move("MyProtoModel.dll", pluginPath + "/MyProtoModel.dll");
 
         AssetDatabase.Refresh();
     }
@@ -52,17 +51,30 @@ public class MumbleCompiler
     [MenuItem("Protobuf/Create proto file")]
     private static void CreateProtoFile()
     {
-        if (!Directory.Exists(plugginfloder))
+        GetPath();
+        if (!Directory.Exists(pluginPath))
         {
-            Directory.CreateDirectory(plugginfloder);
+            Directory.CreateDirectory(pluginPath);
         }
 
         RuntimeTypeModel typeModel = GetModel();
-        using (FileStream stream = File.Open(plugginfloder+"/model.proto", FileMode.Create))
+        using (FileStream stream = File.Open(pluginPath + "/model.proto", FileMode.Create))
         {
             byte[] protoBytes = Encoding.UTF8.GetBytes(typeModel.GetSchema(null));
             stream.Write(protoBytes, 0, protoBytes.Length);
         }
+    }
+
+    static void GetPath()
+    {
+        // Get the relative path of this file from the Assets folder.
+        string fileName = $"{nameof(MumbleCompiler)}";
+        var assets = AssetDatabase.FindAssets($"t:Script {fileName}");
+        string path = AssetDatabase.GUIDToAssetPath(assets[0]);
+
+        // Remove script name with extension.
+        pluginPath = path.Substring(0, path.Length - fileName.Length - 3);
+        pluginPath += "Plugins";
     }
 
     private static RuntimeTypeModel GetModel()
