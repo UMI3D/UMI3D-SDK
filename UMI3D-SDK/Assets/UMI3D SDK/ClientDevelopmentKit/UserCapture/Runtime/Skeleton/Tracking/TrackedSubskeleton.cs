@@ -111,6 +111,9 @@ namespace umi3d.cdk.userCapture.tracking
 
         private void Update()
         {
+            if (skeleton is IPersonalSkeleton)
+                return; // no use of extrapolator for own skeleton, it also introduce a race conflict with Updates from Trackers, because extrapolators never receive tracking frame to be updated from.
+
             foreach (var extrapolator in extrapolators.Values)
                 if (extrapolator.Controller is DistantController vc)
                 {
