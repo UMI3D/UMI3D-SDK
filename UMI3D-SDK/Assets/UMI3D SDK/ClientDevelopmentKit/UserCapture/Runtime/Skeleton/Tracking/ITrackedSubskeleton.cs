@@ -15,8 +15,6 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
-using System.Threading.Tasks;
-using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
 
@@ -30,7 +28,7 @@ namespace umi3d.cdk.userCapture.tracking
         IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones { get; }
         IReadOnlyDictionary<uint, IController> Controllers { get; }
 
-        void RemoveTracker(uint boneType);
+        void RemoveController(uint boneType);
 
         UserTrackingBoneDto GetController(uint boneType);
 

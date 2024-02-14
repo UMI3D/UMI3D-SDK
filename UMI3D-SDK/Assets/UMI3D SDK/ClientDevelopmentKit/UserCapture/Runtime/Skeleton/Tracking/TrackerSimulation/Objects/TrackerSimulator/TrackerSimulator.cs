@@ -117,11 +117,13 @@ namespace umi3d.cdk.userCapture.tracking
             if (simulatedTrackingRecord.registeredPoseAnchors.Count > 0)
                 return;
 
-            if (simulatedTrackingRecord.simulatedTracker.GameObject != null)
-                GameObject.Destroy(simulatedTrackingRecord.simulatedTracker.GameObject);
+            simulatedTrackingRecord.simulatedTracker.Controller.isActive = false;
 
             simulatedTrackingRecords.Remove(poseAnchor.bone);
-            skeleton.TrackedSubskeleton.RemoveTracker(poseAnchor.bone);
+            skeleton.TrackedSubskeleton.RemoveController(poseAnchor.bone);
+
+            if (simulatedTrackingRecord.simulatedTracker.GameObject != null)
+                GameObject.Destroy(simulatedTrackingRecord.simulatedTracker.GameObject);
         }
     }
 }
