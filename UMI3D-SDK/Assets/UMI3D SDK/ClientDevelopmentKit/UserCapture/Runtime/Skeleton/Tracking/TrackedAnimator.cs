@@ -30,6 +30,8 @@ namespace umi3d.cdk.userCapture.tracking
         public event Action<int> IkCallback;
 
         // mandatory for OnAnimatorIk event
+        public Animator Animator => animator;
+
         private Animator animator;
 
         void Start()
