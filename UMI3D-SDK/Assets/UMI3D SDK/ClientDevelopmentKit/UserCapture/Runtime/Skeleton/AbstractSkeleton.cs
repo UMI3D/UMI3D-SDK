@@ -169,9 +169,19 @@ namespace umi3d.cdk.userCapture
             foreach (uint boneType in Bones.Keys)
                 alreadyComputedBonesCache[boneType] = false;
 
-            //very naive : for now, we consider the tracked hips as the computer hips
-            Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position + hipsDisplacement : Vector3.zero;
-            Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation * Bones[BoneType.Hips].LocalRotation : Quaternion.identity;
+
+            if (TrackedSubskeleton.Controllers.TryGetValue(BoneType.Hips, out IController hipsController))
+            {
+                Bones[BoneType.Hips].Position = hipsController.position;
+                Bones[BoneType.Hips].Rotation = hipsController.rotation;
+            }
+            else
+            {
+                //very naive : for now, we consider the tracked hips as the computer hips
+                Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position + hipsDisplacement : Vector3.zero; // add displacement to have the movement of Hips from animations
+                Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation * Bones[BoneType.Hips].LocalRotation : Quaternion.identity;
+            }
+
 
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
@@ -245,7 +255,7 @@ namespace umi3d.cdk.userCapture
 
                     List<SubSkeletonBoneDto> bones = pose.bones;
 
-                    if (pose.boneAnchor?.bone == BoneType.Hips)
+                    if (pose.boneAnchor?.bone == BoneType.Hips) //hips displacement is used when subskeleton moves the hips as its anchor, e.g. emotes
                         hipsDisplacement = Vector3.Scale(HipsAnchor.rotation * pose.boneAnchor.position.Struct(), ExtractXZVector);
 
                     foreach (var b in bones)

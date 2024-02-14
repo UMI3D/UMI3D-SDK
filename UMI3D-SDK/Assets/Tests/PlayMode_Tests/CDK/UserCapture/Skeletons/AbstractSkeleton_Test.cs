@@ -94,6 +94,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         {
             //Given
             // Empty by default
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(new Dictionary<uint, IController>(0));
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -129,6 +130,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             foreach (var animatedSubskeleton in animatedSubskeletons)
                 abstractSkeleton.AddSubskeleton(animatedSubskeleton);
+
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(new Dictionary<uint, IController>(0));
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -176,6 +179,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             foreach (var animatedSubskeleton in animatedSubskeletons)
                 abstractSkeleton.AddSubskeleton(animatedSubskeleton);
+
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(new Dictionary<uint, IController>(0));
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
