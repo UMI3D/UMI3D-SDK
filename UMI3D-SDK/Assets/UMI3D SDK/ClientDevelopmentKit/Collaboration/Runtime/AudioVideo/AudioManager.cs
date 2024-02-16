@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using inetum.unityUtils.audio;
 using Mumble;
 using System.Collections;
 using System.Collections.Generic;
@@ -335,6 +336,7 @@ namespace umi3d.cdk.collaboration
                 }
             }
             SetGainAndVolumeForUser(user);
+            AudioMixerControl.SetConversationGroup(audioPlayer);
         }
 
         private IEnumerator WaitForAudioCreation(UMI3DUser user)
