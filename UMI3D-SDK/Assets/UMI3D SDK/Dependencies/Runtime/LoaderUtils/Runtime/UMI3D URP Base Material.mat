@@ -23,8 +23,7 @@ Material:
   m_Name: UMI3D URP Base Material
   m_Shader: {fileID: 4800000, guid: 27874cd6a5cfc5b4d8c2194d42169c18, type: 3}
   m_ValidKeywords: []
-  m_InvalidKeywords:
-  - _ROUGHNESSTOSMOOTHNESS_ON
+  m_InvalidKeywords: []
   m_LightmapFlags: 4
   m_EnableInstancingVariants: 0
   m_DoubleSidedGI: 0
@@ -123,7 +122,7 @@ Material:
     - _QueueControl: 0
     - _QueueOffset: 0
     - _ReceiveShadows: 1
-    - _RoughnesstoSmoothness: 1
+    - _RoughnesstoSmoothness: 0
     - _Smoothness: 0.5
     - _SmoothnessTextureChannel: 0
     - _SpecularHighlights: 1
