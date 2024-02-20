@@ -8,7 +8,7 @@ Shader "UMI3D/UMI3D_default"
 		[ASEBegin]_Tilling("Tilling", Vector) = (1,1,0,0)
 		_Offset("Offset", Vector) = (0,0,0,0)
 		_BaseMap("Albedo Map", 2D) = "white" {}
-		_BaseColor("Albedo Color", Color) = (0,0,0,0)
+		[MainColor]_BaseColor("Albedo Color", Color) = (0,0,0,0)
 		_EmissionMap("Emissive Map", 2D) = "white" {}
 		[HDR]_EmissionColor("Emissive Color", Color) = (0,0,0,0)
 		[Normal]_BumpMap("Normal Map", 2D) = "bump" {}
