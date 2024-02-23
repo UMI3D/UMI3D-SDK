@@ -14,12 +14,29 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common.interaction;
+using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    public interface IProjectionTreeNodeDto 
+    [Serializable]
+    public struct ProjectionTreeManipulationNodeData : IProjectionTreeNodeData
     {
-        AbstractInteractionDto Interaction { get; }
+        public ManipulationDto interaction;
+
+        /// <summary>
+        /// Associated Degree of Freedom Group DTO
+        /// </summary>
+        [Tooltip("Associated Degree of Freedom Group DTO")]
+        public DofGroupDto manipulationDofGroupDto;
+
+        public AbstractInteractionDto Interaction
+        {
+            get
+            {
+                return interaction;
+            }
+        }
     }
 }

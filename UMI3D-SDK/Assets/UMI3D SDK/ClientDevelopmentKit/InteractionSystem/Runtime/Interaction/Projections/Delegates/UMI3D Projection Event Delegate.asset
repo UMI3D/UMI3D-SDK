@@ -9,8 +9,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: dfed8fa9a50a51a48ac3922974e5f6b2, type: 3}
-  m_Name: UMI3D Projection Tree
+  m_Script: {fileID: 11500000, guid: cc44a3b2c0885b54383666d837fad0de, type: 3}
+  m_Name: UMI3D Projection Event Delegate
   m_EditorClassIdentifier: 
-  _guid: 4f8ebd7bc1ce3ca4a8617ff740c4a745
-  trees: []
+  _guid: 

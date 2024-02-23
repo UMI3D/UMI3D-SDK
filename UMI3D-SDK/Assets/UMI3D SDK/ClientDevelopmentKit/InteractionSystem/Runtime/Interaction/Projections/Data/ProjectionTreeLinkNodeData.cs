@@ -21,15 +21,9 @@ using UnityEngine;
 namespace umi3d.cdk.interaction
 {
     [Serializable]
-    public struct ProjectionTreeManipulationNodeDto : IProjectionTreeNodeDto
+    public struct ProjectionTreeLinkNodeData : IProjectionTreeNodeData
     {
-        public ManipulationDto interaction;
-
-        /// <summary>
-        /// Associated Degree of Freedom Group DTO
-        /// </summary>
-        [Tooltip("Associated Degree of Freedom Group DTO")]
-        public DofGroupDto manipulationDofGroupDto;
+        public LinkDto interaction;
 
         public AbstractInteractionDto Interaction
         {

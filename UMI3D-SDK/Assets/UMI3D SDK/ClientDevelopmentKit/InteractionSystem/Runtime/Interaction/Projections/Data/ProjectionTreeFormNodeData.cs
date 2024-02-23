@@ -15,27 +15,22 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
+using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
     [Serializable]
-    public struct ProjectionTreeDto 
+    public struct ProjectionTreeFormNodeData : IProjectionTreeNodeData
     {
-        /// <summary>
-        /// Tree's id.
-        /// </summary>
-        public string treeId;
+        public FormDto interaction;
 
-        /// <summary>
-        /// Root of this tree.
-        /// </summary>
-        public ProjectionTreeNodeDto root;
-
-        /// <summary>
-        /// List of all of the nodes.
-        /// </summary>
-        public List<ProjectionTreeNodeDto> nodes;
+        public AbstractInteractionDto Interaction
+        {
+            get
+            {
+                return interaction;
+            }
+        }
     }
 }

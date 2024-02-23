@@ -21,31 +21,21 @@ using UnityEngine;
 namespace umi3d.cdk.interaction
 {
     [Serializable]
-    public struct ProjectionTreeNodeDto 
+    public struct ProjectionTreeData 
     {
         /// <summary>
-        /// Node id.
-        /// </summary>
-        public ulong id;
-        /// <summary>
-        /// Node's parent id.
-        /// </summary>
-        public ulong parentId;
-        /// <summary>
-        /// Tree's id the node belongs to.
+        /// Tree's id.
         /// </summary>
         public string treeId;
+
         /// <summary>
-        /// Node's children IDs.
+        /// Root of this tree.
         /// </summary>
-        public List<ProjectionTreeNodeDto> children;
+        public ProjectionTreeNodeData root;
+
         /// <summary>
-        /// The concreate interaction Dto.
+        /// List of all of the nodes.
         /// </summary>
-        public IProjectionTreeNodeDto interactionDto;
-        /// <summary>
-        /// The input associated with this interaction.
-        /// </summary>
-        public AbstractUMI3DInput input;
+        public List<ProjectionTreeNodeData> nodes;
     }
 }

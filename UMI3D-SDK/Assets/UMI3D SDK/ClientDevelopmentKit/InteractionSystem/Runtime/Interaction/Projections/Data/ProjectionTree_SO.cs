@@ -14,23 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using umi3d.common.interaction;
+using inetum.unityUtils.saveSystem;
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    [Serializable]
-    public struct ProjectionTreeParameterNodeDto : IProjectionTreeNodeDto
+    [CreateAssetMenu(fileName = "UMI3D Projection Tree", menuName = "UMI3D/Data/Interaction/Projection Tree")]
+    public class ProjectionTree_SO : SerializableScriptableObject
     {
-        public AbstractParameterDto interaction;
-
-        public AbstractInteractionDto Interaction
-        {
-            get
-            {
-                return interaction;
-            }
-        }
+        public List<ProjectionTreeData> trees;
     }
 }

@@ -41,7 +41,7 @@ namespace umi3d.cdk.interaction
             this.treeId = treeId;
         }
 
-        public List<ProjectionTreeNodeDto> Nodes
+        public List<ProjectionTreeNodeData> Nodes
         {
             get
             {
@@ -60,7 +60,7 @@ namespace umi3d.cdk.interaction
             });
         }
 
-        public int IndexOfChildInParent(ProjectionTreeNodeDto parent, ulong child)
+        public int IndexOfChildInParent(ProjectionTreeNodeData parent, ulong child)
         {
             return parent.children?.FindIndex(node =>
             {
@@ -86,11 +86,11 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="parent"></param>
         /// <returns></returns>
-        public List<ProjectionTreeNodeDto> GetAllSubNodes(ProjectionTreeNodeDto parent)
+        public List<ProjectionTreeNodeData> GetAllSubNodes(ProjectionTreeNodeData parent)
         {
-            List<ProjectionTreeNodeDto> buffer = new();
+            List<ProjectionTreeNodeData> buffer = new();
 
-            Queue<List<ProjectionTreeNodeDto>> queue = new();
+            Queue<List<ProjectionTreeNodeData>> queue = new();
             queue.Enqueue(parent.children);
 
             while (queue.Count != 0)
@@ -107,7 +107,7 @@ namespace umi3d.cdk.interaction
             return buffer;
         }
 
-        public bool AddRoot(ProjectionTreeNodeDto root)
+        public bool AddRoot(ProjectionTreeNodeData root)
         {
             if (projectionTree_SO.trees.FindIndex(tree =>
             {
@@ -115,7 +115,7 @@ namespace umi3d.cdk.interaction
             }) == -1)
             {
                 projectionTree_SO.trees.Add(
-                    new ProjectionTreeDto()
+                    new ProjectionTreeData()
                     {
                         treeId = root.treeId,
                         root = root,
@@ -132,7 +132,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="parent"></param>
         /// <param name="child">Node to add</param>
-        public bool AddChild(ulong parent, ProjectionTreeNodeDto child)
+        public bool AddChild(ulong parent, ProjectionTreeNodeData child)
         {
             if (IsChildOf(parent, child.id))
             {
