@@ -77,7 +77,7 @@ namespace umi3d.cdk.interaction
         {
             foreach (AbstractController controller in Controllers)
             {
-                if (controller.IsCompatibleWith(tool) && controller.IsAvailableFor(tool))
+                if (controller.toolManager.toolDelegate.IsCompatibleWith(tool) && controller.toolManager.toolDelegate.IsAvailableFor(tool))
                 {
                     return controller;
                 }
@@ -85,7 +85,7 @@ namespace umi3d.cdk.interaction
 
             foreach (AbstractController controller in Controllers)
             {
-                if (controller.IsCompatibleWith(tool))
+                if (controller.toolManager.toolDelegate.IsCompatibleWith(tool))
                 {
                     return controller;
                 }
@@ -101,7 +101,7 @@ namespace umi3d.cdk.interaction
 
             if (toolIdToController.TryGetValue((tool.environmentId,tool.id), out AbstractController controller))
             {
-                controller.Release(tool, reason);
+                controller.projectionManager.Release(tool, reason);
                 toolIdToController.Remove((tool.environmentId, tool.id));
                 tool.OnUpdated.RemoveAllListeners();
                 tool.OnAdded.RemoveAllListeners();
@@ -129,11 +129,11 @@ namespace umi3d.cdk.interaction
             AbstractController controller = GetController(tool);
             if (controller != null)
             {
-                if (!controller.IsAvailableFor(tool))
+                if (!controller.toolManager.toolDelegate.IsAvailableFor(tool))
                 {
                     if (ShouldForceProjection(controller, tool, reason))
                     {
-                        ReleaseTool(environmentId, controller.tool.id);
+                        ReleaseTool(environmentId, controller.toolManager.toolDelegate.Tool.id);
                     }
                     else
                     {
@@ -158,7 +158,7 @@ namespace umi3d.cdk.interaction
         public bool SelectTool(ulong environmentId, ulong toolId, bool releasable, AbstractController controller, ulong hoveredObjectId, InteractionMappingReason reason = null)
         {
             AbstractTool tool = GetTool(environmentId, toolId);
-            if (controller.IsCompatibleWith(tool))
+            if (controller.toolManager.toolDelegate.IsCompatibleWith(tool))
             {
                 if (toolIdToController.ContainsKey((tool.environmentId, tool.id)))
                 {
@@ -171,7 +171,12 @@ namespace umi3d.cdk.interaction
                 tool.OnAdded.AddListener(abstractInteractionDto => { UpdateAddOnTools(environmentId, toolId, releasable, abstractInteractionDto, reason); });
                 tool.OnRemoved.AddListener(abstractInteractionDto => { UpdateRemoveOnTools(environmentId, toolId, releasable, abstractInteractionDto, reason); });
 
-                controller.Project(tool, releasable, reason, hoveredObjectId);
+                controller.projectionManager.Project(
+                    tool, 
+                    releasable, 
+                    reason, 
+                    hoveredObjectId
+                );
 
                 return true;
             }
@@ -191,7 +196,12 @@ namespace umi3d.cdk.interaction
                 if (tool.interactionsId.Count <= 0)
                     ReleaseTool(environmentId, tool.id, new ToolNeedToBeUpdated());
                 else
-                    controller.Update(tool, releasable, reason);
+                    controller.projectionManager.Project(
+                        tool, 
+                        releasable, 
+                        reason,
+                        controller.toolManager.toolDelegate.CurrentHoverTool.id
+                    );
                 return true;
             }
             throw new Exception("no controller have this tool projected");
@@ -204,7 +214,7 @@ namespace umi3d.cdk.interaction
             {
                 AbstractController controller = toolIdToController[(environmentId, toolId)];
                 AbstractTool tool = GetTool(environmentId, toolId);
-                controller.AddUpdate(tool, releasable, abstractInteractionDto, reason);
+                controller.projectionManager.Project(tool, abstractInteractionDto, releasable, reason);
                 return true;
             }
             throw new Exception("no controller have this tool projected");
@@ -258,13 +268,13 @@ namespace umi3d.cdk.interaction
         //this function will change/move in the future.
         protected bool ShouldForceProjection(AbstractController controller, AbstractTool tool, InteractionMappingReason reason)
         {
-            if (controller.IsAvailableFor(tool))
+            if (controller.toolManager.toolDelegate.IsAvailableFor(tool))
                 return true;
 
-            if (controller.tool == null)
+            if (controller.toolManager.toolDelegate.Tool == null)
                 return true; //check here
 
-            if (projectedTools.TryGetValue((controller.tool.environmentId,controller.tool.id), out InteractionMappingReason lastProjectionReason))
+            if (projectedTools.TryGetValue((controller.toolManager.toolDelegate.Tool.environmentId, controller.toolManager.toolDelegate.Tool.id), out InteractionMappingReason lastProjectionReason))
             {
                 //todo : add some intelligence here.
                 return !(reason is AutoProjectOnHover);
