@@ -116,24 +116,30 @@ namespace MrtkShader
             });
 
         public static ShaderProperty<Color> EmissiveColor = new ShaderProperty<Color>("_EmissionColor", Color.black, "_EMISSION");
-        public static ShaderProperty<Texture2D> ChannelMap = new ShaderProperty<Texture2D>("_ChannelMap", null, "_METALLICSPECGLOSSMAP",
+        public static ShaderProperty<Texture2D> ChannelMap = new ShaderProperty<Texture2D>("_ChannelMap", null, "",
             (m, s, v) =>
             {
-                m.SetTexture("_MetallicGlossMap", v);
-                m.SetTexture("_OcclusionMap", v);
+                m.SetTexture("_ChannelMap", v);
+                m.SetFloat("_ChannelMapONOFF", 1);
             });
 
-        public static ShaderProperty<Texture2D> MetallicMap = new ShaderProperty<Texture2D>("_MetallicGlossMap", null, "_METALLICSPECGLOSSMAP");
+        public static ShaderProperty<Texture2D> MetallicMap = new ShaderProperty<Texture2D>("_MetallicGlossMap", null, "");
 
-        public static ShaderProperty<Texture2D> RoughnessMap = new ShaderProperty<Texture2D>("_ChannelMap", null, null,
+        public static ShaderProperty<Texture2D> RoughnessMap = new ShaderProperty<Texture2D>("_Smoothness", null, null,
             (m, s, v) =>
             {
-                Debug.LogWarning("Warning rougness map not supported, must be contained in a channel map or with a metallic map");
+                m.SetTexture("_SmoothnessTextureChannel", v);
+                m.SetFloat("_RoughnesstoSmoothness", 0f);
+                m.SetFloat("_Smoothness", 1f);
             });
 
         public static ShaderProperty<Texture2D> EmissionMap = new ShaderProperty<Texture2D>("_EmissionMap", null, "_EMISSION");
         public static ShaderProperty<Texture2D> NormalMap = new ShaderProperty<Texture2D>("_BumpMap", null, "_NORMALMAP");
-        public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null);
+        public static ShaderProperty<Texture2D> OcclusionMap = new ShaderProperty<Texture2D>("_OcclusionMap", null, "", (m, s, v) =>
+        {
+            m.SetTexture("_OcclusionMap", v);
+            m.SetFloat("_OcclusionStrength", 1f);
+        });
 
         /// <summary>
         /// Makes a URP Lit shader opaque.

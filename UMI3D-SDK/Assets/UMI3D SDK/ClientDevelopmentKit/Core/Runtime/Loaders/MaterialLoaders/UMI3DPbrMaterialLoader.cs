@@ -77,7 +77,11 @@ namespace umi3d.cdk
                         LoadTextureInMaterial(ext.id, ext.occlusionTexture, MRTKShaderUtils.OcclusionMap, newMat);
 
                         LoadTextureInMaterial(ext.id, ext.metallicTexture, MRTKShaderUtils.MetallicMap, newMat);
-                        LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+                        LoadTextureInMaterial(ext.id, ext.roughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
+
+                        if (ext.metallicRoughnessTexture is not null)
+                            LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+
 #else
                         Texture2D channelMap;
                         if (ext.metallicRoughnessTexture != null)

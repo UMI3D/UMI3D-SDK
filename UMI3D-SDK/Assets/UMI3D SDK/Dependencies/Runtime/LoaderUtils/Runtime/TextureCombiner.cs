@@ -65,7 +65,7 @@ namespace MrtkShader
         /// <returns></returns>
         public static Texture2D CombineFromMrtkStandard(Texture2D metallicMap, Texture2D occlusionMap, Texture2D emissionMap, Texture2D smoothnessMap)
         {
-            return Combine(metallicMap, occlusionMap, emissionMap, smoothnessMap,Channel.Red,Channel.Green,Channel.Blue,Channel.Alpha);
+            return Combine(metallicMap, occlusionMap, emissionMap, smoothnessMap, Channel.Red, Channel.Green, Channel.Blue, Channel.Alpha);
         }
 
         /// <summary>
@@ -79,7 +79,7 @@ namespace MrtkShader
         public static Texture2D CombineFromGltfStandard(Texture2D metallicMap, Texture2D occlusionMap, Texture2D emissionMap, Texture2D roughnessMap)
         {
             Texture2D smoothnessMap = InverseMap(roughnessMap);
-                return Combine(metallicMap, occlusionMap, emissionMap, smoothnessMap,gltfMetallicMapChannel,gltfOcclusionMapChannel,emissionMapChannel,gltfSmoothnessMapChannel);
+            return Combine(metallicMap, occlusionMap, emissionMap, smoothnessMap, gltfMetallicMapChannel, gltfOcclusionMapChannel, emissionMapChannel, gltfSmoothnessMapChannel);
         }
 
         /// <summary>
@@ -101,7 +101,7 @@ namespace MrtkShader
         /// <param name="occlusionMap"></param>
         /// <param name="emissionMap"></param>
         /// <returns></returns>
-        public static Texture2D CombineFromGltfStandard(Texture2D metallicRoughnessMap,Texture2D occlusionMap, Texture2D emissionMap)
+        public static Texture2D CombineFromGltfStandard(Texture2D metallicRoughnessMap, Texture2D occlusionMap, Texture2D emissionMap)
         {
             Texture2D smoothnessMap = InverseMap(metallicRoughnessMap);
             return Combine(metallicRoughnessMap, occlusionMap, emissionMap, smoothnessMap, gltfMetallicMapChannel, gltfOcclusionMapChannel, emissionMapChannel, gltfSmoothnessMapChannel);
@@ -115,7 +115,7 @@ namespace MrtkShader
         {
             return Combine(metallicMap, occlusionMap, emissionMap, smoothnessMap, gltfMetallicMapChannel, gltfOcclusionMapChannel, emissionMapChannel, gltfSmoothnessMapChannel);
         }
-        
+
         /// <summary>
         /// probably never used because gltf standard uses Roughness map
         /// </summary>
@@ -137,8 +137,10 @@ namespace MrtkShader
                 {
                     colors[i] = Color.white - colors[i];
                 }
+
                 res.SetPixels(colors);
-                //Destroy(map);
+                res.Apply();
+
                 return res;
             }
             catch (Exception e)
@@ -197,7 +199,7 @@ namespace MrtkShader
             RenderTexture.active = previous;
             RenderTexture.ReleaseTemporary(renderTexture);
 
-            return channelMap; 
+            return channelMap;
         }
 
         /// <summary>
