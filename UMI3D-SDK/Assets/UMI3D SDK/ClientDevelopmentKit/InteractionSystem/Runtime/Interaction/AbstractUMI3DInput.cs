@@ -39,12 +39,6 @@ namespace umi3d.cdk.interaction
         public AbstractController controller { get; protected set; }
 
         /// <summary>
-        /// Available numbers of degrees of freedom.
-        /// </summary>
-        [Tooltip("Available numbers of degrees of freedom")]
-        public readonly int DegreesOfFreedom = 0;
-
-        /// <summary>
         /// Event raised when the input is pressed down (first frame only).
         /// </summary>
         [Tooltip("Event raised when the input is pressed down (first frame only)")]

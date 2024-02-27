@@ -50,7 +50,7 @@ namespace umi3d.cdk.interaction
         /// Controller projection memory.
         /// </summary>
         [Tooltip("Controller projection memory")]
-        public ProjectionMemory projectionMemory;
+        public ProjectionManager projectionMemory;
 
         #endregion
 
