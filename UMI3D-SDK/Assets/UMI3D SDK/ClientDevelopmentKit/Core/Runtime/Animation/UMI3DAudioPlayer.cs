@@ -13,6 +13,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using inetum.unityUtils.audio;
 using MainThreadDispatcher;
 using System.Collections;
 using System.Threading.Tasks;
@@ -289,6 +290,10 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public override void Start(float atTime)
         {
+            if (audioSource.outputAudioMixerGroup == null)
+            {
+                AudioMixerControl.SetEnvironmentGroup(audioSource);
+            }
             atTime = atTime / 1000f; //Convert to seconds
 
             if (audioSource != null)
