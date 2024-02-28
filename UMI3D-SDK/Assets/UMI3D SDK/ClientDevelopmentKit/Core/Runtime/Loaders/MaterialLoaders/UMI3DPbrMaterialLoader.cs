@@ -60,6 +60,11 @@ namespace umi3d.cdk
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Metallic, dto.pbrMetallicRoughness.metallicFactor);
                     newMat.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - dto.pbrMetallicRoughness.roughnessFactor);
 
+                    Vector2 scale = dto.extensions.KHR_texture_transform.scale.Struct();
+                    newMat.ApplyShaderProperty(MRTKShaderUtils.Tilling, new Color(scale.x, scale.y, 0, 0));
+                    Vector2 offset = dto.extensions.KHR_texture_transform.scale.Struct();
+                    newMat.ApplyShaderProperty(MRTKShaderUtils.Offset, new Color(offset.x, offset.y, 0, 0));
+
                     LoadTextureInMaterial(ext.id, ext.baseColorTexture, MRTKShaderUtils.MainTex, newMat);
                     LoadTextureInMaterial(ext.id, ext.normalTexture, MRTKShaderUtils.NormalMap, newMat);
                     LoadTextureInMaterial(ext.id, ext.heightTexture, MRTKShaderUtils.BumpMap, newMat);
@@ -77,7 +82,11 @@ namespace umi3d.cdk
                         LoadTextureInMaterial(ext.id, ext.occlusionTexture, MRTKShaderUtils.OcclusionMap, newMat);
 
                         LoadTextureInMaterial(ext.id, ext.metallicTexture, MRTKShaderUtils.MetallicMap, newMat);
-                        LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+                        LoadTextureInMaterial(ext.id, ext.roughnessTexture, MRTKShaderUtils.RoughnessMap, newMat);
+
+                        if (ext.metallicRoughnessTexture is not null)
+                            LoadTextureInMaterial(ext.id, ext.metallicRoughnessTexture, MRTKShaderUtils.MetallicMap, newMat);
+
 #else
                         Texture2D channelMap;
                         if (ext.metallicRoughnessTexture != null)
