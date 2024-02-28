@@ -96,6 +96,8 @@ namespace MrtkShader
             }
         }
 #if USING_URP
+        public static ShaderProperty<Color> Tilling = new ShaderProperty<Color>("_Tilling", new Color(1, 1, 1, 1));
+        public static ShaderProperty<Color> Offset = new ShaderProperty<Color>("_Offset", new Color(0, 0, 0, 0));
 
         public static ShaderProperty<Color> MainColor = new ShaderProperty<Color>("_BaseColor", Color.white, null,
             (m, s, v) =>
@@ -130,7 +132,8 @@ namespace MrtkShader
             {
                 m.SetTexture("_SmoothnessTextureChannel", v);
                 m.SetFloat("_RoughnesstoSmoothness", 0f);
-                m.SetFloat("_Smoothness", 1f);
+                if(v is not null)
+                    m.SetFloat("_Smoothness", 1f);
             });
 
         public static ShaderProperty<Texture2D> EmissionMap = new ShaderProperty<Texture2D>("_EmissionMap", null, "_EMISSION");
@@ -244,6 +247,9 @@ namespace MrtkShader
         public static ShaderProperty<float> Metallic = new ShaderProperty<float>("_Metallic", 0f);
         public static ShaderProperty<float> Smoothness = new ShaderProperty<float>("_Smoothness", 0.5f);
         public static ShaderProperty<float> NormalMapScale = new ShaderProperty<float>("_NormalMapScale", 1f);
-        public static ShaderProperty<float> BumpScale = new ShaderProperty<float>("_BumpScale", 1f);
+        public static ShaderProperty<float> BumpScale = new ShaderProperty<float>("_BumpScale", 1f, null, (m, s, v) =>
+        {
+            m.SetFloat("_BumpScale", Mathf.Clamp(v, 0, 1));
+        });
     }
 }
