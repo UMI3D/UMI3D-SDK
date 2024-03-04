@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,23 @@ limitations under the License.
 
 namespace umi3d.common.interaction.form
 {
-    public class ButtonDto : BaseInputDto
+    public enum FlexDirection
     {
-        public ButtonType buttonType { get; set; }
+        //
+        // Summary:
+        //     Top to Bottom.
+        Column,
+        //
+        // Summary:
+        //     Bottom to Top.
+        ColumnReverse,
+        //
+        // Summary:
+        //     Left to Right.
+        Row,
+        //
+        // Summary:
+        //     Right to Left.
+        RowReverse
     }
 }

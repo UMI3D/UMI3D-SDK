@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,10 @@ limitations under the License.
 
 namespace umi3d.common.interaction.form
 {
-    public class ButtonDto : BaseInputDto
+    public struct StyleLength
     {
-        public ButtonType buttonType { get; set; }
+        public Length value;
+        public StyleKeyword keyword;
     }
+
 }

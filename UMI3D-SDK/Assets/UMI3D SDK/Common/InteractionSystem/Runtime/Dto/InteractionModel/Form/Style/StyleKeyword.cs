@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,28 @@ limitations under the License.
 
 namespace umi3d.common.interaction.form
 {
-    public class ButtonDto : BaseInputDto
+    public enum StyleKeyword
     {
-        public ButtonType buttonType { get; set; }
+        //
+        // Summary:
+        //     Means that there's no keyword defined for that property.
+        Undefined,
+        //
+        // Summary:
+        //     Means that an inline style from IStyle has no value or keyword.
+        Null,
+        //
+        // Summary:
+        //     For style properties accepting auto.
+        Auto,
+        //
+        // Summary:
+        //     For style properties accepting none.
+        None,
+        //
+        // Summary:
+        //     The initial (or default) value of a style property.
+        Initial
     }
+
 }

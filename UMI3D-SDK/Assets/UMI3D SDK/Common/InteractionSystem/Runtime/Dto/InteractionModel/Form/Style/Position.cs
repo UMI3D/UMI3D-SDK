@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,8 +16,17 @@ limitations under the License.
 
 namespace umi3d.common.interaction.form
 {
-    public class ButtonDto : BaseInputDto
+    public enum Position
     {
-        public ButtonType buttonType { get; set; }
+        //
+        // Summary:
+        //     The element is positioned in relation to its default box as calculated by layout.
+        Relative,
+        //
+        // Summary:
+        //     The element is positioned in relation to its parent box and does not contribute
+        //     to the layout anymore.
+        Absolute
     }
+
 }

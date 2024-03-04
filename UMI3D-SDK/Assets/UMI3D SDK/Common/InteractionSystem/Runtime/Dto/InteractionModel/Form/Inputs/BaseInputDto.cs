@@ -2,13 +2,13 @@ namespace umi3d.common.interaction.form
 {
     public class BaseInputDto : DivDto
     {
-        public string Label { get; set; }
+        public string label { get; set; }
 
-        public ulong PreviousId { get; set; }
-        public ulong NextId { get; set; }
+        public ulong previousId { get; set; }
+        public ulong nextId { get; set; }
 
-        public bool IsInteractable { get; set; }
-        public bool SubmitOnValidate { get; set; }
+        public bool isInteractable { get; set; }
+        public bool submitOnValidate { get; set; }
 
         public virtual object GetPlaceHolder() { return null; }
 

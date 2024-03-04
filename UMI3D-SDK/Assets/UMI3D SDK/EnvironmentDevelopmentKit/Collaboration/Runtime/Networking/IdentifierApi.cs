@@ -45,7 +45,7 @@ namespace umi3d.edk.collaboration
             return librariesUpdateStatus[user.Id()] ? ((identity.status > StatusType.READY) ? identity.status : StatusType.READY) : StatusType.CREATED;
         }
 
-        private void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, FormAnswerDto param)
+        private void SetUserLocalInfoAuthorization(UMI3DCollaborationUser user, common.interaction.FormAnswerDto param)
         {
             if (param != null)
             {

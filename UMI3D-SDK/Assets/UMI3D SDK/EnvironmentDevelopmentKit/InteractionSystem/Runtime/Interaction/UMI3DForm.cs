@@ -37,7 +37,7 @@ namespace umi3d.edk.interaction
 
         public class FormEventContent : InteractionEventContent
         {
-            public FormEventContent(UMI3DUser user, FormAnswerDto dto) : base(user, dto)
+            public FormEventContent(UMI3DUser user, common.interaction.FormAnswerDto dto) : base(user, dto)
             {
             }
 
@@ -86,7 +86,7 @@ namespace umi3d.edk.interaction
         {
             switch (interactionRequest)
             {
-                case FormAnswerDto formAnswer:
+                case common.interaction.FormAnswerDto formAnswer:
                     formAnswer.answers.ForEach(a => UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, a));
                     onFormCompleted.Invoke(new FormEventContent(user, formAnswer));
                     break;

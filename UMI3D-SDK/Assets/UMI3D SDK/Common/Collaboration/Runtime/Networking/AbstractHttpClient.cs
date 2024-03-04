@@ -109,13 +109,14 @@ namespace umi3d.common.collaboration
             }
 
             ConnectionFormDto dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new Old_ParameterConverter() });
+            interaction.form.ConnectionFormDto dto4 = UMI3DDtoSerializer.FromJson<interaction.form.ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
 
             if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
                 return dto2.ToPrivateIdentity();
             else
-                return dto3;
+                return (UMI3DDto)dto3 ?? dto4;
 
         }
 

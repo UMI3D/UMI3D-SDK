@@ -4,8 +4,8 @@ namespace umi3d.common.interaction.form
 {
     public abstract class DivDto : ItemDto
     {
-        public string Type { get; set; }
-        public string Tooltip { get; set; }
-        public List<StyleDto> Styles { get; set; }
+        public string type { get; set; }
+        public string tooltip { get; set; }
+        public List<StyleDto> styles { get; set; }
     }
 }

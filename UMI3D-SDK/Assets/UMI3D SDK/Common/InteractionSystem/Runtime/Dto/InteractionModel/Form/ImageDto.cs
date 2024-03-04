@@ -4,6 +4,6 @@ namespace umi3d.common.interaction.form
 {
     public class ImageDto : DivDto
     {
-        public ResourceDto Resource { get; set; }
+        public ResourceDto resource { get; set; }
     }
 }

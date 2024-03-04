@@ -30,7 +30,7 @@ namespace umi3d.common.collaboration
 
         public override bool CanConvert(Type objectType)
         {
-            return typeof(DivDto).IsAssignableFrom(objectType);
+            return typeof(DivDto).IsAssignableFrom(objectType) || typeof(VariantStyleDto).IsAssignableFrom(objectType);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
@@ -50,24 +50,36 @@ namespace umi3d.common.collaboration
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {
-            if (value is DivDto dto)
+            if (value is VariantStyleDto sdto)
             {
-                dto.Type = GetTypeName(dto.GetType());
+                sdto.type = GetTypeName(sdto.GetType());
+            }
+            else if (value is DivDto dto)
+            {
+                dto.type = GetTypeName(dto.GetType());
             }
 
             if (value is GroupDto group)
             {
-                var tmp = group.Children;
-                group.Children = null;
+                var tmp = group.children;
+                group.children = null;
                 JObject gjo = JObject.FromObject(value);
                 if (tmp is not null)
-                    gjo["Children"] = JsonConvert.SerializeObject(tmp, serializer.Converters.ToArray());
-                group.Children = tmp;
+                    gjo["children"] = JToken.FromObject(tmp, serializer); //JsonConvert.SerializeObject(tmp, serializer.Converters.ToArray());
+                gjo["styles"] = JToken.FromObject(group.styles, serializer);
+                group.children = tmp;
                 gjo.WriteTo(writer);
                 return;
             }
 
             JObject jo = JObject.FromObject(value);
+
+            if(value is DivDto divDto)
+            {
+                jo["styles"] = JToken.FromObject(divDto.styles, serializer);
+                //jo["styles"] = JsonConvert.SerializeObject(divDto.styles, serializer.Converters.ToArray());
+            }
+
             //jo["Type"] = "Hello";
             jo.WriteTo(writer);
         }

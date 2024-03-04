@@ -144,7 +144,7 @@ namespace umi3d.edk.collaboration
                 }
                 else if (answerDto is ConnectionFormDto form)
                 {
-                    FormAnswerDto answer = await GetFormAnswer(form);
+                    common.interaction.FormAnswerDto answer = await GetFormAnswer(form);
                     var _answer = new FormConnectionAnswerDto()
                     {
                         formAnswerDto = answer,
@@ -167,9 +167,9 @@ namespace umi3d.edk.collaboration
             isConnected = true;
         }
 
-        private async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)
+        private async Task<common.interaction.FormAnswerDto> GetFormAnswer(ConnectionFormDto form)
         {
-            return await Task.FromResult(new FormAnswerDto()
+            return await Task.FromResult(new common.interaction.FormAnswerDto()
             {
                 id = form.id,
                 toolId = 0,

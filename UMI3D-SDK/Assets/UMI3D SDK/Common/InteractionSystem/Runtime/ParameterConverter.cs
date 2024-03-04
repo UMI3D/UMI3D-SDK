@@ -48,25 +48,16 @@ namespace umi3d.common.collaboration
             string part1 = fullType.Substring(0, splitIndex);
             var part2 = fullType.Substring(splitIndex + 1, fullType.Length - splitIndex - 2).Split(',').Select(t => t.Trim()).ToList(); // -2 to remove the last '>'
             return (part1, part2);
-
-            //Match match = Regex.Match(fullType, pattern);
-            //if (match.Success)
-            //{
-            //    UnityEngine.Debug.Log($"=> {fullType} [{match.Groups.Select(g => g.Value).Aggregate((a, b) => $"{a},{b}")}]");
-
-            //    var c = match.Groups.Count;
-            //    if (match.Groups.Count > 3)
-            //        return (match.Groups[1].Value, match.Groups.Skip(3).Select(g => g.Value).ToList());
-            //    if (match.Groups.Count > 1)
-            //        return (match.Groups[1].Value, null);
-            //}
-
-            //return (fullType, null);
         }
 
         public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
         {
-            JsonSerializer local = JsonSerializer.CreateDefault();
+            JsonSerializerSettings settings = new JsonSerializerSettings()
+            {
+                Converters = new List<JsonConverter>() { new StyleConverter() }
+            };
+
+            JsonSerializer local = JsonSerializer.CreateDefault(settings);
             try
             {
                 if (reader.TokenType == JsonToken.Null)
@@ -75,50 +66,50 @@ namespace umi3d.common.collaboration
                 var jo = JObject.Load(reader);
                 DivDto dto = null;
 
-                if (jo.TryGetValue("Type", out JToken tokenB))
+                if (jo.TryGetValue("type", out JToken tokenB))
                 {
                     (string type, IEnumerable<string> args) = GetType(tokenB.ToObject<string>());
                     switch (type)
                     {
                         case "GroupDto":
                         case "GroupScrollViewDto":
-                            var tmp = jo.ToObject<BaseInputDto>();
+                            var tmp = jo.ToObject<BaseInputDto>(local);
                             var _dto = type == "GroupScrollViewDto" ? new GroupScrollViewDto() : new GroupDto()
                             {
-                                Id = tmp.Id,
-                                Type = tmp.Type,
-                                Tooltip = tmp.Tooltip,
-                                Styles = tmp.Styles,
-                                Label = tmp.Label,
+                                id = tmp.id,
+                                type = tmp.type,
+                                tooltip = tmp.tooltip,
+                                styles = tmp.styles,
+                                label = tmp.label,
 
-                                PreviousId = tmp.PreviousId,
-                                NextId = tmp.NextId,
+                                previousId = tmp.previousId,
+                                nextId = tmp.nextId,
 
-                                IsInteractable = tmp.IsInteractable,
-                                SubmitOnValidate = tmp.SubmitOnValidate,
+                                isInteractable = tmp.isInteractable,
+                                submitOnValidate = tmp.submitOnValidate,
                             };
 
-                            if (jo.TryGetValue("CanRemember", out JToken cr))
-                                _dto.CanRemember = cr.ToObject<bool>();
+                            if (jo.TryGetValue("canRemember", out JToken cr))
+                                _dto.canRemember = cr.ToObject<bool>(local);
 
-                            if (jo.TryGetValue("SelectFirstInput", out JToken sfi))
-                                _dto.SelectFirstInput = sfi.ToObject<bool>();
+                            if (jo.TryGetValue("selectFirstInput", out JToken sfi))
+                                _dto.selectFirstInput = sfi.ToObject<bool>(local);
 
-                            if (jo.TryGetValue("Children", out JToken children))
+                            if (jo.TryGetValue("children", out JToken children))
                             {
                                 if (children is JArray)
                                 {
-                                    _dto.Children = children.ToObject<DivDto[]>(serializer).ToList();
+                                    _dto.children = children.ToObject<DivDto[]>(serializer).ToList();
                                 }
                                 else
                                 {
                                     var s = children.ToObject<string>();
                                     var j = JArray.Parse(s);
-                                    _dto.Children = j.ToObject<DivDto[]>(serializer).ToList();
+                                    _dto.children = j.ToObject<DivDto[]>(serializer).ToList();
                                 }
                             }
                             else
-                                _dto.Children = null;
+                                _dto.children = null;
 
                             if (_dto is GroupScrollViewDto sg && jo.TryGetValue("Mode", out JToken mode))
                                 sg.Mode = mode.ToObject<ScrollViewMode>();
@@ -128,23 +119,23 @@ namespace umi3d.common.collaboration
                             if (args is null || args.Count() == 0)
                                 break;
                             var t = GetInputDtoType(type, args);
-                            return jo.ToObject(t);
+                            return jo.ToObject(t, local);
                         case "EnumDto":
                             if (args is null || args.Count() <= 1)
                                 break;
                             var t2 = GetEnumDtoType(type, args);
-                            return jo.ToObject(t2);
+                            return jo.ToObject(t2, local);
                         case "ButtonDto":
-                            return jo.ToObject(typeof(ButtonDto));
+                            return jo.ToObject(typeof(ButtonDto), local);
                         case "LabelDto":
-                            return jo.ToObject(typeof(LabelDto));
+                            return jo.ToObject(typeof(LabelDto), local);
                         case "ImageDto":
-                            return jo.ToObject(typeof(ImageDto));
+                            return jo.ToObject(typeof(ImageDto), local);
                         case "RangeDto":
                             if (args is null || args.Count() == 0)
                                 break;
                             var t3 = GetRangeDtoType(type, args);
-                            return jo.ToObject(t3);
+                            return jo.ToObject(t3, local);
                     }
 
                 }
@@ -294,6 +285,67 @@ namespace umi3d.common.collaboration
             return result;
         }
 
+
+        public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
+        {
+            throw new NotImplementedException();
+        }
+    }
+
+    public class StyleConverter : Newtonsoft.Json.JsonConverter
+    {
+        public override bool CanRead => true;
+
+        public override bool CanWrite => false;
+
+        public override bool CanConvert(Type objectType)
+        {
+            return typeof(VariantStyleDto).IsAssignableFrom(objectType);
+        }
+
+        string GetType(string fullType)
+        {
+            if (fullType is null)
+                return (null);
+            fullType = fullType.Trim();
+            return fullType;
+        }
+
+        public override object ReadJson(JsonReader reader, Type objectType, object existingValue, JsonSerializer serializer)
+        {
+            JsonSerializer local = JsonSerializer.CreateDefault();
+            try
+            {
+                if (reader.TokenType == JsonToken.Null)
+                    return null;
+
+                var jo = JObject.Load(reader);
+
+                if (jo.TryGetValue("type", out JToken tokenB))
+                {
+                    string type = GetType(tokenB.ToObject<string>());
+                    UnityEngine.Debug.Log($"{jo} {tokenB} {type}");
+                    switch (type)
+                    {
+                        case "FlexStyleDto":
+                            return jo.ToObject(typeof(FlexStyleDto));
+                        case "PositionStyleDto":
+                            return jo.ToObject(typeof(PositionStyleDto));
+                        case "SizeStyleDto":
+                            return jo.ToObject(typeof(SizeStyleDto));
+                        default:
+                            UnityEngine.Debug.Log($"Missing case for -{type}-");
+                            throw new NotImplementedException();
+                    }
+
+                }
+            }
+            catch (Exception ex)
+            {
+                UnityEngine.Debug.LogException(ex);
+            }
+            return local.Deserialize(reader, objectType);
+        }
 
         public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
         {

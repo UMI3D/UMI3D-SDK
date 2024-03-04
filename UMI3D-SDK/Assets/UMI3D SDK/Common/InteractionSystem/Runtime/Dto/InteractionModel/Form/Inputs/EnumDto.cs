@@ -6,14 +6,14 @@ public class EnumDto<T, G> : BaseInputDto
     where T : EnumValue<G> 
     where G : DivDto
 {
-    public List<T> Values { get; set; }
-    public bool CanSelectMultiple { get; set; }
+    public List<T> values { get; set; }
+    public bool canSelectMultiple { get; set; }
 
-    public override object GetValue() => Values.Where(e => e.IsSelected);
+    public override object GetValue() => values.Where(e => e.isSelected);
 }
 
 public class EnumValue<G> where G : DivDto
 {
-    public G Item { get; set; }
-    public bool IsSelected { get; set; }
+    public G item { get; set; }
+    public bool isSelected { get; set; }
 }
