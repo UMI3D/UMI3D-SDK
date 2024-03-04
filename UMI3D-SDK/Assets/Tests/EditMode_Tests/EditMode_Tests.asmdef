@@ -15,7 +15,9 @@
         "UMI3D.EDK.UserCapture",
         "UMI3D.EDK.Collaboration",
         "UMI3D.Common.UserCapture.Editor",
-        "TestUtils"
+        "UMI3D.Common.InteractionSystem",
+        "TestUtils",
+        "Unity.RenderPipelines.Core.Runtime"
     ],
     "includePlatforms": [
         "Editor"
@@ -25,7 +27,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Moq.dll"
+        "Moq.dll",
+        "Newtonsoft.Json.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [

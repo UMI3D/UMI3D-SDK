@@ -10,6 +10,8 @@ namespace umi3d.common.interaction.form
         public bool IsInteractable { get; set; }
         public bool SubmitOnValidate { get; set; }
 
+        public virtual object GetPlaceHolder() { return null; }
+
         public virtual object GetValue() { return null; }
     }
 }
