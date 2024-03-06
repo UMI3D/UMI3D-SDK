@@ -212,6 +212,10 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     async void Restart()
     {
         await _Stop();
+
+        if (string.IsNullOrEmpty(ServerUrl))
+            return;
+
         await _Start();
 
         UMI3DCollaborationServer.Instance.OnUserCreated.AddListener(OnUserCreated);
