@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -36,6 +37,7 @@ namespace umi3d.edk.collaboration
 
         private readonly GateDto gate;
         private string globalToken;
+        private byte[] metaData;
         private UMI3DEnvironmentClient environment;
         private PrivateIdentityDto privateIdentity;
         public readonly UMI3DDistantEnvironmentNode node;
@@ -78,6 +80,8 @@ namespace umi3d.edk.collaboration
             isConnecting = false;
             isConnected = false;
             privateIdentity = null;
+            this.globalToken = node.token;
+            this.metaData = node.metaData;
         }
 
         public UMI3DWorldControllerClient(MediaDto media, GateDto gate, UMI3DDistantEnvironmentNode node) : this(media, node)
@@ -89,7 +93,7 @@ namespace umi3d.edk.collaboration
         {
         }
 
-        public UMI3DWorldControllerClient(RedirectionDto redirection, string globalToken, UMI3DDistantEnvironmentNode node) : this(redirection, node)
+        public UMI3DWorldControllerClient(RedirectionDto redirection, string globalToken, UMI3DDistantEnvironmentNode node, byte[] metaData = null) : this(redirection, node)
         {
             this.globalToken = globalToken;
         }
@@ -106,12 +110,14 @@ namespace umi3d.edk.collaboration
                         globalToken = this.globalToken,
                         gate = this.gate,
                         libraryPreloading = downloadLibraryOnly,
-                        isServer = true
+                        isServer = true,
+                        metadata = metaData
                     });
                 return false;
             }
             catch (Exception ex)
             {
+                UnityEngine.Debug.Log(ex.ToString());
                 UnityEngine.Debug.LogException(ex);
                 isConnecting = false;
                 return false;
@@ -133,8 +139,6 @@ namespace umi3d.edk.collaboration
         {
             if (!string.IsNullOrEmpty(media.url))
             {
-                UnityEngine.Debug.Log($"Is server is {dto.isServer}");
-
                 UMI3DDto answerDto = await HttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
                 {

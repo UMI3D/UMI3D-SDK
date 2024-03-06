@@ -36,15 +36,17 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     int reconnection = 60000;
     bool run = false;
 
-    async void Loop()
+    int count = 0;
+
+    async void Loop(CancellationTokenSource tokenSource)
     {
+        var cancellationToken = tokenSource.Token;
         if (run) return;
         run = true;
-        while (run)
+        while (run && !cancellationToken.IsCancellationRequested)
         {
             if(!wcClient.IsConnected())
             {
-                UnityEngine.Debug.Log("connect");
                 await Connect();
                 //return;
                 await UMI3DAsyncManager.Delay(reconnection);
@@ -63,14 +65,28 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             environmentDto.SetValue(nvClient.environement);
             lastTransactionAsync.SetValue(new());
         }
+        tokenSource.Dispose();
     }
+
+    /// <summary>
+    /// Token set in conectionDto if needed.
+    /// It's need to be set before setting the ServerUrl.
+    /// </summary>
+    public string token;
+
+    /// <summary>
+    /// metaData set in conectionDto if needed.
+    /// It's need to be set before setting the ServerUrl.
+    /// </summary>
+    public byte[] metaData;
 
     public string ServerUrl
     {
         get => serverUrl; set
         {
             serverUrl = value;
-            Restart();
+            if(UMI3DCollaborationServer.Exists && UMI3DCollaborationServer.Instance.isRunning)
+                Restart();
         }
     }
 
@@ -201,6 +217,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         UMI3DCollaborationServer.Instance.OnUserCreated.AddListener(OnUserCreated);
     }
 
+    CancellationTokenSource tokenSource;
     Task _Start()
     {
         Id();
@@ -211,7 +228,9 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             url = ServerUrl
         };
         wcClient = new UMI3DWorldControllerClient(media, this);
-        Loop();
+
+        tokenSource = new CancellationTokenSource();
+        Loop(tokenSource);
         return Task.CompletedTask;
     }
 
@@ -219,10 +238,13 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         if (await wcClient.Connect())
         {
+            UnityEngine.Debug.Log($"Distant Connection to WC : OK");
             nvClient = await wcClient.ConnectToEnvironment();
 
             while (!nvClient.IsConnected() || nvClient.environement == null)
                 await Task.Yield();
+
+            UnityEngine.Debug.Log($"Distant Connection to ENV : OK");
 
             environmentDto.SetValue(nvClient.environement);
             //if (dto.environmentDto?.scenes != null)
@@ -232,6 +254,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             useDto.SetValue(nvClient.useDto);
             
             GetLoadEntity().ToTransaction(true).Dispatch();
+
+            UnityEngine.Debug.Log($"Distant Connection : END");
 
             return true;
         }
@@ -247,6 +271,11 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             wcClient.Logout();
         }
         run = false;
+        if (tokenSource is not null)
+        {
+            tokenSource.Cancel();
+            tokenSource = null;
+        }
     }
 
     async void OnUserCreated(UMI3DUser user)
