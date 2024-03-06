@@ -35,14 +35,14 @@ namespace umi3d.edk.collaboration
             }
         }
 
-        protected void StartLoop()
+        protected virtual void StartLoop()
         {
             OnLoopStart();
             sendAvatarFramesThread = new Thread(new ThreadStart(Looper));
             sendAvatarFramesThread.Start();
         }
 
-        protected void StopLoop()
+        protected virtual void StopLoop()
         {
             running = false;
             sendAvatarFramesThread = null;
