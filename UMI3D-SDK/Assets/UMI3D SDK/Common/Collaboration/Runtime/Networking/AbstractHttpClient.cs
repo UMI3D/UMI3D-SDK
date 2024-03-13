@@ -336,7 +336,9 @@ namespace umi3d.common.collaboration
                     displayName = displayName,
                     key = key,
                     login = login,
-                    userId = userId
+                    userId = userId,
+                    isServer = isServer,
+                    
                 };
             }
         }

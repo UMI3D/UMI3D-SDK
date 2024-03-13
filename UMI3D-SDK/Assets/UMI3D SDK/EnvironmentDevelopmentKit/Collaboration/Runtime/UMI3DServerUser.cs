@@ -18,7 +18,7 @@ using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DServerUser : UMI3DCollaborationAbstractUser
+    public class UMI3DServerUser : UMI3DCollaborationAbstractContentUser
     {
         public UMI3DServerUser(RegisterIdentityDto identity) : base(identity)
         {

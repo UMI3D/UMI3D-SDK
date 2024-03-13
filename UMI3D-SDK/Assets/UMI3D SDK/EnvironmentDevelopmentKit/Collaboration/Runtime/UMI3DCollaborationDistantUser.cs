@@ -14,22 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Threading.Tasks;
-using umi3d.edk.collaboration;
+using BeardedManStudios.Forge.Networking;
+using umi3d.common;
+using umi3d.common.collaboration.dto.signaling;
+using umi3d.edk.userCapture.tracking;
 
-namespace umi3d.worldController
+namespace umi3d.edk.collaboration
 {
-    /// <summary>
-    /// API for communication from an environment to a world controller.
-    /// </summary>
-    public interface IWorldController_Environment
+    public class UMI3DCollaborationDistantUser : UMI3DCollaborationAbstractUser
     {
-        Task NotifyUserRegister(UMI3DCollaborationAbstractContentUser user);
-
-        Task NotifyUserJoin(UMI3DCollaborationAbstractContentUser user);
-
-        Task NotifyUserLeave(UMI3DCollaborationAbstractContentUser user);
-
-        Task NotifyUserUnregister(UMI3DCollaborationAbstractContentUser user);
+        public UMI3DCollaborationDistantUser(RegisterIdentityDto identity) : base(identity)
+        {
+        }
     }
 }

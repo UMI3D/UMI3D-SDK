@@ -48,8 +48,9 @@ namespace umi3d.edk.collaboration.murmur
             {
                 var error = www.error;
                 var url = www.url;
+                var body = www.downloadHandler?.text;
                 www.Dispose();
-                throw new System.Exception($"Error [{url}]" + error);
+                throw new System.Exception($"Error [{url}] :\n{error} \n{body} ");
             }
 
             string res = www?.downloadHandler?.text;

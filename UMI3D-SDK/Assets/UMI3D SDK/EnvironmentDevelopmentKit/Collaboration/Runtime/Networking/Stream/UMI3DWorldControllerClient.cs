@@ -196,9 +196,7 @@ namespace umi3d.edk.collaboration
             if (environment != null)
                 await environment.Logout(false);
 
-            UnityEngine.Debug.Log($"Distant ConnectToEnvironment : {privateIdentity.connectionDto}");
-            UnityEngine.Debug.Log($"Distant ConnectToEnvironment Dto : {privateIdentity.connectionDto.httpUrl}");
-
+            privateIdentity.isServer = true;
 
             environment = new UMI3DEnvironmentClient(privateIdentity.connectionDto, this);
             if (environment.Connect())

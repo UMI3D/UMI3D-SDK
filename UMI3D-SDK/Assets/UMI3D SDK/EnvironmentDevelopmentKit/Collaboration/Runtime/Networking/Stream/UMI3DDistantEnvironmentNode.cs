@@ -15,6 +15,7 @@ using umi3d.common.collaboration.dto;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
+    private const DebugScope scope = DebugScope.EDK | DebugScope.Networking ;
 
     public bool SendTransaction;
 
@@ -131,7 +132,6 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         await Task.Yield();
         ByteContainer container = new ByteContainer(0, 0, data.StreamData.byteArr);
         uint TransactionId = UMI3DSerializer.Read<uint>(container);
-        UnityEngine.Debug.Log(PerformTransaction(container));
     }
 
     public string PerformTransaction(ByteContainer container)
@@ -225,7 +225,6 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     Task _Start()
     {
         Id();
-        UnityEngine.Debug.Log("start");
         media = new MediaDto()
         {
             name = "other server",
@@ -242,25 +241,19 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     {
         if (await wcClient.Connect())
         {
-            UnityEngine.Debug.Log($"Distant Connection to WC : OK");
             nvClient = await wcClient.ConnectToEnvironment();
 
-            UnityEngine.Debug.Log($"Distant Connection to wait for client : OK");
             while (!nvClient.IsConnected() || nvClient.environement == null)
                 await Task.Yield();
 
-            UnityEngine.Debug.Log($"Distant Connection to ENV : OK");
-
             environmentDto.SetValue(nvClient.environement);
-            //if (dto.environmentDto?.scenes != null)
-            //    dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             resourcesUrl.SetValue(ResourceServerUrl);
             useDto.SetValue(nvClient.useDto);
             
             GetLoadEntity().ToTransaction(true).Dispatch();
 
-            UnityEngine.Debug.Log($"Distant Connection : END");
+            UMI3DLogger.Log("Connected To distant server", scope);
 
             return true;
         }
@@ -289,7 +282,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         {
             while (run && nvClient == null)
                 await Task.Yield();
-            if (!run || user is null || cuser.status != StatusType.NONE)
+
+            if (!run || user is null || cuser.status == StatusType.NONE)
                 return;
 
             var dto = cuser.identityDto;
