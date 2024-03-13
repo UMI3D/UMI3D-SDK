@@ -23,7 +23,7 @@ using System.Linq;
 
 namespace umi3d.edk.collaboration
 {
-    public abstract class UMI3DToUserRelay<Frame> : UMI3DRelay<UMI3DCollaborationAbstractUser, NetworkingPlayer, Frame> where Frame : class
+    public abstract class UMI3DToUserRelay<Frame> : UMI3DRelay<UMI3DCollaborationAbstractContentUser, NetworkingPlayer, Frame> where Frame : class
     {
         IForgeServer server;
         protected DataChannelTypes dataChannel = DataChannelTypes.Data;
@@ -34,7 +34,7 @@ namespace umi3d.edk.collaboration
 
             UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u => 
             {
-                if (u is UMI3DCollaborationAbstractUser uc)
+                if (u is UMI3DCollaborationAbstractContentUser uc)
                 {
                     RemoveTo(uc);
                     RemoveSource(uc.networkPlayer);
@@ -44,7 +44,7 @@ namespace umi3d.edk.collaboration
             UMI3DCollaborationServer.Instance.OnUserActive.AddListener((user) => forceSendToAll = true);
         }
 
-        protected override IEnumerable<UMI3DCollaborationAbstractUser> GetTargets()
+        protected override IEnumerable<UMI3DCollaborationAbstractContentUser> GetTargets()
         {
             var r = new System.Random();
             return UMI3DCollaborationServer.Collaboration.Users.Where(u => u.networkPlayer != null).OrderBy(s => r.Next());
@@ -55,7 +55,7 @@ namespace umi3d.edk.collaboration
             return server.Time;
         }
 
-        protected override void Send(UMI3DCollaborationAbstractUser to, List<Frame> frames, bool force)
+        protected override void Send(UMI3DCollaborationAbstractContentUser to, List<Frame> frames, bool force)
         {
             server.RelayBinaryDataTo((int)dataChannel, to.networkPlayer, GetMessage(frames), force);
         }
@@ -66,7 +66,7 @@ namespace umi3d.edk.collaboration
         /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
         /// </summary>
         /// <param name="to"></param>
-        protected override (List<Frame> frames, bool force) GetFramesToSend(UMI3DCollaborationAbstractUser userTo, ulong time, KeyValuePair<NetworkingPlayer, Frame>[] framesPerSource)
+        protected override (List<Frame> frames, bool force) GetFramesToSend(UMI3DCollaborationAbstractContentUser userTo, ulong time, KeyValuePair<NetworkingPlayer, Frame>[] framesPerSource)
         {
             bool forceRelay = false;
 
@@ -77,9 +77,9 @@ namespace umi3d.edk.collaboration
 
             KeyValuePair<NetworkingPlayer, Frame>[] userFrameMap = null;
             RelayVolume relayVolume;
-            if (userTo is UMI3DCollaborationAbstractUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
+            if (userTo is UMI3DCollaborationAbstractContentUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
             {
-                var users = relayVolume.RelayTrackingRequest(null, null, userTo, Receivers.Others).Select(u => u as UMI3DCollaborationAbstractUser).ToList();
+                var users = relayVolume.RelayTrackingRequest(null, null, userTo, Receivers.Others).Select(u => u as UMI3DCollaborationAbstractContentUser).ToList();
                 userFrameMap = framesPerSource.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
                 forceRelay = true;
             }
@@ -238,8 +238,8 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         protected ulong GetCurrentDelay(NetworkingPlayer from, NetworkingPlayer to)
         {
-            UMI3DCollaborationAbstractUser user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
-            UMI3DCollaborationAbstractUser user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
+            UMI3DCollaborationAbstractContentUser user1 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(from.NetworkId);
+            UMI3DCollaborationAbstractContentUser user2 = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(to.NetworkId);
             float dist = Vector3.Distance(user1.CurrentTrackingFrame.position.Struct(), user2.CurrentTrackingFrame.position.Struct());
             float coeff = 0f;
             if (dist > startProximityAt && dist < proximityCutout)

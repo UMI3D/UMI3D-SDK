@@ -39,9 +39,12 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public class UMI3DResourcesServerApi : UMI3DAbstractEnvironmentApi
     {
-        private UMI3DCollaborationAbstractUser GetUserFor(HttpListenerRequest request)
+
+        private const DebugScope scope = DebugScope.EDK | DebugScope.Networking;
+
+        private UMI3DCollaborationAbstractContentUser GetUserFor(HttpListenerRequest request)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(request);
+            (UMI3DCollaborationAbstractContentUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(request);
             return c.user;
         }
 
@@ -73,11 +76,10 @@ namespace umi3d.edk.collaboration
                 dto = UMI3DDtoSerializer.FromJson<RegisterIdentityDto>(System.Text.Encoding.UTF8.GetString(bytes));
             }
 
+            UMI3DLogger.Log($"Register Distant User : {dto.guid}", scope);
+
             await UMI3DCollaborationServer.Instance.Register(dto,true);
-
         }
-
-
     }
 
     /// <summary>
@@ -91,9 +93,9 @@ namespace umi3d.edk.collaboration
         public void Stop()
         { }
 
-        private UMI3DCollaborationAbstractUser GetUserFor(HttpListenerRequest request)
+        private UMI3DCollaborationAbstractContentUser GetUserFor(HttpListenerRequest request)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(request);
+            (UMI3DCollaborationAbstractContentUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(request);
             return c.user;
         }
 
@@ -190,7 +192,7 @@ namespace umi3d.edk.collaboration
             while (!finished) System.Threading.Thread.Sleep(1);
         }
 
-        private IEnumerator _updateConnectionInformation(UMI3DCollaborationAbstractUser user, UserConnectionAnswerDto dto)
+        private IEnumerator _updateConnectionInformation(UMI3DCollaborationAbstractContentUser user, UserConnectionAnswerDto dto)
         {
             UMI3DLogger.Log($"Update Connection Information {user?.Id()} {dto?.status} {dto?.librariesUpdated} {dto?.parameters?.answers?.Select((a) => a.parameter.ToString()).ToString<string>()}", scope);
             if (user is UMI3DCollaborationUser cuser)
@@ -209,7 +211,7 @@ namespace umi3d.edk.collaboration
         [HttpPost(UMI3DNetworkingKeys.logout, WebServiceMethodAttribute.Security.PrivateAllowOldToken, WebServiceMethodAttribute.Type.Method)]
         public void Logout(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
-            (UMI3DCollaborationAbstractUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(e.Request);
+            (UMI3DCollaborationAbstractContentUser user, bool oldToken, bool resourcesOnly) c = UMI3DCollaborationServer.GetUserFor(e.Request);
             if (c.user != null)
             {
                 UMI3DLogger.Log($"Logout {c.user.Id()}", scope);

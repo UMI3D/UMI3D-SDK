@@ -50,6 +50,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
     protected override void Init()
     {
         version = new VersionGUI(
+                "VersionData",
                 Application.dataPath + @"\UMI3D SDK\Common\Core\Runtime\UMI3DVersion.cs",
                 "I.I.s.yyMMdd",
                 () => UMI3DVersion.version,

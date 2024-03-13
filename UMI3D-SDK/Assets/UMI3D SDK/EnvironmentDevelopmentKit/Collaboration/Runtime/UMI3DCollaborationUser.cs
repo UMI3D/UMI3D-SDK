@@ -21,7 +21,7 @@ using umi3d.edk.userCapture.pose;
 
 namespace umi3d.edk.collaboration
 {
-    public class UMI3DCollaborationUser : UMI3DCollaborationAbstractUser
+    public class UMI3DCollaborationUser : UMI3DCollaborationAbstractContentUser
     {
         public UMI3DCollaborationUser(RegisterIdentityDto identity) : base(identity)
         {

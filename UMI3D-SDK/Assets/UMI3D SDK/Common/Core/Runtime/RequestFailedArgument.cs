@@ -103,8 +103,17 @@ namespace umi3d.common
         public Umi3dNetworkingException(UnityWebRequest webRequest, string message) : base(message)
         {
             this.errorCode = webRequest?.responseCode ?? 0;
-            this.errorMessage = webRequest?.error ?? "Web request is null";
+            this.errorMessage = webRequest?.error ?? "Web request is null"; 
             this.url = webRequest?.url ?? "";
+            try
+            {
+                this.errorbody = webRequest?.downloadHandler?.text;
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+                this.errorbody = e.Message;
+            }
         }
 
         public Umi3dNetworkingException(long errorCode, string errorMessage, string url, string message) : base(message)
@@ -116,14 +125,18 @@ namespace umi3d.common
 
         public long errorCode { get; protected set; }
         public string errorMessage { get; protected set; }
+        public string errorbody { get; protected set; }
         public string url { get; protected set; }
+
+        public override string Message => $"Networking Error : Error code : {errorCode} | Error Message : {errorMessage} {errorbody} | Error URL : {url} | [ {base.Message} ]";
 
         public override string ToString()
         {
-            return $"Networking Error : Error code : {errorCode} | Error Message : {errorMessage} | Error Message : {url} | [ {base.ToString()} ]";
+            return $"Networking Error : Error code : {errorCode} | Error Message : {errorMessage} {errorbody} | Error URL : {url} | [ {base.ToString()} ]";
         }
 
     }
+
     public class Umi3dLoadingException : Umi3dException
     {
 
@@ -131,6 +144,7 @@ namespace umi3d.common
         {
         }
 
+        public override string Message => $"Loading Error : {base.Message}";
 
         public override string ToString()
         {
