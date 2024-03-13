@@ -245,6 +245,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             UnityEngine.Debug.Log($"Distant Connection to WC : OK");
             nvClient = await wcClient.ConnectToEnvironment();
 
+            UnityEngine.Debug.Log($"Distant Connection to wait for client : OK");
             while (!nvClient.IsConnected() || nvClient.environement == null)
                 await Task.Yield();
 

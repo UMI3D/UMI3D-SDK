@@ -136,6 +136,7 @@ namespace umi3d.common
         }
 
     }
+
     public class Umi3dLoadingException : Umi3dException
     {
 
@@ -143,6 +144,7 @@ namespace umi3d.common
         {
         }
 
+        public override string Message => $"Loading Error : {base.Message}";
 
         public override string ToString()
         {
