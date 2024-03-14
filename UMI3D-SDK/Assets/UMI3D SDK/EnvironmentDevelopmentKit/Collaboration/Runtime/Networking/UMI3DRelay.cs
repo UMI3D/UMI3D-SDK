@@ -21,7 +21,7 @@ using inetum.unityUtils;
 
 namespace umi3d.edk.collaboration
 {
-    public abstract class UMI3DRelay<To,Source,Frame> : ThreadLoop where To : class where Source : class where Frame : class
+    public abstract class UMI3DRelay<To, Source, Frame> : ThreadLoop where To : class where Source : class where Frame : class
     {
         protected readonly object framesPerSourceLock = new();
         protected readonly object lastFrameSentToLock = new();
@@ -31,10 +31,10 @@ namespace umi3d.edk.collaboration
 
         public void RemoveSource(Source source)
         {
-            lock(framesPerSourceLock)
+            lock (framesPerSourceLock)
                 framesPerSource.Remove(source);
-            lock(lastFrameSentToLock)
-                lastFrameSentTo.Select(k => k.Value).ForEach(d =>d.Remove(source));
+            lock (lastFrameSentToLock)
+                lastFrameSentTo.Select(k => k.Value).ForEach(d => d.Remove(source));
         }
 
         public void RemoveTo(To to)
@@ -51,8 +51,9 @@ namespace umi3d.edk.collaboration
                 lastFrameSentTo.Clear();
         }
 
-        public void SetFrame(Source source, Frame frame) {
-            if(source != null)
+        public void SetFrame(Source source, Frame frame)
+        {
+            if (source != null)
                 framesPerSource[source] = frame;
         }
 
@@ -88,7 +89,7 @@ namespace umi3d.edk.collaboration
         {
             ulong time = GetTime(); //introduce wrong time. TB tested with frame.timestep
 
-            KeyValuePair<Source,Frame>[] _framesPerSource;
+            KeyValuePair<Source, Frame>[] _framesPerSource;
 
 
             var r = new System.Random();
@@ -96,7 +97,7 @@ namespace umi3d.edk.collaboration
                 _framesPerSource = framesPerSource.OrderBy(s => r.Next()).ToArray();
 
             var targets = GetTargets();
-            foreach(var target in targets)
+            foreach (var target in targets)
             {
                 if (target == null)
                     continue;
@@ -132,6 +133,13 @@ namespace umi3d.edk.collaboration
                 }
             }
             return (frames, false);
+        }
+
+        protected override void StopLoop()
+        {
+            base.StopLoop();
+
+            Clear();
         }
     }
 }

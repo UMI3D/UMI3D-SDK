@@ -108,24 +108,24 @@ namespace umi3d.worldController
         }
 
 
-        public override Task NotifyUserJoin(UMI3DCollaborationAbstractUser user)
+        public override Task NotifyUserJoin(UMI3DCollaborationAbstractContentUser user)
         {
             forgeClient.Send(new WorldControllerUserJoinMessage(user.login).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserUnregister(UMI3DCollaborationAbstractUser user)
+        public override Task NotifyUserUnregister(UMI3DCollaborationAbstractContentUser user)
         {
             forgeClient.Send(new WorldControllerUserLeaveMessage(user.login).ToBytable().ToBytes());
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserLeave(UMI3DCollaborationAbstractUser user)
+        public override Task NotifyUserLeave(UMI3DCollaborationAbstractContentUser user)
         {
             return Task.CompletedTask;
         }
 
-        public override Task NotifyUserRegister(UMI3DCollaborationAbstractUser user)
+        public override Task NotifyUserRegister(UMI3DCollaborationAbstractContentUser user)
         {
             return Task.CompletedTask;
         }

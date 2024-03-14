@@ -38,9 +38,6 @@ namespace umi3d.edk.userCapture.pose.editor
 
         private SerializedProperty durationField;
 
-        private SerializedProperty interpolableField;
-        private SerializedProperty composableField;
-
         private SerializedProperty activationModeField;
 
         private SerializedProperty activationConditionsField;
@@ -57,9 +54,6 @@ namespace umi3d.edk.userCapture.pose.editor
 
             durationField = serializedObject.FindProperty("duration");
 
-            interpolableField = serializedObject.FindProperty("interpolable");
-            composableField = serializedObject.FindProperty("composable");
-
             activationModeField = serializedObject.FindProperty("activationMode");
 
             activationConditionsField = serializedObject.FindProperty("activationConditions");
@@ -74,9 +68,6 @@ namespace umi3d.edk.userCapture.pose.editor
                 EditorGUILayout.PropertyField(anchoringParametersField);
 
             EditorGUILayout.PropertyField(durationField);
-
-            EditorGUILayout.PropertyField(interpolableField);
-            EditorGUILayout.PropertyField(composableField);
 
             EditorGUILayout.PropertyField(activationModeField);
 

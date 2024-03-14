@@ -87,124 +87,133 @@ namespace inetum.unityUtils.editor
         }
 
         readonly string browserVersionPath;
+        readonly bool loadingFailed = false;
         VersionRegex[] versions;
         ScriptableLoader<VersionData> data;
         readonly Func<string> old;
         readonly Func<string> ComputeVersion;
         public string version => ComputeVersion();
 
-        public VersionGUI(string filePath, string format, Func<string> oldVersion, params (string name, Func<string,object> resetValue)[] datas)
+        public VersionGUI(string versionDataName,string filePath, string format, Func<string> oldVersion, params (string name, Func<string,object> resetValue)[] datas)
         {
             browserVersionPath = filePath;
             old = oldVersion;
 
-            data = new ScriptableLoader<VersionData>("VersionData");
+            data = new ScriptableLoader<VersionData>(versionDataName);
 
-            if (data.data.versions == null || data.data.versions.Length != datas.Length)
-                data.data.versions = new object[datas.Length];
-            versions = new VersionRegex[datas.Length];
-
-            int i = 0;
-            int j = 0;
-
-            ComputeVersion = () => "";
-
-            while (i < format.Length)
+            if (data == null || data.data == null)
             {
-                var tmpCompute = ComputeVersion;
-                int k = j;
-                switch (format[i])
-                {
-                    case 's':
-                        if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(string))
-                            data.data.versions[j] = "";
-                        versions[j] = new VersionRegex(
-                                datas[j].name,
-                                (s) => data.data.versions[k] = datas[k].resetValue(s),
-                                () => data.data.versions[k].ToString(),
-                                () => data.data.versions[k] = EditorGUILayout.TextField(data.data.versions[k].ToString()),
-                                () =>
-                                {
-                                    var enable = GUI.enabled;
-                                    GUI.enabled = false;
-                                    GUILayout.Button("            ");
-                                    GUI.enabled = enable;
-                                }
-                            );
-                        ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
-                        j++;
-                        i++;
-                        break;
-                    case 'I':
-                        if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(int))
-                            data.data.versions[j] = 0;
-                        versions[j] = new VersionRegex(
-                            datas[j].name,
-                            (s) => data.data.versions[k] = datas[k].resetValue(s),
-                            () => data.data.versions[k].ToString(),
-                            () =>
-                            {
-                                int res;
-                                if (int.TryParse(EditorGUILayout.TextField(data.data.versions[k].ToString()), out res))
-                                {
-                                    data.data.versions[k] = res;
-                                }
-                            },
-                            () =>
-                            {
-                                if (GUILayout.Button($"{datas[k].name} +1"))
-                                    data.data.versions[k] = (int)data.data.versions[k] + 1;
-                            }
-                        );
-                        ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
-                        i++;
-                        j++;
-                        break;
-                    case 'y':
-                    case 'm':
-                    case 'M':
-                    case 'd':
-                    case 'h':
-                    case 'H':
-                        string datePattern = GetDatePattern(format, ref i);
+                loadingFailed = true;
+            }
+            else
+            {
 
-                        if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(DateTime))
-                            data.data.versions[j] = DateTime.Now.ToString(datePattern);
-                        versions[j] = new VersionRegex(
+                if (data.data.versions == null || data.data.versions.Length != datas.Length)
+                    data.data.versions = new object[datas.Length];
+                versions = new VersionRegex[datas.Length];
+
+                int i = 0;
+                int j = 0;
+
+                ComputeVersion = () => "";
+
+                while (i < format.Length)
+                {
+                    var tmpCompute = ComputeVersion;
+                    int k = j;
+                    switch (format[i])
+                    {
+                        case 's':
+                            if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(string))
+                                data.data.versions[j] = "";
+                            versions[j] = new VersionRegex(
+                                    datas[j].name,
+                                    (s) => data.data.versions[k] = datas[k].resetValue(s),
+                                    () => data.data.versions[k].ToString(),
+                                    () => data.data.versions[k] = EditorGUILayout.TextField(data.data.versions[k].ToString()),
+                                    () =>
+                                    {
+                                        var enable = GUI.enabled;
+                                        GUI.enabled = false;
+                                        GUILayout.Button("            ");
+                                        GUI.enabled = enable;
+                                    }
+                                );
+                            ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
+                            j++;
+                            i++;
+                            break;
+                        case 'I':
+                            if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(int))
+                                data.data.versions[j] = 0;
+                            versions[j] = new VersionRegex(
                                 datas[j].name,
                                 (s) => data.data.versions[k] = datas[k].resetValue(s),
                                 () => data.data.versions[k].ToString(),
                                 () =>
                                 {
-                                    var date = EditorGUILayout.TextField(data.data.versions[k].ToString());
-                                    DateTime res;
-                                    if (DateTime.TryParseExact($"{date}", datePattern, System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
+                                    int res;
+                                    if (int.TryParse(EditorGUILayout.TextField(data.data.versions[k].ToString()), out res))
                                     {
-                                        data.data.versions[k] = res.ToString(datePattern);
+                                        data.data.versions[k] = res;
                                     }
-                                    else
-                                        UnityEngine.Debug.Log($"Error in pasing date : {date} with yyMMdd");
                                 },
                                 () =>
                                 {
-                                    if (GUILayout.Button("Set To Now"))
-                                        data.data.versions[k] = DateTime.Now.ToString(datePattern);
+                                    if (GUILayout.Button($"{datas[k].name} +1"))
+                                        data.data.versions[k] = (int)data.data.versions[k] + 1;
                                 }
                             );
-                        ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
-                        j++;
-                        break;
-                    default:
-                        int tmpI = i;
-                        ComputeVersion = () => tmpCompute() + format[tmpI];
-                        i++;
-                        break;
+                            ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
+                            i++;
+                            j++;
+                            break;
+                        case 'y':
+                        case 'm':
+                        case 'M':
+                        case 'd':
+                        case 'h':
+                        case 'H':
+                            string datePattern = GetDatePattern(format, ref i);
+
+                            if (data.data.versions[j] == null || data.data.versions[j].GetType() != typeof(DateTime))
+                                data.data.versions[j] = DateTime.Now.ToString(datePattern);
+                            versions[j] = new VersionRegex(
+                                    datas[j].name,
+                                    (s) => data.data.versions[k] = datas[k].resetValue(s),
+                                    () => data.data.versions[k].ToString(),
+                                    () =>
+                                    {
+                                        var date = EditorGUILayout.TextField(data.data.versions[k].ToString());
+                                        DateTime res;
+                                        if (DateTime.TryParseExact($"{date}", datePattern, System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out res))
+                                        {
+                                            data.data.versions[k] = res.ToString(datePattern);
+                                        }
+                                        else
+                                            UnityEngine.Debug.Log($"Error in pasing date : {date} with yyMMdd");
+                                    },
+                                    () =>
+                                    {
+                                        if (GUILayout.Button("Set To Now"))
+                                            data.data.versions[k] = DateTime.Now.ToString(datePattern);
+                                    }
+                                );
+                            ComputeVersion = () => tmpCompute() + data.data.versions[k].ToString();
+                            j++;
+                            break;
+                        default:
+                            int tmpI = i;
+                            ComputeVersion = () => tmpCompute() + format[tmpI];
+                            i++;
+                            break;
+                    }
                 }
             }
             ResetVersion();
         }
 
-        string GetDatePattern(string format, ref int i)
+        static string GetDatePattern(string format, ref int i)
         {
             string dateFormat = "";
             bool date = true;
@@ -232,6 +241,8 @@ namespace inetum.unityUtils.editor
 
         public void Draw()
         {
+            if(loadingFailed) return;
+
             EditorGUILayout.BeginHorizontal();
             EditorGUILayout.Space();
 
@@ -263,6 +274,7 @@ namespace inetum.unityUtils.editor
 
         public void ResetVersion()
         {
+            if (loadingFailed) return;
             string _old = old();
             foreach (var version in versions)
                 version.Reset(_old);
@@ -270,6 +282,7 @@ namespace inetum.unityUtils.editor
 
         public virtual bool UpdateVersion()
         {
+            if (loadingFailed) return false;
             string text = File.ReadAllText(browserVersionPath);
             string old = text;
             foreach (var version in versions)

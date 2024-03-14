@@ -15,6 +15,7 @@ using umi3d.common.collaboration.dto;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
+    private const DebugScope scope = DebugScope.EDK | DebugScope.Networking ;
 
     public bool SendTransaction;
 
@@ -36,15 +37,17 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     int reconnection = 60000;
     bool run = false;
 
-    async void Loop()
+    int count = 0;
+
+    async void Loop(CancellationTokenSource tokenSource)
     {
+        var cancellationToken = tokenSource.Token;
         if (run) return;
         run = true;
-        while (run)
+        while (run && !cancellationToken.IsCancellationRequested)
         {
             if(!wcClient.IsConnected())
             {
-                UnityEngine.Debug.Log("connect");
                 await Connect();
                 //return;
                 await UMI3DAsyncManager.Delay(reconnection);
@@ -63,14 +66,28 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             environmentDto.SetValue(nvClient.environement);
             lastTransactionAsync.SetValue(new());
         }
+        tokenSource.Dispose();
     }
+
+    /// <summary>
+    /// Token set in conectionDto if needed.
+    /// It's need to be set before setting the ServerUrl.
+    /// </summary>
+    public string token;
+
+    /// <summary>
+    /// metaData set in conectionDto if needed.
+    /// It's need to be set before setting the ServerUrl.
+    /// </summary>
+    public byte[] metaData;
 
     public string ServerUrl
     {
         get => serverUrl; set
         {
             serverUrl = value;
-            Restart();
+            if(UMI3DCollaborationServer.Exists && UMI3DCollaborationServer.Instance.isRunning)
+                Restart();
         }
     }
 
@@ -115,7 +132,6 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         await Task.Yield();
         ByteContainer container = new ByteContainer(0, 0, data.StreamData.byteArr);
         uint TransactionId = UMI3DSerializer.Read<uint>(container);
-        UnityEngine.Debug.Log(PerformTransaction(container));
     }
 
     public string PerformTransaction(ByteContainer container)
@@ -196,22 +212,28 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
     async void Restart()
     {
         await _Stop();
+
+        if (string.IsNullOrEmpty(ServerUrl))
+            return;
+
         await _Start();
 
         UMI3DCollaborationServer.Instance.OnUserCreated.AddListener(OnUserCreated);
     }
 
+    CancellationTokenSource tokenSource;
     Task _Start()
     {
         Id();
-        UnityEngine.Debug.Log("start");
         media = new MediaDto()
         {
             name = "other server",
             url = ServerUrl
         };
         wcClient = new UMI3DWorldControllerClient(media, this);
-        Loop();
+
+        tokenSource = new CancellationTokenSource();
+        Loop(tokenSource);
         return Task.CompletedTask;
     }
 
@@ -225,13 +247,13 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
                 await Task.Yield();
 
             environmentDto.SetValue(nvClient.environement);
-            //if (dto.environmentDto?.scenes != null)
-            //    dto.environmentDto.scenes.SelectMany(s => s.nodes).Debug();
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             resourcesUrl.SetValue(ResourceServerUrl);
             useDto.SetValue(nvClient.useDto);
             
             GetLoadEntity().ToTransaction(true).Dispatch();
+
+            UMI3DLogger.Log("Connected To distant server", scope);
 
             return true;
         }
@@ -247,6 +269,11 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
             wcClient.Logout();
         }
         run = false;
+        if (tokenSource is not null)
+        {
+            tokenSource.Cancel();
+            tokenSource = null;
+        }
     }
 
     async void OnUserCreated(UMI3DUser user)
@@ -255,7 +282,8 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         {
             while (run && nvClient == null)
                 await Task.Yield();
-            if (!run || user is null || cuser.status != StatusType.NONE)
+
+            if (!run || user is null || cuser.status == StatusType.NONE)
                 return;
 
             var dto = cuser.identityDto;

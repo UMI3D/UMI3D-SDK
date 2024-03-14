@@ -131,7 +131,7 @@ namespace umi3d.edk.collaboration.murmur
         }
 
 
-        public void SwitchDefaultRoom(string name, IEnumerable<UMI3DCollaborationAbstractUser> users, bool force = false)
+        public void SwitchDefaultRoom(string name, IEnumerable<UMI3DCollaborationAbstractContentUser> users, bool force = false)
         {
             if(name == null)
                 name = roomList.FirstOrDefault()?.name;
@@ -452,7 +452,7 @@ namespace umi3d.edk.collaboration.murmur
         }
 
 
-        public List<Operation> SwitchUserRoom(UMI3DCollaborationAbstractUser user, int roomId = -1)
+        public List<Operation> SwitchUserRoom(UMI3DCollaborationAbstractContentUser user, int roomId = -1)
         {
             var ops = new List<Operation>();
 

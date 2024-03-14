@@ -380,6 +380,7 @@ namespace umi3d.cdk
                 yield return null;
 
             data.Init();
+            yield return null;
         }
 
 

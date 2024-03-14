@@ -138,16 +138,16 @@ namespace umi3d.edk.collaboration
         /// <param name="target"></param>
         /// <param name="receiverSetting"></param>
         /// <returns></returns>
-        protected List<UMI3DCollaborationAbstractUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
+        protected List<UMI3DCollaborationAbstractContentUser> GetTargetHashSet(UMI3DUser target, Receivers receiverSetting)
         {
             switch (receiverSetting)
             {
                 case Receivers.All:
-                    return new List<UMI3DCollaborationAbstractUser>(UMI3DCollaborationServer.Collaboration.Users);
+                    return new List<UMI3DCollaborationAbstractContentUser>(UMI3DCollaborationServer.Collaboration.Users);
                 case Receivers.Others:
-                    return new List<UMI3DCollaborationAbstractUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
+                    return new List<UMI3DCollaborationAbstractContentUser>(UMI3DCollaborationServer.Collaboration.Users.Where(u => u.Id() != target.Id()));
                 case Receivers.Target:
-                    return new List<UMI3DCollaborationAbstractUser>() { target as UMI3DCollaborationAbstractUser };
+                    return new List<UMI3DCollaborationAbstractContentUser>() { target as UMI3DCollaborationAbstractContentUser };
                 default:
                     return null;
             }
@@ -157,12 +157,12 @@ namespace umi3d.edk.collaboration
         {
             ulong now = UMI3DCollaborationServer.ForgeServer.Time;
 
-            List<UMI3DCollaborationAbstractUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
+            List<UMI3DCollaborationAbstractContentUser> targetHashSet = GetTargetHashSet(target, receiverSetting);
             List<UMI3DUser> result = targetHashSet?.Select(p => p as UMI3DUser).ToList();
 
             if (targetHashSet != null)
             {
-                foreach (UMI3DCollaborationAbstractUser user in targetHashSet)
+                foreach (UMI3DCollaborationAbstractContentUser user in targetHashSet)
                 {
                     if (ShouldRelay(sender, user, dataChannel, now))
                     {
@@ -183,7 +183,7 @@ namespace umi3d.edk.collaboration
         /// <param name="channel"></param>
         /// <param name="now"></param>
         /// <returns></returns>
-        protected bool ShouldRelay(UMI3DAbstractNode sender, UMI3DCollaborationAbstractUser to, DataChannelTypes channel, ulong now)
+        protected bool ShouldRelay(UMI3DAbstractNode sender, UMI3DCollaborationAbstractContentUser to, DataChannelTypes channel, ulong now)
         {
             if (to.status != common.StatusType.ACTIVE)
                 return false;
@@ -281,7 +281,7 @@ namespace umi3d.edk.collaboration
         /// <param name="to"></param>
         /// <param name="channel"></param>
         /// <param name="now"></param>
-        protected void RememberRelay(UMI3DAbstractNode sender, UMI3DCollaborationAbstractUser to, DataChannelTypes channel, ulong now)
+        protected void RememberRelay(UMI3DAbstractNode sender, UMI3DCollaborationAbstractContentUser to, DataChannelTypes channel, ulong now)
         {
             Dictionary<ulong, Dictionary<ulong, ulong>> relayMemory = GetRelayMemory(channel);
 
