@@ -29,7 +29,7 @@ namespace umi3d.cdk.interaction
         /// Associated Degree of Freedom Group DTO
         /// </summary>
         [Tooltip("Associated Degree of Freedom Group DTO")]
-        public DofGroupDto manipulationDofGroupDto;
+        public DofGroupDto dofGroup;
 
         public AbstractInteractionDto Interaction
         {
