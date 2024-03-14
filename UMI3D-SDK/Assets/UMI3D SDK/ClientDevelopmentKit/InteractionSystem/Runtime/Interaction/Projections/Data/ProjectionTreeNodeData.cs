@@ -20,7 +20,6 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    [Serializable]
     public struct ProjectionTreeNodeData 
     {
         /// <summary>
@@ -35,6 +34,7 @@ namespace umi3d.cdk.interaction
         /// Tree's id the node belongs to.
         /// </summary>
         public string treeId;
+        [HideInInspector]
         /// <summary>
         /// Node's children IDs.
         /// </summary>
@@ -44,8 +44,8 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public IProjectionTreeNodeData interactionData;
         /// <summary>
-        /// The input associated with this interaction.
+        /// The control associated with this interaction.
         /// </summary>
-        public AbstractUMI3DInput input;
+        public AbstractControlEntity control;
     }
 }

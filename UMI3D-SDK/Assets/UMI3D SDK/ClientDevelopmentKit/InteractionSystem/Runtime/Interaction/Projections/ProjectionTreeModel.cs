@@ -14,11 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
-using umi3d.common;
-using umi3d.debug;
-using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
@@ -27,34 +23,19 @@ namespace umi3d.cdk.interaction
         debug.UMI3DLogger logger = new(mainTag: nameof(ProjectionTreeModel));
 
         public ProjectionTree_SO projectionTree_SO;
-        /// <summary>
-        /// Tree's id the node belongs to.
-        /// </summary>
-        public string treeId;
 
         public ProjectionTreeModel(
-            ProjectionTree_SO projectionTree_SO, 
+            ProjectionTree_SO projectionTree_SO,
             string treeId
         )
         {
             this.projectionTree_SO = projectionTree_SO;
-            this.treeId = treeId;
-        }
-
-        public List<ProjectionTreeNodeData> Nodes
-        {
-            get
-            {
-                return projectionTree_SO.trees.Find(tree =>
-                {
-                    return tree.treeId == treeId;
-                }).nodes;
-            }
+            projectionTree_SO.treeId = treeId;
         }
 
         public int IndexOf(ulong nodeId)
         {
-            return Nodes.FindIndex(node =>
+            return projectionTree_SO.nodes.FindIndex(node =>
             {
                 return node.id == nodeId;
             });
@@ -76,7 +57,7 @@ namespace umi3d.cdk.interaction
                 return false;
             }
 
-            return IndexOfChildInParent(Nodes[parentIndex], child) != -1;
+            return IndexOfChildInParent(projectionTree_SO.nodes[parentIndex], child) != -1;
         }
 
         /// <summary>
@@ -109,22 +90,9 @@ namespace umi3d.cdk.interaction
 
         public bool AddRoot(ProjectionTreeNodeData root)
         {
-            if (projectionTree_SO.trees.FindIndex(tree =>
-            {
-                return tree.treeId == root.treeId;
-            }) == -1)
-            {
-                projectionTree_SO.trees.Add(
-                    new ProjectionTreeData()
-                    {
-                        treeId = root.treeId,
-                        root = root,
-                        nodes = new()
-                    }
-                );
-                return true;
-            }
-            return false;
+            projectionTree_SO.root = root;
+            projectionTree_SO.nodes.Add(root);
+            return true;
         }
 
         /// <summary>
@@ -145,7 +113,7 @@ namespace umi3d.cdk.interaction
                 return false;
             }
 
-            var parentNode = Nodes[parentIndex];
+            var parentNode = projectionTree_SO.nodes[parentIndex];
             if (parentNode.children == null)
             {
                 parentNode.children = new();
@@ -157,13 +125,13 @@ namespace umi3d.cdk.interaction
             var childIndex = IndexOf(child.id);
             if (childIndex == -1)
             {
-                Nodes.Add(child);
+                projectionTree_SO.nodes.Add(child);
             }
             else
             {
-                Nodes[childIndex] = child;
+                projectionTree_SO.nodes[childIndex] = child;
             }
-            Nodes[parentIndex] = parentNode;
+            projectionTree_SO.nodes[parentIndex] = parentNode;
             return true;
         }
 
@@ -178,10 +146,10 @@ namespace umi3d.cdk.interaction
             var childIndex = IndexOf(child);
             if (childIndex != -1)
             {
-                Nodes.RemoveAt(childIndex);
+                projectionTree_SO.nodes.RemoveAt(childIndex);
             }
 
-            var parentNode = Nodes[parentIndex];
+            var parentNode = projectionTree_SO.nodes[parentIndex];
             parentNode.children?.RemoveAll(_child =>
             {
                 return _child.id == child;

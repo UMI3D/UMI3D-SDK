@@ -17,13 +17,27 @@ limitations under the License.
 using inetum.unityUtils.saveSystem;
 using System.Collections;
 using System.Collections.Generic;
+using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    [CreateAssetMenu(fileName = "UMI3D Projection Tree", menuName = "UMI3D/Data/Interaction/Projection Tree")]
+    [CreateAssetMenu(fileName = "UMI3D Projection Tree", menuName = "UMI3D/Interactions/Projection/Projection Tree")]
     public class ProjectionTree_SO : SerializableScriptableObject
     {
-        public List<ProjectionTreeData> trees;
+        /// <summary>
+        /// Tree's id.
+        /// </summary>
+        public string treeId;
+
+        /// <summary>
+        /// Root of this tree.
+        /// </summary>
+        public ProjectionTreeNodeData root;
+
+        /// <summary>
+        /// List of all of the nodes.
+        /// </summary>
+        public List<ProjectionTreeNodeData> nodes = new();
     }
 }
