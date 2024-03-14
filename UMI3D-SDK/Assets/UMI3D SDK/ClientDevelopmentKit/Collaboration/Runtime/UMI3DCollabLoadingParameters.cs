@@ -24,6 +24,7 @@ using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
+using System;
 
 namespace umi3d.cdk.collaboration
 {
@@ -57,6 +58,9 @@ namespace umi3d.cdk.collaboration
         public Sprite defaultEmoteIcon;
 
         #endregion Emotes
+
+        public static event Func<DtoContainer, Task> unknownOperationHandlerDto;
+        public static event Func<uint, ByteContainer, Task> unknownOperationHandlerByte;
 
         public override void Init()
         {
@@ -94,48 +98,14 @@ namespace umi3d.cdk.collaboration
         public override Task UnknownOperationHandler(DtoContainer operation)
         {
             base.UnknownOperationHandler(operation);
-            switch (operation.operation)
-            {
-                case SwitchToolDto switchTool:
-                    AbstractInteractionMapper.Instance.SwitchTools(operation.environmentId, switchTool.toolId, switchTool.replacedToolId, switchTool.releasable, 0, new interaction.RequestedByEnvironment());
-                    break;
-                case ProjectToolDto projection:
-                    AbstractInteractionMapper.Instance.SelectTool(operation.environmentId, projection.toolId, projection.releasable, 0, new interaction.RequestedByEnvironment());
-                    break;
-                case ReleaseToolDto release:
-                    AbstractInteractionMapper.Instance.ReleaseTool(operation.environmentId, release.toolId, new interaction.RequestedByEnvironment());
-                    break;
-            }
-            return Task.CompletedTask;
+            return unknownOperationHandlerDto?.Invoke(operation) ?? Task.CompletedTask;
         }
 
         /// <inheritdoc/>
         public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
             base.UnknownOperationHandler(operationId, container);
-
-            ulong id;
-            bool releasable;
-
-            switch (operationId)
-            {
-                case UMI3DOperationKeys.SwitchTool:
-                    id = UMI3DSerializer.Read<ulong>(container);
-                    ulong oldid = UMI3DSerializer.Read<ulong>(container);
-                    releasable = UMI3DSerializer.Read<bool>(container);
-                    AbstractInteractionMapper.Instance.SwitchTools(container.environmentId, id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
-                    break;
-                case UMI3DOperationKeys.ProjectTool:
-                    id = UMI3DSerializer.Read<ulong>(container);
-                    releasable = UMI3DSerializer.Read<bool>(container);
-                    AbstractInteractionMapper.Instance.SelectTool(container.environmentId, id, releasable, 0, new interaction.RequestedByEnvironment());
-                    break;
-                case UMI3DOperationKeys.ReleaseTool:
-                    id = UMI3DSerializer.Read<ulong>(container);
-                    AbstractInteractionMapper.Instance.ReleaseTool(container.environmentId, id, new interaction.RequestedByEnvironment());
-                    break;
-            }
-            return Task.CompletedTask;
+            return unknownOperationHandlerByte?.Invoke(operationId, container) ?? Task.CompletedTask;
         }
     }
 }

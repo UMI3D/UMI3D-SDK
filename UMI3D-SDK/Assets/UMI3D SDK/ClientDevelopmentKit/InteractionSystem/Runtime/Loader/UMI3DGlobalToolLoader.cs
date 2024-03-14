@@ -80,7 +80,7 @@ namespace umi3d.cdk.interaction
         /// <param name="dto">Tool dto</param>
         private static async Task ReadUMI3DExtension(ulong environmentId, GlobalToolDto dto, Toolbox parent)
         {
-            if (GlobalTool.GetGlobalTools().Exists(t => t.id == dto.id))
+            if (GlobalTool.GetGlobalTools().Exists(t => t.data.dto.id == dto.id))
                 return;
 
             if (dto is ToolboxDto toolbox)

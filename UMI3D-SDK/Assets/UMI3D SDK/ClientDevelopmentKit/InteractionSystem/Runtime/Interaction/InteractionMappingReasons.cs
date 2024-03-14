@@ -67,7 +67,7 @@ namespace umi3d.cdk.interaction
     /// <see cref="RequestedByUser"/>
     public class RequestedUsingSelector : RequestedByUser
     {
-        public AbstractController controller;
+        public UMI3DController controller;
     }
 
     /// <summary>
