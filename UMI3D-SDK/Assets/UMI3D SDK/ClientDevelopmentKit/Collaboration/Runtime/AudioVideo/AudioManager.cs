@@ -336,7 +336,8 @@ namespace umi3d.cdk.collaboration
                 }
             }
             SetGainAndVolumeForUser(user);
-            AudioMixerControl.SetConversationGroup(audioPlayer);
+            if(audioPlayer is not null)
+                AudioMixerControl.SetConversationGroup(audioPlayer);
         }
 
         private IEnumerator WaitForAudioCreation(UMI3DUser user)
