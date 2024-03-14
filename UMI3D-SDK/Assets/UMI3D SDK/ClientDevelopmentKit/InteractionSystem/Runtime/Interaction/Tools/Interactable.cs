@@ -54,9 +54,6 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public float InteractionDistance => dto?.interactionDistance ?? -1;
 
-        /// <inheritdoc/>
-        protected override AbstractToolDto abstractDto { get => dto; set => dto = value as InteractableDto; }
-
         public Interactable(ulong environmentId ,InteractableDto dto) : base(environmentId, dto)
         {
         }
@@ -68,7 +65,7 @@ namespace umi3d.cdk.interaction
         {
             var hoverDto = new HoverStateChangedDto()
             {
-                toolId = id,
+                toolId = data.dto.id,
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
                 state = true,
@@ -88,7 +85,7 @@ namespace umi3d.cdk.interaction
         {
             var hoverDto = new HoverStateChangedDto()
             {
-                toolId = id,
+                toolId = data.dto.id,
                 hoveredObjectId = hoveredObjectId,
                 boneType = bone,
                 state = false,
@@ -112,7 +109,7 @@ namespace umi3d.cdk.interaction
             {
                 var hoverDto = new HoveredDto()
                 {
-                    toolId = id,
+                    toolId = data.dto.id,
                     hoveredObjectId = hoveredObjectId,
                     boneType = bone,
                     normal = normal.Dto(),

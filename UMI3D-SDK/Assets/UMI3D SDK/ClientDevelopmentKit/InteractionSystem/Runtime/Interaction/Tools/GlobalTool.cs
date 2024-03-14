@@ -54,7 +54,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Delete tool.
         /// </summary>
-        public void Delete() { instances.Remove(id); }
+        public void Delete() { instances.Remove(data.dto.id); }
 
         /// <summary>
         /// DTO associated to the tool.
@@ -74,10 +74,7 @@ namespace umi3d.cdk.interaction
         public GlobalTool(ulong environmentId, AbstractToolDto abstractDto, Toolbox parent) : base(environmentId, abstractDto)
         {
             this.parent = parent;
-            instances.Add(id, this);
+            instances.Add(data.dto.id, this);
         }
-
-        /// <inheritdoc/>
-        protected override AbstractToolDto abstractDto { get => dto; set => dto = value as GlobalToolDto; }
     }
 }

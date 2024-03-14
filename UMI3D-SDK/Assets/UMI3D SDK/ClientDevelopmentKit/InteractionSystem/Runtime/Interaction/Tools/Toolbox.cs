@@ -48,9 +48,6 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Tools within the toolbox.
         /// </summary>
-        public List<GlobalToolDto> tools { get => (abstractDto as ToolboxDto).tools; set => (abstractDto as ToolboxDto).tools = value; }
-
-        /// <inheritdoc/>
-        protected override AbstractToolDto abstractDto { get => dto; set => dto = value as ToolboxDto; }
+        public List<GlobalToolDto> tools { get => (data.dto as ToolboxDto).tools; set => (data.dto as ToolboxDto).tools = value; }
     }
 }
