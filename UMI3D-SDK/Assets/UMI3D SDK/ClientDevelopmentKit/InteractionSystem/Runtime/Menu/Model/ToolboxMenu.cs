@@ -42,12 +42,12 @@ namespace umi3d.cdk.menu.interaction
         public async void Setup(ulong environmentId, Toolbox toolbox)
         {
             this.toolbox = toolbox;
-            Name = toolbox.name;
+            Name = toolbox.data.dto.name;
             if (icon2D != null)
             {
                 icon2D = new Texture2D(0, 0);
 
-                FileDto icon2DFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(toolbox.icon2D.variants);
+                FileDto icon2DFile = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(toolbox.data.dto.icon2D.variants);
 
                 if ((icon2DFile.url != null) && (icon2DFile.url != ""))
                 {
@@ -59,7 +59,7 @@ namespace umi3d.cdk.menu.interaction
             foreach(var interation in toolbox.interactions)
             {
                 var inter = await interation;
-                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter,environmentId, toolbox.id));
+                this.Add(GlobalToolMenuManager.GetMenuForInteraction(inter,environmentId, toolbox.data.dto.id));
             }
         }
     }

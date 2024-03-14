@@ -156,35 +156,89 @@ namespace umi3d.cdk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
+
                     index = UMI3DSerializer.Read<int>(container);
                     value = UMI3DSerializer.Read<ulong>(container);
                     if (index == dto.interactions.Count)
+                    {
                         dto.interactions.Add(value);
+                    }
                     else if (index < dto.interactions.Count)
+                    {
                         dto.interactions.Insert(index, value);
-                    else return false;
-                    tool.Added(UMI3DEnvironmentLoader.GetEntity(container.environmentId,value).dto as AbstractInteractionDto); break;
+                    }
+                    else
+                    {
+                        return false;
+                    }
+
+                    AbstractInteractionDto newInteraction 
+                        = UMI3DEnvironmentLoader
+                        .Instance
+                        .TryGetEntityInstance(
+                            tool.data.environmentId,
+                            value
+                        ).dto as AbstractInteractionDto;
+
+                    UMI3DToolManager.UpdateAddOnTools(
+                        tool.data.environmentId,
+                        tool.data.dto.id,
+                        tool.Data.releasable,
+                        newInteraction,
+                        new ToolNeedToBeUpdated()
+                    );
+                    break;
+
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
+
                     index = UMI3DSerializer.Read<int>(container);
                     if (index < dto.interactions.Count)
                     {
-                        AbstractInteractionDto removed = UMI3DEnvironmentLoader.GetEntity(container.environmentId,dto.interactions[index]).dto as AbstractInteractionDto;
-                        dto.interactions.RemoveAt(index);
-                        tool.Removed(removed);
+                        AbstractInteractionDto oldInteraction
+                            = UMI3DEnvironmentLoader
+                            .Instance
+                            .TryGetEntityInstance(
+                                tool.data.environmentId,
+                                tool.Data.dto.interactions[index]
+                            ).dto as AbstractInteractionDto;
+
+                        tool.Data.dto.interactions.RemoveAt(index);
+
+                        UMI3DToolManager.UpdateRemoveOnTools(
+                            tool.data.environmentId,
+                            tool.data.dto.id,
+                            tool.Data.releasable,
+                            oldInteraction,
+                            new ToolNeedToBeUpdated()
+                        );
                     }
-                    else return false;
+                    else
+                    {
+                        return false; 
+                    }
                     break;
+
                 case UMI3DOperationKeys.SetEntityListProperty:
                     index = UMI3DSerializer.Read<int>(container);
                     value = UMI3DSerializer.Read<ulong>(container);
                     if (index < dto.interactions.Count)
                         dto.interactions[index] = value;
                     else return false;
-                    tool.Updated();
+                    UMI3DToolManager.UpdateTools(
+                        tool.data.environmentId,
+                        tool.data.dto.id,
+                        tool.Data.releasable,
+                        new ToolNeedToBeUpdated()
+                    );
                     break;
                 default:
                     dto.interactions = UMI3DSerializer.ReadList<ulong>(container);
-                    tool.Updated();
+                    UMI3DToolManager.UpdateTools(
+                        tool.data.environmentId,
+                        tool.data.dto.id,
+                        tool.Data.releasable,
+                        new ToolNeedToBeUpdated()
+                    );
                     break;
             }
             return true;
@@ -218,7 +272,12 @@ namespace umi3d.cdk.interaction
                     dto.interactions = (List<ulong>)property.value;
                     break;
             }
-            tool.Updated();
+            UMI3DToolManager.UpdateTools(
+                tool.data.environmentId,
+                tool.data.dto.id,
+                tool.Data.releasable,
+                new ToolNeedToBeUpdated()
+            );
             return true;
         }
 

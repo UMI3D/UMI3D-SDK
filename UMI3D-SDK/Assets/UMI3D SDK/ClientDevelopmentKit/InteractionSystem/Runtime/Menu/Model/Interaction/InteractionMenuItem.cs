@@ -39,21 +39,22 @@ namespace umi3d.cdk.menu.interaction
         /// <returns></returns>
         public bool isProjected()
         {
-            if ((interaction == null) || (interaction.id == 0))
-                return false;
+            throw new System.NotImplementedException();
+            //if ((interaction == null) || (interaction.id == 0))
+            //    return false;
 
-            if (!AbstractInteractionMapper.Instance.IsToolSelected(environmentId, toolId))
-                return false;
+            //if (!AbstractInteractionMapper.Instance.IsToolSelected(environmentId, toolId))
+            //    return false;
 
-            AbstractController controller = AbstractInteractionMapper.Instance.GetController(environmentId, toolId);
-            if (controller != null)
-            {
-                return controller.inputs.Exists(input => (input.CurrentInteraction() != null) && input.CurrentInteraction().id.Equals(interaction.id));
-            }
-            else
-            {
-                return false;
-            }
+            //AbstractController controller = AbstractInteractionMapper.Instance.GetController(environmentId, toolId);
+            //if (controller != null)
+            //{
+            //    return controller.inputs.Exists(input => (input.CurrentInteraction() != null) && input.CurrentInteraction().id.Equals(interaction.id));
+            //}
+            //else
+            //{
+            //    return false;
+            //}
         }
     }
 }
