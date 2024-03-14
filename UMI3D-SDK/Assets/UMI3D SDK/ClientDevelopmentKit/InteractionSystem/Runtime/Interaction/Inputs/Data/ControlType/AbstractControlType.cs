@@ -14,14 +14,16 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils.saveSystem;
 using System;
-using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    public abstract class AbstractEventInputDelegate : AbstractInputDelegate<EventDto>
+    /// <summary>
+    /// Type of control.
+    /// </summary>
+    public abstract class AbstractControlType : SerializableScriptableObject
     {
-        public bool tryToFindInputForHoldableEvent;
     }
 }

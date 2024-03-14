@@ -36,7 +36,7 @@ namespace umi3d.cdk.interaction
         /// Controller the input is related to.
         /// </summary>
         [SerializeField]
-        public AbstractController controller { get; protected set; }
+        public UMI3DController controller { get; protected set; }
 
         /// <summary>
         /// Event raised when the input is pressed down (first frame only).
@@ -54,8 +54,8 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Initialise component.
         /// </summary>
-        /// <param name="controller"><see cref="AbstractController"/> containing this input</param>
-        public virtual void Init(AbstractController controller)
+        /// <param name="controller"><see cref="UMI3DController"/> containing this input</param>
+        public virtual void Init(UMI3DController controller)
         {
             this.controller = controller;
         }
