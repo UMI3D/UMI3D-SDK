@@ -142,6 +142,11 @@ namespace umi3d.cdk.collaboration
         public ulong onStopSpeakingAnimationId => dto.onStopSpeakingAnimationId;
 
         /// <summary>
+        /// See <see cref="UserDto.areTrackedControllersVisible"/>.
+        /// </summary>
+        public bool areTrackedControllersVisible => dto.areTrackedControllersVisible;
+
+        /// <summary>
         /// See <see cref="UserDto.login"/>.
         /// </summary>
         public string login => dto?.login;
