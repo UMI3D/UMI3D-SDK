@@ -14,23 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils.saveSystem;
 using System;
-using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    public abstract class AbstractInputDelegate<Interaction>: SerializableScriptableObject
-        where Interaction: AbstractInteractionDto
+    [CreateAssetMenu(fileName = "UMI3D Shortcut Control [Shortcut]", menuName = "UMI3D/Interactions/Control/Shortcut Type")]
+    public class ShortcutControlType : AbstractControlType
     {
-        /// <summary>
-        /// Return an input for a given parameter.<br/> 
-        /// Return null if no input is available.
-        /// </summary>
-        /// <param name="param"></param>
-        /// <param name="unused"></param>
-        /// <returns></returns>
-        public abstract AbstractUMI3DInput FindInput(Interaction param, bool unused = true);
     }
 }

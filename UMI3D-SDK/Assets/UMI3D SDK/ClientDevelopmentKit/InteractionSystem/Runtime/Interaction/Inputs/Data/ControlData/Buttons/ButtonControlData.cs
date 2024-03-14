@@ -15,18 +15,18 @@ limitations under the License.
 */
 
 using System;
-using umi3d.common.interaction;
 using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    [Serializable]
-    public sealed class UMI3DInputManager 
+    public interface HasButtonControlData
     {
-        public AbstractManipulationInputDelegate manipulationDelegate;
-        public AbstractEventInputDelegate eventInputDelegate;
-        public AbstractInputDelegate<FormDto> formInputDelegate;
-        public AbstractInputDelegate<LinkDto> linkInputDelegate;
-        public AbstractInputDelegate<AbstractParameterDto> parameterInputDelegate;
+        ButtonControlData ButtonControlData { get; set; }
+    }
+
+    [Serializable]
+    public sealed class ButtonControlData 
+    {
+        public AbstractButtonControlType type;
     }
 }

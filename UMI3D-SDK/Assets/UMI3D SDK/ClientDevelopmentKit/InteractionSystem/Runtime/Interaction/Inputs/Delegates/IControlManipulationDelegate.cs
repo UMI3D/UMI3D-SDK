@@ -20,15 +20,10 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-    public abstract class AbstractManipulationInputDelegate : AbstractInputDelegate<ManipulationDto>
+    public interface IControlManipulationDelegate : IControlDelegate<ManipulationDto>
     {
-        public DofGroupDto dof;
+        DofGroupDto Dof { get; set; }
 
-        /// <summary>
-        /// Find the best <see cref="DofGroupOptionDto"/>> for this controller.
-        /// </summary>
-        /// <param name="options">Options to search in</param>
-        /// <returns></returns>
-        public abstract DofGroupOptionDto FindBest(DofGroupOptionDto[] options);
+        DofGroupOptionDto FindBest(DofGroupOptionDto[] options);
     }
 }
