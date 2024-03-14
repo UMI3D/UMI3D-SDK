@@ -222,6 +222,8 @@ namespace umi3d.common
         public const uint PoseAnimatorActivationConditions = 11017;
         public const uint PoseAnimatorPoseClip = 11018;
 
+        public const uint AreTrackedControllersVisible = 11030;
+
         #endregion
 
         #region notification
