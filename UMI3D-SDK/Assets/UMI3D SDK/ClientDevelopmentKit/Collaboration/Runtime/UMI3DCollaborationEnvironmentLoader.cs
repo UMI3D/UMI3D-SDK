@@ -175,6 +175,7 @@ namespace umi3d.cdk.collaboration
                     return UpdateUser(data.property.property, data.entity, data.property.value);
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
+                case UMI3DPropertyKeys.AreTrackedControllersVisible:
                     return UpdateUser(data.property.property, data.entity, (ulong)(long)data.property.value);
 
                 default:
@@ -197,6 +198,7 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
                 case UMI3DPropertyKeys.UserAudioUseMumble:
+                case UMI3DPropertyKeys.AreTrackedControllersVisible:
                     {
                         bool value = UMI3DSerializer.Read<bool>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
