@@ -58,13 +58,21 @@ namespace umi3d.edk.collaboration
         /// </summary>
         public string token => identityDto.localToken;
 
+        /// <summary>
+        /// If true, user's visible controllers (device representation or hands from hand tracking) are visible.
+        /// </summary>
+        /// Typically set this value to false if you already have an avatar 
+        /// for the user that is enough for visual feedback.
+        public UMI3DAsyncProperty<bool> AreTrackedControllersVisible;
 
-        public UMI3DCollaborationAbstractUser(RegisterIdentityDto identity)
+
+        public UMI3DCollaborationAbstractUser(RegisterIdentityDto identity) : base()
         {
             this.identityDto = identity ?? new RegisterIdentityDto();
 
-
             userId = identity is not null && identity.userId != 0 ? UMI3DEnvironment.Register(this, identity.userId) : Id();
+
+            AreTrackedControllersVisible = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.AreTrackedControllersVisible, true);
 
             status = StatusType.CREATED;
 
