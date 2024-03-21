@@ -566,7 +566,6 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             ulong poseId = 1uL;
             var playPoseDto = new PlayPoseClipDto()
             {
-                userID = userId,
                 poseId = poseId,
                 stopPose = false
             };
@@ -602,7 +601,6 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             ulong poseId = 1uL;
             var playPoseDto = new PlayPoseClipDto()
             {
-                userID = userId,
                 poseId = poseId,
                 stopPose = true
             };
