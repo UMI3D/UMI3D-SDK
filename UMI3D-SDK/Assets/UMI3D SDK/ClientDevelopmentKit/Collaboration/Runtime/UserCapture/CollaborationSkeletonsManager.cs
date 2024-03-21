@@ -22,7 +22,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
-
+using umi3d.cdk.navigation;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -44,7 +44,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Fields
 
-        public AbstractNavigation navigation;
+        public INavigationDelegate navigation;
 
         /// <inheritdoc/>
         public virtual IReadOnlyDictionary<(ulong, ulong), ISkeleton> Skeletons => skeletons;

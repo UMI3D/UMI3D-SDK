@@ -19,6 +19,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.cdk.navigation;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common;
@@ -615,7 +616,7 @@ namespace umi3d.cdk.collaboration
             await (UMI3DEnvironmentLoader.Instance.Load(environement, LoadProgress));
             UpdateProgress.AddComplete();
             UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
-            UMI3DNavigation.Instance.currentNav.Teleport(UMI3DGlobalID.EnvironmentId,new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
+            UMI3DNavigation.currentNav.Teleport(UMI3DGlobalID.EnvironmentId,new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
             EnvironementLoaded.Invoke();
             UserDto.answerDto.status = statusToBeSet;
             UMI3DCollaborationClientServer.transactionPending = await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);

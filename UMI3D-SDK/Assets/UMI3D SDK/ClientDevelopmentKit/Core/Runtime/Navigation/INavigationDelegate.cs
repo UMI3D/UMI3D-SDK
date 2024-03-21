@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,55 +16,47 @@ limitations under the License.
 using umi3d.common;
 using UnityEngine;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.navigation
 {
     /// <summary>
-    /// Abstract class for user navigation methods in scene.
+    /// Navigation Delegate Interface.
     /// </summary>
-    public abstract class AbstractNavigation : MonoBehaviour
+    public interface INavigationDelegate
     {
         /// <summary>
         /// Disable this navigation system.
         /// </summary>
-        public abstract void Disable();
+        void Disable();
 
         /// <summary>
         /// Activate this navigation system.
         /// </summary>
-        public abstract void Activate();
+        void Activate();
 
         /// <summary>
         /// Apply navigation request from server.
         /// </summary>
         /// <param name="data"></param>
         /// <seealso cref="Teleport(TeleportDto)"/>
-        public abstract void Navigate(ulong environmentId, NavigateDto data);
+        void Navigate(ulong environmentId, NavigateDto data);
 
         /// <summary>
         /// Apply teleport request from server.
         /// </summary>
         /// <param name="data"></param>
         /// <seealso cref="Navigate(NavigateDto)"/>
-        public abstract void Teleport(ulong environmentId, TeleportDto data);
+        void Teleport(ulong environmentId, TeleportDto data);
 
         /// <summary>
         /// Apply FrameRequestDto request from server.
         /// </summary>
         /// <param name="data"></param>
-        public abstract void UpdateFrame(ulong environmentId, FrameRequestDto data);
+        void UpdateFrame(ulong environmentId, FrameRequestDto data);
 
         /// <summary>
         /// Get data on current movements of the user.
         /// </summary>
         /// <returns></returns>
-        public abstract NavigationData GetNavigationData();
-
-        public struct NavigationData
-        {
-            public Vector3Dto speed;
-            public bool grounded;
-            public bool jumping;
-            public bool crouching;
-        }
+        NavigationData GetNavigationData();
     }
 }
