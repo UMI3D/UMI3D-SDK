@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -19,29 +19,29 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 
-namespace umi3d.cdk
+namespace umi3d.cdk.navigation
 {
     /// <summary>
     /// Navigation manager for user displacement in the environment. 
     /// </summary>
-    public class UMI3DNavigation : inetum.unityUtils.SingleBehaviour<UMI3DNavigation>
+    public sealed class UMI3DNavigation
     {
         /// <summary>
         /// Current navigation system.
         /// </summary>
-        public AbstractNavigation currentNav { get; protected set; } = null;
+        public static INavigationDelegate currentNav = null;
         /// <summary>
         /// Different available navigation system.
         /// </summary>
-        public List<AbstractNavigation> navigations;
+        public static List<INavigationDelegate> navigations = new();
 
         public delegate void OnEmbarkVehicleDelegate(ulong vehicleId);
 
         public static event OnEmbarkVehicleDelegate onUpdateFrameDelegate;
 
-        // Start is called before the first frame update
-        private void Start()
+        public void Init(params INavigationDelegate[] navigationDelegates)
         {
+            navigations.AddRange(navigationDelegates);
             currentNav = navigations.FirstOrDefault();
             currentNav.Activate();
         }
@@ -49,11 +49,11 @@ namespace umi3d.cdk
         public static void SetFrame(ulong environmentId, FrameRequestDto frameRequest)
         {
             UnityEngine.Debug.LogError("Need to handle rescaling");
-            if (Exists && Instance.currentNav != null)
+            if (currentNav != null)
             {
                 onUpdateFrameDelegate?.Invoke(frameRequest.FrameId);
 
-                Instance.currentNav.UpdateFrame(environmentId, frameRequest);
+                currentNav.UpdateFrame(environmentId, frameRequest);
 
                 var fConfirmation = new FrameConfirmationDto()
                 {
@@ -70,17 +70,19 @@ namespace umi3d.cdk
         /// <param name="dto"></param>
         public static IEnumerator Navigate(ulong environmentId, NavigateDto dto)
         {
-            if (Exists && Instance.currentNav != null)
+            if (currentNav == null)
             {
-                switch (dto)
-                {
-                    case TeleportDto teleportDto:
-                        Instance.currentNav.Teleport(environmentId, teleportDto);
-                        break;
-                    default:
-                        Instance.currentNav.Navigate(environmentId, dto);
-                        break;
-                }
+                yield break;
+            }
+
+            switch (dto)
+            {
+                case TeleportDto teleportDto:
+                    currentNav.Teleport(environmentId, teleportDto);
+                    break;
+                default:
+                    currentNav.Navigate(environmentId, dto);
+                    break;
             }
 
             yield break;

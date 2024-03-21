@@ -31,8 +31,6 @@ namespace umi3d.cdk.collaboration
 
         #endregion Emotes
 
-        public AbstractNavigation navigation;
-
         protected override void Awake()
         {
             // LOADING SERVICE
@@ -44,9 +42,6 @@ namespace umi3d.cdk.collaboration
                 emoteService = EmoteManager.Instance;
                 emoteService.DefaultIcon = (parameters as UMI3DCollabLoadingParameters).defaultEmoteIcon;
             }
-
-            // SKELETON SERVICE
-            CollaborationSkeletonsManager.Instance.navigation = navigation; //also use to init manager via Instance call
 
             base.Awake();
         }

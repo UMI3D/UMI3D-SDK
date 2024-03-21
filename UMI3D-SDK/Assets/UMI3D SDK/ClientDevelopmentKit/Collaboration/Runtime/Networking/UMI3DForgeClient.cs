@@ -22,6 +22,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.interaction;
+using umi3d.cdk.navigation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.common;
 using umi3d.common.collaboration;
