@@ -57,7 +57,7 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetScale"/>.
         /// </summary>
-        public Vector3 OffSetScale => SimpleBindingData.offSetRotation.Struct();
+        public Vector3 OffSetScale => SimpleBindingData.offSetScale.Struct();
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.anchorPosition"/>.
@@ -66,11 +66,10 @@ namespace umi3d.cdk.binding
 
         #endregion DTO access
 
-        protected Quaternion originalRotationOffset;
+        protected Quaternion originalRotationOffset = Quaternion.identity;
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
-            originalRotationOffset = Quaternion.identity; //boundTransform.rotation;
         }
 
         /// <summary>
