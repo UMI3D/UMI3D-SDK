@@ -452,15 +452,15 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual void ApplyPoseRequest(ulong environmentId, PlayPoseClipDto playPoseDto)
         {
-            if (!Skeletons.TryGetValue((environmentId, playPoseDto.userID), out ISkeleton skeleton))
+            if (!Skeletons.TryGetValue((environmentId, collaborationClientServerService.GetUserId()), out ISkeleton skeleton))
             {
-                UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. Skeleton not found.", scope);
+                UMI3DLogger.LogWarning($"Cannot apply pose request for own user. Skeleton not found.", scope);
                 return;
             }
 
             if (!collaborativeEnvironmentManagementService.TryGetEntity(environmentId, playPoseDto.poseId, out PoseClip pose))
             {
-                UMI3DLogger.LogWarning($"Cannot apply pose request for user {playPoseDto.userID}. Pose {playPoseDto.poseId} not found.", scope);
+                UMI3DLogger.LogWarning($"Cannot apply pose request for own user. Pose {playPoseDto.poseId} not found.", scope);
                 return;
             }
 

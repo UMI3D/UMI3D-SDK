@@ -676,12 +676,10 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
                     {
-                        ulong userID = UMI3DSerializer.Read<ulong>(container);
                         ulong poseId = UMI3DSerializer.Read<ulong>(container);
                         bool stopPose = UMI3DSerializer.Read<bool>(container);
                         PlayPoseClipDto playPoseDto = new PlayPoseClipDto
                         {
-                            userID = userID,
                             poseId = poseId,
                             stopPose = stopPose
                         };

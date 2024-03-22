@@ -53,42 +53,51 @@ namespace umi3d.cdk
         //[SerializeField, Tooltip("Material to use when material is unavailable or inexistent.")]
         //public Material baseMaterial;
 
-        [SerializeField]
+        public Material defaultMat = null;
+
+        public override Material GetDefaultMaterial() => defaultMat;
+
+        [SerializeField, Tooltip("Default skybox when no one is set by the server")]
+        private Material _skyboxDefaultMaterial;
+        public Material skyboxDefaultMaterial
+        {
+            get
+            {
+                if (_skyboxDefaultMaterial == null)
+                {
+                    _skyboxDefaultMaterial = new Material(RenderSettings.skybox);
+                }
+
+                return _skyboxDefaultMaterial;
+            }
+        }
+
+        [SerializeField, Tooltip("Skybox material to use when skybox type is cubemap")]
         private Material _skyboxMaterial;
         public Material skyboxMaterial
         {
             get
             {
-                if (defaultMat == null)
-                    defaultMat = new Material(RenderSettings.skybox);
                 if (_skyboxMaterial == null)
                 {
                     _skyboxMaterial = new Material(RenderSettings.skybox);
-                    RenderSettings.skybox = _skyboxMaterial;
                 }
 
                 return _skyboxMaterial;
             }
         }
 
-        public Material defaultMat = null;
 
-        public override Material GetDefaultMaterial() => defaultMat;
-        
-
-        [SerializeField]
+        [SerializeField, Tooltip("Skybox material to use when skybox type is equirectangular")]
         private Material _skyboxEquirectangularMaterial;
 
         public Material skyboxEquirectangularMaterial
         {
             get
             {
-                if (defaultMat == null)
-                    defaultMat = new Material(RenderSettings.skybox);
                 if (_skyboxEquirectangularMaterial == null)
                 {
                     _skyboxEquirectangularMaterial = new Material(RenderSettings.skybox);
-                    RenderSettings.skybox = _skyboxEquirectangularMaterial;
                 }
 
                 return _skyboxEquirectangularMaterial;
@@ -270,14 +279,16 @@ namespace umi3d.cdk
         {
             try
             {
-                if (skybox == null)
+                if (skybox == null || skybox.variants.Count == 0)
                 {
-                    RenderSettings.skybox = defaultMat;
+                    RenderSettings.skybox = skyboxDefaultMaterial;
                     return;
                 }
 
                 FileDto fileToLoad = ChooseVariant(skybox.variants);
-                if (fileToLoad == null) return;
+                if (fileToLoad == null)
+                    return;
+
                 string ext = fileToLoad.extension;
                 IResourcesLoader loader = SelectLoader(ext);
                 if (loader != null)

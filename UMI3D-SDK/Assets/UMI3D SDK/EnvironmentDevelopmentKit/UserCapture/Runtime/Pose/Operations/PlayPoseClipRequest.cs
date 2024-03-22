@@ -50,7 +50,7 @@ namespace umi3d.edk.userCapture.pose
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             PlayPoseClipDto dto = CreateDto();
-            WriteProperties(dto, user.Id());
+            WriteProperties(dto);
             return dto;
         }
 
@@ -68,9 +68,8 @@ namespace umi3d.edk.userCapture.pose
             return new PlayPoseClipDto();
         }
 
-        protected virtual void WriteProperties(PlayPoseClipDto dto, ulong userID)
+        protected virtual void WriteProperties(PlayPoseClipDto dto)
         {
-            dto.userID = userID;
             dto.poseId = poseId;
             dto.stopPose = shouldStopPose;
         }
