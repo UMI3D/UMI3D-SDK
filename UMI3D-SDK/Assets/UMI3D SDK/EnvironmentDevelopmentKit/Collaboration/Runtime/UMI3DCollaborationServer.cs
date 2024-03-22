@@ -39,7 +39,7 @@ namespace umi3d.edk.collaboration
     /// <summary>
     /// Manager for the UMI3D server in a collaborative context.
     /// </summary>
-    public class UMI3DCollaborationServer : UMI3DServer, IEnvironment
+    public class UMI3DCollaborationServer : UMI3DServer, IEnvironment, IUMI3DCollaborationServer
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Networking;
         public static new UMI3DCollaborationServer Instance { get => UMI3DServer.Instance as UMI3DCollaborationServer; set => UMI3DServer.Instance = value; }
@@ -234,7 +234,7 @@ namespace umi3d.edk.collaboration
 
             if (collaborativeModule == null)
                 collaborativeModule = UMI3DSerializerModuleUtils.GetModules().ToList();
-            
+
             UMI3DSerializer.AddModule(collaborativeModule);
 
             if (!useIp)
@@ -292,7 +292,7 @@ namespace umi3d.edk.collaboration
             user.SetStatus(StatusType.REGISTERED);
             if (!reconnection)
             {
-                if(user is UMI3DCollaborationAbstractContentUser collaborationUser)
+                if (user is UMI3DCollaborationAbstractContentUser collaborationUser)
                     WorldController.NotifyUserRegister(collaborationUser);
                 UMI3DLogger.Log($"User Registered", scope);
                 OnUserRegistered.Invoke(user);
@@ -323,10 +323,10 @@ namespace umi3d.edk.collaboration
             if (user is UMI3DCollaborationUser collaborationUser)
             {
                 List<Operation> op = mumbleManager.AddUser(collaborationUser);
-            var t = new Transaction() { reliable = true };
-            t.AddIfNotNull(op);
-            t.Dispatch();
-        }
+                var t = new Transaction() { reliable = true };
+                t.AddIfNotNull(op);
+                t.Dispatch();
+            }
             else if (user is UMI3DServerUser serv)
                 mumbleManager.AddUser(serv);
         }
@@ -339,8 +339,8 @@ namespace umi3d.edk.collaboration
         public static async Task NotifyUserJoin(UMI3DCollaborationAbstractContentUser user)
         {
             user.hasJoined = true;
-            if(user is  UMI3DCollaborationUser)
-            Collaboration.UserJoin(user);
+            if (user is UMI3DCollaborationUser)
+                Collaboration.UserJoin(user);
             MainThreadManager.Run(async () =>
             {
                 UMI3DLogger.Log($"<color=magenta>User Join [{user.Id()}] [{user.login}]</color>", scope);
@@ -374,17 +374,17 @@ namespace umi3d.edk.collaboration
 
         private static string DebugGetLocalIPAddress(Func<NetworkInterface, bool> networkPredicate, Func<NetworkInterface, IPAddressInformation, (bool, int)> AddressPredicate)
         {
-            return NetworkInterface.GetAllNetworkInterfaces().SelectMany(n => n.GetIPProperties().UnicastAddresses.Select(a => (n, a))).Select(c => $"{c.n.Name} : {c.a.Address} [networkPredicate :{networkPredicate?.Invoke(c.n)}|AddressPredicate :{AddressPredicate?.Invoke(c.n,c.a)}]").Aggregate("",(a,b) => $"{a}{Environment.NewLine}{b}");
+            return NetworkInterface.GetAllNetworkInterfaces().SelectMany(n => n.GetIPProperties().UnicastAddresses.Select(a => (n, a))).Select(c => $"{c.n.Name} : {c.a.Address} [networkPredicate :{networkPredicate?.Invoke(c.n)}|AddressPredicate :{AddressPredicate?.Invoke(c.n, c.a)}]").Aggregate("", (a, b) => $"{a}{Environment.NewLine}{b}");
         }
 
-        private static IPAddressInformation GetLocalIPAddress(Func<NetworkInterface, bool> networkPredicate, Func<NetworkInterface,IPAddressInformation, (bool,int)> AddressPredicate)
+        private static IPAddressInformation GetLocalIPAddress(Func<NetworkInterface, bool> networkPredicate, Func<NetworkInterface, IPAddressInformation, (bool, int)> AddressPredicate)
         {
-            if(networkPredicate == null)
+            if (networkPredicate == null)
                 networkPredicate = (NetworkInterface n) => true;
-            if(AddressPredicate == null)
-                AddressPredicate = (NetworkInterface n, IPAddressInformation a) => (true,0);
+            if (AddressPredicate == null)
+                AddressPredicate = (NetworkInterface n, IPAddressInformation a) => (true, 0);
 
-            (IPAddressInformation,bool,int) SelectAdress((NetworkInterface n, UnicastIPAddressInformation a) c)
+            (IPAddressInformation, bool, int) SelectAdress((NetworkInterface n, UnicastIPAddressInformation a) c)
             {
                 var r = AddressPredicate(c.n, c.a);
                 return (c.a, r.Item1, r.Item2);
@@ -397,19 +397,19 @@ namespace umi3d.edk.collaboration
         {
             bool NetworkPredicate(NetworkInterface network)
             {
-                if(loopback)
+                if (loopback)
                     return network.NetworkInterfaceType == NetworkInterfaceType.Loopback;
 
                 return network.NetworkInterfaceType == NetworkInterfaceType.Ethernet || network.NetworkInterfaceType == NetworkInterfaceType.Wireless80211 || network.NetworkInterfaceType == NetworkInterfaceType.Loopback;
             }
 
-            static (bool,int) AdressPredicate(NetworkInterface network, IPAddressInformation ip)
+            static (bool, int) AdressPredicate(NetworkInterface network, IPAddressInformation ip)
             {
                 return ((ip.Address.AddressFamily == AddressFamily.InterNetwork) && ip.Address.IsLocal(), network.NetworkInterfaceType == NetworkInterfaceType.Loopback ? 10 : 0);
             }
 
             var ip = GetLocalIPAddress(NetworkPredicate, AdressPredicate);
-            if(ip == null)
+            if (ip == null)
                 throw new Exception("Local IP Address Not Found!");
             return ip.Address.ToString();
         }
@@ -553,8 +553,8 @@ namespace umi3d.edk.collaboration
         private void _Logout(UMI3DCollaborationAbstractContentUser user)
         {
             UMI3DLogger.Log($"Logout {user.login} {user.Id()}", scope);
-            if(user is UMI3DCollaborationUser cUser)
-            RemoveUserAudio(cUser);
+            if (user is UMI3DCollaborationUser cUser)
+                RemoveUserAudio(cUser);
             WorldController.NotifyUserLeave(user);
             OnUserLeave.Invoke(user);
         }
@@ -687,7 +687,7 @@ namespace umi3d.edk.collaboration
                 {
                     SendTransaction(user, transaction);
                 }
-                catch(Exception e)
+                catch (Exception e)
                 {
                     UnityEngine.Debug.LogException(e);
                 }

@@ -218,6 +218,15 @@ namespace umi3d.edk
             if (Exists) Instance._Dispatch(transaction);
         }
 
+        /// <summary>
+        /// Send a <see cref="Transaction"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
+        public void DispatchTransaction(Transaction transaction)
+        {
+            _Dispatch(transaction);
+        }
+
         //? empty ?
         protected virtual void _Dispatch(Transaction transaction)
         {
