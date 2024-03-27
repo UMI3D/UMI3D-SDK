@@ -78,7 +78,10 @@ namespace umi3d.cdk
                         throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
 #endif
                 else
+                {
+                    UMI3DResourcesManager.Instance.DebugCach();
                     throw new Umi3dException($"Asset bundle empty: \n\n\"{url}\" \n\nAn error might have occurred during the decoding of the asset bundle’s assets.");
+                }
             }
             www.Dispose();
             throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
