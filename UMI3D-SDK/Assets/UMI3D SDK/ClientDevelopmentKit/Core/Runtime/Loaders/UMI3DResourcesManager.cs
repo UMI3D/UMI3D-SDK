@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -35,6 +36,11 @@ namespace umi3d.cdk
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public Transform CacheTransform => gameObject.transform;
+
+        public void DebugCach()
+        {
+            UnityEngine.Debug.Log($"CacheCollection : {CacheCollection.ToString<ObjectData>(o => o.url)}");
+        }
 
         #region const
         private const string dataFile = "data.json";
@@ -250,6 +256,7 @@ namespace umi3d.cdk
             /// <returns></returns>
             public bool MatchUrl(Match Matchurl, string url, Library? library = null)
             {
+                url = url.Replace("\\", "/").Replace("%20", " ");
                 if (url == this.url && (library == null || libraryIds.Any(lib => lib == library)))
                     return true;
 
@@ -319,7 +326,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.Loaded;
                 downloadedPath = null;
-                this.url = url;
+                this.url = url.Replace("\\","/").Replace("%20"," ");
                 a = rx.Match(url);
             }
 
@@ -330,7 +337,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.Loaded;
                 downloadedPath = null;
-                this.url = url;
+                this.url = url.Replace("\\", "/").Replace("%20", " ");
                 a = rx.Match(url);
             }
 
@@ -341,7 +348,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
-                this.url = url;
+                this.url = url.Replace("\\", "/").Replace("%20", " ");
                 this.extension = extension;
                 a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
@@ -354,7 +361,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
-                this.url = url;
+                this.url = url.Replace("\\", "/").Replace("%20", " ");
                 this.extension = extension;
                 a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
@@ -367,7 +374,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>() { library };
                 state = Estate.NotLoaded;
                 downloadedPath = null;
-                this.url = url;
+                this.url = url.Replace("\\", "/").Replace("%20", " ");
                 this.extension = extension;
                 a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
@@ -380,7 +387,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>() { library };
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
-                this.url = url;
+                this.url = url.Replace("\\", "/").Replace("%20", " ");
                 this.extension = extension;
                 this.authorization = authorization;
                 a = rx.Match(url);
@@ -394,7 +401,7 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
-                this.url = url;
+                this.url = url.Replace("\\", "/").Replace("%20", " ");
                 this.extension = extension;
                 this.authorization = authorization;
                 a = rx.Match(url);
@@ -786,11 +793,13 @@ namespace umi3d.cdk
 
         public async Task<object> _LoadFile(ulong id, FileDto file, IResourcesLoader loader)
         {
+            file.url = file.url.Replace("\\", "/").Replace("%20", " ");
             string fileName = System.IO.Path.GetFileName(file.url);
             var library = Library.GetLibrary(file.libraryKey);
             Match matchUrl = ObjectData.rx.Match(file.url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
+
                 return o.MatchUrl(matchUrl, file.url, library);
             });
 

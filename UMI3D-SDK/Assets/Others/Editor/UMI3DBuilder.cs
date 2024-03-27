@@ -138,6 +138,8 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         if (GUILayout.Button($"Build step by step and push on {data.data.Branch}"))
             CleanComputeBuildStepByStep(true);
         EditorGUILayout.EndHorizontal();
+        if (GUILayout.Button($"Push on {data.data.Branch}"))
+            CleanComputeBuild(true, false);
     }
     protected virtual void DrawBuildingStepByStep()
     {
@@ -193,24 +195,25 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
 
         async void CleanComputeBuildStepByStep(bool comit)
     {
-        await CleanComputeBuildStart();
+        await CleanComputeBuildStart(true);
         data.data.commit = comit;
         data.data.buildstepByStep = true;
         isBuilding = false;
     }
 
-    async void CleanComputeBuild(bool comit)
+    async void CleanComputeBuild(bool comit, bool build = true)
     {
         EditorUtility.SetDirty(data.data);
-        await CleanComputeBuildStart();
+        await CleanComputeBuildStart(build);
         EditorUtility.SetDirty(data.data);
-        await CleanComputeBuildMiddle();
+        if(build)
+            await CleanComputeBuildMiddle();
         EditorUtility.SetDirty(data.data);
         await CleanComputeBuildEnd(comit);
         EditorUtility.SetDirty(data.data);
     }
 
-    async Task CleanComputeBuildStart()
+    async Task CleanComputeBuildStart(bool cleanBuild)
     {
         IsBuilding = true;
         await Task.Yield();
@@ -220,7 +223,8 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
             info.NewTitle($"Build Packages");
             version.UpdateVersion();
 
-            cleanBuildFolder(data.data.PackageFolderPath);
+            if(cleanBuild)
+                cleanBuildFolder(data.data.PackageFolderPath);
 
             await Task.Delay(100);
             // Build player.

@@ -40,5 +40,11 @@ namespace umi3d.edk
         IEnumerable<UMI3DUser> Users();
         HashSet<UMI3DUser> UserSet();
         HashSet<UMI3DUser> UserSetWhenHasJoined();
+
+        /// <summary>
+        /// Send a <see cref="Transaction"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
+        void DispatchTransaction(Transaction transaction);
     }
 }
