@@ -16,16 +16,14 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System.Linq;
-
 using umi3d.common;
-using umi3d.common.userCapture.description;
 
 namespace umi3d.cdk.userCapture.pose
 {
     /// <summary>
-    /// Manager that handles poses.
+    /// Manager that handles pose animators requests.
     /// </summary>
-    public class PoseManager : Singleton<PoseManager>, IPoseManager
+    public class PoseService : Singleton<PoseService>, IPoseService
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.CDK | DebugScope.UserCapture;
 
@@ -35,10 +33,10 @@ namespace umi3d.cdk.userCapture.pose
         private readonly IEnvironmentManager environmentManager;
         private readonly IUMI3DClientServer clientServerService;
 
-        public PoseManager() : this(PersonalSkeletonManager.Instance, UMI3DEnvironmentLoader.Instance, UMI3DClientServer.Instance)
+        public PoseService() : this(PersonalSkeletonManager.Instance, UMI3DEnvironmentLoader.Instance, UMI3DClientServer.Instance)
         { }
 
-        public PoseManager(ISkeletonManager skeletonManager, IEnvironmentManager environmentManager, IUMI3DClientServer clientServerService)
+        public PoseService(ISkeletonManager skeletonManager, IEnvironmentManager environmentManager, IUMI3DClientServer clientServerService)
         {
             this.skeletonManager = skeletonManager;
             this.environmentManager = environmentManager;
@@ -57,7 +55,7 @@ namespace umi3d.cdk.userCapture.pose
 
         private void Reset()
         {
-            StopAllPoses();
+            skeletonManager.PersonalSkeleton.PoseSubskeleton.StopAllPoses();
         }
 
         /// <inheritdoc/>
@@ -65,7 +63,7 @@ namespace umi3d.cdk.userCapture.pose
         {
             if (!environmentManager.TryGetEntity(environmentId, poseAnimatorId, out IPoseAnimator poseAnimator))
             {
-                UMI3DLogger.LogWarning($"Unable to try to activate pose animator {environmentId} {poseAnimatorId}. Entity {poseAnimatorId} not found.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Unable to try to activate pose animator ({environmentId}, {poseAnimatorId}). Pose animator {poseAnimatorId} not found.", DEBUG_SCOPE);
                 return false;
             }
 
@@ -76,7 +74,7 @@ namespace umi3d.cdk.userCapture.pose
         {
             if (!environmentManager.TryGetEntity(environmentId, poseAnimatorId, out IPoseAnimator poseAnimator))
             {
-                UMI3DLogger.LogWarning($"Unable to try to deactivate pose animator {environmentId} {poseAnimatorId}. Entity {poseAnimatorId} not found.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Unable to try to deactivate pose animator ({environmentId}, {poseAnimatorId}). Pose animator {poseAnimatorId} not found.", DEBUG_SCOPE);
                 return false;
             }
 
@@ -84,12 +82,27 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public void PlayPoseClip(PoseClip poseClip, PoseAnchorDto anchorToForce = null, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
+        public void ChangeEnvironmentPoseCondition(ulong environmentId, ulong poseConditionId, bool shouldBeValidated)
+        {
+            if (!environmentManager.TryGetEntity(environmentId, poseConditionId, out EnvironmentPoseCondition condition))
+            {
+                UMI3DLogger.LogWarning($"Unable to try to change pose condition state of pose condition ({environmentId}, {poseConditionId}). Pose condition {poseConditionId} not found.", DEBUG_SCOPE);
+                return;
+            }
+
+            if (shouldBeValidated)
+                condition.Validate();
+            else
+                condition.Invalidate();
+        }
+
+        /// <inheritdoc/>
+        public void PlayPoseClip(PoseClip poseClip, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, bool shouldOverride = false)
         {
             if (poseClip == null)
                 throw new System.ArgumentNullException(nameof(poseClip));
 
-            skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip, parameters: parameters, anchorToForce: anchorToForce);
+            skeletonManager.PersonalSkeleton.PoseSubskeleton.StartPose(poseClip, parameters: parameters, isOverriding: shouldOverride);
         }
 
         /// <inheritdoc/>
@@ -111,17 +124,6 @@ namespace umi3d.cdk.userCapture.pose
         public void StopAllPoses()
         {
             skeletonManager.PersonalSkeleton.PoseSubskeleton.StopAllPoses();
-        }
-
-        /// <inheritdoc/>
-        public void ChangeEnvironmentPoseCondition(ulong environmentId, ulong poseConditionId, bool shouldBeValidated)
-        {
-            EnvironmentPoseCondition condition = environmentManager.GetEntityObject<EnvironmentPoseCondition>(environmentId, poseConditionId);
-
-            if (shouldBeValidated)
-                condition.Validate();
-            else
-                condition.Invalidate();
         }
     }
 }

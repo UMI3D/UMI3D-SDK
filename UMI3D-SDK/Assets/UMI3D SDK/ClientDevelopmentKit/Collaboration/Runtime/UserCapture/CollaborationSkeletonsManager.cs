@@ -228,8 +228,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
             var poseSkeleton = new PoseSubskeleton(environmentId,
                                                                 parentSkeleton: cs,
-                                                                environmentManagerService: collaborativeEnvironmentManagementService,
-                                                                trackerSimulator: TrackerSimulationManager.Instance.GetTrackerSimulator(cs));
+                                                                environmentManagerService: collaborativeEnvironmentManagementService);
 
             cs.Init(trackedSkeleton, poseSkeleton);
 

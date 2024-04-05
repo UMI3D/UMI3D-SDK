@@ -1,5 +1,5 @@
-/*
-Copyright 2019 - 2021 Inetum
+﻿/*
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -15,31 +15,32 @@ limitations under the License.
 */
 
 using umi3d.common;
-
+using umi3d.common.userCapture.tracking.constraint;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture.tracking
+namespace umi3d.cdk.userCapture.tracking.constraint
 {
-    public class NodeAnchoredSimulatedTracker : AbstractSimulatedTracker
+    public class NodeBoneConstraint : AbstractBoneConstraint
     {
-        private Transform nodeReference;
-
-        public void Init(UMI3DNodeInstance node, uint boneType, Vector3 posOffset, Quaternion rotOffset)
+        public NodeBoneConstraint(NodeBoneConstraintDto dto, UMI3DNodeInstance node) : base(dto)
         {
-            this.nodeReference = node.transform;
-            Init(boneType, posOffset, rotOffset);
+            ConstrainingNode = node;
         }
 
-        public override (Vector3 position, Quaternion rotation) SimulatePosition()
+        public UMI3DNodeInstance ConstrainingNode { get; private set; }
+
+        public override string TrackerLabel { get; protected set; } = "Node Constrained Tracker";
+
+        public override (Vector3 position, Quaternion rotation) Resolve()
         {
-            if (nodeReference == null)
+            if (ConstrainingNode == null)
             {
                 UMI3DLogger.LogWarning($"Anchoring reference node destroyed without destroying simulated tracker first. Destroying tracker.", DebugScope.CDK | DebugScope.UserCapture);
-                Destroy(this);
+                DestroySimulatedTracker();
                 return default;
             }
-            Quaternion rotation = nodeReference.rotation * rotationOffset;
-            Vector3 position = nodeReference.position + nodeReference.rotation * positionOffset;
+            Quaternion rotation = ConstrainingNode.transform.rotation * RotationOffset;
+            Vector3 position = ConstrainingNode.transform.position + ConstrainingNode.transform.rotation * PositionOffset;
             return (position, rotation);
         }
     }

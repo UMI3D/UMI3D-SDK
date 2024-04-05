@@ -1,5 +1,5 @@
-/*
-Copyright 2019 - 2021 Inetum
+﻿/*
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,23 +14,20 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common;
-
+using umi3d.common.userCapture.tracking.constraint;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture.tracking
+namespace umi3d.cdk.userCapture.tracking.constraint
 {
-    public class FloorAnchoredSimulatedTracker : AbstractSimulatedTracker
+    public class FloorBoneConstraint : AbstractBoneConstraint
     {
-        private Transform floorReference;
-
-        public void Init(Transform floor, uint boneType, Vector3 posOffset, Quaternion rotOffset)
+        public FloorBoneConstraint(FloorBoneConstraintDto dto) : base(dto)
         {
-            this.floorReference = floor;
-            Init(boneType, posOffset, rotOffset);
         }
 
-        public override (Vector3 position, Quaternion rotation) SimulatePosition()
+        public override string TrackerLabel { get; protected set; } = "Floor Constrained Tracker";
+
+        public override (Vector3 position, Quaternion rotation) Resolve()
         {
             throw new System.NotImplementedException();
         }

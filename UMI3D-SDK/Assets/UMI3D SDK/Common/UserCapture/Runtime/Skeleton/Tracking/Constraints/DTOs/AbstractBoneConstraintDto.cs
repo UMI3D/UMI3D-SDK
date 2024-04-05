@@ -14,31 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-
-namespace umi3d.cdk.userCapture.tracking
+namespace umi3d.common.userCapture.tracking.constraint
 {
     /// <summary>
-    /// Manages tracker simulation for all skeletons.
+    /// Define a constraint on the bone, exerced by another object.
     /// </summary>
-    public interface ITrackerSimulationService
+    public abstract class AbstractBoneConstraintDto : AbstractEntityDto, IEntity
     {
         /// <summary>
-        /// Current tracker simulmator for each skeleton.
+        /// If true, the constraint could be applied if possible.
         /// </summary>
-        IReadOnlyDictionary<ISkeleton, ITrackerSimulator> TrackerSimulators { get; }
+        public bool ShouldBeApplied { get; set; }
 
         /// <summary>
-        /// Get or create a tracker simulator for a skeleton.
+        /// The bone that should receive the constraint.
         /// </summary>
-        /// <param name="skeleton"></param>
-        /// <returns></returns>
-        ITrackerSimulator GetTrackerSimulator(ISkeleton skeleton);
+        public uint ConstrainedBone { get; set; }
 
         /// <summary>
-        /// Remove a tracker simulator for a skeleton.
+        /// Positional offset from the constraining object.
         /// </summary>
-        /// <param name="skeleton"></param>
-        void RemoveTrackerSimulator(ISkeleton skeleton);
+        public Vector3Dto PositionOffset { get; set; } = new Vector3Dto();
+
+        /// <summary>
+        /// Rotational offset from the constraining object.
+        /// </summary>
+        public Vector4Dto RotationOffset { get; set; } = new Vector4Dto();
     }
 }

@@ -20,11 +20,11 @@ using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.tracking.constraint;
 using umi3d.edk;
 using umi3d.edk.core;
 using umi3d.edk.userCapture.pose;
-
+using umi3d.edk.userCapture.tracking.constraint;
 using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
@@ -97,7 +97,7 @@ namespace umi3d.common.userCapture.pose
 
         [SerializeField, Tooltip("Specifying if the pose is relative to another object."), EditorReadOnly]
         private PoseAnchoringParameters anchoringParameters = new();
-        public UMI3DAsyncProperty<PoseAnchoringParameters> AnchoringParameters { get; protected set; }
+        public UMI3DAsyncProperty<IBoneConstraint> AnchoringConstraint { get; protected set; }
 
         [Serializable]
         public class PoseAnchoringParameters
@@ -105,9 +105,16 @@ namespace umi3d.common.userCapture.pose
             [Tooltip("Defining the type of object for the pose anchor.")]
             public PoseAnchoringType anchoringType;
 
-            [Tooltip("Specifying the Node which serves as reference for the pose.")]
-            public UMI3DNode anchoringNode;
+            // -- case NodeBoneConstraint
+            [Header("Node constraint")]
+            [Tooltip("Node bone constraint to apply when pose is played.")]
+            public UMI3DNodeBoneConstraint nodeBoneConstraint;
+            // --
 
+            // case BoneBoneConstraint
+            private BoneBoneConstraint boneBoneConstraint;
+
+            [Header("Other bone constraint")]
             [ConstEnum(typeof(BoneType), typeof(uint)), Tooltip("Specifying the BoneType which serves as reference for the pose.")]
             public uint anchoringBone;
 
@@ -118,23 +125,48 @@ namespace umi3d.common.userCapture.pose
                 public Quaternion rotation;
             }
 
-            [Tooltip("The relative position & rotation of the pose.")]
+            [Space(10), Tooltip("The relative position & rotation of the pose.")]
             public OffsetData anchoringOffset;
 
-            public PoseAnchorDto ToPoseAnchorDto(uint rootBone)
-            {
-                PoseAnchorDto anchorDto = anchoringType switch
-                {
-                    PoseAnchoringType.Node => new NodePoseAnchorDto() { node = anchoringNode != null ? anchoringNode.Id() : default },
-                    PoseAnchoringType.Bone => new BonePoseAnchorDto() { otherBone = anchoringBone },
-                    PoseAnchoringType.Floor => new FloorPoseAnchorDto() { },
-                    _ => new PoseAnchorDto()
-                };
-                anchorDto.bone = rootBone;
-                anchorDto.position = anchoringOffset.position.Dto();
-                anchorDto.rotation = anchoringOffset.rotation.Dto();
+            // --
 
-                return anchorDto;
+            public IBoneConstraint GetBoneConstraint(GameObject component, uint rootBone, UMI3DUser user)
+            {
+                switch (anchoringType)
+                {
+                    case PoseAnchoringType.Node:
+                        {
+                            if (nodeBoneConstraint != null)
+                                return nodeBoneConstraint;
+
+                            if (component.TryGetComponent(out UMI3DNodeBoneConstraint constraint))
+                            {
+                                nodeBoneConstraint = constraint;
+                            }
+                            else
+                            {
+                                nodeBoneConstraint = component.AddComponent<UMI3DNodeBoneConstraint>();
+                                nodeBoneConstraint.Init();
+                                nodeBoneConstraint.ConstrainedBone.SetValue(rootBone);
+                                nodeBoneConstraint.ConstrainingNode.SetValue(component.GetComponent<UMI3DNode>());
+                                nodeBoneConstraint.PositionOffset.SetValue(anchoringOffset.position);
+                                nodeBoneConstraint.RotationOffset.SetValue(anchoringOffset.rotation);
+                            }
+                            return nodeBoneConstraint;
+                        }
+                    case PoseAnchoringType.Bone:
+                        {
+                            boneBoneConstraint ??= new BoneBoneConstraint();
+                            boneBoneConstraint.ConstrainedBone.SetValue(rootBone);
+                            boneBoneConstraint.ConstrainingBone.SetValue(anchoringBone);
+                            boneBoneConstraint.PositionOffset.SetValue(anchoringOffset.position);
+                            boneBoneConstraint.RotationOffset.SetValue(anchoringOffset.rotation);
+                            return boneBoneConstraint;
+
+                        }
+                    default:
+                        return null;
+                }
             }
         }
 
@@ -226,11 +258,12 @@ namespace umi3d.common.userCapture.pose
             Init();
         }
 
-        private void Init()
+        public void Init()
         {
             _PoseClip = new UMI3DAsyncProperty<PoseClip>(Id(), UMI3DPropertyKeys.PoseAnimatorPoseClip, _poseClip);
             IsAnchored = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.PoseAnimatorUseAnchoring, isAnchored);
-            AnchoringParameters = new UMI3DAsyncProperty<PoseAnchoringParameters>(Id(), UMI3DPropertyKeys.PoseAnimatorAnchoringParameters, anchoringParameters);
+            uint rootBone = PoseClip.GetValue()?.PoseResource.GetValue().Anchor.bone ?? BoneType.None;
+            AnchoringConstraint = new UMI3DAsyncProperty<IBoneConstraint>(Id(), UMI3DPropertyKeys.PoseAnimatorAnchoringConstraint, anchoringParameters.GetBoneConstraint(gameObject, rootBone, null));
             PoseApplicationDuration = new UMI3DAsyncProperty<Duration>(Id(), UMI3DPropertyKeys.PoseAnimatorApplicationDuration, duration);
             ActivationMode = new UMI3DAsyncProperty<PoseAnimatorActivationMode>(Id(), UMI3DPropertyKeys.PoseAnimatorActivationMode, activationMode);
             ActivationConditions = new UMI3DAsyncListProperty<IPoseAnimatorActivationCondition>(Id(), UMI3DPropertyKeys.PoseAnimatorActivationConditions, SerializableActivationConditions.Cast<IPoseAnimatorActivationCondition>().ToList());
@@ -245,7 +278,7 @@ namespace umi3d.common.userCapture.pose
                 id = Id(),
                 relatedNodeId = RelativeNode.Id(),
                 isAnchored = IsAnchored.GetValue(user),
-                anchor = AnchoringParameters.GetValue(user).ToPoseAnchorDto(PoseClip.GetValue(user).PoseResource.GetValue(user).Anchor.bone),
+                boneConstraintId = AnchoringConstraint.GetValue(user)?.Id() ?? default,
                 poseClipId = PoseClip.GetValue(user).Id(),
                 poseConditions = ActivationConditions.GetValue(user).Select(x => x.ToDto()).ToArray(),
                 duration = PoseApplicationDuration.GetValue(user).ToDto(),

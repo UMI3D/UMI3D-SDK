@@ -21,21 +21,17 @@ namespace umi3d.cdk.userCapture.tracking
     /// <summary>
     /// Tracker that does not physically exist.
     /// </summary>
-    public interface ISimulatedTracker
+    public class SimulatedTracker : Tracker, ISimulatedTracker
     {
-        /// <summary>
-        /// Bone type associated with the tracker.
-        /// </summary>
-        uint BoneType { get; }
+        public IController Controller => distantController;
 
-        /// <summary>
-        /// Controller corresponding to the tracker.
-        /// </summary>
-        IController Controller { get; }
+        public GameObject GameObject => this.gameObject;
 
-        /// <summary>
-        /// Gameobject reference of the tracker in the scene.
-        /// </summary>
-        GameObject GameObject { get; }
+        public void Init(uint boneType)
+        {
+            this.boneType = boneType;
+
+            CreateDistantController();
+        }
     }
 }
