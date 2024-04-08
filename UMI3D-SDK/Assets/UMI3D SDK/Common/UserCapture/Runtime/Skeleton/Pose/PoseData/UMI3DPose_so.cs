@@ -71,6 +71,11 @@ namespace umi3d.common.userCapture.pose
             };
         }
 
+        public void Init(PoseDto poseDto)
+        {
+            Init(poseDto.bones, poseDto.anchor);
+        }
+
         /// <inheritdoc/>
         public PoseDto ToPoseDto()
         {
