@@ -40,7 +40,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         private Mock<IEnvironmentManager> environmentServiceMock;
         private Mock<ISkeleton> parentSkeletonMock;
-        private Mock<ITrackerSimulator> trackerSimulatorMock;
 
         #region SetUp
 
@@ -55,8 +54,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         {
             environmentServiceMock = new();
             parentSkeletonMock = new();
-            trackerSimulatorMock = new();
-            poseSubskeleton = new PoseSubskeleton(0, parentSkeletonMock.Object, environmentServiceMock.Object, trackerSimulatorMock.Object);
+            poseSubskeleton = new PoseSubskeleton(0, parentSkeletonMock.Object, environmentServiceMock.Object);
         }
 
         [TearDown]
@@ -67,8 +65,8 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         private void ClearSingletons()
         {
-            if (PoseManager.Exists)
-                PoseManager.Destroy();
+            if (PoseService.Exists)
+                PoseService.Destroy();
         }
 
         #endregion SetUp
@@ -346,7 +344,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             Mock<ITrackedSubskeleton> trackedSubskeletonMock = new ();
             parentSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackerSimulatorMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
 
             PoseClip poseClip1 = poseClips[0];
             PoseClip poseClip2 = poseClips[1];
@@ -397,7 +394,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
             Mock<ITrackedSubskeleton> trackedSubskeletonMock = new();
             parentSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-            trackerSimulatorMock.Setup(x => x.StartTrackerSimulation(It.IsAny<PoseAnchorDto>()));
             poseSubskeleton.StartPose(poses, true);
 
             UserTrackingFrameDto frame = new();

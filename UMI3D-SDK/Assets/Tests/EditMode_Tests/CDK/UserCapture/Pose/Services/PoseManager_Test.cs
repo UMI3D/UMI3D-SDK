@@ -12,10 +12,10 @@ using umi3d.common.userCapture.pose;
 
 namespace EditMode_Tests.UserCapture.Pose.CDK
 {
-    [TestFixture, TestOf(nameof(PoseManager))]
+    [TestFixture, TestOf(nameof(PoseService))]
     public class PoseManager_Test
     {
-        private PoseManager poseManager;
+        private PoseService poseManager;
         private Mock<IEnvironmentManager> environmentServiceMock;
         private Mock<ISkeletonManager> skeletonManagerServiceMock;
         private Mock<IUMI3DClientServer> clientServerServiceMock;
@@ -36,7 +36,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             clientServerServiceMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
             clientServerServiceMock.Setup(x => x.OnRedirection).Returns(new UnityEngine.Events.UnityEvent());
 
-            poseManager = new PoseManager(skeletonManagerServiceMock.Object, environmentServiceMock.Object, clientServerServiceMock.Object);
+            poseManager = new PoseService(skeletonManagerServiceMock.Object, environmentServiceMock.Object, clientServerServiceMock.Object);
         }
 
         [TearDown]
@@ -49,15 +49,15 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
 
         private void ClearSingletons()
         {
-            if (PoseManager.Exists)
-                PoseManager.Destroy();
+            if (PoseService.Exists)
+                PoseService.Destroy();
         }
 
         #endregion SetUp
 
         #region TryActivatePoseAnimator
 
-        [Test, TestOf(nameof(PoseManager.TryActivatePoseAnimator))]
+        [Test, TestOf(nameof(PoseService.TryActivatePoseAnimator))]
         public void TryActivatePoseAnimator()
         {
             // Given
@@ -68,7 +68,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                 relatedNodeId = 1006uL
             };
 
-            Mock<PoseAnimator> poseAnimatorMock = new (dto, new PoseClip(new()), new IPoseCondition[0]);
+            Mock<PoseAnimator> poseAnimatorMock = new (dto, new PoseClip(new()), new IPoseCondition[0], null);
 
             poseAnimatorMock.Setup(x=>x.TryActivate()).Returns(true);
             IPoseAnimator pA = poseAnimatorMock.Object;
@@ -78,7 +78,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
             skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
             personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
+            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>()));
             // When
             bool result = false;
             TestDelegate action = () => result = poseManager.TryActivatePoseAnimator(UMI3DGlobalID.EnvironmentId, dto.id);
@@ -89,200 +89,5 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         }
 
         #endregion TryActivatePoseAnimator
-
-        #region PlayPoseClip
-
-        [Test]
-        public void PlayPoseClip_Null()
-        {
-            // Given
-            PoseClip poseClip = null;
-
-            // When
-            TestDelegate action = () => poseManager.PlayPoseClip(poseClip);
-
-            // Then
-            Assert.Throws<ArgumentNullException>(() => action());
-        }
-
-        [Test, TestOf(nameof(PoseManager.PlayPoseClip))]
-        public void PlayPoseClip()
-        {
-            // Given
-            PoseClipDto dto = new()
-            {
-                id = 1005uL,
-                pose = new PoseDto() { }
-            };
-            PoseClip poseClip = new PoseClip(dto);
-
-            var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
-            var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
-            skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
-            personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
-            personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-
-            // When
-            poseManager.PlayPoseClip(poseClip);
-
-            // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
-        }
-
-        [Test, TestOf(nameof(PoseManager.PlayPoseClip))]
-        public void PlayPoseClip_WithAnchoring()
-        {
-            // Given
-            PoseClipDto dto = new()
-            {
-                id = 1005uL,
-                pose = new PoseDto() 
-                {
-                    anchor = new(),
-                },
-            };
-
-            PoseClip poseClip = new PoseClip(dto);
-
-            var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
-            var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
-            skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
-            personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
-            personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-
-            // When
-            poseManager.PlayPoseClip(poseClip);
-
-            // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
-        }
-
-        [Test, TestOf(nameof(PoseManager.PlayPoseClip))]
-        public void PlayPoseClip_WithAnchoring_Specified()
-        {
-            // Given
-            PoseClipDto dto = new()
-            {
-                id = 1005uL,
-                pose = new PoseDto() { }
-            };
-            PoseClip poseClip = new PoseClip(dto);
-
-            var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
-            var trackedSubskeletonMock = new Mock<ITrackedSubskeleton>();
-            skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
-            personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>());
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
-            personalSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
-
-            PoseAnchorDto anchorDto = new();
-            // When
-            poseManager.PlayPoseClip(poseClip, anchorDto, null);
-
-            // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
-        }
-
-        [Test]
-        public void PlayPoseClip_AlreadyPlayed()
-        {
-            // Given
-            PoseClipDto dto = new()
-            {
-                id = 1005uL,
-                pose = new PoseDto() { }
-            };
-            PoseClip poseClip = new PoseClip(dto);
-
-            var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
-            skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
-            personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>() { poseClip });
-            poseSubskeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
-
-            // When
-            poseManager.PlayPoseClip(poseClip);
-
-            // Then
-            poseSubskeletonMock.Verify(x => x.StartPose(It.IsAny<PoseClip>(), false, It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()), Times.Once());
-        }
-
-        #endregion PlayPoseClip
-
-        #region StopPoseClip
-
-        [Test]
-        public void StopPoseClip_Null()
-        {
-            // Given
-            PoseClip poseClip = null;
-
-            // When
-            TestDelegate action = () => poseManager.StopPoseClip(poseClip);
-
-            // Then
-            Assert.Throws<ArgumentNullException>(() => action());
-        }
-
-        [Test, TestOf(nameof(PoseManager.StopPoseClip))]
-        public void StopPoseClip()
-        {
-            // Given
-            PoseClipDto dto = new()
-            {
-                id = 1005uL,
-                pose = new PoseDto() { }
-            };
-            PoseClip poseClip = new PoseClip(dto);
-
-            var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
-            skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
-            personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>() { poseClip });
-            poseSubskeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
-
-            // When
-            poseManager.StopPoseClip(poseClip);
-
-            // Then
-            poseSubskeletonMock.Verify(x => x.StopPose(It.IsAny<PoseClip>()), Times.Once());
-        }
-
-        [Test]
-        public void StopPoseClip_NotCurrentlyPlaying()
-        {
-            // Given
-            PoseClipDto dto = new()
-            {
-                id = 1005uL,
-                pose = new PoseDto() { }
-            };
-            PoseClip poseClip = new PoseClip(dto);
-
-            var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            var poseSubskeletonMock = new Mock<IPoseSubskeleton>();
-            skeletonManagerServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
-            personalSkeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSubskeletonMock.Object);
-            poseSubskeletonMock.Setup(x => x.AppliedPoses).Returns(new List<PoseClip>() { });
-            poseSubskeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
-
-            // When
-            poseManager.StopPoseClip(poseClip);
-
-            // Then
-            poseSubskeletonMock.Verify(x => x.StopPose(It.IsAny<PoseClip>()), Times.Never());
-        }
-
-        #endregion StopPoseClip
     }
 }

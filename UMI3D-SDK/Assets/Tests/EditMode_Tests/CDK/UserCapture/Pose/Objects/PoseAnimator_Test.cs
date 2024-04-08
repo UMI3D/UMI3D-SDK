@@ -20,7 +20,9 @@ using NUnit.Framework;
 using System;
 using System.Collections;
 using System.Linq;
+using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.tracking.constraint;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -29,6 +31,50 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
     [TestFixture, TestOf(nameof(PoseAnimator))]
     public class PoseAnimator_Test
     {
+
+        private PoseAnimator poseAnimator;
+        private Mock<ICoroutineService> coroutineServiceMock;
+        private Mock<IPoseService> poseServiceMock;
+        private Mock<ISkeletonConstraintService> trackerSimulationServiceMock;
+
+        #region Test SetUp
+
+        [SetUp]
+        public void SetUp()
+        {
+            coroutineServiceMock = new ();
+            poseServiceMock = new ();
+            trackerSimulationServiceMock = new ();
+            PoseAnimatorDto dto = new PoseAnimatorDto()
+            {
+            };
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+            poseAnimator = new PoseAnimator(dto, poseClip, new IPoseCondition[0], null, poseServiceMock.Object, trackerSimulationServiceMock.Object, coroutineServiceMock.Object);
+
+        }
+
+        #endregion Test SetUp
+
+        #region PoseAnimator
+
+        [Test]
+        public void PoseAnimator_Null()
+        {
+            // GIVEN
+            PoseAnimatorDto dto = null;
+            PoseClipDto poseClipDto = new PoseClipDto();
+            PoseClip poseClip = new(poseClipDto);
+
+            // WHEN
+            TestDelegate action = () => new PoseAnimator(dto, poseClip, new IPoseCondition[0], null, poseServiceMock.Object, trackerSimulationServiceMock.Object, coroutineServiceMock.Object);
+
+            // THEN
+            Assert.Throws<ArgumentNullException>(() => action());
+        }
+
+        #endregion PoseAnimator
+
         #region CheckConditions
 
         [Test]
@@ -43,7 +89,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseClipDto poseClipDto = new PoseClipDto();
             PoseClip poseClip = new(poseClipDto);
 
-            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, new IPoseCondition[0]);
+            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, new IPoseCondition[0], null);
 
             // WHEN
             bool check = poseOverrider.CheckConditions();
@@ -70,7 +116,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseClipDto poseClipDto = new PoseClipDto();
             PoseClip poseClip = new(poseClipDto);
 
-            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, conditions.Select(x => x.Object).ToArray());
+            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, conditions.Select(x => x.Object).ToArray(), null);
 
             // WHEN
             bool check = poseOverrider.CheckConditions();
@@ -98,7 +144,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             PoseClipDto poseClipDto = new PoseClipDto();
             PoseClip poseClip = new(poseClipDto);
 
-            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, conditions.Select(x => x.Object).ToArray());
+            PoseAnimator poseOverrider = new PoseAnimator(dto, poseClip, conditions.Select(x => x.Object).ToArray(), null);
 
             // WHEN
             bool check = poseOverrider.CheckConditions();
@@ -109,47 +155,6 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         }
 
         #endregion CheckConditions
-
-        private PoseAnimator poseAnimator;
-        private Mock<ICoroutineService> coroutineServiceMock;
-        private Mock<IPoseManager> poseServiceMock;
-
-        #region Test SetUp
-
-        [SetUp]
-        public void SetUp()
-        {
-            coroutineServiceMock = new ();
-            poseServiceMock = new ();
-            PoseAnimatorDto dto = new PoseAnimatorDto()
-            {
-            };
-            PoseClipDto poseClipDto = new PoseClipDto();
-            PoseClip poseClip = new(poseClipDto);
-            poseAnimator = new PoseAnimator(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
-
-        }
-
-        #endregion Test SetUp
-
-        #region PoseAnimator
-
-        [Test]
-        public void PoseAnimator_Null()
-        {
-            // GIVEN
-            PoseAnimatorDto dto = null;
-            PoseClipDto poseClipDto = new PoseClipDto();
-            PoseClip poseClip = new(poseClipDto);
-
-            // WHEN
-            TestDelegate action = () => new PoseAnimator(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
-
-            // THEN
-            Assert.Throws<ArgumentNullException>(() => action());
-        }
-
-        #endregion PoseAnimator
 
         #region StartWatchActivationConditions
 
@@ -200,7 +205,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             };
             PoseClipDto poseClipDto = new PoseClipDto();
             PoseClip poseClip = new(poseClipDto);
-            poseAnimator = new PoseAnimator(dto, poseClip, new IPoseCondition[0], poseServiceMock.Object, coroutineServiceMock.Object);
+            poseAnimator = new PoseAnimator(dto, poseClip, new IPoseCondition[0], null, poseServiceMock.Object, trackerSimulationServiceMock.Object, coroutineServiceMock.Object);
 
             // when
             bool success = poseAnimator.TryActivate();
