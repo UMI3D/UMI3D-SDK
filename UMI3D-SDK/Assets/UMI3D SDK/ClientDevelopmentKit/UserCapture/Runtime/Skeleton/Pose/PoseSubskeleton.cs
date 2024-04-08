@@ -20,6 +20,7 @@ using System.Collections.Generic;
 using System.Linq;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
 
@@ -141,7 +142,7 @@ namespace umi3d.cdk.userCapture.pose
             SubskeletonDescriptionInterpolationPlayer player = AddPoseClipPlayer(poseToAdd, anchorToForce ?? poseToAdd.Pose.anchor);
 
             PoseAnchorDto anchor = posePlayingControllers[poseToAdd].Anchor;
-            if (anchor != null)
+            if (anchor != null && anchor.bone is not BoneType.None)
                 trackerSimulator.StartTrackerSimulation(anchor);
 
             player.Play(parameters);
