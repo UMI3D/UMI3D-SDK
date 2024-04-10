@@ -17,9 +17,8 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections;
-using System.Collections.Generic;
-using umi3d.common.userCapture;
-using umi3d.common.userCapture.description;
+using umi3d.cdk.userCapture.tracking.constraint;
+using umi3d.cdk.userCapture.tracking;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -60,7 +59,7 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// See <see cref="PoseClipDto.pose"/>.
         /// </summary>
-        public PoseAnchorDto Anchor => dto.anchor;
+        public AbstractBoneConstraint Anchor { get; internal set; }
 
         /// <summary>
         /// See <see cref="PoseClipDto.isAnchored"/>.
@@ -109,22 +108,32 @@ namespace umi3d.cdk.userCapture.pose
         #region Dependency Injection
 
         private readonly ICoroutineService coroutineService;
-        private readonly IPoseManager poseService;
+        private readonly IPoseService poseService;
+        private readonly ISkeletonConstraintService skeletonConstraintService;
 
-        public PoseAnimator(PoseAnimatorDto dto, PoseClip poseClip, IPoseCondition[] poseConditions) : this(dto,
+        public PoseAnimator(PoseAnimatorDto dto, PoseClip poseClip, IPoseCondition[] poseConditions, AbstractBoneConstraint anchor) : this(dto,
                                                                                          poseClip,
                                                                                          poseConditions,
-                                                                                         poseService: PoseManager.Instance,
+                                                                                         anchor,
+                                                                                         poseService: PoseService.Instance,
+                                                                                         skeletonConstraintService : SkeletonConstraintService.Instance,
                                                                                          coroutineService: CoroutineManager.Instance)
         {
         }
 
-        public PoseAnimator(PoseAnimatorDto poseAnimatorDto, PoseClip poseClip, IPoseCondition[] poseConditions, IPoseManager poseService, ICoroutineService coroutineService)
+        public PoseAnimator(PoseAnimatorDto poseAnimatorDto,
+                            PoseClip poseClip,
+                            IPoseCondition[] poseConditions,
+                            AbstractBoneConstraint anchor,
+                            IPoseService poseService,
+                            ISkeletonConstraintService skeletonConstraintService,
+                            ICoroutineService coroutineService)
         {
             this.dto = poseAnimatorDto ?? throw new System.ArgumentNullException(nameof(poseAnimatorDto));
             this.PoseConditions = poseConditions ?? new IPoseCondition[0];
             this.poseClip = poseClip;
-
+            this.Anchor = anchor;
+            this.skeletonConstraintService = skeletonConstraintService;
             this.coroutineService = coroutineService;
             this.poseService = poseService;
         }
@@ -215,7 +224,12 @@ namespace umi3d.cdk.userCapture.pose
         private void Apply()
         {
             IsApplied = true;
-            poseService.PlayPoseClip(poseClip, Anchor);
+
+            poseService.PlayPoseClip(poseClip);
+
+            if (IsAnchored)
+                skeletonConstraintService.ForceActivateConstraint(Anchor);
+
             ConditionsValidated?.Invoke();
             StartWatchEndOfConditions();
         }
@@ -226,7 +240,12 @@ namespace umi3d.cdk.userCapture.pose
         private void EndApply()
         {
             IsApplied = false;
+
             poseService.StopPoseClip(poseClip);
+
+            if (IsAnchored)
+                skeletonConstraintService.ForceDeactivateConstraint(Anchor);
+
             ConditionsInvalided?.Invoke();
             StopWatchEndOfConditions();
         }
@@ -327,6 +346,6 @@ namespace umi3d.cdk.userCapture.pose
             return false;
         }
 
-        
+
     }
 }

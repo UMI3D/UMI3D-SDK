@@ -71,6 +71,7 @@ namespace umi3d.common.userCapture.pose
                         readable = UMI3DSerializer.TryRead(container, out ulong id);
                         readable &= UMI3DSerializer.TryRead(container, out ulong poseId);
                         readable &= UMI3DSerializer.TryRead(container, out bool isAnchored);
+                        readable &= UMI3DSerializer.TryRead(container, out ulong boneConstraintId);
                         readable &= UMI3DSerializer.TryRead(container, out ulong relativeNodeId);
                         readable &= UMI3DSerializer.TryRead(container, out DurationDto durationDto);
                         readable &= UMI3DSerializer.TryRead(container, out ushort activationMode);
@@ -84,6 +85,7 @@ namespace umi3d.common.userCapture.pose
                                 id = id,
                                 poseClipId = poseId,
                                 isAnchored = isAnchored,
+                                boneConstraintId = boneConstraintId,
                                 relatedNodeId = relativeNodeId,
                                 poseConditions = poseConditionDtos,
                                 duration = durationDto,
@@ -179,6 +181,7 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write(poseOverriderDto.id)
                         + UMI3DSerializer.Write(poseOverriderDto.poseClipId)
                         + UMI3DSerializer.Write(poseOverriderDto.isAnchored)
+                        + UMI3DSerializer.Write(poseOverriderDto.boneConstraintId)
                         + UMI3DSerializer.Write(poseOverriderDto.relatedNodeId)
                         + UMI3DSerializer.Write(poseOverriderDto.duration)
                         + UMI3DSerializer.Write(poseOverriderDto.activationMode)

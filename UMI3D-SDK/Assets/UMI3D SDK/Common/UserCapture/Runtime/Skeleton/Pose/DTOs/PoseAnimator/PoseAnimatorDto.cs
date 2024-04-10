@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common.userCapture.description;
+using umi3d.common.userCapture.tracking;
 
 namespace umi3d.common.userCapture.pose
 {
@@ -37,7 +38,7 @@ namespace umi3d.common.userCapture.pose
         /// <summary>
         /// Constraints applied to override the default pose anchor.
         /// </summary>
-        public PoseAnchorDto anchor { get; set; }
+        public ulong boneConstraintId { get; set; }
 
         /// <summary>
         /// Id the corresponding node in the scene

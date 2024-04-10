@@ -36,20 +36,17 @@ namespace umi3d.cdk.userCapture.pose
 
         private readonly IEnvironmentManager environmentManagerService;
         private readonly ISkeleton parentSkeleton;
-        private readonly ITrackerSimulator trackerSimulator;
 
         public PoseSubskeleton(ulong environmentId, ISkeleton parentSkeleton) : this(environmentId: environmentId,
                                                                                                                parentSkeleton: parentSkeleton,
-                                                                                                               environmentManagerService: UMI3DEnvironmentLoader.Instance,
-                                                                                                               trackerSimulator: TrackerSimulationManager.Instance.GetTrackerSimulator(parentSkeleton))
+                                                                                                               environmentManagerService: UMI3DEnvironmentLoader.Instance)
         {
         }
 
-        public PoseSubskeleton(ulong environmentId, ISkeleton parentSkeleton, IEnvironmentManager environmentManagerService, ITrackerSimulator trackerSimulator)
+        public PoseSubskeleton(ulong environmentId, ISkeleton parentSkeleton, IEnvironmentManager environmentManagerService)
         {
             this.environmentManagerService = environmentManagerService;
             this.parentSkeleton = parentSkeleton;
-            this.trackerSimulator = trackerSimulator;
             EnvironmentId = environmentId;
         }
 
@@ -66,43 +63,32 @@ namespace umi3d.cdk.userCapture.pose
 
         private const int PRIORITY = 100;
 
-        private readonly Dictionary<PoseClip, PosePlayingControllers> posePlayingControllers = new();
+        private readonly Dictionary<PoseClip, ISubskeletonDescriptionInterpolationPlayer> posePlayers = new();
 
-        private class PosePlayingControllers
-        {
-            public ISubskeletonDescriptionInterpolationPlayer Player;
-            public PoseAnchorDto Anchor;
-        }
-
-        private SubskeletonDescriptionInterpolationPlayer AddPoseClipPlayer(PoseClip poseClip, PoseAnchorDto anchor = null)
+        private SubskeletonDescriptionInterpolationPlayer CreatePoseClipPlayer(PoseClip poseClip)
         {
             SubskeletonDescriptionInterpolationPlayer posePlayer = new (poseClip, poseClip.IsInterpolable, parentSkeleton);
-            PosePlayingControllers posePlayingData = new()
-            {
-                Player = posePlayer,
-                Anchor = anchor
-            };
 
-            if (posePlayingControllers.ContainsKey(poseClip))
+            if (posePlayers.ContainsKey(poseClip))
                 RemovePoseClipPlayer(poseClip);
 
-            posePlayingControllers.Add(poseClip, posePlayingData);
+            posePlayers.Add(poseClip, posePlayer);
             return posePlayer;
         }
 
         private void RemovePoseClipPlayer(PoseClip poseClip)
         {
-            if (!posePlayingControllers.TryGetValue(poseClip, out PosePlayingControllers playingControllers))
+            if (!posePlayers.TryGetValue(poseClip, out ISubskeletonDescriptionInterpolationPlayer posePlayer))
                 return;
 
-            if (playingControllers.Player.IsPlaying)
-                playingControllers.Player.End(true);
+            if (posePlayer.IsPlaying)
+                posePlayer.End(true);
 
-            posePlayingControllers.Remove(poseClip);
+            posePlayers.Remove(poseClip);
         }
 
         /// <inheritdoc/>
-        public void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, PoseAnchorDto anchorToForce = null)
+        public void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
         {
             if (posesToAdd == null)
                 throw new ArgumentNullException(nameof(posesToAdd), $"Cannot start poses.");
@@ -111,18 +97,18 @@ namespace umi3d.cdk.userCapture.pose
                 StopAllPoses();
 
             foreach (PoseClip poseClip in posesToAdd)
-                StartPose(poseClip, parameters: parameters, anchorToForce: anchorToForce);
+                StartPose(poseClip, parameters: parameters);
         }
 
         /// <inheritdoc/>
-        public void StartPose(PoseClip poseToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, PoseAnchorDto anchorToForce = null)
+        public void StartPose(PoseClip poseToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
         {
             if (poseToAdd == null)
                 throw new ArgumentNullException(nameof(poseToAdd), $"Cannot start pose.");
 
             if (appliedPoses.Contains(poseToAdd))
             {
-                UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already playing.", DebugScope.CDK | DebugScope.UserCapture);
+                UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already playing.", DEBUG_SCOPE);
                 return;
             }
 
@@ -131,18 +117,7 @@ namespace umi3d.cdk.userCapture.pose
 
             appliedPoses.Add(poseToAdd);
 
-            if (posePlayingControllers.TryGetValue(poseToAdd, out PosePlayingControllers existingPosePlayingController)) // reset the pose player when chaining the same pose clip
-            {
-                if (existingPosePlayingController.Anchor != null)
-                    trackerSimulator.StopTrackerSimulation(existingPosePlayingController.Anchor);
-                RemovePoseClipPlayer(poseToAdd);
-            }
-
-            SubskeletonDescriptionInterpolationPlayer player = AddPoseClipPlayer(poseToAdd, anchorToForce ?? poseToAdd.Pose.anchor);
-
-            PoseAnchorDto anchor = posePlayingControllers[poseToAdd].Anchor;
-            if (anchor != null)
-                trackerSimulator.StartTrackerSimulation(anchor);
+            SubskeletonDescriptionInterpolationPlayer player = CreatePoseClipPlayer(poseToAdd);
 
             player.Play(parameters);
         }
@@ -162,14 +137,11 @@ namespace umi3d.cdk.userCapture.pose
             if (poseToStop == null)
                 return;
 
-            if (!posePlayingControllers.TryGetValue(poseToStop, out PosePlayingControllers posePlayer))
+            if (!posePlayers.TryGetValue(poseToStop, out ISubskeletonDescriptionInterpolationPlayer posePlayer))
                 return;
 
-            posePlayer.Player.End();
+            posePlayer.End();
             appliedPoses.Remove(poseToStop);
-
-            if (posePlayer.Anchor != null)
-                trackerSimulator.StopTrackerSimulation(posePlayer.Anchor);
         }
 
         /// <inheritdoc/>
@@ -199,17 +171,17 @@ namespace umi3d.cdk.userCapture.pose
             Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
 
             // merge poses from pose players
-            foreach (var (poseClip, posePlayingController) in posePlayingControllers)
+            foreach (var (poseClip, posePlayer) in posePlayers)
             {
-                if (!posePlayingController.Player.IsPlaying)
+                if (!posePlayer.IsPlaying)
                     continue;
 
-                SubSkeletonPoseDto subSkeletonPose = posePlayingController.Player.GetPose(hierarchy);
+                SubSkeletonPoseDto subSkeletonPose = posePlayer.GetPose(hierarchy);
                 Dictionary<uint, SubSkeletonBoneDto> subskeletonBonePose = subSkeletonPose.bones.ToDictionary(x => x.boneType);
 
                 foreach (BoneDto bone in poseClip.Bones)
                 {
-                    if (bonePoses.ContainsKey(bone.boneType) && posePlayingController.Player.IsEnding) // priority to non-ending poses
+                    if (bonePoses.ContainsKey(bone.boneType) && posePlayer.IsEnding) // priority to non-ending poses
                         continue;
 
                     bonePoses[bone.boneType] = subskeletonBonePose[bone.boneType];

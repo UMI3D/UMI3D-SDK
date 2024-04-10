@@ -153,6 +153,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   parameters: {fileID: 11400000, guid: e90d847ca7b97a6458f82cf6f19fc85b, type: 2}
+  navigation: {fileID: 0}
 --- !u!4 &1233126523
 Transform:
   m_ObjectHideFlags: 0

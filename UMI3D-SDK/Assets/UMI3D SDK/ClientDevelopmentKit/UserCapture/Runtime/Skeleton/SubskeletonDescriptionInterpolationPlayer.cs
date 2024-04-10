@@ -134,6 +134,8 @@ namespace umi3d.cdk.userCapture
 
         private Coroutine endRoutine;
 
+
+
         /// <summary>
         /// Coroutine handling the waiting for the ending phase.
         /// </summary>
@@ -180,23 +182,26 @@ namespace umi3d.cdk.userCapture
         protected SubSkeletonPoseDto InterpolatePose(SubSkeletonPoseDto pose)
         {
             PoseAnchorDto anchor = pose.boneAnchor;
+
+            // manages Hips position interpolation if it is the anchor
             if (anchor != null && anchor.bone == BoneType.Hips)
             {
-                Vector3 hipsPosition = new(0, Skeleton.Bones[BoneType.Hips].Position.y, 0);
-                if (!IsEnding)
+                Vector3 skeletonHipsPosition = new(0, Skeleton.Bones[BoneType.Hips].Position.y, 0);
+                if (!IsEnding) // start transition
                 {
                     float tEnterPhase = (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
-                    anchor.position = Vector3.Lerp(hipsPosition, anchor.position.Struct(), tEnterPhase).Dto();
-                    anchor.rotation = Quaternion.Slerp(Skeleton.Bones[anchor.bone].Rotation, anchor.rotation.Quaternion(), tEnterPhase).Dto();
+                    anchor.position = Vector3.Lerp(skeletonHipsPosition, anchor.position.Struct(), tEnterPhase).Dto();
+                    anchor.rotation = Quaternion.Slerp(Skeleton.Bones[BoneType.Hips].Rotation, anchor.rotation.Quaternion(), tEnterPhase).Dto();
                 }
-                else
+                else // end transition
                 {
                     float tEndPhase = (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
-                    anchor.position = Vector3.Lerp(anchor.position.Struct(), hipsPosition, tEndPhase).Dto();
-                    anchor.rotation = Quaternion.Slerp(anchor.rotation.Quaternion(), Skeleton.Bones[anchor.bone].Rotation, tEndPhase).Dto();
+                    anchor.position = Vector3.Lerp(anchor.position.Struct(), skeletonHipsPosition, tEndPhase).Dto();
+                    anchor.rotation = Quaternion.Slerp(anchor.rotation.Quaternion(), Skeleton.Bones[BoneType.Hips].Rotation, tEndPhase).Dto();
                 }
             }
 
+            // manages local rotation interpolation for all bones of the poses
             Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
             foreach (SubSkeletonBoneDto bonePose in pose.bones)
             {
@@ -205,9 +210,9 @@ namespace umi3d.cdk.userCapture
 
                 if (ShouldInterpolate && bonePose.boneType != BoneType.Hips && bonePose.boneType != pose.boneAnchor?.bone)
                 {
-                    if (!IsEnding)
+                    if (!IsEnding) // start transition
                         bonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[bonePose.boneType].LocalRotation, bonePose.localRotation.Quaternion(), (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration).Dto();
-                    else
+                    else // end transition
                         bonePose.localRotation = Quaternion.Slerp(bonePose.localRotation.Quaternion(), Skeleton.Bones[bonePose.boneType].LocalRotation, (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration).Dto();
                 }
 

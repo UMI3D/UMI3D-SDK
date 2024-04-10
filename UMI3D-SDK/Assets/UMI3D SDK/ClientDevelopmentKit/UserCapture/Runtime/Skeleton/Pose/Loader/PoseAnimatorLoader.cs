@@ -14,12 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 
+using umi3d.cdk.userCapture.tracking.constraint;
 using umi3d.common;
-using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 
 namespace umi3d.cdk.userCapture.pose
@@ -68,17 +67,18 @@ namespace umi3d.cdk.userCapture.pose
             IPoseCondition[] poseConditions = await Task.WhenAll(dto.poseConditions
                                                                 .Select(x => LoadPoseCondition(environmentId, x)));
 
-            UMI3DEntityInstance poseClipInstance = await loadingService.WaitUntilEntityLoaded(environmentId, dto.poseClipId, null);
-            PoseClip poseClip = (PoseClip)poseClipInstance.Object;
+            PoseClip poseClip = await loadingService.WaitUntilEntityLoaded<PoseClip>(environmentId, dto.poseClipId, null);
 
-            PoseAnimator poseAnimator = new PoseAnimator(dto, poseClip, poseConditions.Where(x => x is not null).ToArray());
+            AbstractBoneConstraint boneConstraint = null;
+            if (dto.boneConstraintId != default)
+                boneConstraint = await loadingService.WaitUntilEntityLoaded<AbstractBoneConstraint>(environmentId, dto.boneConstraintId, null);
 
+            PoseAnimator poseAnimator = new PoseAnimator(dto, poseClip, poseConditions.Where(x => x is not null).ToArray(), boneConstraint);
 
             if (poseAnimator.ActivationMode == (ushort)PoseAnimatorActivationMode.AUTO)
                 poseAnimator.StartWatchActivationConditions();
 
             environmentService.RegisterEntity(environmentId, dto.id, dto, poseAnimator, () => Delete(environmentId, dto.id)).NotifyLoaded();
-
             return poseAnimator;
         }
 
@@ -142,7 +142,7 @@ namespace umi3d.cdk.userCapture.pose
                             instance = environmentService.RegisterEntity(environmentId, environmentPoseConditionDto.Id, environmentPoseConditionDto, new EnvironmentPoseCondition(environmentPoseConditionDto));
                             instance.NotifyLoaded();
                         }
-                        
+
                         return (EnvironmentPoseCondition)instance.Object;
                     }
 
@@ -176,8 +176,8 @@ namespace umi3d.cdk.userCapture.pose
                     SetUseAnchoring(value.environmentId, dto.id, UMI3DSerializer.Read<bool>(value.container));
                     break;
 
-                case UMI3DPropertyKeys.PoseAnimatorAnchoringParameters:
-                    SetAnchoring(value.environmentId, dto.id, UMI3DSerializer.Read<PoseAnchorDto>(value.container));
+                case UMI3DPropertyKeys.PoseAnimatorAnchoringConstraint:
+                    SetAnchoring(value.environmentId, dto.id, UMI3DSerializer.Read<ulong>(value.container));
                     break;
 
                 case UMI3DPropertyKeys.PoseAnimatorActivationConditions:
@@ -213,8 +213,8 @@ namespace umi3d.cdk.userCapture.pose
                     SetUseAnchoring(value.environmentId, dto.id, (bool)value.property.value);
                     break;
 
-                case UMI3DPropertyKeys.PoseAnimatorAnchoringParameters:
-                    SetAnchoring(value.environmentId, dto.id, (PoseAnchorDto)(value.property.value));
+                case UMI3DPropertyKeys.PoseAnimatorAnchoringConstraint:
+                    SetAnchoring(value.environmentId, dto.id, (ulong)(value.property.value));
                     break;
 
                 case UMI3DPropertyKeys.PoseAnimatorActivationConditions:
@@ -272,12 +272,22 @@ namespace umi3d.cdk.userCapture.pose
             poseAnimator.Dto.isAnchored = isAnchored;
         }
 
-        protected void SetAnchoring(ulong environmentId, ulong entityId, PoseAnchorDto anchor)
+        protected void SetAnchoring(ulong environmentId, ulong entityId, ulong boneConstraintId)
         {
             if (!environmentService.TryGetEntity(environmentId, entityId, out PoseAnimator poseAnimator))
+            {
+                UMI3DLogger.LogWarning($"Cannot set new bone constraint for pose animator {poseAnimator.Id}. Pose animator {poseAnimator.Id} does not exist.", DEBUG_SCOPE);
                 return;
+            }
 
-            poseAnimator.Dto.anchor = anchor;
+            if (!environmentService.TryGetEntity(environmentId, entityId, out AbstractBoneConstraint boneConstraint))
+            {
+                UMI3DLogger.LogWarning($"Cannot set new bone constraint for pose animator {poseAnimator.Id}. Bone constraint {boneConstraintId} does not exist.", DEBUG_SCOPE);
+                return;
+            }
+
+            poseAnimator.Dto.boneConstraintId = boneConstraintId;
+            poseAnimator.Anchor = boneConstraint;
         }
 
         protected async Task SetActivationConditions(ulong environmentId, ulong entityId, AbstractPoseConditionDto[] newPoseConditions)

@@ -35,8 +35,10 @@ namespace umi3d.common.userCapture.description
         {
             if (typeof(T) == typeof(BoneDto))
             {
-                if (UMI3DSerializer.TryRead(container, out uint type)
-                    && UMI3DSerializer.TryRead(container, out Vector4Dto rot))
+                readable = UMI3DSerializer.TryRead(container, out uint type);
+                readable &= UMI3DSerializer.TryRead(container, out Vector4Dto rot);
+
+                if (readable)
                 {
                     var bone = new BoneDto() { boneType = type, rotation = rot };
 
@@ -44,6 +46,9 @@ namespace umi3d.common.userCapture.description
                     readable = true;
                     return true;
                 }
+
+                result = default;
+                return false;
             }
 
             result = default(T);

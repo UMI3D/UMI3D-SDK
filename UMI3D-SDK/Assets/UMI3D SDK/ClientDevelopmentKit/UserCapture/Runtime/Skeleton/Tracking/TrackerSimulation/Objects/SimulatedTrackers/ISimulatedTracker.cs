@@ -14,25 +14,28 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
+    /// <summary>
+    /// Tracker that does not physically exist.
+    /// </summary>
     public interface ISimulatedTracker
     {
+        /// <summary>
+        /// Bone type associated with the tracker.
+        /// </summary>
         uint BoneType { get; }
 
-        Vector3 PositionOffset { get; }
-
-        Quaternion RotationOffset { get; }
-
+        /// <summary>
+        /// Controller corresponding to the tracker.
+        /// </summary>
         IController Controller { get; }
+
+        /// <summary>
+        /// Gameobject reference of the tracker in the scene.
+        /// </summary>
         GameObject GameObject { get; }
-
-        event Action<ISimulatedTracker> Destroyed;
-
-        (Vector3 position, Quaternion rotation) SimulatePosition();
     }
 }
