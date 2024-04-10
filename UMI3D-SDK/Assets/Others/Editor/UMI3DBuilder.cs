@@ -53,7 +53,7 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
                 "VersionData",
                 Application.dataPath + @"\UMI3D SDK\Common\Core\Runtime\UMI3DVersion.cs",
                 "I.I.s.yyMMdd",
-                () => UMI3DVersion.version,
+                (text) => UMI3DVersion.version,
                 ("major", (s) => UMI3DVersion.major),
                 ("minor", (s) => UMI3DVersion.minor),
                 ("status", (s) => UMI3DVersion.status),
@@ -138,8 +138,12 @@ public class UMI3DBuilder : InitedWindow<UMI3DBuilder>
         if (GUILayout.Button($"Build step by step and push on {data.data.Branch}"))
             CleanComputeBuildStepByStep(true);
         EditorGUILayout.EndHorizontal();
+        EditorGUILayout.BeginHorizontal();
         if (GUILayout.Button($"Push on {data.data.Branch}"))
             CleanComputeBuild(true, false);
+        if (GUILayout.Button($"Don't Push"))
+            CleanComputeBuild(false, false);
+        EditorGUILayout.EndHorizontal();
     }
     protected virtual void DrawBuildingStepByStep()
     {
