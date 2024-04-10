@@ -27,6 +27,11 @@ namespace umi3d.common.userCapture.tracking
     public class UserTrackingFrameDto : AbstractBrowserRequestDto
     {
         /// <summary>
+        /// Id of the environment or distant environment
+        /// </summary>
+        public ulong environmentId { get; set; }
+
+        /// <summary>
         /// User id of the tracked user
         /// </summary>
         public ulong userId { get; set; }

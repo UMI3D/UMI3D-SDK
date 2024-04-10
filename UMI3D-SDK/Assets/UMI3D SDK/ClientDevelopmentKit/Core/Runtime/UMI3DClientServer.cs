@@ -168,18 +168,18 @@ namespace umi3d.cdk
         }
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
-        public static async Task<LoadEntityDto> GetEntity(List<ulong> ids)
+        public static async Task<LoadEntityDto> GetEntity(ulong environmentId, List<ulong> ids)
         {
             if (Exists)
             {
-                LoadEntityDto dto = await Instance._GetEntity(ids);
+                LoadEntityDto dto = await Instance._GetEntity(environmentId, ids);
                 return (dto);
             }
             else
                 throw new Exception($"Instance of UMI3DClientServer is null");
         }
 
-        protected virtual Task<LoadEntityDto> _GetEntity(List<ulong> id)
+        protected virtual Task<LoadEntityDto> _GetEntity(ulong environmentId, List<ulong> ids)
         {
             throw new NotImplementedException();
         }

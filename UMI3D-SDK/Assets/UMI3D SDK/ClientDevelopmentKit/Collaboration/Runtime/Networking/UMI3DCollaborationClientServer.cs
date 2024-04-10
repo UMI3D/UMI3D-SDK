@@ -23,6 +23,7 @@ using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.userCapture;
+using UnityEngine;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -48,6 +49,7 @@ namespace umi3d.cdk.collaboration
         public static PendingTransactionDto transactionPending = null;
 
         private static UMI3DWorldControllerClient worldControllerClient;
+        private static UMI3DWorldControllerClient connectingWorldControllerClient;
         private static UMI3DEnvironmentClient environmentClient;
 
         public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
@@ -168,8 +170,8 @@ namespace umi3d.cdk.collaboration
                 if (Exists)
                 {
                     Instance.status = StatusType.AWAY;
-                    UMI3DWorldControllerClient wc = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
-                    if (await wc.Connect())
+                    connectingWorldControllerClient = worldControllerClient?.Redirection(redirection) ?? new UMI3DWorldControllerClient(redirection);
+                    if (await connectingWorldControllerClient.Connect())
                     {
                         Instance.OnRedirection.Invoke();
                         loadingEntities.Clear();
@@ -190,8 +192,8 @@ namespace umi3d.cdk.collaboration
                         MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joinning Environment");
                         onProgress.Invoke(progress);
 
-                        worldControllerClient = wc;
-                        environmentClient = await wc.ConnectToEnvironment(progress);
+                        worldControllerClient = connectingWorldControllerClient;
+                        environmentClient = await connectingWorldControllerClient.ConnectToEnvironment(progress);
                         environmentClient.status = StatusType.CREATED;
                     }
                 }
@@ -343,7 +345,7 @@ namespace umi3d.cdk.collaboration
         public static async Task<MediaDto> GetMedia(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             UMI3DLogger.Log($"Get media at {url}", scope | DebugScope.Connection);
-            return await HttpClient.SendGetMedia(url, shouldTryAgain);
+            return await EnvironmentHttpClient.SendGetMedia(url, shouldTryAgain);
         }
 
         /// <summary>
@@ -384,11 +386,11 @@ namespace umi3d.cdk.collaboration
         protected override async Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader)
         {
             UMI3DLogger.Log($"GetFile {url}", scope);
-            return await (environmentClient?.GetFile(url, useParameterInsteadOfHeader) ?? Task.FromResult<byte[]>(null));
+            return await (environmentClient?.GetFile(url, useParameterInsteadOfHeader) ?? connectingWorldControllerClient?.GetFile(url, useParameterInsteadOfHeader) ?? Task.FromResult<byte[]>(null));
         }
 
         /// <inheritdoc/>
-        protected override async Task<LoadEntityDto> _GetEntity(List<ulong> ids)
+        protected override async Task<LoadEntityDto> _GetEntity(ulong environmentId, List<ulong> ids)
         {
             List<ulong> idsToSend = new List<ulong>();
             foreach (ulong id in ids)
@@ -409,7 +411,7 @@ namespace umi3d.cdk.collaboration
             try
             {
                 result = idsToSend.Count > 0 ?
-                    await (environmentClient?.GetEntity(idsToSend) ?? Task.FromResult<LoadEntityDto>(null))
+                    await (environmentClient?.GetEntity(environmentId, idsToSend) ?? Task.FromResult<LoadEntityDto>(null))
                     : new LoadEntityDto() { entities = new List<IEntity>() };
             }
             finally

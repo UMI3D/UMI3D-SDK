@@ -33,12 +33,12 @@ namespace umi3d.edk.binding
         /// <summary>
         /// Bindings, indexed by id of the bound node.
         /// </summary>
-        public readonly UMI3DAsyncDictionnaryProperty<ulong, AbstractBinding> bindings = new(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.Bindings, new());
+        public readonly UMI3DAsyncDictionnaryProperty<ulong, AbstractBinding> bindings = new(UMI3DGlobalID.EnvironmentId, UMI3DPropertyKeys.Bindings, new());
 
         /// <summary>
         /// Are bindings computations enabled on the browser of the user?
         /// </summary>
-        public readonly UMI3DAsyncProperty<bool> areBindingsEnabled = new(UMI3DGlobalID.EnvironementId, UMI3DPropertyKeys.ActiveBindings, true);
+        public readonly UMI3DAsyncProperty<bool> areBindingsEnabled = new(UMI3DGlobalID.EnvironmentId, UMI3DPropertyKeys.ActiveBindings, true);
 
         #region DI
 
@@ -71,8 +71,19 @@ namespace umi3d.edk.binding
         protected void Init()
         {
             umi3dServerService.OnUserActive.AddListener(DispatchBindings);
+            umi3dServerService.OnUserRefreshed.AddListener(ReDispatchBindings);
             umi3dServerService.OnUserMissing.AddListener(CleanBindings);
             umi3dServerService.OnUserLeave.AddListener(CleanBindings);
+        }
+
+
+        protected virtual void ReDispatchBindings(UMI3DUser user)
+        {
+            if (usersWithBindingsReceived.Contains(user))
+            {
+                usersWithBindingsReceived.Remove(user);
+                DispatchBindings(user);
+            }
         }
 
         /// <summary>

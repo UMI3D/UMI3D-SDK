@@ -22,7 +22,7 @@ namespace umi3d.edk.collaboration
 {
     public abstract class WebServiceMethodAttribute : System.Attribute
     {
-        public enum Security { Public, Private, PrivateAllowOldToken }
+        public enum Security { Public, Private, PrivateAllowResourcesOnly, PrivateAllowOldToken }
         public enum Type { Method, Directory }
 
         public string path = null;

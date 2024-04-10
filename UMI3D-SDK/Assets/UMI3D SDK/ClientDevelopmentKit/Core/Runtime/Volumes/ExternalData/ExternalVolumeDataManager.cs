@@ -73,7 +73,7 @@ namespace umi3d.cdk.volumes
             onVolumeDelete.RemoveListener(callback);
         }
 
-        public async Task<AbstractVolumeCell> CreateOBJVolume(OBJVolumeDto dto)
+        public async Task<AbstractVolumeCell> CreateOBJVolume(ulong environmentId,OBJVolumeDto dto)
         {
             var loader = new ObjMeshDtoLoader();
 
@@ -82,11 +82,12 @@ namespace umi3d.cdk.volumes
             var cell = new OBJVolumeCell()
             {
                 id = dto.id,
+                environmentId = environmentId,
                 meshes = (obj as GameObject).GetComponentsInChildren<MeshFilter>().ToList().ConvertAll(filter => filter.mesh),
                 parts = new List<GameObject>() { obj as GameObject }
             };
 
-            UMI3DNodeInstance root = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId);
+            UMI3DNodeInstance root = UMI3DEnvironmentLoader.GetNode(environmentId, dto.rootNodeId);
 
             if (root == null)
                 UMI3DLogger.LogError("Root node of a Volume must not be null : node with id " + dto.rootNodeId + " not found.", DebugScope.CDK);

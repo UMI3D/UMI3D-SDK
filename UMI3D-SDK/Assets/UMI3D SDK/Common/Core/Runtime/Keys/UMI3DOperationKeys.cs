@@ -97,7 +97,7 @@ namespace umi3d.common
         public const uint EmoteRequest = 10020;
 
         public const uint ValidatePoseConditionRequest = 10030;
-        public const uint ActivatePoseAnimatorRequest = 10031;
+        public const uint CheckPoseAnimatorConditionsRequest = 10031;
 
         public const uint VolumeUserTransit = 10100;
 

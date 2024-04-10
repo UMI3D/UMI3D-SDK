@@ -76,9 +76,9 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.LogError($"501 {description}", scope);
         }
 
-        public virtual bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
+        public virtual bool isAuthenticated(HttpListenerRequest request, bool allowOldToken, bool allowResourceOnly)
         {
-            return UMI3DCollaborationServer.IsAuthenticated(request, allowOldToken);
+            return UMI3DCollaborationServer.IsAuthenticated(request, allowOldToken, allowResourceOnly);
         }
         #endregion
     }

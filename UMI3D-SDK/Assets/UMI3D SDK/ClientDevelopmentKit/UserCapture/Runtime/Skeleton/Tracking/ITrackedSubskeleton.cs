@@ -26,7 +26,12 @@ namespace umi3d.cdk.userCapture.tracking
         Camera ViewPoint { get; }
         Transform Hips { get; }
         IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones { get; }
+        IReadOnlyDictionary<uint, IController> Controllers { get; }
+
+        void RemoveController(uint boneType);
 
         UserTrackingBoneDto GetController(uint boneType);
+
+        void ReplaceController(IController newController, bool saveOldController = false);
     }
 }

@@ -43,5 +43,10 @@ namespace umi3d.common.userCapture.animation
         /// </summary>
         /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
         public SkeletonAnimationParameterDto[] animatorSelfTrackedParameters { get; set; }
+
+        /// <summary>
+        /// True if the animation could be interpolated at start and end.
+        /// </summary>
+        public bool IsInterpolable { get; set; }
     }
 }

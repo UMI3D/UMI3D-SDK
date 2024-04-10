@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 #if UNITY_EDITOR
+using Newtonsoft.Json;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -29,69 +30,74 @@ namespace umi3d.common.userCapture.pose.editor
     /// </summary>
     public class PoseSaverService
     {
-        /// <summary>
-        /// Create a new pose.
-        /// </summary>
-        /// <param name="skeleton"></param>
-        public void CreatePose(PoseEditorSkeleton skeleton)
+        private const string DEFAULT_PATH = "Assets";
+
+        private static readonly JsonSerializerSettings serializationSettings = new JsonSerializerSettings()
         {
-            skeleton.currentPose = (UMI3DPose_so)ScriptableObject.CreateInstance(typeof(UMI3DPose_so));
-            skeleton.currentPose.name = "Unnamed pose";
-        }
+            MissingMemberHandling = MissingMemberHandling.Error,
+            TypeNameHandling = TypeNameHandling.None
+        };
 
         /// <summary>
-        /// Saves a scriptable object at given path
+        /// Saves a .umi3dpose asset at given path.
+        /// </summary>
         /// --> if you got many root on your skeleton it wil generate a scriptable object per root
         /// --> keep in mind that its normal that is you add a parent root you delete all the children root a
         ///         and that when you add a children root it dosent touch the parent once, (this last feature has to be changed at somepoint)
-        /// </summary>
-        public void SavePose(PoseEditorSkeleton skeleton, string path, string name, out bool success)
+        public void SavePose(IEnumerable<PoseSetterBoneComponent> roots, string filePath, out bool success)
         {
-            if (path == string.Empty)
-                path = "Assets";
+            if (roots is null)
+                throw new System.ArgumentNullException(nameof(roots));
 
-            var roots = skeleton.boneComponents.Where(bc => bc.isRoot);
+            if (filePath is null || filePath == string.Empty)
+                filePath = Path.ChangeExtension(Path.Combine(DEFAULT_PATH, PoseEditorParameters.DEFAULT_POSE_NAME), PoseEditorParameters.POSE_FORMAT_EXTENSION);
 
-            foreach (PoseSetterBoneComponent r in roots)
+            foreach (PoseSetterBoneComponent rootBoneComponent in roots)
             {
-                r.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
-                List<BoneDto> bonsPoseSos = new();
-                var pose_So = (UMI3DPose_so)ScriptableObject.CreateInstance(typeof(UMI3DPose_so));
-                pose_So.name = name;
+                Quaternion originalRootRotation = rootBoneComponent.transform.rotation;
+                rootBoneComponent.transform.rotation = Quaternion.identity; // security to make sure that the positions and rotation are right
 
-                string fileName = roots.Count() == 1 ? name : $"{name}_from_{BoneTypeHelper.GetBoneName(r.BoneType)}";
-                string completeName = System.IO.Path.ChangeExtension(fileName, ".asset");
-                AssetDatabase.CreateAsset(pose_So, System.IO.Path.Combine(path, completeName));
+                PoseDto poseDto = new PoseDto
+                {
+                    anchor = new PoseAnchorDto()
+                    {
+                        bone = rootBoneComponent.BoneType,
+                        position = rootBoneComponent.transform.position.Dto(),
+                        rotation = rootBoneComponent.transform.rotation.Dto()
+                    },
 
-                List<PoseSetterBoneComponent> bonesToSave = r.GetComponentsInChildren<PoseSetterBoneComponent>()
-                                                             .Where(bc => bc.BoneType != BoneType.None)
-                                                             .ToList();
+                    bones = rootBoneComponent.GetComponentsInChildren<PoseSetterBoneComponent>()
+                                    .Where(bc => bc.BoneType != BoneType.None)
+                                    .Skip(1) // skip root
+                                    .Select(bc =>
+                                    {
+                                        Vector4Dto boneRotation = bc.transform.rotation.Dto();
+                                        return new BoneDto()
+                                        {
+                                            boneType = bc.BoneType,
+                                            rotation = boneRotation
+                                        };
+                                    }).ToList()
+                };
 
-                Vector4Dto rootRotation = r.transform.rotation.Dto();
-                PoseAnchorDto bonePoseDto = CreateBoneAnchor(rootRotation, r);
-                bonesToSave.RemoveAt(0);
+                rootBoneComponent.transform.rotation = originalRootRotation; // put back rotation before saving
 
+                string savePath = filePath;
+                if (roots.Count() > 1)
+                {
+                    savePath = Path.Combine(Path.GetDirectoryName(savePath), Path.GetFileNameWithoutExtension(savePath) + $"_from_{BoneTypeHelper.GetBoneName(rootBoneComponent.BoneType)}");
+                    savePath = Path.ChangeExtension(savePath, PoseEditorParameters.POSE_FORMAT_EXTENSION);
+                }
+
+                // write the string in a file IO
                 try
                 {
-                    bonesToSave.ForEach(bc =>
-                    {
-                        Vector4Dto boneRotation = bc.transform.rotation.Dto();
-                        var bonePose_So = new BoneDto()
-                        {
-                            boneType = bc.BoneType,
-                            rotation = boneRotation
-                        };
+                    string jsonString = JsonConvert.SerializeObject(poseDto, Formatting.Indented, serializationSettings);
+                    File.WriteAllText(savePath, jsonString);
 
-                        AssetDatabase.SaveAssets();
-
-                        bonsPoseSos.Add(bonePose_So);
-                    });
-
-                    pose_So.Init(bonsPoseSos, bonePoseDto);
-                    EditorUtility.SetDirty(pose_So);
-                    AssetDatabase.SaveAssets();
+                    AssetDatabase.SaveAssets(); // import the json as a text asset if within project
                 }
-                catch (IOException e)
+                catch (System.Exception e) when (e is IOException or JsonSerializationException)
                 {
                     Debug.LogException(e);
                     success = false;
@@ -103,43 +109,31 @@ namespace umi3d.common.userCapture.pose.editor
         }
 
         /// <summary>
-        /// Load one scriptable object and apply all bone pose to the current skeleton in scene view
+        /// Load one pose asset and apply all bone pose to the current skeleton in scene view
         /// </summary>
-        public void LoadPose(PoseEditorSkeleton skeleton, UMI3DPose_so pose, out bool success)
+        public PoseDto LoadPose(string path, out bool success)
         {
-            if (skeleton.boneComponents?.Count == 0)
+            success = false;
+
+            if (path is null)
+                throw new System.ArgumentNullException(nameof(path));
+
+            try
             {
-                Debug.Log($"<color=red>A skeleton with rigs is expected.</color>");
-                success = false;
-                return;
+                string fileContent = File.ReadAllText(path);
+                PoseDto pose = JsonConvert.DeserializeObject<PoseDto>(fileContent, serializationSettings);
+                
+                if (pose is null)
+                    return null;
+
+                success = true;
+                return pose;
             }
-
-            if (pose == null)
+            catch (System.Exception e) when (e is IOException or JsonSerializationException)
             {
-                Debug.Log($"<color=red>An UMI3DPose_so is expected.</color>");
-                success = false;
-                return;
+                Debug.LogException(e);
+                return null;
             }
-
-            skeleton.currentPose = pose;
-            success = true;
-        }
-
-
-        private PoseAnchorDto CreateBoneAnchor(Vector4Dto rootRotation, PoseSetterBoneComponent r)
-        {
-            var bonePoseDto = new PoseAnchorDto()
-            {
-                bone = r.BoneType,
-                position = r.transform.position.Dto(),
-                rotation = rootRotation
-            };
-            return new NodePoseAnchorDto()
-            {
-                bone = bonePoseDto.bone,
-                position = bonePoseDto.position,
-                rotation = bonePoseDto.rotation
-            };
         }
     }
 }

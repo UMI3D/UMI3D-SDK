@@ -48,7 +48,7 @@ namespace umi3d.cdk
                 throw (new Umi3dException("nodeDto should not be null"));
             }
 
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(nodeDto.modelId, data.tokens);
+            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(data.environmentId, nodeDto.modelId, data.tokens);
             LoadSubModel(e, data.node, nodeDto);
         }
 
@@ -58,7 +58,7 @@ namespace umi3d.cdk
             if (entity is UMI3DNodeInstance modelNodeInstance)
             {
                 var modelDto = (GlTFNodeDto)modelNodeInstance.dto;
-                UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(subDto.id);
+                UMI3DNodeInstance nodeInstance = UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.id);
 
                 FileDto file = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(((UMI3DMeshNodeDto)modelDto.extensions.umi3d).mesh.variants);
 
@@ -79,18 +79,18 @@ namespace umi3d.cdk
                             instance.transform.localEulerAngles += new Vector3(0, 180, 0);
                         }
 
-                        SetCollider(subDto.id, UMI3DEnvironmentLoader.GetNode(subDto.id), subDto.colliderDto);
+                        SetCollider(subDto.id, UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.id), subDto.colliderDto);
 
-                        UMI3DEnvironmentLoader.GetNode(subDto.modelId).subNodeInstances.Add(nodeInstance);
+                        UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.modelId).subNodeInstances.Add(nodeInstance);
                         Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
 
                         if (renderers != null)
                         {
-                            UMI3DEnvironmentLoader.GetNode(subDto.modelId).renderers.AddRange(renderers);
-                            UMI3DEnvironmentLoader.GetNode(subDto.id).renderers.AddRange(renderers);
+                            UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.modelId).renderers.AddRange(renderers);
+                            UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.id).renderers.AddRange(renderers);
                         }
 
-                        if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(subDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
+                        if (rootDto.applyCustomMaterial && !((SubModelDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.id).dto).extensions.umi3d).ignoreModelMaterialOverride)
                         {
                             // apply root model override
                             SetMaterialOverided(rootDto, nodeInstance);
@@ -108,10 +108,34 @@ namespace umi3d.cdk
                             renderer.receiveShadows = subDto.receiveShadow;
                         }
 
-                        UpdateLightmapReferences(rootDto.id, renderers, o as GameObject);
+                        UpdateLightmapReferences(entity.EnvironmentId, rootDto.id, renderers, o as GameObject);
 
                         nodeInstance.IsTraversable = subDto.isTraversable;
                         nodeInstance.IsPartOfNavmesh = subDto.isPartOfNavmesh;
+
+                        int? shapeCount = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>()?.sharedMesh?.blendShapeCount;
+                        if (shapeCount != null && shapeCount > 0)
+                        {
+                            SkinnedMeshRenderer skm = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+                            nodeInstance.skmToUpdateWithBlendShapes = new List<SkinnedMeshRenderer>();
+
+                            if (skm.sharedMesh.blendShapeCount > 0)
+                            {
+
+                                nodeInstance.skmToUpdateWithBlendShapes.Add(skm);
+                                try
+                                {
+                                    for (int i = 0; i < skm.sharedMesh.blendShapeCount; i++)
+                                    {
+                                        skm.SetBlendShapeWeight(i, subDto.blendShapesValues[i]);
+                                    }
+                                }
+                                catch (Exception ex)
+                                {
+                                    Debug.LogError("Cannot apply blendshape values. " + ex);
+                                }
+                            }
+                        }
                     });
 
                 }
@@ -131,9 +155,9 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="rooId"></param>
         /// <param name="renderers"></param>
-        protected void UpdateLightmapReferences(ulong rooId, Renderer[] renderers, GameObject o)
+        protected void UpdateLightmapReferences(ulong environmentId, ulong rooId, Renderer[] renderers, GameObject o)
         {
-            var lightmapData = UMI3DEnvironmentLoader.GetNode(rooId)?.prefabLightmapData;
+            var lightmapData = UMI3DEnvironmentLoader.GetNode(environmentId, rooId)?.prefabLightmapData;
 
             if (lightmapData == null)
                 return;
@@ -165,7 +189,7 @@ namespace umi3d.cdk
                 return;
             var subDto = (SubModelDto)((GlTFNodeDto)entity.dto).extensions.umi3d;
 
-            var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(subDto.modelId).dto).extensions.umi3d;
+            var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.modelId).dto).extensions.umi3d;
             foreach (Renderer renderer in renderers)
             {
                 OldMaterialContainer oldMaterialContainer = renderer.gameObject.GetComponent<OldMaterialContainer>();
@@ -214,7 +238,7 @@ namespace umi3d.cdk
                         else
                         {
                             RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
-                            var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
+                            var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(data.environmentId, extension.modelId).dto).extensions.umi3d;
                             SetMaterialOverided(parentDto, (UMI3DNodeInstance)data.entity);
                             SetMaterialOverided(extension, (UMI3DNodeInstance)data.entity);
                         }
@@ -259,7 +283,7 @@ namespace umi3d.cdk
                         else
                         {
                             RevertToOriginalMaterial((UMI3DNodeInstance)data.entity);
-                            var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(extension.modelId).dto).extensions.umi3d;
+                            var parentDto = (UMI3DMeshNodeDto)((GlTFNodeDto)UMI3DEnvironmentLoader.GetNode(data.environmentId, extension.modelId).dto).extensions.umi3d;
                             SetMaterialOverided(parentDto, (UMI3DNodeInstance)data.entity);
                             SetMaterialOverided(extension, (UMI3DNodeInstance)data.entity);
                         }

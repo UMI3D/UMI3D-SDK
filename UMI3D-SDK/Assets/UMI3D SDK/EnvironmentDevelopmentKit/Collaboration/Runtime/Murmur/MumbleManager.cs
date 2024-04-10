@@ -38,6 +38,8 @@ namespace umi3d.edk.collaboration.murmur
 
         int localRoomIndex = 0;
 
+        public string GetGUID() => guid;
+
         class Room
         {
             public int roomId;
@@ -55,7 +57,7 @@ namespace umi3d.edk.collaboration.murmur
                 this.name = name;
             }
         }
-        class User
+        public class User
         {
             public int id;
             public string userId;
@@ -82,14 +84,14 @@ namespace umi3d.edk.collaboration.murmur
 
         List<Room> roomList;
         Room defaultRoom;
-        List<User> userList;
+        public List<User> userList;
 
         bool refreshing = false;
         bool running = false;
         float RefreshTime = 0;
         const float MaxRefreshTimeSecond = 30f;
 
-        public static MumbleManager Create(string ip,string http = null, string guid = null)
+        public static MumbleManager Create(string ip, string http = null, string guid = null)
         {
             if (string.IsNullOrEmpty(ip))
                 return null;
@@ -128,13 +130,34 @@ namespace umi3d.edk.collaboration.murmur
             defaultRoom = _CreateRoom();
         }
 
+
+        public void SwitchDefaultRoom(string name, IEnumerable<UMI3DCollaborationAbstractContentUser> users, bool force = false)
+        {
+            if(name == null)
+                name = roomList.FirstOrDefault()?.name;
+            
+            var room = roomList.FirstOrDefault(r => r.name == name) ?? _CreateRoom(name);
+            if (room == null)
+                return;
+
+            var old = defaultRoom;
+            defaultRoom = room;
+            if (old == defaultRoom)
+                return;
+
+            foreach(var user in users)
+                if (force || user.audioChannel.GetValue(user) == old.name)
+                    SwitchUserRoom(user); 
+
+        }
+
         public async void RefreshAsync()
         {
             if (!refreshing)
                 await Refresh();
         }
 
-        private MumbleManager(string ip,string http, string guid = null)
+        private MumbleManager(string ip, string http, string guid = null)
         {
             this.guid = guid;
             this.ip = ip;
@@ -146,14 +169,14 @@ namespace umi3d.edk.collaboration.murmur
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
         }
 
-        private string GenerateUserName(UMI3DCollaborationUser user, string userID)
+        public string GenerateUserName(UMI3DCollaborationUser user, string userID)
         {
-            return RemoveSpace(@"User_" +user.displayName+"_"+ userID + @"_[" + guid + @"]");
+            return RemoveSpace(@"User_" + user.displayName + "_" + userID + @"_[" + guid + @"]");
         }
 
-        string RemoveSpace(string value)
+        public string RemoveSpace(string value)
         {
-            return new string( value.Where(c => !Char.IsWhiteSpace(c)).ToArray());
+            return new string(value.Where(c => !Char.IsWhiteSpace(c)).ToArray());
         }
 
         private string GenerateRoomName(int i)
@@ -185,8 +208,8 @@ namespace umi3d.edk.collaboration.murmur
                     serv = await MurmurAPI.Server.Create(m, 1);
                 else
                     await serv.Refresh();
-                CheckRoom();
-                CheckUser();
+                await CheckRoom();
+                await CheckUser();
             }
             catch (Exception e)
             {
@@ -197,7 +220,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private void CheckUser()
+        private async Task CheckUser()
         {
             List<User> toAdd = new List<User>(this.userList);
             List<User> toDelete = new List<User>();
@@ -222,12 +245,12 @@ namespace umi3d.edk.collaboration.murmur
                 }
             }
             foreach (var user in toAdd)
-                CreateUser(user);
+                await CreateUser(user);
             foreach (var user in toDelete)
-                DeleteUser(user);
+                await DeleteUser(user);
         }
 
-        private void CheckRoom()
+        private async Task CheckRoom()
         {
             List<Room> toAdd = new List<Room>(this.roomList);
             List<Room> toDelete = new List<Room>();
@@ -252,12 +275,12 @@ namespace umi3d.edk.collaboration.murmur
             }
 
             foreach (var room in toAdd)
-                CreateRoom(room);
+                await CreateRoom(room);
             foreach (var room in toDelete)
-                DeleteRoom(room);
+                await DeleteRoom(room);
         }
 
-        private async void CreateRoom(Room room)
+        private async Task CreateRoom(Room room)
         {
             await WaitWhileRefreshing();
             try
@@ -274,7 +297,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async void DeleteRoom(Room room)
+        private async Task DeleteRoom(Room room)
         {
             await WaitWhileRefreshing();
             try
@@ -291,7 +314,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async void CreateUser(User user)
+        public async Task CreateUser(User user)
         {
             await WaitWhileRefreshing();
             try
@@ -308,7 +331,7 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-        private async void DeleteUser(User user)
+        private async Task DeleteUser(User user)
         {
             await WaitWhileRefreshing();
             try
@@ -324,16 +347,21 @@ namespace umi3d.edk.collaboration.murmur
             }
         }
 
-
-        private Room _CreateRoom()
+        private Room _CreateRoom(string name = null)
         {
             var roomId = localRoomIndex++;
-            var name = GenerateRoomName(roomId);
+            name = name ?? GenerateRoomName(roomId);
             var room = new Room(roomId, name);
-            roomList.Add(room);
-            CreateRoom(room);
+            __CreateRoom(room);
             return room;
         }
+
+        private async void __CreateRoom(Room room)
+        {
+            await CreateRoom(room);
+            roomList.Add(room);
+        }
+
 
         public int CreateRoom()
         {
@@ -372,14 +400,24 @@ namespace umi3d.edk.collaboration.murmur
                 DeleteRoom(room);
         }
 
+
+        public List<Operation> AddUser(UMI3DServerUser user, int room = -1)
+        {
+            var ops = new List<Operation>();
+            ops.Add(user.audioServerUrl.SetValue(ip));
+            ops.Add(user.audioUseMumble.SetValue(true));
+            ops.AddRange(SwitchUserRoom(user, room));
+
+            return ops;
+        }
+
         public List<Operation> AddUser(UMI3DCollaborationUser user, int room = -1)
         {
             var userId = System.Guid.NewGuid().ToString();
-            var _user = new User(userId, GenerateUserName(user,userId));
+            var _user = new User(userId, GenerateUserName(user, userId));
             _user.password = System.Guid.NewGuid().ToString();
-            userList.Add(_user);
 
-            CreateUser(_user);
+            _CreateUser(_user);
             var ops = new List<Operation>();
 
             ops.Add(user.audioLogin.SetValue(_user.login));
@@ -391,7 +429,13 @@ namespace umi3d.edk.collaboration.murmur
             return ops;
         }
 
-        private Operation ToPrivate(UMI3DCollaborationUser user, Operation op)
+        async void _CreateUser(User user)
+        {
+            await CreateUser(user);
+            userList.Add(user);
+        }
+
+        public Operation ToPrivate(UMI3DCollaborationUser user, Operation op)
         {
             if (op == null) return null;
 
@@ -419,7 +463,7 @@ namespace umi3d.edk.collaboration.murmur
         }
 
 
-        public List<Operation> SwitchUserRoom(UMI3DCollaborationUser user, int roomId = -1)
+        public List<Operation> SwitchUserRoom(UMI3DCollaborationAbstractContentUser user, int roomId = -1)
         {
             var ops = new List<Operation>();
 
@@ -444,6 +488,11 @@ namespace umi3d.edk.collaboration.murmur
             }
             roomList.Clear();
             userList.Clear();
+        }
+
+        public string GetDefaultRoomName()
+        {
+            return defaultRoom.name;
         }
     }
 }

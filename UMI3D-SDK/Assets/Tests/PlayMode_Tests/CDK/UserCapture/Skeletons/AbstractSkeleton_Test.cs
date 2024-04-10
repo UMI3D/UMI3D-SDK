@@ -16,6 +16,7 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,13 +25,16 @@ using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.TestTools;
 using static umi3d.cdk.userCapture.animation.AnimatedSubskeleton;
 
 
@@ -41,7 +45,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
     {
         protected AbstractSkeleton abstractSkeleton;
         protected GameObject skeletonGo;
-        private Mock<IUnityMainThreadDispatcher> unityMainThreadDispatcherMock;
+        protected Mock<IUnityMainThreadDispatcher> unityMainThreadDispatcherMock;
 
         protected Mock<ITrackedSubskeleton> trackedSubskeletonMock;
         protected Mock<IPoseSubskeleton> poseSubskeletonMock;
@@ -90,6 +94,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
         {
             //Given
             // Empty by default
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(new Dictionary<uint, IController>(0));
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -112,12 +117,12 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
+            Mock<IAnimatedSubskeleton> animatedSkeletonMock = new();
             animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
 
             animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(new SubSkeletonPoseDto());
 
-            List<AnimatedSubskeleton> animatedSubskeletons = new()
+            List<IAnimatedSubskeleton> animatedSubskeletons = new()
             {
                 animatedSkeletonMock.Object,
                 animatedSkeletonMock.Object
@@ -125,6 +130,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             foreach (var animatedSubskeleton in animatedSubskeletons)
                 abstractSkeleton.AddSubskeleton(animatedSubskeleton);
+
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(new Dictionary<uint, IController>(0));
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -146,7 +153,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             UnityEngine.Object.Instantiate(subskeletonGo);
             var mapper = subskeletonGo.AddComponent<SkeletonMapper>();
 
-            Mock<AnimatedSubskeleton> animatedSkeletonMock = new(mapper, new List<UMI3DAnimatorAnimation>(), 0, null, null, unityMainThreadDispatcherMock.Object);
+            Mock<IAnimatedSubskeleton> animatedSkeletonMock = new();
             animatedSkeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
           
             var poseDto = new SubSkeletonPoseDto()
@@ -164,7 +171,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             animatedSkeletonMock.Setup(x => x.GetPose(hierarchy)).Returns(poseDto);
 
-            List<AnimatedSubskeleton> animatedSubskeletons = new()
+            List<IAnimatedSubskeleton> animatedSubskeletons = new()
             {
                 animatedSkeletonMock.Object,
                 animatedSkeletonMock.Object
@@ -172,6 +179,8 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
 
             foreach (var animatedSubskeleton in animatedSubskeletons)
                 abstractSkeleton.AddSubskeleton(animatedSubskeleton);
+
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(new Dictionary<uint, IController>(0));
 
             //When
             ISkeleton results = abstractSkeleton.Compute();
@@ -240,53 +249,53 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             }
         }
 
-        [Test]
-        public async void AddSusbskeleton_AnimatedSusbskeleton()
+        [UnityTest]
+        public IEnumerator AddSusbskeleton_AnimatedSusbskeleton()
         {
             // given
             var subskeletons = abstractSkeleton.Subskeletons.ToList();
 
-            var newSubskeletonMock = new Mock<AnimatedSubskeleton>(null,
-                new UMI3DAnimatorAnimation[0],
-                0,
-                new umi3d.common.userCapture.animation.SkeletonAnimationParameterDto[] { new() },
-                null,
-                null
-                );
+            var newSubskeletonMock = new Mock<IAnimatedSubskeleton>();
+              
             newSubskeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
 
             newSubskeletonMock.Setup(x => x.StartParameterSelfUpdate(abstractSkeleton));
 
+            unityMainThreadDispatcherMock.Setup(x => x.Enqueue(It.IsAny<System.Action>())).Callback<System.Action>(r => r()); // callback allow the nested code to be run also
+
             // when
             abstractSkeleton.AddSubskeleton(newSubskeletonMock.Object);
 
-            await Task.Yield();
+            yield return null;
 
             // then
             Assert.AreEqual(subskeletons.Count + 1, abstractSkeleton.Subskeletons.Count);
             newSubskeletonMock.Verify(x => x.StartParameterSelfUpdate(abstractSkeleton), Times.Once);
         }
 
-        [Test]
-        public async void AddSusbskeleton_SeveralAnimatedSusbskeletonsOrderedInsert()
+        [UnityTest]
+        public IEnumerator AddSusbskeleton_SeveralAnimatedSubskeletonsOrderedInsert()
         {
             // given
-            var subskeletons = abstractSkeleton.Subskeletons.Where(x=>x is AnimatedSubskeleton).ToList();
+            var subskeletons = abstractSkeleton.Subskeletons.Where(x=>x is IAnimatedSubskeleton).ToList();
 
-            var newSubskeleton1 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 2, null, null, null);
-            var newSubskeleton2 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 1, null, null, null);
-            var newSubskeleton3 = new AnimatedSubskeleton(null, new List<UMI3DAnimatorAnimation>(), priority: 3, null, null, null);
+            unityMainThreadDispatcherMock.Setup(x => x.Enqueue(It.IsAny<System.Action>())).Callback<System.Action>(r => r()); // callback allow the nested code to be run also
+
+            // nb : mocking AnimatedSkeleton conflicts with the IComparable interface default implementation in ISubskeleton
+            var newSubskeleton1 = new AnimatedSubskeleton(new() { priority = 2 }, null, null, new List<UMI3DAnimatorAnimation>(), null, null, null);
+            var newSubskeleton2 = new AnimatedSubskeleton(new() { priority = 1 }, null, null, new List<UMI3DAnimatorAnimation>(), null, null, null);
+            var newSubskeleton3 = new AnimatedSubskeleton(new() { priority = 3 }, null, null, new List<UMI3DAnimatorAnimation>(), null, null, null);
             abstractSkeleton.AddSubskeleton(newSubskeleton1);
             abstractSkeleton.AddSubskeleton(newSubskeleton2);
 
             // when
             abstractSkeleton.AddSubskeleton(newSubskeleton3);
 
-            await Task.Yield();
+            yield return null;
 
             // then
-            var sortedSubskeletons = abstractSkeleton.Subskeletons.Where(x => x is AnimatedSubskeleton).OrderBy(x => x.Priority).ToList();
-            var resultSubskeletons = abstractSkeleton.Subskeletons.Where(x => x is AnimatedSubskeleton).ToList();
+            var sortedSubskeletons = abstractSkeleton.Subskeletons.Where(x => x is IAnimatedSubskeleton).OrderBy(x => x.Priority).ToList();
+            var resultSubskeletons = abstractSkeleton.Subskeletons.Where(x => x is IAnimatedSubskeleton).ToList();
 
             Assert.AreEqual(subskeletons.Count + 3, resultSubskeletons.Count);
             for (int i = 0; i < sortedSubskeletons.Count; i++)
@@ -316,20 +325,19 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             }
         }
 
-        [Test]
-        public async void RemoveSubskeleton_AnimatedSubskeleton()
+        [UnityTest]
+        public IEnumerator RemoveSubskeleton_AnimatedSubskeleton()
         {
             // given
-            var newSubskeletonMock = new Mock<AnimatedSubskeleton>(null,
-                new List<UMI3DAnimatorAnimation>(0),
-                0,
-                new umi3d.common.userCapture.animation.SkeletonAnimationParameterDto[1] { new() },
-                null,
-                null
-                );
+            var newSubskeletonMock = new Mock<IAnimatedSubskeleton>();
+            
             newSubskeletonMock.Setup(x => x.SelfUpdatedAnimatorParameters).Returns(new List<SkeletonAnimationParameter>() { new(new()) });
+            unityMainThreadDispatcherMock.Setup(x => x.Enqueue(It.IsAny<System.Action>())).Callback<System.Action>(r => r()); // callback allow the nested code to be run also
 
             abstractSkeleton.AddSubskeleton(newSubskeletonMock.Object);
+
+            yield return null;
+
             var subskeletons = abstractSkeleton.Subskeletons.ToList();
 
             newSubskeletonMock.Setup(x => x.StartParameterSelfUpdate(abstractSkeleton));
@@ -338,7 +346,7 @@ namespace PlayMode_Tests.UserCapture.Skeletons.CDK
             // when
             abstractSkeleton.RemoveSubskeleton(newSubskeletonMock.Object);
 
-            await Task.Yield();
+            yield return null;
 
             // then
             Assert.AreEqual(subskeletons.Count - 1, abstractSkeleton.Subskeletons.Count);

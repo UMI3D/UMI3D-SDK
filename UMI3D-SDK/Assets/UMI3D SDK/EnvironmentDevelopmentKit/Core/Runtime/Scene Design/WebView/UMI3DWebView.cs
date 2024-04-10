@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
 
@@ -56,6 +57,30 @@ namespace umi3d.edk
         [SerializeField, Tooltip("Url to load on clients")]
         private bool canUrlBeForced = true;
 
+        /// <summary>
+        /// If true, will use <see cref="whiteList"/> to determine which domains are allowed.
+        /// </summary>
+        [SerializeField, Tooltip("Use a white list ?")]
+        private bool useWhiteList = false;
+
+        /// <summary>
+        /// If true, will use <see cref="whiteList"/> to determine which domains are allowed.
+        /// </summary>
+        [SerializeField, Tooltip("If useWhiteList true, list of authorized domains")]
+        private List<string> whiteList = new();
+
+        /// <summary>
+        /// If true, will use <see cref="blackList"/> to determine which domains are not allowed.
+        /// </summary>
+        [SerializeField, Tooltip("Use a black list ?")]
+        private bool useBlackList = false;
+
+        /// <summary>
+        /// If true, will use <see cref="whiteList"/> to determine which domains are not allowed.
+        /// </summary>
+        [SerializeField, Tooltip("If useBlackList true, list of non authorized domains")]
+        private List<string> blackList = new();
+
         #endregion
 
         #region Async properties
@@ -69,6 +94,14 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<string> _objectUrl;
 
         private UMI3DAsyncProperty<bool> _objectCanUrlBeForced;
+
+        private UMI3DAsyncProperty<bool> _objectUseWhiteList;
+
+        private UMI3DAsyncProperty<List<string>> _objectWhiteList;
+
+        private UMI3DAsyncProperty<bool> _objectUseBlackList;
+
+        private UMI3DAsyncProperty<List<string>> _objectBlackList;
 
 
         /// <summary>
@@ -96,6 +129,27 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAsyncProperty<bool> objectCanUrlBeForced { get { Register(); return _objectCanUrlBeForced; } protected set => _objectCanUrlBeForced = value; }
 
+
+        /// <summary>
+        /// Async property to change <see cref="useWhiteList"> property.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectUseWhiteList { get { Register(); return _objectUseWhiteList; } protected set => _objectUseWhiteList = value; }
+
+        /// <summary>
+        /// Async property to change <see cref="whiteList"/> property.
+        /// </summary>
+        public UMI3DAsyncProperty<List<string>> objectWhiteList { get { Register(); return _objectWhiteList; } protected set => _objectWhiteList = value; }
+
+        /// <summary>
+        /// Async property to change <see cref="useBlackList"> property.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectUseBlackList { get { Register(); return _objectUseBlackList; } protected set => _objectUseBlackList = value; }
+
+        /// <summary>
+        /// Async property to change <see cref="blackList"/> property.
+        /// </summary>
+        public UMI3DAsyncProperty<List<string>> objectBlackList { get { Register(); return _objectBlackList; } protected set => _objectBlackList = value; }
+
         #endregion
 
         #region Methods
@@ -107,17 +161,25 @@ namespace umi3d.edk
         {
             base.InitDefinition(id);
 
-            objectCanInteract = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanInteract, canInteract);         
+            objectCanInteract = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanInteract, canInteract);
             objectSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewSize, size, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
             objectCanUrlBeForced = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanUrlBeForced, canUrlBeForced);
+            objectUseWhiteList = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewUseWhileList, useWhiteList);
+            objectWhiteList = new UMI3DAsyncProperty<List<string>>(id, UMI3DPropertyKeys.WebViewWhileList, whiteList);
+            objectUseBlackList = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewUseBlackList, useBlackList);
+            objectBlackList = new UMI3DAsyncProperty<List<string>>(id, UMI3DPropertyKeys.WebViewBlackList, blackList);
 
             objectCanInteract.OnValueChanged += (b) => canInteract = b;
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
             objectSize.OnValueChanged += (s) => size = s;
             objectUrl.OnValueChanged += (u) => url = u;
             objectCanUrlBeForced.OnValueChanged += (b) => canUrlBeForced = b;
+            objectUseWhiteList.OnValueChanged += (u) => useWhiteList = u;
+            objectWhiteList.OnValueChanged += (b) => whiteList = b;
+            objectUseBlackList.OnValueChanged += (u) => useBlackList = u;
+            objectBlackList.OnValueChanged += (b) => blackList = b;
         }
 
         /// <summary>
@@ -131,7 +193,11 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(objectTextureSize.GetValue(user))
                 + UMI3DSerializer.Write(objectUrl.GetValue(user))
                 + UMI3DSerializer.Write(objectCanInteract.GetValue(user))
-                + UMI3DSerializer.Write(objectCanUrlBeForced.GetValue(user));
+                + UMI3DSerializer.Write(objectCanUrlBeForced.GetValue(user))
+                + UMI3DSerializer.Write(objectUseWhiteList.GetValue(user))
+                + UMI3DSerializer.Write(objectWhiteList.GetValue(user))
+                + UMI3DSerializer.Write(objectUseBlackList.GetValue(user))
+                + UMI3DSerializer.Write(objectBlackList.GetValue(user));
         }
 
         /// <summary>
@@ -156,6 +222,10 @@ namespace umi3d.edk
             webViewDto.textureSize = objectTextureSize.GetValue(user).Dto();
             webViewDto.url = objectUrl.GetValue(user);
             webViewDto.canUrlBeForced = objectCanUrlBeForced.GetValue(user);
+            webViewDto.useWhiteList = objectUseWhiteList.GetValue(user);
+            webViewDto.whiteList = objectWhiteList.GetValue(user);
+            webViewDto.useBlackList = objectUseBlackList.GetValue(user);
+            webViewDto.blackList = objectBlackList.GetValue(user);
         }
 
         #endregion
@@ -171,7 +241,7 @@ namespace umi3d.edk
             Gizmos.color = Color.yellow;
 
             Gizmos.DrawLine(transform.position + transform.up * halfHeight - transform.right * halfWidth,
-                transform.position + transform.up * halfHeight + transform.right * halfWidth);   
+                transform.position + transform.up * halfHeight + transform.right * halfWidth);
             Gizmos.DrawLine(transform.position + transform.up * halfHeight + transform.right * halfWidth,
                 transform.position - transform.up * halfHeight + transform.right * halfWidth);
             Gizmos.DrawLine(transform.position - transform.up * halfHeight + transform.right * halfWidth,

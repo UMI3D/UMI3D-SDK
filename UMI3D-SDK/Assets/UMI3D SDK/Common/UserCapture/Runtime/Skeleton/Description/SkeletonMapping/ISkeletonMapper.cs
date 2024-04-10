@@ -22,16 +22,10 @@ namespace umi3d.common.userCapture.description
     /// <summary>
     /// Mapper between any skeleton hiearchy and the UMI3D one.
     /// </summary>
-    public interface ISkeletonMapper
+    public interface ISkeletonMapper : ISubskeletonDescriptor
     {
         IList<SkeletonMapping> Mappings { get; set; }
 
         PoseAnchorDto BoneAnchor { get; set; }
-
-        /// <summary>
-        /// Get pose of the bone using mappings.
-        /// </summary>
-        /// <returns></returns>
-        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
     }
 }

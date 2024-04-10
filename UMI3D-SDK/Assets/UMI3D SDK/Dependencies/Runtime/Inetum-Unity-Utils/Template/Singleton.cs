@@ -37,7 +37,7 @@ namespace inetum.unityUtils
         public static bool Exists => !ApplicationIsQuitting && instance != null;
 
         /// <summary>
-        /// static rteference to the only instance of <typeparamref name="T"/>
+        /// static reference to the only instance of <typeparamref name="T"/>
         /// </summary>
         public static T Instance
         {

@@ -31,6 +31,7 @@ namespace umi3d.cdk.menu.interaction
         /// Tool id if the interaciton belongs to one.
         /// </summary>
         public virtual ulong toolId { get; set; }
+        public virtual ulong environmentId { get; set; }
 
         /// <summary>
         /// Is the interaction projected on a controller ?
@@ -41,10 +42,10 @@ namespace umi3d.cdk.menu.interaction
             if ((interaction == null) || (interaction.id == 0))
                 return false;
 
-            if (!AbstractInteractionMapper.Instance.IsToolSelected(toolId))
+            if (!AbstractInteractionMapper.Instance.IsToolSelected(environmentId, toolId))
                 return false;
 
-            AbstractController controller = AbstractInteractionMapper.Instance.GetController(toolId);
+            AbstractController controller = AbstractInteractionMapper.Instance.GetController(environmentId, toolId);
             if (controller != null)
             {
                 return controller.inputs.Exists(input => (input.CurrentInteraction() != null) && input.CurrentInteraction().id.Equals(interaction.id));

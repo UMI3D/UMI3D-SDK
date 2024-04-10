@@ -70,17 +70,17 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if a toolbox with the given id exists.
         /// </summary>
-        public abstract bool ToolboxExists(ulong id);
+        public abstract bool ToolboxExists(ulong environmentId, ulong id);
 
         /// <summary>
         /// Get the toolbox with the given id (if any).
         /// </summary>
-        public abstract Toolbox GetToolbox(ulong id);
+        public abstract Toolbox GetToolbox(ulong environmentId, ulong id);
 
         /// <summary>
         /// Return the toolboxes matching a given condition.
         /// </summary>
-        public abstract IEnumerable<Toolbox> GetToolboxes(Predicate<Toolbox> condition);
+        public abstract IEnumerable<Toolbox> GetToolboxes( Predicate<Toolbox> condition);
 
         /// <summary>
         /// Return all known toolboxes.
@@ -92,46 +92,46 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Check if a tool with the given id exists.
         /// </summary>
-        public abstract bool ToolExists(ulong id);
+        public abstract bool ToolExists(ulong environmentId, ulong id);
 
         /// <summary>
         /// Return true if the tool is currently projected on a controller.
         /// </summary>
         /// <param name="id">Id of the tool.</param>
         /// <returns></returns>
-        public abstract bool IsToolSelected(ulong id);
+        public abstract bool IsToolSelected(ulong environmentId, ulong id);
 
         /// <summary>
         /// Get the tool with the given id (if any).
         /// </summary>
-        public abstract AbstractTool GetTool(ulong id);
+        public abstract AbstractTool GetTool(ulong environmentId, ulong id);
 
         /// <summary>
         /// Return the tools matching a given condition.
         /// </summary>
-        public abstract IEnumerable<AbstractTool> GetTools(Predicate<AbstractTool> condition);
+        public abstract IEnumerable<AbstractTool> GetTools( Predicate<AbstractTool> condition);
 
         /// <summary>
         /// Return all known tools.
         /// </summary>
         /// <returns></returns>
-        public virtual IEnumerable<AbstractTool> GetTools() { return GetTools(t => true); }
+        public virtual IEnumerable<AbstractTool> GetTools() { return GetTools( t => true); }
 
 
         /// <summary>
         /// Check if an interaction with the given id exists.
         /// </summary>
-        public abstract bool InteractionExists(ulong id);
+        public abstract bool InteractionExists(ulong environmentId, ulong id);
 
         /// <summary>
         /// Get the interaction with the given id (if any).
         /// </summary>
-        public abstract AbstractInteractionDto GetInteraction(ulong id);
+        public abstract AbstractInteractionDto GetInteraction(ulong environmentId, ulong id);
 
         /// <summary>
         /// Return the interactions matching a given condition.
         /// </summary>
-        public abstract IEnumerable<AbstractInteractionDto> GetInteractions(Predicate<AbstractInteractionDto> condition);
+        public abstract IEnumerable<AbstractInteractionDto> GetInteractions( Predicate<AbstractInteractionDto> condition);
 
         /// <summary>
         /// Return all known interactions.
@@ -144,7 +144,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         /// <param name="projectedToolId">Tool's id</param>
         /// <returns></returns>
-        public abstract AbstractController GetController(ulong projectedToolId);
+        public abstract AbstractController GetController(ulong environmentId, ulong projectedToolId);
 
         /// <summary>
         /// Request the selection of a Tool.
@@ -156,14 +156,14 @@ namespace umi3d.cdk.interaction
         /// <param name="hoveredObjectId">The id of the hovered object.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool SelectTool(ulong toolId, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null);
+        public abstract bool SelectTool(ulong environmentId, ulong toolId, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be released.
         /// </summary>
         /// <param name="toolId">Id of the tool to release.</param>
         /// <param name="reason">Interaction mapping reason.</param>
-        public abstract void ReleaseTool(ulong toolId, InteractionMappingReason reason = null);
+        public abstract void ReleaseTool(ulong environmentId, ulong toolId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be replaced by another one.
@@ -174,7 +174,7 @@ namespace umi3d.cdk.interaction
         /// <param name="hoveredObjectId">The id of the hovered object.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool SwitchTools(ulong selected, ulong released, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null);
+        public abstract bool SwitchTools(ulong environmentId, ulong selected, ulong released, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be updated.
@@ -183,7 +183,7 @@ namespace umi3d.cdk.interaction
         /// <param name="releasable">Is the tool releasable.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool UpdateTools(ulong toolId, bool releasable, InteractionMappingReason reason = null);
+        public abstract bool UpdateTools(ulong environmentId, ulong toolId, bool releasable, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be updated when one element was added on the tool.
@@ -192,7 +192,7 @@ namespace umi3d.cdk.interaction
         /// <param name="releasable">Is the tool releasable.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool UpdateAddOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
+        public abstract bool UpdateAddOnTools(ulong environmentId, ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
 
         /// <summary>
         /// Request a Tool to be updated when one element was removed on the tool.
@@ -201,7 +201,7 @@ namespace umi3d.cdk.interaction
         /// <param name="releasable">Is the tool releasable.</param>
         /// <param name="reason">Interaction mapping reason.</param>
         /// <returns></returns>
-        public abstract bool UpdateRemoveOnTools(ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
+        public abstract bool UpdateRemoveOnTools(ulong environmentId, ulong toolId, bool releasable, AbstractInteractionDto abstractInteractionDto, InteractionMappingReason reason = null);
 
     }
 }

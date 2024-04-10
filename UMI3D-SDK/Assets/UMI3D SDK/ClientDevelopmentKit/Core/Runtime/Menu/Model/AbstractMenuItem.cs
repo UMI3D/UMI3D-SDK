@@ -44,6 +44,12 @@ namespace umi3d.cdk.menu
         public GameObject icon3D;
 
         /// <summary>
+        /// State if a parameter is a displayer.
+        /// If set to true the value will not be editable.
+        /// </summary>
+        public bool isDisplayer;
+
+        /// <summary>
         /// Menu name.
         /// </summary>
         public abstract override string ToString();
@@ -78,7 +84,7 @@ namespace umi3d.cdk.menu
         {
             if (!subscribers.Contains(callback))
                 subscribers.Add(callback);
-            else 
+            else
                 return false;
             return true;
         }

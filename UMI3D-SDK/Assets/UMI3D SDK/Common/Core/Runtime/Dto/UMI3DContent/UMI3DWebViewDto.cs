@@ -11,6 +11,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common
 {
     /// <summary>
@@ -31,6 +33,7 @@ namespace umi3d.common
         public Vector2Dto textureSize { get; set; }
 
         /// <summary>
+        /// new
         /// Url to load on clients.
         /// </summary>
         public string url { get; set; }
@@ -39,5 +42,25 @@ namespace umi3d.common
         /// If set to false, when <see cref="url"/> is set, the value will be ignored by the browser.
         /// </summary>
         public bool canUrlBeForced { get; set; }
+
+        /// <summary>
+        /// if true, will use <see cref="whiteList"/> to determine which domains are allowed.
+        /// </summary>
+        public bool useWhiteList { get; set; }
+
+        /// <summary>
+        /// Authorized domaines.
+        /// </summary>
+        public List<string> whiteList { get; set; }
+
+        /// <summary>
+        /// if true, will use <see cref="useBlackList"/> to determine which domains are prohibited.
+        /// </summary>
+        public bool useBlackList { get; set; }
+
+        /// <summary>
+        /// Non authorized domaines.
+        /// </summary>
+        public List<string> blackList { get; set; }
     }
 }

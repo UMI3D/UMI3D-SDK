@@ -140,6 +140,15 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Notify that the user has changed.
+        /// </summary>
+        /// <param name="user"></param>
+        public virtual void NotifyUserRefreshed(UMI3DUser user)
+        {
+            OnUserRegistered.Invoke(user);
+        }
+
+        /// <summary>
         /// Get the set of all <see cref="UMI3DUser"/> instances in the environment.
         /// </summary>
         /// <returns></returns>
@@ -209,6 +218,15 @@ namespace umi3d.edk
             if (Exists) Instance._Dispatch(transaction);
         }
 
+        /// <summary>
+        /// Send a <see cref="Transaction"/> to all clients.
+        /// </summary>
+        /// <param name="transaction"></param>
+        public void DispatchTransaction(Transaction transaction)
+        {
+            _Dispatch(transaction);
+        }
+
         //? empty ?
         protected virtual void _Dispatch(Transaction transaction)
         {
@@ -225,6 +243,7 @@ namespace umi3d.edk
 
         #region session
         public UMI3DUserEvent OnUserJoin { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserEvent OnUserRefreshed { get; protected set; } = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserRegistered { get; protected set; } = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserCreated { get; protected set; } = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserRecreated { get; protected set; } = new UMI3DUserEvent();

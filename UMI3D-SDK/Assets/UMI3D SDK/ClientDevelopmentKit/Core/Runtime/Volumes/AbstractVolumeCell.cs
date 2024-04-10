@@ -32,6 +32,13 @@ namespace umi3d.cdk.volumes
         /// <returns></returns>
         public abstract ulong Id();
 
+
+        /// <summary>
+        /// Get UMI3D id.
+        /// </summary>
+        /// <returns></returns>
+        public abstract ulong EnvironmentId();
+
         /// <summary>
         /// Can the volume be entered?
         /// </summary>

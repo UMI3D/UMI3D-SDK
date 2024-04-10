@@ -110,7 +110,7 @@ namespace umi3d.cdk.collaboration
                                 {
                                     try
                                     {
-                                        await ((HttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(key, bytes);
+                                        await ((EnvironmentHttpClient)UMI3DClientServer.Instance.GetHttpClient()).SendPostLocalInfo(key, bytes);
                                     }
                                     catch (Exception e)
                                     {

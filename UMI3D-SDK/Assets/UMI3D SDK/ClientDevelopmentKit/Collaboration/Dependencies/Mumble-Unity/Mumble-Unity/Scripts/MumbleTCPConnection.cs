@@ -41,7 +41,7 @@ namespace Mumble
         internal MumbleTcpConnection(IPEndPoint host, string hostname, UpdateOcbServerNonce updateOcbServerNonce,
             MumbleUdpConnection udpConnection, MumbleClient mumbleClient)
         {
-            _model = (ProtoBuf.Meta.TypeModel)Activator.CreateInstance(Type.GetType("MyProtoModel, MyProtoModel"));
+            _model = (ProtoBuf.Meta.TypeModel)Activator.CreateInstance(typeof(MyProtoModel));
 
             _host = host;
             _hostname = hostname;

@@ -69,7 +69,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseClipDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseClipDto result);
@@ -99,18 +99,16 @@ namespace EditMode_Tests.UserCapture.Pose.Common
                 poseClipId = 11025uL,
                 poseConditions = new AbstractPoseConditionDto[]
                 {
-                    new UserScaleConditionDto() { Scale = Vector3.one.Dto() },
+                    new ScaleConditionDto() { Scale = Vector3.one.Dto() },
                     new DirectionConditionDto() { Direction = Vector3.one.Dto() },
                 },
                 duration = new DurationDto() { duration = 24, max = 12, min = 2 },
-                isInterpolable = true,
-                isComposable = false,
                 activationMode = 0,
             };
 
             poseSerializerModule.Write(poseAnimatorDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnimatorDto result);
             Assert.IsTrue(readable);
@@ -121,8 +119,6 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
 
             Assert.AreEqual(poseAnimatorDto.duration.duration, result.duration.duration);
-            Assert.AreEqual(poseAnimatorDto.isInterpolable, result.isInterpolable);
-            Assert.AreEqual(poseAnimatorDto.isComposable, result.isComposable);
 
             Assert.AreEqual(poseAnimatorDto.activationMode, result.activationMode);
 
@@ -145,7 +141,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(duration, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             poseSerializerModule.Read(byteContainer, out bool readable, out DurationDto result);
             Assert.IsTrue(readable);

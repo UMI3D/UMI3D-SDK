@@ -16,6 +16,9 @@ limitations under the License.
 
 
 #if UNITY_EDITOR
+using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common.userCapture.pose;
 
 using UnityEditor;
@@ -29,23 +32,15 @@ namespace umi3d.edk.userCapture.pose.editor
     public class UMI3DPoseAnimatorEditor : Editor
     {
         private SerializedProperty poseSOField;
-        private SerializedProperty durationField;
 
-        private SerializedProperty interpolableField;
-        private SerializedProperty composableField;
+        private SerializedProperty isAnchoredField;
+        private SerializedProperty anchoringParametersField;
+
+        private SerializedProperty durationField;
 
         private SerializedProperty activationModeField;
 
-        private SerializedProperty hasMagnitudeConditionField;
-        private SerializedProperty magnitudeField;
-        private SerializedProperty boneOriginField;
-        private SerializedProperty relativeNodeField;
-
-        private SerializedProperty hasDirectionConditionField;
-        private SerializedProperty directionField;
-
-        private SerializedProperty hasScaleConditionField;
-        private SerializedProperty targetScaleField;
+        private SerializedProperty activationConditionsField;
 
         private readonly Color magnitudeSphereColor = Color.red;
         private readonly Color magnitudeHandlesColor = Color.magenta;
@@ -53,45 +48,30 @@ namespace umi3d.edk.userCapture.pose.editor
         protected virtual void OnEnable()
         {
             poseSOField = serializedObject.FindProperty("pose_so");
-            durationField = serializedObject.FindProperty("duration");
 
-            interpolableField = serializedObject.FindProperty("interpolable");
-            composableField = serializedObject.FindProperty("composable");
+            isAnchoredField = serializedObject.FindProperty("isAnchored");
+            anchoringParametersField = serializedObject.FindProperty("anchoringParameters");
+
+            durationField = serializedObject.FindProperty("duration");
 
             activationModeField = serializedObject.FindProperty("activationMode");
 
-            hasMagnitudeConditionField = serializedObject.FindProperty("HasMagnitudeCondition");
-            magnitudeField = serializedObject.FindProperty("Magnitude");
-            boneOriginField = serializedObject.FindProperty("BoneOrigin");
-            relativeNodeField = serializedObject.FindProperty("relativeNode");
-
-            hasDirectionConditionField = serializedObject.FindProperty("HasDirectionCondition");
-            directionField = serializedObject.FindProperty("Direction");
-
-            hasScaleConditionField = serializedObject.FindProperty("HasScaleCondition");
-            targetScaleField = serializedObject.FindProperty("TargetScale");
+            activationConditionsField = serializedObject.FindProperty("activationConditions");
         }
 
         protected virtual void OnInspectorGUIInternal()
         {
             EditorGUILayout.PropertyField(poseSOField);
-            EditorGUILayout.PropertyField(durationField);
 
-            EditorGUILayout.PropertyField(interpolableField);
-            EditorGUILayout.PropertyField(composableField);
+            EditorGUILayout.PropertyField(isAnchoredField);
+            if (isAnchoredField.boolValue)
+                EditorGUILayout.PropertyField(anchoringParametersField);
+
+            EditorGUILayout.PropertyField(durationField);
 
             EditorGUILayout.PropertyField(activationModeField);
 
-            EditorGUILayout.PropertyField(hasMagnitudeConditionField);
-            EditorGUILayout.PropertyField(magnitudeField);
-            EditorGUILayout.PropertyField(boneOriginField);
-            EditorGUILayout.PropertyField(relativeNodeField);
-
-            EditorGUILayout.PropertyField(hasDirectionConditionField);
-            EditorGUILayout.PropertyField(directionField);
-
-            EditorGUILayout.PropertyField(hasScaleConditionField);
-            EditorGUILayout.PropertyField(targetScaleField);
+            EditorGUILayout.PropertyField(activationConditionsField);
         }
 
         public override void OnInspectorGUI()
@@ -103,29 +83,77 @@ namespace umi3d.edk.userCapture.pose.editor
 
         public void OnSceneGUI()
         {
-            if (hasMagnitudeConditionField.boolValue)
+            UMI3DPoseAnimator animator = target as UMI3DPoseAnimator;
+            if (animator == null)
+                return;
+
+
+            MagnitudeCondition t = null;
+            foreach (var conditionField in animator.activationConditions)
             {
-                var t = target as UMI3DPoseAnimator;
-                Handles.color = magnitudeSphereColor;
-
-                Transform targetTransform = t.relativeNode == null ? t.transform : t.relativeNode.transform;
-
-                var capPos = targetTransform.position + t.Magnitude * Vector3.forward;
-                t.Magnitude = Handles.ScaleValueHandle(t.Magnitude,
-                                                                    capPos,
-                                                                    Quaternion.identity,
-                                                                    0.25f,
-                                                                    Handles.SphereHandleCap,
-                                                                    1f);
-
-                Handles.color = magnitudeHandlesColor;
-                Handles.DrawWireDisc(targetTransform.position, Vector3.up, t.Magnitude);
-                Handles.DrawWireDisc(targetTransform.position, Vector3.right, t.Magnitude);
-                Handles.DrawWireDisc(targetTransform.position, Vector3.forward, t.Magnitude);
-                Handles.DrawDottedLine(targetTransform.position, capPos, 5);
+                if (conditionField.conditionType == BrowserPoseAnimatorActivationConditionField.ConditionType.MAGNITUDE)
+                {
+                    t = conditionField.magnitudeCondition;
+                    break;
+                }
             }
+            if (t == null)
+                return;
 
+
+            Handles.color = magnitudeSphereColor;
+
+            Transform targetTransform = t.RelativeNode == null ? animator.transform : t.RelativeNode.transform;
+
+            var capPos = targetTransform.position + t.Distance * Vector3.forward;
+            t.Distance = Handles.ScaleValueHandle(t.Distance,
+                                                                capPos,
+                                                                Quaternion.identity,
+                                                                0.25f,
+                                                                Handles.SphereHandleCap,
+                                                                1f);
+
+            Handles.color = magnitudeHandlesColor;
+
+            var previousZtest = Handles.zTest;
+            Handles.zTest = UnityEngine.Rendering.CompareFunction.LessEqual;
+
+            DrawMagnitudeZone(targetTransform, t);
+
+            Handles.zTest = previousZtest;
+            Handles.DrawDottedLine(targetTransform.position, capPos, 5);
         }
+
+        private void DrawMagnitudeZone(Transform targetTransform, MagnitudeCondition t)
+        {
+            Handles.DrawWireDisc(targetTransform.position, Vector3.up, t.Distance);
+
+            if (t.IgnoreHeight) // create a nearly infinite cylinder
+            {
+                for (int i = 0; i < NUMBER_OF_CYLINDER_LINES; i++)
+                {
+                    float angle = 2 * Mathf.PI * i / NUMBER_OF_CYLINDER_LINES;
+                    Vector3 pos = t.Distance * (Mathf.Cos(angle) * Vector3.forward + Mathf.Sin(angle) * Vector3.left);
+                    Handles.DrawDottedLine(targetTransform.position + pos + Vector3.up * Y_LIMIT,
+                                           targetTransform.position + pos - Vector3.up * Y_LIMIT, DASH_SIZE);
+                }
+            }
+            else // create a sphere by rotating disks
+            {
+                Handles.color = magnitudeHandlesColor * new Color(1, 1, 1, 0.5f);
+                for (int i = 0; i < NUMBER_OF_DISK_LINES; i++)
+                {
+                    float angle = 2 * Mathf.PI * i / NUMBER_OF_DISK_LINES;
+                    Vector3 normal = t.Distance * (Mathf.Cos(angle) * Vector3.forward + Mathf.Sin(angle) * Vector3.left);
+                    Handles.DrawWireDisc(targetTransform.position, normal, t.Distance);
+                }
+            }
+        }
+
+        const float Y_LIMIT = 20;
+        const float DASH_SIZE = 2;
+        const int NUMBER_OF_CYLINDER_LINES = 32;
+        const int NUMBER_OF_DISK_LINES = 12;
     }
 }
 #endif

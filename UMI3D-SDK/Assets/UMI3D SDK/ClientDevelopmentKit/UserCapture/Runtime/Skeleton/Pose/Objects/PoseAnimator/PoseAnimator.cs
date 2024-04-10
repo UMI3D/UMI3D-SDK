@@ -17,6 +17,9 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections;
+using System.Collections.Generic;
+using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -28,6 +31,11 @@ namespace umi3d.cdk.userCapture.pose
     public class PoseAnimator : IPoseAnimator
     {
         private PoseAnimatorDto dto;
+
+        /// <summary>
+        /// DTO access for loader only.
+        /// </summary>
+        protected internal PoseAnimatorDto Dto => dto;
 
         /// <summary>
         /// If true, the animator is applying its pose override.
@@ -42,30 +50,34 @@ namespace umi3d.cdk.userCapture.pose
         /// <summary>
         /// Pose clip associated to this animator;
         /// </summary>
-        public PoseClip PoseClip => poseClip;
+        public PoseClip PoseClip
+        {
+            get => poseClip;
+            internal set => poseClip = value;
+        }
         private PoseClip poseClip;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.pose"/>.
+        /// </summary>
+        public PoseAnchorDto Anchor => dto.anchor;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.isAnchored"/>.
+        /// </summary>
+        public bool IsAnchored => dto.isAnchored;
 
         public ulong RelativeNodeId => dto.relatedNodeId;
 
         /// <summary>
         /// The different condition that are needed for the overrider to get activated
         /// </summary>
-        public IPoseCondition[] PoseConditions { get; private set; }
+        public IPoseCondition[] PoseConditions { get; internal set; }
 
         /// <summary>
         /// How long the pose should last [Not Implemented]
         /// </summary>
         public DurationDto Duration => dto.duration;
-
-        /// <summary>
-        /// If the pose can be interpolated
-        /// </summary>
-        public bool IsInterpolable => dto.isInterpolable;
-
-        /// <summary>
-        /// If the pose can be added to  other poses
-        /// </summary>
-        public bool IsComposable => dto.isComposable;
 
         /// <summary>
         /// How the pose is activated.
@@ -181,12 +193,29 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <summary>
+        /// Disable poses that listens to this activation mode.
+        /// </summary>
+        public virtual bool TryDeactivate()
+        {
+            if (!IsApplied)
+                return false;
+
+            if (ActivationMode == (ushort)PoseAnimatorActivationMode.ON_REQUEST && !CheckConditions())
+            {
+                EndApply();
+                return true;
+            }
+
+            return false;
+        }
+
+        /// <summary>
         /// Apply the pose on the pose subskeleton.
         /// </summary>
         private void Apply()
         {
             IsApplied = true;
-            poseService.PlayPoseClip(poseClip);
+            poseService.PlayPoseClip(poseClip, Anchor);
             ConditionsValidated?.Invoke();
             StartWatchEndOfConditions();
         }
@@ -221,7 +250,9 @@ namespace umi3d.cdk.userCapture.pose
 
                 // check to enable/disable auto-watched poses (nonInteractional)
                 if (!IsApplied && CheckConditions())
+                {
                     Apply();
+                }
             }
             StopWatchActivationConditions();
         }
@@ -295,5 +326,7 @@ namespace umi3d.cdk.userCapture.pose
 
             return false;
         }
+
+        
     }
 }

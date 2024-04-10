@@ -35,7 +35,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="finished"></param>
-        public async Task LoadGlTFScene(GlTFSceneDto dto, Progress progress)
+        public async Task LoadGlTFScene(ulong environmentId, GlTFSceneDto dto, Progress progress)
         {
             if (UMI3DEnvironmentLoader.Exists)
             {
@@ -44,6 +44,7 @@ namespace umi3d.cdk
                 progress.AddComplete();
                 var go = new GameObject(dto.name);
                 UMI3DNodeInstance node = UMI3DEnvironmentLoader.RegisterNodeInstance(
+                    environmentId,
                     dto.extensions.umi3d.id,
                     dto,
                     go,
@@ -54,11 +55,11 @@ namespace umi3d.cdk
                             UMI3DResourcesManager.UnloadLibrary(library, sceneDto.id);
                     });
 
-                go.transform.SetParent(UMI3DEnvironmentLoader.Instance.transform);
+                go.transform.SetParent(UMI3DLoadingHandler.Instance.transform);
                 //Load Materials and then Nodes
-                LoadSceneMaterials(dto);
+                LoadSceneMaterials(environmentId, dto);
                 
-                await UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(dto.nodes, progress);
+                await UMI3DEnvironmentLoader.Instance.nodeLoader.LoadNodes(environmentId, dto.nodes, progress);
                 progress.AddComplete();
                 node.NotifyLoaded();
             }
@@ -89,7 +90,7 @@ namespace umi3d.cdk
                 await Task.WhenAll(sceneDto.otherEntities.Select(
                     async entity =>
                     {
-                       await  UMI3DEnvironmentLoader.LoadEntity(entity, data.tokens);
+                       await  UMI3DEnvironmentLoader.LoadEntity(data.environmentId, entity, data.tokens);
                     }));
             }
 
@@ -217,7 +218,7 @@ namespace umi3d.cdk
             return true;
         }
 
-        public void LoadSceneMaterials(GlTFSceneDto dto)
+        public void LoadSceneMaterials(ulong environmentId, GlTFSceneDto dto)
         {
             foreach (GlTFMaterialDto material in dto.materials)
             {
@@ -232,11 +233,11 @@ namespace umi3d.cdk
                         //register the material
                         if (m == null)
                         {
-                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, new List<Material>()).NotifyLoaded();
+                            UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, ((AbstractEntityDto)material.extensions.umi3d).id, material, new List<Material>()).NotifyLoaded();
                         }
                         else
                         {
-                            UMI3DEnvironmentLoader.RegisterEntityInstance(((AbstractEntityDto)material.extensions.umi3d).id, material, m).NotifyLoaded();
+                            UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, ((AbstractEntityDto)material.extensions.umi3d).id, material, m).NotifyLoaded();
                         }
                     }
                     );
@@ -290,20 +291,14 @@ namespace umi3d.cdk
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
                     Vector2 offset = ((Vector2Dto)property.value).Struct();
-                    foreach (string textureName in materialToModify.GetTexturePropertyNames())
-                    {
-                        materialToModify.SetTextureOffset(textureName, offset);
-                    }
+                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.Offset, new Color(offset.x, offset.y, 0, 0));
                     glTFMaterialDto.extensions.KHR_texture_transform.offset = offset.Dto();
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
-                    var scale = (Vector2Dto)property.value;
-                    foreach (string textureName in materialToModify.GetTexturePropertyNames())
-                    {
-                        materialToModify.SetTextureScale(textureName, scale.Struct());
-                    }
-                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale;
+                    Vector2 scale = ((Vector2Dto)property.value).Struct();
+                    materialToModify.ApplyShaderProperty(MRTKShaderUtils.Tilling, new Color(scale.x, scale.y, 0, 0));
+                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale.Dto();
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:
@@ -507,22 +502,16 @@ namespace umi3d.cdk
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingOffset:
-                    Vector2 offset = UMI3DSerializer.Read<Vector2>(container);
-                    if (materialToModify is Material)
+                    Vector4 offset = UMI3DSerializer.Read<Vector2>(container);
+                    if (materialToModify is Material m)
                     {
-                        foreach (string textureName in (materialToModify as Material).GetTexturePropertyNames())
-                        {
-                            (materialToModify as Material).SetTextureOffset(textureName, offset);
-                        }
+                        m.ApplyShaderProperty(MRTKShaderUtils.Offset, offset);
                     }
                     else if (materialToModify is List<Material>)
                     {
                         foreach (Material itemToModify in materialToModify as List<Material>)
                         {
-                            foreach (string textureName in itemToModify.GetTexturePropertyNames())
-                            {
-                                itemToModify.SetTextureOffset(textureName, offset);
-                            }
+                            itemToModify.ApplyShaderProperty(MRTKShaderUtils.Offset, offset);
                         }
                     }
                     else
@@ -530,26 +519,20 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.extensions.KHR_texture_transform.offset = offset.Dto();
+                    glTFMaterialDto.extensions.KHR_texture_transform.offset = ((Vector2)offset).Dto();
                     break;
 
                 case UMI3DPropertyKeys.TextureTilingScale:
-                    Vector2 scale = UMI3DSerializer.Read<Vector2>(container);
-                    if (materialToModify is Material)
+                    Vector4 scale = UMI3DSerializer.Read<Vector2>(container);
+                    if (materialToModify is Material mat)
                     {
-                        foreach (string textureName in (materialToModify as Material).GetTexturePropertyNames())
-                        {
-                            (materialToModify as Material).SetTextureScale(textureName, scale);
-                        }
+                        mat.ApplyShaderProperty(MRTKShaderUtils.Tilling, scale);
                     }
                     else if (materialToModify is List<Material>)
                     {
                         foreach (Material itemToModify in materialToModify as List<Material>)
                         {
-                            foreach (string textureName in itemToModify.GetTexturePropertyNames())
-                            {
-                                itemToModify.SetTextureScale(textureName, scale);
-                            }
+                            itemToModify.ApplyShaderProperty(MRTKShaderUtils.Tilling, scale);
                         }
                     }
                     else
@@ -557,7 +540,7 @@ namespace umi3d.cdk
                         return false;
                     }
 
-                    glTFMaterialDto.extensions.KHR_texture_transform.scale = scale.Dto();
+                    glTFMaterialDto.extensions.KHR_texture_transform.scale = ((Vector2)scale).Dto();
                     break;
 
                 case UMI3DPropertyKeys.ShaderProperties:

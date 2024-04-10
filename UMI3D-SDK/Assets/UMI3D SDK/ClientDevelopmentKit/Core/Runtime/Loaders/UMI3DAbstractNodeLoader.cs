@@ -71,11 +71,13 @@ namespace umi3d.cdk
             {
                 if (nodeDto.pid != 0)
                 {
-                    loadingManager.WaitUntilEntityLoaded(nodeDto.pid, e =>
+                    loadingManager.WaitUntilEntityLoaded(
+                        data.environmentId 
+                        ,nodeDto.pid, e =>
                     {
                         if (e is UMI3DNodeInstance instance)
                         {
-                            var nodeInstance = environmentManager.TryGetEntityInstance(nodeDto.pid) as UMI3DNodeInstance;
+                            var nodeInstance = environmentManager.TryGetEntityInstance(data.environmentId,nodeDto.pid) as UMI3DNodeInstance;
                             if ( nodeInstance != null && nodeInstance.mainInstance != null)
                             {
                                 data.node.transform.SetParent(nodeInstance.mainInstance.transform, false);
@@ -132,7 +134,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = (ulong)(long)data.property.value;
-                    UMI3DNodeInstance parent = environmentManager.GetNodeInstance(pid);
+                    UMI3DNodeInstance parent = environmentManager.GetNodeInstance(data.environmentId, pid);
                     node.transform.SetParent(parent != null ? parent.transform : environmentManager.transform);
                     if(parent != null)
                     {
@@ -196,7 +198,7 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = UMI3DSerializer.Read<ulong>(data.container);
-                    UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(pid);
+                    UMI3DNodeInstance parent = UMI3DEnvironmentLoader.GetNode(data.environmentId, pid);
                     node.transform.SetParent(parent != null ? parent.transform : environmentManager.transform);
                     if (parent != null)
                     {

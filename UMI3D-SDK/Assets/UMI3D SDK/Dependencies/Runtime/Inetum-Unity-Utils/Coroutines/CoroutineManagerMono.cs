@@ -58,6 +58,8 @@ namespace inetum.unityUtils
 
         public void DetachLateRoutine(IEnumerator routine)
         {
+            if (!routines.Contains(routine) || routinesToRemove.Contains(routine))
+                return;
             routinesToRemove.Enqueue(routine);
         }
 
@@ -82,7 +84,8 @@ namespace inetum.unityUtils
             }
 
             foreach (var routine in routines)
-                routine.MoveNext();
+                if (!routine.MoveNext())
+                    DetachLateRoutine(routine);
         }
     }
 }

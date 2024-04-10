@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common;
 using umi3d.common.userCapture.pose;
 using UnityEngine;
 
@@ -45,11 +46,23 @@ namespace umi3d.cdk.userCapture.pose
         /// <inheritdoc/>
         public bool Check()
         {
+            if (nodeTransform == null) // happens when node is destroyed but condition is not removed.
+            {
+                UMI3DLogger.LogWarning($"Magnitude Pose Condition broke. Node {magnitudeConditionDto.TargetNodeId} destroyed without removing condition first.", DebugScope.CDK | DebugScope.UserCapture);
+                return false;
+            }
+
             Vector3 targetPosition = nodeTransform.position;
 
             Vector3 bonePosition = Vector3.zero;
             if (trackedSkeleton.TrackedBones.TryGetValue(magnitudeConditionDto.BoneOrigin, out TrackedSubskeletonBone bone))
                 bonePosition = bone.transform.position;
+
+            if (magnitudeConditionDto.IgnoreHeight)
+            {
+                targetPosition = Vector3.ProjectOnPlane(targetPosition, Vector3.up);
+                bonePosition = Vector3.ProjectOnPlane(bonePosition, Vector3.up);
+            }
 
             return Vector3.Distance(targetPosition, bonePosition) < magnitudeConditionDto.Magnitude;
         }

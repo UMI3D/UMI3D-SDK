@@ -24,12 +24,12 @@ namespace umi3d.worldController
     /// </summary>
     public interface IWorldController_Environment
     {
-        Task NotifyUserRegister(UMI3DCollaborationUser user);
+        Task NotifyUserRegister(UMI3DCollaborationAbstractContentUser user);
 
-        Task NotifyUserJoin(UMI3DCollaborationUser user);
+        Task NotifyUserJoin(UMI3DCollaborationAbstractContentUser user);
 
-        Task NotifyUserLeave(UMI3DCollaborationUser user);
+        Task NotifyUserLeave(UMI3DCollaborationAbstractContentUser user);
 
-        Task NotifyUserUnregister(UMI3DCollaborationUser user);
+        Task NotifyUserUnregister(UMI3DCollaborationAbstractContentUser user);
     }
 }

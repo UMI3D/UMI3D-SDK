@@ -86,7 +86,8 @@ namespace umi3d.worldController
                 {
                     gate = _dto.gate,
                     globalToken = _dto.globalToken,
-                    libraryPreloading = _dto.libraryPreloading
+                    libraryPreloading = _dto.libraryPreloading,
+                    isServer = _dto.isServer
                 };
             }
 
@@ -184,7 +185,7 @@ namespace umi3d.worldController
         }
         #endregion
 
-        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken)
+        public bool isAuthenticated(HttpListenerRequest request, bool allowOldToken, bool allowResourceOnly)
         {
             throw new NotImplementedException();
         }

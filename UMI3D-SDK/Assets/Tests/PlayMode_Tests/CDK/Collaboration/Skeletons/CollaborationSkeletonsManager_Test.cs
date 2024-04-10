@@ -27,6 +27,7 @@ using umi3d.cdk.collaboration.userCapture;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
@@ -69,7 +70,6 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborationClientServerServiceMock = new();
             collaborativeLoaderServiceMock = new();
             collaborativeEnvironmentManagementServiceMock = new();
-            poseManagerMock = new();
             routineServiceMock = new();
             personalSkeletonManagerMock = new();
 
@@ -81,14 +81,15 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeSkeletonManagerMock = new Mock<CollaborationSkeletonsManager>(collaborationClientServerServiceMock.Object,
                                                                             collaborativeLoaderServiceMock.Object,
                                                                             collaborativeEnvironmentManagementServiceMock.Object,
-                                                                            poseManagerMock.Object,
                                                                             personalSkeletonManagerMock.Object,
                                                                             routineServiceMock.Object);
             collaborativeSkeletonManagerMock.CallBase = true;
             collaborativeSkeletonManager = collaborativeSkeletonManagerMock.Object;
 
             skeletonGo = new GameObject("Skeleton created");
+            skeletonGo.AddComponent<CollaborativeSkeleton>();
             trackedSubskeletonGo = new GameObject("Tracked subskeleton");
+            trackedSubskeletonGo.transform.SetParent(skeletonGo.transform);
             var trackedSubskeleton = trackedSubskeletonGo.AddComponent<TrackedSubskeleton>();
             hipsTracked = new GameObject("Hips tracked");
             hipsTracked.transform.SetParent(trackedSubskeletonGo.transform);
@@ -122,7 +123,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             // GIVEN
             ulong userId = 1005uL;
             UserDto userDto = new UserDto() { id = userId };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
@@ -133,7 +134,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(userList);
 
             // WHEN
-            var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, skeletonGo.transform, hierarchy);
+            var skeleton = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, skeletonGo.transform, hierarchy);
 
             // THEN
             Assert.IsNotNull(skeleton);
@@ -154,7 +155,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             // GIVEN
             ulong userId = 1005uL;
             UserDto userDto = new UserDto() { id = userId };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
 
@@ -166,7 +167,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(userList);
 
             // WHEN
-            var skeleton = collaborativeSkeletonManager.CreateSkeleton(userId, null, hierarchy);
+            var skeleton = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, null, hierarchy);
 
             // THEN
             Assert.IsNotNull(skeleton);
@@ -187,13 +188,13 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             // GIVEN
             ulong userId = 1005uL;
             UserDto userDto = new UserDto() { id = userId };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             GameObject go = new GameObject("Skeleton created");
             collaborativeEnvironmentManagementServiceMock.Setup(x => x.UserList).Returns(userList);
             // WHEN
-            Action action = () => { _ = collaborativeSkeletonManager.CreateSkeleton(userId, go.transform, null); };
+            Action action = () => { _ = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, go.transform, null); };
 
             // THEN
             Assert.Throws<System.ArgumentNullException>(() => action());
@@ -216,7 +217,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
 
@@ -228,10 +229,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton(userId);
+            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton((UMI3DGlobalID.EnvironmentId,userId));
 
             // then
             Assert.AreEqual(resultSkeleton.UserId, userId);
@@ -247,7 +248,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
@@ -258,10 +259,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton(userId + 1);
+            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton((UMI3DGlobalID.EnvironmentId, userId + 1));
 
             // then
             Assert.IsNull(resultSkeleton);
@@ -281,7 +282,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
@@ -292,10 +293,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            ISkeleton resultSkeleton = collaborativeSkeletonManager.TryGetSkeletonById(userId + 1);
+            ISkeleton resultSkeleton = collaborativeSkeletonManager.TryGetSkeletonById(UMI3DGlobalID.EnvironmentId, userId + 1);
 
             // then
             Assert.IsNull(resultSkeleton);
@@ -311,7 +312,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
                 id = userId,
                 userSize = new umi3d.common.Vector3Dto()
             };
-            UMI3DUser user = new UMI3DUser(userDto);
+            UMI3DUser user = new UMI3DUser(UMI3DGlobalID.EnvironmentId, userDto);
             var userList = new List<UMI3DUser>() { user };
 
             var parameterMock = new Mock<IUMI3DCollabLoadingParameters>();
@@ -322,10 +323,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             GameObject testSkeletonGo = new GameObject("Test collaborative skeleton");
             UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
 
-            _ = collaborativeSkeletonManager.CreateSkeleton(userId, testSkeletonGo.transform, hierarchy);
+            _ = collaborativeSkeletonManager.CreateSkeleton(UMI3DGlobalID.EnvironmentId, userId, testSkeletonGo.transform, hierarchy);
 
             // when
-            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton(userId + 1);
+            CollaborativeSkeleton resultSkeleton = collaborativeSkeletonManager.GetCollaborativeSkeleton((UMI3DGlobalID.EnvironmentId, userId + 1));
 
             // then
             Assert.IsNull(resultSkeleton);
@@ -397,10 +398,12 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             UserTrackingFrameDto frame1 = new UserTrackingFrameDto()
             {
                 userId = 1005uL,
+                environmentId = UMI3DGlobalID.EnvironmentId
             };
             UserTrackingFrameDto frame2 = new UserTrackingFrameDto()
             {
-                userId = 1006uL
+                userId = 1006uL,
+                environmentId = UMI3DGlobalID.EnvironmentId
             };
 
             List<UserTrackingFrameDto> frames = new()
@@ -413,10 +416,10 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             skeletonMock1.Setup(x => x.UpdateBones(frame1));
             skeletonMock2.Setup(x => x.UpdateBones(frame2));
 
-            Dictionary<ulong, ISkeleton> dictSkeletons = new()
+            Dictionary<(ulong,ulong), ISkeleton> dictSkeletons = new()
             {
-                { frame1.userId, skeletonMock1.Object},
-                { frame2.userId, skeletonMock2.Object },
+                { (UMI3DGlobalID.EnvironmentId,frame1.userId), skeletonMock1.Object},
+                { (UMI3DGlobalID.EnvironmentId, frame2.userId), skeletonMock2.Object },
             };
 
             var mockRoutine = new Mock<IEnumerator>();
@@ -549,7 +552,8 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             var poses = new List<PoseClip>(2) { new PoseClip(null), new PoseClip(null) };
 
             collaborativeSkeletonManagerMock.CallBase = false;
-            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<PlayPoseClipDto>())).CallBase();
+            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(UMI3DGlobalID.EnvironmentId,It.IsAny<PlayPoseClipDto>())).CallBase();
+
 
             var poseSkeletonMock = new Mock<IPoseSubskeleton>();
             poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
@@ -557,20 +561,23 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSkeletonMock.Object);
 
-            var skeletons = new Dictionary<ulong, ISkeleton>(1) { { userId, skeletonMock.Object } };
+            var skeletons = new Dictionary<(ulong, ulong), ISkeleton>(1) { { (UMI3DGlobalID.EnvironmentId, userId), skeletonMock.Object } };
             collaborativeSkeletonManagerMock.Setup(x => x.Skeletons).Returns(skeletons);
+            ulong poseId = 1uL;
             var playPoseDto = new PlayPoseClipDto()
             {
-                userID = userId,
-                poseId = 1,
+                poseId = poseId,
                 stopPose = false
             };
 
+            PoseClip poseClip = poses[0];
+            collaborativeEnvironmentManagementServiceMock.Setup(x => x.TryGetEntity(UMI3DGlobalID.EnvironmentId, poseId, out poseClip));
+
             // when
-            collaborativeSkeletonManager.ApplyPoseRequest(playPoseDto);
+            collaborativeSkeletonManager.ApplyPoseRequest(UMI3DGlobalID.EnvironmentId,playPoseDto);
 
             // then
-            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), It.IsAny<bool>()));
+            poseSkeletonMock.Setup(x => x.StartPose(It.IsAny<PoseClip>(), It.IsAny<bool>(), It.IsAny<ISubskeletonDescriptionInterpolationPlayer.PlayingParameters>(), It.IsAny<PoseAnchorDto>()));
         }
 
         [Test]
@@ -581,7 +588,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             var poses = new List<PoseClip>(2) { new PoseClip(null), new PoseClip(null) };
 
             collaborativeSkeletonManagerMock.CallBase = false;
-            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(It.IsAny<PlayPoseClipDto>())).CallBase();
+            collaborativeSkeletonManagerMock.Setup(x => x.ApplyPoseRequest(UMI3DGlobalID.EnvironmentId, It.IsAny<PlayPoseClipDto>())).CallBase();
 
             var poseSkeletonMock = new Mock<IPoseSubskeleton>();
             poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));
@@ -589,17 +596,20 @@ namespace PlayMode_Tests.Collaboration.UserCapture.CDK
             var skeletonMock = new Mock<ISkeleton>();
             skeletonMock.Setup(x => x.PoseSubskeleton).Returns(poseSkeletonMock.Object);
 
-            var skeletons = new Dictionary<ulong, ISkeleton>(1) { { userId, skeletonMock.Object } };
+            var skeletons = new Dictionary<(ulong,ulong), ISkeleton>(1) { { (UMI3DGlobalID.EnvironmentId, userId), skeletonMock.Object } };
             collaborativeSkeletonManagerMock.Setup(x => x.Skeletons).Returns(skeletons);
+            ulong poseId = 1uL;
             var playPoseDto = new PlayPoseClipDto()
             {
-                userID = userId,
-                poseId = 1,
+                poseId = poseId,
                 stopPose = true
             };
 
+            PoseClip poseClip = poses[0];
+            collaborativeEnvironmentManagementServiceMock.Setup(x => x.TryGetEntity(UMI3DGlobalID.EnvironmentId, poseId, out poseClip));
+
             // when
-            collaborativeSkeletonManager.ApplyPoseRequest(playPoseDto);
+            collaborativeSkeletonManager.ApplyPoseRequest(UMI3DGlobalID.EnvironmentId, playPoseDto);
 
             // then
             poseSkeletonMock.Setup(x => x.StopPose(It.IsAny<PoseClip>()));

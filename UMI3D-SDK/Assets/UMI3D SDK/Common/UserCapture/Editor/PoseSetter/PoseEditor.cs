@@ -16,6 +16,7 @@ limitations under the License.
 #if UNITY_EDITOR
 
 using System.Linq;
+using umi3d.common.userCapture.description;
 using UnityEngine;
 
 namespace umi3d.common.userCapture.pose.editor
@@ -25,6 +26,8 @@ namespace umi3d.common.userCapture.pose.editor
         private readonly PoseEditorSkeleton skeleton;
         public PoseEditorSkeleton Skeleton => skeleton;
 
+        private readonly HandClosureSkeleton handClosureSkeleton;
+
         private readonly PoseEditionService poseEditionService;
         private readonly PoseSaverService poseSaverService;
 
@@ -32,43 +35,42 @@ namespace umi3d.common.userCapture.pose.editor
         {
             this.poseEditionService = new();
             this.poseSaverService = new();
-            this.skeleton = new PoseEditorSkeleton();
+            this.skeleton = new();
+            this.handClosureSkeleton = new();
         }
 
-        public void CreatePose()
-        {
-            poseSaverService.CreatePose(skeleton);
-        }
-
-        public void SavePose(string poseName, string path)
+        public void SavePose(string filePath)
         {
             if (skeleton.boneComponents.Where(bc => bc.isRoot).Count() == 0)
                 poseEditionService.ResetRoot(skeleton);
 
-            poseSaverService.SavePose(skeleton, path, poseName, out bool success);
+            var roots = skeleton.boneComponents.Where(bc => bc.isRoot);
+
+            poseSaverService.SavePose(roots, filePath, out bool success);
         }
 
-        public void LoadPose(UMI3DPose_so pose, out bool success)
+        public void LoadPose(string path, out bool success)
         {
-            poseSaverService.LoadPose(skeleton, pose, out success);
+            PoseDto pose = poseSaverService.LoadPose(path, out success);
             if (!success)
                 return;
 
-            poseEditionService.ResetAllBones(skeleton);
+            ResetSkeleton(skeleton.root);
 
-            PoseSetterBoneComponent root_boneComponent = skeleton.boneComponents.Find(bc => bc.BoneType == pose.GetBonePoseCopy().bone);
+            PoseSetterBoneComponent root_boneComponent = skeleton.boneComponents.Find(bc => bc.BoneType == pose.anchor.bone);
             root_boneComponent.isRoot = true;
+            skeleton.anchor = pose.anchor.bone;
 
-            poseEditionService.UpdateBoneRotation(skeleton, pose.GetBonePoseCopy());
+            poseEditionService.UpdateBoneRotation(skeleton, pose.anchor.bone, pose.anchor.rotation.Quaternion());
 
-            pose.GetBonesCopy().ForEach((bone) => poseEditionService.UpdateBoneRotation(skeleton, bone));
+            pose.bones.ForEach((bone) => poseEditionService.UpdateBoneRotation(skeleton, bone.boneType, bone.rotation.Quaternion()));
             success = true;
         }
 
         public void ResetSkeleton(GameObject skeletonRootGo)
         {
-            poseEditionService.ResetAllBones(skeleton);
-            poseEditionService.ResetSkeleton(skeleton, skeletonRootGo);
+            poseEditionService.RemoveAllRoots(skeleton);
+            poseEditionService.ResetSkeleton(skeleton);
         }
 
         public void ApplySymmetry(bool isLeft, SymmetryTarget target)
@@ -76,9 +78,9 @@ namespace umi3d.common.userCapture.pose.editor
             poseEditionService.ApplySymmetry(skeleton, isLeft, target);
         }
 
-        public void UpdateSkeletonGameObject(GameObject value)
+        public void InitSkeleton(GameObject skeletonGo)
         {
-            poseEditionService.UpdateSkeletonGameObject(skeleton, value);
+            poseEditionService.InitSkeleton(skeleton, handClosureSkeleton, skeletonGo);
         }
 
         public void UpdateIsRoot(uint boneType, bool isRoot)
@@ -86,6 +88,10 @@ namespace umi3d.common.userCapture.pose.editor
             poseEditionService.ChangeIsRoot(skeleton, boneType, isRoot);
         }
 
+        public void CloseFinger(uint handBoneType, HandClosureGroup fingerGroup, float closureRate)
+        {
+            poseEditionService.CloseFinger(skeleton, handClosureSkeleton, handBoneType, fingerGroup, closureRate);
+        }
     }
 }
 #endif

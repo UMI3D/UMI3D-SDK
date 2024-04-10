@@ -37,7 +37,8 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">UMI3D id</param>
         /// <returns></returns>
-        public static new UMI3DNodeAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DNodeAnimation; }
+        public static new UMI3DNodeAnimation Get(ulong environmentId,ulong id) { return UMI3DAbstractAnimation.Get(environmentId,id) as UMI3DNodeAnimation; }
+
         /// <summary>
         /// DTO local copy.
         /// </summary>
@@ -82,7 +83,7 @@ namespace umi3d.cdk
         private float progress;
         private bool started = false;
 
-        public UMI3DNodeAnimation(UMI3DNodeAnimationDto dto) : base(dto)
+        public UMI3DNodeAnimation(ulong environmentId, UMI3DNodeAnimationDto dto) : base(environmentId, dto)
         {
         }
 
@@ -163,10 +164,17 @@ namespace umi3d.cdk
 
         async void PerformChain(OperationChain chain)
         {
-            if (chain.IsByte)
-                await UMI3DClientServer.transactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
-            else
-                await UMI3DClientServer.transactionDispatcher.PerformOperation(new DtoContainer(chain.operation));
+            try
+            {
+                if (chain.IsByte)
+                    await UMI3DClientServer.transactionDispatcher.PerformOperation(new ByteContainer(chain.byteOperation));
+                else
+                    await UMI3DClientServer.transactionDispatcher.PerformOperation(new DtoContainer(EnvironmentId, chain.operation));
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         /// <inheritdoc/>

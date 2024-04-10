@@ -36,7 +36,7 @@ namespace umi3d.edk
         /// <summary>
         /// The public Getter for objectId.
         /// </summary>
-        public ulong Id()
+        public virtual ulong Id()
         {
             if (userId == 0 && UMI3DEnvironment.Exists)
                 userId = UMI3DEnvironment.Register(this);

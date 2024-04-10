@@ -105,7 +105,7 @@ namespace umi3d.edk
         {
             var env = new GlTFEnvironmentDto
             {
-                id = UMI3DGlobalID.EnvironementId
+                id = UMI3DGlobalID.EnvironmentId
             };
             env.scenes.AddRange(scenes.Where(s => s.LoadOnConnection(user)).Select(s => s.ToGlTFNodeDto(user)));
             env.extensions.umi3d = CreateDto();
@@ -157,11 +157,17 @@ namespace umi3d.edk
         /// <returns></returns>
         public virtual LibrariesDto ToLibrariesDto(UMI3DUser user)
         {
-            List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto())?.ToList() ?? new List<AssetLibraryDto>();
-            IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
-            if (sceneLib != null)
-                libraries.AddRange(sceneLib);
-            return new LibrariesDto() { libraries = libraries };
+            try
+            {
+                List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto()).ToList() ?? new List<AssetLibraryDto>();
+                IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
+                if (sceneLib != null)
+                    libraries.AddRange(sceneLib);
+                return new LibrariesDto() { libraries = libraries };
+            } catch (Exception e) {
+                Debug.LogException(e);
+                return null;
+            }
         }
 
         /// <summary>
@@ -178,7 +184,7 @@ namespace umi3d.edk
 
         private void InitDefinition()
         {
-            ulong id = UMI3DGlobalID.EnvironementId;
+            ulong id = UMI3DGlobalID.EnvironmentId;
 
             objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, 0, defaultStartPosition);
             objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, 0, Quaternion.Euler(defaultStartOrientation));

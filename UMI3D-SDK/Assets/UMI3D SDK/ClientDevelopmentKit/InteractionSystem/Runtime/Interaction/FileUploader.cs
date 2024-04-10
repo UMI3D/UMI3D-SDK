@@ -95,10 +95,10 @@ namespace umi3d.cdk.interaction
         /// Send upload request when a form contains an Upload File Parameter.
         /// </summary>
         /// <param name="form"></param>
-        public static void CheckFormToUploadFile(FormDto form)
+        public static void CheckFormToUploadFile(ulong environmentId,FormDto form)
         {
             form.fields
-                .Select(async id => (await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(id,null)).dto)
+                .Select(async id => (await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, id, null)).dto)
                 .ForEach(async p =>
             {
                 var param = await p;

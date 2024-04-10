@@ -26,25 +26,25 @@ namespace umi3d.cdk
         /// <param name="id"></param>
         /// <returns></returns>
         [Obsolete("Use UMI3DEnvironmentLoader.Instance.GetEntity<UMI3DAbstractAnimation>() instead.")]
-        public static UMI3DAbstractAnimation Get(ulong id) { return UMI3DEnvironmentLoader.GetEntity(id)?.Object as UMI3DAbstractAnimation; }
+        public static UMI3DAbstractAnimation Get(ulong environmentId, ulong id) { return UMI3DEnvironmentLoader.GetEntity(environmentId,id)?.Object as UMI3DAbstractAnimation; }
 
         /// <summary>
         /// Start playing an animation.
         /// </summary>
         /// <param name="id">Animation UMI3D id.</param>
         [Obsolete("Use Instance.StartAnimation() instead.")]
-        public static void Start(ulong id)
+        public static void Start(ulong environmentId, ulong id)
         {
-            Get(id)?.Start();
+            Get(environmentId, id)?.Start();
         }
 
         /// <summary>
         /// Start playing an animation.
         /// </summary>
         /// <param name="id">Animation UMI3D id.</param>
-        public virtual void StartAnimation(ulong id)
+        public virtual void StartAnimation(ulong environmentId, ulong id)
         {
-            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Start();
+            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(environmentId, id).Start();
         }
 
         /// <summary>
@@ -52,18 +52,18 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id">Animation UMI3D id.</param>
         [Obsolete("Use Instance.StopAnimation() instead.")]
-        public static void Stop(ulong id)
+        public static void Stop(ulong environmentId, ulong id)
         {
-            Get(id)?.Stop();
+            Get(environmentId, id)?.Stop();
         }
 
         /// <summary>
         /// Stop playing an animation.
         /// </summary>
         /// <param name="id">Animation UMI3D id.</param>
-        public virtual void StopAnimation(ulong id)
+        public virtual void StopAnimation(ulong environmentId, ulong id)
         {
-            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(id).Stop();
+            UMI3DEnvironmentLoader.Instance.GetEntityObject<UMI3DAbstractAnimation>(environmentId, id).Stop();
         }
     }
 }

@@ -89,9 +89,15 @@ namespace umi3d.common
         public const uint LineStartWidth = 3012;
         public const uint LineEndWidth = 3013;
 
+        public const uint DistantEnvironmentReliable = 3014;
+        public const uint DistantEnvironmentUnreliable = 3015;
+        public const uint DistantEnvironmentResourceUrl = 3017;
+        public const uint DistantEnvironmentUseDto = 3018;
+
         public const uint IsTraversable = 3020;
         public const uint IsPartOfNavmesh = 3021;
 
+        public const uint BlendShapeValues = 3030;
         #endregion
 
         #region KHR_light
@@ -203,7 +209,21 @@ namespace umi3d.common
         public const uint AnimationEmote = 11007;
 
         public const uint Poses = 11008;
-        public const uint AllPoseOverriderContainers = 11009;
+        public const uint ValidationEnvironmentPoseCondition = 11009;
+
+        public const uint PoseClipResource = 11010;
+        public const uint PoseClipComposable = 11011;
+        public const uint PoseClipInterpolable = 11012;
+
+        public const uint PoseAnimatorApplicationDuration= 11013;
+        public const uint PoseAnimatorActivationMode = 11014;
+        public const uint PoseAnimatorUseAnchoring = 11015;
+        public const uint PoseAnimatorAnchoringParameters = 11016;
+        public const uint PoseAnimatorActivationConditions = 11017;
+        public const uint PoseAnimatorPoseClip = 11018;
+
+        public const uint AreTrackedControllersVisible = 11030;
+
         #endregion
 
         #region notification
@@ -295,7 +315,10 @@ namespace umi3d.common
         public const uint WebViewTextureSize = 17003;
         public const uint WebViewUrl = 17004;
         public const uint WebViewCanUrlBeForced = 17005;
-
+        public const uint WebViewUseWhileList = 17006;
+        public const uint WebViewWhileList = 17007;
+        public const uint WebViewUseBlackList = 17008;
+        public const uint WebViewBlackList = 17009;
         #endregion
 
     }

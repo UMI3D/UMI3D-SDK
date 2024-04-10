@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using umi3d.common.userCapture.description;
+using UnityEngine;
 
 namespace umi3d.common.userCapture.pose
 {
@@ -39,5 +40,7 @@ namespace umi3d.common.userCapture.pose
         /// </summary>
         /// <returns></returns>
         PoseDto ToPoseDto();
+
+        PoseDto ToPoseDto(PoseAnchoringType anchoringType, ulong poseRelativeNodeId, uint poseRelativeBone, Vector3 posOffset, Quaternion rotOffset);
     }
 }

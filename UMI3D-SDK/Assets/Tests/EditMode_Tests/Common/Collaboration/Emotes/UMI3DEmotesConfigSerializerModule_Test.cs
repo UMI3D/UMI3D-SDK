@@ -81,7 +81,7 @@ namespace EditMode_Tests.Collaboration.Emotes.Common
             // WHEN
             emotesConfigSerializerModule.Write(dto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
 
             emotesConfigSerializerModule.Read(byteContainer, out bool readable, out UMI3DEmotesConfigDto result);
 

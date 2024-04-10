@@ -64,6 +64,13 @@ namespace umi3d.edk.userCapture.animation
         /// Available parameters are listed in <see cref="SkeletonAnimatorParameterKeys"/>.
         public SkeletonAnimationParameter[] animatorSelfTrackedParameters = new SkeletonAnimationParameter[0];
 
+        /// <summary>
+        /// True if the animation could be interpolated at start and end.
+        /// </summary>
+        /// Used for smooth transition to a skeleton animation.
+        [Tooltip("True if the animation could be interpolated at start and end."), EditorReadOnly]
+        public bool isInterpolable = true;
+
         #endregion Fields
 
         #region AnimationManagement
@@ -204,11 +211,12 @@ namespace umi3d.edk.userCapture.animation
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            var skeletonNodeDto = dto as SkeletonAnimationNodeDto;
+            SkeletonAnimationNodeDto skeletonNodeDto = (SkeletonAnimationNodeDto)dto;
             skeletonNodeDto.userId = userId;
             skeletonNodeDto.relatedAnimationsId = relatedAnimationIds;
             skeletonNodeDto.priority = priority;
             skeletonNodeDto.animatorSelfTrackedParameters = animatorSelfTrackedParameters.Select(x => x.ToDto()).ToArray();
+            skeletonNodeDto.IsInterpolable = isInterpolable;
         }
 
         public override Bytable ToBytes(UMI3DUser user)
@@ -217,7 +225,8 @@ namespace umi3d.edk.userCapture.animation
                     + UMI3DSerializer.Write(userId)
                     + UMI3DSerializer.Write(priority)
                     + UMI3DSerializer.WriteCollection(relatedAnimationIds)
-                    + UMI3DSerializer.WriteCollection(animatorSelfTrackedParameters); //TODO : Add a complete serializer for parameter. no use here because it s always sent through bson.
+                    + UMI3DSerializer.WriteCollection(animatorSelfTrackedParameters)
+                    + UMI3DSerializer.Write(isInterpolable); //TODO : Add a complete serializer for parameter. no use here because it s always sent through bson.
         }
 
         #endregion Serialization

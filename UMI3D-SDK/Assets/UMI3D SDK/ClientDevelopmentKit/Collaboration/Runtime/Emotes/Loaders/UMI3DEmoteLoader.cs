@@ -54,7 +54,7 @@ namespace umi3d.cdk.collaboration.emotes
         public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as UMI3DEmoteDto;
-            environmentManager.RegisterEntity(dto.id, dto, null).NotifyLoaded();
+            environmentManager.RegisterEntity(value.environmentId,dto.id, dto, null).NotifyLoaded();
             emoteManagementService.UpdateEmote(dto);
             return Task.CompletedTask;
         }

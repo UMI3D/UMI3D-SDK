@@ -50,9 +50,9 @@ namespace umi3d.common
                 var lss = m.Groups[3].Captures.Cast<Capture>().Select(s => s.Value).Select(s => int.Parse(s));
 
                 if (ignorePos)
-                    result.AddRange(pss.Zip(lss, (pos, len) => (pos, len)).Zip(bss, (a, b) => new ByteContainer(0, b)));
+                    result.AddRange(pss.Zip(lss, (pos, len) => (pos, len)).Zip(bss, (a, b) => new ByteContainer(0, 0, b)));
                 else
-                    result.AddRange(pss.Zip(lss, (pos, len) => (pos, len)).Zip(bss, (a, b) => new ByteContainer(0, b) { position = a.pos, length = a.len }));
+                    result.AddRange(pss.Zip(lss, (pos, len) => (pos, len)).Zip(bss, (a, b) => new ByteContainer(0, 0, b) { position = a.pos, length = a.len }));
                 m = m.NextMatch();
             }
             return result;
@@ -243,13 +243,13 @@ namespace umi3d.common
                     continue;
                 }
                
-                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
                 var byteTester = new ByteTester(SubContainer, operationReader);
                 this.results.Add(new(typeof(int).Name, nopIndex.ToString(), nopIndex, $"Tester {i++}", () => { operationReader.testers.Add(byteTester); }));
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
                 var byteTester = new ByteTester(SubContainer, operationReader);
                 this.results.Add(new($"Tester {i}", () => { operationReader.testers.Add(byteTester); }));
             }

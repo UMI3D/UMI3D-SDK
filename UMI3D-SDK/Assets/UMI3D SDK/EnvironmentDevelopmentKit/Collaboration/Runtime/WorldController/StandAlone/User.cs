@@ -34,6 +34,8 @@ namespace umi3d.worldController
         public string headearToken => privateIdentity.headerToken;
         public string key => privateIdentity.key;
 
+        public bool isServer => privateIdentity.isServer;
+
         public string globalToken;
         private static readonly Dictionary<ulong, User> ids = new Dictionary<ulong, User>();
 
@@ -42,7 +44,8 @@ namespace umi3d.worldController
             this.globalToken = globalToken;
             privateIdentity = new PrivateIdentityDto
             {
-                guid = NewID()
+                guid = NewID(),
+                isServer = connectionDto.isServer
             };
             Update(connectionDto);
         }
@@ -88,6 +91,7 @@ namespace umi3d.worldController
         {
             identity.login = privateIdentity.login;
             identity.displayName = privateIdentity.displayName;
+            identity.isServer = privateIdentity.isServer;
         }
 
         private void SetIdentity(IdentityDto identity)

@@ -65,7 +65,7 @@ namespace umi3d.worldController
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserJoin(UMI3DCollaborationUser user)
+        public override Task NotifyUserJoin(UMI3DCollaborationAbstractContentUser user)
         {
             return Task.CompletedTask;
         }
@@ -130,7 +130,7 @@ namespace umi3d.worldController
 
                 await env.Register(user.RegisterIdentityDto());
             }
-            List<LibrariesDto> l = await IAM.GetLibraries(user);
+            List<AssetLibraryDto> l = await IAM.GetLibraries(user);
             PrivateIdentityDto privateId = user.PrivateIdentityDto();
             privateId.libraries = l;
             Debug.Log(privateId);
@@ -138,19 +138,19 @@ namespace umi3d.worldController
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserUnregister(UMI3DCollaborationUser user)
+        public override Task NotifyUserUnregister(UMI3DCollaborationAbstractContentUser user)
         {
             return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserLeave(UMI3DCollaborationUser user)
+        public override Task NotifyUserLeave(UMI3DCollaborationAbstractContentUser user)
         {
             return Task.CompletedTask;
         }
 
         /// <inheritdoc/>
-        public override Task NotifyUserRegister(UMI3DCollaborationUser user)
+        public override Task NotifyUserRegister(UMI3DCollaborationAbstractContentUser user)
         {
             return Task.CompletedTask;
         }

@@ -31,6 +31,8 @@ namespace umi3d.cdk.userCapture
     /// </summary>
     public interface ISkeleton
     {
+        ulong EnvironmentId { get; set; }
+
         UserTrackingFrameDto LastFrame { get; }
 
         /// <summary>

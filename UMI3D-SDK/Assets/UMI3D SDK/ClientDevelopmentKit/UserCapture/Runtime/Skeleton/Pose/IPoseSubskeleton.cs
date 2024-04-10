@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common.userCapture.description;
 
 namespace umi3d.cdk.userCapture.pose
 {
@@ -33,14 +34,14 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="posesToAdd">Poses to start to apply</param>
         /// <param name="isOverriding">If true, all previous poses will be stopped.</param>
-        void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false);
+        void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, PoseAnchorDto anchorToForce = null);
 
         /// <summary>
         /// Set a pose for the calculation of the next tracking frame
         /// </summary>
         /// <param name="posesToAdd">Poses to start to apply</param>
         /// <param name="isOverriding">If true, all previous poses will be stopped.</param>
-        void StartPose(PoseClip poseToAdd, bool isOverriding = false);
+        void StartPose(PoseClip poseToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null, PoseAnchorDto anchorToForce = null);
 
         /// <summary>
         /// Remove all poses from computation.

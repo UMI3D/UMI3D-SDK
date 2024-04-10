@@ -78,7 +78,10 @@ namespace umi3d.cdk
                         throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
 #endif
                 else
+                {
+                    UMI3DResourcesManager.Instance.DebugCach();
                     throw new Umi3dException($"Asset bundle empty: \n\n\"{url}\" \n\nAn error might have occurred during the decoding of the asset bundle’s assets.");
+                }
             }
             www.Dispose();
             throw new Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
@@ -108,6 +111,10 @@ namespace umi3d.cdk
                     {
                         if (objectInBundle is GameObject)
                         {
+#if UNITY_EDITOR && !UNITY_STANDALONE_WIN
+                            UnityEngine.Debug.Log("<color=green>TODO: </color>" + $"Fix shader on asset bundle go {(objectInBundle as GameObject).name}");
+                            ShaderFix.FixShadersForEditor(objectInBundle as GameObject);
+#endif
                             AbstractMeshDtoLoader.HideModelRecursively((GameObject)objectInBundle);
                         }
                         return (objectInBundle);
@@ -118,6 +125,10 @@ namespace umi3d.cdk
                     if (Array.Exists(bundle.GetAllScenePaths(), element => { return element == pathIfObjectInBundle; }))
                     {
                         var scene = await LoadScene(pathIfObjectInBundle);
+#if UNITY_EDITOR && !UNITY_STANDALONE_WIN
+                        UnityEngine.Debug.Log("<color=green>TODO: </color>" + $"Fix shader on asset bundle go {scene.Item1.name}");
+                        ShaderFix.FixShadersForEditor(scene.Item1);
+#endif
                         AbstractMeshDtoLoader.HideModelRecursively(scene.Item1);
                         return scene;
                     }

@@ -67,14 +67,14 @@ namespace umi3d.cdk.volumes
             onPrimitiveDelete.RemoveListener(callback);
         }
 
-        public static async Task<AbstractVolumeCell> CreatePrimitive(AbstractPrimitiveDto dto)
+        public static async Task<AbstractVolumeCell> CreatePrimitive(ulong environmentId, AbstractPrimitiveDto dto)
         {
-            Matrix4x4 localToWorldMatrix = UMI3DEnvironmentLoader.GetNode(dto.rootNodeId)?.transform.localToWorldMatrix ?? Matrix4x4.identity;
+            Matrix4x4 localToWorldMatrix = UMI3DEnvironmentLoader.GetNode(environmentId, dto.rootNodeId)?.transform.localToWorldMatrix ?? Matrix4x4.identity;
 
             switch (dto)
             {
                 case BoxDto boxDto:
-                    var box = new Box() { id = boxDto.id };
+                    var box = new Box() { id = boxDto.id, Environmentid = environmentId };
                     box.SetBounds(new Bounds() { center = boxDto.center.Struct(), size = boxDto.size.Struct() });
                     box.RootNodeId = dto.rootNodeId;
 
@@ -86,6 +86,7 @@ namespace umi3d.cdk.volumes
                     var c = new Cylinder()
                     {
                         id = cylinderDto.id,
+                        Environmentid = environmentId,
                         position = localToWorldMatrix.MultiplyPoint(Vector3.zero),
                         rotation = localToWorldMatrix.rotation,
                         scale = localToWorldMatrix.lossyScale

@@ -60,7 +60,7 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Audio player attached to the user.
         /// </summary>
-        public UMI3DAudioPlayer audioplayer => UMI3DAudioPlayer.Get(dto.audioSourceId);
+        public UMI3DAudioPlayer audioplayer => dto.audioSourceId != 0 ? UMI3DAudioPlayer.Get(EnvironmentId, dto.audioSourceId) : null;
         /// <summary>
         /// See <see cref="UserDto.videoSourceId"/>.
         /// </summary>
@@ -68,7 +68,9 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Video player attached to the user.
         /// </summary>
-        public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(dto.videoSourceId);
+        public UMI3DVideoPlayer videoPlayer => UMI3DVideoPlayer.Get(EnvironmentId, dto.videoSourceId);
+
+        public readonly ulong EnvironmentId;
 
         /// <summary>
         /// See <see cref="UserDto.microphoneStatus"/>.
@@ -140,23 +142,21 @@ namespace umi3d.cdk.collaboration
         public ulong onStopSpeakingAnimationId => dto.onStopSpeakingAnimationId;
 
         /// <summary>
+        /// See <see cref="UserDto.areTrackedControllersVisible"/>.
+        /// </summary>
+        public bool areTrackedControllersVisible => dto.areTrackedControllersVisible;
+
+        /// <summary>
         /// See <see cref="UserDto.login"/>.
         /// </summary>
         public string login => dto?.login;
 
         public bool isClient => id == UMI3DCollaborationClientServer.Instance.GetUserId();
 
-        public UMI3DUser(UserDto user)
+        public UMI3DUser(ulong environmentId, UserDto user)
         {
             dto = user;
-            UMI3DEnvironmentLoader.Instance.RegisterEntity(dto.id, dto, null).NotifyLoaded();
-            OnNewUser.Invoke(this);
-        }
-
-        public void Destroy()
-        {
-            UMI3DEnvironmentLoader.DeleteEntity(dto.id,null);
-            OnRemoveUser.Invoke(this);
+            this.EnvironmentId = environmentId;
         }
 
         /// <summary>
@@ -180,6 +180,7 @@ namespace umi3d.cdk.collaboration
             bool serverUpdate = dto.audioServerUrl != user.audioServerUrl;
 
             bool loginUpdate = dto.audioLogin != user.audioLogin;
+            bool areTrackedControllersVisibleUpdate = dto.areTrackedControllersVisible != user.areTrackedControllersVisible;
             bool pswUpdate = false;
 
             dto = user;
@@ -204,6 +205,7 @@ namespace umi3d.cdk.collaboration
             if (channelUpdate) OnUserMicrophoneChannelUpdated.Invoke(this);
             if (serverUpdate) OnUserMicrophoneServerUpdated.Invoke(this);
             if (loginUpdate || pswUpdate) OnUserMicrophoneIdentityUpdated.Invoke(this);
+            if (areTrackedControllersVisibleUpdate) OnAreTrackedControllersVisible.Invoke(this);
         }
 
         public bool UpdateUser(ulong property, object value)
@@ -267,10 +269,14 @@ namespace umi3d.cdk.collaboration
                     dto.userSize = (Vector3Dto)value;
                     return true;
 
+                case UMI3DPropertyKeys.AreTrackedControllersVisible:
+                    dto.areTrackedControllersVisible = (bool)value;
+                    OnAreTrackedControllersVisible.Invoke(this);
+                    return true;
+
                 default:
                     return false;
             }
-            return false;
         }
 
         public void SetMicrophoneStatus(bool microphoneStatus)
@@ -336,6 +342,6 @@ namespace umi3d.cdk.collaboration
         public static UMI3DUserEvent OnUserMicrophoneServerUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnUserMicrophoneChannelUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnUserMicrophoneUseMumbleUpdated = new UMI3DUserEvent();
-
+        public static UMI3DUserEvent OnAreTrackedControllersVisible = new UMI3DUserEvent();
     }
 }

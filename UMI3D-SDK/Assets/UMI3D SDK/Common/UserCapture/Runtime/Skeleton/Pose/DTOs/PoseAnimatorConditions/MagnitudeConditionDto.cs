@@ -37,6 +37,11 @@ namespace umi3d.common.userCapture.pose
         /// UMI3D Id of the target object 
         /// </summary>
         public ulong TargetNodeId { get; set; }
+
+        /// <summary>
+        /// If true, the magnitude comparison will be done on the XZ plane.
+        /// </summary>
+        public bool IgnoreHeight { get; set; }
     }
 }
 

@@ -82,6 +82,9 @@ namespace umi3d.cdk
             {
                 if (alternativeCallback != null)
                     alternativeCallback.Invoke(null);
+                else
+                    mat?.ApplyShaderProperty(materialKey, null);
+
                 return;
             }
             FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(textureDto.variants);  // Peut etre ameliore
@@ -111,7 +114,7 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
+                    UMI3DLogger.LogWarning($"invalid cast from {o?.GetType()} to {typeof(Texture2D)}", scope);
                 }
             }
         }

@@ -55,24 +55,30 @@ namespace umi3d.cdk.collaboration.userCapture.binding
         #endregion DependencyInjection
 
         /// <inheritdoc/>
-        protected override async Task<AbstractBinding> LoadData(ulong boundNodeId, AbstractBindingDataDto dto)
+        protected override async Task<AbstractBinding> LoadData(ulong environmentId, ulong boundNodeId, AbstractBindingDataDto dto)
         {
             switch (dto)
             {
                 case NodeBindingDataDto
                     or MultiBindingDataDto:
                     {
-                        return await base.LoadData(boundNodeId, dto);
+                        return await base.LoadData(environmentId, boundNodeId, dto);
                     }
                 case RigBoneBindingDataDto riggedBoneBinding:
                     {
-                        var skeleton = skeletonService.Skeletons[riggedBoneBinding.userId];
+                        var skeleton = await skeletonService.WaitForSkeleton(environmentId, riggedBoneBinding.userId);
+                        if (skeleton == null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - ({environmentId},{riggedBoneBinding.userId}). Skeleton does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+
                         if (!skeleton.Bones.ContainsKey(riggedBoneBinding.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {riggedBoneBinding.boneType} - {BoneTypeHelper.GetBoneName(riggedBoneBinding.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
                             return null;
                         }
-                        UMI3DNodeInstance boundNode = (UMI3DNodeInstance)await environmentLoaderService.WaitUntilEntityLoaded(boundNodeId, null);
+                        UMI3DNodeInstance boundNode = await environmentLoaderService.WaitUntilNodeInstanceLoaded(environmentId, boundNodeId, null);
 
                         Transform rig = boundNode.transform.GetComponentsInChildren<Transform>().Where(t => t.name == riggedBoneBinding.rigName).FirstOrDefault();
                         if (rig == null)
@@ -85,13 +91,19 @@ namespace umi3d.cdk.collaboration.userCapture.binding
                     }
                 case BoneBindingDataDto boneBindingDataDto:
                     {
-                        var skeleton = skeletonService.Skeletons[boneBindingDataDto.userId];
+                        var skeleton = await skeletonService.WaitForSkeleton(environmentId, boneBindingDataDto.userId);
+                        if (skeleton == null)
+                        {
+                            UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - ({environmentId},{boneBindingDataDto.userId}). Skeleton does not exist.", DEBUG_SCOPE);
+                            return null;
+                        }
+
                         if (!skeleton.Bones.ContainsKey(boneBindingDataDto.boneType))
                         {
                             UMI3DLogger.LogWarning($"Impossible to bind on bone {boneBindingDataDto.boneType} - {BoneTypeHelper.GetBoneName(boneBindingDataDto.boneType)}. Bone does not exist on skeleton.", DEBUG_SCOPE);
                             return null;
                         }
-                        UMI3DNodeInstance boundNode = await environmentLoaderService.WaitUntilEntityLoaded(boundNodeId, null) as UMI3DNodeInstance;
+                        UMI3DNodeInstance boundNode = await environmentLoaderService.WaitUntilNodeInstanceLoaded(environmentId, boundNodeId, null);
                         return new BoneBinding(boneBindingDataDto, boundNode.transform, skeleton);
                     }
                 default:

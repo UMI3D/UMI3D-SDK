@@ -20,7 +20,7 @@ using umi3d.common.collaboration.dto.signaling;
 
 public interface IEnvironment
 {
-    Task Register(RegisterIdentityDto identityDto);
+    Task Register(RegisterIdentityDto identityDto, bool resourcesOnly = false);
 
     Task<EnvironmentConnectionDto> ToDto();
 }

@@ -84,6 +84,13 @@ namespace umi3d.common.collaboration.dto.signaling
         /// It is the equivalent of a "raise your end" feature in videochat.
         public bool attentionRequired { get; set; }
 
+        /// <summary>
+        /// If true, user's visible controllers (device representation or hands from hand tracking) are visible.
+        /// </summary>
+        /// Typically set this value to false if you already have an avatar 
+        /// for the user that is enough for visual feedback.
+        public bool areTrackedControllersVisible { get; set; }
+
         #region audioNetworking
 
         /// <summary>

@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using umi3d.cdk.userCapture;
 using umi3d.common.userCapture.tracking;
 
@@ -26,9 +28,9 @@ namespace umi3d.cdk.collaboration.userCapture
     public interface ICollaborationSkeletonsManager : ISkeletonManager
     {
         /// <summary>
-        /// Collection of all skeletons indexed by user id.
+        /// Collection of all skeletons indexed by environment id and user id.
         /// </summary>
-        IReadOnlyDictionary<ulong, ISkeleton> Skeletons { get; }
+        IReadOnlyDictionary<(ulong,ulong), ISkeleton> Skeletons { get; }
 
         /// <summary>
         /// Scene where <see cref="CollaborativeSkeleton"/> are put.
@@ -38,9 +40,10 @@ namespace umi3d.cdk.collaboration.userCapture
         /// <summary>
         /// Try to get a skeleton from a <paramref name="userId"/>.
         /// </summary>
+        /// <param name="environmentId">Environment Id</param>
         /// <param name="userId">User UMI3D id.</param>
         /// <returns>Return null if no skeleton is found.</returns>
-        ISkeleton TryGetSkeletonById(ulong userId);
+        ISkeleton TryGetSkeletonById(ulong environmentId, ulong userId);
 
         /// <summary>
         /// Frequency of bone sending indexed by bone id.
@@ -82,5 +85,14 @@ namespace umi3d.cdk.collaboration.userCapture
         /// </summary>
         /// <param name="frame"></param>
         void UpdateSkeleton(UserTrackingFrameDto frame);
+
+        /// <summary>
+        /// Wait for a collaborative skeleton to be instantiated.
+        /// </summary>
+        /// <param name="environmentId"></param>
+        /// <param name="userId"></param>
+        /// <param name="tokens"></param>
+        /// <returns></returns>
+        Task<ISkeleton> WaitForSkeleton(ulong environmentId, ulong userId, List<CancellationToken> tokens = null);
     }
 }

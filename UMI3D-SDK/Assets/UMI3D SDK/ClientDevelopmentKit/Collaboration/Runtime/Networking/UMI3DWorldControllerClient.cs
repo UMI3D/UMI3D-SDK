@@ -14,11 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
+using umi3d.worldController;
+using UnityEngine;
 
 namespace umi3d.cdk.collaboration
 {
@@ -35,6 +38,8 @@ namespace umi3d.cdk.collaboration
         private string globalToken;
         private UMI3DEnvironmentClient environment;
         private PrivateIdentityDto privateIdentity;
+
+        private WorldHttpClient httpClient;
 
         /// <summary>
         /// Called to create a new Public Identity for this client.
@@ -73,6 +78,8 @@ namespace umi3d.cdk.collaboration
             isConnecting = false;
             isConnected = false;
             privateIdentity = null;
+
+            httpClient = new WorldHttpClient(this);
         }
 
         public UMI3DWorldControllerClient(MediaDto media, GateDto gate) : this(media)
@@ -107,10 +114,13 @@ namespace umi3d.cdk.collaboration
         {
             if (UMI3DCollaborationClientServer.Exists && !string.IsNullOrEmpty(media.url))
             {
-                UMI3DDto answerDto = await HttpClient.Connect(dto, media.url);
+                UMI3DDto answerDto = await EnvironmentHttpClient.Connect(dto, media.url);
                 if (answerDto is PrivateIdentityDto identity)
                 {
                     Connected(identity);
+
+                    await DownloadWorldLib();
+
                     return true;
                 }
                 else if (answerDto is ConnectionFormDto form)
@@ -130,10 +140,34 @@ namespace umi3d.cdk.collaboration
             return false;
         }
 
+        private async Task DownloadWorldLib()
+        {
+            // TODO : Verify if we show more lib to dl than really needed
+            var lstToDownload = UMI3DResourcesManager.LibrariesToDownload(privateIdentity.libraries);
+            bool shouldDownload = await UMI3DCollaborationClientServer.Instance.Identifier.ShouldDownloadLibraries(lstToDownload);
+
+            if (!shouldDownload) 
+                return;
+
+            MultiProgress progress = new MultiProgress("Searching for Libraries");
+            UMI3DCollaborationClientServer.onProgress.Invoke(progress);
+
+            try
+            {
+                await UMI3DResourcesManager.DownloadLibraries(privateIdentity.libraries, name, progress);
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+            }
+        }
+
         private void Connected(PrivateIdentityDto identity)
         {
             globalToken = identity.globalToken;
             privateIdentity = identity;
+
+            httpClient.HeaderToken = globalToken;
         }
 
         private async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)
@@ -175,6 +209,11 @@ namespace umi3d.cdk.collaboration
         public void Clear()
         {
             Logout();
+        }
+
+        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
+        {
+            return await httpClient.SendGetPrivate(url, useParameterInsteadOfHeader);
         }
     }
 }

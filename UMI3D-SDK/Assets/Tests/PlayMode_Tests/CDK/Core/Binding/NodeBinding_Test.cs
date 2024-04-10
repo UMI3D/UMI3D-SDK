@@ -17,8 +17,11 @@ limitations under the License.
 using Moq;
 using NUnit.Framework;
 using System.Collections;
+using TestUtils;
+using TestUtils.UserCapture;
 using umi3d.cdk;
 using umi3d.cdk.binding;
+using umi3d.common;
 using umi3d.common.binding;
 using umi3d.common.dto.binding;
 using UnityEngine;
@@ -83,7 +86,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetPosition = offSetPosition.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -97,9 +100,9 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             // THEN
             Assert.IsTrue(succes);
-            Assert.AreEqual(parentGo.transform.position + offSetPosition, go.transform.position);
-            Assert.AreEqual(previousRotation, go.transform.rotation);
-            Assert.AreEqual(previousScale, go.transform.localScale);
+            AssertUnityStruct.AreEqual(parentGo.transform.position + parentGo.transform.rotation * offSetPosition, go.transform.position, message: "Positions are not equal");
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
         }
 
         [UnityTest]
@@ -113,7 +116,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetPosition = offSetPosition.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -134,9 +137,9 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(succes);
-                Assert.AreEqual(parentGo.transform.position + offSetPosition, go.transform.position);
-                Assert.AreEqual(previousRotation, go.transform.rotation);
-                Assert.AreEqual(previousScale, go.transform.localScale);
+                AssertUnityStruct.AreEqual(parentGo.transform.position + parentGo.transform.rotation * offSetPosition, go.transform.position, message: $"Positions are not equal at frame {i}.");
+                AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation, message: $"Rotations are not equal at frame {i}.");
+                AssertUnityStruct.AreEqual(previousScale, go.transform.localScale, message: $"Scales are not equal at frame {i}.");
 
                 yield return null;
             }
@@ -158,7 +161,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetRotation = offsetRotation.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -173,9 +176,9 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             // THEN
             Assert.IsTrue(success);
-            Assert.AreEqual(previousPosition, go.transform.position);
-            Assert.IsTrue(parentGo.transform.rotation * previousRotation * offsetRotation == go.transform.rotation);
-            Assert.AreEqual(previousScale, go.transform.localScale);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position, message: "Positions are not the same.");
+            AssertUnityStruct.AreEqual(parentGo.transform.rotation * offsetRotation, go.transform.rotation, message: "Rotations are not the same.");
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale, message: "Scales are not the same.");
         }
 
         [UnityTest]
@@ -190,7 +193,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetRotation = offsetRotation.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -213,9 +216,9 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(success);
-                Assert.AreEqual(previousPosition, go.transform.position);
-                Assert.IsTrue(parentGo.transform.rotation * previousRotation * offsetRotation == go.transform.rotation);
-                Assert.AreEqual(previousScale, go.transform.localScale);
+                AssertUnityStruct.AreEqual(previousPosition, go.transform.position, message: $"Positions are not equal at frame {i}.");
+                AssertUnityStruct.AreEqual(parentGo.transform.rotation * offsetRotation, go.transform.rotation, message: $"Rotations are not equal at frame {i}.");
+                AssertUnityStruct.AreEqual(previousScale, go.transform.localScale, message: $"Scales are not equal at frame {i}.");
 
                 yield return null;
             }
@@ -236,7 +239,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetScale = offSetScale.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -251,9 +254,9 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
             // THEN
             Assert.IsTrue(succes);
-            Assert.AreEqual(previousPosition, go.transform.position);
-            Assert.AreEqual(previousRotation, go.transform.rotation);
-            Assert.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position);
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+            AssertUnityStruct.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
         }
 
         [UnityTest]
@@ -267,7 +270,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 offSetPosition = offSetScale.Dto()
             };
 
-            var parentNodeMock = new Mock<UMI3DNodeInstance>(new System.Action(() => { }));
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
 
             parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
 
@@ -289,9 +292,9 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
                 // THEN
                 Assert.IsTrue(succes);
-                Assert.AreEqual(previousPosition, go.transform.position);
-                Assert.AreEqual(previousRotation, go.transform.rotation);
-                Assert.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
+                AssertUnityStruct.AreEqual(previousPosition, go.transform.position);
+                AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+                AssertUnityStruct.AreEqual(Vector3.Scale(parentGo.transform.localScale, go.transform.localScale), go.transform.localScale);
 
                 yield return null;
             }

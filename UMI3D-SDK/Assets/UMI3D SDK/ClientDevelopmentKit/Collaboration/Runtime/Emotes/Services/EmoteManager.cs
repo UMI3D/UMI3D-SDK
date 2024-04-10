@@ -169,6 +169,7 @@ namespace umi3d.cdk.collaboration.emotes
                     {
                         available = emoteConfigDto.allAvailableByDefault || emoteDtoInConfig.available,
                         icon = DefaultIcon,
+                        environmentId = UMI3DGlobalID.EnvironmentId,
                         dto = emoteDtoInConfig
                     };
                     if (emoteDtoInConfig.iconResource is not null
@@ -281,7 +282,7 @@ namespace umi3d.cdk.collaboration.emotes
         private void StartPlayMode(Emote emote)
         {
             playingEmote = emote;
-            playingEmoteAnimation = environmentManager.GetEntityObject<UMI3DAbstractAnimation>(playingEmote.AnimationId);
+            playingEmoteAnimation = environmentManager.GetEntityObject<UMI3DAbstractAnimation>(emote.environmentId,playingEmote.AnimationId);
             playingEmoteAnimation.AnimationEnded += StopEmote;
         }
 

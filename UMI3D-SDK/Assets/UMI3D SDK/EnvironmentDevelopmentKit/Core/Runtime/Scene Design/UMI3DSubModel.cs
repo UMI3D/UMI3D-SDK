@@ -93,6 +93,17 @@ namespace umi3d.edk
 
             _objectTraversable = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsTraversable, isTraversable);
             _objectTraversable.OnValueChanged += b => isTraversable = b;
+
+            var skmr = GetComponent<SkinnedMeshRenderer>();
+            if (skmr != null && skmr.sharedMesh.blendShapeCount > 0)
+            {
+                for (int i = 0; i < skmr.sharedMesh.blendShapeCount; i++)
+                {
+                    blendShapesValues.Add(skmr.GetBlendShapeWeight(i));
+                }
+                objectBlendShapesValues.SetValue(blendShapesValues);
+
+            }
         }
 
         /// <summary>

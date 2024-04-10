@@ -15,6 +15,9 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
+using System.Threading;
+using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
@@ -27,14 +30,18 @@ namespace umi3d.cdk
 
         Transform transform { get; }
 
-        T GetEntityObject<T>(ulong id) where T : class;
+        T GetEntityObject<T>(ulong environmentId, ulong id) where T : class;
 
-        UMI3DEntityInstance GetEntityInstance(ulong id);
+        UMI3DEntityInstance GetEntityInstance(ulong environmentId, ulong id);
 
-        UMI3DNodeInstance GetNodeInstance(ulong id);
+        UMI3DNodeInstance GetNodeInstance(ulong environmentId, ulong id);
 
-        UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
+        UMI3DEntityInstance RegisterEntity(ulong environmentId, ulong id, UMI3DDto dto, object objectInstance, Action delete = null);
 
-        UMI3DEntityInstance TryGetEntityInstance(ulong id);
+        Task DeleteEntityInstance(ulong environmentId, ulong entityId, List<CancellationToken> tokens = null);
+
+        UMI3DEntityInstance TryGetEntityInstance(ulong environmentId, ulong id);
+
+        bool TryGetEntity<T>(ulong environmentId, ulong id, out T entity) where T : class;
     }
 }

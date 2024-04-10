@@ -30,22 +30,37 @@ namespace umi3d.edk.userCapture.pose
         /// <summary>
         /// Pose animation description.
         /// </summary>
-        public IUMI3DPoseData poseResource;
+        public readonly UMI3DAsyncProperty<IUMI3DPoseData> PoseResource;
 
         public PoseClip(IUMI3DPoseData poseResource)
         {
-            this.poseResource = poseResource;
+            if (poseResource == null)
+                throw new System.ArgumentNullException(nameof(poseResource));
+
+            this.PoseResource = new UMI3DAsyncProperty<IUMI3DPoseData>(Id(), UMI3DPropertyKeys.PoseClipResource, poseResource);
+            IsComposable = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.PoseClipComposable, true);
+            IsInterpolable = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.PoseClipInterpolable, true);
         }
 
         /// <summary>
         /// The bone that anchor the pose
         /// </summary>
-        public PoseAnchorDto Anchor => poseResource.Anchor;
+        public PoseAnchorDto Anchor => PoseResource.GetValue().Anchor;
 
         /// <summary>
         /// All the bones that describe the pose
         /// </summary>
-        public IList<BoneDto> Bones => poseResource.Bones;
+        public IList<BoneDto> Bones => PoseResource.GetValue().Bones;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.isComposable"/>.
+        /// </summary>
+        public readonly UMI3DAsyncProperty<bool> IsComposable;
+
+        /// <summary>
+        /// See <see cref="PoseClipDto.isInterpolable"/>.
+        /// </summary>
+        public readonly UMI3DAsyncProperty<bool> IsInterpolable;
 
         /// <inheritdoc/>
         public override IEntity ToEntityDto(UMI3DUser user)
@@ -53,13 +68,10 @@ namespace umi3d.edk.userCapture.pose
             return new PoseClipDto()
             {
                 id = Id(),
-                pose = poseResource.ToPoseDto()
+                pose = PoseResource.GetValue(user).ToPoseDto(),
+                isInterpolable = IsInterpolable.GetValue(user),
+                isComposable = IsComposable.GetValue(user),
             };
-        }
-
-        public IEntity ToEntityDto()
-        {
-            return ToEntityDto(null);
         }
     }
 }

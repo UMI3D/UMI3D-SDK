@@ -37,6 +37,18 @@ public static class ColorDtoExtension
         if (c == null) return default;
         return new Color(c.R, c.G, c.B, c.A);
     }
+
+    public static ColorDto Clone(this ColorDto v)
+    {
+        if (v == null) return default;
+        return new ColorDto()
+        {
+            R = v.R,
+            G = v.G,
+            B = v.B,
+            A = v.A
+        };
+    }
 }
 
 public static class Vector2DtoExtension
@@ -52,6 +64,16 @@ public static class Vector2DtoExtension
         if (v == null) return default;
         return new Vector2(v.X, v.Y);
     }
+
+    public static Vector2Dto Clone(this Vector2Dto v)
+    {
+        if (v == null) return default;
+        return new Vector2Dto()
+        {
+            X = v.X,
+            Y = v.Y
+        };
+    }
 }
 
 public static class Vector3DtoExtension
@@ -66,6 +88,17 @@ public static class Vector3DtoExtension
     {
         if (v == null) return default;
         return new Vector3(v.X, v.Y, v.Z);
+    }
+
+    public static Vector3Dto Clone(this Vector3Dto v)
+    {
+        if (v == null) return default;
+        return new Vector3Dto()
+        {
+            X = v.X,
+            Y = v.Y,
+            Z = v.Z
+        };
     }
 }
 
@@ -93,6 +126,18 @@ public static class Vector4DtoExtension
     {
         if (v4 == null) return default;
         return new Quaternion(v4.X, v4.Y, v4.Z, v4.W);
+    }
+
+    public static Vector4Dto Clone(this Vector4Dto v)
+    {
+        if (v == null) return default;
+        return new Vector4Dto()
+        {
+            X = v.X,
+            Y = v.Y,
+            Z = v.Z,
+            W = v.W
+        };
     }
 }
 

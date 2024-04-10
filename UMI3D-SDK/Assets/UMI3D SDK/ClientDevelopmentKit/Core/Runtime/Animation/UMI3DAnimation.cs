@@ -37,7 +37,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public static new UMI3DAnimation Get(ulong id) { return UMI3DAbstractAnimation.Get(id) as UMI3DAnimation; }
+        public static new UMI3DAnimation Get(ulong environmentId, ulong id) { return UMI3DAbstractAnimation.Get(environmentId, id) as UMI3DAnimation; }
         /// <summary>
         /// DTO local copy.
         /// </summary>
@@ -51,7 +51,7 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public override bool IsPlaying() => started;
 
-        public UMI3DAnimation(UMI3DAnimationDto dto) : base(dto)
+        public UMI3DAnimation(ulong environmentId, UMI3DAnimationDto dto) : base(environmentId, dto)
         {
 
         }
@@ -72,9 +72,9 @@ namespace umi3d.cdk
             {
                 float p = GetProgress();
                 if (p < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Instance.StartAnimation(chain.animationId); })));
+                    Coroutines.Add(UMI3DAnimationManager.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Instance.StartAnimation(EnvironmentId, chain.animationId); })));
                 if (p == chain.startOnProgress)
-                    UMI3DAnimationManager.Instance.StartAnimation(chain.animationId);
+                    UMI3DAnimationManager.Instance.StartAnimation(EnvironmentId, chain.animationId);
             }
 
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(actionAfterPlaying: OnEnd));
@@ -86,7 +86,7 @@ namespace umi3d.cdk
             if (!started) return;
             if (PlayingCoroutines != null) UMI3DAnimationManager.StopCoroutine(PlayingCoroutines);
             foreach (AnimationChainDto chain in dto.animationChain)
-                UMI3DAnimationManager.Instance.StopAnimation(chain.animationId);
+                UMI3DAnimationManager.Instance.StopAnimation(EnvironmentId, chain.animationId);
             foreach (Coroutine c in Coroutines)
                 UMI3DAnimationManager.StopCoroutine(c);
         }
@@ -220,9 +220,9 @@ namespace umi3d.cdk
             {
                 float p = GetProgress();
                 if (p < chain.startOnProgress)
-                    Coroutines.Add(UMI3DAnimationManager.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Instance.StartAnimation(chain.animationId); })));
+                    Coroutines.Add(UMI3DAnimationManager.StartCoroutine(WaitForProgress(chain.startOnProgress, () => { UMI3DAnimationManager.Instance.StartAnimation(EnvironmentId, chain.animationId); })));
                 if (p == chain.startOnProgress)
-                    UMI3DAnimationManager.Instance.StartAnimation(chain.animationId);
+                    UMI3DAnimationManager.Instance.StartAnimation(EnvironmentId, chain.animationId);
             }
 
             PlayingCoroutines = UMI3DAnimationManager.StartCoroutine(Playing(actionAfterPlaying: OnEnd));

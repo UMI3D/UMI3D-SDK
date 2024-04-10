@@ -28,6 +28,10 @@ namespace umi3d.edk.editor
         private SerializedProperty textureSize;
         private SerializedProperty url;
         private SerializedProperty canBeForced;
+        private SerializedProperty useWhiteList;
+        private SerializedProperty whiteList;
+        private SerializedProperty useBlackList;
+        private SerializedProperty blackList;
 
         protected override void OnEnable()
         {
@@ -38,6 +42,10 @@ namespace umi3d.edk.editor
             textureSize = serializedObject.FindProperty("textureSize");
             url = serializedObject.FindProperty("url");
             canBeForced = serializedObject.FindProperty("canUrlBeForced");
+            useWhiteList = serializedObject.FindProperty("useWhiteList");
+            whiteList = serializedObject.FindProperty("whiteList");
+            useBlackList = serializedObject.FindProperty("useBlackList");
+            blackList = serializedObject.FindProperty("blackList");
         }
 
         public override void OnInspectorGUI()
@@ -56,6 +64,13 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(textureSize);
 
             EditorGUILayout.Space();
+
+            EditorGUILayout.PropertyField(useWhiteList);
+            if (useWhiteList.boolValue)
+                EditorGUILayout.PropertyField(whiteList);
+            EditorGUILayout.PropertyField(useBlackList);
+            if (useBlackList.boolValue)
+                EditorGUILayout.PropertyField(blackList);
 
             serializedObject.ApplyModifiedProperties();
         }

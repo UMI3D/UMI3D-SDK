@@ -14,6 +14,7 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
+using MainThreadDispatcher;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -225,7 +226,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         public void Stop()
         {
-            if (client != null) client.Disconnect(true);
+            if (client != null) client.Disconnect(false);
             client = null;
 
             if (networkManagerComponent?.Networker != null)
@@ -233,6 +234,8 @@ namespace umi3d.cdk.collaboration
 
             networkManagerComponent?.Disconnect();
             networkManagerComponent = null;
+
+            UMI3DClientServer.transactionDispatcher = null;
         }
 
         #region signaling
@@ -387,8 +390,16 @@ namespace umi3d.cdk.collaboration
                     case TransactionDto transaction:
                         MainThreadManager.Run(async () =>
                         {
-                            await UMI3DClientServer.transactionDispatcher.PerformTransaction(transaction);
-                            if(UMI3DCollaborationClientServer.transactionPending != null)
+                            try
+                            {
+                                await UMI3DClientServer.transactionDispatcher?.PerformTransaction(UMI3DGlobalID.EnvironmentId, transaction);
+                            }
+                            catch (Exception e)
+                            {
+                                UnityEngine.Debug.LogException(e);
+                            }
+
+                            if (UMI3DCollaborationClientServer.transactionPending != null)
                                 UMI3DCollaborationClientServer.transactionPending.areTransactionPending = false;
                         });
 
@@ -404,7 +415,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame);
                 uint TransactionId = UMI3DSerializer.Read<uint>(container);
                 switch (TransactionId)
                 {
@@ -454,7 +465,7 @@ namespace umi3d.cdk.collaboration
                     bool waitforreparenting = true;
                     MainThreadManager.Run(async () =>
                     {
-                        UMI3DNavigation.SetFrame(frame);
+                        UMI3DNavigation.SetFrame(UMI3DGlobalID.EnvironmentId, frame);
                         await UMI3DAsyncManager.Yield();
                         waitforreparenting = false;
                     });
@@ -464,7 +475,7 @@ namespace umi3d.cdk.collaboration
                 case NavigateDto navigate:
                     MainThreadManager.Run(() =>
                     {
-                        StartCoroutine(UMI3DNavigation.Navigate(navigate));
+                        StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, navigate));
                     });
 
                     break;
@@ -528,13 +539,13 @@ namespace umi3d.cdk.collaboration
                 case PlayPoseClipDto playPoseDto:
                     MainThreadManager.Run(() =>
                     {
-                        CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
+                        CollaborationSkeletonsManager.Instance.ApplyPoseRequest(operation.environmentId, playPoseDto);
                     });
                     break;
                 case ValidateEnvironmentPoseConditionDto validateEnvironmentPoseCondition:
                     MainThreadManager.Run(() =>
                     {
-                        PoseManager.Instance.ChangeEnvironmentPoseCondition(validateEnvironmentPoseCondition.Id, validateEnvironmentPoseCondition.ShouldBeValidated);
+                        PoseManager.Instance.ChangeEnvironmentPoseCondition(operation.environmentId, validateEnvironmentPoseCondition.Id, validateEnvironmentPoseCondition.ShouldBeValidated);
                     });
                     break;
                 default:
@@ -562,7 +573,7 @@ namespace umi3d.cdk.collaboration
                         var nav = new NavigateDto() { position = pos };
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, nav));
                         });
                     }
                     break;
@@ -573,7 +584,7 @@ namespace umi3d.cdk.collaboration
                         var nav = new TeleportDto() { position = pos, rotation = rot };
                         MainThreadManager.Run(() =>
                         {
-                            StartCoroutine(UMI3DNavigation.Navigate(nav));
+                            StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, nav));
 
                         });
                     }
@@ -594,7 +605,7 @@ namespace umi3d.cdk.collaboration
                         {
                             try
                             {
-                                UMI3DNavigation.SetFrame(frame);
+                                UMI3DNavigation.SetFrame(UMI3DGlobalID.EnvironmentId, frame);
                             }
                             catch (Exception e)
                             {
@@ -664,28 +675,30 @@ namespace umi3d.cdk.collaboration
                     break;
                 case UMI3DOperationKeys.PlayPoseRequest:
                     {
-                        ulong userID = UMI3DSerializer.Read<ulong>(container);
                         ulong poseId = UMI3DSerializer.Read<ulong>(container);
                         bool stopPose = UMI3DSerializer.Read<bool>(container);
                         PlayPoseClipDto playPoseDto = new PlayPoseClipDto
                         {
-                            userID = userID,
                             poseId = poseId,
                             stopPose = stopPose
                         };
 
                         MainThreadManager.Run(() =>
                         {
-                            CollaborationSkeletonsManager.Instance.ApplyPoseRequest(playPoseDto);
+                            CollaborationSkeletonsManager.Instance.ApplyPoseRequest(container.environmentId, playPoseDto);
                         });
                         break;
                     }
-                case UMI3DOperationKeys.ActivatePoseAnimatorRequest:
+                case UMI3DOperationKeys.CheckPoseAnimatorConditionsRequest:
                     {
                         ulong poseOverriderId = UMI3DSerializer.Read<ulong>(container);
+                        bool shouldActivate = UMI3DSerializer.Read<bool>(container);
                         MainThreadManager.Run(() =>
                         {
-                            PoseManager.Instance.TryActivatePoseAnimator(poseOverriderId);
+                            if (shouldActivate)
+                                PoseManager.Instance.TryActivatePoseAnimator(container.environmentId, poseOverriderId);
+                            else
+                                PoseManager.Instance.TryDeactivatePoseAnimator(container.environmentId, poseOverriderId);
                         });
                         break;
                     }
@@ -701,7 +714,7 @@ namespace umi3d.cdk.collaboration
 
                         MainThreadManager.Run(() =>
                         {
-                            PoseManager.Instance.ChangeEnvironmentPoseCondition(validateEnvironmentPoseConditionDto.Id, validateEnvironmentPoseConditionDto.ShouldBeValidated);
+                            PoseManager.Instance.ChangeEnvironmentPoseCondition(UMI3DGlobalID.EnvironmentId, validateEnvironmentPoseConditionDto.Id, validateEnvironmentPoseConditionDto.ShouldBeValidated);
                         });
                         break;
                     }
@@ -766,7 +779,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                var container = new ByteContainer(frame);
+                var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame);
                 try
                 {
                     System.Collections.Generic.List<UserTrackingFrameDto> frames = UMI3DSerializer.ReadList<UserTrackingFrameDto>(container);

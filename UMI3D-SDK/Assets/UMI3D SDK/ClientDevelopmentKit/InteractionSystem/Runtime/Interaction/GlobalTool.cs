@@ -20,7 +20,7 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
 {
-    public class GlobalToolEvent : UnityEvent<GlobalTool> { }
+    public class GlobalToolEvent : UnityEvent<ulong,GlobalTool> { }
 
     /// <summary>
     /// Direct instanciation of <see cref="AbstractTool"/>.
@@ -71,7 +71,7 @@ namespace umi3d.cdk.interaction
         /// </summary>
         public bool isInsideToolbox => parent != null;
 
-        public GlobalTool(AbstractToolDto abstractDto, Toolbox parent) : base(abstractDto)
+        public GlobalTool(ulong environmentId, AbstractToolDto abstractDto, Toolbox parent) : base(environmentId, abstractDto)
         {
             this.parent = parent;
             instances.Add(id, this);

@@ -15,17 +15,19 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections;
 using System.Collections.Generic;
+
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
-using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture
@@ -94,16 +96,33 @@ namespace umi3d.cdk.userCapture
         protected UserTrackingFrameDto lastFrame;
         public UserTrackingFrameDto LastFrame => lastFrame;
 
+        public ulong EnvironmentId { get; set; }
+
         /// <summary>
         /// Anchor of the skeleton hierarchy.
         /// </summary>
         [SerializeField, Tooltip("Anchor of the skeleton hierarchy.")]
         protected Transform hipsAnchor;
 
+        private const float SKELETON_STANDARD_SIZE = 1.8f;
+
         #endregion Fields
+
+        #region DI
+
+        protected IUnityMainThreadDispatcher UnityMainThreadDispatcherService { get; private set; }
+
+        public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton, IUnityMainThreadDispatcher mainThreadDispatcher)
+        {
+            UnityMainThreadDispatcherService = mainThreadDispatcher;
+            Init(trackedSkeleton, poseSkeleton);
+        }
+
+        #endregion DI
 
         public void Init(ITrackedSubskeleton trackedSkeleton, IPoseSubskeleton poseSkeleton)
         {
+            UnityMainThreadDispatcherService ??= UnityMainThreadDispatcherManager.Instance;
             this._trackedSkeleton = trackedSkeleton;
             HipsAnchor = TrackedSubskeleton.Hips;
             PoseSubskeleton = poseSkeleton;
@@ -122,8 +141,10 @@ namespace umi3d.cdk.userCapture
             Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
             Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
 
+            // wait to add PoseSubskeleton until we received at least one frame
             StartCoroutine(InitPoseSubskeleton());
         }
+
 
         private IEnumerator InitPoseSubskeleton()
         {
@@ -148,47 +169,60 @@ namespace umi3d.cdk.userCapture
             foreach (uint boneType in Bones.Keys)
                 alreadyComputedBonesCache[boneType] = false;
 
-            //very naive : for now, we consider the tracked hips as the computer hips
-            Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
-            Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
+
+            if (TrackedSubskeleton.Controllers.TryGetValue(BoneType.Hips, out IController hipsController))
+            {
+                Bones[BoneType.Hips].Position = hipsController.position;
+                Bones[BoneType.Hips].Rotation = hipsController.rotation;
+            }
+            else
+            {
+                //very naive : for now, we consider the tracked hips as the computer hips
+                Bones[BoneType.Hips].Position = HipsAnchor != null ? HipsAnchor.position + hipsDisplacement : Vector3.zero; // add displacement to have the movement of Hips from animations
+                Bones[BoneType.Hips].Rotation = HipsAnchor != null ? HipsAnchor.rotation * Bones[BoneType.Hips].LocalRotation : Quaternion.identity;
+            }
+
 
             alreadyComputedBonesCache[BoneType.Hips] = true;
 
-            // better use normal recusive computations then.
+            // better use normal recursive computations then.
             foreach (uint boneType in Bones.Keys)
             {
                 if (!alreadyComputedBonesCache[boneType])
-                    ComputeBonePosition(boneType);
+                    ComputeBoneTransform(boneType);
             }
 
             return this;
         }
 
         /// <summary>
-        /// Cache for bottom-up recursive <see cref="ComputeBonePosition(uint)"/> method.
+        /// Cache for bottom-up recursive <see cref="ComputeBoneTransform(uint)"/> method.
         /// Speeding up computations.
         /// </summary>
         private Dictionary<uint, bool> alreadyComputedBonesCache = new();
+        private Vector3 hipsDisplacement = Vector3.zero;
 
         /// <summary>
-        /// Compute the final position of each bone, and their parents recursively if not already computed
+        /// Compute the final position and rotation of each bone, and their parents recursively if not already computed
         /// </summary>
         /// <param name="boneType"></param>
-        private void ComputeBonePosition(uint boneType)
+        private void ComputeBoneTransform(uint boneType)
         {
             if (!alreadyComputedBonesCache[boneType]
                 && SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
                 && boneRelation.boneTypeParent != BoneType.None)
             {
                 if (!alreadyComputedBonesCache[boneRelation.boneTypeParent])
-                    ComputeBonePosition(boneRelation.boneTypeParent);
+                    ComputeBoneTransform(boneRelation.boneTypeParent);
 
-                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f/1.8f));
+                Matrix4x4 m = Matrix4x4.TRS(Bones[boneRelation.boneTypeParent].Position, Bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f / SKELETON_STANDARD_SIZE));
                 Bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //Bones[boneRelation.boneTypeParent].Position + Bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
                 Bones[boneType].Rotation = (Bones[boneRelation.boneTypeParent].Rotation * Bones[boneType].LocalRotation).normalized;
                 alreadyComputedBonesCache[boneType] = true;
             }
         }
+
+        private readonly Vector3 ExtractXZVector = Vector3.forward + Vector3.right;
 
         /// <summary>
         /// Get all final bone rotation, based on subskeletons. Lastest subskeleton has lowest priority.
@@ -213,17 +247,20 @@ namespace umi3d.cdk.userCapture
             lock (SubskeletonsLock)
                 foreach (var skeleton in Subskeletons)
                 {
-                    List<SubSkeletonBoneDto> bones = skeleton.GetPose(hierarchy)?.bones;
+                    var pose = skeleton.GetPose(hierarchy);
 
-                    if (bones is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
+
+                    if (pose is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                         continue;
+
+                    List<SubSkeletonBoneDto> bones = pose.bones;
+
+                    if (pose.boneAnchor?.bone == BoneType.Hips) //hips displacement is used when subskeleton moves the hips as its anchor, e.g. emotes
+                        hipsDisplacement = Vector3.Scale(HipsAnchor.rotation * pose.boneAnchor.position.Struct(), ExtractXZVector);
 
                     foreach (var b in bones)
                     {
-                        if (b.boneType == BoneType.Hips)
-                            continue;
                         // if a bone rotation has already been registered, erase it
-
                         if (Bones.ContainsKey(b.boneType))
                             Bones[b.boneType].LocalRotation = b.localRotation.Quaternion();
                         else
@@ -261,7 +298,7 @@ namespace umi3d.cdk.userCapture
 
             lock (SubskeletonsLock) // loader can start parallel async tasks, required to load concurrently
             {
-                UnityMainThreadDispatcherManager.Instance.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.AddSorted(animatedSubskeleton); } });
+                UnityMainThreadDispatcherService.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.AddSorted(animatedSubskeleton); } });
 
                 // if some animator parameters should be updated by the browsers itself, start listening to them
                 if (animatedSubskeleton.SelfUpdatedAnimatorParameters.Count > 0)
@@ -278,7 +315,12 @@ namespace umi3d.cdk.userCapture
                 animatedSubskeleton.StopParameterSelfUpdate();
 
             if (subskeletons.Contains(animatedSubskeleton))
-                subskeletons.Remove(animatedSubskeleton);
+            {
+                lock (SubskeletonsLock)
+                {
+                    UnityMainThreadDispatcherService.Enqueue(() => { lock (SubskeletonsLock) { subskeletons.Remove(animatedSubskeleton); } });
+                }
+            }
         }
     }
 }

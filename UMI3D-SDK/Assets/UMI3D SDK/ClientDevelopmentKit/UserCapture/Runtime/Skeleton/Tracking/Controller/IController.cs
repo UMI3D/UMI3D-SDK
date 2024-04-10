@@ -22,7 +22,7 @@ namespace umi3d.cdk.userCapture.tracking
 {
     public interface IController
     {
-        public bool isActif { set; get; }
+        public bool isActive { set; get; }
 
         public void Destroy();
 
@@ -32,6 +32,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public virtual ControllerDto ToControllerDto()
         {
+            // if DTO is null, it will break in serialization
             return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = position.Dto(), rotation = rotation.Dto(), isOverrider = false };
         }
     }

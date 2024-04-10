@@ -53,7 +53,7 @@ namespace umi3d.cdk
                 IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
                 if (loader != null)
                 {
-                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironementId, fileToLoad, loader);
+                    var o = await UMI3DResourcesManager.LoadFile(UMI3DGlobalID.EnvironmentId, fileToLoad, loader);
                     UMI3DLogger.Log("this scene is going  to be loaded : " + fileToLoad.pathIfInBundle, scope);
                 }
             }
@@ -98,7 +98,7 @@ namespace umi3d.cdk
                         }
 
                         foreach (PreloadedSceneDto scene in scenesToLoad)
-                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, null, value.tokens));
+                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(value.environmentId, scene, null, value.tokens));
 
                         foreach (PreloadedSceneDto scene in scenesToUnload)
                             Unload(scene, null);
@@ -146,7 +146,7 @@ namespace umi3d.cdk
                         }
 
                         foreach (PreloadedSceneDto scene in scenesToLoad)
-                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(scene, value.tokens));
+                            await ReadUMI3DExtension(new ReadUMI3DExtensionData(value.environmentId, scene, value.tokens));
 
                         foreach (PreloadedSceneDto scene in scenesToUnload)
                             Unload(scene, null);
