@@ -16,6 +16,8 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
+using System.Linq;
 using umi3d.cdk;
 using umi3d.cdk.collaboration;
 using umi3d.cdk.collaboration.emotes;
@@ -73,7 +75,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         #region UpdateEmote
 
         [Test]
-        public void UpdateEmote_NotReceivedEmote()
+        public void UpdateEmote()
         {
             // GIVEN
             UMI3DEmoteDto emoteDto = new()
@@ -83,23 +85,24 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 label = ""
             };
 
+            Emote emote = new(emoteDto, null);
+
             bool wasEmoteUpdatedTriggered = false;
             emoteManagerService.EmoteUpdated += delegate { wasEmoteUpdatedTriggered = true; };
 
             // WHEN
-            emoteManagerService.UpdateEmote(emoteDto);
+            emoteManagerService.UpdateEmote(emote);
 
             // THEN
-            Assert.IsFalse(wasEmoteUpdatedTriggered);
+            Assert.IsTrue(wasEmoteUpdatedTriggered);
         }
 
         #endregion UpdateEmote
 
-        #region LoadEmoteConfig
+        #region AddEmoteConfig
 
-        // Playmode because of use of UMI3DCollaborationClientServer
         [Test]
-        public void Test_LoadEmoteConfig_Empty()
+        public void AddEmoteConfig_Empty()
         {
             // GIVEN
             UMI3DEmotesConfigDto dto = new()
@@ -109,6 +112,8 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 allAvailableByDefault = false
             };
 
+            EmotesConfig emotesConfig = new EmotesConfig(dto, new List<Emote>());
+
             bool wasEmotesLoaded = false;
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
 
@@ -117,7 +122,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             collaborationClientServerMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
 
             // WHEN
-            emoteManagerService.UpdateEmoteConfig(dto);
+            emoteManagerService.AddEmoteConfig(emotesConfig);
             loadingManagerMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
@@ -126,27 +131,32 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         }
 
         [Test]
-        public void Test_LoadEmoteConfig_SeveralEmotes()
+        public void AddEmoteConfig_SeveralEmotes()
         {
             // GIVEN
+
+            List<UMI3DEmoteDto> emoteDtos = new List<UMI3DEmoteDto>()
+            {
+                new UMI3DEmoteDto()
+                {
+                    id = 2,
+                    available = true
+                },
+                new UMI3DEmoteDto()
+                {
+                    id = 3,
+                    available = false
+                }
+            };
+
             UMI3DEmotesConfigDto dto = new()
             {
                 id = 1,
-                emotes = new()
-                {
-                    new UMI3DEmoteDto()
-                    {
-                        id = 2,
-                        available = true
-                    },
-                    new UMI3DEmoteDto()
-                    {
-                        id = 3,
-                        available = false
-                    }
-                },
+                emotes = emoteDtos,
                 allAvailableByDefault = false
             };
+
+            EmotesConfig emotesConfig = new EmotesConfig(dto, emoteDtos.Select(d => new Emote(d, null)).ToList());
 
             bool wasEmotesLoaded = false;
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
@@ -156,7 +166,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             collaborationClientServerMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
 
             // WHEN
-            emoteManagerService.UpdateEmoteConfig(dto);
+            emoteManagerService.AddEmoteConfig(emotesConfig);
             loadingManagerMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
@@ -165,27 +175,32 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         }
 
         [Test]
-        public void Test_LoadEmoteConfig_SeveralEmotes_AllAvailableOverride()
+        public void AddEmoteConfig_SeveralEmotes_AllAvailableOverride()
         {
             // GIVEN
+
+            List<UMI3DEmoteDto> emoteDtos = new List<UMI3DEmoteDto>()
+            {
+                new UMI3DEmoteDto()
+                {
+                    id = 2,
+                    available = true
+                },
+                new UMI3DEmoteDto()
+                {
+                    id = 3,
+                    available = false
+                }
+            };
+
             UMI3DEmotesConfigDto dto = new()
             {
                 id = 1,
-                emotes = new()
-                {
-                    new UMI3DEmoteDto()
-                    {
-                        id = 2,
-                        available = false
-                    },
-                    new UMI3DEmoteDto()
-                    {
-                        id = 3,
-                        available = false
-                    }
-                },
+                emotes = emoteDtos,
                 allAvailableByDefault = true
             };
+
+            EmotesConfig emotesConfig = new EmotesConfig(dto, emoteDtos.Select(d => new Emote(d, null)).ToList());
 
             bool wasEmotesLoaded = false;
             emoteManagerService.EmotesLoaded += delegate { wasEmotesLoaded = true; };
@@ -195,7 +210,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             collaborationClientServerMock.Setup(x => x.OnLeaving).Returns(new UnityEngine.Events.UnityEvent());
 
             // WHEN
-            emoteManagerService.UpdateEmoteConfig(dto);
+            emoteManagerService.AddEmoteConfig(emotesConfig);
             loadingManagerMock.Object.onEnvironmentLoaded.Invoke();
 
             // THEN
@@ -205,7 +220,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                 Assert.IsTrue(emote.available);
         }
 
-        #endregion LoadEmoteConfig
+        #endregion AddEmoteConfig
 
         #region PlayEmote
 
@@ -213,25 +228,23 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         public void PlayEmote_Available()
         {
             // GIVEN
+            ulong environmentId = 0;
             bool wasEmoteStartedInvoked = false;
             emoteManagerService.EmoteStarted += delegate { wasEmoteStartedInvoked = true; };
 
-            Emote emote = new Emote()
+            UMI3DEmoteDto dto = new UMI3DEmoteDto()
             {
-                environmentId = 0L,
-                icon = null,
-                available = true,
-                dto = new UMI3DEmoteDto()
-                {
-                    id = 1005uL,
-                    label = "TestEmote",
-                    animationId = 2
-                }
+                id = 1005uL,
+                label = "TestEmote",
+                animationId = 1516uL,
+                available = true
             };
+
+            Emote emote = new Emote(dto, null, environmentId);
 
             EmoteRequestDto req = new EmoteRequestDto()
             {
-                emoteId = emote.dto.id,
+                emoteId = emote.Id,
                 shouldTrigger = true
             };
 
@@ -242,9 +255,9 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             {
                 nodeId = 3
             };
-            Mock<UMI3DAbstractAnimation> mockAnimation = new(MockBehavior.Default,0UL, mockDto);
-
-            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(0UL, emote.AnimationId)).Returns(mockAnimation.Object);
+            Mock<UMI3DAbstractAnimation> mockAnimation = new(MockBehavior.Default, environmentId, mockDto);
+            UMI3DAbstractAnimation foundAnimation = mockAnimation.Object;
+            environmentManagerMock.Setup(x => x.TryGetEntity<UMI3DAbstractAnimation>(environmentId, emote.AnimationId, out foundAnimation)).Returns(true);
 
             // WHEN
             emoteManagerService.PlayEmote(emote);
@@ -261,17 +274,15 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             bool wasEmoteStartedInvoked = false;
             emoteManagerService.EmoteStarted += delegate { wasEmoteStartedInvoked = true; };
 
-            Emote emote = new Emote()
+            UMI3DEmoteDto dto = new UMI3DEmoteDto()
             {
-                icon = null,
-                available = false,
-                dto = new UMI3DEmoteDto()
-                {
-                    id = 1005uL,
-                    label = "TestEmote",
-                    animationId = 0
-                }
+                id = 1005uL,
+                label = "TestEmote",
+                animationId = 1516uL,
+                available = false
             };
+
+            Emote emote = new Emote(dto, null);
 
             // WHEN
             emoteManagerService.PlayEmote(emote);
@@ -304,26 +315,36 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         public void StopEmote_EmotePlaying()
         {
             // GIVEN
+            ulong environmentId = 0;
             bool wasEmoteStoppedInvoked = false;
             emoteManagerService.EmoteEnded += (emote) => { wasEmoteStoppedInvoked = true; };
 
-            Emote playingEmote = new Emote()
+            UMI3DEmoteDto dto = new UMI3DEmoteDto()
             {
-                icon = null,
-                available = true,
-                dto = new UMI3DEmoteDto()
-                {
-                    id = 1,
-                    label = "TestEmote",
-                    animationId = 2
-                }
+                id = 1005uL,
+                label = "TestEmote",
+                animationId = 1516uL,
+                available = true
             };
-            Mock<Emote> mockEmote = new Mock<Emote>(playingEmote);
 
-            UMI3DAnimatorAnimationDto mockDto = new UMI3DAnimatorAnimationDto();
-            Mock<UMI3DAbstractAnimation> mockAnimation = new(MockBehavior.Default,0UL ,mockDto);
+            Emote playingEmote = new Emote(dto, null, environmentId);
 
-            environmentManagerMock.Setup(x => x.GetEntityObject<UMI3DAbstractAnimation>(UMI3DGlobalID.EnvironmentId, playingEmote.AnimationId)).Returns(mockAnimation.Object);
+            UMI3DAbstractAnimationDto mockDto = new UMI3DAnimatorAnimationDto()
+            {
+                nodeId = 3
+            };
+            Mock<UMI3DAbstractAnimation> mockAnimation = new(MockBehavior.Default, environmentId, mockDto);
+            UMI3DAbstractAnimation foundAnimation = mockAnimation.Object;
+            environmentManagerMock.Setup(x => x.TryGetEntity<UMI3DAbstractAnimation>(environmentId, playingEmote.AnimationId, out foundAnimation)).Returns(true);
+
+            EmoteRequestDto req = new EmoteRequestDto()
+            {
+                emoteId = playingEmote.Id,
+                shouldTrigger = true
+            };
+
+            Mock<IUMI3DCollaborationClientServer> mockServer = new();
+            mockServer.Setup(x => x._SendRequest(req, true));
 
             // WHEN
             emoteManagerService.PlayEmote(playingEmote);

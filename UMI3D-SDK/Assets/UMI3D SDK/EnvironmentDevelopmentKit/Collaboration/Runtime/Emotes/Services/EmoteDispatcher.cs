@@ -160,12 +160,15 @@ namespace umi3d.edk.collaboration.emotes
             }
 
             ulong animationId = emote.AnimationId.GetValue(sendingUser);
-            var animation = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractAnimation>(animationId);
-
-            var t = new Transaction() { reliable = true };
-            var op = animation.objectPlaying.SetValue(trigger);
-            if (t.AddIfNotNull(op))
-                t.Dispatch();
+            
+            if (animationId != default) // when animationId is default, trigger emote without triggering an animation
+            {
+                UMI3DAbstractAnimation animation = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractAnimation>(animationId);
+                Transaction t = new (true);
+                SetEntityProperty op = animation.objectPlaying.SetValue(trigger);
+                if (t.AddIfNotNull(op))
+                    t.Dispatch();
+            }
 
             EmoteTriggered?.Invoke((sendingUser, emoteId, trigger));
         }

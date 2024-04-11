@@ -73,17 +73,17 @@ namespace umi3d.cdk.collaboration.emotes
         #region Emote Changes
 
         /// <summary>
-        /// Change the availability of an emote based on the received <see cref="UMI3DEmoteDto"/>.
+        /// Change an emote based on the received <see cref="UMI3DEmoteDto"/>.
         /// </summary>
         /// <param name="dto"></param>
-        public void UpdateEmote(UMI3DEmoteDto emoteDto);
+        public void UpdateEmote(Emote emote);
 
         /// <summary>
         /// Load and configure emotes from an <see cref="UMI3DEmotesConfigDto"/>
         /// and try to get the animations.
         /// </summary>
         /// <param name="dto"></param>
-        public void UpdateEmoteConfig(UMI3DEmotesConfigDto dto);
+        public void AddEmoteConfig(EmotesConfig emotesConfig);
 
         /// <summary>
         /// Default icon used when no corresponding emote is found.
