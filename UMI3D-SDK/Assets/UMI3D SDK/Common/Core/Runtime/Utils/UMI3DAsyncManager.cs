@@ -59,20 +59,26 @@ public static class UMI3DAsyncManager
 
     private static void ErrorIfQuitting(List<CancellationToken> tokens)
     {
+#if UNITY_2022_1_OR_NEWER
+            UnityEngine.Debug.LogError("Add Application.exitToken");
+            if (QuittingManager.ApplicationIsQuitting)
+                throw new UMI3DAsyncManagerException("Application is quitting");
+#else
         if (QuittingManager.ApplicationIsQuitting)
-            throw new UMI3DAsyncManagerException("Application is quitting");
-#if UNITY_EDITOR
-        try
-        {
-            if (!Application.isPlaying)
+                throw new UMI3DAsyncManagerException("Application is quitting");
+    #if UNITY_EDITOR
+            try
             {
-                throw new UMI3DAsyncManagerException("Application is not playing");
+                if (!Application.isPlaying)
+                {
+                    throw new UMI3DAsyncManagerException("Application is not playing");
+                }
             }
-        }
-        catch(UnityException e)
-        {
-            UnityEngine.Debug.LogException(e);
-        }
+            catch(UnityException e)
+            {
+                UnityEngine.Debug.LogException(e);
+            }
+    #endif
 #endif
         TestTokens(tokens);
     }
