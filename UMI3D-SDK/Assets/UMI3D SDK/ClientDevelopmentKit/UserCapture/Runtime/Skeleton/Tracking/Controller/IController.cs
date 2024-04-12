@@ -29,6 +29,7 @@ namespace umi3d.cdk.userCapture.tracking
         public uint boneType { get; }
         public Vector3 position { get; }
         public Quaternion rotation { get; }
+        public Vector3 scale { get; }
 
         public virtual ControllerDto ToControllerDto()
         {

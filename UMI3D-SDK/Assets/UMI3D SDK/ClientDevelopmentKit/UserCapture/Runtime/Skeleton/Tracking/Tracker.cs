@@ -40,7 +40,7 @@ namespace umi3d.cdk.userCapture.tracking
             UpdateDistantController();
         }
 
-        protected void CreateDistantController()
+        protected virtual void CreateDistantController()
         {
             distantController = new DistantController()
             {
@@ -52,7 +52,7 @@ namespace umi3d.cdk.userCapture.tracking
             };
         }
 
-        protected void UpdateDistantController()
+        protected virtual void UpdateDistantController()
         {
             distantController.position = transform.position;
             distantController.rotation = transform.rotation;

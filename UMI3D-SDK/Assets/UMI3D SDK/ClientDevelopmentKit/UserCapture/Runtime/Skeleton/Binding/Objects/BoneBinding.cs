@@ -79,6 +79,7 @@ namespace umi3d.cdk.userCapture.binding
                 {
                     Position = controller.position,
                     Rotation = controller.rotation,
+                    Scale = controller.scale
                 };
             }
             else
@@ -95,7 +96,7 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            Compute((parentBone.Position, parentBone.Rotation, Vector3.one));
+            Compute((parentBone.Position, parentBone.Rotation, parentBone.Scale));
             success = true;
         }
     }

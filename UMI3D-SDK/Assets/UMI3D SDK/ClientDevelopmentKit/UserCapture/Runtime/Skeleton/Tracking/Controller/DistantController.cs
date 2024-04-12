@@ -29,6 +29,8 @@ namespace umi3d.cdk.userCapture.tracking
 
         public Quaternion rotation { get; set; }
 
+        public Vector3 scale { get; set; } = Vector3.one;
+
         public bool isActive { get; set; }
 
         public bool isOverrider { get; set; }

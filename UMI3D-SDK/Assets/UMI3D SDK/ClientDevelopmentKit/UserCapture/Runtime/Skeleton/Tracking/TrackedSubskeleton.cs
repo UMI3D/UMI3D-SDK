@@ -285,6 +285,9 @@ namespace umi3d.cdk.userCapture.tracking
         /// <param name="saveOldController">If true the removed controlled is saved and will be used when the replacing controller will be deleted.</param>
         public void ReplaceController(IController newController, bool saveOldController = false)
         {
+            if (newController == null)
+                return;
+
             if (newController.boneType is BoneType.None) // cannot put a controller on none bonetype
             {
                 UMI3DLogger.LogWarning($"Impossible to add controller. None bone type cannot receive a controller.", DebugScope.CDK | DebugScope.UserCapture);
