@@ -16,7 +16,9 @@ limitations under the License.
 
 using Moq;
 using NUnit.Framework;
+using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk;
 using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
@@ -30,199 +32,57 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         private UMI3DEmotesConfigLoader emotesConfigLoader;
         private Mock<IEmoteService> emoteManagerMock;
         private Mock<IEnvironmentManager> environmentManagerMock;
+        private Mock<ILoader<UMI3DEmoteDto, Emote>> emoteLoaderMock;
 
         #region Test SetUp
 
         [SetUp]
         public void SetUp()
         {
-            emoteManagerMock = new Mock<IEmoteService>();
-            environmentManagerMock = new Mock<IEnvironmentManager>();
-            emotesConfigLoader = new UMI3DEmotesConfigLoader(emoteManagerMock.Object, environmentManagerMock.Object);
+            emoteManagerMock = new ();
+            environmentManagerMock = new ();
+            emoteLoaderMock = new ();
+            emotesConfigLoader = new UMI3DEmotesConfigLoader(emoteManagerMock.Object, environmentManagerMock.Object, emoteLoaderMock.Object);
         }
 
         #endregion Test SetUp
 
-        #region CanReadUMI3DExtension
+        #region Load
 
-        [Test]
-        public void CanReadUMI3DExtension_IsEmotesConfigDto()
+        [Test, TestOf(nameof(UMI3DEmotesConfigLoader.Load))]
+        public void Load([Values(true, false)] bool allAvailableByDefault)
         {
             // GIVEN
-            var emotesConfigDto = new UMI3DEmotesConfigDto();
-
-            var data = new ReadUMI3DExtensionData(0, emotesConfigDto);
-
-            // WHEN
-            var canRead = emotesConfigLoader.CanReadUMI3DExtension(data);
-
-            // THEN
-            Assert.IsTrue(canRead);
-        }
-
-        [Test]
-        public void CanReadUMI3DExtension_IsNotEmoteDto()
-        {
-            // GIVEN
-            var dto = new UMI3DDto();
-
-            var data = new ReadUMI3DExtensionData(0, dto);
-
-            // WHEN
-            var canRead = emotesConfigLoader.CanReadUMI3DExtension(data);
-
-            // THEN
-            Assert.IsFalse(canRead);
-        }
-
-        #endregion CanReadUMI3DExtension
-
-        #region ReadUMI3DExtension
-
-        [Test]
-        public async void ReadUMI3DExtension_EmoteConfig(
-            [Range(1000uL, 2000ul, 500ul)] ulong id)
-        {
-            // GIVEN
+            ulong environmentId = 0;
             var dto = new UMI3DEmotesConfigDto()
             {
-                id = id,
-                allAvailableByDefault = false,
-                emotes = new()
+                id = 1025uL,
+                allAvailableByDefault = allAvailableByDefault,
+                emotes = new() { new(), new()}
             };
 
-            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
+            var entityInstance = new UMI3DEntityInstance(environmentId, () => { }, dto.id)
             {
-                dto = dto
+                dto = dto,
             };
 
-            emoteManagerMock.Setup(x => x.UpdateEmoteConfig(dto));
-            environmentManagerMock.Setup(x => x.RegisterEntity(0, dto.id, dto, null, null)).Returns(entityInstance);
-
-            var data = new ReadUMI3DExtensionData(0, dto);
+            emoteLoaderMock.Setup(x=>x.Load(environmentId, It.IsAny<UMI3DEmoteDto>())).Returns((ulong a, UMI3DEmoteDto e) => Task.FromResult(new Emote(e, null)));
+            emoteManagerMock.Setup(x => x.AddEmoteConfig(It.IsAny<EmotesConfig>()));
+            environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, It.IsAny<EmotesConfig>(), null)).Returns(entityInstance);
 
             // WHEN
-            await emotesConfigLoader.ReadUMI3DExtension(data);
+            Task<EmotesConfig> task = emotesConfigLoader.Load(environmentId, dto);
+            task.Wait();
+            EmotesConfig emotesConfig = task.Result;
 
             // THEN
-            emoteManagerMock.Verify(x => x.UpdateEmoteConfig(dto), Times.Once());
+            emoteManagerMock.Verify(x => x.AddEmoteConfig(It.IsAny<EmotesConfig>()), Times.Once());
+            Assert.IsNotNull(emotesConfig);
+            Assert.AreEqual(dto.id, emotesConfig.Id);
+            Assert.AreEqual(dto.allAvailableByDefault, emotesConfig.AllAvailableByDefault);
+            Assert.AreEqual(dto.emotes.Count, emotesConfig.Emotes.Count);
         }
 
-        #endregion ReadUMI3DExtension
-
-        #region SetUMI3DProperty
-
-        [Test]
-        public async void SetUMI3DProperty_NotEmotesConfigDto()
-        {
-            // GIVEN
-            var setEntityDto = new SetEntityPropertyDto()
-            {
-                property = UMI3DPropertyKeys.ActiveEmote,
-                value = true
-            };
-
-            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
-            {
-                dto = new UMI3DDto()
-            };
-
-            var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
-
-            // WHEN
-            var success = await emotesConfigLoader.SetUMI3DProperty(data);
-
-            // THEN
-            Assert.IsFalse(success);
-        }
-
-        [Test]
-        public async void SetUMI3DProperty_ChangeEmoteConfig()
-        {
-            // GIVEN
-            var setEntityDto = new SetEntityPropertyDto()
-            {
-                property = UMI3DPropertyKeys.ChangeEmoteConfig,
-                value = new UMI3DEmotesConfigDto()
-            };
-
-            var entityInstance = new UMI3DEntityInstance(0, () => { }, 0)
-            {
-                dto = setEntityDto.value as UMI3DEmotesConfigDto
-            };
-
-            var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
-
-            // WHEN
-            var success = await emotesConfigLoader.SetUMI3DProperty(data);
-
-            // THEN
-            Assert.IsTrue(success);
-            emoteManagerMock.Verify(x => x.UpdateEmoteConfig(It.IsAny<UMI3DEmotesConfigDto>()), Times.Once());
-        }
-
-        #endregion SetUMI3DProperty
-
-        #region ReadUMI3DProperty
-
-        [Test]
-        public async void ReadUMI3DProperty_IsNotEmotesConfig()
-        {
-            // set up
-            var serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
-            UMI3DSerializer.AddModule(serializationModules);
-
-            // GIVEN
-            var dto = new UMI3DEmoteDto();
-
-            Bytable data = UMI3DSerializer.Write(dto);
-
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
-
-            var readUMI3DPropertyData = new ReadUMI3DPropertyData(0,
-                                                                propertyKey: UMI3DPropertyKeys.ActiveEmote,
-                                                                container: byteContainer);
-
-            // WHEN
-            var result = await emotesConfigLoader.ReadUMI3DProperty(readUMI3DPropertyData);
-
-            // THEN
-            Assert.IsFalse(result);
-            emoteManagerMock.Verify(x => x.UpdateEmoteConfig(It.IsAny<UMI3DEmotesConfigDto>()), Times.Never());
-
-            // teardown
-            UMI3DSerializer.RemoveModule(serializationModules);
-        }
-
-        [Test]
-        public async void ReadUMI3DProperty()
-        {
-            // set up
-            var serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
-            UMI3DSerializer.AddModule(serializationModules);
-
-            // GIVEN
-            var dto = new UMI3DEmotesConfigDto();
-
-            Bytable data = UMI3DSerializer.Write(dto);
-
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
-
-            var readUMI3DPropertyData = new ReadUMI3DPropertyData(0,
-                                                                propertyKey: UMI3DPropertyKeys.ChangeEmoteConfig,
-                                                                container: byteContainer);
-
-            // WHEN
-            bool success = await emotesConfigLoader.ReadUMI3DProperty(readUMI3DPropertyData);
-
-            // THEN
-            Assert.IsTrue(success);
-            emoteManagerMock.Verify(x => x.UpdateEmoteConfig(It.IsAny<UMI3DEmotesConfigDto>()), Times.Once());
-
-            // teardown
-            UMI3DSerializer.RemoveModule(serializationModules);
-        }
-
-        #endregion ReadUMI3DProperty
+        #endregion Load
     }
 }
