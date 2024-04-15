@@ -32,6 +32,7 @@ namespace umi3d.edk.collaboration.murmur
         public readonly string httpIp;
         private MurmurAPI m;
         private MurmurAPI.Server serv;
+        Dictionary<string, string> headermap;
         private readonly string guid;
         private Regex roomRegex;
         private Regex userRegex;
@@ -162,11 +163,47 @@ namespace umi3d.edk.collaboration.murmur
             this.guid = guid;
             this.ip = ip;
             this.httpIp = (string.IsNullOrEmpty(http)) ? ip.Split(':')[0] : http;
-            m = new MurmurAPI(httpIp);
+            m = new MurmurAPI(httpIp, headermap);
             roomList = new List<Room>();
             userList = new List<User>();
             roomRegex = new Regex(@"Room([0-9]*)_\[" + guid + @"\]");
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
+            headermap = new Dictionary<string, string>();
+        }
+
+        /// <summary>
+        /// Add a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool AddHeader(string key, string value)
+        {
+            if (headermap.ContainsKey(key))
+                return false;
+
+            headermap.Add(key, value);
+            return true;
+        }
+
+        /// <summary>
+        /// Update a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public void UpdateHeader(string key, string value)
+        {
+            headermap[key] = value;
+        }
+
+        /// <summary>
+        /// Remove a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool RemoveHeader(string key)
+        {
+            return headermap.Remove(key);
         }
 
         public string GenerateUserName(UMI3DCollaborationUser user, string userID)
