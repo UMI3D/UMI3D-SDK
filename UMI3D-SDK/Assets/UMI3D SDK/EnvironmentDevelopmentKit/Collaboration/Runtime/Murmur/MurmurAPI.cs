@@ -29,12 +29,54 @@ namespace umi3d.edk.collaboration.murmur
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Collaboration | DebugScope.Mumble;
         private string url = "";
+        Dictionary<string, string> headermap;
 
-        public MurmurAPI(string url)
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="url">Rest url/ip of a mumble server</param>
+        /// <param name="headers">a map of headers to add, Key is header name, value is header content</param>
+        public MurmurAPI(string url, Dictionary<string, string> headers = null)
         {
             this.url = url;
+            headermap = headers ?? new Dictionary<string, string>();
         }
 
+        /// <summary>
+        /// Add a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool AddHeader(string key, string value)
+        {
+            if (headermap.ContainsKey(key))
+                return false;
+
+            headermap.Add(key, value);
+            return true;
+        }
+
+        /// <summary>
+        /// Remove a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool RemoveHeader(string key)
+        {
+            return headermap.Remove(key);
+        }
+
+        /// <summary>
+        /// Update a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public void UpdateHeader(string key, string value)
+        {
+            headermap[key] = value;
+        }
         private async Task Send(UnityWebRequest www)
         {
             UnityWebRequestAsyncOperation operation = www.SendWebRequest();
@@ -62,6 +104,7 @@ namespace umi3d.edk.collaboration.murmur
         public async Task<string> GetRequest(string url)
         {
             var www = UnityWebRequest.Get(url);
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -78,6 +121,7 @@ namespace umi3d.edk.collaboration.murmur
         {
 
             var www = UnityWebRequest.Post(url + "/servers/", "");
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -92,6 +136,7 @@ namespace umi3d.edk.collaboration.murmur
         public async Task<string> StartServer(int server)
         {
             var www = UnityWebRequest.Post(url + "/servers/" + server + "/start", "");
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -100,6 +145,7 @@ namespace umi3d.edk.collaboration.murmur
         public async Task<string> StopServer(int server)
         {
             var www = UnityWebRequest.Post(url + "/servers/" + server + "/stop", "");
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -115,12 +161,16 @@ namespace umi3d.edk.collaboration.murmur
                     list += ',' + id;
 
                 var www = UnityWebRequest.Delete(url + "/servers/delete?id=" + list);
+
+                SetRequestHeader(www);
                 await Send(www);
                 return RequestToString(www);
             }
             else
             {
                 var www = UnityWebRequest.Delete(url + "/servers/" + serverId);
+
+                SetRequestHeader(www);
                 await Send(www);
                 return RequestToString(www);
             }
@@ -175,6 +225,8 @@ namespace umi3d.edk.collaboration.murmur
             form.Add(new MultipartFormDataSection("username", userName));
             form.Add(new MultipartFormDataSection("password", password));
             var www = UnityWebRequest.Post(url + "/servers/" + server + "/user", form);
+
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -183,6 +235,8 @@ namespace umi3d.edk.collaboration.murmur
         public async Task<string> DeleteUser(int server, int user)
         {
             var www = UnityWebRequest.Delete(url + "/servers/" + server + "/user/" + user);
+
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -213,6 +267,8 @@ namespace umi3d.edk.collaboration.murmur
             form.Add(new MultipartFormDataSection("name", name));
             form.Add(new MultipartFormDataSection($"parent", parent.ToString()));
             var www = UnityWebRequest.Post(url + "/servers/" + server + "/channels", form);
+
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
@@ -227,9 +283,21 @@ namespace umi3d.edk.collaboration.murmur
         public async Task<string> DeleteChannel(int server, int channel)
         {
             var www = UnityWebRequest.Delete(url + "/servers/" + server + "/channels/" + channel);
+
+            SetRequestHeader(www);
             await Send(www);
             return RequestToString(www);
         }
+
+        private UnityWebRequest SetRequestHeader(UnityWebRequest www)
+        {
+            foreach(var header in headermap)
+                if(header.Value != null)
+                    www.SetRequestHeader(header.Key,header.Value);
+
+            return www;
+        }
+
         #endregion
 
         public class MurmurClass
@@ -492,12 +560,12 @@ namespace umi3d.edk.collaboration.murmur
                 }
             }
 
-            public async Task<Channel> CreateChannel(string name)
+            public async Task<Channel> CreateChannel(string name, int? parentId = null)
             {
                 return Channel.Create(
                     murmur,
                     this,
-                    Convert<ChannelData>(await murmur.CreateChannel(data.id, name, data.parent_channel.id)));
+                    Convert<ChannelData>(await murmur.CreateChannel(data.id, name, parentId ?? data.parent_channel.id)));
             }
 
             public async Task<List<User>> Users()
