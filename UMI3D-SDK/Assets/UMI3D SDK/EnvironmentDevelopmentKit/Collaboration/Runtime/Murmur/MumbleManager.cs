@@ -32,7 +32,6 @@ namespace umi3d.edk.collaboration.murmur
         public readonly string httpIp;
         private MurmurAPI m;
         private MurmurAPI.Server serv;
-        Dictionary<string, string> headermap;
         private readonly string guid;
         private Regex roomRegex;
         private Regex userRegex;
@@ -163,12 +162,11 @@ namespace umi3d.edk.collaboration.murmur
             this.guid = guid;
             this.ip = ip;
             this.httpIp = (string.IsNullOrEmpty(http)) ? ip.Split(':')[0] : http;
-            m = new MurmurAPI(httpIp, headermap);
+            m = new MurmurAPI(httpIp);
             roomList = new List<Room>();
             userList = new List<User>();
             roomRegex = new Regex(@"Room([0-9]*)_\[" + guid + @"\]");
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
-            headermap = new Dictionary<string, string>();
         }
 
         /// <summary>
@@ -179,11 +177,7 @@ namespace umi3d.edk.collaboration.murmur
         /// <returns></returns>
         public bool AddHeader(string key, string value)
         {
-            if (headermap.ContainsKey(key))
-                return false;
-
-            headermap.Add(key, value);
-            return true;
+            return m.AddHeader(key, value);
         }
 
         /// <summary>
@@ -193,7 +187,7 @@ namespace umi3d.edk.collaboration.murmur
         /// <returns></returns>
         public void UpdateHeader(string key, string value)
         {
-            headermap[key] = value;
+            m.UpdateHeader(key, value);
         }
 
         /// <summary>
@@ -203,7 +197,7 @@ namespace umi3d.edk.collaboration.murmur
         /// <returns></returns>
         public bool RemoveHeader(string key)
         {
-            return headermap.Remove(key);
+            return m.RemoveHeader(key);
         }
 
         public string GenerateUserName(UMI3DCollaborationUser user, string userID)
@@ -242,7 +236,10 @@ namespace umi3d.edk.collaboration.murmur
             try
             {
                 if (serv == null)
+                {
+                    await Task.Yield();
                     serv = await MurmurAPI.Server.Create(m, 1);
+                }
                 else
                     await serv.Refresh();
                 await CheckRoom();

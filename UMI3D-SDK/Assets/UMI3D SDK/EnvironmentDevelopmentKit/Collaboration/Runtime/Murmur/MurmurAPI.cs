@@ -560,12 +560,12 @@ namespace umi3d.edk.collaboration.murmur
                 }
             }
 
-            public async Task<Channel> CreateChannel(string name)
+            public async Task<Channel> CreateChannel(string name, int? parentId = null)
             {
                 return Channel.Create(
                     murmur,
                     this,
-                    Convert<ChannelData>(await murmur.CreateChannel(data.id, name, data.parent_channel.id)));
+                    Convert<ChannelData>(await murmur.CreateChannel(data.id, name, parentId ?? data.parent_channel.id)));
             }
 
             public async Task<List<User>> Users()
