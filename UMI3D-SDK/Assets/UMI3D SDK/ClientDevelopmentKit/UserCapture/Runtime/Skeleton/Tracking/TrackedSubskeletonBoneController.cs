@@ -49,6 +49,18 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
+        public Vector3 scale
+        {
+            get
+            {
+                return this.transform.localScale;
+            }
+            set
+            {
+                this.transform.localScale = value;
+            }
+        }
+
         public bool isActive { get; set; }
 
         uint IController.boneType => boneType;
