@@ -27,7 +27,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             ConstrainingNode = node;
         }
 
-        public UMI3DNodeInstance ConstrainingNode { get; private set; }
+        public UMI3DNodeInstance ConstrainingNode { get; internal set; }
 
         public override string TrackerLabel { get; protected set; } = "Node Constrained Tracker";
 

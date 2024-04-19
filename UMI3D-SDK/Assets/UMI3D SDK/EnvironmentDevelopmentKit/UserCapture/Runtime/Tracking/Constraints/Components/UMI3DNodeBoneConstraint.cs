@@ -61,11 +61,11 @@ namespace umi3d.edk.userCapture.tracking.constraint
         public void Init()
         {
             _constrainingNode = _constrainingNode == null ? GetComponentInParent<UMI3DNode>() : _constrainingNode;
-            ShouldBeApplied ??= new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.TrackingConstraintIsApplied, _isApplied);
-            ConstrainedBone ??= new UMI3DAsyncProperty<uint>(id, UMI3DPropertyKeys.TrackingConstraintBoneType, _constrainedBone);
-            PositionOffset ??= new UMI3DAsyncProperty<Vector3>(id, UMI3DPropertyKeys.TrackingConstraintPositionOffset, _positionOffset);
-            RotationOffset ??= new UMI3DAsyncProperty<Quaternion>(id, UMI3DPropertyKeys.TrackingConstraintRotationOffset, _rotationOffset);
-            ConstrainingNode ??= new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.TrackingConstraintConstrainingNode, _constrainingNode);
+            ShouldBeApplied ??= new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.TrackingConstraintIsApplied, _isApplied);
+            ConstrainedBone ??= new UMI3DAsyncProperty<uint>(Id(), UMI3DPropertyKeys.TrackingConstraintBoneType, _constrainedBone);
+            PositionOffset ??= new UMI3DAsyncProperty<Vector3>(Id(), UMI3DPropertyKeys.TrackingConstraintPositionOffset, _positionOffset);
+            RotationOffset ??= new UMI3DAsyncProperty<Quaternion>(Id(), UMI3DPropertyKeys.TrackingConstraintRotationOffset, _rotationOffset);
+            ConstrainingNode ??= new UMI3DAsyncProperty<UMI3DNode>(Id(), UMI3DPropertyKeys.TrackingConstraintConstrainingNode, _constrainingNode);
         }
 
         public override IEntity ToEntityDto(UMI3DUser user)
