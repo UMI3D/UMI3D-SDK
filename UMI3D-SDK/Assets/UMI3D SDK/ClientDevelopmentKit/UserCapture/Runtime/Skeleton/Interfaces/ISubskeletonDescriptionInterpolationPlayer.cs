@@ -62,6 +62,9 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="shouldStopImmediate">If true, the subskeleton displacement is ended immediately with no ending interpolation phase.</param>
         void End(bool shouldStopImmediate = false);
+        void SwitchTo(ISubskeletonDescriptor newDescriptor, float transitionDuration = 0.25F);
+
+        event System.Action SwitchTransitionFinished;
 
         /// <summary>
         /// Parameters used to request a specific application of the pose.

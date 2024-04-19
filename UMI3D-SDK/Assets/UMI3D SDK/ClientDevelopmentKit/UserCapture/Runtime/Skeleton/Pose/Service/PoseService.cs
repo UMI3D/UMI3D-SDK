@@ -125,5 +125,20 @@ namespace umi3d.cdk.userCapture.pose
         {
             skeletonManager.PersonalSkeleton.PoseSubskeleton.StopAllPoses();
         }
+
+        /// <inheritdoc/>
+        public void SwitchPose(PoseClip playingPoseClip, PoseClip newPoseClip, float transitionDuration, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
+        {
+            if (playingPoseClip == null && newPoseClip != null)
+                PlayPoseClip(newPoseClip, parameters);
+
+            if (playingPoseClip != null && newPoseClip == null)
+                StopPoseClip(newPoseClip);
+
+            if (playingPoseClip == null && newPoseClip == null)
+                throw new System.ArgumentNullException(nameof(playingPoseClip) + " and " + nameof(newPoseClip));
+
+            skeletonManager.PersonalSkeleton.PoseSubskeleton.SwitchPose(playingPoseClip, newPoseClip, transitionDuration, parameters);
+        }
     }
 }
