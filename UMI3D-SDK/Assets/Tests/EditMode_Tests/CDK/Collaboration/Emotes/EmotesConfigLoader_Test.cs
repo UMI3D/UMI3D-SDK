@@ -17,6 +17,7 @@ limitations under the License.
 using Moq;
 using NUnit.Framework;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.cdk;
 using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
@@ -80,7 +81,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public async void ReadUMI3DExtension_EmoteConfig(
+        public void ReadUMI3DExtension_EmoteConfig(
             [Range(1000uL, 2000ul, 500ul)] ulong id)
         {
             // GIVEN
@@ -102,7 +103,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             var data = new ReadUMI3DExtensionData(0, dto);
 
             // WHEN
-            await emotesConfigLoader.ReadUMI3DExtension(data);
+            Task.Run(() => emotesConfigLoader.ReadUMI3DExtension(data)).Wait();
 
             // THEN
             emoteManagerMock.Verify(x => x.UpdateEmoteConfig(dto), Times.Once());
@@ -130,14 +131,14 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
-            var success = await emotesConfigLoader.SetUMI3DProperty(data);
+            bool success =  Task.Run(() => emotesConfigLoader.SetUMI3DProperty(data)).Result;
 
             // THEN
             Assert.IsFalse(success);
         }
 
         [Test]
-        public async void SetUMI3DProperty_ChangeEmoteConfig()
+        public void SetUMI3DProperty_ChangeEmoteConfig()
         {
             // GIVEN
             var setEntityDto = new SetEntityPropertyDto()
@@ -154,7 +155,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
-            var success = await emotesConfigLoader.SetUMI3DProperty(data);
+            bool success = Task.Run(() => emotesConfigLoader.SetUMI3DProperty(data)).Result;
 
             // THEN
             Assert.IsTrue(success);
@@ -166,7 +167,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         #region ReadUMI3DProperty
 
         [Test]
-        public async void ReadUMI3DProperty_IsNotEmotesConfig()
+        public void ReadUMI3DProperty_IsNotEmotesConfig()
         {
             // set up
             var serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
@@ -184,10 +185,10 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                                                                 container: byteContainer);
 
             // WHEN
-            var result = await emotesConfigLoader.ReadUMI3DProperty(readUMI3DPropertyData);
+            bool success = Task.Run(() => emotesConfigLoader.ReadUMI3DProperty(readUMI3DPropertyData)).Result;
 
             // THEN
-            Assert.IsFalse(result);
+            Assert.IsFalse(success);
             emoteManagerMock.Verify(x => x.UpdateEmoteConfig(It.IsAny<UMI3DEmotesConfigDto>()), Times.Never());
 
             // teardown
@@ -195,7 +196,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         }
 
         [Test]
-        public async void ReadUMI3DProperty()
+        public void ReadUMI3DProperty()
         {
             // set up
             var serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
@@ -213,7 +214,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                                                                 container: byteContainer);
 
             // WHEN
-            bool success = await emotesConfigLoader.ReadUMI3DProperty(readUMI3DPropertyData);
+            bool success = Task.Run(() => emotesConfigLoader.ReadUMI3DProperty(readUMI3DPropertyData)).Result;
 
             // THEN
             Assert.IsTrue(success);

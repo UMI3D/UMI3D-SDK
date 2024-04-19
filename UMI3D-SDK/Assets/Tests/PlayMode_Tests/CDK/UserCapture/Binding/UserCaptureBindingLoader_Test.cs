@@ -77,7 +77,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public override async void ReadUMI3DExtension_MultiBinding()
+        public override void ReadUMI3DExtension_MultiBinding()
         {
             // GIVEN
             ulong environmentId = 0uL;
@@ -109,7 +109,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
@@ -120,7 +120,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         }
 
         [Test]
-        public virtual async void ReadUMI3DExtension_BoneBinding()
+        public virtual void ReadUMI3DExtension_BoneBinding()
         {
             // GIVEN
             ulong environmentId = 0uL;
@@ -151,7 +151,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));

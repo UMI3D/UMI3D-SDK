@@ -84,7 +84,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public override async void ReadUMI3DExtension_MultiBinding()
+        public override void ReadUMI3DExtension_MultiBinding()
         {
             // GIVEN
             ulong environmentId = UMI3DGlobalID.EnvironmentId;
@@ -120,7 +120,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             collaborativeSkeletonManager.Setup(x => x.WaitForSkeleton(environmentId, userId, It.IsAny<List<CancellationToken>>())).Returns(Task.FromResult(skeletonMock.Object));
 
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
@@ -131,7 +131,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
         }
 
         [Test]
-        public override async void ReadUMI3DExtension_NodeBinding()
+        public override void ReadUMI3DExtension_NodeBinding()
         {
             // GIVEN
             ulong environmentId = UMI3DGlobalID.EnvironmentId;
@@ -156,7 +156,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
@@ -167,7 +167,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
         }
 
         [Test]
-        public override async void ReadUMI3DExtension_BoneBinding()
+        public override void ReadUMI3DExtension_BoneBinding()
         {
             // GIVEN
             ulong environmentId = UMI3DGlobalID.EnvironmentId;
@@ -199,7 +199,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             collaborativeSkeletonManager.Setup(x => x.WaitForSkeleton(environmentId, userId, It.IsAny<List<CancellationToken>>())).Returns(Task.FromResult(skeletonMock.Object));
 
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
