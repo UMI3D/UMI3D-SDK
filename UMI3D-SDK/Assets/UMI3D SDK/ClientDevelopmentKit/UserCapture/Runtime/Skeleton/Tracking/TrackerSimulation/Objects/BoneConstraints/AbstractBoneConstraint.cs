@@ -26,23 +26,26 @@ namespace umi3d.cdk.userCapture.tracking.constraint
     {
         protected AbstractBoneConstraint(AbstractBoneConstraintDto dto)
         {
+            this.Id = dto.id;
             this.ShouldBeApplied = dto.ShouldBeApplied;
             this.ConstrainedBone = dto.ConstrainedBone;
             this.PositionOffset = dto.PositionOffset.Struct();
             this.RotationOffset = dto.RotationOffset.Quaternion();
         }
 
+        public ulong Id { get; private set; }
+
         public bool ShouldBeApplied { get; set; }
 
-        public bool IsApplied { get; protected set; }
+        public bool IsApplied { get; internal set; }
 
-        public uint ConstrainedBone { get; protected set; }
+        public uint ConstrainedBone { get; internal set; }
 
-        public Vector3 PositionOffset { get; protected set; }
+        public Vector3 PositionOffset { get; internal set; }
 
-        public Quaternion RotationOffset { get; protected set; }
+        public Quaternion RotationOffset { get; internal set; }
 
-        public ConstrainedSimulatedTracker Tracker { get; protected set; }
+        public ConstrainedSimulatedTracker Tracker { get; internal set; }
 
         public virtual string TrackerLabel { get; protected set; } = "Constrained Tracker";
 

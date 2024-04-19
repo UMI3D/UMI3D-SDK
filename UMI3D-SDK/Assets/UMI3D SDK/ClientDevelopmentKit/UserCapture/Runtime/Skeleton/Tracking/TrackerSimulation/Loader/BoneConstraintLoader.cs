@@ -30,8 +30,6 @@ namespace umi3d.cdk.userCapture.tracking.constraint
         private static readonly UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.7", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
-
-
         #region Dependencies Injection
 
         private readonly IEnvironmentManager environmentService;
@@ -62,6 +60,10 @@ namespace umi3d.cdk.userCapture.tracking.constraint
         public override async Task<AbstractBoneConstraint> Load(ulong environmentId, AbstractBoneConstraintDto dto)
         {
             AbstractBoneConstraint constraint = null;
+
+            if (dto == null)
+                throw new System.ArgumentNullException(nameof(dto));
+
             switch (dto)
             {
                 case NodeBoneConstraintDto nodeBoneConstraintDto:
@@ -104,5 +106,143 @@ namespace umi3d.cdk.userCapture.tracking.constraint
 
             trackerSimulationService.UnregisterConstraint(constraint);
         }
+
+        #region PropertySetters
+
+        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
+        {
+            if (value.entity.dto is not AbstractBoneConstraintDto dto)
+                return Task.FromResult(false);
+
+            switch (value.propertyKey)
+            {
+                case UMI3DPropertyKeys.TrackingConstraintIsApplied:
+                    SetShouldBeAppliedProperty(value.environmentId, dto.id, UMI3DSerializer.Read<bool>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintBoneType:
+                    SetConstrainedBoneTypeProperty(value.environmentId, dto.id, UMI3DSerializer.Read<uint>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintConstrainingNode:
+                    SetConstrainingNodeProperty(value.environmentId, dto.id, UMI3DSerializer.Read<UMI3DNodeDto>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintConstrainingBone:
+                    SetConstrainingBoneProperty(value.environmentId, dto.id, UMI3DSerializer.Read<uint>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintPositionOffset:
+                    SetPositionOffsetProperty(value.environmentId, dto.id, UMI3DSerializer.Read<Vector3Dto>(value.container));
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintRotationOffset:
+                    SetRotationOffsetProperty(value.environmentId, dto.id, UMI3DSerializer.Read<Vector4Dto>(value.container));
+                    break;
+
+                default:
+                    return Task.FromResult(false);
+            }
+            return Task.FromResult(true);
+        }
+
+        public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
+        {
+            if (value.entity.dto is not AbstractBoneConstraintDto dto)
+                return Task.FromResult(false);
+
+            switch (value.property.property)
+            {
+                case UMI3DPropertyKeys.TrackingConstraintIsApplied:
+                    SetShouldBeAppliedProperty(value.environmentId, dto.id, (bool)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintBoneType:
+                    SetConstrainedBoneTypeProperty(value.environmentId, dto.id, (uint)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintConstrainingNode:
+                    SetConstrainingNodeProperty(value.environmentId, dto.id, (UMI3DNodeDto)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintConstrainingBone:
+                    SetConstrainingBoneProperty(value.environmentId, dto.id, (uint)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintPositionOffset:
+                    SetPositionOffsetProperty(value.environmentId, dto.id, (Vector3Dto)value.property.value);
+                    break;
+
+                case UMI3DPropertyKeys.TrackingConstraintRotationOffset:
+                    SetRotationOffsetProperty(value.environmentId, dto.id, (Vector4Dto)value.property.value);
+                    break;
+
+                default:
+                    return Task.FromResult(false);
+            }
+            return Task.FromResult(true);
+        }
+
+        protected void SetShouldBeAppliedProperty(ulong environmentId, ulong entityId, bool shouldBeApplied)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out AbstractBoneConstraint boneConstraint))
+                return;
+
+            boneConstraint.ShouldBeApplied = shouldBeApplied;
+
+            trackerSimulationService.UpdateConstraints();
+        }
+
+        protected void SetConstrainedBoneTypeProperty(ulong environmentId, ulong entityId, uint constrainedBone)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out AbstractBoneConstraint boneConstraint))
+                return;
+
+            boneConstraint.ConstrainedBone = constrainedBone;
+
+            trackerSimulationService.UpdateConstraints();
+        }
+
+        protected void SetConstrainingNodeProperty(ulong environmentId, ulong entityId, UMI3DNodeDto node)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out NodeBoneConstraint boneConstraint))
+                return;
+
+            UMI3DNodeInstance nodeInstance = environmentService.GetNodeInstance(environmentId, node.id);
+            if (nodeInstance == null)
+                return;
+
+            boneConstraint.ConstrainingNode = nodeInstance;
+        }
+
+        protected void SetConstrainingBoneProperty(ulong environmentId, ulong entityId, uint bone)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out BoneBoneConstraint boneConstraint))
+                return;
+
+            if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(bone, out ISkeleton.Transformation boneReference))
+                return;
+
+            boneConstraint.ConstrainingBoneTransform = boneReference;
+            boneConstraint.ConstrainingBone = bone;
+        }
+
+        protected void SetPositionOffsetProperty(ulong environmentId, ulong entityId, Vector3Dto positionOffset)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out AbstractBoneConstraint boneConstraint))
+                return;
+
+            boneConstraint.PositionOffset = positionOffset.Struct();
+        }
+
+        protected void SetRotationOffsetProperty(ulong environmentId, ulong entityId, Vector4Dto rotationOffset)
+        {
+            if (!environmentService.TryGetEntity(environmentId, entityId, out AbstractBoneConstraint boneConstraint))
+                return;
+
+            boneConstraint.RotationOffset = rotationOffset.Quaternion();
+        }
+
+        #endregion PropertySetters
     }
 }

@@ -22,10 +22,13 @@ namespace umi3d.cdk.userCapture.tracking.constraint
 {
     public class BoneBoneConstraint : AbstractBoneConstraint
     {
-        public ISkeleton.Transformation ConstrainingBoneTransform { get; private set; }
+        public ISkeleton.Transformation ConstrainingBoneTransform { get; internal set; }
+
+        public uint ConstrainingBone { get; internal set; }
 
         public BoneBoneConstraint(BoneBoneConstraintDto dto, ISkeleton.Transformation bone) : base(dto)
         {
+            ConstrainingBone = dto.ConstrainingBone;
             ConstrainingBoneTransform = bone;
         }
 
