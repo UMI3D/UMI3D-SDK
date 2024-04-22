@@ -18,7 +18,6 @@ using Moq;
 using NUnit.Framework;
 using System;
 using System.Linq;
-using System.Threading.Tasks;
 using umi3d.cdk;
 using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
@@ -49,7 +48,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         #region ReadUMI3DExtension
 
         [Test, Pairwise]
-        public void ReadUMI3DExtension_Emote(
+        public async void ReadUMI3DExtension_Emote(
             [Range(1000uL, 2000ul, 500ul)] ulong id,
             [Values(true, false)] bool available,
             [Range(1001uL, 2001ul, 500ul)] ulong animId,
@@ -72,7 +71,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             environmentManagerMock.Setup(x => x.RegisterEntity(0, It.IsAny<ulong>(), It.IsAny<UMI3DEmoteDto>(), null, null)).Returns(new UMI3DNodeInstance(0, () => { }, 0));
 
             // WHEN
-            Task.Run(() => emoteLoader.ReadUMI3DExtension(data)).Wait();
+            await emoteLoader.ReadUMI3DExtension(data);
 
             // THEN
             emoteManagerMock.Verify(x => x.UpdateEmote(emoteDto));
@@ -117,7 +116,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         #region SetUMI3DProperty
 
         [Test]
-        public void SetUMI3DProperty_NotEmoteDto()
+        public async void SetUMI3DProperty_NotEmoteDto()
         {
             // GIVEN
             var setEntityDto = new SetEntityPropertyDto()
@@ -134,14 +133,14 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
-            bool success = Task.Run(() => emoteLoader.SetUMI3DProperty(data)).Result;
+            var success = await emoteLoader.SetUMI3DProperty(data);
 
             // THEN
             Assert.IsFalse(success);
         }
 
         [Test]
-        public void SetUMI3DProperty_ActiveEmote([Values(true, false)] bool value)
+        public async void SetUMI3DProperty_ActiveEmote([Values(true, false)] bool value)
         {
             // GIVEN
             var setEntityDto = new SetEntityPropertyDto()
@@ -158,7 +157,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
-            bool success = Task.Run(() => emoteLoader.SetUMI3DProperty(data)).Result;
+            var success = await emoteLoader.SetUMI3DProperty(data);
 
             // THEN
             Assert.IsTrue(success);
@@ -166,7 +165,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         }
 
         [Test]
-        public void SetUMI3DProperty_AnimationEmote([Range(0ul, 2000uL, 500uL)] ulong value)
+        public async void SetUMI3DProperty_AnimationEmote([Range(0ul, 2000uL, 500uL)] ulong value)
         {
             // GIVEN
             var setEntityDto = new SetEntityPropertyDto()
@@ -183,7 +182,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
             var data = new SetUMI3DPropertyData(0, setEntityDto, entityInstance);
 
             // WHEN
-            bool success = Task.Run(() => emoteLoader.SetUMI3DProperty(data)).Result;
+            var success = await emoteLoader.SetUMI3DProperty(data);
 
             // THEN
             Assert.IsTrue(success);
@@ -240,7 +239,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
         [Test]
         [TestCase(UMI3DPropertyKeys.ActiveEmote)]
         [TestCase(UMI3DPropertyKeys.AnimationEmote)]
-        public void ReadUMI3DProperty(uint propertyKey)
+        public async void ReadUMI3DProperty(uint propertyKey)
         {
             // set up
             var serializationModules = UMI3DSerializerModuleUtils.GetModules().ToList();
@@ -258,7 +257,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
                                                                 container: byteContainer);
 
             // WHEN
-            bool success = Task.Run(() => emoteLoader.ReadUMI3DProperty(readUMI3DPropertyData)).Result;
+            bool success = await emoteLoader.ReadUMI3DProperty(readUMI3DPropertyData);
 
             // THEN
             Assert.IsTrue(success);

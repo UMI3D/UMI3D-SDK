@@ -78,7 +78,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         }
 
         [Test, TestOf(nameof(PoseAnimatorLoader.Load))]
-        public void Load()
+        public async void Load()
         {
             // Given
             PoseAnimatorDto dto = new()
@@ -110,14 +110,14 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
                                   .Verifiable();
 
             // When
-            Task.Run(() => poseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, dto)).Wait();
+            await poseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, dto);
 
             // Then
             environmentServiceMock.Verify(x => x.RegisterEntity(UMI3DGlobalID.EnvironmentId, dto.id, dto, It.IsAny<PoseAnimator>(), It.IsAny<Action>()), Times.Once());
         }
 
         [Test]
-        public void Load_Conditions()
+        public async void Load_Conditions()
         {
             // Given
 
@@ -171,7 +171,7 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             loadingServiceMock.Setup(x => x.WaitUntilEntityLoaded<PoseClip>(UMI3DGlobalID.EnvironmentId, poseClip.Id, null)).Returns(Task.FromResult(poseClip));
 
             // When
-            PoseAnimator poseAnimator = Task.Run(() => poseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, dto)).Result;
+            PoseAnimator poseAnimator = await poseAnimatorLoader.Load(UMI3DGlobalID.EnvironmentId, dto);
 
             // Then
             Assert.AreEqual(dto.id, poseAnimator.Id);

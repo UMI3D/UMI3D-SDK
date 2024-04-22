@@ -157,7 +157,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public void ReadUMI3DExtension_SkeletonAnimatioNode_WithoutSkeletonMapper_NoAvatar()
+        public async void ReadUMI3DExtension_SkeletonAnimatioNode_WithoutSkeletonMapper_NoAvatar()
         {
             // GIVEN
             var dto = new SkeletonAnimationNodeDto()
@@ -194,7 +194,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             var data = new ReadUMI3DExtensionData(UMI3DGlobalID.EnvironmentId, dto) { node = skeletonNodeGo };
 
             // WHEN
-            Task.Run(() => skeletonAnimationNodeLoader.ReadUMI3DExtension(data)).Wait();
+            await skeletonAnimationNodeLoader.ReadUMI3DExtension(data);
 
             // THEN
             environmentManagerMock.Verify(x => x.GetNodeInstance(UMI3DGlobalID.EnvironmentId, dto.id));
