@@ -111,7 +111,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         #region ReadUMI3DExtension
 
         [Test]
-        public virtual async void ReadUMI3DExtension_NodeBinding()
+        public virtual void ReadUMI3DExtension_NodeBinding()
         {
             // GIVEN
             ulong environmentId = 0uL;
@@ -136,7 +136,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
            
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
@@ -144,7 +144,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         }
 
         [Test]
-        public virtual async void ReadUMI3DExtension_MultiBinding()
+        public virtual void ReadUMI3DExtension_MultiBinding()
         {
             // GIVEN
             ulong environmentId = 0uL;
@@ -169,7 +169,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
             bindingManagementServiceMock.Setup(x => x.AddBinding(environmentId, dto.boundNodeId, It.IsAny<AbstractBinding>()));
 
             // WHEN
-            await bindingLoader.ReadUMI3DExtension(extensionData);
+            Task.Run(() => bindingLoader.ReadUMI3DExtension(extensionData)).Wait();
 
             // THEN
             environmentManagerMock.Verify(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>()));
