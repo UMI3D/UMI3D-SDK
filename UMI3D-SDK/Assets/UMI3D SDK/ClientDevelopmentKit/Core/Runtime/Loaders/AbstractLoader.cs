@@ -266,9 +266,16 @@ namespace umi3d.cdk
         public abstract Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value);
     }
 
-    public abstract class AbstractLoader<T> : AbstractLoader where T : UMI3DDto
+    public interface ILoader<DtoType> where DtoType : UMI3DDto
     {
-        public abstract Task Load(ulong environmentId, T dto);
+        Task Load(ulong environmentId, DtoType dto);
+
+        void Delete(ulong id);
+    }
+
+    public abstract class AbstractLoader<DtoType> : AbstractLoader where DtoType : UMI3DDto
+    {
+        public abstract Task Load(ulong environmentId, DtoType dto);
 
         public abstract void Delete(ulong id);
 
@@ -277,7 +284,7 @@ namespace umi3d.cdk
         /// </summary>
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
-            return data.dto is T;
+            return data.dto is DtoType;
         }
 
         /// <summary>
@@ -287,7 +294,7 @@ namespace umi3d.cdk
         {
             switch (value.dto)
             {
-                case T dto:
+                case DtoType dto:
                     Load(value.environmentId,dto);
                     break;
             }
@@ -312,8 +319,13 @@ namespace umi3d.cdk
         }
     }
 
+    public interface ILoader<DtoType, LoadedType> where DtoType : UMI3DDto
+    {
+        void Delete(ulong environmentId, ulong id);
+        Task<LoadedType> Load(ulong environmnetId, DtoType dto);
+    }
 
-    public abstract class AbstractLoader<DtoType, LoadedType> : AbstractLoader where DtoType : UMI3DDto
+    public abstract class AbstractLoader<DtoType, LoadedType> : AbstractLoader, ILoader<DtoType, LoadedType> where DtoType : UMI3DDto
     {
         public abstract Task<LoadedType> Load(ulong environmnetId, DtoType dto);
 

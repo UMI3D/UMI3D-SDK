@@ -12,8 +12,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using umi3d.common;
 using umi3d.common.collaboration.dto.emotes;
 
 namespace umi3d.cdk.collaboration.emotes
@@ -21,101 +21,49 @@ namespace umi3d.cdk.collaboration.emotes
     /// <summary>
     /// Loader for <see cref="UMI3DEmotesConfigDto"/>.
     /// </summary>
-    public class UMI3DEmotesConfigLoader : AbstractLoader
+    public class UMI3DEmotesConfigLoader : AbstractLoader<UMI3DEmotesConfigDto, EmotesConfig>
     {
         private UMI3DVersion.VersionCompatibility _version = new UMI3DVersion.VersionCompatibility("2.6", "*");
         public override UMI3DVersion.VersionCompatibility version => _version;
 
         #region DependencyInjection
 
-        private IEmoteService emoteManagementService;
-        private IEnvironmentManager environmentManager;
+        private readonly IEmoteService emoteManagementService;
+        private readonly IEnvironmentManager environmentManager;
+        private readonly ILoader<UMI3DEmoteDto, Emote> emoteLoader;
 
-        public UMI3DEmotesConfigLoader()
+        public UMI3DEmotesConfigLoader() : this(emoteManagementService: EmoteManager.Instance,
+                                                environmentManager: UMI3DCollaborationEnvironmentLoader.Instance,
+                                                emoteLoader: new UMI3DEmoteLoader())
         {
-            emoteManagementService = EmoteManager.Instance;
-            environmentManager = UMI3DEnvironmentLoader.Instance;
         }
 
-        public UMI3DEmotesConfigLoader(IEmoteService emoteManager, IEnvironmentManager environmentManager)
+        public UMI3DEmotesConfigLoader(IEmoteService emoteManagementService, IEnvironmentManager environmentManager, ILoader<UMI3DEmoteDto, Emote> emoteLoader)
         {
-            emoteManagementService = emoteManager;
+            this.emoteManagementService = emoteManagementService;
             this.environmentManager = environmentManager;
+            this.emoteLoader = emoteLoader;
         }
+
 
         #endregion DependencyInjection
 
-        /// <inheritdoc/>
-        public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
+        public override async Task<EmotesConfig> Load(ulong environmentId, UMI3DEmotesConfigDto dto)
         {
-            return data.dto is UMI3DEmotesConfigDto;
+            IEnumerable<Emote> emotes = await Task.WhenAll(dto.emotes.Select(async (emoteDto) => await emoteLoader.Load(environmentId, emoteDto)));
+
+            EmotesConfig emoteConfig = new(dto, emotes);
+
+            environmentManager.RegisterEntity(environmentId, dto.id, dto, emoteConfig).NotifyLoaded();
+
+            emoteManagementService.AddEmoteConfig(emoteConfig);
+
+            return emoteConfig;
         }
 
-        /// <inheritdoc/>
-        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        public override void Delete(ulong environmentId, ulong id)
         {
-            var dto = value.dto as UMI3DEmotesConfigDto;
-            environmentManager.RegisterEntity(value.environmentId, dto.id, dto, null).NotifyLoaded();
-
-            foreach (UMI3DEmoteDto emoteDto in dto.emotes)
-                environmentManager.RegisterEntity(value.environmentId, emoteDto.id, emoteDto, null).NotifyLoaded();
-
-            emoteManagementService.UpdateEmoteConfig(dto);
-            return Task.CompletedTask;
-        }
-
-        /// <inheritdoc/>
-        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
-        {
-            if (value.entity.dto is not UMI3DEmotesConfigDto dto)
-                return await Task.FromResult(false);
-
-            switch (value.property.property)
-            {
-                case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    dto.emotes = value.property.value as List<UMI3DEmoteDto>;
-                    emoteManagementService.UpdateEmoteConfig(dto);
-                    break;
-
-                default:
-                    return await Task.FromResult(false);
-            }
-            return await Task.FromResult(true);
-        }
-
-        /// <inheritdoc/>
-        public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
-        {
-            if (value.entity.dto is not UMI3DEmotesConfigDto dto)
-                return await Task.FromResult(false);
-
-            switch (value.propertyKey)
-            {
-                case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    dto.emotes = UMI3DSerializer.Read<List<UMI3DEmoteDto>>(value.container);
-                    emoteManagementService.UpdateEmoteConfig(dto);
-                    break;
-
-                default:
-                    return await Task.FromResult(false);
-            }
-            return await Task.FromResult(true);
-        }
-
-        /// <inheritdoc/>
-        public override async Task<bool> ReadUMI3DProperty(ReadUMI3DPropertyData data)
-        {
-            switch (data.propertyKey)
-            {
-                case UMI3DPropertyKeys.ChangeEmoteConfig:
-                    data.result = UMI3DSerializer.Read<UMI3DEmotesConfigDto>(data.container);
-                    emoteManagementService.UpdateEmoteConfig(data.result as UMI3DEmotesConfigDto);
-                    break;
-
-                default:
-                    return await Task.FromResult(false);
-            }
-            return await Task.FromResult(true);
+            // nothing to do
         }
     }
 }
