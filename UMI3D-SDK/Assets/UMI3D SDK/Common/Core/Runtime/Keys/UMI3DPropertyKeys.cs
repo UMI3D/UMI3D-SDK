@@ -204,7 +204,7 @@ namespace umi3d.common
         public const uint ActivePoseOverrider = 11003;
         public const uint UserSize = 11004;
 
-        public const uint ChangeEmoteConfig = 11005;
+        public const uint ChangeEmoteConfig = 11005; // deprecated
         public const uint ActiveEmote = 11006;
         public const uint AnimationEmote = 11007;
 
