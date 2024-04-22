@@ -37,13 +37,13 @@ namespace umi3d.edk.userCapture.tracking.constraint
 
         public UMI3DAsyncProperty<uint> ConstrainingBone { get; private set; }
 
-        public BoneBoneConstraint()
+        public BoneBoneConstraint() : base()
         {
-            ShouldBeApplied = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.TrackingConstraintIsApplied, false);
-            ConstrainedBone = new UMI3DAsyncProperty<uint>(id, UMI3DPropertyKeys.TrackingConstraintBoneType, BoneType.None);
-            PositionOffset = new UMI3DAsyncProperty<Vector3>(id, UMI3DPropertyKeys.TrackingConstraintPositionOffset, Vector3.zero);
-            RotationOffset = new UMI3DAsyncProperty<Quaternion>(id, UMI3DPropertyKeys.TrackingConstraintRotationOffset, Quaternion.identity);
-            ConstrainingBone = new UMI3DAsyncProperty<uint>(id, UMI3DPropertyKeys.TrackingConstraintConstrainingBone, BoneType.None);
+            ShouldBeApplied = new UMI3DAsyncProperty<bool>(Id(), UMI3DPropertyKeys.TrackingConstraintIsApplied, false);
+            ConstrainedBone = new UMI3DAsyncProperty<uint>(Id(), UMI3DPropertyKeys.TrackingConstraintBoneType, BoneType.None);
+            PositionOffset = new UMI3DAsyncProperty<Vector3>(Id(), UMI3DPropertyKeys.TrackingConstraintPositionOffset, Vector3.zero);
+            RotationOffset = new UMI3DAsyncProperty<Quaternion>(Id(), UMI3DPropertyKeys.TrackingConstraintRotationOffset, Quaternion.identity);
+            ConstrainingBone = new UMI3DAsyncProperty<uint>(Id(), UMI3DPropertyKeys.TrackingConstraintConstrainingBone, BoneType.None);
         }
 
         public AbstractBoneConstraintDto ToDto(UMI3DUser user)
