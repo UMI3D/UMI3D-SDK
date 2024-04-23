@@ -70,7 +70,7 @@ namespace umi3d.cdk.userCapture.pose
             PoseClip poseClip = await loadingService.WaitUntilEntityLoaded<PoseClip>(environmentId, dto.poseClipId, null);
 
             AbstractBoneConstraint boneConstraint = null;
-            if (dto.boneConstraintId != default)
+            if (dto.boneConstraintId != default) // if default, no constraint
                 boneConstraint = await loadingService.WaitUntilEntityLoaded<AbstractBoneConstraint>(environmentId, dto.boneConstraintId, null);
 
             PoseAnimator poseAnimator = new PoseAnimator(dto, poseClip, poseConditions.Where(x => x is not null).ToArray(), boneConstraint);
