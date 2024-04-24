@@ -469,35 +469,6 @@ namespace umi3d.cdk.collaboration.userCapture
                 skeleton.PoseSubskeleton.StartPose(pose);
         }
 
-        public virtual void SwitchPoseRequest(ulong environmentId, SwitchPlayingPoseRequestDto switchPoseRequestDto)
-        {
-            if (!Skeletons.TryGetValue((environmentId, collaborationClientServerService.GetUserId()), out ISkeleton skeleton))
-            {
-                UMI3DLogger.LogWarning($"Cannot switch pose for own user. Skeleton not found.", scope);
-                return;
-            }
-
-            if (!collaborativeEnvironmentManagementService.TryGetEntity(environmentId, switchPoseRequestDto.posePlayingId, out PoseClip playingPose))
-            {
-                UMI3DLogger.LogWarning($"Cannot switch pose for own user. Pose {switchPoseRequestDto.posePlayingId} not found.", scope);
-            }
-
-            if (!collaborativeEnvironmentManagementService.TryGetEntity(environmentId, switchPoseRequestDto.poseToPlayId, out PoseClip newPose))
-            {
-                UMI3DLogger.LogWarning($"Cannot switch pose for own user. Pose {switchPoseRequestDto.poseToPlayId} not found. ", scope);
-            }
-
-            if (playingPose == null && newPose == null)
-            {
-                UMI3DLogger.LogWarning($"Cannot switch pose for own user. Both pose {switchPoseRequestDto.posePlayingId} and {switchPoseRequestDto.poseToPlayId} not found.", scope);
-                return;
-            }
-
-            float transitionDuration = switchPoseRequestDto.transitionDuration < 0 ? 0f : switchPoseRequestDto.transitionDuration; 
-
-            skeleton.PoseSubskeleton.SwitchPose(playingPose, newPose, transitionDuration);
-        }
-
         #endregion Pose
     }
 }

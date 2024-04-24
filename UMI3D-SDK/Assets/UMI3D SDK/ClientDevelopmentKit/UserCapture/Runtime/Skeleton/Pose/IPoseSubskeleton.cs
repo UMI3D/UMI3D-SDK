@@ -72,14 +72,5 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         /// <param name="posesToStopIds">Pose to stop</param>
         void StopPose(PoseClip poseToStop);
-
-        /// <summary>
-        /// Swap a playing pose for another pose.
-        /// </summary>
-        /// <param name="playingPoseClip"></param>
-        /// <param name="newPoseClip"></param>
-        /// <param name="transitionDuration"></param>
-        /// <param name="parameters"></param>
-        void SwitchPose(PoseClip playingPoseClip, PoseClip newPoseClip, float transitionDuration, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null);
     }
 }

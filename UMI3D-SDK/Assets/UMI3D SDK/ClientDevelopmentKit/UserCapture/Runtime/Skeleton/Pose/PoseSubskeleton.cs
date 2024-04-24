@@ -15,9 +15,11 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
 using umi3d.common.userCapture.description;
@@ -47,15 +49,19 @@ namespace umi3d.cdk.userCapture.pose
         {
             this.environmentManagerService = environmentManagerService;
             this.parentSkeleton = parentSkeleton;
+            this.poseAggregator = new PoseClipAggregator(parentSkeleton);
             EnvironmentId = environmentId;
         }
 
         #endregion Dependency Injection
 
-        /// <inheritdoc/>
-        public IReadOnlyList<PoseClip> AppliedPoses => appliedPoses;
+        /// <summary>
+        /// Aggregates all played poses into a final skeleton for the pose subskeleton.
+        /// </summary>
+        private readonly IPoseClipAggregator poseAggregator;
 
-        protected List<PoseClip> appliedPoses = new();
+        /// <inheritdoc/>
+        public IReadOnlyList<PoseClip> AppliedPoses => poseAggregator.ActivePoses;
 
         public int Priority => PRIORITY;
 
@@ -63,29 +69,25 @@ namespace umi3d.cdk.userCapture.pose
 
         private const int PRIORITY = 100;
 
-        private readonly Dictionary<PoseClip, ISubskeletonDescriptionInterpolationPlayer> posePlayers = new();
+        /// <summary>
+        /// Poses to play next when possible.
+        /// </summary>
+        private readonly List<PlayPoseRequest> queuedPlayPoseRequests = new();
 
-        private SubskeletonDescriptionInterpolationPlayer CreatePoseClipPlayer(PoseClip poseClip)
+        private record PlayPoseRequest
         {
-            SubskeletonDescriptionInterpolationPlayer posePlayer = new (poseClip, poseClip.IsInterpolable, parentSkeleton);
-
-            if (posePlayers.ContainsKey(poseClip))
-                RemovePoseClipPlayer(poseClip);
-
-            posePlayers.Add(poseClip, posePlayer);
-            return posePlayer;
+            public PoseClip poseClip;
+            public ISubskeletonDescriptionInterpolationPlayer.PlayingParameters playingParameters = new();
         }
 
-        private void RemovePoseClipPlayer(PoseClip poseClip)
+        private void Init()
         {
-            if (!posePlayers.TryGetValue(poseClip, out ISubskeletonDescriptionInterpolationPlayer posePlayer))
-                return;
-
-            if (posePlayer.IsPlaying)
-                posePlayer.End(true);
-
-            posePlayers.Remove(poseClip);
+            poseAggregator.PoseStopped += (_) => CheckPendingPlayingPoseRequests();
         }
+
+        #region Pose Playing
+
+        #region Start
 
         /// <inheritdoc/>
         public void StartPose(IEnumerable<PoseClip> posesToAdd, bool isOverriding = false, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
@@ -106,7 +108,8 @@ namespace umi3d.cdk.userCapture.pose
             if (poseToAdd == null)
                 throw new ArgumentNullException(nameof(poseToAdd), $"Cannot start pose.");
 
-            if (appliedPoses.Contains(poseToAdd))
+            // pose already playing on a channel.
+            if (poseAggregator.IsPlaying(poseToAdd))
             {
                 UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already playing.", DEBUG_SCOPE);
                 return;
@@ -115,21 +118,59 @@ namespace umi3d.cdk.userCapture.pose
             if (isOverriding)
                 StopAllPoses();
 
-            appliedPoses.Add(poseToAdd);
-
-            SubskeletonDescriptionInterpolationPlayer player = CreatePoseClipPlayer(poseToAdd);
-
-            if (parameters == null && poseToAdd.IsInterpolable == false)
+            // pose already requested to be played.
+            if (queuedPlayPoseRequests.Select(x => x.poseClip).Contains(poseToAdd))
             {
-                parameters = new()
-                {
-                    startTransitionDuration = 0,
-                    endTransitionDuration = 0
-                };
+                UMI3DLogger.LogWarning($"Pose clip {poseToAdd.Id} is already queued for playing.", DEBUG_SCOPE);
+                return;
             }
 
-            player.Play(parameters);
+            // if the pose could not be executed right now, store and wait for a channel to free itself.
+            if (!poseAggregator.CanPlay(poseToAdd))
+            {
+                PlayPoseRequest request = new()
+                {
+                    poseClip = poseToAdd,
+                    playingParameters = parameters
+                };
+
+                queuedPlayPoseRequests.Add(request);
+                CheckPendingPlayingPoseRequests();
+                return;
+            }
+
+            poseAggregator.Play(poseToAdd, parameters);
         }
+
+        #endregion Start
+
+        #region Pending Requests Management
+
+        /// <summary>
+        /// Try to apply pending pose playing requests
+        /// </summary>
+        private void CheckPendingPlayingPoseRequests()
+        {
+            if (poseAggregator.IsLocked) // a non-composable pose is preventing others to be played.
+                return;
+
+            foreach (PlayPoseRequest playPoseRequest in queuedPlayPoseRequests.ToArray())
+            {
+                if (poseAggregator.CanPlay(playPoseRequest.poseClip)) // all poses are compatibles, play the pose
+                {
+                    queuedPlayPoseRequests.Remove(playPoseRequest);
+
+                    poseAggregator.Play(playPoseRequest.poseClip, playPoseRequest.playingParameters ?? new());
+
+                    if (!playPoseRequest.poseClip.IsComposable)
+                        return;
+                }
+            }
+        }
+
+        #endregion Pending Requests Management
+
+        #region Stop
 
         /// <inheritdoc/>
         public void StopPose(IEnumerable<PoseClip> posesToStop)
@@ -146,87 +187,53 @@ namespace umi3d.cdk.userCapture.pose
             if (poseToStop == null)
                 return;
 
-            if (!posePlayers.TryGetValue(poseToStop, out ISubskeletonDescriptionInterpolationPlayer posePlayer))
+            if (queuedPlayPoseRequests.Select(x => x.poseClip).Contains(poseToStop))
+            {
+                queuedPlayPoseRequests.Remove(queuedPlayPoseRequests.First(x => x.poseClip == poseToStop));
+                return;
+            }
+
+            if (!poseAggregator.IsPlaying(poseToStop))
                 return;
 
-            posePlayer.End(!poseToStop.IsInterpolable);
-            appliedPoses.Remove(poseToStop);
+            poseAggregator.End(poseToStop);
         }
 
         /// <inheritdoc/>
         public void StopPose(IEnumerable<ulong> posesToStopIds)
         {
-            StopPose(posesToStopIds.Select(poseId => appliedPoses.Find(x => x.Id == poseId)));
+            foreach (ulong poseToStopId in posesToStopIds)
+            {
+                StopPose(poseAggregator.PlayingPoses.FirstOrDefault(x => x.Id == poseToStopId));
+            }
         }
 
         /// <inheritdoc/>
         public void StopPose(ulong poseToStopId)
         {
-            StopPose(appliedPoses.Find(x => x.Id == poseToStopId));
+            StopPose(poseAggregator.PlayingPoses.Where(x => x.Id == poseToStopId));
         }
 
         /// <inheritdoc/>
         public void StopAllPoses()
         {
-            appliedPoses.Clear();
+            queuedPlayPoseRequests.Clear();
+            poseAggregator.StopAll();
         }
 
-        public void SwitchPose(PoseClip playingPoseClip, PoseClip newPoseClip, float transitionDuration, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
-        {
-            if (playingPoseClip == null || !posePlayers.TryGetValue(playingPoseClip, out var currentPlayer)) // no pose to transition from
-            {
-                parameters ??= new();
-                StartPose(newPoseClip, parameters: parameters);
-                return;
-            }
+        #endregion Stop
 
-            currentPlayer.SwitchTo(newPoseClip, transitionDuration);
-
-            currentPlayer.SwitchTransitionFinished += () =>
-            {
-                RemovePoseClipPlayer(playingPoseClip);
-                appliedPoses.Remove(playingPoseClip);
-                parameters ??= new();
-                parameters.startTransitionDuration = 0;
-                StartPose(newPoseClip, parameters: parameters);
-            };
-        }
+        #endregion Pose Playing
 
         /// <inheritdoc/>
         public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
-            if (hierarchy == null)
-                throw new ArgumentNullException(nameof(hierarchy));
-
-            Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
-
-            // merge poses from pose players
-            foreach (var (poseClip, posePlayer) in posePlayers)
-            {
-                if (!posePlayer.IsPlaying)
-                    continue;
-
-                SubSkeletonPoseDto subSkeletonPose = posePlayer.GetPose(hierarchy);
-                Dictionary<uint, SubSkeletonBoneDto> subskeletonBonePose = subSkeletonPose.bones.ToDictionary(x => x.boneType);
-
-                foreach (BoneDto bone in poseClip.Bones)
-                {
-                    if (bonePoses.ContainsKey(bone.boneType) && posePlayer.IsEnding) // priority to non-ending poses
-                        continue;
-
-                    bonePoses[bone.boneType] = subskeletonBonePose[bone.boneType];
-                }
-
-                if (!poseClip.IsComposable)
-                    break;
-            }
-
-            return new SubSkeletonPoseDto()
-            {
-                bones = bonePoses.Values.ToList()
-            };
+            return poseAggregator.GetPose(hierarchy);
         }
 
+        #region TrackingFrames
+
+        private IEnumerable<PoseClip> posesToStop; // optimization for allocation
 
         /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
@@ -234,28 +241,21 @@ namespace umi3d.cdk.userCapture.pose
             if (trackingFrame is null)
                 throw new ArgumentNullException(nameof(trackingFrame));
 
-            StartPoses(trackingFrame);
-
-            // remove not activated poses
-            int nbObjToRemove = appliedPoses.Count - trackingFrame.poses.Count;
-            if (nbObjToRemove > 0)
+            // stop poses
+            posesToStop = AppliedPoses.Where(pose => !trackingFrame.poses.Contains(pose.Id)).ToList();
+            foreach (PoseClip poseToStop in posesToStop)
             {
-                Queue<PoseClip> posesToRemove = new Queue<PoseClip>(nbObjToRemove);
-                appliedPoses.ForEach(pose =>
-                {
-                    if (!trackingFrame.poses.Contains(pose.Id))
-                        posesToRemove.Enqueue(pose);
-                });
-                StopPose(posesToRemove);
+                StopPose(poseToStop);
             }
-        }
 
-        private void StartPoses(UserTrackingFrameDto trackingFrame)
-        {
+            // play poses
             foreach (ulong poseId in trackingFrame.poses)
             {
                 //at load, could receive tracking frame without having the pose
-                if (environmentManagerService.TryGetEntity(EnvironmentId, poseId, out PoseClip poseClip) && !appliedPoses.Contains(poseClip))
+                if (!environmentManagerService.TryGetEntity(EnvironmentId, poseId, out PoseClip poseClip))
+                    continue;
+
+                if (!poseAggregator.IsPlaying(poseClip))
                     StartPose(poseClip);
             }
         }
@@ -266,12 +266,14 @@ namespace umi3d.cdk.userCapture.pose
             if (trackingFrame == null)
                 throw new ArgumentNullException(nameof(trackingFrame));
 
-            trackingFrame.poses ??= new(appliedPoses.Count);
+            trackingFrame.poses ??= new(AppliedPoses.Count);
 
-            appliedPoses.ForEach((pose) =>
+            AppliedPoses.ForEach((pose) =>
             {
                 trackingFrame.poses.Add(pose.Id);
             });
         }
+
+        #endregion TrackingFrames
     }
 }

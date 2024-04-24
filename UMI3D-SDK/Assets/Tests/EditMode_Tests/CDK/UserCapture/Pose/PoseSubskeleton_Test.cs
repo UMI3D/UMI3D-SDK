@@ -117,12 +117,15 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
         [Test]
         public void StartPose_Many()
         {
-            // GIVEN
             var poses = new List<PoseClip>()
             {
-                new (new () { pose = new() }),
-                new (new () { pose = new() }),
+                new (new () { id=0, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.RightForearm } }, anchor=new()} }),
+                new (new () { id=1, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.LeftForearm } }, anchor=new()} }),
+                new (new () { id=2, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.Head } }, anchor=new()} }),
             };
+
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+            parentSkeletonMock.Setup(x => x.SkeletonHierarchy).Returns(hierarchy);
 
             // WHEN
             poseSubskeleton.StartPose(poses, true);
@@ -182,12 +185,15 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             // GIVEN
             var poses = new List<PoseClip>()
             {
-                new (new () { pose = new() }),
-                new (new () { pose = new() }),
-                new (new () { pose = new() }),
+                new (new () { id=0, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.RightForearm } }, anchor=new()} }),
+                new (new () { id=1, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.LeftForearm } }, anchor=new()} }),
+                new (new () { id=2, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.Head } }, anchor=new()} }),
             };
 
             var posesToStop = poses.ToArray()[0..2];
+
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+            parentSkeletonMock.Setup(x => x.SkeletonHierarchy).Returns(hierarchy);
 
             poseSubskeleton.StartPose(poses, true);
 
@@ -388,12 +394,16 @@ namespace EditMode_Tests.UserCapture.Pose.CDK
             // given
             var poses = new List<PoseClip>()
             {
-                new (new () { id=0, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
-                new (new () { id=1, pose = new() { bones=new() { new() { boneType=BoneType.Chest } }, anchor=new()} }),
+                new (new () { id=0, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.RightForearm } }, anchor=new()} }),
+                new (new () { id=1, isComposable = true, pose = new() { bones=new() { new() { boneType=BoneType.LeftForearm } }, anchor=new()} }),
             };
 
             Mock<ITrackedSubskeleton> trackedSubskeletonMock = new();
             parentSkeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
+
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+            parentSkeletonMock.Setup(x=>x.SkeletonHierarchy).Returns(hierarchy);
+
             poseSubskeleton.StartPose(poses, true);
 
             UserTrackingFrameDto frame = new();

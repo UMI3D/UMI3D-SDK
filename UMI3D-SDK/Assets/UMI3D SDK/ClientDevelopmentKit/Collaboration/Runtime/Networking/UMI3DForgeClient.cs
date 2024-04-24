@@ -543,12 +543,6 @@ namespace umi3d.cdk.collaboration
                         CollaborationSkeletonsManager.Instance.ApplyPoseRequest(operation.environmentId, playPoseDto);
                     });
                     break;
-                case SwitchPlayingPoseRequestDto switchPoseDto:
-                    MainThreadManager.Run(() =>
-                    {
-                        CollaborationSkeletonsManager.Instance.SwitchPoseRequest(operation.environmentId, switchPoseDto);
-                    });
-                    break;
                 case ValidateEnvironmentPoseConditionDto validateEnvironmentPoseCondition:
                     MainThreadManager.Run(() =>
                     {
@@ -693,24 +687,6 @@ namespace umi3d.cdk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             CollaborationSkeletonsManager.Instance.ApplyPoseRequest(container.environmentId, playPoseDto);
-                        });
-                        break;
-                    }
-                case UMI3DOperationKeys.SwitchPlayingPoseRequest:
-                    {
-                        ulong playingPoseId = UMI3DSerializer.Read<ulong>(container);
-                        ulong poseToPlayId = UMI3DSerializer.Read<ulong>(container);
-                        float duration = UMI3DSerializer.Read<float>(container);
-                        SwitchPlayingPoseRequestDto switchPoseDto = new SwitchPlayingPoseRequestDto
-                        {
-                            posePlayingId = playingPoseId,
-                            poseToPlayId = poseToPlayId,
-                            transitionDuration = duration
-                        };
-
-                        MainThreadManager.Run(() =>
-                        {
-                            CollaborationSkeletonsManager.Instance.SwitchPoseRequest(container.environmentId, switchPoseDto);
                         });
                         break;
                     }
