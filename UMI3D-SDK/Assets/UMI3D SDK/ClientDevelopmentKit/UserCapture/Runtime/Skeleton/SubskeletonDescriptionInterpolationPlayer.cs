@@ -137,8 +137,6 @@ namespace umi3d.cdk.userCapture
 
         private SubSkeletonPoseDto InterpolateSwitchTransitionTo(UMI3DSkeletonHierarchy hierarchy, ISubskeletonDescriptor oldDescriptor, ISubskeletonDescriptor newDescriptor)
         {
-            float transitionDuration = transitionData.transitionDuration;
-
             SubSkeletonPoseDto newDescription = newDescriptor.GetPose(hierarchy);
 
             SubSkeletonPoseDto currentDescription = oldDescriptor.GetPose(hierarchy);
@@ -147,6 +145,7 @@ namespace umi3d.cdk.userCapture
 
             Dictionary<uint, SubSkeletonBoneDto> bonePoses = new ();
 
+            float normalizedTransitionTime = transitionData.duration <= 0 ? 1 : (Time.time - transitionData.startTime) / transitionData.duration;
             foreach (SubSkeletonBoneDto newDescriptionBonePose in newDescription.bones)
             {
                 uint boneType = newDescriptionBonePose.boneType;
@@ -155,16 +154,16 @@ namespace umi3d.cdk.userCapture
 
                 if (currentBonePoses.ContainsKey(boneType)) // not defined in current pose so go on
                 {
-                    newDescriptionBonePose.localRotation = Quaternion.Slerp(currentBonePoses[boneType].localRotation.Quaternion(), newDescriptionBonePose.localRotation.Quaternion(), (Time.time - playingData.startTime) / transitionDuration).Dto();
+                    newDescriptionBonePose.localRotation = Quaternion.Slerp(currentBonePoses[boneType].localRotation.Quaternion(), newDescriptionBonePose.localRotation.Quaternion(), normalizedTransitionTime).Dto();
                 }
                 else
                 {
                     if (ShouldInterpolate && boneType != BoneType.Hips && boneType != newDescription.boneAnchor?.bone)
                     {
                         if (!IsEnding) // start transition
-                            newDescriptionBonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[boneType].LocalRotation, newDescriptionBonePose.localRotation.Quaternion(), (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration).Dto();
+                            newDescriptionBonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[boneType].LocalRotation, newDescriptionBonePose.localRotation.Quaternion(), normalizedTransitionTime).Dto();
                         else // end transition
-                            newDescriptionBonePose.localRotation = Quaternion.Slerp(newDescriptionBonePose.localRotation.Quaternion(), Skeleton.Bones[boneType].LocalRotation, (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration).Dto();
+                            newDescriptionBonePose.localRotation = Quaternion.Slerp(newDescriptionBonePose.localRotation.Quaternion(), Skeleton.Bones[boneType].LocalRotation, normalizedTransitionTime).Dto();
                     }
                    
                 }
@@ -187,18 +186,20 @@ namespace umi3d.cdk.userCapture
         private record TransitionData
         {
             public ISubskeletonDescriptor newDescriptor;
-            public float transitionDuration = 0.25f;
+            public float startTime;
+            public float duration = 0.25f;
         }
 
         public void SwitchTo(ISubskeletonDescriptor newDescriptor, float transitionDuration = 0.25f)
         {
             IsInTransition = true;
-            transitionCoroutine = coroutineService.AttachCoroutine(TransitionRoutine(transitionDuration));
             transitionData = new()
             {
                 newDescriptor = newDescriptor,
-                transitionDuration = transitionDuration
+                duration = transitionDuration,
+                startTime = Time.time
             };
+            transitionCoroutine = coroutineService.AttachCoroutine(TransitionRoutine(transitionDuration));
         }
 
         private IEnumerator TransitionRoutine(float transitionDuration)
@@ -262,19 +263,20 @@ namespace umi3d.cdk.userCapture
         {
             PoseAnchorDto anchor = pose.boneAnchor;
 
+            float tEnterPhase = playingData.parameters.startTransitionDuration <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
+            float tEndPhase = playingData.parameters.endTransitionDuration <= 0 ? 1 : (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
+
             // manages Hips position interpolation if it is the anchor
             if (anchor != null && anchor.bone == BoneType.Hips)
             {
                 Vector3 skeletonHipsPosition = new(0, Skeleton.Bones[BoneType.Hips].Position.y, 0);
                 if (!IsEnding) // start transition
                 {
-                    float tEnterPhase = playingData.parameters.startTransitionDuration <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
                     anchor.position = Vector3.Lerp(skeletonHipsPosition, anchor.position.Struct(), tEnterPhase).Dto();
                     anchor.rotation = Quaternion.Slerp(Skeleton.Bones[BoneType.Hips].Rotation, anchor.rotation.Quaternion(), tEnterPhase).Dto();
                 }
                 else // end transition
                 {
-                    float tEndPhase = playingData.parameters.endTransitionDuration <= 0 ? 1 : (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
                     anchor.position = Vector3.Lerp(anchor.position.Struct(), skeletonHipsPosition, tEndPhase).Dto();
                     anchor.rotation = Quaternion.Slerp(anchor.rotation.Quaternion(), Skeleton.Bones[BoneType.Hips].Rotation, tEndPhase).Dto();
                 }
@@ -290,15 +292,9 @@ namespace umi3d.cdk.userCapture
                 if (ShouldInterpolate && bonePose.boneType != BoneType.Hips && bonePose.boneType != pose.boneAnchor?.bone)
                 {
                     if (!IsEnding) // start transition
-                    {
-                        float tEnterPhase = playingData.parameters.startTransitionDuration <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
                         bonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[bonePose.boneType].LocalRotation, bonePose.localRotation.Quaternion(), tEnterPhase).Dto();
-                    }
                     else // end transition
-                    {
-                        float tEndPhase = playingData.parameters.endTransitionDuration <= 0 ? 1 : (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
                         bonePose.localRotation = Quaternion.Slerp(bonePose.localRotation.Quaternion(), Skeleton.Bones[bonePose.boneType].LocalRotation, tEndPhase).Dto();
-                    }
                 }
 
                 bonePoses[bonePose.boneType] = bonePose;
