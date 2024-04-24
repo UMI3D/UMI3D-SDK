@@ -103,6 +103,7 @@ namespace MrtkShader
             (m, s, v) =>
             {
                 m.color = v;
+                m.SetColor(s.propertyName, v);
 
                 if (v.a < 1)
                     SetMaterialTransparent(m);
@@ -167,7 +168,7 @@ namespace MrtkShader
             m.SetInt("_SrcBlend", (int)BlendMode.SrcAlpha);
             m.SetInt("_DstBlend", (int)BlendMode.OneMinusSrcAlpha);
             m.SetInt("_ZWrite", 0);
-            m.renderQueue = (int)RenderQueue.Transparent;
+            m.renderQueue = (int)RenderQueue.Transparent + 2;
         }
 
 #else
