@@ -34,6 +34,7 @@ namespace umi3d.common.userCapture.pose
                 true when typeof(T) == typeof(DurationDto) => true,
                 true when typeof(T) == typeof(CheckPoseAnimatorConditionsRequestDto) => true,
                 true when typeof(T) == typeof(PlayPoseClipDto) => true,
+                true when typeof(T) == typeof(SwitchPlayingPoseRequestDto) => true,
 
                 _ => null
             };
@@ -123,7 +124,7 @@ namespace umi3d.common.userCapture.pose
                 case true when typeof(T) == typeof(CheckPoseAnimatorConditionsRequestDto):
                     {
                         readable = UMI3DSerializer.TryRead(container, out ulong poseOverriderId);
-                        readable = UMI3DSerializer.TryRead(container, out bool shouldActivate);
+                        readable &= UMI3DSerializer.TryRead(container, out bool shouldActivate);
 
                         if (readable)
                         {
@@ -153,6 +154,27 @@ namespace umi3d.common.userCapture.pose
                             };
 
                             result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(PlayPoseClipDto));
+                            return true;
+                        }
+                        break;
+                    }
+
+                case true when typeof(T) == typeof(SwitchPlayingPoseRequestDto):
+                    {
+                        readable = UMI3DSerializer.TryRead(container, out ulong posePlayingId);
+                        readable &= UMI3DSerializer.TryRead(container, out ulong poseToPlayId);
+                        readable &= UMI3DSerializer.TryRead(container, out float duration);
+
+                        if (readable)
+                        {
+                            SwitchPlayingPoseRequestDto switchPoseRequestDto = new()
+                            {
+                                posePlayingId = posePlayingId,
+                                poseToPlayId = poseToPlayId,
+                                transitionDuration = duration
+                            };
+
+                            result = (T)Convert.ChangeType(switchPoseRequestDto, typeof(SwitchPlayingPoseRequestDto));
                             return true;
                         }
                         break;
@@ -204,6 +226,13 @@ namespace umi3d.common.userCapture.pose
                     bytable = UMI3DSerializer.Write(UMI3DOperationKeys.PlayPoseRequest)
                         + UMI3DSerializer.Write(playPoseAnimationDto.poseId)
                         + UMI3DSerializer.Write(playPoseAnimationDto.stopPose);
+                    break;
+
+                case SwitchPlayingPoseRequestDto switchPoseRequestDto:
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.SwitchPlayingPoseRequest)
+                        + UMI3DSerializer.Write(switchPoseRequestDto.posePlayingId)
+                        + UMI3DSerializer.Write(switchPoseRequestDto.poseToPlayId)
+                        + UMI3DSerializer.Write(switchPoseRequestDto.transitionDuration);
                     break;
 
                 default:

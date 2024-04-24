@@ -119,6 +119,15 @@ namespace umi3d.cdk.userCapture.pose
 
             SubskeletonDescriptionInterpolationPlayer player = CreatePoseClipPlayer(poseToAdd);
 
+            if (parameters == null && poseToAdd.IsInterpolable == false)
+            {
+                parameters = new()
+                {
+                    startTransitionDuration = 0,
+                    endTransitionDuration = 0
+                };
+            }
+
             player.Play(parameters);
         }
 
@@ -140,7 +149,7 @@ namespace umi3d.cdk.userCapture.pose
             if (!posePlayers.TryGetValue(poseToStop, out ISubskeletonDescriptionInterpolationPlayer posePlayer))
                 return;
 
-            posePlayer.End();
+            posePlayer.End(!poseToStop.IsInterpolable);
             appliedPoses.Remove(poseToStop);
         }
 
@@ -160,6 +169,27 @@ namespace umi3d.cdk.userCapture.pose
         public void StopAllPoses()
         {
             appliedPoses.Clear();
+        }
+
+        public void SwitchPose(PoseClip playingPoseClip, PoseClip newPoseClip, float transitionDuration, ISubskeletonDescriptionInterpolationPlayer.PlayingParameters parameters = null)
+        {
+            if (playingPoseClip == null || !posePlayers.TryGetValue(playingPoseClip, out var currentPlayer)) // no pose to transition from
+            {
+                parameters ??= new();
+                StartPose(newPoseClip, parameters: parameters);
+                return;
+            }
+
+            currentPlayer.SwitchTo(newPoseClip, transitionDuration);
+
+            currentPlayer.SwitchTransitionFinished += () =>
+            {
+                RemovePoseClipPlayer(playingPoseClip);
+                appliedPoses.Remove(playingPoseClip);
+                parameters ??= new();
+                parameters.startTransitionDuration = 0;
+                StartPose(newPoseClip, parameters: parameters);
+            };
         }
 
         /// <inheritdoc/>
@@ -196,6 +226,7 @@ namespace umi3d.cdk.userCapture.pose
                 bones = bonePoses.Values.ToList()
             };
         }
+
 
         /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
