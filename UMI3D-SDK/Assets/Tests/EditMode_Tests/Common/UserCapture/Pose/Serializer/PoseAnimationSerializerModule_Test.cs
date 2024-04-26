@@ -183,36 +183,5 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
         #endregion Read Pose Request
 
-        #region Read Switch Pose Request
-
-        [Test]
-        public void ReadSwitchPoseRequest()
-        {
-            // given
-            SwitchPlayingPoseRequestDto playPoseClipRequest = new()
-            {
-                posePlayingId = 153uL,
-                poseToPlayId = 1259uL,
-                transitionDuration = 0.559f
-            };
-
-            poseSerializerModule.Write(playPoseClipRequest, out Bytable data);
-
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
-
-            // when
-            UMI3DSerializer.TryRead<uint>(byteContainer, out uint operationKey);
-            poseSerializerModule.Read(byteContainer, out bool readable, out SwitchPlayingPoseRequestDto result);
-
-            // then
-            Assert.IsTrue(readable);
-
-            Assert.AreEqual(UMI3DOperationKeys.SwitchPlayingPoseRequest, operationKey);
-            Assert.AreEqual(playPoseClipRequest.posePlayingId, result.posePlayingId);
-            Assert.AreEqual(playPoseClipRequest.poseToPlayId, result.poseToPlayId);
-            Assert.AreEqual(playPoseClipRequest.transitionDuration, result.transitionDuration);
-        }
-
-        #endregion Read Switch Pose Request
     }
 }

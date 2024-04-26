@@ -164,7 +164,7 @@ namespace umi3d.common.userCapture.description
             return hierarchy;
         }
 
-        public (uint root, IDictionary<uint, uint[]>) Tree
+        public (uint root, IDictionary<uint, uint[]> nodes) Tree
         {
             get
             {
@@ -175,10 +175,10 @@ namespace umi3d.common.userCapture.description
             }
         }
 
-        private (uint root, IDictionary<uint, uint[]>) computedTree;
+        private (uint root, IDictionary<uint, uint[]> nodes) computedTree;
         private bool isTreeComputed;
 
-        private (uint root, IDictionary<uint, uint[]>) ToTree()
+        private (uint root, IDictionary<uint, uint[]> nodes) ToTree()
         {
             uint rootBone = relations.First(x => x.Value.boneTypeParent == BoneType.None).Key;
 
@@ -221,6 +221,71 @@ namespace umi3d.common.userCapture.description
             }
 
             return computed;
+        }
+
+        public uint[] GetParents(uint bone)
+        {
+            List<uint> boneParents = new();
+
+            uint currentBone = bone;
+
+            while (currentBone != Tree.root && currentBone != BoneType.None)
+            {
+                if (!relations.TryGetValue(currentBone, out var relation))
+                    break;
+
+                uint parentBone = relation.boneTypeParent;
+                boneParents.Add(parentBone);
+                currentBone = parentBone;
+            }
+
+            return boneParents.ToArray();
+        }
+
+        /// <summary>
+        /// Compare two bones within the hierarchy.
+        /// </summary>
+        /// <param name="bone1"></param>
+        /// <param name="bone2"></param>
+        /// <returns>
+        /// -1 if bone1 is a child of bone2. <br/>
+        /// +1 if bone1 is a parent of bone2. <br/>
+        /// 0 otherwise.
+        /// </returns>
+        public int CompareBones(uint bone1, uint bone2)
+        {
+            if (bone1 == bone2)
+                return 0;
+
+            if (GetParents(bone1).Contains(bone2))
+                return -1;
+
+            if (GetParents(bone2).Contains(bone1))
+                return 1;
+
+            return 0;
+        }
+
+        private IComparer<uint> hierarchicalComparer;
+
+        public class BoneHierarchicalComparer : IComparer<uint>
+        {
+            private UMI3DSkeletonHierarchy hierarchy;
+
+            public BoneHierarchicalComparer(UMI3DSkeletonHierarchy hierarchy)
+            {
+                this.hierarchy = hierarchy;
+            }
+
+            public int Compare(uint x, uint y)
+            {
+                return hierarchy.CompareBones(x, y);
+            }
+        }
+
+        public uint GetHighestBone(IEnumerable<uint> bones)
+        {
+            return bones.OrderBy(x=>x, hierarchicalComparer).LastOrDefault();
         }
     }
 }

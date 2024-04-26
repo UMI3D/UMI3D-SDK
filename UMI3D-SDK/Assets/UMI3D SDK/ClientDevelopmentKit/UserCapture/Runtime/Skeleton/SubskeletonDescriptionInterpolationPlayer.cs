@@ -16,7 +16,6 @@ limitations under the License.
 
 
 using inetum.unityUtils;
-using JetBrains.Annotations;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -59,6 +58,10 @@ namespace umi3d.cdk.userCapture
         public ISubskeletonDescriptor Descriptor { get; protected set; }
 
         protected PlayingData playingData;
+
+        public event System.Action EndStarted;
+
+        public event System.Action Stopped;
 
         protected struct PlayingData
         {
@@ -107,6 +110,9 @@ namespace umi3d.cdk.userCapture
             IsPlaying = true;
 
             playingData = new(UnityEngine.Time.time, parameters ?? new());
+
+            if (parameters?.previousDescriptor != null)
+                SwitchFrom(parameters?.startTransitionDuration ?? 0.25f);
         }
 
         /// <inheritdoc/>
@@ -114,6 +120,8 @@ namespace umi3d.cdk.userCapture
         {
             if (!IsPlaying)
                 return;
+
+            EndStarted?.Invoke();
 
             if (!shouldStopImmediate && ShouldInterpolate)
             {
@@ -135,80 +143,26 @@ namespace umi3d.cdk.userCapture
 
         private Coroutine endRoutine;
 
-        private SubSkeletonPoseDto InterpolateSwitchTransitionTo(UMI3DSkeletonHierarchy hierarchy, ISubskeletonDescriptor oldDescriptor, ISubskeletonDescriptor newDescriptor)
-        {
-            float transitionDuration = transitionData.transitionDuration;
 
-            SubSkeletonPoseDto newDescription = newDescriptor.GetPose(hierarchy);
-
-            SubSkeletonPoseDto currentDescription = oldDescriptor.GetPose(hierarchy);
-
-            Dictionary<uint, SubSkeletonBoneDto> currentBonePoses = currentDescription.bones.ToDictionary(x => x.boneType, y => y);
-
-            Dictionary<uint, SubSkeletonBoneDto> bonePoses = new ();
-
-            foreach (SubSkeletonBoneDto newDescriptionBonePose in newDescription.bones)
-            {
-                uint boneType = newDescriptionBonePose.boneType;
-                if (bonePoses.ContainsKey(boneType))
-                    continue;
-
-                if (currentBonePoses.ContainsKey(boneType)) // not defined in current pose so go on
-                {
-                    newDescriptionBonePose.localRotation = Quaternion.Slerp(currentBonePoses[boneType].localRotation.Quaternion(), newDescriptionBonePose.localRotation.Quaternion(), (Time.time - playingData.startTime) / transitionDuration).Dto();
-                }
-                else
-                {
-                    if (ShouldInterpolate && boneType != BoneType.Hips && boneType != newDescription.boneAnchor?.bone)
-                    {
-                        if (!IsEnding) // start transition
-                            newDescriptionBonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[boneType].LocalRotation, newDescriptionBonePose.localRotation.Quaternion(), (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration).Dto();
-                        else // end transition
-                            newDescriptionBonePose.localRotation = Quaternion.Slerp(newDescriptionBonePose.localRotation.Quaternion(), Skeleton.Bones[boneType].LocalRotation, (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration).Dto();
-                    }
-                   
-                }
-                bonePoses[boneType] = newDescriptionBonePose;
-            }
-
-            return new SubSkeletonPoseDto()
-            {
-                boneAnchor = newDescription.boneAnchor,
-                bones = bonePoses.Values.ToList()
-            };
-        }
 
         private bool IsInTransition;
         private Coroutine transitionCoroutine;
-        private TransitionData transitionData;
 
         public event System.Action SwitchTransitionFinished;
 
-        private record TransitionData
-        {
-            public ISubskeletonDescriptor newDescriptor;
-            public float transitionDuration = 0.25f;
-        }
-
-        public void SwitchTo(ISubskeletonDescriptor newDescriptor, float transitionDuration = 0.25f)
+        public void SwitchFrom(float transitionDuration = 0.25f)
         {
             IsInTransition = true;
-            transitionCoroutine = coroutineService.AttachCoroutine(TransitionRoutine(transitionDuration));
-            transitionData = new()
-            {
-                newDescriptor = newDescriptor,
-                transitionDuration = transitionDuration
-            };
+            transitionCoroutine = coroutineService.AttachCoroutine(SwitchTransitionRoutine(transitionDuration));
         }
 
-        private IEnumerator TransitionRoutine(float transitionDuration)
+        private IEnumerator SwitchTransitionRoutine(float transitionDuration)
         {
             yield return new WaitForSeconds(transitionDuration);
             IsInTransition = false;
             if (transitionCoroutine != null)
                 coroutineService.DetachCoroutine(transitionCoroutine);
             transitionCoroutine = null;
-            End(true);
             SwitchTransitionFinished?.Invoke();
         }
 
@@ -229,6 +183,7 @@ namespace umi3d.cdk.userCapture
         {
             IsPlaying = false;
             playingData = default;
+            Stopped?.Invoke();
         }
 
         /// <inheritdoc/>
@@ -243,7 +198,7 @@ namespace umi3d.cdk.userCapture
             SubSkeletonPoseDto pose = Descriptor.GetPose(hierarchy);
 
             if (IsInTransition)
-                return InterpolateSwitchTransitionTo(hierarchy, Descriptor, transitionData.newDescriptor);
+                return InterpolateSwitchTransitionFrom(hierarchy, playingData.parameters.previousDescriptor);
 
             if (pose == null
                 || !ShouldInterpolate 
@@ -262,19 +217,20 @@ namespace umi3d.cdk.userCapture
         {
             PoseAnchorDto anchor = pose.boneAnchor;
 
+            float tEnterPhase = playingData.parameters.startTransitionDuration <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
+            float tEndPhase = playingData.parameters.endTransitionDuration <= 0 ? 1 : (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
+
             // manages Hips position interpolation if it is the anchor
             if (anchor != null && anchor.bone == BoneType.Hips)
             {
                 Vector3 skeletonHipsPosition = new(0, Skeleton.Bones[BoneType.Hips].Position.y, 0);
                 if (!IsEnding) // start transition
                 {
-                    float tEnterPhase = playingData.parameters.startTransitionDuration <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
                     anchor.position = Vector3.Lerp(skeletonHipsPosition, anchor.position.Struct(), tEnterPhase).Dto();
                     anchor.rotation = Quaternion.Slerp(Skeleton.Bones[BoneType.Hips].Rotation, anchor.rotation.Quaternion(), tEnterPhase).Dto();
                 }
                 else // end transition
                 {
-                    float tEndPhase = playingData.parameters.endTransitionDuration <= 0 ? 1 : (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
                     anchor.position = Vector3.Lerp(anchor.position.Struct(), skeletonHipsPosition, tEndPhase).Dto();
                     anchor.rotation = Quaternion.Slerp(anchor.rotation.Quaternion(), Skeleton.Bones[BoneType.Hips].Rotation, tEndPhase).Dto();
                 }
@@ -290,15 +246,9 @@ namespace umi3d.cdk.userCapture
                 if (ShouldInterpolate && bonePose.boneType != BoneType.Hips && bonePose.boneType != pose.boneAnchor?.bone)
                 {
                     if (!IsEnding) // start transition
-                    {
-                        float tEnterPhase = playingData.parameters.startTransitionDuration <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
                         bonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[bonePose.boneType].LocalRotation, bonePose.localRotation.Quaternion(), tEnterPhase).Dto();
-                    }
                     else // end transition
-                    {
-                        float tEndPhase = playingData.parameters.endTransitionDuration <= 0 ? 1 : (Time.time - playingData.endAskedTime) / playingData.parameters.endTransitionDuration;
                         bonePose.localRotation = Quaternion.Slerp(bonePose.localRotation.Quaternion(), Skeleton.Bones[bonePose.boneType].LocalRotation, tEndPhase).Dto();
-                    }
                 }
 
                 bonePoses[bonePose.boneType] = bonePose;
@@ -307,6 +257,49 @@ namespace umi3d.cdk.userCapture
             return new SubSkeletonPoseDto()
             {
                 boneAnchor = anchor,
+                bones = bonePoses.Values.ToList()
+            };
+        }
+
+
+        private SubSkeletonPoseDto InterpolateSwitchTransitionFrom(UMI3DSkeletonHierarchy hierarchy, ISubskeletonDescriptor oldDescriptor)
+        {
+            SubSkeletonPoseDto newDescription = Descriptor.GetPose(hierarchy);
+
+            SubSkeletonPoseDto currentDescription = oldDescriptor.GetPose(hierarchy);
+
+            Dictionary<uint, SubSkeletonBoneDto> currentBonePoses = currentDescription.bones.ToDictionary(x => x.boneType, y => y);
+
+            Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
+
+            float normalizedTransitionTime = playingData.startTime <= 0 ? 1 : (Time.time - playingData.startTime) / playingData.parameters.startTransitionDuration;
+            foreach (SubSkeletonBoneDto newDescriptionBonePose in newDescription.bones)
+            {
+                uint boneType = newDescriptionBonePose.boneType;
+                if (bonePoses.ContainsKey(boneType))
+                    continue;
+
+                if (currentBonePoses.ContainsKey(boneType)) // not defined in current pose so go on
+                {
+                    newDescriptionBonePose.localRotation = Quaternion.Slerp(currentBonePoses[boneType].localRotation.Quaternion(), newDescriptionBonePose.localRotation.Quaternion(), normalizedTransitionTime).Dto();
+                }
+                else
+                {
+                    if (ShouldInterpolate && boneType != BoneType.Hips && boneType != newDescription.boneAnchor?.bone)
+                    {
+                        if (!IsEnding) // start transition
+                            newDescriptionBonePose.localRotation = Quaternion.Slerp(Skeleton.Bones[boneType].LocalRotation, newDescriptionBonePose.localRotation.Quaternion(), normalizedTransitionTime).Dto();
+                        else // end transition
+                            newDescriptionBonePose.localRotation = Quaternion.Slerp(newDescriptionBonePose.localRotation.Quaternion(), Skeleton.Bones[boneType].LocalRotation, normalizedTransitionTime).Dto();
+                    }
+
+                }
+                bonePoses[boneType] = newDescriptionBonePose;
+            }
+
+            return new SubSkeletonPoseDto()
+            {
+                boneAnchor = newDescription.boneAnchor,
                 bones = bonePoses.Values.ToList()
             };
         }

@@ -62,9 +62,10 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="shouldStopImmediate">If true, the subskeleton displacement is ended immediately with no ending interpolation phase.</param>
         void End(bool shouldStopImmediate = false);
-        void SwitchTo(ISubskeletonDescriptor newDescriptor, float transitionDuration = 0.25F);
 
         event System.Action SwitchTransitionFinished;
+
+        event Action Stopped;
 
         /// <summary>
         /// Parameters used to request a specific application of the pose.
@@ -80,6 +81,8 @@ namespace umi3d.cdk.userCapture
             /// Duration (in seconds) of the transition when pose is ending to be applied.
             /// </summary>
             public float endTransitionDuration = DEFAULT_TRANSITION_DURATION;
+
+            public ISubskeletonDescriptor previousDescriptor;
         }
 
         public const float DEFAULT_TRANSITION_DURATION = 0.25f;
