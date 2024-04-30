@@ -227,8 +227,6 @@ namespace umi3d.edk
 
             userHistory[ev.user] = ev;
 
-            Debug.Log("OnUserUrlChanged " + hasUrlChanged + " " + ev.scrollOffset);
-
             if (synchronizedUser == ev.user)
             {
                 Transaction transaction = new() { reliable = true };
