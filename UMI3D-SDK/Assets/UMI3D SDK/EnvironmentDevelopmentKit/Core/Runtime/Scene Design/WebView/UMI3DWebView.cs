@@ -53,10 +53,10 @@ namespace umi3d.edk
         private string url = string.Empty;
 
         /// <summary>
-        /// Scroll offset (vertical in pixels).
+        /// Scroll offset in pixels.
         /// </summary>
-        [SerializeField, Tooltip("Scroll offset (vertical in pixels)")]
-        private int scrollOffset = 0;
+        [SerializeField, Tooltip("Scroll offset in pixels")]
+        private Vector2 scrollOffset = Vector2.zero;
 
         /// <summary>
         /// If set to false, when <see cref="url"/> is set, the value will be ignored by the browser.
@@ -110,7 +110,7 @@ namespace umi3d.edk
 
         private UMI3DAsyncProperty<string> _objectUrl;
 
-        private UMI3DAsyncProperty<int> _objectScrollOffset;
+        private UMI3DAsyncProperty<Vector2Dto> _objectScrollOffset;
 
         private UMI3DAsyncProperty<bool> _objectIsAdmin;
 
@@ -142,7 +142,7 @@ namespace umi3d.edk
         /// <summary>
         /// Async property to change <see cref="scrollOffset"/> property.
         /// </summary>
-        public UMI3DAsyncProperty<int> objectScrollOffset { get { Register(); return _objectScrollOffset; } protected set => _objectScrollOffset = value; }
+        public UMI3DAsyncProperty<Vector2Dto> objectScrollOffset { get { Register(); return _objectScrollOffset; } protected set => _objectScrollOffset = value; }
 
         /// <summary>
         /// Async property to change <see cref="url"/> property.
@@ -194,7 +194,7 @@ namespace umi3d.edk
             objectSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewSize, size, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
-            objectScrollOffset = new UMI3DAsyncProperty<int>(id, UMI3DPropertyKeys.WebViewScrollOffset, scrollOffset);
+            objectScrollOffset = new UMI3DAsyncProperty<Vector2Dto>(id, UMI3DPropertyKeys.WebViewScrollOffset, scrollOffset.Dto());
             objectIsAdmin = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewIsAdmin, new());
             objectCanUrlBeForced = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanUrlBeForced, canUrlBeForced);
             objectUseWhiteList = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewUseWhileList, useWhiteList);
@@ -206,7 +206,7 @@ namespace umi3d.edk
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
             objectSize.OnValueChanged += (s) => size = s;
             objectUrl.OnValueChanged += (u) => url = u;
-            objectScrollOffset.OnValueChanged += (s) => scrollOffset = s;
+            objectScrollOffset.OnValueChanged += (s) => scrollOffset = s.Struct();
             objectCanUrlBeForced.OnValueChanged += (b) => canUrlBeForced = b;
             objectUseWhiteList.OnValueChanged += (u) => useWhiteList = u;
             objectWhiteList.OnValueChanged += (b) => whiteList = b;
@@ -320,7 +320,6 @@ namespace umi3d.edk
 
             synchronizedUser = user;
 
-            Debug.Log("SYNCHRO");
             if (userHistory.TryGetValue(user, out WebViewEventArgs args))
             {
                 Transaction transaction = new() { reliable = true };

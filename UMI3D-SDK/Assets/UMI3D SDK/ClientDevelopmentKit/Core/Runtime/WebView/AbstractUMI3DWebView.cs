@@ -65,12 +65,12 @@ namespace umi3d.cdk
             }
         }
 
-        private int _scrollOffset = 0;
+        private Vector2Dto _scrollOffset = Vector2.zero.Dto();
 
         /// <summary>
         /// Web view url
         /// </summary>
-        public int scrollOffset
+        public Vector2Dto scrollOffset
         {
             get => _scrollOffset;
             set
@@ -81,7 +81,7 @@ namespace umi3d.cdk
                 if (_scrollOffset != value)
                 {
                     _scrollOffset = value;
-                    OnScrollOffsetChanged(value);
+                    OnScrollOffsetChanged(value.Struct());
                 }
             }
         }
@@ -203,7 +203,7 @@ namespace umi3d.cdk
 
         protected abstract void OnUrlChanged(string url);
 
-        protected abstract void OnScrollOffsetChanged(int scroll);
+        protected abstract void OnScrollOffsetChanged(Vector2 scroll);
 
         protected abstract void OnAdminStatusChanged(bool admin);
 

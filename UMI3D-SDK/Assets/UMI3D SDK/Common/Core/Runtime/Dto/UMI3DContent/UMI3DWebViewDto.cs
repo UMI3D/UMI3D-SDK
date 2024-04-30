@@ -44,9 +44,9 @@ namespace umi3d.common
         public string url { get; set; }
 
         /// <summary>
-        /// Vertical scroll offset.
+        /// Scroll offset.
         /// </summary>
-        public int scrollOffset { get; set; }
+        public Vector2Dto scrollOffset { get; set; }
 
         /// <summary>
         /// If set to false, when <see cref="url"/> is set, the value will be ignored by the browser.

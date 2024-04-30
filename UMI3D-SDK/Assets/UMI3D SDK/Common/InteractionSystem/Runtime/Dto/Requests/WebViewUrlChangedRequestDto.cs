@@ -34,6 +34,6 @@ namespace umi3d.common.interaction
         /// <summary>
         /// Scroll offset.
         /// </summary>
-        public int scrollOffset { get; set; }
+        public Vector2Dto scrollOffset { get; set; }
     }
 }

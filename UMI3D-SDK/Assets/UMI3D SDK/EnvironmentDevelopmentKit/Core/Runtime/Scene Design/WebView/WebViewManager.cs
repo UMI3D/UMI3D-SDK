@@ -13,6 +13,7 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
+using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -43,7 +44,7 @@ namespace umi3d.edk
             /// <summary>
             /// Scroll offset inside web page.
             /// </summary>
-            public int scrollOffset;
+            public Vector2Dto scrollOffset;
         }
 
         /// <summary>
@@ -62,7 +63,7 @@ namespace umi3d.edk
         /// <param name="user"></param>
         /// <param name="webViewId"></param>
         /// <param name="url"></param>
-        public void OnUserChangedUrl(UMI3DUser user, ulong webViewId, string url, int scrollOffset)
+        public void OnUserChangedUrl(UMI3DUser user, ulong webViewId, string url, Vector2Dto scrollOffset)
         {
             try
             {

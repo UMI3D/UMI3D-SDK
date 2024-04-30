@@ -81,7 +81,7 @@ namespace umi3d.cdk
                     webView.url = dto.url = (string)data.property.value;
                     break;
                 case UMI3DPropertyKeys.WebViewScrollOffset:
-                    webView.scrollOffset = dto.scrollOffset = (int)data.property.value;
+                    webView.scrollOffset = dto.scrollOffset = (Vector2Dto)data.property.value;
                     break;
                 case UMI3DPropertyKeys.WebViewCanUrlBeForced:
                     webView.canUrlBeForced = dto.canUrlBeForced = (bool)data.property.value;
@@ -139,7 +139,7 @@ namespace umi3d.cdk
                     webView.url = dto.url = UMI3DSerializer.Read<string>(data.container);
                     break;
                 case UMI3DPropertyKeys.WebViewScrollOffset:
-                    webView.scrollOffset = dto.scrollOffset = UMI3DSerializer.Read<int>(data.container);
+                    webView.scrollOffset = dto.scrollOffset = UMI3DSerializer.Read<Vector2Dto>(data.container);
                     break;
                 case UMI3DPropertyKeys.WebViewCanUrlBeForced:
                     webView.canUrlBeForced = dto.canUrlBeForced = UMI3DSerializer.Read<bool>(data.container);

@@ -428,7 +428,7 @@ namespace umi3d.edk.collaboration
                         {
                             ulong webViewId = UMI3DSerializer.Read<ulong>(container);
                             string url = UMI3DSerializer.Read<string>(container);
-                            int scrollOffset = UMI3DSerializer.Read<int>(container);
+                            Vector2Dto scrollOffset = UMI3DSerializer.Read<Vector2Dto>(container);
 
                             WebViewManager.Instance.OnUserChangedUrl(user, webViewId, url, scrollOffset);
                         });
