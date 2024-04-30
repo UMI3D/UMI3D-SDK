@@ -215,7 +215,7 @@ namespace umi3d.common
         public const uint PoseClipComposable = 11011;
         public const uint PoseClipInterpolable = 11012;
 
-        public const uint PoseAnimatorApplicationDuration= 11013;
+        public const uint PoseAnimatorApplicationDuration = 11013;
         public const uint PoseAnimatorActivationMode = 11014;
         public const uint PoseAnimatorUseAnchoring = 11015;
         public const uint PoseAnimatorAnchoringConstraint = 11016;
@@ -326,6 +326,8 @@ namespace umi3d.common
         public const uint WebViewWhileList = 17007;
         public const uint WebViewUseBlackList = 17008;
         public const uint WebViewBlackList = 17009;
+        public const uint WebViewIsAdmin = 17010;
+        public const uint WebViewScrollOffset = 17011;
         #endregion
 
     }

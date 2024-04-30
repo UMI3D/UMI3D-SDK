@@ -1,12 +1,4 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
-using umi3d.common;
-using UnityEngine;
-using UnityEngine.EventSystems;
-using UnityEngine.UIElements;
-using UnityEngine.XR;
-
 
 namespace umi3d.common.interaction
 {
@@ -21,6 +13,7 @@ namespace umi3d.common.interaction
                 true when typeof(T) == typeof(ToolProjectedDto) => true,
                 true when typeof(T) == typeof(ToolReleasedDto) => true,
                 true when typeof(T) == typeof(WebViewUrlChangedRequestDto) => true,
+                true when typeof(T) == typeof(WebViewSynchronizationRequestDto) => true,
                 _ => null,
             };
         }
@@ -41,7 +34,7 @@ namespace umi3d.common.interaction
 
             }
 
-            result = default(T);
+            result = default;
             readable = false;
             return false;
         }
@@ -86,7 +79,7 @@ namespace umi3d.common.interaction
                         + UMI3DSerializer.Write(c.answers);
                     return true;
                 case EventStateChangedDto c:
-                    bytable = WriteInteraction(c, UMI3DOperationKeys.EventStateChanged, parameters) 
+                    bytable = WriteInteraction(c, UMI3DOperationKeys.EventStateChanged, parameters)
                         + UMI3DSerializer.Write(c.active);
                     return true;
                 case EventTriggeredDto c:
@@ -110,14 +103,20 @@ namespace umi3d.common.interaction
                 case WebViewUrlChangedRequestDto c:
                     bytable = UMI3DSerializer.Write(UMI3DOperationKeys.WebViewUrlRequest)
                        + UMI3DSerializer.Write(c.webViewId)
-                       + UMI3DSerializer.Write(c.url);
+                       + UMI3DSerializer.Write(c.url)
+                       + UMI3DSerializer.Write(c.scrollOffset);
+                    return true;
+                case WebViewSynchronizationRequestDto c:
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.WebViewSynchronizationRequest)
+                       + UMI3DSerializer.Write(c.webViewId);
                     return true;
             }
+
             bytable = null;
             return false;
         }
 
-        Bytable WriteInteraction(InteractionRequestDto c,uint? operation, params object[] parameters)
+        Bytable WriteInteraction(InteractionRequestDto c, uint? operation, params object[] parameters)
         {
             return UMI3DSerializer.Write(operation ?? UMI3DOperationKeys.InteractionRequest)
                         + UMI3DSerializer.Write(c.toolId)
@@ -127,6 +126,5 @@ namespace umi3d.common.interaction
                         + UMI3DSerializer.Write(c.bonePosition)
                         + UMI3DSerializer.Write(c.boneRotation);
         }
-
     }
 }
