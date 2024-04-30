@@ -31,7 +31,7 @@ namespace umi3d.cdk
         /// </summary>
         public bool canInteract
         {
-            get => _canInteract;
+            get => _canInteract || isAdmin;
             set
             {
                 if (_canInteract != value)
@@ -61,6 +61,46 @@ namespace umi3d.cdk
 
                     if (!string.IsNullOrEmpty(_url))
                         OnUrlChanged(value);
+                }
+            }
+        }
+
+        private Vector2Dto _scrollOffset = Vector2.zero.Dto();
+
+        /// <summary>
+        /// Web view url
+        /// </summary>
+        public Vector2Dto scrollOffset
+        {
+            get => _scrollOffset;
+            set
+            {
+                if (!canUrlBeForced)
+                    return;
+
+                if (_scrollOffset != value)
+                {
+                    _scrollOffset = value;
+                    OnScrollOffsetChanged(value.Struct());
+                }
+            }
+        }
+
+        private bool _isAdmin = false;
+
+        /// <summary>
+        /// Web view url
+        /// </summary>
+        public bool isAdmin
+        {
+            get => _isAdmin;
+            set
+            {
+                if (_isAdmin != value)
+                {
+                    _isAdmin = value;
+
+                    OnAdminStatusChanged(value);
                 }
             }
         }
@@ -152,14 +192,20 @@ namespace umi3d.cdk
             blackList = dto.blackList;
 
             url = dto.url;
+            scrollOffset = dto.scrollOffset;
             size = dto.size.Struct();
             textureSize = dto.textureSize.Struct();
             canInteract = dto.canInteract;
+            isAdmin = dto.isAdmin;
 
             OnCanInteractChanged(canInteract);
         }
 
         protected abstract void OnUrlChanged(string url);
+
+        protected abstract void OnScrollOffsetChanged(Vector2 scroll);
+
+        protected abstract void OnAdminStatusChanged(bool admin);
 
         protected abstract void OnSizeChanged(Vector2 size);
 

@@ -17,6 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using umi3d.common;
 using UnityEngine;
+using static umi3d.edk.WebViewManager;
 
 namespace umi3d.edk
 {
@@ -37,19 +38,25 @@ namespace umi3d.edk
         /// Webview size.
         /// </summary>
         [SerializeField, Tooltip("Webview size")]
-        private Vector2 size = new Vector2(1.280f, .720f);
+        private Vector2 size = new(1.280f, .720f);
 
         /// <summary>
         /// Webview texture dimensions.
         /// </summary>
         [SerializeField, Tooltip("Webview texture dimensions")]
-        private Vector2 textureSize = new Vector2(1280, 720);
+        private Vector2 textureSize = new(1280, 720);
 
         /// <summary>
         /// Url to load on clients.
         /// </summary>
         [SerializeField, Tooltip("Url to load on clients")]
         private string url = string.Empty;
+
+        /// <summary>
+        /// Scroll offset in pixels.
+        /// </summary>
+        [SerializeField, Tooltip("Scroll offset in pixels")]
+        private Vector2 scrollOffset = Vector2.zero;
 
         /// <summary>
         /// If set to false, when <see cref="url"/> is set, the value will be ignored by the browser.
@@ -81,6 +88,16 @@ namespace umi3d.edk
         [SerializeField, Tooltip("If useBlackList true, list of non authorized domains")]
         private List<string> blackList = new();
 
+        /// <summary>
+        /// History of all url loaded by users.
+        /// </summary>
+        private Dictionary<UMI3DUser, WebViewEventArgs> userHistory = new();
+
+        /// <summary>
+        /// If not null, current user who synchronizes its content.
+        /// </summary>
+        private UMI3DUser synchronizedUser = null;
+
         #endregion
 
         #region Async properties
@@ -93,16 +110,19 @@ namespace umi3d.edk
 
         private UMI3DAsyncProperty<string> _objectUrl;
 
+        private UMI3DAsyncProperty<Vector2Dto> _objectScrollOffset;
+
+        private UMI3DAsyncProperty<bool> _objectIsAdmin;
+
         private UMI3DAsyncProperty<bool> _objectCanUrlBeForced;
 
         private UMI3DAsyncProperty<bool> _objectUseWhiteList;
 
-        private UMI3DAsyncProperty<List<string>> _objectWhiteList;
+        private UMI3DAsyncListProperty<string> _objectWhiteList;
 
         private UMI3DAsyncProperty<bool> _objectUseBlackList;
 
-        private UMI3DAsyncProperty<List<string>> _objectBlackList;
-
+        private UMI3DAsyncListProperty<string> _objectBlackList;
 
         /// <summary>
         /// Async property to change <see cref="canInteract"/> property.
@@ -120,15 +140,24 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<Vector2> objectTextureSize { get { Register(); return _objectTextureSize; } protected set => _objectTextureSize = value; }
 
         /// <summary>
+        /// Async property to change <see cref="scrollOffset"/> property.
+        /// </summary>
+        public UMI3DAsyncProperty<Vector2Dto> objectScrollOffset { get { Register(); return _objectScrollOffset; } protected set => _objectScrollOffset = value; }
+
+        /// <summary>
         /// Async property to change <see cref="url"/> property.
         /// </summary>
         public UMI3DAsyncProperty<string> objectUrl { get { Register(); return _objectUrl; } protected set => _objectUrl = value; }
 
         /// <summary>
+        /// Async property to set webView admins.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectIsAdmin { get { Register(); return _objectIsAdmin; } protected set => _objectIsAdmin = value; }
+
+        /// <summary>
         /// Async property to change <see cref="canUrlBeForced"/> property.
         /// </summary>
         public UMI3DAsyncProperty<bool> objectCanUrlBeForced { get { Register(); return _objectCanUrlBeForced; } protected set => _objectCanUrlBeForced = value; }
-
 
         /// <summary>
         /// Async property to change <see cref="useWhiteList"> property.
@@ -138,7 +167,7 @@ namespace umi3d.edk
         /// <summary>
         /// Async property to change <see cref="whiteList"/> property.
         /// </summary>
-        public UMI3DAsyncProperty<List<string>> objectWhiteList { get { Register(); return _objectWhiteList; } protected set => _objectWhiteList = value; }
+        public UMI3DAsyncListProperty<string> objectWhiteList { get { Register(); return _objectWhiteList; } protected set => _objectWhiteList = value; }
 
         /// <summary>
         /// Async property to change <see cref="useBlackList"> property.
@@ -148,7 +177,7 @@ namespace umi3d.edk
         /// <summary>
         /// Async property to change <see cref="blackList"/> property.
         /// </summary>
-        public UMI3DAsyncProperty<List<string>> objectBlackList { get { Register(); return _objectBlackList; } protected set => _objectBlackList = value; }
+        public UMI3DAsyncListProperty<string> objectBlackList { get { Register(); return _objectBlackList; } protected set => _objectBlackList = value; }
 
         #endregion
 
@@ -165,21 +194,58 @@ namespace umi3d.edk
             objectSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewSize, size, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
+            objectScrollOffset = new UMI3DAsyncProperty<Vector2Dto>(id, UMI3DPropertyKeys.WebViewScrollOffset, scrollOffset.Dto());
+            objectIsAdmin = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewIsAdmin, new());
             objectCanUrlBeForced = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanUrlBeForced, canUrlBeForced);
             objectUseWhiteList = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewUseWhileList, useWhiteList);
-            objectWhiteList = new UMI3DAsyncProperty<List<string>>(id, UMI3DPropertyKeys.WebViewWhileList, whiteList);
+            objectWhiteList = new UMI3DAsyncListProperty<string>(id, UMI3DPropertyKeys.WebViewWhileList, whiteList);
             objectUseBlackList = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewUseBlackList, useBlackList);
-            objectBlackList = new UMI3DAsyncProperty<List<string>>(id, UMI3DPropertyKeys.WebViewBlackList, blackList);
+            objectBlackList = new UMI3DAsyncListProperty<string>(id, UMI3DPropertyKeys.WebViewBlackList, blackList);
 
             objectCanInteract.OnValueChanged += (b) => canInteract = b;
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
             objectSize.OnValueChanged += (s) => size = s;
             objectUrl.OnValueChanged += (u) => url = u;
+            objectScrollOffset.OnValueChanged += (s) => scrollOffset = s.Struct();
             objectCanUrlBeForced.OnValueChanged += (b) => canUrlBeForced = b;
             objectUseWhiteList.OnValueChanged += (u) => useWhiteList = u;
             objectWhiteList.OnValueChanged += (b) => whiteList = b;
             objectUseBlackList.OnValueChanged += (u) => useBlackList = u;
             objectBlackList.OnValueChanged += (b) => blackList = b;
+
+            WebViewManager.Instance.onUserChangedUrlEvent.AddListener(OnUserUrlChanged);
+        }
+
+        private void OnDestroy()
+        {
+            WebViewManager.Instance.onUserChangedUrlEvent.RemoveListener(OnUserUrlChanged);
+        }
+
+        private void OnUserUrlChanged(WebViewEventArgs ev)
+        {
+            bool hasUrlChanged = !userHistory.ContainsKey(ev.user) || (userHistory[ev.user].url != ev.url);
+
+            userHistory[ev.user] = ev;
+
+            if (synchronizedUser == ev.user)
+            {
+                Transaction transaction = new() { reliable = true };
+
+                if (hasUrlChanged)
+                {
+                    SetEntityProperty op = this.objectUrl.SetValue(ev.url, true);
+                    op.users.Remove(ev.user);
+                    transaction.AddIfNotNull(op);
+                }
+                else
+                {
+                    SetEntityProperty op = this.objectScrollOffset.SetValue(ev.scrollOffset, true);
+                    op.users.Remove(ev.user);
+                    transaction.AddIfNotNull(op);
+                }
+
+                transaction.Dispatch();
+            }
         }
 
         /// <summary>
@@ -197,7 +263,8 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(objectUseWhiteList.GetValue(user))
                 + UMI3DSerializer.Write(objectWhiteList.GetValue(user))
                 + UMI3DSerializer.Write(objectUseBlackList.GetValue(user))
-                + UMI3DSerializer.Write(objectBlackList.GetValue(user));
+                + UMI3DSerializer.Write(objectBlackList.GetValue(user))
+                + UMI3DSerializer.Write(objectScrollOffset.GetValue(user));
         }
 
         /// <summary>
@@ -217,15 +284,52 @@ namespace umi3d.edk
             base.WriteProperties(dto, user);
 
             var webViewDto = dto as UMI3DWebViewDto;
+            webViewDto.isAdmin = objectIsAdmin.GetValue(user);
             webViewDto.canInteract = objectCanInteract.GetValue(user);
             webViewDto.size = objectSize.GetValue(user).Dto();
             webViewDto.textureSize = objectTextureSize.GetValue(user).Dto();
             webViewDto.url = objectUrl.GetValue(user);
+            webViewDto.scrollOffset = objectScrollOffset.GetValue(user);
             webViewDto.canUrlBeForced = objectCanUrlBeForced.GetValue(user);
             webViewDto.useWhiteList = objectUseWhiteList.GetValue(user);
             webViewDto.whiteList = objectWhiteList.GetValue(user);
             webViewDto.useBlackList = objectUseBlackList.GetValue(user);
             webViewDto.blackList = objectBlackList.GetValue(user);
+            webViewDto.blackList = objectBlackList.GetValue(user);
+        }
+
+        public void ToggleSynchronize(UMI3DUser user)
+        {
+            if (synchronizedUser == user)
+                synchronizedUser = null;
+            else
+                Synchronize(user);
+        }
+
+        /// <summary>
+        /// <paramref name="user"/> will synchronizes its view to other users (if <see cref="canUrlBeForced"/> is true for them).
+        /// </summary>
+        /// <param name="user"></param>
+        public void Synchronize(UMI3DUser user)
+        {
+            if (!objectIsAdmin.GetValue(user))
+            {
+                UMI3DLogger.LogError("A user not admin tried to synchronize its view : not allowed", DebugScope.EDK);
+                return;
+            }
+
+            synchronizedUser = user;
+
+            if (userHistory.TryGetValue(user, out WebViewEventArgs args))
+            {
+                Transaction transaction = new() { reliable = true };
+
+                SetEntityProperty op = this.objectUrl.SetValue(args.url, true);
+                op.users.Remove(user);
+                transaction.AddIfNotNull(op);
+
+                transaction.Dispatch();
+            }
         }
 
         #endregion
