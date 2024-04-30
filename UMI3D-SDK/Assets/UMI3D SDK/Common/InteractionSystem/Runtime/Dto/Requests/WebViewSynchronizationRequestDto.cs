@@ -1,5 +1,5 @@
 /*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -16,24 +16,11 @@ limitations under the License.
 
 namespace umi3d.common.interaction
 {
-    /// <summary>
-    /// Request sent by browsers when a user changes its url in a webview.
-    /// </summary>
-    public class WebViewUrlChangedRequestDto : AbstractBrowserRequestDto
+    public class WebViewSynchronizationRequestDto : AbstractBrowserRequestDto
     {
         /// <summary>
         /// Id of the webView which was modified.
         /// </summary>
         public ulong webViewId { get; set; }
-
-        /// <summary>
-        /// Url set by the user
-        /// </summary>
-        public string url { get; set; }
-
-        /// <summary>
-        /// Scroll offset.
-        /// </summary>
-        public int scrollOffset { get; set; }
     }
 }

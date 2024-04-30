@@ -23,16 +23,38 @@ namespace umi3d.edk
     /// </summary>
     public class WebViewManager : Singleton<WebViewManager>
     {
+        public struct WebViewEventArgs
+        {
+            /// <summary>
+            /// WebView which is modified.
+            /// </summary>
+            public ulong webViewId;
+
+            /// <summary>
+            /// User who interacts with the webView.
+            /// </summary>
+            public UMI3DUser user;
+
+            /// <summary>
+            /// Url set by user.
+            /// </summary>
+            public string url;
+
+            /// <summary>
+            /// Scroll offset inside web page.
+            /// </summary>
+            public int scrollOffset;
+        }
+
         /// <summary>
         /// Event used when a user changes its url webView.
         /// <User, webViewId, url>
         /// </summary>
-        public class WebViewEvent : UnityEvent<UMI3DUser, ulong, string>
+        public class WebViewEvent : UnityEvent<WebViewEventArgs>
         {
-
         }
 
-        public readonly WebViewEvent onUserChangedUrlEvent = new WebViewEvent();
+        public readonly WebViewEvent onUserChangedUrlEvent = new();
 
         /// <summary>
         /// Notify the manager a <see cref="WebViewUrlChangedRequestDto"/> was received.
@@ -40,15 +62,28 @@ namespace umi3d.edk
         /// <param name="user"></param>
         /// <param name="webViewId"></param>
         /// <param name="url"></param>
-        public void OnUserChangedUrl(UMI3DUser user, ulong webViewId, string url)
+        public void OnUserChangedUrl(UMI3DUser user, ulong webViewId, string url, int scrollOffset)
         {
             try
             {
-                onUserChangedUrlEvent?.Invoke(user, webViewId, url);
-            } catch(Exception ex)
+                onUserChangedUrlEvent?.Invoke(new()
+                {
+                    user = user,
+                    webViewId = webViewId,
+                    url = url,
+                    scrollOffset = scrollOffset
+                });
+            }
+            catch (Exception ex)
             {
                 Debug.LogException(ex);
             }
+        }
+
+        public void SynchronisationRequest(UMI3DUser user, ulong webViewId)
+        {
+            UMI3DWebView webView = UMI3DEnvironment.GetEntityInstance<UMI3DWebView>(webViewId);
+            webView.ToggleSynchronize(user);
         }
     }
 }

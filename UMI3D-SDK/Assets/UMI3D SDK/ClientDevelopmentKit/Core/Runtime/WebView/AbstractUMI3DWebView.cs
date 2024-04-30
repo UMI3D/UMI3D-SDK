@@ -31,7 +31,7 @@ namespace umi3d.cdk
         /// </summary>
         public bool canInteract
         {
-            get => _canInteract;
+            get => _canInteract || isAdmin;
             set
             {
                 if (_canInteract != value)
@@ -61,6 +61,46 @@ namespace umi3d.cdk
 
                     if (!string.IsNullOrEmpty(_url))
                         OnUrlChanged(value);
+                }
+            }
+        }
+
+        private int _scrollOffset = 0;
+
+        /// <summary>
+        /// Web view url
+        /// </summary>
+        public int scrollOffset
+        {
+            get => _scrollOffset;
+            set
+            {
+                if (!canUrlBeForced)
+                    return;
+
+                if (_scrollOffset != value)
+                {
+                    _scrollOffset = value;
+                    OnScrollOffsetChanged(value);
+                }
+            }
+        }
+
+        private bool _isAdmin = false;
+
+        /// <summary>
+        /// Web view url
+        /// </summary>
+        public bool isAdmin
+        {
+            get => _isAdmin;
+            set
+            {
+                if (_isAdmin != value)
+                {
+                    _isAdmin = value;
+
+                    OnAdminStatusChanged(value);
                 }
             }
         }
@@ -152,14 +192,20 @@ namespace umi3d.cdk
             blackList = dto.blackList;
 
             url = dto.url;
+            scrollOffset = dto.scrollOffset;
             size = dto.size.Struct();
             textureSize = dto.textureSize.Struct();
             canInteract = dto.canInteract;
+            isAdmin = dto.isAdmin;
 
             OnCanInteractChanged(canInteract);
         }
 
         protected abstract void OnUrlChanged(string url);
+
+        protected abstract void OnScrollOffsetChanged(int scroll);
+
+        protected abstract void OnAdminStatusChanged(bool admin);
 
         protected abstract void OnSizeChanged(Vector2 size);
 
