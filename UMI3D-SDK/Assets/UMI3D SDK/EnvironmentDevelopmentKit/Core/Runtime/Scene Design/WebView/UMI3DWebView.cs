@@ -35,6 +35,12 @@ namespace umi3d.edk
         private bool canInteract = true;
 
         /// <summary>
+        /// A admin user can share its view with others
+        /// </summary>
+        [SerializeField, Tooltip("Admin users can share their view with others")]
+        private bool isAdmin = false;
+
+        /// <summary>
         /// Webview size.
         /// </summary>
         [SerializeField, Tooltip("Webview size")]
@@ -195,7 +201,7 @@ namespace umi3d.edk
             objectTextureSize = new UMI3DAsyncProperty<Vector2>(id, UMI3DPropertyKeys.WebViewTextureSize, textureSize, ToUMI3DSerializable.ToSerializableVector2, new UMI3DAsyncPropertyEquality { epsilon = 0.000001f }.Vector2Equality);
             objectUrl = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.WebViewUrl, url);
             objectScrollOffset = new UMI3DAsyncProperty<Vector2Dto>(id, UMI3DPropertyKeys.WebViewScrollOffset, scrollOffset.Dto());
-            objectIsAdmin = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewIsAdmin, new());
+            objectIsAdmin = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewIsAdmin, isAdmin);
             objectCanUrlBeForced = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewCanUrlBeForced, canUrlBeForced);
             objectUseWhiteList = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.WebViewUseWhileList, useWhiteList);
             objectWhiteList = new UMI3DAsyncListProperty<string>(id, UMI3DPropertyKeys.WebViewWhileList, whiteList);
@@ -205,6 +211,7 @@ namespace umi3d.edk
             objectCanInteract.OnValueChanged += (b) => canInteract = b;
             objectTextureSize.OnValueChanged += (s) => textureSize = s;
             objectSize.OnValueChanged += (s) => size = s;
+            objectIsAdmin.OnValueChanged += (b) => isAdmin = b;
             objectUrl.OnValueChanged += (u) => url = u;
             objectScrollOffset.OnValueChanged += (s) => scrollOffset = s.Struct();
             objectCanUrlBeForced.OnValueChanged += (b) => canUrlBeForced = b;
