@@ -24,6 +24,7 @@ namespace umi3d.edk.editor
     public class UMI3DWebViewEditor : UMI3DNodeEditor
     {
         private SerializedProperty canInteract;
+        private SerializedProperty isAdmin;
         private SerializedProperty size;
         private SerializedProperty textureSize;
         private SerializedProperty url;
@@ -38,6 +39,7 @@ namespace umi3d.edk.editor
             base.OnEnable();
 
             canInteract = serializedObject.FindProperty("canInteract");
+            isAdmin = serializedObject.FindProperty("isAdmin");
             size = serializedObject.FindProperty("size");
             textureSize = serializedObject.FindProperty("textureSize");
             url = serializedObject.FindProperty("url");
@@ -56,6 +58,7 @@ namespace umi3d.edk.editor
 
             EditorGUILayout.PropertyField(url);
             EditorGUILayout.PropertyField(canInteract);
+            EditorGUILayout.PropertyField(isAdmin);
             EditorGUILayout.PropertyField(canBeForced);
 
             EditorGUILayout.Space();

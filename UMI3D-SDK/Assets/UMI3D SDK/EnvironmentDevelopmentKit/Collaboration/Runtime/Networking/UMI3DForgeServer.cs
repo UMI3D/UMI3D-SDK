@@ -69,7 +69,8 @@ namespace umi3d.edk.collaboration
         public UMI3DTrackingRelay trackingRelay { get; private set; }
 
         object timeLock = new object();
-        public ulong Time {
+        public ulong Time
+        {
             get
             {
                 lock (timeLock)
@@ -96,7 +97,7 @@ namespace umi3d.edk.collaboration
         /// <param name="natServerPort"></param>
         /// <param name="maxNbPlayer"></param>
         /// <returns></returns>
-        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64, UMI3DTrackingRelay relay = null )
+        public static UMI3DForgeServer Create(string ip = "127.0.0.1", ushort connectionPort = 50043, ushort port = 15937, string masterServerHost = "", ushort masterServerPort = 15940, string natServerHost = "", ushort natServerPort = 15941, int maxNbPlayer = 64, UMI3DTrackingRelay relay = null)
         {
             UMI3DForgeServer server = new GameObject("UMI3DForgeServer").AddComponent<UMI3DForgeServer>();
             server.ip = ip;
@@ -350,7 +351,13 @@ namespace umi3d.edk.collaboration
                     case WebViewUrlChangedRequestDto webViewRequest:
                         MainThreadManager.Run(() =>
                         {
-                            WebViewManager.Instance.OnUserChangedUrl(user, webViewRequest.webViewId, webViewRequest.url);
+                            WebViewManager.Instance.OnUserChangedUrl(user, webViewRequest.webViewId, webViewRequest.url, webViewRequest.scrollOffset);
+                        });
+                        break;
+                    case WebViewSynchronizationRequestDto webViewSynchroRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            WebViewManager.Instance.SynchronisationRequest(user, webViewSynchroRequest.webViewId);
                         });
                         break;
                     default:
@@ -421,8 +428,16 @@ namespace umi3d.edk.collaboration
                         {
                             ulong webViewId = UMI3DSerializer.Read<ulong>(container);
                             string url = UMI3DSerializer.Read<string>(container);
+                            Vector2Dto scrollOffset = UMI3DSerializer.Read<Vector2Dto>(container);
 
-                            WebViewManager.Instance.OnUserChangedUrl(user, webViewId, url);
+                            WebViewManager.Instance.OnUserChangedUrl(user, webViewId, url, scrollOffset);
+                        });
+                        break;
+                    case UMI3DOperationKeys.WebViewSynchronizationRequest:
+                        ulong webViewId = UMI3DSerializer.Read<ulong>(container);
+                        MainThreadManager.Run(() =>
+                        {
+                            WebViewManager.Instance.SynchronisationRequest(user, webViewId);
                         });
                         break;
                     default:
