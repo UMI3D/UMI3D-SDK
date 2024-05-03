@@ -279,7 +279,7 @@ namespace umi3d.cdk.userCapture
                 if (bonePoses.ContainsKey(boneType))
                     continue;
 
-                if (currentBonePoses.ContainsKey(boneType)) // not defined in current pose so go on
+                if (currentBonePoses.ContainsKey(boneType)) // defined in current pose so interpolate
                 {
                     newDescriptionBonePose.localRotation = Quaternion.Slerp(currentBonePoses[boneType].localRotation.Quaternion(), newDescriptionBonePose.localRotation.Quaternion(), normalizedTransitionTime).Dto();
                 }

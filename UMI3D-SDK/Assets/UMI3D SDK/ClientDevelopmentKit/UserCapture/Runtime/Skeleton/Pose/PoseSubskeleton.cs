@@ -51,6 +51,7 @@ namespace umi3d.cdk.userCapture.pose
             this.parentSkeleton = parentSkeleton;
             this.poseAggregator = new PoseClipAggregator(parentSkeleton);
             EnvironmentId = environmentId;
+            Init();
         }
 
         #endregion Dependency Injection
@@ -80,7 +81,7 @@ namespace umi3d.cdk.userCapture.pose
             public ISubskeletonDescriptionInterpolationPlayer.PlayingParameters playingParameters = new();
         }
 
-        private void Init()
+        public void Init()
         {
             poseAggregator.PoseStopped += (_) => CheckPendingPlayingPoseRequests();
         }
