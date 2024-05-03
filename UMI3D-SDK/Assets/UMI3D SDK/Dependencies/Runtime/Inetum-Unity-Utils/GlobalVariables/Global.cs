@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace inetum.unityUtils
@@ -25,13 +26,21 @@ namespace inetum.unityUtils
         static umi3d.debug.UMI3DLogger logger = new(mainTag: nameof(Global));
         static Dictionary<string, object> variables = new();
 
-        public static bool TryGetVariable<T>(string key, out T variable, bool debug = true)
+        /// <summary>
+        /// Try to get the variable stored with this <paramref name="key"/>.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="variable"></param>
+        /// <param name="debug"></param>
+        /// <returns></returns>
+        public static bool TryGet<T>(string key, out T variable, bool debug = true)
         {
             if (!variables.ContainsKey(key))
             {
                 if (debug)
                 {
-                    logger.Error(nameof(TryGetVariable), $"No variable of type: {typeof(T).FullName} with key: {key}");
+                    logger.Error(nameof(TryGet), $"No variable of type: {typeof(T).FullName} with key: {key}");
                 }
                 variable = default(T);
                 return false;
@@ -41,7 +50,7 @@ namespace inetum.unityUtils
             {
                 if (debug)
                 {
-                    logger.Error(nameof(TryGetVariable), $"Variable for key: {key} has type: {variables[key].GetType().FullName} but type: {typeof(T).FullName} is expected");
+                    logger.Error(nameof(TryGet), $"Variable for key: {key} has type: {variables[key].GetType().FullName} but type: {typeof(T).FullName} is expected");
                 }
                 variable = default(T);
                 return false;
@@ -51,9 +60,113 @@ namespace inetum.unityUtils
             return true;
         }
 
-        public static bool Get<T>(out T variable, bool debug = true)
-            => TryGetVariable(typeof(T).FullName, out variable, debug);
+        /// <summary>
+        /// Try to get the variable stored with the key typeof(<typeparamref name="T"/>).FullName.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="variable"></param>
+        /// <param name="debug"></param>
+        /// <returns></returns>
+        public static bool TryGet<T>(out T variable, bool debug = true)
+            => TryGet(typeof(T).FullName, out variable, debug);
 
+        /// <summary>
+        /// Try to get the variable stored with this <paramref name="key"/> in an asynchronous way.<br/>
+        /// <br/>
+        /// The method will try 1 time + <paramref name="numberOfRetry"/> times before giving up. If <paramref name="numberOfRetry"/> is 0 the there is only one try. If <paramref name="numberOfRetry"/> is inferior to 0 then there is an infinit number of try.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="numberOfRetry"></param>
+        /// <param name="getVariable"></param>
+        /// <param name="debug"></param>
+        /// <returns></returns>
+        public static async Task<bool> TryGetAsync<T>(string key, int numberOfRetry, Action<T> getVariable, bool debug = true)
+        {
+            T variable;
+            while (!TryGet(key, out variable, false) && numberOfRetry != 0)
+            {
+                numberOfRetry--;
+                await Task.Yield();
+            }
+
+            if (numberOfRetry == 0)
+            {
+                logger.Error(nameof(TryGetAsync), $"The Number of try has been exceeded. Could not get variable: {typeof(T).FullName} with key: {key}.");
+                return false;
+            }
+
+            getVariable?.Invoke(variable);
+            return true;
+        }
+
+        /// <summary>
+        /// Try to get the variable stored with the key typeof(<typeparamref name="T"/>).FullName in an asynchronous way.<br/>
+        /// <br/>
+        /// The method will try 1 time + <paramref name="numberOfRetry"/> times before giving up. If <paramref name="numberOfRetry"/> is 0 the there is only one try. If <paramref name="numberOfRetry"/> is inferior to 0 then there is an infinit number of try.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="numberOfRetry"></param>
+        /// <param name="getVariable"></param>
+        /// <param name="debug"></param>
+        /// <returns></returns>
+        public static async Task<bool> TryGetAsync<T>(int numberOfRetry, Action<T> getVariable, bool debug = true)
+        {
+            T variable;
+            while (!TryGet(out variable, false) && numberOfRetry != 0)
+            {
+                numberOfRetry--;
+                await Task.Yield();
+            }
+
+            if (numberOfRetry == 0)
+            {
+                logger.Error(nameof(TryGetAsync), $"The Number of try has been exceeded. Could not get variable: {typeof(T).FullName}.");
+                return false;
+            }
+
+            getVariable?.Invoke(variable);
+            return true;
+        }
+
+        /// <summary>
+        /// Get the variable stored with this key in an asynchronous way.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public static async Task<T> GetAsync<T>(string key)
+        {
+            T variable;
+            while (!TryGet(key, out variable, false))
+            {
+                await Task.Yield();
+            }
+
+            return variable;
+        }
+
+        /// <summary>
+        /// Get the variable stored with the key typeof(<typeparamref name="T"/>).FullName in an asynchronous way.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <returns></returns>
+        public static async Task<T> GetAsync<T>()
+        {
+            T variable;
+            while (!TryGet(out variable, false))
+            {
+                await Task.Yield();
+            }
+
+            return variable;
+        }
+
+        /// <summary>
+        /// Store a variable with this key.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="key"></param>
+        /// <param name="variable"></param>
         public static void Add<T>(string key, T variable)
         {
             if (variables.ContainsKey(key))
@@ -66,9 +179,19 @@ namespace inetum.unityUtils
             }
         }
 
+        /// <summary>
+        /// Store a variable with the key typeof(<typeparamref name="T"/>).FullName.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        /// <param name="variable"></param>
         public static void Add<T>(T variable) 
             => Add(variable.GetType().FullName, variable);
 
+        /// <summary>
+        /// Try to remove a variable stored with this key.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
         public static bool Remove(string key)
         {
             if (!variables.ContainsKey(key))
@@ -80,7 +203,11 @@ namespace inetum.unityUtils
             return true;
         }
 
-        public static void Remove<T>()
+        /// <summary>
+        /// Try to remove a variable stored with the key typeof(<typeparamref name="T"/>).FullName.
+        /// </summary>
+        /// <typeparam name="T"></typeparam>
+        public static bool Remove<T>()
             => Remove(typeof(T).FullName);
     }
 }
