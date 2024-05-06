@@ -15,50 +15,30 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using UnityEngine;
 
 namespace inetum.unityUtils
 {
-    public static class Global 
+    public struct SubGlobal 
     {
-        static umi3d.debug.UMI3DLogger logger = new(mainTag: nameof(Global));
-        static Dictionary<string, object> variables = new();
+        public string mainKey;
+
+        public SubGlobal(string mainKey)
+        {
+            this.mainKey = mainKey;
+        }
 
         /// <summary>
-        /// Try to get the variable stored with this <paramref name="key"/>.
+        /// Try to get the variable stored with the key <see cref="mainKey"/>/<paramref name="key"/>.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <param name="variable"></param>
         /// <param name="debug"></param>
         /// <returns></returns>
-        public static bool TryGet<T>(string key, out T variable, bool debug = true)
-        {
-            if (!variables.ContainsKey(key))
-            {
-                if (debug)
-                {
-                    logger.Error(nameof(TryGet), $"No variable of type: {typeof(T).FullName} with key: {key}");
-                }
-                variable = default(T);
-                return false;
-            }
-
-            if (variables[key] is not T)
-            {
-                if (debug)
-                {
-                    logger.Error(nameof(TryGet), $"Variable for key: {key} has type: {variables[key].GetType().FullName} but type: {typeof(T).FullName} is expected");
-                }
-                variable = default(T);
-                return false;
-            }
-
-            variable = (T)variables[key];
-            return true;
-        }
+        public bool TryGet<T>(string key, out T variable, bool debug = true)
+            => Global.TryGet($"{mainKey}/{key}", out variable, debug);
 
         /// <summary>
         /// Try to get the variable stored with the key typeof(<typeparamref name="T"/>).FullName.
@@ -67,8 +47,8 @@ namespace inetum.unityUtils
         /// <param name="variable"></param>
         /// <param name="debug"></param>
         /// <returns></returns>
-        public static bool TryGet<T>(out T variable, bool debug = true)
-            => TryGet(typeof(T).FullName, out variable, debug);
+        public bool TryGet<T>(out T variable, bool debug = true)
+            => TryGet($"{mainKey}/{typeof(T).FullName}", out variable, debug);
 
         /// <summary>
         /// Try to get the variable stored with this <paramref name="key"/> in an asynchronous way.<br/>
@@ -80,24 +60,8 @@ namespace inetum.unityUtils
         /// <param name="getVariable"></param>
         /// <param name="debug"></param>
         /// <returns></returns>
-        public static async Task<bool> TryGetAsync<T>(string key, int numberOfRetry, Action<T> getVariable, bool debug = true)
-        {
-            T variable;
-            while (!TryGet(key, out variable, false) && numberOfRetry != 0)
-            {
-                numberOfRetry--;
-                await Task.Yield();
-            }
-
-            if (numberOfRetry == 0)
-            {
-                logger.Error(nameof(TryGetAsync), $"The Number of try has been exceeded. Could not get variable: {typeof(T).FullName} with key: {key}.");
-                return false;
-            }
-
-            getVariable?.Invoke(variable);
-            return true;
-        }
+        public async Task<bool> TryGetAsync<T>(string key, int numberOfRetry, Action<T> getVariable, bool debug = true)
+            => await Global.TryGetAsync($"{mainKey}/{key}", numberOfRetry, getVariable, debug);
 
         /// <summary>
         /// Try to get the variable stored with the key typeof(<typeparamref name="T"/>).FullName in an asynchronous way.<br/>
@@ -109,24 +73,8 @@ namespace inetum.unityUtils
         /// <param name="getVariable"></param>
         /// <param name="debug"></param>
         /// <returns></returns>
-        public static async Task<bool> TryGetAsync<T>(int numberOfRetry, Action<T> getVariable, bool debug = true)
-        {
-            T variable;
-            while (!TryGet(out variable, false) && numberOfRetry != 0)
-            {
-                numberOfRetry--;
-                await Task.Yield();
-            }
-
-            if (numberOfRetry == 0)
-            {
-                logger.Error(nameof(TryGetAsync), $"The Number of try has been exceeded. Could not get variable: {typeof(T).FullName}.");
-                return false;
-            }
-
-            getVariable?.Invoke(variable);
-            return true;
-        }
+        public async Task<bool> TryGetAsync<T>(int numberOfRetry, Action<T> getVariable, bool debug = true)
+            => await TryGetAsync($"{mainKey}/{typeof(T).FullName}", numberOfRetry, getVariable, debug);
 
         /// <summary>
         /// Get the variable stored with this key in an asynchronous way.
@@ -134,32 +82,16 @@ namespace inetum.unityUtils
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static async Task<T> GetAsync<T>(string key)
-        {
-            T variable;
-            while (!TryGet(key, out variable, false))
-            {
-                await Task.Yield();
-            }
-
-            return variable;
-        }
+        public async Task<T> GetAsync<T>(string key)
+        => await Global.GetAsync<T>($"{mainKey}/{key}");
 
         /// <summary>
         /// Get the variable stored with the key typeof(<typeparamref name="T"/>).FullName in an asynchronous way.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <returns></returns>
-        public static async Task<T> GetAsync<T>()
-        {
-            T variable;
-            while (!TryGet(out variable, false))
-            {
-                await Task.Yield();
-            }
-
-            return variable;
-        }
+        public async Task<T> GetAsync<T>()
+            => await GetAsync<T>($"{mainKey}/{typeof(T).FullName}");
 
         /// <summary>
         /// Store a variable with this key.
@@ -167,47 +99,30 @@ namespace inetum.unityUtils
         /// <typeparam name="T"></typeparam>
         /// <param name="key"></param>
         /// <param name="variable"></param>
-        public static void Add<T>(string key, T variable)
-        {
-            if (variables.ContainsKey(key))
-            {
-                variables[key] = variable;
-            }
-            else
-            {
-                variables.Add(key, variable);
-            }
-        }
+        public void Add<T>(string key, T variable)
+            => Global.Add($"{mainKey}/{key}", variable);
 
         /// <summary>
         /// Store a variable with the key typeof(<typeparamref name="T"/>).FullName.
         /// </summary>
         /// <typeparam name="T"></typeparam>
         /// <param name="variable"></param>
-        public static void Add<T>(T variable) 
-            => Add(variable.GetType().FullName, variable);
+        public void Add<T>(T variable)
+            => Add($"{mainKey}/{typeof(T).FullName}", variable);
 
         /// <summary>
         /// Try to remove a variable stored with this key.
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        public static bool Remove(string key)
-        {
-            if (!variables.ContainsKey(key))
-            {
-                return false;
-            }
-
-            variables.Remove(key);
-            return true;
-        }
+        public bool Remove(string key)
+            => Global.Remove($"{mainKey}/{key}");
 
         /// <summary>
         /// Try to remove a variable stored with the key typeof(<typeparamref name="T"/>).FullName.
         /// </summary>
         /// <typeparam name="T"></typeparam>
-        public static bool Remove<T>()
-            => Remove(typeof(T).FullName);
+        public bool Remove<T>()
+            => Remove($"{mainKey}/{typeof(T).FullName}");
     }
 }
