@@ -78,7 +78,7 @@ namespace umi3d.edk.collaboration
 
             UMI3DLogger.Log($"Register Distant User : {dto.guid}", scope);
 
-            await UMI3DCollaborationServer.Instance.Register(dto,true);
+            await UMI3DCollaborationServer.Instance.Register(dto, true);
         }
     }
 
@@ -460,6 +460,7 @@ namespace umi3d.edk.collaboration
             }
             else
             {
+                bool HasAlreadyGotTheEnvironmentDtoOnce = user.HasAlreadyGotTheEnvironmentDtoOnce;
                 while (!user.IsReadyToGetResources)
                     System.Threading.Thread.Sleep(1);
                 GlTFEnvironmentDto result = null;
@@ -473,13 +474,17 @@ namespace umi3d.edk.collaboration
 
                 while (!finished) System.Threading.Thread.Sleep(1);
 
+
                 e.Response.WriteContent(result?.ToBson() ?? new byte[0]);
-                NotifyRefresh(user);
+                if (HasAlreadyGotTheEnvironmentDtoOnce)
+                    NotifyRefresh(user);
+                user.HasAlreadyGotTheEnvironmentDtoOnce = true;
             }
             UMI3DLogger.Log($"End Get Environment {user?.Id()}", scope);
         }
 
-        private async void NotifyRefresh(UMI3DUser user) {
+        private async void NotifyRefresh(UMI3DUser user)
+        {
             await Task.Yield();
             UMI3DServer.Instance.NotifyUserRefreshed(user);
         }
@@ -527,7 +532,7 @@ namespace umi3d.edk.collaboration
                                 await collabUSer.JoinDtoReception(join);
 
                             e.Response.WriteContent(UMI3DEnvironment.ToEnterDto(user).ToBson());
-                            
+
                             await UMI3DCollaborationServer.NotifyUserJoin(user);
                         }
                         catch (Exception ex)
@@ -636,14 +641,14 @@ namespace umi3d.edk.collaboration
                     }
                     finished2 = true;
                 }
-                catch(Exception ex)
+                catch (Exception ex)
                 {
                     UnityEngine.Debug.LogException(ex);
                     Return404(e.Response, "Internal Error");
                     finished2 = true;
                 }
-                }
-            
+            }
+
             );
             while (!finished2) System.Threading.Thread.Sleep(1);
         }
