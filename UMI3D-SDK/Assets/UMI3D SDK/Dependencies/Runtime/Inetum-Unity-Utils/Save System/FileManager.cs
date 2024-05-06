@@ -98,5 +98,16 @@ namespace inetum.unityUtils.saveSystem
 
             return true;
         }
+
+        /// <summary>
+        /// Whether a file exist at <paramref name="fileName"/>.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        public static bool Exists(string fileName)
+        {
+            var fullPath = InetumPath.Combine(Application.persistentDataPath, fileName);
+            return File.Exists(fullPath);
+        }
     }
 }
