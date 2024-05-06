@@ -512,7 +512,7 @@ namespace umi3d.edk.collaboration
 
         public async Task RefreshEnvironmentDto()
         {
-            UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
+            UMI3DLogger.Log($"Refresh Environment Dto", scope | DebugScope.Connection);
             environement = await HttpClient.SendGetEnvironment();
 
         }
