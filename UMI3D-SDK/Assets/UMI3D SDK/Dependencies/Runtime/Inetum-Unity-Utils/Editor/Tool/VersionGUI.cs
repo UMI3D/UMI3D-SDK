@@ -17,7 +17,6 @@ limitations under the License.
 #if UNITY_EDITOR
 namespace inetum.unityUtils.editor
 {
-    using MathNet.Numerics.Distributions;
     using System;
     using System.Globalization;
     using System.IO;
