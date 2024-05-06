@@ -474,7 +474,7 @@ namespace umi3d.edk.collaboration
             UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
             isJoinning = true;
 
-           // PoseManager.Instance.InitLocalPoses();
+            // PoseManager.Instance.InitLocalPoses();
             var joinDto = new JoinDto()
             {
                 clientLocalPoses = new(),
@@ -508,6 +508,13 @@ namespace umi3d.edk.collaboration
             environement = await HttpClient.SendGetEnvironment();
             UserDto.answerDto.status = statusToBeSet;
             await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
+        }
+
+        public async Task RefreshEnvironmentDto()
+        {
+            UMI3DLogger.Log($"Refresh Environment Dto", scope | DebugScope.Connection);
+            environement = await HttpClient.SendGetEnvironment();
+
         }
 
         /// <summary>

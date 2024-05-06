@@ -43,6 +43,10 @@ namespace umi3d.edk
             return userId;
         }
 
+        /// <summary>
+        /// Use by the Server to check if a refresh event should be risen
+        /// </summary>
+        public bool HasAlreadyGotTheEnvironmentDtoOnce = false;
 
         #endregion
 
@@ -56,7 +60,7 @@ namespace umi3d.edk
         /// Does the user have an immersive display on their device.
         /// </summary>
         public bool HasHeadMountedDisplay { get; protected set; } = true;
-        
+
         /// <summary>
         /// UMI3D status of the object. 
         /// </summary>

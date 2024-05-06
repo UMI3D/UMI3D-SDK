@@ -7,7 +7,7 @@ Shader "UMI3D/UMI3D_default"
 		[HideInInspector] _AlphaCutoff("Alpha Cutoff ", Range(0, 1)) = 0.5
 		[ASEBegin]_Tilling("Tilling", Vector) = (1,1,0,0)
 		_Offset("Offset", Vector) = (0,0,0,0)
-		_BaseMap("Albedo Map", 2D) = "white" {}
+		[MainTexture]_BaseMap("Albedo Map", 2D) = "white" {}
 		[MainColor]_BaseColor("Albedo Color", Color) = (0,0,0,0)
 		_EmissionMap("Emissive Map", 2D) = "white" {}
 		[HDR]_EmissionColor("Emissive Color", Color) = (0,0,0,0)

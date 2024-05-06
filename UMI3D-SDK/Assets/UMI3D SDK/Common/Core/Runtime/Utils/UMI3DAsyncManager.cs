@@ -31,9 +31,9 @@ public static class UMI3DAsyncManager
     /// Similar to <see cref="Task.Yield()"/> with security if the app is quitted in the meanwhile.
     /// </summary>
     /// <returns></returns>
-    public static async Task Yield(List<CancellationToken> tokens = null)
+    public static async Task Yield(List<CancellationToken> tokens = null, bool isMainThread = true)
     {
-        ErrorIfQuitting(tokens);
+        ErrorIfQuitting(tokens, isMainThread);
         await Task.Yield();
     }
 
@@ -42,11 +42,11 @@ public static class UMI3DAsyncManager
     /// </summary>
     /// <param name="milliseconds"></param>
     /// <returns></returns>
-    public static async Task Delay(int milliseconds, List<CancellationToken> tokens = null)
+    public static async Task Delay(int milliseconds, List<CancellationToken> tokens = null, bool isMainThread = true)
     {
-        ErrorIfQuitting(tokens);
+        ErrorIfQuitting(tokens, isMainThread);
         await Task.Delay(milliseconds);
-        ErrorIfQuitting(tokens);
+        ErrorIfQuitting(tokens, isMainThread);
 
     }
 
@@ -57,7 +57,7 @@ public static class UMI3DAsyncManager
                 token.ThrowIfCancellationRequested();
     }
 
-    private static void ErrorIfQuitting(List<CancellationToken> tokens)
+    private static void ErrorIfQuitting(List<CancellationToken> tokens, bool isMainThread = true)
     {
 #if UNITY_2022_1_OR_NEWER
             UnityEngine.Debug.LogError("Add Application.exitToken");
@@ -69,7 +69,7 @@ public static class UMI3DAsyncManager
     #if UNITY_EDITOR
             try
             {
-                if (!Application.isPlaying)
+                if (isMainThread && !Application.isPlaying)
                 {
                     throw new UMI3DAsyncManagerException("Application is not playing");
                 }
