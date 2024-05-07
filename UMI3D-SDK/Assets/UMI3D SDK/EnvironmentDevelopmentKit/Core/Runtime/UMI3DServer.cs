@@ -145,7 +145,7 @@ namespace umi3d.edk
         /// <param name="user"></param>
         public virtual void NotifyUserRefreshed(UMI3DUser user)
         {
-            OnUserRegistered.Invoke(user);
+            OnUserRefreshed.Invoke(user);
         }
 
         /// <summary>

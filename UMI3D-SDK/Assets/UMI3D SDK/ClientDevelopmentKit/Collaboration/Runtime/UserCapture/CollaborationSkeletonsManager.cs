@@ -322,7 +322,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
             if (!Skeletons.TryGetValue((frame.environmentId, frame.userId), out ISkeleton skeleton))
             {
-                UMI3DLogger.LogWarning($"Skeleton of user {frame.userId} not found. Cannot apply skeleton frame update.", scope);
+                UMI3DLogger.LogWarning($"Skeleton of user {frame.userId} not found. Cannot apply skeleton frame update. [environmentId : {frame.environmentId}]", scope);
                 return;
             }
 

@@ -105,8 +105,9 @@ namespace MrtkShader
                 m.color = v;
                 //m.SetColor(s.propertyName, v);
                 //If color is not applied properly :
-                //Check in the shader if the 'MainColor' attribute is set to the main color of the shader in the shader file :
+                //Check in the shader if the 'MainColor' and 'MainTexture' attribute is set to the main color and main texture of the shader in the shader file :
                 //[MainColor] _BaseColor
+                //[MainTexture] _AlbedoTexture
 
                 if (v.a < 1)
                     SetMaterialTransparent(m);
