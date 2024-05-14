@@ -20,7 +20,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Security.Policy;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using umi3d.common;
@@ -206,6 +205,7 @@ namespace umi3d.cdk
             /// url of the object.
             /// </summary>
             public string url;
+            public string comSplit;
             public string fileRelativePath;
 
             /// <summary>
@@ -254,10 +254,13 @@ namespace umi3d.cdk
             /// </summary>
             /// <param name="url">Url to match.</param>
             /// <returns></returns>
-            public bool MatchUrl(Match Matchurl, string url, Library? library = null)
+            public bool MatchUrl(Match Matchurl, string url, string comSplit, Library? library = null)
             {
                 url = url.Replace("\\", "/").Replace("%20", " ");
                 if (url == this.url && (library == null || libraryIds.Any(lib => lib == library)))
+                    return true;
+
+                if (this.comSplit == comSplit)
                     return true;
 
                 if (a.Success && Matchurl.Success)
@@ -297,8 +300,8 @@ namespace umi3d.cdk
 
                     Match b = rx.Match(url);
                     if (a.Success && b.Success)
-                        if (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value 
-                            && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count) 
+                        if (a.Groups[1].Captures[0].Value == b.Groups[1].Captures[0].Value
+                            && (a.Groups[2].Captures.Count == b.Groups[2].Captures.Count)
                             && (a.Groups[2].Captures.Count == 0 || a.Groups[2].Captures[0].Value == b.Groups[2].Captures[0].Value))
                             return true;
                 }
@@ -318,6 +321,15 @@ namespace umi3d.cdk
                 return "Basic" + System.Convert.ToBase64String(System.Text.Encoding.GetEncoding("ISO-8859-1").GetBytes(authorization));
             }
 
+            public static string FormatUrl(string url)
+            {
+                return url.Replace("\\", "/").Replace("%20", " ");
+            }
+
+            public static string UrlToCom(string url)
+            {
+                return url.Split("/com.").Last();
+            }
 
             public ObjectData(string url, object value, HashSet<ulong> entityId)
             {
@@ -326,8 +338,10 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.Loaded;
                 downloadedPath = null;
-                this.url = url.Replace("\\","/").Replace("%20"," ");
+                this.url = FormatUrl(url);
                 a = rx.Match(url);
+
+                this.comSplit = UrlToCom(this.url);
             }
 
             public ObjectData(string url, object value, ulong entityId)
@@ -337,8 +351,9 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.Loaded;
                 downloadedPath = null;
-                this.url = url.Replace("\\", "/").Replace("%20", " ");
+                this.url = FormatUrl(url);
                 a = rx.Match(url);
+                this.comSplit = UrlToCom(this.url);
             }
 
             public ObjectData(string url, string extension, string authorization, HashSet<ulong> entityId)
@@ -348,10 +363,12 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
-                this.url = url.Replace("\\", "/").Replace("%20", " ");
+                this.url = FormatUrl(url);
                 this.extension = extension;
                 a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
+
+                this.comSplit = UrlToCom(this.url);
             }
 
             public ObjectData(string url, string extension, string authorization, ulong entityId)
@@ -361,10 +378,12 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 downloadedPath = null;
-                this.url = url.Replace("\\", "/").Replace("%20", " ");
+                this.url = FormatUrl(url);
                 this.extension = extension;
                 a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
+
+                this.comSplit = UrlToCom(this.url);
             }
 
             public ObjectData(string url, string extension, string authorization, ulong entityId, Library library)
@@ -374,10 +393,12 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>() { library };
                 state = Estate.NotLoaded;
                 downloadedPath = null;
-                this.url = url.Replace("\\", "/").Replace("%20", " ");
+                this.url = FormatUrl(url);
                 this.extension = extension;
                 a = rx.Match(url);
                 this.authorization = ComputeAuthorization(authorization);
+
+                this.comSplit = UrlToCom(this.url);
             }
 
             public ObjectData(string url, string extension, string authorization, Library library, string downloadedPath, string fileRelativePath)
@@ -387,11 +408,13 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>() { library };
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
-                this.url = url.Replace("\\", "/").Replace("%20", " ");
+                this.url = FormatUrl(url);
                 this.extension = extension;
                 this.authorization = authorization;
                 a = rx.Match(url);
                 this.fileRelativePath = fileRelativePath;
+
+                this.comSplit = UrlToCom(this.url);
             }
 
             public ObjectData(string url, string extension, string authorization, ulong entityId, string downloadedPath)
@@ -401,10 +424,12 @@ namespace umi3d.cdk
                 libraryIds = new HashSet<Library>();
                 state = Estate.NotLoaded;
                 this.downloadedPath = downloadedPath;
-                this.url = url.Replace("\\", "/").Replace("%20", " ");
+                this.url = FormatUrl(url);
                 this.extension = extension;
                 this.authorization = authorization;
                 a = rx.Match(url);
+
+                this.comSplit = UrlToCom(this.url);
             }
         }
 
@@ -438,8 +463,10 @@ namespace umi3d.cdk
 
         public static bool ClearCache(string VariantUrl, Library? LibraryId = null)
         {
+            VariantUrl = ObjectData.FormatUrl(VariantUrl);
             Match matchUrl = ObjectData.rx.Match(VariantUrl);
-            return VariantUrl != null && Exists && Instance.ClearCache(ob => ob.MatchUrl(matchUrl, VariantUrl, LibraryId));
+            var sp = ObjectData.UrlToCom(VariantUrl);
+            return VariantUrl != null && Exists && Instance.ClearCache(ob => ob.MatchUrl(matchUrl, VariantUrl, sp, LibraryId));
         }
 
         private bool ClearCache(Func<ObjectData, bool> predicate)
@@ -549,10 +576,14 @@ namespace umi3d.cdk
                             all = false;
                             foreach (Data file in data.files)
                             {
-                                Match matchUrl = ObjectData.rx.Match(file.url);
+                                var url = ObjectData.FormatUrl(file.url);
+                                var sp = ObjectData.UrlToCom(url);
+                                Match matchUrl = ObjectData.rx.Match(url);
+
+
                                 ObjectData objectData = CacheCollection.Find((o) =>
                                 {
-                                    return o.MatchUrl(matchUrl, file.url, data.library);
+                                    return o.MatchUrl(matchUrl, url, sp, data.library);
                                 });
                                 if (objectData != null)
                                     objectData.downloadedPath = file.path;
@@ -793,14 +824,15 @@ namespace umi3d.cdk
 
         public async Task<object> _LoadFile(ulong id, FileDto file, IResourcesLoader loader)
         {
-            file.url = file.url.Replace("\\", "/").Replace("%20", " ");
+            file.url = ObjectData.FormatUrl(file.url);
+            var sp = ObjectData.UrlToCom(file.url);
             string fileName = System.IO.Path.GetFileName(file.url);
             var library = Library.GetLibrary(file.libraryKey);
             Match matchUrl = ObjectData.rx.Match(file.url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
 
-                return o.MatchUrl(matchUrl, file.url, library);
+                return o.MatchUrl(matchUrl, file.url, sp, library);
             });
 
             if (objectData == null)
@@ -813,11 +845,13 @@ namespace umi3d.cdk
 
         private string GetFilePath(string url, Library? library = null)
         {
+            url = ObjectData.FormatUrl(url);
+            var sp = ObjectData.UrlToCom(url);
             Match matchUrl = ObjectData.rx.Match(url);
 
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, url, library);
+                return o.MatchUrl(matchUrl, url, sp, library);
             });
 
             if (objectData != null && objectData.downloadedPath != null)
@@ -833,10 +867,12 @@ namespace umi3d.cdk
         public static async Task<byte[]> GetFile(string url, Library? library = null)
         {
             //ObjectData objectData = Instance.CacheCollection.Find((o) => { return o.MatchUrl(url, libraryKey); });
+            url = ObjectData.FormatUrl(url);
+            var sp = ObjectData.UrlToCom(url);
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = Instance.CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, url, library);
+                return o.MatchUrl(matchUrl, url, sp, library);
             });
 
             if (objectData != null && objectData.downloadedPath != null)
@@ -1084,10 +1120,12 @@ namespace umi3d.cdk
 
         private async Task DownloadFile(Library key, string directoryPath, string filePath, string url, string fileRelativePath, bool force = false)
         {
+            url = ObjectData.FormatUrl(url);
+            var sp = ObjectData.UrlToCom(url);
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = force ? null : CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, url, key);
+                return o.MatchUrl(matchUrl, url, sp, key);
             });
 
             if (objectData != null)
@@ -1117,10 +1155,12 @@ namespace umi3d.cdk
 
         private void UnloadFile(string url, Library id, bool delete = false)
         {
+            url = ObjectData.FormatUrl(url);
+            var sp = ObjectData.UrlToCom(url);
             Match matchUrl = ObjectData.rx.Match(url);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, url, id);
+                return o.MatchUrl(matchUrl, url, sp, id);
             });
             if (objectData != null)
             {
@@ -1252,10 +1292,12 @@ namespace umi3d.cdk
         private string FindMatchingObjectDataUrl(string fileUrl, string libraryKey)
         {
             var library = Library.GetLibrary(libraryKey);
+            fileUrl = ObjectData.FormatUrl(fileUrl);
+            var sp = ObjectData.UrlToCom(fileUrl);
             Match matchUrl = ObjectData.rx.Match(fileUrl);
             ObjectData objectData = CacheCollection.Find((o) =>
             {
-                return o.MatchUrl(matchUrl, fileUrl, library);
+                return o.MatchUrl(matchUrl, fileUrl, sp, library);
             });
 
             return (objectData != null) ? objectData.url : fileUrl;
@@ -1279,10 +1321,12 @@ namespace umi3d.cdk
             }
             else
             {
+                fileUrl = ObjectData.FormatUrl(fileUrl);
+                var sp = ObjectData.UrlToCom(fileUrl);
                 Match matchUrl = ObjectData.rx.Match(fileUrl);
                 ObjectData objectData = CacheCollection.Find((o) =>
                 {
-                    return o.MatchUrl(matchUrl, fileUrl);
+                    return o.MatchUrl(matchUrl, fileUrl, sp);
                 });
 
                 if (objectData == null)
