@@ -15,9 +15,9 @@ limitations under the License.
 */
 
 using NUnit.Framework;
-using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.tracking.constraint;
 using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.tracking.constraint;
 using UnityEngine;
@@ -28,7 +28,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.Constraint.CDK
     public class BoneBoneConstraint_Test : AbstractBoneConstraint_Test
     {
         private BoneBoneConstraint boneBoneConstraint;
-        private ISkeleton.Transformation boneTransformation;
+        private PureTransformation boneTransformation;
 
         #region Test SetUp
 

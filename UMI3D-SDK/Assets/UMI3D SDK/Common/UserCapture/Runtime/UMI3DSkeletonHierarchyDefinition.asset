@@ -178,3 +178,32 @@ MonoBehaviour:
   - Bonetype: 2
     BonetypeParent: 3
     RelativePosition: {x: 0.02944481, y: 0.07681751, z: 0.09120493}
+  _muscles:
+  - Bonetype: 12
+    ReferenceFrameRotation: {x: 0, y: 0, z: 0, w: 1}
+    XRotationRestriction:
+      isRestricted: 1
+      min: -40
+      max: 40
+    YRotationRestriction:
+      isRestricted: 1
+      min: -40
+      max: 40
+    ZRotationRestriction:
+      isRestricted: 1
+      min: -40
+      max: 40
+  - Bonetype: 3
+    ReferenceFrameRotation: {x: 0, y: 0, z: 0, w: 1}
+    XRotationRestriction:
+      isRestricted: 1
+      min: -40
+      max: 40
+    YRotationRestriction:
+      isRestricted: 1
+      min: -40
+      max: 40
+    ZRotationRestriction:
+      isRestricted: 1
+      min: -40
+      max: 40

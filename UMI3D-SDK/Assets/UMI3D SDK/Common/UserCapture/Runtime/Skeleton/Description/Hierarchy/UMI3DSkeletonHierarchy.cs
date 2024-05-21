@@ -29,7 +29,7 @@ namespace umi3d.common.userCapture.description
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
 
-        public UMI3DSkeletonHierarchy(IUMI3DSkeletonHierarchyDefinition definition)
+        public UMI3DSkeletonHierarchy(IUMI3DSkeletonHierarchyDefinition definition, IUMI3DSkeletonMusclesDefinition musclesDefinition = null)
         {
             if (definition == null || definition.Relations.Count == 0) //empty hierarchy has at least a hips
             {
@@ -45,6 +45,15 @@ namespace umi3d.common.userCapture.description
             // create hierarchy of nodes
             root = CreateHierarchyNode(BoneType.None, rootBoneType, relationGroupings[rootBoneType]);
             relations.Add(rootBoneType, root);
+
+            muscles = new();
+            foreach (var muscle in musclesDefinition?.Muscles ?? new())
+            {
+                if (muscles.ContainsKey(muscle.Bonetype))
+                    continue;
+
+                muscles.Add(muscle.Bonetype, muscle);
+            }
 
             UMI3DSkeletonHierarchyNode CreateHierarchyNode(uint parentBoneType, uint boneType, List<BoneRelation> relationGroup)
             {
@@ -134,6 +143,10 @@ namespace umi3d.common.userCapture.description
         /// UMI3D hierarchy nodes, indexed by bone types.
         /// </summary>
         public IReadOnlyDictionary<uint, UMI3DSkeletonHierarchyNode> Relations => relations;
+
+        private readonly Dictionary<uint, IUMI3DSkeletonMusclesDefinition.Muscle> muscles = new();
+        public IReadOnlyDictionary<uint, IUMI3DSkeletonMusclesDefinition.Muscle> Muscles => muscles;
+
 
         private UMI3DSkeletonHierarchyNode root;
         public UMI3DSkeletonHierarchyNode Root => root;
@@ -286,6 +299,38 @@ namespace umi3d.common.userCapture.description
         public uint GetHighestBone(IEnumerable<uint> bones)
         {
             return bones.OrderBy(x=>x, hierarchicalComparer).LastOrDefault();
+        }
+
+        public uint GetHighestBone(params uint[] bones)
+        {
+            return GetHighestBone(bones);
+        }
+
+        /// <summary>
+        /// Recursive action applied on all children.
+        /// </summary>
+        /// <param name="action">Action to perform on each bone. Cannot be null.</param>
+        /// <param name="startBone">Bone from where to start recursive descending application. Cannot be None bone type.</param>
+        public void Apply(System.Action<uint> action, uint startBone = BoneType.Hips)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            if (startBone is BoneType.None || !Relations.ContainsKey(startBone))
+                return;
+
+            Recurse(startBone);
+
+            // recursive on the hierarchy
+            void Recurse(uint bone)
+            {
+                action(bone);
+
+                foreach (var hierarchyNode in Relations[bone].children ?? new())
+                {
+                    Recurse(hierarchyNode.boneType);
+                }
+            }
         }
     }
 }

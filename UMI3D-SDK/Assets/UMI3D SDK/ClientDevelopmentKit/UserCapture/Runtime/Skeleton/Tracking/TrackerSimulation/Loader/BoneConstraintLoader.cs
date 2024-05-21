@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture.tracking.constraint;
 
 namespace umi3d.cdk.userCapture.tracking.constraint
@@ -78,7 +79,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
                     }
                 case BoneBoneConstraintDto boneBoneConstraintDto:
                     {
-                        if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(boneBoneConstraintDto.ConstrainingBone, out ISkeleton.Transformation boneReference))
+                        if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(boneBoneConstraintDto.ConstrainingBone, out ITransformation boneReference))
                         {
                             await Task.Run(() => UMI3DLogger.LogWarning($"Bone {boneBoneConstraintDto.ConstrainingBone} not found for applying BoneBone constraint.", DEBUG_SCOPE));
                             break;
@@ -220,7 +221,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             if (!environmentService.TryGetEntity(environmentId, entityId, out BoneBoneConstraint boneConstraint))
                 return;
 
-            if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(bone, out ISkeleton.Transformation boneReference))
+            if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(bone, out ITransformation boneReference))
                 return;
 
             boneConstraint.ConstrainingBoneTransform = boneReference;

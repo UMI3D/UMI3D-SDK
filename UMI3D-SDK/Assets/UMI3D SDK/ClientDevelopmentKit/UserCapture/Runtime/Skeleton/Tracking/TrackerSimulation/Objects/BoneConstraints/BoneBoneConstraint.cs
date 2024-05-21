@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture.tracking.constraint;
 using UnityEngine;
 
@@ -22,11 +23,11 @@ namespace umi3d.cdk.userCapture.tracking.constraint
 {
     public class BoneBoneConstraint : AbstractBoneConstraint
     {
-        public ISkeleton.Transformation ConstrainingBoneTransform { get; internal set; }
+        public ITransformation ConstrainingBoneTransform { get; internal set; }
 
         public uint ConstrainingBone { get; internal set; }
 
-        public BoneBoneConstraint(BoneBoneConstraintDto dto, ISkeleton.Transformation bone) : base(dto)
+        public BoneBoneConstraint(BoneBoneConstraintDto dto, ITransformation bone) : base(dto)
         {
             ConstrainingBone = dto.ConstrainingBone;
             ConstrainingBoneTransform = bone;

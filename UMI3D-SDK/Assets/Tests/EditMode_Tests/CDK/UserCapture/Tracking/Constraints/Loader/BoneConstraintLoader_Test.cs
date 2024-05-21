@@ -24,6 +24,7 @@ using umi3d.cdk;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.tracking.constraint;
 using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.tracking.constraint;
 using UnityEngine;
@@ -136,7 +137,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
             };
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { dto.ConstrainingBone, new() } });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { dto.ConstrainingBone, new PureTransformation() } });
 
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
@@ -356,7 +357,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
                 RotationOffset = Quaternion.Euler(Vector3.one).Dto()
             };
 
-            BoneBoneConstraint boneBoneConstraint = new(dto, new());
+            BoneBoneConstraint boneBoneConstraint = new(dto, new PureTransformation());
 
             UMI3DEntityInstance entityInstance = new(environmentId, () => { }, boneBoneConstraint.Id)
             {
@@ -369,7 +370,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
             environmentServiceMock.Setup(x => x.TryGetEntity(environmentId, boneBoneConstraint.Id, out boneBoneConstraint)).Returns(true);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { value, new() } });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { value, new PureTransformation() } });
 
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 

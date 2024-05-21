@@ -69,7 +69,8 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             get
             {
-                _standardHierarchy ??= new UMI3DSkeletonHierarchy((collaborativeLoaderService.AbstractLoadingParameters as IUMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
+                var userCaptureLoadingParameters = (IUMI3DUserCaptureLoadingParameters)collaborativeLoaderService.AbstractLoadingParameters;
+                _standardHierarchy ??= new UMI3DSkeletonHierarchy(userCaptureLoadingParameters.SkeletonHierarchyDefinition, userCaptureLoadingParameters.SkeletonMusclesDefinition);
                 return _standardHierarchy;
             }
         }
@@ -176,26 +177,20 @@ namespace umi3d.cdk.collaboration.userCapture
         {
             try
             {
-                List<(ulong, ulong)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
+                List<(ulong EnvironmentId, ulong id)> readyUserIdList = users.Where(u => u.status >= StatusType.READY).Select(u => (u.EnvironmentId, u.id)).ToList();
                 readyUserIdList.Remove((UMI3DGlobalID.EnvironmentId, collaborationClientServerService.GetUserId()));
 
-                var joinedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
-                var deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();
+                List<(ulong EnvironmentId, ulong id)> joinedUsersId = readyUserIdList.Except(Skeletons.Keys).ToList();
+                List<(ulong EnvironmentId, ulong id)> deletedUsersId = Skeletons.Keys.Except(readyUserIdList).ToList();
 
                 foreach (var userId in deletedUsersId)
-                {
-                    if (Skeletons.TryGetValue(userId, out var skeleton) && skeleton is CollaborativeSkeleton collabSkeleton)
-                    {
-                        UnityEngine.Object.Destroy(collabSkeleton.gameObject);
-                        skeletons.Remove(userId);
-                    }
-                }
+                    DestroySkeleton(userId);
 
                 foreach (var userId in joinedUsersId)
                 {
-                    if (userId.Item1 != 0 || userId.Item2 != collaborationClientServerService.GetUserId())
+                    if (userId.EnvironmentId != default || userId.id != collaborationClientServerService.GetUserId())
                     {
-                        CreateSkeleton(userId.Item1, userId.Item2, CollabSkeletonsScene.transform, StandardHierarchy);
+                        CreateSkeleton(userId.EnvironmentId, userId.id, CollabSkeletonsScene.transform, StandardHierarchy);
                     }
                 }
             }
@@ -232,15 +227,6 @@ namespace umi3d.cdk.collaboration.userCapture
 
             cs.Init(trackedSkeleton, poseSkeleton);
 
-            // consider all bones we should have according to the hierarchy, and set all values to identity
-            foreach (var bone in skeletonHierarchy.Relations.Keys)
-            {
-                if (cs.Bones.ContainsKey(bone))
-                    cs.Bones[bone].Rotation = Quaternion.identity;
-                else
-                    cs.Bones[bone] = new ISkeleton.Transformation() { Rotation = Quaternion.identity };
-            }
-
             skeletons[(environmentId, userId)] = cs;
             CollaborativeSkeletonCreated?.Invoke(userId);
             return cs;
@@ -274,6 +260,17 @@ namespace umi3d.cdk.collaboration.userCapture
 
             return skeleton;
         }
+
+        public virtual void DestroySkeleton((ulong environmentId, ulong userId) userIdentifier)
+        {
+            if (!Skeletons.TryGetValue(userIdentifier, out var skeleton) 
+                || skeleton is not CollaborativeSkeleton collabSkeleton)
+                return;
+
+            UnityEngine.Object.Destroy(collabSkeleton.gameObject);
+            skeletons.Remove(userIdentifier);
+        }
+
 
         #endregion LifeCycle
 

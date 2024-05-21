@@ -49,7 +49,8 @@ namespace umi3d.cdk.userCapture
         {
             get
             {
-                _standardHierarchy ??= new UMI3DSkeletonHierarchy((environmentLoaderService.AbstractLoadingParameters as UMI3DUserCaptureLoadingParameters).SkeletonHierarchyDefinition);
+                var userCaptureLoadingParameters = (IUMI3DUserCaptureLoadingParameters)environmentLoaderService.AbstractLoadingParameters;
+                _standardHierarchy ??= new UMI3DSkeletonHierarchy(userCaptureLoadingParameters.SkeletonHierarchyDefinition, userCaptureLoadingParameters.SkeletonMusclesDefinition);
                 return _standardHierarchy;
             }
         }

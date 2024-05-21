@@ -29,6 +29,7 @@ using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
 using UnityEngine.SocialPlatforms.GameCenter;
 using UnityEngine;
+using umi3d.common.core;
 
 namespace PlayMode_Tests.UserCapture.Binding.CDK
 {
@@ -98,7 +99,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new() } });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { targetBoneType, new PureTransformation() } });
 
             loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
             environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
@@ -140,7 +141,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ISkeleton.Transformation>() { { targetBoneType, new()} });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { targetBoneType, new PureTransformation()} });
 
             loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
             environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
