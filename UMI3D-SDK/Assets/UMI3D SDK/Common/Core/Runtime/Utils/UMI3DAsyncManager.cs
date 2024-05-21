@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using System;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -31,24 +32,36 @@ public static class UMI3DAsyncManager
     /// Similar to <see cref="Task.Yield()"/> with security if the app is quitted in the meanwhile.
     /// </summary>
     /// <returns></returns>
-    public static async Task Yield(List<CancellationToken> tokens = null, bool isMainThread = true)
+    public static async Task Yield(List<CancellationToken> tokens, bool isMainThread)
     {
         ErrorIfQuitting(tokens, isMainThread);
         await Task.Yield();
     }
+
+    public static async Task Yield(List<CancellationToken> tokens = null)
+    {
+        await Yield(tokens, true);
+    }
+
 
     /// <summary>
     /// Similar to <see cref="Task.Delay(int)"/> with security if the app is quitted in the meanwhile.
     /// </summary>
     /// <param name="milliseconds"></param>
     /// <returns></returns>
-    public static async Task Delay(int milliseconds, List<CancellationToken> tokens = null, bool isMainThread = true)
+    public static async Task Delay(int milliseconds, List<CancellationToken> tokens, bool isMainThread)
     {
         ErrorIfQuitting(tokens, isMainThread);
         await Task.Delay(milliseconds);
         ErrorIfQuitting(tokens, isMainThread);
 
     }
+
+    public static async Task Delay(int milliseconds, List<CancellationToken> tokens = null)
+    {
+        await Delay(milliseconds, tokens, true);
+    }
+
 
     public static void TestTokens(this List<CancellationToken> tokens)
     {
@@ -59,7 +72,7 @@ public static class UMI3DAsyncManager
 
     private static void ErrorIfQuitting(List<CancellationToken> tokens, bool isMainThread = true)
     {
-#if UNITY_2022_1_OR_NEWER
+#if false && UNITY_2022_1_OR_NEWER
             UnityEngine.Debug.LogError("Add Application.exitToken");
             if (QuittingManager.ApplicationIsQuitting)
                 throw new UMI3DAsyncManagerException("Application is quitting");
