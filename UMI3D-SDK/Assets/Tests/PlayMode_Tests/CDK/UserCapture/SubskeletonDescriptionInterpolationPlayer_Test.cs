@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using System.Linq;
 using TestUtils.UserCapture;
 using umi3d.cdk.userCapture;
+using umi3d.common.core;
 using umi3d.common.userCapture.description;
 using UnityEngine;
 using UnityEngine.TestTools;
@@ -54,7 +55,7 @@ namespace PlayMode_Tests.UserCapture.CDK
             mockDescriptor = new();
             mockDescriptor.Setup(x => x.GetPose(It.IsAny<UMI3DSkeletonHierarchy>())).Returns(pose);
 
-            mockSkeleton.Setup(x => x.Bones).Returns(bones.ToDictionary(x => x.boneType, y => new ISkeleton.Transformation() { LocalRotation = Quaternion.identity, Position = Vector3.zero, Rotation = Quaternion.identity }));
+            mockSkeleton.Setup(x => x.Bones).Returns(bones.ToDictionary(x => x.boneType, y => (ITransformation)new PureTransformation() { LocalRotation = Quaternion.identity, Position = Vector3.zero, Rotation = Quaternion.identity }));
 
             player = new(mockDescriptor.Object, true, mockSkeleton.Object);
         }

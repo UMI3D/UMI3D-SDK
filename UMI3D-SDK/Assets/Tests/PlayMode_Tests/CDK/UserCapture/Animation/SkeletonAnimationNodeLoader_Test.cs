@@ -160,6 +160,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
         public void ReadUMI3DExtension_SkeletonAnimatioNode_WithoutSkeletonMapper_NoAvatar()
         {
             // GIVEN
+            ulong environmentId = UMI3DGlobalID.EnvironmentId;
             var dto = new SkeletonAnimationNodeDto()
             {
                 id = 1005uL,
@@ -176,13 +177,13 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             glTFNodeDto.extensions = new GlTFNodeExtensions();
             glTFNodeDto.extensions.umi3d = dto;
 
-            var instance = new UMI3DNodeInstance(UMI3DGlobalID.EnvironmentId, () => { })
+            var instance = new UMI3DNodeInstance(environmentId, () => { })
             {
                 dto = glTFNodeDto,
                 gameObject = skeletonNodeGo
             };
 
-            environmentManagerMock.Setup(x => x.GetNodeInstance(UMI3DGlobalID.EnvironmentId, dto.id)).Returns(instance);
+            environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.id)).Returns(instance);
             personnalSkeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeleton);
             var loadingParametersMock = new Mock<IUMI3DUserCaptureLoadingParameters>();
             loadingManagerMock.Setup(x => x.AbstractLoadingParameters).Returns(loadingParametersMock.Object);
@@ -191,13 +192,13 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             clientServerMock.Setup(x => x.OnLeavingEnvironment).Returns(new UnityEvent());
             loadingParametersMock.Setup(x => x.SelectLoader(It.IsAny<string>())).Returns(new ObjMeshDtoLoader());
 
-            var data = new ReadUMI3DExtensionData(UMI3DGlobalID.EnvironmentId, dto) { node = skeletonNodeGo };
+            var data = new ReadUMI3DExtensionData(environmentId, dto) { node = skeletonNodeGo };
 
             // WHEN
             Task.Run(() => skeletonAnimationNodeLoader.ReadUMI3DExtension(data)).Wait();
 
             // THEN
-            environmentManagerMock.Verify(x => x.GetNodeInstance(UMI3DGlobalID.EnvironmentId, dto.id));
+            environmentManagerMock.Verify(x => x.GetNodeInstance(environmentId, dto.id));
             personnalSkeletonServiceMock.Verify(x => x.PersonalSkeleton, Times.Never());
         }
 

@@ -21,6 +21,7 @@ using System.Collections.Generic;
 using TestUtils;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.binding;
+using umi3d.common.core;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.binding;
 using UnityEngine;
@@ -98,9 +99,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
+            var skeletonBones = new Dictionary<uint, ITransformation>()
             {
-                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+                { boneType, new PureTransformation() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -135,9 +136,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
+            var skeletonBones = new Dictionary<uint, ITransformation>()
             {
-                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+                { boneType, new PureTransformation() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -190,9 +191,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
+            var skeletonBones = new Dictionary<uint, ITransformation>()
             {
-                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+                { boneType, new PureTransformation() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -226,9 +227,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
+            var skeletonBones = new Dictionary<uint, ITransformation>()
             {
-                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+                { boneType, new PureTransformation() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -279,9 +280,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
+            var skeletonBones = new Dictionary<uint, ITransformation>()
             {
-                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+                { boneType, new PureTransformation() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
@@ -316,9 +317,9 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
             var skeletonBoneMock = new Mock<ISkeleton>();
 
-            var skeletonBones = new Dictionary<uint, ISkeleton.Transformation>()
+            var skeletonBones = new Dictionary<uint, ITransformation>()
             {
-                { boneType, new() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+                { boneType, new PureTransformation() { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
             };
 
             skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);

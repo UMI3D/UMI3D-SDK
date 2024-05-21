@@ -17,6 +17,7 @@ limitations under the License.
 using umi3d.cdk.binding;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture.binding;
 using UnityEngine;
 
@@ -67,20 +68,22 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            ISkeleton.Transformation parentBone;
+            ITransformation parentBone;
 
             if (!BindToController)
             {
                 parentBone = skeleton.Bones[BoneType];
             }
-            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller) && controller is DistantController)
+            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller) && controller is DistantController dc)
             {
-                parentBone = new()
+                GameObject go = new GameObject("Distant Controller");
+                parentBone = new UnityTransformation(go.transform)
                 {
                     Position = controller.position,
                     Rotation = controller.rotation,
                     Scale = controller.scale
                 };
+                dc.Destroyed += () => UnityEngine.Object.Destroy(go);
             }
             else
             {

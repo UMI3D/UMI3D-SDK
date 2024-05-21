@@ -34,6 +34,7 @@ namespace umi3d.cdk.userCapture
         [SerializeField, Tooltip("Hierarchy definition used to instantiate users' skeletons.")]
         private UMI3DSkeletonHierarchyDefinition skeletonHierarchyDefinition;
         public IUMI3DSkeletonHierarchyDefinition SkeletonHierarchyDefinition => skeletonHierarchyDefinition;
+        public IUMI3DSkeletonMusclesDefinition SkeletonMusclesDefinition => skeletonHierarchyDefinition;
 
         [Header("Poses")]
         [SerializeField, Tooltip("Specific poses defined by the browser.")]

@@ -14,15 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.common.core;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
-using UnityEngine;
 
 namespace umi3d.cdk.userCapture
 {
@@ -38,7 +37,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
         /// </summary>
-        IDictionary<uint, Transformation> Bones { get; }
+        IReadOnlyDictionary<uint, ITransformation> Bones { get; }
 
         /// <summary>
         /// Subskeletons that compose the final skeleton.
@@ -100,17 +99,5 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="subskeleton"></param>
         void RemoveSubskeleton(IAnimatedSubskeleton subskeleton);
-
-        #region Data struture
-
-        public class Transformation
-        {
-            public Vector3 Position;
-            public Quaternion Rotation;
-            public Quaternion LocalRotation; 
-            public Vector3 Scale = Vector3.one;
-        }
-
-        #endregion Data struture
     }
 }

@@ -18,11 +18,11 @@ using Moq;
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using TestUtils.UserCapture;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using UnityEngine;
 using UnityEngine.SceneManagement;
-using UnityEngine.TestTools;
 
 namespace PlayMode_Tests.UserCapture.Description.Common
 {
@@ -85,7 +85,6 @@ namespace PlayMode_Tests.UserCapture.Description.Common
                 new() { parentBoneType = BoneType.Chest, boneType = BoneType.LeftForearm, relativePosition = Vector3.zero.Dto() }
             };
 
-
             Mock<IUMI3DSkeletonHierarchyDefinition> definition = new Mock<IUMI3DSkeletonHierarchyDefinition>();
             definition.Setup(x => x.Relations).Returns(boneRelations);
 
@@ -93,7 +92,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
             UMI3DSkeletonHierarchy hierarchy = new(definition.Object);
 
             // THEN
-            Assert.AreEqual(boneRelations.Select(x=>x.boneType).Distinct().Count(), hierarchy.Relations.Count);
+            Assert.AreEqual(boneRelations.Select(x => x.boneType).Distinct().Count(), hierarchy.Relations.Count);
         }
 
         #endregion UMI3DSkeletonHierarchy
@@ -123,7 +122,7 @@ namespace PlayMode_Tests.UserCapture.Description.Common
 
             // THEN
             Assert.AreEqual(boneRelations.Count(), hierarchyGenerated.Count());
-            
+
             foreach (var node in hierarchyGenerated)
             {
                 Assert.AreEqual(BoneTypeHelper.GetBoneName(node.Key), node.Value.name);
@@ -131,5 +130,131 @@ namespace PlayMode_Tests.UserCapture.Description.Common
         }
 
         #endregion Generate
+
+        #region Apply
+
+        /// <summary>
+        /// Given a hierarchy and an action to apply to each bone of the hierarchy strating from a bone StartBone,
+        /// when the action is null,
+        /// then an exception is thrown.
+        /// </summary>
+        [Test]
+        public void Apply_Null()
+        {
+            // given
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+
+            // when
+            TestDelegate action = () => hierarchy.Apply(null);
+
+            // then
+            Assert.Throws<System.ArgumentNullException>(action);
+        }
+
+        /// <summary>
+        /// Given a hierarchy and an action to apply to each bone of the hierarchy strating from a bone StartBone,
+        /// when application is request from root bone,
+        /// then the action is applied on all bones of the hierarchy.
+        /// </summary>
+        [Test]
+        public void Apply()
+        {
+            // given
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+
+            bool hasBeenCalled = false;
+            List<uint> bonesCalled = new();
+
+            void ToApply(uint bone)
+            {
+                hasBeenCalled = true;
+                bonesCalled.Add(bone);
+            }
+
+            // when
+            hierarchy.Apply(ToApply);
+
+            // then
+            Assert.IsTrue(hasBeenCalled);
+            Assert.IsTrue(hierarchy.Relations.Keys.ToHashSet().SetEquals(bonesCalled));
+        }
+
+        /// <summary>
+        /// Given a hierarchy and an action to apply to each bone of the hierarchy,
+        /// when application on hierarchy is requested from a bone StartBone that is a lower bone than the root bone,
+        /// then the action is applied only for the child bones of StartBone.
+        /// </summary>
+        [Test]
+        public void Apply_StartBone_OtherThanRoot()
+        {
+            // given
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+
+            bool hasBeenCalled = false;
+            List<uint> bonesCalled = new();
+
+            void ToApply(uint bone)
+            {
+                hasBeenCalled = true;
+                bonesCalled.Add(bone);
+            }
+
+            // when
+            hierarchy.Apply(ToApply, BoneType.Chest);
+
+            // then
+            Assert.IsTrue(hasBeenCalled);
+            Assert.IsTrue(hierarchy.Relations.Keys.Except(new uint[] { BoneType.Hips }).ToHashSet().SetEquals(bonesCalled));
+        }
+
+        /// <summary>
+        /// Given a hierarchy and an action to apply to each bone of the hierarchy strating from a bone StartBone,
+        /// when StartBone is None,
+        /// then the action is never called.
+        /// </summary>
+        [Test]
+        public void Apply_StartBone_None()
+        {
+            // given
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+
+            bool hasBeenCalled = false;
+            void ToApply(uint bone)
+            {
+                hasBeenCalled = true;
+            }
+
+            // when
+            hierarchy.Apply(ToApply, startBone: BoneType.None);
+
+            // then
+            Assert.IsFalse(hasBeenCalled);
+        }
+
+        /// <summary>
+        /// Given a hierarchy and an action to apply to each bone of the hierarchy strating from a bone StartBone,
+        /// when StartBone is not in the hierarchy,
+        /// then the action is never called.
+        /// </summary>
+        [Test]
+        public void Apply_StartBone_UndefinedInHierarchy()
+        {
+            // given
+            UMI3DSkeletonHierarchy hierarchy = HierarchyTestHelper.CreateTestHierarchy();
+
+            bool hasBeenCalled = false;
+            void ToApply(uint bone)
+            {
+                hasBeenCalled = true;
+            }
+
+            // when
+            hierarchy.Apply(ToApply, startBone: BoneType.RightMiddleProximal);
+
+            // then
+            Assert.IsFalse(hasBeenCalled);
+        }
+
+        #endregion Apply
     }
 }

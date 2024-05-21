@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.core;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -25,18 +26,35 @@ namespace umi3d.cdk.userCapture.tracking
     {
         public uint boneType { get; set; }
 
-        public Vector3 position { get; set; }
+        public PureTransformation Transformation { get; set; } = new();
 
-        public Quaternion rotation { get; set; }
+        public Vector3 position
+        {
+            get => Transformation.Position;
+            set => Transformation.Position = value;
+        }
 
-        public Vector3 scale { get; set; } = Vector3.one;
+        public Quaternion rotation
+        {
+            get => Transformation.Rotation;
+            set => Transformation.Rotation = value;
+        }
+
+        public Vector3 scale
+        {
+            get => Transformation.Scale;
+            set => Transformation.Scale = value;
+        }
 
         public bool isActive { get; set; }
 
         public bool isOverrider { get; set; }
 
+        public event System.Action Destroyed;
+
         public void Destroy()
         {
+            Destroyed?.Invoke();
         }
     }
 }
