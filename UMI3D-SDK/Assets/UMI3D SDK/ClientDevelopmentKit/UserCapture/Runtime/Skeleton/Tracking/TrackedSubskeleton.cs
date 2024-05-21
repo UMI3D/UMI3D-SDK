@@ -61,8 +61,15 @@ namespace umi3d.cdk.userCapture.tracking
         public Transform hips;
         public Transform Hips => hips;
 
+        /// <summary>
+        /// Reference of IK Animator
+        /// </summary>
         [SerializeField]
         private Animator animator;
+
+        /// <summary>
+        /// Animator wrapper.
+        /// </summary>
         public TrackedAnimator trackedAnimator;
 
         [SerializeField]
@@ -86,9 +93,15 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Start()
         {
-            if (trackedAnimator == null)
+            if (trackedAnimator == null && !TryGetComponent(out trackedAnimator))
             {
-                UMI3DLogger.LogWarning("TrackedAnimator was null for TrackedSubskeleton. Generating a new one", DebugScope.CDK);
+                UMI3DLogger.LogWarning("TrackedAnimator not found for TrackedSubskeleton. Generating a new one", DebugScope.CDK);
+                if (animator == null)
+                {
+                    UMI3DLogger.LogWarning("Animator for IK not found. Generating a default one", DebugScope.CDK);
+                    animator = gameObject.AddComponent<Animator>();
+                    animator.Rebind();
+                }
                 trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
             }
 
