@@ -282,7 +282,30 @@ namespace umi3d.common.collaboration
                         readable = false;
                         return false;
                     }
+                case true when typeof(T) == typeof(SpeedDto):
+                    {
+                        float fw, bw, side;
+                        if (
+                            UMI3DSerializer.TryRead(container, out fw)
+                            && UMI3DSerializer.TryRead(container, out bw)
+                            && UMI3DSerializer.TryRead(container, out side)
+                            )
+                        {
+                            var _speed = new SpeedDto
+                            {
+                                forwardSpeed = fw,
+                                backwardSpeed = bw,
+                                sideSpeed = side
+                            };
+                            readable = true;
+                            result = (T)Convert.ChangeType(_speed, typeof(T));
 
+                            return true;
+                        }
+                        result = default(T);
+                        readable = false;
+                        return false;
+                    }
                 default:
                     result = default(T);
                     readable = false;
@@ -419,6 +442,12 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(voice.channelName);
                     break;
 
+                case SpeedDto speed:
+                    bytable = UMI3DSerializer.Write(speed.forwardSpeed)
+                        + UMI3DSerializer.Write(speed.backwardSpeed)
+                        + UMI3DSerializer.Write(speed.sideSpeed);
+                    break;
+
                 default:
                     if (typeof(T) == typeof(ResourceDto))
                     {
@@ -456,6 +485,7 @@ namespace umi3d.common.collaboration
                 true when typeof(T) == typeof(GateDto) => true,
                 true when typeof(T) == typeof(VoiceDto) => true,
                 true when typeof(T) == typeof(ResourceDto) => true,
+                true when typeof(T) == typeof(SpeedDto) => true,
                 _ => null
             };
         }
