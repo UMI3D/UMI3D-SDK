@@ -49,9 +49,9 @@ namespace umi3d.edk
         }
     }
 
-    public class lockedNavigationModeRequest : NavigationModeRequest
+    public class LockedNavigationModeRequest : NavigationModeRequest
     {
-        public lockedNavigationModeRequest() : base()
+        public LockedNavigationModeRequest() : base()
         {
         }
 
@@ -76,7 +76,7 @@ namespace umi3d.edk
         }
     }
 
-    public abstract class FpsNavigationModeRequest : FlyingNavigationModeRequest
+    public class FpsNavigationModeRequest : FlyingNavigationModeRequest
     {
         public float jumpHeigth { get; set; }
         public float fishingRoadMaxDistance { get; set; }
