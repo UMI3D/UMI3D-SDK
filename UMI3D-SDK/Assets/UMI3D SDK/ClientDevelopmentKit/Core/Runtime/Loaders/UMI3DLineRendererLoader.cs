@@ -254,6 +254,8 @@ namespace umi3d.cdk
             node.colliders.Add(meshCollider);
             UpdateModelCollider(node, line, meshCollider);
 
+            meshCollider.convex = dto.convex;
+
             if (line.useWorldSpace)
             {
                 UMI3DLogger.LogWarning("Collider is not supported for now with LineRendere.useWorldSpace", DebugScope.CDK);
