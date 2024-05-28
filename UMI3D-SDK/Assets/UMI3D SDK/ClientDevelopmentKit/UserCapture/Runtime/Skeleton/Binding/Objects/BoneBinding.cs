@@ -68,24 +68,18 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            ITransformation parentBone;
+            ITransformation parentBone = null;
 
-            if (!BindToController)
-            {
-                parentBone = skeleton.Bones[BoneType];
-            }
-            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller))
+            if (BindToController && skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller))
             {
                 parentBone = controller.transformation;
             }
-            else
+            else if (skeleton.Bones.TryGetValue(BoneType, out var boneTransformation))
             {
-                UMI3DLogger.LogWarning($"No existing controller for {BoneType}. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
-                success = false;
-                return;
+                parentBone = boneTransformation;
             }
 
-            if (parentBone is null)
+            if (parentBone == null)
             {
                 UMI3DLogger.LogWarning($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
                 success = false;
