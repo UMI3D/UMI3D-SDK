@@ -74,16 +74,9 @@ namespace umi3d.cdk.userCapture.binding
             {
                 parentBone = skeleton.Bones[BoneType];
             }
-            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller) && controller is DistantController dc)
+            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller))
             {
-                GameObject go = new GameObject("Distant Controller");
-                parentBone = new UnityTransformation(go.transform)
-                {
-                    Position = controller.position,
-                    Rotation = controller.rotation,
-                    Scale = controller.scale
-                };
-                dc.Destroyed += () => UnityEngine.Object.Destroy(go);
+                parentBone = controller.transformation;
             }
             else
             {
@@ -99,7 +92,7 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            Compute((parentBone.Position, parentBone.Rotation, parentBone.Scale));
+            Compute(parentBone);
             success = true;
         }
     }
