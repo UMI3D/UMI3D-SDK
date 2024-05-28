@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using umi3d.common.core;
 using umi3d.common.userCapture.description;
 using UnityEngine;
 
@@ -24,6 +25,15 @@ namespace umi3d.cdk.userCapture.tracking
     [Obsolete()]
     public class TrackedSubskeletonBoneController : TrackedSubskeletonBone, IController
     {
+        private UnityTransformation _transformation;
+
+        private void Start()
+        {
+            _transformation = new(transform);
+        }
+
+        public ITransformation transformation => _transformation;
+
         public Vector3 position
         {
             get

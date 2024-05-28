@@ -68,38 +68,25 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
-            ITransformation parentBone;
+            ITransformation parentBone = null;
 
-            if (!BindToController)
+            if (BindToController && skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller))
             {
-                parentBone = skeleton.Bones[BoneType];
+                parentBone = controller.transformation;
             }
-            else if (skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller) && controller is DistantController dc)
+            else if (skeleton.Bones.TryGetValue(BoneType, out var boneTransformation))
             {
-                GameObject go = new GameObject("Distant Controller");
-                parentBone = new UnityTransformation(go.transform)
-                {
-                    Position = controller.position,
-                    Rotation = controller.rotation,
-                    Scale = controller.scale
-                };
-                dc.Destroyed += () => UnityEngine.Object.Destroy(go);
-            }
-            else
-            {
-                UMI3DLogger.LogWarning($"No existing controller for {BoneType}. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
-                success = false;
-                return;
+                parentBone = boneTransformation;
             }
 
-            if (parentBone is null)
+            if (parentBone == null)
             {
                 UMI3DLogger.LogWarning($"Bone transform from bone {BoneType} is null. It may have been deleted without removing the binding first.", DEBUG_SCOPE);
                 success = false;
                 return;
             }
 
-            Compute((parentBone.Position, parentBone.Rotation, parentBone.Scale));
+            Compute(parentBone);
             success = true;
         }
     }

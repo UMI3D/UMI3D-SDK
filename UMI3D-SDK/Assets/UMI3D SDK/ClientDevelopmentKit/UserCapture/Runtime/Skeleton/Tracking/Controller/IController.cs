@@ -17,6 +17,7 @@ limitations under the License.
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture;
 using UnityEngine;
+using umi3d.common.core;
 
 namespace umi3d.cdk.userCapture.tracking
 {
@@ -30,6 +31,8 @@ namespace umi3d.cdk.userCapture.tracking
         public Vector3 position { get; }
         public Quaternion rotation { get; }
         public Vector3 scale { get; }
+
+        public ITransformation transformation { get; }
 
         public virtual ControllerDto ToControllerDto()
         {

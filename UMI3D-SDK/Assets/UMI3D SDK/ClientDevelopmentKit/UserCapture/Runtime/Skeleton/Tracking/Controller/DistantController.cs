@@ -26,24 +26,41 @@ namespace umi3d.cdk.userCapture.tracking
     {
         public uint boneType { get; set; }
 
-        public PureTransformation Transformation { get; set; } = new();
+        public PureTransformation _transformation { get; set; } = new();
+
+        public ITransformation transformation
+        {
+            get
+            {
+                return _transformation;
+            }
+            set
+            {
+                if (value == null)
+                    return;
+
+                _transformation.Scale = value.Scale;
+                _transformation.Position = value.Position;
+                _transformation.Rotation = value.Rotation;
+            }
+        }
 
         public Vector3 position
         {
-            get => Transformation.Position;
-            set => Transformation.Position = value;
+            get => _transformation.Position;
+            set => _transformation.Position = value;
         }
 
         public Quaternion rotation
         {
-            get => Transformation.Rotation;
-            set => Transformation.Rotation = value;
+            get => _transformation.Rotation;
+            set => _transformation.Rotation = value;
         }
 
         public Vector3 scale
         {
-            get => Transformation.Scale;
-            set => Transformation.Scale = value;
+            get => _transformation.Scale;
+            set => _transformation.Scale = value;
         }
 
         public bool isActive { get; set; }

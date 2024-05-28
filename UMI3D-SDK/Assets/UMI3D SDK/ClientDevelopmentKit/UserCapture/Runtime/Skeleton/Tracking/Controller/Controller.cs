@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using umi3d.common.core;
 using umi3d.common.userCapture;
 using UnityEngine;
 
@@ -25,6 +26,13 @@ namespace umi3d.cdk.userCapture.tracking
         [SerializeField, ConstEnum(typeof(BoneType), typeof(uint))]
         private uint _boneType;
 
+        private UnityTransformation _transformation;
+
+        private void Start()
+        {
+            _transformation = new(transform);
+        }
+
         public uint boneType => _boneType;
 
         public Vector3 position => transform.position;
@@ -32,6 +40,8 @@ namespace umi3d.cdk.userCapture.tracking
         public Quaternion rotation => transform.rotation;
 
         public Vector3 scale => transform.localScale;
+
+        public ITransformation transformation => _transformation;
 
         public bool isActive { get; set; }
 
