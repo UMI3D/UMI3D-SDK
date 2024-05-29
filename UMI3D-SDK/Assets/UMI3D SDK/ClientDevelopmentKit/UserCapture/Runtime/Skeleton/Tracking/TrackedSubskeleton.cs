@@ -55,10 +55,12 @@ namespace umi3d.cdk.userCapture.tracking
 
         [SerializeField]
         public Camera viewpoint;
+
         public Camera ViewPoint => viewpoint;
 
         [SerializeField]
         public Transform hips;
+
         public Transform Hips => hips;
 
         /// <summary>
@@ -74,6 +76,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         [SerializeField]
         public Dictionary<uint, TrackedSubskeletonBone> bones = new();
+
         public IReadOnlyDictionary<uint, TrackedSubskeletonBone> TrackedBones => bones;
 
         public int Priority => GetPriority();
@@ -91,6 +94,8 @@ namespace umi3d.cdk.userCapture.tracking
             return 0;
         }
 
+        #region Lifecycle
+
         public void Start()
         {
             if (trackedAnimator == null && !TryGetComponent(out trackedAnimator))
@@ -106,17 +111,7 @@ namespace umi3d.cdk.userCapture.tracking
             }
 
             IKHandler = new IKHandler(animator);
-            trackedAnimator.IkCallback += (layer) =>
-            {
-                IKHandler.Reset(controllersToClean, bones);
-                controllersToClean.Clear();
-
-                foreach (var controller in controllersToDestroy)
-                    controller.Destroy();
-                controllersToDestroy.Clear();
-
-                IKHandler.HandleAnimatorIK(layer, controllers.Values, bones);
-            };
+            trackedAnimator.IkCallback += ApplyIK;
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
             {
@@ -130,11 +125,39 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
+        /// <summary>
+        /// Inverse kinematics are applied on the subskeleton based on the position of each controller.
+        /// </summary>
+        /// <param name="layer"></param>
+        private void ApplyIK(int layer)
+        {
+            // clean controllers
+            IKHandler.Reset(controllersToClean, bones);
+            controllersToClean.Clear();
+
+            // destroy deleted controllers
+            foreach (var controller in controllersToDestroy)
+                controller.Destroy();
+            controllersToDestroy.Clear();
+
+            // apply actual IK
+            IKHandler.HandleAnimatorIK(layer, controllers.Values, bones);
+        }
+
         private void Update()
         {
             if (skeleton is IPersonalSkeleton)
                 return; // no use of extrapolator for own skeleton, it also introduce a race conflict with Updates from Trackers, because extrapolators never receive tracking frame to be updated from.
 
+            UpdateControllersPosition();
+        }
+
+        /// <summary>
+        /// Controllers positions are extrapolated during Update based on the extrapolator informations from tracking frames.
+        /// It applies to collaborative tracked subskeletons only.
+        /// </summary>
+        private void UpdateControllersPosition()
+        {
             foreach (var extrapolator in extrapolators.Values)
                 if (extrapolator.Controller is DistantController vc)
                 {
@@ -143,11 +166,54 @@ namespace umi3d.cdk.userCapture.tracking
                 }
         }
 
+        #region Destruction
 
+        /// <summary>
+        /// Event raised when object is destroyed.
+        /// </summary>
+        public event System.Action Destroyed;
+
+        /// <summary>
+        /// To call for cleaning before destroying object.
+        /// </summary>
+        protected virtual void Clean()
+        {
+            Destroyed?.Invoke();
+
+            foreach (var controller in controllers.Values)
+            {
+                if (controller != null)
+                    controller.Destroy();
+            }
+
+            bones.Clear();
+            controllers.Clear();
+            BonesAsyncFPS.Clear();
+
+            controllersToClean.Clear();
+            controllersToDestroy.Clear();
+            receivedTypes.Clear();
+            extrapolators.Clear();
+
+            if (trackedAnimator != null)
+                trackedAnimator.IkCallback -= ApplyIK;
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Clean();
+        }
+
+        #endregion Destruction
+
+        #endregion Lifecycle
+
+        /// <inheritdoc/>
         public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             var dto = new SubSkeletonPoseDto() { bones = new(bones.Count) };
 
+            // get the boneDto of each bone that is relevant for IK or is a controller
             foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.ContainsKey(x.boneType)))
             {
                 //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
@@ -156,14 +222,9 @@ namespace umi3d.cdk.userCapture.tracking
             return dto;
         }
 
-        public UserTrackingBoneDto GetController(uint boneType)
-        {
-            return new UserTrackingBoneDto()
-            {
-                bone = bones[boneType].ToControllerDto()
-            };
-        }
+        #region Tracking Frame
 
+        /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
             receivedTypes.Clear();
@@ -213,6 +274,7 @@ namespace umi3d.cdk.userCapture.tracking
             }
         }
 
+        /// <inheritdoc/>
         public void WriteTrackingFrame(UserTrackingFrameDto trackingFrame, TrackingOption option)
         {
             if (bones.Count == 0)
@@ -237,6 +299,18 @@ namespace umi3d.cdk.userCapture.tracking
                     }
                 }
             }
+        }
+
+        #endregion Tracking Frame
+
+        #region Controllers Management
+
+        public UserTrackingBoneDto GetController(uint boneType)
+        {
+            return new UserTrackingBoneDto()
+            {
+                bone = bones[boneType].ToControllerDto()
+            };
         }
 
         /// <summary>
@@ -322,5 +396,7 @@ namespace umi3d.cdk.userCapture.tracking
             AttachExtrapolator(newController);
             newController.isActive = true;
         }
+
+        #endregion Controllers Management
     }
 }
