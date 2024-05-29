@@ -211,6 +211,7 @@ namespace umi3d.edk.collaboration
             this.isConnecting = false;
             this.isConnected = false;
             this.disconected = false;
+            this.needToGetFirstConnectionInfo = true;
             this.connectionDto = connectionDto;
             this.version = new UMI3DVersion.Version(connectionDto.version);
             this.worldControllerClient = worldControllerClient;
@@ -235,6 +236,7 @@ namespace umi3d.edk.collaboration
 
             isConnecting = true;
             disconected = false;
+            needToGetFirstConnectionInfo = true;
 
             ForgeClient = UMI3DForgeClient.Create(this);
             ForgeClient.ip = connectionDto.forgeHost;
