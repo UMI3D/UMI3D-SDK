@@ -463,7 +463,13 @@ namespace umi3d.cdk.collaboration.userCapture
             if (playPoseDto.stopPose)
                 skeleton.PoseSubskeleton.StopPose(pose);
             else
-                skeleton.PoseSubskeleton.StartPose(pose);
+                skeleton.PoseSubskeleton.StartPose(pose, 
+                                                   isOverriding: false,
+                                                   parameters: playPoseDto.transitionDuration < 0 ? null : new() 
+                                                   { 
+                                                       startTransitionDuration = playPoseDto.transitionDuration, 
+                                                       endTransitionDuration = playPoseDto.transitionDuration
+                                                   });
         }
 
         #endregion Pose
