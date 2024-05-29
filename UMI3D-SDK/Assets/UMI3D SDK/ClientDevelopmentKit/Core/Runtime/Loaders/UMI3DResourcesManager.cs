@@ -1313,29 +1313,42 @@ namespace umi3d.cdk
             subModelsCache[FindMatchingObjectDataUrl(fileUrl, libraryKey)] = nodes;
         }
 
-        public async void GetSubModel(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names, Action<object> callback)
+        public void GetSubModel(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names, Action<object> callback)
         {
+            GetSubModelAux(fileUrl, libraryKey, subModelName, indexes, names, callback, 5);
+        }
+
+        public async void GetSubModelAux(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names, Action<object> callback, int count)
+        {
+            if (count < 0)
+            {
+                throw new umi3d.common.Umi3dException($"Error while getting sub model.\nurl: {fileUrl}\nsub model: {subModelName}\nlibrary: {libraryKey}");
+            }
+
             if (IsSubModelsSetFor(fileUrl, libraryKey))
             {
                 callback.Invoke(GetSubModelNow(fileUrl, libraryKey, subModelName, indexes, names).gameObject);
             }
             else
             {
+                var library = Library.GetLibrary(libraryKey);
                 fileUrl = ObjectData.FormatUrl(fileUrl);
                 var sp = ObjectData.UrlToCom(fileUrl);
                 Match matchUrl = ObjectData.rx.Match(fileUrl);
                 ObjectData objectData = CacheCollection.Find((o) =>
                 {
-                    return o.MatchUrl(matchUrl, fileUrl, sp);
+                    return o.MatchUrl(matchUrl, fileUrl, sp, library);
                 });
 
                 if (objectData == null)
-                    UMI3DLogger.LogError("not found in cache", scope);
+                    throw new umi3d.common.Umi3dException("not found in cache");
 
+                //if (objectData.state == ObjectData.Estate.Loaded)
+                //    await UMI3DAsyncManager.Yield();
                 while (objectData.state != ObjectData.Estate.Loaded)
                     await UMI3DAsyncManager.Yield();
 
-                GetSubModel(fileUrl, libraryKey, subModelName, indexes, names, (obj) => { callback.Invoke(obj); });
+                GetSubModelAux(fileUrl, libraryKey, subModelName, indexes, names, (obj) => { callback.Invoke(obj); }, count - 1);
             }
         }
 
