@@ -106,17 +106,7 @@ namespace umi3d.cdk.userCapture.tracking
             }
 
             IKHandler = new IKHandler(animator);
-            trackedAnimator.IkCallback += (layer) =>
-            {
-                IKHandler.Reset(controllersToClean, bones);
-                controllersToClean.Clear();
-
-                foreach (var controller in controllersToDestroy)
-                    controller.Destroy();
-                controllersToDestroy.Clear();
-
-                IKHandler.HandleAnimatorIK(layer, controllers.Values, bones);
-            };
+            trackedAnimator.IkCallback += ApplyIK;
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
             {
@@ -128,6 +118,25 @@ namespace umi3d.cdk.userCapture.tracking
             {
                 controllers.Add(tracker.BoneType, tracker.distantController);
             }
+        }
+
+        /// <summary>
+        /// Inverse kinematics are applied on the subskeleton based on the position of each controller.
+        /// </summary>
+        /// <param name="layer"></param>
+        private void ApplyIK(int layer)
+        {
+            // clean controllers
+            IKHandler.Reset(controllersToClean, bones);
+            controllersToClean.Clear();
+
+            // destroy deleted controllers
+            foreach (var controller in controllersToDestroy)
+                controller.Destroy();
+            controllersToDestroy.Clear();
+
+            // apply actual IK
+            IKHandler.HandleAnimatorIK(layer, controllers.Values, bones);
         }
 
         private void Update()
@@ -143,6 +152,41 @@ namespace umi3d.cdk.userCapture.tracking
                 }
         }
 
+        /// <summary>
+        /// Event raised when object is destroyed.
+        /// </summary>
+        public event System.Action Destroyed;
+
+        /// <summary>
+        /// To call for cleaning before destroying object.
+        /// </summary>
+        protected virtual void Clean()
+        {
+            Destroyed?.Invoke();
+
+            foreach (var controller in controllers.Values)
+            {
+                if (controller != null)
+                    controller.Destroy();
+            }
+
+            bones.Clear();
+            controllers.Clear();
+            BonesAsyncFPS.Clear();
+
+            controllersToClean.Clear();
+            controllersToDestroy.Clear();
+            receivedTypes.Clear();
+            extrapolators.Clear();
+
+            if (trackedAnimator != null)
+                trackedAnimator.IkCallback -= ApplyIK;
+        }
+
+        protected virtual void OnDestroy()
+        {
+            Clean();
+        }
 
         public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {

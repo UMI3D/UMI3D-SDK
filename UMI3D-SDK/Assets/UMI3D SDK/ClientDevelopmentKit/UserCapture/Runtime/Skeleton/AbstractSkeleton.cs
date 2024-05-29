@@ -221,6 +221,9 @@ namespace umi3d.cdk.userCapture
         protected virtual void Clean()
         {
             Destroyed?.Invoke();
+
+            bones.Clear();
+            subskeletons.Clear();
         }
 
         protected virtual void OnDestroy()
