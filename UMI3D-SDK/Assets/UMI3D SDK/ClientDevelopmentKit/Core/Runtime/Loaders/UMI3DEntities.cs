@@ -366,7 +366,6 @@ namespace umi3d.cdk
         public void Clear()
         {
             entityFilters.Clear();
-
             foreach (ulong entity in entities.ToList().Select(p => { return p.Key; }))
             {
                 DeleteEntity(entity, null);

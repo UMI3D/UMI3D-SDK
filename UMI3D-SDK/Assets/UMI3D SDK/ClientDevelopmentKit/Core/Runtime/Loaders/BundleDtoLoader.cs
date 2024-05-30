@@ -173,12 +173,33 @@ namespace umi3d.cdk
         /// <returns>(Empty object which contains every object of loaded scene; loaded scene, empty)</returns>
         private async Task<(GameObject, Scene)> LoadScene(string scenePath)
         {
+
+            List<int> alreadyLoaded = new();
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var sc = SceneManager.GetSceneAt(i);
+
+                if (sc.path == scenePath)
+                {
+                    alreadyLoaded.Add(i);
+                }
+            }
             var asyncLoading = SceneManager.LoadSceneAsync(scenePath, LoadSceneMode.Additive);
 
             while (!asyncLoading.isDone)
                 await UMI3DAsyncManager.Yield();
 
-            var scene = SceneManager.GetSceneByPath(scenePath);
+            Scene scene = SceneManager.GetSceneByPath(scenePath);
+            for (int i = 0; i < SceneManager.sceneCount; i++)
+            {
+                var sc = SceneManager.GetSceneAt(i);
+
+                if (sc.path == scenePath && !alreadyLoaded.Contains(i))
+                {
+                    scene = sc;
+                    break;
+                }
+            }
 
             GameObject sceneObj = new GameObject(scenePath);
 
