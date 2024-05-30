@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common.core;
 using umi3d.common.dto.binding;
 
 using UnityEngine;
@@ -70,6 +71,11 @@ namespace umi3d.cdk.binding
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
+        }
+
+        protected virtual void Compute(ITransformation parentTransformation)
+        {
+            Compute((parentTransformation.Position, parentTransformation.Rotation, parentTransformation.Scale));
         }
 
         /// <summary>

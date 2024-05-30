@@ -49,9 +49,9 @@ namespace umi3d.cdk.userCapture
         public virtual IReadOnlyDictionary<uint, ITransformation> Bones
         {
             get => bones.ToDictionary(x => x.Key, y => (ITransformation)y.Value);
-            protected set => bones = value is not IDictionary<uint, ITransformation> castValue ? bones 
-                                : castValue.Where(kv=>kv.Value is UnityTransformation)
-                                           .ToDictionary(x=>x.Key, y=>(UnityTransformation)y.Value);
+            protected set => bones = value is not IDictionary<uint, ITransformation> castValue ? bones
+                                : castValue.Where(kv => kv.Value is UnityTransformation)
+                                           .ToDictionary(x => x.Key, y => (UnityTransformation)y.Value);
         }
 
         /// <summary>
@@ -91,6 +91,7 @@ namespace umi3d.cdk.userCapture
         /// Subskeleton updated from tracked controllers.
         /// </summary>
         public ITrackedSubskeleton TrackedSubskeleton => _trackedSkeleton;
+
         protected ITrackedSubskeleton _trackedSkeleton;
 
         [SerializeField]
@@ -100,7 +101,6 @@ namespace umi3d.cdk.userCapture
         /// Susbskeleton for body poses.
         /// </summary>
         public IPoseSubskeleton PoseSubskeleton { get; protected set; }
-
 
         protected UserTrackingFrameDto lastFrame;
         public UserTrackingFrameDto LastFrame => lastFrame;
@@ -210,6 +210,8 @@ namespace umi3d.cdk.userCapture
 
         #endregion Initialisation
 
+        #region Destruction
+
         /// <summary>
         /// Event raised when object is destroyed.
         /// </summary>
@@ -221,12 +223,17 @@ namespace umi3d.cdk.userCapture
         protected virtual void Clean()
         {
             Destroyed?.Invoke();
+
+            bones.Clear();
+            subskeletons.Clear();
         }
 
         protected virtual void OnDestroy()
         {
             Clean();
         }
+
+        #endregion Destruction
 
         #endregion Lifecycle
 
@@ -245,7 +252,6 @@ namespace umi3d.cdk.userCapture
             foreach (uint boneType in bones.Keys)
                 alreadyComputedbonesCache[boneType] = false;
 
-
             if (TrackedSubskeleton.Controllers.TryGetValue(ROOT_BONE, out IController hipsController))
             {
                 bones[ROOT_BONE].Position = hipsController.position;
@@ -257,7 +263,6 @@ namespace umi3d.cdk.userCapture
                 bones[ROOT_BONE].Position = HipsAnchor != null ? HipsAnchor.position + hipsDisplacement : Vector3.zero; // add displacement to have the movement of Hips from animations
                 bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation * bones[ROOT_BONE].LocalRotation : Quaternion.identity;
             }
-
 
             alreadyComputedbonesCache[ROOT_BONE] = true;
 
@@ -292,6 +297,7 @@ namespace umi3d.cdk.userCapture
         /// Speeding up computations.
         /// </summary>
         private Dictionary<uint, bool> alreadyComputedbonesCache = new();
+
         private Vector3 hipsDisplacement = Vector3.zero;
 
         /// <summary>
@@ -336,7 +342,6 @@ namespace umi3d.cdk.userCapture
                 foreach (var skeleton in Subskeletons)
                 {
                     var pose = skeleton.GetPose(hierarchy);
-
 
                     if (pose is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                         continue;
@@ -431,7 +436,7 @@ namespace umi3d.cdk.userCapture
             }
         }
 
-        class SubskeletonComparer : IComparer<ISubskeleton>
+        private class SubskeletonComparer : IComparer<ISubskeleton>
         {
             public int Compare(ISubskeleton x, ISubskeleton y)
             {

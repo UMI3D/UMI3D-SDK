@@ -90,6 +90,9 @@ namespace umi3d.common.core
 
         public UnityTransformation(Transform transform)
         {
+            if (transform == null)
+                throw new System.ArgumentNullException(nameof(transform));
+
             Transform = transform;
         }
     }

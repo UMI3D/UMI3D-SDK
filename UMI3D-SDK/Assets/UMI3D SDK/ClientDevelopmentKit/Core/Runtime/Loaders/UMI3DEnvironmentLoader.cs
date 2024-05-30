@@ -477,7 +477,7 @@ namespace umi3d.cdk
         /// </summary>
         private async Task LoadResources(GlTFEnvironmentDto dto, Progress progress)
         {
-            List<string> ids = dto.extensions.umi3d.LibrariesId;
+            List<string> ids = dto?.extensions?.umi3d?.LibrariesId ?? new();
             foreach (GlTFSceneDto scene in dto.scenes)
                 ids.AddRange(scene.extensions.umi3d.LibrariesId);
             await UMI3DResourcesManager.LoadLibraries(ids, progress);

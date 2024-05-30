@@ -28,6 +28,7 @@ using UnityEngine.TestTools;
 using TestUtils.UserCapture;
 using TestUtils;
 using umi3d.common.core;
+using umi3d.cdk.userCapture.tracking;
 
 namespace PlayMode_Tests.UserCapture.Binding.CDK
 {
@@ -86,7 +87,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
             {
                 boneType = boneType,
                 syncPosition = true,
-                offSetPosition = offSetPosition.Dto()
+                offSetPosition = offSetPosition.Dto(),
             };
 
             var skeletonBoneMock = new Mock<ISkeleton>();
@@ -151,6 +152,120 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
                 skeletonBones[boneType].Position = parentGo.transform.position;
                 skeletonBones[boneType].Rotation = parentGo.transform.rotation;
+
+                // WHEN
+                binding.Apply(out bool succes);
+
+                // THEN
+                Assert.IsTrue(succes);
+                AssertUnityStruct.AreEqual(parentGo.transform.position + parentGo.transform.rotation * offSetPosition, go.transform.position);
+                AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+                AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
+
+                yield return null;
+            }
+        }
+
+        [Test]
+        public void Apply_BindToController_SyncPosition([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        {
+            // GIVEN
+            uint boneType = BoneType.Chest;
+            var dto = new BoneBindingDataDto()
+            {
+                boneType = boneType,
+                syncPosition = true,
+                offSetPosition = offSetPosition.Dto(),
+                bindToController = true
+            };
+
+            var skeletonMock = new Mock<ISkeleton>();
+
+            Mock<ITrackedSubskeleton> trackedSubskeletonMock = new ();
+
+            UnityTransformation transformWrapper = new(parentGo.transform);
+            Mock<IController> controllerMock = new();
+            controllerMock.Setup(x => x.transformation).Returns(transformWrapper);
+            controllerMock.Setup(x => x.boneType).Returns(boneType);
+            controllerMock.Setup(x => x.isActive).Returns(true);
+            controllerMock.Setup(x => x.position).Returns(transformWrapper.Position);
+            controllerMock.Setup(x => x.rotation).Returns(transformWrapper.Rotation);
+            controllerMock.Setup(x => x.scale).Returns(transformWrapper.Scale);
+
+            IReadOnlyDictionary<uint, IController> controllers = new Dictionary<uint, IController>()
+            {
+                { boneType, controllerMock.Object}
+            };
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(controllers);
+
+            skeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
+
+            BoneBinding binding = new(dto, go.transform, skeletonMock.Object);
+
+            var previousPosition = go.transform.position;
+            var previousRotation = go.transform.rotation;
+            var previousScale = go.transform.localScale;
+
+            // WHEN
+            binding.Apply(out bool succes);
+
+            // THEN
+            Assert.IsTrue(succes);
+            AssertUnityStruct.AreEqual(parentGo.transform.position + parentGo.transform.rotation * offSetPosition, go.transform.position);
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation);
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale);
+        }
+
+        [UnityTest]
+        public IEnumerator Apply_BindToController_SyncPosition_SeveralFrames([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        {
+            // GIVEN
+            uint boneType = BoneType.Chest;
+            var dto = new BoneBindingDataDto()
+            {
+                boneType = boneType,
+                syncPosition = true,
+                offSetPosition = offSetPosition.Dto(),
+                bindToController = true,
+            };
+
+            var skeletonMock = new Mock<ISkeleton>();
+
+            Mock<ITrackedSubskeleton> trackedSubskeletonMock = new();
+
+            UnityTransformation transformWrapper = new(parentGo.transform);
+            Mock<IController> controllerMock = new();
+            controllerMock.Setup(x => x.transformation).Returns(transformWrapper);
+            controllerMock.Setup(x => x.boneType).Returns(boneType);
+            controllerMock.Setup(x => x.isActive).Returns(true);
+            controllerMock.Setup(x => x.position).Returns(transformWrapper.Position);
+            controllerMock.Setup(x => x.rotation).Returns(transformWrapper.Rotation);
+            controllerMock.Setup(x => x.scale).Returns(transformWrapper.Scale);
+
+            IReadOnlyDictionary<uint, IController> controllers = new Dictionary<uint, IController>()
+            {
+                { boneType, controllerMock.Object}
+            };
+            trackedSubskeletonMock.Setup(x => x.Controllers).Returns(controllers);
+
+            skeletonMock.Setup(x => x.TrackedSubskeleton).Returns(trackedSubskeletonMock.Object);
+
+            BoneBinding binding = new(dto, go.transform, skeletonMock.Object);
+
+            var previousPosition = go.transform.position;
+            var previousRotation = go.transform.rotation;
+            var previousScale = go.transform.localScale;
+
+            int numberOfFrames = 10;
+
+            for (int i = 0; i < numberOfFrames; i++)
+            {
+                // GIVEN
+                parentGo.transform.Translate(1, 1, 1);
+                parentGo.transform.Rotate(1, 1, 1);
+
+                controllers[boneType].transformation.Position = parentGo.transform.position;
+                controllers[boneType].transformation.Rotation = parentGo.transform.rotation;
 
                 // WHEN
                 binding.Apply(out bool succes);

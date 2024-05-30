@@ -26,31 +26,52 @@ namespace inetum.unityUtils.audio
     {
         private static AudioMixer audioMixer;
 
-        private const string CONVERSATION_GROUP = "Master/Conversation";
-        private const string ENVIRONMENT_GROUP = "Master/Environment";
+        public enum Group
+        {
+            Conversation,
+            Environment
+        }
 
         private const string AUDIO_MIXER = "AudioMixer";
 
-        public static void SetConversationGroup(AudioSource audioSource)
+        public static void SetGroup(Group group, AudioSource audioSource)
         {
-            if (audioSource == null) return;
-            if (audioMixer == null) audioMixer = GetAudioMixer();
-            if (audioMixer == null) return;
-            audioSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups(CONVERSATION_GROUP)[0];
+            if (audioSource == null)
+                return;
+            if (audioMixer == null)
+                audioMixer = GetAudioMixer();
+            if (audioMixer == null)
+                return;
+            audioSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups(GroupName(group))[0];
         }
 
-        public static void SetEnvironmentGroup(AudioSource audioSource)
+        public static void SetVolume(Group group, float volume)
         {
-            if (audioSource == null) return;
-            if (audioMixer == null) audioMixer = GetAudioMixer();
-            if (audioMixer == null) return;
-            audioSource.outputAudioMixerGroup = audioMixer.FindMatchingGroups(ENVIRONMENT_GROUP)[0];
+            if (audioMixer == null)
+                audioMixer = GetAudioMixer();
+            if (audioMixer == null)
+                return;
+
+            audioMixer.SetFloat(GroupName(group), volume);
         }
 
         private static AudioMixer GetAudioMixer()
         {
             AudioMixer mixer = Resources.Load<AudioMixer>(AUDIO_MIXER);
             return mixer;
+        }
+
+        private static string GroupName(Group group)
+        {
+            switch (group)
+            {
+                case Group.Conversation:
+                    return "Master/Conversation";
+                case Group.Environment:
+                    return "Master/Environment";
+            }
+
+            return "";
         }
     }
 }
