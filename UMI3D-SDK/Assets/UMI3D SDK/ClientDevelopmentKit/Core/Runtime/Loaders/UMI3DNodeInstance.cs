@@ -148,14 +148,19 @@ namespace umi3d.cdk
         /// </summary>
         public virtual async void ClearBeforeDestroy()
         {
-            if (scene != null && scene.isLoaded)
+            if (scene == null)
+                return;
+
+            if (scene.isLoaded)
             {
                 var op = SceneManager.UnloadSceneAsync(scene);
+                if (op != null)
+                {
+                    while (op != null && !op.isDone)
+                        await UMI3DAsyncManager.Yield();
 
-                while (!op.isDone)
-                    await UMI3DAsyncManager.Yield();
-
-                LightProbes.TetrahedralizeAsync();
+                    LightProbes.TetrahedralizeAsync();
+                }
             }
         }
     }
