@@ -108,6 +108,37 @@ namespace umi3d.edk.collaboration.murmur
             return mm;
         }
 
+        /// <summary>
+        /// Add a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="value"></param>
+        /// <returns></returns>
+        public bool AddHeader(string key, string value)
+        {
+            return m.AddHeader(key, value);
+        }
+
+        /// <summary>
+        /// Update a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public void UpdateHeader(string key, string value)
+        {
+            m.UpdateHeader(key, value);
+        }
+
+        /// <summary>
+        /// Remove a header that will be send on each MurmurApi Rest call
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        public bool RemoveHeader(string key)
+        {
+            return m.RemoveHeader(key);
+        }
+
         async void HeartBeat()
         {
             running = true;
@@ -237,7 +268,10 @@ namespace umi3d.edk.collaboration.murmur
             try
             {
                 if (serv == null)
+                {
+                    await Task.Yield();
                     serv = await MurmurAPI.Server.Create(m, 1);
+                }
                 else
                     await serv.Refresh();
                 await CheckRoom();
