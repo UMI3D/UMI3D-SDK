@@ -78,6 +78,9 @@ namespace umi3d.cdk.navigation
 
             switch (dto)
             {
+                case ViewpointTeleportDto viewpointTeleportDto:
+                    currentNav.ViewpointTeleport(environmentId, viewpointTeleportDto);
+                    break;
                 case TeleportDto teleportDto:
                     currentNav.Teleport(environmentId, teleportDto);
                     break;

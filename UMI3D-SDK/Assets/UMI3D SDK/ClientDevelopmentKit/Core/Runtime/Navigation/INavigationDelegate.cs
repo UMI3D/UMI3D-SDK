@@ -48,6 +48,13 @@ namespace umi3d.cdk.navigation
         void Teleport(ulong environmentId, TeleportDto data);
 
         /// <summary>
+        /// Apply viewpoint teleport request from server.
+        /// </summary>
+        /// <param name="data"></param>
+        /// <seealso cref="Navigate(NavigateDto)"/>
+        void ViewpointTeleport(ulong environmentId, ViewpointTeleportDto data);
+
+        /// <summary>
         /// Apply FrameRequestDto request from server.
         /// </summary>
         /// <param name="data"></param>

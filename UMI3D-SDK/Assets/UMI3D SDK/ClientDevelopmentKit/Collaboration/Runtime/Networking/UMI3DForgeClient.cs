@@ -607,6 +607,18 @@ namespace umi3d.cdk.collaboration
                         });
                     }
                     break;
+                case UMI3DOperationKeys.ViewpointTeleportationRequest:
+                    {
+                        Vector3Dto pos = UMI3DSerializer.Read<Vector3Dto>(container);
+                        Vector4Dto rot = UMI3DSerializer.Read<Vector4Dto>(container);
+                        var nav = new ViewpointTeleportDto() { position = pos, rotation = rot };
+                        MainThreadManager.Run(() =>
+                        {
+                            StartCoroutine(UMI3DNavigation.Navigate(UMI3DGlobalID.EnvironmentId, nav));
+
+                        });
+                    }
+                    break;
                 case UMI3DOperationKeys.FrameRequest:
                     {
                         ulong frameId = UMI3DSerializer.Read<ulong>(container);

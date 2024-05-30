@@ -33,6 +33,7 @@ namespace umi3d.common
         public const uint RedirectionRequest = 8;
         public const uint ForceLogoutRequest = 9;
         public const uint PlayPoseRequest = 10;
+        public const uint ViewpointTeleportationRequest = 11;
 
         public const uint UserMicrophoneStatus = 21;
         public const uint UserAvatarStatus = 22;
