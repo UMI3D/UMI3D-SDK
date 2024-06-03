@@ -102,6 +102,10 @@ namespace umi3d.cdk.userCapture.tracking
                         bones[controller.boneType].transform.rotation = controller.rotation;
                         break;
 
+                    case BoneType.Hips:
+                        SetComputed(controller.boneType);
+                        break;
+
                     default:
                         var boneTypeUnity = BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType);
                         if (boneTypeUnity.HasValue)
