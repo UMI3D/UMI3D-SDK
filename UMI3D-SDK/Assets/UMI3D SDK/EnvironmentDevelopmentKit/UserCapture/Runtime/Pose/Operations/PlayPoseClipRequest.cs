@@ -34,6 +34,12 @@ namespace umi3d.edk.userCapture.pose
         /// </summary>
         public bool shouldStopPose;
 
+        /// <summary>
+        /// Transition to pose duration in seconds.
+        /// </summary>
+        /// If negative, the browser will use a default value.
+        public float transitionDuration = -1f;
+
         public PlayPoseClipRequest(ulong poseId, bool stopPose = false)
         {
             this.poseId = poseId;
@@ -44,7 +50,8 @@ namespace umi3d.edk.userCapture.pose
         {
             return UMI3DSerializer.Write(GetOperationKey())
                 + UMI3DSerializer.Write(poseId)
-                + UMI3DSerializer.Write(shouldStopPose);
+                + UMI3DSerializer.Write(shouldStopPose)
+                + UMI3DSerializer.Write(transitionDuration);
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
@@ -72,6 +79,7 @@ namespace umi3d.edk.userCapture.pose
         {
             dto.poseId = poseId;
             dto.stopPose = shouldStopPose;
+            dto.transitionDuration = transitionDuration;
         }
     }
 }

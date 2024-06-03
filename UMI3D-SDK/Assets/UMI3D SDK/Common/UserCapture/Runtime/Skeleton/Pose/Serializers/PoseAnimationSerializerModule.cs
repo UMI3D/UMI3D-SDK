@@ -143,13 +143,15 @@ namespace umi3d.common.userCapture.pose
                     {
                         readable = UMI3DSerializer.TryRead(container, out ulong poseId);
                         readable &= UMI3DSerializer.TryRead(container, out bool stopPose);
+                        readable &= UMI3DSerializer.TryRead(container, out float transitionDuration);
 
                         if (readable)
                         {
                             PlayPoseClipDto activatePoseOverriderDto = new()
                             {
                                 poseId = poseId,
-                                stopPose = stopPose
+                                stopPose = stopPose,
+                                transitionDuration = transitionDuration
                             };
 
                             result = (T)Convert.ChangeType(activatePoseOverriderDto, typeof(PlayPoseClipDto));
@@ -203,7 +205,8 @@ namespace umi3d.common.userCapture.pose
                 case PlayPoseClipDto playPoseAnimationDto:
                     bytable = UMI3DSerializer.Write(UMI3DOperationKeys.PlayPoseRequest)
                         + UMI3DSerializer.Write(playPoseAnimationDto.poseId)
-                        + UMI3DSerializer.Write(playPoseAnimationDto.stopPose);
+                        + UMI3DSerializer.Write(playPoseAnimationDto.stopPose)
+                        + UMI3DSerializer.Write(playPoseAnimationDto.transitionDuration);
                     break;
 
                 default:

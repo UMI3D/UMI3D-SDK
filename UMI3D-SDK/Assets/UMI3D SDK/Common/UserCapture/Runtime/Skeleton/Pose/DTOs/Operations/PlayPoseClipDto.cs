@@ -31,5 +31,11 @@ namespace umi3d.common.userCapture.pose
         /// Is it a message to stop or to start the related pose
         /// </summary>
         public bool stopPose { get; set; }
+
+        /// <summary>
+        /// Transition duration in seconds.
+        /// </summary>
+        /// If negative, no transition duration is specified.
+        public float transitionDuration { get; set; }
     }
 }

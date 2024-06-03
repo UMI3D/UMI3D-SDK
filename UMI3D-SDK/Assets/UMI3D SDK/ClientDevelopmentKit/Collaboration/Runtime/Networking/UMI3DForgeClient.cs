@@ -707,10 +707,12 @@ namespace umi3d.cdk.collaboration
                     {
                         ulong poseId = UMI3DSerializer.Read<ulong>(container);
                         bool stopPose = UMI3DSerializer.Read<bool>(container);
+                        float transitionDuration = UMI3DSerializer.Read<float>(container);
                         PlayPoseClipDto playPoseDto = new PlayPoseClipDto
                         {
                             poseId = poseId,
-                            stopPose = stopPose
+                            stopPose = stopPose,
+                            transitionDuration = transitionDuration
                         };
 
                         MainThreadManager.Run(() =>
