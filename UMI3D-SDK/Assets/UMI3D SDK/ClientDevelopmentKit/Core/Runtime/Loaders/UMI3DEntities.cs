@@ -329,6 +329,8 @@ namespace umi3d.cdk
         {
             if (entities.ContainsKey(entityId))
             {
+                entityFilters.Remove(entityId);
+
                 UMI3DEntityInstance entity = entities[entityId];
 
                 if (entity.Object is UMI3DAbstractAnimation animation)
@@ -397,6 +399,12 @@ namespace umi3d.cdk
                 {
                     foreach (ulong property in entityFilters[entityId].Keys)
                     {
+                        if (entityId == 0 || !entities.ContainsKey(entityId))
+                        {
+                            Debug.LogWarning($"[Interpolation] Warning: Entity {entityId} does not exist.");
+                            continue;
+                        }
+
                         UMI3DEntityInstance node = GetEntityInstance(entityId);
                         IExtrapolator extrapolator = entityFilters[entityId][property];
 
