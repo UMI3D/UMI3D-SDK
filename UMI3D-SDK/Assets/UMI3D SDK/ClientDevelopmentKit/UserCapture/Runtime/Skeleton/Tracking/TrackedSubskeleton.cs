@@ -86,10 +86,10 @@ namespace umi3d.cdk.userCapture.tracking
         private int GetPriority()
         {
             //AbstractSkeleton skeleton = this.transform.parent.GetComponent<AbstractSkeleton>();
-            UserTrackingFrameDto frame = skeleton is PersonalSkeleton personalSkeleton ? personalSkeleton.GetFrame(new TrackingOption()) : skeleton.LastFrame;
+            //UserTrackingFrameDto frame = skeleton is PersonalSkeleton personalSkeleton ? personalSkeleton.GetFrame(new TrackingOption()) : skeleton.LastFrame;
 
-            if (frame != null && frame.trackedBones.Exists(c => (c.boneType == BoneType.RightHand || c.boneType == BoneType.LeftHand)))
-                return 101;
+            //if (frame != null && frame.trackedBones.Exists(c => (c.boneType == BoneType.RightHand || c.boneType == BoneType.LeftHand)))
+            //    return 101;
 
             return 0;
         }
