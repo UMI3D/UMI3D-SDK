@@ -18,6 +18,7 @@ using NUnit.Framework;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d;
 using umi3d.common;
 using UnityEngine;
 
@@ -44,7 +45,7 @@ namespace EditMode_Tests
         (bool readable, T result) WriteRead<T>(T value)
         {
             var bytable = UMI3DSerializer.Write(value);
-            bool readable = UMI3DSerializer.TryRead<T>(new ByteContainer(0,0,bytable.ToBytes()), out T result);
+            bool readable = UMI3DSerializer.TryRead<T>(new ByteContainer(0,0,bytable.ToBytes(), UMI3DVersion.ComputedVersion), out T result);
             return (readable, result);
         }
 

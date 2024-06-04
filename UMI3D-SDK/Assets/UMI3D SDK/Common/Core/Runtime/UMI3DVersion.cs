@@ -33,6 +33,7 @@ namespace umi3d
         public static readonly string status = "b";
         public static readonly string date = "240529";
 
+        public static readonly Version ComputedVersion = new Version(UMI3DVersion.version);
 
         public class Version
         {

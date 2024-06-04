@@ -17,6 +17,7 @@ limitations under the License.
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d;
 using umi3d.common;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
@@ -69,7 +70,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseClipDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseClipDto result);
@@ -109,7 +110,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseAnimatorDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnimatorDto result);
             Assert.IsTrue(readable);
@@ -142,7 +143,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(duration, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             poseSerializerModule.Read(byteContainer, out bool readable, out DurationDto result);
             Assert.IsTrue(readable);
@@ -169,7 +170,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(playPoseClipRequest, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // when
             UMI3DSerializer.TryRead<uint>(byteContainer, out uint operationKey);

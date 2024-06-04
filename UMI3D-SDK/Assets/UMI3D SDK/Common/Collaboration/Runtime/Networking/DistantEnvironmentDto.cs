@@ -11,6 +11,7 @@ namespace umi3d.common
         public GlTFEnvironmentDto environmentDto { get; set; }
         public string resourcesUrl { get; set; }
         public bool useDto { get; set; }
+        public string version { get; set; } = null;
 
         public List<BinaryDto> binaries { get; set; }
     }

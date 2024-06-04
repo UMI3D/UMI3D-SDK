@@ -16,6 +16,7 @@ limitations under the License.
 
 using EditMode_Tests.Core.Binding.Common;
 using NUnit.Framework;
+using umi3d;
 using umi3d.common;
 using umi3d.common.dto.binding;
 using umi3d.common.userCapture;
@@ -78,7 +79,7 @@ namespace EditMode_Tests.UserCapture.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
@@ -131,7 +132,7 @@ namespace EditMode_Tests.UserCapture.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
@@ -182,7 +183,7 @@ namespace EditMode_Tests.UserCapture.Binding.Common
 
             Bytable data = UMI3DSerializer.Write(bindingDto);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             bool readable = UMI3DSerializer.TryRead(byteContainer, out BindingDto result);
 
