@@ -44,17 +44,21 @@ namespace umi3d.common
 
         public List<CancellationToken> tokens;
 
-        private ByteContainer(ulong environmentId)
+        public UMI3DVersion.Version version;
+
+
+        private ByteContainer(ulong environmentId, UMI3DVersion.Version version)
         {
             tokens = new();
             this.environmentId = environmentId;
+            this.version = version;
         }
 
-        public ByteContainer(ulong environmentId, Binary frame) : this(environmentId, frame.TimeStep, frame.StreamData.byteArr)
+        public ByteContainer(ulong environmentId, Binary frame, UMI3DVersion.Version version) : this(environmentId, frame.TimeStep, frame.StreamData.byteArr, version)
         {
         }
 
-        public ByteContainer(ulong environmentId, ulong timeStep, byte[] bytes) : this(environmentId)
+        public ByteContainer(ulong environmentId, ulong timeStep, byte[] bytes, UMI3DVersion.Version version) : this(environmentId, version)
         {
             this.timeStep = timeStep;
             this.bytes = bytes;
@@ -62,9 +66,8 @@ namespace umi3d.common
             length = bytes.Length;
         }
 
-        public ByteContainer(ByteContainer container) : this(container.environmentId)
+        public ByteContainer(ByteContainer container) : this(container.environmentId, container.version)
         {
-
             this.bytes = container.bytes;
             position = container.position;
             length = container.length;

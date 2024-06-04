@@ -227,6 +227,7 @@ namespace umi3d.cdk.collaboration
             this.disconected = false;
             this.connectionDto = connectionDto;
             this.version = new UMI3DVersion.Version(connectionDto.version);
+            UMI3DSerializer.version = this.version;
             this.worldControllerClient = worldControllerClient;
 
             this.progress = progress;

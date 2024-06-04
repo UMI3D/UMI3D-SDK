@@ -16,6 +16,7 @@ limitations under the License.
 
 using NUnit.Framework;
 using System.Collections.Generic;
+using umi3d;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
@@ -69,7 +70,7 @@ namespace EditMode_Tests.UserCapture.Description.Common
             };
 
             serializer.Write(dto, out Bytable bytable);
-            ByteContainer byteContainer = new ByteContainer(0, 1, bytable.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, bytable.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             serializer.Read(byteContainer, out bool readable, out ControllerDto result);

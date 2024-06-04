@@ -34,9 +34,10 @@ public class DistantEnvironmentLoader : AbstractLoader
         {
             try
             {
+                var version = distantDto?.version is not null ? new UMI3DVersion.Version(distantDto.version) : null;
                 distantEnvironments[distantDto.id] = distantDto;
                 UMI3DEnvironmentLoader.DeclareNewEnvironment(distantDto.id, distantDto.resourcesUrl);
-                var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, null);
+                var e = UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, distantDto.id, distantDto, version);
                 //Id of the distant environment is the id of the DistantEnvironmentDto
 
                 UMI3DEnvironmentLoader.Instance.RegisterEntity(distantDto.id, UMI3DGlobalID.EnvironmentId, distantDto.environmentDto, null).NotifyLoaded();
@@ -53,7 +54,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                             try
                             {
                                 //Log(item);
-                                await ReadBinaryDto(item, distantDto);
+                                await ReadBinaryDto(item, distantDto, version);
                             }
                             catch (Exception ex)
                             {
@@ -93,16 +94,18 @@ public class DistantEnvironmentLoader : AbstractLoader
     {
         if (value?.entity.dto is not DistantEnvironmentDto dto)
             return false;
+        var version = value?.entity.Object as UMI3DVersion.Version ?? UMI3DVersion.ComputedVersion;
+
         switch (value.propertyKey)
         {
             case UMI3DPropertyKeys.DistantEnvironmentReliable:
-                SetUmi3dPropertyList(value, dto);
+                SetUmi3dPropertyList(value, dto, version);
                 break;
             case UMI3DPropertyKeys.DistantEnvironmentUnreliable:
                 var obj = UMI3DSerializer.Read<BinaryDto>(value.container);
                 MainThreadManager.Run(async () =>
                 {
-                    await ReadBinaryDto(obj, dto);
+                    await ReadBinaryDto(obj, dto, version);
                 });
                 break;
 
@@ -120,7 +123,7 @@ public class DistantEnvironmentLoader : AbstractLoader
         return true;
     }
 
-    void SetUmi3dPropertyList(SetUMI3DPropertyContainerData value, DistantEnvironmentDto dto)
+    void SetUmi3dPropertyList(SetUMI3DPropertyContainerData value, DistantEnvironmentDto dto, UMI3DVersion.Version version)
     {
         int index;
         BinaryDto obj;
@@ -131,7 +134,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 obj = UMI3DSerializer.Read<BinaryDto>(value.container);
                 MainThreadManager.Run(async () =>
                 {
-                    await ReadBinaryDto(obj, dto);
+                    await ReadBinaryDto(obj, dto, version);
                 });
                 break;
             case UMI3DOperationKeys.SetEntityListRemoveProperty:
@@ -142,7 +145,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 obj = UMI3DSerializer.Read<BinaryDto>(value.container);
                 MainThreadManager.Run(async () =>
                 {
-                    await ReadBinaryDto(obj, dto);
+                    await ReadBinaryDto(obj, dto, version);
                 });
                 break;
             default:
@@ -150,7 +153,7 @@ public class DistantEnvironmentLoader : AbstractLoader
                 MainThreadManager.Run(async () =>
                 {
                    foreach (var item in list)
-                        await ReadBinaryDto(item, dto);
+                        await ReadBinaryDto(item, dto, version);
                 });
                 break;
         }
@@ -158,10 +161,10 @@ public class DistantEnvironmentLoader : AbstractLoader
 
 
 
-    async Task ReadBinaryDto(BinaryDto obj, DistantEnvironmentDto dto)
+    async Task ReadBinaryDto(BinaryDto obj, DistantEnvironmentDto dto, UMI3DVersion.Version version)
     {
         //Log(obj);
-        ByteContainer container = new ByteContainer(dto.id, obj.timestep, obj.data);
+        ByteContainer container = new ByteContainer(dto.id, obj.timestep, obj.data, version);
         uint TransactionId = UMI3DSerializer.Read<uint>(container);
         try
         {
@@ -178,10 +181,10 @@ public class DistantEnvironmentLoader : AbstractLoader
         }
     }
 
-    async void Log(BinaryDto data)
+    async void Log(BinaryDto data, UMI3DVersion.Version version)
     {
        // await Task.Yield();
-        ByteContainer container = new ByteContainer(0, 0, data.data);
+        ByteContainer container = new ByteContainer(0, 0, data.data, version);
         uint TransactionId = UMI3DSerializer.Read<uint>(container);
         UnityEngine.Debug.Log( PerformTransaction(container));
     }

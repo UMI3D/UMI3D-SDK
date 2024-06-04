@@ -24,6 +24,8 @@ namespace umi3d.common
     /// </summary>
     public static class UMI3DSerializer
     {
+        public static UMI3DVersion.Version version = UMI3DVersion.ComputedVersion;
+
         private const DebugScope scope = DebugScope.Common | DebugScope.Core | DebugScope.Bytes;
 
         /// <summary>
@@ -260,13 +262,13 @@ namespace umi3d.common
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes, container.version) { position = valueIndex, length = nopIndex - valueIndex };
                 if (!TryRead(SubContainer, out T v)) break;
                 result.Add(v);
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes, container.version) { position = valueIndex, length = maxLength - valueIndex };
                 if (TryRead(SubContainer, out T v))
                     result.Add(v);
             }
@@ -331,12 +333,12 @@ namespace umi3d.common
                     indexMaxPos = valueIndex = nopIndex;
                     continue;
                 }
-                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = nopIndex - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes, container.version) { position = valueIndex, length = nopIndex - valueIndex };
                 yield return SubContainer;
                 valueIndex = nopIndex;
             }
             {
-                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes) { position = valueIndex, length = maxLength - valueIndex };
+                var SubContainer = new ByteContainer(container.environmentId, container.timeStep, container.bytes, container.version) { position = valueIndex, length = maxLength - valueIndex };
                 yield return SubContainer;
             }
             yield break;

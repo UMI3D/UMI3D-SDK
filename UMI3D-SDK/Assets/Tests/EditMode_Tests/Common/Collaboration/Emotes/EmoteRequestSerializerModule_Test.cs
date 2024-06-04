@@ -16,6 +16,7 @@ limitations under the License.
 
 using NUnit.Framework;
 using System.Collections.Generic;
+using umi3d;
 using umi3d.common;
 using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.emotes;
@@ -71,7 +72,7 @@ namespace EditMode_Tests.Collaboration.Emotes.Common
             // WHEN
             emoteRequestSerializerModule.Write(dto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             UMI3DSerializer.TryRead<uint>(byteContainer, out _); // emote request property id
             emoteRequestSerializerModule.Read(byteContainer, out bool readable, out EmoteRequestDto result);

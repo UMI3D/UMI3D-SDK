@@ -17,6 +17,7 @@ limitations under the License.
 using NUnit.Framework;
 using System.Collections.Generic;
 using TestUtils;
+using umi3d;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.tracking.constraint;
@@ -73,7 +74,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
 
             boneConstraintSerializerModule.Write(dto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             boneConstraintSerializerModule.Read(byteContainer, out bool readable, out NodeBoneConstraintDto result);
@@ -108,7 +109,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
 
             boneConstraintSerializerModule.Write(dto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             boneConstraintSerializerModule.Read(byteContainer, out bool readable, out BoneBoneConstraintDto result);
@@ -142,7 +143,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Common
 
             boneConstraintSerializerModule.Write(dto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             boneConstraintSerializerModule.Read(byteContainer, out bool readable, out FloorBoneConstraintDto result);

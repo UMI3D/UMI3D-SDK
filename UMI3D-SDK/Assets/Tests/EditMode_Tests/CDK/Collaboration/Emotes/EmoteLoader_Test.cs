@@ -19,6 +19,7 @@ using NUnit.Framework;
 using System;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d;
 using umi3d.cdk;
 using umi3d.cdk.collaboration.emotes;
 using umi3d.common;
@@ -201,7 +202,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             Bytable data = UMI3DSerializer.Write(dto);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             var readUMI3DPropertyData = new ReadUMI3DPropertyData(0,
                                                                 propertyKey: UMI3DPropertyKeys.ActiveEmote,
@@ -247,7 +248,7 @@ namespace EditMode_Tests.Collaboration.Emotes.CDK
 
             Bytable data = UMI3DSerializer.Write(dto);
 
-            ByteContainer byteContainer = new ByteContainer(environmentId, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(environmentId, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             var readUMI3DPropertyData = new ReadUMI3DPropertyData(environmentId,
                                                                                     propertyKey: propertyKey,

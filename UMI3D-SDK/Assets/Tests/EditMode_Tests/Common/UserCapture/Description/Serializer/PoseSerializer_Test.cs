@@ -17,6 +17,7 @@ limitations under the License.
 using NUnit.Framework;
 using System.Collections.Generic;
 using System.Linq;
+using umi3d;
 using umi3d.common;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.pose;
@@ -59,7 +60,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(bonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0,1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0,1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnchorDto result);
@@ -85,7 +86,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(anchorBonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnchorDto result);
             Assert.IsTrue(readable);
@@ -109,7 +110,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             };
             poseSerializerModule.Write(nodeAnchoredBonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnchorDto result);
             Assert.IsTrue(readable);
@@ -133,7 +134,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(floorAnchoredBonePoseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseAnchorDto result);
             Assert.IsTrue(readable);
@@ -159,7 +160,7 @@ namespace EditMode_Tests.UserCapture.Pose.Common
 
             poseSerializerModule.Write(poseDto, out Bytable data);
 
-            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes());
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), UMI3DVersion.ComputedVersion);
 
             // WHEN
             poseSerializerModule.Read(byteContainer, out bool readable, out PoseDto result);
