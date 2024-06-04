@@ -31,7 +31,7 @@ namespace umi3d
         public static readonly string major = "2";
         public static readonly string minor = "9";
         public static readonly string status = "b";
-        public static readonly string date = "240529";
+        public static readonly string date = "240604";
 
         public static readonly Version ComputedVersion = new Version(UMI3DVersion.version);
 
@@ -61,9 +61,9 @@ namespace umi3d
 
 
                 this.version = date?.ToString("yyMMdd");
-                this.version = (this.version == null) ? status : (status ?? "*") + this.version;
-                this.version = (this.version == null) ? minor?.ToString() : (minor?.ToString() ?? "*") + this.version;
-                this.version = (this.version == null) ? major?.ToString() : (major?.ToString() ?? "*") + this.version;
+                this.version = (this.version == null) ? status : (status ?? "*") + '.' + this.version;
+                this.version = (this.version == null) ? minor?.ToString() : (minor?.ToString() ?? "*") + '.' + this.version;
+                this.version = (this.version == null) ? major?.ToString() : (major?.ToString() ?? "*") + '.' + this.version;
             }
 
             public Version(int major, int minor, string status, DateTime date)
@@ -110,7 +110,7 @@ namespace umi3d
                 else
                     status = min.status;
 
-                date_max = min.date ?? DateTime.MaxValue;
+                date_max = max.date ?? DateTime.MaxValue;
                 date_min = min.date ?? DateTime.MinValue;
             }
 
@@ -171,13 +171,13 @@ namespace umi3d
 
             public bool IsCompatible(Version version)
             {
-                if(version == null)
+                if (version == null)
                     return false;
 
                 if (version.major < major_min || version.major > major_max) return false;
                 if (version.minor < minor_min || version.minor > minor_max) return false;
-                if(!status_all && status != version.status) return false;
-                if(version.date < date_min || version.date > date_max) return false;
+                if (!status_all && status != version.status) return false;
+                if (version.date < date_min || version.date > date_max) return false;
 
                 return true;
             }

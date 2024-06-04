@@ -185,6 +185,34 @@ namespace EditMode_Tests.UserCapture.Pose.Common
             Assert.AreEqual(playPoseClipRequest.transitionDuration, result.transitionDuration);
         }
 
+        [Test]
+        public void ReadOldPoseRequest()
+        {
+            // given
+            PlayPoseClipDto playPoseClipRequest = new()
+            {
+                poseId = 1369uL,
+                stopPose = true,
+                transitionDuration = 0.56f
+            };
+
+            poseSerializerModule.Write(playPoseClipRequest, out Bytable data);
+
+            ByteContainer byteContainer = new ByteContainer(0, 1, data.ToBytes(), new UMI3DVersion.Version("2.9.b.240529"));
+
+            // when
+            UMI3DSerializer.TryRead<uint>(byteContainer, out uint operationKey);
+            poseSerializerModule.Read(byteContainer, out bool readable, out PlayPoseClipDto result);
+
+            // then
+            Assert.IsTrue(readable);
+
+            Assert.AreEqual(UMI3DOperationKeys.PlayPoseRequest, operationKey);
+            Assert.AreEqual(playPoseClipRequest.poseId, result.poseId);
+            Assert.AreEqual(playPoseClipRequest.stopPose, result.stopPose);
+            Assert.AreEqual(0f, result.transitionDuration);
+        }
+
         #endregion Read Pose Request
 
     }
