@@ -79,7 +79,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
                     }
                 case BoneBoneConstraintDto boneBoneConstraintDto:
                     {
-                        if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(boneBoneConstraintDto.ConstrainingBone, out ITransformation boneReference))
+                        if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(boneBoneConstraintDto.ConstrainingBone, out UnityTransformation boneReference))
                         {
                             await Task.Run(() => UMI3DLogger.LogWarning($"Bone {boneBoneConstraintDto.ConstrainingBone} not found for applying BoneBone constraint.", DEBUG_SCOPE));
                             break;
@@ -221,7 +221,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             if (!environmentService.TryGetEntity(environmentId, entityId, out BoneBoneConstraint boneConstraint))
                 return;
 
-            if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(bone, out ITransformation boneReference))
+            if (!skeletonService.PersonalSkeleton.Bones.TryGetValue(bone, out UnityTransformation boneReference))
                 return;
 
             boneConstraint.ConstrainingBoneTransform = boneReference;

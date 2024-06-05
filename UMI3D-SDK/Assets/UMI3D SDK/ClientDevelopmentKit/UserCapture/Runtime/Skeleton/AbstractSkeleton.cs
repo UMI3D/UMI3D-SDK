@@ -43,15 +43,13 @@ namespace umi3d.cdk.userCapture
 
         #region Fields
 
-        protected Dictionary<uint, UnityTransformation> bones = new Dictionary<uint, UnityTransformation>();
+        protected Dictionary<uint, UnityTransformation> bones = new ();
 
         /// <inheritdoc/>
-        public virtual IReadOnlyDictionary<uint, ITransformation> Bones
+        public virtual IReadOnlyDictionary<uint, UnityTransformation> Bones
         {
-            get => bones.ToDictionary(x => x.Key, y => (ITransformation)y.Value);
-            protected set => bones = value is not IDictionary<uint, ITransformation> castValue ? bones
-                                : castValue.Where(kv => kv.Value is UnityTransformation)
-                                           .ToDictionary(x => x.Key, y => (UnityTransformation)y.Value);
+            get => bones;
+            protected set => bones = value is not Dictionary<uint, UnityTransformation> castValue ? bones : castValue;
         }
 
         /// <summary>

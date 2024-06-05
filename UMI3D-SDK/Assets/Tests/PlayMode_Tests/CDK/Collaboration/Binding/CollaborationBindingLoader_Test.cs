@@ -110,7 +110,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var skeletonMock = new Mock<ISkeleton>();
-            skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { targetBoneType, new PureTransformation() } });
+            skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, UnityTransformation>() { { targetBoneType, new UnityTransformation(new GameObject().transform) } });
             
             loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
             environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);
@@ -189,7 +189,7 @@ namespace PlayMode_Tests.Collaboration.UserCapture.Binding.CDK
             nodeMock.Setup(x => x.transform).Returns(nodeGameObject.transform);
 
             var skeletonMock = new Mock<ISkeleton>();
-            skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { targetBoneType, new PureTransformation() } });
+            skeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, UnityTransformation>() { { targetBoneType, new UnityTransformation(new GameObject().transform) } });
 
             loadingManagerMock.Setup(x => x.WaitUntilNodeInstanceLoaded(environmentId, dto.boundNodeId, null)).Returns(Task.FromResult(nodeMock.Object));
             environmentManagerMock.Setup(x => x.RegisterEntity(environmentId, dto.id, dto, null, It.IsAny<System.Action>())).Returns(entityFake);

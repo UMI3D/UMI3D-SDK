@@ -137,7 +137,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
             };
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { dto.ConstrainingBone, new PureTransformation() } });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, UnityTransformation>() { { dto.ConstrainingBone, new (new GameObject().transform) } });
 
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
@@ -370,7 +370,7 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
             environmentServiceMock.Setup(x => x.TryGetEntity(environmentId, boneBoneConstraint.Id, out boneBoneConstraint)).Returns(true);
 
             var personalSkeletonMock = new Mock<IPersonalSkeleton>();
-            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, ITransformation>() { { value, new PureTransformation() } });
+            personalSkeletonMock.Setup(x => x.Bones).Returns(new Dictionary<uint, UnityTransformation>() { { value, new(new GameObject().transform) } });
 
             skeletonServiceMock.Setup(x => x.PersonalSkeleton).Returns(personalSkeletonMock.Object);
 
