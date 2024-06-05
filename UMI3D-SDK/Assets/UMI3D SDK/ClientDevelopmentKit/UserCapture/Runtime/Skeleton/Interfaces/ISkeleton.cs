@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture
         /// <summary>
         /// Position and rotation of each bone, indexed by UMI3D <see cref="BoneType"/>.
         /// </summary>
-        IReadOnlyDictionary<uint, ITransformation> Bones { get; }
+        IReadOnlyDictionary<uint, UnityTransformation> Bones { get; }
 
         /// <summary>
         /// Subskeletons that compose the final skeleton.

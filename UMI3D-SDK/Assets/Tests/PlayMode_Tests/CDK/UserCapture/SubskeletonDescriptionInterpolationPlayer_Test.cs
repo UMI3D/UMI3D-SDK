@@ -55,7 +55,7 @@ namespace PlayMode_Tests.UserCapture.CDK
             mockDescriptor = new();
             mockDescriptor.Setup(x => x.GetPose(It.IsAny<UMI3DSkeletonHierarchy>())).Returns(pose);
 
-            mockSkeleton.Setup(x => x.Bones).Returns(bones.ToDictionary(x => x.boneType, y => (ITransformation)new PureTransformation() { LocalRotation = Quaternion.identity, Position = Vector3.zero, Rotation = Quaternion.identity }));
+            mockSkeleton.Setup(x => x.Bones).Returns(bones.ToDictionary(x => x.boneType, y => new UnityTransformation(new GameObject().transform) { LocalRotation = Quaternion.identity, Position = Vector3.zero, Rotation = Quaternion.identity }));
 
             player = new(mockDescriptor.Object, true, mockSkeleton.Object);
         }
