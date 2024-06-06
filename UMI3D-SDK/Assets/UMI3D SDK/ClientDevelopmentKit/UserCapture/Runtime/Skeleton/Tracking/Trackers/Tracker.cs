@@ -19,16 +19,16 @@ using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class Tracker : MonoBehaviour
+    public class Tracker : MonoBehaviour, ITracker
     {
-        [EditorReadOnly,SerializeField, ConstEnum(typeof(common.userCapture.BoneType), typeof(uint))]
+        [EditorReadOnly, SerializeField, ConstEnum(typeof(common.userCapture.BoneType), typeof(uint))]
         protected uint boneType;
 
         public uint BoneType => boneType;
 
-        public bool isActif = true;
+        public bool isActif { get; set; } = true;
 
-        public bool isOverrider = true;
+        public bool isOverrider { get; set; } = true;
 
         protected void Awake()
         {
