@@ -17,11 +17,9 @@ limitations under the License.
 using inetum.unityUtils;
 using Mumble;
 using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using umi3d.common;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -416,6 +414,12 @@ namespace umi3d.cdk.collaboration
                 }
                 channel = pendingChannel;
                 pendingChannel = null;
+
+                await Delay(300);
+                UMI3DUser user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
+                if (user.microphoneStatus == isMute)
+                    user.SetMicrophoneStatus(!isMute);
+
                 return true;
             }
             return false;
