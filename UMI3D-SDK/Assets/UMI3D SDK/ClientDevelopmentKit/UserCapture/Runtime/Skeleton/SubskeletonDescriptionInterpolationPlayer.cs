@@ -240,7 +240,7 @@ namespace umi3d.cdk.userCapture
             Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
             foreach (SubSkeletonBoneDto bonePose in pose.bones)
             {
-                if (bonePoses.ContainsKey(bonePose.boneType))
+                if (bonePoses.ContainsKey(bonePose.boneType) || !Skeleton.Bones.ContainsKey(bonePose.boneType))
                     continue;
 
                 if (ShouldInterpolate && bonePose.boneType != BoneType.Hips && bonePose.boneType != pose.boneAnchor?.bone)
