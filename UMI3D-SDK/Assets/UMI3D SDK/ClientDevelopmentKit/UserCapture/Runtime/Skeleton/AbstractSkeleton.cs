@@ -396,6 +396,9 @@ namespace umi3d.cdk.userCapture
             // fix rotations
             foreach ((uint bone, IController controller) in TrackedSubskeleton.Controllers)
             {
+                if (controller is not DistantController)
+                    continue;
+
                 bones[bone].Rotation = controller.rotation;
             }
         }
