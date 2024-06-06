@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture.tracking
+namespace umi3d.cdk.userCapture.tracking.ik
 {
     /// <summary>
     /// Catches OnAnimatorIk event and dispatch it. Has to be on a gameobject with an animator component.
