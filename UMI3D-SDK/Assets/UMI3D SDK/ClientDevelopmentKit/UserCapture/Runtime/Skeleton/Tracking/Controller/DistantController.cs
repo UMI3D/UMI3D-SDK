@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using umi3d.common.core;
+using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -72,6 +74,14 @@ namespace umi3d.cdk.userCapture.tracking
         public void Destroy()
         {
             Destroyed?.Invoke();
+        }
+
+        public virtual ControllerDto ToControllerDto()
+        {
+            if (boneType is BoneType.None)
+                return null;
+
+            return new ControllerDto { boneType = boneType, position = position.Dto(), rotation = rotation.Dto(), isOverrider = isOverrider };
         }
     }
 }

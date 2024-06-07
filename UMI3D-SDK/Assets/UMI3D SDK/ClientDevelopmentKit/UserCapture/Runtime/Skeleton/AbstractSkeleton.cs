@@ -113,7 +113,7 @@ namespace umi3d.cdk.userCapture
 
         private const float SKELETON_STANDARD_SIZE = 1.8f;
 
-        private IIKHandler postProcessIKHandler;
+        protected IIKHandler postProcessIKHandler;
 
         private const uint ROOT_BONE = BoneType.Hips;
         protected GameObject finalSkeletonGameObject;
@@ -389,17 +389,16 @@ namespace umi3d.cdk.userCapture
         /// Correct IK after subskeleton merge.
         /// </summary>
         /// <param name="layer"></param>
-        private void CorrectIK()
+        protected virtual void CorrectIK()
         {
-            postProcessIKHandler.HandleAnimatorIK(0, controllers: TrackedSubskeleton.Controllers.Values); // pb : what should be overriden ?
-
             // fix rotations
-            foreach ((uint bone, IController controller) in TrackedSubskeleton.Controllers)
+            foreach (IController controller in TrackedSubskeleton.Controllers.Values)
             {
-                if (controller is not DistantController)
+                if (controller is not DistantController dc || !dc.isOverrider || !controller.isActive) // do not overwrite normal controllers
                     continue;
 
-                bones[bone].Rotation = controller.rotation;
+                postProcessIKHandler.HandleAnimatorIK(0, controller); // pb : what should be overriden ?
+                bones[controller.boneType].Rotation = controller.rotation;
             }
         }
 

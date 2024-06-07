@@ -27,6 +27,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
     public class AnimatorIKHandler : IIKHandler
     {
         protected readonly Animator animator;
+
         /// <summary>
         /// Animator controlling the IK.
         /// </summary>
@@ -64,18 +65,28 @@ namespace umi3d.cdk.userCapture.tracking.ik
         {
             foreach (var controller in controllers)
             {
-                if (IKHints.TryGetValue(controller.boneType, out AvatarIKHint avatarIKHint))
-                    SetHint(controller, avatarIKHint);
-                else if (IKGoals.TryGetValue(controller.boneType, out AvatarIKGoal avatarIKGoal))
-                    SetGoal(controller, avatarIKGoal);
-                else if (controller.boneType is BoneType.Head)
-                    LookAt(controller);
-                else if (controller.boneType is not BoneType.Hips) // hips should not be moved by any IK controller.
-                {
-                    HumanBodyBones? boneTypeUnity = BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType);
-                    if (boneTypeUnity.HasValue)
-                        SetControl(controller, boneTypeUnity.Value);
-                }
+                HandleAnimatorIK(0, controller);
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/> <br/>
+        /// Called by OnAnimatorIK in TrackedAnimator, set all tracked bones as computed and positions IK hints.
+        /// </summary>
+        /// <param name="layerIndex"></param>
+        public void HandleAnimatorIK(int layerIndex, IController controller)
+        {
+            if (IKHints.TryGetValue(controller.boneType, out AvatarIKHint avatarIKHint))
+                SetHint(controller, avatarIKHint);
+            else if (IKGoals.TryGetValue(controller.boneType, out AvatarIKGoal avatarIKGoal))
+                SetGoal(controller, avatarIKGoal);
+            else if (controller.boneType is BoneType.Head)
+                LookAt(controller);
+            else if (controller.boneType is not BoneType.Hips) // hips should not be moved by any IK controller.
+            {
+                HumanBodyBones? boneTypeUnity = BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType);
+                if (boneTypeUnity.HasValue)
+                    SetControl(controller, boneTypeUnity.Value);
             }
         }
 

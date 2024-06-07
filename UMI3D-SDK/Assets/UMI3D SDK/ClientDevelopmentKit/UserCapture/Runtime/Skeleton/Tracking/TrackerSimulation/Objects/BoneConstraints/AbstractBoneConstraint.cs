@@ -67,6 +67,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
         {
             ConstrainedSimulatedTracker tracker = new GameObject(TrackerLabel).AddComponent<ConstrainedSimulatedTracker>();
             tracker.Init(this);
+            tracker.distantController.isOverrider = true;
             return tracker;
         }
 

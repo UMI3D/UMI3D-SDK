@@ -34,10 +34,6 @@ namespace umi3d.cdk.userCapture.tracking
 
         public ITransformation transformation { get; }
 
-        public virtual ControllerDto ToControllerDto()
-        {
-            // if DTO is null, it will break in serialization
-            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = position.Dto(), rotation = rotation.Dto(), isOverrider = false };
-        }
+        public ControllerDto ToControllerDto();
     }
 }

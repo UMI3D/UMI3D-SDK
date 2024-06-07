@@ -28,6 +28,13 @@ namespace umi3d.cdk.userCapture.tracking.ik
         /// </summary>
         /// <param name="layerIndex"></param>
         /// <param name="controllers"></param>
+        void HandleAnimatorIK(int layerIndex, IController controller);
+
+        /// <summary>
+        /// Apply Inverse Kinematics logic from the controller data.
+        /// </summary>
+        /// <param name="layerIndex"></param>
+        /// <param name="controllers"></param>
         void HandleAnimatorIK(int layerIndex, IEnumerable<IController> controllers);
 
         /// <summary>

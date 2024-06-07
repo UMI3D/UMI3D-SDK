@@ -17,6 +17,7 @@ limitations under the License.
 using inetum.unityUtils;
 using umi3d.common.core;
 using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -48,6 +49,12 @@ namespace umi3d.cdk.userCapture.tracking
         public void Destroy()
         {
             GameObject.Destroy(gameObject);
+        }
+
+        public ControllerDto ToControllerDto()
+        {
+            // if DTO is null, it will break in serialization
+            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = position.Dto(), rotation = rotation.Dto(), isOverrider = false };
         }
     }
 }

@@ -177,15 +177,25 @@ namespace umi3d.cdk.userCapture.tracking.ik
         #endregion LifeCycle
 
         /// <inheritdoc/>
+        public void HandleAnimatorIK(int layerIndex, IController controller)
+        {
+            if (ikControllers.TryGetValue(controller.boneType, out SimpleIKController ikController))
+            {
+                ikController.goal.transform.position = controller.position;
+                ikController.Apply();
+            }
+        }
+
+        /// <summary>
+        /// <inheritdoc/> <br/>
+        /// Called by OnAnimatorIK in TrackedAnimator, set all tracked bones as computed and positions IK hints.
+        /// </summary>
+        /// <param name="layerIndex"></param>
         public void HandleAnimatorIK(int layerIndex, IEnumerable<IController> controllers)
         {
             foreach (var controller in controllers)
             {
-                if (ikControllers.TryGetValue(controller.boneType, out SimpleIKController ikController))
-                {
-                    ikController.goal.transform.position = controller.position;
-                    ikController.Apply();
-                }
+                HandleAnimatorIK(0, controller);
             }
         }
 
