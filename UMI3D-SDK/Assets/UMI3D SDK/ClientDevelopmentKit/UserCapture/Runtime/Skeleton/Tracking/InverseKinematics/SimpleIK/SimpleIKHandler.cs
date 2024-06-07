@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using UnityEngine;
@@ -58,7 +59,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
             /// <summary>
             /// Joints rotated by IK.
             /// </summary>
-            public (uint first, uint intermerdiary) affectedBones;
+            public (uint first, uint intermediary) affectedBones;
 
             /// <summary>
             /// Relative position of the hint in the reference frame of the Hips.
@@ -124,6 +125,12 @@ namespace umi3d.cdk.userCapture.tracking.ik
         {
             this.skeleton = skeleton;
 
+            if (!skeleton.Bones.ContainsKey(BoneType.Hips))
+            {
+                UMI3DLogger.LogWarning($"Skeleton has no Hips. Post-process IK disabled.", DebugScope.CDK | DebugScope.UserCapture);
+                return;
+            }
+
             IKNode = new GameObject("IK Hints");
             IKNode.transform.SetParent(skeleton.Bones[BoneType.Hips].Transform); // hints are relative to hips
             IKNode.transform.localPosition = Vector3.zero;
@@ -138,12 +145,30 @@ namespace umi3d.cdk.userCapture.tracking.ik
             inited = true;
         }
 
-        private SimpleIKController SetupIK(uint goalBoneType)
+        private void SetupIK(uint goalBoneType)
         {
             string name = BoneTypeHelper.GetBoneName(goalBoneType);
 
+            if (!skeleton.Bones.ContainsKey(goalBoneType))
+            {
+                UMI3DLogger.LogWarning($"Skeleton does not contain required bone {goalBoneType}. Post-process IK on {goalBoneType} disabled.", DebugScope.CDK | DebugScope.UserCapture);
+                return;
+            }
+
+            if (!skeleton.Bones.ContainsKey(ikParameters[goalBoneType].affectedBones.first))
+            {
+                UMI3DLogger.LogWarning($"Skeleton does not contain required bone {ikParameters[goalBoneType].affectedBones.first}. Post-process IK on {goalBoneType} disabled.", DebugScope.CDK | DebugScope.UserCapture);
+                return;
+            }
+
+            if (!skeleton.Bones.ContainsKey(ikParameters[goalBoneType].affectedBones.intermediary))
+            {
+                UMI3DLogger.LogWarning($"Skeleton does not contain required bone {ikParameters[goalBoneType].affectedBones.intermediary} Post-process IK on {goalBoneType} disabled.", DebugScope.CDK | DebugScope.UserCapture);
+                return;
+            }
+
             SimpleIKController ikController = new(skeleton.Bones[ikParameters[goalBoneType].affectedBones.first].Transform,
-                                                        skeleton.Bones[ikParameters[goalBoneType].affectedBones.intermerdiary].Transform,
+                                                        skeleton.Bones[ikParameters[goalBoneType].affectedBones.intermediary].Transform,
                                                         skeleton.Bones[goalBoneType].Transform,
                                                         new GameObject($"IK hint - {name}").transform,
                                                         new GameObject($"IK goal - {name}").transform,
@@ -157,8 +182,6 @@ namespace umi3d.cdk.userCapture.tracking.ik
             ikController.goal.transform.position = skeleton.Bones[goalBoneType].Position;
 
             ikControllers.Add(goalBoneType, ikController);
-
-            return ikController;
         }
 
         #endregion Initialization
