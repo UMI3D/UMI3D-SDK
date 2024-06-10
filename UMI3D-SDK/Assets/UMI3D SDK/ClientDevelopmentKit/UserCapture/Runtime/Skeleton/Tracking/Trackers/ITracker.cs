@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2023 Inetum
+Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,26 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using umi3d.common.userCapture.description;
-using umi3d.common.userCapture;
-using UnityEngine;
-using umi3d.common.core;
-
 namespace umi3d.cdk.userCapture.tracking
 {
-    public interface IController
+    public interface ITracker
     {
-        public bool isActive { set; get; }
-
-        public void Destroy();
-
-        public uint boneType { get; }
-        public Vector3 position { get; }
-        public Quaternion rotation { get; }
-        public Vector3 scale { get; }
-
-        public ITransformation transformation { get; }
-
-        public ControllerDto ToControllerDto();
+        uint BoneType { get; }
+        DistantController distantController { get; }
+        bool isActif { get; set; }
+        bool isOverrider { get; set; }
     }
 }

@@ -37,14 +37,25 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public Vector3 worldSize => TrackedSubskeleton.Hips.lossyScale;
 
+        private ILoadingManager loadingManager;
+
+        private bool hasHeadMountedDisplay = false; 
+
         protected void Start()
         {
             PoseSubskeleton = new PoseSubskeleton(UMI3DGlobalID.EnvironmentId, this);
+            
+        }
+
+        public void Init(bool hasHMD)
+        {
+            this.hasHeadMountedDisplay = hasHMD;
+            Init(trackedSkeleton, PoseSubskeleton);
         }
 
         public void Init()
         {
-            Init(trackedSkeleton, PoseSubskeleton);
+            Init((UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.HasHeadMountedDisplay ?? false);
         }
 
         /// <inheritdoc/>
@@ -80,6 +91,15 @@ namespace umi3d.cdk.userCapture
             }
 
             lastFrame = frame;
+        }
+
+        protected override void CorrectIK()
+        {
+            if (hasHeadMountedDisplay) // no IK correction for VR devices
+                return;
+
+
+            base.CorrectIK();
         }
     }
 }

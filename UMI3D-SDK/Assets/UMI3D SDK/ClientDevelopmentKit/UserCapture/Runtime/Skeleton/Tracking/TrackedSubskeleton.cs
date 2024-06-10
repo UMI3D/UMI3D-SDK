@@ -16,6 +16,7 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+using umi3d.cdk.userCapture.tracking.ik;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
@@ -51,7 +52,7 @@ namespace umi3d.cdk.userCapture.tracking
         private readonly List<uint> receivedTypes = new List<uint>();
         private readonly Dictionary<uint, (Vector3LinearDelayedExtrapolator PositionExtrapolator, QuaternionLinearDelayedExtrapolator RotationExtrapolator, IController Controller)> extrapolators = new();
 
-        private IKHandler IKHandler;
+        private TrackingAnimatorIKHandler ikHandler;
 
         [SerializeField]
         public Camera viewpoint;
@@ -72,7 +73,9 @@ namespace umi3d.cdk.userCapture.tracking
         /// <summary>
         /// Animator wrapper.
         /// </summary>
-        public TrackedAnimator trackedAnimator;
+        [SerializeField]
+        protected TrackedAnimator trackedAnimator;
+        public TrackedAnimator TrackedAnimator => trackedAnimator;
 
         [SerializeField]
         public Dictionary<uint, TrackedSubskeletonBone> bones = new();
@@ -110,7 +113,7 @@ namespace umi3d.cdk.userCapture.tracking
                 trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
             }
 
-            IKHandler = new IKHandler(animator);
+            ikHandler = new TrackingAnimatorIKHandler(animator);
             trackedAnimator.IkCallback += ApplyIK;
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
@@ -132,7 +135,7 @@ namespace umi3d.cdk.userCapture.tracking
         private void ApplyIK(int layer)
         {
             // clean controllers
-            IKHandler.Reset(controllersToClean, bones);
+            ikHandler.Reset(controllersToClean, bones);
             controllersToClean.Clear();
 
             // destroy deleted controllers
@@ -141,7 +144,7 @@ namespace umi3d.cdk.userCapture.tracking
             controllersToDestroy.Clear();
 
             // apply actual IK
-            IKHandler.HandleAnimatorIK(layer, controllers.Values, bones);
+            ikHandler.HandleAnimatorIK(layer, controllers.Values, bones);
         }
 
         private void Update()
