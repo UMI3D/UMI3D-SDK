@@ -178,7 +178,7 @@ namespace umi3d.edk.collaboration.emotes
             
             if (animationId != default) // when animationId is default, trigger emote without triggering an animation
             {
-                UMI3DAbstractAnimation animation = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractAnimation>(animationId);
+                IAnimation animation = umi3dEnvironmentService._GetEntityInstance<IAnimation>(animationId);
 
                 if (animation == null)
                 {
