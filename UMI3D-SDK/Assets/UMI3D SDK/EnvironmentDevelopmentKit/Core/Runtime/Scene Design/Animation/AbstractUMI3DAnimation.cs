@@ -25,13 +25,13 @@ namespace umi3d.edk
     /// <summary>
     /// Abstract base for all animated media, such as animations, videoplayers or audioplayers.
     /// </summary>
-    public class UMI3DAbstractAnimation : MonoBehaviour, UMI3DLoadableEntity
+    public class UMI3DAbstractAnimation : MonoBehaviour, UMI3DLoadableEntity, IAnimation
     {
         /// <summary>
         /// Entity UMI3D id.
         /// </summary>
         private ulong animationID;
-        
+
         /// <summary>
         /// Is the animation playing?
         /// </summary>
@@ -147,7 +147,7 @@ namespace umi3d.edk
         }
 
         /// <inheritdoc/>
-        public DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
+        public virtual DeleteEntity GetDeleteEntity(HashSet<UMI3DUser> users = null)
         {
             var operation = new DeleteEntity()
             {
@@ -176,7 +176,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user">User to convert for</param>
         /// <returns></returns>
-        public UMI3DAbstractAnimationDto ToAnimationDto(UMI3DUser user)
+        public virtual UMI3DAbstractAnimationDto ToAnimationDto(UMI3DUser user)
         {
             UMI3DAbstractAnimationDto dto = CreateDto();
             WriteProperties(dto, user);
@@ -193,13 +193,13 @@ namespace umi3d.edk
         }
 
         /// <inheritdoc/>
-        public IEntity ToEntityDto(UMI3DUser user)
+        public virtual IEntity ToEntityDto(UMI3DUser user)
         {
             return ToAnimationDto(user);
         }
 
         /// <inheritdoc/>
-        public Bytable ToBytes(UMI3DUser user)
+        public virtual Bytable ToBytes(UMI3DUser user)
         {
             return UMI3DSerializer.Write(Id())
                 + UMI3DSerializer.Write(objectPlaying.GetValue(user))
