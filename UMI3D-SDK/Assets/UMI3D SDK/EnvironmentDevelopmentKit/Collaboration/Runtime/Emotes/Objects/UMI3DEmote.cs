@@ -39,7 +39,7 @@ namespace umi3d.edk.collaboration.emotes
         /// <summary>
         /// Emote animation
         /// </summary>
-        public UMI3DAsyncProperty<ulong> AnimationId
+        public virtual UMI3DAsyncProperty<ulong> AnimationId
         {
             get
             {
@@ -54,7 +54,7 @@ namespace umi3d.edk.collaboration.emotes
         /// <summary>
         /// If the user can see and play the emote.
         /// </summary>
-        public UMI3DAsyncProperty<bool> Available
+        public virtual UMI3DAsyncProperty<bool> Available
         {
             get
             {

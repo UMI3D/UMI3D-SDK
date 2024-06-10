@@ -94,6 +94,7 @@ namespace umi3d.edk.collaboration.emotes
             if (!AutoLoadAnimations)
                 return;
 
+            // retrieve animations for each emote and their loading operation
             var operations = (from otherUser in umi3dServerService.Users()
                               where otherUser.Id() != user.Id() && EmotesConfigs.ContainsKey(otherUser.Id())
                               from emote in EmotesConfigs[otherUser.Id()].IncludedEmotes
@@ -108,7 +109,7 @@ namespace umi3d.edk.collaboration.emotes
 
             Transaction t = new() { reliable = true };
             t.AddIfNotNull(operations);
-            t.Dispatch();
+            umi3dServerService.DispatchTransaction(t);
         }
 
         private void CleanEmotesAnimations(UMI3DUser user)
@@ -128,7 +129,7 @@ namespace umi3d.edk.collaboration.emotes
 
             Transaction t = new() { reliable = true };
             t.AddIfNotNull(operations);
-            t.Dispatch();
+            umi3dServerService.DispatchTransaction(t);
         }
 
         /// <summary>
@@ -139,19 +140,33 @@ namespace umi3d.edk.collaboration.emotes
         /// <param name="trigger">True for triggering, false to interrupt.</param>
         public void DispatchEmoteTrigger(UMI3DUser sendingUser, ulong emoteId, bool trigger)
         {
+            // lots of null handling here, but emote request can be invalid in many ways.
+            /* to be valid :
+             * An emote config should exist for the user, 
+             * it should the required emote,
+             * the emote should be available for the user,
+             * and the emote animation should not have been destroyed in the meanwhile.
+            */
+
             ulong sendingUserId = sendingUser.Id();
             if (!EmotesConfigs.ContainsKey(sendingUserId))
             {
-                UMI3DLogger.LogWarning($"Cannot {(trigger ? "start" : "stop")} emote for user {sendingUserId}. User does not have an emote config.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Cannot {(trigger ? "start" : "stop")} emote for user {sendingUserId}. User does not have an emote config. User {sendingUserId} should not be able to request emotes.", DEBUG_SCOPE);
                 return;
             }
             else if (EmotesConfigs[sendingUserId].IncludedEmotes.Count == 0)
             {
-                UMI3DLogger.LogWarning($"Cannot {(trigger ? "start" : "stop")} emote for user {sendingUserId}. Emote config is empty of emotes.", DEBUG_SCOPE);
+                UMI3DLogger.LogWarning($"Cannot {(trigger ? "start" : "stop")} emote for user {sendingUserId}. Emote config is empty of emotes. User {sendingUserId} should not be able to request emotes.", DEBUG_SCOPE);
                 return;
             }
 
             UMI3DEmote emote = EmotesConfigs[sendingUserId].IncludedEmotes.Find(x => x.Id() == emoteId);
+
+            if (emote == null)
+            {
+                UMI3DLogger.LogWarning($"Cannot {(trigger ? "start" : "stop")} emote for user {sendingUserId}. Emote {emoteId} does not exist. Emote request is invalid or emote config has been reset.", DEBUG_SCOPE);
+                return;
+            }
 
             if (!emote.Available.GetValue(sendingUser))
             {
@@ -163,11 +178,18 @@ namespace umi3d.edk.collaboration.emotes
             
             if (animationId != default) // when animationId is default, trigger emote without triggering an animation
             {
-                UMI3DAbstractAnimation animation = umi3dEnvironmentService._GetEntityInstance<UMI3DAbstractAnimation>(animationId);
+                IAnimation animation = umi3dEnvironmentService._GetEntityInstance<IAnimation>(animationId);
+
+                if (animation == null)
+                {
+                    UMI3DLogger.LogWarning($"Cannot {(trigger ? "start" : "stop")} emote for user {sendingUserId}. Associated animation {animationId} for emote {emote.label} does not exist. Animation {animationId} may have been destroyed.", DEBUG_SCOPE);
+                    return;
+                }
+
                 Transaction t = new (true);
                 SetEntityProperty op = animation.objectPlaying.SetValue(trigger);
                 if (t.AddIfNotNull(op))
-                    t.Dispatch();
+                    umi3dServerService.DispatchTransaction(t);
             }
 
             EmoteTriggered?.Invoke((sendingUser, emoteId, trigger));

@@ -177,7 +177,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user">the user</param>
         /// <returns></returns>
-        public T GetValue(UMI3DUser user)
+        public virtual T GetValue(UMI3DUser user)
         {
             if (user == null)
                 return value;
@@ -189,7 +189,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user">the user</param>
         /// <returns></returns>
-        public T GetValue()
+        public virtual T GetValue()
         {
             return value;
         }
@@ -199,7 +199,7 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="value">the new property's value</param>
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
-        public SetEntityProperty SetValue(T value, bool forceOperation = false)
+        public virtual SetEntityProperty SetValue(T value, bool forceOperation = false)
         {
             if (((this.value == null && value == null) || (this.value != null && Equal(this.value, value))) && !forceOperation)
                 return null;
@@ -223,7 +223,7 @@ namespace umi3d.edk
         /// <param name="user">the user</param>
         /// <param name="value">the new property's value</param>
         /// <param name="forceOperation">state if an operation should be return even if the new value is equal to the previous value</param>
-        public SetEntityProperty SetValue(UMI3DUser user, T value, bool forceOperation = false)
+        public virtual SetEntityProperty SetValue(UMI3DUser user, T value, bool forceOperation = false)
         {
             if (user == null)
                 return SetValue(value, forceOperation);
