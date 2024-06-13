@@ -79,7 +79,7 @@ namespace umi3d.worldController
             return await Task.FromResult<List<AssetLibraryDto>>(null);
         }
 
-        public virtual async Task<bool> isFormValid(User user, FormAnswerDto formAnswer)
+        public virtual async Task<bool> isFormValid(User user, common.interaction.FormAnswerDto formAnswer)
         {
             UnityEngine.Debug.Log(formAnswer.ToJson(Newtonsoft.Json.TypeNameHandling.None));
 

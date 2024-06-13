@@ -48,7 +48,7 @@ namespace umi3d.worldController
         /// <param name="user"></param>
         /// <param name="formAnswer"></param>
         /// <returns></returns>
-        Task<bool> isFormValid(User user, FormAnswerDto formAnswer);
+        Task<bool> isFormValid(User user, common.interaction.FormAnswerDto formAnswer);
 
         /// <summary>
         /// Select an Environment for a user.

@@ -32,9 +32,9 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>
-        public virtual async Task<FormAnswerDto> GetParameterDtos(ConnectionFormDto parameter)
+        public virtual async Task<common.interaction.FormAnswerDto> GetParameterDtos(ConnectionFormDto parameter)
         {
-            return await Task.FromResult(new FormAnswerDto()
+            return await Task.FromResult(new common.interaction.FormAnswerDto()
             {
                 id = parameter.id,
                 toolId = 0,
@@ -43,6 +43,25 @@ namespace umi3d.cdk.collaboration
                 answers = parameter.fields.Select(a => new ParameterSettingRequestDto() { toolId = 0, id = a.id, boneType = 0, hoveredObjectId = 0, parameter = a.GetValue() }).ToList()
             });
         }
+
+        /// <summary>
+        /// Fill a form and return it via a callback.
+        /// </summary>
+        /// <param name="parameter">FormDto to be filled.</param>
+        /// <param name="callback">Action to return the completed FormDto.</param>
+        public virtual async Task<common.interaction.form.FormAnswerDto> GetParameterDtos(common.interaction.form.ConnectionFormDto parameter)
+        {
+            return await Task.FromResult(new common.interaction.form.FormAnswerDto()
+            {
+                formId = parameter.id,
+                pageId = 0,
+                submitId = 0,
+                isBack = false,
+                isCancelation = false,
+                inputs = new()
+            });
+        }
+
 
         /// <summary>
         /// Should State if the needed libraries should be downloaded.

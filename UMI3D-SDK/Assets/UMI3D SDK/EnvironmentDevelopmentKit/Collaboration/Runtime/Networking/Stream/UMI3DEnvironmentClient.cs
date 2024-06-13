@@ -164,7 +164,7 @@ namespace umi3d.edk.collaboration
 
             public void Set(UserConnectionDto dto)
             {
-                FormAnswerDto param = this.answerDto.parameters;
+                common.interaction.FormAnswerDto param = this.answerDto.parameters;
                 this.answerDto = new UserConnectionAnswerDto()
                 {
                     id = dto.id,
