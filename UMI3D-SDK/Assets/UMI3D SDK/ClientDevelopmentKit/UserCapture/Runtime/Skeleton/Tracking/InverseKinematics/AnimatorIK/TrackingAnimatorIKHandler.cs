@@ -15,9 +15,12 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using System.Collections.Generic;
+
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking.ik
@@ -46,7 +49,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
             { BoneType.RightHand, new uint[] { BoneType.RightForearm, BoneType.RightUpperArm } },
 
             { BoneType.Head, new uint[] { } },
-            { BoneType.Viewpoint, new uint[] { } },
+            { BoneType.Viewpoint, new uint[] { BoneType.Head } },
 
             { BoneType.Hips, new uint[] { } },
         };
