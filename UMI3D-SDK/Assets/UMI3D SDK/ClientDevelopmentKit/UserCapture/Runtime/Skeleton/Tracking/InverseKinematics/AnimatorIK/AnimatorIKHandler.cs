@@ -15,8 +15,11 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking.ik
@@ -63,7 +66,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
         /// <param name="layerIndex"></param>
         public void HandleAnimatorIK(int layerIndex, IEnumerable<IController> controllers)
         {
-            foreach (var controller in controllers)
+            foreach (var controller in controllers.OrderBy(x => BoneTypeHelper.StandardPriority(x.boneType)))
             {
                 HandleAnimatorIK(0, controller);
             }
