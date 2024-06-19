@@ -394,7 +394,7 @@ namespace umi3d.cdk.userCapture
             // fix rotations
             foreach (IController controller in TrackedSubskeleton.Controllers.Values)
             {
-                if (controller is not DistantController dc || !dc.isOverrider || !controller.isActive) // do not overwrite normal controllers
+                if (controller is not VirtualController dc || !dc.isOverrider || !controller.isActive) // do not overwrite normal controllers
                     continue;
 
                 postProcessIKHandler.HandleAnimatorIK(0, controller); // pb : what should be overriden ?

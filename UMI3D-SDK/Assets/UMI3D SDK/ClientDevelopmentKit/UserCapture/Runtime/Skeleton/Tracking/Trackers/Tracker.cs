@@ -15,52 +15,86 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
+using umi3d.common.core;
+using umi3d.common.userCapture.description;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class Tracker : MonoBehaviour, ITracker
+    /// <summary>
+    /// Tracks a part of the curreent user's skeleton and provides its data.
+    /// </summary>
+    public class Tracker : MonoBehaviour, ITracker, IController
     {
         [EditorReadOnly, SerializeField, ConstEnum(typeof(common.userCapture.BoneType), typeof(uint))]
         protected uint boneType;
 
+        /// <inheritdoc/>
         public uint BoneType => boneType;
 
-        public bool isActif { get; set; } = true;
+        /// <inheritdoc/>
+        public bool isActive { get; set; } = true;
 
-        public bool isOverrider { get; set; } = true;
+        /// <inheritdoc/>
+        public bool isOverrider { get; set; } = false;
+
+        /// <inheritdoc/>
+        public virtual IController Controller => this;
+
+        /// <inheritdoc/>
+        uint IController.boneType => boneType;
+
+        /// <inheritdoc/>
+        public Vector3 position => transform.position;
+
+        /// <inheritdoc/>
+        public Quaternion rotation => transform.rotation;
+
+        /// <inheritdoc/>
+        public Vector3 scale => transform.localScale;
+
+        /// <inheritdoc/>
+        public ITransformation transformation => _transformation;
+
+        /// <summary>
+        ///  Wrapper for unity transformation.
+        /// </summary>
+        public UnityTransformation _transformation;
+
+        #region Lifecycle
+
+        public virtual void Init(uint boneType)
+        {
+            this.boneType = boneType;
+            _transformation = new(transform);
+        }
 
         protected void Awake()
         {
-            CreateDistantController();
+            Init(boneType);
         }
 
-        protected virtual void Update()
+        /// <inheritdoc/>
+        public event System.Action Destroyed;
+
+        /// <inheritdoc/>
+        public void Destroy()
         {
-            UpdateDistantController();
+            Destroyed?.Invoke();
+            UnityEngine.GameObject.Destroy(this);
         }
 
-        protected virtual void CreateDistantController()
+        #endregion Lifecycle
+
+        /// <inheritdoc/>
+        public ControllerDto ToControllerDto()
         {
-            distantController = new DistantController()
-            {
-                boneType = boneType,
-                position = transform.position,
-                rotation = transform.rotation,
-                isActive = isActif,
-                isOverrider = isOverrider
-            };
+            if (boneType is umi3d.common.userCapture.BoneType.None)
+                return null;
+
+            return new ControllerDto { boneType = boneType, position = position.Dto(), rotation = rotation.Dto(), isOverrider = isOverrider };
         }
-
-        protected virtual void UpdateDistantController()
-        {
-            distantController.position = transform.position;
-            distantController.rotation = transform.rotation;
-            distantController.isActive = isActif;
-            distantController.isOverrider = isOverrider;
-        }
-
-        public DistantController distantController { get; protected set; }
-
     }
 }

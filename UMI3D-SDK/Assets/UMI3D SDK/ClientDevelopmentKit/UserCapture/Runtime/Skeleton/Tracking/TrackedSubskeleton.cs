@@ -124,7 +124,7 @@ namespace umi3d.cdk.userCapture.tracking
 
             foreach (var tracker in GetComponentsInChildren<Tracker>())
             {
-                controllers.Add(tracker.BoneType, tracker.distantController);
+                controllers.Add(tracker.BoneType, tracker);
             }
         }
 
@@ -162,7 +162,7 @@ namespace umi3d.cdk.userCapture.tracking
         private void UpdateControllersPosition()
         {
             foreach (var extrapolator in extrapolators.Values)
-                if (extrapolator.Controller is DistantController vc)
+                if (extrapolator.Controller is VirtualController vc)
                 {
                     vc.position = extrapolator.PositionExtrapolator.Extrapolate();
                     vc.rotation = extrapolator.RotationExtrapolator.Extrapolate();
@@ -234,10 +234,10 @@ namespace umi3d.cdk.userCapture.tracking
             foreach (var bone in trackingFrame.trackedBones)
             {
                 if (!controllers.TryGetValue(bone.boneType, out IController controller)
-                    || controller is not DistantController vc) // controllers from tracking frames should be handled as distant controllers
+                    || controller is not VirtualController vc) // controllers from tracking frames should be handled as distant controllers
                 {
                     // create controller from tracking frame
-                    vc = new DistantController
+                    vc = new VirtualController
                     {
                         boneType = bone.boneType,
                         isOverrider = bone.isOverrider,
@@ -262,10 +262,10 @@ namespace umi3d.cdk.userCapture.tracking
                 receivedTypes.Add(bone.boneType);
             }
 
-            Queue<DistantController> controllersToRemove = new();
+            Queue<VirtualController> controllersToRemove = new();
             foreach (var c in controllers.Values)
             {
-                if (c is DistantController dc && !receivedTypes.Contains(c.boneType))
+                if (c is VirtualController dc && !receivedTypes.Contains(c.boneType))
                 {
                     extrapolators.Remove(c.boneType);
                     controllersToRemove.Enqueue(dc);

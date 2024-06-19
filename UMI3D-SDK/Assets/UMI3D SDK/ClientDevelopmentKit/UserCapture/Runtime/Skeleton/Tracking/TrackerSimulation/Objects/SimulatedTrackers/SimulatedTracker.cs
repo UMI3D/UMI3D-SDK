@@ -19,19 +19,10 @@ using UnityEngine;
 namespace umi3d.cdk.userCapture.tracking
 {
     /// <summary>
-    /// Tracker that does not physically exist.
+    /// Tracker that does not physically exist but attempt to describe the current user.
     /// </summary>
     public class SimulatedTracker : Tracker, ISimulatedTracker
     {
-        public IController Controller => distantController;
-
         public GameObject GameObject => this.gameObject;
-
-        public void Init(uint boneType)
-        {
-            this.boneType = boneType;
-
-            CreateDistantController();
-        }
     }
 }
