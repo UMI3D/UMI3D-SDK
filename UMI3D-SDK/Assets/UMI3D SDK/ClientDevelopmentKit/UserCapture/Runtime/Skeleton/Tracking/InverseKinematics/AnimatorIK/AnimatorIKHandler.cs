@@ -101,12 +101,6 @@ namespace umi3d.cdk.userCapture.tracking.ik
             HandleAnimatorIK(0, controllers);
         }
 
-        protected void SetControl(IController controller, HumanBodyBones goal)
-        {
-            if (controller.isActive)
-                animator.SetBoneLocalRotation(goal, controller.rotation);
-        }
-
         protected void SetGoal(IController controller, AvatarIKGoal goal)
         {
             if (controller.isActive)
@@ -163,6 +157,17 @@ namespace umi3d.cdk.userCapture.tracking.ik
             {
                 animator.SetLookAtWeight(0);
             }
+        }
+
+        /// <summary>
+        /// Control IK for bones that are not goals or hints.
+        /// </summary>
+        /// <param name="controller"></param>
+        /// <param name="goal"></param>
+        protected virtual void SetControl(IController controller, HumanBodyBones goal)
+        {
+            if (controller.isActive)
+                animator.SetBoneLocalRotation(goal, controller.transformation.LocalRotation);
         }
     }
 }
