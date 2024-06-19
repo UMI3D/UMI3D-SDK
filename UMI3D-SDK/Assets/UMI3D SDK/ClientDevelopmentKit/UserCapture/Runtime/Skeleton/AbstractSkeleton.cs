@@ -18,6 +18,7 @@ using inetum.unityUtils;
 
 using System.Collections;
 using System.Collections.Generic;
+
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
 using umi3d.cdk.userCapture.tracking;
@@ -247,6 +248,8 @@ namespace umi3d.cdk.userCapture
         /// <inheritdoc/>
         public ISkeleton Compute()
         {
+            PreComputed?.Invoke();
+
             AssembleSkeleton();
 
             RawComputed?.Invoke();
@@ -257,6 +260,11 @@ namespace umi3d.cdk.userCapture
 
             return this;
         }
+
+        /// <summary>
+        /// Called after just before each skeleton computation.
+        /// </summary>
+        public event System.Action PreComputed;
 
         /// <summary>
         /// Called after after each computation and before post-procession.
