@@ -30,8 +30,11 @@ namespace umi3d.cdk.userCapture.tracking.ik
     /// </summary>
     public class TrackingAnimatorIKHandler : AnimatorIKHandler
     {
-        public TrackingAnimatorIKHandler(Animator animator) : base(animator)
+        private readonly ITrackedSubskeleton trackedSubskeleton;
+
+        public TrackingAnimatorIKHandler(Animator animator, ITrackedSubskeleton trackedSubskeleton) : base(animator)
         {
+            this.trackedSubskeleton = trackedSubskeleton;
         }
 
         public readonly IReadOnlyDictionary<uint, uint[]> BonesToMarkComputed = new Dictionary<uint, uint[]>()
@@ -91,6 +94,16 @@ namespace umi3d.cdk.userCapture.tracking.ik
                     }
                 }
             }
+        }
+
+        protected override void SetControl(IController controller, HumanBodyBones goal)
+        {
+            if (controller.isActive)
+            {
+                trackedSubskeleton.TrackedBones[controller.boneType].transform.rotation = controller.rotation;
+                animator.SetBoneLocalRotation(goal, trackedSubskeleton.TrackedBones[controller.boneType].transform.localRotation);
+            }
+                
         }
     }
 }

@@ -16,12 +16,14 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.cdk.userCapture.tracking.ik;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -75,6 +77,7 @@ namespace umi3d.cdk.userCapture.tracking
         /// </summary>
         [SerializeField]
         protected TrackedAnimator trackedAnimator;
+
         public TrackedAnimator TrackedAnimator => trackedAnimator;
 
         [SerializeField]
@@ -113,7 +116,7 @@ namespace umi3d.cdk.userCapture.tracking
                 trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
             }
 
-            ikHandler = new TrackingAnimatorIKHandler(animator);
+            ikHandler = new TrackingAnimatorIKHandler(animator, this);
             trackedAnimator.IkCallback += ApplyIK;
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
