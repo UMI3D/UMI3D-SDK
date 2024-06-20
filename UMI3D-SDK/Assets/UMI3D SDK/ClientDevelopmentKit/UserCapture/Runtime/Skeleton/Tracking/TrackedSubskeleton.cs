@@ -226,7 +226,6 @@ namespace umi3d.cdk.userCapture.tracking
             // get the boneDto of each bone that is relevant for IK or is a controller
             foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.ContainsKey(x.boneType)))
             {
-                //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 dto.bones.Add(bone.ToBoneDto());
             }
             return dto;
@@ -237,50 +236,36 @@ namespace umi3d.cdk.userCapture.tracking
         /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
-            receivedTypes.Clear();
+            receivedTypes.Clear();  // list faster than hashset with few items and clean/rewrite
             foreach (var bone in trackingFrame.trackedBones)
             {
-                if (!controllers.TryGetValue(bone.boneType, out IController controller)
-                    || controller is not VirtualController vc) // controllers from tracking frames should be handled as distant controllers
+                // recieve new distant controller
+                if (!controllers.TryGetValue(bone.boneType, out IController controller)) // controllers from tracking frames should be handled as distant controllers
                 {
                     // create controller from tracking frame
-                    vc = new VirtualController
+                    controller = new VirtualController
                     {
                         boneType = bone.boneType,
                         isOverrider = bone.isOverrider,
                         position = bone.position.Struct(),
                         rotation = bone.rotation.Quaternion()
                     };
-                    ReplaceController(vc);
+                    ReplaceController(controller);
+
+                    controller.isActive = true;
                 }
 
-                vc.isActive = true;
-                if (extrapolators.ContainsKey(bone.boneType))
-                {
-                    extrapolators[bone.boneType].PositionExtrapolator.AddMeasure(bone.position.Struct());
-                    extrapolators[bone.boneType].RotationExtrapolator.AddMeasure(bone.rotation.Quaternion());
-                }
-                else
-                {
-                    vc.position = bone.position.Struct();
-                    vc.rotation = bone.rotation.Quaternion();
-                }
+                // update controller transformation
+                extrapolators[bone.boneType].PositionExtrapolator.AddMeasure(bone.position.Struct());
+                extrapolators[bone.boneType].RotationExtrapolator.AddMeasure(bone.rotation.Quaternion());
 
                 receivedTypes.Add(bone.boneType);
             }
 
-            Queue<VirtualController> controllersToRemove = new();
-            foreach (var c in controllers.Values)
+            // remove not recieved types
+            foreach (var bone in controllers.Keys.Where(b=> !receivedTypes.Contains(b)).ToArray())
             {
-                if (c is VirtualController dc && !receivedTypes.Contains(c.boneType))
-                {
-                    extrapolators.Remove(c.boneType);
-                    controllersToRemove.Enqueue(dc);
-                }
-            }
-            foreach (var dc in controllersToRemove)
-            {
-                DeleteController(dc);
+                RemoveController(bone);
             }
         }
 
