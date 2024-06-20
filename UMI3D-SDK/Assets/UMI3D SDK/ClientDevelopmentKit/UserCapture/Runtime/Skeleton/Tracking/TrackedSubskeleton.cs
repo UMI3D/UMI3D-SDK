@@ -143,6 +143,13 @@ namespace umi3d.cdk.userCapture.tracking
                 controller.Destroy();
             controllersToDestroy.Clear();
 
+            // hips management before IK
+            if (controllers.TryGetValue(BoneType.Hips, out var hipsController))
+            {
+                Hips.transform.position = hipsController.position;
+                Hips.transform.rotation = hipsController.rotation;
+            }
+
             // apply actual IK
             ikHandler.HandleAnimatorIK(layer, controllers.Values, bones);
         }
