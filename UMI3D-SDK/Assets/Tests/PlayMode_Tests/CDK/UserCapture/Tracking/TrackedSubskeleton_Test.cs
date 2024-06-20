@@ -44,12 +44,12 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
         protected TrackedSubskeleton trackedSkeleton;
         protected Camera viewpoint;
 
-        protected DistantController firstOtherDistantController;
-        protected DistantController secondOtherDistantController;
-        protected DistantController thirdOtherDistantController;
+        protected VirtualController firstOtherDistantController;
+        protected VirtualController secondOtherDistantController;
+        protected VirtualController thirdOtherDistantController;
 
         protected List<TrackedSubskeletonBone> trackedBones;
-        protected List<DistantController> distantControllers;
+        protected List<VirtualController> distantControllers;
 
         private List<uint> bonetypesValues;
 
@@ -113,16 +113,16 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
             trackedBones = new List<TrackedSubskeletonBone> { FirstTSB, SecondTSB, ThirdTSB, TSBC };
 
             // DistantControllers setup
-            firstOtherDistantController = new DistantController() { isActive = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
+            firstOtherDistantController = new VirtualController() { isActive = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
             firstOtherDistantController.boneType = GetRandomBonetype();
 
-            secondOtherDistantController = new DistantController() { isActive = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
+            secondOtherDistantController = new VirtualController() { isActive = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
             secondOtherDistantController.boneType = GetRandomBonetype();
 
-            thirdOtherDistantController = new DistantController() { isActive = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
+            thirdOtherDistantController = new VirtualController() { isActive = true, position = Vector3.one, rotation = Quaternion.identity, isOverrider = true };
             thirdOtherDistantController.boneType = GetRandomBonetype();
 
-            distantControllers = new List<DistantController> { firstOtherDistantController, secondOtherDistantController, thirdOtherDistantController };
+            distantControllers = new List<VirtualController> { firstOtherDistantController, secondOtherDistantController, thirdOtherDistantController };
         }
 
         protected GameObject InstantiateGameObjectWithOffset(string name)
@@ -277,7 +277,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
                 if (bone is TrackedSubskeletonBoneController)
                 {
-                    Controllers.Add(new DistantController() { boneType = bone.boneType, isActive = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+                    Controllers.Add(new VirtualController() { boneType = bone.boneType, isActive = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
                     targetPose.bones.Add(bone.ToBoneDto());
                 }
             }
@@ -345,7 +345,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             foreach (var dto in frame.trackedBones)
             {
-                expectedControllers.Add(new DistantController() { boneType = dto.boneType, isActive = true, position = dto.position.Struct(), rotation = dto.rotation.Quaternion(), isOverrider = dto.isOverrider });
+                expectedControllers.Add(new VirtualController() { boneType = dto.boneType, isActive = true, position = dto.position.Struct(), rotation = dto.rotation.Quaternion(), isOverrider = dto.isOverrider });
             }
 
             // WHEN
@@ -372,7 +372,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
 
             foreach (var dto in frame.trackedBones)
             {
-                expectedControllers.Add(new DistantController() { boneType = dto.boneType, isActive = true, position = dto.position.Struct(), rotation = dto.rotation.Quaternion(), isOverrider = dto.isOverrider });
+                expectedControllers.Add(new VirtualController() { boneType = dto.boneType, isActive = true, position = dto.position.Struct(), rotation = dto.rotation.Quaternion(), isOverrider = dto.isOverrider });
             }
 
             List<IController> Controllers = new List<IController>();
@@ -463,7 +463,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
                     bones.Add(bone.boneType, bone);
                 if (bone is TrackedSubskeletonBoneController)
                 {
-                    Controllers.Add(new DistantController() { boneType = bone.boneType, isActive = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+                    Controllers.Add(new VirtualController() { boneType = bone.boneType, isActive = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
                 }
             }
 
@@ -498,7 +498,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.CDK
                     bones.Add(bone.boneType, bone);
                 if (bone is TrackedSubskeletonBoneController)
                 {
-                    Controllers.Add(new DistantController() { boneType = bone.boneType, isActive = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
+                    Controllers.Add(new VirtualController() { boneType = bone.boneType, isActive = true, position = bone.transform.position, rotation = bone.transform.rotation, isOverrider = true });
                     frameTarget.trackedBones.Add(new ControllerDto() { boneType = bone.boneType, isOverrider = true, position = bone.transform.position.Dto(), rotation = bone.transform.rotation.Dto() });
                 }
             }

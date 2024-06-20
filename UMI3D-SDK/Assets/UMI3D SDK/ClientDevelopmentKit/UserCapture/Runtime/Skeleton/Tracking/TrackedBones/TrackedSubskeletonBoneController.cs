@@ -75,8 +75,13 @@ namespace umi3d.cdk.userCapture.tracking
 
         uint IController.boneType => boneType;
 
+        public bool isOverrider { get; set; } = false;
+
+        public event System.Action Destroyed;
+
         public void Destroy()
         {
+            Destroyed?.Invoke();
             GameObject.Destroy(this.gameObject);
         }
 

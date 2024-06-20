@@ -72,6 +72,16 @@ namespace umi3d.cdk.userCapture.tracking.constraint
         void EndApply(ISkeleton skeleton);
 
         /// <summary>
+        /// Raised when constraint start to be applied.
+        /// </summary>
+        public event System.Action Applied;
+
+        /// <summary>
+        /// Raised when constraint stopped to be applied.
+        /// </summary>
+        public event System.Action Stopped;
+
+        /// <summary>
         /// Produce the position and rotation of the bone based on the constraint.
         /// </summary>
         /// <returns>Position and rotation corrected by the constraint.</returns>

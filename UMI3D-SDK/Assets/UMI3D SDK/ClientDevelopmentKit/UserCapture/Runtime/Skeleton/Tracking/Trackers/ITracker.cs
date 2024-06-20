@@ -16,11 +16,29 @@ limitations under the License.
 
 namespace umi3d.cdk.userCapture.tracking
 {
+    /// <summary>
+    /// Provide data from the local browser to track the current user.
+    /// </summary>
     public interface ITracker
     {
+        /// <summary>
+        /// Bone type associated with the tracker.
+        /// </summary>
         uint BoneType { get; }
-        DistantController distantController { get; }
-        bool isActif { get; set; }
+
+        /// <summary>
+        /// Controller transmitting the data of the tracker.
+        /// </summary>
+        IController Controller { get; }
+
+        /// <summary>
+        /// If not true, the trackers data are irrelevant.
+        /// </summary>
+        bool isActive { get; set; }
+
+        /// <summary>
+        /// Overrider ignores IK checks.
+        /// </summary>
         bool isOverrider { get; set; }
     }
 }

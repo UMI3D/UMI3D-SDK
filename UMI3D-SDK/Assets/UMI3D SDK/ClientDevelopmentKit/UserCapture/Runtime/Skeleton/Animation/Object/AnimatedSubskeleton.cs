@@ -244,7 +244,7 @@ namespace umi3d.cdk.userCapture.animation
                     SkeletonAnimationPlayer.End();
             }
 
-            return SkeletonAnimationPlayer.GetPose(hierarchy); ;
+            return SkeletonAnimationPlayer.GetPose(hierarchy);
         }
 
         #region ParameterSelfUpdate

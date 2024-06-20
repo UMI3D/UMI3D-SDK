@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
@@ -68,6 +69,21 @@ namespace umi3d.cdk.userCapture
         /// Susbskeleton for body poses.
         /// </summary>
         IPoseSubskeleton PoseSubskeleton { get; }
+
+        /// <summary>
+        /// Called after just before each skeleton computation.
+        /// </summary>
+        event Action PreComputed;
+
+        /// <summary>
+        /// Called after after each computation and before post-procession.
+        /// </summary>
+        event Action RawComputed;
+
+        /// <summary>
+        /// Called after each post procession of the final skeleton.
+        /// </summary>
+        event Action Computed;
 
         /// <summary>
         /// Update the positions/rotation of bone of subskeletons based on the received frame.

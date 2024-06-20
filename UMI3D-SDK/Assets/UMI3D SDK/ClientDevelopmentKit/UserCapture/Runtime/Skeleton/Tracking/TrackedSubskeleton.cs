@@ -16,12 +16,14 @@ limitations under the License.
 
 using System.Collections.Generic;
 using System.Linq;
+
 using umi3d.cdk.userCapture.tracking.ik;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
@@ -75,6 +77,7 @@ namespace umi3d.cdk.userCapture.tracking
         /// </summary>
         [SerializeField]
         protected TrackedAnimator trackedAnimator;
+
         public TrackedAnimator TrackedAnimator => trackedAnimator;
 
         [SerializeField]
@@ -113,7 +116,7 @@ namespace umi3d.cdk.userCapture.tracking
                 trackedAnimator = gameObject.AddComponent<TrackedAnimator>();
             }
 
-            ikHandler = new TrackingAnimatorIKHandler(animator);
+            ikHandler = new TrackingAnimatorIKHandler(animator, this);
             trackedAnimator.IkCallback += ApplyIK;
 
             foreach (var bone in GetComponentsInChildren<TrackedSubskeletonBone>())
@@ -124,7 +127,7 @@ namespace umi3d.cdk.userCapture.tracking
 
             foreach (var tracker in GetComponentsInChildren<Tracker>())
             {
-                controllers.Add(tracker.BoneType, tracker.distantController);
+                controllers.Add(tracker.BoneType, tracker);
             }
         }
 
@@ -142,6 +145,13 @@ namespace umi3d.cdk.userCapture.tracking
             foreach (var controller in controllersToDestroy)
                 controller.Destroy();
             controllersToDestroy.Clear();
+
+            // hips management before IK
+            if (controllers.TryGetValue(BoneType.Hips, out var hipsController))
+            {
+                Hips.transform.position = hipsController.position;
+                Hips.transform.rotation = hipsController.rotation;
+            }
 
             // apply actual IK
             ikHandler.HandleAnimatorIK(layer, controllers.Values, bones);
@@ -162,7 +172,7 @@ namespace umi3d.cdk.userCapture.tracking
         private void UpdateControllersPosition()
         {
             foreach (var extrapolator in extrapolators.Values)
-                if (extrapolator.Controller is DistantController vc)
+                if (extrapolator.Controller is VirtualController vc)
                 {
                     vc.position = extrapolator.PositionExtrapolator.Extrapolate();
                     vc.rotation = extrapolator.RotationExtrapolator.Extrapolate();
@@ -219,7 +229,6 @@ namespace umi3d.cdk.userCapture.tracking
             // get the boneDto of each bone that is relevant for IK or is a controller
             foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.ContainsKey(x.boneType)))
             {
-                //.Where(x => controllers.Exists(y => y.boneType.Equals(x.boneType)))
                 dto.bones.Add(bone.ToBoneDto());
             }
             return dto;
@@ -230,50 +239,36 @@ namespace umi3d.cdk.userCapture.tracking
         /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
-            receivedTypes.Clear();
+            receivedTypes.Clear();  // list faster than hashset with few items and clean/rewrite
             foreach (var bone in trackingFrame.trackedBones)
             {
-                if (!controllers.TryGetValue(bone.boneType, out IController controller)
-                    || controller is not DistantController vc) // controllers from tracking frames should be handled as distant controllers
+                // recieve new distant controller
+                if (!controllers.TryGetValue(bone.boneType, out IController controller)) // controllers from tracking frames should be handled as distant controllers
                 {
                     // create controller from tracking frame
-                    vc = new DistantController
+                    controller = new VirtualController
                     {
                         boneType = bone.boneType,
                         isOverrider = bone.isOverrider,
                         position = bone.position.Struct(),
                         rotation = bone.rotation.Quaternion()
                     };
-                    ReplaceController(vc);
+                    ReplaceController(controller);
+
+                    controller.isActive = true;
                 }
 
-                vc.isActive = true;
-                if (extrapolators.ContainsKey(bone.boneType))
-                {
-                    extrapolators[bone.boneType].PositionExtrapolator.AddMeasure(bone.position.Struct());
-                    extrapolators[bone.boneType].RotationExtrapolator.AddMeasure(bone.rotation.Quaternion());
-                }
-                else
-                {
-                    vc.position = bone.position.Struct();
-                    vc.rotation = bone.rotation.Quaternion();
-                }
+                // update controller transformation
+                extrapolators[bone.boneType].PositionExtrapolator.AddMeasure(bone.position.Struct());
+                extrapolators[bone.boneType].RotationExtrapolator.AddMeasure(bone.rotation.Quaternion());
 
                 receivedTypes.Add(bone.boneType);
             }
 
-            Queue<DistantController> controllersToRemove = new();
-            foreach (var c in controllers.Values)
+            // remove not recieved types
+            foreach (var bone in controllers.Keys.Where(b=> !receivedTypes.Contains(b)).ToArray())
             {
-                if (c is DistantController dc && !receivedTypes.Contains(c.boneType))
-                {
-                    extrapolators.Remove(c.boneType);
-                    controllersToRemove.Enqueue(dc);
-                }
-            }
-            foreach (var dc in controllersToRemove)
-            {
-                DeleteController(dc);
+                RemoveController(bone);
             }
         }
 

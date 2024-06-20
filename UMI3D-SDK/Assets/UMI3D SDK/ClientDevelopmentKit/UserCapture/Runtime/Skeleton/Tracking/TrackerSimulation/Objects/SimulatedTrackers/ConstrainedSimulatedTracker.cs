@@ -32,15 +32,22 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             base.Init(constraint.ConstrainedBone);
         }
 
-        protected override void Update()
+
+        protected virtual void Update()
+        {
+            BeConstrained();
+        }
+
+        /// <summary>
+        /// Force the controller to be at the place specified by the constraint.
+        /// </summary>
+        protected virtual void BeConstrained()
         {
             if (!constraint.IsApplied)
                 return;
 
             var t = constraint.Resolve();
             transform.SetPositionAndRotation(t.position, t.rotation);
-
-            UpdateDistantController();
         }
     }
 }

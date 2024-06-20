@@ -12,28 +12,48 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking
 {
-    public class FingerTracker : Tracker
+    public class FingerTracker : MonoBehaviour, ITracker
     {
+        [EditorReadOnly, SerializeField, ConstEnum(typeof(common.userCapture.BoneType), typeof(uint))]
+        protected uint boneType;
+        public uint BoneType => boneType;
+
+        public bool isActive { get; set; } = true;
+
+        public bool isOverrider { get; set; } = true;
+
+        public VirtualController controller;
+
+        public IController Controller
+        {
+            get
+            {
+                UpdateController();
+                return controller;
+            }
+        }
+
         [SerializeField] private bool isRight;
         [SerializeField] private bool isThumb;
 
         [SerializeField] private Vector3 offset;
 
-        protected override void UpdateDistantController()
+        protected virtual void UpdateController()
         {
             var directionMul = isRight ? -1 : 1;
-            distantController.position = transform.position;
-            distantController.rotation = (isThumb
+            controller.position = transform.position;
+            controller.rotation = (isThumb
                 ? new Quaternion(-transform.localRotation.z, directionMul * -transform.localRotation.x,
                                  transform.localRotation.y, transform.localRotation.w)
                 : new Quaternion(transform.localRotation.z, transform.localRotation.y,
                                  directionMul * transform.localRotation.x, transform.localRotation.w)) * Quaternion.Euler(offset);
-            distantController.isActive = isActif;
-            distantController.isOverrider = isOverrider;
+            controller.isActive = isActive;
+            controller.isOverrider = isOverrider;
         }
     }
 }
