@@ -21,13 +21,14 @@ using System.Collections.Generic;
 using System.Linq;
 using TestUtils.UserCapture;
 using umi3d.cdk.userCapture;
+using umi3d.cdk.userCapture.description;
 using umi3d.common.core;
 using umi3d.common.userCapture.description;
 using UnityEngine;
 using UnityEngine.TestTools;
 
 
-namespace PlayMode_Tests.UserCapture.CDK
+namespace PlayMode_Tests.UserCapture.Description.CDK
 {
     [TestFixture, TestOf(nameof(SubskeletonDescriptionInterpolationPlayer))]
     public class SubskeletonDescriptionInterpolationPlayer_Test

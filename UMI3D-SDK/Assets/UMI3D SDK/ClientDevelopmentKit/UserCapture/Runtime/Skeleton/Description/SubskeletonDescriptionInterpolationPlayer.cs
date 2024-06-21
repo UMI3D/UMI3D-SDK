@@ -26,7 +26,7 @@ using umi3d.common.userCapture.description;
 
 using UnityEngine;
 
-namespace umi3d.cdk.userCapture
+namespace umi3d.cdk.userCapture.description
 {
     /// <summary>
     /// Compute a subskeleton pose from a subskeleton descriptor.
