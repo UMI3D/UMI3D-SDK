@@ -21,6 +21,7 @@ using System.Collections.Generic;
 
 using umi3d.cdk.userCapture.animation;
 using umi3d.cdk.userCapture.pose;
+using umi3d.cdk.userCapture.description;
 using umi3d.cdk.userCapture.tracking;
 using umi3d.cdk.userCapture.tracking.ik;
 using umi3d.common;
@@ -416,31 +417,22 @@ namespace umi3d.cdk.userCapture
         /// <param name="bone"></param>
         private void MuscleRestrict(uint bone)
         {
-            if (!SkeletonHierarchy.Muscles.ContainsKey(bone)) // muscle not defined
+            if (!SkeletonHierarchy.Muscles.TryGetValue(bone, out var muscle)) // muscle not defined
                 return;
-
-            var muscle = SkeletonHierarchy.Muscles[bone];
 
             if (!SkeletonHierarchy.Relations.ContainsKey(bone)) // bone not defined in hierarchy
                 return;
 
-            Quaternion boneRotation = bones[bone].LocalRotation;
+            if (!musclesRestrictors.TryGetValue(bone, out MuscleRestrictor muscleRestrictor))
+            {
+                musclesRestrictors[bone] = new MuscleRestrictor(muscle);
+                muscleRestrictor = musclesRestrictors[bone];
+            }
 
-            // compare orientations
-            Quaternion referenceFrame = muscle.ReferenceFrameRotation.Quaternion();
-            Vector3 rotation = (referenceFrame * boneRotation).eulerAngles;
-
-            float xAngle = (rotation.x % 360f) < 180f ? rotation.x % 360f : ((rotation.x % 360f) - 360f);
-            float yAngle = (rotation.y % 360f) < 180f ? rotation.y % 360f : ((rotation.y % 360f) - 360f);
-            float zAngle = (rotation.z % 360f) < 180f ? rotation.z % 360f : ((rotation.z % 360f) - 360f);
-
-            // if restricted, appply restriction
-            float xAngleRestricted = muscle.XRotationRestriction.HasValue ? Mathf.Clamp(xAngle, muscle.XRotationRestriction.Value.min, muscle.XRotationRestriction.Value.max) : xAngle;
-            float yAngleRestricted = muscle.YRotationRestriction.HasValue ? Mathf.Clamp(yAngle, muscle.YRotationRestriction.Value.min, muscle.YRotationRestriction.Value.max) : yAngle;
-            float zAngleRestricted = muscle.ZRotationRestriction.HasValue ? Mathf.Clamp(zAngle, muscle.ZRotationRestriction.Value.min, muscle.ZRotationRestriction.Value.max) : zAngle;
-
-            bones[bone].LocalRotation = Quaternion.Inverse(referenceFrame) * Quaternion.Euler(xAngleRestricted, yAngleRestricted, zAngleRestricted);
+            bones[bone].LocalRotation = muscleRestrictor.Restrict(bones[bone].LocalRotation);
         }
+
+        private readonly Dictionary<uint, MuscleRestrictor> musclesRestrictors = new();
 
         #endregion Compute
 
