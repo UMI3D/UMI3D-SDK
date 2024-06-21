@@ -52,6 +52,30 @@ namespace TestUtils
             Assert.AreEqual(expected.w, actual.w, delta, $"{message}\nExpected: {expected}, Actual: {actual}.\n| Coordinate Z is not the same.");
         }
 
+        /// <summary>
+        /// Check on rotation meaning not on actual values.
+        /// </summary>
+        /// <param name="expected"></param>
+        /// <param name="actual"></param>
+        /// <param name="delta"></param>
+        /// <param name="message"></param>
+        public static void AreRotationsEqual(Quaternion expected, Quaternion actual, float delta = DEFAULT_PRECISION, string message = "")
+        {
+            Vector3 expectedForward = expected * Vector3.forward;
+            Vector3 expectedUpward = expected * Vector3.up;
+
+            Vector3 actualForward = actual * Vector3.forward;
+            Vector3 actualUpward = actual * Vector3.up;
+
+            AreEqual(expectedForward, actualForward, message: $"Rotations {expected.eulerAngles} and {actual.eulerAngles} are not equal. Forward vectors differs.\n{message}");
+            AreEqual(expectedUpward, actualUpward, message: $"Rotations {expected.eulerAngles} and {actual.eulerAngles} are not equal. Upward vectors differs.\n{message}");
+
+            Assert.AreEqual(expected.x, actual.x, delta, $"{message}\nExpected: {expected}, Actual: {actual}.\n| Coordinate X is not the same.");
+            Assert.AreEqual(expected.y, actual.y, delta, $"{message}\nExpected: {expected}, Actual: {actual}.\n| Coordinate Y is not the same.");
+            Assert.AreEqual(expected.z, actual.z, delta, $"{message}\nExpected: {expected}, Actual: {actual}.\n| Coordinate Z is not the same.");
+            Assert.AreEqual(expected.w, actual.w, delta, $"{message}\nExpected: {expected}, Actual: {actual}.\n| Coordinate Z is not the same.");
+        }
+
         public static void AreEqual(Matrix4x4 expected, Matrix4x4 actual, float delta = DEFAULT_PRECISION, string message = "")
         {
             Assert.AreEqual(expected.m00, actual.m00, delta, $"{message}\nExpected: {expected}, Actual: {actual}.\n| Coordinate m00 is not the same.");
