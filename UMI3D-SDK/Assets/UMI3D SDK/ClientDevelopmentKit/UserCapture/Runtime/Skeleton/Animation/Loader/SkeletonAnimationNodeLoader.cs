@@ -19,7 +19,7 @@ using inetum.unityUtils;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-
+using umi3d.cdk.userCapture.description;
 using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.animation;
