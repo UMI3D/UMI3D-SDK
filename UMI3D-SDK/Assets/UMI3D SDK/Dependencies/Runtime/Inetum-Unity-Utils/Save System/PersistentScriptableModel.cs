@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using System;
-using System.Diagnostics;
 using System.Threading.Tasks;
 using UnityEngine;
 
@@ -105,7 +104,7 @@ namespace inetum.unityUtils.saveSystem
 
         public void LoadBackup()
         {
-            if (!FileManager.LoadFromFile(BackupFileName, out string json))
+            if (!SaveManager.LoadFromFile(BackupFileName, out string json))
             {
                 throw new Exception($"[{nameof(PersistentScriptableModel)}]: couldn't load json backup to this ({GetType().Name})");
             }
@@ -125,7 +124,7 @@ namespace inetum.unityUtils.saveSystem
         [ContextMenu("Save Backup file")]
         public void SaveBackup()
         {
-            if (!FileManager.WriteToFile(BackupFileName, SaveToJson()))
+            if (!SaveManager.WriteToFile(BackupFileName, SaveToJson()))
             {
                 throw new Exception($"[{nameof(PersistentScriptableModel)}]: couldn't save backup file for ({GetType().Name})");
             }
@@ -137,7 +136,7 @@ namespace inetum.unityUtils.saveSystem
         /// <returns></returns>
         void LoadDataFromDisk()
         {
-            if (!FileManager.Exists(BackupFileName))
+            if (!SaveManager.Exists(BackupFileName))
             {
                 SaveBackup();
             }
@@ -145,8 +144,8 @@ namespace inetum.unityUtils.saveSystem
             string json = null;
             Func<bool> isJsonLoaded = () =>
             {
-                return FileManager.LoadFromFile(saveFilename, out json)
-                || FileManager.LoadFromFile(BackupFileName, out json);
+                return SaveManager.LoadFromFile(saveFilename, out json)
+                || SaveManager.LoadFromFile(BackupFileName, out json);
             };
             
             if (!isJsonLoaded())
@@ -172,7 +171,7 @@ namespace inetum.unityUtils.saveSystem
         /// <param name="data"></param>
         void SaveDataToDisk()
         {
-            if (!FileManager.WriteToFile(saveFilename, SaveToJson()))
+            if (!SaveManager.WriteToFile(saveFilename, SaveToJson()))
             {
                 UnityEngine.Debug.LogError($"[{nameof(PersistentScriptableModel)}]: couldn't save file for ({GetType().Name})");
             }
