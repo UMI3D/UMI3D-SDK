@@ -15,8 +15,11 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using System.Linq;
+
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
+
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.tracking.ik
@@ -63,7 +66,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
         /// <param name="layerIndex"></param>
         public void HandleAnimatorIK(int layerIndex, IEnumerable<IController> controllers)
         {
-            foreach (var controller in controllers)
+            foreach (var controller in controllers.OrderBy(x => BoneTypeHelper.StandardPriority(x.boneType)))
             {
                 HandleAnimatorIK(0, controller);
             }
@@ -85,6 +88,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
             else if (controller.boneType is not BoneType.Hips) // hips should not be moved by any IK controller.
             {
                 HumanBodyBones? boneTypeUnity = BoneTypeConvertingExtensions.ConvertToBoneType(controller.boneType);
+
                 if (boneTypeUnity.HasValue)
                     SetControl(controller, boneTypeUnity.Value);
             }
@@ -101,12 +105,10 @@ namespace umi3d.cdk.userCapture.tracking.ik
             HandleAnimatorIK(0, controllers);
         }
 
-        protected void SetControl(IController controller, HumanBodyBones goal)
-        {
-            if (controller.isActive)
-                animator.SetBoneLocalRotation(goal, controller.rotation);
-        }
-
+        /// <summary>
+        /// Control IK through settings exact goals.
+        /// </summary>
+        /// <param name="controller"></param>
         protected void SetGoal(IController controller, AvatarIKGoal goal)
         {
             if (controller.isActive)
@@ -116,7 +118,7 @@ namespace umi3d.cdk.userCapture.tracking.ik
                 switch (controller.boneType)
                 {
                     case BoneType.RightHand:
-                        animator.SetIKRotation(goal, controller.rotation * Quaternion.Euler(0, 90, 0));
+                        animator.SetIKRotation(goal, controller.rotation * Quaternion.Euler(0, 90, 0)); // skeleton has offsets on hands because of T-pose rotations
                         break;
 
                     case BoneType.LeftHand:
@@ -138,6 +140,10 @@ namespace umi3d.cdk.userCapture.tracking.ik
             }
         }
 
+        /// <summary>
+        /// Control IK through settings hints.
+        /// </summary>
+        /// <param name="controller"></param>
         protected void SetHint(IController controller, AvatarIKHint hint)
         {
             if (controller.isActive)
@@ -151,6 +157,10 @@ namespace umi3d.cdk.userCapture.tracking.ik
             }
         }
 
+        /// <summary>
+        /// Control head rotation.
+        /// </summary>
+        /// <param name="controller"></param>
         protected void LookAt(IController controller)
         {
             if (controller.isActive)
@@ -163,6 +173,17 @@ namespace umi3d.cdk.userCapture.tracking.ik
             {
                 animator.SetLookAtWeight(0);
             }
+        }
+
+        /// <summary>
+        /// Control IK for bones that are not goals or hints.
+        /// </summary>
+        /// <param name="controller"></param>
+        /// <param name="goal"></param>
+        protected virtual void SetControl(IController controller, HumanBodyBones goal)
+        {
+            if (controller.isActive)
+                animator.SetBoneLocalRotation(goal, controller.transformation.LocalRotation);
         }
     }
 }

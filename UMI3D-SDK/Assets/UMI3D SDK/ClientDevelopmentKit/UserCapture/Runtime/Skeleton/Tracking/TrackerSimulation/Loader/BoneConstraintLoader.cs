@@ -14,9 +14,12 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.core;
+using umi3d.common.userCapture;
+using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking.constraint;
 
 namespace umi3d.cdk.userCapture.tracking.constraint
@@ -72,6 +75,13 @@ namespace umi3d.cdk.userCapture.tracking.constraint
                         UMI3DNodeInstance nodeReference = await loadingService.WaitUntilNodeInstanceLoaded(environmentId, nodeBoneConstraintDto.ConstrainingNodeId, null);
 
                         constraint = new NodeBoneConstraint(nodeBoneConstraintDto, nodeReference);
+
+                        if (constraint.ConstrainedBone is BoneType.Hips)
+                        {
+                            SpineFlexer spineFlexer = new(skeletonService.PersonalSkeleton);
+                            constraint.Applied += spineFlexer.Enable;
+                            constraint.Stopped += spineFlexer.Disable;
+                        }
 
                         trackerSimulationService.RegisterConstraint(constraint);
                         environmentService.RegisterEntity(environmentId, dto.id, dto, constraint, () => Delete(environmentId, dto.id)).NotifyLoaded();

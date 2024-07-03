@@ -1,5 +1,5 @@
-/*
-Copyright 2019 - 2021 Inetum
+﻿/*
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -14,15 +14,26 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using UnityEngine;
-
-namespace umi3d.cdk.userCapture.tracking
+namespace umi3d.cdk.userCapture.tracking.constraint
 {
     /// <summary>
-    /// Tracker that does not physically exist but attempt to describe the current user.
+    /// Flex a limb based on constraints and controllers.
     /// </summary>
-    public class SimulatedTracker : Tracker, ISimulatedTracker
+    public interface IFlexer
     {
-        public GameObject GameObject => this.gameObject;
+        /// <summary>
+        /// Initialize and active the flexer.
+        /// </summary>
+        void Enable();
+
+        /// <summary>
+        /// Reset and deactive the flexer.
+        /// </summary>
+        void Disable();
+
+        /// <summary>
+        /// Bend a limb based on constraints.
+        /// </summary>
+        void Flex();
     }
 }

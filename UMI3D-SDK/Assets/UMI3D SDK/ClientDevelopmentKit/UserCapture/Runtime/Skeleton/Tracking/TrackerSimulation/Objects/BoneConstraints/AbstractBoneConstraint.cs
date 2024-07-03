@@ -49,11 +49,15 @@ namespace umi3d.cdk.userCapture.tracking.constraint
 
         public virtual string TrackerLabel { get; protected set; } = "Constrained Tracker";
 
+        public event System.Action Applied;
+        public event System.Action Stopped;
+
         public virtual void Apply(ISkeleton skeleton)
         {
             IsApplied = true;
             Tracker = CreateSimulatedTracker();
             skeleton.TrackedSubskeleton.ReplaceController(Tracker.Controller, true);
+            Applied?.Invoke();
         }
 
         public virtual void EndApply(ISkeleton skeleton)
@@ -61,13 +65,14 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             skeleton.TrackedSubskeleton.RemoveController(Tracker.Controller.boneType);
             DestroySimulatedTracker();
             IsApplied = false;
+            Stopped?.Invoke();
         }
 
         protected ConstrainedSimulatedTracker CreateSimulatedTracker()
         {
             ConstrainedSimulatedTracker tracker = new GameObject(TrackerLabel).AddComponent<ConstrainedSimulatedTracker>();
             tracker.Init(this);
-            tracker.distantController.isOverrider = true;
+            tracker.isOverrider = true;
             return tracker;
         }
 

@@ -131,5 +131,97 @@ namespace umi3d.common.userCapture.description
 
             else return symmetries[boneType];
         }
+
+        /// <summary>
+        /// Give the depth of each bone in a standard hierarchy.
+        /// </summary>
+        public static uint StandardPriority(uint boneType)
+        {
+            if (standardPriority.TryGetValue(boneType, out uint priority))
+                return priority;
+
+            else
+                return standardPriority[BoneType.LastBone] + 1;
+        }
+
+        /// <summary>
+        /// Depth of each bone in a standard hierarchy
+        /// </summary>
+        private static readonly Dictionary<uint, uint> standardPriority = new Dictionary<uint, uint>()
+        {
+            { BoneType.None , 0},
+
+            { BoneType.Hips , 1},
+
+            { BoneType.Spine , 2},
+            { BoneType.Chest , 3},
+            { BoneType.UpperChest , 4},
+
+
+            { BoneType.Neck , 5},
+            { BoneType.Head , 6},
+
+            { BoneType.Jaw , 7},
+
+            { BoneType.LeftEye ,7},
+            { BoneType.RightEye , 7},
+
+            { BoneType.LeftShoulder , 5},
+            { BoneType.LeftUpperArm , 6},
+            { BoneType.LeftForearm , 7},
+            { BoneType.LeftHand , 8},
+
+            { BoneType.RightShoulder , 5},
+            { BoneType.RightUpperArm , 6},
+            { BoneType.RightForearm , 7},
+            { BoneType.RightHand , 8},
+
+            { BoneType.LeftHip , 2},
+            { BoneType.LeftKnee , 3},
+            { BoneType.LeftAnkle , 4},
+            { BoneType.LeftToeBase , 5},
+
+            { BoneType.RightHip , 2},
+            { BoneType.RightKnee , 3},
+            { BoneType.RightAnkle , 4},
+            { BoneType.RightToeBase , 5},
+
+
+            { BoneType.LeftThumbProximal , 9},
+            { BoneType.LeftThumbIntermediate , 10},
+            { BoneType.LeftThumbDistal , 11},
+            { BoneType.LeftIndexProximal , 9},
+            { BoneType.LeftIndexIntermediate , 10},
+            { BoneType.LeftIndexDistal , 11},
+            { BoneType.LeftMiddleProximal , 9},
+            { BoneType.LeftMiddleIntermediate , 10},
+            { BoneType.LeftMiddleDistal , 11},
+            { BoneType.LeftRingProximal , 9},
+            { BoneType.LeftRingIntermediate , 10},
+            { BoneType.LeftRingDistal , 11},
+            { BoneType.LeftLittleProximal , 9},
+            { BoneType.LeftLittleIntermediate , 10},
+            { BoneType.LeftLittleDistal , 11},
+
+            { BoneType.RightThumbProximal , 9},
+            { BoneType.RightThumbIntermediate , 10},
+            { BoneType.RightThumbDistal , 11},
+            { BoneType.RightIndexProximal , 9},
+            { BoneType.RightIndexIntermediate , 10},
+            { BoneType.RightIndexDistal , 11},
+            { BoneType.RightMiddleProximal , 9},
+            { BoneType.RightMiddleIntermediate , 10},
+            { BoneType.RightMiddleDistal , 11},
+            { BoneType.RightRingProximal , 9},
+            { BoneType.RightRingIntermediate , 10},
+            { BoneType.RightRingDistal , 11},
+            { BoneType.RightLittleProximal , 9},
+            { BoneType.RightLittleIntermediate , 10},
+            { BoneType.RightLittleDistal , 11},
+
+            { BoneType.CenterFeet , 15},
+            { BoneType.Viewpoint , 15},
+            { BoneType.LastBone , 16},
+        };
     }
 }
