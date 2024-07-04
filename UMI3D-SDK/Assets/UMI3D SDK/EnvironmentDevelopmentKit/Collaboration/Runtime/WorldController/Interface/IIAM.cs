@@ -31,7 +31,7 @@ namespace umi3d.worldController
         /// </summary>
         /// <param name="user"></param>
         /// <returns></returns>
-        Task<ConnectionFormDto> GenerateForm(User user);
+        Task<common.interaction.form.ConnectionFormDto> GenerateForm(User user);
 
         /// <summary>
         /// State if a user is valid.
@@ -48,7 +48,7 @@ namespace umi3d.worldController
         /// <param name="user"></param>
         /// <param name="formAnswer"></param>
         /// <returns></returns>
-        Task<bool> isFormValid(User user, FormAnswerDto formAnswer);
+        Task<bool> isFormValid(User user, common.interaction.form.FormAnswerDto formAnswer);
 
         /// <summary>
         /// Select an Environment for a user.
