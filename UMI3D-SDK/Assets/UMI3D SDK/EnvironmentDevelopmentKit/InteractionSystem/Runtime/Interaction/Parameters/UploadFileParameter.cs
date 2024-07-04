@@ -17,9 +17,12 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
+using UnityEngine;
 using UnityEngine.Events;
+using WebSocketSharp;
 
 namespace umi3d.edk.interaction
 {
@@ -30,32 +33,41 @@ namespace umi3d.edk.interaction
     {
         private const DebugScope scope = DebugScope.EDK | DebugScope.Interaction;
 
-        public static Dictionary<string, UploadFileParameter> uploadTokens { get; private set; } = new Dictionary<string, UploadFileParameter>();
+        public static Dictionary<string, UploadFileParameter> uploadTokens { get; private set; } = new();
 
-        /// <summary>
-        /// The path of the folder where the file will be saved
-        /// </summary>
+        [Header("Upload configurations")]
+        [Tooltip("The path where the file will be saved on the server.")]
         public string pathToSaveFile = "./TMP/";
 
+        [Tooltip("Extensions allowed. Empty means all extensions allowed")]
         /// <summary>
-        /// Current input value.
-        /// </summary>
-        public string value;
-
-        /// <summary>
-        /// Only these extensions could be upload by the client. Enpty list = allow all, the extensions contain a dot (".obj" for exemple)
+        /// Only these extensions could be upload by the client. Empty list = allow all.<br/>
+        /// <br/>
+        /// You are free to add a dot (.) at the beginning of the extensions. All the extension comparaison have to be made with <see cref="extensionToLowerWithoutDot"/> and <see cref="GetFormattedExtension(string)"/>.
         /// </summary>
         public List<string> authorizedExtensions = new List<string>();
+        List<string> extensionToLowerWithoutDot
+        {
+            get
+            {
+                return authorizedExtensions
+                    .Select(ext => GetFormattedExtension(ext))
+                    .ToList();
+            }
+        }
+
+        [Space]
+        /// <summary>
+        /// The file path on client.
+        /// </summary>
+        public string filePathOnClient;
 
         [System.Serializable]
         public class UploadListener : ParameterEvent<(string, string)> { }
-
-
         /// <summary>
         /// Event raised on value change. string arg is the file name
         /// </summary>
         public UploadListener onChange = new UploadListener();
-
 
         [System.Serializable]
         public class SaveFileListener : UnityEvent<string> { }
@@ -69,7 +81,6 @@ namespace umi3d.edk.interaction
         /// </summary>
         [System.Serializable]
         public class ReceiveListener : UnityEvent<string, string, byte[]> { }
-
         /// <summary>
         /// Event raised when file is received.
         /// </summary>
@@ -81,7 +92,7 @@ namespace umi3d.edk.interaction
         /// <returns></returns>
         protected override AbstractInteractionDto CreateDto()
         {
-            return new UploadFileParameterDto();
+            return new UploadFileParameterDto() { authorizedExtensions = extensionToLowerWithoutDot };
         }
 
         /// <inheritdoc/>
@@ -96,41 +107,24 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case UploadFileRequestDto settingRequestDto:
-                    if (settingRequestDto.parameter is UploadFileParameterDto)
-                    {
-                        var parameter = settingRequestDto.parameter as UploadFileParameterDto;
-                        //value = parameter.value;
-                        // if(System.IO.File.Exists(parameter.value))
-                        // {
-                        string ext = System.IO.Path.GetExtension(parameter.value);
-                        if (!string.IsNullOrEmpty(ext))
-                        {
-                            if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
-                            {
-                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, settingRequestDto, (parameter.value, settingRequestDto.fileId)));
-                            }
-                            else
-                            {
-                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext, scope);
-                            }
-                        }
-                        else
-                        {
-                            UMI3DLogger.LogWarning("unvalide extension", scope);
-                        }
 
-                        /*    }
-                            else
-                            {
-                                UMI3DLogger.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + parameter.value);
-                            }
-                            */
-                    }
-                    else
+                    if (settingRequestDto.parameter is not UploadFileParameterDto parameter)
                     {
-                        throw new System.Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
+                        throw new Exception($"parameter of type {settingRequestDto.parameter.GetType()}");
                     }
 
+                    if (!TryGetExtension(filePathOnClient, out string ext)) { return; }
+
+                    if (!MatchExtension(ext)) { return; }
+
+                    filePathOnClient = parameter.value;
+
+                    onChange.Invoke(new(
+                            user,
+                            settingRequestDto,
+                            (filePathOnClient, settingRequestDto.fileId)
+                        )
+                    );
                     break;
                 default:
                     throw new System.Exception("User interaction not supported (ParameterSettingRequestDto) ");
@@ -138,67 +132,62 @@ namespace umi3d.edk.interaction
         }
 
         /// <inheritdoc/>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
+        public override void OnUserInteraction(
+            UMI3DUser user,
+            ulong operationId,
+            ulong toolId,
+            ulong interactionId,
+            ulong hoverredId,
+            uint boneType,
+            Vector3Dto bonePosition,
+            Vector4Dto boneRotation,
+            ByteContainer container
+        )
         {
             switch (operationId)
             {
-                case UMI3DOperationKeys.ParameterSettingRequest:
+                case UMI3DOperationKeys.UploadFileRequest:
 
                     uint parameterId = UMI3DSerializer.Read<uint>(container);
-                    if (UMI3DParameterKeys.StringUploadFile == parameterId)
+                    if (UMI3DParameterKeys.StringUploadFile != parameterId)
                     {
-                        UMI3DSerializer.Read<bool>(container);
-                        value = UMI3DSerializer.Read<string>(container);
-                        List<string> exts = UMI3DSerializer.ReadList<string>(container);
-                        string fileId = UMI3DSerializer.Read<string>(container);
-                        //authorizedExtensions = UMI3DSerializer.ReadList<string>(container);
-                        //UnityEngine.UMI3DLogger.Log(value);
-                        //if (System.IO.File.Exists(value))
-                        //{
-                        string ext = System.IO.Path.GetExtension(value);
-                        if (!string.IsNullOrEmpty(ext))
-                        {
-                            if (authorizedExtensions.Count == 0 || authorizedExtensions.Contains(ext))
-                            {
-
-                                onChange.Invoke(new ParameterEventContent<(string, string)>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, (value, fileId)));
-                            }
-                            else
-                            {
-                                UMI3DLogger.LogWarning("Unauthorized extension : " + ext, scope);
-                            }
-                        }
-                        else
-                        {
-                            UMI3DLogger.LogWarning("unvalide extension", scope);
-                        }
-
-                        /*    }
-                            else
-                            {
-                                UMI3DLogger.LogWarning("Unvalide path, this file doesn't exist or is not accessible : " + value,scope);
-                            }*/
-
-
-                    }
-                    else
-                    {
-                        throw new System.Exception($"parameter of type {parameterId}");
+                        throw new Exception($"parameter of type {parameterId}");
                     }
 
+                    UMI3DSerializer.Read<bool>(container);
+
+                    // Get the path of the file.
+                    string path = UMI3DSerializer.Read<string>(container);
+                    // Get the authorized extensions.
+                    List<string> extensions = UMI3DSerializer.ReadList<string>(container);
+                    // Get the file extension.
+                    string ext2 = UMI3DSerializer.Read<string>(container);
+                    // Get the fileID.
+                    string fileId = UMI3DSerializer.Read<string>(container);
+
+                    UnityEngine.Debug.Log($"{path}, {ext2}, {fileId}");
+
+                    if (!TryGetExtension(path, out string ext)) { return; }
+
+                    if (!MatchExtension(ext)) { return; }
+
+                    this.filePathOnClient = path;
+
+                    onChange.Invoke(new(
+                            user,
+                            toolId,
+                            interactionId,
+                            hoverredId,
+                            boneType,
+                            bonePosition,
+                            boneRotation,
+                            (filePathOnClient, fileId)
+                        )
+                    );
                     break;
                 default:
                     throw new System.Exception($"User interaction not supported {operationId} ");
             }
-        }
-
-        protected virtual void OnChange(ParameterEventContent<(string, string)> responseContainer)
-        {
-            //RequestHttpUploadDto httpDto = new RequestHttpUploadDto();
-            var request = new UploadFileRequest(responseContainer.value.Item2) { users = new HashSet<UMI3DUser>() { responseContainer.user } };
-            uploadTokens.Add(request.token, this);
-
-            request.ToTransaction(true).Dispatch();
         }
 
         /// <summary>
@@ -207,10 +196,28 @@ namespace umi3d.edk.interaction
         /// <param name="token">Token to remove.</param>
         public static void RemoveToken(string token)
         {
-            if (uploadTokens.ContainsKey(token))
-                uploadTokens.Remove(token);
-            else
+            if (!uploadTokens.ContainsKey(token))
+            {
                 UMI3DLogger.LogWarning("this token : " + token + " is not a valide token", scope);
+                return;
+            }
+
+            uploadTokens.Remove(token);
+        }
+
+        protected virtual void OnChange(ParameterEventContent<(string, string)> responseContainer)
+        {
+            UnityEngine.Debug.Log($"OnChange upload");
+            UploadFileRequest request = new(responseContainer.value.Item2)
+            {
+                // Add the user who triggered the event to the request's users HashSet
+                users = new HashSet<UMI3DUser>() { responseContainer.user }
+            };
+
+            // Add the request's token and this object to the uploadTokens dictionary
+            uploadTokens.Add(request.token, this);
+
+            request.ToTransaction(true).Dispatch();
         }
 
         /// <summary>
@@ -221,21 +228,89 @@ namespace umi3d.edk.interaction
         /// <param name="bytes">File as a byte array.</param>
         public virtual void OnFileReceive(string token, string fileName, byte[] bytes)
         {
+            // Question: Token ?
+
+
+            // Check if the directory to save the file exists.
             if (!Directory.Exists(pathToSaveFile))
             {
+                // If it doesn't exist, create a new directory.
                 var dir = new DirectoryInfo(pathToSaveFile);
                 dir.Create();
             }
+
+            // Combine the path to save the file with the file name to create a full path.
             string path = inetum.unityUtils.Path.Combine(pathToSaveFile, fileName);
+
+            // If a file with the same name already exists, append the current date and time to the file name.
             if (File.Exists(path))
             {
-                //path += "_" + DateTime.Now.ToShortDateString() + "_" + DateTime.Now.ToLongTimeString();
-                path = inetum.unityUtils.Path.Combine(pathToSaveFile, System.IO.Path.GetFileNameWithoutExtension(path) + "_" + DateTime.Now.ToShortDateString().Replace(@"/", "-") + "_" + DateTime.Now.ToLongTimeString().Replace(':', '-') + System.IO.Path.GetExtension(path));
+                string pathWithoutExtension = Path.GetFileNameWithoutExtension(path);
+                string extension = Path.GetExtension(path);
+                DateTime now = DateTime.Now;
+                fileName = $"{pathWithoutExtension}_{now.ToShortDateString().Replace(@"/", "-")}_{now.ToLongTimeString().Replace(':', '-')}{extension}";
 
+                path = inetum.unityUtils.Path.Combine(pathToSaveFile, fileName);
             }
+
+            // Write the byte array to the specified path
             File.WriteAllBytes(path, bytes);
+
             onSave.Invoke(path);
 
+        }
+
+        /// <summary>
+        /// Try to get the extension <paramref name="ext"/> of the file located at <paramref name="path"/>.<br/>
+        /// <br/>
+        /// If the path is valide the extension will contains a dot (.) has the first character.
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="ext"></param>
+        /// <returns></returns>
+        bool TryGetExtension(string path, out string ext)
+        {
+            ext = Path.GetExtension(path);
+
+            if (string.IsNullOrEmpty(ext))
+            {
+                UMI3DLogger.LogWarning($"No extension found in path {path}", scope);
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool MatchExtension(string ext)
+        {
+            ext = GetFormattedExtension(ext);
+
+            if (authorizedExtensions.Count != 0 && !extensionToLowerWithoutDot.Contains(ext))
+            {
+                UMI3DLogger.LogWarning("Unauthorized extension : " + ext, scope);
+                return false;
+            }
+
+            return true;
+        }
+
+        /// <summary>
+        /// Return the extension without the dot (.) at the beginning and in lower case.
+        /// </summary>
+        /// <param name="extension"></param>
+        /// <returns></returns>
+        string GetFormattedExtension(string extension)
+        {
+            // Remove the dot (.) at the beginning of the extension.
+            if (extension.StartsWith('.'))
+            {
+                extension = extension.Substring(1);
+            }
+
+            // Get the lower case extension.
+            extension = extension.ToLowerInvariant();
+
+            return extension;
         }
 
         private void Start()

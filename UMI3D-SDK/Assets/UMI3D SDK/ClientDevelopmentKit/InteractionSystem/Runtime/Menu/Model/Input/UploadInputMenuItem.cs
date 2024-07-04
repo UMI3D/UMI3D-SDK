@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using System.Collections.Generic;
+using umi3d.common.interaction;
 
 namespace umi3d.cdk.menu
 {
@@ -23,8 +24,14 @@ namespace umi3d.cdk.menu
     public class UploadInputMenuItem : TextInputMenuItem
     {
         /// <summary>
-        /// Only these extensions could be upload by the client. Enpty list = allow all, the extensions contain a dot (".obj" for exemple)
+        /// Only these extensions could be upload by the client. Empty list = allow all, the extensions contain a dot (".obj" for exemple)
         /// </summary>
-        public List<string> authorizedExtensions = new List<string>();
+        public List<string> authorizedExtensions
+        {
+            get
+            {
+                return (dto as UploadFileParameterDto).authorizedExtensions;
+            }
+        }
     }
 }
