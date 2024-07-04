@@ -165,6 +165,7 @@ namespace umi3d.cdk.collaboration
         public class UserInfo
         {
             public ConnectionFormDto formdto;
+            public umi3d.common.interaction.form.ConnectionFormDto divForm;
             public UserConnectionAnswerDto answerDto;
 
             public string AudioPassword;
@@ -172,9 +173,9 @@ namespace umi3d.cdk.collaboration
             public UserInfo()
             {
                 formdto = new ConnectionFormDto();
+                divForm = new common.interaction.form.ConnectionFormDto();
                 answerDto = new UserConnectionAnswerDto();
                 AudioPassword = null;
-
             }
 
             public void Set(UserConnectionDto dto)
@@ -209,6 +210,7 @@ namespace umi3d.cdk.collaboration
                     parameters = param
                 };
                 this.formdto = dto.parameters;
+                this.divForm = dto.divForm;
                 this.AudioPassword = dto.audioPassword;
             }
         }
@@ -524,7 +526,13 @@ namespace umi3d.cdk.collaboration
                 if (Ok)
                 {
                     //UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
-                    if (UserDto.formdto != null)
+                    if (UserDto.divForm != null)
+                    {
+                        var param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.divForm);
+                        UserDto.answerDto.divFormAnswer = param;
+                        await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
+                    }
+                    else if (UserDto.formdto != null)
                     {
                         FormAnswerDto param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.formdto);
                         UserDto.answerDto.parameters = param;
