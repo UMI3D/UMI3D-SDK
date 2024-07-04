@@ -37,9 +37,9 @@ namespace umi3d.edk
 
         public UploadFileRequest(string fileId)
         {
-            this.token = System.Guid.NewGuid().ToString();//.Replace('-','0');
-            UMI3DLogger.LogWarning("token : " + this.token, scope);
+            this.token = System.Guid.NewGuid().ToString();
             this.fileId = fileId;
+            UMI3DLogger.Log("token : " + this.token + " FileId: " + fileId, scope);
         }
 
         public override Bytable ToBytable(UMI3DUser user)

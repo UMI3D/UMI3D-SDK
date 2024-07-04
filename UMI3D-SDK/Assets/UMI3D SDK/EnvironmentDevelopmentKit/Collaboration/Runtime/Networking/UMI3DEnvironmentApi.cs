@@ -770,7 +770,7 @@ namespace umi3d.edk.collaboration
             }
             string fileName = e.Request.Headers[UMI3DNetworkingKeys.contentHeader];
             UploadFileParameter uploadParam = UploadFileParameter.uploadTokens[token];
-            if (uploadParam.authorizedExtensions.Contains(System.IO.Path.GetExtension(fileName)) || uploadParam.authorizedExtensions.Count == 0)
+            if (uploadParam.MatchExtension(System.IO.Path.GetExtension(fileName)))
             {
                 UploadFileParameter.RemoveToken(token);
                 uploadParam.onReceive.Invoke(token, fileName, ReadObject(e.Request));
