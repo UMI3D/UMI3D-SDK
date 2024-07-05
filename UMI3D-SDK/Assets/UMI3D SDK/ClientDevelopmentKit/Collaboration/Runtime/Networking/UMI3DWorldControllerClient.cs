@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
@@ -41,6 +42,7 @@ namespace umi3d.cdk.collaboration
 
         private WorldHttpClient httpClient;
 
+        private static List<string> formCompatibleVersions = new() { "1", "2.0" };
         /// <summary>
         /// Called to create a new Public Identity for this client.
         /// </summary>
@@ -101,11 +103,12 @@ namespace umi3d.cdk.collaboration
         public async Task<bool> Connect(bool downloadLibraryOnly = false)
         {
             if (!isConnected && !isConnecting)
-                return await Connect(new ConnectionDto()
-                {
+                return await Connect(new ConnectionDto() {
                     globalToken = this.globalToken,
                     gate = this.gate,
-                    libraryPreloading = downloadLibraryOnly
+                    libraryPreloading = downloadLibraryOnly,
+                    sdkVersion = UMI3DVersion.version,
+                    formCompatibleVersions = formCompatibleVersions,
                 });
             return false;
         }
@@ -144,6 +147,8 @@ namespace umi3d.cdk.collaboration
                         metadata = form2.metadata,
                         globalToken = form2.globalToken,
                         gate = dto.gate,
+                        sdkVersion = dto.sdkVersion,
+                        formCompatibleVersions = dto.formCompatibleVersions,
                         libraryPreloading = dto.libraryPreloading
                     };
                     return await Connect(_answer);
