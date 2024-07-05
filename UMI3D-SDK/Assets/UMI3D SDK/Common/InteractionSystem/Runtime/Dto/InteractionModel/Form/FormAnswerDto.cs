@@ -19,9 +19,9 @@ namespace umi3d.common.interaction.form
 {
     public class FormAnswerDto : UMI3DDto
     {
-        public ulong formId { get; set; }
-        public ulong pageId { get; set; }
-        public ulong submitId { get; set; }
+        public string formId { get; set; }
+        public string pageId { get; set; }
+        public string submitId { get; set; }
         public bool isCancelation { get; set; }
         public bool isBack { get; set; }
         public List<InputAnswerDto> inputs { get; set; }

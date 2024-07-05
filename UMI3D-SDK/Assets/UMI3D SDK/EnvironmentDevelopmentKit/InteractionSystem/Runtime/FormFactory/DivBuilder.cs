@@ -15,8 +15,6 @@ limitations under the License.
 */
 using System.Collections.Generic;
 using umi3d.common.interaction.form.ugui;
-using UnityEngine;
-using UnityEngine.TextCore.Text;
 
 namespace umi3d.common.interaction.form
 {
@@ -103,76 +101,74 @@ namespace umi3d.common.interaction.form
             return this;
         }
 
-        public DivBuilder<PageDto> AddPage(string label)
+        public DivBuilder<PageDto> AddPage(string id, string label)
         {
             var builder = new PageBuilder(label);
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
         }
 
-        public LabelBuilder AddLabel(string label)
+        public LabelBuilder AddLabel(string id, string label)
         {
             var builder = new LabelBuilder(label);
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
         }
 
-        public ImageBuilder AddImage(string url, string format, AssetMetricDto metrics)
+        public ImageBuilder AddImage(string id, string url, string format, AssetMetricDto metrics)
         {
             var builder = new ImageBuilder(url, format, metrics);
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
         }
 
-        public ButtonBuilder AddButton(string label)
+        public ButtonBuilder AddButton(string id, string label)
         {
             var builder = new ButtonBuilder(label);
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
         }
 
-        public GroupBuilder AddGroup()
+        public GroupBuilder AddGroup(string id)
         {
             var builder = new GroupBuilder();
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
         }
 
-        public InputBuilder<V> AddInput<V>(string label)
+        public InputBuilder<V> AddInput<V>(string id, string label)
         {
             var builder = new InputBuilder<V>(label);
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
         }
 
-        public RangeBuilder<V> AddRange<V>(V min, V max)
+        public RangeBuilder<V> AddRange<V>(string id, V min, V max)
         {
             var builder = new RangeBuilder<V>(min, max);
             if (value.FirstChildren == null)
                 value.FirstChildren = new List<DivDto>();
+            builder.value.guid = id;
             value.FirstChildren.Add(builder.value);
             return builder;
-        }
-
-        protected static void SetIdRecursivly(DivDto div, ref ulong id)
-        {
-            div.id = id++;
-
-            if (div.FirstChildren != null)
-                foreach (var newDiv in div.FirstChildren)
-                    SetIdRecursivly(newDiv, ref id);
         }
 
         private void CheckStyleCreated()

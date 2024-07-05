@@ -18,7 +18,7 @@ namespace umi3d.common.interaction.form
 {
     public class InputAnswerDto : UMI3DDto
     {
-        public ulong inputId { get; set; }
+        public string inputId { get; set; }
         public object value { get; set; }
     }
 }

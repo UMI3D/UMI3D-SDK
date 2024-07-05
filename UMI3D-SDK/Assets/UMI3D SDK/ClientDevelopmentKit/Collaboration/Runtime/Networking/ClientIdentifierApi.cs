@@ -52,9 +52,9 @@ namespace umi3d.cdk.collaboration
         public virtual async Task<umi3d.common.interaction.form.FormAnswerDto> GetParameterDtos(common.interaction.form.ConnectionFormDto parameter)
         {
             return await Task.FromResult(new umi3d.common.interaction.form.FormAnswerDto() {
-                formId = parameter.id,
-                pageId = 0,
-                submitId = 0,
+                formId = parameter.guid,
+                pageId = "",
+                submitId = "",
                 isBack = false,
                 isCancelation = false,
                 inputs = new()
