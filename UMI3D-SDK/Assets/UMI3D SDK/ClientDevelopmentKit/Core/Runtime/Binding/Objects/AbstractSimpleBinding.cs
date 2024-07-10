@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using umi3d.common;
 using umi3d.common.core;
 using umi3d.common.dto.binding;
 
@@ -65,13 +66,37 @@ namespace umi3d.cdk.binding
         /// </summary>
         public Vector3 AnchorPosition => SimpleBindingData.anchorPosition.Struct();
 
+        protected bool hasStartedToBeApplied = false;
+
         #endregion DTO access
 
-        protected Quaternion originalRotationOffset = Quaternion.identity;
+        protected Quaternion autoComputedRotationOffset = Quaternion.identity;
+
+        public PureTransformation OriginalTransformation { get; protected set; } = new();
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
         }
+
+        /// <summary>
+        /// Called at the first start of each binding.
+        /// </summary>
+        protected virtual void Start()
+        {
+            if (hasStartedToBeApplied)
+                return;
+
+            if (boundTransform == null)
+            {
+                UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                return;
+            }
+
+            OriginalTransformation = PureTransformation.CopyTransform(boundTransform);
+
+            hasStartedToBeApplied = true;
+        }
+
 
         protected virtual void Compute(ITransformation parentTransformation)
         {
@@ -86,7 +111,7 @@ namespace umi3d.cdk.binding
         {
             if (SyncPosition && SyncRotation)
             {
-                Quaternion rotation = parentTransform.rotation * originalRotationOffset * OffSetRotation;
+                Quaternion rotation = parentTransform.rotation * autoComputedRotationOffset * OffSetRotation;
                 Vector3 position = parentTransform.position + AnchorPosition + parentTransform.rotation * (OffSetPosition - AnchorPosition);
                 boundTransform.SetPositionAndRotation(position, rotation);
             }
@@ -96,10 +121,20 @@ namespace umi3d.cdk.binding
             }
             else if (SyncRotation)
             {
-                boundTransform.rotation = parentTransform.rotation * originalRotationOffset * OffSetRotation;
+                boundTransform.rotation = parentTransform.rotation * autoComputedRotationOffset * OffSetRotation;
             }
             if (SyncScale)
                 boundTransform.localScale = Vector3.Scale(parentTransform.scale, OffSetScale);
+        }
+
+        /// <inheritdoc/>
+        public override void Reset()
+        {
+            if (boundTransform == null) // object destroyed before binding reset
+                return;
+
+            boundTransform.SetLocalPositionAndRotation(OriginalTransformation.LocalPosition, OriginalTransformation.LocalRotation);
+            boundTransform.localScale = OriginalTransformation.Scale;
         }
     }
 }

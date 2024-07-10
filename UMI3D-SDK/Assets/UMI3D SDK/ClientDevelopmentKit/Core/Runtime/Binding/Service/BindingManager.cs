@@ -163,8 +163,13 @@ namespace umi3d.cdk.binding
         public virtual void RemoveBinding(ulong environmentId, ulong boundNodeId)
         {
             var key = (environmentId, boundNodeId);
-            if (bindings.ContainsKey(key))
+            if (bindings.TryGetValue(key, out AbstractBinding bindingToRemove))
             {
+                if (bindingToRemove is not null && bindingToRemove.ResetWhenRemoved)
+                {
+                    bindingToRemove.Reset();
+                }
+
                 bindings.Remove(key);
                 ReorderQueue();
 

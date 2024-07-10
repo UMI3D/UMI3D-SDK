@@ -45,6 +45,7 @@ namespace umi3d.edk.binding
             {
                 Bindings = bindings.Select(x => (x.ToEntityDto(user) as BindingDto).data as AbstractSimpleBindingDataDto).ToArray(),
                 priority = priority,
+                resetWhenRemoved = resetWhenRemoved,
                 partialFit = partialFit
             };
 

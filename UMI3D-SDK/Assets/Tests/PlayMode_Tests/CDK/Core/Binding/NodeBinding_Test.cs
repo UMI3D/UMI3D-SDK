@@ -76,7 +76,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
         #region Position
         [Test]
-        public void Apply_SyncPosition([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        public void Apply_SyncPosition([ValueSource(nameof(positionOffsets))] Vector3 offSetPosition)
         {
             // GIVEN
             var dto = new NodeBindingDataDto()
@@ -106,7 +106,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_SyncPosition_SeveralFrames([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        public IEnumerator Apply_SyncPosition_SeveralFrames([ValueSource(nameof(positionOffsets))] Vector3 offSetPosition)
         {
             // GIVEN
             var dto = new NodeBindingDataDto()
@@ -150,7 +150,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         #region Rotation
 
         [Test]
-        public void Apply_SyncRotation([ValueSource("rotationOffsets")] Quaternion offsetRotation)
+        public void Apply_SyncRotation([ValueSource(nameof(rotationOffsets))] Quaternion offsetRotation)
         {
             // GIVEN
 
@@ -182,7 +182,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_SyncRotation_SeveralFrames([ValueSource("rotationOffsets")] Quaternion offsetRotation)
+        public IEnumerator Apply_SyncRotation_SeveralFrames([ValueSource(nameof(rotationOffsets))] Quaternion offsetRotation)
         {
             // GIVEN
 
@@ -229,7 +229,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         #region Scale
 
         [Test]
-        public void Apply_SyncScale([ValueSource("scaleOffsets")] Vector3 offSetScale)
+        public void Apply_SyncScale([ValueSource(nameof(scaleOffsets))] Vector3 offSetScale)
         {
             // GIVEN
             var dto = new NodeBindingDataDto()
@@ -260,7 +260,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_SyncScale_SeveralFrames([ValueSource("scaleOffsets")] Vector3 offSetScale)
+        public IEnumerator Apply_SyncScale_SeveralFrames([ValueSource(nameof(scaleOffsets))] Vector3 offSetScale)
         {
             // GIVEN
             var dto = new NodeBindingDataDto()
@@ -302,5 +302,47 @@ namespace PlayMode_Tests.Core.Binding.CDK
         #endregion Scale
 
         #endregion Apply
+
+        #region Reset
+
+        [Test, TestOf(nameof(NodeBinding.Reset))]
+        public void Reset()
+        {
+            // GIVEN
+            var dto = new NodeBindingDataDto()
+            {
+                parentNodeId = 1008uL,
+                syncPosition = true,
+                offSetPosition = Vector3.one.Dto(),
+                syncRotation = true,
+                offSetRotation = Quaternion.Euler(0,90,0).Dto(),
+                syncScale = true,
+                offSetScale = (Vector3.one * 2).Dto(),
+                resetWhenRemoved = true,
+            };
+
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), dto.parentNodeId);
+
+            parentNodeMock.Setup(x => x.transform).Returns(parentGo.transform);
+
+            NodeBinding binding = new(dto, go.transform, parentNodeMock.Object);
+
+            Vector3 previousPosition = go.transform.position;
+            Quaternion previousRotation = go.transform.rotation;
+            Vector3 previousScale = go.transform.localScale;
+
+            binding.Apply(out bool succes);
+
+            // WHEN
+            binding.Reset();
+
+            // THEN
+            Assert.IsTrue(succes);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position, message: "Positions are not equal");
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation, message: "Rotations are not the same.");
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale, message: "Scales are not the same.");
+        }
+
+        #endregion Reset
     }
 }

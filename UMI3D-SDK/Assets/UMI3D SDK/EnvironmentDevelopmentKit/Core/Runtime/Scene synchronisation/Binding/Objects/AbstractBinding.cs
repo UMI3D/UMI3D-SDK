@@ -38,6 +38,11 @@ namespace umi3d.edk.binding
         /// </summary>
         public int priority = 0;
 
+        /// <summary>
+        /// If true, the changes implied by the binding are reset when the binding is destroyed.
+        /// </summary>
+        public bool resetWhenRemoved = false;
+
         public AbstractBinding(ulong boundNodeId) : base()
         {
             this.boundNodeId = boundNodeId;

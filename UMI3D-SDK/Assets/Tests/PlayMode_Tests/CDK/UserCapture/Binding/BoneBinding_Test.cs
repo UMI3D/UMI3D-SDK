@@ -29,6 +29,7 @@ using TestUtils.UserCapture;
 using TestUtils;
 using umi3d.common.core;
 using umi3d.cdk.userCapture.tracking;
+using umi3d.cdk.binding;
 
 namespace PlayMode_Tests.UserCapture.Binding.CDK
 {
@@ -72,14 +73,14 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
 
         #region Apply
 
-        private static Vector3[] positionOffsets = new Vector3[] { Vector3.zero, Vector3.one, new Vector3(1, -1, 25) };
-        private static Quaternion[] rotationOffsets = new Quaternion[] { Quaternion.identity, Quaternion.Euler(10, 10, 10), Quaternion.Euler(-10, 10, -10) };
-        private static Vector3[] scaleOffsets = new Vector3[] { Vector3.zero, Vector3.one, new Vector3(1, -1, 25) };
+        private readonly static Vector3[] positionOffsets = new Vector3[] { Vector3.zero, Vector3.one, new Vector3(1, -1, 25) };
+        private readonly static Quaternion[] rotationOffsets = new Quaternion[] { Quaternion.identity, Quaternion.Euler(10, 10, 10), Quaternion.Euler(-10, 10, -10) };
+        private readonly static Vector3[] scaleOffsets = new Vector3[] { Vector3.zero, Vector3.one, new Vector3(1, -1, 25) };
 
         #region Position
 
         [Test]
-        public void Apply_SyncPosition([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        public void Apply_SyncPosition([ValueSource(nameof(positionOffsets))] Vector3 offSetPosition)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -116,7 +117,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_SyncPosition_SeveralFrames([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        public IEnumerator Apply_SyncPosition_SeveralFrames([ValueSource(nameof(positionOffsets))] Vector3 offSetPosition)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -167,7 +168,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         }
 
         [Test]
-        public void Apply_BindToController_SyncPosition([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        public void Apply_BindToController_SyncPosition([ValueSource(nameof(positionOffsets))] Vector3 offSetPosition)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -217,7 +218,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_BindToController_SyncPosition_SeveralFrames([ValueSource("positionOffsets")] Vector3 offSetPosition)
+        public IEnumerator Apply_BindToController_SyncPosition_SeveralFrames([ValueSource(nameof(positionOffsets))] Vector3 offSetPosition)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -285,7 +286,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         #region Rotation
 
         [Test]
-        public void Apply_SyncRotation([ValueSource("rotationOffsets")] Quaternion offsetRotation)
+        public void Apply_SyncRotation([ValueSource(nameof(rotationOffsets))] Quaternion offsetRotation)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -321,7 +322,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_SyncRotation_SeveralFrames([ValueSource("rotationOffsets")] Quaternion offsetRotation)
+        public IEnumerator Apply_SyncRotation_SeveralFrames([ValueSource(nameof(rotationOffsets))] Quaternion offsetRotation)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -374,7 +375,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         #region Scale
 
         [Test]
-        public void Apply_SyncScale([ValueSource("scaleOffsets")] Vector3 offSetScale)
+        public void Apply_SyncScale([ValueSource(nameof(scaleOffsets))] Vector3 offSetScale)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -411,7 +412,7 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         }
 
         [UnityTest]
-        public IEnumerator Apply_SyncScale_SeveralFrames([ValueSource("scaleOffsets")] Vector3 offSetScale)
+        public IEnumerator Apply_SyncScale_SeveralFrames([ValueSource(nameof(scaleOffsets))] Vector3 offSetScale)
         {
             // GIVEN
             uint boneType = BoneType.Chest;
@@ -463,5 +464,53 @@ namespace PlayMode_Tests.UserCapture.Binding.CDK
         #endregion Scale
 
         #endregion Apply
+
+        #region Reset
+
+        [Test, TestOf(nameof(BoneBinding.Reset))]
+        public void Reset()
+        {
+            // GIVEN
+            uint boneType = BoneType.Chest;
+            BoneBindingDataDto dto = new ()
+            {
+                boneType = boneType,
+                syncPosition = true,
+                offSetPosition = Vector3.one.Dto(),
+                syncRotation = true,
+                offSetRotation = Quaternion.Euler(0, 90, 0).Dto(),
+                syncScale = true,
+                offSetScale = (Vector3.one * 2).Dto(),
+                resetWhenRemoved = true,
+            };
+
+            Mock<ISkeleton> skeletonBoneMock = new ();
+
+            var skeletonBones = new Dictionary<uint, UnityTransformation>()
+            {
+                { boneType, new UnityTransformation(new GameObject().transform) { Position = parentGo.transform.position, Rotation= parentGo.transform.rotation } }
+            };
+
+            skeletonBoneMock.Setup(x => x.Bones).Returns(skeletonBones);
+
+            BoneBinding binding = new(dto, go.transform, skeletonBoneMock.Object);
+
+            Vector3 previousPosition = go.transform.position;
+            Quaternion previousRotation = go.transform.rotation;
+            Vector3 previousScale = go.transform.localScale;
+
+            binding.Apply(out bool succes);
+
+            // WHEN
+            binding.Reset();
+
+            // THEN
+            Assert.IsTrue(succes);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position, message: "Positions are not equal");
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation, message: "Rotations are not the same.");
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale, message: "Scales are not the same.");
+        }
+
+        #endregion Reset
     }
 }

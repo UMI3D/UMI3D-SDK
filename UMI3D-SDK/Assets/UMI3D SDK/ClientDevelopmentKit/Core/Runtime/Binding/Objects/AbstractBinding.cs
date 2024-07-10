@@ -47,9 +47,14 @@ namespace umi3d.cdk.binding
         public virtual int Priority => data.priority;
 
         /// <summary>
+        /// See <see cref="AbstractBindingDataDto.resetWhenRemoved"/>.
+        /// </summary>
+        public virtual bool ResetWhenRemoved => data.resetWhenRemoved;
+
+        /// <summary>
         /// Transform of the bound node.
         /// </summary>
-        public virtual Transform BoundTransform => boundTransform;
+        public virtual Transform BoundTransform => boundTransform;  
 
         #endregion DTO Access
 
@@ -64,5 +69,10 @@ namespace umi3d.cdk.binding
         /// </summary>
         /// <param name="success"></param>
         public abstract void Apply(out bool success);
+
+        /// <summary>
+        /// Put back the bound object at its original world place.
+        /// </summary>
+        public abstract void Reset();
     }
 }
