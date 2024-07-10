@@ -62,6 +62,18 @@ namespace umi3d.common.core
         public Quaternion LocalRotation { get; set; } = Quaternion.identity;
 
         public Vector3 Scale { get; set; } = Vector3.one;
+
+        public static PureTransformation CopyTransform(Transform transform)
+        {
+            return new PureTransformation()
+            {
+                Position = transform.position,
+                Rotation = transform.rotation,
+                LocalPosition = transform.localPosition,
+                LocalRotation = transform.localRotation,
+                Scale = transform.localScale
+            };
+        }
     }
 
     /// <summary>
