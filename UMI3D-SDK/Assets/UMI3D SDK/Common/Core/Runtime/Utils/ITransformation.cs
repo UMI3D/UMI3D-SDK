@@ -37,6 +37,11 @@ namespace umi3d.common.core
         public Quaternion LocalRotation { get; set; }
 
         /// <summary>
+        /// Position relative to parent.
+        /// </summary>
+        public Vector3 LocalPosition { get; set; }
+
+        /// <summary>
         /// Scale relative to parent.
         /// </summary>
         public Vector3 Scale { get; set; }
@@ -49,6 +54,8 @@ namespace umi3d.common.core
     public class PureTransformation : ITransformation
     {
         public Vector3 Position { get; set; } = Vector3.zero;
+
+        public Vector3 LocalPosition { get; set; } = Vector3.zero;
 
         public Quaternion Rotation { get; set; } = Quaternion.identity;
 
@@ -72,6 +79,12 @@ namespace umi3d.common.core
         {
             get => Transform.rotation;
             set => Transform.rotation = value;
+        }
+
+        public Vector3 LocalPosition
+        {
+            get => Transform.localPosition;
+            set => Transform.localPosition = value;
         }
 
         public Quaternion LocalRotation
