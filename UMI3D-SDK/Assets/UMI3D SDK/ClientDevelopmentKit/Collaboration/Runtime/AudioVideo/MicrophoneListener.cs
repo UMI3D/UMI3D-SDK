@@ -53,6 +53,12 @@ namespace umi3d.cdk.collaboration
             pushToTalkKeycode = KeyCode.M;
         }
 
+        public override void ResetAudioConference()
+        {
+            base.ResetAudioConference();
+            identity = new Identity(GetIdentity);
+        }
+
 
         (string, int, string, string) GetIdentity()
         {
