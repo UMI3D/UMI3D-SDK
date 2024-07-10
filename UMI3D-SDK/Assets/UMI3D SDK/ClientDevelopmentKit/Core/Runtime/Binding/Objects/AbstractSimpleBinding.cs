@@ -133,8 +133,15 @@ namespace umi3d.cdk.binding
             if (boundTransform == null) // object destroyed before binding reset
                 return;
 
-            boundTransform.SetLocalPositionAndRotation(OriginalTransformation.LocalPosition, OriginalTransformation.LocalRotation);
-            boundTransform.localScale = OriginalTransformation.Scale;
+            if (SyncPosition && SyncRotation)
+                boundTransform.SetLocalPositionAndRotation(OriginalTransformation.LocalPosition, OriginalTransformation.LocalRotation);
+            else if (SyncPosition)
+                boundTransform.localPosition = OriginalTransformation.LocalPosition;
+            else if (SyncRotation)
+                boundTransform.localRotation = OriginalTransformation.LocalRotation;
+
+            if (SyncScale)
+                boundTransform.localScale = OriginalTransformation.Scale;
         }
     }
 }
