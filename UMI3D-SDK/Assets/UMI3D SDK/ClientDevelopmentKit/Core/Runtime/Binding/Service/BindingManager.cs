@@ -67,8 +67,8 @@ namespace umi3d.cdk.binding
         public virtual bool AreBindingsActivated { get; private set; } = true;
 
         /// <inheritdoc/>
-        public virtual IReadOnlyDictionary<(ulong, ulong), AbstractBinding> Bindings => bindings;
-        protected readonly Dictionary<(ulong,ulong), AbstractBinding> bindings = new();
+        public virtual IReadOnlyDictionary<(ulong environmentId, ulong nodeId), AbstractBinding> Bindings => bindings;
+        protected readonly Dictionary<(ulong environmentId, ulong nodeId), AbstractBinding> bindings = new();
 
         protected AbstractBinding[] bindingExecutionQueue = new AbstractBinding[0];
 
@@ -118,7 +118,6 @@ namespace umi3d.cdk.binding
                 bindingRoutine = routineService.AttachLateRoutine(BindingApplicationRoutine());
                 clientServer.OnLeavingEnvironment.AddListener(() => { if (bindingRoutine is not null) routineService.DetachLateRoutine(bindingRoutine); });
             }
-                
         }
 
         /// <summary>
@@ -129,26 +128,39 @@ namespace umi3d.cdk.binding
         {
             while (AreBindingsActivated)
             {
-                if (bindings.Count != bindingExecutionQueue.Length)
-                    ReorderQueue();
-
-                foreach (AbstractBinding binding in bindingExecutionQueue)
-                {
-                    if (binding.BoundTransform == null)
-                    {
-                        UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
-                        var env = bindings.FirstOrDefault(kp => kp.Value.Equals(binding));
-                        if(env.Value != null)
-                            RemoveBinding(env.Key.Item1,env.Key.Item2);
-                        continue;
-                    }
-
-                    binding.Apply(out bool success);
-                    if (!success)
-                        break;
-                }
+                ApplyBindings();
                 yield return null;
             }
+        }
+
+        private void ApplyBindings()
+        {
+            if (bindings.Count != bindingExecutionQueue.Length)
+                ReorderQueue();
+
+            foreach (AbstractBinding binding in bindingExecutionQueue)
+            {
+                if (binding.BoundTransform == null)
+                {
+                    UMI3DLogger.LogWarning($"Bound transform is null. It may have been deleted without removing the binding first.", DebugScope.CDK | DebugScope.Core);
+                    ((ulong environmentId, ulong nodeId), AbstractBinding bindingToRemove) = bindings.FirstOrDefault(kp => kp.Value.Equals(binding));
+                    if (bindingToRemove != null)
+                        RemoveBinding(environmentId, nodeId);
+                    continue;
+                }
+
+                binding.Apply(out bool success);
+                if (!success)
+                    break;
+            }
+        }
+
+        public void ForceBindingsApplicationUpdate()
+        {
+            if (!AreBindingsActivated)
+                return;
+
+            ApplyBindings();
         }
 
         private void ReorderQueue()
