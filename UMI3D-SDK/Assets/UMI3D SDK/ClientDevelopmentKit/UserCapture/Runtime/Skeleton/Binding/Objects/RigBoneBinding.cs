@@ -29,7 +29,7 @@ namespace umi3d.cdk.userCapture.binding
                     : base(dto, rigBoundTransform, skeleton)
         {
             this.rootObject = rootObject;
-            this.autoComputedRotationOffset = UseAutoComputedRotationOffset ? Quaternion.Inverse(rootObject.rotation) * boundTransform.rotation : Quaternion.identity;
+            this.autoComputedRotationOffset = UseAutoComputedRotationOffset ? Quaternion.Inverse(rootObject.rotation) * rigBoundTransform.rotation : Quaternion.identity;
         }
 
         #region DTO Access
