@@ -226,7 +226,12 @@ namespace umi3d.cdk.collaboration
         public bool useLocalLoopback
         {
             get => debuggingVariables?.UseLocalLoopback ?? false;
-            set { if (debuggingVariables != null) debuggingVariables.UseLocalLoopback = value; }
+            set
+            {
+                if (debuggingVariables != null)
+                    debuggingVariables.UseLocalLoopback = value;
+                mumbleClient.SetSelfMute(!value && isMute);
+            }
         }
 
         public float minAmplitudeToSend
