@@ -32,5 +32,10 @@ namespace umi3d.common.dto.binding
         /// State if the binding can be applied partialy or not. A partial fit can happen in MultyBinding when it's not the binding with the highest priority.
         /// </summary>
         public bool partialFit { get; set; }
+
+        /// <summary>
+        /// If true, the changes implied by the binding are reset when the binding is destroyed.
+        /// </summary>
+        public bool resetWhenRemoved { get; set; } = false;
     }
 }

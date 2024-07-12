@@ -233,7 +233,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
         };
 
         [Test]
-        public void BindingRoutine([ValueSource("values")] (ulong id, int priority, bool partialFit)[] testValues)
+        public void BindingRoutine([ValueSource(nameof(values))] (ulong id, int priority, bool partialFit)[] testValues)
         {
             // GIVEN
             Queue<ulong> executionTracker = new();

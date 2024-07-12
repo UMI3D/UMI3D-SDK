@@ -19,6 +19,7 @@ using NUnit.Framework;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using TestUtils;
 using umi3d.cdk;
 using umi3d.cdk.binding;
 using umi3d.common;
@@ -238,7 +239,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
         #region Apply
 
-        private static (ulong id, int priority, bool partialFit)[][] values = new (ulong id, int priority, bool partialFit)[][] 
+        private static (ulong id, int priority, bool partialFit)[][] simpleBindingParameters = new (ulong id, int priority, bool partialFit)[][] 
             {
                 new (ulong id, int priority, bool partialFit)[] { (1008uL, 10, true), (1009uL, 5, true), (1010uL, 1, true)  },
                 new (ulong id, int priority, bool partialFit)[] { (1008uL, 10, true), (1009uL, 5, true), (1010uL, 1, false) },
@@ -250,7 +251,7 @@ namespace PlayMode_Tests.Core.Binding.CDK
 
 
         [Test]
-        public void Apply([ValueSource("values")] (ulong id, int priority, bool partialFit)[] testValue)
+        public void Apply([ValueSource(nameof(simpleBindingParameters))] (ulong id, int priority, bool partialFit)[] testValue)
         {
             // GIVEN
             Queue<AbstractSimpleBindingDataDto> bindingDataDtos = new();
@@ -261,7 +262,11 @@ namespace PlayMode_Tests.Core.Binding.CDK
                 {
                     parentNodeId = v.id,
                     syncPosition = true,
-                    offSetPosition = Vector3.zero.Dto(),
+                    offSetPosition = Vector3.one.Dto(),
+                    syncRotation = true,
+                    offSetRotation = Quaternion.Euler(0, 90, 0).Dto(),
+                    syncScale = true,
+                    offSetScale = (Vector3.one * 2).Dto(),
                     partialFit = v.partialFit,
                     priority = v.priority
                 };
@@ -310,5 +315,70 @@ namespace PlayMode_Tests.Core.Binding.CDK
         }
 
         #endregion
+
+        #region Reset
+
+        [Test, TestOf(nameof(MultiBinding.Reset))]
+        public void Reset([ValueSource(nameof(simpleBindingParameters))] (ulong id, int priority, bool partialFit)[] testValue)
+        {
+            // GIVEN
+            Queue<AbstractSimpleBindingDataDto> bindingDataDtos = new();
+            int i = 0;
+            foreach (var v in testValue)
+            {
+                var bindingDataDto = new NodeBindingDataDto()
+                {
+                    parentNodeId = v.id,
+                    syncPosition = true,
+                    offSetPosition = Vector3.one.Dto(),
+                    syncRotation = true,
+                    offSetRotation = Quaternion.Euler(0, 90, 0).Dto(),
+                    syncScale = true,
+                    offSetScale = (Vector3.one * 2).Dto(),
+                    partialFit = v.partialFit,
+                    priority = v.priority
+                };
+                bindingDataDtos.Enqueue(bindingDataDto);
+                i++;
+            }
+
+            var dto = new MultiBindingDataDto() { Bindings = bindingDataDtos.ToArray() };
+
+            var parentNodeMock = new Mock<UMI3DNodeInstance>(MockBehavior.Default, UMI3DGlobalID.EnvironmentId, new System.Action(() => { }), 0uL);
+
+            Queue<NodeBinding> bindings = new();
+            List<NodeBindingDataDto> callBackCache = new();
+
+            foreach (var bindingDataDto in dto.Bindings.OrderByDescending(x => x.priority))
+            {
+                var bindingMock = new Mock<NodeBinding>(bindingDataDto as NodeBindingDataDto, go.transform, parentNodeMock.Object);
+                bool successLocal = true; // is lazy evaluated and put as the result of the mocked method
+                bindingMock
+                    .Setup(x => x.Apply(out successLocal))
+                    .Callback(() => callBackCache.Add(bindingDataDto as NodeBindingDataDto));
+                bindingMock.Setup(x => x.IsPartiallyFit).Returns(bindingDataDto.partialFit);
+
+                bindings.Enqueue(bindingMock.Object);
+            }
+
+            MultiBinding binding = new(dto, bindings.ToArray(), go.transform, isOrdered: false);
+
+            Vector3 previousPosition = go.transform.position;
+            Quaternion previousRotation = go.transform.rotation;
+            Vector3 previousScale = go.transform.localScale;
+
+            binding.Apply(out bool succes);
+
+            // WHEN
+            binding.Reset();
+
+            // THEN
+            Assert.IsTrue(succes);
+            AssertUnityStruct.AreEqual(previousPosition, go.transform.position, message: "Positions are not equal");
+            AssertUnityStruct.AreEqual(previousRotation, go.transform.rotation, message: "Rotations are not the same.");
+            AssertUnityStruct.AreEqual(previousScale, go.transform.localScale, message: "Scales are not the same.");
+        }
+
+        #endregion Reset
     }
 }

@@ -14,9 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Linq;
-using umi3d.cdk.userCapture.tracking;
-using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture.binding;
 using UnityEngine;
 
@@ -27,10 +25,11 @@ namespace umi3d.cdk.userCapture.binding
     /// </summary>
     public class RigBoneBinding : BoneBinding
     {
-        public RigBoneBinding(RigBoneBindingDataDto dto, Transform rigBoundTransform, ISkeleton skeleton, Transform rootObject) : base(dto, rigBoundTransform, skeleton)
+        public RigBoneBinding(RigBoneBindingDataDto dto, Transform rigBoundTransform, ISkeleton skeleton, Transform rootObject)
+                    : base(dto, rigBoundTransform, skeleton)
         {
-            this.rootObject = rootObject;      
-            this.originalRotationOffset = ApplyOriginalRotation ? Quaternion.Inverse(rootObject.rotation) * boundTransform.rotation : Quaternion.identity;
+            this.rootObject = rootObject;
+            this.autoComputedRotationOffset = UseAutoComputedRotationOffset ? Quaternion.Inverse(rootObject.rotation) * rigBoundTransform.rotation : Quaternion.identity;
         }
 
         #region DTO Access
@@ -47,7 +46,7 @@ namespace umi3d.cdk.userCapture.binding
         /// <summary>
         /// See <see cref="RigBoneBindingDataDto.applyOriginalRotation"/>.
         /// </summary>
-        public bool ApplyOriginalRotation => RigBoneBindingDataDto.applyOriginalRotation;
+        public bool UseAutoComputedRotationOffset => RigBoneBindingDataDto.applyOriginalRotation;
 
 
         #endregion DTO Access

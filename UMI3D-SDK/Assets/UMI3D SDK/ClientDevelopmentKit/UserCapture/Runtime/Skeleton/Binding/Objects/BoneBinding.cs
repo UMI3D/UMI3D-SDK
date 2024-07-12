@@ -68,6 +68,9 @@ namespace umi3d.cdk.userCapture.binding
                 return;
             }
 
+            if (!hasStartedToBeApplied)
+                Start();
+
             ITransformation parentBone = null;
 
             if (BindToController && skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType, out IController controller))

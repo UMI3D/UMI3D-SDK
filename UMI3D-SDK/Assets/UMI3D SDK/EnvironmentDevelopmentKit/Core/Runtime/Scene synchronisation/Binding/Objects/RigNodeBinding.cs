@@ -51,6 +51,7 @@ namespace umi3d.edk.binding
                 syncRotation = syncRotation,
                 syncScale = syncScale,
                 anchorPosition = anchor.Dto(),
+                resetWhenRemoved = resetWhenRemoved,
                 rigName = rigName
             };
 

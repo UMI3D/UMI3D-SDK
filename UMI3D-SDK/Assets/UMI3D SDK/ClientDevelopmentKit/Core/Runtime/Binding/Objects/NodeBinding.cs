@@ -54,6 +54,9 @@ namespace umi3d.cdk.binding
                 return;
             }
 
+            if (!hasStartedToBeApplied)
+                Start();
+
             Compute((parentNode.transform.position, parentNode.transform.rotation, parentNode.transform.localScale));
             success = true;
         }
