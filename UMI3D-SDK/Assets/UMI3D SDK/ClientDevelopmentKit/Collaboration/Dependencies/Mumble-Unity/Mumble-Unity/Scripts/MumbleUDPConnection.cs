@@ -278,7 +278,10 @@ namespace Mumble
             try
             {
                 if (_mumbleClient.UseLocalLoopBack)
+                {
                     UnpackOpusVoicePacket(voicePacket, true);
+                    return; // Don't send voice when in loop back mode
+                }
                 //Debug.Log("Sending UDP packet! Length = " + voicePacket.Length);
 
                 if (_useTcp)

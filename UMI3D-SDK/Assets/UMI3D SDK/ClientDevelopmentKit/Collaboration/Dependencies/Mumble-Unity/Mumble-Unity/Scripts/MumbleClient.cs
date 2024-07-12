@@ -531,7 +531,7 @@ namespace Mumble
         {
             // Don't send anything out if we're muted
             if (OurUserState == null
-                || OurUserState.Mute)
+                || (OurUserState.Mute && !UseLocalLoopBack))
             {
                 floatData.UnRef();
                 return;
