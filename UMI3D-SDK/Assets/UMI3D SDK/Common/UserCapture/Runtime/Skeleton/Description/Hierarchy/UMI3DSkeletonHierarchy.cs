@@ -350,6 +350,17 @@ namespace umi3d.common.userCapture.description
 
         private readonly IReadOnlyList<uint> linearDepthOrderedBones;
 
+        private IReadOnlyList<uint> linearReverseDepthOrderedBones
+        {
+            get
+            {
+                if (_linearReverseDepthOrderedBones == null)
+                    _linearReverseDepthOrderedBones = linearDepthOrderedBones.Reverse().ToList();
+                return _linearReverseDepthOrderedBones;
+            }
+        }
+        private IReadOnlyList<uint> _linearReverseDepthOrderedBones;
+
         /// <summary>
         /// Apply an <paramref name="action"/> to all bones, starting from the hips.
         /// </summary>
@@ -376,7 +387,7 @@ namespace umi3d.common.userCapture.description
             if (action == null)
                 throw new System.ArgumentNullException(nameof(action));
 
-            foreach (uint bone in linearDepthOrderedBones)
+            foreach (uint bone in linearReverseDepthOrderedBones)
             {
                 action(bone);
             }
