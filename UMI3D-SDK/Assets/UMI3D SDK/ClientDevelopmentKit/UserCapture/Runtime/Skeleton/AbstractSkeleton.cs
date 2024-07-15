@@ -153,7 +153,7 @@ namespace umi3d.cdk.userCapture
             // (in order not to be influenced by displacement of this, because of tracked action)
             // final skeleton is GET logic, subskeletons is SET
             finalSkeletonGameObject.transform.SetParent(this.transform.parent);
-            SkeletonHierarchy.Apply(CreateSkeletonBoneGameObject);
+            SkeletonHierarchy.Apply(CreateSkeletonBoneGameObject, startBone: BoneType.Hips);
 
             Destroyed += () =>
             {
