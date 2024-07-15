@@ -89,7 +89,7 @@ namespace umi3d.common.userCapture.description
 
         private readonly Dictionary<uint, BoneComputation> bonesComputations = new();
 
-        private record BoneComputation
+        private class BoneComputation
         {
             public bool isComputed = false;
             public BoneDto bone;
@@ -108,7 +108,17 @@ namespace umi3d.common.userCapture.description
                 if (levelOfArticulation == LevelOfArticulation.NONE || marker.LevelOfArticulation <= levelOfArticulation)
                     mappings.Add(marker.BoneType, marker.ToSkeletonMapping());
             }
-            mappingsList = mappings.Values.ToList();
+            mappingsList = mappings.Values.OrderBy(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
+        }
+
+        private UMI3DSkeletonHierarchy registeredHierarchy;
+
+        public virtual void Init(UMI3DSkeletonHierarchy hierarchy)
+        {
+            if (hierarchy == null)
+                throw new System.ArgumentNullException(nameof(hierarchy));
+
+            registeredHierarchy = hierarchy;
         }
 
         /// <summary>
@@ -134,14 +144,8 @@ namespace umi3d.common.userCapture.description
                     UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
             }
 
-            foreach (BoneComputation boneComputation in bonesComputations.Values)
-            {
-                if (boneComputation != null)
-                    boneComputation.isComputed = false;
-            }
-
             List<SubSkeletonBoneDto> bones = new(hierarchy.Relations.Count);
-            foreach (SkeletonMapping mapping in Mappings)
+            foreach (SkeletonMapping mapping in mappingsList)
             {
                 SubSkeletonBoneDto pose = GetBonePose(hierarchy, mapping).subBone;
                 if (pose != null)
@@ -170,38 +174,40 @@ namespace umi3d.common.userCapture.description
 
             uint boneType = mapping.BoneType;
 
-            // bone already computed
-            if (bonesComputations.TryGetValue(boneType, out BoneComputation value) && value.isComputed)
-                return value;
+            if (!bonesComputations.TryGetValue(boneType, out BoneComputation boneComputation)) // bone not existing  yet
+            {
+                bonesComputations.Add(boneType, new BoneComputation() { });
+            }
+            else if (boneComputation.isComputed) // bone already computed
+            {
+                return boneComputation;
+            }
 
             // bone not in hierarchy
             if (!hierarchy.Relations.TryGetValue(boneType, out var relation))
                 throw new ArgumentException($"Bone ({boneType}, \"{BoneTypeHelper.GetBoneName(boneType)}\") not defined in hierarchy.", nameof(mapping));
 
             // get mapping value
-            var bone = mapping.GetPose();
+            BoneDto bone = mapping.GetPose();
 
             // look for potential parents
             SubSkeletonBoneDto subBone = new() { boneType = boneType };
             if (!mappings.TryGetValue(relation.boneTypeParent, out SkeletonMapping parentMapping) 
-                || parentMapping.BoneType == BoneType.None) // bone has no parent
+                || parentMapping.BoneType == BoneType.None) // bone has no parent mapping
             {
                 subBone.localRotation = bone.rotation;
             }
-            else // bone has a parent and thus its rotation depends on it
+            else // bone has a parent mapping and thus its rotation depends on it
             {
                 BoneComputation parentComputation = GetBonePose(hierarchy, parentMapping);
                 subBone.localRotation = (UnityEngine.Quaternion.Inverse(parentComputation.bone.rotation.Quaternion()) * bone.rotation.Quaternion()).Dto();
             }
 
-            bonesComputations[boneType] = new()
-            {
-                isComputed = true,
-                bone = mapping.GetPose(),
-                subBone = subBone
-            };
+            boneComputation.bone = mapping.GetPose();
+            boneComputation.subBone = subBone;
+            boneComputation.isComputed = true;
 
-            return bonesComputations[boneType];
+            return boneComputation;
         }
     }
 }

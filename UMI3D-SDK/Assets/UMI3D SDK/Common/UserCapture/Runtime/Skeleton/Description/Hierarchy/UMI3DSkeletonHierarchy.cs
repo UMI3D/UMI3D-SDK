@@ -304,6 +304,8 @@ namespace umi3d.common.userCapture.description
             }
         }
 
+        public IComparer<uint> Comparer => hierarchicalComparer;
+
         public uint GetHighestBone(IEnumerable<uint> bones)
         {
             return bones.OrderBy(x=>x, hierarchicalComparer).LastOrDefault();
