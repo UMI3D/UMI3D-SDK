@@ -89,9 +89,9 @@ namespace umi3d.common.userCapture.description
 
         private readonly Dictionary<uint, BoneComputation> bonesComputations = new();
 
-        private class BoneComputation
+        private struct BoneComputation
         {
-            public bool isComputed = false;
+            public bool isComputed;
             public BoneDto bone;
             public SubSkeletonBoneDto subBone;
         }
