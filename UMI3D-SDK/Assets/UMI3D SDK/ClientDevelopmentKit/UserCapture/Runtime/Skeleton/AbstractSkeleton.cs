@@ -293,7 +293,7 @@ namespace umi3d.cdk.userCapture
             if (Subskeletons == null || Subskeletons.Count == 0)
                 return;
 
-            RetrievebonesRotation(SkeletonHierarchy);
+            RetrieveBonesRotation(SkeletonHierarchy);
             if (!bones.ContainsKey(ROOT_BONE))
                 return;
 
@@ -348,14 +348,14 @@ namespace umi3d.cdk.userCapture
         /// Get all final bone rotation, based on subskeletons. Lastest subskeleton has lowest priority.
         /// </summary>
         /// <param name="hierarchy"></param>
-        private void RetrievebonesRotation(UMI3DSkeletonHierarchy hierarchy)
+        private void RetrieveBonesRotation(UMI3DSkeletonHierarchy hierarchy)
         {
             //UnityEngine.Debug.Log($"<color=orange>Compute for {UserId}</color>");
             // consider all bones we should have according to the hierarchy, and set all values to identity
             foreach (var bone in hierarchy.Relations.Keys)
             {
-                if (bones.ContainsKey(bone))
-                    bones[bone].LocalRotation = Quaternion.identity;
+                if (bones.TryGetValue(bone, out var boneTransformation))
+                    boneTransformation.LocalRotation = Quaternion.identity;
             }
 
             // for each subskeleton, in ascending order (last has highest priority),
@@ -376,8 +376,8 @@ namespace umi3d.cdk.userCapture
                     foreach (var b in poseBones)
                     {
                         // if a bone rotation can receive the pose
-                        if (bones.ContainsKey(b.boneType))
-                            bones[b.boneType].LocalRotation = b.localRotation.Quaternion();
+                        if (bones.TryGetValue(b.boneType, out var boneTransformation))
+                            boneTransformation.LocalRotation = b.localRotation.Quaternion();
                     }
                 }
         }
