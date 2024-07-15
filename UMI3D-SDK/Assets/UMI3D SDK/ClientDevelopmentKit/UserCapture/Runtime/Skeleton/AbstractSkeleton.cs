@@ -363,21 +363,19 @@ namespace umi3d.cdk.userCapture
             lock (SubskeletonsLock)
                 foreach (var skeleton in Subskeletons)
                 {
-                    var pose = skeleton.GetPose(hierarchy);
+                    SubSkeletonPoseDto subskeletonPose = skeleton.GetPose(hierarchy);
 
-                    if (pose is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
+                    if (subskeletonPose is null) // if bones are null, sub skeleton should not have any effect. e.g. pose skeleton with no current pose.
                         continue;
 
-                    List<SubSkeletonBoneDto> poseBones = pose.bones;
+                    if (subskeletonPose.boneAnchor?.bone == ROOT_BONE) //hips displacement is used when subskeleton moves the hips as its anchor, e.g. emotes
+                        hipsDisplacement = Vector3.Scale(HipsAnchor.rotation * subskeletonPose.boneAnchor.position.Struct(), ExtractXZVector);
 
-                    if (pose.boneAnchor?.bone == ROOT_BONE) //hips displacement is used when subskeleton moves the hips as its anchor, e.g. emotes
-                        hipsDisplacement = Vector3.Scale(HipsAnchor.rotation * pose.boneAnchor.position.Struct(), ExtractXZVector);
-
-                    foreach (var b in poseBones)
+                    foreach (SubSkeletonBoneDto subskeletonBone in subskeletonPose.bones)
                     {
                         // if a bone rotation can receive the pose
-                        if (bones.TryGetValue(b.boneType, out var boneTransformation))
-                            boneTransformation.LocalRotation = b.localRotation.Quaternion();
+                        if (bones.TryGetValue(subskeletonBone.boneType, out var boneTransformation))
+                            boneTransformation.LocalRotation = subskeletonBone.localRotation.Quaternion();
                     }
                 }
         }
