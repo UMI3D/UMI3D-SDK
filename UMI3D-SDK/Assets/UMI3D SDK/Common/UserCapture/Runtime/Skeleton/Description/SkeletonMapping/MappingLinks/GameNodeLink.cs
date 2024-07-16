@@ -28,6 +28,8 @@ namespace umi3d.common.userCapture.description
         /// </summary>
         public Transform transform;
 
+        private bool IsDestroyed;
+
         public GameNodeLink(Transform transform)
         {
             this.transform = transform;
@@ -36,7 +38,15 @@ namespace umi3d.common.userCapture.description
         /// <inheritdoc/>
         public virtual (Vector3 position, Quaternion rotation) Compute()
         {
+            if (IsDestroyed)
+                return (Vector3.zero, Quaternion.identity);
+
             return (transform.position, transform.rotation);
+        }
+
+        public void MarkAsDrestroyed()
+        {
+            IsDestroyed = true;
         }
     }
 }

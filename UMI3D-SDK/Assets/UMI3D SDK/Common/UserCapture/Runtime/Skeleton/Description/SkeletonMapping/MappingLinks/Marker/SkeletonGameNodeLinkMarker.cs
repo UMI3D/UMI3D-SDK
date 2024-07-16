@@ -29,16 +29,28 @@ namespace umi3d.common.userCapture.description
         [Tooltip("Game node from which to generate the link.")]
         public GameObject node;
 
+        public event System.Action OnDestroyed;
+
         private void Start()
         {
             if (node == null)
                 node = gameObject;
         }
 
+        private void OnDestroy()
+        {
+            OnDestroyed?.Invoke();
+        }
+
         public override ISkeletonMappingLink ToLink()
         {
             if (node == null)
                 node = gameObject;
+
+            GameNodeLink link = new GameNodeLink(node.transform);
+
+            OnDestroyed += link.MarkAsDrestroyed;
+
             return new GameNodeLink(node.transform);
         }
     }
