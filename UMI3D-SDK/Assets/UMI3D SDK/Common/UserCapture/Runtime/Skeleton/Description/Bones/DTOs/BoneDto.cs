@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
@@ -35,5 +36,24 @@ namespace umi3d.common.userCapture.description
         /// Rotation of the bone in world space
         /// </summary>
         public Vector4Dto rotation { get; set; }
+    }
+
+    public readonly struct BonePose
+    {
+        /// <summary>
+        /// Defines the type of the bone.
+        /// </summary>
+        public readonly uint boneType;
+
+        /// <summary>
+        /// Rotation of the bone in world space
+        /// </summary>
+        public readonly UnityEngine.Quaternion rotation;
+
+        public BonePose(uint boneType, Quaternion rotation)
+        {
+            this.boneType = boneType;
+            this.rotation = rotation;
+        }
     }
 }

@@ -33,4 +33,23 @@ namespace umi3d.common.userCapture.description
         /// </summary>
         public PoseAnchorDto anchor { get; set; }
     }
+
+    public record Pose
+    {
+        /// <summary>
+        /// all the bone pose that are composing the current pose
+        /// </summary>
+        public readonly List<BonePose> bones = new();
+
+        /// <summary>
+        /// Where the pose starts on the skeleotn
+        /// </summary>
+        public readonly PoseAnchor anchor;
+
+        public Pose(PoseAnchor anchor, List<BonePose> bones)
+        {
+            this.bones = bones;
+            this.anchor = anchor;
+        }
+    }
 }

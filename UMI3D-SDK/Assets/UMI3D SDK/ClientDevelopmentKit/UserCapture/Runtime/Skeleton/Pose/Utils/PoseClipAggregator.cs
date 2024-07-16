@@ -206,16 +206,16 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         private class SubskeletonPoseSnapshot : ISubskeletonDescriptor
         {
-            private SubSkeletonPoseDto dto;
+            private SubskeletonPose poseToKeep;
 
-            public SubskeletonPoseSnapshot(SubSkeletonPoseDto dto)
+            public SubskeletonPoseSnapshot(SubskeletonPose dto)
             {
-                this.dto = dto;
+                this.poseToKeep = dto;
             }
 
-            public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+            public SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
             {
-                return dto;
+                return poseToKeep;
             }
         }
 
@@ -257,7 +257,7 @@ namespace umi3d.cdk.userCapture.pose
         }
 
         /// <inheritdoc/>
-        public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+        public SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             return AggregateFromChannels(hierarchy, poseChannels.Values.Select(x => x.posePlayer));
         }
@@ -269,12 +269,12 @@ namespace umi3d.cdk.userCapture.pose
         /// <param name="posePlayers"></param>
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
-        private SubSkeletonPoseDto AggregateFromChannels(UMI3DSkeletonHierarchy hierarchy, IEnumerable<ISubskeletonDescriptionInterpolationPlayer> posePlayers)
+        private SubskeletonPose AggregateFromChannels(UMI3DSkeletonHierarchy hierarchy, IEnumerable<ISubskeletonDescriptionInterpolationPlayer> posePlayers)
         {
             if (hierarchy == null)
                 throw new ArgumentNullException(nameof(hierarchy));
 
-            Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
+            Dictionary<uint, SubskeletonBonePose> bonePoses = new();
 
             // merge poses from pose players
             foreach (var posePlayer in posePlayers)
@@ -282,8 +282,8 @@ namespace umi3d.cdk.userCapture.pose
                 if (!posePlayer.IsPlaying)
                     continue;
 
-                SubSkeletonPoseDto subSkeletonPose = posePlayer.GetPose(hierarchy);
-                Dictionary<uint, SubSkeletonBoneDto> subskeletonBonePose = subSkeletonPose.bones.ToDictionary(x => x.boneType);
+                SubskeletonPose subSkeletonPose = posePlayer.GetPose(hierarchy);
+                Dictionary<uint, SubskeletonBonePose> subskeletonBonePose = subSkeletonPose.bones.ToDictionary(x => x.boneType);
 
                 foreach (var bone in subSkeletonPose.bones)
                 {
@@ -294,10 +294,7 @@ namespace umi3d.cdk.userCapture.pose
                 }
             }
 
-            return new SubSkeletonPoseDto()
-            {
-                bones = bonePoses.Values.ToList()
-            };
+            return new SubskeletonPose(default, bonePoses.Values.ToList());
         }
     }
 }

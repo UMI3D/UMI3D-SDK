@@ -34,4 +34,22 @@ namespace umi3d.common.userCapture.description
         /// </summary>
         public Vector4Dto rotation { get; set; } = new Vector4Dto();
     }
+
+    public struct PoseAnchor
+    {
+        /// <summary>
+        /// The current <see cref="BoneType"/> of the bone to update
+        /// </summary>
+        public uint bone;
+
+        /// <summary>
+        /// The position of the bone
+        /// </summary>
+        public UnityEngine.Vector3 position;
+
+        /// <summary>
+        /// The rotation of the bone
+        /// </summary>
+        public UnityEngine.Quaternion rotation;
+    }
 }

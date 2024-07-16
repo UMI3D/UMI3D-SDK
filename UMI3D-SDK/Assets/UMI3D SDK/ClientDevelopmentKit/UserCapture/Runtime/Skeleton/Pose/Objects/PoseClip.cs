@@ -42,6 +42,8 @@ namespace umi3d.cdk.userCapture.pose
         /// </summary>
         public List<BoneDto> Bones => dto.pose.bones;
 
+        public IReadOnlyDictionary<uint, BonePose> BonePoses {  get; protected set; }
+
         /// <summary>
         /// See <see cref="PoseClipDto.isComposable"/>.
         /// </summary>
@@ -60,17 +62,18 @@ namespace umi3d.cdk.userCapture.pose
         public PoseClip(PoseClipDto dto)
         {
             this.dto = dto;
+            BonePoses = dto.pose.bones.ToDictionary(k=>k.boneType, x => new BonePose(x.boneType, x.rotation.Quaternion()));
         }
 
         /// <inheritdoc/>
-        public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+        public SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             if (hierarchy == null)
                 throw new ArgumentNullException(nameof(hierarchy));
 
-            Dictionary<uint, SubSkeletonBoneDto> bonePoses = new();
+            Dictionary<uint, SubskeletonBonePose> bonePoses = new();
 
-            foreach (BoneDto bone in Bones)
+            foreach (var bone in BonePoses.Values)
             {
                 if (bonePoses.ContainsKey(bone.boneType))
                     continue;
@@ -80,13 +83,10 @@ namespace umi3d.cdk.userCapture.pose
 
             computedMap.Clear();
 
-            return new SubSkeletonPoseDto()
-            {
-                bones = bonePoses.Values.ToList()
-            };
+            return new SubskeletonPose(default, bonePoses.Values.ToList());
         }
 
-        private Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
+        private Dictionary<uint, (BonePose bone, SubskeletonBonePose subBone)> computedMap = new();
 
         /// <summary>
         /// Recursively compute local rotation for a bone.
@@ -97,38 +97,31 @@ namespace umi3d.cdk.userCapture.pose
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private (BoneDto bone, SubSkeletonBoneDto subBone) GetBonePose(UMI3DSkeletonHierarchy hierarchy, BoneDto boneDto)
+        private (BonePose bone, SubskeletonBonePose subBone) GetBonePose(UMI3DSkeletonHierarchy hierarchy, BonePose boneDto)
         {
-            if (boneDto == null)
-                throw new ArgumentNullException(nameof(boneDto));
-
             uint boneType = boneDto.boneType;
 
             if (computedMap.ContainsKey(boneType))
                 return computedMap[boneType];
 
-            if (!hierarchy.Relations.ContainsKey(boneType))
+            if (!hierarchy.Relations.TryGetValue(boneType, out var relation))
                 throw new ArgumentException($"Bone ({boneType}, \"{BoneTypeHelper.GetBoneName(boneType)}\") not defined in hierarchy.", nameof(boneDto));
 
-            var relation = hierarchy.Relations[boneType];
-
-            var parentBone = Bones.Find(b => b.boneType == relation.boneTypeParent);
-
-            SubSkeletonBoneDto subBone = new() { boneType = boneType };
-            if (parentBone == default || parentBone.boneType == BoneType.None) // bone has no parent
+            Quaternion localRotation;
+            if (BonePoses.TryGetValue(relation.boneTypeParent, out BonePose parentBonePose) || parentBonePose.boneType == BoneType.None) // bone has no parent
             {
-                subBone.localRotation = boneDto.rotation;
+                localRotation = boneDto.rotation;
             }
             else // bone has a parent and thus its rotation depends on it
             {
-                var parent = GetBonePose(hierarchy, parentBone);
-                subBone.localRotation = (Quaternion.Inverse(parent.bone.rotation.Quaternion()) * boneDto.rotation.Quaternion()).Dto();
+                var parent = GetBonePose(hierarchy, parentBonePose);
+                localRotation = (Quaternion.Inverse(parent.bone.rotation) * boneDto.rotation);
             }
 
             computedMap[boneType] = new()
             {
                 bone = boneDto,
-                subBone = subBone
+                subBone = new(boneType, localRotation) 
             };
 
             return computedMap[boneType];

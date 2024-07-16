@@ -222,16 +222,16 @@ namespace umi3d.cdk.userCapture.tracking
         #endregion Lifecycle
 
         /// <inheritdoc/>
-        public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+        public SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
-            var dto = new SubSkeletonPoseDto() { bones = new(bones.Count) };
+            List<SubskeletonBonePose> subBones = new(bones.Count);
 
             // get the boneDto of each bone that is relevant for IK or is a controller
-            foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.ContainsKey(x.boneType)))
+            foreach (var bone in bones.Values.Where(x => x.positionComputed || controllers.ContainsKey(x.boneType))) // TODO Handle controller issue
             {
-                dto.bones.Add(bone.ToBoneDto());
+                subBones.Add(new(bone.boneType, bone.transform.localRotation));
             }
-            return dto;
+            return new(default, subBones);
         }
 
         #region Tracking Frame

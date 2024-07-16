@@ -47,23 +47,11 @@ namespace umi3d.common.userCapture.description
         /// Get pose of the bone after computing links.
         /// </summary>
         /// <returns></returns>
-        public virtual BoneDto GetPose()
+        public virtual BonePose GetBonePose()
         {
-           // Debug.Log((Link as GameNodeLink).transform != null);
             var computed = Link.Compute();
-            Vector4Dto rotation = new Vector4Dto()
-            {
-                X = computed.rotation.x,
-                Y = computed.rotation.y,
-                Z = computed.rotation.z,
-                W = computed.rotation.w
-            };
 
-            return new BoneDto()
-            {
-                boneType = BoneType,
-                rotation = rotation
-            };
+            return new BonePose(BoneType, rotation: computed.rotation);
         }
     }
 }

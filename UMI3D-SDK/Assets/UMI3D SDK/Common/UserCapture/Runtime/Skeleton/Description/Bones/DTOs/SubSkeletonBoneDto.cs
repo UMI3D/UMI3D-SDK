@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEngine;
+
 namespace umi3d.common.userCapture.description
 {
     public class SubSkeletonBoneDto : UMI3DDto
@@ -32,5 +34,24 @@ namespace umi3d.common.userCapture.description
         /// Rotation of the bone in world space
         /// </summary>
         public Vector4Dto rotation { get; set; }
+    }
+
+    public readonly struct SubskeletonBonePose
+    {
+        /// <summary>
+        /// Defines the type of the bone.
+        /// </summary>
+        public readonly uint boneType;
+
+        /// <summary>
+        /// Rotation of the bone in world space
+        /// </summary>
+        public readonly UnityEngine.Quaternion localRotation;
+
+        public SubskeletonBonePose(uint boneType, Quaternion localRotation)
+        {
+            this.boneType = boneType;
+            this.localRotation = localRotation;
+        }
     }
 }

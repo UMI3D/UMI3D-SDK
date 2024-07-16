@@ -34,7 +34,7 @@ namespace umi3d.cdk.userCapture
         /// Get the skeleton pose based on the position of this subskeleton.
         /// </summary>
         /// <returns></returns>
-        SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy);
+        SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy);
 
         int System.IComparable<ISubskeleton>.CompareTo(ISubskeleton other)
         {

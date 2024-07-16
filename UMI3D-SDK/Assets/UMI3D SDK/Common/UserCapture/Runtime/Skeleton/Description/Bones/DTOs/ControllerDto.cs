@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
@@ -27,5 +28,33 @@ namespace umi3d.common.userCapture.description
         public Vector3Dto position { get; set; }
 
         public bool isOverrider { get; set; }
+    }
+
+    public readonly struct ControllerPose
+    {
+        /// <summary>
+        /// Defines the type of the bone.
+        /// </summary>
+        public readonly uint boneType;
+
+        /// <summary>
+        /// Rotation of the bone in world space
+        /// </summary>
+        public readonly UnityEngine.Quaternion rotation;
+
+        /// <summary>
+        /// Position relative to the tracked node.
+        /// </summary>
+        public readonly UnityEngine.Vector3 position;
+
+        public readonly bool isOverrider;
+
+        public ControllerPose(uint boneType, Vector3 position, Quaternion rotation, bool isOverrider = false)
+        {
+            this.boneType = boneType;
+            this.rotation = rotation;
+            this.position = position;
+            this.isOverrider = isOverrider;
+        }
     }
 }

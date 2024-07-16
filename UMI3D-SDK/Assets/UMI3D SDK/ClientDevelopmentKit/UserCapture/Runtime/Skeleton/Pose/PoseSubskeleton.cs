@@ -227,7 +227,7 @@ namespace umi3d.cdk.userCapture.pose
         #endregion Pose Playing
 
         /// <inheritdoc/>
-        public SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+        public SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             return poseAggregator.GetPose(hierarchy);
         }

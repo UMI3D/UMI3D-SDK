@@ -49,9 +49,24 @@ namespace umi3d.cdk.userCapture.tracking
             return boneType == BoneType.None ? null : new SubSkeletonBoneDto { boneType = boneType, localRotation = this.transform.localRotation.Dto() };
         }
 
+        /// <summary>
+        /// Convert this bone to a dto.
+        /// </summary>
+        /// <param name="Anchor">Frame of reference</param>
+        /// <returns></returns>
+        public SubskeletonBonePose ToBonePose()
+        {
+            return new SubskeletonBonePose(boneType, this.transform.localRotation);
+        }
+
         public virtual ControllerDto ToControllerDto()
         {
             return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position.Dto(), rotation = this.transform.rotation.Dto(), isOverrider = false };
+        }
+
+        public virtual ControllerPose ToControllerPose()
+        {
+            return new ControllerPose(boneType, this.transform.position, this.transform.rotation);
         }
     }
 }

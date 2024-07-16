@@ -26,6 +26,6 @@ namespace umi3d.common.userCapture.description
     {
         IList<SkeletonMapping> Mappings { get; set; }
 
-        PoseAnchorDto BoneAnchor { get; set; }
+        PoseAnchor BoneAnchor { get; set; }
     }
 }

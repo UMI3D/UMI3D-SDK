@@ -217,7 +217,7 @@ namespace umi3d.cdk.userCapture.animation
         /// Get the skeleton pose based on the position of this AnimationSkeleton.
         /// </summary>
         /// <returns></returns>
-        public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+        public virtual SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             UMI3DAnimatorAnimation playingAnimation = null;
 

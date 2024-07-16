@@ -180,7 +180,7 @@ namespace umi3d.cdk.userCapture.animation
                     UMI3DLogger.LogWarning($"Error when getting Skeleton Mapper. SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but no mapping could be retrieved.", DEBUG_SCOPE);
                     return null;
                 }
-                if (skeletonMapper.BoneAnchor == null)
+                if (skeletonMapper.BoneAnchor.bone is BoneType.None)
                 {
                     UMI3DLogger.LogWarning($"Error when getting Skeleton Mapper. SkeletonMapper found on skeleton node {skeletonNodeDto.id} for user {skeletonNodeDto.userId}, but an anchor is missing.", DEBUG_SCOPE);
                     return null;
@@ -204,7 +204,7 @@ namespace umi3d.cdk.userCapture.animation
             SkeletonMapper skeletonMapper = animator.gameObject.AddComponent<SkeletonMapper>();
 
             // umi3d default anchor is hips
-            skeletonMapper.BoneAnchor = new PoseAnchorDto() { bone = BoneType.Hips, position = animator.rootPosition.Dto(), rotation = animator.rootRotation.Dto() };
+            skeletonMapper.BoneAnchor = new PoseAnchor() { bone = BoneType.Hips, position = animator.rootPosition, rotation = animator.rootRotation };
 
             // map animator unity bones to umi3d ones
             var boneUnityMapping = FindBonesTransform(animator);

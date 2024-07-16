@@ -39,20 +39,20 @@ namespace umi3d.common.userCapture.description
         private uint levelOfArticulation;
 
         [HideInInspector]
-        public PoseAnchorDto BoneAnchor
+        public PoseAnchor BoneAnchor
         {
             get
             {
                 if (anchor == null)
                     return boneAnchor;
 
-                if (boneAnchor == null || boneAnchor.position.Struct() != anchor.transform.position) // not initialized or has changed
+                if (boneAnchor.bone is BoneType.None || boneAnchor.position != anchor.transform.position) // not initialized or has changed
                 {
-                    boneAnchor = new PoseAnchorDto()
+                    boneAnchor = new PoseAnchor()
                     {
                         bone = anchor.BoneType,
-                        position = anchor.transform.position.Dto(),
-                        rotation = anchor.transform.rotation.Dto()
+                        position = anchor.transform.position,
+                        rotation = anchor.transform.rotation
                     };
                 }
 
@@ -64,7 +64,7 @@ namespace umi3d.common.userCapture.description
             }
         }
 
-        private PoseAnchorDto boneAnchor;
+        private PoseAnchor boneAnchor;
 
         [HideInInspector]
         public IList<SkeletonMapping> Mappings
@@ -90,9 +90,9 @@ namespace umi3d.common.userCapture.description
 
         private class BoneComputation
         {
-            public bool isComputed = false;
-            public BoneDto bone;
-            public SubSkeletonBoneDto subBone;
+            public bool isComputed;
+            public BonePose bone;
+            public SubskeletonBonePose subBone;
         }
 
         public void RetrieveMappings()
@@ -125,20 +125,20 @@ namespace umi3d.common.userCapture.description
         /// Get pose of the bone using mappings.
         /// </summary>
         /// <returns></returns>
-        public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
+        public virtual SubskeletonPose GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
             if (registeredHierarchy == null && hierarchy != null)
                 SetupHierarchy(hierarchy);
-
-            if (BoneAnchor == null)
+                
+            if (BoneAnchor.bone is BoneType.None)
             {
                 if (anchor != null)
                 {
-                    BoneAnchor = new PoseAnchorDto()
+                    BoneAnchor = new PoseAnchor()
                     {
                         bone = anchor.BoneType,
-                        position = anchor.transform.position.Dto(),
-                        rotation = anchor.transform.rotation.Dto()
+                        position = anchor.transform.position,
+                        rotation = anchor.transform.rotation
                     };
                     if (mappingMarkers.Count == 0 && Mappings.Count == 0)
                         RetrieveMappings();
@@ -153,20 +153,19 @@ namespace umi3d.common.userCapture.description
                     boneComputation.isComputed = false;
             }
 
-            List<SubSkeletonBoneDto> bones = new(hierarchy.Relations.Count);
+            List<SubskeletonBonePose> bones = new(hierarchy.Relations.Count);
             foreach (SkeletonMapping mapping in mappingsList)
             {
-                SubSkeletonBoneDto pose = GetBonePose(hierarchy, mapping).subBone;
-                if (pose != null)
-                    bones.Add(pose);
+                SubskeletonBonePose bonePose = GetBonePose(hierarchy, mapping).subBone;
+                bones.Add(bonePose);
             }
 
-            return new SubSkeletonPoseDto()
-            {
-                boneAnchor = BoneAnchor,
-                bones = bones
-            };
+            currentPose = new SubskeletonPose(BoneAnchor, bones);
+
+            return currentPose;
         }
+
+        private SubskeletonPose currentPose;
 
         /// <summary>
         /// Compute bone position for each bone recursively. Start from desired bone.
@@ -195,22 +194,23 @@ namespace umi3d.common.userCapture.description
                 throw new ArgumentException($"Bone ({boneType}, \"{BoneTypeHelper.GetBoneName(boneType)}\") not defined in hierarchy.", nameof(mapping));
 
             // get mapping value
-            BoneDto bone = mapping.GetPose();
+            BonePose bone = mapping.GetBonePose();
 
             // look for potential parents
-            SubSkeletonBoneDto subBone = new() { boneType = boneType };
+            Quaternion localRotation;
             if (!mappings.TryGetValue(relation.boneTypeParent, out SkeletonMapping parentMapping) 
                 || parentMapping.BoneType == BoneType.None) // bone has no parent mapping
             {
-                subBone.localRotation = bone.rotation;
+                localRotation = bone.rotation;
             }
             else // bone has a parent mapping and thus its rotation depends on it
             {
                 BoneComputation parentComputation = GetBonePose(hierarchy, parentMapping);
-                subBone.localRotation = (UnityEngine.Quaternion.Inverse(parentComputation.bone.rotation.Quaternion()) * bone.rotation.Quaternion()).Dto();
+                localRotation = (UnityEngine.Quaternion.Inverse(parentComputation.bone.rotation) * bone.rotation);
             }
 
-            boneComputation.bone = mapping.GetPose();
+            SubskeletonBonePose subBone = new(boneType, localRotation: localRotation);
+            boneComputation.bone = mapping.GetBonePose();
             boneComputation.subBone = subBone;
             boneComputation.isComputed = true;
 
