@@ -33,6 +33,10 @@ namespace umi3d.cdk.userCapture.binding
         public BoneBinding(BoneBindingDataDto dto, Transform boundTransform, ISkeleton skeleton) : base(dto, boundTransform)
         {
             this.skeleton = skeleton;
+            this.UserId = dto.userId;
+            this.BoneType = dto.boneType;
+            this.BindToController = dto.bindToController;
+
             BoneBindingDataDto = (BoneBindingDataDto)SimpleBindingData;
         }
 
@@ -43,14 +47,17 @@ namespace umi3d.cdk.userCapture.binding
         /// <summary>
         /// See <see cref="BoneBindingDataDto.userId"/>.
         /// </summary>
-        public ulong UserId => BoneBindingDataDto.userId;
+        public ulong UserId { get; }
 
         /// <summary>
         /// See <see cref="BoneBindingDataDto.boneType"/>.
         /// </summary>
-        public uint BoneType => BoneBindingDataDto.boneType;
+        public uint BoneType { get; }
 
-        public bool BindToController => BoneBindingDataDto.bindToController;
+        /// <summary>
+        /// See <see cref="BoneBindingDataDto.bindToController"/>.
+        /// </summary>
+        public bool BindToController { get; }
 
         #endregion DTO Access
 

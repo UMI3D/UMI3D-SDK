@@ -29,7 +29,10 @@ namespace umi3d.cdk.userCapture.binding
                     : base(dto, rigBoundTransform, skeleton)
         {
             this.rootObject = rootObject;
+            this.UseAutoComputedRotationOffset = dto.applyOriginalRotation;
             this.autoComputedRotationOffset = UseAutoComputedRotationOffset ? Quaternion.Inverse(rootObject.rotation) * rigBoundTransform.rotation : Quaternion.identity;
+            this.RigName = dto.rigName;
+
             RigBoneBindingDataDto = (RigBoneBindingDataDto)SimpleBindingData;
         }
 
@@ -42,12 +45,12 @@ namespace umi3d.cdk.userCapture.binding
         /// <summary>
         /// See <see cref="RigBoneBindingDataDto.rigName"/>.
         /// </summary>
-        public string RigName => RigBoneBindingDataDto.rigName;
+        public string RigName { get; }
 
         /// <summary>
         /// See <see cref="RigBoneBindingDataDto.applyOriginalRotation"/>.
         /// </summary>
-        public bool UseAutoComputedRotationOffset => RigBoneBindingDataDto.applyOriginalRotation;
+        public bool UseAutoComputedRotationOffset { get; }
 
 
         #endregion DTO Access

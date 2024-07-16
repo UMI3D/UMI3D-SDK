@@ -30,6 +30,8 @@ namespace umi3d.cdk.binding
         public NodeBinding(NodeBindingDataDto dto, Transform boundTransform, UMI3DNodeInstance parentNode) : base(dto, boundTransform)
         {
             this.parentNode = parentNode;
+            this.ParentNodeId = dto.parentNodeId;
+
             NodeBindingDataDto = (NodeBindingDataDto)SimpleBindingData;
         }
 
@@ -40,7 +42,7 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// See <see cref="NodeBindingDataDto.parentNodeId"/>.
         /// </summary>
-        public virtual ulong ParentNodeId => NodeBindingDataDto.parentNodeId;
+        public virtual ulong ParentNodeId { get; }
 
         #endregion DTO Access
 

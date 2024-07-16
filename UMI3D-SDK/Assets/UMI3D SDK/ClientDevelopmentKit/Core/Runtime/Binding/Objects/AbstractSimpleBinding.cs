@@ -34,17 +34,17 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncPosition"/>.
         /// </summary>
-        public bool SyncPosition => SimpleBindingData.syncPosition;
+        public bool SyncPosition { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncRotation"/>.
         /// </summary>
-        public bool SyncRotation => SimpleBindingData.syncRotation;
+        public bool SyncRotation { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncScale"/>.
         /// </summary>
-        public bool SyncScale => SimpleBindingData.syncScale;
+        public bool SyncScale { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetPosition"/>.
@@ -76,10 +76,15 @@ namespace umi3d.cdk.binding
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
-            OffSetPosition = SimpleBindingData.offSetPosition.Struct();
-            OffSetRotation = SimpleBindingData.offSetRotation.Quaternion();
-            OffSetScale = SimpleBindingData.offSetScale.Struct();
-            AnchorPosition = SimpleBindingData.anchorPosition.Struct();
+            OffSetPosition = dto.offSetPosition.Struct();
+            OffSetRotation = dto.offSetRotation.Quaternion();
+            OffSetScale = dto.offSetScale.Struct();
+            AnchorPosition = dto.anchorPosition.Struct();
+
+            this.SyncPosition = dto.syncPosition;
+            this.SyncRotation = dto.syncRotation;
+            this.SyncScale = dto.syncScale;
+
             SimpleBindingData = (AbstractSimpleBindingDataDto)data;
         }
 

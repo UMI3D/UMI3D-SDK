@@ -30,6 +30,8 @@ namespace umi3d.cdk.binding
         {
             this.rootObject = rootObject;
             this.autoComputedRotationOffset = Quaternion.Inverse(rootObject.rotation) * boundTransform.rotation; // local in the parent referential
+            this.RigName = dto.rigName;
+
             RigNodeBindingDataDto = (RigNodeBindingDataDto)SimpleBindingData;
         }
 
@@ -42,7 +44,7 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// See <see cref="NodeBindingDataDto.parentNodeId"/>.
         /// </summary>
-        public virtual string RigName => RigNodeBindingDataDto.rigName;
+        public virtual string RigName { get; }
 
         #endregion DTO Access
 
