@@ -37,7 +37,7 @@ namespace umi3d.cdk.userCapture.binding
 
         #region DTO Access
 
-        protected BoneBindingDataDto BoneBindingDataDto => SimpleBindingData as BoneBindingDataDto;
+        protected BoneBindingDataDto BoneBindingDataDto => (BoneBindingDataDto)SimpleBindingData;
 
         /// <summary>
         /// See <see cref="BoneBindingDataDto.userId"/>.

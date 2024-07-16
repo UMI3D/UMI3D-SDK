@@ -49,22 +49,22 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetPosition"/>.
         /// </summary>
-        public Vector3 OffSetPosition => SimpleBindingData.offSetPosition.Struct();
+        public Vector3 OffSetPosition { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetRotation"/>.
         /// </summary>
-        public Quaternion OffSetRotation => SimpleBindingData.offSetRotation.Quaternion();
+        public Quaternion OffSetRotation { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetScale"/>.
         /// </summary>
-        public Vector3 OffSetScale => SimpleBindingData.offSetScale.Struct();
+        public Vector3 OffSetScale { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.anchorPosition"/>.
         /// </summary>
-        public Vector3 AnchorPosition => SimpleBindingData.anchorPosition.Struct();
+        public Vector3 AnchorPosition { get; }
 
         protected bool hasStartedToBeApplied = false;
 
@@ -76,6 +76,10 @@ namespace umi3d.cdk.binding
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
+            OffSetPosition = SimpleBindingData.offSetPosition.Struct();
+            OffSetRotation = SimpleBindingData.offSetRotation.Quaternion();
+            OffSetScale = SimpleBindingData.offSetScale.Struct();
+            AnchorPosition = SimpleBindingData.anchorPosition.Struct();
         }
 
         /// <summary>
