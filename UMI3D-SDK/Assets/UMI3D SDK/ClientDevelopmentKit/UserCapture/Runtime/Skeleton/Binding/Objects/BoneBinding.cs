@@ -33,11 +33,12 @@ namespace umi3d.cdk.userCapture.binding
         public BoneBinding(BoneBindingDataDto dto, Transform boundTransform, ISkeleton skeleton) : base(dto, boundTransform)
         {
             this.skeleton = skeleton;
+            BoneBindingDataDto = (BoneBindingDataDto)SimpleBindingData;
         }
 
         #region DTO Access
 
-        protected BoneBindingDataDto BoneBindingDataDto => (BoneBindingDataDto)SimpleBindingData;
+        protected BoneBindingDataDto BoneBindingDataDto { get; }
 
         /// <summary>
         /// See <see cref="BoneBindingDataDto.userId"/>.

@@ -33,6 +33,8 @@ namespace umi3d.cdk.binding
 
         public IReadOnlyList<AbstractSimpleBinding> Bindings { get; }
 
+        protected MultiBindingDataDto MultiBindingData { get; }
+
         public MultiBinding(MultiBindingDataDto data, AbstractSimpleBinding[] bindings, Transform boundTransform, bool isOrdered = false) : base(boundTransform, data)
         {
             if (isOrdered)
@@ -46,6 +48,7 @@ namespace umi3d.cdk.binding
                                                .ToArray();
             }
             Bindings = orderedBindings.ToList();
+            MultiBindingData = data;
         }
 
         /// <inheritdoc/>

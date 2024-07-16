@@ -30,9 +30,10 @@ namespace umi3d.cdk.binding
         {
             this.rootObject = rootObject;
             this.autoComputedRotationOffset = Quaternion.Inverse(rootObject.rotation) * boundTransform.rotation; // local in the parent referential
+            RigNodeBindingDataDto = (RigNodeBindingDataDto)SimpleBindingData;
         }
 
-        protected RigNodeBindingDataDto RigNodeBindingDataDto => SimpleBindingData as RigNodeBindingDataDto;
+        protected RigNodeBindingDataDto RigNodeBindingDataDto { get; }
 
         protected Transform rootObject;
 

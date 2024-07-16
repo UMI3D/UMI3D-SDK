@@ -29,7 +29,7 @@ namespace umi3d.cdk.binding
     {
         #region DTO access
 
-        protected AbstractSimpleBindingDataDto SimpleBindingData => data as AbstractSimpleBindingDataDto;
+        protected AbstractSimpleBindingDataDto SimpleBindingData { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncPosition"/>.
@@ -80,6 +80,7 @@ namespace umi3d.cdk.binding
             OffSetRotation = SimpleBindingData.offSetRotation.Quaternion();
             OffSetScale = SimpleBindingData.offSetScale.Struct();
             AnchorPosition = SimpleBindingData.anchorPosition.Struct();
+            SimpleBindingData = (AbstractSimpleBindingDataDto)data;
         }
 
         /// <summary>

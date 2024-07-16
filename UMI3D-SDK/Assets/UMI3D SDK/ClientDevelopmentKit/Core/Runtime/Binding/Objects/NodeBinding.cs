@@ -30,9 +30,10 @@ namespace umi3d.cdk.binding
         public NodeBinding(NodeBindingDataDto dto, Transform boundTransform, UMI3DNodeInstance parentNode) : base(dto, boundTransform)
         {
             this.parentNode = parentNode;
+            NodeBindingDataDto = (NodeBindingDataDto)SimpleBindingData;
         }
 
-        protected NodeBindingDataDto NodeBindingDataDto => SimpleBindingData as NodeBindingDataDto;
+        protected NodeBindingDataDto NodeBindingDataDto { get; }
 
         #region DTO Access
 

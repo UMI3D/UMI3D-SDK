@@ -30,11 +30,12 @@ namespace umi3d.cdk.userCapture.binding
         {
             this.rootObject = rootObject;
             this.autoComputedRotationOffset = UseAutoComputedRotationOffset ? Quaternion.Inverse(rootObject.rotation) * rigBoundTransform.rotation : Quaternion.identity;
+            RigBoneBindingDataDto = (RigBoneBindingDataDto)SimpleBindingData;
         }
 
         #region DTO Access
 
-        protected RigBoneBindingDataDto RigBoneBindingDataDto => SimpleBindingData as RigBoneBindingDataDto;
+        protected RigBoneBindingDataDto RigBoneBindingDataDto { get; }
 
         protected Transform rootObject;
 
