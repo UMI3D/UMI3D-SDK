@@ -111,8 +111,8 @@ namespace umi3d.common.collaboration
                 dto2 = UMI3DDtoSerializer.FromJson<FakePrivateIdentityDto>(text, Newtonsoft.Json.TypeNameHandling.None);
             }
 
-            var dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
-            var dto4 = UMI3DDtoSerializer.FromJson<umi3d.common.interaction.form.ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.Auto);
+            var dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
+            var dto4 = UMI3DDtoSerializer.FromJson<umi3d.common.interaction.form.ConnectionFormDto>(text, TypeNameHandling.None, new List<JsonConverter> { new ReadDivConverter() });
             
             if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
