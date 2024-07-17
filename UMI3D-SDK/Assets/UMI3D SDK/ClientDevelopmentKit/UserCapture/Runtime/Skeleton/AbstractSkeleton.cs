@@ -327,8 +327,9 @@ namespace umi3d.cdk.userCapture
         /// <param name="boneType"></param>
         private void ComputeBoneWorldTransform(uint boneType)
         {
-            if (SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
-                && boneRelation.boneTypeParent != BoneType.None)
+            var boneRelation = SkeletonHierarchy.Relations[boneType]; // garantied to be there
+
+            if (boneRelation.boneTypeParent != BoneType.None)
             {
                 UnityTransformation parentransformation = bones[boneRelation.boneTypeParent];
                 Matrix4x4 m = Matrix4x4.TRS(parentransformation.Position, parentransformation.Rotation, transform.localScale * SKELETON_STANDARD_SIZE_INVERSE);
