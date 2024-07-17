@@ -114,6 +114,7 @@ namespace umi3d.cdk.userCapture
         protected Transform hipsAnchor;
 
         private const float SKELETON_STANDARD_SIZE = 1.8f;
+        private const float SKELETON_STANDARD_SIZE_INVERSE = 1f / SKELETON_STANDARD_SIZE;
 
         protected IIKHandler postProcessIKHandler;
 
@@ -334,11 +335,13 @@ namespace umi3d.cdk.userCapture
             {
                 if (!alreadyComputedbonesCache[boneRelation.boneTypeParent])
                     ComputeBoneTransform(boneRelation.boneTypeParent);
+                UnityTransformation parentransformation = bones[boneRelation.boneTypeParent];
+                Matrix4x4 m = Matrix4x4.TRS(parentransformation.Position, parentransformation.Rotation, transform.localScale * SKELETON_STANDARD_SIZE_INVERSE);
 
-                Matrix4x4 m = Matrix4x4.TRS(bones[boneRelation.boneTypeParent].Position, bones[boneRelation.boneTypeParent].Rotation, transform.localScale * (1f / SKELETON_STANDARD_SIZE));
-                bones[boneType].Position = m.MultiplyPoint3x4(boneRelation.relativePosition); //bones[boneRelation.boneTypeParent].Position + bones[boneRelation.boneTypeParent].Rotation * boneRelation.relativePosition;
-                bones[boneType].Rotation = (bones[boneRelation.boneTypeParent].Rotation * bones[boneType].LocalRotation).normalized;
                 alreadyComputedbonesCache[boneType] = true;
+                UnityTransformation transformation = bones[boneType];
+                transformation.Position = m.MultiplyPoint3x4(boneRelation.relativePosition);
+                transformation.Rotation = (parentransformation.Rotation * transformation.LocalRotation).normalized;
             }
         }
 
