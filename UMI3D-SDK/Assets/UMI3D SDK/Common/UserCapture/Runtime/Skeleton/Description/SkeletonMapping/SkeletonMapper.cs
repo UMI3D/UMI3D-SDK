@@ -79,11 +79,13 @@ namespace umi3d.common.userCapture.description
             set
             {
                 mappingsList = value.ToList();
+                mappingsArray = mappingsList.ToArray();
                 mappings = mappingsList.ToDictionary(x => x.BoneType);
             }
         }
 
         private List<SkeletonMapping> mappingsList;
+        private SkeletonMapping[] mappingsArray;
 
         private Dictionary<uint, SkeletonMapping> mappings;
 
@@ -109,6 +111,7 @@ namespace umi3d.common.userCapture.description
                     mappings.Add(marker.BoneType, marker.ToSkeletonMapping());
             }
             mappingsList = mappings.Values.OrderBy(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
+            mappingsArray = mappingsList.ToArray();
         }
 
         private UMI3DSkeletonHierarchy registeredHierarchy;
@@ -151,7 +154,7 @@ namespace umi3d.common.userCapture.description
             }
 
             List<SubSkeletonBoneDto> bones = new(hierarchy.Relations.Count);
-            foreach (SkeletonMapping mapping in mappingsList)
+            foreach (SkeletonMapping mapping in mappingsArray)
             {
                 SubSkeletonBoneDto pose = GetBonePose(hierarchy, mapping).subBone;
                 if (pose != null)
