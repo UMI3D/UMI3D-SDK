@@ -89,9 +89,9 @@ namespace umi3d.common.userCapture.description
 
         private readonly Dictionary<uint, BoneComputation> bonesComputations = new();
 
-        private struct BoneComputation
+        private class BoneComputation
         {
-            public bool isComputed;
+            public bool isComputed = false;
             public BoneDto bone;
             public SubSkeletonBoneDto subBone;
         }
@@ -144,6 +144,12 @@ namespace umi3d.common.userCapture.description
                     UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
             }
 
+            foreach (var boneComputation in bonesComputations.Values)
+            {
+                if (boneComputation != null)
+                    boneComputation.isComputed = false;
+            }
+
             List<SubSkeletonBoneDto> bones = new(hierarchy.Relations.Count);
             foreach (SkeletonMapping mapping in mappingsList)
             {
@@ -176,7 +182,8 @@ namespace umi3d.common.userCapture.description
 
             if (!bonesComputations.TryGetValue(boneType, out BoneComputation boneComputation)) // bone not existing  yet
             {
-                bonesComputations.Add(boneType, new BoneComputation() { });
+                boneComputation = new BoneComputation() { isComputed = false };
+                bonesComputations.Add(boneType, boneComputation);
             }
             else if (boneComputation.isComputed) // bone already computed
             {
