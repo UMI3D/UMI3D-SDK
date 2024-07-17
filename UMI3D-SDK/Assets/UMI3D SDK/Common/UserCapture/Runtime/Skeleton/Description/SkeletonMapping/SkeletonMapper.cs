@@ -107,7 +107,7 @@ namespace umi3d.common.userCapture.description
                 if (levelOfArticulation == LevelOfArticulation.NONE || marker.LevelOfArticulation <= levelOfArticulation)
                     mappings.Add(marker.BoneType, marker.ToSkeletonMapping());
             }
-            mappingsList = mappings.Values.Where(x=>x != null).OrderBy(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
+            mappingsList = mappings.Values.Where(x=>x != null).OrderByDescending(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
         }
 
         private UMI3DSkeletonHierarchy registeredHierarchy;

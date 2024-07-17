@@ -61,7 +61,7 @@ namespace umi3d.common.userCapture.description
                 }
             }
 
-            linearDepthOrderedBones = this.Tree.nodes.Select(x => x.Key).OrderBy(x => x, hierarchicalComparer).ToList();
+            linearDepthOrderedBones = this.Tree.nodes.Select(x => x.Key).OrderByDescending(x => x, hierarchicalComparer).ToList();
 
             UMI3DSkeletonHierarchyNode CreateHierarchyNode(uint parentBoneType, uint boneType, List<BoneRelation> relationGroup)
             {
