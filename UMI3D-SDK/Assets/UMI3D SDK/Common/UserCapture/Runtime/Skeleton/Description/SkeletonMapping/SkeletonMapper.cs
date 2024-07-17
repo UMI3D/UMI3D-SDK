@@ -77,7 +77,7 @@ namespace umi3d.common.userCapture.description
             }
             set
             {
-                mappingsList = value.Where(x => x != null).OrderBy(x => x.BoneType, registeredHierarchy?.Comparer).ToList();
+                mappingsList = value.Where(x => x != null).OrderByDescending(x => x.BoneType, registeredHierarchy?.Comparer).ToList();
                 mappings = mappingsList.ToDictionary(x => x.BoneType);
             }
         }
@@ -112,12 +112,13 @@ namespace umi3d.common.userCapture.description
 
         private UMI3DSkeletonHierarchy registeredHierarchy;
 
-        public virtual void Init(UMI3DSkeletonHierarchy hierarchy)
+        public virtual void SetupHierarchy(UMI3DSkeletonHierarchy hierarchy)
         {
             if (hierarchy == null)
                 throw new System.ArgumentNullException(nameof(hierarchy));
 
             registeredHierarchy = hierarchy;
+            mappingsList = mappings.Values.Where(x => x != null).OrderByDescending(x => x.BoneType, registeredHierarchy?.Comparer).ToList();
         }
 
         /// <summary>
@@ -126,6 +127,9 @@ namespace umi3d.common.userCapture.description
         /// <returns></returns>
         public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
+            if (registeredHierarchy == null && hierarchy != null)
+                SetupHierarchy(hierarchy);
+
             if (BoneAnchor == null)
             {
                 if (anchor != null)
