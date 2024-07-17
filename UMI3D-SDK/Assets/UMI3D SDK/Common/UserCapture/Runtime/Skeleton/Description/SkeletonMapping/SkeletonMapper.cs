@@ -78,7 +78,7 @@ namespace umi3d.common.userCapture.description
             }
             set
             {
-                mappingsList = value.ToList();
+                mappingsList = value.Where(x => x != null).OrderBy(x => x.BoneType, registeredHierarchy?.Comparer).ToList();
                 mappingsArray = mappingsList.ToArray();
                 mappings = mappingsList.ToDictionary(x => x.BoneType);
             }
@@ -110,7 +110,7 @@ namespace umi3d.common.userCapture.description
                 if (levelOfArticulation == LevelOfArticulation.NONE || marker.LevelOfArticulation <= levelOfArticulation)
                     mappings.Add(marker.BoneType, marker.ToSkeletonMapping());
             }
-            mappingsList = mappings.Values.OrderBy(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
+            mappingsList = mappings.Values.Where(x=>x != null).OrderBy(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
             mappingsArray = mappingsList.ToArray();
         }
 
@@ -178,9 +178,6 @@ namespace umi3d.common.userCapture.description
         /// <exception cref="ArgumentException"></exception>
         private BoneComputation GetBonePose(UMI3DSkeletonHierarchy hierarchy, SkeletonMapping mapping)
         {
-            if (mapping == null)
-                throw new ArgumentNullException(nameof(mapping));
-
             uint boneType = mapping.BoneType;
 
             if (!bonesComputations.TryGetValue(boneType, out BoneComputation boneComputation)) // bone not existing  yet
