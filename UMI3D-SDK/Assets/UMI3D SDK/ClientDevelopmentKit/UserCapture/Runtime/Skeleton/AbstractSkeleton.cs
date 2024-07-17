@@ -279,7 +279,7 @@ namespace umi3d.cdk.userCapture
         public event System.Action Computed;
 
         /// <summary>
-        /// Cache for bottom-up recursive <see cref="ComputeBoneTransform(uint)"/> method.
+        /// Cache for bottom-up recursive <see cref="ComputeBoneWorldTransform(uint)"/> method.
         /// Speeding up computations.
         /// </summary>
         private Dictionary<uint, bool> alreadyComputedbonesCache = new();
@@ -295,11 +295,9 @@ namespace umi3d.cdk.userCapture
                 return;
 
             RetrieveBonesRotation(SkeletonHierarchy);
+
             if (!bones.ContainsKey(ROOT_BONE))
                 return;
-
-            foreach (uint boneType in bones.Keys)
-                alreadyComputedbonesCache[boneType] = false;
 
             if (TrackedSubskeleton.Controllers.TryGetValue(ROOT_BONE, out IController hipsController))
             {
@@ -313,13 +311,13 @@ namespace umi3d.cdk.userCapture
                 bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation * bones[ROOT_BONE].LocalRotation : Quaternion.identity;
             }
 
-            alreadyComputedbonesCache[ROOT_BONE] = true;
-
             // better use normal recursive computations then.
-            foreach (uint boneType in bones.Keys)
+            foreach (uint boneType in SkeletonHierarchy.OrderedBones) // order is garantied by hierarchy
             {
-                if (!alreadyComputedbonesCache[boneType])
-                    ComputeBoneTransform(boneType);
+                if (boneType == ROOT_BONE) 
+                    continue;
+
+                ComputeBoneWorldTransform(boneType);
             }
         }
 
@@ -327,18 +325,14 @@ namespace umi3d.cdk.userCapture
         /// Compute the final position and rotation of each bone, and their parents recursively if not already computed
         /// </summary>
         /// <param name="boneType"></param>
-        private void ComputeBoneTransform(uint boneType)
+        private void ComputeBoneWorldTransform(uint boneType)
         {
-            if (!alreadyComputedbonesCache[boneType]
-                && SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
+            if (SkeletonHierarchy.Relations.TryGetValue(boneType, out var boneRelation)
                 && boneRelation.boneTypeParent != BoneType.None)
             {
-                if (!alreadyComputedbonesCache[boneRelation.boneTypeParent])
-                    ComputeBoneTransform(boneRelation.boneTypeParent);
                 UnityTransformation parentransformation = bones[boneRelation.boneTypeParent];
                 Matrix4x4 m = Matrix4x4.TRS(parentransformation.Position, parentransformation.Rotation, transform.localScale * SKELETON_STANDARD_SIZE_INVERSE);
 
-                alreadyComputedbonesCache[boneType] = true;
                 UnityTransformation transformation = bones[boneType];
                 transformation.Position = m.MultiplyPoint3x4(boneRelation.relativePosition);
                 transformation.Rotation = (parentransformation.Rotation * transformation.LocalRotation).normalized;

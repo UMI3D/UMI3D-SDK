@@ -350,6 +350,11 @@ namespace umi3d.common.userCapture.description
             }
         }
 
+        /// <summary>
+        /// Bones, ordered by depth.
+        /// </summary>
+        public IReadOnlyList<uint> OrderedBones => linearDepthOrderedBones;
+
         private readonly IReadOnlyList<uint> linearDepthOrderedBones;
 
         private IReadOnlyList<uint> linearReverseDepthOrderedBones
