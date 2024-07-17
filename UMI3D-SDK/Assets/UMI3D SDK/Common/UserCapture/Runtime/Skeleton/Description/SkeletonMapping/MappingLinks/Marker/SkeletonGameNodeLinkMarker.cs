@@ -44,14 +44,11 @@ namespace umi3d.common.userCapture.description
 
         public override ISkeletonMappingLink ToLink()
         {
-            if (node == null)
-                node = gameObject;
-
             GameNodeLink link = new GameNodeLink(node.transform);
 
             OnDestroyed += link.MarkAsDrestroyed;
 
-            return new GameNodeLink(node.transform);
+            return link;
         }
     }
 }
