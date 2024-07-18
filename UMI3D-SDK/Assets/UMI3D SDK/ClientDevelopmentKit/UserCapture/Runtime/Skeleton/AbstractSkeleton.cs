@@ -296,9 +296,6 @@ namespace umi3d.cdk.userCapture
 
             RetrieveBonesRotation(SkeletonHierarchy);
 
-            if (!bones.ContainsKey(ROOT_BONE))
-                return;
-
             if (TrackedSubskeleton.Controllers.TryGetValue(ROOT_BONE, out IController hipsController))
             {
                 bones[ROOT_BONE].Position = hipsController.position;
@@ -350,10 +347,9 @@ namespace umi3d.cdk.userCapture
         {
             //UnityEngine.Debug.Log($"<color=orange>Compute for {UserId}</color>");
             // consider all bones we should have according to the hierarchy, and set all values to identity
-            foreach (var bone in hierarchy.Relations.Keys)
+            foreach (var boneTransformation in bones.Values)
             {
-                if (bones.TryGetValue(bone, out var boneTransformation))
-                    boneTransformation.LocalRotation = Quaternion.identity;
+                boneTransformation.LocalRotation = Quaternion.identity;
             }
 
             // for each subskeleton, in ascending order (last has highest priority),
