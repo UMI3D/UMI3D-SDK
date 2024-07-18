@@ -230,7 +230,7 @@ namespace umi3d.cdk.collaboration
             {
                 if (debuggingVariables != null)
                     debuggingVariables.UseLocalLoopback = value;
-                mumbleClient.SetSelfMute(!value && isMute);
+                mumbleClient?.SetSelfMute(!value && isMute);
             }
         }
 
