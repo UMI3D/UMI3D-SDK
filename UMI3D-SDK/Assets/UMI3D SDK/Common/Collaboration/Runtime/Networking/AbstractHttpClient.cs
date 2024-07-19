@@ -44,7 +44,6 @@ namespace umi3d.common.collaboration
 
         abstract protected string httpUrl { get; }
 
-        private readonly ThreadDeserializer deserializer;
         protected readonly T environmentClient;
 
         /// <summary>
@@ -55,12 +54,10 @@ namespace umi3d.common.collaboration
         {
             this.environmentClient = environmentClient;
             UMI3DLogger.Log($"Init HttpClient", scope | DebugScope.Connection);
-            deserializer = new ThreadDeserializer();
         }
 
-        public void Stop()
+        public virtual void Stop()
         {
-            deserializer?.Stop();
         }
 
         /// <summary>
@@ -113,7 +110,7 @@ namespace umi3d.common.collaboration
 
             var dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
             var dto4 = UMI3DDtoSerializer.FromJson<umi3d.common.interaction.form.ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.Auto);
-            
+
             if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
@@ -339,7 +336,7 @@ namespace umi3d.common.collaboration
                     login = login,
                     userId = userId,
                     isServer = isServer,
-                    
+
                 };
             }
         }
@@ -356,7 +353,8 @@ namespace umi3d.common.collaboration
             using (UnityWebRequest uwr = await _GetRequest(this, _HeaderToken, httpUrl + UMI3DNetworkingKeys.connectionInfo, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
             {
                 UMI3DLogger.Log($"Received Get Identity", scope | DebugScope.Connection);
-                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                byte[] data = uwr?.downloadHandler.data;
+                UMI3DDto dto = await Task.Run(() => UMI3DDtoSerializer.FromBson(data));
                 return dto as UserConnectionDto;
             }
         }
@@ -484,7 +482,8 @@ namespace umi3d.common.collaboration
             using (UnityWebRequest uwr = await _GetRequest(this, _HeaderToken, httpUrl + UMI3DNetworkingKeys.libraries, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
             {
                 UMI3DLogger.Log($"Received GetLibraries", scope | DebugScope.Connection);
-                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                byte[] data = uwr?.downloadHandler.data;
+                UMI3DDto dto = await Task.Run(() => UMI3DDtoSerializer.FromBson(data));
                 return dto as LibrariesDto;
             }
         }
@@ -501,7 +500,8 @@ namespace umi3d.common.collaboration
             using (UnityWebRequest uwr = await _PostRequest(this, _HeaderToken, httpUrl + UMI3DNetworkingKeys.entity, null, id.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
             {
                 UMI3DLogger.Log($"Received PostEntity", scope | DebugScope.Connection);
-                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                byte[] data = uwr?.downloadHandler.data;
+                UMI3DDto dto = await Task.Run(() => UMI3DDtoSerializer.FromBson(data));
                 return dto as LoadEntityDto;
             }
         }
@@ -573,7 +573,8 @@ namespace umi3d.common.collaboration
             using (UnityWebRequest uwr = await _GetRequest(this, _HeaderToken, httpUrl + UMI3DNetworkingKeys.environment, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
             {
                 UMI3DLogger.Log($"Received GetEnvironment", scope | DebugScope.Connection);
-                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                byte[] data = uwr?.downloadHandler.data;
+                UMI3DDto dto = await Task.Run(() => UMI3DDtoSerializer.FromBson(data));
                 return dto as GlTFEnvironmentDto;
             }
         }
@@ -590,7 +591,8 @@ namespace umi3d.common.collaboration
             using (UnityWebRequest uwr = await _PostRequest(this, _HeaderToken, httpUrl + UMI3DNetworkingKeys.join, null, join.ToBson(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
             {
                 UMI3DLogger.Log($"Received PostJoin", scope | DebugScope.Connection);
-                UMI3DDto dto = await deserializer.FromBson(uwr?.downloadHandler.data);
+                byte[] data = uwr?.downloadHandler.data;
+                UMI3DDto dto = await Task.Run(() => UMI3DDtoSerializer.FromBson(data));
                 return dto as EnterDto;
             }
         }
