@@ -156,7 +156,6 @@ namespace umi3d.cdk.userCapture
             finalSkeletonGameObject.transform.SetParent(this.transform.parent);
 
             // generate hierarchy
-            finalSkeletonGameObject.transform.hierarchyCapacity = SkeletonHierarchy.OrderedBones.Count + 5;
             GameObject rootGameObject = new GameObject(BoneTypeHelper.GetBoneName(ROOT_BONE));
             bones[ROOT_BONE] = new(rootGameObject.transform)
             {
@@ -165,6 +164,7 @@ namespace umi3d.cdk.userCapture
                 LocalRotation = Quaternion.identity // local after global to ensure local are identity at start
             };
             bones[ROOT_BONE].Transform.SetParent(finalSkeletonGameObject.transform);
+            bones[ROOT_BONE].Transform.hierarchyCapacity = SkeletonHierarchy.OrderedBones.Count + 5;
             bones[ROOT_BONE].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
             bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
 
