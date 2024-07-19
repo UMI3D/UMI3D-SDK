@@ -63,6 +63,11 @@ namespace umi3d.common.userCapture.description
         [SerializeField, Tooltip("Collection of relation between a bone and its parent. Declare the hierarchy.")]
         private List<BoneRelation> BoneRelations = new List<BoneRelation>();
 
+        [SerializeField]
+        private GameObject skeletonPrefab;
+
+        public GameObject SkeletonPrefab => skeletonPrefab;
+
         public IList<IUMI3DSkeletonHierarchyDefinition.BoneRelation> Relations
             => BoneRelations.Select(x => new IUMI3DSkeletonHierarchyDefinition.BoneRelation()
             {

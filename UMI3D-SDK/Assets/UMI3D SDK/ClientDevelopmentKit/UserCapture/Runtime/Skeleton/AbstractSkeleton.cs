@@ -32,6 +32,7 @@ using umi3d.common.userCapture.tracking;
 using umi3d.common.utils;
 
 using UnityEngine;
+using System.Linq;
 
 namespace umi3d.cdk.userCapture
 {
@@ -148,27 +149,18 @@ namespace umi3d.cdk.userCapture
             subskeletons = new List<ISubskeleton> { TrackedSubskeleton };
 
             // init final skeleton game objects
-            finalSkeletonGameObject = new GameObject($"Final Skeleton - user {UserId}");
-
             // either personal skeleton container or collab skeleton scene
             // (in order not to be influenced by displacement of this, because of tracked action)
             // final skeleton is GET logic, subskeletons is SET
-            finalSkeletonGameObject.transform.SetParent(this.transform.parent);
+            GameObject skeletonPrefab = SkeletonHierarchy.Definition.SkeletonPrefab;
+            finalSkeletonGameObject = GameObject.Instantiate(skeletonPrefab, this.transform.parent);
+            finalSkeletonGameObject.name = $"Final Skeleton - user {UserId}";
 
             // generate hierarchy
-            GameObject rootGameObject = new GameObject(BoneTypeHelper.GetBoneName(ROOT_BONE));
-            bones[ROOT_BONE] = new(rootGameObject.transform)
-            {
-                Position = Vector3.zero,
-                Rotation = Quaternion.identity,
-                LocalRotation = Quaternion.identity // local after global to ensure local are identity at start
-            };
-            bones[ROOT_BONE].Transform.SetParent(finalSkeletonGameObject.transform);
-            bones[ROOT_BONE].Transform.hierarchyCapacity = SkeletonHierarchy.OrderedBones.Count + 5;
-            bones[ROOT_BONE].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
-            bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
-
-            SkeletonHierarchy.Apply(CreateSkeletonBoneGameObject);
+            UMI3DStandardSkeleton skeletonReader = finalSkeletonGameObject.GetComponentInChildren<UMI3DStandardSkeleton>();
+            skeletonReader.Map();
+            bones = skeletonReader.Bones.ToDictionary(x => x.Key, y => new UnityTransformation(y.Value));
+            bones[ROOT_BONE].Transform.SetPositionAndRotation(HipsAnchor != null ? HipsAnchor.position : Vector3.zero, HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity);
 
             Destroyed += () =>
             {

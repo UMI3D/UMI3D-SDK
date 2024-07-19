@@ -25,6 +25,8 @@ namespace TestUtils.UserCapture
     {
         public IList<IUMI3DSkeletonHierarchyDefinition.BoneRelation> Relations => relations;
 
+        public GameObject SkeletonPrefab => new();
+
         private readonly List<IUMI3DSkeletonHierarchyDefinition.BoneRelation> relations = new();
     }
 

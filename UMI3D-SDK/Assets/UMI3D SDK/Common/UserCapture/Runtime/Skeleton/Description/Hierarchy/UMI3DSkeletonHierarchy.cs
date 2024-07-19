@@ -29,9 +29,12 @@ namespace umi3d.common.userCapture.description
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
 
+        public IUMI3DSkeletonHierarchyDefinition Definition { get; private set; }
+
         public UMI3DSkeletonHierarchy(IUMI3DSkeletonHierarchyDefinition definition, IUMI3DSkeletonMusclesDefinition musclesDefinition = null)
         {
             hierarchicalComparer = new BoneHierarchicalComparer(this);
+            Definition = definition;
 
             if (definition == null || definition.Relations.Count == 0) //empty hierarchy has at least a hips
             {
