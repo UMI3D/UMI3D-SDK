@@ -215,8 +215,7 @@ namespace umi3d.cdk.userCapture
 
             GameObject boneGo = new(BoneTypeHelper.GetBoneName(bone));
 
-            if (SkeletonHierarchy.Relations[bone].boneTypeParent is not BoneType.None
-                && bones.TryGetValue(SkeletonHierarchy.Relations[bone].boneTypeParent, out var parentTransformation))
+            if (bones.TryGetValue(SkeletonHierarchy.Relations[bone].boneTypeParent, out var parentTransformation))
             {
                 boneGo.transform.SetParent(parentTransformation.Transform);
             }
