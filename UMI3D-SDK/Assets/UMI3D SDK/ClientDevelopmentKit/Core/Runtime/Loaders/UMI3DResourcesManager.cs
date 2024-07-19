@@ -443,22 +443,17 @@ namespace umi3d.cdk
         #endregion
         #region setup
 
-        private ThreadDeserializer deserializer;
-
         /// <inheritdoc/>
         protected override void Awake()
         {
             NsubModelsCache = new();
             base.Awake();
             ClearCache();
-            deserializer = new ThreadDeserializer();
         }
 
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            if (!Exists)
-                deserializer?.Stop();
         }
 
         public static bool ClearCache(string VariantUrl, Library? LibraryId = null)
