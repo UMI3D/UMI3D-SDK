@@ -154,17 +154,26 @@ namespace umi3d.cdk.userCapture
             // (in order not to be influenced by displacement of this, because of tracked action)
             // final skeleton is GET logic, subskeletons is SET
             finalSkeletonGameObject.transform.SetParent(this.transform.parent);
-            SkeletonHierarchy.Apply(CreateSkeletonBoneGameObject, startBone: BoneType.Hips);
+
+            // generate hierarchy
+            GameObject rootGameObject = new GameObject(BoneTypeHelper.GetBoneName(ROOT_BONE));
+            bones[ROOT_BONE] = new(rootGameObject.transform)
+            {
+                Position = Vector3.zero,
+                Rotation = Quaternion.identity,
+                LocalRotation = Quaternion.identity // local after global to ensure local are identity at start
+            };
+            bones[ROOT_BONE].Transform.SetParent(finalSkeletonGameObject.transform);
+            bones[ROOT_BONE].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
+            bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
+
+            SkeletonHierarchy.Apply(CreateSkeletonBoneGameObject);
 
             Destroyed += () =>
             {
                 if (finalSkeletonGameObject != null) // clean final skeleton
                     UnityEngine.Object.Destroy(finalSkeletonGameObject);
             };
-
-            bones[ROOT_BONE].Transform.SetParent(finalSkeletonGameObject.transform);
-            bones[ROOT_BONE].Position = HipsAnchor != null ? HipsAnchor.position : Vector3.zero;
-            bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity;
 
             // setup IK post processor
             SimpleIKHandler ikHandler = finalSkeletonGameObject.AddComponent<SimpleIKHandler>();
@@ -200,6 +209,9 @@ namespace umi3d.cdk.userCapture
         /// <param name="bone"></param>
         private void CreateSkeletonBoneGameObject(uint bone)
         {
+            if (bone == ROOT_BONE)
+                return;
+
             GameObject boneGo = new(BoneTypeHelper.GetBoneName(bone));
 
             if (SkeletonHierarchy.Relations[bone].boneTypeParent is not BoneType.None
