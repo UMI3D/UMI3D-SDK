@@ -156,6 +156,7 @@ namespace umi3d.cdk.userCapture
             finalSkeletonGameObject.transform.SetParent(this.transform.parent);
 
             // generate hierarchy
+            finalSkeletonGameObject.transform.hierarchyCapacity = SkeletonHierarchy.OrderedBones.Count + 5;
             GameObject rootGameObject = new GameObject(BoneTypeHelper.GetBoneName(ROOT_BONE));
             bones[ROOT_BONE] = new(rootGameObject.transform)
             {
