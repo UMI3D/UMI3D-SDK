@@ -458,6 +458,30 @@ namespace umi3d.cdk.userCapture
 
         #region Tracking
 
+        private Renderer[] trackedRenderers;
+
+        public bool IsVisible
+        {
+            get
+            {
+                if (trackedRenderers == null || trackedRenderers.Length == 0)
+                {
+                    trackedRenderers = (TrackedSubskeleton as TrackedSubskeleton).GetComponentsInChildren<Renderer>(true);
+                    if (trackedRenderers.Length == 0)
+                        return false;
+                }
+
+                foreach (Renderer renderer in trackedRenderers)
+                {
+                    if (renderer.isVisible)
+                        return true;
+                }
+
+                return false;
+            }
+        }
+    
+
         /// <inheritdoc/>
         public abstract void UpdateBones(UserTrackingFrameDto frame);
 

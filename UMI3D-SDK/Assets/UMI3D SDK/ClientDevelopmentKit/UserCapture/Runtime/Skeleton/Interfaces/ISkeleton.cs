@@ -71,6 +71,11 @@ namespace umi3d.cdk.userCapture
         IPoseSubskeleton PoseSubskeleton { get; }
 
         /// <summary>
+        /// True if a skeleton part is visible, using renderer's logic.
+        /// </summary>
+        bool IsVisible { get; }
+
+        /// <summary>
         /// Called after just before each skeleton computation.
         /// </summary>
         event Action PreComputed;
