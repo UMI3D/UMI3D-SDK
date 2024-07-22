@@ -49,7 +49,9 @@ namespace umi3d.common.userCapture.description
             uint rootBoneType = FindRoots(definition);
 
             // create hierarchy of nodes
+            List<uint> depthOrderedBones = new List<uint>() { rootBoneType };
             root = CreateHierarchyNode(BoneType.None, rootBoneType, relationGroupings[rootBoneType]);
+            linearDepthOrderedBones = depthOrderedBones;
             relations.Add(rootBoneType, root);
 
             // manages muscles
@@ -63,8 +65,6 @@ namespace umi3d.common.userCapture.description
                     muscles.Add(muscle.Bonetype, muscle);
                 }
             }
-
-            linearDepthOrderedBones = this.Tree.nodes.Select(x => x.Key).OrderByDescending(x => x, hierarchicalComparer).ToList();
 
             UMI3DSkeletonHierarchyNode CreateHierarchyNode(uint parentBoneType, uint boneType, List<BoneRelation> relationGroup)
             {
@@ -86,6 +86,8 @@ namespace umi3d.common.userCapture.description
                             children = new()
                         };
                     }
+
+                    depthOrderedBones.Append(childRelation.boneType);
 
                     relations.Add(childRelation.boneType, childNode);
                     children.Add(childNode);
@@ -356,11 +358,22 @@ namespace umi3d.common.userCapture.description
         /// <summary>
         /// Bones, ordered by depth.
         /// </summary>
-        public IReadOnlyList<uint> OrderedBones => linearDepthOrderedBones;
+        public IReadOnlyList<uint> OrderedBones
+        {
+            get => linearDepthOrderedBones;
+            set
+            {
+                if (value is null)
+                    throw new System.ArgumentNullException();
 
-        private readonly IReadOnlyList<uint> linearDepthOrderedBones;
+                linearDepthOrderedBones = value;
+                _linearReverseDepthOrderedBones = linearDepthOrderedBones.Reverse().ToList();
+            }
+        }
 
-        private IReadOnlyList<uint> linearReverseDepthOrderedBones
+        private IReadOnlyList<uint> linearDepthOrderedBones;
+
+        private IReadOnlyList<uint> LinearReverseDepthOrderedBones
         {
             get
             {
@@ -397,7 +410,7 @@ namespace umi3d.common.userCapture.description
             if (action == null)
                 throw new System.ArgumentNullException(nameof(action));
 
-            foreach (uint bone in linearReverseDepthOrderedBones)
+            foreach (uint bone in LinearReverseDepthOrderedBones)
             {
                 action(bone);
             }

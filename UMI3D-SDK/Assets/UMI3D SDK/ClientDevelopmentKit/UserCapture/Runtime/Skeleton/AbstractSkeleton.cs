@@ -162,6 +162,7 @@ namespace umi3d.cdk.userCapture
                 // generate hierarchy
                 UMI3DStandardSkeleton skeletonReader = finalSkeletonGameObject.GetComponentInChildren<UMI3DStandardSkeleton>();
                 skeletonReader.Map();
+                SkeletonHierarchy.OrderedBones = skeletonReader.OrderedBones; // optimize by ensuring the transform order
                 bones = skeletonReader.Bones.ToDictionary(x => x.Key, y => new UnityTransformation(y.Value));
                 bones[ROOT_BONE].Transform.SetPositionAndRotation(HipsAnchor != null ? HipsAnchor.position : Vector3.zero, HipsAnchor != null ? HipsAnchor.rotation : Quaternion.identity);
             }

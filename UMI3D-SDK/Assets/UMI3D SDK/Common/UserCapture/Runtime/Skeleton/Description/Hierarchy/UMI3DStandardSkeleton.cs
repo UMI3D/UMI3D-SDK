@@ -20,11 +20,21 @@ using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
+    /// <summary>
+    /// Standard skeleton hierarchy.
+    /// </summary>
     public class UMI3DStandardSkeleton : MonoBehaviour
     {
 
         private readonly Dictionary<uint, Transform> bones = new();
         public IReadOnlyDictionary<uint, Transform> Bones => bones;
+
+        /// <summary>
+        /// Bones ordered by depth and instanciation order.
+        /// </summary>
+        public IReadOnlyList<uint> OrderedBones => orderedBones;
+
+        private List<uint> orderedBones;
 
         [Header("Root")]
         [SerializeField]
@@ -291,6 +301,82 @@ namespace umi3d.common.userCapture.description
             bones.Add(BoneType.RightLittleProximal, rightLittleProximal);
             bones.Add(BoneType.RightLittleIntermediate, rightLittleIntermediate);
             bones.Add(BoneType.RightLittleDistal, rightLittleDistal);
+
+            orderedBones = new()
+            {
+                BoneType.Hips,
+
+                BoneType.Spine,
+                BoneType.Chest,
+                BoneType.UpperChest,
+
+                BoneType.Neck,
+                BoneType.Head,
+                BoneType.Viewpoint,
+                BoneType.LeftEye,
+                BoneType.RightEye,
+
+                BoneType.LeftHip,
+                BoneType.LeftKnee,
+                BoneType.LeftAnkle,
+                BoneType.LeftToeBase,
+
+                BoneType.LeftShoulder,
+                BoneType.LeftUpperArm,
+                BoneType.LeftForearm,
+                BoneType.LeftHand,
+
+                BoneType.LeftThumbProximal,
+                BoneType.LeftThumbIntermediate,
+                BoneType.LeftThumbDistal,
+
+                BoneType.LeftIndexProximal,
+                BoneType.LeftIndexIntermediate,
+                BoneType.LeftIndexDistal,
+
+                BoneType.LeftMiddleProximal,
+                BoneType.LeftMiddleIntermediate,
+                BoneType.LeftMiddleDistal,
+
+                BoneType.LeftRingProximal,
+                BoneType.LeftRingIntermediate,
+                BoneType.LeftRingDistal,
+
+                BoneType.LeftLittleProximal,
+                BoneType.LeftLittleIntermediate,
+                BoneType.LeftLittleDistal,
+
+
+                BoneType.RightHip,
+                BoneType.RightKnee,
+                BoneType.RightAnkle,
+                BoneType.RightToeBase,
+
+                BoneType.RightShoulder,
+                BoneType.RightUpperArm,
+                BoneType.RightForearm,
+                BoneType.RightHand,
+
+                BoneType.RightThumbProximal,
+                BoneType.RightThumbIntermediate,
+                BoneType.RightThumbDistal,
+
+                BoneType.RightIndexProximal,
+                BoneType.RightIndexIntermediate,
+                BoneType.RightIndexDistal,
+
+                BoneType.RightMiddleProximal,
+                BoneType.RightMiddleIntermediate,
+                BoneType.RightMiddleDistal,
+
+                BoneType.RightRingProximal,
+                BoneType.RightRingIntermediate,
+                BoneType.RightRingDistal,
+
+                BoneType.RightLittleProximal,
+                BoneType.RightLittleIntermediate,
+                BoneType.RightLittleDistal,
+        };
 
             isMapped = true;
         }
