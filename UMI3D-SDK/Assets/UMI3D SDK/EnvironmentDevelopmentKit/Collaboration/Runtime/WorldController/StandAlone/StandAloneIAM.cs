@@ -74,7 +74,7 @@ namespace umi3d.worldController
         }
         public virtual async Task<umi3d.common.interaction.form.ConnectionFormDto> GenerateDivForm(User user)
         {
-            return await GenerateDivFormLogin(user);
+            return await GenerateDivFormVignettes(user);
         }
 
         public virtual async Task<umi3d.common.interaction.form.ConnectionFormDto> GenerateDivFormVignettes(User user)
@@ -85,7 +85,7 @@ namespace umi3d.worldController
             {
                 for (int i = 0; i < 3; i++)
                 {
-                    var vignette = lastPage.AddImage("vignette-image-" + i, UMI3DServer.publicRepository + "/ButtonOk.png", "png", new AssetMetricDto() { resolution = 0, size = 0.063f });
+                    var vignette = lastPage.AddImage("vignette-image-" + i, UMI3DServer.publicRepository + "/PlaceholderVignette.png", "png", new AssetMetricDto() { resolution = 0, size = 0.063f });
                     vignette.AddLabel("vignette-label-" + i, "Name"); // TODO : Correct vignette name
                 }
             }
@@ -93,7 +93,7 @@ namespace umi3d.worldController
             var connectionGroup = root.AddGroup("group-connectionInfo")
                 .Position(-275, 160).Size(190, 61);
             {
-                connectionGroup.AddImage("image-user", UMI3DServer.publicRepository + "/ButtonOk.png", "png", new AssetMetricDto() { resolution = 0, size = 0.063f }) // TODO Correct User icon
+                connectionGroup.AddImage("image-user", UMI3DServer.publicRepository + "/PlaceholderAvatar.png", "png", new AssetMetricDto() { resolution = 0, size = 0.063f }) // TODO Correct User icon
                     .Position(-68, -4).Size(35, 35);
                 connectionGroup.AddLabel("label-connected", "Connected as")
                     .Position(5, 13).Size(100, 19)
@@ -102,7 +102,7 @@ namespace umi3d.worldController
                     .Position(207, 13).Size(300, 19)
                     .TextSize(16).TextColor(1, 1, 1, 1).AddTextStyle(E_FontStyle.Bold);
                 connectionGroup.AddLabel("label-portal", "Portal Name") // TODO Correct Portal name
-                    .Position(26.7f, -3).Size(142.6f, 16)
+                    .Position(169.3f, -3).Size(427.8f, 16)
                     .TextSize(16).TextColor(0, 0.8f, 1, 1);
                 connectionGroup.AddButton("button-cancel", "Log out").Type(ButtonType.Cancel)
                     .Position(26.7f, -18).Size(142.6f, 16)

@@ -60,6 +60,10 @@ namespace umi3d.common
                 TypeNameHandling = typeNameHandling
             });
         }
+        public static string ToJson(this UMI3DDto dto, JsonConverter jsonConverter)
+        {
+            return JsonConvert.SerializeObject(dto, Formatting.Indented, jsonConverter);
+        }
 
 
 

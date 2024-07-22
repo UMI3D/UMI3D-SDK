@@ -67,7 +67,7 @@ public class ReadDivConverter : JsonConverter
 
             if (jsonObject.TryGetValue("type", out JToken jsonToken))
             {
-                string type = jsonToken.ToObject<string>();
+                string type = jsonToken?.ToObject<string>();
                 if (type == nameof(ConnectionFormDto))
                     return ReadConnectionFormJson(serializer, jsonObject);
 
@@ -133,14 +133,14 @@ public class ReadDivConverter : JsonConverter
     {
         var connectionFormDto = new ConnectionFormDto();
         if (jsonObject.TryGetValue("globalToken", out var globalToken))
-            connectionFormDto.globalToken = globalToken.ToObject<string>();
+            connectionFormDto.globalToken = globalToken?.ToObject<string>();
         if (jsonObject.TryGetValue("metadata", out var metadata))
-            connectionFormDto.metadata = metadata.ToObject<byte[]>();
+            connectionFormDto.metadata = metadata?.ToObject<byte[]>();
 
         if (jsonObject.TryGetValue("name", out var name))
-            connectionFormDto.name = name.ToObject<string>();
+            connectionFormDto.name = name?.ToObject<string>();
         if (jsonObject.TryGetValue("description", out var description))
-            connectionFormDto.description = description.ToObject<string>();
+            connectionFormDto.description = description?.ToObject<string>();
 
         ReadDivJson(connectionFormDto, jsonObject, serializer);
         return connectionFormDto;
@@ -150,7 +150,7 @@ public class ReadDivConverter : JsonConverter
         var imageDto = new ImageDto();
 
         if (jsonObject.TryGetValue("resource", out var ressource))
-            imageDto.resource = ressource.ToObject<ResourceDto>();
+            imageDto.resource = ressource?.ToObject<ResourceDto>();
 
         ReadDivJson(imageDto, jsonObject, serializer);
         return imageDto;
@@ -160,7 +160,7 @@ public class ReadDivConverter : JsonConverter
         var labelDto = new LabelDto();
 
         if (jsonObject.TryGetValue("text", out var text))
-            labelDto.text = text.ToObject<string>();
+            labelDto.text = text?.ToObject<string>();
 
         ReadDivJson(labelDto, jsonObject, serializer);
         return labelDto;
@@ -170,7 +170,7 @@ public class ReadDivConverter : JsonConverter
         var pageDto = new PageDto();
 
         if (jsonObject.TryGetValue("name", out var name))
-            pageDto.name = name.ToObject<string>();
+            pageDto.name = name?.ToObject<string>();
 
         ReadDivJson(pageDto, jsonObject, serializer);
         return pageDto;
@@ -180,11 +180,11 @@ public class ReadDivConverter : JsonConverter
         var buttonDto = new ButtonDto();
 
         if (jsonObject.TryGetValue("Text", out var Text))
-            buttonDto.Text = Text.ToObject<string>();
+            buttonDto.Text = Text?.ToObject<string>();
         if (jsonObject.TryGetValue("buttonType", out var buttonType))
-            buttonDto.buttonType = buttonType.ToObject<ButtonType>();
+            buttonDto.buttonType = buttonType?.ToObject<ButtonType>() ?? default;
         if (jsonObject.TryGetValue("resource", out var ressource))
-            buttonDto.resource = ressource.ToObject<ResourceDto>();
+            buttonDto.resource = ressource?.ToObject<ResourceDto>();
 
         ReadDivJson(buttonDto, jsonObject, serializer);
         ReadBaseInputJson(buttonDto, jsonObject, serializer);
@@ -195,9 +195,9 @@ public class ReadDivConverter : JsonConverter
         var groupDto = new GroupDto();
 
         if (jsonObject.TryGetValue("canRemember", out var canRemember))
-            groupDto.canRemember = canRemember.ToObject<bool>();
+            groupDto.canRemember = canRemember?.ToObject<bool>() ?? default;
         if (jsonObject.TryGetValue("selectFirstInput", out var selectFirstInput))
-            groupDto.selectFirstInput = selectFirstInput.ToObject<bool>();
+            groupDto.selectFirstInput = selectFirstInput?.ToObject<bool>() ?? default;
 
         ReadDivJson(groupDto, jsonObject, serializer);
         ReadBaseInputJson(groupDto, jsonObject, serializer);
@@ -208,13 +208,13 @@ public class ReadDivConverter : JsonConverter
         var inputDto = new InputDto<T>();
 
         if (jsonObject.TryGetValue("Name", out var Name))
-            inputDto.Name = Name.ToObject<string>();
+            inputDto.Name = Name?.ToObject<string>();
         if (jsonObject.TryGetValue("Value", out var Value))
-            inputDto.Value = Value.ToObject<T>();
+            inputDto.Value = Value.ToObject<T>() ?? default;
         if (jsonObject.TryGetValue("TextType", out var TextType))
-            inputDto.TextType = Value.ToObject<TextType>();
+            inputDto.TextType = TextType?.ToObject<TextType>() ?? default;
         if (jsonObject.TryGetValue("PlaceHolder", out var PlaceHolder))
-            inputDto.PlaceHolder = PlaceHolder.ToObject<T>();
+            inputDto.PlaceHolder = PlaceHolder.ToObject<T>() ?? default;
 
         ReadDivJson(inputDto, jsonObject, serializer);
         ReadBaseInputJson(inputDto, jsonObject, serializer);
@@ -225,11 +225,11 @@ public class ReadDivConverter : JsonConverter
         var rangeDto = new RangeDto<T>();
 
         if (jsonObject.TryGetValue("Min", out var Min))
-            rangeDto.Min = Min.ToObject<T>();
+            rangeDto.Min = Min.ToObject<T>() ?? default;
         if (jsonObject.TryGetValue("Max", out var Max))
-            rangeDto.Max = Max.ToObject<T>();
+            rangeDto.Max = Max.ToObject<T>() ?? default;
         if (jsonObject.TryGetValue("Value", out var Value))
-            rangeDto.Value = Value.ToObject<T>();
+            rangeDto.Value = Value.ToObject<T>() ?? default;
 
         ReadDivJson(rangeDto, jsonObject, serializer);
         ReadBaseInputJson(rangeDto, jsonObject, serializer);
@@ -239,9 +239,9 @@ public class ReadDivConverter : JsonConverter
     private void ReadDivJson(DivDto divDto, JObject jsonObject, JsonSerializer serializer)
     {
         if (jsonObject.TryGetValue("guid", out var guid))
-            divDto.guid = guid.ToObject<string>();
+            divDto.guid = guid?.ToObject<string>();
         if (jsonObject.TryGetValue("tooltip", out var tooltip))
-            divDto.tooltip = tooltip.ToObject<string>();
+            divDto.tooltip = tooltip?.ToObject<string>();
 
         if (jsonObject.TryGetValue("styles", out var styles))
             divDto.styles = styles?.ToObject<StyleDto[]>(styleSerializer)?.ToList();
@@ -251,11 +251,11 @@ public class ReadDivConverter : JsonConverter
     private void ReadBaseInputJson(BaseInputDto baseInputDto, JObject jsonObject, JsonSerializer serializer)
     {
         if (jsonObject.TryGetValue("label", out var label))
-            baseInputDto.label = label.ToObject<string>();
+            baseInputDto.label = label?.ToObject<string>();
         if (jsonObject.TryGetValue("isInteractable", out var isInteractable))
-            baseInputDto.isInteractable = isInteractable.ToObject<bool>();
+            baseInputDto.isInteractable = isInteractable?.ToObject<bool>() ?? default;
         if (jsonObject.TryGetValue("submitOnValidate", out var submitOnValidate))
-            baseInputDto.submitOnValidate = submitOnValidate.ToObject<bool>();
+            baseInputDto.submitOnValidate = submitOnValidate?.ToObject<bool>() ?? default;
     }
 
     public override void WriteJson(JsonWriter writer, object value, JsonSerializer serializer)
