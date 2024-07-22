@@ -56,6 +56,11 @@ namespace umi3d.common
                 thread.Start();
         }
 
+        ~ThreadDeserializer()
+        {
+            Stop();
+        }
+
         public void Stop()
         {
             Running = false;
@@ -105,7 +110,7 @@ namespace umi3d.common
             while (Running)
             {
                 try
-                {
+                {               
                     (byte[], Action<UMI3DDto>, Newtonsoft.Json.TypeNameHandling) c = default;
                     bool set = false;
                     lock (bsonQueue)
