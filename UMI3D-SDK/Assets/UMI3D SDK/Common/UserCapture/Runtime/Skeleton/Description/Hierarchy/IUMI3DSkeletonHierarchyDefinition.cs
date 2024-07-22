@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using UnityEngine;
 
 namespace umi3d.common.userCapture.description
 {
@@ -27,6 +28,11 @@ namespace umi3d.common.userCapture.description
         /// Collection of relation between a bone and its parent.
         /// </summary>
         IList<BoneRelation> Relations { get; }
+
+        /// <summary>
+        /// Prefab for hierarchy, ready to be instanciated.
+        /// </summary>
+        GameObject SkeletonPrefab { get; }
 
         public struct BoneRelation
         {

@@ -39,17 +39,17 @@ namespace umi3d.cdk.binding
         /// <summary>
         /// See <see cref="AbstractBindingDataDto.partialFit"/>.
         /// </summary>
-        public virtual bool IsPartiallyFit => data.partialFit;
+        public virtual bool IsPartiallyFit { get; }
 
         /// <summary>
         /// See <see cref="AbstractBindingDataDto.priority"/>.
         /// </summary>
-        public virtual int Priority => data.priority;
+        public virtual int Priority { get; }
 
         /// <summary>
         /// See <see cref="AbstractBindingDataDto.resetWhenRemoved"/>.
         /// </summary>
-        public virtual bool ResetWhenRemoved => data.resetWhenRemoved;
+        public virtual bool ResetWhenRemoved { get; }
 
         /// <summary>
         /// Transform of the bound node.
@@ -62,6 +62,10 @@ namespace umi3d.cdk.binding
         {
             this.boundTransform = boundTransform;
             this.data = data;
+            this.IsPartiallyFit = data.partialFit;
+            this.Priority = data.priority;
+            this.Priority = data.priority;
+            this.ResetWhenRemoved = data.resetWhenRemoved;
         }
 
         /// <summary>

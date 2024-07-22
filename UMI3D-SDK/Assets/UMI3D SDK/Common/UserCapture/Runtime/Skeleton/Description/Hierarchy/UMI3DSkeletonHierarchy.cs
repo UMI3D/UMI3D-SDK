@@ -29,11 +29,17 @@ namespace umi3d.common.userCapture.description
     {
         private const DebugScope DEBUG_SCOPE = DebugScope.Common | DebugScope.UserCapture;
 
+        public IUMI3DSkeletonHierarchyDefinition Definition { get; private set; }
+
         public UMI3DSkeletonHierarchy(IUMI3DSkeletonHierarchyDefinition definition, IUMI3DSkeletonMusclesDefinition musclesDefinition = null)
         {
+            hierarchicalComparer = new BoneHierarchicalComparer(this);
+            Definition = definition;
+
             if (definition == null || definition.Relations.Count == 0) //empty hierarchy has at least a hips
             {
                 relations.Add(BoneType.Hips, new() { boneType = BoneType.None, relativePosition = Vector3.zero });
+                linearDepthOrderedBones = new List<uint>();
                 return;
             }
 
@@ -43,16 +49,21 @@ namespace umi3d.common.userCapture.description
             uint rootBoneType = FindRoots(definition);
 
             // create hierarchy of nodes
+            List<uint> depthOrderedBones = new List<uint>() { rootBoneType };
             root = CreateHierarchyNode(BoneType.None, rootBoneType, relationGroupings[rootBoneType]);
+            linearDepthOrderedBones = depthOrderedBones;
             relations.Add(rootBoneType, root);
 
-            muscles = new();
-            foreach (var muscle in musclesDefinition?.Muscles ?? new())
+            // manages muscles
+            if (musclesDefinition?.Muscles != null)
             {
-                if (muscles.ContainsKey(muscle.Bonetype))
-                    continue;
+                foreach (var muscle in musclesDefinition?.Muscles)
+                {
+                    if (muscles.ContainsKey(muscle.Bonetype))
+                        continue;
 
-                muscles.Add(muscle.Bonetype, muscle);
+                    muscles.Add(muscle.Bonetype, muscle);
+                }
             }
 
             UMI3DSkeletonHierarchyNode CreateHierarchyNode(uint parentBoneType, uint boneType, List<BoneRelation> relationGroup)
@@ -75,6 +86,8 @@ namespace umi3d.common.userCapture.description
                             children = new()
                         };
                     }
+
+                    depthOrderedBones.Append(childRelation.boneType);
 
                     relations.Add(childRelation.boneType, childNode);
                     children.Add(childNode);
@@ -279,7 +292,7 @@ namespace umi3d.common.userCapture.description
             return 0;
         }
 
-        private IComparer<uint> hierarchicalComparer;
+        private readonly IComparer<uint> hierarchicalComparer;
 
         public class BoneHierarchicalComparer : IComparer<uint>
         {
@@ -296,6 +309,8 @@ namespace umi3d.common.userCapture.description
             }
         }
 
+        public IComparer<uint> Comparer => hierarchicalComparer;
+
         public uint GetHighestBone(IEnumerable<uint> bones)
         {
             return bones.OrderBy(x=>x, hierarchicalComparer).LastOrDefault();
@@ -307,11 +322,11 @@ namespace umi3d.common.userCapture.description
         }
 
         /// <summary>
-        /// Recursive action applied on all children.
+        /// Recursive <paramref name="action"/> applied on all children from a certain <paramref name="startBone"/>.
         /// </summary>
         /// <param name="action">Action to perform on each bone. Cannot be null.</param>
         /// <param name="startBone">Bone from where to start recursive descending application. Cannot be None bone type.</param>
-        public void Apply(System.Action<uint> action, uint startBone = BoneType.Hips)
+        public void Apply(System.Action<uint> action, uint startBone)
         {
             if (action == null)
                 throw new System.ArgumentNullException(nameof(action));
@@ -326,10 +341,78 @@ namespace umi3d.common.userCapture.description
             {
                 action(bone);
 
-                foreach (var hierarchyNode in Relations[bone].children ?? new())
+                if (!Relations.TryGetValue(bone, out var relation))
+                    return;
+
+                var children = relation.children;
+                if (children is null || children.Count == 0) // stop condition, require no loop in hierarchy (ensured by construction)
+                    return;
+
+                foreach (var hierarchyNode in children)
                 {
                     Recurse(hierarchyNode.boneType);
                 }
+            }
+        }
+
+        /// <summary>
+        /// Bones, ordered by depth.
+        /// </summary>
+        public IReadOnlyList<uint> OrderedBones
+        {
+            get => linearDepthOrderedBones;
+            set
+            {
+                if (value is null)
+                    throw new System.ArgumentNullException();
+
+                linearDepthOrderedBones = value;
+                _linearReverseDepthOrderedBones = linearDepthOrderedBones.Reverse().ToList();
+            }
+        }
+
+        private IReadOnlyList<uint> linearDepthOrderedBones;
+
+        private IReadOnlyList<uint> LinearReverseDepthOrderedBones
+        {
+            get
+            {
+                if (_linearReverseDepthOrderedBones == null)
+                    _linearReverseDepthOrderedBones = linearDepthOrderedBones.Reverse().ToList();
+                return _linearReverseDepthOrderedBones;
+            }
+        }
+        private IReadOnlyList<uint> _linearReverseDepthOrderedBones;
+
+        /// <summary>
+        /// Apply an <paramref name="action"/> to all bones, starting from the hips.
+        /// </summary>
+        /// <param name="action">Action to perform on each bone. Cannot be null.</param>
+        /// <param name="startBone">Bone from where to start recursive descending application. Cannot be None bone type.</param>
+        public void Apply(System.Action<uint> action)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            foreach (uint bone in linearDepthOrderedBones)
+            {
+                action(bone);
+            }
+        }
+
+        /// <summary>
+        /// Apply an <paramref name="action"/> to all bones, starting from the lowest bones.
+        /// </summary>
+        /// <param name="action">Action to perform on each bone. Cannot be null.</param>
+        /// <param name="startBone">Bone from where to start recursive descending application. Cannot be None bone type.</param>
+        public void ApplyReverse(System.Action<uint> action)
+        {
+            if (action == null)
+                throw new System.ArgumentNullException(nameof(action));
+
+            foreach (uint bone in LinearReverseDepthOrderedBones)
+            {
+                action(bone);
             }
         }
     }

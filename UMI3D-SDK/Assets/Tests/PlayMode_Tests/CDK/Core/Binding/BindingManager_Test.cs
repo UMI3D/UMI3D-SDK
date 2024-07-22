@@ -168,7 +168,8 @@ namespace PlayMode_Tests.Core.Binding.CDK
         {
             // GIVEN
             var go = new GameObject();
-            Dictionary<(ulong,ulong), AbstractBinding> mockBindingsDict = new() { { (UMI3DGlobalID.EnvironmentId, boundNodeId), new NodeBinding(null, go.transform, null) } };
+            NodeBindingDataDto dto = new();
+            Dictionary<(ulong,ulong), AbstractBinding> mockBindingsDict = new() { { (UMI3DGlobalID.EnvironmentId, boundNodeId), new NodeBinding(dto, go.transform, null) } };
 
             mockBindingManager.CallBase = false;
             mockBindingManager.Setup(x => x.RemoveBinding(UMI3DGlobalID.EnvironmentId, It.IsAny<ulong>())).CallBase();
@@ -248,7 +249,8 @@ namespace PlayMode_Tests.Core.Binding.CDK
             var go = new GameObject();
             foreach (var testValue in testValues)
             {
-                var mockNodeBinding = new Mock<NodeBinding>(null, go.transform, null);
+                NodeBindingDataDto dto = new();
+                var mockNodeBinding = new Mock<NodeBinding>(dto, go.transform, null);
                 mockNodeBinding.Setup(x => x.BoundTransform).CallBase();
                 mockNodeBinding.Setup(x => x.ParentNodeId).Returns(testValue.id);
                 mockNodeBinding.Setup(x => x.Priority).Returns(testValue.priority);

@@ -178,6 +178,8 @@ MonoBehaviour:
   - Bonetype: 2
     BonetypeParent: 3
     RelativePosition: {x: 0.02944481, y: 0.07681751, z: 0.09120493}
+  skeletonPrefab: {fileID: 6021071559978550030, guid: 778eeff3f88d1224da5903c34fdaf8c6,
+    type: 3}
   _muscles:
   - Bonetype: 25
     ReferenceFrameRotation: {x: 0, y: 0, z: 0, w: 1}

@@ -29,42 +29,42 @@ namespace umi3d.cdk.binding
     {
         #region DTO access
 
-        protected AbstractSimpleBindingDataDto SimpleBindingData => data as AbstractSimpleBindingDataDto;
+        protected AbstractSimpleBindingDataDto SimpleBindingData { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncPosition"/>.
         /// </summary>
-        public bool SyncPosition => SimpleBindingData.syncPosition;
+        public bool SyncPosition { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncRotation"/>.
         /// </summary>
-        public bool SyncRotation => SimpleBindingData.syncRotation;
+        public bool SyncRotation { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.syncScale"/>.
         /// </summary>
-        public bool SyncScale => SimpleBindingData.syncScale;
+        public bool SyncScale { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetPosition"/>.
         /// </summary>
-        public Vector3 OffSetPosition => SimpleBindingData.offSetPosition.Struct();
+        public Vector3 OffSetPosition { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetRotation"/>.
         /// </summary>
-        public Quaternion OffSetRotation => SimpleBindingData.offSetRotation.Quaternion();
+        public Quaternion OffSetRotation { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.offSetScale"/>.
         /// </summary>
-        public Vector3 OffSetScale => SimpleBindingData.offSetScale.Struct();
+        public Vector3 OffSetScale { get; }
 
         /// <summary>
         /// See <see cref="AbstractSimpleBindingDataDto.anchorPosition"/>.
         /// </summary>
-        public Vector3 AnchorPosition => SimpleBindingData.anchorPosition.Struct();
+        public Vector3 AnchorPosition { get; }
 
         protected bool hasStartedToBeApplied = false;
 
@@ -76,6 +76,16 @@ namespace umi3d.cdk.binding
 
         public AbstractSimpleBinding(AbstractSimpleBindingDataDto dto, Transform boundTransform) : base(boundTransform, dto)
         {
+            OffSetPosition = dto.offSetPosition.Struct();
+            OffSetRotation = dto.offSetRotation.Quaternion();
+            OffSetScale = dto.offSetScale.Struct();
+            AnchorPosition = dto.anchorPosition.Struct();
+
+            this.SyncPosition = dto.syncPosition;
+            this.SyncRotation = dto.syncRotation;
+            this.SyncScale = dto.syncScale;
+
+            SimpleBindingData = (AbstractSimpleBindingDataDto)data;
         }
 
         /// <summary>

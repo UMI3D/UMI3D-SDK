@@ -31,7 +31,9 @@ namespace umi3d.cdk.binding
         /// </summary>
         protected readonly AbstractSimpleBinding[] orderedBindings;
 
-        public IReadOnlyList<AbstractSimpleBinding> Bindings => orderedBindings.ToList();
+        public IReadOnlyList<AbstractSimpleBinding> Bindings { get; }
+
+        protected MultiBindingDataDto MultiBindingData { get; }
 
         public MultiBinding(MultiBindingDataDto data, AbstractSimpleBinding[] bindings, Transform boundTransform, bool isOrdered = false) : base(boundTransform, data)
         {
@@ -45,6 +47,8 @@ namespace umi3d.cdk.binding
                                                .OrderByDescending(x => x.Priority)
                                                .ToArray();
             }
+            Bindings = orderedBindings.ToList();
+            MultiBindingData = data;
         }
 
         /// <inheritdoc/>
@@ -80,7 +84,7 @@ namespace umi3d.cdk.binding
             if (boundTransform == null) // object destroyed before binding
                 return;
 
-            foreach (AbstractSimpleBinding binding in Bindings)
+            foreach (AbstractSimpleBinding binding in orderedBindings)
             {
                 if (binding is not null && binding.ResetWhenRemoved)
                 {

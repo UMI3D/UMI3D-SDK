@@ -18,7 +18,6 @@ using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
 using System.Linq;
-using umi3d.common.userCapture.pose;
 using UnityEngine;
 
 namespace umi3d.common.userCapture.description
@@ -74,25 +73,52 @@ namespace umi3d.common.userCapture.description
             {
                 if (mappings == null && mappingMarkers.Count == 0)
                     RetrieveMappings();
-                return mappings;
+                return mappingsList;
             }
             set
             {
-                mappings = value.ToList();
+                mappingsList = value.Where(x => x != null).OrderByDescending(x => x.BoneType, registeredHierarchy?.Comparer).ToList();
+                mappings = mappingsList.ToDictionary(x => x.BoneType);
             }
         }
 
-        private List<SkeletonMapping> mappings;
+        private List<SkeletonMapping> mappingsList;
 
-        private readonly Dictionary<uint, (BoneDto bone, SubSkeletonBoneDto subBone)> computedMap = new();
+        private Dictionary<uint, SkeletonMapping> mappings;
+
+        private readonly Dictionary<uint, BoneComputation> bonesComputations = new();
+
+        private class BoneComputation
+        {
+            public bool isComputed = false;
+            public BoneDto bone;
+            public SubSkeletonBoneDto subBone;
+        }
 
         public void RetrieveMappings()
         {
             mappingMarkers = GetComponentsInChildren<SkeletonMappingLinkMarker>().ToList();
             mappings = new();
             foreach (var marker in mappingMarkers)
+            {
+                if (mappings.ContainsKey(marker.BoneType))
+                    continue;
+
                 if (levelOfArticulation == LevelOfArticulation.NONE || marker.LevelOfArticulation <= levelOfArticulation)
-                    mappings.Add(marker.ToSkeletonMapping());
+                    mappings.Add(marker.BoneType, marker.ToSkeletonMapping());
+            }
+            mappingsList = mappings.Values.Where(x=>x != null).OrderByDescending(x=>x.BoneType, registeredHierarchy?.Comparer).ToList();
+        }
+
+        private UMI3DSkeletonHierarchy registeredHierarchy;
+
+        public virtual void SetupHierarchy(UMI3DSkeletonHierarchy hierarchy)
+        {
+            if (hierarchy == null)
+                throw new System.ArgumentNullException(nameof(hierarchy));
+
+            registeredHierarchy = hierarchy;
+            mappingsList = mappings.Values.Where(x => x != null).OrderByDescending(x => x.BoneType, registeredHierarchy?.Comparer).ToList();
         }
 
         /// <summary>
@@ -101,6 +127,9 @@ namespace umi3d.common.userCapture.description
         /// <returns></returns>
         public virtual SubSkeletonPoseDto GetPose(UMI3DSkeletonHierarchy hierarchy)
         {
+            if (registeredHierarchy == null && hierarchy != null)
+                SetupHierarchy(hierarchy);
+
             if (BoneAnchor == null)
             {
                 if (anchor != null)
@@ -118,12 +147,16 @@ namespace umi3d.common.userCapture.description
                     UMI3DLogger.LogWarning("BoneAnchor is null.", DEBUG_SCOPE);
             }
 
-            computedMap.Clear();
+            foreach (var boneComputation in bonesComputations.Values)
+            {
+                if (boneComputation != null)
+                    boneComputation.isComputed = false;
+            }
 
             List<SubSkeletonBoneDto> bones = new(hierarchy.Relations.Count);
-            foreach (SkeletonMapping mapping in Mappings)
+            foreach (SkeletonMapping mapping in mappingsList)
             {
-                var pose = GetBonePose(hierarchy, mapping).subBone;
+                SubSkeletonBoneDto pose = GetBonePose(hierarchy, mapping).subBone;
                 if (pose != null)
                     bones.Add(pose);
             }
@@ -143,47 +176,45 @@ namespace umi3d.common.userCapture.description
         /// <returns></returns>
         /// <exception cref="ArgumentNullException"></exception>
         /// <exception cref="ArgumentException"></exception>
-        private (BoneDto bone, SubSkeletonBoneDto subBone) GetBonePose(UMI3DSkeletonHierarchy hierarchy, SkeletonMapping mapping)
+        private BoneComputation GetBonePose(UMI3DSkeletonHierarchy hierarchy, SkeletonMapping mapping)
         {
-            if (mapping == null)
-                throw new ArgumentNullException(nameof(mapping));
-
             uint boneType = mapping.BoneType;
 
-            // bone already computed
-            if (computedMap.ContainsKey(boneType))
-                return computedMap[boneType];
+            if (!bonesComputations.TryGetValue(boneType, out BoneComputation boneComputation)) // bone not existing  yet
+            {
+                boneComputation = new BoneComputation() { isComputed = false };
+                bonesComputations.Add(boneType, boneComputation);
+            }
+            else if (boneComputation.isComputed) // bone already computed
+            {
+                return boneComputation;
+            }
 
             // bone not in hierarchy
-            if (!hierarchy.Relations.ContainsKey(boneType))
+            if (!hierarchy.Relations.TryGetValue(boneType, out var relation))
                 throw new ArgumentException($"Bone ({boneType}, \"{BoneTypeHelper.GetBoneName(boneType)}\") not defined in hierarchy.", nameof(mapping));
 
-            var relation = hierarchy.Relations[boneType];
-
             // get mapping value
-            var bone = mapping.GetPose();
+            BoneDto bone = mapping.GetPose();
 
             // look for potential parents
-            SkeletonMapping parentMapping = mappings.Find(m => m.BoneType == relation.boneTypeParent);
-
             SubSkeletonBoneDto subBone = new() { boneType = boneType };
-            if (parentMapping == default || parentMapping.BoneType == BoneType.None) // bone has no parent
+            if (!mappings.TryGetValue(relation.boneTypeParent, out SkeletonMapping parentMapping) 
+                || parentMapping.BoneType == BoneType.None) // bone has no parent mapping
             {
                 subBone.localRotation = bone.rotation;
             }
-            else // bone has a parent and thus its rotation depends on it
+            else // bone has a parent mapping and thus its rotation depends on it
             {
-                var parent = GetBonePose(hierarchy, parentMapping);
-                subBone.localRotation = (UnityEngine.Quaternion.Inverse(parent.bone.rotation.Quaternion()) * bone.rotation.Quaternion()).Dto();
+                BoneComputation parentComputation = GetBonePose(hierarchy, parentMapping);
+                subBone.localRotation = (UnityEngine.Quaternion.Inverse(parentComputation.bone.rotation.Quaternion()) * bone.rotation.Quaternion()).Dto();
             }
 
-            computedMap[boneType] = new()
-            {
-                bone = mapping.GetPose(),
-                subBone = subBone
-            };
+            boneComputation.bone = mapping.GetPose();
+            boneComputation.subBone = subBone;
+            boneComputation.isComputed = true;
 
-            return computedMap[boneType];
+            return boneComputation;
         }
     }
 }
