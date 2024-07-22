@@ -432,7 +432,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 foreach (var skeletonPair in Skeletons)
                 {
                     var skeleton = skeletonPair.Value;
-                    if (skeleton.UserId != PersonalSkeleton.UserId)
+                    if (skeleton.UserId != PersonalSkeleton.UserId && skeleton.IsVisible)
                     {
                         skeleton.Compute();
                     }
