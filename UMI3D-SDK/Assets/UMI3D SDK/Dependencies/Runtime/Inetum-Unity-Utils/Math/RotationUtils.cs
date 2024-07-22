@@ -30,6 +30,20 @@ namespace inetum.unityUtils.math
             return (angle % 360f) < 180f ? angle % 360f : ((angle % 360f) - 360f);
         }
 
+        /// <summary>
+        /// Project angles of a rotation in degrees to [-180°;180°[ range.
+        /// </summary>
+        /// <param name="angle">Angle in degrees</param>
+        /// <returns></returns>
+        public static Vector3 ProjectAngleIn180Range(Vector3 eulerAngles)
+        {
+            float xAngle = ProjectAngleIn180Range(eulerAngles.x);
+            float yAngle = ProjectAngleIn180Range(eulerAngles.y);
+            float zAngle = ProjectAngleIn180Range(eulerAngles.z);
+
+            return new Vector3(xAngle, yAngle, zAngle);
+        }
+
         public static void ToYawPitchRoll(Quaternion rotation, out float yawAngle, out float pitchAngle, out float rollAngle)
         {
             rotation.ToAngleAxis(out rollAngle, out Vector3 zAxis);

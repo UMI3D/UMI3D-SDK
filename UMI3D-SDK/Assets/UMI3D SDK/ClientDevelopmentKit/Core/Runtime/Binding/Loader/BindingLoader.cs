@@ -77,6 +77,8 @@ namespace umi3d.cdk.binding
 
             bindingManagementService.AddBinding(value.environmentId,dto.boundNodeId, binding);
 
+            bindingManagementService.ForceBindingsApplicationUpdate();
+
             void onDelete() { bindingManagementService.RemoveBinding(value.environmentId,dto.boundNodeId); }
             environmentManager.RegisterEntity(value.environmentId, dto.id, dto, null, onDelete).NotifyLoaded();
         }

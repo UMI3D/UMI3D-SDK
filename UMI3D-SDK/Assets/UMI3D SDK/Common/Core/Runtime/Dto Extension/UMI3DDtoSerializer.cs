@@ -81,7 +81,7 @@ namespace umi3d.common
         /// <returns>The DTO contained in the BSON.</returns>
         public static UMI3DDto FromBson(byte[] bson, TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
-            var ms = new MemoryStream(bson);
+            using var ms = new MemoryStream(bson);
             using (var reader = new BsonReader(ms))
             {
                 var serializer = new JsonSerializer
@@ -101,7 +101,7 @@ namespace umi3d.common
         /// <returns>The DTO contained in the BSON.</returns>
         public static T FromBson<T>(byte[] bson, TypeNameHandling typeNameHandling = TypeNameHandling.All)
         {
-            var ms = new MemoryStream(bson);
+            using var ms = new MemoryStream(bson);
             using (var reader = new BsonReader(ms))
             {
                 var serializer = new JsonSerializer

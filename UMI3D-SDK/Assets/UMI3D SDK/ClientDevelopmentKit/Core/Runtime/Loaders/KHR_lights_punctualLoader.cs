@@ -31,9 +31,11 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="ldto">dto to be loaded.</param>
         /// <param name="node">node on which the light will be created.</param>
-        public virtual void CreateLight(KHR_lights_punctual ldto, GameObject node)
+        public virtual void CreateLight(KHR_lights_punctual ldto, UMI3DNodeInstance node)
         {
-            Light light = node.GetOrAddComponent<Light>();
+            Light light = node.gameObject.GetOrAddComponent<Light>();
+            node.Object = light;
+
             light.shadows = LightShadows.Soft;
 
             light.intensity = ldto.intensity;
@@ -62,16 +64,16 @@ namespace umi3d.cdk
         /// <param name="entity">entity to be updated.</param>
         /// <param name="property">property containing the new value</param>
         /// <returns></returns>
-        public virtual bool SetLightPorperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
+        public virtual bool SetLightProperty(UMI3DEntityInstance entity, SetEntityPropertyDto property)
         {
             KHR_lights_punctual dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
             var node = entity as UMI3DNodeInstance;
-            Light light = node?.gameObject?.GetComponent<Light>();
+            Light light = node?.Object as Light;
             if (property.property == UMI3DPropertyKeys.Light)
             {
                 var lightdto = (KHR_lights_punctual)property.value;
                 if (light != null && lightdto == null) GameObject.Destroy(light);
-                else if (lightdto != null) CreateLight(lightdto, node.gameObject);
+                else if (lightdto != null) CreateLight(lightdto, node);
                 return true;
             }
             if (dto == null || light == null) return false;
@@ -128,7 +130,7 @@ namespace umi3d.cdk
             {
                 KHR_lights_punctual lightdto = UMI3DSerializer.Read<KHR_lights_punctual>(container);
                 if (light != null && lightdto == null) GameObject.Destroy(light);
-                else if (lightdto != null) CreateLight(lightdto, node.gameObject);
+                else if (lightdto != null) CreateLight(lightdto, node);
                 return true;
             }
             if (dto == null || light == null) return false;

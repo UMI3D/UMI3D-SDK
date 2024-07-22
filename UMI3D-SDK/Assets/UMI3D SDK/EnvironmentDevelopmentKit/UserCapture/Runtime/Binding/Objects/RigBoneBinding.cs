@@ -60,6 +60,7 @@ namespace umi3d.edk.userCapture.binding
 
                 partialFit = partialFit,
                 priority = priority,
+                resetWhenRemoved = resetWhenRemoved,
 
                 syncPosition = syncPosition,
                 syncRotation = syncRotation,

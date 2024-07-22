@@ -26,6 +26,7 @@ namespace Mumble
         /// </summary>
         private string _name;
         private UInt32 _session;
+        private int _debugCount;
 
         /// <summary>
         /// The audio DSP time when we last dequeued a buffer
@@ -171,8 +172,11 @@ namespace Mumble
                 count = _decodedBuffer.Count;
                 if (count > MumbleConstants.RECEIVED_PACKET_BUFFER_SIZE)
                 {
-                    // TODO this seems to happen at times
-                    Debug.LogWarning("Max recv buffer size reached, dropping for user " + _name);
+                    if (count > _debugCount)
+                    {
+                        Debug.LogWarning("Max received buffer size reached, dropping for user " + _name + " [" + count + "]");
+                        _debugCount = count + 100;
+                    }
                 }
                 else
                 {

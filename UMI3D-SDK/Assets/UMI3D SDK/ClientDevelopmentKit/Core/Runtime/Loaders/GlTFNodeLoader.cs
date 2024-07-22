@@ -62,7 +62,7 @@ namespace umi3d.cdk
         /// <returns>state if the property was handled</returns>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
         {
-            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightPorperty(value.entity, value.property))
+            if (UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.SetLightProperty(value.entity, value.property))
                 return true;
             var node = value.entity as UMI3DNodeInstance;
             if (node == null) return false;
@@ -150,9 +150,9 @@ namespace umi3d.cdk
         /// <param name="node">node to load.</param>
         /// <param name="finished">Callback called when the node is loaded.</param>
         /// <returns></returns>
-        public async Task LoadNode(ulong environmentId,GlTFNodeDto node)
+        public async Task LoadNode(ulong environmentId, GlTFNodeDto node)
         {
-            await LoadNodes(environmentId, new List<GlTFNodeDto>() { node }, new Progress(0,"Load Node"));
+            await LoadNodes(environmentId, new List<GlTFNodeDto>() { node }, new Progress(0, "Load Node"));
         }
 
         /// <summary>
@@ -181,7 +181,7 @@ namespace umi3d.cdk
                     {
                         await UMI3DEnvironmentLoader.AbstractParameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentId, dto.extensions.umi3d, node.gameObject));
 
-                        ReadLightingExtensions(dto, node.gameObject);
+                        ReadLightingExtensions(dto, node);
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
                         // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
                         node.transform.localPosition = dto.position.Struct();
@@ -218,7 +218,7 @@ namespace umi3d.cdk
                     {
                         await UMI3DEnvironmentLoader.Parameters.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentId, dto.extensions.umi3d, node.gameObject));
 
-                        ReadLightingExtensions(dto, node.gameObject);
+                        ReadLightingExtensions(dto, node);
                         // Important: all nodes in the scene must be registred before to handle hierarchy. 
                         // Done using CreateNode( GlTFNodeDto dto) on the whole nodes collections
                         node.transform.localPosition = dto.position.Struct();
@@ -257,11 +257,11 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="dto"></param>
         /// <param name="node"></param>
-        public void ReadLightingExtensions(GlTFNodeDto dto, GameObject node)
+        public void ReadLightingExtensions(GlTFNodeDto dto, UMI3DNodeInstance node)
         {
             if (dto.extensions.KHR_lights_punctual != null)
             {
-                UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.CreateLight(dto.extensions.KHR_lights_punctual, node.gameObject);
+                UMI3DEnvironmentLoader.Parameters.khr_lights_punctualLoader.CreateLight(dto.extensions.KHR_lights_punctual, node);
                 //TODO: future loaders for e.g. shadows parameters
             }
         }

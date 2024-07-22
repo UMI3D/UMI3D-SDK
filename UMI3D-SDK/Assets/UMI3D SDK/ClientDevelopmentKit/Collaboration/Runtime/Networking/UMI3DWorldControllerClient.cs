@@ -21,7 +21,6 @@ using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
-using umi3d.worldController;
 using UnityEngine;
 
 namespace umi3d.cdk.collaboration
@@ -142,7 +141,8 @@ namespace umi3d.cdk.collaboration
                 else if (answerDto is common.interaction.form.ConnectionFormDto form2)
                 {
                     common.interaction.form.FormAnswerDto answer = await GetFormAnswer(form2);
-                    var _answer = new FormConnectionAnswerDto() {
+                    var _answer = new FormConnectionAnswerDto()
+                    {
                         divFormAnswerDto = answer,
                         metadata = form2.metadata,
                         globalToken = form2.globalToken,
@@ -163,7 +163,7 @@ namespace umi3d.cdk.collaboration
             var lstToDownload = UMI3DResourcesManager.LibrariesToDownload(privateIdentity.libraries);
             bool shouldDownload = await UMI3DCollaborationClientServer.Instance.Identifier.ShouldDownloadLibraries(lstToDownload);
 
-            if (!shouldDownload) 
+            if (!shouldDownload)
                 return;
 
             MultiProgress progress = new MultiProgress("Searching for Libraries");
@@ -220,9 +220,11 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// Logout from the World Controller server.
         /// </summary>
-        public void Logout()
+        public async void Logout()
         {
+            await environment.Clear();
 
+            httpClient.Stop();
         }
 
         /// <summary>
