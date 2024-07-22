@@ -133,7 +133,6 @@ namespace umi3d.cdk.userCapture.tracking.ik
 
             IKNode = new GameObject("IK Hints");
             IKNode.transform.SetParent(skeleton.Bones[BoneType.Hips].Transform); // hints are relative to hips
-            IKNode.transform.hierarchyCapacity = NB_IK_BONES * 2;
             IKNode.transform.localPosition = Vector3.zero;
             IKNode.transform.localRotation = Quaternion.identity;
 
@@ -145,8 +144,6 @@ namespace umi3d.cdk.userCapture.tracking.ik
 
             inited = true;
         }
-
-        private const int NB_IK_BONES = 4;
 
         private void SetupIK(uint goalBoneType)
         {
