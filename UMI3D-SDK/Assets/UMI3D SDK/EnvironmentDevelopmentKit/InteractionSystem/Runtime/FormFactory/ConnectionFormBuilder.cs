@@ -19,17 +19,15 @@ namespace umi3d.common.interaction.form
 {
     public class ConnectionFormBuilder : DivBuilder<ConnectionFormDto>
     {
-        public ConnectionFormBuilder(string name)
+        public ConnectionFormBuilder(string id, string name)
         {
             InstantiateValue();
+            value.guid = id;
             value.name = name;
         }
 
         public ConnectionFormDto Get()
         {
-            ulong id = 0;
-            SetIdRecursivly(value, ref id);
-
             return value;
         }
     }

@@ -1,4 +1,6 @@
-﻿namespace umi3d.common.interaction.form
+﻿using System.Collections.Generic;
+
+namespace umi3d.common.interaction.form
 {
     public class ConnectionFormDto : FormDto
     {

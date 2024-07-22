@@ -21,6 +21,6 @@ namespace umi3d.common.interaction.form.ugui
     /// </summary>
     public class UGUIStyleItemDto
     {
-
+        public string type { get; set; }
     }
 }
