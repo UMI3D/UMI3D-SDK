@@ -206,9 +206,12 @@ namespace umi3d.common
             return Exists ? Instance._validFlag(scope) : (scope & LogScope) != 0;
         }
 
+        private static TimeZoneInfo timeZone = TimeZoneInfo.Local;
+
         private static string GetTime()
         {
-            var now = DateTime.Now;
+            TimeZoneInfo.ConvertTimeFromUtc(DateTime.UtcNow, timeZone);
+            var now = DateTime.UtcNow;
 
 #if UNITY_EDITOR
             return string.Empty;

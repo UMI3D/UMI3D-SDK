@@ -673,6 +673,9 @@ namespace umi3d.edk.collaboration
 
         private void Update()
         {
+            if (TransactionToBeSend.Count == 0)
+                return;
+
             foreach (KeyValuePair<UMI3DCollaborationAbstractContentUser, Transaction> kp in TransactionToBeSend.ToList())
             {
                 UMI3DCollaborationAbstractContentUser user = kp.Key;
