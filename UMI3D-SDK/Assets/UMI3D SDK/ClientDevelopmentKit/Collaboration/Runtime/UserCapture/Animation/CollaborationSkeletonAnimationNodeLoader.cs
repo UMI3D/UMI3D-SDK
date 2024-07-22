@@ -19,6 +19,7 @@ using inetum.unityUtils;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
+using umi3d.common.utils;
 
 namespace umi3d.cdk.collaboration.userCapture.animation
 {
@@ -45,8 +46,10 @@ namespace umi3d.cdk.collaboration.userCapture.animation
                                                         ICoroutineService coroutineManager,
                                                         ISkeletonManager personnalSkeletonService,
                                                         ICollaborationSkeletonsManager collaborativeSkeletonsmanager,
-                                                        IUMI3DClientServer clientServer)
-            : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService, clientServer)
+                                                        IUMI3DClientServer clientServer,
+                                                        ICoroutineService coroutineService,
+                                                        IUnityMainThreadDispatcher mainThreadDispatcherService)
+            : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService, clientServer, coroutineService, mainThreadDispatcherService)
         {
             this.collaborativeSkeletonsmanager = collaborativeSkeletonsmanager;
         }
