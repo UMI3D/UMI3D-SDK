@@ -33,6 +33,7 @@ using umi3d.common.utils;
 
 using UnityEngine;
 using System.Linq;
+using inetum.unityUtils.culling;
 
 namespace umi3d.cdk.userCapture
 {
@@ -205,6 +206,8 @@ namespace umi3d.cdk.userCapture
                 if (initPoseSubskeletonCoroutine != null) // stop waiting if initalization unfinished
                     StopCoroutine(initPoseSubskeletonCoroutine);
             };
+
+            SetupVisibilityTracking();
         }
 
         private Coroutine initPoseSubskeletonCoroutine;
@@ -275,12 +278,20 @@ namespace umi3d.cdk.userCapture
 
         #region Compute
 
+        public ISkeleton.ComputeMode ComputationMode { get; set; } = ISkeleton.ComputeMode.FULL;
+
         /// <inheritdoc/>
         public ISkeleton Compute()
         {
+            if (ComputationMode == ISkeleton.ComputeMode.DISABLED)
+                return this;
+
             PreComputed?.Invoke();
 
             AssembleSkeleton();
+
+            if (ComputationMode == ISkeleton.ComputeMode.ROOT_ONLY)
+                return this;
 
             RawComputed?.Invoke();
 
@@ -322,8 +333,27 @@ namespace umi3d.cdk.userCapture
             if (Subskeletons == null || Subskeletons.Count == 0)
                 return;
 
+            if (ComputationMode == ISkeleton.ComputeMode.ROOT_ONLY)
+            {
+                MoveRoot();
+                return;
+            }
+            
             RetrieveBonesRotation(SkeletonHierarchy);
+            MoveRoot();
 
+            // better use normal recursive computations then.
+            foreach (uint boneType in SkeletonHierarchy.OrderedBones) // order is garantied by hierarchy
+            {
+                if (boneType == ROOT_BONE) 
+                    continue;
+
+                ComputeBoneWorldTransform(boneType);
+            }
+        }
+
+        private void MoveRoot()
+        {
             if (TrackedSubskeleton.Controllers.TryGetValue(ROOT_BONE, out IController hipsController))
             {
                 bones[ROOT_BONE].Position = hipsController.position;
@@ -334,15 +364,6 @@ namespace umi3d.cdk.userCapture
                 //very naive : for now, we consider the tracked hips as the computer hips
                 bones[ROOT_BONE].Position = HipsAnchor != null ? HipsAnchor.position + hipsDisplacement : Vector3.zero; // add displacement to have the movement of Hips from animations
                 bones[ROOT_BONE].Rotation = HipsAnchor != null ? HipsAnchor.rotation * bones[ROOT_BONE].LocalRotation : Quaternion.identity;
-            }
-
-            // better use normal recursive computations then.
-            foreach (uint boneType in SkeletonHierarchy.OrderedBones) // order is garantied by hierarchy
-            {
-                if (boneType == ROOT_BONE) 
-                    continue;
-
-                ComputeBoneWorldTransform(boneType);
             }
         }
 
@@ -456,31 +477,55 @@ namespace umi3d.cdk.userCapture
 
         #endregion Compute
 
-        #region Tracking
+        #region Visibility
+
+        public event System.Action<bool> VisibilityChanged;
 
         private Renderer[] trackedRenderers;
 
-        public bool IsVisible
+        public bool IsVisible { get; protected set; }
+
+        private void SetupVisibilityTracking()
         {
-            get
+            if (trackedRenderers == null || trackedRenderers.Length == 0)
             {
-                if (trackedRenderers == null || trackedRenderers.Length == 0)
-                {
-                    trackedRenderers = (TrackedSubskeleton as TrackedSubskeleton).GetComponentsInChildren<Renderer>(true);
-                    if (trackedRenderers.Length == 0)
-                        return false;
-                }
+                trackedRenderers = (TrackedSubskeleton as TrackedSubskeleton)?.GetComponentsInChildren<Renderer>();
+            }
 
-                foreach (Renderer renderer in trackedRenderers)
-                {
-                    if (renderer.isVisible)
-                        return true;
-                }
+            foreach (var renderer in trackedRenderers)
+            {
+                if (!renderer.TryGetComponent(out VisibilityTracker visibilityTracker))
+                    visibilityTracker = renderer.gameObject.AddComponent<VisibilityTracker>();
 
-                return false;
+                visibilityTracker.VisibilityChanged += (_) => UpdateSkeletonVisibility();
             }
         }
-    
+
+        private void UpdateSkeletonVisibility()
+        {
+            bool isVisible = IsVisible;
+            IsVisible = IsSkeletonVisible();
+            
+            if (isVisible != IsVisible)
+                VisibilityChanged?.Invoke(IsVisible);
+        }
+
+        private bool IsSkeletonVisible()
+        {
+            if (trackedRenderers == null || trackedRenderers.Length == 0)
+                return false;
+
+            foreach (Renderer renderer in trackedRenderers)
+            {
+                if (renderer.isVisible)
+                    return true;
+            }
+            return false;
+        }
+
+        #endregion Visibility
+
+        #region Tracking
 
         /// <inheritdoc/>
         public abstract void UpdateBones(UserTrackingFrameDto frame);

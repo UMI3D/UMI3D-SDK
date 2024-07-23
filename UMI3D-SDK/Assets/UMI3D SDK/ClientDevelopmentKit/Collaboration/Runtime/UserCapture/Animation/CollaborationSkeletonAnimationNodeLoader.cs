@@ -46,10 +46,8 @@ namespace umi3d.cdk.collaboration.userCapture.animation
                                                         ICoroutineService coroutineManager,
                                                         ISkeletonManager personnalSkeletonService,
                                                         ICollaborationSkeletonsManager collaborativeSkeletonsmanager,
-                                                        IUMI3DClientServer clientServer,
-                                                        ICoroutineService coroutineService,
-                                                        IUnityMainThreadDispatcher mainThreadDispatcherService)
-            : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService, clientServer, coroutineService, mainThreadDispatcherService)
+                                                        IUMI3DClientServer clientServer)
+            : base(environmentManager, loadingManager, resourcesManager, coroutineManager, personnalSkeletonService, clientServer)
         {
             this.collaborativeSkeletonsmanager = collaborativeSkeletonsmanager;
         }

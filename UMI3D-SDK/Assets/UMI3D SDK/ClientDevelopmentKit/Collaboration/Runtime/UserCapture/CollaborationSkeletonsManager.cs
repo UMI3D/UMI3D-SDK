@@ -22,6 +22,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
+
+using umi3d.cdk.binding;
 using umi3d.cdk.navigation;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.pose;
@@ -203,11 +205,10 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual CollaborativeSkeleton CreateSkeleton(ulong environmentId, ulong userId, Transform parent, UMI3DSkeletonHierarchy skeletonHierarchy)
         {
-            GameObject go = new GameObject();
+            GameObject go = new GameObject($"skeleton_user_{environmentId}_{userId}");
             CollaborativeSkeleton cs = go.AddComponent<CollaborativeSkeleton>();
             cs.UserId = userId;
             cs.EnvironmentId = environmentId;
-            cs.name = $"skeleton_user_{environmentId}_{userId}";
 
             if (parent != null)
                 cs.transform.SetParent(parent);
@@ -230,6 +231,18 @@ namespace umi3d.cdk.collaboration.userCapture
 
             skeletons[(environmentId, userId)] = cs;
             CollaborativeSkeletonCreated?.Invoke(userId);
+
+            cs.VisibilityChanged += (isVisible) =>
+            {
+                cs.ComputationMode = isVisible ? ISkeleton.ComputeMode.FULL : ISkeleton.ComputeMode.ROOT_ONLY;
+
+                if (!isVisible)
+                    return;
+
+                cs.Compute();
+                BindingManager.Instance.ForceBindingsApplicationUpdate();
+            };
+
             return cs;
         }
 
@@ -432,7 +445,7 @@ namespace umi3d.cdk.collaboration.userCapture
                 foreach (var skeletonPair in Skeletons)
                 {
                     var skeleton = skeletonPair.Value;
-                    if (skeleton.UserId != PersonalSkeleton.UserId && skeleton.IsVisible)
+                    if (skeleton.UserId != PersonalSkeleton.UserId)
                     {
                         skeleton.Compute();
                     }

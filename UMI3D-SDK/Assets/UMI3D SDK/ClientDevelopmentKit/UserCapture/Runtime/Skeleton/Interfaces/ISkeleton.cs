@@ -76,6 +76,11 @@ namespace umi3d.cdk.userCapture
         bool IsVisible { get; }
 
         /// <summary>
+        /// Raised when the skeleton became visible/invisible.
+        /// </summary>
+        event Action<bool> VisibilityChanged;
+
+        /// <summary>
         /// Called after just before each skeleton computation.
         /// </summary>
         event Action PreComputed;
@@ -120,5 +125,20 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         /// <param name="subskeleton"></param>
         void RemoveSubskeleton(IAnimatedSubskeleton subskeleton);
+
+        /// <summary>
+        /// How to compute the skeleton. Can decrease the quality of computations.
+        /// </summary>
+        public enum ComputeMode
+        {
+            FULL,
+            ROOT_ONLY,
+            DISABLED
+        }
+
+        /// <summary>
+        /// How to compute the skeleton. Can decrease the quality of computations.
+        /// </summary>
+        ComputeMode ComputationMode { get; set; }
     }
 }

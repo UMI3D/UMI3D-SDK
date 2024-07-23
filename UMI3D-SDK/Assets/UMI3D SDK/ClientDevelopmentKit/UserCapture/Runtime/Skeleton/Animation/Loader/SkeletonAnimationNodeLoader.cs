@@ -44,15 +44,11 @@ namespace umi3d.cdk.userCapture.animation
 
         protected readonly ISkeletonManager personalSkeletonService;
         protected readonly IUMI3DClientServer clientServer;
-        protected readonly ICoroutineService coroutineService;
-        protected readonly IUnityMainThreadDispatcher mainThreadDispatcherService;
 
         public SkeletonAnimationNodeLoader() : base()
         {
             personalSkeletonService = PersonalSkeletonManager.Instance;
             clientServer = UMI3DClientServer.Instance;
-            this.coroutineService = CoroutineManager.Instance;
-            this.mainThreadDispatcherService = UnityMainThreadDispatcherManager.Instance;
         }
 
         public SkeletonAnimationNodeLoader(IEnvironmentManager environmentManager,
@@ -60,15 +56,11 @@ namespace umi3d.cdk.userCapture.animation
                                            IUMI3DResourcesManager resourcesManager,
                                            ICoroutineService coroutineManager,
                                            ISkeletonManager personalSkeletonService,
-                                           IUMI3DClientServer clientServer,
-                                           ICoroutineService coroutineService,
-                                           IUnityMainThreadDispatcher mainThreadDispatcherService)
+                                           IUMI3DClientServer clientServer)
             : base(environmentManager, loadingManager, resourcesManager, coroutineManager)
         {
             this.personalSkeletonService = personalSkeletonService;
             this.clientServer = clientServer;
-            this.coroutineService = coroutineService;
-            this.mainThreadDispatcherService = mainThreadDispatcherService;
         }
 
         #endregion Dependency Injection
@@ -143,11 +135,26 @@ namespace umi3d.cdk.userCapture.animation
                     return;
                 }
 
-                if (parentSkeleton is not IPersonalSkeleton && !cullCoroutines.ContainsKey((parentSkeleton.UserId, nodeInstance.Id)))
+                // cull animators of other skeletons when they are not visible
+                if (parentSkeleton is not IPersonalSkeleton)
                 {
-                    clientServer.OnRedirection.AddListener(ResetAutoCulling);
-                    clientServer.OnLeavingEnvironment.AddListener(ResetAutoCulling);
-                    mainThreadDispatcherService.Enqueue(() => cullCoroutines[(parentSkeleton.UserId, nodeInstance.Id)] = coroutineService.AttachCoroutine(AutoCullAnimator(parentSkeleton, nodeInstance.Id, animator)));
+                    parentSkeleton.VisibilityChanged += AutoCullAnimator;
+
+                    void AutoCullAnimator(bool isVisible)
+                    {
+                        if (animator == null)
+                            return;
+
+                        if (isVisible && animator.cullingMode != AnimatorCullingMode.AlwaysAnimate)
+                        {
+                            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                            animator.Update(0);
+                        }
+                        else if (!isVisible && animator.cullingMode != AnimatorCullingMode.CullCompletely)
+                        {
+                            animator.cullingMode = AnimatorCullingMode.CullCompletely;
+                        }
+                    }
                 }
 
                 ISubskeletonDescriptionInterpolationPlayer player = new SubskeletonDescriptionInterpolationPlayer(skeletonMapper, skeletonNodeDto.IsInterpolable, parentSkeleton);
@@ -158,43 +165,6 @@ namespace umi3d.cdk.userCapture.animation
 
             await Task.CompletedTask;
         }
-
-        readonly Dictionary<(ulong userId, ulong animationNodeId), Coroutine> cullCoroutines = new();
-
-        private void ResetAutoCulling()
-        {
-            foreach (var loop in cullCoroutines.Values)
-                CoroutineManager.Instance.DetachCoroutine(loop);
-
-            cullCoroutines.Clear();
-
-            clientServer.OnRedirection.RemoveListener(ResetAutoCulling);
-            clientServer.OnLeavingEnvironment.RemoveListener(ResetAutoCulling);
-        }
-
-        private IEnumerator AutoCullAnimator(ISkeleton parentSkeleton, ulong nodeId, Animator animator)
-        {
-            Debug.Log($"Start coroutine for {parentSkeleton.UserId}.");
-            mainThreadDispatcherService.Enqueue(() => Debug.Log($"Start coroutine for {parentSkeleton.UserId}."));
-            while (parentSkeleton != null && animator != null && Application.isPlaying)
-            {
-                if (parentSkeleton.IsVisible && animator.cullingMode != AnimatorCullingMode.AlwaysAnimate)
-                {
-                    animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
-                    mainThreadDispatcherService.Enqueue(() => Debug.Log($"Skeleton of user {parentSkeleton.UserId} visible."));
-
-                }
-                else if (!parentSkeleton.IsVisible && animator.cullingMode != AnimatorCullingMode.CullCompletely)
-                {
-                    animator.cullingMode = AnimatorCullingMode.CullCompletely;
-                    mainThreadDispatcherService.Enqueue(() => Debug.Log($"Skeleton of user {parentSkeleton.UserId} invisible."));
-                }
-                yield return null;
-            };
-            mainThreadDispatcherService.Enqueue(() => Debug.Log($"Stopped coroutine for {parentSkeleton.UserId}."));
-            cullCoroutines.Remove((parentSkeleton.UserId, nodeId));
-        }
-
 
         /// <summary>
         /// Get the parent skeleton of the animated subskeleton.
