@@ -131,8 +131,19 @@ namespace umi3d.cdk.userCapture
         /// </summary>
         public enum ComputeMode
         {
+            /// <summary>
+            /// Compute the whole skeleton
+            /// </summary>
             FULL,
+
+            /// <summary>
+            /// Only compute the movement of the root
+            /// </summary>
             ROOT_ONLY,
+
+            /// <summary>
+            /// Disable all computations
+            /// </summary>
             DISABLED
         }
 
