@@ -306,7 +306,7 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance.entities?.Values?.ToList()?.Where(entities => entities is E)?.Select(e => e as E);
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
                 return new List<E>();
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
@@ -365,7 +365,7 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance.entities?.old.ToList();
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
                 return new List<ulong>();
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
@@ -379,7 +379,7 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance.entities.Values.ToList().Where(entities => entities is E).Select(e => e as E).Where(predicate);
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
                 return new List<E>();
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
@@ -393,7 +393,7 @@ namespace umi3d.edk
         {
             if (Exists)
                 return Instance._GetEntityInstance<E>(id);
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
                 return null;
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
@@ -424,7 +424,7 @@ namespace umi3d.edk
                     return (e, true, true);
                 }
             }
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
                 return (null, false, false);
             else
                 throw new System.NullReferenceException("UMI3DEnvironment doesn't exists !");
@@ -444,7 +444,7 @@ namespace umi3d.edk
                 else
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
             {
                 return 0;
             }
@@ -479,7 +479,7 @@ namespace umi3d.edk
                 else
                     throw new System.NullReferenceException("Trying to register null entity !");
             }
-            else if (QuittingManager.ApplicationIsQuitting)
+            else if (QuittingManager.applicationIsQuitting)
             {
                 return 0;
             }

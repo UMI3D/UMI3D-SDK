@@ -211,7 +211,12 @@ namespace umi3d.edk.collaboration
             Debug.Assert(Identifier != null, "Identifier cannot be null");
             Debug.Assert(WorldController != null, "WorldController cannot be null");
 
-            QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            NotificationHub.Default.Subscribe(
+                this,
+                QuittingManagerNotificationKey.ApplicationIsQuitting,
+                null,
+                ApplicationQuit
+            );
         }
 
         protected override void OnDestroy()

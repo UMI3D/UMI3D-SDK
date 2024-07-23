@@ -73,9 +73,12 @@ namespace umi3d.edk.collaboration
                 StopLoop();
             });
 
-            QuittingManager.OnApplicationIsQuitting.AddListener(() => {
-                StopLoop();
-            });
+            NotificationHub.Default.Subscribe(
+                this,
+                QuittingManagerNotificationKey.ApplicationIsQuitting,
+                null,
+                StopLoop
+            );
 
 #if UNITY_EDITOR
             Application.quitting += () =>
