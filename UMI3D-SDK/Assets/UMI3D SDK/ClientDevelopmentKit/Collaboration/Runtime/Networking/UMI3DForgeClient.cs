@@ -916,9 +916,9 @@ namespace umi3d.cdk.collaboration
         /// <summary>
         /// 
         /// </summary>
-        private void ApplicationQuit(Notification notification)
+        private void ApplicationQuit()
         {
-            if (!inetum.unityUtils.QuittingManager.applicationIsQuitting) return;
+            if (!QuittingManager.applicationIsQuitting) return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();
         }
