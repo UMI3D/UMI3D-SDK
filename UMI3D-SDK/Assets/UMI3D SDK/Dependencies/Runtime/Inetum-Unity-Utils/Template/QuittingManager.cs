@@ -24,49 +24,112 @@ using UnityEngine.Events;
 namespace inetum.unityUtils
 {
     /// <summary>
-    /// A manager to handle the application quitting.
-    /// This is used by default by singleBehaviour
+    /// A manager to handle the application quitting.<br/>
+    /// <br/>
+    /// How to:<br/>
+    /// <list type="number">
+    /// <item>Register to <see cref="QuittingManagerNotificationKey.RequestToQuit"/> to be notify when the quitting process has started. This is where to update ui.</item>
+    /// <item>Register to <see cref="QuittingManagerNotificationKey.ApplicationIsQuitting"/> to be notify when the quitting process has been accepted.</item>
+    /// <item>Call <see cref="Application.Quit()"/> to start the quitting process.</item>
+    /// </list>
     /// </summary>
-    /// <seealso cref="SingleBehaviour{T}"/>>
-    /// <seealso cref="PersistentSingleBehaviour{T}"/>>
-    public class QuittingManager : MonoBehaviour
+    public static class QuittingManager
     {
-
-        private static bool applicationIsQuitting = false;
-        /// <summary>
-        /// Should be set to true when the application is quitting.
-        /// </summary>
-        public static bool ApplicationIsQuitting
+        static QuittingManager()
         {
-            get => applicationIsQuitting;
-            set
-            {
-                if (applicationIsQuitting != value)
-                {
-                    applicationIsQuitting = value;
-                    if (value)
-                        OnApplicationIsQuitting.Invoke();
-                }
-            }
+            Application.wantsToQuit += WantsToQuit;
+
+            NotificationHub.Default.Subscribe(
+                typeof(QuittingManager).FullName,
+                QuittingManagerNotificationKey.QuittingConfirmation,
+                null,
+                QuittingConfirmation
+            );
         }
 
         /// <summary>
-        /// Should be set to true in the client and the server when they deal with quitting the application.
+        /// Method called when <see cref="Application.Quit()"/> is called.
         /// </summary>
-        public static bool ShouldWaitForApplicationToQuit = false;
+        /// <returns></returns>
+        static bool WantsToQuit()
+        {
+            // If applicationIsQuitting then return true to confirm the quitting process.
+            if (applicationIsQuitting)
+            {
+                return true;
+            }
+
+            // Notify the observers that the application is asked to quit.
+            // The observers have to display a pop up that let the user
+            // choose between confirming or cancelling the quitting process.
+            NotificationHub.Default.Notify(
+                typeof(QuittingManager).FullName,
+                QuittingManagerNotificationKey.RequestToQuit
+            );
+
+            // Cancel quitting process for now.
+            return false;
+        }
 
         /// <summary>
-        /// Raised when ApplicationIsQuitting is set to true.
+        /// Method call when the user confirm or cancel the quitting process.
         /// </summary>
-        public static UnityEvent OnApplicationIsQuitting = new UnityEvent();
-
-        protected virtual void OnApplicationQuit()
+        /// <param name="notification"></param>
+        static void QuittingConfirmation(Notification notification)
         {
-            if (!ShouldWaitForApplicationToQuit)
-                ApplicationIsQuitting = true;
-#if UNITY_EDITOR
-            ApplicationIsQuitting = true;
-#endif
+            // Try to get the status of the confirmation.
+            if (!notification.TryGetInfoT(QuittingManagerNotificationKey.QuittingConfirmationInfo.Confirmation, out bool confirmation))
+            {
+                return;
+            }
+
+            // Set the status of the confirmation.
+            applicationIsQuitting = confirmation;
+
+            // If the quitting process is cancel then return.
+            if (!applicationIsQuitting)
+            {
+                return;
+            }
+
+            // Notify observers that the application is quitting.
+            NotificationHub.Default.Notify(
+                typeof(QuittingManager).FullName,
+                QuittingManagerNotificationKey.ApplicationIsQuitting
+            );
+
+            UnityEngine.Debug.Log($"*********** Application is quitting ***********");
+            // Quit.
+            Application.Quit();
+        }
+
+        /// <summary>
+        /// Whether or not the application has started to quit.
+        /// </summary>
+        public static bool applicationIsQuitting { get; private set; }
+    }
+
+    public static class QuittingManagerNotificationKey
+    {
+        /// <summary>
+        /// Notification send when <see cref="Application.Quit()"/> is call.
+        /// </summary>
+        public const string RequestToQuit = "RequestToQuit";
+        /// <summary>
+        /// Notification send to confirm or cancel the quitting process.
+        /// </summary>
+        public const string QuittingConfirmation = "QuittingConfirmation";
+        /// <summary>
+        /// Notification send when the process of quitting has been confirmed and the application is quitting.
+        /// </summary>
+        public const string ApplicationIsQuitting = "ApplicationIsQuitting";
+
+        public static class QuittingConfirmationInfo
+        {
+            /// <summary>
+            /// The confirmation value.
+            /// </summary>
+            public const string Confirmation = "Confirmation";
         }
     }
 }

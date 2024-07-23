@@ -29,7 +29,7 @@ namespace inetum.unityUtils
         /// This is a direct reference to QuittingManager.ApplicationIsQuitting.
         /// </summary>
         /// <seealso cref="QuittingManager.ApplicationIsQuitting"/>>
-        public static bool ApplicationIsQuitting => QuittingManager.ApplicationIsQuitting;
+        public static bool ApplicationIsQuitting => QuittingManager.applicationIsQuitting;
 
         /// <summary>
         /// State if an instance of <typeparamref name="T"/> exist.

@@ -104,7 +104,14 @@ namespace umi3d.edk.collaboration.murmur
             var mm = new MumbleManager(ip, http, guid);
             mm._Create();
             mm.HeartBeat();
-            QuittingManager.OnApplicationIsQuitting.AddListener(mm.Delete);
+
+            NotificationHub.Default.Subscribe(
+                typeof(MumbleManager).FullName,
+                QuittingManagerNotificationKey.ApplicationIsQuitting,
+                null,
+                mm.Delete
+            );
+
             return mm;
         }
 

@@ -14,6 +14,7 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -900,7 +901,15 @@ namespace umi3d.cdk.collaboration
             // If not using TCP
             // Should it be done before Host() ???
             NetWorker.PingForFirewall(port);
-            if (!HasBeenSet) inetum.unityUtils.QuittingManager.OnApplicationIsQuitting.AddListener(ApplicationQuit);
+            if (!HasBeenSet)
+            {
+                NotificationHub.Default.Subscribe(
+                    this,
+                    QuittingManagerNotificationKey.ApplicationIsQuitting,
+                    null,
+                    ApplicationQuit
+                );
+            }
             HasBeenSet = true;
         }
 
@@ -909,7 +918,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void ApplicationQuit()
         {
-            if (!inetum.unityUtils.QuittingManager.ApplicationIsQuitting) return;
+            if (!QuittingManager.applicationIsQuitting) return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();
         }

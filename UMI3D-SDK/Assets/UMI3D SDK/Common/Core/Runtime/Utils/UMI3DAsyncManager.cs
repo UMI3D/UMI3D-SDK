@@ -72,7 +72,7 @@ public static class UMI3DAsyncManager
 
     private static void ErrorIfQuitting(List<CancellationToken> tokens, bool isMainThread = true)
     {
-        if (QuittingManager.ApplicationIsQuitting)
+        if (QuittingManager.applicationIsQuitting)
                 throw new UMI3DAsyncManagerException("Application is quitting");
     #if UNITY_EDITOR
             try
