@@ -169,6 +169,7 @@ namespace umi3d.cdk.userCapture
             }
             else
             {
+                finalSkeletonGameObject = new GameObject($"Final Skeleton - user {UserId}");
                 finalSkeletonGameObject.transform.SetParent(this.transform.parent);
                
 
