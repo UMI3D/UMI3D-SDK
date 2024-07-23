@@ -19,6 +19,7 @@ using inetum.unityUtils;
 using umi3d.cdk.userCapture;
 using umi3d.cdk.userCapture.animation;
 using umi3d.common;
+using umi3d.common.utils;
 
 namespace umi3d.cdk.collaboration.userCapture.animation
 {

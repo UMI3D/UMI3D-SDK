@@ -15,7 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-
+using MainThreadDispatcher;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -24,7 +25,7 @@ using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
-
+using umi3d.common.utils;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation
@@ -133,6 +134,29 @@ namespace umi3d.cdk.userCapture.animation
                     UMI3DLogger.LogWarning($"Skeleton of user {skeletonNodeDto.userId} not found. Cannot attach skeleton node.", DEBUG_SCOPE);
                     return;
                 }
+
+                // cull animators of other skeletons when they are not visible
+                if (parentSkeleton is not IPersonalSkeleton)
+                {
+                    parentSkeleton.VisibilityChanged += AutoCullAnimator;
+
+                    void AutoCullAnimator(bool isVisible)
+                    {
+                        if (animator == null)
+                            return;
+
+                        if (isVisible && animator.cullingMode != AnimatorCullingMode.AlwaysAnimate)
+                        {
+                            animator.cullingMode = AnimatorCullingMode.AlwaysAnimate;
+                            animator.Update(0);
+                        }
+                        else if (!isVisible && animator.cullingMode != AnimatorCullingMode.CullCompletely)
+                        {
+                            animator.cullingMode = AnimatorCullingMode.CullCompletely;
+                        }
+                    }
+                }
+
                 ISubskeletonDescriptionInterpolationPlayer player = new SubskeletonDescriptionInterpolationPlayer(skeletonMapper, skeletonNodeDto.IsInterpolable, parentSkeleton);
                 AnimatedSubskeleton animationSubskeleton = new AnimatedSubskeleton(skeletonNodeDto, player, skeletonMapper, animations.ToArray(), skeletonNodeDto.animatorSelfTrackedParameters);
                 AttachToSkeleton(parentSkeleton, animationSubskeleton);
