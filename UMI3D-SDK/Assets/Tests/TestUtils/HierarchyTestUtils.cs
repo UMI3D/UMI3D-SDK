@@ -25,7 +25,7 @@ namespace TestUtils.UserCapture
     {
         public IList<IUMI3DSkeletonHierarchyDefinition.BoneRelation> Relations => relations;
 
-        public GameObject SkeletonPrefab => new();
+        public GameObject SkeletonPrefab => null;
 
         private readonly List<IUMI3DSkeletonHierarchyDefinition.BoneRelation> relations = new();
     }
@@ -38,7 +38,10 @@ namespace TestUtils.UserCapture
             hierarchyDef.Relations.Add(new() { parentBoneType = BoneType.Hips, boneType = BoneType.Chest , relativePosition = Vector3.zero.Dto() });
             hierarchyDef.Relations.Add(new() { parentBoneType = BoneType.Chest, boneType = BoneType.Spine , relativePosition = Vector3.zero.Dto() });
             hierarchyDef.Relations.Add(new() { parentBoneType = BoneType.Chest, boneType = BoneType.LeftForearm , relativePosition = Vector3.zero.Dto() });
-            return new UMI3DSkeletonHierarchy(hierarchyDef);
+
+            var hierarchy = new UMI3DSkeletonHierarchy(hierarchyDef);
+            hierarchy.OrderedBones = new List<uint> { BoneType.Hips, BoneType.Chest, BoneType.Spine, BoneType.LeftForearm };
+            return hierarchy;
         }
     }
 }
