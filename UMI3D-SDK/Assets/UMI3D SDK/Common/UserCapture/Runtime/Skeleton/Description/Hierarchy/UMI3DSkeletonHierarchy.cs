@@ -394,7 +394,7 @@ namespace umi3d.common.userCapture.description
             if (action == null)
                 throw new System.ArgumentNullException(nameof(action));
 
-            foreach (uint bone in linearDepthOrderedBones)
+            foreach (uint bone in OrderedBones)
             {
                 action(bone);
             }

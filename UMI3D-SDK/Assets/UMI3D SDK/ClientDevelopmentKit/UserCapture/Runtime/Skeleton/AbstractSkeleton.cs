@@ -154,7 +154,7 @@ namespace umi3d.cdk.userCapture
             // (in order not to be influenced by displacement of this, because of tracked action)
             // final skeleton is GET logic, subskeletons is SET
 
-            if (SkeletonHierarchy.Definition.SkeletonPrefab != null) // quick instanciation from prefab
+            if (SkeletonHierarchy.Definition?.SkeletonPrefab != null) // quick instanciation from prefab
             {
                 GameObject skeletonPrefab = SkeletonHierarchy.Definition.SkeletonPrefab;
                 finalSkeletonGameObject = GameObject.Instantiate(skeletonPrefab, this.transform.parent);
@@ -491,6 +491,9 @@ namespace umi3d.cdk.userCapture
             if (trackedRenderers == null || trackedRenderers.Length == 0)
             {
                 trackedRenderers = (TrackedSubskeleton as TrackedSubskeleton)?.GetComponentsInChildren<Renderer>();
+
+                if (trackedRenderers == null)
+                    return;
             }
 
             foreach (var renderer in trackedRenderers)
