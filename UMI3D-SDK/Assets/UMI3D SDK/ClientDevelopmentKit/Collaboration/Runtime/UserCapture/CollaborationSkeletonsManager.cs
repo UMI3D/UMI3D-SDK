@@ -298,7 +298,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         #region Tracking management
 
-        public virtual void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames)
+        public virtual void UpdateSkeleton(List<UserTrackingFrameDto> frames)
         {
             if (Application.isBatchMode || !canUpdateSkeletons)
                 return;
@@ -306,7 +306,7 @@ namespace umi3d.cdk.collaboration.userCapture
             if (frames is null)
                 throw new ArgumentNullException(nameof(frames));
 
-            if (!frames.Any())
+            if (frames.Count == 0)
                 return;
 
             foreach (var frame in frames)

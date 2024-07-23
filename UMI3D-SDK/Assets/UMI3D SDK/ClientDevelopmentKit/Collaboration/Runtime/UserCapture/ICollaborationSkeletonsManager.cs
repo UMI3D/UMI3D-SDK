@@ -78,7 +78,7 @@ namespace umi3d.cdk.collaboration.userCapture
         /// Update skeletons from tracking frames.
         /// </summary>
         /// <param name="frames"></param>
-        void UpdateSkeleton(IEnumerable<UserTrackingFrameDto> frames);
+        void UpdateSkeleton(List<UserTrackingFrameDto> frames);
 
         /// <summary>
         /// Update a collaborative skeleton from a tracking frame.
