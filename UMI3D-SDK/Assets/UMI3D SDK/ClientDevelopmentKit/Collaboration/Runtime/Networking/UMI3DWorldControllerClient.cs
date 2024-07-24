@@ -41,7 +41,7 @@ namespace umi3d.cdk.collaboration
 
         private WorldHttpClient httpClient;
 
-        private static List<string> formCompatibleVersions = new() { "1", "2.0" };
+        public static List<string> formCompatibleVersions = new() { "1", "2.0" };
         /// <summary>
         /// Called to create a new Public Identity for this client.
         /// </summary>
@@ -102,7 +102,8 @@ namespace umi3d.cdk.collaboration
         public async Task<bool> Connect(bool downloadLibraryOnly = false)
         {
             if (!isConnected && !isConnecting)
-                return await Connect(new ConnectionDto() {
+                return await Connect(new ConnectionDto()
+                {
                     globalToken = this.globalToken,
                     gate = this.gate,
                     libraryPreloading = downloadLibraryOnly,
