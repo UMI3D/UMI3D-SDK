@@ -26,7 +26,8 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
     public class SkeletonConstraintService_Test
     {
         private SkeletonConstraintService skeletonConstraintService;
-        private Mock<ISkeleton> skeletonMock;
+        private Mock<IPersonalSkeletonManager> skeletonManagerMock;
+        private Mock<IPersonalSkeleton> skeletonMock;
 
         #region Test Setup
 
@@ -36,7 +37,9 @@ namespace EditMode_Tests.UserCapture.Tracking.Constraint.CDK
             ClearSingletons();
 
             skeletonMock = new();
-            skeletonConstraintService = new SkeletonConstraintService(skeletonMock.Object);
+            skeletonManagerMock = new();
+            skeletonManagerMock.Setup(x=>x.PersonalSkeleton).Returns(skeletonMock.Object);
+            skeletonConstraintService = new SkeletonConstraintService(skeletonManagerMock.Object);
         }
 
         [TearDown]

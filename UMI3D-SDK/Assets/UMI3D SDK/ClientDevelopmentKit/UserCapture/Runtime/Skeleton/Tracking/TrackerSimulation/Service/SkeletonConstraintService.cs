@@ -32,14 +32,14 @@ namespace umi3d.cdk.userCapture.tracking.constraint
 
         #region DI
 
-        private readonly ISkeleton skeleton;
+        private readonly IPersonalSkeletonManager skeletonService;
 
-        public SkeletonConstraintService(ISkeleton skeleton)
+        public SkeletonConstraintService(IPersonalSkeletonManager skeleton)
         {
-            this.skeleton = skeleton;
+            this.skeletonService = skeleton;
         }
 
-        public SkeletonConstraintService() : this(skeleton: PersonalSkeletonManager.Instance.PersonalSkeleton)
+        public SkeletonConstraintService() : this(skeleton: PersonalSkeletonManager.Instance)
         {
         }
 
@@ -74,7 +74,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
                 boneConstraints.Add(constraint);
 
                 if (canApply && constraint.ShouldBeApplied)
-                    constraint.Apply(skeleton);
+                    constraint.Apply(skeletonService.PersonalSkeleton);
 
                 return;
             }
@@ -83,7 +83,7 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             constraints.Add(constraint.ConstrainedBone, new List<IBoneConstraint> { constraint });
 
             if (constraint.ShouldBeApplied)
-                constraint.Apply(skeleton);
+                constraint.Apply(skeletonService.PersonalSkeleton);
         }
 
         /// <inheritdoc/>
@@ -110,10 +110,10 @@ namespace umi3d.cdk.userCapture.tracking.constraint
 
             foreach (IBoneConstraint constraintToEndApply in boneConstraints.Where(x => x != constraintToApply && x.IsApplied))
             {
-                constraintToEndApply.EndApply(skeleton);
+                constraintToEndApply.EndApply(skeletonService.PersonalSkeleton);
             }
 
-            constraintToApply?.Apply(skeleton);
+            constraintToApply?.Apply(skeletonService.PersonalSkeleton);
         }
 
         /// <inheritdoc/>
@@ -133,10 +133,10 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             if (!constraint.IsApplied)
                 return;
 
-            constraint.EndApply(skeleton);
+            constraint.EndApply(skeletonService.PersonalSkeleton);
 
             IBoneConstraint constraintToApply = boneConstraints.FirstOrDefault(x => x.ShouldBeApplied && !x.IsApplied);
-            constraintToApply?.Apply(skeleton);
+            constraintToApply?.Apply(skeletonService.PersonalSkeleton);
         }
 
         /// <inheritdoc/>
