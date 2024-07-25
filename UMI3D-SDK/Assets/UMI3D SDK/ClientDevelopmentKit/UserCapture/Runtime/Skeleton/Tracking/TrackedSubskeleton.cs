@@ -154,7 +154,7 @@ namespace umi3d.cdk.userCapture.tracking
             }
 
             // apply actual IK
-            ikHandler.HandleAnimatorIK(layer, controllers.Values, bones);
+            ikHandler.HandleAnimatorIK(layer, Controllers.Values, bones);
         }
 
         private void Update()
