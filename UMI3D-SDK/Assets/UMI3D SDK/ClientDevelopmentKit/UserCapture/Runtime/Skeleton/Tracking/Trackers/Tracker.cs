@@ -80,12 +80,12 @@ namespace umi3d.cdk.userCapture.tracking
         public event System.Action Destroyed;
 
         /// <inheritdoc/>
-        protected void Destroy()
+        public void Destroy()
         {
             UnityEngine.GameObject.Destroy(this);
         }
 
-        public void OnDestroy()
+        protected void OnDestroy()
         {
             Destroyed?.Invoke();
         }
