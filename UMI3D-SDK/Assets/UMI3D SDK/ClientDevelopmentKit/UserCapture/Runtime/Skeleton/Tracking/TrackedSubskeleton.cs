@@ -51,7 +51,6 @@ namespace umi3d.cdk.userCapture.tracking
         private readonly Queue<IController> controllersToClean = new();
         private readonly Queue<IController> controllersToDestroy = new();
 
-        private readonly List<uint> receivedTypes = new List<uint>();
         private readonly Dictionary<uint, (Vector3LinearDelayedExtrapolator PositionExtrapolator, QuaternionLinearDelayedExtrapolator RotationExtrapolator, IController Controller)> extrapolators = new();
 
         private TrackingAnimatorIKHandler ikHandler;
@@ -236,6 +235,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         #region Tracking Frame
 
+        private readonly List<uint> receivedTypes = new List<uint>();
         /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
