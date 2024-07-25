@@ -20,6 +20,7 @@ using System.Linq;
 using umi3d.cdk.userCapture.tracking.ik;
 using umi3d.cdk.utils.extrapolation;
 using umi3d.common;
+using umi3d.common.core;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.description;
 using umi3d.common.userCapture.tracking;
@@ -48,8 +49,8 @@ namespace umi3d.cdk.userCapture.tracking
         public IReadOnlyDictionary<uint, IController> Controllers => controllers;
         private readonly Dictionary<uint, IController> controllers = new();
 
-        private readonly Queue<IController> controllersToClean = new();
-        private readonly Queue<IController> controllersToDestroy = new();
+        private readonly List<IController> controllersToClean = new();
+        private readonly List<IController> controllersToDestroy = new();
 
         private readonly Dictionary<uint, (Vector3LinearDelayedExtrapolator PositionExtrapolator, QuaternionLinearDelayedExtrapolator RotationExtrapolator, IController Controller)> extrapolators = new();
 
@@ -136,14 +137,22 @@ namespace umi3d.cdk.userCapture.tracking
         /// <param name="layer"></param>
         private void ApplyIK(int layer)
         {
-            // clean controllers
-            ikHandler.Reset(controllersToClean, bones);
-            controllersToClean.Clear();
+            if (controllersToDestroy.Count > 0)
+            {
+                // destroy deleted controllers
+                foreach (var controller in controllersToDestroy)
+                {
+                    controller.Destroy();
+                }
+                controllersToDestroy.Clear();
+            }
 
-            // destroy deleted controllers
-            foreach (var controller in controllersToDestroy)
-                controller.Destroy();
-            controllersToDestroy.Clear();
+            if (controllersToClean.Count > 0)
+            {
+                // clean
+                ikHandler.Reset(controllersToClean, bones);
+                controllersToClean.Clear();
+            }
 
             // hips management before IK
             if (controllers.TryGetValue(BoneType.Hips, out var hipsController))
@@ -236,6 +245,7 @@ namespace umi3d.cdk.userCapture.tracking
         #region Tracking Frame
 
         private readonly List<uint> receivedTypes = new List<uint>();
+
         /// <inheritdoc/>
         public void UpdateBones(UserTrackingFrameDto trackingFrame)
         {
@@ -341,8 +351,8 @@ namespace umi3d.cdk.userCapture.tracking
         /// <param name="controller"></param>
         private void DeleteController(IController controller)
         {
-            controllersToClean.Enqueue(controller);
-            controllersToDestroy.Enqueue(controller);
+            controllersToClean.Add(controller);
+            controllersToDestroy.Add(controller);
             controllers.Remove(controller.boneType);
         }
 
@@ -393,6 +403,17 @@ namespace umi3d.cdk.userCapture.tracking
             controllers[newController.boneType] = newController;
             AttachExtrapolator(newController);
             newController.isActive = true;
+            newController.Destroyed += () => CleanController(newController);
+        }
+
+        private void CleanController(IController controller)
+        {
+            controller.isActive = false;
+
+            if (controllersToClean.Contains(controller))
+                controllersToClean.Remove(controller);
+
+            ikHandler.Reset(new IController[] { controller }, bones);
         }
 
         #endregion Controllers Management
