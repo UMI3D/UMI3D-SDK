@@ -253,10 +253,10 @@ namespace umi3d.cdk.userCapture.tracking
             foreach (var bone in trackingFrame.trackedBones)
             {
                 // recieve new distant controller
-                if (!controllers.TryGetValue(bone.boneType, out IController controller)) // controllers from tracking frames should be handled as distant controllers
+                if (!controllers.ContainsKey(bone.boneType)) // controllers from tracking frames should be handled as distant controllers
                 {
                     // create controller from tracking frame
-                    controller = new VirtualController
+                    IController controller = new VirtualController
                     {
                         boneType = bone.boneType,
                         isOverrider = bone.isOverrider,
