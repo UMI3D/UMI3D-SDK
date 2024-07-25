@@ -208,7 +208,9 @@ namespace umi3d.cdk.userCapture.tracking.constraint
             }
 
             // limitations of rotation will be applied by the muscles system
-            skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType.Hips, out IController hipsControllerConstrained);
+            if (!skeleton.TrackedSubskeleton.Controllers.TryGetValue(BoneType.Hips, out IController hipsControllerConstrained) || hipsControllerConstrained == null)
+                return;
+
             spineFlexerBaseGO.transform.rotation = hipsControllerConstrained.rotation;
             controlledBones[BoneType.Spine].controller.GameObject.transform.localRotation = Quaternion.AngleAxis(yRotation / 3, Vector3.up);
             controlledBones[BoneType.Chest].controller.GameObject.transform.localRotation = Quaternion.AngleAxis(yRotation / 3, Vector3.up);
