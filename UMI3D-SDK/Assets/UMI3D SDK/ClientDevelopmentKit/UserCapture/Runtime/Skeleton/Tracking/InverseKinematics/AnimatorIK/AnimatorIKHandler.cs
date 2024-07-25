@@ -100,7 +100,8 @@ namespace umi3d.cdk.userCapture.tracking.ik
             //clean controllers to destroy;
             foreach (var controller in controllers)
             {
-                controller.isActive = false;
+                if (controller != null)
+                    controller.isActive = false;
             }
             HandleAnimatorIK(0, controllers);
         }
