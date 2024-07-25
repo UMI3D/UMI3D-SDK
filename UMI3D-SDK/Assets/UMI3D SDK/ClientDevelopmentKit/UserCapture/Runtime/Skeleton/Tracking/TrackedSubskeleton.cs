@@ -276,9 +276,10 @@ namespace umi3d.cdk.userCapture.tracking
             }
 
             // remove not recieved types
-            foreach (var bone in controllers.Keys.Where(b=> !receivedTypes.Contains(b)).ToArray())
+            foreach (var bone in controllers.Keys.ToArray())
             {
-                RemoveController(bone);
+                if (!receivedTypes.Contains(bone))
+                    RemoveController(bone);
             }
         }
 
