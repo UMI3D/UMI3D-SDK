@@ -81,8 +81,12 @@ namespace umi3d.cdk.userCapture.tracking
 
         public void Destroy()
         {
+            GameObject.Destroy(this);
+        }
+
+        protected void OnDestroy()
+        {
             Destroyed?.Invoke();
-            GameObject.Destroy(this.gameObject);
         }
 
         public override ControllerDto ToControllerDto()
