@@ -100,7 +100,10 @@ namespace umi3d.cdk.userCapture
             _skeleton = personalSkeleton;
             _skeleton.SkeletonHierarchy = StandardHierarchy;
             _skeleton.Init();
-            computeRoutine = null;
+
+            if (computeRoutine != null)
+                StopCompute();
+
             StartCompute();
         }
 
