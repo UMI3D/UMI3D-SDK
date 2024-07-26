@@ -114,7 +114,7 @@ namespace umi3d.cdk.userCapture.animation
             // scale the subskeleton to fit the scale of the user
             nodeInstance.transform.localScale = personalSkeletonService.PersonalSkeleton.worldSize;
 
-            Task attachtask = WaitAndAttach();
+            Task attachtask = WaitAndAttach(); // do not await purposefully
 
             async Task WaitAndAttach()
             {
