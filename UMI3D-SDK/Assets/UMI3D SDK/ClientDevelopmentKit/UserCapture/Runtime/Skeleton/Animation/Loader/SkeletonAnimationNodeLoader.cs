@@ -15,8 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using MainThreadDispatcher;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -25,7 +23,6 @@ using umi3d.common;
 using umi3d.common.userCapture;
 using umi3d.common.userCapture.animation;
 using umi3d.common.userCapture.description;
-using umi3d.common.utils;
 using UnityEngine;
 
 namespace umi3d.cdk.userCapture.animation
@@ -117,7 +114,9 @@ namespace umi3d.cdk.userCapture.animation
             // scale the subskeleton to fit the scale of the user
             nodeInstance.transform.localScale = personalSkeletonService.PersonalSkeleton.worldSize;
 
-            _ = Task.Run(async () => // task is required to load asynchronously while not blocking the loading process
+            Task attachtask = WaitAndAttach();
+
+            async Task WaitAndAttach()
             {
                 // get animation related to the skeleton node
                 Queue<UMI3DAnimatorAnimation> animations = new(skeletonNodeDto.relatedAnimationsId.Length);
@@ -160,7 +159,7 @@ namespace umi3d.cdk.userCapture.animation
                 ISubskeletonDescriptionInterpolationPlayer player = new SubskeletonDescriptionInterpolationPlayer(skeletonMapper, skeletonNodeDto.IsInterpolable, parentSkeleton);
                 AnimatedSubskeleton animationSubskeleton = new AnimatedSubskeleton(skeletonNodeDto, player, skeletonMapper, animations.ToArray(), skeletonNodeDto.animatorSelfTrackedParameters);
                 AttachToSkeleton(parentSkeleton, animationSubskeleton);
-            });
+            };
             nodeInstance.Delete = () => Delete(skeletonNodeDto.userId);
 
             await Task.CompletedTask;
