@@ -29,54 +29,54 @@ namespace umi3d.edk
         /// <summary>
         /// Pivot position relative to the anchor.
         /// </summary>
-        private Vector2 anchoredPosition => GetComponent<RectTransform>().anchoredPosition;
         private Vector2 anchoredPosition => rectTransform.anchoredPosition;
 
         /// <summary>
         /// 3D pivot position relative to the anchor.
         /// </summary>
-        private Vector3 anchoredPosition3D => GetComponent<RectTransform>().anchoredPosition3D;
         private Vector3 anchoredPosition3D => rectTransform.anchoredPosition3D;
 
         /// <summary>
         /// Normalized position of the upper right corner in the parent UIRect.
         /// </summary>
-        private Vector2 anchorMax => GetComponent<RectTransform>().anchorMax;
         private Vector2 anchorMax => rectTransform.anchorMax;
 
         /// <summary>
         /// NNormalized position of the lower left corner in the parent UIRect.
         /// </summary>
-        private Vector2 anchorMin => GetComponent<RectTransform>().anchorMin;
         private Vector2 anchorMin => rectTransform.anchorMin;
 
         /// <summary>
         /// Distance between the upper right corner of this rectangle and the upper right anchor.
         /// </summary>
-        private Vector2 offsetMax => GetComponent<RectTransform>().offsetMax;
         private Vector2 offsetMax => rectTransform.offsetMax;
 
         /// <summary>
         /// Distance between the lower left corner of this rectangle and the lower left anchor.
         /// </summary>
-        private Vector2 offsetMin => GetComponent<RectTransform>().offsetMin;
         private Vector2 offsetMin => rectTransform.offsetMin;
 
         /// <summary>
         /// Pivot point.
         /// </summary>
-        private Vector2 pivot => GetComponent<RectTransform>().pivot;
         private Vector2 pivot => rectTransform.pivot;
 
         /// <summary>
         /// Relative size of the rectangle relative to the distance between upper right and lower left anchors.
         /// </summary>
-        private Vector2 sizeDelta => GetComponent<RectTransform>().sizeDelta;
         private Vector2 sizeDelta => rectTransform.sizeDelta;
 
         private bool rectMask => GetComponent<RectMask2D>() != null;
 
         protected internal RectTransform rectTransform;
+
+        protected internal bool useLayoutGrouping;
+
+        /// <summary>
+        /// If true, this rect is defined by a layout group.
+        /// </summary>
+        public bool UseLayoutGrouping => useLayoutGrouping;
+
 
         ///<see cref="anchoredPosition"/>
         public UMI3DAsyncProperty<Vector2> AnchoredPosition { get { Register(); return _anchoredPosition; } protected set => _anchoredPosition = value; }
@@ -135,6 +135,8 @@ namespace umi3d.edk
             Pivot = new UMI3DAsyncProperty<Vector2>(objectId, UMI3DPropertyKeys.Pivot, pivot, ToUMI3DSerializable.ToSerializableVector2, equality.Vector2Equality);
             SizeDelta = new UMI3DAsyncProperty<Vector2>(objectId, UMI3DPropertyKeys.SizeDelta, sizeDelta, ToUMI3DSerializable.ToSerializableVector2, equality.Vector2Equality);
             RectMask = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.RectMask, rectMask);
+
+            useLayoutGrouping = TryGetComponent<LayoutGroup>(out _) || TryGetComponent<LayoutElement>(out _);
         }
 
         /// <inheritdoc/>
