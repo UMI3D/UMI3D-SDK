@@ -66,6 +66,9 @@ namespace umi3d.edk
                 layout.OffsetMax.SetValue(layout.rectTransform.offsetMax);
                 layout.OffsetMin.SetValue(layout.rectTransform.offsetMin);
                 layout.SizeDelta.SetValue(layout.rectTransform.sizeDelta);
+
+                if (layout.objectHasCollider.GetValue()) // also update collider size
+                    layout.SearchCollider();
             }
         }
     }
