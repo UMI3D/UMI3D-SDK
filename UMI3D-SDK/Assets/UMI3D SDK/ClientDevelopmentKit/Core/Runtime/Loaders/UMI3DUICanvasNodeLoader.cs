@@ -41,6 +41,7 @@ namespace umi3d.cdk
             canvasScaler.dynamicPixelsPerUnit = dto.dynamicPixelsPerUnit;
             canvasScaler.referencePixelsPerUnit = dto.referencePixelsPerUnit;
             Canvas canvas = node.GetOrAddComponent<Canvas>();
+            canvas.overrideSorting = dto.orderInLayer != 0; // having a sorting order different from 0 require to activate overriding
             canvas.sortingOrder = dto.orderInLayer;
         }
 
@@ -69,6 +70,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.OrderInLayer:
                     Canvas canvas = node.gameObject.GetOrAddComponent<Canvas>();
                     canvas.sortingOrder = dto.orderInLayer = (int)(Int64)property.value;
+                    canvas.overrideSorting = dto.orderInLayer != 0;
                     break;
                 default:
                     return false;
@@ -95,6 +97,7 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.OrderInLayer:
                     Canvas canvas = node.gameObject.GetOrAddComponent<Canvas>();
                     canvas.sortingOrder = dto.orderInLayer = UMI3DSerializer.Read<int>(container);
+                    canvas.overrideSorting = dto.orderInLayer != 0;
                     break;
                 default:
                     return false;
