@@ -49,6 +49,9 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         {
             if (!wcClient.IsConnected())
             {
+                lastUnreliableTransactionAsync.SetValue(new());
+                lastReliableTransactionsAsync.SetValue(new());
+
                 await Connect();
                 //return;
                 await UMI3DAsyncManager.Delay(reconnection);
@@ -71,7 +74,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
                 continue;
 
             environmentDto.SetValue(nvClient.environement);
-            
+
             lastUnreliableTransactionAsync.SetValue(new());
             lastReliableTransactionsAsync.SetValue(new());
         }
@@ -219,7 +222,7 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         return nvClient.GetEntity(0, ids.ToList());
     }
 
-    async void Restart()
+    async public void Restart()
     {
         await _Stop();
 
