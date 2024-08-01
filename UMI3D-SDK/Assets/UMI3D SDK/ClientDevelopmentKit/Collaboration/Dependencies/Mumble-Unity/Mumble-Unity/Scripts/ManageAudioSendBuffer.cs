@@ -34,6 +34,9 @@ namespace Mumble
         /// </summary>
         const int MaxPendingBuffersForSleep = 4;
 
+        const int audioWarningStep = 100;
+        int nextAudioCountWarning = 0;
+
         public ManageAudioSendBuffer(MumbleUdpConnection udpConnection, MumbleClient mumbleClient, int maxPositionalLength)
         {
             _isRunning = true;
@@ -46,7 +49,7 @@ namespace Mumble
         }
         internal void InitForSampleRate(int sampleRate)
         {
-            if(_encoder != null)
+            if (_encoder != null)
             {
                 Debug.LogError("Destroying opus encoder");
                 _encoder.Dispose();
@@ -56,7 +59,7 @@ namespace Mumble
 
             _encoder = new OpusEncoder(sampleRate, 1) { EnableForwardErrorCorrection = false };
 
-            if(_pendingBitrate > 0)
+            if (_pendingBitrate > 0)
             {
                 Debug.Log("Using pending bitrate");
                 SetBitrate(_pendingBitrate);
@@ -79,7 +82,7 @@ namespace Mumble
         }
         public void SetBitrate(int bitrate)
         {
-            if(_encoder == null)
+            if (_encoder == null)
             {
                 // We'll use the provided bitrate once we've created the encoder
                 _pendingBitrate = bitrate;
@@ -93,7 +96,7 @@ namespace Mumble
         }
         public PcmArray GetAvailablePcmArray()
         {
-            foreach(PcmArray ray in _pcmArrays)
+            foreach (PcmArray ray in _pcmArrays)
             {
                 if (ray._refCount == 0)
                 {
@@ -105,10 +108,17 @@ namespace Mumble
             PcmArray newArray = new PcmArray(_mumbleClient.NumSamplesPerOutgoingPacket, _pcmArrays.Count, _maxPositionalLength);
             _pcmArrays.Add(newArray);
 
-            if(_pcmArrays.Count > 10)
+            if (_pcmArrays.Count > 10)
             {
-                Debug.LogWarning(_pcmArrays.Count + " audio buffers in-use. There may be a leak");
+                var count = _pcmArrays.Count;
+                if (count > nextAudioCountWarning)
+                {
+                    nextAudioCountWarning = count + audioWarningStep;
+                    Debug.LogWarning(count + " audio buffers in-use. There may be a leak. Next Warning at " + nextAudioCountWarning);
+                }
             }
+            else if (nextAudioCountWarning > 0)
+                nextAudioCountWarning = 0;
             //Debug.Log("New buffer length is: " + _pcmArrays.Count);
             return newArray;
         }
@@ -128,10 +138,10 @@ namespace Mumble
             _isRunning = false;
             _waitHandle.Set();
 
-            if(_encodingThread != null)
+            if (_encodingThread != null)
                 _encodingThread.Abort();
             _encodingThread = null;
-            if(_encoder != null)
+            if (_encoder != null)
                 _encoder.Dispose();
             _encoder = null;
         }
@@ -147,7 +157,7 @@ namespace Mumble
 
             while (true)
             {
-                if(!_isRunning)
+                if (!_isRunning)
                     return;
                 try
                 {
@@ -155,7 +165,7 @@ namespace Mumble
                     // Then wait for a new voice packet
                     while (_stopSendingRequested && isLastPacket)
                         _waitHandle.WaitOne();
-                    if(!_isRunning)
+                    if (!_isRunning)
                         return;
 
                     bool isEmpty;
@@ -200,7 +210,7 @@ namespace Mumble
                     Array.Copy(packet.Array, packet.Offset, finalPacket, finalOffset, packet.Count);
                     finalOffset += packet.Count;
                     // Append positional data, if it exists
-                    if(buff.PositionalDataLength > 0)
+                    if (buff.PositionalDataLength > 0)
                         Array.Copy(buff.PositionalData, 0, finalPacket, finalOffset, buff.PositionalDataLength);
                     //Debug.Log("seq: " + sequenceIndex + " final len: " + finalPacket.Length + " pos: " + buff.PositionalDataLength);
 
@@ -225,15 +235,16 @@ namespace Mumble
                     stopwatch.Reset();
                     stopwatch.Start();
                 }
-                catch (Exception e){
-                    if(e is System.Threading.ThreadAbortException)
+                catch (Exception e)
+                {
+                    if (e is System.Threading.ThreadAbortException)
                     {
                         // This is ok
                         break;
                     }
                     else
                     {
-                        Debug.LogException( e);
+                        Debug.LogException(e);
                     }
                 }
             }
@@ -256,7 +267,7 @@ namespace Mumble
         public PcmArray(int pcmLength, int index, int maxPositionLengthBytes)
         {
             Pcm = new float[pcmLength];
-            if(maxPositionLengthBytes > 0)
+            if (maxPositionLengthBytes > 0)
                 PositionalData = new byte[maxPositionLengthBytes];
             Index = index;
             _refCount = 1;
