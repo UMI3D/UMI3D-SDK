@@ -107,7 +107,8 @@ namespace umi3d.cdk.interaction
             var projectedDto = new ToolProjectedDto
             {
                 boneType = boneType,
-                toolId = id
+                toolId = id,
+                environmentId = environmentId
             };
             UMI3DClientServer.SendRequest(projectedDto, true);
         }
@@ -118,7 +119,8 @@ namespace umi3d.cdk.interaction
             var releasedDto = new ToolReleasedDto
             {
                 boneType = boneType,
-                toolId = id
+                toolId = id,
+                environmentId = environmentId
             };
             UMI3DClientServer.SendRequest(releasedDto, true);
         }

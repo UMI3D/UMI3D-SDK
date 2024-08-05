@@ -371,6 +371,8 @@ namespace umi3d.edk.collaboration
             else
             {
                 var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, frame, UMI3DVersion.ComputedVersion);
+                ulong environmentId = UMI3DSerializer.Read<ulong>(container);
+                container.UpdateEnvironmentId(environmentId);
                 uint id = UMI3DSerializer.Read<uint>(container);
                 switch (id)
                 {
@@ -443,6 +445,7 @@ namespace umi3d.edk.collaboration
                     default:
                         MainThreadManager.Run(() =>
                         {
+                            //UnityEngine.Debug.Log($"DispatchBrowserRequest {user.Id()} {environmentId} {id}");
                             UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
                         });
                         break;

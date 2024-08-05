@@ -46,7 +46,6 @@ namespace umi3d.common
 
         public UMI3DVersion.Version version;
 
-
         private ByteContainer(ulong environmentId, UMI3DVersion.Version version)
         {
             tokens = new();
@@ -73,6 +72,16 @@ namespace umi3d.common
             length = container.length;
             timeStep = container.timeStep;
         }
+
+        /// <summary>
+        /// Use to change the EnvironmentId field
+        /// </summary>
+        /// <param name="environmentId"></param>
+        public void UpdateEnvironmentId(ulong environmentId)
+        {
+            this.environmentId = environmentId;
+        }
+
 
         /// <inheritdoc/>
         public override string ToString()

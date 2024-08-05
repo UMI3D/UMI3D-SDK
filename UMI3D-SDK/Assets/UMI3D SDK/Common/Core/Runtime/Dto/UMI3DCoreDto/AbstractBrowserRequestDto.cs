@@ -24,6 +24,6 @@ namespace umi3d.common
     [Serializable]
     public abstract class AbstractBrowserRequestDto : UMI3DDto
     {
-        
+        public ulong environmentId { get; set; }
     }
 }
