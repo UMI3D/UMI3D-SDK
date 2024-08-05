@@ -23,7 +23,10 @@ using umi3d.cdk.volumes;
 using umi3d.cdk.binding;
 using umi3d.common;
 using UnityEngine;
-using MainThreadDispatcher;
+using Unity.Collections;
+using Unity.Jobs;
+using Unity.Burst;
+using ReadOnlyAttribute = Unity.Collections.ReadOnlyAttribute;
 
 namespace umi3d.cdk
 {
@@ -339,13 +342,28 @@ namespace umi3d.cdk
                 cube = new Cubemap(size, TextureFormat.RGB24, false);
 
                 //Need to invert y ? Oo
-                var buffer = new Texture2D(tex.width, tex.height);
-                buffer.SetPixels(tex.GetPixels());
-                for (int x = 0; x < tex.width; x++)
+                NativeArray<Color32> original = tex.GetPixelData<Color32>(0);
+                NativeArray<Color32> inverted = new NativeArray<Color32>(original.Length, Allocator.TempJob);
+
+                try
                 {
-                    for (int y = 0; y < tex.height; y++)
-                        tex.SetPixel(x, y, buffer.GetPixel(x, tex.height - 1 - y));
+                    int width = tex.width;
+                    int height = tex.height;
+
+                    // Compute shader may be faster ?
+                    InvertTextureJob job = new () { width = width, height = height, original = original, result = inverted };
+                    job.Schedule().Complete();
+
+                    tex.SetPixelData(inverted, 0);
+                    tex.Apply();
                 }
+                catch (Exception e)
+                {
+                    Debug.LogException(e);
+                }
+
+                original.Dispose();
+                inverted.Dispose();
 
                 imageColors = tex.GetPixels(size, 0, size, size);
                 cube.SetPixels(imageColors, CubemapFace.PositiveY);
@@ -377,6 +395,15 @@ namespace umi3d.cdk
 
         private void LoadEquirectangularSkybox(Texture2D texture, float rotation, float exposure)
         {
+            //Remove generated mipmaps (for the future, Unity 6 introduces parameters to directly download a Texture2D without mipmap)
+            if (texture.mipmapCount > 1)
+            {
+                Texture2D result = new Texture2D(texture.width, texture.height, texture.format, false);
+                Graphics.CopyTexture(texture, 0, 0, result, 0, 0);
+                result.Apply();
+                texture = result;
+            }
+
             skyboxEquirectangularMaterial.SetTexture("_Tex", texture);
 
             SetSkyboxProperties(SkyboxType.Equirectangular, rotation, exposure);
@@ -414,6 +441,45 @@ namespace umi3d.cdk
         public override Task UnknownOperationHandler(uint operationId, ByteContainer container)
         {
             return Task.CompletedTask;
+        }
+    }
+
+    /// <summary>
+    /// A job to invert a texture on y axis
+    /// </summary>
+    [BurstCompile]
+    public struct InvertTextureJob : IJob
+    {
+        /// <summary>
+        /// Texture width
+        /// </summary>
+        [ReadOnly]
+        public int width;
+
+        /// <summary>
+        /// Texture height
+        /// </summary>
+        [ReadOnly]
+        public int height;
+
+        /// <summary>
+        /// Original texture
+        /// </summary>
+        [ReadOnly] public NativeArray<Color32> original;
+
+        //Result
+        [WriteOnly] public NativeArray<Color32> result;
+
+        [BurstCompile]
+        public void Execute()
+        {
+            for (int i = 0; i < height; i++)
+            {
+                for (int j = 0; j < width; j++)
+                {
+                    result[(height - i - 1) * width + j] = original[i * width + j];
+                }
+            }
         }
     }
 }
