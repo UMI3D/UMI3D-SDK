@@ -52,6 +52,9 @@ namespace umi3d.cdk.collaboration
         private bool pingReceived = false;
         private bool CheckForBandWidthRunning = false;
 
+        UMI3DVersion.VersionCompatibility version = new("2.9.240805", "*");
+        private bool? IsCompatibleWithVersion = null;
+        
         private UMI3DUser GetUserByNetWorkId(uint nid)
         {
             if (UMI3DCollaborationEnvironmentLoader.Exists && UMI3DCollaborationEnvironmentLoader.Instance.UserList != null)
@@ -337,6 +340,7 @@ namespace umi3d.cdk.collaboration
             SendBinaryData((int)DataChannelTypes.Signaling, dto.ToBson(), true);
         }
 
+
         public void SendBrowserRequest(AbstractBrowserRequestDto dto, bool reliable)
         {
             if (useDto)
@@ -345,7 +349,17 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                SendBinaryData((int)DataChannelTypes.Data, UMI3DSerializer.Write(dto).ToBytes(), reliable);
+                if (!IsCompatibleWithVersion.HasValue)
+                {
+                    IsCompatibleWithVersion = version.IsCompatible(environmentClient.version);
+                }
+
+                UnityEngine.Debug.Log("Send browser");
+
+                if(IsCompatibleWithVersion.Value)
+                    SendBinaryData((int)DataChannelTypes.Data, (UMI3DSerializer.Write(dto.environmentId)+UMI3DSerializer.Write(dto)).ToBytes(), reliable);
+                else
+                    SendBinaryData((int)DataChannelTypes.Data, (UMI3DSerializer.Write(dto)).ToBytes(), reliable);
             }
         }
 

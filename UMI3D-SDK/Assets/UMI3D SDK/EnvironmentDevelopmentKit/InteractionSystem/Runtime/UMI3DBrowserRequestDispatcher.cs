@@ -21,7 +21,7 @@ using umi3d.common.interaction;
 namespace umi3d.edk.interaction
 {
     /// <summary>
-    /// Dispactcher managing incoming <see cref="AbstractBrowserRequestDto"/> from clients.
+    /// Dispatcher managing incoming <see cref="AbstractBrowserRequestDto"/> from clients.
     /// </summary>
     public static class UMI3DBrowserRequestDispatcher
     {
@@ -71,9 +71,12 @@ namespace umi3d.edk.interaction
         /// <param name="container">Received byte container</param>
         public static void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
+            if (container.environmentId != 0)
+                UnityEngine.Debug.LogWarning($"A browser request for a distant environment {container.environmentId} was ignored");
+
             ulong toolId = UMI3DSerializer.Read<ulong>(container);
-            ulong interactionId, hoverredId;
-            uint bonetype;
+            ulong interactionId, hoveredId;
+            uint boneType;
             Vector3Dto bonePosition;
             Vector4Dto boneRotation;
             switch (operationKey)
@@ -82,41 +85,41 @@ namespace umi3d.edk.interaction
                     UMI3DLogger.Log($"receive transaction from browser {user.Id()}", scope);
                     break;
                 case UMI3DOperationKeys.ToolReleased:
-                    bonetype = UMI3DSerializer.Read<uint>(container);
-                    UMI3DEnvironment.GetEntityInstance<AbstractTool>(toolId)?.OnToolReleased(user, bonetype, container);
+                    boneType = UMI3DSerializer.Read<uint>(container);
+                    UMI3DEnvironment.GetEntityInstance<AbstractTool>(toolId)?.OnToolReleased(user, boneType, container);
                     break;
                 case UMI3DOperationKeys.ToolProjected:
-                    bonetype = UMI3DSerializer.Read<uint>(container);
-                    UMI3DEnvironment.GetEntityInstance<AbstractTool>(toolId)?.OnToolProjected(user, bonetype, container);
+                    boneType = UMI3DSerializer.Read<uint>(container);
+                    UMI3DEnvironment.GetEntityInstance<AbstractTool>(toolId)?.OnToolProjected(user, boneType, container);
                     break;
                 case UMI3DOperationKeys.NotificationCallback:
                     UMI3DEnvironment.GetEntityInstance<UMI3DNotification>(toolId)?.OnCallbackReceived(container);
                     break;
                 case UMI3DOperationKeys.HoverStateChanged:
                     interactionId = UMI3DSerializer.Read<ulong>(container);
-                    hoverredId = UMI3DSerializer.Read<ulong>(container);
-                    bonetype = UMI3DSerializer.Read<uint>(container);
+                    hoveredId = UMI3DSerializer.Read<ulong>(container);
+                    boneType = UMI3DSerializer.Read<uint>(container);
                     bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
                     boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                    UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.HoverStateChanged(user, toolId, interactionId, hoverredId, bonetype, bonePosition, boneRotation, container);
+                    UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.HoverStateChanged(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                     break;
                 case UMI3DOperationKeys.Hoverred:
                     interactionId = UMI3DSerializer.Read<ulong>(container);
-                    hoverredId = UMI3DSerializer.Read<ulong>(container);
-                    bonetype = UMI3DSerializer.Read<uint>(container);
+                    hoveredId = UMI3DSerializer.Read<ulong>(container);
+                    boneType = UMI3DSerializer.Read<uint>(container);
                     bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
                     boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                    UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.Hovered(user, toolId, interactionId, hoverredId, bonetype, bonePosition, boneRotation, container);
+                    UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.Hovered(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                     break;
                 default:
                     if ((UMI3DOperationKeys.InteractionRequest <= operationKey && operationKey <= UMI3DOperationKeys.UserTrackingFrame) || operationKey == UMI3DOperationKeys.UploadFileRequest)
                         {
                         interactionId = UMI3DSerializer.Read<ulong>(container);
-                        hoverredId = UMI3DSerializer.Read<ulong>(container);
-                        bonetype = UMI3DSerializer.Read<uint>(container);
+                        hoveredId = UMI3DSerializer.Read<ulong>(container);
+                        boneType = UMI3DSerializer.Read<uint>(container);
                         bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
                         boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                        UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoverredId, bonetype, bonePosition, boneRotation, container);
+                        UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                         break;
                     }
                     UMI3DLogger.LogWarning($"Missing case {operationKey}", scope);
