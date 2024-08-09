@@ -236,9 +236,9 @@ namespace umi3d.cdk.collaboration
             Logout();
         }
 
-        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
+        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader, Progress progress = null)
         {
-            return await httpClient.SendGetPrivate(url, useParameterInsteadOfHeader);
+            return await httpClient.SendGetPrivate(url, useParameterInsteadOfHeader, null, progress);
         }
     }
 }

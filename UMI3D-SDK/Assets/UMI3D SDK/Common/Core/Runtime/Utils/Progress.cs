@@ -19,14 +19,9 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
-using UnityEngine;
-using UnityEngine.Events;
 
-namespace umi3d.cdk
+namespace umi3d.common
 {
-    //$"Load resources {(loadedResources / resourcesToLoad * 100).ToString("N2")} %"
-
-
     public class DebugProgress : MultiProgress
     {
         public DebugProgress(string state) : base(state)

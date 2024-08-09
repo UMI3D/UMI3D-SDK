@@ -951,7 +951,7 @@ namespace umi3d.cdk
         private async Task DownloadResources(AssetLibraryDto assetLibrary, string application, MultiProgress progress)
         {
             Progress progress2 = new Progress(0, $"Downloading library {assetLibrary.libraryId}");
-            Progress progress3 = new Progress(1, $"Storring library {assetLibrary.libraryId}");
+            Progress progress3 = new Progress(1, $"Storing library {assetLibrary.libraryId}");
             progress.Add(progress2);
             progress.Add(progress3);
 
@@ -1097,7 +1097,7 @@ namespace umi3d.cdk
                     dicPath = System.IO.Path.GetDirectoryName(path);
                     url = Path.Combine(baseUrl, name);
 
-                    await DownloadFile(key, dicPath, path, url, name);
+                    await DownloadFile(key, dicPath, path, url, name, false, progress);
                     data.files.Add(new Data(url, path, name));
                     progress.AddComplete();
                 }
@@ -1113,7 +1113,7 @@ namespace umi3d.cdk
             return (data);
         }
 
-        private async Task DownloadFile(Library key, string directoryPath, string filePath, string url, string fileRelativePath, bool force = false)
+        private async Task DownloadFile(Library key, string directoryPath, string filePath, string url, string fileRelativePath, bool force = false, Progress progress = null)
         {
             url = ObjectData.FormatUrl(url);
             var sp = ObjectData.UrlToCom(url);
@@ -1139,13 +1139,21 @@ namespace umi3d.cdk
                 CacheCollection.Insert(0, new ObjectData(url, null, null, key, filePath, fileRelativePath));
             }
 
-            var bytes = await UMI3DClientServer.GetFile(url, !UMI3DClientServer.Instance.AuthorizationInHeader);
+            string progressState = progress?.currentState;
+            string fileName = System.IO.Path.GetFileName(filePath);
+            progress?.SetStatus($"{progressState} \n{fileName}");
+
+            var bytes = await UMI3DClientServer.GetFile(url, !UMI3DClientServer.Instance.AuthorizationInHeader, progress);
 
             UMI3DLogger.Log($"<color=green>{directoryPath} {filePath}</color>", scope);
 
             if (!Directory.Exists(directoryPath))
                 Directory.CreateDirectory(directoryPath);
-            File.WriteAllBytes(filePath, bytes);
+
+            progress?.SetStatus($"{progressState} \n{fileName} : copying file to disk");
+            await File.WriteAllBytesAsync(filePath, bytes);
+
+            progress?.SetStatus(progressState);
         }
 
         private void UnloadFile(string url, Library id, bool delete = false)
