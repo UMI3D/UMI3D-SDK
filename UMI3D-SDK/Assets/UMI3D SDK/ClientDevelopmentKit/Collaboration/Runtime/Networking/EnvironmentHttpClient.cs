@@ -14,18 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.collaboration.dto.networking;
-using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration

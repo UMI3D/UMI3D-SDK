@@ -383,10 +383,10 @@ namespace umi3d.cdk.collaboration
 
 
         /// <inheritdoc/>
-        protected override async Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader)
+        protected override async Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader, Progress progress = null)
         {
             UMI3DLogger.Log($"GetFile {url}", scope);
-            return await (environmentClient?.GetFile(url, useParameterInsteadOfHeader) ?? connectingWorldControllerClient?.GetFile(url, useParameterInsteadOfHeader) ?? Task.FromResult<byte[]>(null));
+            return await (environmentClient?.GetFile(url, useParameterInsteadOfHeader, progress) ?? connectingWorldControllerClient?.GetFile(url, useParameterInsteadOfHeader, progress) ?? Task.FromResult<byte[]>(null));
         }
 
         /// <inheritdoc/>
