@@ -63,32 +63,24 @@ namespace umi3d.common
             return bytes;
         }
 
-        public static BytableCollection operator +(Bytable a, Bytable b)
+        public static Bytable operator +(Bytable a, Bytable b)
         {
-            BytableCollection c;
-            if (a == null)
-            {
-                if (b == null)
-                    return null;
-                if (b is BytableCollection bc)
-                    return bc;
-                c = new();
-                c.Add(b);
-                return c;
-            }
+            if (a == null) return b;
+            if (b == null) return a;
 
+            BytableCollection collection;
             if (a is BytableCollection ac)
-                c = ac;
+                collection = ac;
             else
             {
-                c = new();
-                c.Add(a);
+                collection = new();
+                collection.Add(a);
             }
 
             if (b != null)
-                c.Add(b);
+                collection.Add(b);
 
-            return c;
+            return collection;
         }
     }
 
@@ -118,13 +110,6 @@ namespace umi3d.common
 
             this.functions.Add(a.function);
             this.size += a.size;
-        }
-
-        public static BytableCollection operator +(BytableCollection a, Bytable b)
-        {
-            if (a == null || b == null) return a;
-            a.Add(b);
-            return a;
         }
     }
 }
