@@ -29,12 +29,12 @@ namespace umi3d.common
         /// <summary>
         /// Size of the array of byte to reserve.
         /// </summary>
-        public int size { get; private set; }
+        public int size { get; protected set; }
         /// <summary>
         /// Function that take an array of byte to fill up, an index of a cell to write, and an already been used size. 
         /// This function shoudl return a couple ((position+newly reserved size),(current total size + newly reserved size)).
         /// </summary>
-        public Func<byte[], int, int, (int, int)> function { get; private set; }
+        public Func<byte[], int, int, (int, int)> function { get; protected set; }
 
         public Bytable(int size, Func<byte[], int, int, (int, int)> function)
         {
@@ -63,48 +63,68 @@ namespace umi3d.common
             return bytes;
         }
 
-        public static Bytable operator +(Bytable a, Bytable b)
+        public static BytableCollection operator +(Bytable a, Bytable b)
         {
-            if (a == null) return b;
-            if (b == null) return a;
-
-            Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
+            BytableCollection c;
+            if (a == null)
             {
-                (i, bs) = a.function(by, i, bs);
-                return b.function(by, i, bs);
-            };
-            return new Bytable(a.size + b.size, f);
+                if (b == null)
+                    return null;
+                if (b is BytableCollection bc)
+                    return bc;
+                c = new();
+                c.Add(b);
+                return c;
+            }
+
+            if (a is BytableCollection ac)
+                c = ac;
+            else
+            {
+                c = new();
+                c.Add(a);
+            }
+
+            if (b != null)
+                c.Add(b);
+
+            return c;
+        }
+    }
+
+    public class BytableCollection : Bytable
+    {
+        public BytableCollection()
+        {
+            this.functions = new();
+            this.function = Compute;
+            this.size = 0;
         }
 
-        public static Bytable operator +(Bytable a, IEnumerable<Bytable> b)
+        (int, int) Compute(byte[] by, int i, int bs)
         {
-            if (b == null || b.Count() == 0) return a;
-            if (a == null) return b.Aggregate((c, d) => c + d);
-
-
-            Bytable b2 = b.Aggregate((c, d) => c + d);
-
-            Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
+            foreach (var f in functions)
             {
-                (i, bs) = a.function(by, i, bs);
-                return b2.function(by, i, bs);
-            };
-            return new Bytable(a.size + b2.size, f);
+                (i, bs) = f(by, i, bs);
+            }
+            return (i, bs);
         }
 
-        public static Bytable operator +(IEnumerable<Bytable> a, Bytable b)
+        public List<Func<byte[], int, int, (int, int)>> functions { get; private set; }
+
+        public void Add(Bytable a)
         {
-            if (a == null || a.Count() == 0) return b;
-            if (b == null) return a.Aggregate((c, d) => c + d);
+            if (a == null) return;
 
-            Bytable a2 = a.Aggregate((c, d) => c + d);
+            this.functions.Add(a.function);
+            this.size += a.size;
+        }
 
-            Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
-            {
-                (i, bs) = a2.function(by, i, bs);
-                return b.function(by, i, bs);
-            };
-            return new Bytable(a2.size + b.size, f);
+        public static BytableCollection operator +(BytableCollection a, Bytable b)
+        {
+            if (a == null || b == null) return a;
+            a.Add(b);
+            return a;
         }
     }
 }
