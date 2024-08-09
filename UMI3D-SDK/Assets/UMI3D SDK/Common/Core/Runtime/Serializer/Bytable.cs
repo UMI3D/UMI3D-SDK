@@ -14,7 +14,6 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace umi3d.common
 {
@@ -34,9 +33,9 @@ namespace umi3d.common
         /// Function that take an array of byte to fill up, an index of a cell to write, and an already been used size. 
         /// This function shoudl return a couple ((position+newly reserved size),(current total size + newly reserved size)).
         /// </summary>
-        public Func<byte[], int, int, (int, int)> function { get; protected set; }
+        public Func<byte[], int, int, (int index, int computedSize)> function { get; protected set; }
 
-        public Bytable(int size, Func<byte[], int, int, (int, int)> function)
+        public Bytable(int size, Func<byte[], int, int, (int index, int computedSize)> function)
         {
             this.size = size;
             this.function = function;
@@ -45,21 +44,22 @@ namespace umi3d.common
         public Bytable()
         {
             this.size = 0;
-            this.function = (by, i, bs) => (i, bs);
+            this.function = (bytes, index, bytesSize) => (index, bytesSize);
         }
 
         public byte[] ToBytes()
         {
-            byte[] b = new byte[size];
-            (int, int) c = function(b, 0, 0);
-            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}", scope);
-            return b;
+            byte[] bytes = new byte[size];
+            (int index, int computedSize) = function(bytes, 0, 0);
+            if (computedSize != size) 
+                UMI3DLogger.LogError($"Size requested [{size}] and size used [{computedSize}] have a different value. Last position is {index}. {bytes.ToString<byte>()}", scope);
+            return bytes;
         }
 
         public byte[] ToBytes(byte[] bytes, int position = 0)
         {
-            (int, int) c = function(bytes, position, 0);
-            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}", scope);
+            (int index, int computedSize) = function(bytes, position, 0);
+            if (computedSize != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{computedSize}] have a different value. Last position is {index}. {bytes.ToString<byte>()}", scope);
             return bytes;
         }
 
@@ -101,16 +101,16 @@ namespace umi3d.common
             this.size = 0;
         }
 
-        (int, int) Compute(byte[] by, int i, int bs)
+        (int index, int computedSize) Compute(byte[] bytes, int index, int bytesSize)
         {
             foreach (var f in functions)
             {
-                (i, bs) = f(by, i, bs);
+                (index, bytesSize) = f(bytes, index, bytesSize);
             }
-            return (i, bs);
+            return (index, bytesSize);
         }
 
-        public List<Func<byte[], int, int, (int, int)>> functions { get; private set; }
+        public List<Func<byte[], int, int, (int index, int computedSize)>> functions { get; private set; }
 
         public void Add(Bytable a)
         {
