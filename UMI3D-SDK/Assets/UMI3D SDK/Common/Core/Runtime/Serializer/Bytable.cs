@@ -14,7 +14,6 @@ limitations under the License.
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace umi3d.common
 {
@@ -29,14 +28,14 @@ namespace umi3d.common
         /// <summary>
         /// Size of the array of byte to reserve.
         /// </summary>
-        public int size { get; private set; }
+        public int size { get; protected set; }
         /// <summary>
         /// Function that take an array of byte to fill up, an index of a cell to write, and an already been used size. 
         /// This function shoudl return a couple ((position+newly reserved size),(current total size + newly reserved size)).
         /// </summary>
-        public Func<byte[], int, int, (int, int)> function { get; private set; }
+        public Func<byte[], int, int, (int index, int computedSize)> function { get; protected set; }
 
-        public Bytable(int size, Func<byte[], int, int, (int, int)> function)
+        public Bytable(int size, Func<byte[], int, int, (int index, int computedSize)> function)
         {
             this.size = size;
             this.function = function;
@@ -45,21 +44,22 @@ namespace umi3d.common
         public Bytable()
         {
             this.size = 0;
-            this.function = (by, i, bs) => (i, bs);
+            this.function = (bytes, index, bytesSize) => (index, bytesSize);
         }
 
         public byte[] ToBytes()
         {
-            byte[] b = new byte[size];
-            (int, int) c = function(b, 0, 0);
-            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {b.ToString<byte>()}", scope);
-            return b;
+            byte[] bytes = new byte[size];
+            (int index, int computedSize) = function(bytes, 0, 0);
+            if (computedSize != size) 
+                UMI3DLogger.LogError($"Size requested [{size}] and size used [{computedSize}] have a different value. Last position is {index}. {bytes.ToString<byte>()}", scope);
+            return bytes;
         }
 
         public byte[] ToBytes(byte[] bytes, int position = 0)
         {
-            (int, int) c = function(bytes, position, 0);
-            if (c.Item2 != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{c.Item2}] have a different value. Last position is {c.Item1}. {bytes.ToString<byte>()}", scope);
+            (int index, int computedSize) = function(bytes, position, 0);
+            if (computedSize != size) UMI3DLogger.LogError($"Size requested [{size}] and size used [{computedSize}] have a different value. Last position is {index}. {bytes.ToString<byte>()}", scope);
             return bytes;
         }
 
@@ -68,43 +68,48 @@ namespace umi3d.common
             if (a == null) return b;
             if (b == null) return a;
 
-            Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
+            BytableCollection collection;
+            if (a is BytableCollection ac)
+                collection = ac;
+            else
             {
-                (i, bs) = a.function(by, i, bs);
-                return b.function(by, i, bs);
-            };
-            return new Bytable(a.size + b.size, f);
+                collection = new();
+                collection.Add(a);
+            }
+
+            if (b != null)
+                collection.Add(b);
+
+            return collection;
+        }
+    }
+
+    public class BytableCollection : Bytable
+    {
+        public BytableCollection()
+        {
+            this.functions = new();
+            this.function = Compute;
+            this.size = 0;
         }
 
-        public static Bytable operator +(Bytable a, IEnumerable<Bytable> b)
+        (int index, int computedSize) Compute(byte[] bytes, int index, int bytesSize)
         {
-            if (b == null || b.Count() == 0) return a;
-            if (a == null) return b.Aggregate((c, d) => c + d);
-
-
-            Bytable b2 = b.Aggregate((c, d) => c + d);
-
-            Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
+            foreach (var f in functions)
             {
-                (i, bs) = a.function(by, i, bs);
-                return b2.function(by, i, bs);
-            };
-            return new Bytable(a.size + b2.size, f);
+                (index, bytesSize) = f(bytes, index, bytesSize);
+            }
+            return (index, bytesSize);
         }
 
-        public static Bytable operator +(IEnumerable<Bytable> a, Bytable b)
+        public List<Func<byte[], int, int, (int index, int computedSize)>> functions { get; private set; }
+
+        public void Add(Bytable a)
         {
-            if (a == null || a.Count() == 0) return b;
-            if (b == null) return a.Aggregate((c, d) => c + d);
+            if (a == null) return;
 
-            Bytable a2 = a.Aggregate((c, d) => c + d);
-
-            Func<byte[], int, int, (int, int)> f = (by, i, bs) =>
-            {
-                (i, bs) = a2.function(by, i, bs);
-                return b.function(by, i, bs);
-            };
-            return new Bytable(a2.size + b.size, f);
+            this.functions.Add(a.function);
+            this.size += a.size;
         }
     }
 }
