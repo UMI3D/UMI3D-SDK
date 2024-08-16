@@ -14,10 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Collections.Generic;
-using UnityEngine;
-using System.Linq;
 using inetum.unityUtils;
+using System.Collections.Generic;
+using System.Linq;
+using UnityEngine;
 
 namespace umi3d.edk.collaboration
 {
@@ -27,7 +27,10 @@ namespace umi3d.edk.collaboration
         protected readonly object lastFrameSentToLock = new();
 
         protected Dictionary<Source, Frame> framesPerSource = new();
+
         protected Dictionary<To, Dictionary<Source, Frame>> lastFrameSentTo = new();
+
+        protected List<Source> tempSources;
 
         public void RemoveSource(Source source)
         {
@@ -45,6 +48,8 @@ namespace umi3d.edk.collaboration
 
         public void Clear()
         {
+            this.tempSources.Clear();
+
             lock (framesPerSourceLock)
                 framesPerSource.Clear();
             lock (lastFrameSentToLock)
@@ -53,18 +58,31 @@ namespace umi3d.edk.collaboration
 
         public void SetFrame(Source source, Frame frame)
         {
-            if (source != null)
-                framesPerSource[source] = frame;
+            lock (framesPerSourceLock)
+            {
+                if (source != null)
+                    framesPerSource[source] = frame;
+            }
         }
 
         protected abstract IEnumerable<To> GetTargets();
+
         protected abstract ulong GetTime();
-        protected abstract void Send(To to, List<Frame> frames, bool force);
+
+        /// <summary>
+        /// Send data to <paramref name="to"/> from <paramref name="source"/>.
+        /// </summary>
+        /// <param name="to"></param>
+        /// <param name="source"></param>
+        /// <param name="force"></param>
+        protected abstract void Send(To to, List<Source> source, bool force);
 
         public bool forceSendToAll;
 
         protected UMI3DRelay()
         {
+            this.tempSources = new();
+
             UMI3DCollaborationServer.Instance.OnServerStart.AddListener(() => {
                 StartLoop();
             });
@@ -92,25 +110,19 @@ namespace umi3d.edk.collaboration
         {
             ulong time = GetTime(); //introduce wrong time. TB tested with frame.timestep
 
-            KeyValuePair<Source, Frame>[] _framesPerSource;
-
-
-            var r = new System.Random();
-            lock (framesPerSourceLock)
-                _framesPerSource = framesPerSource.OrderBy(s => r.Next()).ToArray();
-
             var targets = GetTargets();
             foreach (var target in targets)
             {
                 if (target == null)
                     continue;
 
-                (List<Frame> frames, bool force) = GetFramesToSend(target, time, _framesPerSource);
+                this.tempSources.Clear();
+                bool force = GetSourcesToSendTo(target, time, this.tempSources);
 
-                if (frames.Count == 0)
+                if (tempSources.Count == 0)
                     continue;
 
-                Send(target, frames, forceSendToAll || force);
+                Send(target, tempSources, forceSendToAll || force);
             }
 
             if (forceSendToAll)
@@ -118,9 +130,8 @@ namespace umi3d.edk.collaboration
         }
 
 
-        protected virtual (List<Frame> frames, bool force) GetFramesToSend(To to, ulong time, KeyValuePair<Source, Frame>[] framesPerSource)
+        protected virtual bool GetSourcesToSendTo(To to, ulong time, List<Source> sources)
         {
-            List<Frame> frames = new();
             lock (lastFrameSentToLock)
             {
                 if (!lastFrameSentTo.ContainsKey(to))
@@ -131,11 +142,12 @@ namespace umi3d.edk.collaboration
                     if (!lastFrameSentTo[to].ContainsKey(kFrame.Key) || lastFrameSentTo[to][kFrame.Key] != kFrame.Value)
                     {
                         lastFrameSentTo[to][kFrame.Key] = kFrame.Value;
-                        frames.Add(kFrame.Value);
+                        sources.Add(kFrame.Key);
                     }
                 }
             }
-            return (frames, false);
+
+            return false;
         }
 
         protected override void StopLoop()
