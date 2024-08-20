@@ -61,7 +61,7 @@ namespace umi3d.edk
         /// Alpha blending mode.
         /// </summary>
         [Tooltip("Alpha blending mode.")]
-        public AlphaMode alphaMode = AlphaMode.BLEND;
+        public AlphaMode alphaMode = AlphaMode.OPAQUE;
 
         /// <summary>
         /// Unity's function called when the object is activated and active.
