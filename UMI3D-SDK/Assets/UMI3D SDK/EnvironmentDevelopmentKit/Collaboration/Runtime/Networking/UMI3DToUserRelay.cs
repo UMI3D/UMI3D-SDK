@@ -27,12 +27,15 @@ namespace umi3d.edk.collaboration
     {
         IForgeServer server;
         protected DataChannelTypes dataChannel = DataChannelTypes.Data;
+        private System.Random random;
+        private List<KeyValuePair<NetworkingPlayer, Frame>> tempUserFrameMap = new();
 
         protected UMI3DToUserRelay(IForgeServer server) : base()
         {
             this.server = server;
+            this.random = new();
 
-            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u => 
+            UMI3DCollaborationServer.Instance.OnUserLeave.AddListener(u =>
             {
                 if (u is UMI3DCollaborationAbstractContentUser uc)
                 {
@@ -46,8 +49,7 @@ namespace umi3d.edk.collaboration
 
         protected override IEnumerable<UMI3DCollaborationAbstractContentUser> GetTargets()
         {
-            var r = new System.Random();
-            return UMI3DCollaborationServer.Collaboration.Users.Where(u => u.networkPlayer != null).OrderBy(s => r.Next());
+            return UMI3DCollaborationServer.Collaboration.Users.Where(u => u.networkPlayer != null).OrderBy(s => random.Next());
         }
 
         protected override ulong GetTime()
@@ -55,51 +57,53 @@ namespace umi3d.edk.collaboration
             return server.Time;
         }
 
-        protected override void Send(UMI3DCollaborationAbstractContentUser to, List<Frame> frames, bool force)
+        protected override void Send(UMI3DCollaborationAbstractContentUser to, List<NetworkingPlayer> sources, bool force)
         {
-            server.RelayBinaryDataTo((int)dataChannel, to.networkPlayer, GetMessage(frames), force);
+            server.RelayBinaryDataTo((int)dataChannel, to.networkPlayer, GetMessage(sources), force);
         }
 
-        abstract protected byte[] GetMessage(List<Frame> frames);
+        abstract protected byte[] GetMessage(List<NetworkingPlayer> fromPlayers);
 
         /// <summary>
         /// Returns all <see cref="UserTrackingFrameDto"/> that <paramref name="to"/> should received.
         /// </summary>
         /// <param name="to"></param>
-        protected override (List<Frame> frames, bool force) GetFramesToSend(UMI3DCollaborationAbstractContentUser userTo, ulong time, KeyValuePair<NetworkingPlayer, Frame>[] framesPerSource)
+        protected override bool GetSourcesToSendTo(UMI3DCollaborationAbstractContentUser userTo, ulong time, List<NetworkingPlayer> sources)
         {
             bool forceRelay = false;
 
-            List<Frame> frames = new List<Frame>();
-
             if (userTo == null)
-                return (frames, false);
+                return false;
 
-            KeyValuePair<NetworkingPlayer, Frame>[] userFrameMap = null;
             RelayVolume relayVolume;
-            if (userTo is UMI3DCollaborationAbstractContentUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
+
+            tempUserFrameMap.Clear();
+
+            lock (framesPerSourceLock)
             {
-                var users = relayVolume.RelayTrackingRequest(null, null, userTo, Receivers.Others).Select(u => u as UMI3DCollaborationAbstractContentUser).ToList();
-                userFrameMap = framesPerSource.Where(p => users.Any(u => u?.networkPlayer == p.Key)).ToArray();
-                forceRelay = true;
-            }
-            else
-            {
-                userFrameMap = framesPerSource;
+                if (userTo is UMI3DCollaborationAbstractContentUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
+                {
+                    var users = relayVolume.RelayTrackingRequest(null, null, userTo, Receivers.Others).Select(u => u as UMI3DCollaborationAbstractContentUser).ToList();
+                    tempUserFrameMap.AddRange(framesPerSource.Where(p => users.Any(u => u?.networkPlayer == p.Key)));
+                    forceRelay = true;
+                }
+                else
+                {
+                    tempUserFrameMap.AddRange(framesPerSource);
+                }
             }
 
-            foreach (var other in userFrameMap)
+            foreach (var other in tempUserFrameMap)
             {
                 if (userTo.networkPlayer == other.Key)
                     continue;
 
                 if (forceSendToAll || forceRelay)
                 {
-                    frames.Add(other.Value);
+                    sources.Add(other.Key);
                 }
-                else if (ShouldRelay((int)(int)DataChannelTypes.Tracking, other.Key, userTo.networkPlayer,  time, BeardedManStudios.Forge.Networking.Receivers.Target))
+                else if (ShouldRelay((int)DataChannelTypes.Tracking, other.Key, userTo.networkPlayer, time, BeardedManStudios.Forge.Networking.Receivers.Target))
                 {
-
                     if (!lastFrameSentTo.ContainsKey(userTo))
                     {
                         lastFrameSentTo.Add(userTo, new());
@@ -108,14 +112,14 @@ namespace umi3d.edk.collaboration
                     if (!lastFrameSentTo[userTo].ContainsKey(other.Key))
                     {
                         lastFrameSentTo[userTo][other.Key] = other.Value;
-                        frames.Add(other.Value);
+                        sources.Add(other.Key);
                         RememberRelay(userTo.networkPlayer, other.Key, time);
                     }
                     else
                     {
                         if (lastFrameSentTo[userTo][other.Key] != other.Value)
                         {
-                            frames.Add(other.Value);
+                            sources.Add(other.Key);
                             lastFrameSentTo[userTo][other.Key] = other.Value;
                             RememberRelay(userTo.networkPlayer, other.Key, time);
                         }
@@ -123,9 +127,8 @@ namespace umi3d.edk.collaboration
                 }
             }
 
-            return (frames, forceSendToAll);
+            return forceSendToAll;
         }
-
 
         #region proximity_relay
 
@@ -215,7 +218,7 @@ namespace umi3d.edk.collaboration
         {
             if (to.IsHost || from == to || UMI3DCollaborationServer.Collaboration?.GetUserByNetworkId(to.NetworkId)?.status != StatusType.ACTIVE)
                 return false;
-            
+
             if (Proximity.Contains(strategy))
             {
                 ulong last = GetLastRelay(from, to, groupId);
