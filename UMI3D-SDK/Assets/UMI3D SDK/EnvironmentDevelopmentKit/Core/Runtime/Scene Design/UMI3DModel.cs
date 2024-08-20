@@ -24,7 +24,7 @@ using static UnityEngine.Mesh;
 namespace umi3d.edk
 {
     /// <summary>
-    /// 3D model, representation of an object with rendered sufaces.
+    /// 3D model, representation of an object with rendered surfaces.
     /// </summary>
     public partial class UMI3DModel : AbstractRenderedNode
     {
@@ -54,7 +54,7 @@ namespace umi3d.edk
         /// Should the subobjects considered as seperated nodes?
         /// </summary>
         /// Should not be modified after init
-        [Tooltip("Should the subobjects considered as seperated nodes?")]
+        [Tooltip("Should the subobjects considered as separated nodes?")]
         public bool areSubobjectsTracked = false;
         /// <summary>
         /// Have submodels already been added under this model?
@@ -96,6 +96,20 @@ namespace umi3d.edk
         public UMI3DAsyncProperty<bool> objectTraversable { get { Register(); return _objectTraversable; } protected set => _objectTraversable = value; }
 
         private UMI3DAsyncProperty<bool> _objectTraversable;
+
+        /// <summary>
+        /// Should the user be allowed to navigate through this object?
+        /// </summary>
+        /// When set to true, it will alter the navigation mesh generation.
+        [Tooltip("Should the user be allowed to navigate through this object?")]
+        public bool isBlockingInteraction = true;
+
+        /// <summary>
+        /// Property to set or not the object as traversable.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectIsBlockingInteraction { get { Register(); return _objectIsBlockingInteraction; } protected set => _objectIsBlockingInteraction = value; }
+
+        private UMI3DAsyncProperty<bool> _objectIsBlockingInteraction;
 
         /// <summary>
         /// <see cref="model"/>.
@@ -162,6 +176,9 @@ namespace umi3d.edk
 
             _objectTraversable = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsTraversable, isTraversable);
             _objectTraversable.OnValueChanged += b => isTraversable = b;
+
+            _objectIsBlockingInteraction = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsBlockingInteraction, isBlockingInteraction);
+            _objectIsBlockingInteraction.OnValueChanged += b => isBlockingInteraction = b;
         }
 
         /// <summary>

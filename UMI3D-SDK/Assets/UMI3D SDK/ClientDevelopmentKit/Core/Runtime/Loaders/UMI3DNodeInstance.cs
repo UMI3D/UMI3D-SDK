@@ -72,6 +72,14 @@ namespace umi3d.cdk
         }
 
         /// <summary>
+        /// Is this node preventing interaction behind it ?
+        /// </summary>
+        public bool IsBlockingInteraction
+        {
+            get; set;
+        }
+
+        /// <summary>
         /// Event call when the transform is updated.
         /// </summary>
         public UnityEvent OnPoseUpdated = new UnityEvent();

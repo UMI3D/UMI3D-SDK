@@ -81,6 +81,20 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<bool> _objectTraversable;
 
 
+        /// <summary>
+        /// Should the user be allowed to navigate through this object?
+        /// </summary>
+        /// When set to true, it will alter the navigation mesh generation.
+        [Tooltip("Should the user be allowed to navigate through this object?")]
+        public bool isBlockingInteraction = true;
+
+        /// <summary>
+        /// Property to set or not the object as traversable.
+        /// </summary>
+        public UMI3DAsyncProperty<bool> objectIsBlockingInteraction { get { Register(); return _objectIsBlockingInteraction; } protected set => _objectIsBlockingInteraction = value; }
+
+        private UMI3DAsyncProperty<bool> _objectIsBlockingInteraction;
+
         /// <inheritdoc/>
         protected override void InitDefinition(ulong id)
         {
@@ -93,6 +107,9 @@ namespace umi3d.edk
 
             _objectTraversable = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsTraversable, isTraversable);
             _objectTraversable.OnValueChanged += b => isTraversable = b;
+
+            _objectIsBlockingInteraction = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.IsBlockingInteraction, isBlockingInteraction);
+            _objectIsBlockingInteraction.OnValueChanged += b => isBlockingInteraction = b;
 
             var skmr = GetComponent<SkinnedMeshRenderer>();
             if (skmr != null && skmr.sharedMesh.blendShapeCount > 0)
