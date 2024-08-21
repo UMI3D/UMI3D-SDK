@@ -30,6 +30,45 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
+            if (startValue == null)
+                UMI3DLogger.LogError($"{nameof(startValue)} property was not set for {nameof(StartInterpolationProperty)}", DebugScope.EDK | DebugScope.Core);
+
+            return UMI3DSerializer.Write(UMI3DOperationKeys.StartInterpolationProperty)
+                + UMI3DSerializer.Write(entityId)
+                + UMI3DSerializer.Write(property)
+                + UMI3DSerializer.Write(startValue);
+
+        }
+
+        /// <inheritdoc/>
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            if (startValue == null)
+                UMI3DLogger.LogError($"{nameof(startValue)} property was not set for {nameof(StartInterpolationProperty)}", DebugScope.EDK | DebugScope.Core);
+
+            var startInterpolation = new StartInterpolationPropertyDto
+            {
+                property = property,
+                entityId = entityId,
+                startValue = startValue
+            };
+            return startInterpolation;
+        }
+    }
+
+    /// <summary>
+    /// An operation to start interpolatation on a property's entity.
+    /// </summary>
+    public class StartInterpolationProperty<PropertyType> : AbstractInterpolationProperty
+    {
+        /// <summary>
+        /// The value at which to start interpolation.
+        /// </summary>
+        public PropertyType startValue = default;
+
+        /// <inheritdoc/>
+        public override Bytable ToBytable(UMI3DUser user)
+        {
             return UMI3DSerializer.Write(UMI3DOperationKeys.StartInterpolationProperty)
                 + UMI3DSerializer.Write(entityId)
                 + UMI3DSerializer.Write(property)

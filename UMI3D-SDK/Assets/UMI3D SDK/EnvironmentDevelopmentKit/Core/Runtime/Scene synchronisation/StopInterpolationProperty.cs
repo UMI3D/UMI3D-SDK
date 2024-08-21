@@ -30,6 +30,44 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytable(UMI3DUser user)
         {
+            if (stopValue == null)
+                UMI3DLogger.LogError($"{nameof(stopValue)} property was not set for {nameof(StopInterpolationProperty)}", DebugScope.EDK | DebugScope.Core);
+
+            return UMI3DSerializer.Write(UMI3DOperationKeys.StopInterpolationProperty)
+                + UMI3DSerializer.Write(entityId)
+                + UMI3DSerializer.Write(property)
+                + UMI3DSerializer.Write(stopValue);
+        }
+
+        /// <inheritdoc/>
+        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+        {
+            if (stopValue == null)
+                UMI3DLogger.LogError($"{nameof(stopValue)} property was not set for {nameof(StopInterpolationProperty)}", DebugScope.EDK | DebugScope.Core);
+
+            var stopInterpolation = new StopInterpolationPropertyDto
+            {
+                property = property,
+                entityId = entityId,
+                stopValue = stopValue
+            };
+            return stopInterpolation;
+        }
+    }
+
+    /// <summary>
+    /// An opertion to stop interpolation on a property's entity
+    /// </summary>
+    public class StopInterpolationProperty<PropertyType> : AbstractInterpolationProperty
+    {
+        /// <summary>
+        /// The value with which to stop interpolation
+        /// </summary>
+        public PropertyType stopValue = default;
+
+        /// <inheritdoc/>
+        public override Bytable ToBytable(UMI3DUser user)
+        {
             return UMI3DSerializer.Write(UMI3DOperationKeys.StopInterpolationProperty)
                 + UMI3DSerializer.Write(entityId)
                 + UMI3DSerializer.Write(property)
