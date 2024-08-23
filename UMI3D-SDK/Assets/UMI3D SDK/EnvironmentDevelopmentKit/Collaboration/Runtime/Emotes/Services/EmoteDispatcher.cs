@@ -85,6 +85,7 @@ namespace umi3d.edk.collaboration.emotes
         protected void Init()
         {
             umi3dServerService.OnUserActive.AddListener(LoadEmotesAnimations);
+            umi3dServerService.OnUserRefreshed.AddListener(LoadEmotesAnimations);
             umi3dServerService.OnUserLeave.AddListener(CleanEmotesAnimations);
             umi3dServerService.OnUserMissing.AddListener(CleanEmotesAnimations);
         }
