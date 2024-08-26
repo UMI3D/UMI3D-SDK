@@ -26,7 +26,6 @@ using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
 using inetum.unityUtils;
-using UnityEditor.Animations;
 
 namespace umi3d.cdk
 {
