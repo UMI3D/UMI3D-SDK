@@ -124,13 +124,13 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.Static:
                     dto.isStatic = (bool)data.property.value;
-                    if (dto.isStatic != node.gameObject.isStatic)
-                        node.gameObject.isStatic = dto.isStatic;
+                    if (dto.isStatic != node.GameObject.isStatic)
+                        node.GameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
                     dto.active = (bool)data.property.value;
-                    if (node.gameObject.activeSelf != dto.active)
-                        node.gameObject.SetActive(dto.active);
+                    if (node.GameObject.activeSelf != dto.active)
+                        node.GameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = (ulong)(long)data.property.value;
@@ -188,13 +188,13 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.Static:
                     dto.isStatic = UMI3DSerializer.Read<bool>(data.container);
-                    if (dto.isStatic != node.gameObject.isStatic)
-                        node.gameObject.isStatic = dto.isStatic;
+                    if (dto.isStatic != node.GameObject.isStatic)
+                        node.GameObject.isStatic = dto.isStatic;
                     break;
                 case UMI3DPropertyKeys.Active:
                     dto.active = UMI3DSerializer.Read<bool>(data.container);
-                    if (node.gameObject.activeSelf != dto.active)
-                        node.gameObject.SetActive(dto.active);
+                    if (node.GameObject.activeSelf != dto.active)
+                        node.GameObject.SetActive(dto.active);
                     break;
                 case UMI3DPropertyKeys.ParentId:
                     ulong pid = dto.pid = UMI3DSerializer.Read<ulong>(data.container);

@@ -26,13 +26,14 @@ namespace umi3d.edk.editor
     {
         private SerializedProperty isPartOfNavmesh;
         private SerializedProperty isTraversable;
-
+        private SerializedProperty isBlockingInteraction;
 
         protected override void OnEnable()
         {
             base.OnEnable();
             isPartOfNavmesh = serializedObject.FindProperty("isPartOfNavmesh");
             isTraversable = serializedObject.FindProperty("isTraversable");
+            isBlockingInteraction = serializedObject.FindProperty("isBlockingInteraction");
         }
 
 
@@ -48,6 +49,7 @@ namespace umi3d.edk.editor
             base.OnInspectorGUI();
             EditorGUILayout.PropertyField(isPartOfNavmesh);
             EditorGUILayout.PropertyField(isTraversable);
+            EditorGUILayout.PropertyField(isBlockingInteraction);
             serializedObject.ApplyModifiedProperties();
         }
     }

@@ -49,15 +49,5 @@ namespace umi3d.common
         /// State if the subobject was generated in a rightHanded 
         /// </summary>
         public bool isRightHanded { get; set; } = true;
-
-        /// <summary>
-        /// If true, the mesh will be used for navmesh generation on the browser.
-        /// </summary>
-        public bool isPartOfNavmesh { get; set; } = false;
-
-        /// <summary>
-        /// Indicate whether or not the user is allowed to navigate through this object.
-        /// </summary>
-        public bool isTraversable { get; set; } = true;
     }
 }

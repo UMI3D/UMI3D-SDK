@@ -63,19 +63,19 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.DynamicPixelsPerUnit:
                     {
-                        CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
+                        CanvasScaler canvasScaler = node.GameObject.GetOrAddComponent<CanvasScaler>();
                         canvasScaler.dynamicPixelsPerUnit = dto.dynamicPixelsPerUnit = (float)(Double)property.value;
                     }
                     break;
                 case UMI3DPropertyKeys.ReferencePixelsPerUnit:
                     {
-                        CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
+                        CanvasScaler canvasScaler = node.GameObject.GetOrAddComponent<CanvasScaler>();
                         canvasScaler.referencePixelsPerUnit = dto.referencePixelsPerUnit = (float)(Double)property.value;
                     }
                     break;
                 case UMI3DPropertyKeys.OrderInLayer:
                     {
-                        Canvas canvas = node.gameObject.GetOrAddComponent<Canvas>();
+                        Canvas canvas = node.GameObject.GetOrAddComponent<Canvas>();
                         canvas.sortingOrder = dto.orderInLayer = (int)(Int64)property.value;
                         canvas.overrideSorting = dto.orderInLayer != 0;
                         break;
@@ -101,19 +101,19 @@ namespace umi3d.cdk
             {
                 case UMI3DPropertyKeys.DynamicPixelsPerUnit:
                     {
-                        CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
+                        CanvasScaler canvasScaler = node.GameObject.GetOrAddComponent<CanvasScaler>();
                         canvasScaler.dynamicPixelsPerUnit = dto.dynamicPixelsPerUnit = UMI3DSerializer.Read<float>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.ReferencePixelsPerUnit:
                     {
-                        CanvasScaler canvasScaler = node.gameObject.GetOrAddComponent<CanvasScaler>();
+                        CanvasScaler canvasScaler = node.GameObject.GetOrAddComponent<CanvasScaler>();
                         canvasScaler.referencePixelsPerUnit = dto.referencePixelsPerUnit = UMI3DSerializer.Read<float>(container);
                     }
                     break;
                 case UMI3DPropertyKeys.OrderInLayer:
                     {
-                        Canvas canvas = node.gameObject.GetOrAddComponent<Canvas>();
+                        Canvas canvas = node.GameObject.GetOrAddComponent<Canvas>();
                         canvas.sortingOrder = dto.orderInLayer = UMI3DSerializer.Read<int>(container);
                         canvas.overrideSorting = dto.orderInLayer != 0;
                         break;

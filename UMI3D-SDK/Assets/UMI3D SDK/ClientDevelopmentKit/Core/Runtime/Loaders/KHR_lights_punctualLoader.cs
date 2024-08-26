@@ -33,7 +33,7 @@ namespace umi3d.cdk
         /// <param name="node">node on which the light will be created.</param>
         public virtual void CreateLight(KHR_lights_punctual ldto, UMI3DNodeInstance node)
         {
-            Light light = node.gameObject.GetOrAddComponent<Light>();
+            Light light = node.GameObject.GetOrAddComponent<Light>();
             node.Object = light;
 
             light.shadows = LightShadows.Soft;
@@ -125,7 +125,7 @@ namespace umi3d.cdk
         {
             KHR_lights_punctual dto = (entity.dto as GlTFNodeDto)?.extensions.KHR_lights_punctual;
             var node = entity as UMI3DNodeInstance;
-            Light light = node?.gameObject?.GetComponent<Light>();
+            Light light = node?.GameObject?.GetComponent<Light>();
             if (propertyKey == UMI3DPropertyKeys.Light)
             {
                 KHR_lights_punctual lightdto = UMI3DSerializer.Read<KHR_lights_punctual>(container);

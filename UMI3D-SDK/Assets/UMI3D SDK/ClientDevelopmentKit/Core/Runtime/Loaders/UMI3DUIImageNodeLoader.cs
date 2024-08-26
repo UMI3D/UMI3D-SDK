@@ -80,19 +80,19 @@ namespace umi3d.cdk
                 //Image
                 case UMI3DPropertyKeys.ImageColor:
                     {
-                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         image.color = (dto.color = (ColorDto)property.value).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
                     {
-                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         image.type = (dto.type = (ImageType)(Int64)property.value).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.Image:
                     {
-                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         dto.sprite = property.value as ResourceDto;
                         FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)
@@ -132,19 +132,19 @@ namespace umi3d.cdk
                 //Image
                 case UMI3DPropertyKeys.ImageColor:
                     {
-                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         image.color = (dto.color = UMI3DSerializer.Read<ColorDto>(container)).Struct();
                     }
                     break;
                 case UMI3DPropertyKeys.ImageType:
                     {
-                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         image.type = (dto.type = (ImageType)UMI3DSerializer.Read<int>(container)).Convert();
                     }
                     break;
                 case UMI3DPropertyKeys.Image:
                     {
-                        Image image = node.gameObject.GetOrAddComponent<Image>();
+                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         dto.sprite = UMI3DSerializer.Read<ResourceDto>(container);
                         FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
                         if (fileToLoad == null)

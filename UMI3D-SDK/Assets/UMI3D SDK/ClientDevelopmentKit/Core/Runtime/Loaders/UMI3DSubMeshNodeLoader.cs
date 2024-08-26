@@ -112,11 +112,12 @@ namespace umi3d.cdk
 
                         nodeInstance.IsTraversable = subDto.isTraversable;
                         nodeInstance.IsPartOfNavmesh = subDto.isPartOfNavmesh;
+                        nodeInstance.IsBlockingInteraction = subDto.isBlockingInteraction;
 
-                        int? shapeCount = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>()?.sharedMesh?.blendShapeCount;
+                        int? shapeCount = nodeInstance.GameObject.GetComponentInChildren<SkinnedMeshRenderer>()?.sharedMesh?.blendShapeCount;
                         if (shapeCount != null && shapeCount > 0)
                         {
-                            SkinnedMeshRenderer skm = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>();
+                            SkinnedMeshRenderer skm = nodeInstance.GameObject.GetComponentInChildren<SkinnedMeshRenderer>();
                             nodeInstance.skmToUpdateWithBlendShapes = new List<SkinnedMeshRenderer>();
 
                             if (skm.sharedMesh.blendShapeCount > 0)
@@ -250,7 +251,9 @@ namespace umi3d.cdk
                     case UMI3DPropertyKeys.IsTraversable:
                         (data.entity as UMI3DNodeInstance).IsTraversable = (bool)data.property.value;
                         return true;
-
+                    case UMI3DPropertyKeys.IsBlockingInteraction:
+                        (data.entity as UMI3DNodeInstance).IsBlockingInteraction = (bool)data.property.value;
+                        return true;
                     default:
                         return false;
                 }
@@ -295,6 +298,10 @@ namespace umi3d.cdk
 
                     case UMI3DPropertyKeys.IsTraversable:
                         (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DSerializer.Read<bool>(data.container);
+                        return true;
+
+                    case UMI3DPropertyKeys.IsBlockingInteraction:
+                        (data.entity as UMI3DNodeInstance).IsBlockingInteraction = UMI3DSerializer.Read<bool>(data.container);
                         return true;
 
                     default:

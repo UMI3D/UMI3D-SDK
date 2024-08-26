@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
@@ -148,6 +149,9 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.IsTraversable:
                     (data.entity as UMI3DNodeInstance).IsTraversable = (bool)data.property.value;
                     return true;
+                case UMI3DPropertyKeys.IsBlockingInteraction:
+                    (data.entity as UMI3DNodeInstance).IsBlockingInteraction = (bool)data.property.value;
+                    return true;
                 default:
                     return false;
             }
@@ -178,6 +182,9 @@ namespace umi3d.cdk
                     return true;
                 case UMI3DPropertyKeys.IsTraversable:
                     (data.entity as UMI3DNodeInstance).IsTraversable = UMI3DSerializer.Read<bool>(data.container);
+                    return true;
+                case UMI3DPropertyKeys.IsBlockingInteraction:
+                    (data.entity as UMI3DNodeInstance).IsBlockingInteraction = UMI3DSerializer.Read<bool>(data.container);
                     return true;
                 default:
                     return false;
@@ -322,6 +329,8 @@ namespace umi3d.cdk
 
             nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
             nodeInstance.IsTraversable = dto.isTraversable;
+            nodeInstance.IsBlockingInteraction = dto.isBlockingInteraction;
+
         }
 
         private void SetBlendShapeRef(GameObject instance, UMI3DNodeInstance nodeInstance, UMI3DMeshNodeDto dto, bool setValue = true)

@@ -99,7 +99,7 @@ namespace umi3d.cdk
                 var extension = (data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DLineDto;
                 if (extension == null) return false;
 
-                line = GetOrCreateLine(node.gameObject);
+                line = GetOrCreateLine(node.GameObject);
                 if (line == null) return false;
 
                 switch (data.property.property)
@@ -178,7 +178,7 @@ namespace umi3d.cdk
 
             var node = data.entity as UMI3DNodeInstance;
 
-            line = GetOrCreateLine(node.gameObject);
+            line = GetOrCreateLine(node.GameObject);
             if (line == null) return false;
 
             switch (data.propertyKey)
@@ -247,10 +247,10 @@ namespace umi3d.cdk
         {
             if (node == null) return;
 
-            line = GetOrCreateLine(node.gameObject);
+            line = GetOrCreateLine(node.GameObject);
             if (line == null) return;
 
-            MeshCollider meshCollider = node.gameObject?.AddComponent<MeshCollider>();
+            MeshCollider meshCollider = node.GameObject?.AddComponent<MeshCollider>();
             node.colliders.Add(meshCollider);
             UpdateModelCollider(node, line, meshCollider);
 
@@ -264,9 +264,9 @@ namespace umi3d.cdk
 
         private async void UpdateModelCollider(UMI3DNodeInstance nodeInstance, LineRenderer line, MeshCollider meshCollider = null)
         {
-            if (nodeInstance == null || line == null || nodeInstance.gameObject == null) return;
+            if (nodeInstance == null || line == null || nodeInstance.GameObject == null) return;
             if (meshCollider == null)
-                meshCollider = nodeInstance.gameObject.GetComponent<MeshCollider>();
+                meshCollider = nodeInstance.GameObject.GetComponent<MeshCollider>();
             if (meshCollider == null) return;
 
             Mesh mesh = new Mesh();

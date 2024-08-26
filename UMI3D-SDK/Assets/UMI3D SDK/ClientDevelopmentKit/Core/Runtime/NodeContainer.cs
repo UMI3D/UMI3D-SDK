@@ -17,24 +17,19 @@ limitations under the License.
 using System.Collections.Generic;
 using UnityEngine;
 
-namespace umi3d.cdk.interaction
+namespace umi3d.cdk
 {
-
     /// <summary>
     /// Game object containing UMI3D <see cref="umi3d.cdk.interaction.Interactable"/>.
     /// </summary>
-    public class InteractableContainer : MonoBehaviour
+    public class NodeContainer : MonoBehaviour
     {
         /// <summary>
         /// List of all <see cref="umi3d.cdk.interaction.Interactable"/> containers.
         /// </summary>
-        public static List<InteractableContainer> containers = new List<InteractableContainer>();
+        public static List<NodeContainer> containers = new List<NodeContainer>();
+        public UMI3DNodeInstance instance;
 
-        /// <summary>
-        /// Interatable associated with the object.
-        /// </summary>
-        [Tooltip("Interatable associated with the object")]
-        public Interactable Interactable;
 
         private void Awake()
         {

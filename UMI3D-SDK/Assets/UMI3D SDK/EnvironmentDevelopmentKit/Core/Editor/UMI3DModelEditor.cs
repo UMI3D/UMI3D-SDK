@@ -32,6 +32,7 @@ namespace umi3d.edk.editor
         private SerializedProperty isRightHanded;
         private SerializedProperty isPartOfNavmesh;
         private SerializedProperty isTraversable;
+        private SerializedProperty isBlockingInteraction;
 
         private readonly Editor _materialEditor = null;
         private readonly bool foldout;
@@ -50,6 +51,7 @@ namespace umi3d.edk.editor
             isRightHanded = serializedObject.FindProperty("isRightHanded");
             isPartOfNavmesh = serializedObject.FindProperty("isPartOfNavmesh");
             isTraversable = serializedObject.FindProperty("isTraversable");
+            isBlockingInteraction = serializedObject.FindProperty("isBlockingInteraction");
         }
 
         private void OnDisable()
@@ -79,6 +81,7 @@ namespace umi3d.edk.editor
 
             EditorGUILayout.PropertyField(isTraversable);
             EditorGUILayout.PropertyField(isPartOfNavmesh);
+            EditorGUILayout.PropertyField(isBlockingInteraction);
 
             if (isPartOfNavmesh.boolValue && !activeCollider.boolValue)
             {

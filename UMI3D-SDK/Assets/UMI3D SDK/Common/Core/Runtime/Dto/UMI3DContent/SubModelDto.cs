@@ -49,15 +49,5 @@ namespace umi3d.common
         /// subModel Loader should apply root model material overrider or ignore it
         /// </summary>
         public bool ignoreModelMaterialOverride { get; set; }
-
-        /// <summary>
-        /// If true, the mesh will be used for navmesh generation on the browser.
-        /// </summary>
-        public bool isPartOfNavmesh { get; set; } = false;
-
-        /// <summary>
-        /// Indicate whether or not the user is allowed to navigate through this object.
-        /// </summary>
-        public bool isTraversable { get; set; } = true;
     }
 }

@@ -43,7 +43,7 @@ namespace umi3d.cdk.interaction
 
             if (e is UMI3DNodeInstance nodeI)
             {
-                value.node = nodeI.gameObject;
+                value.node = nodeI.GameObject;
                 Interactable interactable = value.node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(value.environmentId, dto);
                 UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId,dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
             }
@@ -158,7 +158,7 @@ namespace umi3d.cdk.interaction
         private static void RemoveInteractableOnNode(ulong environmentId, InteractableDto dto)
         {
             UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(environmentId, dto.nodeId);
-            InteractableContainer interactable = node.gameObject.GetComponent<InteractableContainer>();
+            InteractableContainer interactable = node.GameObject.GetComponent<InteractableContainer>();
             if (interactable != null)
                 GameObject.Destroy(interactable);
         }
@@ -173,7 +173,7 @@ namespace umi3d.cdk.interaction
             var interactable = UMI3DEnvironmentLoader.GetEntity(environmentId, dto.id)?.Object as Interactable;
             if (interactable == null)
                 interactable = new Interactable(environmentId, dto);
-            node.gameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
+            node.GameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
         }
     }
 }

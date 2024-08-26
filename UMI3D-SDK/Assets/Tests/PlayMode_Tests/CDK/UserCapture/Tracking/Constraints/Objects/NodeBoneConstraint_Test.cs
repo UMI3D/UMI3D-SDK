@@ -37,7 +37,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.Constraint.CDK
             GameObject go = new();
             node = new UMI3DNodeInstance(0, () => { }, id: 1538uL)
             {
-                gameObject = go
+                GameObject = go
             };
 
             NodeBoneConstraintDto dto = new()
@@ -56,7 +56,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.Constraint.CDK
 
         public override void TearDown()
         {
-            UnityEngine.Object.Destroy(node.gameObject);
+            UnityEngine.Object.Destroy(node.GameObject);
         }
 
         #endregion Test SetUp
@@ -69,7 +69,7 @@ namespace PlayMode_Tests.UserCapture.Tracking.Constraint.CDK
             // given
             (Vector3 position, Quaternion rotation) boneTransform = (new Vector3(125, 35, 16), Quaternion.Euler(94, 35, 16));
 
-            node.gameObject.transform.SetPositionAndRotation(boneTransform.position, boneTransform.rotation);
+            node.GameObject.transform.SetPositionAndRotation(boneTransform.position, boneTransform.rotation);
 
             // when
             (Vector3 position, Quaternion rotation) result = nodeBoneConstraint.Resolve();
