@@ -19,7 +19,6 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
-
     /// <summary>
     /// Game object containing UMI3D <see cref="umi3d.cdk.interaction.Interactable"/>.
     /// </summary>
