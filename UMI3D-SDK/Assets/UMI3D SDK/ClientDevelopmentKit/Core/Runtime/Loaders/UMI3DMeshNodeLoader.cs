@@ -18,6 +18,7 @@ using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
@@ -328,6 +329,8 @@ namespace umi3d.cdk
 
             nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
             nodeInstance.IsTraversable = dto.isTraversable;
+            nodeInstance.IsBlockingInteraction = dto.isBlockingInteraction;
+
         }
 
         private void SetBlendShapeRef(GameObject instance, UMI3DNodeInstance nodeInstance, UMI3DMeshNodeDto dto, bool setValue = true)

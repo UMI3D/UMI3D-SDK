@@ -71,12 +71,23 @@ namespace umi3d.cdk
             }
         }
 
+        private bool isBlockingInteraction = false;
+
         /// <summary>
         /// Is this node preventing interaction behind it ?
         /// </summary>
         public bool IsBlockingInteraction
         {
-            get; set;
+            get => isBlockingInteraction;
+
+            set
+            {
+                if (isBlockingInteraction != value)
+                {
+                    isBlockingInteraction = value;
+                    UMI3DEnvironmentLoader.Instance.SetNodeBlockingInteraction(this);
+                }
+            }
         }
 
         /// <summary>

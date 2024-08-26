@@ -46,6 +46,21 @@ namespace umi3d.common
         /// Specify the values of blendshapes in SkinMesh. On Model, it will be applied on each SkinnedMeshRenderer that has blendShapes, On SubModel, it will be applied on the current entity.
         /// </summary>
         public List<float> blendShapesValues { get; set; } = null;
+
+        /// <summary>
+        /// If true, the mesh will be used for navmesh generation on the browser.
+        /// </summary>
+        public bool isPartOfNavmesh { get; set; } = false;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isTraversable { get; set; } = true;
+
+        /// <summary>
+        /// Indicate whether or not the user is allowed to navigate through this object.
+        /// </summary>
+        public bool isBlockingInteraction { get; set; } = true;
     }
 
 }

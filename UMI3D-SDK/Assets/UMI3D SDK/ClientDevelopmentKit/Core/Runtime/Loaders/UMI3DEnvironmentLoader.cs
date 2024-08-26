@@ -1117,6 +1117,18 @@ namespace umi3d.cdk
             onNodeTraversableSet?.Invoke(node);
         }
 
+
+        public event NodeNavmeshModifiedDelegate onNodeBlockingInteractionSet;
+        /// <summary>
+        /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its traversable status.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="isTraversable"></param>
+        public void SetNodeBlockingInteraction(UMI3DNodeInstance node)
+        {
+            onNodeBlockingInteractionSet?.Invoke(node);
+        }
+
         #endregion
     }
 }

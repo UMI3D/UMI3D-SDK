@@ -112,6 +112,7 @@ namespace umi3d.cdk
 
                         nodeInstance.IsTraversable = subDto.isTraversable;
                         nodeInstance.IsPartOfNavmesh = subDto.isPartOfNavmesh;
+                        nodeInstance.IsBlockingInteraction = subDto.isBlockingInteraction;
 
                         int? shapeCount = nodeInstance.gameObject.GetComponentInChildren<SkinnedMeshRenderer>()?.sharedMesh?.blendShapeCount;
                         if (shapeCount != null && shapeCount > 0)
