@@ -96,6 +96,7 @@ namespace umi3d.edk.userCapture.pose
         private void Init()
         {
             umi3dServerService.OnUserActive.AddListener(DispatchPoseClips);
+            umi3dServerService.OnUserRefreshed.AddListener(DispatchPoseClips);
             umi3dServerService.OnUserMissing.AddListener(CleanPoseClips);
             umi3dServerService.OnUserLeave.AddListener(CleanPoseClips);
         }
