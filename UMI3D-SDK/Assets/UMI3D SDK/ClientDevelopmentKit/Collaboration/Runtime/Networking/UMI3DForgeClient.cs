@@ -354,8 +354,6 @@ namespace umi3d.cdk.collaboration
                     IsCompatibleWithVersion = version.IsCompatible(environmentClient.version);
                 }
 
-                UnityEngine.Debug.Log("Send browser");
-
                 if(IsCompatibleWithVersion.Value)
                     SendBinaryData((int)DataChannelTypes.Data, (UMI3DSerializer.Write(dto.environmentId)+UMI3DSerializer.Write(dto)).ToBytes(), reliable);
                 else
