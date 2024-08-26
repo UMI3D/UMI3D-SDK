@@ -132,7 +132,7 @@ namespace umi3d.cdk
                             ApplyParameter(entry.Key, param);
                         }
 
-                        animator = (n as UMI3DNodeInstance)?.gameObject.GetComponentInChildren<Animator>();
+                        animator = (n as UMI3DNodeInstance)?.GameObject.GetComponentInChildren<Animator>();
                         if (animator != null)
                             animator.Rebind();
                     });
@@ -426,7 +426,7 @@ namespace umi3d.cdk
             {
                 node = n as UMI3DNodeInstance;
                 if (node is not null)
-                    animator = node.gameObject.GetComponentInChildren<Animator>();
+                    animator = node.GameObject.GetComponentInChildren<Animator>();
                 if (animator != null && dto.playing)
                     Start();
             });

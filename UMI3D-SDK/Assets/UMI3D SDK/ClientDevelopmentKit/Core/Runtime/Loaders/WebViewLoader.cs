@@ -57,7 +57,7 @@ namespace umi3d.cdk
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DWebViewDto;
             if (dto == null) return false;
 
-            AbstractUMI3DWebView webView = node.gameObject.GetComponentInChildren<AbstractUMI3DWebView>();
+            AbstractUMI3DWebView webView = node.GameObject.GetComponentInChildren<AbstractUMI3DWebView>();
             if (webView == null)
             {
                 UMI3DLogger.Log("Webview should not be null on " + node.transform.name, scope);
@@ -115,7 +115,7 @@ namespace umi3d.cdk
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DWebViewDto;
             if (dto == null) return false;
 
-            AbstractUMI3DWebView webView = node.gameObject.GetComponentInChildren<AbstractUMI3DWebView>();
+            AbstractUMI3DWebView webView = node.GameObject.GetComponentInChildren<AbstractUMI3DWebView>();
             if (webView == null)
             {
                 UMI3DLogger.Log("Webview should not be null on " + node.transform.name, scope);

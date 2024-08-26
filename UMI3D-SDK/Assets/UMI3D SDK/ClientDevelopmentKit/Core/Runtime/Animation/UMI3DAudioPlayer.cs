@@ -62,7 +62,7 @@ namespace umi3d.cdk
             if (dto.nodeID == 0)
                 UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, UMI3DEnvironmentLoader.Instance.gameObject));
             else
-                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId,dto.nodeID, e => UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, (e as UMI3DNodeInstance).gameObject)));
+                UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(EnvironmentId,dto.nodeID, e => UnityMainThreadDispatcher.Instance().Enqueue(() => _InitPlayer(dto, (e as UMI3DNodeInstance).GameObject)));
         }
 
         private async void _InitPlayer(UMI3DAudioPlayerDto dto, GameObject gameObject)

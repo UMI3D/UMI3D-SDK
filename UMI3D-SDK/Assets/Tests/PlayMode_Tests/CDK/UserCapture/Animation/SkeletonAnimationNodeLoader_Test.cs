@@ -180,7 +180,7 @@ namespace PlayMode_Tests.UserCapture.Animation.CDK
             var instance = new UMI3DNodeInstance(environmentId, () => { })
             {
                 dto = glTFNodeDto,
-                gameObject = skeletonNodeGo
+                GameObject = skeletonNodeGo
             };
 
             environmentManagerMock.Setup(x => x.GetNodeInstance(environmentId, dto.id)).Returns(instance);

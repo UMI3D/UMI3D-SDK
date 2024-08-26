@@ -87,7 +87,7 @@ namespace umi3d.cdk.userCapture.animation
             UMI3DNodeInstance nodeInstance = environmentManager.GetNodeInstance(environmentId, skeletonNodeDto.id);  //node exists because of base call of ReadUMI3DExtensiun
 
             // a skeleton node should contain an animator
-            Animator animator = nodeInstance.gameObject.GetComponentInChildren<Animator>();
+            Animator animator = nodeInstance.GameObject.GetComponentInChildren<Animator>();
             if (animator == null)
             {
                 UMI3DLogger.LogWarning($"Cannot load skeleton animation {skeletonNodeDto.id}. No animator was found on node for user {skeletonNodeDto.userId}. ", DEBUG_SCOPE);
@@ -104,11 +104,11 @@ namespace umi3d.cdk.userCapture.animation
                 return;
             }
 
-            var modelTracker = nodeInstance.gameObject.GetOrAddComponent<ModelTracker>();
+            var modelTracker = nodeInstance.GameObject.GetOrAddComponent<ModelTracker>();
             modelTracker.animatorsToRebind.Add(animator);
 
             // hide the model if it has any renderers
-            foreach (var renderer in nodeInstance.gameObject.GetComponentsInChildren<Renderer>())
+            foreach (var renderer in nodeInstance.GameObject.GetComponentsInChildren<Renderer>())
                 renderer.gameObject.layer = LayerMask.NameToLayer("Invisible");
 
             // scale the subskeleton to fit the scale of the user

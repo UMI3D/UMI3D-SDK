@@ -254,13 +254,13 @@ namespace umi3d.cdk
                 node = entities[id] as UMI3DNodeInstance;
                 if (node == null)
                     throw new Exception($"id:{id} found but the value was of type {entities[id].GetType()}");
-                if (node.gameObject != instance)
+                if (node.GameObject != instance)
                     UnityEngine.Object.Destroy(instance);
                 return node;
             }
             else
             {
-                node = new UMI3DNodeInstance(EnvironmentId, () => NotifyEntityLoad(id), id) { gameObject = instance, dto = dto, Delete = delete };
+                node = new UMI3DNodeInstance(EnvironmentId, () => NotifyEntityLoad(id), id) { GameObject = instance, dto = dto, Delete = delete };
                 entities.Add(id, node);
             }
 
@@ -342,7 +342,7 @@ namespace umi3d.cdk
                 {
                     var node = entity as UMI3DNodeInstance;
                     node.ClearBeforeDestroy();
-                    UnityEngine.Object.Destroy(node.gameObject);
+                    UnityEngine.Object.Destroy(node.GameObject);
                 }
                 entities[entityId].Delete?.Invoke();
                 entities.Remove(entityId);

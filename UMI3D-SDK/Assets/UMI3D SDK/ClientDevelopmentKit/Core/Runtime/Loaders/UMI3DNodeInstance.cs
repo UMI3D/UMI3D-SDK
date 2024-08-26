@@ -28,8 +28,8 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DNodeInstance : UMI3DEntityInstance
     {
-        public GameObject gameObject;
-        public virtual Transform transform => gameObject.transform;
+        private GameObject gameObject;
+        public virtual Transform transform => GameObject.transform;
 
         private bool isPartOfNavmesh = false;
 
@@ -100,8 +100,8 @@ namespace umi3d.cdk
         public override string ToString()
         {
             if (dto is GlTFNodeDto gltf)
-                return $"UMI3DNodeInstance [{dto} : {gltf.name} : {gltf.extensions?.umi3d} : {Object} : {gameObject}]";
-            return $"UMI3DNodeInstance [{dto} : {Object} : {gameObject}]";
+                return $"UMI3DNodeInstance [{dto} : {gltf.name} : {gltf.extensions?.umi3d} : {Object} : {GameObject}]";
+            return $"UMI3DNodeInstance [{dto} : {Object} : {GameObject}]";
         }
 
         public bool updatePose = true;
@@ -162,8 +162,18 @@ namespace umi3d.cdk
             set => _subNodeInstances = value;
         }
 
+        public GameObject GameObject
+        {
+            get => gameObject; set
+            {
+                var old = gameObject;
+                gameObject = value;
+                UMI3DEnvironmentLoader.Instance.SetNodeNodeGameObject(this, old);
+            }
+        }
+
         /// <summary>
-        /// Clean all loaded data before destroying <see cref="gameObject"/>.
+        /// Clean all loaded data before destroying <see cref="GameObject"/>.
         /// </summary>
         public virtual async void ClearBeforeDestroy()
         {

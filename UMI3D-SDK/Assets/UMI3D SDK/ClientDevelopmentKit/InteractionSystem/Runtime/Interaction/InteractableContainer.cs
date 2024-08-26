@@ -19,6 +19,7 @@ using UnityEngine;
 
 namespace umi3d.cdk.interaction
 {
+
     /// <summary>
     /// Game object containing UMI3D <see cref="umi3d.cdk.interaction.Interactable"/>.
     /// </summary>
@@ -32,7 +33,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Interatable associated with the object.
         /// </summary>
-        [Tooltip("Interactable associated with the object")]
+        [Tooltip("Interatable associated with the object")]
         public Interactable Interactable;
 
         private void Awake()

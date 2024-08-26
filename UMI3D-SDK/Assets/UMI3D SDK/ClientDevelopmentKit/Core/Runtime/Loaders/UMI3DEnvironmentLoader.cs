@@ -26,6 +26,7 @@ using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
 using inetum.unityUtils;
+using UnityEditor.Animations;
 
 namespace umi3d.cdk
 {
@@ -450,7 +451,7 @@ namespace umi3d.cdk
             {
                 if (entity.dto is GlTFSceneDto && entity is UMI3DNodeInstance scene)
                 {
-                    foreach (var probe in scene.gameObject.GetComponentsInChildren<ReflectionProbe>())
+                    foreach (var probe in scene.GameObject.GetComponentsInChildren<ReflectionProbe>())
                     {
                         if (probe.mode == ReflectionProbeMode.Realtime && probe.refreshMode == ReflectionProbeRefreshMode.OnAwake)
                         {
@@ -544,9 +545,9 @@ namespace umi3d.cdk
                 progress1.AddComplete();
                 var node = GetNodeInstance(environmentid, scene.extensions.umi3d.id);
                 UMI3DSceneNodeDto umi3dScene = scene.extensions.umi3d;
-                await sceneLoader.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentid,umi3dScene, node.gameObject));
+                await sceneLoader.ReadUMI3DExtension(new ReadUMI3DExtensionData(environmentid,umi3dScene, node.GameObject));
                 progress1.AddComplete();
-                node.gameObject.SetActive(umi3dScene.active);
+                node.GameObject.SetActive(umi3dScene.active);
             }));
         }
 
@@ -1091,9 +1092,10 @@ namespace umi3d.cdk
 
         #region Navmesh
 
-        public delegate void NodeNavmeshModifiedDelegate(UMI3DNodeInstance node);
+        public delegate void NodeModifiedDelegate(UMI3DNodeInstance node);
+        public delegate void NodeModifiedWithParamDelegate(UMI3DNodeInstance node, GameObject gameObject);
 
-        public event NodeNavmeshModifiedDelegate onNodePartOfNavmeshSet;
+        public event NodeModifiedDelegate onNodePartOfNavmeshSet;
 
         /// <summary>
         /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its part of navmesh status.
@@ -1105,7 +1107,7 @@ namespace umi3d.cdk
             onNodePartOfNavmeshSet?.Invoke(node);
         }
 
-        public event NodeNavmeshModifiedDelegate onNodeTraversableSet;
+        public event NodeModifiedDelegate onNodeTraversableSet;
 
         /// <summary>
         /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its traversable status.
@@ -1118,7 +1120,7 @@ namespace umi3d.cdk
         }
 
 
-        public event NodeNavmeshModifiedDelegate onNodeBlockingInteractionSet;
+        public event NodeModifiedDelegate onNodeBlockingInteractionSet;
         /// <summary>
         /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its traversable status.
         /// </summary>
@@ -1127,6 +1129,17 @@ namespace umi3d.cdk
         public void SetNodeBlockingInteraction(UMI3DNodeInstance node)
         {
             onNodeBlockingInteractionSet?.Invoke(node);
+        }
+
+        public event NodeModifiedWithParamDelegate onNodeGameObjectSet;
+        /// <summary>
+        /// Notify browser that a <see cref="UMI3DNodeInstance"/> has changed its traversable status.
+        /// </summary>
+        /// <param name="node"></param>
+        /// <param name="isTraversable"></param>
+        public void SetNodeNodeGameObject(UMI3DNodeInstance node, GameObject gameObject)
+        {
+            onNodeGameObjectSet?.Invoke(node, gameObject);
         }
 
         #endregion
