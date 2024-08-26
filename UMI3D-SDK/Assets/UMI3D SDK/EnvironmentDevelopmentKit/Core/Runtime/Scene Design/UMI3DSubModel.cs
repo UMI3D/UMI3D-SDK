@@ -169,6 +169,7 @@ namespace umi3d.edk
             subDto.ignoreModelMaterialOverride = ignoreModelMaterialOverride;
             subDto.isTraversable = isTraversable;
             subDto.isPartOfNavmesh = isPartOfNavmesh;
+            subDto.isBlockingInteraction = isBlockingInteraction;
         }
 
         /// <inheritdoc/>

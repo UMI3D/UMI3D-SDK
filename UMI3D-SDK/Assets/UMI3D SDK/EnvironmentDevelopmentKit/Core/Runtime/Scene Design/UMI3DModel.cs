@@ -368,6 +368,7 @@ namespace umi3d.edk
             meshDto.idGenerator = idGenerator;
             meshDto.isPartOfNavmesh = isPartOfNavmesh;
             meshDto.isTraversable = isTraversable;
+            meshDto.isBlockingInteraction = isBlockingInteraction;
         }
 
         /// <inheritdoc/>
