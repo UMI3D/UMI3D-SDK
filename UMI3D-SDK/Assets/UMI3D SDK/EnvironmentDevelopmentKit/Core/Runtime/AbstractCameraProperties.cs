@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.edk.userCapture.tracking
+namespace umi3d.edk.core
 {
     public abstract class AbstractCameraProperties : Operation
     {

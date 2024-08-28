@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.common.userCapture.tracking
+namespace umi3d.common
 {
-    public class OrthographicCameraPropertiesDto : AbstractCameraPropertiesDto
+    public class PerspectiveCameraPropertiesDto : AbstractCameraPropertiesDto
     {
         /// <summary>
         /// 
         /// </summary>
-        public float size { get; set; }
+        public float fieldOfView { get; set; }
     }
 }

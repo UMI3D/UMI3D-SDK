@@ -14,13 +14,17 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using MainThreadDispatcher;
 using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.CompilerServices;
 using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
+using umi3d.cdk.notification;
 using umi3d.common;
 using UnityEngine;
 
@@ -137,6 +141,8 @@ namespace umi3d.cdk
             }
         }
 
+        Dictionary<string, object> info = new();
+
         /// <summary>
         /// Apply an <paramref name="operation"/>.
         /// </summary>
@@ -166,6 +172,14 @@ namespace umi3d.cdk
                     break;
                 case StopInterpolationPropertyDto interpolationStop:
                     await UMI3DEnvironmentLoader.StopInterpolation(operation.environmentId, interpolationStop, operation.tokens);
+                    break;
+                case PerspectiveCameraPropertiesDto perspectiveCameraProperties:
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = perspectiveCameraProperties;
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
+                    break;
+                case OrthographicCameraPropertiesDto orthographicCameraProperties:
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = orthographicCameraProperties;
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
                 default:
                     if (!await OperationDto(operation))
@@ -201,6 +215,10 @@ namespace umi3d.cdk
                     break;
                 case UMI3DOperationKeys.StopInterpolationProperty:
                     await UMI3DEnvironmentLoader.StopInterpolation(container.environmentId, container);
+                    break;
+                case UMI3DOperationKeys.PerspectiveCameraProperties:
+                    break;
+                case UMI3DOperationKeys.OrthographicCameraProperties:
                     break;
 
                 default:

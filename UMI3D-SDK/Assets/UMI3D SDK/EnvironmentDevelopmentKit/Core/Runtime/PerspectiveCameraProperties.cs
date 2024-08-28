@@ -15,9 +15,8 @@ limitations under the License.
 */
 
 using umi3d.common;
-using umi3d.common.userCapture.tracking;
 
-namespace umi3d.edk.userCapture.tracking
+namespace umi3d.edk.core
 {
     public class PerspectiveCameraProperties : AbstractCameraProperties
     {
