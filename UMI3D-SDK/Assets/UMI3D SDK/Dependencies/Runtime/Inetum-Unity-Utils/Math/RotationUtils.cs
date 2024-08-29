@@ -126,5 +126,34 @@ namespace inetum.unityUtils.math
                 angle += 360f;
             }
         }
+
+        /// <summary>
+        /// Get the angle in degree from a vector.<br/>
+        /// <br/>
+        /// If vector is null (0,0) the return <see cref="float.NaN"/>.<br/>
+        /// (1,0) return 0, (0, -1) return 90 if <paramref name="clockwiseDirection"/> is true else 270.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="clockwiseDirection"></param>
+        /// <returns></returns>
+        public static float Vector2Degree(this Vector2 vector, bool clockwiseDirection = true)
+        {
+            if (vector.x == 0 && vector.y == 0)
+            {
+                return float.NaN;
+            }
+
+            // Get the angle in radians [-pi, pi].
+            float angle = Mathf.Atan2(vector.y, vector.x);
+
+            angle = clockwiseDirection ? -angle : angle;
+
+            // Converts the radians to degrees
+            angle *= Mathf.Rad2Deg;
+
+            ZeroTo360(ref angle);
+
+            return angle;
+        }
     }
 }
