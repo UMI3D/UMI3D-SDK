@@ -37,6 +37,11 @@ namespace umi3d.cdk.interaction
         public AbstractTool tool => currentTool;
 
         /// <summary>
+        /// Currently projected tool ID.
+        /// </summary>
+        protected ulong? currentToolId = null;
+
+        /// <summary>
         /// Controller's inputs.
         /// </summary>
         public abstract List<AbstractUMI3DInput> inputs { get; }
@@ -171,11 +176,12 @@ namespace umi3d.cdk.interaction
         /// <see cref="Release(AbstractTool)"/>
         public virtual void Project(AbstractTool tool, bool releasable, InteractionMappingReason reason, ulong hoveredObjectId)
         {
-            if (!IsCompatibleWith(tool))
-                throw new System.Exception("Trying to project an uncompatible tool !");
 
-            if (currentTool != null)
-                throw new System.Exception("A tool is already projected !");
+            if (currentToolId != tool.id)
+            {
+                Debug.LogError("This tool is not currently projected on this controller. Temporary Fix.");
+                return;
+            }
 
             if (RequiresMenu(tool))
             {
