@@ -15,13 +15,9 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using MainThreadDispatcher;
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Linq;
-using System.Runtime.CompilerServices;
-using System.Security.Claims;
 using System.Threading;
 using System.Threading.Tasks;
 using umi3d.cdk.notification;
@@ -217,8 +213,18 @@ namespace umi3d.cdk
                     await UMI3DEnvironmentLoader.StopInterpolation(container.environmentId, container);
                     break;
                 case UMI3DOperationKeys.PerspectiveCameraProperties:
+                    float perspNear = UMI3DSerializer.Read<float>(container);
+                    float perspFar = UMI3DSerializer.Read<float>(container);
+                    float fov = UMI3DSerializer.Read<float>(container);
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new PerspectiveCameraPropertiesDto() { nearPlane = perspNear, farPlane = perspFar, fieldOfView = fov };
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
                 case UMI3DOperationKeys.OrthographicCameraProperties:
+                    float orthoNear = UMI3DSerializer.Read<float>(container);
+                    float orthoFar = UMI3DSerializer.Read<float>(container);
+                    float size = UMI3DSerializer.Read<float>(container);
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new OrthographicCameraPropertiesDto() { nearPlane = orthoNear, farPlane = orthoFar, size = size };
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
 
                 default:

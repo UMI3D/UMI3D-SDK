@@ -27,7 +27,5 @@ namespace umi3d.edk.core
             this.nearPlane = nearPlane;
             this.farPlane = farPlane;
         }
-
-        public abstract AbstractCameraProperties SetDefault();
     }
 }

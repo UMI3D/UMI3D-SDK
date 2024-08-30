@@ -27,7 +27,7 @@ namespace umi3d.edk.core
             this.fieldOfView = fieldOfView;
         }
 
-        public override AbstractCameraProperties SetDefault()
+        public static AbstractCameraProperties GetDefault()
         {
             return new PerspectiveCameraProperties(60, 0.3f, 1000);
         }

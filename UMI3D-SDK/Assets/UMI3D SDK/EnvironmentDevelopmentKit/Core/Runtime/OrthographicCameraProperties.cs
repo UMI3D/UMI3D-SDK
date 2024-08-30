@@ -27,14 +27,14 @@ namespace umi3d.edk.core
             this.size = size;
         }
 
-        public override AbstractCameraProperties SetDefault()
+        public static AbstractCameraProperties GetDefault()
         {
             return new OrthographicCameraProperties(5, 0.3f, 1000);
         }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
-            return UMI3DSerializer.Write(UMI3DOperationKeys.PerspectiveCameraProperties)
+            return UMI3DSerializer.Write(UMI3DOperationKeys.OrthographicCameraProperties)
                     + UMI3DSerializer.Write(nearPlane)
                     + UMI3DSerializer.Write(farPlane)
                     + UMI3DSerializer.Write(size);
