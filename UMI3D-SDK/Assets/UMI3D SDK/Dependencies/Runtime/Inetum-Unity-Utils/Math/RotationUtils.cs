@@ -51,5 +51,109 @@ namespace inetum.unityUtils.math
             pitchAngle = Vector3.Angle(zAxis, Vector3.ProjectOnPlane(zAxis, Vector3.up));
         }
 
+        /// <summary>
+        /// Transform a rotation to a direction.
+        /// </summary>
+        /// <param name="rotation"></param>
+        /// <returns></returns>
+        public static Vector3 RotationToDirection(Quaternion rotation)
+        {
+            return RotationToDirection(rotation.eulerAngles);
+        }
+
+        /// <summary>
+        /// Transform a rotation to a direction.
+        /// </summary>
+        /// <param name="rotation"></param>
+        /// <returns></returns>
+        public static Vector3 RotationToDirection(Vector3 rotation)
+        {
+            // Convert the rotation angles to radians
+            float angleRadX = rotation.x * Mathf.Deg2Rad;
+            float angleRadY = rotation.y * Mathf.Deg2Rad;
+            float angleRadZ = rotation.z * Mathf.Deg2Rad;
+
+            // Calculate the X, Y, and Z components of the direction
+            float dirX = Mathf.Sin(angleRadY) * Mathf.Cos(angleRadX);
+            float dirY = Mathf.Sin(angleRadX);
+            float dirZ = Mathf.Cos(angleRadY) * Mathf.Cos(angleRadX);
+
+            // Normalize the direction
+            Vector3 direction = new Vector3(dirX, dirY, dirZ).normalized;
+
+            return direction;
+        }
+
+        /// <summary>
+        /// Whether <paramref name="angle"/> is between (strictly) <paramref name="min"/> and <paramref name="max"/>.
+        /// </summary>
+        /// <param name="angle">Angle in degree.</param>
+        /// <param name="min">Angle in degree.</param>
+        /// <param name="max">Angle in degree.</param>
+        /// <returns></returns>
+        public static bool IsBetween(this float angle, float min, float max)
+        {
+            ZeroTo360(ref min);
+            ZeroTo360(ref max);
+            ZeroTo360(ref angle);
+
+            if (min < max)
+            {
+                return min < angle && angle < max;
+            }
+            else
+            {
+                return min < angle || angle < max;
+            }
+        }
+
+        /// <summary>
+        /// Restrict <paramref name="angle"/> to [0, 360].
+        /// </summary>
+        /// <param name="angle">The angle in degree.</param>
+        public static void ZeroTo360(ref float angle)
+        {
+            if (angle > 360f)
+            {
+                // Restrict the angle to [0, 360].
+                angle %= 360f;
+            }
+            else if (angle < 0)
+            {
+                // Restrict the angle to [-360, 360].
+                angle %= 360f;
+                // Restrict the angle to [0, 360].
+                angle += 360f;
+            }
+        }
+
+        /// <summary>
+        /// Get the angle in degree from a vector.<br/>
+        /// <br/>
+        /// If vector is null (0,0) the return <see cref="float.NaN"/>.<br/>
+        /// (1,0) return 0, (0, -1) return 90 if <paramref name="clockwiseDirection"/> is true else 270.
+        /// </summary>
+        /// <param name="vector"></param>
+        /// <param name="clockwiseDirection"></param>
+        /// <returns></returns>
+        public static float Vector2Degree(this Vector2 vector, bool clockwiseDirection = true)
+        {
+            if (vector.x == 0 && vector.y == 0)
+            {
+                return float.NaN;
+            }
+
+            // Get the angle in radians [-pi, pi].
+            float angle = Mathf.Atan2(vector.y, vector.x);
+
+            angle = clockwiseDirection ? -angle : angle;
+
+            // Converts the radians to degrees
+            angle *= Mathf.Rad2Deg;
+
+            ZeroTo360(ref angle);
+
+            return angle;
+        }
     }
 }
