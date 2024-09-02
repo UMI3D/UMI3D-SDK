@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using UnityEngine.Playables;
 
 namespace inetum.unityUtils
 {
@@ -64,12 +63,16 @@ namespace inetum.unityUtils
         /// <param name="key"></param>
         /// <param name="info"></param>
         /// <returns></returns>
-        public bool TryGetInfo(string key, out Object info)
+        public bool TryGetInfo(string key, out Object info, bool logError = true)
         {
             // If 'Info' is null then there is no additional information.
             if (Info == null)
             {
                 info = null;
+                if (logError)
+                {
+                    UnityEngine.Debug.LogError($"Notification: '{ID}' does not contain info id: '{key}'.");
+                }
                 return false;
             }
 
@@ -83,12 +86,17 @@ namespace inetum.unityUtils
         /// </summary>
         /// <param name="key"></param>
         /// <param name="info"></param>
+        /// <param name="logError">Whether a log error will be display if no value is found.</param>
         /// <returns></returns>
-        public bool TryGetInfoT<T>(string key, out T info)
+        public bool TryGetInfoT<T>(string key, out T info, bool logError = true)
         {
             if (!TryGetInfo(key, out object infoObject))
             {
                 info = default;
+                if (logError)
+                {
+                    UnityEngine.Debug.LogError($"Notification: '{ID}' does not contain info id: '{key}'.");
+                }
                 return false;
             }
 
@@ -96,11 +104,84 @@ namespace inetum.unityUtils
             if (infoObject is not T infoT)
             {
                 info = default;
+                if (infoObject == null)
+                {
+                    // If infoObject is not T but is null then return true.
+                    return true;
+                }
+
+                if (logError)
+                {
+                    string error = $"Notification: '{ID}' does not contain info id: '{key}' of type {typeof(T)}.";
+                    error += $"\nType of the object is {infoObject.GetType()}";
+                    UnityEngine.Debug.LogError(error);
+                }
                 return false;
             }
 
             info = infoT;
             return true;
+        }
+
+        /// <summary>
+        /// Try to get the information stored with this <paramref name="key"/>.<br/>
+        /// Return true if the information exist and is of type <see cref="Nullable{T}"/>, else false.
+        /// </summary>
+        /// <param name="key"></param>
+        /// <param name="info"></param>
+        /// <param name="logError">Whether a log error will be display if no value is found.</param>
+        /// <returns></returns>
+        public bool TryGetInfoNullableT<T>(string key, out Nullable<T> info, bool logError = true)
+            where T : struct
+        {
+            if (!TryGetInfo(key, out object infoObject))
+            {
+                info = default;
+                if (logError)
+                {
+                    UnityEngine.Debug.LogError($"Notification: '{ID}' does not contain info id: '{key}'.");
+                }
+                return false;
+            }
+
+            // Try to cast the information.
+            if (infoObject is not T infoT)
+            {
+                info = null;
+                if (infoObject == null)
+                {
+                    // If infoObject is not T but is null then return true.
+                    // No cast exist to Nullable<T>.
+                    return true;
+                }
+
+                if (logError)
+                {
+                    string error = $"Notification: '{ID}' does not contain info id: '{key}' of type {typeof(T)}.";
+                    error += $"\nType of the object is {infoObject.GetType()}";
+                    UnityEngine.Debug.LogError(error);
+                }
+                return false;
+            }
+
+            info = infoT;
+            return true;
+        }
+
+        /// <summary>
+        /// Display a log error.
+        /// </summary>
+        /// <param name="subscriber"></param>
+        /// <param name="infoKey"></param>
+        public void LogError(string subscriber, string infoKey, string message = null)
+        {
+            string error = $"[{subscriber}] notification: '{ID}' does not contain info id: '{infoKey}'.";
+            if (!string.IsNullOrEmpty(error))
+            {
+                error += "\n";
+                error += message;
+            }
+            UnityEngine.Debug.LogError(error);
         }
     }
 }
