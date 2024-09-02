@@ -14,16 +14,21 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using UnityEngine;
+
 namespace umi3d.edk.core
 {
     public abstract class AbstractCameraProperties : Operation
     {
+        protected Vector3 localPosition;
+
         protected float nearPlane;
 
         protected float farPlane;
 
-        public AbstractCameraProperties(float nearPlane, float farPlane)
+        public AbstractCameraProperties(float nearPlane, float farPlane, Vector3 localPos)
         {
+            this.localPosition = localPos;
             this.nearPlane = nearPlane;
             this.farPlane = farPlane;
         }

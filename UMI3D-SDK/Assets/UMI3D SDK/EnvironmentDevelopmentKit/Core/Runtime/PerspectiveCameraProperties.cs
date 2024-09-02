@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk.core
 {
@@ -22,19 +23,20 @@ namespace umi3d.edk.core
     {
         protected float fieldOfView;
 
-        public PerspectiveCameraProperties(float fieldOfView, float nearPlane, float farPlane) : base(nearPlane, farPlane)
+        public PerspectiveCameraProperties(float fieldOfView, float nearPlane, float farPlane, Vector3 localPos) : base(nearPlane, farPlane, localPos)
         {
             this.fieldOfView = fieldOfView;
         }
 
         public static AbstractCameraProperties GetDefault()
         {
-            return new PerspectiveCameraProperties(60, 0.3f, 1000);
+            return new PerspectiveCameraProperties(60, 0.3f, 1000, new Vector3(0, 0.198f, 0.1243f));
         }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(UMI3DOperationKeys.PerspectiveCameraProperties)
+                    + UMI3DSerializer.Write(localPosition)
                     + UMI3DSerializer.Write(nearPlane)
                     + UMI3DSerializer.Write(farPlane)
                     + UMI3DSerializer.Write(fieldOfView);
@@ -44,6 +46,7 @@ namespace umi3d.edk.core
         {
             return new PerspectiveCameraPropertiesDto()
             {
+                localPosition = this.localPosition.Dto(),
                 nearPlane = this.nearPlane,
                 farPlane = this.farPlane,
                 fieldOfView = this.fieldOfView

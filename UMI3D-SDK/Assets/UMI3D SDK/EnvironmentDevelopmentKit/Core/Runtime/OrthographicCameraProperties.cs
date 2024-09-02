@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk.core
 {
@@ -22,19 +23,20 @@ namespace umi3d.edk.core
     {
         protected float size;
 
-        public OrthographicCameraProperties(float size, float nearPlane, float farPlane) : base(nearPlane, farPlane)
+        public OrthographicCameraProperties(float size, float nearPlane, float farPlane, Vector3 localPos) : base(nearPlane, farPlane, localPos)
         {
             this.size = size;
         }
 
         public static AbstractCameraProperties GetDefault()
         {
-            return new OrthographicCameraProperties(5, 0.3f, 1000);
+            return new OrthographicCameraProperties(5, 0.3f, 1000, new Vector3(0, 0.198f, 0.1243f));
         }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(UMI3DOperationKeys.OrthographicCameraProperties)
+                    + UMI3DSerializer.Write(localPosition)
                     + UMI3DSerializer.Write(nearPlane)
                     + UMI3DSerializer.Write(farPlane)
                     + UMI3DSerializer.Write(size);
@@ -44,6 +46,7 @@ namespace umi3d.edk.core
         {
             return new OrthographicCameraPropertiesDto()
             {
+                localPosition = this.localPosition.Dto(),
                 nearPlane = this.nearPlane,
                 farPlane = this.farPlane,
                 size = this.size

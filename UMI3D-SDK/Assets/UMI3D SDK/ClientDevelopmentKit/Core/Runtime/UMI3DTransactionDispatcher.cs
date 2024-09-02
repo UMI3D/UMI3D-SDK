@@ -213,17 +213,19 @@ namespace umi3d.cdk
                     await UMI3DEnvironmentLoader.StopInterpolation(container.environmentId, container);
                     break;
                 case UMI3DOperationKeys.PerspectiveCameraProperties:
+                    Vector3Dto localPos = UMI3DSerializer.Read<Vector3Dto>(container);
                     float perspNear = UMI3DSerializer.Read<float>(container);
                     float perspFar = UMI3DSerializer.Read<float>(container);
                     float fov = UMI3DSerializer.Read<float>(container);
-                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new PerspectiveCameraPropertiesDto() { nearPlane = perspNear, farPlane = perspFar, fieldOfView = fov };
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new PerspectiveCameraPropertiesDto() { localPosition = localPos, nearPlane = perspNear, farPlane = perspFar, fieldOfView = fov };
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
                 case UMI3DOperationKeys.OrthographicCameraProperties:
+                    Vector3Dto orthoLocalPos = UMI3DSerializer.Read<Vector3Dto>(container);
                     float orthoNear = UMI3DSerializer.Read<float>(container);
                     float orthoFar = UMI3DSerializer.Read<float>(container);
                     float size = UMI3DSerializer.Read<float>(container);
-                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new OrthographicCameraPropertiesDto() { nearPlane = orthoNear, farPlane = orthoFar, size = size };
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new OrthographicCameraPropertiesDto() { localPosition = orthoLocalPos, nearPlane = orthoNear, farPlane = orthoFar, size = size };
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
 

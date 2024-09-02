@@ -24,6 +24,9 @@ namespace umi3d.common
         /// <summary>
         /// 
         /// </summary>
+
+        public Vector3Dto localPosition {  get; set; }
+
         public float nearPlane { get; set; }
 
         public float farPlane { get; set; }
