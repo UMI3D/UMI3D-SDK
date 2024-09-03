@@ -1,0 +1,17 @@
+## Type of modifications
+- [ ] Feature
+- [ ] Bug fix
+- [ ] Documentation
+
+## Common
+- [Core|UserCapture|InteractionSystem|Collaboration] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+
+## CDK
+- [Core|UserCapture|InteractionSystem|Collaboration] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+## EDK
+- [Core|UserCapture|InteractionSystem|Collaboration] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+
+## API Update
+- [Common|CDK|EDK][Core|UserCapture|InteractionSystem|Collaboration][Created|Updated|Deleted] Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
