@@ -118,5 +118,20 @@ namespace inetum.unityUtils
             string id,
             Dictionary<string, Object> info = null
         );
+
+        /// <summary>
+        /// Get a <see cref="Notifier"/>. Use that to optimize notification sending.
+        /// </summary>
+        /// <param name="publisher"></param>
+        /// <param name="id"></param>
+        /// <param name="subscribersFilter"></param>
+        /// <param name="info"></param>
+        /// <returns></returns>
+        public Notifier GetNotifier(
+            Object publisher,
+            string id,
+            INotificationFilter subscribersFilter = null,
+            Dictionary<string, Object> info = null
+        );
     }
 }

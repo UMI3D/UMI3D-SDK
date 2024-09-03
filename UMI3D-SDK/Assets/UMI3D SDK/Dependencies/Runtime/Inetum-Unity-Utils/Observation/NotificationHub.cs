@@ -262,6 +262,22 @@ namespace inetum.unityUtils
             return Notify(publisher, id, null, info);
         }
 
+        public Notifier GetNotifier(
+            Object publisher,
+            string id,
+            INotificationFilter subscribersFilter = null,
+            Dictionary<string, Object> info = null
+        )
+        {
+            return new Notifier(
+                publisher,
+                id, 
+                subscribersFilter, 
+                info,
+                this
+            );
+        }
+
         /// <summary>
         /// Class representing a subscription to a notification.
         /// </summary>
