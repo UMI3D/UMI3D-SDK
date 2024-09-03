@@ -18,12 +18,24 @@ using UnityEngine;
 
 namespace umi3d.edk.core
 {
+    /// <summary>
+    /// Abstract operation to describe a camera operation.
+    /// </summary>
     public abstract class AbstractCameraProperties : Operation
     {
+        /// <summary>
+        /// The new camera local position.
+        /// </summary>
         protected Vector3 localPosition;
 
+        /// <summary>
+        /// The new camera near plane.
+        /// </summary>
         protected float nearPlane;
 
+        /// <summary>
+        /// The new camera far plane.
+        /// </summary>
         protected float farPlane;
 
         public AbstractCameraProperties(float nearPlane, float farPlane, Vector3 localPos)

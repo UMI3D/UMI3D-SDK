@@ -19,8 +19,14 @@ using UnityEngine;
 
 namespace umi3d.edk.core
 {
+    /// <summary>
+    /// Operation to apply orthographic projection on the camera.
+    /// </summary>
     public class OrthographicCameraProperties : AbstractCameraProperties
     {
+        /// <summary>
+        /// The new camera size.
+        /// </summary>
         protected float size;
 
         public OrthographicCameraProperties(float size, float nearPlane, float farPlane, Vector3 localPos) : base(nearPlane, farPlane, localPos)
@@ -28,6 +34,9 @@ namespace umi3d.edk.core
             this.size = size;
         }
 
+        /// <summary>
+        /// Create an operation for orthographic camera with default settings.
+        /// </summary>
         public static AbstractCameraProperties GetDefault()
         {
             return new OrthographicCameraProperties(5, 0.3f, 1000, new Vector3(0, 0.198f, 0.1243f));

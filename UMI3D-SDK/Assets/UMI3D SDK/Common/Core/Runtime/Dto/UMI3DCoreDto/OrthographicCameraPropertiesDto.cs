@@ -16,10 +16,13 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Operation DTO to apply orthographic projection on the camera.
+    /// </summary>
     public class OrthographicCameraPropertiesDto : AbstractCameraPropertiesDto
     {
         /// <summary>
-        /// 
+        /// The new camera size.
         /// </summary>
         public float size { get; set; }
     }

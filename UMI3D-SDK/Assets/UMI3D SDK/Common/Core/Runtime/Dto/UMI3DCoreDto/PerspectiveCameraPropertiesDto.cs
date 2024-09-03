@@ -16,10 +16,13 @@ limitations under the License.
 
 namespace umi3d.common
 {
+    /// <summary>
+    /// Operation DTO to apply perspective on the camera.
+    /// </summary>
     public class PerspectiveCameraPropertiesDto : AbstractCameraPropertiesDto
     {
         /// <summary>
-        /// 
+        /// The new camera FoV.
         /// </summary>
         public float fieldOfView { get; set; }
     }

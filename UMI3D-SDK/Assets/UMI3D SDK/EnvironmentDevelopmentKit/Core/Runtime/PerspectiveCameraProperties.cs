@@ -19,8 +19,14 @@ using UnityEngine;
 
 namespace umi3d.edk.core
 {
+    /// <summary>
+    /// Operation to apply perspective on the camera.
+    /// </summary>
     public class PerspectiveCameraProperties : AbstractCameraProperties
     {
+        /// <summary>
+        /// The new camera FoV.
+        /// </summary>
         protected float fieldOfView;
 
         public PerspectiveCameraProperties(float fieldOfView, float nearPlane, float farPlane, Vector3 localPos) : base(nearPlane, farPlane, localPos)
@@ -28,6 +34,9 @@ namespace umi3d.edk.core
             this.fieldOfView = fieldOfView;
         }
 
+        /// <summary>
+        /// Create an operation for perspective camera with default settings.
+        /// </summary>
         public static AbstractCameraProperties GetDefault()
         {
             return new PerspectiveCameraProperties(60, 0.3f, 1000, new Vector3(0, 0.198f, 0.1243f));

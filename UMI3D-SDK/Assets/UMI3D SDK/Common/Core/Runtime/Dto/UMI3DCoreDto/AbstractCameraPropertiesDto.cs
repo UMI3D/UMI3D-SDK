@@ -17,18 +17,23 @@ limitations under the License.
 namespace umi3d.common
 {
     /// <summary>
-    /// 
+    /// Abstract operation DTO to describe a camera operation.
     /// </summary>
     public abstract class AbstractCameraPropertiesDto : AbstractOperationDto
     {
         /// <summary>
-        /// 
+        /// The new camera local position.
         /// </summary>
-
         public Vector3Dto localPosition {  get; set; }
 
+        /// <summary>
+        /// The new camera near plane.
+        /// </summary>
         public float nearPlane { get; set; }
 
+        /// <summary>
+        /// The new camera far plane.
+        /// </summary>
         public float farPlane { get; set; }
     }
 }
