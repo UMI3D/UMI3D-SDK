@@ -90,13 +90,9 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public bool TryGetInfoT<T>(string key, out T info, bool logError = true)
         {
-            if (!TryGetInfo(key, out object infoObject))
+            if (!TryGetInfo(key, out object infoObject, logError))
             {
                 info = default;
-                if (logError)
-                {
-                    UnityEngine.Debug.LogError($"Notification: '{ID}' does not contain info id: '{key}'.");
-                }
                 return false;
             }
 
@@ -113,7 +109,7 @@ namespace inetum.unityUtils
                 if (logError)
                 {
                     string error = $"Notification: '{ID}' does not contain info id: '{key}' of type {typeof(T)}.";
-                    error += $"\nType of the object is {infoObject.GetType()}";
+                    error += $"\nType of the object is {infoObject.GetType()}\n";
                     UnityEngine.Debug.LogError(error);
                 }
                 return false;
@@ -134,13 +130,9 @@ namespace inetum.unityUtils
         public bool TryGetInfoNullableT<T>(string key, out Nullable<T> info, bool logError = true)
             where T : struct
         {
-            if (!TryGetInfo(key, out object infoObject))
+            if (!TryGetInfo(key, out object infoObject, logError))
             {
                 info = default;
-                if (logError)
-                {
-                    UnityEngine.Debug.LogError($"Notification: '{ID}' does not contain info id: '{key}'.");
-                }
                 return false;
             }
 
