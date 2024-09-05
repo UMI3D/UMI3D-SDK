@@ -386,7 +386,8 @@ namespace umi3d.common.collaboration
                 case StringParameterDto param:
                     bytable = UMI3DSerializer.Write(UMI3DParameterKeys.String)
                         + UMI3DSerializer.Write(param.privateParameter)
-                        + UMI3DSerializer.Write(param.value);
+                        + UMI3DSerializer.Write(param.value)
+                        + UMI3DSerializer.Write(param.expectLongText);
                     break;
 
                 case UploadFileParameterDto param:

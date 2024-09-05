@@ -29,6 +29,8 @@ namespace umi3d.cdk.menu
         /// </summary>
         private string value = "";
 
+        private bool expectLongText = false;
+
         /// <summary>
         /// Subscribers on value change
         /// </summary>

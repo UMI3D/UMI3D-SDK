@@ -22,6 +22,8 @@ namespace umi3d.common.interaction
     [System.Serializable]
     public class StringParameterDto : AbstractParameterDto<string>
     {
+        public bool expectLongText { get; set; }
+
         public StringParameterDto() : base() { }
     }
 }

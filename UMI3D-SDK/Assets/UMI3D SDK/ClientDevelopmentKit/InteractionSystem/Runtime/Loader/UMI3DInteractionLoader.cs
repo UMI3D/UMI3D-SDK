@@ -212,6 +212,7 @@ namespace umi3d.cdk.interaction
                     var String = new StringParameterDto();
                     ReadAbstractParameterDto(String, container);
                     String.value = UMI3DSerializer.Read<string>(container);
+                    String.expectLongText = UMI3DSerializer.Read<bool>(container);
                     interaction = String;
                     break;
                 case UMI3DInteractionKeys.LocalInfoParameter:
