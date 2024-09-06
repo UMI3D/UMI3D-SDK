@@ -107,7 +107,7 @@ namespace umi3d.edk.interaction
         {
             base.InitDefinition(id);
 
-            objectValue = new(id, UMI3DPropertyKeys.InteractionParameter, DefaultValue);
+            objectValue = new(id, UMI3DPropertyKeys.InteractionParameterValue, DefaultValue);
         }
 
         public enum ParameterType : int

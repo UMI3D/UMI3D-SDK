@@ -75,6 +75,24 @@ namespace umi3d.cdk.interaction
                             }
                             return true;
                         }
+                    case AbstractParameterDto parameterDto:
+                        {
+                            if (value.property.property is UMI3DPropertyKeys.InteractionParameterValue)
+                            {
+                                switch (parameterDto)
+                                {
+                                    case BooleanParameterDto booleanParameterDto:
+                                        {
+                                            booleanParameterDto.value = (bool)value.property.value;
+                                            break;
+                                        }
+                                    default:
+                                        break;
+                                }
+                                return true;
+                            }
+                            return false;
+                        }
                     default:
                         return false;
                 }
