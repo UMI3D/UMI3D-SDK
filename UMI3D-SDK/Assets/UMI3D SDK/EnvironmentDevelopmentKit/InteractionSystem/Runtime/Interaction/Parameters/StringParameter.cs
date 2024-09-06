@@ -22,13 +22,8 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Editable <see cref="string"/> parameter.
     /// </summary>
-    public class StringParameter : AbstractParameter
+    public class StringParameter : AbstractParameter<string>
     {
-        /// <summary>
-        /// Current input value.
-        /// </summary>
-        public string value;
-
         public bool expectLongText;
 
         [System.Serializable]

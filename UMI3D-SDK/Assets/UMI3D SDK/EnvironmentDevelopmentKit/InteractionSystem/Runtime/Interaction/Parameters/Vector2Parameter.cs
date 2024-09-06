@@ -21,12 +21,9 @@ using UnityEngine;
 namespace umi3d.edk.interaction
 {
 
-    public class Vector2Parameter : AbstractParameter
+    public class Vector2Parameter : AbstractParameter<Vector2>
     {
-        /// <summary>
-        /// Current input value.
-        /// </summary>
-        public Vector2 value = Vector2.one;
+        protected override Vector2 DefaultValue => Vector2.one;
 
         [System.Serializable]
         public class Vector2Listener : ParameterEvent<Vector2> { }

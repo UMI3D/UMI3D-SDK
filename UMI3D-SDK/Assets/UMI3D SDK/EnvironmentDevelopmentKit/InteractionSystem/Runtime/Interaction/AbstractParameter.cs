@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine.Events;
@@ -81,4 +82,46 @@ namespace umi3d.edk.interaction
                 + UMI3DSerializer.Write(isDisplayer);
         }
     }
+
+    public abstract class AbstractParameter<T> : AbstractParameter
+    {
+        /// <summary>
+        /// Current input value.
+        /// </summary>
+        public UMI3DAsyncProperty<T> objectValue;
+
+        /// <summary>
+        /// Current value.
+        /// </summary>
+        public T value
+        {
+            get => objectValue.GetValue();
+            set => objectValue.SetValue(value);
+        }
+
+        protected virtual T DefaultValue => default;
+
+        protected abstract ParameterType ParameterTypeIndex {  get; }
+
+        protected override void InitDefinition(ulong id)
+        {
+            base.InitDefinition(id);
+
+            objectValue = new(id, UMI3DPropertyKeys.InteractionParameter, DefaultValue);
+        }
+
+        public enum ParameterType : int
+        {
+            NONE,
+            BOOLEAN,
+            FLOAT,
+            STRING,
+            STRING_ENUM,
+            VECTOR2,
+            VECTOR3,
+            VECTOR4,
+            COLOR
+        }
+    }
+
 }

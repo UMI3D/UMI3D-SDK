@@ -23,13 +23,8 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Editable <see cref="enum"/> parameter using values as <see cref="string"/>.
     /// </summary>
-    public class StringEnumParameter : AbstractParameter
+    public class StringEnumParameter : AbstractParameter<string>
     {
-        /// <summary>
-        /// Current value.
-        /// </summary>
-        public string value = null;
-
         /// <summary>
         /// Availables options.
         /// </summary>

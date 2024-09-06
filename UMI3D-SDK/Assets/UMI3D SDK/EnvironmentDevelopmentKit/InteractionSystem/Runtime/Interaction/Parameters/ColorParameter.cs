@@ -21,13 +21,8 @@ using UnityEngine;
 namespace umi3d.edk.interaction
 {
 
-    public class ColorParameter : AbstractParameter
+    public class ColorParameter : AbstractParameter<Color>
     {
-        /// <summary>
-        /// Current input value.
-        /// </summary>
-        public Color value = Color.white;
-
         [System.Serializable]
         public class ColorListener : ParameterEvent<Color> { }
 

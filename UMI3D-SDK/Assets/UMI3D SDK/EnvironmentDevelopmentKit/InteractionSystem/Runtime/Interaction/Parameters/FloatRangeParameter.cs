@@ -23,13 +23,8 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Editable <see cref="float"/> range parameter.
     /// </summary>
-    public class FloatRangeParameter : AbstractParameter
+    public class FloatRangeParameter : AbstractParameter<float>
     {
-        /// <summary>
-        /// Current input value.
-        /// </summary>
-        public float value = 0;
-
         /// <summary>
         /// Range's minium value.
         /// </summary>

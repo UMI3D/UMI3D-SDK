@@ -22,13 +22,8 @@ namespace umi3d.edk.interaction
     /// <summary>
     /// Editable <see cref="bool"/> parameter.
     /// </summary>
-    public class BooleanParameter : AbstractParameter
+    public class BooleanParameter : AbstractParameter<bool>
     {
-        /// <summary>
-        /// Current input value.
-        /// </summary>
-        public bool value = false;
-
         [System.Serializable]
         public class CheckboxListener : ParameterEvent<bool> { }
 
