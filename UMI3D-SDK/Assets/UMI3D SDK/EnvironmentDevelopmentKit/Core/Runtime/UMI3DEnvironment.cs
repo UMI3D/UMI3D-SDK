@@ -120,7 +120,13 @@ namespace umi3d.edk
         /// <param name="user"></param>
         protected virtual void WriteProperties(UMI3DEnvironmentDto dto, UMI3DUser user)
         {
-            dto.LibrariesId = globalLibraries.Select(l => l.idVersion).ToList();
+            dto.LibrariesId = globalLibraries.Select(l =>
+            {
+                if (l == null)
+                    throw new MissingReferenceException("A referenced global library was null");
+
+                return l.idVersion;
+            }).ToList();
             dto.preloadedScenes = objectPreloadedScenes.GetValue(user).Select(r => new PreloadedSceneDto() { scene = r.ToDto() }).ToList();
             dto.ambientType = (AmbientType)objectAmbientType.GetValue(user);
             dto.skyColor = objectSkyColor.GetValue(user).Dto();
@@ -159,7 +165,13 @@ namespace umi3d.edk
         {
             try
             {
-                List<AssetLibraryDto> libraries = globalLibraries?.Select(l => l.ToDto()).ToList() ?? new List<AssetLibraryDto>();
+                List<AssetLibraryDto> libraries = globalLibraries?.Select(l =>
+                {
+                    if (l == null)
+                        throw new MissingReferenceException("A referenced global library was null");
+
+                    return l.ToDto();
+                }).ToList() ?? new List<AssetLibraryDto>();
                 IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
                 if (sceneLib != null)
                     libraries.AddRange(sceneLib);
