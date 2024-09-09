@@ -64,11 +64,6 @@ namespace umi3d.cdk
             }
         }
 
-        /*     public static void LoadTextureInMaterial(TextureDto textureDto, MRTKShaderUtils.ShaderProperty<Texture2D> materialKey, Material mat)
-             {
-                 LoadTextureInMaterial(textureDto, (MRTKShaderUtils.ShaderProperty<Texture> )materialKey, mat);
-             }*/
-
         /// <summary>
         /// Load a texture from file or from cache and add it in the material
         /// </summary>
@@ -167,62 +162,76 @@ namespace umi3d.cdk
         {
             if (shaderAdditionalProperties == null)
                 return;
-            foreach (KeyValuePair<string, object> item in shaderAdditionalProperties)
+
+            foreach ((string propertyName, object propertyValue) in shaderAdditionalProperties)
             {
-                if ((!string.IsNullOrEmpty(item.Key)) && item.Value != null)
+                if ((!string.IsNullOrEmpty(propertyName)) && propertyValue != null)
                 {
-                    //type type = item.Value.GetType();
-                    switch (item.Value)
+                    switch (propertyName)
+                    {
+                        case UMI3DShaderProperties.RenderQueueProperty:
+
+                            if (propertyValue is int renderQueue)
+                                newMat.renderQueue = renderQueue;
+                            else if (propertyValue is long longRenderQueue)
+                                newMat.renderQueue = (int)longRenderQueue;
+                            else
+                            {
+                                UMI3DLogger.LogError($"Impossible to set material render queue, a integer is expected as a value, not a {propertyValue?.GetType()} (value = {propertyValue})", scope);
+                            }
+
+                            break;
+                    }
+
+                    switch (propertyValue)
                     {
                         case float f:
-                            newMat.SetFloat(item.Key, f);
+                            newMat.SetFloat(propertyName, f);
                             break;
                         case double f:
-                            newMat.SetFloat(item.Key, (float)f);
+                            newMat.SetFloat(propertyName, (float)f);
                             break;
                         case Vector4 v:
-                            newMat.SetVector(item.Key, v);
+                            newMat.SetVector(propertyName, v);
                             break;
                         case Vector4Dto v:
-                            newMat.SetVector(item.Key, v.Struct());
+                            newMat.SetVector(propertyName, v.Struct());
                             break;
                         case Vector3 v:
-                            newMat.SetVector(item.Key, new Vector4(v.x, v.y, v.z));
+                            newMat.SetVector(propertyName, new Vector4(v.x, v.y, v.z));
                             break;
                         case Vector3Dto v:
-                            newMat.SetVector(item.Key, new Vector4(v.X, v.Y, v.Z));
+                            newMat.SetVector(propertyName, new Vector4(v.X, v.Y, v.Z));
                             break;
                         case Vector2 v:
-                            newMat.SetVector(item.Key, new Vector4(v.x, v.y));
+                            newMat.SetVector(propertyName, new Vector4(v.x, v.y));
                             break;
                         case Vector2Dto v:
-                            newMat.SetVector(item.Key, new Vector4(v.X, v.Y));
+                            newMat.SetVector(propertyName, new Vector4(v.X, v.Y));
                             break;
                         case Color c:
-                            newMat.SetColor(item.Key, c);
+                            newMat.SetColor(propertyName, c);
                             break;
                         case ColorDto c:
-                            newMat.SetColor(item.Key, c.Struct());
+                            newMat.SetColor(propertyName, c.Struct());
                             break;
                         case int i:
-                            newMat.SetInt(item.Key, i);
+                            newMat.SetInt(propertyName, i);
                             break;
                         case Int64 i:
-                            newMat.SetInt(item.Key, (int)i);
+                            newMat.SetInt(propertyName, (int)i);
                             break;
                         case TextureDto t:
-                            //newMat.SetTexture(item.Key, t);
-                            LoadTextureInMaterial(id, t, item.Key, newMat);
-                            //ApplyTiling(KhrTT.offset, KhrTT.scale, newMat);
+                            LoadTextureInMaterial(id, t, propertyName, newMat);
                             break;
                         case bool b:
                             if (b)
                             {
-                                newMat.EnableKeyword(item.Key);
+                                newMat.EnableKeyword(propertyName);
                             }
                             else
                             {
-                                newMat.DisableKeyword(item.Key);
+                                newMat.DisableKeyword(propertyName);
                             }
                             break;
                         default:
