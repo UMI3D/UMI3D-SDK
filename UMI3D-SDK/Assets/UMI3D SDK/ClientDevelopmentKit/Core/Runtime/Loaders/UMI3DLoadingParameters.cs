@@ -262,7 +262,7 @@ namespace umi3d.cdk
                 if (loader.IsToBeIgnored(extension))
                     return null;
             }
-            throw new Umi3dException("there is no compatible loader for this extention : " + extension);
+            throw new Umi3dException("there is no compatible loader for this extension : " + extension);
         }
 
         /// <inheritdoc/>
