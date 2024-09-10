@@ -137,6 +137,24 @@ namespace umi3d.common
 
     }
 
+    public class Umi3dBundleException : Umi3dException
+    {
+        public readonly bool bundleAlreadyLoaded;
+
+        public Umi3dBundleException(string message, bool bundleAlreadyLoaded) : base(message)
+        {
+            this.bundleAlreadyLoaded = bundleAlreadyLoaded;
+        }
+
+        public override string Message => $"Loading Error : {base.Message}";
+
+        public override string ToString()
+        {
+            return $" Loading Error [ {base.ToString()} ]";
+        }
+
+    }
+
     public class Umi3dLoadingException : Umi3dException
     {
 

@@ -73,16 +73,25 @@ namespace umi3d.cdk
             {
                 AssetBundle bundle = downloadHandlerAssetBundle?.assetBundle;
 
-                www.Dispose();
-                if (bundle != null) return (bundle);
-#if UNITY_2020_OR_NEWER
-                    else if (downloadHandlerAssetBundle?.error != null)
-                        throw new Umi3dException($"An error has occurred during the decoding of the asset bundle’s assets.\n{downloadHandlerAssetBundle?.error}");
+
+                if (bundle != null)
+                {
+                    www.Dispose();
+                    return (bundle);
+                }
+#if UNITY_2020_1_OR_NEWER
+                else if (downloadHandlerAssetBundle?.error != null)
+                {
+                    string error = downloadHandlerAssetBundle?.error;
+                    www.Dispose();
+                    throw new Umi3dBundleException($"An error has occurred during the decoding of the asset bundle’s assets.\n{error}", error.Contains("can't be loaded because another AssetBundle with the same files is already loaded."));
+                }
 #endif
                 else
                 {
                     UMI3DResourcesManager.Instance.DebugCach();
-                    throw new Umi3dException($"Asset bundle empty: \n\n\"{url}\" \n\nAn error might have occurred during the decoding of the asset bundle’s assets.");
+                    www.Dispose();
+                    throw new Umi3dBundleException($"Asset bundle empty: \n\n\"{url}\" \n\nAn error might have occurred during the decoding of the asset bundle’s assets.", true);
                 }
             }
             www.Dispose();

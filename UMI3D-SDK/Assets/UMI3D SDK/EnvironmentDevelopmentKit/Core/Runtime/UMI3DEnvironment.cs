@@ -172,7 +172,7 @@ namespace umi3d.edk
 
                     return l.ToDto();
                 }).ToList() ?? new List<AssetLibraryDto>();
-                IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.id)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
+                IEnumerable<AssetLibraryDto> sceneLib = scenes?.SelectMany(s => s.libraries)?.GroupBy(l => l.libraryId)?.Where(l => !libraries.Any(l2 => l2.libraryId == l.Key))?.Select(l => l.First().ToDto());
                 if (sceneLib != null)
                     libraries.AddRange(sceneLib);
                 return new LibrariesDto() { libraries = libraries };

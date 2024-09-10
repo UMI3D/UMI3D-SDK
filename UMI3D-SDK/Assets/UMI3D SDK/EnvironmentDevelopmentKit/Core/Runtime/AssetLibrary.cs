@@ -36,12 +36,25 @@ namespace umi3d.edk
         /// </summary>
         /// Typically "com.compagny.application".
         [Tooltip("Id of the library. Choose a unique name. Typically 'com.compagny.application'.")]
-        public string id = "com.compagny.application";
+        [SerializeField]
+        private string id = "com.compagny.application";
 
         /// <summary>
         /// UMI3D entity ID.
         /// </summary>
         private ulong eId = 0;
+
+        private bool? isNameTooLongForGuidInVersion = null;
+        public bool IsNameTooLongForGuidInVersion
+        {
+            get
+            {
+                if (!isNameTooLongForGuidInVersion.HasValue)
+                    isNameTooLongForGuidInVersion = libraryId.Length > 30;
+                
+                return isNameTooLongForGuidInVersion.Value;
+            }
+        }
 
         /// <summary>
         /// Version of the library.
@@ -61,14 +74,24 @@ namespace umi3d.edk
         public List<UMI3DLocalAssetDirectory> variants = new List<UMI3DLocalAssetDirectory>();
 
 
-        public string idVersion => id + ":" + version;
+        public string idVersion => libraryId + ":" + version;
+
+        public string libraryId
+        {
+            get => this.id;
+            set
+            {
+                this.id = value;
+                isNameTooLongForGuidInVersion = this.id.Length > 30;
+            }
+        }
 
         /// <inheritdoc/>
         public AssetLibraryDto ToDto()
         {
             var dto = new AssetLibraryDto
             {
-                libraryId = id,
+                libraryId = libraryId,
                 id = Id(),
                 version = version, 
                 variants = new List<UMI3DLocalAssetFilesDto>()
@@ -84,7 +107,7 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public Bytable ToBytes(UMI3DUser user)
         {
-            return UMI3DSerializer.Write(id)
+            return UMI3DSerializer.Write(libraryId)
                 + UMI3DSerializer.Write(Id())
                 + UMI3DSerializer.Write(version)
                 + UMI3DSerializer.WriteCollection(variants.Select(v => v.ToFileDto()));
