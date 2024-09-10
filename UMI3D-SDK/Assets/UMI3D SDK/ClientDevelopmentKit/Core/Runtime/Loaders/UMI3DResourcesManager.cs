@@ -337,46 +337,6 @@ namespace umi3d.cdk
                 return url.Split("/com.").Last();
             }
 
-            //public ObjectData(string url, object value, HashSet<ulong> entityId)
-            //{
-            //    this.value = value;
-            //    entityIds = entityId;
-            //    libraryIds = new HashSet<Library>();
-            //    state = Estate.Loaded;
-            //    downloadedPath = null;
-            //    this.url = FormatUrl(url);
-            //    a = rx.Match(url);
-
-            //    this.comSplit = UrlToCom(this.url);
-            //}
-
-            //public ObjectData(string url, object value, ulong entityId)
-            //{
-            //    this.value = value;
-            //    entityIds = new HashSet<ulong>() { entityId };
-            //    libraryIds = new HashSet<Library>();
-            //    state = Estate.Loaded;
-            //    downloadedPath = null;
-            //    this.url = FormatUrl(url);
-            //    a = rx.Match(url);
-            //    this.comSplit = UrlToCom(this.url);
-            //}
-
-            //public ObjectData(string url, string extension, string authorization, HashSet<ulong> entityId)
-            //{
-            //    value = null;
-            //    entityIds = entityId;
-            //    libraryIds = new HashSet<Library>();
-            //    state = Estate.NotLoaded;
-            //    downloadedPath = null;
-            //    this.url = FormatUrl(url);
-            //    this.extension = extension;
-            //    a = rx.Match(url);
-            //    this.authorization = ComputeAuthorization(authorization);
-
-            //    this.comSplit = UrlToCom(this.url);
-            //}
-
             public ObjectData(string url, string extension, string authorization, ulong entityId)
             {
                 value = null;
@@ -425,21 +385,6 @@ namespace umi3d.cdk
                 this.comSplit = UrlToCom(this.url);
                 this.fileName = System.IO.Path.GetFileName(this.url);
             }
-
-            //public ObjectData(string url, string extension, string authorization, ulong entityId, string downloadedPath)
-            //{
-            //    value = null;
-            //    entityIds = new HashSet<ulong>() { entityId };
-            //    libraryIds = new HashSet<Library>();
-            //    state = Estate.NotLoaded;
-            //    this.downloadedPath = downloadedPath;
-            //    this.url = FormatUrl(url);
-            //    this.extension = extension;
-            //    this.authorization = authorization;
-            //    a = rx.Match(url);
-
-            //    this.comSplit = UrlToCom(this.url);
-            //}
         }
 
         public Dictionary<ulong, Library> librariesMap = new Dictionary<ulong, Library>();
