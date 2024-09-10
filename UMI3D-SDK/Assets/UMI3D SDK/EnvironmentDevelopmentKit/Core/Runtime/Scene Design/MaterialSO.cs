@@ -31,9 +31,11 @@ namespace umi3d.edk
         [Tooltip("Custom shader properties for customized shaders.")]
         public Dictionary<string, object> shaderProperties = new Dictionary<string, object>();
         /// <summary>
-        /// See <see cref="shaderProperties"/>.
+        /// See <see cref="shaderProperties"/>. Common properties can be found at <see cref="UMI3DShaderProperties"/>.
         /// </summary>
+        /// 
         public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
+        
         /// <summary>
         /// See <see cref="shaderProperties"/>.
         /// </summary>

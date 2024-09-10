@@ -581,6 +581,7 @@ namespace umi3d.cdk
                         default:
                             break;
                     }
+
                     if (materialToModify != null)
                     {
                         if (materialToModify is Material)
@@ -599,6 +600,7 @@ namespace umi3d.cdk
                             return false;
                         }
                     }
+
                     break;
 
                 default:

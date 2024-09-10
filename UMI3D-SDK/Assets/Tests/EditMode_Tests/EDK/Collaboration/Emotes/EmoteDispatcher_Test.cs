@@ -49,6 +49,7 @@ namespace EditMode_Tests.Collaboration.Emotes.EDK
 
             umi3dServerMock.Setup(x => x.OnUserActive).Returns(new UMI3DUserEvent());
             umi3dServerMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
+            umi3dServerMock.Setup(x => x.OnUserRefreshed).Returns(new UMI3DUserEvent());
             umi3dServerMock.Setup(x => x.OnUserMissing).Returns(new UMI3DUserEvent());
 
             emoteDispatcher = new EmoteDispatcher(umi3dEnvironmentMock.Object, umi3dServerMock.Object);
