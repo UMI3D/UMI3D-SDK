@@ -3,11 +3,17 @@ using System.Collections;
 using System;
 using MumbleProto;
 using UnityEngine.Events;
+using System.Linq;
 
 namespace Mumble
 {
     public class MumbleAudioPlayerPlayingEvent : UnityEvent<bool> { }
 
+    /*
+     * WARNING : THIS CLASS IS MODIFIED !
+     * 
+     * Most modifications concern OnAudioFilterRead method.
+     */
     [RequireComponent(typeof(AudioSource))]
     public class MumbleAudioPlayer : MonoBehaviour
     {
@@ -132,8 +138,9 @@ namespace Mumble
         float[] monoSoundReceived;
         void OnAudioFilterRead(float[] data, int channels)
         {
-            if (_mumbleClient == null || !_mumbleClient.ConnectionSetupFinished)
+            if (_mumbleClient == null /*|| !_mumbleClient.ConnectionSetupFinished*/)
                 return;
+
 
             if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
             {
@@ -165,7 +172,7 @@ namespace Mumble
             float percentUnderrun = 1f - numRead / data.Length;
 
             if (OnAudioSample != null)
-                OnAudioSample(data, percentUnderrun);
+                OnAudioSample?.Invoke(data.ToArray(), percentUnderrun);
 
             if (Gain == 1)
                 return;
@@ -220,7 +227,7 @@ namespace Mumble
             }
             if (!_isPlaying && _mumbleClient.HasPlayableAudio(Session))
             {
-                _audioSource.Play();
+                _audioSource.Play();     
                 _isPlaying = true;
             }
             else if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
