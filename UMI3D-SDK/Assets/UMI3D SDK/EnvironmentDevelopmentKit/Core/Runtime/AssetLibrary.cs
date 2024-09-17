@@ -212,17 +212,27 @@ namespace umi3d.edk
         public UMI3DLocalAssetFilesDto ToFileDto()
         {
             var directoryPath = inetum.unityUtils.Path.Combine(Application.dataPath, UMI3DServer.dataPath, path);
-            return new UMI3DLocalAssetFilesDto()
+
+            UMI3DLocalAssetFilesDto dto = new()
             {
                 name = name,
                 files = new FileListDto()
                 {
                     baseUrl = inetum.unityUtils.Path.Combine("file", path),
-                    files = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories).Select(f => f.Replace(directoryPath, "")).ToList(),
                 },
                 metrics = metrics.ToDto(),
                 formats = formats,
             };
+
+            if (Directory.Exists(directoryPath))
+                dto.files.files = Directory.GetFiles(directoryPath, "*.*", SearchOption.AllDirectories).Select(f => f.Replace(directoryPath, "")).ToList();
+            else
+            {
+                dto.files.files = new();
+                UMI3DLogger.LogWarning($"{nameof(UMI3DLocalAssetDirectory)}.{nameof(ToFileDto)} : directory doesn't exist {directoryPath} ", DebugScope.EDK);
+            }
+
+            return dto;
         }
 
         public class AssetMetric
