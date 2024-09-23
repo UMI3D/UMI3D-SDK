@@ -664,6 +664,19 @@ namespace umi3d.cdk.collaboration
                             await UMI3DAsyncManager.Yield();
                     }
                     break;
+                case UMI3DOperationKeys.MicrophoneRequest:
+                    bool status = UMI3DSerializer.Read<bool>(container);
+
+                    bool waitForMSRequest = true;
+                    MainThreadManager.Run(async () =>
+                    {
+                        await AudioManager.OnMicrophoneStatusRequest(status);
+                        await UMI3DAsyncManager.Yield();
+                        waitForMSRequest = false;
+                    });
+                    while (waitForMSRequest)
+                        await UMI3DAsyncManager.Yield();
+                    break;
                 case UMI3DOperationKeys.GetLocalInfoRequest:
                     string key = UMI3DSerializer.Read<string>(container);
                     MainThreadManager.Run(() =>
