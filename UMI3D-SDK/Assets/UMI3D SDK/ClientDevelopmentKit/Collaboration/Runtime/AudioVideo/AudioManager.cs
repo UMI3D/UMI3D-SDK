@@ -17,9 +17,11 @@ limitations under the License.
 using inetum.unityUtils;
 using inetum.unityUtils.audio;
 using Mumble;
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Events;
 
@@ -46,6 +48,8 @@ namespace umi3d.cdk.collaboration
         public AudioUserIsSpeaking OnUserSpeaking = new AudioUserIsSpeaking();
         public AudioUserData OnAudioUserData = new AudioUserData();
 
+        private HashSet<Func<Task<bool>>> OpenMicrophoneValidators = new();
+
         public void Setup(Dictionary<string, float> volumeMemory, Dictionary<string, float> gainMemory)
         {
             this.volumeMemory.Clear();
@@ -60,6 +64,27 @@ namespace umi3d.cdk.collaboration
                 this.gainMemory[k.Key] = k.Value;
             }
         }
+
+        public static async Task OnMicrophoneStatusRequest(bool status)
+        {
+            if(status == MicrophoneListener.mute)
+            {
+                if (status && Exists && Instance.OpenMicrophoneValidators.Count > 0)
+                {
+                    //check if possible
+                    foreach(var task in Instance.OpenMicrophoneValidators.Select(f => f?.Invoke()))
+                    {
+                        if (!await task)
+                            return;
+                    }
+                }
+                MicrophoneListener.mute = !status;
+            }
+        }
+
+        public static bool AddOpenMicrophoneValidators(Func<Task<bool>> validator) => Exists && Instance.OpenMicrophoneValidators.Add(validator);
+        public static bool RemoveOpenMicrophoneValidators(Func<Task<bool>> validator) => Exists && Instance.OpenMicrophoneValidators.Remove(validator);
+
 
         public bool SetGainForUser(UMI3DUser user, float gain)
         {

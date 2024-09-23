@@ -487,14 +487,25 @@ namespace umi3d.cdk.collaboration
                     });
                     break;
                 case FrameRequestDto frame:
-                    bool waitforreparenting = true;
+                    bool waitForReparenting = true;
                     MainThreadManager.Run(async () =>
                     {
                         UMI3DNavigation.SetFrame(UMI3DGlobalID.EnvironmentId, frame);
                         await UMI3DAsyncManager.Yield();
-                        waitforreparenting = false;
+                        waitForReparenting = false;
                     });
-                    while (waitforreparenting)
+                    while (waitForReparenting)
+                        await UMI3DAsyncManager.Yield();
+                    break;
+                case MicrophoneStatusRequestDto statusRequest:
+                    bool waitForMSRequest = true;
+                    MainThreadManager.Run(async () =>
+                    {
+                        await AudioManager.OnMicrophoneStatusRequest(statusRequest.status);
+                        await UMI3DAsyncManager.Yield();
+                        waitForMSRequest = false;
+                    });
+                    while (waitForMSRequest)
                         await UMI3DAsyncManager.Yield();
                     break;
                 case NavigateDto navigate:

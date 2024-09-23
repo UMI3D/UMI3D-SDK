@@ -1,4 +1,4 @@
-/*
+﻿/*
 Copyright 2019 - 2021 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
@@ -16,18 +16,11 @@ limitations under the License.
 
 namespace umi3d.common
 {
-    public class FrameRequestDto : AbstractOperationDto
+    public class MicrophoneStatusRequestDto : AbstractOperationDto
     {
         /// <summary>
-        /// Frame's UMI3D id.
+        /// Status to switch the microphone to. 
         /// </summary>
-        public ulong FrameId { get; set; } = 0;
-
-        /// <summary>
-        /// Scale of the user in the new referential. 
-        /// Not to be misunderstood with the height.
-        /// A user should be at full height with a scale of one.
-        /// </summary>
-        public float scale { get; set; } = 1;
+        public bool status { get; set; } = false;
     }
 }
