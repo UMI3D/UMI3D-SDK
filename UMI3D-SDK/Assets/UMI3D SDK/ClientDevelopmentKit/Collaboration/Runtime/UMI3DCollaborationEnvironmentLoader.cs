@@ -62,9 +62,9 @@ namespace umi3d.cdk.collaboration
             return UserList.FirstOrDefault(u => UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId());
         }
 
-        private UMI3DUser GetUser(UserDto dto)
+        private UMI3DUser GetUser(ulong environmentId, UserDto dto)
         {
-            return UserList.FirstOrDefault(u => u.id == dto.id);
+            return userList[environmentId].FirstOrDefault(u => u.id == dto.id);
         }
 
         /// <inheritdoc/>
@@ -163,6 +163,9 @@ namespace umi3d.cdk.collaboration
                     var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
                     return SetUserList(data.environmentId, dto, data.property);
 
+                case UMI3DPropertyKeys.UserActions:
+                    return UpdateUser(data);
+
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
@@ -173,6 +176,7 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserAudioUseMumble:
                 case UMI3DPropertyKeys.UserAudioChannel:
                     return UpdateUser(data.property.property, data.entity, data.property.value);
+                
                 case UMI3DPropertyKeys.UserOnStartSpeakingAnimationId:
                 case UMI3DPropertyKeys.UserOnStopSpeakingAnimationId:
                 case UMI3DPropertyKeys.AreTrackedControllersVisible:
@@ -193,7 +197,9 @@ namespace umi3d.cdk.collaboration
                 case UMI3DPropertyKeys.UserList:
                     var dto = ((data.entity.dto as GlTFEnvironmentDto)?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;
                     return SetUserList(data.environmentId, dto, data.operationId, data.propertyKey, data.container);
-
+                
+                case UMI3DPropertyKeys.UserActions:
+                        return UpdateUser(data);
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
                 case UMI3DPropertyKeys.UserAvatarStatus:
@@ -223,6 +229,7 @@ namespace umi3d.cdk.collaboration
                         ulong value = UMI3DSerializer.Read<ulong>(data.container);
                         return UpdateUser(data.propertyKey, data.entity, value);
                     }
+
                 default:
                     return false;
             }
@@ -298,11 +305,27 @@ namespace umi3d.cdk.collaboration
         {
             if (!(userInstance.dto is UserDto dto)) return false;
 
-            UMI3DUser user = GetUser(dto);
+            UMI3DUser user = GetUser(userInstance.EnvironmentId, dto);
             return user?.UpdateUser(property, value) ?? false;
         }
 
+        private bool UpdateUser(SetUMI3DPropertyContainerData data)
+        {
+            if (!(data.entity.dto is UserDto dto)) return false;
 
+            UMI3DUser user = GetUser(data.entity.EnvironmentId, dto);
+
+            return user.userActions.SetEntity(data);
+        }
+
+        private bool UpdateUser(SetUMI3DPropertyData data)
+        {
+            if (!(data.entity.dto is UserDto dto)) return false;
+
+            UMI3DUser user = GetUser(data.entity.EnvironmentId, dto);
+
+            return user.userActions.SetEntity(data);
+        }
 
         private void InsertUser(ulong environmentId,UMI3DCollaborationEnvironmentDto dto, int index, UserDto userDto)
         {

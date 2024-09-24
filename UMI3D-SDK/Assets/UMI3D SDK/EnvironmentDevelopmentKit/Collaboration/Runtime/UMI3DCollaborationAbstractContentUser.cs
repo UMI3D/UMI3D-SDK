@@ -17,6 +17,7 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
+using umi3d.edk.interaction;
 using umi3d.edk.userCapture.tracking;
 
 namespace umi3d.edk.collaboration
@@ -27,12 +28,9 @@ namespace umi3d.edk.collaboration
     /// </summary>
     public abstract class UMI3DCollaborationAbstractContentUser : UMI3DCollaborationAbstractUser
     {
-
-
         public UMI3DAsyncProperty<string> audioChannel;
         public UMI3DAsyncProperty<string> audioServerUrl;
         public UMI3DAsyncProperty<bool> audioUseMumble;
-
 
         /// <summary>
         /// Current id for ForgeNetworkingRemastered

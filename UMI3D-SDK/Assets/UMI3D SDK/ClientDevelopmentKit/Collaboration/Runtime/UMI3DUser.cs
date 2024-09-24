@@ -15,12 +15,9 @@ limitations under the License.
 */
 
 using System;
-using System.Collections.Generic;
-using System.Threading.Tasks;
-using umi3d.cdk.userCapture;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.userCapture;
 using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
@@ -98,6 +95,9 @@ namespace umi3d.cdk.collaboration
         /// See <see cref="UserDto.audioLogin"/>.
         /// </summary>
         public string audioLogin => dto.audioLogin;
+
+        public PropertyList<UserActionDto, UserAction> userActions;
+
         /// <summary>
         /// See <see cref="UMI3DEnvironmentClient.UserInfo.AudioPassword"/>.
         /// </summary>
@@ -156,6 +156,7 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser(ulong environmentId, UserDto user)
         {
             dto = user;
+            userActions = new(user.userActions,UserAction.Converter(this.EnvironmentId));
             this.EnvironmentId = environmentId;
         }
 
@@ -183,7 +184,10 @@ namespace umi3d.cdk.collaboration
             bool areTrackedControllersVisibleUpdate = dto.areTrackedControllersVisible != user.areTrackedControllersVisible;
             bool pswUpdate = false;
 
+            bool userActionUpdate = !MatchActions(user);
+
             dto = user;
+            userActions.SetList(user.userActions);
 
             if (isClient && user is UserConnectionDto connectionDto)
             {
@@ -206,6 +210,68 @@ namespace umi3d.cdk.collaboration
             if (serverUpdate) OnUserMicrophoneServerUpdated.Invoke(this);
             if (loginUpdate || pswUpdate) OnUserMicrophoneIdentityUpdated.Invoke(this);
             if (areTrackedControllersVisibleUpdate) OnAreTrackedControllersVisible.Invoke(this);
+            if (userActionUpdate) OnUserActionsUpdated.Invoke(this);
+
+        }
+
+        bool MatchActions(UserDto user)
+        {
+            if (dto.userActions.Count != user.userActions.Count)
+                return false;
+
+            if(dto.userActions.Count == 0) 
+                return true;
+
+            return dto.userActions
+                .Zip(user.userActions, (a, b) => (a, b))
+                .All(MatchAction);
+        }
+
+        bool MatchAction((UserActionDto, UserActionDto) c)
+        {
+            return MatchAction(c.Item1,c.Item2);
+        }
+
+        bool MatchAction(UserActionDto a, UserActionDto b)
+        {
+            return a.id == b.id
+                && a.isPrimary == b.isPrimary
+                && a.description == b.description
+                && a.name == b.name
+                && MatchResources(a.icon3D, b.icon3D)
+                && MatchResources(a.icon2D, b.icon2D);
+        }
+
+        bool MatchResources(ResourceDto a, ResourceDto b)
+        {
+            if (a == b)
+                return true;
+
+            if(a==null || b == null)
+                return false;
+
+            if(a.variants.Count != b.variants.Count)
+                return false;
+
+            return a.variants
+                .Zip(b.variants, (a, b) => (a, b))
+                .All(MatchFile);
+        }
+
+        bool MatchFile((FileDto, FileDto) c)
+        {
+            return MatchFile(c.Item1, c.Item2);
+        }
+
+        bool MatchFile(FileDto a, FileDto b)
+        {
+            if (a == b)
+                return true;
+
+            if (a == null || b == null)
+                return false;
+
+            return a.url == b.url;
         }
 
         public bool UpdateUser(ulong property, object value)
@@ -343,5 +409,31 @@ namespace umi3d.cdk.collaboration
         public static UMI3DUserEvent OnUserMicrophoneChannelUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnUserMicrophoneUseMumbleUpdated = new UMI3DUserEvent();
         public static UMI3DUserEvent OnAreTrackedControllersVisible = new UMI3DUserEvent();
+
+        public static UMI3DUserEvent OnUserActionsUpdated = new UMI3DUserEvent();
+    }
+
+    public class UserAction : UserActionDto
+    {
+        ulong environmentId;
+
+        public UserAction(ulong environmentId, UserActionDto dto)
+        {
+            this.environmentId = environmentId;
+            this.id = dto.id;
+            this.isPrimary = dto.isPrimary;
+            this.name = dto.name;
+            this.description = dto.description;
+            this.icon3D = dto.icon3D;
+            this.icon2D = dto.icon2D;
+        }
+
+        public void Call()
+        {
+            var dto = new UserActionRequestDto() { environmentId = this.environmentId, actionId = this.id };
+            UMI3DClientServer.SendRequest(dto, true);
+        }
+
+        public static Func<UserActionDto, UserAction> Converter(ulong environmentId) => dto => new(environmentId, dto);
     }
 }
