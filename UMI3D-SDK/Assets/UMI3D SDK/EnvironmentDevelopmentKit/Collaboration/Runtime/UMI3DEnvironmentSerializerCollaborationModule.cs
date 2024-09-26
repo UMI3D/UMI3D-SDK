@@ -30,7 +30,6 @@ namespace umi3d.edk.collaboration
             {
                 true when typeof(T) == typeof(UserDto) => true,
                 true when typeof(T) == typeof(UMI3DCollaborationUser) => true,
-                true when typeof(T) == typeof(UserActionDto) => true,
                 true when typeof(T) == typeof(RegisterIdentityDto) => true,
                 _ => null,
             };
@@ -57,34 +56,6 @@ namespace umi3d.edk.collaboration
                         metaData = UMI3DSerializer.ReadArray<byte>(container)
                     };
                     result = (T)(object)identity;
-                    readable = true;
-                    return true;
-                case true when typeof(T) == typeof(UserActionDto):
-                    if (!(
-                        UMI3DSerializer.TryRead<ulong>(container, out var id) &&
-                        UMI3DSerializer.TryRead<bool>(container, out var isPrimary) &&
-                        UMI3DSerializer.TryRead<string>(container, out var name) &&
-                        UMI3DSerializer.TryRead<string>(container, out var description) &&
-                        UMI3DSerializer.TryRead<ResourceDto>(container, out var icon2D) &&
-                        UMI3DSerializer.TryRead<ResourceDto>(container, out var icon3D)
-                        ))
-                    {
-                        result = default(T);
-                        readable = false;
-                        return true;
-                    }
-
-                    var userAction = new UserActionDto
-                    {
-                        id = id,
-                        isPrimary = isPrimary,
-                        name = name,
-                        description = description,
-                        icon2D = icon2D,
-                        icon3D = icon3D
-                    };
-
-                    result = (T)(object)userAction;
                     readable = true;
                     return true;
             }
@@ -152,15 +123,6 @@ namespace umi3d.edk.collaboration
                         + UMI3DSerializer.Write(identity.key)
                         + UMI3DSerializer.Write(identity.metaData);
                     return true;
-                case UserActionDto userAction:
-                    bytable = UMI3DSerializer.Write(userAction.id)
-                        + UMI3DSerializer.Write(userAction.isPrimary)
-                        + UMI3DSerializer.Write(userAction.name)
-                        + UMI3DSerializer.Write(userAction.description)
-                        + UMI3DSerializer.Write(userAction.icon2D)
-                        + UMI3DSerializer.Write(userAction.icon3D);
-                    return true;
-
             }
             bytable = null;
             return false;

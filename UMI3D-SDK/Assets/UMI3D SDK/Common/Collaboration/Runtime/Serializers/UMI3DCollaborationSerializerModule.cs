@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using umi3d.common.collaboration.dto.networking;
+using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.collaboration.dto.voip;
 using umi3d.common.interaction;
 
@@ -306,6 +307,34 @@ namespace umi3d.common.collaboration
                         readable = false;
                         return false;
                     }
+                case true when typeof(T) == typeof(UserActionDto):
+                    if (!(
+                        UMI3DSerializer.TryRead<ulong>(container, out var actionId) &&
+                        UMI3DSerializer.TryRead<bool>(container, out var isPrimary) &&
+                        UMI3DSerializer.TryRead<string>(container, out var actionName) &&
+                        UMI3DSerializer.TryRead<string>(container, out var actionDescription) &&
+                        UMI3DSerializer.TryRead<ResourceDto>(container, out var actionIcon2D) &&
+                        UMI3DSerializer.TryRead<ResourceDto>(container, out var actionIcon3D)
+                        ))
+                    {
+                        result = default(T);
+                        readable = false;
+                        return true;
+                    }
+
+                    var userAction = new UserActionDto
+                    {
+                        id = actionId,
+                        isPrimary = isPrimary,
+                        name = actionName,
+                        description = actionDescription,
+                        icon2D = actionIcon2D,
+                        icon3D = actionIcon3D
+                    };
+
+                    result = (T)(object)userAction;
+                    readable = true;
+                    return true;
                 default:
                     result = default(T);
                     readable = false;
@@ -447,7 +476,14 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(speed.backwardSpeed)
                         + UMI3DSerializer.Write(speed.sideSpeed);
                     break;
-
+                case UserActionDto userAction:
+                    bytable = UMI3DSerializer.Write(userAction.id)
+                        + UMI3DSerializer.Write(userAction.isPrimary)
+                        + UMI3DSerializer.Write(userAction.name)
+                        + UMI3DSerializer.Write(userAction.description)
+                        + UMI3DSerializer.Write(userAction.icon2D)
+                        + UMI3DSerializer.Write(userAction.icon3D);
+                    return true;
                 default:
                     if (typeof(T) == typeof(ResourceDto))
                     {
@@ -486,6 +522,7 @@ namespace umi3d.common.collaboration
                 true when typeof(T) == typeof(VoiceDto) => true,
                 true when typeof(T) == typeof(ResourceDto) => true,
                 true when typeof(T) == typeof(SpeedDto) => true,
+                true when typeof(T) == typeof(UserActionDto) => true,
                 _ => null
             };
         }
