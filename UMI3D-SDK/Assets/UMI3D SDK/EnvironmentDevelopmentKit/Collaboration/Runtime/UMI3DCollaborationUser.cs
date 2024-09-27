@@ -146,7 +146,9 @@ namespace umi3d.edk.collaboration
                 audioPassword = audioPassword.GetValue(),
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),
-                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this)
+                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this),
+
+                userActions = source.userActions
             };
 
             return connectionInformation;

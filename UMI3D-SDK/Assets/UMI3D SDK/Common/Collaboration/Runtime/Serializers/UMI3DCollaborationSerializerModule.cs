@@ -335,6 +335,26 @@ namespace umi3d.common.collaboration
                     result = (T)(object)userAction;
                     readable = true;
                     return true;
+                case true when typeof(T) == typeof(UserActionRequestDto):
+                    if (!(
+                        UMI3DSerializer.TryRead<ulong>(container, out var requestActionEnvironmentId) &&
+                        UMI3DSerializer.TryRead<ulong>(container, out var requestActionId)
+                        ))
+                    {
+                        result = default(T);
+                        readable = false;
+                        return true;
+                    }
+
+                    var userActionRequest = new UserActionRequestDto
+                    {
+                        actionId = requestActionId,
+                        environmentId = requestActionEnvironmentId
+                    };
+
+                    result = (T)(object)userActionRequest;
+                    readable = true;
+                    return true;
                 default:
                     result = default(T);
                     readable = false;
@@ -484,6 +504,10 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(userAction.icon2D)
                         + UMI3DSerializer.Write(userAction.icon3D);
                     return true;
+                case UserActionRequestDto userActionRequest:
+                    bytable = UMI3DSerializer.Write(userActionRequest.environmentId)
+                        + UMI3DSerializer.Write(userActionRequest.actionId);
+                    return true;
                 default:
                     if (typeof(T) == typeof(ResourceDto))
                     {
@@ -523,6 +547,7 @@ namespace umi3d.common.collaboration
                 true when typeof(T) == typeof(ResourceDto) => true,
                 true when typeof(T) == typeof(SpeedDto) => true,
                 true when typeof(T) == typeof(UserActionDto) => true,
+                true when typeof(T) == typeof(UserActionRequestDto) => true,
                 _ => null
             };
         }
