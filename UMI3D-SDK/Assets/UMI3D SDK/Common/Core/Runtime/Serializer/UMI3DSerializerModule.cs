@@ -100,7 +100,18 @@ namespace umi3d.common
         {
             return AppDomain.CurrentDomain.GetAssemblies()
                 .Where(a => assembly == null || a == assembly)
-                .SelectMany(a => a.GetTypes())
+                .SelectMany(a =>
+                {
+                    try
+                    {
+                        return a.GetTypes();
+                    }
+                    catch (ReflectionTypeLoadException e)
+                    {
+                        UnityEngine.Debug.LogWarning($"ReflectionTypeLoadException when loading {a?.FullName}. This is expected when loading third party DLLs.");
+                    }
+                    return new Type[0];
+                })
                 .Where(type => type.IsValidType() && !type.IsIgnoreAttribute())
                 .OrderByDescending(type =>
                 {
