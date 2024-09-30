@@ -276,17 +276,14 @@ namespace umi3d.cdk
         public virtual UMI3DEntityInstance RegisterEntity(ulong id, UMI3DDto dto, object objectInstance, Action delete = null)
         {
             UMI3DEntityInstance node = null;
-            UnityEngine.Debug.Log($"Register Entity {EnvironmentId}:{id}");
+            
             if (entities.ContainsKey(id))
-   { node = entities[id];
-                UnityEngine.Debug.Log($"already in {EnvironmentId}:{id}");
-            }
+                node = entities[id];
 
             else
             {
                 node = new UMI3DEntityInstance(EnvironmentId, () => NotifyEntityLoad(id), id) { dto = dto, Object = objectInstance, Delete = delete };
                 entities.Add(id, node);
-                UnityEngine.Debug.Log($"new {EnvironmentId}:{id}");
             }
 
             return node;
@@ -330,7 +327,6 @@ namespace umi3d.cdk
         /// <param name="performed"></param>
         public async Task DeleteEntity(ulong entityId, List<CancellationToken> tokens)
         {
-            UnityEngine.Debug.Log($"Delete Entity {EnvironmentId}:{entityId}");
             if (entities.ContainsKey(entityId))
             {
                 entityFilters.Remove(entityId);

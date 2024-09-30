@@ -116,7 +116,7 @@ namespace umi3d.edk.collaboration
 
                     + UMI3DSerializer.Write<string>(string.IsNullOrEmpty(user.displayName) ? (string.IsNullOrEmpty(user.login) ? user.Id().ToString() : user.login) : user.displayName)
                     + UMI3DSerializer.Write(user.userSize.GetValue() ?? new Vector3Dto())
-                    + UMI3DSerializer.Write(user.userActions);
+                    + UMI3DSerializer.Write(user.userActions.GetValue());
                     return true;
                 case RegisterIdentityDto identity:
                     bytable = UMI3DSerializer.Write(identity.userId)
