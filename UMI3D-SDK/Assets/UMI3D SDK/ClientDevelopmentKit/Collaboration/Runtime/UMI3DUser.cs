@@ -156,6 +156,7 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser(ulong environmentId, UserDto user)
         {
             dto = user;
+            UnityEngine.Debug.Log($"Create user {isClient} {user.userActions.Count}");
             userActions = new(user.userActions,UserAction.Converter(this.EnvironmentId));
             this.EnvironmentId = environmentId;
         }

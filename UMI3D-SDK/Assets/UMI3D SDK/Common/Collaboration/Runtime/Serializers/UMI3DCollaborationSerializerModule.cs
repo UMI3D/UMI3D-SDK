@@ -336,25 +336,11 @@ namespace umi3d.common.collaboration
                     readable = true;
                     return true;
                 case true when typeof(T) == typeof(UserActionRequestDto):
-                    if (!(
-                        UMI3DSerializer.TryRead<ulong>(container, out var requestActionEnvironmentId) &&
-                        UMI3DSerializer.TryRead<ulong>(container, out var requestActionId)
-                        ))
-                    {
-                        result = default(T);
-                        readable = false;
-                        return true;
-                    }
-
-                    var userActionRequest = new UserActionRequestDto
-                    {
-                        actionId = requestActionId,
-                        environmentId = requestActionEnvironmentId
-                    };
-
-                    result = (T)(object)userActionRequest;
-                    readable = true;
+                    UnityEngine.Debug.LogError("Should not read this");
+                    result = default(T);
+                    readable = false;
                     return true;
+   
                 default:
                     result = default(T);
                     readable = false;
@@ -505,7 +491,7 @@ namespace umi3d.common.collaboration
                         + UMI3DSerializer.Write(userAction.icon3D);
                     return true;
                 case UserActionRequestDto userActionRequest:
-                    bytable = UMI3DSerializer.Write(userActionRequest.environmentId)
+                    bytable = UMI3DSerializer.Write(UMI3DOperationKeys.UserActionRequest)
                         + UMI3DSerializer.Write(userActionRequest.actionId);
                     return true;
                 default:
