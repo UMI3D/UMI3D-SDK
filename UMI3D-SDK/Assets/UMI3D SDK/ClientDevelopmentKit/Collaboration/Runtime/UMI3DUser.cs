@@ -450,28 +450,4 @@ namespace umi3d.cdk.collaboration
 
         public static UMI3DUserEvent OnUserActionsUpdated = new UMI3DUserEvent();
     }
-
-    public class UserAction : UserActionDto
-    {
-        ulong environmentId;
-
-        public UserAction(ulong environmentId, UserActionDto dto)
-        {
-            this.environmentId = environmentId;
-            this.id = dto.id;
-            this.isPrimary = dto.isPrimary;
-            this.name = dto.name;
-            this.description = dto.description;
-            this.icon3D = dto.icon3D;
-            this.icon2D = dto.icon2D;
-        }
-
-        public void Call()
-        {
-            var dto = new UserActionRequestDto() { environmentId = this.environmentId, actionId = this.id };
-            UMI3DClientServer.SendRequest(dto, true);
-        }
-
-        public static Func<UserActionDto, UserAction> Converter(ulong environmentId) => dto => new(environmentId, dto);
-    }
 }
