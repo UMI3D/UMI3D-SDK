@@ -192,6 +192,7 @@ namespace umi3d.cdk
         public async Task PerformOperation(ByteContainer container)
         {
             uint operationId = UMI3DSerializer.Read<uint>(container);
+            UnityEngine.Debug.Log(operationId);
             switch (operationId)
             {
                 case UMI3DOperationKeys.LoadEntity:
@@ -234,6 +235,7 @@ namespace umi3d.cdk
                     {
                         ulong entityId = UMI3DSerializer.Read<ulong>(container);
                         uint propertyKey = UMI3DSerializer.Read<uint>(container);
+                        UnityEngine.Debug.Log(propertyKey);
                         await UMI3DEnvironmentLoader.SetEntity(container.environmentId, operationId, entityId, propertyKey, container);
                     }
                     else if (!await Operation(operationId, container))

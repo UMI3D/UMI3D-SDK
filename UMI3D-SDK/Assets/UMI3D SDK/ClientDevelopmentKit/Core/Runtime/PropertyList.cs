@@ -64,6 +64,7 @@ namespace umi3d.cdk
 
         public bool SetEntity(SetUMI3DPropertyContainerData data)
         {
+            UnityEngine.Debug.Log($"PropertyList SetEntity {data.operationId}");
             switch (data.operationId)
             {
                 case UMI3DOperationKeys.SetEntityListAddProperty:
@@ -79,6 +80,7 @@ namespace umi3d.cdk
 
                         OnValueAdded?.Invoke(index, value);
 
+                        OnCollectionUpdated?.Invoke(this);
                         return true;
                     }
                 case UMI3DOperationKeys.SetEntityListRemoveProperty:
@@ -91,6 +93,7 @@ namespace umi3d.cdk
 
                         OnValueRemoved(index);
 
+                        OnCollectionUpdated?.Invoke(this);
                         return true;
                     }
                 case UMI3DOperationKeys.SetEntityListProperty:
@@ -105,6 +108,7 @@ namespace umi3d.cdk
 
                         OnValueChanged?.Invoke(index, value);
 
+                        OnCollectionUpdated?.Invoke(this);
                         return true;
                     }
                 default:

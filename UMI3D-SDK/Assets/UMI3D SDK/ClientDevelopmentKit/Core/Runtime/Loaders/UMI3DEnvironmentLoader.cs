@@ -762,6 +762,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
+            UnityEngine.Debug.Log(data.propertyKey);
             if (Exists)
                 return await Instance._SetUMI3DProperty(data);
             else
@@ -893,7 +894,9 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static async Task SetEntity(ulong environmentId, uint operationId, ulong entityId, uint propertyKey, ByteContainer container)
         {
+            UnityEngine.Debug.Log($"Wait for {entityId} {propertyKey}");
             var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, entityId, container.tokens);
+            UnityEngine.Debug.Log($"End Wait {entityId} {propertyKey}");
             if (!await SetEntity(environmentId, entityId, new SetUMI3DPropertyContainerData(environmentId, e, operationId, propertyKey, container)))
                 UMI3DLogger.LogWarning("SetEntity operation was not applied : entity : " + entityId + "  operation : " + operationId + "   propKey : " + propertyKey, scope);
 
@@ -925,7 +928,8 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static async Task<bool> SetEntity(ulong environmentId, ulong entityId, SetUMI3DPropertyContainerData data)
         {
-           // UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"SetEntityProperty {environmentId} {entityId}"));
+            // UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"SetEntityProperty {environmentId} {entityId}"));
+            UnityEngine.Debug.Log(data.propertyKey);
             if (await Instance.entitiesCollection[environmentId].SetEntity(entityId,data, ReadValueEntity))
                 return true;
             else

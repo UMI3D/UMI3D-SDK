@@ -95,7 +95,7 @@ namespace umi3d.cdk.collaboration
             else
                 userList = new();
 
-            var users = dto.userList.Select(u => (dto: u, entity: new UMI3DUser(environmentId, u)));
+            var users = dto.userList.Select(u => (dto: u, entity: UMI3DUser.CreateUser(environmentId, u)));
 
             userList[environmentId] = users.Select(u => u.entity).ToList();
             users.ForEach(u =>
@@ -190,8 +190,10 @@ namespace umi3d.cdk.collaboration
         /// <inheritdoc/>
         protected override async Task<bool> _SetUMI3DProperty(SetUMI3DPropertyContainerData data)
         {
+            UnityEngine.Debug.Log(data.propertyKey);
             if (await base._SetUMI3DProperty(data)) return true;
             if (data.entity == null) return false;
+            UnityEngine.Debug.Log(data.propertyKey);
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.UserList:
@@ -199,6 +201,7 @@ namespace umi3d.cdk.collaboration
                     return SetUserList(data.environmentId, dto, data.operationId, data.propertyKey, data.container);
                 
                 case UMI3DPropertyKeys.UserActions:
+                    UnityEngine.Debug.Log("set list");
                         return UpdateUser(data);
                 case UMI3DPropertyKeys.UserMicrophoneStatus:
                 case UMI3DPropertyKeys.UserAttentionRequired:
@@ -311,10 +314,11 @@ namespace umi3d.cdk.collaboration
 
         private bool UpdateUser(SetUMI3DPropertyContainerData data)
         {
+            UnityEngine.Debug.Log("UpdateUser -");
             if (!(data.entity.dto is UserDto dto)) return false;
-
+            UnityEngine.Debug.Log("UpdateUser A");
             UMI3DUser user = GetUser(data.entity.EnvironmentId, dto);
-
+            UnityEngine.Debug.Log("UpdateUser B");
             return user.userActions.SetEntity(data);
         }
 
@@ -336,7 +340,7 @@ namespace umi3d.cdk.collaboration
 
             if (index >= 0 && index <= userList[environmentId].Count)
             {
-                userList[environmentId].Insert(index, new UMI3DUser(environmentId, userDto));
+                userList[environmentId].Insert(index, UMI3DUser.CreateUser(environmentId, userDto));
                 OnUpdateUserList?.Invoke();
                 OnUpdateJoinnedUserList?.Invoke();
             }
@@ -396,13 +400,30 @@ namespace umi3d.cdk.collaboration
             else
                 userList = new();
 
-            var users = usersNew.Select(u => (dto: u, entity: new UMI3DUser(environmentId, u)));
-            userList[environmentId] = users.Select(u => u.entity).ToList();
-            users.ForEach(u =>
+
+            try
             {
-                UMI3DEnvironmentLoader.Instance.RegisterEntity(UMI3DGlobalID.EnvironmentId, u.entity.id, u.dto, u.entity, () => { UMI3DUser.OnRemoveUser.Invoke(u.entity); }).NotifyLoaded();
-                UMI3DUser.OnNewUser.Invoke(u.entity);
-            });
+                usersNew.Debug(u => u.id.ToString());
+                UnityEngine.Debug.Log("Step A");
+                var users = usersNew.Select(u => (dto: u, entity: UMI3DUser.CreateUser(environmentId, u)));
+                UnityEngine.Debug.Log("Step B");
+                userList[environmentId] = users.Select(u => u.entity).ToList();
+                UnityEngine.Debug.Log("Step C");
+                userList[environmentId].Debug(u => u.id.ToString());
+                UnityEngine.Debug.Log("Step D");
+            }
+            catch(Exception ex)
+            {
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() =>
+                UnityEngine.Debug.LogException(ex));
+            }
+
+            userList[environmentId].Debug(u => u.id.ToString());
+            //users.ForEach(u =>
+            //{
+            //    //UMI3DEnvironmentLoader.Instance.RegisterEntity(UMI3DGlobalID.EnvironmentId, u.entity.id, u.dto, u.entity, () => { UMI3DUser.OnRemoveUser.Invoke(u.entity); }).NotifyLoaded();
+            //    UMI3DUser.OnNewUser.Invoke(u.entity);
+            //});
 
             OnUpdateUserList?.Invoke();
             OnUpdateJoinnedUserList?.Invoke();

@@ -14,8 +14,10 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using MainThreadDispatcher;
 using System;
 using System.Linq;
+using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
 using UnityEngine.Events;
@@ -156,9 +158,44 @@ namespace umi3d.cdk.collaboration
         public UMI3DUser(ulong environmentId, UserDto user)
         {
             dto = user;
+            if (user.userActions == null)
+                user.userActions = new System.Collections.Generic.List<UserActionDto>();
+
+            UnityEngine.Debug.Log("Step B1");
+            userActions = new(user.userActions ?? new System.Collections.Generic.List<UserActionDto>(),UserAction.Converter(this.EnvironmentId));
+            UnityEngine.Debug.Log("Step B2");
             UnityEngine.Debug.Log($"Create user {isClient} {user.userActions.Count}");
-            userActions = new(user.userActions,UserAction.Converter(this.EnvironmentId));
+            UnityEngine.Debug.Log("Step B3");
+            userActions.OnCollectionUpdated += UserActions_OnCollectionUpdated;
+            UnityEngine.Debug.Log("Step B4");
             this.EnvironmentId = environmentId;
+            UnityEngine.Debug.Log("Step B5");
+        }
+
+        public static UMI3DUser CreateUser(ulong environmentId, UserDto dto)
+        {
+            UnityEngine.Debug.Log("Step A0");
+            var user = new UMI3DUser(environmentId, dto);
+            UnityEngine.Debug.Log("Step A1");
+            var instance = UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, user.id, dto, user, () => { UMI3DUser.OnRemoveUser.Invoke(user); });
+            UnityEngine.Debug.Log("Step A2");
+            instance.NotifyLoaded();
+            UnityEngine.Debug.Log("Step A3");
+            UnityMainThreadDispatcher.Instance().Enqueue( () =>
+            UnityEngine.Debug.Log($"Register {dto.id}"));
+            CreateUserAux(user);
+            return user;
+        }
+
+        public static async void CreateUserAux(UMI3DUser user)
+        {
+            await Task.Yield();
+            UMI3DUser.OnNewUser.Invoke(user);
+        }
+
+        private void UserActions_OnCollectionUpdated(PropertyList<UserActionDto, UserAction> obj)
+        {
+            OnUserActionsUpdated.Invoke(this);
         }
 
         /// <summary>
