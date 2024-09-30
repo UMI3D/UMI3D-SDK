@@ -161,28 +161,17 @@ namespace umi3d.cdk.collaboration
             if (user.userActions == null)
                 user.userActions = new System.Collections.Generic.List<UserActionDto>();
 
-            UnityEngine.Debug.Log("Step B1");
-            userActions = new(user.userActions ?? new System.Collections.Generic.List<UserActionDto>(),UserAction.Converter(this.EnvironmentId));
-            UnityEngine.Debug.Log("Step B2");
-            UnityEngine.Debug.Log($"Create user {isClient} {user.userActions.Count}");
-            UnityEngine.Debug.Log("Step B3");
+            userActions = new(user.userActions, UserAction.Converter(this.EnvironmentId));
+
             userActions.OnCollectionUpdated += UserActions_OnCollectionUpdated;
-            UnityEngine.Debug.Log("Step B4");
             this.EnvironmentId = environmentId;
-            UnityEngine.Debug.Log("Step B5");
         }
 
         public static UMI3DUser CreateUser(ulong environmentId, UserDto dto)
         {
-            UnityEngine.Debug.Log("Step A0");
             var user = new UMI3DUser(environmentId, dto);
-            UnityEngine.Debug.Log("Step A1");
             var instance = UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, user.id, dto, user, () => { UMI3DUser.OnRemoveUser.Invoke(user); });
-            UnityEngine.Debug.Log("Step A2");
             instance.NotifyLoaded();
-            UnityEngine.Debug.Log("Step A3");
-            UnityMainThreadDispatcher.Instance().Enqueue( () =>
-            UnityEngine.Debug.Log($"Register {dto.id}"));
             CreateUserAux(user);
             return user;
         }
@@ -257,7 +246,7 @@ namespace umi3d.cdk.collaboration
             if (dto.userActions.Count != user.userActions.Count)
                 return false;
 
-            if(dto.userActions.Count == 0) 
+            if (dto.userActions.Count == 0)
                 return true;
 
             return dto.userActions
@@ -267,7 +256,7 @@ namespace umi3d.cdk.collaboration
 
         bool MatchAction((UserActionDto, UserActionDto) c)
         {
-            return MatchAction(c.Item1,c.Item2);
+            return MatchAction(c.Item1, c.Item2);
         }
 
         bool MatchAction(UserActionDto a, UserActionDto b)
@@ -285,10 +274,10 @@ namespace umi3d.cdk.collaboration
             if (a == b)
                 return true;
 
-            if(a==null || b == null)
+            if (a == null || b == null)
                 return false;
 
-            if(a.variants.Count != b.variants.Count)
+            if (a.variants.Count != b.variants.Count)
                 return false;
 
             return a.variants
