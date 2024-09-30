@@ -46,7 +46,7 @@ namespace umi3d.edk.collaboration
         private UMI3DAsyncListProperty<UMI3DCollaborationAbstractContentUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
 
-        public event Action<UMI3DCollaborationUser, UserActionDto> OnActionClicked;
+        public event Action<UMI3DCollaborationUser, ulong> OnActionClicked;
 
         public void SetLastUpdate(UMI3DCollaborationAbstractContentUser user) { if (users.ContainsValue(user)) SetLastUpdate(); }
 
@@ -542,7 +542,7 @@ namespace umi3d.edk.collaboration
         public void HandleUserActionRequest(UMI3DCollaborationAbstractContentUser user, UserActionRequestDto userActionRequest)
         {
             if (user is UMI3DCollaborationUser cUser)
-                OnActionClicked?.Invoke(cUser, cUser.userActions.GetValue(user)?.FirstOrDefault(a => a.id == userActionRequest.actionId));
+                OnActionClicked?.Invoke(cUser, userActionRequest.actionId);
             else
                 UnityEngine.Debug.Log($"User action not found {userActionRequest.environmentId} {userActionRequest.actionId}");
         }
