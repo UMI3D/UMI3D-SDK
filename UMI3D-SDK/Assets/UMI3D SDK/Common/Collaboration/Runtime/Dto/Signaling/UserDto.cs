@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 
 namespace umi3d.common.collaboration.dto.signaling
 {
@@ -76,13 +77,18 @@ namespace umi3d.common.collaboration.dto.signaling
         /// <summary>
         /// Size of the user.
         /// </summary>
-        public Vector3Dto userSize { get; set; } 
+        public Vector3Dto userSize { get; set; }
 
         /// <summary>
         /// Is the user indicating they require special attention?
         /// </summary>
         /// It is the equivalent of a "raise your end" feature in videochat.
         public bool attentionRequired { get; set; }
+
+        /// <summary>
+        /// List of user action.
+        /// </summary>
+        public List<UserActionDto> userActions { get; set; }
 
         /// <summary>
         /// If true, user's visible controllers (device representation or hands from hand tracking) are visible.

@@ -71,7 +71,7 @@ namespace umi3d.edk.interaction
         /// <param name="container">Received byte container</param>
         public static void DispatchBrowserRequest(UMI3DUser user, uint operationKey, ByteContainer container)
         {
-            if (container.environmentId != 0)
+            if (container.environmentId != 0 && container.environmentId != UMI3DGlobalID.EnvironmentId)
                 UnityEngine.Debug.LogWarning($"A browser request for a distant environment {container.environmentId} was ignored");
 
             ulong toolId = UMI3DSerializer.Read<ulong>(container);

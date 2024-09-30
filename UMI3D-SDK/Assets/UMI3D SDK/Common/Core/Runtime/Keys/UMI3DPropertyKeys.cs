@@ -232,6 +232,8 @@ namespace umi3d.common
         public const uint TrackingConstraintConstrainingNode = 11114;
         public const uint TrackingConstraintConstrainingBone = 11115;
 
+        public const uint UserActions = 11200;
+
         #endregion
 
         #region notification

@@ -397,7 +397,7 @@ namespace inetum.unityUtils.editor
 
             if (directoriesToDestroy.Count > 0 && shouldPermanentDelete)
                 foreach (var path in directoriesToDestroy)
-                    Directory.Delete(path, true);
+                    DeleteDirectory(path, true);
             else
                 SafeDelete(directoriesToDestroy, isMovingFromReferenceFolder);
 
@@ -407,6 +407,36 @@ namespace inetum.unityUtils.editor
 
             if (!isMovingFromReferenceFolder)
                 AssetDatabase.Refresh();
+        }
+
+        public static void DeleteDirectory(string folderPath, bool recursive = true)
+        {
+            var dir = new DirectoryInfo(folderPath);
+
+            //Delete files excluding the list of file names
+            foreach (var fi in dir.GetFiles())
+            {
+                try
+                {
+                    fi.Delete();
+                }
+                catch { }
+            }
+
+            //Loop sub directories if recursive == true
+            if (recursive)
+            {
+                foreach (var di in dir.GetDirectories())
+                {
+                    DeleteDirectory(di.FullName, recursive);
+
+                    //Delete directory if empty
+                    if (!di.EnumerateFileSystemInfos().Any())
+                    {
+                        di.Delete();
+                    }
+                }
+            }
         }
 
         public static void CopyFolder(string pathFrom, string pathTo)

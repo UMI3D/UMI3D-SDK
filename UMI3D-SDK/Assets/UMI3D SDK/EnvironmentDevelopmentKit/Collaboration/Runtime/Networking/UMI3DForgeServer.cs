@@ -360,6 +360,12 @@ namespace umi3d.edk.collaboration
                             WebViewManager.Instance.SynchronisationRequest(user, webViewSynchroRequest.webViewId);
                         });
                         break;
+                    case UserActionRequestDto userAction:
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationServer.Collaboration?.HandleUserActionRequest(user, userAction);
+                        });
+                        break;
                     default:
                         MainThreadManager.Run(() =>
                         {
@@ -440,6 +446,13 @@ namespace umi3d.edk.collaboration
                         MainThreadManager.Run(() =>
                         {
                             WebViewManager.Instance.SynchronisationRequest(user, webViewId);
+                        });
+                        break;
+                    case UMI3DOperationKeys.UserActionRequest:
+                        ulong userActionId = UMI3DSerializer.Read<ulong>(container);
+                        MainThreadManager.Run(() =>
+                        {
+                            UMI3DCollaborationServer.Collaboration.HandleUserActionRequest(user, new UserActionRequestDto() { environmentId = container.environmentId, actionId = userActionId });
                         });
                         break;
                     default:

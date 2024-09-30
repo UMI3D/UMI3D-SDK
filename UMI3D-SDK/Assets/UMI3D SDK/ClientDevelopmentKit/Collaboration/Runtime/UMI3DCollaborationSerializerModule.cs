@@ -76,6 +76,8 @@ namespace umi3d.cdk.collaboration
                         login = UMI3DSerializer.Read<string>(container),
                         userSize = UMI3DSerializer.Read<Vector3Dto>(container),
 
+                        userActions = UMI3DSerializer.ReadList<UserActionDto>(container),
+
                     };
                     result = (T)(object)user;
                     readable = true;

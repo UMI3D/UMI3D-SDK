@@ -925,7 +925,7 @@ namespace umi3d.cdk
         /// <returns></returns>
         public static async Task<bool> SetEntity(ulong environmentId, ulong entityId, SetUMI3DPropertyContainerData data)
         {
-           // UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"SetEntityProperty {environmentId} {entityId}"));
+            // UnityMainThreadDispatcher.Instance().Enqueue(() => UnityEngine.Debug.Log($"SetEntityProperty {environmentId} {entityId}"));
             if (await Instance.entitiesCollection[environmentId].SetEntity(entityId,data, ReadValueEntity))
                 return true;
             else

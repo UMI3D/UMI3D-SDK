@@ -43,9 +43,10 @@ namespace umi3d.edk.collaboration
 
         private readonly List<string> oldTokenOfUpdatedUser = new List<string>();
 
-
         private UMI3DAsyncListProperty<UMI3DCollaborationAbstractContentUser> _objectUserList;
         private DateTime lastUpdate = new DateTime();
+
+        public event Action<UMI3DCollaborationUser, ulong> OnActionClicked;
 
         public void SetLastUpdate(UMI3DCollaborationAbstractContentUser user) { if (users.ContainsValue(user)) SetLastUpdate(); }
 
@@ -81,8 +82,6 @@ namespace umi3d.edk.collaboration
             };
             return pc;
         }
-
-
 
         /// <summary>
         /// Return the UMI3D user associated with an identifier.
@@ -540,6 +539,13 @@ namespace umi3d.edk.collaboration
             return notif;
         }
 
+        public void HandleUserActionRequest(UMI3DCollaborationAbstractContentUser user, UserActionRequestDto userActionRequest)
+        {
+            if (user is UMI3DCollaborationUser cUser)
+                OnActionClicked?.Invoke(cUser, userActionRequest.actionId);
+            else
+                UnityEngine.Debug.Log($"User action not found {userActionRequest.environmentId} {userActionRequest.actionId}");
+        }
 
     }
 }

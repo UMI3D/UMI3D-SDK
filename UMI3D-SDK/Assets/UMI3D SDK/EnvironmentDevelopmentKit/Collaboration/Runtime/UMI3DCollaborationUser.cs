@@ -17,6 +17,7 @@ limitations under the License.
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
+using umi3d.edk.interaction;
 using umi3d.edk.userCapture.pose;
 
 namespace umi3d.edk.collaboration
@@ -38,6 +39,8 @@ namespace umi3d.edk.collaboration
             onStopSpeakingAnimationId = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(userId, UMI3DPropertyKeys.UserOnStopSpeakingAnimationId, null, (v, u) => v?.Id());
 
             userSize = new UMI3DAsyncProperty<Vector3Dto>(userId, UMI3DPropertyKeys.UserSize, new());
+
+            this.userActions = new UMI3DAsyncListProperty<UserActionDto>(userId, UMI3DPropertyKeys.UserActions, new());
         }
 
         /// <summary>
@@ -67,6 +70,8 @@ namespace umi3d.edk.collaboration
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> onStopSpeakingAnimationId;
 
         public UMI3DAsyncProperty<Vector3Dto> userSize;
+
+        public UMI3DAsyncListProperty<UserActionDto> userActions;
 
         static object joinLock = new object();
         private IPoseManager poseManagerService;
@@ -141,7 +146,9 @@ namespace umi3d.edk.collaboration
                 audioPassword = audioPassword.GetValue(),
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),
-                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this)
+                librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this),
+
+                userActions = source.userActions
             };
 
             return connectionInformation;
@@ -175,6 +182,8 @@ namespace umi3d.edk.collaboration
 
                 onStartSpeakingAnimationId = onStartSpeakingAnimationId.GetValue(user)?.Id() ?? 0,
                 onStopSpeakingAnimationId = onStopSpeakingAnimationId.GetValue(user)?.Id() ?? 0,
+
+                userActions = this.userActions.GetValue(user),
             };
             return _user;
         }
