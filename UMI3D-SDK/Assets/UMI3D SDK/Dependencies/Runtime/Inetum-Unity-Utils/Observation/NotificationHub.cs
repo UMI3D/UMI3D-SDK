@@ -46,6 +46,16 @@ namespace inetum.unityUtils
         /// </summary>
         Dictionary<Object, HashSet<string>> _subscriberToID = new();
 
+        /// <summary>
+        /// ID to requests.
+        /// </summary>
+        Dictionary<string, Request> _requests = new();
+        /// <summary>
+        /// Supplier to IDs.
+        /// </summary>
+        Dictionary<Object, HashSet<string>> _supplierToID = new();
+
+        #region Subscribe
 
         public void Subscribe(
             Object subscriber,
@@ -150,6 +160,10 @@ namespace inetum.unityUtils
             Subscribe(subscriber, typeof(T).FullName, action);
         }
 
+        #endregion
+
+        #region Unsubscribe
+
         public void Unsubscribe(Object subscriber)
         {
             string subscriberName = subscriber is string
@@ -244,6 +258,10 @@ namespace inetum.unityUtils
             Unsubscribe(subscriber, typeof(T).FullName);
         }
 
+        #endregion
+
+        #region Notify
+
         public int Notify(
             Object publisher,
             string id,
@@ -317,6 +335,10 @@ namespace inetum.unityUtils
             return Notify(publisher, typeof(T).FullName, info);
         }
 
+        #endregion
+
+        #region GetNotifier
+
         public Notifier GetNotifier(
             Object publisher,
             string id,
@@ -342,10 +364,201 @@ namespace inetum.unityUtils
             return GetNotifier(publisher, typeof(T).FullName, subscribersFilter, info);
         }
 
+        #endregion
+
+        #region Supply
+
+        public Request Supply(
+            Object supplier,
+            string id
+        )
+        {
+            // Check if request already exist for that 'id'.
+            if (_requests.TryGetValue(id, out Request request))
+            {
+                // A request is already registered for that 'id'.
+
+                if (request.Supplier != supplier)
+                {
+                    // Only one supplier.
+                    request.SetSupplier(supplier);
+                }
+            }
+            else
+            {
+                // If no request exist for that 'id' create a new one.
+                request = new(id, supplier);
+                _requests.Add(id, request);
+            }
+
+            // Check if this 'supplier' already supply.
+            if (_supplierToID.TryGetValue(supplier, out HashSet<string> ids))
+            {
+                // Add the 'id' to the list of ids, if the list didn't contain this 'id' already.
+                // This list is a set, that means there is no duplicate ids.
+                ids.Add(id);
+            }
+            else
+            {
+                // If that 'subscriber' listen to no one, create a new association 'subscriber' -> ids.
+                _supplierToID.Add(supplier, new HashSet<string>() { id });
+            }
+
+            return request;
+        }
+
+        public Request Supply<T>(
+            Object supplier
+        )
+        {
+            return Supply(supplier, typeof(T).FullName);
+        }
+
+        #endregion
+
+        #region Withhold 
+
+        public void Withhold(
+            Object supplier
+        )
+        {
+            // Check if that 'supplier' is supplying.
+            if (!_supplierToID.TryGetValue(supplier, out HashSet<string> ids))
+            {
+                UnityEngine.Debug.LogWarning($"[NotificationHub] Try to unsubscribe [{supplier}] but supplier is not supplying.");
+                return;
+            }
+
+            // Loop through all the ids that this 'supplier' supplies.
+            foreach (string id in ids)
+            {
+                // Check if subscriptions exist for 'id'.
+                if (!_requests.TryGetValue(id, out Request request))
+                {
+                    UnityEngine.Debug.LogError($"[{nameof(Withhold)}] Try remove request for {supplier}. No request for {id}, that should not happen.");
+                    continue;
+                }
+
+                request.SetSupplier(null);
+                // Remove id from the requests.
+                _requests.Remove(id);
+            }
+
+            // Clear the ids.
+            ids.Clear();
+
+            // Remove 'supplier' from '_supplierToID'.
+            _supplierToID.Remove(supplier);
+        }
+
+        public void Withhold(
+           Object supplier,
+           string id
+        )
+        {
+            // Check if that 'supplier' is supplying.
+            if (!_supplierToID.TryGetValue(supplier, out HashSet<string> ids))
+            {
+                UnityEngine.Debug.LogWarning($"[NotificationHub] Try to unsubscribe [{supplier}] but supplier is not supplying.");
+                return;
+            }
+
+            if (!ids.Contains(id))
+            {
+                UnityEngine.Debug.LogWarning($"[NotificationHub] Try to unsubscribe [{supplier}] but supplier is not supplying for id [{id}].");
+                return;
+            }
+
+            // Remove the id.
+            ids.Remove(id);
+
+            // If there is not more ids then remove 'supplier' from '_supplierToID'.
+            if (ids.Count == 0)
+            {
+                _supplierToID.Remove(supplier);
+            }
+
+            // Check if subscriptions exist for 'id'.
+            if (!_requests.TryGetValue(id, out Request request))
+            {
+                UnityEngine.Debug.LogError($"[{nameof(Withhold)}] Try remove request for {supplier}. No request for {id}, that should not happen.");
+                return;
+            }
+
+            request.SetSupplier(null);
+
+            // Remove id from the requests.
+            _requests.Remove(id);
+        }
+
+        public void Withhold<T>(
+            Object supplier
+        )
+        {
+            Withhold(supplier, typeof(T).FullName);
+        }
+
+        #endregion
+
+        #region Request
+
+        public bool TryRequest(
+            Object client,
+            string id,
+            out Request request,
+            UnityEngine.LogType? logType = UnityEngine.LogType.Error
+        )
+        {
+            // Check if request already exist for that 'id'.
+            if (!_requests.TryGetValue(id, out request))
+            {
+                if (logType.HasValue)
+                {
+                    string log = $"[NotificationHub] {client} try to request with id [{id}] but no supplier is associated with that id.";
+
+                    switch (logType.Value)
+                    {
+                        case UnityEngine.LogType.Error:
+                            UnityEngine.Debug.LogError(log);
+                            break;
+                        case UnityEngine.LogType.Assert:
+                            UnityEngine.Debug.LogAssertion(log);
+                            break;
+                        case UnityEngine.LogType.Warning:
+                            UnityEngine.Debug.LogWarning(log);
+                            break;
+                        case UnityEngine.LogType.Log:
+                            UnityEngine.Debug.Log(log);
+                            break;
+                        case UnityEngine.LogType.Exception:
+                            UnityEngine.Debug.LogException(new Exception(log));
+                            break;
+                        default:
+                            break;
+                    }
+                }
+
+                return false;
+            }
+
+            return true;
+        }
+
+        public bool TryRequest<T>(
+            Object client,
+            out Request request,
+            UnityEngine.LogType? logType = UnityEngine.LogType.Error
+        )
+        {
+            return TryRequest(client, typeof(T).FullName, out request, logType);
+        }
+
+        #endregion
+
         /// <summary>
         /// Class representing a subscription to a notification.
         /// </summary>
-        private class Subscription
+        class Subscription
         {
             /// <summary>
             /// The object that wait for a notification. If subscriber is static then user typeof().FullName.

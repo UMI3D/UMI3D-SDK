@@ -16,7 +16,6 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace inetum.unityUtils
 {
@@ -45,10 +44,10 @@ namespace inetum.unityUtils
         INotificationHub notificationHub;
 
         public Notifier(
-            Object publisher, 
-            string id, 
+            Object publisher,
+            string id,
             INotificationFilter subscribersFilter,
-            Dictionary<string, object> info, 
+            Dictionary<string, object> info,
             INotificationHub notificationHub
         )
         {
