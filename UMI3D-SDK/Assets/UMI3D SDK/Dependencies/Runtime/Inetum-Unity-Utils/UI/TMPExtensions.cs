@@ -15,11 +15,12 @@ limitations under the License.
 */
 
 using System;
+using TMPro;
 using UnityEngine;
 
 namespace inetum.unityUtils.ui
 {
-    public static class TMPExtensions 
+    public static class TMPExtensions
     {
         public enum Whitespace
         {
@@ -41,7 +42,7 @@ namespace inetum.unityUtils.ui
             KeepWhitespace
         }
 
-        public static Vector2 GetTextSize(this TMPro.TMP_Text tmpText, string text, Whitespace whitespace = Whitespace.KeepWhitespace)
+        public static Vector2 GetTextSize(this TMP_Text tmpText, string text, Whitespace whitespace = Whitespace.KeepWhitespace)
         {
             Vector2 eSize = Vector2.zero;
 
@@ -81,6 +82,68 @@ namespace inetum.unityUtils.ui
             }
 
             return result;
+        }
+
+        public static float GetAlignmentOffset(this TMP_InputField inputField)
+        {
+            TMP_Text textTMP = inputField.textComponent;
+
+            float alignOffset = 0f;
+            switch (inputField.textComponent.alignment)
+            {
+                case TextAlignmentOptions.TopLeft:
+                case TextAlignmentOptions.Left:
+                case TextAlignmentOptions.BottomLeft:
+                case TextAlignmentOptions.BaselineLeft:
+                case TextAlignmentOptions.MidlineLeft:
+                case TextAlignmentOptions.CaplineLeft:
+                case TextAlignmentOptions.TopJustified:
+                case TextAlignmentOptions.Justified:
+                case TextAlignmentOptions.BottomJustified:
+                case TextAlignmentOptions.BaselineJustified:
+                case TextAlignmentOptions.MidlineJustified:
+                case TextAlignmentOptions.CaplineJustified:
+                    // The offset is 0;
+                    break;
+                case TextAlignmentOptions.Top:
+                case TextAlignmentOptions.Center:
+                case TextAlignmentOptions.Bottom:
+                case TextAlignmentOptions.Baseline:
+                case TextAlignmentOptions.Midline:
+                case TextAlignmentOptions.Capline:
+                    alignOffset = (inputField.textViewport.rect.width - textTMP.GetTextSize(inputField.text).x) / 2f;
+                    break;
+                case TextAlignmentOptions.TopRight:
+                case TextAlignmentOptions.Right:
+                case TextAlignmentOptions.BottomRight:
+                case TextAlignmentOptions.BaselineRight:
+                case TextAlignmentOptions.MidlineRight:
+                case TextAlignmentOptions.CaplineRight:
+                    alignOffset = inputField.textViewport.rect.width - textTMP.GetTextSize(inputField.text).x;
+                    break;
+                case TextAlignmentOptions.TopFlush:
+                case TextAlignmentOptions.Flush:
+                case TextAlignmentOptions.BottomFlush:
+                case TextAlignmentOptions.BaselineFlush:
+                case TextAlignmentOptions.MidlineFlush:
+                case TextAlignmentOptions.CaplineFlush:
+                    UnityEngine.Debug.LogError($"Not handle case");
+                    break;
+                case TextAlignmentOptions.TopGeoAligned:
+                case TextAlignmentOptions.CenterGeoAligned:
+                case TextAlignmentOptions.BottomGeoAligned:
+                case TextAlignmentOptions.BaselineGeoAligned:
+                case TextAlignmentOptions.MidlineGeoAligned:
+                case TextAlignmentOptions.CaplineGeoAligned:
+                case TextAlignmentOptions.Converted:
+                    UnityEngine.Debug.LogError($"Not handle case");
+                    break;
+                default:
+                    UnityEngine.Debug.LogError($"Not handle case");
+                    break;
+            }
+
+            return alignOffset;
         }
     }
 }
