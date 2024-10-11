@@ -537,9 +537,9 @@ namespace umi3d.cdk
                                 if (objectData != null)
                                     objectData.downloadedPath = file.path;
                                 else
-                                    CacheCollection.Insert(0, new ObjectData(file.url, null, null, data.library, file.path, file.fileRelativePath));
+                                    CacheCollection.Insert(0, new ObjectData(file.url, System.IO.Path.GetExtension(file.path), null, data.library, file.path, file.fileRelativePath));
                             }
-                            
+
                             libraries.Add(data.library, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
                         }
                         else
@@ -800,7 +800,7 @@ namespace umi3d.cdk
             {
                 return await _LoadFile(id, objectData, loader, file.pathIfInBundle);
             }
-            catch(Umi3dBundleException be)
+            catch (Umi3dBundleException be)
             {
                 if (!be.bundleAlreadyLoaded)
                     throw;
@@ -1145,7 +1145,7 @@ namespace umi3d.cdk
             }
             else
             {
-                CacheCollection.Insert(0, new ObjectData(url, null, null, key, filePath, fileRelativePath));
+                CacheCollection.Insert(0, new ObjectData(url, System.IO.Path.GetExtension(filePath), null, key, filePath, fileRelativePath));
             }
 
             string progressState = progress?.currentState;
