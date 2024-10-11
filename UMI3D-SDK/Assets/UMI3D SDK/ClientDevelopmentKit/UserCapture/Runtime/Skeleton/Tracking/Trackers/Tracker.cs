@@ -15,7 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-
+using umi3d.cdk.notification;
 using umi3d.common.core;
 using umi3d.common.userCapture.description;
 
@@ -63,6 +63,8 @@ namespace umi3d.cdk.userCapture.tracking
         /// </summary>
         public UnityTransformation _transformation;
 
+        Request request;
+
         #region Lifecycle
 
         public virtual void Init(uint boneType)
@@ -74,6 +76,42 @@ namespace umi3d.cdk.userCapture.tracking
         protected void Awake()
         {
             Init(boneType);
+        }
+
+        void OnEnable()
+        {
+            switch (boneType)
+            {
+                case common.userCapture.BoneType.RightHand:
+                    request = RequestHub.Default
+                        .SubscribeAsSupplier<UMI3DClientRequestKeys.RightTrackerRequest>(this);
+                    break;
+
+                case common.userCapture.BoneType.LeftHand:
+                    request = RequestHub.Default
+                        .SubscribeAsSupplier<UMI3DClientRequestKeys.LeftTrackerRequest>(this);
+                    break;
+
+                default:
+                    request = null;
+                    break;
+            }
+
+            if (request != null)
+            {
+                request[this, UMI3DClientRequestKeys.TrackerRequest.BoneType] = () => boneType;
+                request[this, UMI3DClientRequestKeys.TrackerRequest.Position] = () => position;
+                request[this, UMI3DClientRequestKeys.TrackerRequest.Rotation] = () => rotation;
+                request[this, UMI3DClientRequestKeys.TrackerRequest.Scale] = () => scale;
+            }
+        }
+
+        void OnDisable()
+        {
+            if (request != null)
+            {
+                RequestHub.Default.UnsubscribeAsSupplier(this, request.ID);
+            }
         }
 
         /// <inheritdoc/>
