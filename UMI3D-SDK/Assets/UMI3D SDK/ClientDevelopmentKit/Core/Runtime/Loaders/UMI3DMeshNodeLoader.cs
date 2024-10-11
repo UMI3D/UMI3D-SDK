@@ -323,8 +323,7 @@ namespace umi3d.cdk
             SetCollider(dto.id, nodeInstance, colliderDto);
             SetMaterialOverided(dto, nodeInstance);
             SetLightMap(instance, nodeInstance);
-            SetBlendShapeRef(instance, nodeInstance, dto);
-
+            SetBlendShapeRef(nodeInstance, dto);
 
             nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
             nodeInstance.IsTraversable = dto.isTraversable;
@@ -332,10 +331,10 @@ namespace umi3d.cdk
 
         }
 
-        private void SetBlendShapeRef(GameObject instance, UMI3DNodeInstance nodeInstance, UMI3DMeshNodeDto dto, bool setValue = true)
+        private void SetBlendShapeRef(UMI3DNodeInstance nodeInstance, UMI3DMeshNodeDto dto, bool setValue = true)
         {
             IEnumerable<Renderer> childrenSkinnedMesh = GetChildRenderersWhithoutOtherModel(nodeInstance).Where(s => s is SkinnedMeshRenderer);
-            foreach (var skinnedMesh in childrenSkinnedMesh)
+            foreach (Renderer skinnedMesh in childrenSkinnedMesh)
             {
                 SkinnedMeshRenderer skm = (skinnedMesh as SkinnedMeshRenderer);
                 if (skm.sharedMesh.blendShapeCount > 0 && !nodeInstance.skmToUpdateWithBlendShapes.Contains(skm))
@@ -347,19 +346,18 @@ namespace umi3d.cdk
                     if (setValue)
                         try
                         {
-                            for (int i = 0; i < skm.sharedMesh.blendShapeCount; i++)
+                            for (int i = 0; i < dto.blendShapesValues.Count; i++)
                             {
                                 skm.SetBlendShapeWeight(i, dto.blendShapesValues[i]);
                             }
                         }
                         catch (Exception e)
                         {
-                            Debug.LogError("Cannot apply blendshape values. " + e);
+                            Debug.LogError($"Cannot apply blendshape values. Skinned Mesh Renderer {skm.name} has {skm.sharedMesh.blendShapeCount} blendshapes whereas dto has {dto.blendShapesValues.Count}." + e);
                         }
                 }
             }
         }
-
 
         /// <summary>
         /// If the node has a <see cref="PrefabLightmapData"/>, makes sure to refresh once its references are updated.
