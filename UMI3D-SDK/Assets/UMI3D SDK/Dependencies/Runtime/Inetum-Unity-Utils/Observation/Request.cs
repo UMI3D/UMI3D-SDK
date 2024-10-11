@@ -22,7 +22,7 @@ namespace inetum.unityUtils
     /// <summary>
     /// The request made by a client to get some values from a supplier.
     /// </summary>
-    public class Request 
+    public class Request
     {
         /// <summary>
         /// Whether this request is associated with a <see cref="Supplier"/>.
@@ -40,6 +40,11 @@ namespace inetum.unityUtils
         public Object Supplier { get; private set; }
 
         /// <summary>
+        /// The clients of the request.
+        /// </summary>
+        public HashSet<Object> Clients { get; private set; } = new();
+
+        /// <summary>
         /// Additional information.<br/>
         /// <br/>
         /// key: Id of the information, Value: a func that return the additional information.
@@ -51,10 +56,17 @@ namespace inetum.unityUtils
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        public Func<Object> this[string id]
+        public Func<Object> this[Object supplier, string id]
         {
             set
             {
+                if (supplier != Supplier)
+                {
+                    UnityEngine.Debug.LogError($"[{nameof(Request)}] try to set request info but with the wrong supplier.\n" +
+                        $"This request supplier is {Supplier?.GetType().Name ?? "Not Def"} but the alien object is {supplier?.GetType().Name ?? "Not Def"}");
+                    return;
+                }
+
                 if (Info == null)
                 {
                     Info = new();
@@ -84,7 +96,25 @@ namespace inetum.unityUtils
         public void SetSupplier(Object supplier)
         {
             Supplier = supplier;
-            Info.Clear();
+            Info?.Clear();
+        }
+
+        /// <summary>
+        /// Add <paramref name="client"/> to the list of clients.
+        /// </summary>
+        /// <param name="client"></param>
+        public void SubscribeAsClient(Object client)
+        {
+            Clients.Add(client);
+        }
+
+        /// <summary>
+        /// Remove <paramref name="client"/> from the list of clients.
+        /// </summary>
+        /// <param name="client"></param>
+        public void UnsubscribeAsClient(Object client)
+        {
+            Clients.Remove(client);
         }
 
         /// <summary>
@@ -132,6 +162,16 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public bool TryGetInfo(string key, out Object info, bool logError = true)
         {
+            if (!IsAssociated)
+            {
+                if (logError)
+                {
+                    UnityEngine.Debug.LogError($"Request with'{ID}' has no supplier.");
+                }
+                info = default;
+                return false;
+            }
+
             // If 'Info' is null then there is no additional information.
             if (Info == null)
             {
