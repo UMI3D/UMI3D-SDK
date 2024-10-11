@@ -52,6 +52,7 @@ namespace umi3d.common
         public const string entity = "/environment/entity";
         public const string scene = "/environment/scene";
         public const string playerCount = "/environment/player_count";
+        public const string serverMessage = "/server/message";
 
         //RESOURCES SERVER
         //public const string register = "/resourcesServer/register";

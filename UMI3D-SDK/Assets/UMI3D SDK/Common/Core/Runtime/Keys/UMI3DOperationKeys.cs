@@ -76,11 +76,12 @@ namespace umi3d.common
         public const uint PerspectiveCameraProperties = 309;
         public const uint OrthographicCameraProperties = 310;
 
-
         public const uint FpsNavigationMode = 400;
         public const uint FlyingNavigationMode = 401;
         public const uint LayeredFlyingNavigationMode = 402;
         public const uint LockedNavigationMode = 403;
+
+        public const uint ServerMessageRequest = 500;
 
         public const uint InteractionRequest = 10001;
         public const uint EventStateChanged = 10002;
