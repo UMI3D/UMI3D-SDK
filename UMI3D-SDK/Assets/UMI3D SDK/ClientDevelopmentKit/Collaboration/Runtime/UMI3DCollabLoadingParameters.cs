@@ -24,7 +24,6 @@ using umi3d.cdk.collaboration.userCapture.binding;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
-using umi3d.cdk.userCapture.tracking;
 using umi3d.cdk.userCapture.tracking.constraint;
 
 namespace umi3d.cdk.collaboration
@@ -39,7 +38,11 @@ namespace umi3d.cdk.collaboration
         [Header("Collab User Capture")]
         [SerializeField]
         private bool collaborationUserCaptureActivated;
-        public bool CollaborationUserCaptureActivated => collaborationUserCaptureActivated;
+        public bool CollaborationUserCaptureActivated
+        {
+            get => collaborationUserCaptureActivated;
+            set => collaborationUserCaptureActivated = value;
+        }
 
         [SerializeField]
         private GameObject collabTrackedSkeleton;
