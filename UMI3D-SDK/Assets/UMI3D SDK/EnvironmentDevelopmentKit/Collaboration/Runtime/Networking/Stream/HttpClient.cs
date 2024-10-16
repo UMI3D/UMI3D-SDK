@@ -47,5 +47,16 @@ namespace umi3d.edk.collaboration
             return result;
         }
 
+        public async Task<PendingTransactionDto> SendPostMessage(string message, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            PendingTransactionDto result = null;
+            UMI3DLogger.Log($"Send Message {message}", scope | DebugScope.Connection);
+            using (UnityWebRequest uwr = await _PostRequest(this, _HeaderToken, httpUrl + UMI3DNetworkingKeys.serverMessage, null, UMI3DSerializer.Write(message).ToBytes(), (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true))
+            {
+
+            }
+            return result;
+        }
+
     }
 }

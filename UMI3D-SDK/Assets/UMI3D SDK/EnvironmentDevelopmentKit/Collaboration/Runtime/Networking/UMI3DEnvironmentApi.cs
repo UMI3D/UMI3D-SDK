@@ -40,7 +40,7 @@ namespace umi3d.edk.collaboration
     public class UMI3DResourcesServerApi : UMI3DAbstractEnvironmentApi
     {
 
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Networking;
+        private new const DebugScope scope = DebugScope.EDK | DebugScope.Networking;
 
         private UMI3DCollaborationAbstractContentUser GetUserFor(HttpListenerRequest request)
         {
@@ -735,6 +735,22 @@ namespace umi3d.edk.collaboration
         {
             UMI3DLogger.Log($"Get Player count", scope);
             e.Response.WriteContent(UMI3DCollaborationServer.Collaboration.GetPlayerCount().ToBson());
+        }
+
+        [HttpPost(UMI3DNetworkingKeys.serverMessage, WebServiceMethodAttribute.Security.Private, WebServiceMethodAttribute.Type.Method)]
+        public void ReceivedMessage(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
+        {
+            UMI3DServerUser user = GetUserFor(e.Request) as UMI3DServerUser;
+            if (user is null)
+                return;
+
+            UMI3DLogger.Log($"ReceivedMessage {user?.Id()}", scope);
+            byte[] bytes = ReadObject(e.Request);
+            var b = new ByteContainer(0, 0, bytes, new(""));
+            if (UMI3DSerializer.TryRead(b, out string message))
+            {
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => user.ReceivedMessage(message));
+            }
         }
 
         #endregion

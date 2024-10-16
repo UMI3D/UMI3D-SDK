@@ -222,7 +222,7 @@ namespace umi3d.edk.collaboration
         protected override void OnDestroy()
         {
             base.OnDestroy();
-            if (!Exists)
+            if (!Exists && http != null)
                 http.Dispose();
         }
 

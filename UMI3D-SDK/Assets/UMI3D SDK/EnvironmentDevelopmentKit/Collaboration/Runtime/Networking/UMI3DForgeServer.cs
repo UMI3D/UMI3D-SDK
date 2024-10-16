@@ -23,7 +23,6 @@ using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.emotes;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
-using umi3d.common.userCapture;
 using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.emotes;
 using umi3d.edk.collaboration.tracking;
@@ -31,7 +30,6 @@ using umi3d.edk.interaction;
 using umi3d.edk.userCapture.tracking;
 using umi3d.edk.volume;
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace umi3d.edk.collaboration
 {
@@ -295,7 +293,7 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            UMI3DCollaborationAbstractContentUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            UMI3DUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
 
@@ -363,7 +361,10 @@ namespace umi3d.edk.collaboration
                     case UserActionRequestDto userAction:
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DCollaborationServer.Collaboration?.HandleUserActionRequest(user, userAction);
+                            if (user is UMI3DCollaborationAbstractContentUser AUser)
+                                UMI3DCollaborationServer.Collaboration?.HandleUserActionRequest(AUser, userAction);
+                            else
+                                UnityEngine.Debug.LogError($"Received UserAction from a {user.GetType()}");
                         });
                         break;
                     default:
@@ -452,13 +453,25 @@ namespace umi3d.edk.collaboration
                         ulong userActionId = UMI3DSerializer.Read<ulong>(container);
                         MainThreadManager.Run(() =>
                         {
-                            UMI3DCollaborationServer.Collaboration.HandleUserActionRequest(user, new UserActionRequestDto() { environmentId = container.environmentId, actionId = userActionId });
+                            if (user is UMI3DCollaborationAbstractContentUser AUser)
+                                UMI3DCollaborationServer.Collaboration.HandleUserActionRequest(AUser, new UserActionRequestDto() { environmentId = container.environmentId, actionId = userActionId });
+                            else
+                                UnityEngine.Debug.LogError($"Received UserAction from a {user.GetType()}");
+
+                        });
+                        break;
+                    case UMI3DOperationKeys.ServerMessageRequest:
+                        string message = UMI3DSerializer.Read<string>(container);
+
+                        MainThreadManager.Run(() =>
+                        {
+                            if (user is UMI3DServerUser serverUser)
+                                serverUser.ReceivedMessage(message);
                         });
                         break;
                     default:
                         MainThreadManager.Run(() =>
                         {
-                            //UnityEngine.Debug.Log($"DispatchBrowserRequest {user.Id()} {environmentId} {id}");
                             UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, id, container);
                         });
                         break;

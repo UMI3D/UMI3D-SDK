@@ -17,7 +17,6 @@ limitations under the License.
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.signaling;
@@ -34,11 +33,44 @@ namespace umi3d.edk.collaboration
     /// an <see cref="umi3d.cdk.collaboration.HttpClient"/> and a <see cref="UMI3DForgeClient"/> to handle other messages.
     public class UMI3DEnvironmentClient
     {
+        public class UMI3DEnvironmentServerUser : UMI3DServerUser
+        {
+            UMI3DEnvironmentClient client;
+
+            public UMI3DEnvironmentServerUser(UMI3DEnvironmentClient client) : base(null)
+            {
+                this.client = client;
+            }
+
+            public override async void SendMessageToThisServer(string message)
+            {
+                try
+                {
+                    await client.HttpClient.SendPostMessage(message);
+                }
+                catch (Exception e)
+                {
+                    UMI3DLogger.LogException(e, scope);
+                }
+            }
+        }
+
+        public static event Action UsersListUpdated;
+
+        static async void NotifyUsersListUpdated()
+        {
+            await Task.Yield();
+            UsersListUpdated?.Invoke();
+        }
+
+        public static IReadOnlyList<UMI3DEnvironmentServerUser> Users { get => users; }
+        public UMI3DEnvironmentServerUser User { get; private set; }
+
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
+        private bool isJoining, isConnecting, isConnected, needToGetFirstConnectionInfo, disconnected;
 
-        public GlTFEnvironmentDto environement { get; private set; }
+        public GlTFEnvironmentDto environment { get; private set; }
         public ulong environmentId { get; private set; }
 
         public UMI3DDistantEnvironmentNode node => worldControllerClient.node;
@@ -49,7 +81,7 @@ namespace umi3d.edk.collaboration
         /// <returns></returns>
         public bool IsConnected()
         {
-            return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconected;
+            return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconnected;
         }
 
         public class ConnectionStateEvent : UnityEvent<string> { };
@@ -202,15 +234,15 @@ namespace umi3d.edk.collaboration
         /// Local copy of the user description.
         /// </summary>
         public UserInfo UserDto = new UserInfo();
-
+        private static List<UMI3DEnvironmentServerUser> users = new();
 
         public UMI3DEnvironmentClient(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient)
         {
             this.environmentId = environmentId;
-            this.isJoinning = false;
+            this.isJoining = false;
             this.isConnecting = false;
             this.isConnected = false;
-            this.disconected = false;
+            this.disconnected = false;
             this.needToGetFirstConnectionInfo = true;
             this.connectionDto = connectionDto;
             this.version = new UMI3DVersion.Version(connectionDto.version);
@@ -218,7 +250,9 @@ namespace umi3d.edk.collaboration
 
             lastTokenUpdate = default;
             HttpClient = new HttpClient(this);
-
+            this.User = new(this);
+            users.Add(this.User);
+            NotifyUsersListUpdated();
         }
 
         /// <summary>
@@ -235,7 +269,7 @@ namespace umi3d.edk.collaboration
                 return false;
 
             isConnecting = true;
-            disconected = false;
+            disconnected = false;
             needToGetFirstConnectionInfo = true;
 
             ForgeClient = UMI3DForgeClient.Create(this);
@@ -258,7 +292,7 @@ namespace umi3d.edk.collaboration
         {
             ForgeClient.Join(authenticator);
             await UMI3DAsyncManager.Delay(4500);
-            if (ForgeClient != null && !ForgeClient.IsConnected && !disconected)
+            if (ForgeClient != null && !ForgeClient.IsConnected && !disconnected)
             {
                 ConnectionState.Invoke("Connection Failed");
                 isConnecting = false;
@@ -313,13 +347,16 @@ namespace umi3d.edk.collaboration
                 ForgeClient.Stop();
                 ok = true;
             }
-            disconected = true;
+            disconnected = true;
             isConnected = false;
             if (ForgeClient != null)
             {
                 GameObject.Destroy(ForgeClient.gameObject);
                 ForgeClient = null;
             }
+            users.Remove(this.User);
+            this.User = null;
+            NotifyUsersListUpdated();
             return ok;
         }
 
@@ -472,9 +509,9 @@ namespace umi3d.edk.collaboration
         private async void Join()
         {
 
-            if (isJoinning || isConnected) return;
+            if (isJoining || isConnected) return;
             UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
-            isJoinning = true;
+            isJoining = true;
 
             // PoseManager.Instance.InitLocalPoses();
             var joinDto = new JoinDto()
@@ -499,7 +536,7 @@ namespace umi3d.edk.collaboration
             }
             finally
             {
-                isJoinning = false;
+                isJoining = false;
             }
         }
 
@@ -507,7 +544,7 @@ namespace umi3d.edk.collaboration
         {
             UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
             useDto = enter.usedDto;
-            environement = await HttpClient.SendGetEnvironment();
+            environment = await HttpClient.SendGetEnvironment();
             UserDto.answerDto.status = statusToBeSet;
             await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
         }
@@ -515,7 +552,7 @@ namespace umi3d.edk.collaboration
         public async Task RefreshEnvironmentDto()
         {
             UMI3DLogger.Log($"Refresh Environment Dto", scope | DebugScope.Connection);
-            environement = await HttpClient.SendGetEnvironment();
+            environment = await HttpClient.SendGetEnvironment();
 
         }
 

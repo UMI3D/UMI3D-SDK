@@ -14,15 +14,18 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using umi3d.common.collaboration.dto.signaling;
 
 namespace umi3d.edk.collaboration
 {
     public class UMI3DServerUser : UMI3DCollaborationAbstractContentUser
     {
+        public static event Action<UMI3DServerUser, string> OnMessage;
+
         public UMI3DServerUser(RegisterIdentityDto identity) : base(identity)
         {
-            UnityEngine.Debug.Log("Create USer");
+
         }
 
 
@@ -30,6 +33,18 @@ namespace umi3d.edk.collaboration
         {
             base.InitConnection(connection);
             SetStatus(common.StatusType.READY);
+        }
+
+        public virtual void SendMessageToThisServer(string message)
+        {
+            var request = new ServerMessageRequest(message, this);
+            request.ToTransaction(true).Dispatch();
+            UnityEngine.Debug.Log("Dispatch");
+        }
+
+        public void ReceivedMessage(string message)
+        {
+            OnMessage?.Invoke(this, message);
         }
     }
 }

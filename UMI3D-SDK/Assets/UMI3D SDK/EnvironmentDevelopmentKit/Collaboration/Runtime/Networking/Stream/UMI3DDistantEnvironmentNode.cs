@@ -1,18 +1,16 @@
+using BeardedManStudios.Forge.Networking.Frame;
+using BeardedManStudios.Forge.Networking.Unity;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using System.Threading.Tasks;
-using umi3d.cdk.collaboration;
+using umi3d;
 using umi3d.common;
+using umi3d.common.userCapture.tracking;
 using umi3d.edk;
 using umi3d.edk.collaboration;
 using UnityEngine;
 using WebSocketSharp;
-using umi3d.common.userCapture.tracking;
-using BeardedManStudios.Forge.Networking.Frame;
-using System.ComponentModel;
-using System.Threading;
-using umi3d.common.collaboration.dto;
-using System;
 
 public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 {
@@ -70,10 +68,10 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
             await nvClient.RefreshEnvironmentDto();
 
-            if (nvClient.environement == null)
+            if (nvClient.environment == null)
                 continue;
 
-            environmentDto.SetValue(nvClient.environement);
+            environmentDto.SetValue(nvClient.environment);
 
             lastUnreliableTransactionAsync.SetValue(new());
             lastReliableTransactionsAsync.SetValue(new());
@@ -122,6 +120,9 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
 
     public void OnData(Binary data)
     {
+        if (ReadMessage(data))
+            return;
+
         var bin = new BinaryDto
         {
             data = data.StreamData.byteArr,
@@ -137,6 +138,46 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         var op = (data.IsReliable) ? lastReliableTransactionsAsync.Add(bin) : lastUnreliableTransactionAsync.SetValue(bin);
         var t = op.ToTransaction(data.IsReliable);
         t.Dispatch();
+    }
+
+    bool ReadMessage(Binary data)
+    {
+        if (!useDto.GetValue())
+        {
+            var container = new ByteContainer(UMI3DGlobalID.EnvironmentId, data, UMI3DVersion.ComputedVersion);
+            bool catchFrame = true;
+
+            if (UMI3DSerializer.TryRead(container, out uint transaction) && transaction == UMI3DOperationKeys.Transaction)
+            {
+                foreach (ByteContainer c in UMI3DSerializer.ReadIndexesList(container))
+                {
+                    catchFrame &= PerformOperation(c);
+                }
+                return catchFrame;
+            }
+        }
+        //TODO do when useDto is true
+
+        return false;
+    }
+
+
+    public bool PerformOperation(ByteContainer container)
+    {
+        uint operationId = UMI3DSerializer.Read<uint>(container);
+        switch (operationId)
+        {
+            case UMI3DOperationKeys.ServerMessageRequest:
+                {
+                    if (UMI3DSerializer.TryRead<string>(container, out string message))
+                        MainThreadManager.Run(() =>
+                        {
+                            nvClient.User.ReceivedMessage(message);
+                        });
+                    return true;
+                }
+        }
+        return false;
     }
 
     async void Log(Binary data)
@@ -256,10 +297,10 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
         {
             nvClient = await wcClient.ConnectToEnvironment();
 
-            while (!nvClient.IsConnected() || nvClient.environement == null)
+            while (!nvClient.IsConnected() || nvClient.environment == null)
                 await Task.Yield();
 
-            environmentDto.SetValue(nvClient.environement);
+            environmentDto.SetValue(nvClient.environment);
             ResourceServerUrl = nvClient.connectionDto.resourcesUrl;
             resourcesUrl.SetValue(ResourceServerUrl);
             useDto.SetValue(nvClient.useDto);
