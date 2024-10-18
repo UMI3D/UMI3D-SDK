@@ -913,12 +913,20 @@ namespace umi3d.cdk.collaboration
         {
             if (IsConnected)
             {
-                ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
-                bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
-                bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
+                try
+                {
+                    ulong timestep = NetworkManager.Instance.Networker.Time.Timestep;
+                    bool isTcpClient = NetworkManager.Instance.Networker is TCPClient;
+                    bool isTcp = NetworkManager.Instance.Networker is BaseTCP;
 
-                var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
-                client.Send(bin, isReliable);
+                    var bin = new Binary(timestep, isTcpClient, data, Receivers.All, channel, isTcp);
+                    client.Send(bin, isReliable);
+                }
+                catch(Exception ex)
+                {
+                    UMI3DLogger.LogError("Error while sending data to the server", scope);
+                    UMI3DLogger.LogException(ex, scope);
+                }
             }
         }
 
