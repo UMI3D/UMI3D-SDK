@@ -118,41 +118,58 @@ namespace umi3d.cdk.collaboration
             if (UMI3DCollaborationClientServer.Exists && !string.IsNullOrEmpty(media.url))
             {
                 UMI3DDto answerDto = await EnvironmentHttpClient.Connect(dto, media.url);
-                if (answerDto is PrivateIdentityDto identity)
+                switch (answerDto)
                 {
-                    Connected(identity);
+                    case PrivateIdentityDto identity:
+                        Connected(identity);
 
-                    await DownloadWorldLib();
+                        await DownloadWorldLib();
 
-                    return true;
-                }
-                else if (answerDto is ConnectionFormDto form)
-                {
-                    FormAnswerDto answer = await GetFormAnswer(form);
-                    var _answer = new FormConnectionAnswerDto()
-                    {
-                        formAnswerDto = answer,
-                        metadata = form.metadata,
-                        globalToken = form.globalToken,
-                        gate = dto.gate,
-                        libraryPreloading = dto.libraryPreloading
-                    };
-                    return await Connect(_answer);
-                }
-                else if (answerDto is common.interaction.form.ConnectionFormDto form2)
-                {
-                    common.interaction.form.FormAnswerDto answer = await GetFormAnswer(form2);
-                    var _answer = new FormConnectionAnswerDto()
-                    {
-                        divFormAnswerDto = answer,
-                        metadata = form2.metadata,
-                        globalToken = form2.globalToken,
-                        gate = dto.gate,
-                        sdkVersion = dto.sdkVersion,
-                        formCompatibleVersions = dto.formCompatibleVersions,
-                        libraryPreloading = dto.libraryPreloading
-                    };
-                    return await Connect(_answer);
+                        return true;
+                    case ConnectionFormDto form:
+                        {
+                            FormAnswerDto answer = await GetFormAnswer(form);
+                            var _answer = new FormConnectionAnswerDto()
+                            {
+                                formAnswerDto = answer,
+                                metadata = form.metadata,
+                                globalToken = form.globalToken,
+                                gate = dto.gate,
+                                libraryPreloading = dto.libraryPreloading
+                            };
+                            return await Connect(_answer);
+                        }
+
+                    case common.interaction.form.ConnectionFormDto form2:
+                        {
+                            common.interaction.form.FormAnswerDto answer = await GetFormAnswer(form2);
+                            var _answer = new FormConnectionAnswerDto()
+                            {
+                                divFormAnswerDto = answer,
+                                metadata = form2.metadata,
+                                globalToken = form2.globalToken,
+                                gate = dto.gate,
+                                sdkVersion = dto.sdkVersion,
+                                formCompatibleVersions = dto.formCompatibleVersions,
+                                libraryPreloading = dto.libraryPreloading
+                            };
+                            return await Connect(_answer);
+                        }
+                    case WaitConnectionDto wait:
+                        {
+                            await GetFormAnswer(wait);
+                            var _answer = new WaitConnectionAnswerDto()
+                            {
+                                waitId = wait.id,
+                                metadata = wait.metadata,
+                                globalToken = wait.globalToken,
+                                gate = dto.gate,
+                                sdkVersion = dto.sdkVersion,
+                                formCompatibleVersions = dto.formCompatibleVersions,
+                                libraryPreloading = dto.libraryPreloading
+                            };
+                            return await Connect(_answer);
+                        }
                 }
             }
             return false;
@@ -186,6 +203,20 @@ namespace umi3d.cdk.collaboration
             privateIdentity = identity;
 
             httpClient.HeaderToken = globalToken;
+        }
+
+
+        private async Task GetFormAnswer(WaitConnectionDto form)
+        {
+            if(form is WebConnectionDto webConnection)
+            {
+                Application.OpenURL(webConnection.connectionUrl);
+            }
+
+            UnityEngine.Debug.Log($"Wait for {form.waitTimeSecond} : {form.message} {form.id}");
+            await UMI3DAsyncManager.Delay((int)(form.waitTimeSecond*1000));
+            UnityEngine.Debug.Log($"End Wait for {form.waitTimeSecond} : {form.message} {form.id}");
+            // return await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
         }
 
         private async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)

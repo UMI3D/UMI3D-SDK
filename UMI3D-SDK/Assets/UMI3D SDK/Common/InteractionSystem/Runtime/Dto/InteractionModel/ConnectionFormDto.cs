@@ -41,4 +41,37 @@ namespace umi3d.common.interaction
 
         public ConnectionFormDto() : base() { }
     }
+
+    /// <summary>
+    /// DTO describing a connection form.
+    /// </summary>
+    [System.Serializable]
+    public class WaitConnectionDto : AbstractInteractionDto
+    {
+        public float waitTimeSecond { get; set; }
+        public string message { get; set; }
+
+        /// <summary>
+        /// Globaltoken previously used in the media the client want to connect to.
+        /// </summary>
+        public string globalToken { get; set; }
+
+        /// <summary>
+        /// array that can be use to store data.
+        /// </summary>
+        public byte[] metadata { get; set; }
+
+        public WaitConnectionDto() : base() { }
+    }
+
+    /// <summary>
+    /// DTO describing a connection form.
+    /// </summary>
+    [System.Serializable]
+    public class WebConnectionDto : WaitConnectionDto
+    {
+        public string connectionUrl { get; set; }
+
+        public WebConnectionDto() : base() { }
+    }
 }
