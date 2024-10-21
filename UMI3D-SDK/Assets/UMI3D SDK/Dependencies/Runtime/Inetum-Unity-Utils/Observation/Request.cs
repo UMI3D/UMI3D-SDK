@@ -119,7 +119,7 @@ namespace inetum.unityUtils
             catch (Exception e)
             {
 
-                UnityEngine.Debug.Log($"[Request] NotifyClientThatSupplierChanged return an exception");
+                UnityEngine.Debug.LogError($"[Request] NotifyClientThatSupplierChanged return an exception");
                 UnityEngine.Debug.LogException(e);
             }
         }
