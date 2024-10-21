@@ -25,6 +25,13 @@ namespace inetum.unityUtils
     public class Request
     {
         /// <summary>
+        /// Event raised when the supplier has changed.<br/>
+        /// <br/>
+        /// To raise this event call <see cref="NotifyClientsThatSupplierChanged"/>.
+        /// </summary>
+        public event Action supplierChanged;
+
+        /// <summary>
         /// Whether this request is associated with a <see cref="Supplier"/>.
         /// </summary>
         public bool IsAssociated => Supplier != null;
@@ -97,6 +104,24 @@ namespace inetum.unityUtils
         {
             Supplier = supplier;
             Info?.Clear();
+        }
+
+        /// <summary>
+        /// Notify clients that supplier changed.<br/>
+        /// Call <see cref="supplierChanged"/> event.
+        /// </summary>
+        public void NotifyClientsThatSupplierChanged()
+        {
+            try
+            {
+                supplierChanged?.Invoke();
+            }
+            catch (Exception e)
+            {
+
+                UnityEngine.Debug.Log($"[Request] NotifyClientThatSupplierChanged return an exception");
+                UnityEngine.Debug.LogException(e);
+            }
         }
 
         /// <summary>
