@@ -34,8 +34,7 @@ namespace inetum.unityUtils.editor
 
 		public static void PropertyField_Layout(SerializedProperty property, bool includeChildren)
 		{
-			Rect dummyRect = new Rect();
-			PropertyField_Implementation(dummyRect, property, includeChildren, DrawPropertyField_Layout);
+			PropertyField_Implementation(new(), property, includeChildren, DrawPropertyField_Layout);
 		}
 
 		private static void DrawPropertyField(Rect rect, SerializedProperty property, GUIContent label, bool includeChildren)
@@ -61,11 +60,9 @@ namespace inetum.unityUtils.editor
 
 				propertyFieldFunction.Invoke(rect, property, new GUIContent(property.displayName), includeChildren);
 
-				if (EditorGUI.EndChangeCheck())
-				{
-					// TODO : value changed callback
-				}
-			}
+                EditorGUI.EndChangeCheck();
+
+            }
 		}
         public static void Button(UnityEngine.Object target, MethodInfo methodInfo)
         {

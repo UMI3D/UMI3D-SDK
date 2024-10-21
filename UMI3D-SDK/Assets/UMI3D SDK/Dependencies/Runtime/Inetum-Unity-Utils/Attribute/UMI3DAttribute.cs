@@ -19,6 +19,5 @@ namespace inetum.unityUtils
 {
     public interface IUMI3DAttribute { }
 
-    public class UMI3DAttribute : Attribute, IUMI3DAttribute { }
     public class UMI3DSpecialAttribute : Attribute, IUMI3DAttribute { }
 }

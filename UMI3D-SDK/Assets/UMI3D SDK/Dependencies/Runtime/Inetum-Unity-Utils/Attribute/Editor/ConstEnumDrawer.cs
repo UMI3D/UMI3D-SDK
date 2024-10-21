@@ -1,5 +1,5 @@
 ﻿/*
-Copyright 2019 - 2021 Inetum
+Copyright 2019 - 2024 Inetum
 
 Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
@@ -13,7 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-#if UNITY_EDITOR
 
 using System;
 using System.Linq;
@@ -25,7 +24,6 @@ namespace inetum.unityUtils.editor
     [CustomPropertyDrawer(typeof(ConstEnumAttribute))]
     public class ConstEnumDrawer : PropertyDrawer
     {
-        /// <inheritdoc/>
         public override void OnGUI(Rect position, SerializedProperty property, GUIContent label)
         {
             var cseAttribute = attribute as ConstEnumAttribute;
@@ -47,4 +45,3 @@ namespace inetum.unityUtils.editor
         }
     }
 }
-#endif
