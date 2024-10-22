@@ -44,6 +44,49 @@ namespace inetum.unityUtils.math
             return new Vector3(xAngle, yAngle, zAngle);
         }
 
+        /// <summary>
+        /// Restrict <paramref name="angle"/> to [0, 360].
+        /// </summary>
+        /// <param name="angle">The angle in degree.</param>
+        public static void ZeroTo360(ref float angle)
+        {
+            if (angle > 360f)
+            {
+                // Restrict the angle to [0, 360].
+                angle %= 360f;
+            }
+            else if (angle < 0)
+            {
+                // Restrict the angle to [-360, 360].
+                angle %= 360f;
+                // Restrict the angle to [0, 360].
+                angle += 360f;
+            }
+        }
+
+        /// <summary>
+        /// Whether <paramref name="angle"/> is between (strictly) <paramref name="min"/> and <paramref name="max"/>.
+        /// </summary>
+        /// <param name="angle">Angle in degree.</param>
+        /// <param name="min">Angle in degree.</param>
+        /// <param name="max">Angle in degree.</param>
+        /// <returns></returns>
+        public static bool IsBetween(this float angle, float min, float max)
+        {
+            ZeroTo360(ref min);
+            ZeroTo360(ref max);
+            ZeroTo360(ref angle);
+
+            if (min < max)
+            {
+                return min < angle && angle < max;
+            }
+            else
+            {
+                return min < angle || angle < max;
+            }
+        }
+
         public static void ToYawPitchRoll(Quaternion rotation, out float yawAngle, out float pitchAngle, out float rollAngle)
         {
             rotation.ToAngleAxis(out rollAngle, out Vector3 zAxis);
@@ -85,49 +128,6 @@ namespace inetum.unityUtils.math
         }
 
         /// <summary>
-        /// Whether <paramref name="angle"/> is between (strictly) <paramref name="min"/> and <paramref name="max"/>.
-        /// </summary>
-        /// <param name="angle">Angle in degree.</param>
-        /// <param name="min">Angle in degree.</param>
-        /// <param name="max">Angle in degree.</param>
-        /// <returns></returns>
-        public static bool IsBetween(this float angle, float min, float max)
-        {
-            ZeroTo360(ref min);
-            ZeroTo360(ref max);
-            ZeroTo360(ref angle);
-
-            if (min < max)
-            {
-                return min < angle && angle < max;
-            }
-            else
-            {
-                return min < angle || angle < max;
-            }
-        }
-
-        /// <summary>
-        /// Restrict <paramref name="angle"/> to [0, 360].
-        /// </summary>
-        /// <param name="angle">The angle in degree.</param>
-        public static void ZeroTo360(ref float angle)
-        {
-            if (angle > 360f)
-            {
-                // Restrict the angle to [0, 360].
-                angle %= 360f;
-            }
-            else if (angle < 0)
-            {
-                // Restrict the angle to [-360, 360].
-                angle %= 360f;
-                // Restrict the angle to [0, 360].
-                angle += 360f;
-            }
-        }
-
-        /// <summary>
         /// Get the angle in degree from a vector.<br/>
         /// <br/>
         /// If vector is null (0,0) the return <see cref="float.NaN"/>.<br/>
@@ -154,6 +154,17 @@ namespace inetum.unityUtils.math
             ZeroTo360(ref angle);
 
             return angle;
+        }
+
+        /// <summary>
+        /// Calculates the rotation of object "b" with respect to object "a
+        /// </summary>
+        /// <param name="a"></param>
+        /// <param name="b"></param>
+        /// <returns></returns>
+        public static Quaternion GetRelativeRotationOfAToB(this Transform a, Transform b)
+        {
+            return Quaternion.Inverse(a.rotation) * b.rotation;
         }
     }
 }

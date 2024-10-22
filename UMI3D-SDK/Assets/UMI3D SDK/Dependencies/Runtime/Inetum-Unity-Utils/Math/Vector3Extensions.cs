@@ -19,32 +19,8 @@ using UnityEngine;
 
 namespace inetum.unityUtils.math
 {
-    public static class Vector3Extensions 
+    public static class Vector3Extensions
     {
-        /// <summary>
-        /// Filter the <paramref name="translation"/> by <paramref name="filter"/>.
-        /// </summary>
-        /// <param name="translation">The translation.</param>
-        /// <param name="filter">The filter. If a composant is 0 then the translation will be null in that composant.</param>
-        /// <returns></returns>
-        public static Vector3 FilterTranslation(this Vector3 translation, Vector3 filter)
-        {
-            return Vector3.Scale(translation, filter);
-        }
-
-        /// <summary>
-        /// Filter the translation from <paramref name="originPosition"/> to <paramref name="endPosition"/> by <paramref name="filter"/>.
-        /// </summary>
-        /// <param name="originPosition">The origin of the translation.</param>
-        /// <param name="endPosition">The position of the object after the translation.</param>
-        /// <param name="filter">The filter. If a composant is 0 then the translation will be null in that composant.</param>
-        /// <returns></returns>
-        public static Vector3 FilterTranslation(this Vector3 originPosition, Vector3 endPosition, Vector3 filter)
-        {
-            Vector3 translation = endPosition - originPosition;
-            return Vector3.Scale(translation, filter);
-        }
-
         /// <summary>
         /// Whether an object at <paramref name="position"/> is inside a sphere of center <paramref name="sphereCenter"/> and radius <paramref name="sphereRadius"/>.
         /// </summary>
