@@ -147,6 +147,7 @@ namespace umi3d.edk.collaboration
 
                 parameters = UMI3DCollaborationServer.Instance.Identifier.GetParameterDtosFor(this),
                 librariesUpdated = UMI3DCollaborationServer.Instance.Identifier.getLibrariesUpdateSatus(this),
+                waitDto = UMI3DCollaborationServer.Instance.Identifier.GetWaitDtosFor(this),
 
                 userActions = source.userActions
             };
