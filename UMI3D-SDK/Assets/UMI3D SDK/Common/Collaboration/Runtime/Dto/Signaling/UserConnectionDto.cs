@@ -31,6 +31,7 @@ namespace umi3d.common.collaboration.dto.signaling
         /// </summary>
         public ConnectionFormDto parameters { get; set; }
         public interaction.form.ConnectionFormDto divForm { get; set; }
+        public WaitConnectionDto waitDto { get; set; }
 
         /// <summary>
         /// State if the libraries have been updated

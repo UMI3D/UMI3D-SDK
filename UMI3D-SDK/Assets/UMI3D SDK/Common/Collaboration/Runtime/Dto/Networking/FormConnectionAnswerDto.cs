@@ -28,4 +28,15 @@ namespace umi3d.common.collaboration.dto.networking
         public FormAnswerDto formAnswerDto { get; set; }
         public umi3d.common.interaction.form.FormAnswerDto divFormAnswerDto { get; set; }
     }
+
+    /// <summary>
+    /// DTO describing a connection to a media with a form answer.
+    /// </summary>
+    public class WaitConnectionAnswerDto : ConnectionDto
+    {
+        /// <summary>
+        /// Id of the waitConnectionDto
+        /// </summary>
+        public ulong waitId { get; set; }
+    }
 }

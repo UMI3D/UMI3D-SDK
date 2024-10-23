@@ -388,6 +388,8 @@ namespace umi3d.common
         /// </summary>
         public virtual void AddComplete() { started = true; completed += 1; OnCompleteUpdated?.Invoke(completed); }
 
+        public virtual void SetCompleted(float completed) { started = true; this.completed = completed; OnCompleteUpdated?.Invoke(this.completed); }
+
         /// <summary>
         /// Add a failed task.
         /// </summary>

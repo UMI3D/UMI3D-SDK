@@ -69,6 +69,26 @@ namespace umi3d.edk.collaboration
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual WaitConnectionDto GetWaitDtosFor(UMI3DCollaborationUser user)
+        {
+            return null;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="user"></param>
+        /// <returns></returns>
+        public virtual common.interaction.form.ConnectionFormDto GetDivDtosFor(UMI3DCollaborationUser user)
+        {
+            return null;
+        }
+
+        /// <summary>
         /// Should a user update has updataed its libraries.
         /// </summary>
         /// <param name="login">Login of the user.</param>
