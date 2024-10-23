@@ -41,7 +41,16 @@ namespace umi3d.cdk.collaboration
 
         private WorldHttpClient httpClient;
 
-        public static List<string> formCompatibleVersions = new() { "1", "2.0" };
+        public static class Versions
+        {
+            public const string version1 = "1";
+            public const string version2 = "2.0";
+            public const string version2_1 = "2.1";
+            public const string windows = "windows";
+            public const string vr = "vr";
+        }
+
+        public static List<string> formCompatibleVersions = new() { Versions.version1, Versions.version2, Versions.version2_1, Versions.windows, Versions.vr };
         /// <summary>
         /// Called to create a new Public Identity for this client.
         /// </summary>

@@ -532,7 +532,12 @@ namespace umi3d.cdk.collaboration
                 if (Ok)
                 {
                     //UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
-                    if (UserDto.divForm != null)
+                    if (UserDto.waitDto != null)
+                    {
+                        await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.waitDto);
+                        await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
+                    }
+                    else if (UserDto.divForm != null)
                     {
                         var param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.divForm);
                         UserDto.answerDto.divFormAnswer = param;
@@ -542,11 +547,6 @@ namespace umi3d.cdk.collaboration
                     {
                         FormAnswerDto param = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.formdto);
                         UserDto.answerDto.parameters = param;
-                        await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
-                    }
-                    else if (UserDto.waitDto != null)
-                    {
-                        await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.waitDto);
                         await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
                     }
                     else

@@ -73,9 +73,7 @@ namespace umi3d.cdk.collaboration
             {
                 UnityEngine.Application.OpenURL(webConnection.connectionUrl);
             }
-            UnityEngine.Debug.Log($"Wait for {parameter.waitTimeSecond} : {parameter.message} {parameter.id}");
             await UMI3DAsyncManager.Delay((int)(parameter.waitTimeSecond * 1000));
-            UnityEngine.Debug.Log($"End Wait for {parameter.waitTimeSecond} : {parameter.message} {parameter.id}");
         }
 
         /// <summary>
