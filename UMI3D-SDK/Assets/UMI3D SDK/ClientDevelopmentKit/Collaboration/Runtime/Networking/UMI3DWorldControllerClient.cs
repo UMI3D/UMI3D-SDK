@@ -208,14 +208,7 @@ namespace umi3d.cdk.collaboration
 
         private async Task GetFormAnswer(WaitConnectionDto form)
         {
-            if(form is WebConnectionDto webConnection)
-            {
-                Application.OpenURL(webConnection.connectionUrl);
-            }
-
-            UnityEngine.Debug.Log($"Wait for {form.waitTimeSecond} : {form.message} {form.id}");
-            await UMI3DAsyncManager.Delay((int)(form.waitTimeSecond*1000));
-            UnityEngine.Debug.Log($"End Wait for {form.waitTimeSecond} : {form.message} {form.id}");
+            await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
             // return await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
         }
 

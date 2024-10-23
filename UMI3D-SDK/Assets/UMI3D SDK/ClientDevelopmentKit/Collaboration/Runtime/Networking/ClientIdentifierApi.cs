@@ -17,6 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using umi3d.common.collaboration.dto.networking;
 using umi3d.common.interaction;
 using UnityEngine;
 
@@ -59,6 +60,22 @@ namespace umi3d.cdk.collaboration
                 isCancelation = false,
                 inputs = new()
             });
+        }
+
+        /// <summary>
+        /// Display A wait Connection .
+        /// </summary>
+        /// <param name="parameter">FormDto to be filled.</param>
+        /// <param name="callback">Action to return the completed FormDto.</param>
+        public virtual async Task GetParameterDtos(WaitConnectionDto parameter)
+        {
+            if (parameter is WebConnectionDto webConnection)
+            {
+                UnityEngine.Application.OpenURL(webConnection.connectionUrl);
+            }
+            UnityEngine.Debug.Log($"Wait for {parameter.waitTimeSecond} : {parameter.message} {parameter.id}");
+            await UMI3DAsyncManager.Delay((int)(parameter.waitTimeSecond * 1000));
+            UnityEngine.Debug.Log($"End Wait for {parameter.waitTimeSecond} : {parameter.message} {parameter.id}");
         }
 
         /// <summary>
