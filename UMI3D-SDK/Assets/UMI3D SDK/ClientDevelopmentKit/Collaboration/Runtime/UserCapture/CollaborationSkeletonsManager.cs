@@ -148,7 +148,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         private void Init()
         {
-            collaborativeEnvironmentManagementService.OnUpdateJoinnedUserList += () => UpdateSkeletons(collaborativeEnvironmentManagementService.UserList);
+            collaborativeEnvironmentManagementService.OnUpdateJoinedUserList += () => UpdateSkeletons(collaborativeEnvironmentManagementService.UserList);
             collaborativeLoaderService.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); if (ShouldSendTracking) SendTrackingLoop(); canClearSkeletons = true; canUpdateSkeletons = true; });
             collaborationClientServerService.OnLeavingEnvironment.AddListener(Clear);
             collaborationClientServerService.OnRedirection.AddListener(Clear);

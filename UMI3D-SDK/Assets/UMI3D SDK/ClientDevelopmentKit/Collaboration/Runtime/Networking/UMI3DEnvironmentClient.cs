@@ -40,7 +40,7 @@ namespace umi3d.cdk.collaboration
     {
         private const DebugScope scope = DebugScope.CDK | DebugScope.Collaboration | DebugScope.Networking;
 
-        private bool isJoinning, isConnecting, isConnected, needToGetFirstConnectionInfo, disconected;
+        private bool isJoining, isConnecting, isConnected, needToGetFirstConnectionInfo, disconnected;
 
         /// <summary>
         /// Is the client connected to the environment server?
@@ -49,7 +49,7 @@ namespace umi3d.cdk.collaboration
         /// <returns></returns>
         public bool IsConnected()
         {
-            return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconected;
+            return ForgeClient != null && isConnected && ForgeClient.IsConnected && !disconnected;
         }
 
         public class ConnectionStateEvent : UnityEvent<string> { };
@@ -72,8 +72,8 @@ namespace umi3d.cdk.collaboration
 
         private readonly UMI3DWorldControllerClient worldControllerClient;
 
-        static public UnityEvent EnvironementJoinned = new UnityEvent();
-        static public UnityEvent EnvironementLoaded = new UnityEvent();
+        static public UnityEvent EnvironmentJoined = new UnityEvent();
+        static public UnityEvent EnvironmentLoaded = new UnityEvent();
 
         /// <summary>
         /// Get current user UMI3D id.
@@ -226,10 +226,10 @@ namespace umi3d.cdk.collaboration
 
         public UMI3DEnvironmentClient(EnvironmentConnectionDto connectionDto, UMI3DWorldControllerClient worldControllerClient, MultiProgress progress)
         {
-            this.isJoinning = false;
+            this.isJoining = false;
             this.isConnecting = false;
             this.isConnected = false;
-            this.disconected = false;
+            this.disconnected = false;
             this.connectionDto = connectionDto;
             this.version = new UMI3DVersion.Version(connectionDto.version);
             UMI3DSerializer.version = this.version;
@@ -260,7 +260,7 @@ namespace umi3d.cdk.collaboration
                 return false;
 
             isConnecting = true;
-            disconected = false;
+            disconnected = false;
 
             ForgeClient = UMI3DForgeClient.Create(this);
             ForgeClient.ip = connectionDto.forgeHost;
@@ -282,7 +282,7 @@ namespace umi3d.cdk.collaboration
         {
             ForgeClient.Join(authenticator);
             await UMI3DAsyncManager.Delay(4500);
-            if (ForgeClient != null && !ForgeClient.IsConnected && !disconected)
+            if (ForgeClient != null && !ForgeClient.IsConnected && !disconnected)
             {
                 ConnectionState.Invoke("Connection Failed");
                 isConnecting = false;
@@ -294,7 +294,7 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
-                EnvironementJoinned.Invoke();
+                EnvironmentJoined.Invoke();
             }
         }
 
@@ -337,7 +337,7 @@ namespace umi3d.cdk.collaboration
                 ForgeClient.Stop();
                 ok = true;
             }
-            disconected = true;
+            disconnected = true;
             isConnected = false;
             if (ForgeClient != null)
             {
@@ -389,7 +389,7 @@ namespace umi3d.cdk.collaboration
         }
 
         /// <summary>
-        /// Handles the message comming from the websockekt server.
+        /// Handles the message coming from the websocket server.
         /// </summary>
         /// <param name="message"></param>
         public async void OnMessage(object message)
@@ -586,9 +586,9 @@ namespace umi3d.cdk.collaboration
             progress.Add(PostJoinProgress);
             progress.Add(EnterProgress);
 
-            if (isJoinning || isConnected) return;
+            if (isJoining || isConnected) return;
             UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
-            isJoinning = true;
+            isJoining = true;
 
             var joinDto = new JoinDto()
             {
@@ -615,15 +615,15 @@ namespace umi3d.cdk.collaboration
             finally
             {
                 progress.SetAsFailed();
-                isJoinning = false;
+                isJoining = false;
             }
         }
 
         private async Task EnterScene(EnterDto enter, MultiProgress progress)
         {
-            Progress PostJoinProgress = new Progress(1, "Joinning Environment");
+            Progress PostJoinProgress = new Progress(1, "Joining Environment");
             MultiProgress LoadProgress = new MultiProgress("Loading Environment");
-            Progress UpdateProgress = new Progress(2, "Instanciating Environment");
+            Progress UpdateProgress = new Progress(2, "Instantiating Environment");
             progress.Add(PostJoinProgress);
             progress.Add(LoadProgress);
             progress.Add(UpdateProgress);
@@ -631,13 +631,13 @@ namespace umi3d.cdk.collaboration
             PostJoinProgress.AddComplete();
             UMI3DLogger.Log($"Enter scene", scope | DebugScope.Connection);
             useDto = enter.usedDto;
-            GlTFEnvironmentDto environement = await HttpClient.SendGetEnvironment();
+            GlTFEnvironmentDto environment = await HttpClient.SendGetEnvironment();
             UMI3DLogger.Log($"get environment completed", scope | DebugScope.Connection);
-            await (UMI3DEnvironmentLoader.Instance.Load(environement, LoadProgress));
+            await (UMI3DEnvironmentLoader.Instance.Load(environment, LoadProgress));
             UpdateProgress.AddComplete();
             UMI3DLogger.Log($"Load ended, Teleport and set status to active", scope | DebugScope.Connection);
             UMI3DNavigation.currentNav.Teleport(UMI3DGlobalID.EnvironmentId, new TeleportDto() { position = enter.userPosition, rotation = enter.userRotation });
-            EnvironementLoaded.Invoke();
+            EnvironmentLoaded.Invoke();
             UserDto.answerDto.status = statusToBeSet;
             UMI3DCollaborationClientServer.transactionPending = await HttpClient.SendPostUpdateIdentity(UserDto.answerDto, null);
             UpdateProgress.AddComplete();
