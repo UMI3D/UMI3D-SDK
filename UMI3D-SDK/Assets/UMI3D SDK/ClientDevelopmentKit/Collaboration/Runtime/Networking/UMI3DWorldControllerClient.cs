@@ -129,6 +129,21 @@ namespace umi3d.cdk.collaboration
                 UMI3DDto answerDto = await EnvironmentHttpClient.Connect(dto, media.url);
                 switch (answerDto)
                 {
+                    case WaitConnectionDto wait:
+                        {
+                            await GetFormAnswer(wait);
+                            var _answer = new WaitConnectionAnswerDto()
+                            {
+                                waitId = wait.id,
+                                metadata = wait.metadata,
+                                globalToken = wait.globalToken,
+                                gate = dto.gate,
+                                sdkVersion = dto.sdkVersion,
+                                formCompatibleVersions = dto.formCompatibleVersions,
+                                libraryPreloading = dto.libraryPreloading
+                            };
+                            return await Connect(_answer);
+                        }
                     case PrivateIdentityDto identity:
                         Connected(identity);
 
@@ -157,21 +172,6 @@ namespace umi3d.cdk.collaboration
                                 divFormAnswerDto = answer,
                                 metadata = form2.metadata,
                                 globalToken = form2.globalToken,
-                                gate = dto.gate,
-                                sdkVersion = dto.sdkVersion,
-                                formCompatibleVersions = dto.formCompatibleVersions,
-                                libraryPreloading = dto.libraryPreloading
-                            };
-                            return await Connect(_answer);
-                        }
-                    case WaitConnectionDto wait:
-                        {
-                            await GetFormAnswer(wait);
-                            var _answer = new WaitConnectionAnswerDto()
-                            {
-                                waitId = wait.id,
-                                metadata = wait.metadata,
-                                globalToken = wait.globalToken,
                                 gate = dto.gate,
                                 sdkVersion = dto.sdkVersion,
                                 formCompatibleVersions = dto.formCompatibleVersions,

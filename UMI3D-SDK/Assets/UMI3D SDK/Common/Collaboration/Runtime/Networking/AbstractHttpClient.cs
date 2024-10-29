@@ -106,8 +106,18 @@ namespace umi3d.common.collaboration
 
             var dto3 = UMI3DDtoSerializer.FromJson<ConnectionFormDto>(text, Newtonsoft.Json.TypeNameHandling.None, new List<JsonConverter>() { new ParameterConverter() });
             var dto4 = UMI3DDtoSerializer.FromJson<umi3d.common.interaction.form.ConnectionFormDto>(text, TypeNameHandling.None, new List<JsonConverter> { new ReadDivConverter() });
+            var dto5 = UMI3DDtoSerializer.FromJson<WebConnectionDto>(text, Newtonsoft.Json.TypeNameHandling.None);
 
-            if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
+            if (dto5 != null && dto5.waitTimeSecond > 0.01f)
+            {
+                if (dto5.connectionUrl == null)
+                {
+                    return UMI3DDtoSerializer.FromJson<WaitConnectionDto>(text, Newtonsoft.Json.TypeNameHandling.None);
+                }
+                else
+                    return dto5;
+            }
+            else if (dto1 != null && dto1?.globalToken != null && dto1?.connectionDto != null)
                 return dto1;
             else if (dto2 != null && dto2?.GlobalToken != null && dto2?.connectionDto != null)
                 return dto2.ToPrivateIdentity();

@@ -22,9 +22,9 @@ namespace umi3d.cdk.collaboration
     public interface ICollaborationEnvironmentManager : IEnvironmentManager
     {
         IReadOnlyList<UMI3DUser> UserList { get; }
-        IReadOnlyList<UMI3DUser> JoinnedUserList { get; }
+        IReadOnlyList<UMI3DUser> JoinedUserList { get; }
 
-        event Action OnUpdateJoinnedUserList;
+        event Action OnUpdateJoinedUserList;
         event Action OnUpdateUserList;
     }
 }

@@ -189,7 +189,7 @@ namespace umi3d.cdk.collaboration
                         //Connection will not restart without this...
                         await Task.Yield();
 
-                        MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joinning Environment");
+                        MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joining Environment");
                         onProgress.Invoke(progress);
 
                         worldControllerClient = connectingWorldControllerClient;

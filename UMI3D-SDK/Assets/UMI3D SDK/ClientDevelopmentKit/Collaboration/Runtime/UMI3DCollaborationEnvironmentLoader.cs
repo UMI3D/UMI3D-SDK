@@ -52,8 +52,8 @@ namespace umi3d.cdk.collaboration
 
         public event Action OnUpdateUserList;
 
-        public IReadOnlyList<UMI3DUser> JoinnedUserList => UserList.Where(u => u.status >= StatusType.AWAY || (UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId())).ToList();
-        public event Action OnUpdateJoinnedUserList;
+        public IReadOnlyList<UMI3DUser> JoinedUserList => UserList.Where(u => u.status >= StatusType.AWAY || (UMI3DCollaborationClientServer.Exists && u.id == UMI3DCollaborationClientServer.Instance.GetUserId())).ToList();
+        public event Action OnUpdateJoinedUserList;
 
         private Dictionary<ulong,ulong> lastTimeUserMessageListReceived = new();
 
@@ -104,7 +104,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DUser.OnNewUser.Invoke(u.entity);
             });
             OnUpdateUserList?.Invoke();
-            OnUpdateJoinnedUserList?.Invoke();
+            OnUpdateJoinedUserList?.Invoke();
 
             AudioManager.Instance.OnUserSpeaking.AddListener(OnUserSpeaking);
         }
@@ -339,7 +339,7 @@ namespace umi3d.cdk.collaboration
             {
                 userList[environmentId].Insert(index, UMI3DUser.CreateUser(environmentId, userDto));
                 OnUpdateUserList?.Invoke();
-                OnUpdateJoinnedUserList?.Invoke();
+                OnUpdateJoinedUserList?.Invoke();
             }
             else
             {
@@ -357,7 +357,7 @@ namespace umi3d.cdk.collaboration
                 userList[environmentId].RemoveAt(index);
                 DeleteEntityInstance(Olduser.EnvironmentId, Olduser.id);
                 OnUpdateUserList?.Invoke();
-                OnUpdateJoinnedUserList?.Invoke();
+                OnUpdateJoinedUserList?.Invoke();
             }
             else
             {
@@ -379,7 +379,7 @@ namespace umi3d.cdk.collaboration
                 dto.userList[index] = userNew;
 
                 if (userReadyListUpdated)
-                    OnUpdateJoinnedUserList?.Invoke();
+                    OnUpdateJoinedUserList?.Invoke();
             }
             else if (index == UserList.Count) InsertUser(environmentId, dto, index, userNew);
         }
@@ -401,7 +401,7 @@ namespace umi3d.cdk.collaboration
             userList[environmentId] = users.Select(u => u.entity).ToList();
 
             OnUpdateUserList?.Invoke();
-            OnUpdateJoinnedUserList?.Invoke();
+            OnUpdateJoinedUserList?.Invoke();
         }
 
         protected override void InternalClear()

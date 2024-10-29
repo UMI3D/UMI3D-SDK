@@ -51,7 +51,7 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnLeaving.AddListener(Reset);
 
             UMI3DCollaborationClientServer.Instance.OnRedirectionAborted.AddListener(Heartbeat);
-            UMI3DEnvironmentClient.EnvironementLoaded.AddListener(Heartbeat);
+            UMI3DEnvironmentClient.EnvironmentLoaded.AddListener(Heartbeat);
 
             identity = new Identity(GetIdentity);
 
@@ -104,7 +104,7 @@ namespace umi3d.cdk.collaboration
             UMI3DUser.OnUserMicrophoneServerUpdated.RemoveListener(ServerUpdate);
             UMI3DUser.OnUserMicrophoneUseMumbleUpdated.RemoveListener(UseMumbleUpdate);
 
-            UMI3DEnvironmentClient.EnvironementLoaded.RemoveListener(Heartbeat);
+            UMI3DEnvironmentClient.EnvironmentLoaded.RemoveListener(Heartbeat);
         }
         #endregion
 

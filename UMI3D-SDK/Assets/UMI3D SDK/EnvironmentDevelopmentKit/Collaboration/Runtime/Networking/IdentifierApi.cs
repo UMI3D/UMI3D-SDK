@@ -32,7 +32,7 @@ namespace umi3d.edk.collaboration
         private Dictionary<ulong, bool> librariesUpdateStatus;
 
         /// <summary>
-        /// Update a client status acording to a userconnectionDto
+        /// Update a client status according to a userConnectionDto
         /// </summary>
         /// <param name="user">User.</param>
         /// <param name="identity">Identity Dto send by the user.</param>
