@@ -56,26 +56,36 @@ public class UMI3DDistantEnvironmentNode : UMI3DAbstractDistantEnvironmentNode
                 continue;
             }
 
-            await UMI3DAsyncManager.Delay(refresh);
             if (!nvClient.IsConnected())
+            {
+                await UMI3DAsyncManager.Delay(refresh);
                 continue;
+            }
 
             var manager = UMI3DCollaborationServer.MumbleManager;
             if (nvClient.UserDto.answerDto.audioUseMumble && manager != null && manager.ip == nvClient.UserDto.answerDto.audioServerUrl)
             {
-                manager.SwitchDefaultRoom(nvClient.UserDto.answerDto.audioChannel, UMI3DCollaborationServer.Collaboration.Users);
+                Transaction transaction = new() { reliable = true };
+                transaction.AddIfNotNull(manager.SwitchDefaultRoom(nvClient.UserDto.answerDto.audioChannel, UMI3DCollaborationServer.Collaboration.Users));
+                transaction.Dispatch();
             }
 
             await nvClient.RefreshEnvironmentDto();
 
             if (nvClient.environment == null)
+            {
+                await UMI3DAsyncManager.Delay(refresh);
                 continue;
+            }
 
             environmentDto.SetValue(nvClient.environment);
 
             lastUnreliableTransactionAsync.SetValue(new());
             lastReliableTransactionsAsync.SetValue(new());
+
+            await UMI3DAsyncManager.Delay(refresh);
         }
+
         tokenSource.Dispose();
     }
 
