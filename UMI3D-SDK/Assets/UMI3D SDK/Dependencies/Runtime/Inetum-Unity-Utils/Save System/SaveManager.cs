@@ -43,32 +43,55 @@ namespace inetum.unityUtils.saveSystem
         /// <summary>
         /// Save <paramref name="fileContents"/> with key <paramref name="fileName"/>.
         /// </summary>
-        /// <param name="fileName"></param>
         /// <param name="fileContents"></param>
+        /// <param name="directories"></param>
+        /// <param name="fileName"></param>
+        /// <param name="path"></param>
+        /// <param name="savingSystem"></param>
         /// <returns></returns>
-        public static bool WriteToFile(string fileName, string fileContents, SavingSystem savingSystem = SavingSystem.Default)
+        public static bool WriteToFile(
+            string fileContents, 
+            string directories,
+            string fileName, 
+            out string path,
+            SavingSystem savingSystem = SavingSystem.Default
+        )
         {
+            bool hasSaved = false;
             switch (savingSystem)
             {
                 case SavingSystem.Default:
 #if UNITY_ANDROID && !UNITY_EDITOR
-                    PlayerPrefsManager.WriteToFile(fileName, fileContents);
+                    path = directories + fileName;
+                    hasSaved = PlayerPrefsManager.WriteToFile(path, fileContents);
 #else
-                    FileManager.WriteToFile(fileName, fileContents);
+                    hasSaved = FileManager.WriteToFile(
+                        fileContents,
+                        directories,
+                        fileName, 
+                        out path
+                    );
 #endif
                     break;
                 case SavingSystem.FileSystem:
-                    FileManager.WriteToFile(fileName, fileContents);
+                    hasSaved = FileManager.WriteToFile(
+                        fileContents,
+                        directories,
+                        fileName,
+                        out path
+                    );
                     break;
                 case SavingSystem.PlayerPrefs:
-                    PlayerPrefsManager.WriteToFile(fileName, fileContents);
+                    path = directories + fileName;
+                    hasSaved = PlayerPrefsManager.WriteToFile(path, fileContents);
                     break;
                 default:
                     Debug.LogError($"Unknown saving system {savingSystem}");
+                    path = null;
                     return false;
             }
 
-            return true;
+            return hasSaved;
         }
 
         /// <summary>
@@ -77,25 +100,53 @@ namespace inetum.unityUtils.saveSystem
         /// <param name="fileName"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static bool LoadFromFile(string fileName, out string result, SavingSystem savingSystem = SavingSystem.Default)
+        public static bool LoadFromFile(
+            string directories,
+            string fileName,
+            out string path,
+            out string result, 
+            SavingSystem savingSystem = SavingSystem.Default
+        )
         {
+            bool hasLoaded = false;
             switch (savingSystem)
             {
                 case SavingSystem.Default:
 #if UNITY_ANDROID && !UNITY_EDITOR
-                    return PlayerPrefsManager.LoadFromFile(fileName, out result);
+                    path = directories + fileName;
+                    hasLoaded = PlayerPrefsManager.LoadFromFile(path, out result);
 #else
-                    return FileManager.LoadFromFile(fileName, out result);
+                    hasLoaded = FileManager.LoadFromFile(
+                        directories,
+                        fileName, 
+                        out path,
+                        out result
+                    );
 #endif
+                    break;
+
                 case SavingSystem.FileSystem:
-                    return FileManager.LoadFromFile(fileName, out result);
+                    hasLoaded = FileManager.LoadFromFile(
+                        directories,
+                        fileName,
+                        out path,
+                        out result
+                    );
+                    break;
+
                 case SavingSystem.PlayerPrefs:
-                    return PlayerPrefsManager.LoadFromFile(fileName, out result);
+                    path = directories + fileName;
+                    hasLoaded = PlayerPrefsManager.LoadFromFile(path, out result);
+                    break;
+
                 default:
                     Debug.LogError($"Unknown saving system {savingSystem}");
+                    path = null;
                     result = "";
                     return false;
             }
+
+            return hasLoaded;
         }
 
         /// <summary>

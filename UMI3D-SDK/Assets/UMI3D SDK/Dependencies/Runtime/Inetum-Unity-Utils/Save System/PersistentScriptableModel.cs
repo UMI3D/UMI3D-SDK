@@ -22,7 +22,12 @@ namespace inetum.unityUtils.saveSystem
 {
     public class PersistentScriptableModel : ScriptableObject
     {
-        const string BACKUP_PREFIX = "BACKUP";
+        const string PREFIX_BACKUP = "BACKUP";
+
+        /// <summary>
+        /// The directories where to save the file.
+        /// </summary>
+        public string directories;
 
         /// <summary>
         /// Name of the file.
@@ -32,37 +37,18 @@ namespace inetum.unityUtils.saveSystem
         /// <summary>
         /// Name of the backup file.
         /// </summary>
-        public string BackupFileName
-        {
-            get
-            {
-                return $"{BACKUP_PREFIX}_{saveFilename}";
-            }
-        }
+        public string BackupFileName => $"{PREFIX_BACKUP}_{saveFilename}";
 
-        bool isWaitingToSave;
+        string path;
 
         public PersistentScriptableModel()
         {
             saveFilename = GetType().Name;
         }
 
-        /// <summary>
-        /// Load the data.
-        /// </summary>
-        public void Load(bool editorOnly = false)
-        {
-            if (editorOnly)
-            {
-#if UNITY_EDITOR
+        #region Save Model to disk
 
-#endif
-            }
-            else
-            {
-                LoadDataFromDisk();
-            }
-        }
+        bool isWaitingToSave;
 
         /// <summary>
         /// Save the data.
@@ -71,7 +57,7 @@ namespace inetum.unityUtils.saveSystem
         /// <param name="editorOnly">Whether to use the built-in scriptable serialization feature or to save on disk.</param>
         public async void Save(int waitingDuration = 5, bool editorOnly = false)
         {
-            if (waitingDuration > 0)
+            if (!QuittingManager.applicationIsQuitting && waitingDuration > 0)
             {
                 if (isWaitingToSave)
                 {
@@ -96,107 +82,141 @@ namespace inetum.unityUtils.saveSystem
             }
             else
             {
-                SaveDataToDisk();
-            }
-        }
-
-        #region Load and Save persistently on disk
-
-        public void LoadBackup()
-        {
-            if (!SaveManager.LoadFromFile(BackupFileName, out string json))
-            {
-                throw new Exception($"[{nameof(PersistentScriptableModel)}]: couldn't load json backup to this ({GetType().Name})");
-            }
-
-            try
-            {
-                LoadFromJson(json);
-            }
-            catch (Exception e)
-            {
-                var exception = new Exception($"[{nameof(PersistentScriptableModel)}]: couldn't load json to this ({GetType().Name})");
-                UnityEngine.Debug.LogException(exception);
-                throw e;
+                TrySaveDataToDisk(saveFilename);
             }
         }
 
         [ContextMenu("Save Backup file")]
         public void SaveBackup()
         {
-            if (!SaveManager.WriteToFile(BackupFileName, SaveToJson()))
-            {
-                throw new Exception($"[{nameof(PersistentScriptableModel)}]: couldn't save backup file for ({GetType().Name})");
-            }
-        }
-
-        /// <summary>
-        /// Load the data from disk at <see cref="saveFilename"/> or <see cref="BACKUP_PREFIX"/>_<see cref="saveFilename"/>.
-        /// </summary>
-        /// <returns></returns>
-        void LoadDataFromDisk()
-        {
-            if (!SaveManager.Exists(BackupFileName))
-            {
-                SaveBackup();
-            }
-
-            string json = null;
-            Func<bool> isJsonLoaded = () =>
-            {
-                return SaveManager.LoadFromFile(saveFilename, out json)
-                || SaveManager.LoadFromFile(BackupFileName, out json);
-            };
-            
-            if (!isJsonLoaded())
-            {
-                throw new Exception($"[{nameof(PersistentScriptableModel)}]: no Json file found for ({GetType().Name})");
-            }
-
-            try
-            {
-                LoadFromJson(json);
-            }
-            catch (Exception e)
-            {
-                var exception = new Exception($"[{nameof(PersistentScriptableModel)}]: couldn't load json to this ({GetType().Name})");
-                UnityEngine.Debug.LogException(exception);
-                throw e;
-            }
+            TrySaveDataToDisk(BackupFileName);
         }
 
         /// <summary>
         /// Save the data to disk at <see cref="saveFilename"/>.
         /// </summary>
         /// <param name="data"></param>
-        void SaveDataToDisk()
+        bool TrySaveDataToDisk(string fileName)
         {
-            if (!SaveManager.WriteToFile(saveFilename, SaveToJson()))
+            if (!TrySaveToJson(out string json))
             {
-                UnityEngine.Debug.LogError($"[{nameof(PersistentScriptableModel)}]: couldn't save file for ({GetType().Name})");
+                return false;
             }
+
+            try
+            {
+                SaveManager.WriteToFile(
+                    json,
+                    directories,
+                    fileName,
+                    out path
+                );
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError($"[PersistentScriptableModel] Cannot save file [{fileName}]");
+                UnityEngine.Debug.LogException(e);
+                return false;
+            }
+
+            return true;
         }
-
-        #endregion
-
-        #region JSON
 
         /// <summary>
         /// Convert this to a Json file.
         /// </summary>
         /// <returns></returns>
-        string SaveToJson()
+        bool TrySaveToJson(out string json)
         {
-            return JsonUtility.ToJson(this);
+            try
+            {
+                json = JsonUtility.ToJson(this);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError($"[PersistentScriptableModel] Cannot convert the file [{saveFilename}] to its json.");
+                UnityEngine.Debug.LogException(e);
+                json = null;
+                return false;
+            }
+
+            return true;
+        }
+
+        #endregion
+
+        #region Load Model from disk
+
+        /// <summary>
+        /// Whether the backup file has been saved.
+        /// </summary>
+        bool isBackupSaved = false;
+
+        /// <summary>
+        /// Load the data.
+        /// </summary>
+        public void Load(bool editorOnly = false)
+        {
+            bool hasLoaded = TryLoadDataFromDisk(saveFilename);
+
+            if (!editorOnly && hasLoaded && !isBackupSaved)
+            {
+                isBackupSaved = TrySaveDataToDisk(BackupFileName);
+            }
+
+            TryLoadDataFromDisk(BackupFileName);
+        }
+
+        /// <summary>
+        /// Load the backup file.
+        /// </summary>
+        [ContextMenu("Load Backup file")]
+        public void LoadBackup()
+        {
+            TryLoadDataFromDisk(BackupFileName);
+        }
+
+        /// <summary>
+        /// Load the data from disk.
+        /// </summary>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
+        bool TryLoadDataFromDisk(string fileName)
+        {
+            bool hasGetJson = SaveManager.LoadFromFile(
+                directories,
+                fileName,
+                out string path,
+                out string json
+            );
+
+            if (!hasGetJson)
+            {
+                return false;
+            }
+
+            return TryLoadFromJson(json);
         }
 
         /// <summary>
         /// Apply a Json file to overwrite this data.
         /// </summary>
         /// <param name="json"></param>
-        void LoadFromJson(string json)
+        /// <returns></returns>
+        bool TryLoadFromJson(string json)
         {
-            JsonUtility.FromJsonOverwrite(json, this);
+            try
+            {
+                JsonUtility.FromJsonOverwrite(json, this);
+            }
+            catch (Exception e)
+            {
+                UnityEngine.Debug.LogError($"[PersistentScriptableModel] Cannot override the file [{saveFilename}] from its json.");
+                UnityEngine.Debug.LogException(e);
+                return false;
+            }
+
+            return true;
         }
 
         #endregion
