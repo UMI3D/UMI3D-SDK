@@ -31,18 +31,40 @@ namespace inetum.unityUtils.saveSystem
         /// <param name="fileName"></param>
         /// <param name="fileContents"></param>
         /// <returns></returns>
-        public static bool WriteToFile(string fileName, string fileContents)
+        public static bool WriteToFile(
+            string fileContents,
+            string directories,
+            string fileName,
+            out string path
+        )
         {
-            var fullPath = InetumPath.Combine(Application.persistentDataPath, fileName);
+            path = InetumPath.Combine(Application.persistentDataPath, directories);
+
+            if (!Directory.Exists(path))
+            {
+                try
+                {
+                    Directory.CreateDirectory(path);
+                }
+                catch (Exception e)
+                {
+                    Debug.LogError($"Failed to create directory {directories} at path {path}.");
+                    UnityEngine.Debug.LogException(e);
+                    return false;
+                }
+            }
+
+            path = InetumPath.Combine(path, fileName);
 
             try
             {
-                File.WriteAllText(fullPath, fileContents);
+                File.WriteAllText(path, fileContents);
                 return true;
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to write to {fullPath} with exception {e}");
+                Debug.LogError($"Failed to write to {path}.");
+                UnityEngine.Debug.LogException(e);
                 return false;
             }
         }
@@ -53,18 +75,38 @@ namespace inetum.unityUtils.saveSystem
         /// <param name="fileName"></param>
         /// <param name="result"></param>
         /// <returns></returns>
-        public static bool LoadFromFile(string fileName, out string result)
+        public static bool LoadFromFile(
+            string directories,
+            string fileName, 
+            out string path,
+            out string result
+        )
         {
-            var fullPath = InetumPath.Combine(Application.persistentDataPath, fileName);
+            path = InetumPath.Combine(Application.persistentDataPath, directories);
+
+            if (!Directory.Exists(path))
+            {
+                result = null;
+                return false;
+            }
+
+            path = InetumPath.Combine(path, fileName);
+
+            if (!File.Exists(path))
+            {
+                result = null;
+                return false;
+            }
 
             try
             {
-                result = File.ReadAllText(fullPath);
+                result = File.ReadAllText(path);
                 return true;
             }
             catch (Exception e)
             {
-                Debug.LogError($"Failed to read from {fullPath} with exception {e}");
+                Debug.LogError($"Failed to read file from {path}");
+                UnityEngine.Debug.LogException(e);
                 result = "";
                 return false;
             }
