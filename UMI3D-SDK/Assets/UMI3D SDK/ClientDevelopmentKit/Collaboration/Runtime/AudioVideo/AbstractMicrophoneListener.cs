@@ -240,7 +240,7 @@ namespace umi3d.cdk.collaboration
             set
             {
                 if (Exists)
-                    Instance._mute = value;
+                    Instance._canUnmute = value;
             }
         }
 
@@ -589,7 +589,8 @@ namespace umi3d.cdk.collaboration
         protected void Mute(bool? mute)
         {
             var isMute = mute ?? !this.isMute;
-            if (canUnmute && !isMute)
+
+            if (isMute || canUnmute && !isMute)
                 ForceMute(isMute);
         }
 
