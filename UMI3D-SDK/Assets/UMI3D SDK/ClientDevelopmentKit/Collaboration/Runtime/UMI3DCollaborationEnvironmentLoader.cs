@@ -78,6 +78,8 @@ namespace umi3d.cdk.collaboration
         ///<inheritdoc/>
         public override async Task ReadUMI3DExtension(ulong environmentId, GlTFEnvironmentDto _dto, GameObject node)
         {
+            MicrophoneListener.canUnmute = true;
+
             await base.ReadUMI3DExtension(environmentId, _dto, node);
 
             var dto = (_dto?.extensions)?.umi3d as UMI3DCollaborationEnvironmentDto;

@@ -39,7 +39,7 @@ namespace umi3d.cdk.collaboration
         private readonly Dictionary<string, MumbleAudioPlayer> PendingMumbleAudioPlayer = new Dictionary<string, MumbleAudioPlayer>();
 
         private readonly Dictionary<ulong, MumbleAudioPlayer> GlobalReader = new Dictionary<ulong, MumbleAudioPlayer>();
-        private readonly Dictionary<ulong, MumbleAudioPlayer> SpacialReader = new Dictionary<ulong, MumbleAudioPlayer>();
+        private readonly Dictionary<ulong, MumbleAudioPlayer> SpatialReader = new Dictionary<ulong, MumbleAudioPlayer>();
         private readonly Dictionary<ulong, Coroutine> WaitCoroutine = new Dictionary<ulong, Coroutine>();
 
         public readonly Dictionary<string, float> volumeMemory = new Dictionary<string, float>();
@@ -78,12 +78,13 @@ namespace umi3d.cdk.collaboration
                             return;
                     }
                 }
-                MicrophoneListener.mute = !status;
+                MicrophoneListener.forceMute = !status;
             }
         }
 
         public static bool AddOpenMicrophoneValidators(Func<Task<bool>> validator) => Exists && Instance.OpenMicrophoneValidators.Add(validator);
         public static bool RemoveOpenMicrophoneValidators(Func<Task<bool>> validator) => Exists && Instance.OpenMicrophoneValidators.Remove(validator);
+
 
 
         public bool SetGainForUser(UMI3DUser user, float gain)
@@ -190,8 +191,8 @@ namespace umi3d.cdk.collaboration
 
         private MumbleAudioPlayer MumbleAudioPlayerContain(ulong id)
         {
-            if (SpacialReader.ContainsKey(id))
-                return SpacialReader[id];
+            if (SpatialReader.ContainsKey(id))
+                return SpatialReader[id];
 
             if (GlobalReader.ContainsKey(id))
                 return GlobalReader[id];
@@ -305,12 +306,12 @@ namespace umi3d.cdk.collaboration
                 Destroy(GlobalReader[user.id].gameObject);
                 GlobalReader.Remove(user.id);
             }
-            if (SpacialReader.ContainsKey(user.id))
+            if (SpatialReader.ContainsKey(user.id))
             {
-                pending?.Setup(SpacialReader[user.id]);
+                pending?.Setup(SpatialReader[user.id]);
 
-                SpacialReader[user.id].Reset();
-                SpacialReader.Remove(user.id);
+                SpatialReader[user.id].Reset();
+                SpatialReader.Remove(user.id);
             }
 
             if (pending != null && !pending.IsMumbleClientSet())
@@ -337,7 +338,7 @@ namespace umi3d.cdk.collaboration
             {
                 MumbleAudioPlayer reader = audioPlayer.gameObject.GetOrAddComponent<MumbleAudioPlayer>();
 
-                SpacialReader[user.id] = reader;
+                SpatialReader[user.id] = reader;
 
                 if (oldReader != null && oldReader != reader)
                 {
@@ -359,8 +360,8 @@ namespace umi3d.cdk.collaboration
                 }
                 else
                 {
-                    if (SpacialReader.ContainsKey(user.id))
-                        SpacialReader.Remove(user.id);
+                    if (SpatialReader.ContainsKey(user.id))
+                        SpatialReader.Remove(user.id);
                     if (!GlobalReader.ContainsKey(user.id))
                     {
                         var g = new GameObject
@@ -409,7 +410,7 @@ namespace umi3d.cdk.collaboration
                     global.Value.Reset();
                     GameObject.Destroy(global.Value);
                 }
-            foreach (var local in SpacialReader)
+            foreach (var local in SpatialReader)
                 if (local.Value != null)
                 {
                     local.Value.Reset();
@@ -417,7 +418,7 @@ namespace umi3d.cdk.collaboration
                 }
             PendingMumbleAudioPlayer.Clear();
             GlobalReader.Clear();
-            SpacialReader.Clear();
+            SpatialReader.Clear();
             WaitCoroutine.Clear();
         }
     }
