@@ -677,6 +677,10 @@ namespace umi3d.cdk.collaboration
                     while (waitForMSRequest)
                         await UMI3DAsyncManager.Yield();
                     break;
+                case UMI3DOperationKeys.CanUnmuteMicrophoneRequest:
+                    bool canUnmute = UMI3DSerializer.Read<bool>(container);
+                    MicrophoneListener.canUnmute = canUnmute;
+                    break;
                 case UMI3DOperationKeys.GetLocalInfoRequest:
                     string key = UMI3DSerializer.Read<string>(container);
                     MainThreadManager.Run(() =>
