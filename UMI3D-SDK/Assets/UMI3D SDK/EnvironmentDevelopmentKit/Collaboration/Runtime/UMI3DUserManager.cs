@@ -493,6 +493,18 @@ namespace umi3d.edk.collaboration
                     foreach (UMI3DCollaborationUser u in users.Values)
                         tr.AddIfNotNull(u.attentionRequired.SetValue(false));
                     break;
+
+                case UMI3DOperationKeys.UserIsTalkingStatus:
+                    id = UMI3DSerializer.Read<ulong>(container);
+                    value = UMI3DSerializer.Read<bool>(container);
+                    if (users.ContainsKey(id) && id == user.Id())
+                    {
+                        if(user is UMI3DCollaborationUser cUser)
+                            cUser.isTalking = value;
+                        UMI3DServer.Instance.OnUserIsTalkingStatusChanged?.Invoke(user, value);
+
+                    }
+                    break;
             }
             tr.Dispatch();
         }

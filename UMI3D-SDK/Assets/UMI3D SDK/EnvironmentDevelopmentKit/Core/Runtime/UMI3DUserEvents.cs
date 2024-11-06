@@ -24,4 +24,10 @@ namespace umi3d.edk
     /// </summary>
     [Serializable]
     public class UMI3DUserEvent : UnityEvent<UMI3DUser> { }
+
+    /// <summary>
+    /// Event raising an UMI3DUser instance.
+    /// </summary>
+    [Serializable]
+    public class UMI3DUserIsTalkingEvent : UnityEvent<UMI3DUser,bool> { }
 }
