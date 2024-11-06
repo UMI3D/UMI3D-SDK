@@ -172,7 +172,12 @@ namespace umi3d.cdk.collaboration
             var user = new UMI3DUser(environmentId, dto);
             var instance = UMI3DEnvironmentLoader.Instance.RegisterEntity(environmentId, user.id, dto, user, () => { UMI3DUser.OnRemoveUser.Invoke(user); });
             instance.NotifyLoaded();
-            CreateUserAux(user);
+            // Call CreateUserAux(user) in the current thread.
+            // Assuming the current thread is the main thread.
+            new Task(() =>
+            {
+                CreateUserAux(user);
+            }).Start(TaskScheduler.FromCurrentSynchronizationContext());
             return user;
         }
 
