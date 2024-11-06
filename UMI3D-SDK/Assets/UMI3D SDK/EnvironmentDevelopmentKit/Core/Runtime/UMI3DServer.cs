@@ -253,6 +253,7 @@ namespace umi3d.edk
         public UMI3DUserEvent OnUserActive { get; protected set; } = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserLeave { get; protected set; } = new UMI3DUserEvent();
         public UMI3DUserEvent OnUserUnregistered { get; protected set; } = new UMI3DUserEvent();
+        public UMI3DUserIsTalkingEvent OnUserIsTalkingStatusChanged { get; protected set; } = new();
         #endregion
     }
 }

@@ -56,6 +56,12 @@ namespace umi3d.cdk.collaboration
             identity = new Identity(GetIdentity);
 
             pushToTalkKeycode = KeyCode.M;
+
+            MicrophoneListener.Instance.Subscribe(value => {
+                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => {
+                    UMI3DClientServer.SendRequest(ConferenceRequest.GetUserIsSpeakingStatusRequest(UMI3DCollaborationClientServer.Instance.GetUserId(), value), true); 
+                });
+            });
         }
 
         public override void ResetAudioConference()
@@ -271,7 +277,6 @@ namespace umi3d.cdk.collaboration
                 new DebugInfo<float>("DB",()=>{ return db; }),
                 new DebugInfo<bool>("Saturated",()=>{ return saturated; })
             };
-
         }
 
         public string GetLogName()

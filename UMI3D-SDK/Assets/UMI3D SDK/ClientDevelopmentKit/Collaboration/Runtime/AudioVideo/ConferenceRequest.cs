@@ -7,6 +7,15 @@ namespace umi3d.cdk.collaboration
 {
     public static class ConferenceRequest
     {
+        public static ConferenceBrowserRequestDto GetUserIsSpeakingStatusRequest(ulong userId, bool value)
+        {
+            return new ConferenceBrowserRequestDto()
+            {
+                operation = UMI3DOperationKeys.UserIsTalkingStatus,
+                id = userId,
+                value = value
+            };
+        }
         public static ConferenceBrowserRequestDto GetChangeMicrophoneStatusRequest(ulong userId, bool value)
         {
             return new ConferenceBrowserRequestDto()

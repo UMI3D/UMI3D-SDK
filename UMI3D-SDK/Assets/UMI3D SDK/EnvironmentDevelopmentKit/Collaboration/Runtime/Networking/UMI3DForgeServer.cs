@@ -411,7 +411,7 @@ namespace umi3d.edk.collaboration
                             VolumeManager.DispatchBrowserRequest(user, id, container);
                         });
                         break;
-
+                    case UMI3DOperationKeys.UserIsTalkingStatus:
                     case UMI3DOperationKeys.UserMicrophoneStatus:
                     case UMI3DOperationKeys.UserAvatarStatus:
                     case UMI3DOperationKeys.UserAttentionStatus:

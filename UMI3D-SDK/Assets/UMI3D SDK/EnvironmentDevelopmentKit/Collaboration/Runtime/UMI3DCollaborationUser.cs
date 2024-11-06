@@ -76,6 +76,8 @@ namespace umi3d.edk.collaboration
         static object joinLock = new object();
         private IPoseManager poseManagerService;
 
+        public bool isTalking { get; internal set; } = false;
+
         public override void InitConnection(UMI3DForgeServer connection)
         {
             base.InitConnection(connection);
