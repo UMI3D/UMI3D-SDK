@@ -1334,7 +1334,10 @@ namespace umi3d.cdk
         {
             if (count < 0)
             {
-                throw new umi3d.common.Umi3dException($"Error while getting sub model.\nurl: {fileUrl}\nsub model: {subModelName}\nlibrary: {libraryKey}");
+                throw new umi3d.common.Umi3dException($"Error while getting sub model.\n" +
+                                                        $"url: {fileUrl}\nsub model: {subModelName}\n" +
+                                                        $"library: {libraryKey}.\n" +
+                                                        $"The parent model may have loading issues.");
             }
 
             if (IsSubModelsSetFor(fileUrl, libraryKey))
