@@ -211,7 +211,9 @@ namespace umi3d.edk.editor
 
                             if (myLoadedAssetBundle != null)
                             {
-                                pathIfInBundle.stringValue = myLoadedAssetBundle.GetAllAssetNames().FirstOrDefault();
+                                pathIfInBundle.stringValue = myLoadedAssetBundle.GetAllAssetNames().FirstOrDefault();        
+                                if(string.IsNullOrEmpty(pathIfInBundle.stringValue))
+                                    pathIfInBundle.stringValue = myLoadedAssetBundle.GetAllScenePaths().FirstOrDefault();
                                 pathIfInBundle.serializedObject.ApplyModifiedProperties();
                             }
 
