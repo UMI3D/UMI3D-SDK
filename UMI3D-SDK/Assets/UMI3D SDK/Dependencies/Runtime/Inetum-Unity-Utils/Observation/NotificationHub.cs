@@ -45,6 +45,30 @@ namespace inetum.unityUtils
         /// Subscriber to IDs.
         /// </summary>
         Dictionary<Object, HashSet<string>> _subscriberToID = new();
+        /// <summary>
+        /// The status of notification for a given ID.
+        /// </summary>
+        Dictionary<string, bool> notifyStatus = new();
+
+        /// <summary>
+        /// Whether <paramref name="id"/> is being notified.
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        public bool isNotifying(string id)
+        {
+            return notifyStatus.TryGetValue(id, out bool isNotifying) && isNotifying;
+        }
+
+        /// <summary>
+        /// Whether id is being notified.
+        /// </summary>
+        /// <typeparam name="T">The id of the notification.</typeparam>
+        /// <returns></returns>
+        public bool isNotifying<T>()
+        {
+            return notifyStatus.TryGetValue(typeof(T).FullName, out bool isNotifying) && isNotifying;
+        }
 
         #region Subscribe
 
@@ -55,6 +79,14 @@ namespace inetum.unityUtils
             Action<Notification> action
         )
         {
+            if (isNotifying(id))
+            {
+                string subscriberName = subscriber is string
+                   ? subscriber as string
+                   : subscriber.GetType().FullName;
+                UnityEngine.Debug.LogError($"[{nameof(Subscribe)}] Try to subscribe {subscriberName} with id {id} while Notify is running with that id, that should not happen.");
+            }
+
             // Create a subscription entry.
             Subscription subscription = new()
             {
@@ -179,6 +211,12 @@ namespace inetum.unityUtils
                     continue;
                 }
 
+                if (isNotifying(id))
+                {
+                    UnityEngine.Debug.LogError($"[{nameof(Unsubscribe)}] Try remove subscriptions for {subscriberName}. Try to unsubscribe to {id} while Notify is running with that id, that should not happen.");
+                    continue;
+                }
+
                 // Remove all the subscriptions concerning 'subscriber'.
                 subscriptions.RemoveAll(sub => sub.subscriber == subscriber);
 
@@ -215,6 +253,12 @@ namespace inetum.unityUtils
             {
                 UnityEngine.Debug.LogWarning($"[NotificationHub] Try to unsubscribe {subscriberName} with id {id} but subscriber has not subscribed to this id yet.");
                 // If subscriber is not listening to 'id' then return;
+                return;
+            }
+
+            if (isNotifying(id))
+            {
+                UnityEngine.Debug.LogError($"[{nameof(Unsubscribe)}] Try to unsubscribe {subscriberName} with id {id} while Notify is running with that id, that should not happen.");
                 return;
             }
 
@@ -276,8 +320,11 @@ namespace inetum.unityUtils
             // Create the notification.
             Notification notification = new Notification(id, publisher, info);
 
-            foreach (Subscription subscription in subscriptions)
+            notifyStatus[id] = true;
+
+            for (int i = 0; i < subscriptions.Count; i++)
             {
+                Subscription subscription = subscriptions[i];
                 // filter the notification by subscribers and publishers.
                 if ((subscribersFilter == null || subscribersFilter.IsAccepted(subscription.subscriber))
                     && (subscription.publishersFilter == null || subscription.publishersFilter.IsAccepted(publisher)))
@@ -296,6 +343,8 @@ namespace inetum.unityUtils
                     observers++;
                 }
             }
+
+            notifyStatus[id] = false;
 
             return observers;
         }
