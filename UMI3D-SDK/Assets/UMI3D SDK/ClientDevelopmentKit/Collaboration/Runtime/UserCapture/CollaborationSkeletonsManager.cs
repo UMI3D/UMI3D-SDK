@@ -234,7 +234,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
             cs.VisibilityChanged += (isVisible) =>
             {
-                cs.ComputationMode = isVisible ? ISkeleton.ComputeMode.FULL : ISkeleton.ComputeMode.ROOT_ONLY;
+                cs.ComputationMode = isVisible ? ISkeleton.ComputeMode.FULL : ISkeleton.ComputeMode.DISABLED;
 
                 if (!isVisible)
                     return;

@@ -123,6 +123,8 @@ namespace umi3d.cdk.userCapture
         private const uint ROOT_BONE = BoneType.Hips;
         protected GameObject finalSkeletonGameObject;
 
+        private Vector3 hipsOffset;
+
         #endregion Fields
 
         #region DI
@@ -187,6 +189,7 @@ namespace umi3d.cdk.userCapture
                 SkeletonHierarchy.Apply(CreateSkeletonBoneGameObject);
             }
 
+            hipsOffset = HipsAnchor.position - (TrackedSubskeleton as TrackedSubskeleton).transform.position;
 
             Destroyed += () =>
             {
@@ -285,7 +288,10 @@ namespace umi3d.cdk.userCapture
         public ISkeleton Compute()
         {
             if (ComputationMode == ISkeleton.ComputeMode.DISABLED)
+            {
+                bones[ROOT_BONE].Position = this.transform.position + hipsOffset;
                 return this;
+            }
 
             PreComputed?.Invoke();
 
