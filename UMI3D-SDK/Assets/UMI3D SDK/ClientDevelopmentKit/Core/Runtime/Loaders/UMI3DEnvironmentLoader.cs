@@ -653,7 +653,7 @@ namespace umi3d.cdk
 
         public async Task DeleteEntityInstance(ulong environmentId, ulong entityId, List<CancellationToken> tokens = null)
         {
-            if (UMI3DResourcesManager.isKnowedLibrary(entityId))
+            if (UMI3DResourcesManager.IsKnownLibrary(entityId))
                 UMI3DResourcesManager.UnloadLibrary(entityId);
             else
                 await entitiesCollection[environmentId].DeleteEntity(entityId, tokens);
