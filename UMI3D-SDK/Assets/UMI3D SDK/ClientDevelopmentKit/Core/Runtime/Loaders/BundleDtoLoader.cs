@@ -272,6 +272,9 @@ namespace umi3d.cdk
 
             GameObject sceneObj = new GameObject(scenePath);
 
+            if (UMI3DResourcesManager.Exists)
+                sceneObj.transform.SetParent(UMI3DResourcesManager.Instance.transform, true);
+
             await UMI3DAsyncManager.Yield();
 
             foreach (GameObject obj in scene.GetRootGameObjects())
@@ -314,7 +317,7 @@ namespace umi3d.cdk
         }
 
         /// <inheritdoc/>
-        public void DeleteObject(object objectLoaded, string reason)
+        public async void DeleteObject(object objectLoaded, string reason)
         {
             try
             {
@@ -328,7 +331,13 @@ namespace umi3d.cdk
                     // Scenes assets are unloaded elsewhere
                     foreach ((GameObject root, Scene scene) in bundleCacheData.scenes.Values)
                     {
-                        Debug.Assert(!scene.isLoaded);
+                        if (scene.isLoaded)
+                        {
+                            UnityEngine.AsyncOperation op = SceneManager.UnloadSceneAsync(scene);
+
+                            while (!op.isDone)
+                                await UMI3DAsyncManager.Yield();
+                        }
 
                         if (root)
                             Object.Destroy(root);
