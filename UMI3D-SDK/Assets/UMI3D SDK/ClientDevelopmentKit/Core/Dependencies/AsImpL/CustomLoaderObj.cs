@@ -16,12 +16,13 @@ public class CustomLoaderObj : LoaderObj
             SetCertificate(uwr);
             yield return uwr.SendWebRequest();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result != UnityWebRequest.Result.Success)
             {
                 if (notifyErrors)
                 {
                     //Debug.LogError(uwr.error);
                 }
+
                 objLoadingProgress.error = true;
             }
             else
@@ -59,9 +60,9 @@ public class CustomLoaderObj : LoaderObj
             SetCertificate(uwr);
             yield return uwr.SendWebRequest();
 
-            if (uwr.isNetworkError || uwr.isHttpError)
+            if (uwr.result != UnityWebRequest.Result.Success)
             {
-                Debug.LogError(uwr.error);
+                Debug.LogError(uwr.error + " " + texPath);
             }
             else
             {
@@ -70,7 +71,6 @@ public class CustomLoaderObj : LoaderObj
             }
         }
     }
-
 
     protected void SetCertificate(UnityWebRequest www)
     {
@@ -83,7 +83,5 @@ public class CustomLoaderObj : LoaderObj
 
         }
     }
-
-
 }
 
