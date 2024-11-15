@@ -19,7 +19,7 @@ using UnityEngine;
 namespace umi3d.common.graphics
 {
     /// <summary>
-    /// Abstract manager for post-processing efdects.
+    /// Abstract manager for post-processing effects.
     /// </summary>
     public abstract class UMI3DAbstractPostProcessing : inetum.unityUtils.SingleBehaviour<UMI3DAbstractPostProcessing>
     {
@@ -96,6 +96,7 @@ namespace umi3d.common.graphics
         #endregion
 
         #region Fog
+
         /// <summary>
         /// Set the Fog using parameters in FogSettings
         /// </summary>
@@ -121,10 +122,21 @@ namespace umi3d.common.graphics
 
         /// <see cref=" UMI3DAbstractPostProcessing.ResetFog()"/>
         protected abstract void _ResetFog();
+
         #endregion
 
-
         protected virtual void Start()
+        {
+            _Reset();
+        }
+
+        public static void Reset()
+        {
+            if (Exists)
+                Instance._Reset();
+        }
+
+        public void _Reset()
         {
             ResetFog();
             ResetBloom();
