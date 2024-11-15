@@ -23,6 +23,7 @@ using System.Runtime.Serialization.Formatters.Binary;
 using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using umi3d.common;
+using umi3d.common.graphics;
 using UnityEngine;
 using UnityEngine.Networking;
 using WebSocketSharp;
@@ -486,6 +487,7 @@ namespace umi3d.cdk
             NsubModelsCache.Clear();
 
             LightmapSettings.lightmaps = new LightmapData[0];
+            UMI3DAbstractPostProcessing.Reset();
 
             Resources.UnloadUnusedAssets();
 
