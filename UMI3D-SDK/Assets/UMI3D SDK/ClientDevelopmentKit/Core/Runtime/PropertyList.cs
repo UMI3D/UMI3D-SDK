@@ -90,7 +90,7 @@ namespace umi3d.cdk
                         else
                             return false;
 
-                        OnValueRemoved(index);
+                        OnValueRemoved?.Invoke(index);
 
                         OnCollectionUpdated?.Invoke(this);
                         return true;
@@ -120,7 +120,6 @@ namespace umi3d.cdk
 
         public bool SetEntity(SetUMI3DPropertyData data)
         {
-            UnityEngine.Debug.Log($"SetEntity {data.property}");
             switch (data.property)
             {
                 case SetEntityListAddPropertyDto add:
@@ -173,7 +172,6 @@ namespace umi3d.cdk
 
         public void SetList(IEnumerable<S> values)
         {
-            UnityEngine.Debug.Log($"Set list {values.Count()}");
             this.Clear();
             this.AddRange(values.Select(v => Converter(v)));
         }

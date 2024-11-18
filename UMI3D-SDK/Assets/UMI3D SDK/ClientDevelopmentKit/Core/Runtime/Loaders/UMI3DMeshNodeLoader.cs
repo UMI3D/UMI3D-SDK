@@ -77,7 +77,7 @@ namespace umi3d.cdk
             var nodeDto = data.dto as UMI3DMeshNodeDto;
             if (data.node == null)
             {
-                throw (new Umi3dException("Node gameobject is not referenced. Dto should be an UMI3DAbstractNodeDto."));
+                throw (new common.Umi3dException("Node gameobject is not referenced. Dto should be an UMI3DAbstractNodeDto."));
             }
 
             await base.ReadUMI3DExtension(data);
@@ -90,6 +90,7 @@ namespace umi3d.cdk
             string pathIfInBundle = fileToLoad.pathIfInBundle;
             IResourcesLoader loader = loadingManager.AbstractLoadingParameters.SelectLoader(ext);
             Vector3 offset = Vector3.zero;
+
             if (loader is AbstractMeshDtoLoader meshLoader)
                 offset = meshLoader.GetRotationOffset();
             if (loader != null)
@@ -104,26 +105,14 @@ namespace umi3d.cdk
                     }
                     else if (o is (GameObject go, Scene scene))
                     {
-                        /*Debug.LogError("TODO : to improve");
-                        var transforms = new List<GameObject>();
-                        for (int i = 0; i < go.transform.childCount; i++)
-                        {
-                            transforms.Add(go.transform.GetChild(i).gameObject);
-                        }*/
-
                         await CallbackAfterLoadingForMesh(data.environmentId, go, meshDto, data.node.transform, offset, scene);
-
-                        /*foreach (var goo in transforms.ToArray())
-                        {
-                            GameObject.Destroy(goo);
-                        }*/
                     }
                 }
                 else
-                    throw (new Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {data.dto.GetType()} into UMI3DMeshNodeDto"));
+                    throw (new common.Umi3dException($"Cast not valid for {o.GetType()} into GameObject or {data.dto.GetType()} into UMI3DMeshNodeDto"));
             }
             else
-                throw (new Umi3dException($"No loader found for {ext}"));
+                throw (new common.Umi3dException($"No loader found for {ext}"));
         }
 
         /// <summary>
