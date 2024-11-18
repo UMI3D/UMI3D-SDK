@@ -66,7 +66,7 @@ namespace umi3d.cdk
             bool isUsingResourceServer = url.StartsWith("http") && !UMI3DClientServer.Instance.AuthorizationInHeader;
             if (isUsingResourceServer)
             {
-                url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(url, authorization);
+                url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(url, authorization);
             }
 
             var createdObj = new GameObject();

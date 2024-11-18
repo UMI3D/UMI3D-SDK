@@ -381,7 +381,7 @@ namespace umi3d.cdk
                 this.fileName = System.IO.Path.GetFileName(this.url);
             }
 
-            public override string ToString() => $"[ObjectData {fileName} {libraryIds.FirstOrDefault().id} {libraryIds.FirstOrDefault().version}. State : {state}]";
+            public override string ToString() => $"[ObjectData { fileName } { libraryIds.FirstOrDefault().id } {libraryIds.FirstOrDefault().version}. State : { state }]";
         }
 
         public Dictionary<ulong, Library> librariesMap = new Dictionary<ulong, Library>();
@@ -611,9 +611,9 @@ namespace umi3d.cdk
             Instance.ClearCache(ids);
 
             var downloaded = Instance.CacheCollection.Where((p) =>
-            {
-                return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Any(c => c == i));
-            })
+                {
+                    return p.downloadedPath != null && p.state == ObjectData.Estate.NotLoaded && p.libraryIds.Any(i => ids.Any(c => c == i));
+                })
                 .Select(async (data) =>
                 {
                     progress.AddTotal();
@@ -673,7 +673,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="fileUrl"></param>
         /// <returns></returns>
-        public string SetAuthorisationWithParameter(string fileUrl, string authorization)
+        public string SetAuthorizationWithParameter(string fileUrl, string authorization)
         {
             if (HasUrlGotParameters(fileUrl))
                 fileUrl += "&" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
@@ -751,7 +751,7 @@ namespace umi3d.cdk
                 return null;
             DateTime date = DateTime.UtcNow;
             try
-            {
+            {          
                 return await _UrlToObject1(loader, path, extension, objectData.authorization, bundlePath);
             }
             catch (Exception e)
@@ -898,7 +898,7 @@ namespace umi3d.cdk
                         }
                     }
                     catch
-                    { };
+                    {};
                     toDownload.Add(assetLibrary.libraryId);
                 }
             }

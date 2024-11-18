@@ -190,7 +190,7 @@ namespace umi3d.cdk
                     string matchingPath = data.assets.Keys.FirstOrDefault(path => path.Contains(pathIfObjectInBundle));
                     if (matchingPath != null)
                         result = data.assets[matchingPath];
-
+                        
                     if (result != null)
                     {
                         isAsset = true;
@@ -307,7 +307,7 @@ namespace umi3d.cdk
                 string authorization = fileAuthorization;
                 if (!UMI3DClientServer.Instance.AuthorizationInHeader && www.url.StartsWith("http"))
                 {
-                    www.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(www.url, fileAuthorization);
+                    www.url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(www.url, fileAuthorization);
                 }
                 else
                 {

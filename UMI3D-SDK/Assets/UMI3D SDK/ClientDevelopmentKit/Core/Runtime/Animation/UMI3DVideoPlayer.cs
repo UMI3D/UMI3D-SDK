@@ -92,7 +92,7 @@ namespace umi3d.cdk
             // setup video player
             FileDto fileDto = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.videoResource.variants);
             if (!UMI3DClientServer.Instance.AuthorizationInHeader)
-                videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
+                videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(fileDto.url, UMI3DClientServer.getAuthorization());
             else
                 videoPlayer.url = fileDto.url;
 
@@ -410,7 +410,7 @@ namespace umi3d.cdk
         private void LoadVideo(FileDto file, UMI3DVideoPlayerDto videoDto)
         {
             if (!UMI3DClientServer.Instance.AuthorizationInHeader)
-                videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorisationWithParameter(file.url, UMI3DClientServer.getAuthorization());
+                videoPlayer.url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(file.url, UMI3DClientServer.getAuthorization());
             else
                 videoPlayer.url = file.url;
 
