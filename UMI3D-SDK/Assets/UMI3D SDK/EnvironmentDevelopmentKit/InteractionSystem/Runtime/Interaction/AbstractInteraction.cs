@@ -51,7 +51,7 @@ namespace umi3d.edk.interaction
             /// </summary>
             public UMI3DUser user { get; private set; }
             /// <summary>
-            /// Bonetype use to performe the interaction.
+            /// BoneType use to perform the interaction.
             /// </summary>
             public uint boneType { get; private set; }
             /// <summary>

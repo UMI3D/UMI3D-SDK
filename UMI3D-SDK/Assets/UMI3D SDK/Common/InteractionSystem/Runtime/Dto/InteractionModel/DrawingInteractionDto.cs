@@ -17,15 +17,20 @@ limitations under the License.
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// DTO describing an event interaction block
+    /// DTO describing a drawing interaction block
     /// </summary>
     [System.Serializable]
-    public class EventDto : AbstractInteractionDto
+    public class DrawingInteractionDto : AbstractInteractionDto
     {
         /// <summary>
-        /// Should the environment be notified of the event rising edge only (false) or both rising edge and falling edge (true).
+        /// Id of the lineDto use to draw.
         /// </summary>
-        public bool hold { get; set; } = false;
+        public ulong LineId { get; set; }
+
+        /// <summary>
+        /// Id of the meshDto use to draw.
+        /// </summary>
+        public ulong MeshId { get; set; }
 
         /// <summary>
         /// Id of the animation to be triggered when the interaction is triggered.
@@ -38,6 +43,6 @@ namespace umi3d.common.interaction
         public ulong ReleaseAnimationId { get; set; }
 
 
-        public EventDto() : base() { }
+        public DrawingInteractionDto() : base() { }
     }
 }

@@ -60,7 +60,7 @@ namespace umi3d.common.interaction
                             + UMI3DSerializer.Write(c.state);
                     return true;
                 case HoveredDto c:
-                    bytable = WriteInteraction(c, UMI3DOperationKeys.Hoverred, parameters)
+                    bytable = WriteInteraction(c, UMI3DOperationKeys.Hovered, parameters)
                         + UMI3DSerializer.Write(c.position)
                         + UMI3DSerializer.Write(c.normal)
                         + UMI3DSerializer.Write(c.direction);
