@@ -131,7 +131,7 @@ namespace umi3d.cdk
 #endif
                         }
 
-                        AssetBundleUnloadOperation op = bundle.UnloadAsync(false);
+                        var op = bundle.UnloadAsync(false);
 
                         while (op.isDone)
                             await UMI3DAsyncManager.Yield();
