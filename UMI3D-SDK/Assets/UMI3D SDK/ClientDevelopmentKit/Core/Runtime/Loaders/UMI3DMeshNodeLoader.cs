@@ -256,7 +256,7 @@ namespace umi3d.cdk
             }
         }
 
-        private async Task CallbackAfterLoadingForMesh(ulong environmentId,GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, object data)
+        private async Task CallbackAfterLoadingForMesh(ulong environmentId, GameObject go, UMI3DMeshNodeDto dto, Transform parent, Vector3 rotationOffsetByLoader, object data)
         {
             var modelTracker = parent.gameObject.AddComponent<ModelTracker>();
             GameObject root = null;
@@ -268,6 +268,8 @@ namespace umi3d.cdk
             else
             {
                 root = go;
+                root.transform.localPosition = Vector3.zero;
+                root.transform.localRotation = Quaternion.identity;
             }
 
             GameObject instance = null;

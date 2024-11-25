@@ -33,7 +33,7 @@ namespace umi3d.cdk
         /// <summary>
         /// Represents all <see cref="AssetBundle"/> assets and scenes to be able to unload the bundle.
         /// </summary>
-        private class BundleCacheData
+        public class BundleCacheData
         {
             /// <summary>
             /// All bundle assets by bundle path.
@@ -190,7 +190,7 @@ namespace umi3d.cdk
                     string matchingPath = data.assets.Keys.FirstOrDefault(path => path.Contains(pathIfObjectInBundle));
                     if (matchingPath != null)
                         result = data.assets[matchingPath];
-                        
+
                     if (result != null)
                     {
                         isAsset = true;
