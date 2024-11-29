@@ -16,6 +16,7 @@ limitations under the License.
 
 using System;
 using System.Collections.Generic;
+using System.Linq;
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -27,7 +28,7 @@ namespace umi3d.edk.interaction
     /// Interaction to draw a line. <br/>
     /// See <seealso cref="ProjectTool"/> and <seealso cref="ReleaseTool"/>.
     /// </summary>
-    public class UMI3DDrawingInteraction : AbstractInteraction
+    public class UMI3DDrawingInteraction : UMI3DEvent
     {
         //TODO : link line renderer 
         // receive positions => set in local line => create new line => reset local line
@@ -36,39 +37,36 @@ namespace umi3d.edk.interaction
         #region fields
 
         /// <summary>
-        /// Called during the first frame when the interaction is held by a user.
-        /// </summary>
-        [SerializeField, Tooltip("Called during the first frame when the interaction is held by a user.")]
-        public InteractionEvent onTrigger = new();
-
-        /// <summary>
-        /// Called during the first frame after the interaction is no longer held by for a user.
-        /// </summary>
-        [SerializeField, Tooltip("Called during the first frame after the interaction is no longer held by a user.")]
-        public UnityEvent<DrawingEventContent> onRelease = new();
-
-        /// <summary>
         /// Called during the first frame after the interaction is no longer held by for a user.
         /// </summary>
         [SerializeField, Tooltip("Called during the drawing process of a user.")]
         public UnityEvent<DrawingEventContent> onDrawing = new();
 
         /// <summary>
+        /// Called during the first frame after the interaction is no longer held by for a user.
+        /// </summary>
+        [SerializeField, Tooltip("Called at the end of a drawing.")]
+        public UnityEvent<DrawingEventContent> onDrawingEnd = new();
+
+        /// <summary>
         /// <see cref="AbstractInteraction.InteractionEventContent"/> specialized for drawing.
         /// </summary>
         [Serializable]
-        public class DrawingEventContent : AbstractInteraction.InteractionEventContent
+        public class DrawingEventContent : InteractionEventContent
         {
+            public UMI3DLineRenderer line { get; private set; } = null;
             public List<Vector3Dto> positions { get; private set; } = new List<Vector3Dto>();
 
-            public DrawingEventContent(UMI3DUser user, DrawingDto dto) : base(user, dto)
+            public DrawingEventContent(UMI3DUser user, DrawingDto dto, UMI3DLineRenderer line) : base(user, dto)
             {
                 positions = dto.positions;
+                this.line = line;
             }
 
-            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.positions = positions;
+                this.line = line;
             }
         }
 
@@ -82,16 +80,6 @@ namespace umi3d.edk.interaction
         /// </summary>
         [Tooltip("Line the user use to draw")]
         public AbstractRenderedNode mesh = null;
-        /// <summary>
-        /// Animation triggered when the interaction is triggered.
-        /// </summary>
-        [SerializeField, Tooltip("Client animation triggered when the interaction is triggered by a user.")]
-        public UMI3DAbstractAnimation TriggerAnimation;
-        /// <summary>
-        /// Animation triggered when the interaction is released.
-        /// </summary>
-        [SerializeField, Tooltip("Client animation triggered when is released by a user.")]
-        public UMI3DAbstractAnimation ReleaseAnimation;
 
 
         /// <summary>
@@ -102,14 +90,6 @@ namespace umi3d.edk.interaction
         /// Animation Async property of the animation triggered when the interaction is triggered
         /// </summary>
         private UMI3DAsyncProperty<AbstractRenderedNode> _mesh;
-        /// <summary>
-        /// Animation Async property of the animation triggered when the interaction is triggered
-        /// </summary>
-        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _triggerAnimation;
-        /// <summary>
-        /// Animation Async property of the animation triggered when the interaction is released
-        /// </summary>
-        private UMI3DAsyncProperty<UMI3DAbstractAnimation> _releaseAnimation;
 
         /// <summary>
         /// Animation Async property of the animation triggered when the interaction is triggered
@@ -119,24 +99,21 @@ namespace umi3d.edk.interaction
         /// Renderer Async property of the mesh the drawing is done on
         /// </summary>
         public UMI3DAsyncProperty<AbstractRenderedNode> Mesh { get { Register(); return _mesh; } set => _mesh = value; }
-        /// <summary>
-        /// Animation Async property of the animation triggered when the interaction is triggered
-        /// </summary>
-        public UMI3DAsyncProperty<UMI3DAbstractAnimation> triggerAnimation { get { Register(); return _triggerAnimation; } set => _triggerAnimation = value; }
-        /// <summary>
-        /// Animation Async property of the animation triggered when the interaction is released
-        /// </summary>
-        public UMI3DAsyncProperty<UMI3DAbstractAnimation> releaseAnimation { get { Register(); return _releaseAnimation; } set => _releaseAnimation = value; }
+
+
+        public Dictionary<(ulong, ulong), UMI3DLineRenderer> LineMap = new();
+
 
         #endregion
 
         protected override void InitDefinition(ulong id)
         {
+            Hold = true;
+
             base.InitDefinition(id);
             Line = new UMI3DAsyncProperty<UMI3DLineRenderer>(id, UMI3DPropertyKeys.DrawingLine, line, (v, u) => v?.Id());
             Mesh = new UMI3DAsyncProperty<AbstractRenderedNode>(id, UMI3DPropertyKeys.DrawingMesh, line, (v, u) => v?.Id());
-            triggerAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventTriggerAnimation, TriggerAnimation, (v, u) => v?.Id());
-            releaseAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.EventReleaseAnimation, ReleaseAnimation, (v, u) => v?.Id());
+            
         }
 
         /// <summary>
@@ -148,15 +125,16 @@ namespace umi3d.edk.interaction
         {
             switch (interactionRequest)
             {
-                case EventTriggeredDto eventTriggered:
-                    onTrigger.Invoke(new InteractionEventContent(user, interactionRequest));
-                    break;
                 case DrawingDto drawing:
+                    UMI3DLineRenderer line = null;
+                    this.LineMap.TryGetValue((user.Id(), drawing.clientLineId), out line);
                     if (drawing.drawingEnd)
-                        onRelease.Invoke(new DrawingEventContent(user, drawing));
+                        onDrawingEnd.Invoke(new DrawingEventContent(user, drawing, line));
                     else
-                        onDrawing.Invoke(new DrawingEventContent(user, drawing));
-
+                        onDrawing.Invoke(new DrawingEventContent(user, drawing, line));
+                    break;
+                default:
+                    base.OnUserInteraction(user, interactionRequest);
                     break;
             }
         }
@@ -175,19 +153,65 @@ namespace umi3d.edk.interaction
         {
             switch (operationId)
             {
-                case UMI3DOperationKeys.EventTriggered:
-                    onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
-                    break;
                 case UMI3DOperationKeys.Drawing:
-                    bool active = UMI3DSerializer.Read<bool>(container);
+                    bool drawingEnd = UMI3DSerializer.Read<bool>(container);
+                    ulong clientLineId = UMI3DSerializer.Read<ulong>(container);
                     List<Vector3Dto> positions = UMI3DSerializer.ReadList<Vector3Dto>(container);
-                    if (active)
-                        onDrawing.Invoke(new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions));
-                    else
-                        onRelease.Invoke(new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions));
 
+                    UMI3DLineRenderer line = null;
+                    if(!this.LineMap.TryGetValue((user.Id(), clientLineId), out line))
+                    {
+                        var Line = this.Line.GetValue(user);
+                        line = Line == null ? null : CreateLine(Line, user, clientLineId);
+                    }
+
+                    if (drawingEnd)
+                        onDrawingEnd.Invoke(new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line));
+                    else
+                        onDrawing.Invoke(new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line));
+                    break;
+
+                default:
+                    base.OnUserInteraction(user, operationId, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                     break;
             }
+        }
+
+        protected override void InternalOnTrigger(UMI3DUser user) 
+        {
+            var id = user.Id();
+            foreach(var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
+                this.LineMap.Remove(key);
+        }
+
+        protected override void InternalOnRelease(UMI3DUser user) {
+            var id = user.Id();
+            foreach (var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
+                this.LineMap.Remove(key);
+        }
+
+        public UMI3DLineRenderer CreateLine(UMI3DLineRenderer template, UMI3DUser user, ulong ClientLineID)
+        {
+            GameObject gm = new GameObject();
+            gm.transform.SetParent(template.transform.parent);
+            gm.transform.position = Vector3.zero;
+
+            UMI3DLineRenderer lr = gm.AddComponent<UMI3DLineRenderer>();
+            lr.objectStartColor.SetValue(user,template.objectStartColor.GetValue(user));
+            lr.objectEndColor.SetValue(user, template.objectEndColor.GetValue(user));
+            lr.objectStartWidth.SetValue(user, template.objectStartWidth.GetValue(user));
+            lr.objectEndWidth.SetValue(user, template.objectEndWidth.GetValue(user));
+            lr.objectLoop.SetValue(user, template.objectLoop.GetValue(user));
+            lr.objectUseWorldSpace.SetValue(user, template.objectUseWorldSpace.GetValue(user));
+            lr.objectPositions.SetValue(user, template.objectPositions.GetValue(user));
+            lr.objectClientLineId.SetValue(user, ClientLineID);
+
+            LoadEntity entity = lr.GetLoadEntity();
+            entity.ToTransaction(true).Dispatch();
+
+            LineMap.Add((user.Id(), ClientLineID), lr);
+
+            return lr;
         }
 
         /// <inheritdoc/>
@@ -195,9 +219,7 @@ namespace umi3d.edk.interaction
         {
             return base.ToBytes(user)
                     + UMI3DSerializer.Write(Line?.GetValue(user)?.Id() ?? 0)
-                     + UMI3DSerializer.Write(Mesh?.GetValue(user)?.Id() ?? 0)
-                     + UMI3DSerializer.Write(triggerAnimation?.GetValue(user)?.Id() ?? 0)
-                     + UMI3DSerializer.Write(releaseAnimation?.GetValue(user)?.Id() ?? 0);
+                     + UMI3DSerializer.Write(Mesh?.GetValue(user)?.Id() ?? 0);
         }
 
         /// <inheritdoc/>
@@ -220,8 +242,6 @@ namespace umi3d.edk.interaction
             {
                 _dto.LineId = Line.GetValue(user)?.Id() ?? 0;
                 _dto.MeshId = Mesh.GetValue(user)?.Id() ?? 0;
-                _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
-                _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
             }
         }
     }

@@ -98,6 +98,8 @@ namespace umi3d.common
         public const uint IsPartOfNavmesh = 3021;
         public const uint IsBlockingInteraction = 3022;
 
+        public const uint LineClientLineId = 30023;
+
         public const uint BlendShapeValues = 3030;
         #endregion
 

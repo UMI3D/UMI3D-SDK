@@ -101,15 +101,18 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case EventTriggeredDto eventTriggered:
+                    InternalOnTrigger(user);
                     onTrigger.Invoke(new InteractionEventContent(user, interactionRequest));
                     break;
                 case EventStateChangedDto eventStateChanged:
                     if (eventStateChanged.active)
                     {
+                        InternalOnTrigger(user);
                         onHold.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     else
                     {
+                        InternalOnRelease(user);
                         onRelease.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     break;
@@ -131,29 +134,36 @@ namespace umi3d.edk.interaction
             switch (operationId)
             {
                 case UMI3DOperationKeys.EventTriggered:
+                    InternalOnTrigger(user);
                     onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
                     break;
                 case UMI3DOperationKeys.EventStateChanged:
                     bool active = UMI3DSerializer.Read<bool>(container);
                     if (active)
                     {
+                        InternalOnTrigger(user);
                         onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
                     }
                     else
-                    {
+                    { 
+                        InternalOnRelease(user);
                         onRelease.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
                     }
+
                     break;
             }
         }
+
+        protected virtual void InternalOnTrigger(UMI3DUser user) { }
+        protected virtual void InternalOnRelease(UMI3DUser user) { }
 
         /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                    + UMI3DSerializer.Write(Hold);
-                    //+ ((UMI3DLoadableEntity)this.triggerAnimation).ToBytes(user)
-                    //+ ((UMI3DLoadableEntity)this.releaseAnimation).ToBytes(user);
+                    + UMI3DSerializer.Write(Hold)
+                    + UMI3DSerializer.Write(triggerAnimation.GetValue(user)?.Id() ?? 0)
+                    + UMI3DSerializer.Write(releaseAnimation.GetValue(user)?.Id() ?? 0);
         }
 
         /// <inheritdoc/>

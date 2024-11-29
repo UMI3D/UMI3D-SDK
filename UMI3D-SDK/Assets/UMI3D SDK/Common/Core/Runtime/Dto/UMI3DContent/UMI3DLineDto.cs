@@ -58,5 +58,10 @@ namespace umi3d.common
         /// The positions of points on the line
         /// </summary>
         public List<Vector3Dto> positions { get; set; } = new List<Vector3Dto>();
+
+        /// <summary>
+        /// Id of the line on the client side if the line was created by the client during a drawing interaction.
+        /// </summary>
+        public ulong clientLineId { get; set; } = 0;
     }
 }

@@ -20,7 +20,7 @@ namespace umi3d.common.interaction
     /// DTO describing a drawing interaction block
     /// </summary>
     [System.Serializable]
-    public class DrawingInteractionDto : AbstractInteractionDto
+    public class DrawingInteractionDto : EventDto
     {
         /// <summary>
         /// Id of the lineDto use to draw.
@@ -31,17 +31,6 @@ namespace umi3d.common.interaction
         /// Id of the meshDto use to draw.
         /// </summary>
         public ulong MeshId { get; set; }
-
-        /// <summary>
-        /// Id of the animation to be triggered when the interaction is triggered.
-        /// </summary>
-        public ulong TriggerAnimationId { get; set; }
-
-        /// <summary>
-        /// Id of the animation to be triggered when the interaction is released.
-        /// </summary>
-        public ulong ReleaseAnimationId { get; set; }
-
 
         public DrawingInteractionDto() : base() { }
     }

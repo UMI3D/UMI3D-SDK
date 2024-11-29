@@ -116,6 +116,9 @@ namespace umi3d.cdk
                         extension.loop = (bool)data.property.value;
                         line.loop = extension.loop;
                         break;
+                    case UMI3DPropertyKeys.LineClientLineId:
+                        extension.clientLineId = (ulong)data.property.value;
+                        break;
                     case UMI3DPropertyKeys.LinePositions:
                         switch (data.property)
                         {
@@ -194,6 +197,9 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.LineLoop:
                     extension.loop = UMI3DSerializer.Read<bool>(data.container);
                     line.loop = extension.loop;
+                    break;
+                case UMI3DPropertyKeys.LineClientLineId:
+                    extension.clientLineId = UMI3DSerializer.Read<ulong>(data.container);
                     break;
                 case UMI3DPropertyKeys.LinePositions:
                     int index;
