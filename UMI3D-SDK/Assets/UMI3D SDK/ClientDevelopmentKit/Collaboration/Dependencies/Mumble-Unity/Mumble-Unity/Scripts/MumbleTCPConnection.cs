@@ -324,33 +324,48 @@ namespace Mumble
                             break;
                     }
                 }
+                catch (AggregateException aggregateException)
+                {
+                    aggregateException.Handle(e =>
+                    {
+                        HandleException(e, "[MumbleTCPConnection.ProcessTcpData] Aggregate exception.");
+                        return true;
+                    });
+
+                    return;
+                }
                 catch (Exception ex)
                 {
-                    if (ex is EndOfStreamException)
-                    {
-                        Debug.LogError("EOS Exception: " + ex);//This happens when we connect again with the same username
-                        _mumbleClient?.OnConnectionDisconnect();
-                    }
-                    else if (ex is IOException)
-                    {
-                        Debug.LogError("IO Exception: " + ex);
-                        _mumbleClient?.OnConnectionDisconnect();
-                    }
-                    //These just means the app stopped, it's ok
-                    else if (ex is ObjectDisposedException) { }
-                    else if (ex is ThreadAbortException) { }
-                    else if (ex is System.Threading.ThreadInterruptedException) { }
-                    else
-                    {
-                        Debug.LogError($"Unhandled error: {ex}");
-                        Debug.LogException(ex);
-                    }
+                    HandleException(ex, "[MumbleTCPConnection.ProcessTcpData].");
+
                     return;
                 }
             }
             // This probably isn't needed but just putting this here to ensure we're always set up for
             // the next thread
             _running = true;
+        }
+
+        private void HandleException(Exception ex, string baseMessage)
+        {
+            switch (ex)
+            {
+                case EndOfStreamException://This happens when we connect again with the same username
+                case IOException:
+                case SocketException:
+                    Debug.LogError($"{baseMessage} Exception {ex.GetType().Name}. {ex.Message}");
+                    _mumbleClient?.OnConnectionDisconnect();
+                    break;
+                case ObjectDisposedException:
+                case ThreadAbortException:
+                case ThreadInterruptedException:
+                    Debug.LogError(baseMessage + " Expected error (app stops) " + ex.GetType().Name);
+                    break;
+                default:
+                    Debug.LogError($"{baseMessage} Unhandled error: {ex}");
+                    Debug.LogException(ex);
+                    break;
+            }
         }
 
         private void ProcessCryptSetup(CryptSetup cryptSetup)
