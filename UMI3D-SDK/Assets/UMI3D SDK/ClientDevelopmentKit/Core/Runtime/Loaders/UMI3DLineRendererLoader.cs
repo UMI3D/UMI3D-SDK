@@ -57,12 +57,8 @@ namespace umi3d.cdk
 
                 if (localId != 0 && maps.TryGetValue(localId, out LineRenderer result))
                 {
-                    line.startColor = result.startColor;
-                    line.endColor = result.endColor;
-                    line.loop = result.loop;
-                    line.useWorldSpace = result.useWorldSpace;
-                    line.endWidth = result.endWidth;
-                    line.startWidth = result.startWidth;
+                    maps[localId] = line;
+                    GameObject.Destroy(result);
                 }
             }
             return line;
@@ -104,6 +100,7 @@ namespace umi3d.cdk
             line.useWorldSpace = template.useWorldSpace;
             line.endWidth = template.endWidth;
             line.startWidth = template.startWidth;
+            line.material = template.material;
             line.positionCount = 0;
             line.SetPositions(new Vector3[0]);
 
