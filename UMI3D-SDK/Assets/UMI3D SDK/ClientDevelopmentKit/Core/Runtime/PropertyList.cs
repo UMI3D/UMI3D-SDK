@@ -179,4 +179,120 @@ namespace umi3d.cdk
 
 
     }
+    public static class PropertyListSetter
+    {
+        public static bool SetEntity<S>(SetUMI3DPropertyContainerData data, List<S> list)
+        {
+            return SetEntity<S, S>(data, s => s, list);
+        }
+
+        public static bool SetEntity<S, T>(SetUMI3DPropertyContainerData data, Func<S, T> converter, List<T> list)
+        {
+            switch (data.operationId)
+            {
+                case UMI3DOperationKeys.SetEntityListAddProperty:
+                    {
+                        var index = UMI3DSerializer.Read<int>(data.container);
+                        var value = converter(UMI3DSerializer.Read<S>(data.container));
+                        if (index == list.Count)
+                            list.Add(value);
+                        else if (index < list.Count && index >= 0)
+                            list.Insert(index, value);
+                        else
+                            return false;
+                        return true;
+                    }
+                case UMI3DOperationKeys.SetEntityListRemoveProperty:
+                    {
+                        var index = UMI3DSerializer.Read<int>(data.container);
+                        if (index < list.Count && index >= 0)
+                            list.RemoveAt(index);
+                        else
+                            return false;
+                        return true;
+                    }
+                case UMI3DOperationKeys.SetEntityListProperty:
+                    {
+                        var index = UMI3DSerializer.Read<int>(data.container);
+                        var value = converter(UMI3DSerializer.Read<S>(data.container));
+
+                        if (index < list.Count && index >= 0)
+                            list[index] = value;
+                        else
+                            return false;
+                        return true;
+                    }
+                default:
+                    SetList(UMI3DSerializer.ReadList<S>(data.container), converter, list);
+                    return true;
+            }
+        }
+
+
+        public static bool SetEntity<S>(SetUMI3DPropertyData data, List<S> list)
+        {
+            return SetEntity<S, S>(data, s => s, list);
+        }
+
+        public static bool SetEntity<S, T>(SetUMI3DPropertyData data, Func<S, T> converter, List<T> list)
+        {
+            switch (data.property)
+            {
+                case SetEntityListAddPropertyDto add:
+                    {
+                        if (add.value != null && !typeof(S).IsAssignableFrom(add.value.GetType()))
+                            return false;
+
+                        var index = add.index;
+                        var value = converter((S)add.value);
+
+                        if (index == list.Count)
+                            list.Add(value);
+                        else if (index < list.Count && index >= 0)
+                            list.Insert(index, value);
+                        else
+                            return false;
+                        return true;
+                    }
+                case SetEntityListRemovePropertyDto remove:
+                    {
+                        var index = remove.index;
+                        if (index < list.Count && index >= 0)
+                            list.RemoveAt(index);
+                        else
+                            return false;
+                        return true;
+                    }
+                case SetEntityListPropertyDto change:
+                    {
+                        if (change.value != null && !typeof(S).IsAssignableFrom(change.value.GetType()))
+                            return false;
+
+                        var index = change.index;
+                        var value = converter((S)change.value);
+
+                        if (index < list.Count && index >= 0)
+                            list[index] = value;
+                        else
+                            return false;
+                        return true;
+                    }
+                case SetEntityPropertyDto set:
+                    SetList((List<S>)set.value, converter, list);
+                    break;
+                default:
+                    return false;
+            }
+            return true;
+        }
+
+        private static void SetList<S, T>(IEnumerable<S> values, Func<S, T> converter, List<T> list)
+        {
+            list.Clear();
+            list.AddRange(values.Select(v => converter(v)));
+        }
+
+
+
+    }
 }

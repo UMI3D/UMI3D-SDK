@@ -41,8 +41,7 @@ namespace umi3d.cdk.interaction
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as AbstractInteractionDto;
-
-            UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId, dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, dto.id, dto, null).NotifyLoaded();
 
         }
 
@@ -62,6 +61,20 @@ namespace umi3d.cdk.interaction
                 {
                     case EventDto dto:
                         {
+                            if(dto is DrawingInteractionDto drawing)
+                                switch (value.property.property)
+                                {
+                                    case UMI3DPropertyKeys.DrawingLine:
+                                        drawing.LineId = (ulong)value.property.value;
+                                        return true;
+                                    case UMI3DPropertyKeys.DrawingInTheAir:
+                                        drawing.CanDrawInSpace = (bool)value.property.value;
+                                        return true;
+                                    case UMI3DPropertyKeys.DrawingMesh:
+                                        PropertyListSetter.SetEntity(value, drawing.MeshIds);
+                                        return true;
+                                }
+
                             switch (value.property.property)
                             {
                                 case UMI3DPropertyKeys.EventTriggerAnimation:
@@ -73,7 +86,10 @@ namespace umi3d.cdk.interaction
                                 default:
                                     return false;
                             }
+
+
                             return true;
+
                         }
                     default:
                         return false;
@@ -94,10 +110,25 @@ namespace umi3d.cdk.interaction
                     return true;
                 }
 
-                //try to read commun value
+                //try to read common value
                 switch (value.entity?.dto)
                 {
                     case EventDto dto:
+
+                        if (dto is DrawingInteractionDto drawing)
+                            switch (value.propertyKey)
+                            {
+                                case UMI3DPropertyKeys.DrawingLine:
+                                    drawing.LineId = UMI3DSerializer.Read<ulong>(value.container);
+                                    return true;
+                                case UMI3DPropertyKeys.DrawingInTheAir:
+                                    drawing.CanDrawInSpace = UMI3DSerializer.Read<bool>(value.container);
+                                    return true;
+                                case UMI3DPropertyKeys.DrawingMesh:
+                                    PropertyListSetter.SetEntity(value, drawing.MeshIds);
+                                    return true;
+                            }
+
                         switch (value.propertyKey)
                         {
                             case UMI3DPropertyKeys.EventTriggerAnimation:

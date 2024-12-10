@@ -138,6 +138,7 @@ namespace umi3d.common
 
         public const uint DrawingLine = 5305;
         public const uint DrawingMesh = 5306;
+        public const uint DrawingInTheAir = 5307;
         #endregion
 
         #region UI

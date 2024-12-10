@@ -80,7 +80,11 @@ namespace umi3d.edk.interaction
         /// </summary>
         [Tooltip("Line the user use to draw")]
         public AbstractRenderedNode mesh = null;
-
+        /// <summary>
+        /// State if the interaction can be done in the air
+        /// </summary>
+        [Tooltip("Line the user use to draw")]
+        public bool canDrawInTheAir = true;
 
         /// <summary>
         /// Animation Async property of the animation triggered when the interaction is triggered
@@ -89,7 +93,11 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Animation Async property of the animation triggered when the interaction is triggered
         /// </summary>
-        private UMI3DAsyncProperty<AbstractRenderedNode> _mesh;
+        private UMI3DAsyncListProperty<AbstractRenderedNode> _mesh;
+        /// <summary>
+        /// State if the interaction can be done in the air
+        /// </summary>
+        private UMI3DAsyncProperty<bool> _canDrawInTheAir;
 
         /// <summary>
         /// Animation Async property of the animation triggered when the interaction is triggered
@@ -98,7 +106,13 @@ namespace umi3d.edk.interaction
         /// <summary>
         /// Renderer Async property of the mesh the drawing is done on
         /// </summary>
-        public UMI3DAsyncProperty<AbstractRenderedNode> Mesh { get { Register(); return _mesh; } set => _mesh = value; }
+        public UMI3DAsyncListProperty<AbstractRenderedNode> Mesh { get { Register(); return _mesh; } set => _mesh = value; }
+
+        /// <summary>
+        /// State if the interaction can be done in the air
+        /// </summary>
+        public UMI3DAsyncProperty<bool> CanDrawInTheAir { get { Register(); return _canDrawInTheAir; } set => _canDrawInTheAir = value; }
+
 
 
         public Dictionary<(ulong, ulong), UMI3DLineRenderer> LineMap = new();
@@ -112,8 +126,8 @@ namespace umi3d.edk.interaction
 
             base.InitDefinition(id);
             Line = new UMI3DAsyncProperty<UMI3DLineRenderer>(id, UMI3DPropertyKeys.DrawingLine, line, (v, u) => v?.Id());
-            Mesh = new UMI3DAsyncProperty<AbstractRenderedNode>(id, UMI3DPropertyKeys.DrawingMesh, line, (v, u) => v?.Id());
-            
+            Mesh = new UMI3DAsyncListProperty<AbstractRenderedNode>(id, UMI3DPropertyKeys.DrawingMesh, mesh != null ? new() { mesh } : null, (v, u) => v?.Id());
+            CanDrawInTheAir = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.DrawingInTheAir, canDrawInTheAir);
         }
 
         /// <summary>
@@ -219,7 +233,8 @@ namespace umi3d.edk.interaction
         {
             return base.ToBytes(user)
                     + UMI3DSerializer.Write(Line?.GetValue(user)?.Id() ?? 0)
-                     + UMI3DSerializer.Write(Mesh?.GetValue(user)?.Id() ?? 0);
+                     + UMI3DSerializer.Write(CanDrawInTheAir?.GetValue(user) ?? true)
+                     + UMI3DSerializer.Write(Mesh?.GetValue(user)?.Select(m => m.Id()).ToList() ?? new List<ulong>());
         }
 
         /// <inheritdoc/>
@@ -241,7 +256,8 @@ namespace umi3d.edk.interaction
             if (dto is DrawingInteractionDto _dto)
             {
                 _dto.LineId = Line.GetValue(user)?.Id() ?? 0;
-                _dto.MeshId = Mesh.GetValue(user)?.Id() ?? 0;
+                _dto.CanDrawInSpace = CanDrawInTheAir?.GetValue(user) ?? true;
+                _dto.MeshIds = Mesh?.GetValue(user)?.Select(m => m?.Id() ?? 0).ToList() ?? new List<ulong>();
             }
         }
     }
