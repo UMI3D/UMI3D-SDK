@@ -17,6 +17,7 @@ limitations under the License.
 using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.cdk
 {
@@ -36,6 +37,11 @@ namespace umi3d.cdk
         {
             await base.ReadUMI3DExtension(data);
 
+            await CreateWebView(data);
+        }
+
+        private async Task CreateWebView(ReadUMI3DExtensionData data)
+        {
             if (AbstractWebViewFactory.Exists)
             {
                 AbstractUMI3DWebView webView = await AbstractWebViewFactory.Instance.CreateWebView();
@@ -43,6 +49,7 @@ namespace umi3d.cdk
                 webView.transform.SetParent(data.node.transform);
                 webView.transform.localPosition = UnityEngine.Vector3.zero;
                 webView.transform.localRotation = UnityEngine.Quaternion.identity;
+                webView.onStartUpError += async () => await OnStartUpError(data, webView);
             }
             else
             {
@@ -50,10 +57,18 @@ namespace umi3d.cdk
             }
         }
 
+        private async Task OnStartUpError(ReadUMI3DExtensionData data, AbstractUMI3DWebView webView)
+        {
+            Object.Destroy(webView);
+
+            UMI3DLogger.LogError("Webview failed to start, try to recreate a new one", scope);
+            await CreateWebView(data);
+        }
+
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            var node = data.entity as UMI3DNodeInstance;
-            if (node == null) return false;
+            if (data.entity is not UMI3DNodeInstance node) return false;
+
             var dto = (node.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DWebViewDto;
             if (dto == null) return false;
 

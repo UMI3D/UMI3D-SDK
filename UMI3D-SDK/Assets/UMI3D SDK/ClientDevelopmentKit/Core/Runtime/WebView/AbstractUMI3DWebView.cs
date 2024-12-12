@@ -178,6 +178,11 @@ namespace umi3d.cdk
         /// </summary>
         public List<string> blackList { get; set; } = new List<string>();
 
+        /// <summary>
+        /// Notify the webview was not able to start.
+        /// </summary>
+        public event System.Action onStartUpError;
+
         #endregion
 
         #region Methods
@@ -212,6 +217,8 @@ namespace umi3d.cdk
         protected abstract void OnTextureSizeChanged(Vector2 size);
 
         protected abstract void OnCanInteractChanged(bool canInteract);
+
+        protected void NotifyErrorOnStartUp() => onStartUpError?.Invoke();
 
         #endregion
     }
