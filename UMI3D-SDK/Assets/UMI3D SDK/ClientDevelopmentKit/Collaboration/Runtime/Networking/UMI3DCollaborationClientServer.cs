@@ -212,7 +212,10 @@ namespace umi3d.cdk.collaboration
             }
             UMI3DCollaborationClientServer.Instance.IsRedirectionInProgress = false;
             if (aborted)
+            {
+                Instance.status = StatusType.ACTIVE;
                 Instance.OnRedirectionAborted.Invoke();
+            }
         }
 
         public static void Connect(MediaDto dto, Action<string> failed = null)
