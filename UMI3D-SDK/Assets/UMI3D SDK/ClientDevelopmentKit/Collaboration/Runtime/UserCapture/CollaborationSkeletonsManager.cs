@@ -149,15 +149,23 @@ namespace umi3d.cdk.collaboration.userCapture
         private void Init()
         {
             collaborativeEnvironmentManagementService.OnUpdateJoinedUserList += () => UpdateSkeletons(collaborativeEnvironmentManagementService.UserList);
-            collaborativeLoaderService.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); if (ShouldSendTracking) SendTrackingLoop(); canClearSkeletons = true; canUpdateSkeletons = true; });
-            collaborationClientServerService.OnLeavingEnvironment.AddListener(Clear);
-            collaborationClientServerService.OnRedirection.AddListener(Clear);
+            collaborativeLoaderService.onEnvironmentLoaded.AddListener(() => { InitSkeletons(); ShouldSendTracking = true; canClearSkeletons = true; canUpdateSkeletons = true; });
+            collaborationClientServerService.OnLeaving.AddListener(() => { Clear(); ShouldSendTracking = sendTrackingLoopOnce = false; });
+            collaborationClientServerService.OnLeavingEnvironment.AddListener(() => { Clear(); ShouldSendTracking = sendTrackingLoopOnce = false; });
+            collaborationClientServerService.OnRedirectionStarted.AddListener(() => { ShouldSendTracking = false; });
+            //collaborationClientServerService.OnRedirection.AddListener(() => { Clear(); });
+            collaborationClientServerService.OnRedirectionAborted.AddListener(() => { ShouldSendTracking = true; });
         }
 
         private void Clear()
         {
             if (canClearSkeletons)
             {
+                for (int i = 0; i < skeletons.Count; i++)
+                {
+                    if (skeletons.Values.ToList()[i] != PersonalSkeleton)
+                        GameObject.Destroy((skeletons.Values.ToList()[i] as CollaborativeSkeleton).gameObject);
+                }
                 skeletons.Clear();
                 canClearSkeletons = false;
             }
@@ -277,7 +285,7 @@ namespace umi3d.cdk.collaboration.userCapture
 
         public virtual void DestroySkeleton((ulong environmentId, ulong userId) userIdentifier)
         {
-            if (!Skeletons.TryGetValue(userIdentifier, out var skeleton) 
+            if (!Skeletons.TryGetValue(userIdentifier, out var skeleton)
                 || skeleton is not CollaborativeSkeleton collabSkeleton)
                 return;
 
@@ -477,11 +485,11 @@ namespace umi3d.cdk.collaboration.userCapture
             if (playPoseDto.stopPose)
                 skeleton.PoseSubskeleton.StopPose(pose);
             else
-                skeleton.PoseSubskeleton.StartPose(pose, 
+                skeleton.PoseSubskeleton.StartPose(pose,
                                                    isOverriding: false,
-                                                   parameters: playPoseDto.transitionDuration < 0 ? null : new() 
-                                                   { 
-                                                       startTransitionDuration = playPoseDto.transitionDuration, 
+                                                   parameters: playPoseDto.transitionDuration < 0 ? null : new()
+                                                   {
+                                                       startTransitionDuration = playPoseDto.transitionDuration,
                                                        endTransitionDuration = playPoseDto.transitionDuration
                                                    });
         }
