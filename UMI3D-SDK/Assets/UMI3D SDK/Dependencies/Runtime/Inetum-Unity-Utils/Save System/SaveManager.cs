@@ -13,7 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System;
+using inetum.unityUtils.systemIO;
 using UnityEngine;
 
 namespace inetum.unityUtils.saveSystem
@@ -163,12 +163,12 @@ namespace inetum.unityUtils.saveSystem
 #if UNITY_ANDROID && !UNITY_EDITOR
                     return PlayerPrefsManager.MoveFile(fileName, newFileName);
 #else
-                    return FileManager.MoveFile(fileName, newFileName);
+                    //return FileManager.MoveFile(fileName, newFileName);
 #endif
                 case SavingSystem.FileSystem:
-                    return FileManager.MoveFile(fileName, newFileName);
+                    //return FileManager.MoveFile(fileName, newFileName);
                 case SavingSystem.PlayerPrefs:
-                    return PlayerPrefsManager.MoveFile(fileName, newFileName);
+                    return PlayerPrefsManager.Move(fileName, newFileName);
                 default:
                     Debug.LogError($"Unknown saving system {savingSystem}");
                     return false;

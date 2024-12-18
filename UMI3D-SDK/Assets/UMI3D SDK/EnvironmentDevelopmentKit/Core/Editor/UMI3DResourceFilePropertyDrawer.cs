@@ -21,7 +21,7 @@ using System.IO;
 using System.Linq;
 using UnityEditor;
 using UnityEngine;
-using Path = inetum.unityUtils.Path;
+using Path = inetum.unityUtils.systemIO.Path;
 
 namespace umi3d.edk.editor
 {

@@ -3,7 +3,8 @@
     "rootNamespace": "",
     "references": [
         "Unity.Addressables",
-        "inetum.unityUtils"
+        "inetum.unityUtils",
+        "inetum.unityUtils.systemIO"
     ],
     "includePlatforms": [
         "Editor"

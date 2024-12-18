@@ -46,7 +46,7 @@ namespace umi3d.cdk.collaboration
                 return null;
             }
 
-            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
+            string path = inetum.unityUtils.systemIO.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
             if (File.Exists(path))
             {
                 return File.ReadAllBytes(path);
@@ -72,7 +72,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.LogWarning("Unautorized to write this local data : " + key, scope);
                 return;
             }
-            string path = inetum.unityUtils.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
+            string path = inetum.unityUtils.systemIO.Path.Combine(Application.persistentDataPath, key + ".umi3dData");
             if (!File.Exists(path))
             {
                 File.Create(path).Dispose();
