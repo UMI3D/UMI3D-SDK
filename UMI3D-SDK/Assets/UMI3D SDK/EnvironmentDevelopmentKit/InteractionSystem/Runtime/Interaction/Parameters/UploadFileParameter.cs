@@ -240,7 +240,7 @@ namespace umi3d.edk.interaction
             }
 
             // Combine the path to save the file with the file name to create a full path.
-            string path = inetum.unityUtils.Path.Combine(pathToSaveFile, fileName);
+            string path = inetum.unityUtils.systemIO.Path.Combine(pathToSaveFile, fileName);
 
             // If a file with the same name already exists, append the current date and time to the file name.
             if (File.Exists(path))
@@ -250,7 +250,7 @@ namespace umi3d.edk.interaction
                 DateTime now = DateTime.Now;
                 fileName = $"{pathWithoutExtension}_{now.ToShortDateString().Replace(@"/", "-")}_{now.ToLongTimeString().Replace(':', '-')}{extension}";
 
-                path = inetum.unityUtils.Path.Combine(pathToSaveFile, fileName);
+                path = inetum.unityUtils.systemIO.Path.Combine(pathToSaveFile, fileName);
             }
 
             // Write the byte array to the specified path

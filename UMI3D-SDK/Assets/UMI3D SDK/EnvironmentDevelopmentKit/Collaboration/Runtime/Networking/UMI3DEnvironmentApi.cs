@@ -260,7 +260,7 @@ namespace umi3d.edk.collaboration
         {
 
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.publicFiles.Length);
-            file = inetum.unityUtils.Path.Combine(
+            file = inetum.unityUtils.systemIO.Path.Combine(
                 UMI3DServer.publicRepository, file);
             file = System.Uri.UnescapeDataString(file);
             UMI3DLogger.Log($"Get public file {file}", scope);
@@ -289,7 +289,7 @@ namespace umi3d.edk.collaboration
         public void GetPrivateFile(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string file = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.privateFiles.Length);
-            file = inetum.unityUtils.Path.Combine(UMI3DServer.privateRepository, file);
+            file = inetum.unityUtils.systemIO.Path.Combine(UMI3DServer.privateRepository, file);
             file = System.Uri.UnescapeDataString(file);
             UMI3DLogger.Log($"Get private file{file}", scope);
             //Validate url.
@@ -319,7 +319,7 @@ namespace umi3d.edk.collaboration
         {
             string rawDirectory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory.Length);
             rawDirectory = System.Uri.UnescapeDataString(rawDirectory);
-            string directory = inetum.unityUtils.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
+            string directory = inetum.unityUtils.systemIO.Path.Combine(UMI3DServer.dataRepository, rawDirectory);
             UMI3DLogger.Log($"Get Directory {directory}", scope);
             //Validate url.
             HttpListenerResponse res = e.Response;
@@ -330,7 +330,7 @@ namespace umi3d.edk.collaboration
                     var dto = new FileListDto()
                     {
                         files = GetDir(directory).Select(f => System.Uri.EscapeUriString(f)).ToList(),
-                        baseUrl = System.Uri.EscapeUriString(inetum.unityUtils.Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, rawDirectory))
+                        baseUrl = System.Uri.EscapeUriString(inetum.unityUtils.systemIO.Path.Combine(UMI3DServer.GetResourcesUrl(), UMI3DNetworkingKeys.files, rawDirectory))
                     };
 
                     res.WriteContent(dto.ToBson());
@@ -361,7 +361,7 @@ namespace umi3d.edk.collaboration
         public void GetDirectoryAsZip(object sender, HttpRequestEventArgs e, Dictionary<string, string> uriparam)
         {
             string directory = e.Request.RawUrl.Substring(UMI3DNetworkingKeys.directory_zip.Length);
-            directory = inetum.unityUtils.Path.Combine(UMI3DServer.dataRepository, directory);
+            directory = inetum.unityUtils.systemIO.Path.Combine(UMI3DServer.dataRepository, directory);
             directory = System.Uri.UnescapeDataString(directory);
             UMI3DLogger.Log($"Get directory as zip {directory}", scope);
             //Validate url.
@@ -422,11 +422,11 @@ namespace umi3d.edk.collaboration
         {
             var files = new List<string>();
             IEnumerable<string> localFiles = Directory.GetFiles(directory).Select(full => System.IO.Path.GetFileName(full));
-            IEnumerable<string> uris = localFiles.Select(f => inetum.unityUtils.Path.Combine(localpath, f));
+            IEnumerable<string> uris = localFiles.Select(f => inetum.unityUtils.systemIO.Path.Combine(localpath, f));
             files.AddRange(uris);
             foreach (string susdir in Directory.GetDirectories(directory))
             {
-                files.AddRange(GetDir(susdir, inetum.unityUtils.Path.Combine(localpath, System.IO.Path.GetFileName(System.IO.Path.GetFileName(susdir)))));
+                files.AddRange(GetDir(susdir, inetum.unityUtils.systemIO.Path.Combine(localpath, System.IO.Path.GetFileName(System.IO.Path.GetFileName(susdir)))));
             }
 
             return files;

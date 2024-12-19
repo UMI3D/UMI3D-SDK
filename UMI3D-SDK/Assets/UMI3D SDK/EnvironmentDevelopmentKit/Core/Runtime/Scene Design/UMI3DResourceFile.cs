@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using inetum.unityUtils.systemIO;
 using umi3d.common;
 
 namespace umi3d.edk

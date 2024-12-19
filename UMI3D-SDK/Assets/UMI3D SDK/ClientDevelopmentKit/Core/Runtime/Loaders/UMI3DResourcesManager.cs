@@ -27,7 +27,7 @@ using umi3d.common.graphics;
 using UnityEngine;
 using UnityEngine.Networking;
 using WebSocketSharp;
-using Path = inetum.unityUtils.Path;
+using Path = inetum.unityUtils.systemIO.Path;
 
 namespace umi3d.cdk
 {
