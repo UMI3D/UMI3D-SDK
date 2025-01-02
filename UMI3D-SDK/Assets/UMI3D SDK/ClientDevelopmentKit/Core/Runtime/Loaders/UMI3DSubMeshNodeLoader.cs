@@ -52,7 +52,6 @@ namespace umi3d.cdk
             LoadSubModel(e, data.node, nodeDto);
         }
 
-
         private void LoadSubModel(UMI3DEntityInstance entity, GameObject node, SubModelDto subDto)
         {
             if (entity is UMI3DNodeInstance modelNodeInstance)
@@ -71,7 +70,9 @@ namespace umi3d.cdk
 
                     UMI3DResourcesManager.Instance.GetSubModel(file.url, file.libraryKey, sub, subDto.subModelHierachyIndexes, subDto.subModelHierachyNames, (o) =>
                     {
-                        instance = GameObject.Instantiate((GameObject)o, node.gameObject.transform, false);
+                        GameObject original = o as GameObject;
+
+                        instance = GameObject.Instantiate(original, node.gameObject.transform, false);
 
                         AbstractMeshDtoLoader.ShowModelRecursively(instance);
                         if (!rootDto.isRightHanded)
@@ -83,6 +84,7 @@ namespace umi3d.cdk
 
                         UMI3DEnvironmentLoader.GetNode(entity.EnvironmentId, subDto.modelId).subNodeInstances.Add(nodeInstance);
                         Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
+                        UMI3DMeshNodeLoader.FixLightMaps(original.GetComponentsInChildren<Renderer>(), renderers);
 
                         if (renderers != null)
                         {

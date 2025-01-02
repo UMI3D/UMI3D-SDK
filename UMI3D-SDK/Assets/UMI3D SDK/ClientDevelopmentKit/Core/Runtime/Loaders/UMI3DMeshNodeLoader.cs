@@ -192,6 +192,8 @@ namespace umi3d.cdk
             if (!resourcesManager.IsSubModelsSetFor(file.url, file.libraryKey))
             {
                 var copy = GameObject.Instantiate(goInCache, resourcesManager.CacheTransform);// goInCache.transform.parent);
+                FixLightMaps(goInCache.GetComponentsInChildren<Renderer>(), copy.GetComponentsInChildren<Renderer>());
+
                 foreach (LODGroup lodgroup in copy.GetComponentsInChildren<LODGroup>())
                     GameObject.Destroy(lodgroup);
 
@@ -277,12 +279,6 @@ namespace umi3d.cdk
 
             instance = GameObject.Instantiate(root, parent, true);
 
-            if (data is Scene scene)
-            {
-                GameObject.Destroy(go);
-                nodeInstance.scene = scene;
-            }
-
             AbstractMeshDtoLoader.ShowModelRecursively(instance);
             Renderer[] renderers = instance.GetComponentsInChildren<Renderer>();
             nodeInstance.renderers = renderers.ToList();
@@ -307,6 +303,13 @@ namespace umi3d.cdk
                 }
             }
 
+            if (data is Scene scene)
+            {
+                nodeInstance.scene = scene;
+                FixLightMaps(root.GetComponentsInChildren<Renderer>(), renderers);
+                GameObject.Destroy(go);
+            }
+
             instance.transform.localPosition = root.transform.localPosition;
             instance.transform.localScale = root.transform.localScale;
             instance.transform.localEulerAngles = root.transform.localEulerAngles;
@@ -319,7 +322,6 @@ namespace umi3d.cdk
             nodeInstance.IsPartOfNavmesh = dto.isPartOfNavmesh;
             nodeInstance.IsTraversable = dto.isTraversable;
             nodeInstance.IsBlockingInteraction = dto.isBlockingInteraction;
-
         }
 
         private void SetBlendShapeRef(UMI3DNodeInstance nodeInstance, UMI3DMeshNodeDto dto, bool setValue = true)
@@ -380,6 +382,30 @@ namespace umi3d.cdk
             yield return null;
         }
 
+        /// <summary>
+        /// Fix objects copied from a scene without lightmaps. 
+        /// A bug was submitted to Unity : it's an expected behavior as this isn’t really a use-case lightmaps
+        /// support out of the box. It does work in Player but not in Editor due to Player build serialization
+        /// being slightly different.
+        /// However we apply the workaround for both Player and Editor just in case (performance impact seems slight).
+        /// </summary>
+        /// <param name="baseRenderers">Renderers from original objects</param>
+        /// <param name="newRenderers">Renderers created</param>
+        public static void FixLightMaps(Renderer[] baseRenderers, Renderer[] newRenderers)
+        {
+            if (baseRenderers.Length != newRenderers.Length)
+            {
+                UMI3DLogger.LogError("Impossible to fix lightmaps, renderers lists don't match : " + baseRenderers.Length + " vs " + newRenderers.Length,
+                    DebugScope.CDK);
 
+                return;
+            }
+
+            for (int i = 0; i < baseRenderers.Length; i++)
+            {
+                newRenderers[i].lightmapIndex = baseRenderers[i].lightmapIndex;
+                newRenderers[i].lightmapScaleOffset = baseRenderers[i].lightmapScaleOffset;
+            }
+        }
     }
 }
