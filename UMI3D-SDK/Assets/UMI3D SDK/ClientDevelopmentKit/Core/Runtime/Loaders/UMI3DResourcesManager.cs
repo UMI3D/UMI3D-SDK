@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils.systemIO;
 using inetum.unityUtils;
 using System;
 using System.Collections.Generic;
@@ -1125,7 +1126,7 @@ namespace umi3d.cdk
                     string url = null;
 
                     path = Path.Combine(directoryPath, name);
-                    path = path.Replace('\\', '/');
+                    path = path.ReplaceSeparatorByAltDirectorySeparatorChar();
                     path = System.Uri.UnescapeDataString(path);
                     dicPath = System.IO.Path.GetDirectoryName(path);
                     url = Path.Combine(baseUrl, name);
