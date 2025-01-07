@@ -1,0 +1,32 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2013/05/nuspec.xsd">
+  <metadata>
+    <id>AutoFixture.AutoMoq</id>
+    <version>4.18.1</version>
+    <title>AutoFixture with Auto Mocking using Moq</title>
+    <authors>Mark Seemann,AutoFixture</authors>
+    <license type="expression">MIT</license>
+    <licenseUrl>https://licenses.nuget.org/MIT</licenseUrl>
+    <icon>icon.png</icon>
+    <projectUrl>https://github.com/AutoFixture/AutoFixture</projectUrl>
+    <iconUrl>https://raw.githubusercontent.com/AutoFixture/AutoFixture/79c882c3f4af3cf52ad43e5c95851f25d217ac17/AutoFixtureLogo200x200.png</iconUrl>
+    <description>This extension turns AutoFixture into an Auto-Mocking Container. The mock instances are created by Moq. To use it, add the AutoMoqCustomization to your Fixture instance. Read more at http://blog.ploeh.dk/2010/08/19/AutoFixtureAsAnAutomockingContainer.aspx</description>
+    <copyright>Copyright © Ploeh 2011</copyright>
+    <repository type="git" url="https://github.com/AutoFixture/AutoFixture.git" commit="fd842903f3da074080191e23f5dd3db6b7a58156" />
+    <dependencies>
+      <group targetFramework=".NETFramework4.5.2">
+        <dependency id="AutoFixture" version="4.18.1" exclude="Build,Analyzers" />
+        <dependency id="Moq" version="[4.1.1308.2120, 5.0.0)" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard1.5">
+        <dependency id="AutoFixture" version="4.18.1" exclude="Build,Analyzers" />
+        <dependency id="Moq" version="[4.7.0, 4.11.0)" exclude="Build,Analyzers" />
+        <dependency id="NETStandard.Library" version="1.6.1" exclude="Build,Analyzers" />
+      </group>
+      <group targetFramework=".NETStandard2.0">
+        <dependency id="AutoFixture" version="4.18.1" exclude="Build,Analyzers" />
+        <dependency id="Moq" version="[4.7.0, 5.0.0)" exclude="Build,Analyzers" />
+      </group>
+    </dependencies>
+  </metadata>
+</package>
