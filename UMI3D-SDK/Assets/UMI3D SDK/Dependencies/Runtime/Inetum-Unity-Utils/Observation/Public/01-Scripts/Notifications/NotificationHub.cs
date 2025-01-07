@@ -17,7 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 
-namespace inetum.unityUtils
+namespace inetum.unityUtils.observation
 {
     public class NotificationHub : INotificationHub
     {

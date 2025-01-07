@@ -16,7 +16,7 @@ limitations under the License.
 
 using System;
 
-namespace inetum.unityUtils
+namespace inetum.unityUtils.observation
 {
     public interface IRequestHub
     {

@@ -15,6 +15,7 @@ using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
 using inetum.unityUtils;
+using inetum.unityUtils.observation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
