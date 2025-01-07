@@ -14,8 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils.systemIO;
 using inetum.unityUtils;
+using inetum.unityUtils.systemIO;
 using System;
 using System.Collections.Generic;
 using System.IO;
