@@ -14,12 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System.Threading;
+using inetum.unityUtils.observation;
 #if UNITY_EDITOR
 using UnityEditor;
 #endif
 using UnityEngine;
-using UnityEngine.Events;
 
 namespace inetum.unityUtils
 {

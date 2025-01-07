@@ -33,6 +33,7 @@ using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using System.Net.NetworkInformation;
 using WebSocketSharp;
+using inetum.unityUtils.observation;
 
 namespace umi3d.edk.collaboration
 {

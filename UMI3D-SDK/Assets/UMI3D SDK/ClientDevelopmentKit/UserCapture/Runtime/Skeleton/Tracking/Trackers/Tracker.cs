@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using inetum.unityUtils.observation;
 using umi3d.cdk.notification;
 using umi3d.common.core;
 using umi3d.common.userCapture.description;
