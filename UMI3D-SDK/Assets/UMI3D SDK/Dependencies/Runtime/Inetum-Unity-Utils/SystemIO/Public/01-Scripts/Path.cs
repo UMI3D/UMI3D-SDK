@@ -20,9 +20,8 @@ namespace inetum.unityUtils.systemIO
 {
     public static class Path
     {
-        static readonly char[] charsToTrim = { 
-            System.IO.Path.DirectorySeparatorChar, 
-            System.IO.Path.AltDirectorySeparatorChar 
+        static readonly char[] charsToTrim = {
+            '/', '\\'
         };
 
         static readonly char[] invalidPathChars
@@ -60,7 +59,7 @@ namespace inetum.unityUtils.systemIO
                 result = _Combine(result, trimmedPaths[i]);
             }
 
-            return result.ReplaceSeparatorByAltDirectorySeparatorChar();
+            return result.ReplaceBackslashsBySlashs();
         }
 
         static string _Combine(string path1, string path2)
@@ -75,7 +74,7 @@ namespace inetum.unityUtils.systemIO
             }
             else
             {
-                return path1 + System.IO.Path.AltDirectorySeparatorChar + path2;
+                return path1 + "/" + path2;
             }
         }
 
@@ -97,40 +96,40 @@ namespace inetum.unityUtils.systemIO
         }
 
         /// <summary>
-        /// This method replaces the directory separator character with the alternative directory separator character in the given path string.<br/>
+        /// This method replaces backslashs with slashs in the given path string.<br/>
         /// <br/>
         /// <example>
-        /// Given a path string when replacing directory separators then the path with alternative directory separators.<br/>
+        /// Given a path string when replacing directory separators then return the path separated by slashs.<br/>
         /// <code>
-        /// string result = Path.ReplaceSeparatorByAltDirectorySeparatorChar("Value0\\Value1/Value2"); // result = "Value0/Value1/Value2"
+        /// string result = Path.ReplaceBackslashsBySlashs("Value0\\Value1/Value2"); // result = "Value0/Value1/Value2"
         /// </code> 
         /// </example>
         /// </summary>
         /// <param name="path">The path string in which the directory separator character will be replaced.</param>
-        /// <returns>The path string with the directory separator character replaced by the alternative directory separator character, or null if the input path is null.</returns>
-        public static string ReplaceSeparatorByAltDirectorySeparatorChar(this string path)
+        /// <returns>The path string with the backslashs replaced by slashs, or null if the input path is null.</returns>
+        public static string ReplaceBackslashsBySlashs(this string path)
         {
             return path?.Replace(
-                System.IO.Path.DirectorySeparatorChar, 
-                System.IO.Path.AltDirectorySeparatorChar
+                '\\', 
+                '/'
             ) ?? null;
         }
 
         /// <summary>
-        /// This method inserts the alternative directory separator character at the specified index in the given path string.<br/>
+        /// This method inserts a slash '/' at the specified index in the given path string.<br/>
         /// <br/>
         /// <example>
-        /// Given a path string and an index when inserting the alternative directory separator character then the path with the character inserted.<br/>
+        /// Given a path string and an index when inserting a slash then the path with the character inserted.<br/>
         /// <code>
-        /// string result = "Value".InsertAltDirectorySeparatorChar(0); // result = "/Value"
+        /// string result = "Value".InsertSlashAt(0); // result = "/Value"
         /// </code> 
         /// </example>
         /// </summary>
-        /// <param name="path">The path string in which the alternative directory separator character will be inserted.</param>
-        /// <param name="index">The index at which the alternative directory separator character will be inserted.</param>
-        /// <returns>The path string with the alternative directory separator character inserted at the specified index.</returns>
+        /// <param name="path">The path string in which the slash will be inserted.</param>
+        /// <param name="index">The index at which the slash will be inserted.</param>
+        /// <returns>The path string with the slash inserted at the specified index.</returns>
         /// <exception cref="System.IndexOutOfRangeException">Thrown when the index is out of range.</exception>
-        public static string InsertAltDirectorySeparatorChar(this string path, int index)
+        public static string InsertSlashAt(this string path, int index)
         {
             if (index < 0)
             {
@@ -144,37 +143,27 @@ namespace inetum.unityUtils.systemIO
 
             if (string.IsNullOrEmpty(path))
             {
-                return System.IO.Path.AltDirectorySeparatorChar.ToString();
+                return "/";
             }
 
             if (index == 0)
             {
-                if (path[0] != System.IO.Path.AltDirectorySeparatorChar)
-                {
-                    return System.IO.Path.AltDirectorySeparatorChar + path;
-                }
-                else
-                {
-                    return path;
-                }
+                return path[0] == '/'
+                    ? path 
+                    : $"/{path}";
             }
 
             if (index == path.Length)
             {
-                if (path[path.Length - 1] != System.IO.Path.AltDirectorySeparatorChar)
-                {
-                    return path + System.IO.Path.AltDirectorySeparatorChar;
-                }
-                else
-                {
-                    return path;
-                }
+                return path[path.Length - 1] == '/'
+                    ? path
+                    : $"{path}/";
             }
 
-            if (path[index - 1] != System.IO.Path.AltDirectorySeparatorChar 
-                && path[index] != System.IO.Path.AltDirectorySeparatorChar)
+            if (path[index - 1] != '/'
+                && path[index] != '/')
             {
-                return path.Insert(index, System.IO.Path.AltDirectorySeparatorChar.ToString());
+                return path.Insert(index, "/");
             }
 
             return path;
