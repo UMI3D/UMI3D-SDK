@@ -173,10 +173,16 @@ namespace umi3d.edk.interaction
                     List<Vector3Dto> positions = UMI3DSerializer.ReadList<Vector3Dto>(container);
 
                     UMI3DLineRenderer line = null;
-                    if(!this.LineMap.TryGetValue((user.Id(), clientLineId), out line))
+
+                    if (clientLineId != 0)
                     {
-                        var Line = this.Line.GetValue(user);
-                        line = Line == null ? null : CreateLine(Line, user, clientLineId);
+                        if (!this.LineMap.TryGetValue((user.Id(), clientLineId), out line))
+                        {
+                            var Line = this.Line.GetValue(user);
+                            line = Line == null ? null : CreateLine(Line, user, clientLineId, positions, drawingEnd);
+                        }
+                        else
+                            UpdateLine(line, user, positions, drawingEnd);
                     }
 
                     if (drawingEnd)
@@ -204,21 +210,33 @@ namespace umi3d.edk.interaction
                 this.LineMap.Remove(key);
         }
 
-        public UMI3DLineRenderer CreateLine(UMI3DLineRenderer template, UMI3DUser user, ulong ClientLineID)
+        public UMI3DLineRenderer CreateLine(UMI3DLineRenderer template, UMI3DUser user, ulong ClientLineID, List<Vector3Dto> positions, bool endDrawing)
         {
             GameObject gm = new GameObject();
             gm.transform.SetParent(template.transform.parent);
             gm.transform.position = Vector3.zero;
 
             UMI3DLineRenderer lr = gm.AddComponent<UMI3DLineRenderer>();
-            lr.objectStartColor.SetValue(user,template.objectStartColor.GetValue(user));
-            lr.objectEndColor.SetValue(user, template.objectEndColor.GetValue(user));
-            lr.objectStartWidth.SetValue(user, template.objectStartWidth.GetValue(user));
-            lr.objectEndWidth.SetValue(user, template.objectEndWidth.GetValue(user));
-            lr.objectLoop.SetValue(user, template.objectLoop.GetValue(user));
-            lr.objectUseWorldSpace.SetValue(user, template.objectUseWorldSpace.GetValue(user));
-            lr.objectPositions.SetValue(user, template.objectPositions.GetValue(user));
-            lr.objectClientLineId.SetValue(user, ClientLineID);
+            lr.objectStartColor.SetValue(template.objectStartColor.GetValue(user));
+            lr.objectEndColor.SetValue(template.objectEndColor.GetValue(user));
+            lr.objectStartWidth.SetValue(template.objectStartWidth.GetValue(user));
+            lr.objectEndWidth.SetValue(template.objectEndWidth.GetValue(user));
+            lr.objectLoop.SetValue(template.objectLoop.GetValue(user));
+            lr.objectUseWorldSpace.SetValue(template.objectUseWorldSpace.GetValue(user));
+            lr.objectPositions.SetValue(positions.Select(p => p.Struct()).ToList());
+            lr.objectClientLineId.SetValue(ClientLineID);
+
+            lr.objectMaterialOverriders.SetValue(template.objectMaterialOverriders.GetValue(user));
+            lr.objectMaterialsOverrided.SetValue(template.objectMaterialsOverrided.GetValue(user));
+
+            lr.objectHasCollider.SetValue(template.objectHasCollider.GetValue(user));
+            lr.objectColliderType.SetValue(template.objectColliderType.GetValue(user));
+            lr.objectIsConvexe.SetValue(template.objectIsConvexe.GetValue(user));
+
+            lr.objectIsMeshCustom.SetValue(template.objectIsMeshCustom.GetValue(user));
+
+            if (!endDrawing)
+                lr.objectPositions.DeSync(user, false);
 
             LoadEntity entity = lr.GetLoadEntity();
             entity.ToTransaction(true).Dispatch();
@@ -227,6 +245,13 @@ namespace umi3d.edk.interaction
 
             return lr;
         }
+
+        public void UpdateLine(UMI3DLineRenderer lr, UMI3DUser except, List<Vector3Dto> positions, bool endDrawing)
+        {
+            lr.objectPositions.DeSync(except, endDrawing);
+            lr.objectPositions.SetValue(positions.Select(dto => dto.Struct()).ToList())?.ToTransaction(except == null).Dispatch();
+        }
+
 
         /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
