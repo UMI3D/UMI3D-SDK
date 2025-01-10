@@ -74,13 +74,13 @@ namespace umi3d.cdk
             return null;
         }
 
-        public static (LineRenderer,ulong) CopyLine(GameObject node, LineRenderer template)
+        public static (LineRenderer,ulong?) CopyLine(GameObject node, LineRenderer template)
         {
             if (maps == null)
                 maps = new Dictionary<ulong, LineRenderer>();
 
             if (node == null)
-                return (null,0);
+                return (null,null);
             var line = node.GetComponent<LineRenderer>();
             if (line == null)
             {
@@ -103,9 +103,6 @@ namespace umi3d.cdk
             line.material = template.material;
             line.positionCount = 0;
             line.SetPositions(new Vector3[0]);
-
-            if (maps == null)
-                maps = new Dictionary<ulong, LineRenderer>();
 
             ulong localId = localIdIndexer++;
             maps[localId] = line;

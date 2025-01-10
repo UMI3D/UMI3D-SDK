@@ -303,7 +303,7 @@ namespace umi3d.cdk
 
             if (data is Scene scene)
             {
-                nodeInstance.scene = scene;
+                nodeInstance.scene = scene; 
                 FixLightMaps(root.GetComponentsInChildren<Renderer>(), renderers);
                 GameObject.Destroy(go);
             }
