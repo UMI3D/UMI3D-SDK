@@ -295,7 +295,7 @@ namespace umi3d.cdk
                     extension.startWidth = UMI3DSerializer.Read<float>(data.container);
                     line.startWidth = extension.startWidth;
                     break;
-                case UMI3DPropertyKeys.LineUseWorldSpace:
+                case UMI3DPropertyKeys.LineUseWorldSpace:                    
                     extension.useWorldSpace = UMI3DSerializer.Read<bool>(data.container);
                     line.useWorldSpace = extension.useWorldSpace;
                     break;
@@ -342,7 +342,7 @@ namespace umi3d.cdk
 
             await UMI3DAsyncManager.Yield();
 
-            if (AtLeast3DistinctVertice(mesh))
+            if (meshCollider != null && AtLeast3DistinctVertice(mesh))
                 meshCollider.sharedMesh = mesh;
         }
 
