@@ -109,8 +109,7 @@ namespace umi3d.edk.collaboration.murmur
             NotificationHub.Default.Subscribe(
                 typeof(MumbleManager).FullName,
                 QuittingManagerNotificationKey.ApplicationIsQuitting,
-                null,
-                mm.Delete
+                (Callback)mm.Delete
             );
 
             return mm;

@@ -215,8 +215,7 @@ namespace umi3d.edk.collaboration
             NotificationHub.Default.Subscribe(
                 this,
                 QuittingManagerNotificationKey.ApplicationIsQuitting,
-                null,
-                ApplicationQuit
+                (Callback)ApplicationQuit
             );
         }
 
