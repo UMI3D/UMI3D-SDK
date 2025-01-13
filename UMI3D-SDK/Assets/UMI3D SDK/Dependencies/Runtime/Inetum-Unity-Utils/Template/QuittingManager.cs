@@ -41,8 +41,7 @@ namespace inetum.unityUtils
             NotificationHub.Default.Subscribe(
                 typeof(QuittingManager).FullName,
                 QuittingManagerNotificationKey.QuittingConfirmation,
-                null,
-                QuittingConfirmation
+                (Callback)QuittingConfirmation
             );
         }
 
