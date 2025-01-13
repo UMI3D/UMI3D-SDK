@@ -85,8 +85,8 @@ namespace inetum.unityUtils.observation
             return notificationHub.Notify(
                 publisher,
                 id,
-                subscribersFilter,
-                info
+                info,
+                subscribersFilter
             );
         }
     }
