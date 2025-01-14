@@ -14,7 +14,7 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
-using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
 using inetum.unityUtils.observation;
 using System;
 using System.Collections;
@@ -528,9 +528,9 @@ namespace umi3d.edk.collaboration
             NetWorker.PingForFirewall(port);
             if (!HasBeenSet)
             {
-                NotificationHub.Default.Subscribe(
+                Quitting.instance.SubscribeFor(
+                    Quitting.SubscriptionType.IsQuitting,
                     this,
-                    QuittingManagerNotificationKey.ApplicationIsQuitting,
                     (Callback)ApplicationQuit
                 );
             }
@@ -542,7 +542,7 @@ namespace umi3d.edk.collaboration
         /// </summary>
         private void ApplicationQuit()
         {
-            if (!QuittingManager.applicationIsQuitting) return;
+            if (!Quitting.instance) return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();
         }

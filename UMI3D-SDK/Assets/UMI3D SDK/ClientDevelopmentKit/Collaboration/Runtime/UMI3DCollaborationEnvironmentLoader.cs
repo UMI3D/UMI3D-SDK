@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -35,7 +36,7 @@ namespace umi3d.cdk.collaboration
         {
             get
             {
-                if (ApplicationIsQuitting)
+                if (Quitting.instance)
                     return null;
                 if (!Exists)
                     instance = new UMI3DCollaborationEnvironmentLoader();

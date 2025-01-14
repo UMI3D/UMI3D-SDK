@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils.lifeCycle;
 using System;
 using System.Threading.Tasks;
 using UnityEngine;
@@ -57,7 +58,7 @@ namespace inetum.unityUtils.saveSystem
         /// <param name="editorOnly">Whether to use the built-in scriptable serialization feature or to save on disk.</param>
         public async void Save(int waitingDuration = 5, bool editorOnly = false)
         {
-            if (!QuittingManager.applicationIsQuitting && waitingDuration > 0)
+            if (!Quitting.instance && waitingDuration > 0)
             {
                 if (isWaitingToSave)
                 {

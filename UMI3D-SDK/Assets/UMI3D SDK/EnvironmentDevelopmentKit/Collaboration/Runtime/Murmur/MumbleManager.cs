@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
 using inetum.unityUtils.observation;
 using System;
 using System.Collections.Generic;
@@ -106,9 +106,9 @@ namespace umi3d.edk.collaboration.murmur
             mm._Create();
             mm.HeartBeat();
 
-            NotificationHub.Default.Subscribe(
-                typeof(MumbleManager).FullName,
-                QuittingManagerNotificationKey.ApplicationIsQuitting,
+            Quitting.instance.SubscribeFor(
+                Quitting.SubscriptionType.IsQuitting, 
+                typeof(MumbleManager).FullName, 
                 (Callback)mm.Delete
             );
 

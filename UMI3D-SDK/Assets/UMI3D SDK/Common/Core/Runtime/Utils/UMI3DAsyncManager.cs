@@ -14,7 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
 using System;
 using System.Collections.Generic;
 using System.Threading;
@@ -72,7 +72,7 @@ public static class UMI3DAsyncManager
 
     private static void ErrorIfQuitting(List<CancellationToken> tokens, bool isMainThread = true)
     {
-        if (QuittingManager.applicationIsQuitting)
+        if (Quitting.instance)
                 throw new UMI3DAsyncManagerException("Application is quitting");
     #if UNITY_EDITOR
             try
