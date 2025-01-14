@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils.lifeCycle;
+
 namespace inetum.unityUtils
 {
     /// <summary>
@@ -25,16 +27,9 @@ namespace inetum.unityUtils
         protected static T instance;
 
         /// <summary>
-        /// State if the application is currently Quitting. 
-        /// This is a direct reference to QuittingManager.ApplicationIsQuitting.
-        /// </summary>
-        /// <seealso cref="QuittingManager.ApplicationIsQuitting"/>>
-        public static bool ApplicationIsQuitting => QuittingManager.applicationIsQuitting;
-
-        /// <summary>
         /// State if an instance of <typeparamref name="T"/> exist.
         /// </summary>
-        public static bool Exists => !ApplicationIsQuitting && instance != null;
+        public static bool Exists => !Quitting.instance && instance != null;
 
         /// <summary>
         /// static reference to the only instance of <typeparamref name="T"/>
@@ -43,7 +38,7 @@ namespace inetum.unityUtils
         {
             get
             {
-                if (ApplicationIsQuitting)
+                if (Quitting.instance)
                 {
                     return null;
                 }
