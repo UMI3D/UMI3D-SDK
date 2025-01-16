@@ -23,5 +23,8 @@ namespace umi3d.common.interaction
     public class StringParameterDto : AbstractParameterDto<string>
     {
         public StringParameterDto() : base() { }
+
+        public bool IsMultiLine = false;
+        public int NbLine = 1;
     }
 }
