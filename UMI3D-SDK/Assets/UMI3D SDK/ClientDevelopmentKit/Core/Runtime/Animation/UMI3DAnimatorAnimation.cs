@@ -26,7 +26,7 @@ namespace umi3d.cdk
 {
     /// <summary>
     /// Animation played on an <see cref="Animator"/> component. The animation is typically inside a state
-    /// of the Mecanima Animator.
+    /// of the Mecanim Animator.
     /// </summary>
     public class UMI3DAnimatorAnimation : UMI3DAbstractAnimation
     {
@@ -74,6 +74,8 @@ namespace umi3d.cdk
         /// This animator could be shared by several <see cref="UMI3DAnimatorAnimation"/> as each animation
         /// corresponds to a state of the animator.
         protected Animator animator { get; private set; }
+
+        protected AnimatorIKRelay IKRelay { get; private set; }
 
         #endregion Fields
 
@@ -134,7 +136,11 @@ namespace umi3d.cdk
 
                         animator = (n as UMI3DNodeInstance)?.GameObject.GetComponentInChildren<Animator>();
                         if (animator != null)
+                        {
                             animator.Rebind();
+                            IKRelay = this.animator.gameObject.AddComponent<AnimatorIKRelay>();
+                            ApplyLookAtProperties();
+                        }
                     });
                 }
             );
@@ -294,6 +300,16 @@ namespace umi3d.cdk
                     dto.normalizedTime = (float)value.property.value;
                     break;
 
+                case UMI3DPropertyKeys.AnimationAnimatorLookAtPosition:
+                    dto.lookAtPosition = (Vector3Dto)value.property.value;
+                    ApplyLookAtProperties();
+                    break;
+
+                case UMI3DPropertyKeys.AnimationAnimatorLookAtWeight:
+                    dto.lookAtWeight = (float)value.property.value;
+                    ApplyLookAtProperties();
+                    break;
+
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:
                     switch (value.property)
                     {
@@ -324,7 +340,6 @@ namespace umi3d.cdk
             return true;
         }
 
-
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyContainerData value)
         {
             if (await base.SetUMI3DProperty(value)) return true;
@@ -341,6 +356,16 @@ namespace umi3d.cdk
 
                 case UMI3DPropertyKeys.AnimationAnimatorNormalizedTime:
                     dto.normalizedTime = UMI3DSerializer.Read<float>(value.container);
+                    break;
+
+                case UMI3DPropertyKeys.AnimationAnimatorLookAtPosition:
+                    dto.lookAtPosition = UMI3DSerializer.Read<Vector3Dto>(value.container);
+                    ApplyLookAtProperties();
+                    break;
+
+                case UMI3DPropertyKeys.AnimationAnimatorLookAtWeight:
+                    dto.lookAtWeight = UMI3DSerializer.Read<float>(value.container);
+                    ApplyLookAtProperties();
                     break;
 
                 case UMI3DPropertyKeys.AnimationAnimatorParameters:
@@ -430,6 +455,45 @@ namespace umi3d.cdk
                 if (animator != null && dto.playing)
                     Start();
             });
+        }
+
+        /// <summary>
+        /// If true, the animator is listening to IK callback for lookAt properties.
+        /// </summary>
+        private bool listenToIKCallbackForLookAt = false;
+
+        /// <summary>
+        /// Apply look at properties to the animator.
+        /// </summary>
+        private void ApplyLookAtProperties()
+        {
+            if (animator == null)
+                return;
+
+            if (dto.lookAtWeight < 0)
+                dto.lookAtWeight = 0;
+
+            if (dto.lookAtWeight > 0 && !listenToIKCallbackForLookAt)
+            {
+                IKRelay.IkCallback += ApplyLookAtPropertiesOnIKCallback;
+                listenToIKCallbackForLookAt = true;
+            }
+            else if (dto.lookAtWeight == 0 && listenToIKCallbackForLookAt)
+            {
+                IKRelay.IkCallback -= ApplyLookAtPropertiesOnIKCallback;
+                listenToIKCallbackForLookAt = false;
+            }
+        }
+
+        private void ApplyLookAtPropertiesOnIKCallback(int layer)
+        {
+            if (animator == null) return; // destroyed in meanwhile
+
+            if (dto.lookAtWeight == 0) return;
+
+            // those methods can only be called in IK call in Unity lifecycle.
+            animator.SetLookAtPosition(dto.lookAtPosition.Struct());
+            animator.SetLookAtWeight(dto.lookAtWeight);
         }
 
         async void debugClip()
