@@ -270,8 +270,6 @@ namespace umi3d.cdk
             else
             {
                 root = go;
-                root.transform.localPosition = Vector3.zero;
-                root.transform.localRotation = Quaternion.identity;
             }
 
             GameObject instance = null;
