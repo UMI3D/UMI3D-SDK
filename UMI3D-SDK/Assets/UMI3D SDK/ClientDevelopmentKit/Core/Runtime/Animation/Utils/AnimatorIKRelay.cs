@@ -5,7 +5,7 @@ Licensed under the Apache License, Version 2.0 (the "License");
 you may not use this file except in compliance with the License.
 You may obtain a copy of the License at
 
-    http://www.apache.org/licenses/LICENSE-2.0
+http://www.apache.org/licenses/LICENSE-2.0
 
 Unless required by applicable law or agreed to in writing, software
 distributed under the License is distributed on an "AS IS" BASIS,
@@ -14,14 +14,34 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-namespace umi3d.cdk.userCapture.tracking.ik
+using System;
+using UnityEngine;
+
+namespace umi3d.cdk
 {
     /// <summary>
     /// Catches OnAnimatorIk event and dispatch it. Has to be on a gameobject with an animator component.
     /// </summary>
-    public class TrackedAnimator : AnimatorIKRelay
+    public class AnimatorIKRelay : MonoBehaviour
     {
-        // the content of this class has been migrated to its parent
-        // to include it in the core module without breaking existing prefabs.
+        /// <summary>
+        /// Triggered just before the related animator updates its own IK system.
+        /// </summary>
+        public event Action<int> IkCallback;
+
+        // mandatory for OnAnimatorIk event
+        public Animator Animator => animator;
+
+        private Animator animator;
+
+        private void Start()
+        {
+            animator = GetComponent<Animator>();
+        }
+
+        private void OnAnimatorIK(int layerIndex)
+        {
+            IkCallback?.Invoke(layerIndex);
+        }
     }
 }

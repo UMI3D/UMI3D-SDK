@@ -38,12 +38,27 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Current state's name in the animator controller. \n" +
                                                  "An empty state name corresponds to a self-caring animator.")]
         private string stateName = string.Empty;
-        
+
         /// <summary>
         /// Animation normalized time at start. 
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Animation normalized time at start.")]
         private float normalizedTime = 0f;
+
+        /// <summary>
+        /// Look at position for the animator's IK.
+        /// Make sure the animator has IK pass enabled on first layer.
+        /// </summary>
+        [SerializeField, Tooltip("Look at position for the animator's IK.\n Make sure the animator has IK pass enabled on first layer.")]
+        private Vector3 lookAtPosition = Vector3.zero;
+
+        /// <summary>
+        /// Look at weight for the animator's IK.
+        /// Make sure the animator has IK pass enabled on first layer.
+        /// </summary>
+        /// A 0 value disable IK look at.
+        [SerializeField, Tooltip("Look at weight for the animator's IK.\n Make sure the animator has IK pass enabled on first layer.")]
+        private float lookAtWeight = 0f;
 
         /// <summary>
         /// See <see cref="node"/>.
@@ -57,6 +72,14 @@ namespace umi3d.edk
         /// See <see cref="normalizedTime"/>.
         /// </summary>
         private UMI3DAsyncProperty<float> _objectNormalizedTime;
+        /// <summary>
+        /// See <see cref="lookAtPosition"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<Vector3> _objectLookAtPosition;
+        /// <summary>
+        /// See <see cref="lookAtWeight"/>.
+        /// </summary>
+        private UMI3DAsyncProperty<float> _objectLookAtWeight;
         /// <summary>
         /// <see cref="objectParameters"/>.
         /// </summary>
@@ -74,6 +97,14 @@ namespace umi3d.edk
         /// See <see cref="normalizedTime"/>.
         /// </summary>
         public UMI3DAsyncProperty<float> objectNormalizedTime { get { Register(); return _objectNormalizedTime; } protected set => _objectNormalizedTime = value; }
+        /// <summary>
+        /// See <see cref="lookAtPosition"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<Vector3> objectLookAtPosition { get { Register(); return _objectLookAtPosition; } protected set => _objectLookAtPosition = value; }
+        /// <summary>
+        /// See <see cref="lookAtWeight"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<float> objectLookAtWeight { get { Register(); return _objectLookAtWeight; } protected set => _objectLookAtWeight = value; }
         /// <summary>
         /// Property to change <see cref="Animator"/> parameters. Allowed values are float, integer, bool (value true for trigger parameter).
         /// </summary>
@@ -94,6 +125,8 @@ namespace umi3d.edk
             objectNode = new UMI3DAsyncProperty<UMI3DNode>(id, UMI3DPropertyKeys.AnimationNodeId, node, null, (o, u) => o.Equals(u));
             objectStateName = new UMI3DAsyncProperty<string>(id, UMI3DPropertyKeys.AnimationStateName, stateName, null, (o, u) => o.Equals(u));
             objectNormalizedTime = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationAnimatorNormalizedTime, normalizedTime, null, (o, u) => o.Equals(u));
+            objectLookAtPosition = new UMI3DAsyncProperty<Vector3>(id, UMI3DPropertyKeys.AnimationAnimatorLookAtPosition, lookAtPosition, null, (o, u) => o.Equals(u));
+            objectLookAtWeight = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationAnimatorLookAtWeight, lookAtWeight, null, (o, u) => o.Equals(u));
             objectParameters = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.AnimationAnimatorParameters,
                 new Dictionary<string, object>(), null, (o, u) => UMI3DAnimatorParameter.Create(o), null, d =>
                 {
@@ -103,6 +136,8 @@ namespace umi3d.edk
             objectNode.OnValueChanged += (d) => node = d;
             objectStateName.OnValueChanged += (d) => stateName = d;
             objectNormalizedTime.OnValueChanged += (d) => normalizedTime = d;
+            objectLookAtPosition.OnValueChanged += (d) => lookAtPosition = d;
+            objectLookAtWeight.OnValueChanged += (d) => lookAtWeight = d;
         }
 
         /// <inheritdoc/>
@@ -113,6 +148,8 @@ namespace umi3d.edk
             Adto.nodeId = objectNode.GetValue(user).Id();
             Adto.stateName = objectStateName.GetValue(user);
             Adto.normalizedTime = objectNormalizedTime.GetValue(user);
+            Adto.lookAtPosition = objectLookAtPosition.GetValue(user).Dto();
+            Adto.lookAtWeight = objectLookAtWeight.GetValue(user);
             Adto.parameters = objectParameters.GetValue(user);
         }
 
@@ -123,6 +160,8 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(objectNode.GetValue(user).Id())
                 + UMI3DSerializer.Write(objectStateName.GetValue(user))
                 + UMI3DSerializer.Write(objectNormalizedTime.GetValue(user))
+                + UMI3DSerializer.Write(objectLookAtPosition.GetValue(user).Dto())
+                + UMI3DSerializer.Write(objectLookAtWeight.GetValue(user))
                 + UMI3DSerializer.Write(objectParameters.GetValue(user));
         }
     }
