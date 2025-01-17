@@ -228,7 +228,8 @@ namespace inetum.unityUtils.lifeCycle
             switch (state)
             {
                 case QuittingState.NotQuitting:
-                    UnityEngine.Debug.LogError($"[Quitting.WantsToQuit] Error: state should not have this value.");
+                    // Happen when user try to quit by pressing the close application top bar button.
+                    Quit(this, true);
                     return false;
 
                 case QuittingState.WaitsForConfirmation:
