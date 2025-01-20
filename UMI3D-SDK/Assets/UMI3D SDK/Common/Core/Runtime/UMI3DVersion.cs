@@ -31,7 +31,7 @@ namespace umi3d
         public static readonly string major = "2";
         public static readonly string minor = "9";
         public static readonly string status = "b";
-        public static readonly string date = "241106";
+        public static readonly string date = "250120";
 
         public static readonly Version ComputedVersion = new Version(UMI3DVersion.version);
 
@@ -81,8 +81,8 @@ namespace umi3d
             public readonly int major_max;
             public readonly int major_min;
 
-            public readonly int minor_max;  
-            public readonly int minor_min;  
+            public readonly int minor_max;
+            public readonly int minor_min;
 
             public readonly string status;
             public readonly bool status_all = false;
@@ -91,15 +91,15 @@ namespace umi3d
             public readonly DateTime date_min;
 
 
-            public VersionCompatibility(string min, string max) : this(new Version(min),new Version(max))
+            public VersionCompatibility(string min, string max) : this(new Version(min), new Version(max))
             { }
 
             public VersionCompatibility(Version min, Version max)
             {
                 major_max = max.major ?? int.MaxValue;
-                major_min= min.major ?? int.MinValue;
+                major_min = min.major ?? int.MinValue;
 
-                minor_max= max.minor ?? int.MaxValue;
+                minor_max = max.minor ?? int.MaxValue;
                 minor_min = min.minor ?? int.MinValue;
 
                 if (min.status != max.status || min.status == null || min.status == string.Empty)
@@ -139,11 +139,11 @@ namespace umi3d
                         min = result;
 
                     if (split2.Length > 1 && int.TryParse(split2[1], out result))
-                            max = result;
+                        max = result;
                 }
                 else if (int.TryParse(pattern, out result))
                     max = min = result;
-                
+
                 return (min, max);
             }
 
@@ -153,7 +153,7 @@ namespace umi3d
                 DateTime result;
 
                 if (pattern == null || pattern == string.Empty || pattern == "*") { }
-                else if (pattern.Contains("-")) 
+                else if (pattern.Contains("-"))
                 {
                     var split2 = pattern.Split('-');
 
@@ -165,7 +165,7 @@ namespace umi3d
                 }
                 else if (DateTime.TryParseExact(pattern, "yyMMdd", System.Globalization.CultureInfo.InvariantCulture, DateTimeStyles.None, out result))
                     max = min = result;
-                
+
                 return (min, max);
             }
 
