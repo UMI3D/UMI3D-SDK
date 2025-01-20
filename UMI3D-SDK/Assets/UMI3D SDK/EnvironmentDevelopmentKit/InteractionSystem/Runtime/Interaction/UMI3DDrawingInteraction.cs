@@ -56,17 +56,24 @@ namespace umi3d.edk.interaction
         {
             public UMI3DLineRenderer line { get; private set; } = null;
             public List<Vector3Dto> positions { get; private set; } = new List<Vector3Dto>();
+            public UMI3DNode node { get; private set; }
 
-            public DrawingEventContent(UMI3DUser user, DrawingDto dto, UMI3DLineRenderer line) : base(user, dto)
+            public ulong clientDrawingId { get; private set; }
+
+            public DrawingEventContent(UMI3DUser user, DrawingDto dto, UMI3DLineRenderer line, UMI3DNode node) : base(user, dto)
             {
                 positions = dto.positions;
                 this.line = line;
+                this.node = node;
+                this.clientDrawingId = dto.clientDrawingId;
             }
 
-            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line, UMI3DNode node, ulong clientDrawingId ) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.positions = positions;
                 this.line = line;
+                this.node = node;
+                this.clientDrawingId= clientDrawingId;
             }
         }
 
@@ -142,10 +149,11 @@ namespace umi3d.edk.interaction
                 case DrawingDto drawing:
                     UMI3DLineRenderer line = null;
                     this.LineMap.TryGetValue((user.Id(), drawing.clientLineId), out line);
+                    UMI3DNode node = UMI3DEnvironment.GetEntityInstance<UMI3DNode>(drawing.surfaceId);
                     if (drawing.drawingEnd)
-                        onDrawingEnd.Invoke(new DrawingEventContent(user, drawing, line));
+                        onDrawingEnd.Invoke(new DrawingEventContent(user, drawing, line, node));
                     else
-                        onDrawing.Invoke(new DrawingEventContent(user, drawing, line));
+                        onDrawing.Invoke(new DrawingEventContent(user, drawing, line, node));
                     break;
                 default:
                     base.OnUserInteraction(user, interactionRequest);
@@ -169,10 +177,13 @@ namespace umi3d.edk.interaction
             {
                 case UMI3DOperationKeys.Drawing:
                     bool drawingEnd = UMI3DSerializer.Read<bool>(container);
+                    ulong clientDrawingId = UMI3DSerializer.Read<ulong>(container);
                     ulong clientLineId = UMI3DSerializer.Read<ulong>(container);
+                    ulong surfaceId = UMI3DSerializer.Read<ulong>(container);
                     List<Vector3Dto> positions = UMI3DSerializer.ReadList<Vector3Dto>(container);
 
                     UMI3DLineRenderer line = null;
+                    UMI3DNode surface = null;
 
                     if (clientLineId != 0)
                     {
@@ -185,10 +196,14 @@ namespace umi3d.edk.interaction
                             UpdateLine(line, user, positions, drawingEnd);
                     }
 
+                    if (surfaceId != 0)
+                       surface = UMI3DEnvironment.GetEntityInstance<UMI3DNode>(surfaceId);
+
+                    var DrawingEvent = new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line, surface, clientDrawingId);
                     if (drawingEnd)
-                        onDrawingEnd.Invoke(new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line));
+                        onDrawingEnd.Invoke(DrawingEvent);
                     else
-                        onDrawing.Invoke(new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line));
+                        onDrawing.Invoke(DrawingEvent);
                     break;
 
                 default:

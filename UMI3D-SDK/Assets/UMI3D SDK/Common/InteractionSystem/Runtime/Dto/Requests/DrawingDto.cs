@@ -21,7 +21,13 @@ namespace umi3d.common.interaction
     public class DrawingDto : InteractionRequestDto
     {
         public bool drawingEnd { get; set; }
+
+        public ulong clientDrawingId { get; set; } = 0;
+
         public ulong clientLineId { get; set; } = 0;
+
+        public ulong surfaceId { get; set; } = 0;
+
         public List<Vector3Dto> positions { get; set; } = new List<Vector3Dto>();
     }
 }

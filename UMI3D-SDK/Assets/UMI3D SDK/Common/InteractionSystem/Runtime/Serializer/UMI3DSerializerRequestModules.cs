@@ -85,7 +85,9 @@ namespace umi3d.common.interaction
                 case DrawingDto c:
                     bytable = WriteInteraction(c, UMI3DOperationKeys.Drawing, parameters)
                         + UMI3DSerializer.Write(c.drawingEnd)
+                         + UMI3DSerializer.Write(c.clientDrawingId)
                         + UMI3DSerializer.Write(c.clientLineId)
+                        + UMI3DSerializer.Write(c.surfaceId)
                         + UMI3DSerializer.Write(c.positions);
                     return true;
                 case EventTriggeredDto c:
