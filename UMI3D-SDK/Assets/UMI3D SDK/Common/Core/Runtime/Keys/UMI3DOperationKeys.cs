@@ -89,7 +89,7 @@ namespace umi3d.common
         public const uint EventStateChanged = 10002;
         public const uint EventTriggered = 10003;
         public const uint FormAnswer = 10004;
-        public const uint Hoverred = 10005;
+        public const uint Hovered = 10005;
         public const uint HoverStateChanged = 10006;
         public const uint LinkOpened = 10007;
         public const uint ManipulationRequest = 10008;
@@ -102,6 +102,8 @@ namespace umi3d.common
         public const uint NotificationCallback = 10014;
         public const uint BoardedVehicleRequest = 10015;
         public const uint UserTrackingBone = 10016;
+
+        public const uint Drawing = 10017;
 
         public const uint EmoteRequest = 10020;
 

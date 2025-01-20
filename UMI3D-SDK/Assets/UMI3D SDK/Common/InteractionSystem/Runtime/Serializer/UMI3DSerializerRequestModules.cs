@@ -60,7 +60,7 @@ namespace umi3d.common.interaction
                             + UMI3DSerializer.Write(c.state);
                     return true;
                 case HoveredDto c:
-                    bytable = WriteInteraction(c, UMI3DOperationKeys.Hoverred, parameters)
+                    bytable = WriteInteraction(c, UMI3DOperationKeys.Hovered, parameters)
                         + UMI3DSerializer.Write(c.position)
                         + UMI3DSerializer.Write(c.normal)
                         + UMI3DSerializer.Write(c.direction);
@@ -81,6 +81,14 @@ namespace umi3d.common.interaction
                 case EventStateChangedDto c:
                     bytable = WriteInteraction(c, UMI3DOperationKeys.EventStateChanged, parameters)
                         + UMI3DSerializer.Write(c.active);
+                    return true;
+                case DrawingDto c:
+                    bytable = WriteInteraction(c, UMI3DOperationKeys.Drawing, parameters)
+                        + UMI3DSerializer.Write(c.drawingEnd)
+                         + UMI3DSerializer.Write(c.clientDrawingId)
+                        + UMI3DSerializer.Write(c.clientLineId)
+                        + UMI3DSerializer.Write(c.surfaceId)
+                        + UMI3DSerializer.Write(c.positions);
                     return true;
                 case EventTriggeredDto c:
                     bytable = WriteInteraction(c, UMI3DOperationKeys.EventTriggered, parameters);

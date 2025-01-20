@@ -14,30 +14,31 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System.Collections.Generic;
+
 namespace umi3d.common.interaction
 {
     /// <summary>
-    /// DTO describing an event interaction block
+    /// DTO describing a drawing interaction block
     /// </summary>
     [System.Serializable]
-    public class EventDto : AbstractInteractionDto
+    public class DrawingInteractionDto : EventDto
     {
         /// <summary>
-        /// Should the environment be notified of the event rising edge only (false) or both rising edge and falling edge (true).
+        /// Id of the lineDto use to draw.
         /// </summary>
-        public bool hold { get; set; } = false;
+        public ulong lineId { get; set; }
 
         /// <summary>
-        /// Id of the animation to be triggered when the interaction is triggered.
+        /// State if the interaction can be done in 3D.
         /// </summary>
-        public ulong triggerAnimationId { get; set; }
+        public bool canDrawInSpace { get; set; }
 
         /// <summary>
-        /// Id of the animation to be triggered when the interaction is released.
+        /// Id of the meshDto use to draw.
         /// </summary>
-        public ulong releaseAnimationId { get; set; }
+        public List<ulong> meshIds { get; set; }
 
-
-        public EventDto() : base() { }
+        public DrawingInteractionDto() : base() { }
     }
 }

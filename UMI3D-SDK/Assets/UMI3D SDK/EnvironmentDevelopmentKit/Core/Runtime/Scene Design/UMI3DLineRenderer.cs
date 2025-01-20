@@ -63,6 +63,9 @@ namespace umi3d.edk
         /// </summary
         public UMI3DAsyncListProperty<Vector3> objectPositions { get { Register(); return _objectPositions; } protected set => _objectPositions = value; }
 
+        public UMI3DAsyncProperty<ulong> objectClientLineId { get { Register(); return _objectClientLineId; } protected set => _objectClientLineId = value; }
+
+
         #endregion asyncproperties
 
         /// <summary>
@@ -137,6 +140,10 @@ namespace umi3d.edk
         /// See <see cref="positions"/>.
         /// </summary
         private UMI3DAsyncListProperty<Vector3> _objectPositions;
+        /// <summary>
+        /// See <see cref="positions"/>.
+        /// </summary
+        private UMI3DAsyncProperty<ulong> _objectClientLineId;
 
         #endregion asyncproperties
 
@@ -168,7 +175,7 @@ namespace umi3d.edk
             objectPositions = new UMI3DAsyncListProperty<Vector3>(objectId, UMI3DPropertyKeys.LinePositions, positions, (v, u) => ToUMI3DSerializable.ToSerializableVector3(v, u));
             objectPositions.OnValueChanged += b => positions = b;
 
-
+            objectClientLineId = new UMI3DAsyncProperty<ulong>(objectId, UMI3DPropertyKeys.LineClientLineId, 0, (r, u) => r);
         }
 
         public void SyncPositionsFromLineRenderer()
@@ -201,6 +208,7 @@ namespace umi3d.edk
             lineDto.startWidth = objectStartWidth.GetValue(user);
             lineDto.endWidth = objectEndWidth.GetValue(user);
             lineDto.positions = objectPositions.GetValue(user).ConvertAll(vector => ToUMI3DSerializable.ToSerializableVector3(vector, user));
+            lineDto.clientLineId = objectClientLineId.GetValue(user);
         }
 
         /// <inheritdoc/>
