@@ -185,8 +185,8 @@ namespace umi3d.edk.interaction
             if (dto is EventDto _dto)
             {
                 _dto.hold = Hold;
-                _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
-                _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
+                _dto.triggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
+                _dto.releaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
             }
         }
     }

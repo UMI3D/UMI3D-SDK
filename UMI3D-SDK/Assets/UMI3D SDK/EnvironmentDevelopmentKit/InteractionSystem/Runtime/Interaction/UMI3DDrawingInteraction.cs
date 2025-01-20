@@ -295,9 +295,9 @@ namespace umi3d.edk.interaction
             base.WriteProperties(dto, user);
             if (dto is DrawingInteractionDto _dto)
             {
-                _dto.LineId = Line.GetValue(user)?.Id() ?? 0;
-                _dto.CanDrawInSpace = CanDrawInTheAir?.GetValue(user) ?? true;
-                _dto.MeshIds = Mesh?.GetValue(user)?.Select(m => m?.Id() ?? 0).ToList() ?? new List<ulong>();
+                _dto.lineId = Line.GetValue(user)?.Id() ?? 0;
+                _dto.canDrawInSpace = CanDrawInTheAir?.GetValue(user) ?? true;
+                _dto.meshIds = Mesh?.GetValue(user)?.Select(m => m?.Id() ?? 0).ToList() ?? new List<ulong>();
             }
         }
     }
