@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration.dto.networking;
@@ -32,6 +33,9 @@ namespace umi3d.edk.collaboration
         /// Is the server active?
         /// </summary>
         bool isRunning { get; }
+
+        event Action OnServerStarted;
+        event Action OnServerStopped;
 
         void ClearIP();
 
