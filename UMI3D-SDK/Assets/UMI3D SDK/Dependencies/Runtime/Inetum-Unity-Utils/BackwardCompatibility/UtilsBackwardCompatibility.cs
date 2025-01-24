@@ -51,39 +51,11 @@ namespace inetum.unityUtils
         public static string Combine(string path1, string path2)
         {
             return inetum.unityUtils.systemIO.Path.Combine(path1, path2);
-
-            /*if (string.IsNullOrEmpty(path1))
-            {
-                return path2;
-            }
-            else if (string.IsNullOrEmpty(path2))
-            {
-                return path1;
-            }
-            else
-            {
-                return path1.Trim().TrimEnd(charsToTrim)
-                    + System.IO.Path.AltDirectorySeparatorChar
-                    + path2.Trim().TrimStart(charsToTrim);
-            }*/
         }
 
         public static string Combine(params string[] paths)
         {
             return inetum.unityUtils.systemIO.Path.Combine(paths);
-
-            /*if (paths == null || paths.Length == 0)
-            {
-                return null;
-            }
-
-            string result = paths[0];
-            for (int i = 1; i < paths.Length; i++)
-            {
-                result = Combine(result, paths[i]);
-            }
-
-            return result;*/
         }
     }
 }
