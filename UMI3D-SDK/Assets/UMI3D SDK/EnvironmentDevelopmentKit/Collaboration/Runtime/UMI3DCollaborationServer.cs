@@ -753,7 +753,9 @@ namespace umi3d.edk.collaboration
         }
 
         #region session
+        [Obsolete("Use OnServerStarted instead.")]
         public UnityEvent OnServerStart = new UnityEvent();
+        [Obsolete("Use OnServerStopped instead.")]
         public UnityEvent OnServerStop = new UnityEvent();
         public event System.Action OnServerStarted;
         public event System.Action OnServerStopped;
