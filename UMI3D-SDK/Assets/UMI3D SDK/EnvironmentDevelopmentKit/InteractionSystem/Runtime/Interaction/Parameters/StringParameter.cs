@@ -29,6 +29,16 @@ namespace umi3d.edk.interaction
         /// </summary>
         public string value;
 
+        /// <summary>
+        /// Is the input on multiple line
+        /// </summary>
+        public bool isMultiline = false;
+
+        /// <summary>
+        /// How many line to show in the input
+        /// </summary>
+        public int nbLine = 1;
+
         [System.Serializable]
         public class StringListener : ParameterEvent<string> { }
 
@@ -57,6 +67,8 @@ namespace umi3d.edk.interaction
         {
             base.WriteProperties(dto, user);
             (dto as StringParameterDto).value = value;
+            (dto as StringParameterDto).IsMultiLine = isMultiline;
+            (dto as StringParameterDto).NbLine = nbLine;
         }
 
         /// <inheritdoc/>
@@ -69,7 +81,9 @@ namespace umi3d.edk.interaction
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                + UMI3DSerializer.Write(value);
+                + UMI3DSerializer.Write(value)
+                + UMI3DSerializer.Write(isMultiline)
+                + UMI3DSerializer.Write(nbLine);
         }
 
         /// <inheritdoc/>
@@ -82,6 +96,8 @@ namespace umi3d.edk.interaction
                     {
                         var parameter = settingRequestDto.parameter as StringParameterDto;
                         value = parameter.value;
+                        isMultiline = parameter.IsMultiLine;
+                        nbLine = parameter.NbLine;
                         onChange.Invoke(new ParameterEventContent<string>(user, settingRequestDto, value));
                     }
                     else
@@ -107,6 +123,8 @@ namespace umi3d.edk.interaction
                     {
                         UMI3DSerializer.Read<bool>(container);
                         value = UMI3DSerializer.Read<string>(container);
+                        isMultiline = UMI3DSerializer.Read<bool>(container);
+                        nbLine = UMI3DSerializer.Read<int>(container);
                         onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, value));
                     }
                     else
