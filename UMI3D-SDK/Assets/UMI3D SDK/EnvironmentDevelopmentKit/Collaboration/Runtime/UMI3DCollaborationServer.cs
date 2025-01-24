@@ -757,7 +757,15 @@ namespace umi3d.edk.collaboration
         public UnityEvent OnServerStart = new UnityEvent();
         [Obsolete("Use OnServerStopped instead.")]
         public UnityEvent OnServerStop = new UnityEvent();
+
+        /// <summary>
+        /// Event called when the UMI3D server is launched.
+        /// </summary>
         public event System.Action OnServerStarted;
+
+        /// <summary>
+        /// Event called when the UMI3D server has been stopped.
+        /// </summary>
         public event System.Action OnServerStopped;
         #endregion
     }

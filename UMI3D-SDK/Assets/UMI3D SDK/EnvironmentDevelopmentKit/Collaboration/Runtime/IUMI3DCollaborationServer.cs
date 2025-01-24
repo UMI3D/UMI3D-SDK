@@ -33,8 +33,15 @@ namespace umi3d.edk.collaboration
         /// Is the server active?
         /// </summary>
         bool isRunning { get; }
-
+      
+        /// <summary>
+        /// Event called when the UMI3D server is launched.
+        /// </summary>
         event Action OnServerStarted;
+
+        /// <summary>
+        /// Event called when the UMI3D server has been stopped.
+        /// </summary>
         event Action OnServerStopped;
 
         void ClearIP();
