@@ -14,8 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
-using inetum.unityUtils.systemIO;
+using Path = inetum.unityUtils.systemIO.Path;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
