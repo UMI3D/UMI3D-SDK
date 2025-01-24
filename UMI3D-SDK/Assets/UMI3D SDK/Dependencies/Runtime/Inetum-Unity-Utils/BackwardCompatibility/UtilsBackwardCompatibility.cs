@@ -46,8 +46,6 @@ namespace inetum.unityUtils
     [Obsolete("Kept for backward compatibility : use inetum.unityUtils.systemIO.Path instead.\n Will be removed in next major version.")]
     public class Path
     {
-        public static readonly char[] charsToTrim = { System.IO.Path.DirectorySeparatorChar, System.IO.Path.AltDirectorySeparatorChar };
-
         public static string Combine(string path1, string path2)
         {
             return inetum.unityUtils.systemIO.Path.Combine(path1, path2);
