@@ -266,6 +266,12 @@ namespace umi3d.edk
         /// A event that is triggered when value changes.
         /// </summary>
         public Action<T> OnValueChanged;
+
+        /// <summary>
+        /// A event that is triggered when value changes.
+        /// </summary>
+        public Action<T,UMI3DGroupAsyncProperty> OnGroupValueChanged;
+
         /// <summary>
         /// A event that is triggered when value changes.
         /// </summary>
@@ -319,6 +325,7 @@ namespace umi3d.edk
             UMI3DServer.Instance.OnUserLeave.AddListener((u) => { DeSync(u, true); });
         }
 
+        #region Group
         /// <inheritdoc/>
         internal override SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
         {
@@ -364,6 +371,7 @@ namespace umi3d.edk
             }
             return null;
         }
+        #endregion Group
 
         /// <summary>
         /// Get property value for a given user
@@ -394,6 +402,12 @@ namespace umi3d.edk
             return value;
         }
 
+        public virtual T GetValue(UMI3DGroupAsyncProperty group)
+        {
+            return groupValueMaps.TryGetValue(group,out T value) ? value : this.value;
+        }
+
+        #region Set
         /// <summary>
         /// Set the property's default/synchronized value.
         /// </summary>
@@ -408,6 +422,30 @@ namespace umi3d.edk
 
             if (OnValueChanged != null)
                 OnValueChanged.Invoke(value);
+
+            if (UMI3DEnvironment.Exists)
+            {
+                return GetSetEntityOperationForAllUsers();
+            }
+
+            return null;
+        }
+
+        public virtual SetEntityProperty SetValue(T value, UMI3DGroupAsyncProperty group, bool forceOperation = false)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out T defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            if (((defaultValue == null && value == null) || (defaultValue != null && Equal(defaultValue, value))) && !forceOperation)
+                return null;
+
+            this.groupValueMaps[group] = value;
+
+            if (OnGroupValueChanged != null)
+                OnGroupValueChanged.Invoke(value, group);
 
             if (UMI3DEnvironment.Exists)
             {
@@ -547,8 +585,10 @@ namespace umi3d.edk
                 value = Serializer(value, null)
             };
         }
+        #endregion Set
 
         /// <inheritdoc/>
+        /// <todo>Sync for group</todo>
         public override SetEntityProperty Sync()
         {
             SetEntityProperty operation = null;

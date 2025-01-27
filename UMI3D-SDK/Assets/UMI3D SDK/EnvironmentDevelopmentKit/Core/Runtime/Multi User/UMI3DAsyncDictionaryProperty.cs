@@ -20,17 +20,30 @@ using System.Linq;
 
 namespace umi3d.edk
 {
+    [Obsolete("UMI3DAsyncDictionnaryProperty was renamed UMI3DAsyncDictionaryProperty. This version might be removed in future version")]
+    public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
+    {
+        public UMI3DAsyncDictionnaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<Dictionary<T, L>, UMI3DUser, object> serializer = null, Func<Dictionary<T, L>, Dictionary<T, L>, bool> equal = null) : base(entityId, propertyId, value, serializer, equal)
+        {
+        }
+    }
+
+
     /// <summary>
     /// <see cref="UMI3DAsyncProperty"/> for key-value collections.
     /// </summary>
     /// <typeparam name="T">Key type</typeparam>
     /// <typeparam name="L">Value type</typeparam>
-    public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
+    public class UMI3DAsyncDictionaryProperty<T, L> : UMI3DAsyncDictionnaryProperty<T, L>
     {
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
         public Action<T, L> OnInnerValueChanged;
+        /// <summary>
+        /// A event that is triggered when inner value changes.
+        /// </summary>
+        public Action<T, L, UMI3DGroupAsyncProperty> OnInnerGroupValueChanged;
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
@@ -42,12 +55,20 @@ namespace umi3d.edk
         /// <summary>
         /// A event that is triggered when inner value is Added.
         /// </summary>
+        public Action<T, L, UMI3DGroupAsyncProperty> OnInnerGroupValueAdded;
+        /// <summary>
+        /// A event that is triggered when inner value is Added.
+        /// </summary>
         public Action<T, UMI3DUser, L> OnUserInnerValueAdded;
 
         /// <summary>
         /// A event that is triggered when inner value is Removed.
         /// </summary>
         public Action<T> OnInnerValueRemoved;
+        /// <summary>
+        /// A event that is triggered when inner value is Removed.
+        /// </summary>
+        public Action<T,UMI3DGroupAsyncProperty> OnInnerGroupValueRemoved;
         /// <summary>
         /// A event that is triggered when inner value is Removed.
         /// </summary>
@@ -74,11 +95,11 @@ namespace umi3d.edk
         private readonly Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
 
         /// <summary>
-        /// Convert a serializer for a single value to a dictionnary serializer.
+        /// Convert a serializer for a single value to a dictionary serializer.
         /// </summary>
         /// <param name="serializer">Serializer for a single value.</param>
         /// <returns>Serializer for lists.</returns>
-        private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
+        private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSerializer(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
         {
             if (serializerT == null && serializerL == null) return null;
             if (serializerT == null)
@@ -127,14 +148,14 @@ namespace umi3d.edk
         private static Func<Dictionary<T, L>, Dictionary<T, L>, bool> EqualToListEqual(Func<L, L, bool> equal)
         {
             if (equal == null) return null;
-            bool DictionnaryEqual(Dictionary<T, L> dict, Dictionary<T, L> other)
+            bool DictionaryEqual(Dictionary<T, L> dict, Dictionary<T, L> other)
             {
                 return !dict.Keys.Except(other.Keys).Any() && !other.Keys.Except(dict.Keys).Any() && !dict.Where(p => { return !equal(p.Value, other[p.Key]); }).Any();
             }
-            return DictionnaryEqual;
+            return DictionaryEqual;
         }
 
-        public UMI3DAsyncDictionnaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializerT, serializerL), EqualToListEqual(equal))
+        public UMI3DAsyncDictionaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSerializer(serializerT, serializerL), EqualToListEqual(equal))
         {
             if (equal == null)
             {
@@ -170,11 +191,8 @@ namespace umi3d.edk
         /// <param name="user">The user to get the key for</param>
         /// <returns></returns>
         /// A null user will call <see cref="UMI3DAsyncProperty.GetValue"/>
-        public L GetValue(T key, UMI3DUser user = null)
-        {
-            return GetValue(user)[key];
-        }
-
+        public L GetValue(T key, UMI3DUser user = null) => GetValue(user)[key];
+        
         /// <summary>
         /// Set the property's default/synchronized value.
         /// </summary>
@@ -190,8 +208,31 @@ namespace umi3d.edk
                 return null;
             GetValue()[key] = value;
 
-            if (OnInnerValueChanged != null)
-                OnInnerValueChanged.Invoke(key, value);
+            OnInnerValueChanged?.Invoke(key, value);
+
+            if (UMI3DEnvironment.Exists)
+            {
+                return GetSetEntityOperationForAllUsers();
+            }
+            return null;
+        }
+
+        public SetEntityProperty SetValue(T key, L value, UMI3DGroupAsyncProperty group, bool forceOperation = false)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            L oldValue = defaultValue[key];
+
+            if (((oldValue == null && value == null) || (oldValue != null && Equal(oldValue, value))) && !forceOperation)
+                return null;
+
+            defaultValue[key] = value;
+
+            OnInnerGroupValueChanged?.Invoke(key, value, group);
 
             if (UMI3DEnvironment.Exists)
             {
@@ -256,6 +297,20 @@ namespace umi3d.edk
             return GetSetEntityDictionaryAddOperationForAllUsers(key);
         }
 
+        public SetEntityProperty Add(T key, L value, UMI3DGroupAsyncProperty group)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            defaultValue.Add(key, value);
+            OnInnerGroupValueAdded?.Invoke(key, value, group);
+
+            return GetSetEntityDictionaryAddOperationForAllUsers(key);
+        }
+
         /// <summary>
         /// Add a keay-value pair to the dictionnary for a given user.
         /// </summary>
@@ -290,8 +345,26 @@ namespace umi3d.edk
             var operation = GetSetEntityDictionaryRemoveOperationForAllUsers(key);
 
             if (!GetValue().Remove(key)) return null;
-            if (OnInnerValueRemoved != null)
-                OnInnerValueRemoved.Invoke(key);
+            OnInnerValueRemoved?.Invoke(key);
+
+            return operation;
+        }
+
+        public SetEntityProperty Remove(T key, UMI3DGroupAsyncProperty group)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            if (!defaultValue.ContainsKey(key)) return null;
+            L value = defaultValue[key];
+
+            var operation = GetSetEntityDictionaryRemoveOperationForAllUsers(key);
+
+            if (!defaultValue.Remove(key)) return null;
+            OnInnerGroupValueRemoved?.Invoke(key, group);
 
             return operation;
         }

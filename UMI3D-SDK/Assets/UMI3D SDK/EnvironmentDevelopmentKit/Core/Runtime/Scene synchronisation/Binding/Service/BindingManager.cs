@@ -33,7 +33,7 @@ namespace umi3d.edk.binding
         /// <summary>
         /// Bindings, indexed by id of the bound node.
         /// </summary>
-        public readonly UMI3DAsyncDictionnaryProperty<ulong, AbstractBinding> bindings = new(UMI3DGlobalID.EnvironmentId, UMI3DPropertyKeys.Bindings, new());
+        public readonly UMI3DAsyncDictionaryProperty<ulong, AbstractBinding> bindings = new(UMI3DGlobalID.EnvironmentId, UMI3DPropertyKeys.Bindings, new());
 
         /// <summary>
         /// Are bindings computations enabled on the browser of the user?

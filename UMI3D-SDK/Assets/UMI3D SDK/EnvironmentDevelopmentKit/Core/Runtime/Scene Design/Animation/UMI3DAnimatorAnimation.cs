@@ -83,7 +83,7 @@ namespace umi3d.edk
         /// <summary>
         /// <see cref="objectParameters"/>.
         /// </summary>
-        private UMI3DAsyncDictionnaryProperty<string, object> _objectParameters;
+        private UMI3DAsyncDictionaryProperty<string, object> _objectParameters;
 
         /// <summary>
         /// See <see cref="node"/>.
@@ -108,7 +108,7 @@ namespace umi3d.edk
         /// <summary>
         /// Property to change <see cref="Animator"/> parameters. Allowed values are float, integer, bool (value true for trigger parameter).
         /// </summary>
-        public UMI3DAsyncDictionnaryProperty<string, object> objectParameters { get { Register(); return _objectParameters; } protected set => _objectParameters = value; }
+        public UMI3DAsyncDictionaryProperty<string, object> objectParameters { get { Register(); return _objectParameters; } protected set => _objectParameters = value; }
 
         /// <inheritdoc/>
         protected override UMI3DAbstractAnimationDto CreateDto()
@@ -127,7 +127,7 @@ namespace umi3d.edk
             objectNormalizedTime = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationAnimatorNormalizedTime, normalizedTime, null, (o, u) => o.Equals(u));
             objectLookAtPosition = new UMI3DAsyncProperty<Vector3>(id, UMI3DPropertyKeys.AnimationAnimatorLookAtPosition, lookAtPosition, null, (o, u) => o.Equals(u));
             objectLookAtWeight = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.AnimationAnimatorLookAtWeight, lookAtWeight, null, (o, u) => o.Equals(u));
-            objectParameters = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.AnimationAnimatorParameters,
+            objectParameters = new UMI3DAsyncDictionaryProperty<string, object>(id, UMI3DPropertyKeys.AnimationAnimatorParameters,
                 new Dictionary<string, object>(), null, (o, u) => UMI3DAnimatorParameter.Create(o), null, d =>
                 {
                     return new Dictionary<string, object>(d);

@@ -24,7 +24,7 @@ using UnityEngine;
 namespace umi3d.edk.editor
 {
 
-    public class DictionnaryDisplayer<T, L>
+    public class DictionaryDisplayer<T, L>
     {
         private const char upArrow = '\u25B2';
         private const char downArrow = '\u25bc';
@@ -33,20 +33,20 @@ namespace umi3d.edk.editor
         private readonly bool displayArrows = false;
         private readonly Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> NewValue;
 
-        public DictionnaryDisplayer(Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> newValue, bool displayArrow = false)
+        public DictionaryDisplayer(Func<SerializedProperty, SerializedProperty, KeyValuePair<T, L>> newValue, bool displayArrow = false)
         {
             NewValue = newValue;
             this.displayArrows = displayArrow;
         }
 
-        public DictionnaryDisplayer(Func<T> newKey, bool displayArrow = false)
+        public DictionaryDisplayer(Func<T> newKey, bool displayArrow = false)
         {
             NewValue = (SerializedProperty k, SerializedProperty v) => { return new KeyValuePair<T, L>(newKey.Invoke(), default); };
             this.displayArrows = displayArrow;
         }
 
         /// <summary>
-        /// Display a seriazible dictionnary
+        /// Display a serializable dictionary
         /// </summary>
         /// <param name="showDict"></param>
         /// <param name="KeyList"></param>

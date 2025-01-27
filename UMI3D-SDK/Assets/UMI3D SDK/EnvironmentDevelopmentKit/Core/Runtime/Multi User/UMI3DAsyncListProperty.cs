@@ -33,11 +33,19 @@ namespace umi3d.edk
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
+        public Action<int, T, UMI3DGroupAsyncProperty> OnInnerGroupValueChanged;
+        /// <summary>
+        /// A event that is triggered when inner value changes.
+        /// </summary>
         public Action<int, UMI3DUser, T> OnUserInnerValueChanged;
         /// <summary>
         /// A event that is triggered when inner value is Added.
         /// </summary>
         public Action<int, T> OnInnerValueAdded;
+        /// <summary>
+        /// A event that is triggered when inner value is Added.
+        /// </summary>
+        public Action<int, T, UMI3DGroupAsyncProperty> OnInnerGroupValueAdded;
         /// <summary>
         /// A event that is triggered when inner value is Added.
         /// </summary>
@@ -47,6 +55,10 @@ namespace umi3d.edk
         /// A event that is triggered when inner value is Removed.
         /// </summary>
         public Action<int, T> OnInnerValueRemoved;
+        /// <summary>
+        /// A event that is triggered when inner value is Removed.
+        /// </summary>
+        public Action<int, T, UMI3DGroupAsyncProperty> OnInnerGroupValueRemoved;
         /// <summary>
         /// A event that is triggered when inner value is Removed.
         /// </summary>
@@ -182,6 +194,28 @@ namespace umi3d.edk
             return null;
         }
 
+        public SetEntityProperty SetValue(int index, T value, UMI3DGroupAsyncProperty group, bool forceOperation = false)
+        {
+
+            if (!this.groupValueMaps.TryGetValue(group, out List<T> defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            T oldValue = defaultValue[index];
+
+            if (((oldValue == null && value == null) || (oldValue != null && Equal(oldValue, value))) && !forceOperation)
+                return null;
+
+            defaultValue[index] = value;
+
+            if (OnInnerGroupValueChanged != null)
+                OnInnerGroupValueChanged.Invoke(index, value, group);
+
+            return UMI3DEnvironment.Exists ? GetSetEntityOperationForAllUsers(index) : (SetEntityProperty)null;
+        }
+
         /// <summary>
         /// Set the property's value for a given user.
         /// </summary>
@@ -239,6 +273,23 @@ namespace umi3d.edk
             return GetSetEntityListAddOperationForAllUsers(index);
         }
 
+        public SetEntityProperty Add(T value, UMI3DGroupAsyncProperty group)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out List<T> defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            int index = defaultValue.Count;
+            defaultValue.Add(value);
+
+            OnInnerGroupValueAdded?.Invoke(index, value,group);
+
+            return GetSetEntityListAddOperationForAllUsers(index);
+        }
+
+
         /// <summary>
         /// Add a value to the collection for a given user.
         /// </summary>
@@ -273,6 +324,20 @@ namespace umi3d.edk
             return RemoveAt(index);
         }
 
+        public SetEntityProperty Remove(T value, UMI3DGroupAsyncProperty group)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out List<T> defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            if (!defaultValue.Contains(value)) return null;
+            int index = defaultValue.IndexOf(value);
+            if (index < 0) return null;
+            return RemoveAt(index, group);
+        }
+
         /// <summary>
         /// Remove a value from the collection for a given user.
         /// </summary>
@@ -300,6 +365,25 @@ namespace umi3d.edk
 
             GetValue().RemoveAt(index);
             OnInnerValueRemoved?.Invoke(index, value);
+
+            return operation;
+        }
+
+        public SetEntityProperty RemoveAt(int index, UMI3DGroupAsyncProperty group)
+        {
+            if (!this.groupValueMaps.TryGetValue(group, out List<T> defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            if (index < 0 || index >= defaultValue.Count) return null;
+            T value = defaultValue[index];
+
+            var operation = GetSetEntityListRemoveOperationForAllUsers(index, group);
+
+            defaultValue.RemoveAt(index);
+            OnInnerGroupValueRemoved?.Invoke(index, value, group);
 
             return operation;
         }
