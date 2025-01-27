@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
@@ -33,14 +34,32 @@ namespace umi3d.edk
         /// </summary>
         /// <param name="user"></param>
         /// <param name="group"></param>
+        /// <returns>SetEntityProperty for all impacted user</returns>
         public abstract SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Remove a user from a group
         /// </summary>
         /// <param name="user"></param>
-        /// <param name="group"></param>
+        /// <param name="group"></param> 
+        /// <returns>SetEntityProperty for all impacted user</returns>
         public abstract SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
+
+        /// <summary>
+        /// Add a group
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        /// <returns>SetEntityProperty for all impacted user</returns>
+        public abstract SetEntityProperty AddGroup(UMI3DGroupAsyncProperty group);
+
+        /// <summary>
+        /// Remove a group
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        /// <returns>SetEntityProperty for all impacted user</returns>
+        public abstract SetEntityProperty RemoveGroup(UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Get a <see cref="SetEntityProperty"/> operation for this property for all users matching the async information.
@@ -125,9 +144,55 @@ namespace umi3d.edk
     }
 
 
-    public class UMI3DGroupAsyncProperty {
-        public List<UMI3DUser> users { get; protected set; }
-    
+    public class UMI3DGroupAsyncProperty : IEnumerable<UMI3DUser> {
+        public HashSet<UMI3DUser> users { get; protected set; } = new();
+
+        public HashSet<UMI3DAsyncProperty> properties { get; protected set; } = new();
+
+        public virtual IEnumerable<SetEntityProperty> Add(UMI3DUser user)
+        {
+            if (users.Add(user))
+               return properties.Select(p => p.AddToGroup(user, this));
+
+            return null;
+        }
+
+        public virtual IEnumerable<SetEntityProperty> Remove(UMI3DUser user)
+        {
+            if (users.Remove(user))
+                return properties.Select(p => p.RemoveFromGroup(user, this));
+
+            return null;
+        }
+
+        public virtual SetEntityProperty Add(UMI3DAsyncProperty property)
+        {
+            if (properties.Add(property))
+                return property.AddGroup(this);
+
+            return null;
+        }
+
+        public virtual SetEntityProperty Remove(UMI3DAsyncProperty property)
+        {
+            if (properties.Remove(property))
+                return property.RemoveGroup(this);
+
+            return null;
+        }
+
+        #region IEnumerator
+
+        public IEnumerator<UMI3DUser> GetEnumerator()
+        {
+            return users.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return users.GetEnumerator();
+        }
+        #endregion IEnumerator
     }
 
     public class UMI3DGroupAsyncProperty<T> : UMI3DGroupAsyncProperty
@@ -157,7 +222,7 @@ namespace umi3d.edk
         /// Maps of group, use to give default value for user in group
         /// </summary>
         protected Dictionary<UMI3DUser, UMI3DGroupAsyncProperty<T>> groupMaps = new();
-        protected List<UMI3DGroupAsyncProperty<T>> groupAsyncProperties = new();
+        protected HashSet<UMI3DGroupAsyncProperty<T>> groupAsyncProperties = new();
         /// <summary>
         /// The id of this property.
         /// </summary>
@@ -234,31 +299,58 @@ namespace umi3d.edk
             UMI3DServer.Instance.OnUserLeave.AddListener((u) => { DeSync(u, true); });
         }
 
-        /// <summary>
-        /// Add a user in a group
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="group"></param>
+        /// <inheritdoc/>
         public override SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
         {
             if (group is not UMI3DGroupAsyncProperty<T> groupT)
                 throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
+            
+            if(!groupAsyncProperties.Contains(groupT))
+                throw new Exception($"This property does not contain {groupT}, the group should be added with AddGroup(group)");
+
             groupMaps[user] = groupT;
 
             return GetSetEntityOperationForUser(user);
         }
 
-        /// <summary>
-        /// Remove a user from a group
-        /// </summary>
-        /// <param name="user"></param>
-        /// <param name="group"></param>
+        /// <inheritdoc/>
         public override SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
         {
+            if (!groupAsyncProperties.Contains(group))
+                return null;
+
             if (groupMaps.TryGetValue(user, out var groupT) && groupT == group)
                 groupMaps.Remove(user);
 
             return GetSetEntityOperationForUser(user);
+        }
+
+        /// <inheritdoc/>
+        public override SetEntityProperty AddGroup(UMI3DGroupAsyncProperty group)
+        {
+            if (group is not UMI3DGroupAsyncProperty<T> groupT)
+                throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
+
+            if (groupAsyncProperties.Add(groupT))
+            {
+                groupT.Select(u => groupMaps[u] = groupT);
+                return GetSetEntityOperationForAllUsers(groupT);
+            }
+            return null;
+        }
+
+        /// <inheritdoc/>
+        public override SetEntityProperty RemoveGroup(UMI3DGroupAsyncProperty group)
+        {
+            if (group is not UMI3DGroupAsyncProperty<T> groupT)
+                throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
+
+            if (groupAsyncProperties.Remove(groupT))
+            {
+                groupT.Select(u => groupMaps.Remove(u));
+                return GetSetEntityOperationForUsers(groupT.Contains);
+            }
+            return null;
         }
 
         /// <summary>
