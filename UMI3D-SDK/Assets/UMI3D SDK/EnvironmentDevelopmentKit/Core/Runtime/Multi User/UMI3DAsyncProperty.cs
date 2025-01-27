@@ -17,6 +17,7 @@ limitations under the License.
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Security.Cryptography.X509Certificates;
 using umi3d.common;
 using UnityEngine;
 
@@ -28,9 +29,33 @@ namespace umi3d.edk
     public abstract class UMI3DAsyncProperty
     {
         /// <summary>
+        /// Add a user in a group
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        public abstract SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
+
+        /// <summary>
+        /// Remove a user from a group
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        public abstract SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
+
+        /// <summary>
         /// Get a <see cref="SetEntityProperty"/> operation for this property for all users matching the async information.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForAllUsers();
+
+        /// <summary>
+        /// Get a <see cref="SetEntityProperty"/> operation for this property for all users matching the async information.
+        /// </summary>
+        public abstract SetEntityProperty GetSetEntityOperationForAllUsers(UMI3DGroupAsyncProperty group);
+
+        /// <summary>
+        /// Get a list of <see cref="SetEntityProperty"/> operation for this property for all users matching the async information.
+        /// </summary>
+        public abstract List<SetEntityProperty> GetSetEntityOperationForAllUsersAndGroups();
 
         /// <summary>
         /// Get a <see cref="SetEntityProperty"/> operation for this property for a given user.
@@ -41,6 +66,16 @@ namespace umi3d.edk
         /// Get a <see cref="SetEntityProperty"/> operation for this property for users matching the given condition and the async information.
         /// </summary>
         public abstract SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition);
+
+        /// <summary>
+        /// Get a <see cref="SetEntityProperty"/> operation for this property for users matching the given condition and the async information.
+        /// </summary>
+        public abstract SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group);
+
+        /// <summary>
+        /// Get a list of <see cref="SetEntityProperty"/> operation for this property for users matching the given condition and the async information.
+        /// </summary>
+        public abstract List<SetEntityProperty> GetSetEntityOperationForUsersAndGroups(Func<UMI3DUser, bool> condition);
 
         /// <summary>
         /// Indicates if the property is asynchronous.
@@ -65,8 +100,14 @@ namespace umi3d.edk
 
         /// <summary>
         /// Set the property as synchronized/asynchronous.
+        /// This does affect users in groups
         /// </summary>
         public abstract SetEntityProperty Sync();
+
+        /// <summary>
+        /// Set the property as synchronized/asynchronous.
+        /// </summary>
+        public abstract List<SetEntityProperty> SyncAll();
 
         /// <summary>
         /// Set the property as synchronized/asynchronous for a user.
@@ -83,6 +124,23 @@ namespace umi3d.edk
         public abstract SetEntityProperty DeSync(UMI3DUser user, bool isnotifying);
     }
 
+
+    public class UMI3DGroupAsyncProperty {
+        public List<UMI3DUser> users { get; protected set; }
+    
+    }
+
+    public class UMI3DGroupAsyncProperty<T> : UMI3DGroupAsyncProperty
+    {
+        /// <summary>
+        /// The current default or synchronized value.
+        /// </summary>
+        private T value;
+
+        public T GetDefaultValue(UMI3DUser user) {  return value; }
+    }
+
+
     /// <summary>
     /// Define an object property that could be edited and have a different value depending on the <see cref="UMI3DUser"/>.
     /// </summary>
@@ -95,6 +153,11 @@ namespace umi3d.edk
         /// </summary>
         private T value;
 
+        /// <summary>
+        /// Maps of group, use to give default value for user in group
+        /// </summary>
+        protected Dictionary<UMI3DUser, UMI3DGroupAsyncProperty<T>> groupMaps = new();
+        protected List<UMI3DGroupAsyncProperty<T>> groupAsyncProperties = new();
         /// <summary>
         /// The id of this property.
         /// </summary>
@@ -171,6 +234,32 @@ namespace umi3d.edk
             UMI3DServer.Instance.OnUserLeave.AddListener((u) => { DeSync(u, true); });
         }
 
+        /// <summary>
+        /// Add a user in a group
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        public override SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
+        {
+            if (group is not UMI3DGroupAsyncProperty<T> groupT)
+                throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
+            groupMaps[user] = groupT;
+
+            return GetSetEntityOperationForUser(user);
+        }
+
+        /// <summary>
+        /// Remove a user from a group
+        /// </summary>
+        /// <param name="user"></param>
+        /// <param name="group"></param>
+        public override SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
+        {
+            if (groupMaps.TryGetValue(user, out var groupT) && groupT == group)
+                groupMaps.Remove(user);
+
+            return GetSetEntityOperationForUser(user);
+        }
 
         /// <summary>
         /// Get property value for a given user
@@ -181,7 +270,12 @@ namespace umi3d.edk
         {
             if (user == null)
                 return value;
-            return asyncValues.ContainsKey(user) ? asyncValues[user] : value;
+
+            return asyncValues.ContainsKey(user) 
+                ? asyncValues[user]
+                : groupMaps.TryGetValue(user, out var groupValue) 
+                    ? groupValue.GetDefaultValue(user)
+                    : value;
         }
 
         /// <summary>
@@ -265,6 +359,12 @@ namespace umi3d.edk
         }
 
         /// <inheritdoc/>
+        public override SetEntityProperty GetSetEntityOperationForAllUsers(UMI3DGroupAsyncProperty group)
+        {
+            return GetSetEntityOperationForUsers(u => true, group);
+        }
+
+        /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUser(UMI3DUser user)
         {
             return new SetEntityProperty()
@@ -276,15 +376,38 @@ namespace umi3d.edk
             };
         }
 
+        public override List<SetEntityProperty> GetSetEntityOperationForAllUsersAndGroups()
+        {
+            return GetSetEntityOperationForUsersAndGroups(u => true);
+        }
+
+        public override List<SetEntityProperty> GetSetEntityOperationForUsersAndGroups(Func<UMI3DUser, bool> condition)
+        {
+            List<SetEntityProperty> list = new()
+            {
+                GetSetEntityOperationForUsers(condition)
+            };
+
+            if(groupAsyncProperties.Count > 0)
+                list.AddRange(groupAsyncProperties.Select(g => GetSetEntityOperationForUsers(condition,g)));
+
+            return list;
+        }
+
         /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition)
         {
-            bool IsUserAsync(UMI3DUser user)
+            bool IsUserSyncAndCondition(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !groupMaps.ContainsKey(user) && condition(user);
             }
 
-            var _c = (isAsync || isDeSync) ? IsUserAsync : condition;
+            bool IsCondition(UMI3DUser user)
+            {
+                return !groupMaps.ContainsKey(user) && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? IsUserSyncAndCondition : (Func<UMI3DUser, bool>)IsCondition;
 
             return new SetEntityProperty()
             {
@@ -295,7 +418,29 @@ namespace umi3d.edk
             };
         }
 
+        /// <inheritdoc/>
+        public override SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
+        {
+            bool IsUserSyncAndCondition(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+            }
 
+            bool IsCondition(UMI3DUser user)
+            {
+                return groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? (Func<UMI3DUser, bool>)IsUserSyncAndCondition : IsCondition;
+
+            return new SetEntityProperty()
+            {
+                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                entityId = entityId,
+                property = propertyId,
+                value = Serializer(value, null)
+            };
+        }
 
         /// <inheritdoc/>
         public override SetEntityProperty Sync()
@@ -310,6 +455,20 @@ namespace umi3d.edk
             return operation;
         }
 
+
+        /// <inheritdoc/>
+        public override List<SetEntityProperty> SyncAll()
+        {
+            List<SetEntityProperty> operations = null;
+            if (isAsync || isDeSync)
+            {
+                asyncValues.Clear();
+                UserDesync.Clear();
+                operations = GetSetEntityOperationForAllUsersAndGroups();
+            }
+            return operations;
+        }
+
         /// <inheritdoc/>
         public override SetEntityProperty Sync(UMI3DUser user, bool isSync)
         {
@@ -317,13 +476,13 @@ namespace umi3d.edk
 
             if (!isSync)
             {
-                asyncValues[user] = CopyOfValue(value);
+                asyncValues[user] = CopyOfValue(GetValue(user));
             }
             else if (asyncValues.ContainsKey(user))
             {
                 T userAsyncValue = asyncValues[user];
                 asyncValues.Remove(user);
-                if (!Equal(userAsyncValue, value) && !UserDesync.Contains(user))
+                if (!Equal(userAsyncValue, GetValue(user)) && !UserDesync.Contains(user))
                 {
                     operation = GetSetEntityOperationForUser(user);
                 }
@@ -332,10 +491,10 @@ namespace umi3d.edk
         }
 
         /// <inheritdoc/>
-        public override SetEntityProperty DeSync(UMI3DUser user, bool isnotifying)
+        public override SetEntityProperty DeSync(UMI3DUser user, bool isNotifying)
         {
             SetEntityProperty operation = null;
-            if (!isnotifying)
+            if (!isNotifying)
             {
                 UserDesync.Add(user);
             }
