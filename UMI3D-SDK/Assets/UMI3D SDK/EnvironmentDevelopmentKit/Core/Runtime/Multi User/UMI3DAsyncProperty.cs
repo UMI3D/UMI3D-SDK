@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -123,9 +124,14 @@ namespace umi3d.edk
 
         /// <summary>
         /// Set the property as synchronized/asynchronous.
-        /// This does affect users in groups
+        /// This does not affect users in groups
         /// </summary>
         public abstract SetEntityProperty Sync();
+
+        /// <summary>
+        /// Set the property as synchronized/asynchronous in a group.
+        /// </summary>
+        public abstract SetEntityProperty Sync(UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Set the property as synchronized/asynchronous.
@@ -588,31 +594,39 @@ namespace umi3d.edk
         #endregion Set
 
         /// <inheritdoc/>
-        /// <todo>Sync for group</todo>
         public override SetEntityProperty Sync()
         {
-            SetEntityProperty operation = null;
-            if (isAsync || isDeSync)
-            {
-                asyncValues.Clear();
-                UserDesync.Clear();
-                operation = GetSetEntityOperationForAllUsers();
-            }
-            return operation;
+            if (!isAsync && !isDeSync)
+                return null;
+            
+            asyncValues.Keys.Where(u => !userGroupMaps.ContainsKey(u)).ToList().ForEach(u => asyncValues.Remove(u));
+            UserDesync.Where(u => !userGroupMaps.ContainsKey(u)).ToList().ForEach(u => UserDesync.Remove(u));
+
+            return GetSetEntityOperationForAllUsers();
         }
 
+        /// <inheritdoc/>
+        public override SetEntityProperty Sync(UMI3DGroupAsyncProperty group)
+        {
+            if (!isAsync && !isDeSync)
+                return null;
+            
+            group.ForEach(u => asyncValues.Remove(u));
+            group.ForEach(u => UserDesync.Remove(u));
+
+            return GetSetEntityOperationForAllUsers(group);
+        }
 
         /// <inheritdoc/>
         public override List<SetEntityProperty> SyncAll()
         {
-            List<SetEntityProperty> operations = null;
-            if (isAsync || isDeSync)
-            {
-                asyncValues.Clear();
-                UserDesync.Clear();
-                operations = GetSetEntityOperationForAllUsersAndGroups();
-            }
-            return operations;
+            if (!isAsync && !isDeSync)
+                return null;
+            
+            asyncValues.Clear();
+            UserDesync.Clear();
+
+            return GetSetEntityOperationForAllUsersAndGroups();
         }
 
         /// <inheritdoc/>
