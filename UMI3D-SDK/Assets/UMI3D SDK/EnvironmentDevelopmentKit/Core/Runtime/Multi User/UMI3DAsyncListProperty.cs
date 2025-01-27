@@ -354,8 +354,8 @@ namespace umi3d.edk
                 GetSetEntityOperationForUsers(index,condition)
             };
 
-            if (groupAsyncProperties.Count > 0)
-                result.AddRange(groupAsyncProperties.Select(g => GetSetEntityOperationForUsers(index, condition, g)));
+            if (groupValueMaps.Count > 0)
+                result.AddRange(groupValueMaps.Select(g => GetSetEntityOperationForUsers(index, condition, g.Key)));
 
             return result;
         }
@@ -382,12 +382,12 @@ namespace umi3d.edk
         {
             bool IsUserAsync(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !groupMaps.ContainsKey(user) && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return !groupMaps.ContainsKey(user) && condition(user);
+                return !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserAsync : (Func<UMI3DUser, bool>)IsCondition;
@@ -409,12 +409,12 @@ namespace umi3d.edk
         {
             bool IsUserAsync(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserAsync : (Func<UMI3DUser, bool>)IsCondition;
@@ -451,8 +451,8 @@ namespace umi3d.edk
                 GetSetEntityListAddOperationForUsers(index,condition)
             };
 
-            if (groupAsyncProperties.Count > 0)
-                result.AddRange(groupAsyncProperties.Select(g => GetSetEntityListAddOperationForUsers(index, condition, g)));
+            if (groupValueMaps.Count > 0)
+                result.AddRange(groupValueMaps.Select(g => GetSetEntityListAddOperationForUsers(index, condition, g.Key)));
 
             return result;
         }
@@ -479,12 +479,12 @@ namespace umi3d.edk
         {
             bool IsUserAsync(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !groupMaps.ContainsKey(user) && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return !groupMaps.ContainsKey(user) && condition(user);
+                return !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserAsync : (Func<UMI3DUser, bool>)IsCondition;
@@ -506,12 +506,12 @@ namespace umi3d.edk
         {
             bool IsUserAsync(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserAsync : (Func<UMI3DUser, bool>)IsCondition;
@@ -548,8 +548,8 @@ namespace umi3d.edk
                 GetSetEntityListRemoveOperationForUsers(index,condition)
             };
 
-            if (groupAsyncProperties.Count > 0)
-                result.AddRange(groupAsyncProperties.Select(g => GetSetEntityListRemoveOperationForUsers(index, condition, g)));
+            if (groupValueMaps.Count > 0)
+                result.AddRange(groupValueMaps.Select(g => GetSetEntityListRemoveOperationForUsers(index, condition, g.Key)));
 
             return result;
         }
@@ -576,12 +576,12 @@ namespace umi3d.edk
         {
             bool IsUserAsync(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !groupMaps.ContainsKey(user) && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return !groupMaps.ContainsKey(user) && condition(user);
+                return !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserAsync : (Func<UMI3DUser, bool>)IsCondition;
@@ -603,12 +603,12 @@ namespace umi3d.edk
         {
             bool IsUserAsync(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserAsync : (Func<UMI3DUser, bool>)IsCondition;

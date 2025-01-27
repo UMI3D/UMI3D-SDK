@@ -35,7 +35,8 @@ namespace umi3d.edk
         /// <param name="user"></param>
         /// <param name="group"></param>
         /// <returns>SetEntityProperty for all impacted user</returns>
-        public abstract SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
+        /// <remarks>Should be call only by <see cref="UMI3DGroupAsyncProperty"/></remarks>
+        internal abstract SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Remove a user from a group
@@ -43,15 +44,17 @@ namespace umi3d.edk
         /// <param name="user"></param>
         /// <param name="group"></param> 
         /// <returns>SetEntityProperty for all impacted user</returns>
-        public abstract SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
+        /// <remarks>Should be call only by <see cref="UMI3DGroupAsyncProperty"/></remarks>
+        internal abstract SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Add a group
         /// </summary>
         /// <param name="user"></param>
         /// <param name="group"></param>
-        /// <returns>SetEntityProperty for all impacted user</returns>
-        public abstract SetEntityProperty AddGroup(UMI3DGroupAsyncProperty group);
+        /// <returns><see langword="true"/> if the property already contains the group</returns>
+        /// <remarks>Should be call only by <see cref="UMI3DGroupAsyncProperty"/></remarks>
+        internal abstract bool AddGroup(UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Remove a group
@@ -59,7 +62,8 @@ namespace umi3d.edk
         /// <param name="user"></param>
         /// <param name="group"></param>
         /// <returns>SetEntityProperty for all impacted user</returns>
-        public abstract SetEntityProperty RemoveGroup(UMI3DGroupAsyncProperty group);
+        /// <remarks>Should be call only by <see cref="UMI3DGroupAsyncProperty"/></remarks>
+        internal abstract SetEntityProperty RemoveGroup(UMI3DGroupAsyncProperty group);
 
         /// <summary>
         /// Get a <see cref="SetEntityProperty"/> operation for this property for all users matching the async information.
@@ -145,10 +149,22 @@ namespace umi3d.edk
 
 
     public class UMI3DGroupAsyncProperty : IEnumerable<UMI3DUser> {
+
+        /// <summary>
+        /// Users in this group
+        /// </summary>
         public HashSet<UMI3DUser> users { get; protected set; } = new();
 
+        /// <summary>
+        /// property using this group
+        /// </summary>
         public HashSet<UMI3DAsyncProperty> properties { get; protected set; } = new();
 
+        /// <summary>
+        /// Add a user to this group and apply this change to all the property in <see cref="UMI3DGroupAsyncProperty.properties"/>
+        /// </summary>
+        /// <param name="user">user to add</param>
+        /// <returns>A collection of SetEntityProperty describing the change from each property default value to the group default value in it</returns>
         public virtual IEnumerable<SetEntityProperty> Add(UMI3DUser user)
         {
             if (users.Add(user))
@@ -157,6 +173,11 @@ namespace umi3d.edk
             return null;
         }
 
+        /// <summary>
+        /// Remove a user from this group and apply this change to all the property in <see cref="UMI3DGroupAsyncProperty.properties"/>
+        /// </summary>
+        /// <param name="user">user to remove</param>
+        /// <returns>A collection of SetEntityProperty describing the change to each property default value from the group default value in it</returns>
         public virtual IEnumerable<SetEntityProperty> Remove(UMI3DUser user)
         {
             if (users.Remove(user))
@@ -165,14 +186,22 @@ namespace umi3d.edk
             return null;
         }
 
-        public virtual SetEntityProperty Add(UMI3DAsyncProperty property)
+        /// <summary>
+        /// Add this group to the given property.
+        /// </summary>
+        /// <param name="property"></param>
+        /// <remarks>Does not return a SetEntityProperty as the group value is inited to the default value of the property</remarks>
+        public virtual void Add(UMI3DAsyncProperty property)
         {
             if (properties.Add(property))
-                return property.AddGroup(this);
-
-            return null;
+                property.AddGroup(this);
         }
 
+        /// <summary>
+        /// Remove this group from the given property
+        /// </summary>
+        /// <param name="property"></param>
+        /// <returns></returns>
         public virtual SetEntityProperty Remove(UMI3DAsyncProperty property)
         {
             if (properties.Remove(property))
@@ -195,16 +224,6 @@ namespace umi3d.edk
         #endregion IEnumerator
     }
 
-    public class UMI3DGroupAsyncProperty<T> : UMI3DGroupAsyncProperty
-    {
-        /// <summary>
-        /// The current default or synchronized value.
-        /// </summary>
-        private T value;
-
-        public T GetDefaultValue(UMI3DUser user) {  return value; }
-    }
-
 
     /// <summary>
     /// Define an object property that could be edited and have a different value depending on the <see cref="UMI3DUser"/>.
@@ -221,8 +240,9 @@ namespace umi3d.edk
         /// <summary>
         /// Maps of group, use to give default value for user in group
         /// </summary>
-        protected Dictionary<UMI3DUser, UMI3DGroupAsyncProperty<T>> groupMaps = new();
-        protected HashSet<UMI3DGroupAsyncProperty<T>> groupAsyncProperties = new();
+        protected Dictionary<UMI3DUser, UMI3DGroupAsyncProperty> userGroupMaps = new();
+        protected Dictionary<UMI3DGroupAsyncProperty,T> groupValueMaps = new();
+
         /// <summary>
         /// The id of this property.
         /// </summary>
@@ -300,55 +320,47 @@ namespace umi3d.edk
         }
 
         /// <inheritdoc/>
-        public override SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
+        internal override SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
         {
-            if (group is not UMI3DGroupAsyncProperty<T> groupT)
-                throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
-            
-            if(!groupAsyncProperties.Contains(groupT))
-                throw new Exception($"This property does not contain {groupT}, the group should be added with AddGroup(group)");
+            if(!groupValueMaps.ContainsKey(group))
+                throw new Exception($"This property does not contain {group}, the group should be added with AddGroup(group)");
 
-            groupMaps[user] = groupT;
+            userGroupMaps[user] = group;
 
             return GetSetEntityOperationForUser(user);
         }
 
         /// <inheritdoc/>
-        public override SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
+        internal override SetEntityProperty RemoveFromGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
         {
-            if (!groupAsyncProperties.Contains(group))
+            if (!groupValueMaps.ContainsKey(group))
                 return null;
 
-            if (groupMaps.TryGetValue(user, out var groupT) && groupT == group)
-                groupMaps.Remove(user);
+            if (userGroupMaps.TryGetValue(user, out var groupT) && groupT == group)
+                userGroupMaps.Remove(user);
 
             return GetSetEntityOperationForUser(user);
         }
 
         /// <inheritdoc/>
-        public override SetEntityProperty AddGroup(UMI3DGroupAsyncProperty group)
+        internal override bool AddGroup(UMI3DGroupAsyncProperty group)
         {
-            if (group is not UMI3DGroupAsyncProperty<T> groupT)
-                throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
+            if (groupValueMaps.ContainsKey(group))
+                return false;
 
-            if (groupAsyncProperties.Add(groupT))
-            {
-                groupT.Select(u => groupMaps[u] = groupT);
-                return GetSetEntityOperationForAllUsers(groupT);
-            }
-            return null;
+            groupValueMaps.Add(group, GetValue());
+            group.Select(u => userGroupMaps[u] = group);
+
+            return true;
         }
 
         /// <inheritdoc/>
-        public override SetEntityProperty RemoveGroup(UMI3DGroupAsyncProperty group)
+        internal override SetEntityProperty RemoveGroup(UMI3DGroupAsyncProperty group)
         {
-            if (group is not UMI3DGroupAsyncProperty<T> groupT)
-                throw new Exception($"Group {group} should be of type {typeof(UMI3DGroupAsyncProperty<T>)} but is of type {group?.GetType()?.ToString() ?? "null"}");
-
-            if (groupAsyncProperties.Remove(groupT))
+            if (groupValueMaps.Remove(group))
             {
-                groupT.Select(u => groupMaps.Remove(u));
-                return GetSetEntityOperationForUsers(groupT.Contains);
+                group.Select(u => userGroupMaps.Remove(u));
+                return GetSetEntityOperationForUsers(group.Contains);
             }
             return null;
         }
@@ -365,8 +377,10 @@ namespace umi3d.edk
 
             return asyncValues.ContainsKey(user) 
                 ? asyncValues[user]
-                : groupMaps.TryGetValue(user, out var groupValue) 
-                    ? groupValue.GetDefaultValue(user)
+                : userGroupMaps.TryGetValue(user, out var group) 
+                    ? groupValueMaps.TryGetValue(group, out var groupValue) 
+                        ? groupValue
+                        : value
                     : value;
         }
 
@@ -480,8 +494,8 @@ namespace umi3d.edk
                 GetSetEntityOperationForUsers(condition)
             };
 
-            if(groupAsyncProperties.Count > 0)
-                list.AddRange(groupAsyncProperties.Select(g => GetSetEntityOperationForUsers(condition,g)));
+            if(groupValueMaps.Count > 0)
+                list.AddRange(groupValueMaps.Select(g => GetSetEntityOperationForUsers(condition,g.Key)));
 
             return list;
         }
@@ -491,12 +505,12 @@ namespace umi3d.edk
         {
             bool IsUserSyncAndCondition(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !groupMaps.ContainsKey(user) && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return !groupMaps.ContainsKey(user) && condition(user);
+                return !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? IsUserSyncAndCondition : (Func<UMI3DUser, bool>)IsCondition;
@@ -515,12 +529,12 @@ namespace umi3d.edk
         {
             bool IsUserSyncAndCondition(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             bool IsCondition(UMI3DUser user)
             {
-                return groupMaps.ContainsKey(user) && groupMaps[user] == group && condition(user);
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
             }
 
             var _c = (isAsync || isDeSync) ? (Func<UMI3DUser, bool>)IsUserSyncAndCondition : IsCondition;
