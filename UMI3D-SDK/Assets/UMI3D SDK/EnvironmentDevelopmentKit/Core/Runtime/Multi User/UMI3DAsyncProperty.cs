@@ -16,12 +16,10 @@ limitations under the License.
 
 using inetum.unityUtils;
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using System.Security.Cryptography.X509Certificates;
 using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -154,83 +152,6 @@ namespace umi3d.edk
     }
 
 
-    public class UMI3DGroupAsyncProperty : IEnumerable<UMI3DUser> {
-
-        /// <summary>
-        /// Users in this group
-        /// </summary>
-        public HashSet<UMI3DUser> users { get; protected set; } = new();
-
-        /// <summary>
-        /// property using this group
-        /// </summary>
-        public HashSet<UMI3DAsyncProperty> properties { get; protected set; } = new();
-
-        /// <summary>
-        /// Add a user to this group and apply this change to all the property in <see cref="UMI3DGroupAsyncProperty.properties"/>
-        /// </summary>
-        /// <param name="user">user to add</param>
-        /// <returns>A collection of SetEntityProperty describing the change from each property default value to the group default value in it</returns>
-        public virtual IEnumerable<SetEntityProperty> Add(UMI3DUser user)
-        {
-            if (users.Add(user))
-               return properties.Select(p => p.AddToGroup(user, this));
-
-            return null;
-        }
-
-        /// <summary>
-        /// Remove a user from this group and apply this change to all the property in <see cref="UMI3DGroupAsyncProperty.properties"/>
-        /// </summary>
-        /// <param name="user">user to remove</param>
-        /// <returns>A collection of SetEntityProperty describing the change to each property default value from the group default value in it</returns>
-        public virtual IEnumerable<SetEntityProperty> Remove(UMI3DUser user)
-        {
-            if (users.Remove(user))
-                return properties.Select(p => p.RemoveFromGroup(user, this));
-
-            return null;
-        }
-
-        /// <summary>
-        /// Add this group to the given property.
-        /// </summary>
-        /// <param name="property"></param>
-        /// <remarks>Does not return a SetEntityProperty as the group value is inited to the default value of the property</remarks>
-        public virtual void Add(UMI3DAsyncProperty property)
-        {
-            if (properties.Add(property))
-                property.AddGroup(this);
-        }
-
-        /// <summary>
-        /// Remove this group from the given property
-        /// </summary>
-        /// <param name="property"></param>
-        /// <returns></returns>
-        public virtual SetEntityProperty Remove(UMI3DAsyncProperty property)
-        {
-            if (properties.Remove(property))
-                return property.RemoveGroup(this);
-
-            return null;
-        }
-
-        #region IEnumerator
-
-        public IEnumerator<UMI3DUser> GetEnumerator()
-        {
-            return users.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return users.GetEnumerator();
-        }
-        #endregion IEnumerator
-    }
-
-
     /// <summary>
     /// Define an object property that could be edited and have a different value depending on the <see cref="UMI3DUser"/>.
     /// </summary>
@@ -247,8 +168,12 @@ namespace umi3d.edk
         /// Maps of group, use to give default value for user in group
         /// </summary>
         protected Dictionary<UMI3DUser, UMI3DGroupAsyncProperty> userGroupMaps = new();
-        protected Dictionary<UMI3DGroupAsyncProperty,T> groupValueMaps = new();
+        protected Dictionary<UMI3DGroupAsyncProperty, T> groupValueMaps = new();
 
+#if UNITY_EDITOR
+        internal IReadOnlyDictionary<UMI3DUser, UMI3DGroupAsyncProperty> TEST_UserGroupMaps => userGroupMaps;
+        internal IReadOnlyDictionary<UMI3DGroupAsyncProperty, T> TEST_GroupValueMaps => groupValueMaps;
+#endif
         /// <summary>
         /// The id of this property.
         /// </summary>
@@ -276,7 +201,7 @@ namespace umi3d.edk
         /// <summary>
         /// A event that is triggered when value changes.
         /// </summary>
-        public Action<T,UMI3DGroupAsyncProperty> OnGroupValueChanged;
+        public Action<T, UMI3DGroupAsyncProperty> OnGroupValueChanged;
 
         /// <summary>
         /// A event that is triggered when value changes.
@@ -305,13 +230,20 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override IEnumerable<UMI3DUser> DesynchronousUser => UserDesync.ToList();
 
+        private readonly IUMI3DServer umi3dServerService;
+
         /// <summary>
         /// UMI3DAsyncProperty constructor.
         /// </summary>
         /// <param name="source">The object to which this property belongs.</param>
         /// <param name="value">The current default or synchronized value.</param>
         /// <param name="equal">Set the function use to check the equality between to value. If null the default object.Equals function will be use</param>
-        public UMI3DAsyncProperty(ulong entityId, uint propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
+        public UMI3DAsyncProperty(ulong entityId, uint propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null) :
+            this(UMI3DServer.Instance, entityId, propertyId, value, serializer, equal)
+        { }
+
+
+        internal UMI3DAsyncProperty(IUMI3DServer umi3dServerService, ulong entityId, uint propertyId, T value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null)
         {
             if (equal == null)
             {
@@ -328,14 +260,17 @@ namespace umi3d.edk
             this.value = value;
             asyncValues = new Dictionary<UMI3DUser, T>();
             UserDesync = new HashSet<UMI3DUser>();
-            UMI3DServer.Instance.OnUserLeave.AddListener((u) => { DeSync(u, true); });
+
+            this.umi3dServerService = umi3dServerService;
+
+            this.umi3dServerService.OnUserLeave.AddListener((u) => { DeSync(u, true); });
         }
 
         #region Group
         /// <inheritdoc/>
         internal override SetEntityProperty AddToGroup(UMI3DUser user, UMI3DGroupAsyncProperty group)
         {
-            if(!groupValueMaps.ContainsKey(group))
+            if (!groupValueMaps.ContainsKey(group))
                 throw new Exception($"This property does not contain {group}, the group should be added with AddGroup(group)");
 
             userGroupMaps[user] = group;
@@ -362,7 +297,7 @@ namespace umi3d.edk
                 return false;
 
             groupValueMaps.Add(group, GetValue());
-            group.Select(u => userGroupMaps[u] = group);
+            group.ForEach(u => userGroupMaps[u] = group);
 
             return true;
         }
@@ -372,7 +307,7 @@ namespace umi3d.edk
         {
             if (groupValueMaps.Remove(group))
             {
-                group.Select(u => userGroupMaps.Remove(u));
+                group.ForEach(u => userGroupMaps.Remove(u));
                 return GetSetEntityOperationForUsers(group.Contains);
             }
             return null;
@@ -389,10 +324,10 @@ namespace umi3d.edk
             if (user == null)
                 return value;
 
-            return asyncValues.ContainsKey(user) 
+            return asyncValues.ContainsKey(user)
                 ? asyncValues[user]
-                : userGroupMaps.TryGetValue(user, out var group) 
-                    ? groupValueMaps.TryGetValue(group, out var groupValue) 
+                : userGroupMaps.TryGetValue(user, out var group)
+                    ? groupValueMaps.TryGetValue(group, out var groupValue)
                         ? groupValue
                         : value
                     : value;
@@ -410,7 +345,7 @@ namespace umi3d.edk
 
         public virtual T GetValue(UMI3DGroupAsyncProperty group)
         {
-            return groupValueMaps.TryGetValue(group,out T value) ? value : this.value;
+            return groupValueMaps.TryGetValue(group, out T value) ? value : this.value;
         }
 
         #region Set
@@ -453,12 +388,7 @@ namespace umi3d.edk
             if (OnGroupValueChanged != null)
                 OnGroupValueChanged.Invoke(value, group);
 
-            if (UMI3DEnvironment.Exists)
-            {
-                return GetSetEntityOperationForAllUsers();
-            }
-
-            return null;
+            return GetSetEntityOperationForAllUsers();
         }
 
         /// <summary>
@@ -538,8 +468,8 @@ namespace umi3d.edk
                 GetSetEntityOperationForUsers(condition)
             };
 
-            if(groupValueMaps.Count > 0)
-                list.AddRange(groupValueMaps.Select(g => GetSetEntityOperationForUsers(condition,g.Key)));
+            if (groupValueMaps.Count > 0)
+                list.AddRange(groupValueMaps.Select(g => GetSetEntityOperationForUsers(condition, g.Key)));
 
             return list;
         }
@@ -561,10 +491,10 @@ namespace umi3d.edk
 
             return new SetEntityProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
-                value = Serializer(value, null)
+                value = Serializer(GetValue(), null)
             };
         }
 
@@ -585,12 +515,15 @@ namespace umi3d.edk
 
             return new SetEntityProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
-                value = Serializer(value, null)
+                value = Serializer(GetValue(group), null)
             };
         }
+
+        HashSet<UMI3DUser> GetUsersWhere(Func<UMI3DUser, bool> condition) => new HashSet<UMI3DUser>(umi3dServerService.Users().Where(condition));
+
         #endregion Set
 
         /// <inheritdoc/>
@@ -598,7 +531,7 @@ namespace umi3d.edk
         {
             if (!isAsync && !isDeSync)
                 return null;
-            
+
             asyncValues.Keys.Where(u => !userGroupMaps.ContainsKey(u)).ToList().ForEach(u => asyncValues.Remove(u));
             UserDesync.Where(u => !userGroupMaps.ContainsKey(u)).ToList().ForEach(u => UserDesync.Remove(u));
 
@@ -610,7 +543,7 @@ namespace umi3d.edk
         {
             if (!isAsync && !isDeSync)
                 return null;
-            
+
             group.ForEach(u => asyncValues.Remove(u));
             group.ForEach(u => UserDesync.Remove(u));
 
@@ -622,7 +555,7 @@ namespace umi3d.edk
         {
             if (!isAsync && !isDeSync)
                 return null;
-            
+
             asyncValues.Clear();
             UserDesync.Clear();
 
@@ -673,101 +606,5 @@ namespace umi3d.edk
         /// <returns>Copied value.</returns>
         /// Override this method to implement a custom copier, for reference types for examples.
         protected virtual T CopyOfValue(T value) { return value; }
-    }
-
-
-    /// <summary>
-    /// Collection of Equality functions for floats and structs containing float, using an epsilon threshold.
-    /// </summary>
-    public class UMI3DAsyncPropertyEquality
-    {
-        /// <summary>
-        /// Epsilon threshold used for Equality test.
-        /// A == B is true if A in ]B - epsilon; B + epsilon[.
-        /// </summary>
-        /// Default value for epsilon is 10E-6.
-        public float epsilon = 0.000001f;
-
-        /// <summary>
-        /// Vector Equality test component by component using epsilon.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>True if all components are close enough.</returns>
-        /// <seealso cref="epsilon"/>
-        public bool Vector3Equality(Vector3 a, Vector3 b)
-        {
-            return InRange(a.x - b.x) && InRange(a.y - b.y) && InRange(a.z - b.z);
-        }
-
-        /// <summary>
-        /// Vector Equality test component by component using epsilon.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>True if all components are close enough.</returns>
-        /// <seealso cref="epsilon"/>
-        public bool Vector2Equality(Vector2 a, Vector2 b)
-        {
-            return InRange(a.x - b.x) && InRange(a.y - b.y);
-        }
-
-        /// <summary>
-        /// Vector Equality test component by component using epsilon.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>True if all components are close enough.</returns>
-        /// <seealso cref="epsilon"/>
-        public bool Vector4Equality(Vector4 a, Vector4 b)
-        {
-            return InRange(a.x - b.x) && InRange(a.y - b.y) && InRange(a.z - b.z) && InRange(a.w - b.w);
-        }
-
-        /// <summary>
-        /// Color Equality test component by component using epsilon.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>True if all components are close enough.</returns>
-        /// <seealso cref="epsilon"/>
-        public bool ColorEquality(Color a, Color b)
-        {
-            return InRange(a.a - b.a) && InRange(a.r - b.r) && InRange(a.b - b.b) && InRange(a.g - b.g);
-        }
-
-        /// <summary>
-        /// Quaternion Equality test by angle using epsilon.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>True if the angle between the two quaternion is small enough.</returns>
-        /// <seealso cref="epsilon"/>
-        public bool QuaternionEquality(Quaternion a, Quaternion b)
-        {
-            return InRange(Quaternion.Angle(a, b));
-        }
-
-        /// <summary>
-        /// Float Equality test using epsilon.
-        /// </summary>
-        /// <param name="a"></param>
-        /// <param name="b"></param>
-        /// <returns>True if the difference between the two float is small enough.</returns>
-        /// <seealso cref="epsilon"/>
-        public bool FloatEquality(float a, float b)
-        {
-            return InRange(a - b);
-        }
-
-        /// <summary>
-        /// Check if a float is in epsilon range
-        /// </summary>
-        /// <param name="d"></param>
-        /// <returns>return true if <paramref name="d"/> is in ]-epsilon,epsilon[</returns>
-        private bool InRange(float d)
-        {
-            return d < epsilon && d > -epsilon;
-        }
     }
 }
