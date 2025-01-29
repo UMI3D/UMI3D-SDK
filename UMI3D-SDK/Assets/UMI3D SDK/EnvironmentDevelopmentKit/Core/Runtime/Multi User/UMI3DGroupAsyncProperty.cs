@@ -39,6 +39,9 @@ namespace umi3d.edk
         /// <returns>A collection of SetEntityProperty describing the change from each property default value to the group default value in it</returns>
         public virtual List<SetEntityProperty> Add(UMI3DUser user)
         {
+            if (user == null)
+                return null;
+
             if (users.Add(user))
                return properties.Select(p => p.AddToGroup(user, this)).ToList();
 
@@ -52,6 +55,9 @@ namespace umi3d.edk
         /// <returns>A collection of SetEntityProperty describing the change to each property default value from the group default value in it</returns>
         public virtual List<SetEntityProperty> Remove(UMI3DUser user)
         {
+            if (user == null)
+                return null;
+
             if (users.Remove(user))
                 return properties.Select(p => p.RemoveFromGroup(user, this)).ToList();
 
@@ -65,6 +71,9 @@ namespace umi3d.edk
         /// <remarks>Does not return a SetEntityProperty as the group value is inited to the default value of the property</remarks>
         public virtual void Add(UMI3DAsyncProperty property)
         {
+            if (property == null)
+                return;
+
             if (properties.Add(property))
                 property.AddGroup(this);
         }
@@ -76,6 +85,9 @@ namespace umi3d.edk
         /// <returns></returns>
         public virtual SetEntityProperty Remove(UMI3DAsyncProperty property)
         {
+            if (property == null)
+                return null;
+
             if (properties.Remove(property))
                 return property.RemoveGroup(this);
 

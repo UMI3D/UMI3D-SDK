@@ -132,7 +132,8 @@ namespace umi3d.edk
             return ListEqual;
         }
 
-        public UMI3DAsyncListProperty(ulong entityId, uint propertyId, List<T> value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null, Func<List<T>, List<T>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializer), EqualToListEqual(equal))
+
+        internal UMI3DAsyncListProperty(IUMI3DServer umi3dServerService, ulong entityId, uint propertyId, List<T> value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null, Func<List<T>, List<T>> copier = null) : base(umi3dServerService,entityId, propertyId, value, SerializerToListSeriliser(serializer), EqualToListEqual(equal))
         {
             if (equal == null)
             {
@@ -151,6 +152,11 @@ namespace umi3d.edk
             Copier = copier;
         }
 
+        public UMI3DAsyncListProperty(ulong entityId, uint propertyId, List<T> value, Func<T, UMI3DUser, object> serializer = null, Func<T, T, bool> equal = null, Func<List<T>, List<T>> copier = null)
+            : this(UMI3DServer.Instance, entityId, propertyId, value, serializer, equal, copier)
+        { }
+
+
         //get[] operator definition
         public T this[int index] => GetValue()[index];
 
@@ -166,6 +172,11 @@ namespace umi3d.edk
         public T GetValue(int index, UMI3DUser user = null)
         {
             return GetValue(user)[index];
+        }
+
+        public T GetValue(int index, UMI3DGroupAsyncProperty group)
+        {
+            return GetValue(group)[index];
         }
 
         /// <summary>
@@ -478,7 +489,7 @@ namespace umi3d.edk
 
             return new SetEntityListProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 index = index,
                 property = propertyId,
@@ -505,7 +516,7 @@ namespace umi3d.edk
 
             return new SetEntityListProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 index = index,
                 property = propertyId,
@@ -575,7 +586,7 @@ namespace umi3d.edk
 
             return new SetEntityListAddProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 index = index,
                 property = propertyId,
@@ -602,7 +613,7 @@ namespace umi3d.edk
 
             return new SetEntityListAddProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 index = index,
                 property = propertyId,
@@ -672,7 +683,7 @@ namespace umi3d.edk
 
             return new SetEntityListRemoveProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 index = index,
                 property = propertyId,
@@ -699,7 +710,7 @@ namespace umi3d.edk
 
             return new SetEntityListRemoveProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 index = index,
                 property = propertyId,

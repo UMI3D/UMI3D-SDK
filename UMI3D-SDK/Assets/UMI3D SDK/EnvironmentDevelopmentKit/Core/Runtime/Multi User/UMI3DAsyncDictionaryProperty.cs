@@ -459,7 +459,7 @@ namespace umi3d.edk
 
             return new SetEntityDictionaryProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
@@ -484,7 +484,7 @@ namespace umi3d.edk
 
             return new SetEntityDictionaryProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
@@ -555,7 +555,7 @@ namespace umi3d.edk
 
             return new SetEntityDictionaryAddProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
@@ -580,7 +580,7 @@ namespace umi3d.edk
 
             return new SetEntityDictionaryAddProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
@@ -651,7 +651,7 @@ namespace umi3d.edk
 
             return new SetEntityDictionaryRemoveProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
@@ -676,7 +676,7 @@ namespace umi3d.edk
 
             return new SetEntityDictionaryRemoveProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),

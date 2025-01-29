@@ -14,12 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using inetum.unityUtils;
 using Moq;
 using NUnit.Framework;
 using umi3d.edk;
+using UnityEngine;
 
 /// <summary>
 /// Test GetSetEntityOperationForAll
@@ -29,6 +31,124 @@ namespace EditMode_Tests.Core.Properties
 {
     public class UMI3DAsyncProperty_Test
     {
+        public class Equality
+        {
+            UMI3DAsyncPropertyEquality equality;
+
+            [SetUp]
+            public void Setup()
+            {
+                equality = new();
+            }
+
+            [Test]
+            public void Given2V3_WhenVector3Equality_ThenFalse()
+            {
+                Vector3 a = Vector3.zero;
+                Assert.IsFalse(equality.Vector3Equality(a, new Vector3(1, 0, 0)));
+                Assert.IsFalse(equality.Vector3Equality(a, new Vector3(0, 1, 0)));
+                Assert.IsFalse(equality.Vector3Equality(a, new Vector3(0, 0, 1)));
+            }
+
+
+            [Test]
+            public void Given1V3_WhenVector3Equality_ThenTrue()
+            {
+                Vector3 a = Vector3.zero;
+                Vector3 b = Vector3.zero;
+                Assert.IsTrue(equality.Vector3Equality(a, b));
+            }
+
+            [Test]
+            public void Given2V2_WhenVector2Equality_ThenFalse()
+            {
+                Vector2 a = Vector2.zero;
+                Assert.IsFalse(equality.Vector2Equality(a, new Vector2(1, 0)));
+                Assert.IsFalse(equality.Vector2Equality(a, new Vector2(0, 1)));
+            }
+
+
+            [Test]
+            public void Given1V2_WhenVector2Equality_ThenTrue()
+            {
+                Vector2 a = Vector2.zero;
+                Vector2 b = Vector2.zero;
+                Assert.IsTrue(equality.Vector2Equality(a, b));
+            }
+
+            [Test]
+            public void Given2V4_WhenVector4Equality_ThenFalse()
+            {
+                Vector4 a = Vector4.zero;
+                Assert.IsFalse(equality.Vector4Equality(a, new Vector4(1, 0, 0, 0)));
+                Assert.IsFalse(equality.Vector4Equality(a, new Vector4(0, 1, 0, 0)));
+                Assert.IsFalse(equality.Vector4Equality(a, new Vector4(0, 0, 1, 0)));
+                Assert.IsFalse(equality.Vector4Equality(a, new Vector4(0, 0, 0, 1)));
+            }
+
+
+            [Test]
+            public void Given1V4_WhenVector4Equality_ThenTrue()
+            {
+                Vector4 a = Vector4.zero;
+                Vector4 b = Vector4.zero;
+                Assert.IsTrue(equality.Vector4Equality(a, b));
+            }
+
+            [Test]
+            public void Given2Color_WhenColorEquality_ThenFalse()
+            {
+                Color a = Color.black;
+                Assert.IsFalse(equality.ColorEquality(a, Color.red));
+                Assert.IsFalse(equality.ColorEquality(a, Color.blue));
+                Assert.IsFalse(equality.ColorEquality(a, Color.green));
+                Assert.IsFalse(equality.ColorEquality(a, new Color(0,0,0,0)));
+            }
+
+
+            [Test]
+            public void Given1Color_WhenVector4Equality_ThenTrue()
+            {
+                Color a = Color.black;
+                Color b = Color.black;
+                Assert.IsTrue(equality.ColorEquality(a, b));
+            }
+
+
+            [Test]
+            public void Given2Float_WhenFloatEquality_ThenFalse()
+            {
+                float a = 1f;
+                Assert.IsFalse(equality.FloatEquality(a, 0f));
+                Assert.IsFalse(equality.FloatEquality(a, 1.0001f));
+            }
+
+
+            [Test]
+            public void Given1Float_WhenFloatEquality_ThenTrue()
+            {
+                float a = 1f;
+                float b = 1f;
+                Assert.IsTrue(equality.FloatEquality(a, b));
+            }
+
+            [Test]
+            public void Given2Quaternion_WhenQuaternionEquality_ThenFalse()
+            {
+                Quaternion a = new();
+                Quaternion b = Quaternion.Euler(35,0,0);
+                Assert.IsFalse(equality.QuaternionEquality(a, b));
+            }
+
+            [Test]
+            public void Given1Quaternion_WhenQuaternionEquality_ThenTrue()
+            {
+                Quaternion a = Quaternion.identity;
+                Quaternion b = Quaternion.Euler(a.eulerAngles);
+
+                Assert.IsTrue(equality.QuaternionEquality(a, b));
+            }
+        }
 
         public class SetGetValue
         {
@@ -245,6 +365,47 @@ namespace EditMode_Tests.Core.Properties
                 map.Add(users[1], 91120);
                 foreach (var item in map)
                     asyncP.SetValue(item.Key, item.Value);
+
+                Assert.AreEqual(value, asyncP.GetValue());
+
+                foreach (var u in users)
+                    Assert.AreEqual(map.TryGetValue(u, out int v) ? v : value, asyncP.GetValue(u));
+
+                Assert.AreEqual(true, asyncP.isAsync);
+                Assert.AreEqual(false, asyncP.isDeSync);
+            }
+
+            [Test]
+            public void GivenUserAsync_WhenSetValueUser_ThenDefaultValueUserNewValue()
+            {
+                Dictionary<UMI3DUser, int> map = new();
+                map.Add(users[1], 91120);
+                foreach (var item in map)
+                    asyncP.SetValue(item.Key, item.Value);
+
+                map[users[1]] =  91300;
+                foreach (var item in map)
+                    asyncP.SetValue(item.Key, item.Value);
+
+                Assert.AreEqual(value, asyncP.GetValue());
+
+                foreach (var u in users)
+                    Assert.AreEqual(map.TryGetValue(u, out int v) ? v : value, asyncP.GetValue(u));
+
+                Assert.AreEqual(true, asyncP.isAsync);
+                Assert.AreEqual(false, asyncP.isDeSync);
+            }
+
+            [Test]
+            public void GivenUserAsync_WhenSetSameValueUser_ThenDefaultValueUserNewValue()
+            {
+                Dictionary<UMI3DUser, int> map = new();
+                map.Add(users[1], 91120);
+                foreach (var item in map)
+                    asyncP.SetValue(item.Key, item.Value);
+
+                foreach (var item in map)
+                    Assert.AreEqual(null, asyncP.SetValue(item.Key, item.Value));
 
                 Assert.AreEqual(value, asyncP.GetValue());
 
@@ -737,6 +898,63 @@ namespace EditMode_Tests.Core.Properties
                 serverServiceMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
             }
 
+
+            [Test]
+            public void GivenGroup_WhenAddUsersNull_ThenNull()
+            {
+                //GIVEN
+                UMI3DGroupAsyncProperty group = new();
+                Assert.AreEqual(0, group.Count());
+
+                //WHEN
+                List<SetEntityProperty> result = group.Add((UMI3DUser)null);
+
+                //THEN
+                Assert.AreEqual(null, result);
+            }
+
+            [Test]
+            public void GivenGroup_WhenAddPropertyNull_ThenNothing()
+            {
+                //GIVEN
+                UMI3DGroupAsyncProperty group = new();
+                Assert.AreEqual(0, group.Count());
+
+                //WHEN
+                group.Add((UMI3DAsyncProperty)null);
+
+            }
+
+            [Test]
+            public void GivenGroup_WhenRemoveUsersNull_ThenNull()
+            {
+                //GIVEN
+                UMI3DGroupAsyncProperty group = new();
+                Assert.AreEqual(0, group.Count());
+
+                //WHEN
+                List<SetEntityProperty> result = group.Remove((UMI3DUser)null);
+
+                //THEN
+                Assert.AreEqual(null, result);
+            }
+
+            [Test]
+            public void GivenGroup_WhenRemovePropertyNull_ThenNull()
+            {
+                //GIVEN
+                UMI3DGroupAsyncProperty group = new();
+                Assert.AreEqual(0, group.Count());
+
+                //WHEN
+                var result = group.Remove((UMI3DAsyncProperty)null);
+
+                //THEN
+                Assert.AreEqual(null, result);
+            }
+
+
+
             [Test]
             public void GivenGroup_WhenAddUsers_ThenUsersInGroup()
             {
@@ -755,12 +973,45 @@ namespace EditMode_Tests.Core.Properties
             }
 
             [Test]
+            public void GivenGroupContainingUsers_WhenAddUsers_ThenUsersInGroupOnlyOnce()
+            {
+                //GIVEN
+                UMI3DGroupAsyncProperty group = new();
+                foreach (var u in users)
+                    group.Add(u);
+
+
+                //WHEN
+                foreach (var u in users)
+                    group.Add(u);
+
+                //THEN
+                Assert.AreEqual(users.Count, group.Count());
+                foreach (var u in users)
+                    Assert.IsTrue(group.Contains(u));
+            }
+
+            [Test]
             public void GivenGroupContainingUsers_WhenRemoveUsers_ThenUsersNotInGroup()
             {
                 //GIVEN
                 UMI3DGroupAsyncProperty group = new();
                 foreach (var u in users)
                     group.Add(u);
+
+                //WHEN
+                foreach (var u in users)
+                    group.Remove(u);
+
+                //THEN
+                Assert.AreEqual(0, group.Count());
+            }
+
+            [Test]
+            public void GivenGroup_WhenRemoveUsers_ThenNothing()
+            {
+                //GIVEN
+                UMI3DGroupAsyncProperty group = new();
 
                 //WHEN
                 foreach (var u in users)
@@ -811,6 +1062,26 @@ namespace EditMode_Tests.Core.Properties
                 //THEN
                 Assert.AreEqual(0, group.properties.Count());
                 Assert.IsFalse(asyncP.TEST_GroupValueMaps.ContainsKey(group));
+            }
+
+            [Test]
+            public void GivenGroup_WhenRemoveProperty_ThenPropertyNotInGroup()
+            {
+                //GIVEN
+                ulong entity = 30uL;
+                uint property = 40;
+                int value = 42;
+                var asyncP = new UMI3DAsyncProperty<int>(serverServiceMock.Object, entity, property, value);
+
+                UMI3DGroupAsyncProperty group = new();
+
+                //WHEN
+                var result = group.Remove(asyncP);
+
+                //THEN
+                Assert.AreEqual(0, group.properties.Count());
+                Assert.IsFalse(asyncP.TEST_GroupValueMaps.ContainsKey(group));
+                Assert.AreEqual(null, result);
             }
 
 
@@ -1084,7 +1355,559 @@ namespace EditMode_Tests.Core.Properties
 
         public class PropertyList
         {
+            public class GetSet
+            {
+                const int casesPerList = 2;
+                protected Mock<IUMI3DServer> serverServiceMock;
 
+                protected float newFPSTracking = 18f;
+                private List<UMI3DUser> users;
+
+                ulong entity = 30uL;
+                uint property = 40;
+                List<int> value = new() { 42 };
+                UMI3DAsyncListProperty<int> asyncP;
+
+                Dictionary<UMI3DUser, List<int>> userExpectedValueMap;
+                Dictionary<UMI3DUser, UMI3DGroupAsyncProperty> userGroupMap;
+                Dictionary<UMI3DGroupAsyncProperty, List<int>> groupExpectedValueMap;
+
+                UMI3DGroupAsyncProperty group;
+
+                HashSet<UMI3DUser> UserGroupSync;
+                HashSet<UMI3DUser> UserGroupAsync;
+                HashSet<UMI3DUser> UserNoGroupSync;
+                HashSet<UMI3DUser> UserNoGroupAsync;
+                HashSet<UMI3DUser> UserGroupSyncDesync;
+                HashSet<UMI3DUser> UserGroupAsyncDesync;
+                HashSet<UMI3DUser> UserNoGroupSyncDesync;
+                HashSet<UMI3DUser> UserNoGroupAsyncDesync;
+
+                List<HashSet<UMI3DUser>> userListList;
+
+                //Init Mock Umi3dServer and users
+                [SetUp]
+                public void Setup()
+                {
+                    UserGroupSync = new();
+                    UserGroupAsync = new();
+                    UserNoGroupSync = new();
+                    UserNoGroupAsync = new();
+                    UserGroupSyncDesync = new();
+                    UserGroupAsyncDesync = new();
+                    UserNoGroupSyncDesync = new();
+                    UserNoGroupAsyncDesync = new();
+
+                    userListList = new()
+                {
+                    UserGroupSync,
+                    UserGroupAsync,
+                    UserNoGroupSync,
+                    UserNoGroupAsync,
+                    UserGroupSyncDesync,
+                    UserGroupAsyncDesync,
+                    UserNoGroupSyncDesync,
+                    UserNoGroupAsyncDesync,
+                };
+
+
+                    serverServiceMock = new();
+
+                    var usersMock = new List<Mock<UMI3DUser>>();
+
+                    int cases = userListList.Count;
+
+                    for (int ui = 0; ui < cases * casesPerList; ui++)
+                        usersMock.Add(new Mock<UMI3DUser>());
+
+                    ulong i = 20000uL;
+                    foreach (var userMock in usersMock)
+                    {
+                        userMock.Setup(x => x.Id()).Returns(i++);
+                    }
+                    users = usersMock.Select(x => x.Object).ToList();
+                    serverServiceMock.Setup(x => x.Users()).Returns(users);
+
+                    serverServiceMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
+
+                    entity = 30uL;
+                    property = 40;
+                    value = new() { 42 };
+                    asyncP = new UMI3DAsyncListProperty<int>(serverServiceMock.Object, entity, property, value);
+                }
+
+                /// <summary>
+                /// Fill property with a combination of user sync async in group not in group
+                /// </summary>
+                public void FillGroupAndProperty()
+                {
+                    int i = 0;
+                    userListList.Do(l => l = new()).ForEach(l =>
+                    {
+                        for (int j = 0; j < casesPerList; j++)
+                            l.Add(users[i++]);
+                    });
+
+                    userExpectedValueMap = new();
+                    userGroupMap = new();
+                    groupExpectedValueMap = new();
+
+                    group = new();
+
+                    //group in property
+                    groupExpectedValueMap.Add(group, new List<int>() { 123456789 });
+
+                    #region initUserMap
+                    //users sync not in group 
+                    //NOTHING TO DO
+
+                    //users sync in group
+                    foreach (var user in UserGroupSync)
+                    {
+                        userGroupMap.Add(user, group);
+                    }
+
+                    //users async not in group
+                    foreach (var user in UserNoGroupAsync)
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+
+                    //users async in group
+                    foreach (var user in UserGroupAsync)
+                    {
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+                        userGroupMap.Add(user, group);
+                    }
+
+                    //users sync not in group desync
+                    foreach (var user in UserGroupSyncDesync)
+                    {
+                        asyncP.DeSync(user, true);
+                    }
+
+                    //users sync in group desync
+                    foreach (var user in UserGroupSyncDesync)
+                    {
+                        userGroupMap.Add(user, group);
+                        asyncP.DeSync(user, true);
+                    }
+
+                    //users async not in group desync
+                    foreach (var user in UserNoGroupAsyncDesync)
+                    {
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+                        asyncP.DeSync(user, true);
+                    }
+
+                    //users async in group desync
+                    foreach (var user in UserGroupAsyncDesync)
+                    {
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+                        userGroupMap.Add(user, group);
+                        asyncP.DeSync(user, true);
+                    }
+                    #endregion
+
+                    //Set user async
+                    foreach (var item in userExpectedValueMap)
+                        asyncP.SetValue(item.Key, item.Value);
+
+                    //Set user in group
+                    foreach (var item in userGroupMap)
+                        (item.Value).Add(item.Key);
+
+                    //Set group value
+                    foreach (var item in groupExpectedValueMap)
+                        asyncP.SetValue(item.Value, item.Key);
+                }
+
+                [Test]
+                public void GivenNothing_WhenGetValueIndex_ThenDefaultValueIndex()
+                {
+                    //GIVEN
+
+                    //WHEN
+                    int index = 0;
+                    var result = asyncP.GetValue(index);
+
+                    //Then
+                    Assert.AreEqual(value[index], result);
+                    foreach (var user in users)
+                        Assert.AreEqual(value[index], asyncP.GetValue(index, user));
+
+                }
+
+                [Test]
+                public void GivenNothing_WhenGetValueIndexOutOfRange_ThenThrow()
+                {
+                    //GIVEN
+
+                    //WHEN
+                    int index1 = value.Count + 10;
+                    int index2 = -1;
+
+                    List<TestDelegate> tests = new()
+                {
+                    () => asyncP.GetValue(index1),
+                    () => asyncP.GetValue(index2),
+                };
+
+                    foreach (var user in users)
+                    {
+                        tests.Add(() => asyncP.GetValue(index1, user));
+                        tests.Add(() => asyncP.GetValue(index2, user));
+                    }
+
+                    //Then
+                    foreach (var test in tests)
+                        Assert.Throws<ArgumentOutOfRangeException>(test);
+                }
+
+                [Test]
+                public void GivenFill_WhenGetValueIndexOutOfRange_ThenThrow()
+                {
+                    //GIVEN
+                    FillGroupAndProperty();
+
+                    //WHEN
+                    int index1 = value.Count + 10;
+                    int index2 = -1;
+
+                    List<TestDelegate> tests = new()
+                {
+                    () => asyncP.GetValue(index1),
+                    () => asyncP.GetValue(index2),
+                };
+
+                    foreach (var user in users)
+                    {
+                        tests.Add(() => asyncP.GetValue(index1, user));
+                        tests.Add(() => asyncP.GetValue(index2, user));
+                    }
+
+                    //Then
+                    foreach (var test in tests)
+                        Assert.Throws<ArgumentOutOfRangeException>(test);
+                }
+
+                [Test]
+                public void GivenNothing_WhenSetValueIndex_ThenNewValue()
+                {
+                    //Given
+
+                    //When
+                    var newValue = 336;
+                    int index = 0;
+                    asyncP.SetValue(index, newValue);
+
+                    //Then
+                    Assert.AreEqual(newValue, asyncP.GetValue(index));
+                    foreach (var user in users)
+                        Assert.AreEqual(newValue, asyncP.GetValue(index, user));
+
+                }
+
+                [Test]
+                public void GivenNothing_WhenSetValueIndexUser_ThenNewValueUser()
+                {
+                    //Given
+
+                    //When
+                    var newValue = 336;
+                    int index = 0;
+                    var testUser = users.First();
+
+                    asyncP.SetValue(testUser, index, newValue);
+
+                    //Then
+                    Assert.AreNotEqual(newValue, asyncP.GetValue(index));
+                    Assert.AreEqual(newValue, asyncP.GetValue(index, testUser));
+                    foreach (var user in users.Where(u => u != testUser))
+                        Assert.AreNotEqual(newValue, asyncP.GetValue(index, user));
+                }
+
+                [Test]
+                public void GivenFill_WhenSetValueIndex_ThenNewValue()
+                {
+                    //Given
+                    FillGroupAndProperty();
+
+                    //When
+                    var newValue = 336;
+                    int index = 0;
+                    asyncP.SetValue(index, newValue);
+
+                    //Then
+                    Assert.AreEqual(newValue, asyncP.GetValue(index));
+                    foreach (var user in UserNoGroupSync)
+                        Assert.AreEqual(newValue, asyncP.GetValue(index, user));
+                    foreach (var user in UserNoGroupSyncDesync)
+                        Assert.AreEqual(newValue, asyncP.GetValue(index, user));
+                    foreach (var user in users.Where(u => !UserNoGroupSync.Contains(u) && !UserNoGroupSyncDesync.Contains(u)))
+                        Assert.AreNotEqual(newValue, asyncP.GetValue(index, user));
+                }
+
+                [Test]
+                public void GivenFill_WhenSetValueIndexGroup_ThenNewValueGroup()
+                {
+                    //Given
+                    FillGroupAndProperty();
+
+                    //When
+                    var newValue = 336;
+                    int index = 0;
+                    asyncP.SetValue(index, newValue, group);
+
+                    //Then
+                    Assert.AreEqual(newValue, asyncP.GetValue(index, group));
+                    foreach (var user in UserGroupSync)
+                        Assert.AreEqual(newValue, asyncP.GetValue(index, user));
+                    foreach (var user in UserGroupSyncDesync)
+                        Assert.AreEqual(newValue, asyncP.GetValue(index, user));
+                    foreach (var user in users.Where(u => !UserGroupSync.Contains(u) && !UserGroupSyncDesync.Contains(u)))
+                        Assert.AreNotEqual(newValue, asyncP.GetValue(index, user));
+                }
+            }
+
+            public class AddRemove
+            {
+                const int casesPerList = 2;
+                protected Mock<IUMI3DServer> serverServiceMock;
+
+                protected float newFPSTracking = 18f;
+                private List<UMI3DUser> users;
+
+                ulong entity = 30uL;
+                uint property = 40;
+                List<int> value = new() { 42 };
+                UMI3DAsyncListProperty<int> asyncP;
+
+                Dictionary<UMI3DUser, List<int>> userExpectedValueMap;
+                Dictionary<UMI3DUser, UMI3DGroupAsyncProperty> userGroupMap;
+                Dictionary<UMI3DGroupAsyncProperty, List<int>> groupExpectedValueMap;
+
+                UMI3DGroupAsyncProperty group;
+
+                HashSet<UMI3DUser> UserGroupSync;
+                HashSet<UMI3DUser> UserGroupAsync;
+                HashSet<UMI3DUser> UserNoGroupSync;
+                HashSet<UMI3DUser> UserNoGroupAsync;
+                HashSet<UMI3DUser> UserGroupSyncDesync;
+                HashSet<UMI3DUser> UserGroupAsyncDesync;
+                HashSet<UMI3DUser> UserNoGroupSyncDesync;
+                HashSet<UMI3DUser> UserNoGroupAsyncDesync;
+
+                List<HashSet<UMI3DUser>> userListList;
+
+                //Init Mock Umi3dServer and users
+                [SetUp]
+                public void Setup()
+                {
+                    UserGroupSync = new();
+                    UserGroupAsync = new();
+                    UserNoGroupSync = new();
+                    UserNoGroupAsync = new();
+                    UserGroupSyncDesync = new();
+                    UserGroupAsyncDesync = new();
+                    UserNoGroupSyncDesync = new();
+                    UserNoGroupAsyncDesync = new();
+
+                    userListList = new()
+                {
+                    UserGroupSync,
+                    UserGroupAsync,
+                    UserNoGroupSync,
+                    UserNoGroupAsync,
+                    UserGroupSyncDesync,
+                    UserGroupAsyncDesync,
+                    UserNoGroupSyncDesync,
+                    UserNoGroupAsyncDesync,
+                };
+
+
+                    serverServiceMock = new();
+
+                    var usersMock = new List<Mock<UMI3DUser>>();
+
+                    int cases = userListList.Count;
+
+                    for (int ui = 0; ui < cases * casesPerList; ui++)
+                        usersMock.Add(new Mock<UMI3DUser>());
+
+                    ulong i = 20000uL;
+                    foreach (var userMock in usersMock)
+                    {
+                        userMock.Setup(x => x.Id()).Returns(i++);
+                    }
+                    users = usersMock.Select(x => x.Object).ToList();
+                    serverServiceMock.Setup(x => x.Users()).Returns(users);
+
+                    serverServiceMock.Setup(x => x.OnUserLeave).Returns(new UMI3DUserEvent());
+
+                    entity = 30uL;
+                    property = 40;
+                    value = new() { 42 };
+                    asyncP = new UMI3DAsyncListProperty<int>(serverServiceMock.Object, entity, property, value);
+                }
+
+                /// <summary>
+                /// Fill property with a combination of user sync async in group not in group
+                /// </summary>
+                public void FillGroupAndProperty()
+                {
+                    int i = 0;
+                    userListList.Do(l => l = new()).ForEach(l =>
+                    {
+                        for (int j = 0; j < casesPerList; j++)
+                            l.Add(users[i++]);
+                    });
+
+                    userExpectedValueMap = new();
+                    userGroupMap = new();
+                    groupExpectedValueMap = new();
+
+                    group = new();
+
+                    //group in property
+                    groupExpectedValueMap.Add(group, new List<int>() { 123456789 });
+
+                    #region initUserMap
+                    //users sync not in group 
+                    //NOTHING TO DO
+
+                    //users sync in group
+                    foreach (var user in UserGroupSync)
+                    {
+                        userGroupMap.Add(user, group);
+                    }
+
+                    //users async not in group
+                    foreach (var user in UserNoGroupAsync)
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+
+                    //users async in group
+                    foreach (var user in UserGroupAsync)
+                    {
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+                        userGroupMap.Add(user, group);
+                    }
+
+                    //users sync not in group desync
+                    foreach (var user in UserGroupSyncDesync)
+                    {
+                        asyncP.DeSync(user, true);
+                    }
+
+                    //users sync in group desync
+                    foreach (var user in UserGroupSyncDesync)
+                    {
+                        userGroupMap.Add(user, group);
+                        asyncP.DeSync(user, true);
+                    }
+
+                    //users async not in group desync
+                    foreach (var user in UserNoGroupAsyncDesync)
+                    {
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+                        asyncP.DeSync(user, true);
+                    }
+
+                    //users async in group desync
+                    foreach (var user in UserGroupAsyncDesync)
+                    {
+                        userExpectedValueMap.Add(user, new List<int>() { 8544555 });
+                        userGroupMap.Add(user, group);
+                        asyncP.DeSync(user, true);
+                    }
+                    #endregion
+
+                    //Set user async
+                    foreach (var item in userExpectedValueMap)
+                        asyncP.SetValue(item.Key, item.Value);
+
+                    //Set user in group
+                    foreach (var item in userGroupMap)
+                        (item.Value).Add(item.Key);
+
+                    //Set group value
+                    foreach (var item in groupExpectedValueMap)
+                        asyncP.SetValue(item.Value, item.Key);
+                }
+
+                [Test]
+                public void GivenNothing_WhenAddValue_ThenDefaultValueLastIndex()
+                {
+                    //GIVEN
+
+                    //WHEN
+                    var newValue = 336;
+                    var result = asyncP.Add(newValue) as SetEntityListAddProperty;
+
+                    //Then
+                    Assert.AreEqual(newValue, result.value);
+                    Assert.AreEqual(asyncP.GetValue().Count - 1, result.index);
+                    Assert.AreEqual(newValue, asyncP.GetValue()[result.index]);
+                    foreach (var user in users)
+                        Assert.AreEqual(value[result.index], asyncP.GetValue(result.index, user));
+
+                }
+
+
+                [Test]
+                public void GivenNothing_WhenRemoveAtValue_ThenDefaultValueLastIndex()
+                {
+                    //GIVEN
+                    var newValue = 336;
+                    var add = asyncP.Add(newValue) as SetEntityListAddProperty;
+
+                    //WHEN
+                    var result = asyncP.RemoveAt(add.index) as SetEntityListRemoveProperty;
+
+                    //Then
+                    Assert.AreEqual(newValue, result.value);
+                    Assert.AreEqual(add.index, result.index);
+                    //Assert.AreEqual(newValue, asyncP.GetValue()[result.index]);
+                    //foreach (var user in users)
+                    //    Assert.AreEqual(value[result.index], asyncP.GetValue(result.index, user));
+
+                }
+
+                [Test]
+                public void GivenNothing_WhenRemoveValue_ThenDefaultValueLastIndex()
+                {
+                    //GIVEN
+                    var newValue = 336;
+                    var add = asyncP.Add(newValue) as SetEntityListAddProperty;
+
+                    //WHEN
+                    var result = asyncP.Remove(newValue) as SetEntityListRemoveProperty;
+
+                    //Then
+                    Assert.AreEqual(newValue, result.value);
+                    Assert.AreEqual(add.index, result.index);
+                    //Assert.AreEqual(newValue, asyncP.GetValue()[result.index]);
+                    //foreach (var user in users)
+                    //    Assert.AreEqual(value[result.index], asyncP.GetValue(result.index, user));
+
+                }
+
+                [Test]
+                public void GivenNothing_WhenRemoveValueNotInList_ThenNull()
+                {
+                    //GIVEN
+                    var newValue = 336;
+
+                    //WHEN
+                    var result = asyncP.Remove(newValue) as SetEntityListRemoveProperty;
+
+                    //Then
+                    Assert.AreEqual(null, result);
+                    //Assert.AreEqual(add.index, result.index);
+                    //Assert.AreEqual(newValue, asyncP.GetValue()[result.index]);
+                    //foreach (var user in users)
+                    //    Assert.AreEqual(value[result.index], asyncP.GetValue(result.index, user));
+
+                }
+            }
         }
     }
 }

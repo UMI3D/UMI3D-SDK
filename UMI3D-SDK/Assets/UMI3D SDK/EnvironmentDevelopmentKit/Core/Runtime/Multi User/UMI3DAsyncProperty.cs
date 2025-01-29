@@ -522,7 +522,7 @@ namespace umi3d.edk
             };
         }
 
-        HashSet<UMI3DUser> GetUsersWhere(Func<UMI3DUser, bool> condition) => new HashSet<UMI3DUser>(umi3dServerService.Users().Where(condition));
+        protected HashSet<UMI3DUser> GetUsersWhere(Func<UMI3DUser, bool> condition) => new HashSet<UMI3DUser>(umi3dServerService.Users().Where(condition));
 
         #endregion Set
 
