@@ -34,12 +34,12 @@ namespace umi3d.edk
         /// See <see cref="shaderProperties"/>. Common properties can be found at <see cref="UMI3DShaderProperties"/>.
         /// </summary>
         /// 
-        public UMI3DAsyncDictionnaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
+        public UMI3DAsyncDictionaryProperty<string, object> objectShaderProperties { get { Id(); return _objectShaderProperties; } protected set => _objectShaderProperties = value; }
         
         /// <summary>
         /// See <see cref="shaderProperties"/>.
         /// </summary>
-        private UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
+        private UMI3DAsyncDictionaryProperty<string, object> _objectShaderProperties;
 
         /// <summary>
         /// Alpha blending settings.
