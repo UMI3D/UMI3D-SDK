@@ -68,12 +68,12 @@ namespace umi3d.edk.interaction
                 this.clientDrawingId = dto.clientDrawingId;
             }
 
-            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line, UMI3DNode node, ulong clientDrawingId ) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line, UMI3DNode node, ulong clientDrawingId) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.positions = positions;
                 this.line = line;
                 this.node = node;
-                this.clientDrawingId= clientDrawingId;
+                this.clientDrawingId = clientDrawingId;
             }
         }
 
@@ -197,9 +197,10 @@ namespace umi3d.edk.interaction
                     }
 
                     if (surfaceId != 0)
-                       surface = UMI3DEnvironment.GetEntityInstance<UMI3DNode>(surfaceId);
+                        surface = UMI3DEnvironment.GetEntityInstance<UMI3DNode>(surfaceId);
 
                     var DrawingEvent = new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line, surface, clientDrawingId);
+
                     if (drawingEnd)
                         onDrawingEnd.Invoke(DrawingEvent);
                     else
@@ -212,14 +213,15 @@ namespace umi3d.edk.interaction
             }
         }
 
-        protected override void InternalOnTrigger(UMI3DUser user) 
+        protected override void InternalOnTrigger(UMI3DUser user)
         {
             var id = user.Id();
-            foreach(var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
+            foreach (var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
                 this.LineMap.Remove(key);
         }
 
-        protected override void InternalOnRelease(UMI3DUser user) {
+        protected override void InternalOnRelease(UMI3DUser user)
+        {
             var id = user.Id();
             foreach (var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
                 this.LineMap.Remove(key);
@@ -263,8 +265,10 @@ namespace umi3d.edk.interaction
 
         public void UpdateLine(UMI3DLineRenderer lr, UMI3DUser except, List<Vector3Dto> positions, bool endDrawing)
         {
-            lr.objectPositions.DeSync(except, endDrawing);
-            lr.objectPositions.SetValue(positions.Select(dto => dto.Struct()).ToList())?.ToTransaction(except == null).Dispatch();
+            Transaction t = new(except == null);
+            t.AddIfNotNull(lr.objectPositions.DeSync(except, endDrawing));
+            t.AddIfNotNull(lr.objectPositions.SetValue(positions.Select(dto => dto.Struct()).ToList()));
+            t.Dispatch();
         }
 
 
