@@ -20,19 +20,11 @@ using System.Linq;
 
 namespace umi3d.edk
 {
-    public class UMI3DAsyncDictionaryProperty<T, L> : UMI3DAsyncDictionnaryProperty<T, L>
-    {
-        public UMI3DAsyncDictionaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, serializerT, serializerL, equal, copier)
-        {
-        }
-    }
-
     /// <summary>
     /// <see cref="UMI3DAsyncProperty"/> for key-value collections.
     /// </summary>
     /// <typeparam name="T">Key type</typeparam>
-    /// <typeparam name="L">Value type</typeparam>
-    [Obsolete("UMI3DAsyncDictionnaryProperty was renamed UMI3DAsyncDictionaryProperty. This version might be removed in future version")]
+    /// <typeparam name="L">Value type</typeparam    
     public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
     {
         /// <summary>

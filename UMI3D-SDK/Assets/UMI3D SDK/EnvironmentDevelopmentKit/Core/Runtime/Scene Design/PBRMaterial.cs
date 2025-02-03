@@ -272,7 +272,7 @@ namespace umi3d.edk
         /// See <see cref="CustomTextures.heightTexture.scale"/>.
         /// </summary>
         private UMI3DAsyncProperty<float> _objectHeightTextureScale;
-        private readonly UMI3DAsyncDictionaryProperty<string, object> _objectShaderProperties;
+        private readonly UMI3DAsyncDictionnaryProperty<string, object> _objectShaderProperties;
 
         #endregion asyncproperties
 
@@ -334,7 +334,7 @@ namespace umi3d.edk
             objectHeightTextureScale = new UMI3DAsyncProperty<float>(id, UMI3DPropertyKeys.HeightTextureScale, this.textures.heightTexture.scale, null, pCompare.FloatEquality);
             objectHeightTextureScale.OnValueChanged += (float f) => { textures.heightTexture.scale = f; };
 
-            objectShaderProperties = new UMI3DAsyncDictionaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => UMI3DSerializerShaderModules.Create(o), null, (d) =>
+            objectShaderProperties = new UMI3DAsyncDictionnaryProperty<string, object>(id, UMI3DPropertyKeys.ShaderProperties, this.shaderProperties, null, (o, u) => UMI3DSerializerShaderModules.Create(o), null, (d) =>
             {
                 return new Dictionary<string, object>(d);
             });
