@@ -20,21 +20,20 @@ using System.Linq;
 
 namespace umi3d.edk
 {
-    [Obsolete("UMI3DAsyncDictionnaryProperty was renamed UMI3DAsyncDictionaryProperty. This version might be removed in future version")]
-    public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
+    public class UMI3DAsyncDictionaryProperty<T, L> : UMI3DAsyncDictionnaryProperty<T, L>
     {
-        public UMI3DAsyncDictionnaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<Dictionary<T, L>, UMI3DUser, object> serializer = null, Func<Dictionary<T, L>, Dictionary<T, L>, bool> equal = null) : base(entityId, propertyId, value, serializer, equal)
+        public UMI3DAsyncDictionaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, serializerT, serializerL, equal, copier)
         {
         }
     }
-
 
     /// <summary>
     /// <see cref="UMI3DAsyncProperty"/> for key-value collections.
     /// </summary>
     /// <typeparam name="T">Key type</typeparam>
     /// <typeparam name="L">Value type</typeparam>
-    public class UMI3DAsyncDictionaryProperty<T, L> : UMI3DAsyncDictionnaryProperty<T, L>
+    [Obsolete("UMI3DAsyncDictionnaryProperty was renamed UMI3DAsyncDictionaryProperty. This version might be removed in future version")]
+    public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
     {
         /// <summary>
         /// A event that is triggered when inner value changes.
@@ -68,7 +67,7 @@ namespace umi3d.edk
         /// <summary>
         /// A event that is triggered when inner value is Removed.
         /// </summary>
-        public Action<T,UMI3DGroupAsyncProperty> OnInnerGroupValueRemoved;
+        public Action<T, UMI3DGroupAsyncProperty> OnInnerGroupValueRemoved;
         /// <summary>
         /// A event that is triggered when inner value is Removed.
         /// </summary>
@@ -155,7 +154,7 @@ namespace umi3d.edk
             return DictionaryEqual;
         }
 
-        public UMI3DAsyncDictionaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSerializer(serializerT, serializerL), EqualToListEqual(equal))
+        public UMI3DAsyncDictionnaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSerializer(serializerT, serializerL), EqualToListEqual(equal))
         {
             if (equal == null)
             {
@@ -192,7 +191,7 @@ namespace umi3d.edk
         /// <returns></returns>
         /// A null user will call <see cref="UMI3DAsyncProperty.GetValue"/>
         public L GetValue(T key, UMI3DUser user = null) => GetValue(user)[key];
-        
+
         /// <summary>
         /// Set the property's default/synchronized value.
         /// </summary>
@@ -434,7 +433,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>() { user },
                 entityId = entityId,
                 property = propertyId,
-                key = SerializerT(key,user),
+                key = SerializerT(key, user),
                 value = SerializerL(GetValue(user)[key], user)
             };
         }
