@@ -96,8 +96,6 @@ namespace umi3d.edk.interaction
                     {
                         var parameter = settingRequestDto.parameter as StringParameterDto;
                         value = parameter.value;
-                        isMultiline = parameter.IsMultiLine;
-                        nbLine = parameter.NbLine;
                         onChange.Invoke(new ParameterEventContent<string>(user, settingRequestDto, value));
                     }
                     else
@@ -123,8 +121,6 @@ namespace umi3d.edk.interaction
                     {
                         UMI3DSerializer.Read<bool>(container);
                         value = UMI3DSerializer.Read<string>(container);
-                        isMultiline = UMI3DSerializer.Read<bool>(container);
-                        nbLine = UMI3DSerializer.Read<int>(container);
                         onChange.Invoke(new ParameterEventContent<string>(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation, value));
                     }
                     else
