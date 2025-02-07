@@ -307,7 +307,7 @@ namespace umi3d.edk.interaction
 
         public class SplitLineOperation : Operation
         {
-            ulong interactionId;
+            public ulong interactionId;
 
             /// <inheritdoc/>
             public override Bytable ToBytable(UMI3DUser user)

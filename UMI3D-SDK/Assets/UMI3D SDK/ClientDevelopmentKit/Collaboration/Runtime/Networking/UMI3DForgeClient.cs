@@ -779,7 +779,12 @@ namespace umi3d.cdk.collaboration
                         });
                         break;
                     }
-
+                case UMI3DOperationKeys.DrawingSplitLineRequest:
+                    {
+                        var id = UMI3DSerializer.Read<ulong>(container);
+                        UMI3DLineRendererLoader.TriggerOnSplitLineEvent(id);
+                        break;
+                    }
                 default:
                     return false;
             }
