@@ -68,12 +68,12 @@ namespace umi3d.edk.interaction
                 this.clientDrawingId = dto.clientDrawingId;
             }
 
-            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line, UMI3DNode node, ulong clientDrawingId) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
+            public DrawingEventContent(UMI3DUser user, ulong toolId, ulong id, ulong hoveredObjectId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, List<Vector3Dto> positions, UMI3DLineRenderer line, UMI3DNode node, ulong clientDrawingId ) : base(user, toolId, id, hoveredObjectId, boneType, bonePosition, boneRotation)
             {
                 this.positions = positions;
                 this.line = line;
                 this.node = node;
-                this.clientDrawingId = clientDrawingId;
+                this.clientDrawingId= clientDrawingId;
             }
         }
 
@@ -200,7 +200,7 @@ namespace umi3d.edk.interaction
                         surface = UMI3DEnvironment.GetEntityInstance<UMI3DNode>(surfaceId);
 
                     var DrawingEvent = new DrawingEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, positions, line, surface, clientDrawingId);
-
+                    
                     if (drawingEnd)
                         onDrawingEnd.Invoke(DrawingEvent);
                     else
@@ -213,15 +213,14 @@ namespace umi3d.edk.interaction
             }
         }
 
-        protected override void InternalOnTrigger(UMI3DUser user)
+        protected override void InternalOnTrigger(UMI3DUser user) 
         {
             var id = user.Id();
-            foreach (var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
+            foreach(var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
                 this.LineMap.Remove(key);
         }
 
-        protected override void InternalOnRelease(UMI3DUser user)
-        {
+        protected override void InternalOnRelease(UMI3DUser user) {
             var id = user.Id();
             foreach (var key in this.LineMap.Where(kp => kp.Key.Item1 == id).Select(kp => kp.Key).ToList())
                 this.LineMap.Remove(key);
@@ -241,7 +240,7 @@ namespace umi3d.edk.interaction
             lr.objectLoop.SetValue(template.objectLoop.GetValue(user));
             lr.objectUseWorldSpace.SetValue(template.objectUseWorldSpace.GetValue(user));
             lr.objectPositions.SetValue(positions.Select(p => p.Struct()).ToList());
-            lr.objectClientLineId.SetValue(ClientLineID);
+            lr.objectClientLineId.SetValue(user,ClientLineID);
 
             lr.objectMaterialOverriders.SetValue(template.objectMaterialOverriders.GetValue(user));
             lr.objectMaterialsOverrided.SetValue(template.objectMaterialsOverrided.GetValue(user));
@@ -302,6 +301,50 @@ namespace umi3d.edk.interaction
                 _dto.lineId = Line.GetValue(user)?.Id() ?? 0;
                 _dto.canDrawInSpace = CanDrawInTheAir?.GetValue(user) ?? true;
                 _dto.meshIds = Mesh?.GetValue(user)?.Select(m => m?.Id() ?? 0).ToList() ?? new List<ulong>();
+            }
+        }
+
+
+        public class SplitLineOperation : Operation
+        {
+            public ulong interactionId;
+
+            /// <inheritdoc/>
+            public override Bytable ToBytable(UMI3DUser user)
+            {
+                return UMI3DSerializer.Write(UMI3DOperationKeys.DrawingSplitLineRequest)
+                    + UMI3DSerializer.Write(interactionId);
+            }
+
+            /// <inheritdoc/>
+            public override AbstractOperationDto ToOperationDto(UMI3DUser user)
+            {
+                return new SplitLineDto() { interactionId = interactionId };
+            }
+
+            public static SplitLineOperation operator +(SplitLineOperation a, IEnumerable<UMI3DUser> b)
+            {
+                a.users = new HashSet<UMI3DUser>(a.users.Concat(b));
+                return a;
+            }
+
+            public static SplitLineOperation operator +(SplitLineOperation a, SplitLineOperation b)
+            {
+                return a + b.users;
+            }
+
+            public static SplitLineOperation operator -(SplitLineOperation a, SplitLineOperation b)
+            {
+                return a - b.users;
+            }
+
+            public static SplitLineOperation operator -(SplitLineOperation a, IEnumerable<UMI3DUser> b)
+            {
+                foreach (UMI3DUser u in b)
+                {
+                    if (a.users.Contains(u)) a.users.Remove(u);
+                }
+                return a;
             }
         }
     }

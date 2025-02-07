@@ -104,6 +104,7 @@ namespace umi3d.common
         public const uint UserTrackingBone = 10016;
 
         public const uint Drawing = 10017;
+        public const uint DrawingSplitLineRequest = 10018;
 
         public const uint EmoteRequest = 10020;
 

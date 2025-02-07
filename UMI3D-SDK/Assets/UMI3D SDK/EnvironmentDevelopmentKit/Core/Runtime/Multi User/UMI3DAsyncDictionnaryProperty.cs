@@ -24,7 +24,7 @@ namespace umi3d.edk
     /// <see cref="UMI3DAsyncProperty"/> for key-value collections.
     /// </summary>
     /// <typeparam name="T">Key type</typeparam>
-    /// <typeparam name="L">Value type</typeparam    
+    /// <typeparam name="L">Value type</typeparam>
     public class UMI3DAsyncDictionnaryProperty<T, L> : UMI3DAsyncProperty<Dictionary<T, L>>
     {
         /// <summary>

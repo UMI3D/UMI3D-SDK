@@ -28,6 +28,8 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DLineRendererLoader : AbstractRenderedNodeLoader
     {
+        public static event Action<ulong> OnSplitLineEvent;
+        public static void TriggerOnSplitLineEvent(ulong id) => OnSplitLineEvent?.Invoke(id);
 
         public UMI3DLineRendererLoader() { }
 
@@ -128,7 +130,7 @@ namespace umi3d.cdk
             var lineDto = data.dto as UMI3DLineDto;
             if (data.node == null)
             {
-                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
+                throw (new umi3d.common.Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
             }
 
             line = GetOrCreateLine(data.node, lineDto.clientLineId);
