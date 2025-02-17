@@ -604,6 +604,7 @@ namespace umi3d.cdk.collaboration
 
                 UMI3DUser user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
 
+                UMI3DUser.OnUserMicrophoneStatusUpdated?.Invoke(user);
                 if (user.microphoneStatus == isMute)
                     user.SetMicrophoneStatus(!isMute);
 
