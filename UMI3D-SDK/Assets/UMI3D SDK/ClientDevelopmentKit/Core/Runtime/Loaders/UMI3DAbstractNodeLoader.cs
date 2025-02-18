@@ -14,13 +14,13 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
 
 namespace umi3d.cdk
 {
+
     /// <summary>
     /// Loader for <see cref="UMI3DAbstractNodeDto"/>.
     /// </summary>

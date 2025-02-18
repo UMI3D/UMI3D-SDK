@@ -116,17 +116,20 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="user"></param>
         /// <param name="isSpeaking"></param>
-        void OnUserSpeaking(UMI3DUser user, bool isSpeaking)
+        void OnUserSpeaking(IAudioUser user, bool isSpeaking)
         {
+            if (user is not UMI3DUser uUser)
+                return;
+
             if (isSpeaking)
             {
-                if (user != null && user.onStartSpeakingAnimationId != 0)
-                    StartAnim(UMI3DGlobalID.EnvironmentId,user.onStartSpeakingAnimationId);
+                if (user != null && uUser.onStartSpeakingAnimationId != 0)
+                    StartAnim(UMI3DGlobalID.EnvironmentId, uUser.onStartSpeakingAnimationId);
             }
             else
             {
-                if (user != null && user.onStopSpeakingAnimationId != 0)
-                    StartAnim(UMI3DGlobalID.EnvironmentId,user.onStopSpeakingAnimationId);
+                if (user != null && uUser.onStopSpeakingAnimationId != 0)
+                    StartAnim(UMI3DGlobalID.EnvironmentId, uUser.onStopSpeakingAnimationId);
             }
         }
 

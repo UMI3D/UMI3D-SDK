@@ -19,6 +19,14 @@ using System.Collections.Generic;
 
 namespace umi3d.common.collaboration.dto.signaling
 {
+
+    public class AudioBindingDto : AbstractEntityDto
+    {
+        public string audioLogin { get; set; }
+        public string login { get; set; }
+        public ulong audioPlayerId { get; }
+    }
+
     /// <summary>
     /// DTO describing a user as a collaborative entity.
     /// </summary>

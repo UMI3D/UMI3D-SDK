@@ -28,8 +28,8 @@ using UnityEngine.Events;
 namespace umi3d.cdk.collaboration
 {
 
-    public class AudioUserIsSpeaking : UnityEvent<UMI3DUser, bool> { }
-    public class AudioUserData : UnityEvent<UMI3DUser, float[]> { }
+    public class AudioUserIsSpeaking : UnityEvent<IAudioUser, bool> { }
+    public class AudioUserData : UnityEvent<IAudioUser, float[]> { }
 
     /// <summary>
     /// Manager for audio reading.
@@ -147,7 +147,7 @@ namespace umi3d.cdk.collaboration
             return player.GetVolume();
         }
 
-        private void SetGainAndVolumeForUser(UMI3DUser user)
+        private void SetGainAndVolumeForUser(IAudioUser user)
         {
             if (user == null)
                 return;
@@ -165,6 +165,9 @@ namespace umi3d.cdk.collaboration
 
         private void Start()
         {
+            AudioBindingLoader.OnNewUser += OnAudioChanged;
+            AudioBindingLoader.OnRemoveUser += OnUserDisconnected;
+
             UMI3DUser.OnNewUser.AddListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.AddListener(OnUserDisconnected);
             UMI3DUser.OnUserAudioUpdated.AddListener(OnAudioChanged);
@@ -174,13 +177,17 @@ namespace umi3d.cdk.collaboration
         protected override void OnDestroy()
         {
             base.OnDestroy();
+
+            AudioBindingLoader.OnNewUser -= OnAudioChanged;
+            AudioBindingLoader.OnRemoveUser -= OnUserDisconnected;
+
             UMI3DUser.OnNewUser.RemoveListener(OnAudioChanged);
             UMI3DUser.OnRemoveUser.RemoveListener(OnUserDisconnected);
             UMI3DUser.OnUserAudioUpdated.RemoveListener(OnAudioChanged);
             UMI3DUser.OnUserMicrophoneIdentityUpdated.RemoveListener(OnAudioChanged);
         }
 
-        private MumbleAudioPlayer MumbleAudioPlayerContain(UMI3DUser user)
+        private MumbleAudioPlayer MumbleAudioPlayerContain(IAudioUser user)
         {
             if (user == null)
                 return null;
@@ -200,7 +207,7 @@ namespace umi3d.cdk.collaboration
             return null;
         }
 
-        public MumbleAudioPlayer GetMumbleAudioPlayer(UMI3DUser user)
+        public MumbleAudioPlayer GetMumbleAudioPlayer(IAudioUser user)
         {
             if (user == null) return null;
 
@@ -249,7 +256,7 @@ namespace umi3d.cdk.collaboration
             return PendingMumbleAudioPlayer[username];
         }
 
-        private void CleanPending(UMI3DUser user)
+        private void CleanPending(IAudioUser user)
         {
             if (!string.IsNullOrEmpty(user.audioLogin) && PendingMumbleAudioPlayer.ContainsKey(user.audioLogin))
             {
@@ -288,7 +295,7 @@ namespace umi3d.cdk.collaboration
         /// Manage user update
         /// </summary>
         /// <param name="user"></param>
-        private void OnUserDisconnected(UMI3DUser user)
+        private void OnUserDisconnected(IAudioUser user)
         {
             if (WaitCoroutine.ContainsKey(user.id))
             {
@@ -324,7 +331,7 @@ namespace umi3d.cdk.collaboration
         /// Manage user update
         /// </summary>
         /// <param name="user"></param>
-        private void OnAudioChanged(UMI3DUser user)
+        private void OnAudioChanged(IAudioUser user)
         {
             if (WaitCoroutine.ContainsKey(user.id))
             {
@@ -386,7 +393,7 @@ namespace umi3d.cdk.collaboration
                 AudioMixerControl.SetGroup(AudioMixerControl.Group.Conversation, audioPlayer);
         }
 
-        private IEnumerator WaitForAudioCreation(UMI3DUser user)
+        private IEnumerator WaitForAudioCreation(IAudioUser user)
         {
             yield return new WaitUntil(() => user?.audioplayer?.audioSource?.gameObject != null);
             OnAudioChanged(user);
