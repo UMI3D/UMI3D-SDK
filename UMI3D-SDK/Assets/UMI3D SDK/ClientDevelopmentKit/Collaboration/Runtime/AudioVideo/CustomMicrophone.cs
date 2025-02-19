@@ -201,14 +201,15 @@ namespace umi3d.cdk.collaboration
             if (!shouldSendAudioToServer)
                 return;
 
-            Profiler.BeginThreadProfiling("Others", "NAudio Thread");
-
+            Profiler.BeginThreadProfiling("Others", "Custom Audio Thread");
             audioProcessingProfilerMarker.Begin();
 
-            try
-            {
-                float[] tmpSamples = ConvertAudioInputToData(a.ByteCount, a.Data);
+            float[] tmpSamples = ConvertAudioInputToData(a.ByteCount, a.Data);
 
+            bool useLoopBack = (MicrophoneListener.Exists && MicrophoneListener.Instance.useLocalLoopback);
+
+            if (!useLoopBack)
+            {
                 foreach (IMicrophoneFilter filter in filters)
                 {
                     if (!filter.Enable)
@@ -224,21 +225,15 @@ namespace umi3d.cdk.collaboration
                         UMI3DLogger.LogException(e, DebugScope.Collaboration);
                     }
                 }
-
-                lock (data)
-                    data.AddRange(tmpSamples);
-
-                if (!isChannelChoosen)
-                    ChooseChannel(a.Data, a.ByteCount);
             }
-            catch (Exception e)
-            {
-                UMI3DLogger.LogError($"{nameof(CustomMicrophone)}.{nameof(ProcessAudio)} error ", DebugScope.Mumble);
-                UMI3DLogger.LogException(e, DebugScope.Mumble);
-            }
+
+            lock (data)
+                data.AddRange(tmpSamples);
+
+            if (!isChannelChoosen)
+                ChooseChannel(a.Data, a.ByteCount);
 
             audioProcessingProfilerMarker.End();
-
             Profiler.EndThreadProfiling();
         }
 
@@ -246,19 +241,29 @@ namespace umi3d.cdk.collaboration
 
         private float[] ConvertAudioInputToData(int nbBytes, byte[] buffer)
         {
-            int sampleCount = (int)(nbBytes / (2f * numberOfChannel));
-
-            if (tmpSamples == null || tmpSamples.Length == sampleCount)
-                tmpSamples = new float[sampleCount];
-
-            int j = 0;
-            for (int index = 0; index < nbBytes; index += 2 * numberOfChannel)
+            try
             {
-                tmpSamples[j] = ((short)((buffer[channelChoosen + index + 1] << 8) | buffer[channelChoosen + index])) / (float)short.MaxValue;
-                j++;
-            }
+                int sampleCount = (int)(nbBytes / (2f * numberOfChannel));
 
-            return tmpSamples;
+                if (tmpSamples == null || tmpSamples.Length == sampleCount)
+                    tmpSamples = new float[sampleCount];
+
+                int j = 0;
+                for (int index = 0; index < nbBytes; index += 2 * numberOfChannel)
+                {
+                    tmpSamples[j] = ((short)((buffer[channelChoosen + index + 1] << 8) | buffer[channelChoosen + index])) / (float)short.MaxValue;
+                    j++;
+                }
+
+                return tmpSamples;
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.LogError($"{nameof(CustomMicrophone)}.{nameof(ConvertAudioInputToData)} error ", DebugScope.Mumble);
+                UMI3DLogger.LogException(e, DebugScope.Mumble);
+
+                return new float[0];
+            }
         }
 
         /// <summary>

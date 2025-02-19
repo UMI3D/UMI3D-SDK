@@ -17,6 +17,7 @@ limitations under the License.
 using CSCore.SoundIn;
 using System;
 using System.Collections.Generic;
+using umi3d.common;
 
 namespace umi3d.cdk.collaboration
 {
@@ -88,18 +89,27 @@ namespace umi3d.cdk.collaboration
 
             this.settings = settings;
 
-            // we can't change WasapiLoopbackCapture format to mono sound, otherwise it fails
-            this.capture = new WasapiLoopbackCapture(100, new(48000, 16, 2));
-            this.capture.Initialize();
-            this.bytesPerSample = capture.WaveFormat.BitsPerSample / 8;
-            capture.DataAvailable += RecordSystemAudio;
+            try
+            {
+                // we can't change WasapiLoopbackCapture format to mono sound, otherwise it can fail
+                this.capture = new WasapiLoopbackCapture(100, new(48000, 16, 2));
+                this.capture.Initialize();
+                this.capture.DataAvailable += RecordSystemAudio;
+                this.bytesPerSample = capture.WaveFormat.BitsPerSample / 8;
+            }
+            catch (Exception ex)
+            {
+                UMI3DLogger.LogError($"{nameof(AECAndNoiseReductionMicrophoneFilter)} : cannot init system audio recording, AEC won't be performed", DebugScope.Collaboration);
+                UMI3DLogger.LogException(ex, DebugScope.Collaboration);
+                this.capture = null;
+            }
         }
 
         private void RecordSystemAudio(object sender, DataAvailableEventArgs e)
         {
             int sampleCount = e.ByteCount / bytesPerSample;
 
-            lock(this.echoSamples)
+            lock (this.echoSamples)
             {
                 float sample = 0f;
 
@@ -120,7 +130,7 @@ namespace umi3d.cdk.collaboration
                     }
 
                     if (this.echoSamples.Count > MAX_ECHO_QUEUE_SIZE)
-                        this.echoSamples.Dequeue();
+                        _ = this.echoSamples.Dequeue();
 
                     this.echoSamples.Enqueue(sample);
                 }
@@ -129,7 +139,11 @@ namespace umi3d.cdk.collaboration
 
         void IMicrophoneFilter.ProcessAudio(float[] samples)
         {
-            if (!this.Enable || (!this.settings.useEchoCanceller && !this.settings.useNoiseReduction))
+            if (!this.Enable || this.capture == null)
+                return;
+
+            // nothing to do
+            if (!this.settings.useEchoCanceller && !this.settings.useNoiseReduction)
                 return;
 
             int bufferSize = samples.Length;
@@ -169,7 +183,7 @@ namespace umi3d.cdk.collaboration
 
         void IDisposable.Dispose()
         {
-            capture.Dispose();
+            this.capture?.Dispose();
             AudioProcessingWebRTCWrapper.Destroy();
         }
     }
