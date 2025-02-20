@@ -17,6 +17,7 @@ limitations under the License.
 using CSCore.SoundIn;
 using System;
 using System.Collections.Generic;
+using System.Threading.Tasks;
 using umi3d.common;
 
 namespace umi3d.cdk.collaboration
@@ -42,10 +43,20 @@ namespace umi3d.cdk.collaboration
                 this.enable = value;
                 this.echoSamples.Clear();
 
-                if (value)
+                if (this.capture == null)
+                    return;
+
+                if (value && !this.isCapturing)
+                {
+                    this.isCapturing = true;
                     this.capture.Start();
-                else
+                }
+                else if (!value && this.isCapturing)
+                {
                     this.capture.Stop();
+
+                    isCapturing = false;
+                }
             }
         }
 
@@ -58,6 +69,8 @@ namespace umi3d.cdk.collaboration
         /// Recorder for audio system.
         /// </summary>
         private WasapiLoopbackCapture capture;
+
+        private bool isCapturing = false;
 
         /// <summary>
         /// Bytes per sample for <see cref="capture"/>
@@ -85,17 +98,27 @@ namespace umi3d.cdk.collaboration
 
         public AECAndNoiseReductionMicrophoneFilter(AudioProcessingWebRTCWrapper.AudioProcessingSettings settings)
         {
-            AudioProcessingWebRTCWrapper.Init(settings);
-
             this.settings = settings;
 
+            InitAsync();
+        }
+
+        private async void InitAsync()
+        {
             try
             {
-                // we can't change WasapiLoopbackCapture format to mono sound, otherwise it can fail
-                this.capture = new WasapiLoopbackCapture(100, new(48000, 16, 2));
-                this.capture.Initialize();
-                this.capture.DataAvailable += RecordSystemAudio;
-                this.bytesPerSample = capture.WaveFormat.BitsPerSample / 8;
+                AudioProcessingWebRTCWrapper.Init(settings);
+
+                await Task.Run(() =>
+                {
+                    // we can't change WasapiLoopbackCapture format to mono sound, otherwise it can fail
+                    this.capture = new WasapiLoopbackCapture(100, new(48000, 16, 2));
+                    this.capture.Initialize(); // CPU Intensive
+                    this.capture.DataAvailable += RecordSystemAudio;
+                    this.bytesPerSample = capture.WaveFormat.BitsPerSample / 8;
+                });
+
+                this.Enable = this.enable;
             }
             catch (Exception ex)
             {
@@ -183,6 +206,7 @@ namespace umi3d.cdk.collaboration
 
         void IDisposable.Dispose()
         {
+            this.isCapturing = false;
             this.capture?.Dispose();
             AudioProcessingWebRTCWrapper.Destroy();
         }

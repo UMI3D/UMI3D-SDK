@@ -23,6 +23,7 @@ using UnityEngine.Profiling;
 using CSCore.SoundIn;
 using CSCore;
 using System.Linq;
+using System.Threading.Tasks;
 
 namespace umi3d.cdk.collaboration
 {
@@ -160,14 +161,7 @@ namespace umi3d.cdk.collaboration
             isChannelChoosen = false;
             NumSamplesPerOutgoingPacket = MumbleConstants.NUM_FRAMES_PER_OUTGOING_PACKET * currentMicSampleRate / 100;
 
-            waveIn?.Dispose();
-            waveIn = new WaveIn(new WaveFormat(this.currentMicSampleRate, 16, numberOfChannel))
-            {
-                Device = WaveInDevice.EnumerateDevices().ElementAt(MicNumberToUse),
-                Latency = 100 // Delay, to be sure echo samples are recorded before mic samples
-            };
-            waveIn.Initialize();
-            waveIn.DataAvailable += ProcessAudio;
+            InitMicrophoneAsync();
 
             if (!this.filterInit)
             {
@@ -184,12 +178,41 @@ namespace umi3d.cdk.collaboration
 
                 this.filters.Add(new AECAndNoiseReductionMicrophoneFilter(settings));
 #endif
+
+                foreach (IMicrophoneFilter filter in filters)
+                    filter.Enable = false;
                 this.filterInit = true;
             }
 
-            UMI3DLogger.Log($"{nameof(CustomMicrophone)} : init with {waveIn.Device.Name}", DebugScope.Collaboration);
-
             return currentMicSampleRate;
+        }
+
+        private async void InitMicrophoneAsync()
+        {
+            try
+            {
+                await Task.Run(() =>
+                {
+                    waveIn?.Dispose();
+                    waveIn = new WaveIn(new WaveFormat(this.currentMicSampleRate, 16, numberOfChannel))
+                    {
+                        Device = WaveInDevice.EnumerateDevices().ElementAt(MicNumberToUse),
+                        Latency = 100 // Delay, to be sure echo samples are recorded before mic samples
+                    };
+
+                    lock (waveIn)
+                    {
+                        waveIn.Initialize();// CPU Intensive
+                        waveIn.DataAvailable += ProcessAudio;
+                    }
+
+                    UMI3DLogger.Log($"{nameof(CustomMicrophone)} : init with {waveIn.Device.Name}", DebugScope.Collaboration);
+                });
+            }
+            catch (Exception ex)
+            {
+                UMI3DLogger.LogException(ex, DebugScope.Collaboration);
+            }
         }
 
         /// <summary>
@@ -363,7 +386,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void StartRecording()
         {
-            if (!needToRecord)
+            if (!needToRecord && this.waveIn != null)
             {
                 try
                 {
@@ -404,6 +427,9 @@ namespace umi3d.cdk.collaboration
             {
                 needToRecord = false;
                 waveIn.Stop();
+
+                foreach (IMicrophoneFilter filter in filters)
+                    filter.Enable = false;
             }
         }
 
