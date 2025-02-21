@@ -29,6 +29,9 @@ namespace umi3d.edk.collaboration
         readonly public string login;
         readonly public UMI3DAudioPlayer audioPlayer;
 
+        private readonly IUMI3DServer umi3dServerService;
+        private readonly IUMI3DEnvironmentManager umi3dEnvironmentService;
+
         public AudioBinding(string audioLogin, string login, UMI3DAudioPlayer audioPlayer)
         {
             if (audioLogin is null)
@@ -41,6 +44,30 @@ namespace umi3d.edk.collaboration
             this.audioLogin = audioLogin;
             this.login = login;
             this.audioPlayer = audioPlayer;
+
+            umi3dServerService = UMI3DServer.Instance;
+            umi3dEnvironmentService = UMI3DEnvironment.Instance;
+            Init();
+        }
+
+        protected void Init()
+        {
+            umi3dServerService.OnUserActive.AddListener(DispatchBinding);
+            umi3dServerService.OnUserRefreshed.AddListener(DispatchBinding);
+        }
+
+        private void Remove(UMI3DUser user)
+        {
+            Transaction transaction = new(true);
+            transaction.AddIfNotNull(this.GetDeleteEntity());
+            transaction.Dispatch();
+        }
+
+        private void DispatchBinding(UMI3DUser user)
+        {
+            Transaction transaction = new(true);
+            transaction.AddIfNotNull(this.GetLoadEntity(new System.Collections.Generic.HashSet<UMI3DUser>() { user }));
+            transaction.Dispatch();
         }
 
         public override IEntity ToEntityDto(UMI3DUser user)

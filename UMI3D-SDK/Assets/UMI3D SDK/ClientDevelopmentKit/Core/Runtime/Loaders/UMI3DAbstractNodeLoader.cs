@@ -20,7 +20,6 @@ using UnityEngine;
 
 namespace umi3d.cdk
 {
-
     /// <summary>
     /// Loader for <see cref="UMI3DAbstractNodeDto"/>.
     /// </summary>
@@ -65,7 +64,7 @@ namespace umi3d.cdk
         {
             var nodeDto = data.dto as UMI3DAbstractNodeDto;
             if (data.node == null)
-                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
+                throw (new common.Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
 
             if (data.dto != null)
             {

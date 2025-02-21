@@ -19,7 +19,6 @@ using System.Collections.Generic;
 
 namespace umi3d.common.collaboration.dto.signaling
 {
-
     /// <summary>
     /// DTO describing a user as a collaborative entity.
     /// </summary>

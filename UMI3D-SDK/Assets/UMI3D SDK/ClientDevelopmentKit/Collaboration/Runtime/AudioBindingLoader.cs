@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration;
 using umi3d.cdk.collaboration.emotes;
@@ -30,9 +31,10 @@ namespace umi3d.cdk
         {
             public AudioBindingDto dto;
 
-            public AudioUser(AudioBindingDto dto)
+            public AudioUser(AudioBindingDto dto, UMI3DAudioPlayer audioplayer)
             {
                 this.dto = dto;
+                this.audioplayer = audioplayer;
             }
 
             public ulong id => dto.id;
@@ -40,7 +42,7 @@ namespace umi3d.cdk
 
             public string login => dto.login;
 
-            public UMI3DAudioPlayer audioplayer { get; }
+            public UMI3DAudioPlayer audioplayer { get;}
 
             public ulong audioPlayerId => dto.audioPlayerId;
         }
@@ -51,35 +53,46 @@ namespace umi3d.cdk
 
         private readonly IEnvironmentManager environmentManager;
 
-        public AudioBindingLoader() : this(emoteManagementService: EmoteManager.Instance,
-                                        environmentManager: UMI3DCollaborationEnvironmentLoader.Instance)
+        public AudioBindingLoader() : this(environmentManager: UMI3DCollaborationEnvironmentLoader.Instance)
         {
         }
 
-        public AudioBindingLoader(IEmoteService emoteManagementService, IEnvironmentManager environmentManager)
+        public AudioBindingLoader(IEnvironmentManager environmentManager)
         {
             this.environmentManager = environmentManager;
         }
 
         #endregion DependencyInjection
 
+        static public List<AudioUser> users = new();
+
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
         {
             return data.dto is AudioBindingDto;
         }
 
-        public override Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
+        public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
+
             if (value.dto is not AudioBindingDto audioBindingDto)
                 throw (new common.Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
 
-            var user = new AudioUser(audioBindingDto);
+            var audioEntity = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(value.environmentId, audioBindingDto.audioPlayerId, value.tokens);
 
-            environmentManager.RegisterEntity(value.environmentId, audioBindingDto.id, audioBindingDto, user,() => OnRemoveUser?.Invoke(user)).NotifyLoaded();
+            var user = new AudioUser(audioBindingDto, UMI3DAudioPlayer.Get(value.environmentId, audioBindingDto.audioPlayerId));
 
+            environmentManager.RegisterEntity(value.environmentId, audioBindingDto.id, audioBindingDto, user, Delete(user)).NotifyLoaded();
+            users.Add(user);
             OnNewUser?.Invoke(user);
+        }
 
-            return Task.CompletedTask;
+        public Action Delete(AudioUser user)
+        {
+            return () =>
+            {
+                users.Remove(user);
+                OnRemoveUser?.Invoke(user);
+            };
         }
 
         public override Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)

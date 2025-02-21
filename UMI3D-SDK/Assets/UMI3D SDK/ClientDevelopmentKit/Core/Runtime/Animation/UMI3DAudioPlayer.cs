@@ -45,8 +45,7 @@ namespace umi3d.cdk
 
 
         public UMI3DAudioPlayer(ulong environmentId,UMI3DAudioPlayerDto dto) : base(environmentId, dto)
-        {
-        }
+        { }
 
         /// <inheritdoc/>
         public override bool IsPlaying() => audioSource.isPlaying;

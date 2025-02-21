@@ -223,7 +223,9 @@ namespace umi3d.cdk.collaboration
 
         public MumbleAudioPlayer GetMumbleAudioPlayer(string username, uint session)
         {
-            UMI3DUser user = UMI3DCollaborationEnvironmentLoader.Instance.UserList.FirstOrDefault(u => u.audioLogin == username);
+            IAudioUser user = 
+                UMI3DCollaborationEnvironmentLoader.Instance.UserList.FirstOrDefault(u => u.audioLogin == username)
+                ?? (IAudioUser)AudioBindingLoader.users.FirstOrDefault(u => u.audioLogin == username);
             if (user != null)
             {
                 MumbleAudioPlayer newPlayer = GetMumbleAudioPlayer(user);
