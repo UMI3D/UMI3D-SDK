@@ -57,12 +57,18 @@ public class ReadStyleConverter : JsonConverter
                     return ReadAnchorJson(jsonObject);
                 if (type == nameof(ColorStyleDto))
                     return ReadColorJson(jsonObject);
+                if (type == nameof(HoverColorStyleDto))
+                    return ReadHoverColorJson(jsonObject);
                 if (type == nameof(PositionStyleDto))
                     return ReadPositionJson(jsonObject);
                 if (type == nameof(SizeStyleDto))
                     return ReadSizeJson(jsonObject);
                 if (type == nameof(TextStyleDto))
                     return ReadTextJson(jsonObject, serializer);
+                if (type == nameof(TextStyleDto))
+                    return ReadTextJson(jsonObject, serializer);
+                if (type == nameof(LoadingStyleDto))
+                    return ReadLoadingJson(jsonObject);
             }
         }
         catch (Exception ex)
@@ -117,6 +123,22 @@ public class ReadStyleConverter : JsonConverter
     private object ReadColorJson(JObject jsonObject)
     {
         var colorStyleDto = new ColorStyleDto();
+        if (jsonObject.TryGetValue("color", out var color))
+            colorStyleDto.color = color.ToObject<ColorDto>();
+
+        return colorStyleDto;
+    }
+
+    private object ReadLoadingJson(JObject jsonObject)
+    {
+        var loadingStyleDto = new LoadingStyleDto();
+
+        return loadingStyleDto;
+    }
+
+    private object ReadHoverColorJson(JObject jsonObject)
+    {
+        var colorStyleDto = new HoverColorStyleDto();
         if (jsonObject.TryGetValue("color", out var color))
             colorStyleDto.color = color.ToObject<ColorDto>();
 

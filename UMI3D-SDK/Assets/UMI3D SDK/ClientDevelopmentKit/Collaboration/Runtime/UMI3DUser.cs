@@ -24,11 +24,22 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.collaboration
 {
+
+    public interface IAudioUser
+    {
+        public ulong id { get; }
+        public string audioLogin { get; }
+        public string login { get; }
+        public UMI3DAudioPlayer audioplayer { get; }
+
+        public ulong audioPlayerId { get; }
+    }
+
     /// <summary>
     /// UMI3D user representation.
     /// </summary>
     [Serializable]
-    public class UMI3DUser
+    public class UMI3DUser : IAudioUser
     {
         /// <summary>
         /// DTO local copy.

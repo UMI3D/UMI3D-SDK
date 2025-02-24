@@ -15,7 +15,8 @@
         "UMI3D.EDK.UserCapture",
         "UMI3D.EDK.Collaboration",
         "UMI3D.Common.UserCapture.Editor",
-        "TestUtils"
+        "TestUtils",
+        "inetum.unityUtils.editor"
     ],
     "includePlatforms": [
         "Editor"
