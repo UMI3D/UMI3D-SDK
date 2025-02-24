@@ -33,6 +33,21 @@ namespace umi3d.edk
         UMI3DUserEvent OnUserRegistered { get; }
         UMI3DUserEvent OnUserUnregistered { get; }
 
+        /// <summary>
+        /// Is the server active?
+        /// </summary>
+        bool isRunning { get; }
+
+        /// <summary>
+        /// Event called when the UMI3D server is launched.
+        /// </summary>
+        event System.Action OnServerStarted;
+
+        /// <summary>
+        /// Event called when the UMI3D server has been stopped.
+        /// </summary>
+        event System.Action OnServerStopped;
+
         void NotifyUserRefreshed(UMI3DUser user);
         void NotifyUserChanged(UMI3DUser user);
         void NotifyUserStatusChanged(UMI3DUser user, StatusType status);
