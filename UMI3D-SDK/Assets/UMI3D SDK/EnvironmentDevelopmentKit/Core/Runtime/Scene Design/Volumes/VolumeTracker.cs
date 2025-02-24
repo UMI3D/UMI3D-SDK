@@ -19,13 +19,25 @@ using System.Collections.Generic;
 
 namespace umi3d.edk.volume
 {
+    public interface IVolumeTracker
+    {
+        IReadOnlyCollection<UMI3DUser> UsersInVolume { get; }
+        IVolume Volume { get; }
+
+        event Action<UMI3DUser> UserEntered;
+        event Action<UMI3DUser> UserExited;
+
+        void Dispose();
+    }
+
     /// <summary>
     /// Utility class to track user entries and exits in a volume. Resistant to user leave.
     /// </summary>
-    public class VolumeTracker : IDisposable
+    public class VolumeTracker : IDisposable, IVolumeTracker
     {
         private readonly IVolume volume;
         private readonly IUMI3DServer umi3dServer;
+
         private readonly HashSet<UMI3DUser> usersInVolume = new();
 
         /// <summary>
@@ -49,6 +61,8 @@ namespace umi3d.edk.volume
         /// </summary>
         public event Action<UMI3DUser> UserExited;
 
+        private readonly HashSet<UMI3DUser> insideButNotActiveUsers = new();
+
         /// <summary>
         /// Initializes the VolumeTracker with a specific volume.
         /// </summary>
@@ -58,19 +72,21 @@ namespace umi3d.edk.volume
         {
             if (volume == null) throw new ArgumentNullException(nameof(volume));
             if (umi3dServer == null) throw new ArgumentNullException(nameof(umi3dServer));
+
             this.volume = volume;
             this.umi3dServer = umi3dServer;
+
             SubscribeToVolumeEvents();
         }
 
         /// <summary>
         /// Subscribes to the volume's user enter and exit events.
         /// </summary>
-        /// <param name="umi3dServer">Server instance to listen to user leave.</param>
         private void SubscribeToVolumeEvents()
         {
             volume.GetUserEnter().AddListener(OnUserEnter);
             volume.GetUserExit().AddListener(OnUserExit);
+            umi3dServer.OnUserActive.AddListener(TriggerEnterEventAfterLoading);
             umi3dServer.OnUserLeave.AddListener(OnUserExit);
         }
 
@@ -85,7 +101,10 @@ namespace umi3d.edk.volume
             volume.GetUserExit().RemoveListener(OnUserExit);
 
             if (umi3dServer != null) // could have been destroyed
+            {
+                umi3dServer.OnUserActive.RemoveListener(TriggerEnterEventAfterLoading);
                 umi3dServer.OnUserLeave.RemoveListener(OnUserExit);
+            }
         }
 
         /// <summary>
@@ -94,6 +113,11 @@ namespace umi3d.edk.volume
         /// <param name="user">The user who entered the volume.</param>
         private void OnUserEnter(UMI3DUser user)
         {
+            if (user.status is not umi3d.common.StatusType.ACTIVE)
+            {
+                insideButNotActiveUsers.Add(user);
+                return;
+            }
             if (user == null || usersInVolume.Contains(user)) return;
             usersInVolume.Add(user);
             UserEntered?.Invoke(user);
@@ -110,6 +134,14 @@ namespace umi3d.edk.volume
             UserExited?.Invoke(user);
         }
 
+        private void TriggerEnterEventAfterLoading(UMI3DUser user)
+        {
+            if (!insideButNotActiveUsers.Contains(user)) return;
+
+            OnUserEnter(user);
+            insideButNotActiveUsers.Remove(user);
+        }
+
         /// <summary>
         /// Cleans up the event subscriptions.
         /// </summary>
@@ -119,11 +151,16 @@ namespace umi3d.edk.volume
         }
     }
 
+    public interface IVolumeTracker<T> : IVolumeTracker where T : IVolume
+    {
+        T VolumeTyped { get; }
+    }
+
     /// <summary>
     /// Generic version of VolumeTracker for a specific type of volume.
     /// </summary>
     /// <typeparam name="T">The type of volume to be tracked.</typeparam>
-    public class VolumeTracker<T> : VolumeTracker where T : IVolume
+    public class VolumeTracker<T> : VolumeTracker, IVolumeTracker<T> where T : IVolume
     {
         private readonly T volumeTyped;
 
