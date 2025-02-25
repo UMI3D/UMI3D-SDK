@@ -24,5 +24,6 @@ namespace umi3d.common.interaction.form
         public string tooltip { get; set; }
         public List<StyleDto> styles { get; set; }
         public List<DivDto> FirstChildren { get; set; }
+        public string tag { get; set; }
     }
 }

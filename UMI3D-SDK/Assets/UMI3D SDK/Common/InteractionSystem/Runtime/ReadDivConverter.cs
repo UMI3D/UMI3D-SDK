@@ -247,6 +247,8 @@ public class ReadDivConverter : JsonConverter
             divDto.styles = styles?.ToObject<StyleDto[]>(styleSerializer)?.ToList();
         if (jsonObject.TryGetValue("FirstChildren", out var FirstChildren))
             divDto.FirstChildren = FirstChildren?.ToObject<DivDto[]>(serializer)?.ToList();
+        if (jsonObject.TryGetValue("tag", out var tag))
+            divDto.tag = tag?.ToObject<string>();
     }
     private void ReadBaseInputJson(BaseInputDto baseInputDto, JObject jsonObject, JsonSerializer serializer)
     {
