@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using SFB;
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -212,5 +213,46 @@ namespace umi3d.cdk.interaction
                     }
                 });
         }
+
+        public static string[] OpenFileBrowser(string title,List<string> authorizedExtensions, bool allowMultipleFiles)
+        {
+            ExtensionFilter[] extensions = (authorizedExtensions == null || authorizedExtensions.Count == 0)
+                ? null
+                : new[] { new ExtensionFilter("", authorizedExtensions.ToArray()) };
+
+            string[] paths = StandaloneFileBrowser.OpenFilePanel(
+                    title,
+                    "",
+                    extensions,
+                    allowMultipleFiles
+                );
+
+            return paths;
+            //if (paths == null || paths.Length == 0)
+            //{
+            //    return null;
+            //}
+
+            //menuItem.dto.value = paths[0];
+            //menuItem.NotifyValueChange(paths[0]);
+        }
+
+        public static bool TryGetFileToUpload(string path, out byte[] fileInByte, out string fileName)
+        {
+            // Check if there is a valid file at this 'path'.
+            if (!FileExist(path))
+            {
+                fileInByte = null;
+                fileName = null;
+                return false;
+            }
+
+            // Set the 'fileInByte'.
+            fileInByte = File.ReadAllBytes(path);
+            fileName = System.IO.Path.GetFileName(path);
+
+            return true;
+        }
+
     }
 }

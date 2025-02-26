@@ -673,6 +673,16 @@ namespace umi3d.common.collaboration
             UnityWebRequest uwr = await _PostRequest(this, _HeaderToken, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, headers);
             uwr.Dispose();
         }
+
+        public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        {
+            var headers = new List<(string, string)>
+            {
+                (UMI3DNetworkingKeys.contentHeader, fileName)
+            };
+            UnityWebRequest uwr = await _PostRequest(this, null, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false, headers);
+            uwr.Dispose();
+        }
         #endregion
 
         #region utils
@@ -788,7 +798,7 @@ namespace umi3d.common.collaboration
             {
                 return
                     await (instance?.Sub_PostRequest(www, date, HeaderToken, url, contentType, bytes, ShouldTryAgain, UseCredential, headers, tryCount)
-                    ?? throw new Umi3dNetworkingException(www, "Failed to get "));
+                    ?? throw new Umi3dNetworkingException(www, "Failed to post "));
 
             }
             return www;

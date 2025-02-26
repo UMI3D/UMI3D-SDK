@@ -529,7 +529,9 @@ namespace umi3d.cdk.collaboration
 
                     UploadFileRequest(token, fileId);
                     break;
-
+                case RequestHttpUploadToUrlDto uploadFileRequest:
+                    UploadFileRequest(uploadFileRequest.url, uploadFileRequest.extensions, uploadFileRequest.allowMultipleFile);
+                    break;
                 case RedirectionDto redirection:
                     MainThreadManager.Run(() =>
                     {
@@ -696,6 +698,13 @@ namespace umi3d.cdk.collaboration
                     UploadFileRequest(token, fileId);
 
                     break;
+                case UMI3DOperationKeys.UploadFileToUrlRequest:
+                    string url = UMI3DSerializer.Read<string>(container);
+                    List<string> extensions = UMI3DSerializer.ReadList<string>(container);
+                    bool allowMultipleFile = UMI3DSerializer.Read<bool>(container);
+                    UploadFileRequest(url, extensions, allowMultipleFile);
+
+                    break;
 
                 case UMI3DOperationKeys.RedirectionRequest:
                     RedirectionDto redirection = UMI3DSerializer.Read<RedirectionDto>(container);
@@ -816,6 +825,32 @@ namespace umi3d.cdk.collaboration
             });
         }
 
+        async void UploadFileRequest(string url, List<string> extensions, bool allowMultipleFile)
+        {
+            try
+            {
+                var result = FileUploader.OpenFileBrowser("Upload", extensions, allowMultipleFile);
+                if (result == null)
+                    return;
+
+                var tasks = result.Select(p => (FileUploader.TryGetFileToUpload(p, out byte[] bytesToUpload, out string fileName), bytesToUpload, fileName))
+                    .Where(c => c.Item1)
+                    .Select(c => SendPostFileToURL(url, c.fileName, c.bytesToUpload));
+
+                if (allowMultipleFile)
+                    await Task.WhenAll(tasks);
+                else
+                    await (tasks.FirstOrDefault() ?? Task.CompletedTask);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.Log("Error on upload file request to " + url, scope);
+                UMI3DLogger.LogException(e, scope);
+            }
+        }
+
+
+
         private async void SendGetLocalInfo(string key)
         {
             try
@@ -835,6 +870,19 @@ namespace umi3d.cdk.collaboration
             try
             {
                 await environmentClient.HttpClient.SendPostFile(token, fileName, bytesToUpload);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.Log("error on upload file : " + fileName, scope);
+                UMI3DLogger.LogException(e, scope);
+            }
+        }
+
+        private async Task SendPostFileToURL(string url, string fileName, byte[] bytesToUpload)
+        {
+            try
+            {
+                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload);
             }
             catch (Exception e)
             {
