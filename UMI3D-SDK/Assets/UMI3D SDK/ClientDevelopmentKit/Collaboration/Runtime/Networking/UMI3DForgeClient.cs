@@ -827,6 +827,7 @@ namespace umi3d.cdk.collaboration
 
         async void UploadFileRequest(string url, List<string> extensions, bool allowMultipleFile)
         {
+#if UNITY_STANDALONE_WIN
             try
             {
                 var result = FileUploader.OpenFileBrowser("Upload", extensions, allowMultipleFile);
@@ -847,6 +848,7 @@ namespace umi3d.cdk.collaboration
                 UMI3DLogger.Log("Error on upload file request to " + url, scope);
                 UMI3DLogger.LogException(e, scope);
             }
+#endif
         }
 
 
