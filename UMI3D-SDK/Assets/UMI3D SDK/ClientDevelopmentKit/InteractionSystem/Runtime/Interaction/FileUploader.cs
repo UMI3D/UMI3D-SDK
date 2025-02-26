@@ -214,6 +214,13 @@ namespace umi3d.cdk.interaction
                 });
         }
 
+        /// <summary>
+        /// Open the os file explorer pop up for file opening
+        /// </summary>
+        /// <param name="title"></param>
+        /// <param name="authorizedExtensions"></param>
+        /// <param name="allowMultipleFiles"></param>
+        /// <returns></returns>
         public static string[] OpenFileBrowser(string title,List<string> authorizedExtensions, bool allowMultipleFiles)
         {
             ExtensionFilter[] extensions = (authorizedExtensions == null || authorizedExtensions.Count == 0)
@@ -228,15 +235,15 @@ namespace umi3d.cdk.interaction
                 );
 
             return paths;
-            //if (paths == null || paths.Length == 0)
-            //{
-            //    return null;
-            //}
-
-            //menuItem.dto.value = paths[0];
-            //menuItem.NotifyValueChange(paths[0]);
         }
 
+        /// <summary>
+        /// Retrieve data and name file from path
+        /// </summary>
+        /// <param name="path"></param>
+        /// <param name="fileInByte"></param>
+        /// <param name="fileName"></param>
+        /// <returns></returns>
         public static bool TryGetFileToUpload(string path, out byte[] fileInByte, out string fileName)
         {
             // Check if there is a valid file at this 'path'.
