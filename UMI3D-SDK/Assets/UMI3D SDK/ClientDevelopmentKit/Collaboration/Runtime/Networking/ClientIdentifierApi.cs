@@ -67,13 +67,15 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         /// <param name="parameter">FormDto to be filled.</param>
         /// <param name="callback">Action to return the completed FormDto.</param>
-        public virtual async Task GetParameterDtos(WaitConnectionDto parameter)
+        /// <returns>cancelation status</returns>
+        public virtual async Task<bool> GetParameterDtos(WaitConnectionDto parameter)
         {
             if (parameter is WebConnectionDto webConnection)
             {
                 UnityEngine.Application.OpenURL(webConnection.connectionUrl);
             }
             await UMI3DAsyncManager.Delay((int)(parameter.waitTimeSecond * 1000));
+            return false;
         }
 
         /// <summary>

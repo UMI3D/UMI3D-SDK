@@ -38,5 +38,10 @@ namespace umi3d.common.collaboration.dto.networking
         /// Id of the waitConnectionDto
         /// </summary>
         public ulong waitId { get; set; }
+
+        /// <summary>
+        /// state if the connection is cancel
+        /// </summary>
+        public bool isCancel { get; set; }
     }
 }
