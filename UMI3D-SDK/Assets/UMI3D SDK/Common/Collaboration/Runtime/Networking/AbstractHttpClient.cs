@@ -674,6 +674,14 @@ namespace umi3d.common.collaboration
             uwr.Dispose();
         }
 
+        /// <summary>
+        /// Send request using POST method to send file to a given url.
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="fileName"></param>
+        /// <param name="bytes"></param>
+        /// <param name="shouldTryAgain"></param>
+        /// <returns></returns>
         public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
             var headers = new List<(string, string)>

@@ -132,7 +132,7 @@ namespace umi3d.cdk.collaboration
         {
             int sampleCount = e.ByteCount / bytesPerSample;
 
-            lock(this.echoSamples)
+            lock (this.echoSamples)
             {
                 float sample = 0f;
 
@@ -169,7 +169,7 @@ namespace umi3d.cdk.collaboration
             if (!this.settings.useEchoCanceller && !this.settings.useNoiseReduction)
                 return;
 
-                int bufferSize = samples.Length;
+            int bufferSize = samples.Length;
 
             if (echoShortSamples == null || echoShortSamples.Length != bufferSize)
                 echoShortSamples = new short[bufferSize];
