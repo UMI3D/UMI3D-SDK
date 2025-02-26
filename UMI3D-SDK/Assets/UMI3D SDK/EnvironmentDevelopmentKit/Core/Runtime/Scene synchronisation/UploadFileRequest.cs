@@ -13,8 +13,6 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections.Generic;
-using System.Linq;
 using umi3d.common;
 
 namespace umi3d.edk
@@ -55,47 +53,6 @@ namespace umi3d.edk
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
         {
             RequestHttpUploadDto dto = CreateDto();
-            WriteProperties(dto);
-            return dto;
-        }
-    }
-
-    public class UploadFileToServerRequest : Operation
-    {
-        private const DebugScope scope = DebugScope.EDK | DebugScope.Core | DebugScope.Networking;
-
-        /// <summary>
-        /// url for the upload.
-        /// </summary>
-        public string url;
-        public List<string> extensions;
-        public bool allowMultipleFiles;
-
-        public UploadFileToServerRequest(string url, IEnumerable<string> extensions, bool allowMultipleFile)
-        {
-            this.url = url;
-            this.extensions = extensions.ToList();
-            this.allowMultipleFiles = allowMultipleFile;
-        }
-
-        public override Bytable ToBytable(UMI3DUser user)
-        {
-            return UMI3DSerializer.Write(UMI3DOperationKeys.UploadFileToUrlRequest)
-                + UMI3DSerializer.Write(url) 
-                + UMI3DSerializer.Write(extensions) 
-                + UMI3DSerializer.Write(allowMultipleFiles);
-        }
-
-        protected virtual RequestHttpUploadToUrlDto CreateDto() { return new RequestHttpUploadToUrlDto(); }
-        protected virtual void WriteProperties(RequestHttpUploadToUrlDto dto) {
-            dto.url = url;
-            dto.extensions = extensions;
-            dto.allowMultipleFile = allowMultipleFiles;
-        }
-
-        public override AbstractOperationDto ToOperationDto(UMI3DUser user)
-        {
-            RequestHttpUploadToUrlDto dto = CreateDto();
             WriteProperties(dto);
             return dto;
         }
