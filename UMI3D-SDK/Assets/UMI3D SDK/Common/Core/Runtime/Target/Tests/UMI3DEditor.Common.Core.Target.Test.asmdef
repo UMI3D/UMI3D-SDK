@@ -1,0 +1,25 @@
+{
+    "name": "UMI3DEditor.Common.Core.Target.Test",
+    "rootNamespace": "",
+    "references": [
+        "UnityEngine.TestRunner",
+        "UnityEditor.TestRunner",
+        "UMI3D.Common.Core.Target"
+    ],
+    "includePlatforms": [
+        "Editor"
+    ],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": true,
+    "precompiledReferences": [
+        "nunit.framework.dll"
+    ],
+    "autoReferenced": false,
+    "defineConstraints": [
+        "UNITY_INCLUDE_TESTS",
+        "UMI3D_2_10"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

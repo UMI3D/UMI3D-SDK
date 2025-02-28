@@ -1,0 +1,18 @@
+{
+    "name": "UMI3D.Common.Core.Target",
+    "rootNamespace": "",
+    "references": [
+        "GUID:47c6c327aa0369a4f9e668c0087332d4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [
+        "UMI3D_2_10"
+    ],
+    "versionDefines": [],
+    "noEngineReferences": false
+}
