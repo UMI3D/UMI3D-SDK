@@ -454,7 +454,7 @@ namespace umi3d.common
             if (value is IDictionary dic)
                 return WriteCollectionIDictionary(dic, parameters);
 
-            if (value.Count() > 0)
+            if (value?.Count() > 0)
             {
                 if (typeof(T) == typeof(DictionaryEntryBytable) && value.Cast<DictionaryEntryBytable>().Any(e => !e.IsCountable()))
                     return ListToIndexesBytable(value, parameters);
@@ -462,9 +462,10 @@ namespace umi3d.common
                     return ListToIndexesBytable(value, parameters);
             }
 
-            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value.Count());
-            foreach (T v in value)
-                b += Write(v, parameters);
+            Bytable b = Write(UMI3DObjectKeys.CountArray) + Write(value?.Count() ?? 0);
+            if(value != null)
+                foreach (T v in value)
+                    b += Write(v, parameters);
             return b;
         }
 
