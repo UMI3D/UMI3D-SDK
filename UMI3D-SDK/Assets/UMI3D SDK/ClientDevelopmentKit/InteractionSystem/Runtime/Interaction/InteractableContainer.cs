@@ -32,7 +32,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Interatable associated with the object.
         /// </summary>
-        [Tooltip("Interatable associated with the object")]
+        [Tooltip("Interactable associated with the object")]
         public Interactable Interactable;
 
         private void Awake()
@@ -41,9 +41,29 @@ namespace umi3d.cdk.interaction
                 containers.Add(this);
         }
 
+        private void Start()
+        {
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(AddVisibilityListenerToRendererChildren);
+        }
+
         private void OnDestroy()
         {
             containers.Remove(this);
+            UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.RemoveListener(AddVisibilityListenerToRendererChildren);
+        }
+
+        void AddVisibilityListenerToRendererChildren()
+        {
+            Renderer[] renderers = GetComponentsInChildren<Renderer>();
+            foreach (Renderer renderer in renderers)
+            {
+                if (renderer.GetComponent<InteractableVisibilityListener>() == null)
+                {
+                    InteractableVisibilityListener visibilityListener = renderer.gameObject.AddComponent<InteractableVisibilityListener>();
+                    visibilityListener.renderer = renderer;
+                    visibilityListener.interactableContainer = this;
+                }
+            }
         }
     }
 }
