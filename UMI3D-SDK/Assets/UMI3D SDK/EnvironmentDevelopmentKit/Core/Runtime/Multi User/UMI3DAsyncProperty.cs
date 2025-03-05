@@ -345,6 +345,9 @@ namespace umi3d.edk
 
         public virtual T GetValue(UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetValue();
+
             return groupValueMaps.TryGetValue(group, out T value) ? value : this.value;
         }
 
@@ -374,6 +377,9 @@ namespace umi3d.edk
 
         public virtual SetEntityProperty SetValue(T value, UMI3DGroupAsyncProperty group, bool forceOperation = false)
         {
+            if(group == null)
+                return SetValue(value, forceOperation);
+
             if (!this.groupValueMaps.TryGetValue(group, out T defaultValue))
             {
                 group.Add(this);
@@ -441,6 +447,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForAllUsers(UMI3DGroupAsyncProperty group)
         {
+            if(group == null)
+                return GetSetEntityOperationForUsers(u => true);
+
             return GetSetEntityOperationForUsers(u => true, group);
         }
 
@@ -501,6 +510,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override SetEntityProperty GetSetEntityOperationForUsers(Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetSetEntityOperationForUsers(condition);
+
             bool IsUserSyncAndCondition(UMI3DUser user)
             {
                 return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
@@ -541,6 +553,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override SetEntityProperty Sync(UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return null;
+
             if (!isAsync && !isDeSync)
                 return null;
 

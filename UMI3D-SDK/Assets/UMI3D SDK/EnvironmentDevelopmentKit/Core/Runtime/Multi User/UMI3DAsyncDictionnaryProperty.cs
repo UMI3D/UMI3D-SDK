@@ -210,6 +210,9 @@ namespace umi3d.edk
 
         public SetEntityProperty SetValue(T key, L value, UMI3DGroupAsyncProperty group, bool forceOperation = false)
         {
+            if(group == null)
+                return SetValue(key, value, forceOperation);
+
             if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
             {
                 group.Add(this);
@@ -290,6 +293,9 @@ namespace umi3d.edk
 
         public SetEntityProperty Add(T key, L value, UMI3DGroupAsyncProperty group)
         {
+            if(group == null)
+                return Add(key, value);
+
             if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
             {
                 group.Add(this);
@@ -343,6 +349,9 @@ namespace umi3d.edk
 
         public SetEntityProperty Remove(T key, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return Remove(key);
+
             if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
             {
                 group.Add(this);
@@ -399,6 +408,9 @@ namespace umi3d.edk
 
         public virtual SetEntityDictionaryProperty GetSetEntityOperationForAllUsers(T key, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetSetEntityOperationForAllUsers(key);
+
             return GetSetEntityOperationForUsers(key, u => true, group);
         }
 
@@ -461,6 +473,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public virtual SetEntityDictionaryProperty GetSetEntityOperationForUsers(T key, Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetSetEntityOperationForUsers(key, condition);
+
             bool IsUserSyncAndCondition(UMI3DUser user)
             {
                 return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
@@ -495,6 +510,9 @@ namespace umi3d.edk
 
         public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForAllUsers(T key, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetSetEntityDictionaryAddOperationForAllUsers(key);
+
             return GetSetEntityDictionaryAddOperationForUsers(key, u => true, group);
         }
 
@@ -557,6 +575,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForUsers(T key, Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetSetEntityDictionaryAddOperationForUsers(key, condition);
+
             bool IsUserSyncAndCondition(UMI3DUser user)
             {
                 return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
@@ -591,6 +612,9 @@ namespace umi3d.edk
 
         public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForAllUsers(T key, UMI3DGroupAsyncProperty group)
         {
+            if (group == null)
+                return GetSetEntityDictionaryRemoveOperationForAllUsers(key);
+
             return GetSetEntityDictionaryRemoveOperationForUsers(key, u => true, group);
         }
 
@@ -653,6 +677,9 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForUsers(T key, Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
         {
+            if(group == null)
+                return GetSetEntityDictionaryRemoveOperationForUsers(key, condition);
+
             bool IsUserSyncAndCondition(UMI3DUser user)
             {
                 return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
