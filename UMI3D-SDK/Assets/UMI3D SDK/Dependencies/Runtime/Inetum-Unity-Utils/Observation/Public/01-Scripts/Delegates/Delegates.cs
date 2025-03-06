@@ -298,7 +298,7 @@ namespace inetum.unityUtils.observation
                     // If the flow control value is Break, exit the loop.
                     if (flow.HasValue && flow.Value == Flow.Break)
                     {
-                        return;
+                        break;
                     }
                 }
                 catch (NotImplementedException)
