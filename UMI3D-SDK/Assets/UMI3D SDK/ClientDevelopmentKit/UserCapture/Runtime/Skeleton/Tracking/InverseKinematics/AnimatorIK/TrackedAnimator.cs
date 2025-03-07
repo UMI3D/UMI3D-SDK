@@ -14,34 +14,14 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
-using UnityEngine;
-
 namespace umi3d.cdk.userCapture.tracking.ik
 {
     /// <summary>
     /// Catches OnAnimatorIk event and dispatch it. Has to be on a gameobject with an animator component.
     /// </summary>
-    public class TrackedAnimator : MonoBehaviour
+    public class TrackedAnimator : AnimatorIKRelay
     {
-        /// <summary>
-        /// Triggered just before the related animator updates its own IK system.
-        /// </summary>
-        public event Action<int> IkCallback;
-
-        // mandatory for OnAnimatorIk event
-        public Animator Animator => animator;
-
-        private Animator animator;
-
-        void Start()
-        {
-            animator = GetComponent<Animator>();
-        }
-
-        private void OnAnimatorIK(int layerIndex)
-        {
-            IkCallback?.Invoke(layerIndex);
-        }
+        // the content of this class has been migrated to its parent
+        // to include it in the core module without breaking existing prefabs.
     }
 }

@@ -17,6 +17,7 @@ limitations under the License.
 using umi3d.common;
 using umi3d.common.interaction;
 using UnityEngine;
+using static umi3d.edk.interaction.UMI3DInteractable;
 
 namespace umi3d.edk.interaction
 {
@@ -46,15 +47,15 @@ namespace umi3d.edk.interaction
         public InteractionEvent onRelease = new InteractionEvent();
 
         /// <summary>
-        /// Called when the interaction is triggerred by a user.
+        /// Called when the interaction is triggered by a user.
         /// </summary>
-        [SerializeField, Tooltip("Called when the interaction is triggerred by a user.")]
+        [SerializeField, Tooltip("Called when the interaction is triggered by a user.")]
         public InteractionEvent onTrigger = new InteractionEvent();
 
         /// <summary>
         /// Animation triggered when the interaction is triggered.
         /// </summary>
-        [SerializeField, Tooltip("Client animation triggered when the interaction is triggerred by a user.")]
+        [SerializeField, Tooltip("Client animation triggered when the interaction is triggered by a user.")]
         public UMI3DAbstractAnimation TriggerAnimation;
         /// <summary>
         /// Animation triggered when the interaction is released.
@@ -63,20 +64,20 @@ namespace umi3d.edk.interaction
         public UMI3DAbstractAnimation ReleaseAnimation;
 
         /// <summary>
-        /// Animation Asych property of the animatiuon triggered when the interaction is triggered
+        /// Animation Async property of the animation triggered when the interaction is triggered
         /// </summary>
         private UMI3DAsyncProperty<UMI3DAbstractAnimation> _triggerAnimation;
         /// <summary>
-        /// Animation Asych property of the animatiuon triggered when the interaction is realeased
+        /// Animation Async property of the animation triggered when the interaction is released
         /// </summary>
         private UMI3DAsyncProperty<UMI3DAbstractAnimation> _releaseAnimation;
 
         /// <summary>
-        /// Animation Asych Attribute of the animatiuon triggered when the interaction is triggered
+        /// Animation Async attribute of the animation triggered when the interaction is triggered
         /// </summary>
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> triggerAnimation { get { Register(); return _triggerAnimation; } set => _triggerAnimation = value; }
         /// <summary>
-        /// Animation Asych Attribute of the animatiuon triggered when the interaction is realeased
+        /// Animation Async attribute of the animation triggered when the interaction is released
         /// </summary>
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> releaseAnimation { get { Register(); return _releaseAnimation; } set => _releaseAnimation = value; }
 
@@ -100,15 +101,18 @@ namespace umi3d.edk.interaction
             switch (interactionRequest)
             {
                 case EventTriggeredDto eventTriggered:
+                    InternalOnTrigger(user);
                     onTrigger.Invoke(new InteractionEventContent(user, interactionRequest));
                     break;
                 case EventStateChangedDto eventStateChanged:
                     if (eventStateChanged.active)
                     {
+                        InternalOnTrigger(user);
                         onHold.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     else
                     {
+                        InternalOnRelease(user);
                         onRelease.Invoke(new InteractionEventContent(user, interactionRequest));
                     }
                     break;
@@ -119,40 +123,47 @@ namespace umi3d.edk.interaction
         /// Called by a user on interaction.
         /// </summary>
         /// <param name="user">Interacting user</param>
-        /// <param name="operationId">Operatin id in <see cref="UMI3DOperationKeys"/></param>
+        /// <param name="operationId">Operation id in <see cref="UMI3DOperationKeys"/></param>
         /// <param name="toolId">Tool id in </param>
         /// <param name="interactionId">Id of the interaction</param>
-        /// <param name="hoverredId">The id of the currently hoverred object.</param>
+        /// <param name="hoveredId">The id of the currently hovered object.</param>
         /// <param name="boneType">User's used bone</param>
         /// <param name="container">Byte container</param>
-        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoverredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
+        public override void OnUserInteraction(UMI3DUser user, ulong operationId, ulong toolId, ulong interactionId, ulong hoveredId, uint boneType, Vector3Dto bonePosition, Vector4Dto boneRotation, ByteContainer container)
         {
             switch (operationId)
             {
                 case UMI3DOperationKeys.EventTriggered:
-                    onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
+                    InternalOnTrigger(user);
+                    onTrigger.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
                     break;
                 case UMI3DOperationKeys.EventStateChanged:
                     bool active = UMI3DSerializer.Read<bool>(container);
                     if (active)
                     {
-                        onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
+                        InternalOnTrigger(user);
+                        onHold.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
                     }
                     else
-                    {
-                        onRelease.Invoke(new InteractionEventContent(user, toolId, interactionId, hoverredId, boneType, bonePosition, boneRotation));
+                    { 
+                        InternalOnRelease(user);
+                        onRelease.Invoke(new InteractionEventContent(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation));
                     }
+
                     break;
             }
         }
+
+        protected virtual void InternalOnTrigger(UMI3DUser user) { }
+        protected virtual void InternalOnRelease(UMI3DUser user) { }
 
         /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
             return base.ToBytes(user)
-                    + UMI3DSerializer.Write(Hold);
-                    //+ ((UMI3DLoadableEntity)this.triggerAnimation).ToBytes(user)
-                    //+ ((UMI3DLoadableEntity)this.releaseAnimation).ToBytes(user);
+                    + UMI3DSerializer.Write(Hold)
+                    + UMI3DSerializer.Write(triggerAnimation.GetValue(user)?.Id() ?? 0)
+                    + UMI3DSerializer.Write(releaseAnimation.GetValue(user)?.Id() ?? 0);
         }
 
         /// <inheritdoc/>
@@ -174,8 +185,8 @@ namespace umi3d.edk.interaction
             if (dto is EventDto _dto)
             {
                 _dto.hold = Hold;
-                _dto.TriggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
-                _dto.ReleaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
+                _dto.triggerAnimationId = triggerAnimation.GetValue(user)?.Id() ?? 0;
+                _dto.releaseAnimationId = releaseAnimation.GetValue(user)?.Id() ?? 0;
             }
         }
     }

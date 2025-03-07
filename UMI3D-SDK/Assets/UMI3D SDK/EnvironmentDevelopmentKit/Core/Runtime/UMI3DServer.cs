@@ -15,10 +15,12 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using Path = inetum.unityUtils.systemIO.Path;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
 using UnityEngine;
+using System;
 
 namespace umi3d.edk
 {
@@ -34,6 +36,11 @@ namespace umi3d.edk
         /// Default to "Localhost.
         [SerializeField, Tooltip("IP of the UMI3D server.")]
         protected string ip = "localhost";
+
+        /// <summary>
+        /// Is the server active?
+        /// </summary>
+        public bool isRunning { get; protected set; } = false;
 
         /// <summary>
         /// Initialize the server.
@@ -58,6 +65,16 @@ namespace umi3d.edk
         private string privateDataFullPath;
         private string dataFullPath;
 
+        /// <summary>
+        /// Event called when the UMI3D server is launched.
+        /// </summary>
+        public event System.Action OnServerStarted;
+
+        /// <summary>
+        /// Event called when the UMI3D server has been stopped.
+        /// </summary>
+        public event System.Action OnServerStopped;
+
         public static string publicRepository => Instance?.publicDataFullPath;
         public static string privateRepository => Instance?.privateDataFullPath;
         public static string dataRepository => Instance?.dataFullPath;
@@ -78,6 +95,16 @@ namespace umi3d.edk
         {
             string fullPath = System.IO.Path.GetFullPath(path);
             return fullPath.StartsWith(publicRepository);
+        }
+
+        protected void NotifyServerStarted()
+        {
+            OnServerStarted?.Invoke();
+        }
+
+        protected void NotifyServerStopped()
+        {
+            OnServerStopped?.Invoke();
         }
 
         #endregion

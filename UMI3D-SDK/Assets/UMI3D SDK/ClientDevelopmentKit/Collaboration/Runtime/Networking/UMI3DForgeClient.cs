@@ -14,7 +14,8 @@ limitations under the License.
 using BeardedManStudios.Forge.Networking;
 using BeardedManStudios.Forge.Networking.Frame;
 using BeardedManStudios.Forge.Networking.Unity;
-using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
+using inetum.unityUtils.observation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
@@ -544,7 +545,9 @@ namespace umi3d.cdk.collaboration
 
                     UploadFileRequest(token, fileId);
                     break;
-
+                case RequestHttpUploadToUrlDto uploadFileRequest:
+                    UploadFileRequest(uploadFileRequest.url, uploadFileRequest.extensions, uploadFileRequest.allowMultipleFile);
+                    break;
                 case RedirectionDto redirection:
                     MainThreadManager.Run(() =>
                     {
@@ -759,6 +762,13 @@ namespace umi3d.cdk.collaboration
                     UploadFileRequest(token, fileId);
 
                     break;
+                case UMI3DOperationKeys.UploadFileToUrlRequest:
+                    string url = UMI3DSerializer.Read<string>(container);
+                    List<string> extensions = UMI3DSerializer.ReadList<string>(container);
+                    bool allowMultipleFile = UMI3DSerializer.Read<bool>(container);
+                    UploadFileRequest(url, extensions, allowMultipleFile);
+
+                    break;
 
                 case UMI3DOperationKeys.RedirectionRequest:
                     RedirectionDto redirection = UMI3DSerializer.Read<RedirectionDto>(container);
@@ -840,6 +850,12 @@ namespace umi3d.cdk.collaboration
                         {
                             PoseService.Instance.ChangeEnvironmentPoseCondition(UMI3DGlobalID.EnvironmentId, validateEnvironmentPoseConditionDto.Id, validateEnvironmentPoseConditionDto.ShouldBeValidated);
                         });
+                        break;
+                    }
+                case UMI3DOperationKeys.DrawingSplitLineRequest:
+                    {
+                        var id = UMI3DSerializer.Read<ulong>(container);
+                        UMI3DLineRendererLoader.TriggerOnSplitLineEvent(id);
                         break;
                     }
                 case UMI3DOperationKeys.MDMAddUserOperation:
@@ -935,6 +951,34 @@ namespace umi3d.cdk.collaboration
             });
         }
 
+        async void UploadFileRequest(string url, List<string> extensions, bool allowMultipleFile)
+        {
+#if UNITY_STANDALONE_WIN
+            try
+            {
+                var result = FileUploader.OpenFileBrowser("Upload", extensions, allowMultipleFile);
+                if (result == null)
+                    return;
+
+                var tasks = result.Select(p => (FileUploader.TryGetFileToUpload(p, out byte[] bytesToUpload, out string fileName), bytesToUpload, fileName))
+                    .Where(c => c.Item1)
+                    .Select(c => SendPostFileToURL(url, c.fileName, c.bytesToUpload));
+
+                if (allowMultipleFile)
+                    await Task.WhenAll(tasks);
+                else
+                    await (tasks.FirstOrDefault() ?? Task.CompletedTask);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.Log("Error on upload file request to " + url, scope);
+                UMI3DLogger.LogException(e, scope);
+            }
+#endif
+        }
+
+
+
         private async void SendGetLocalInfo(string key)
         {
             try
@@ -954,6 +998,19 @@ namespace umi3d.cdk.collaboration
             try
             {
                 await environmentClient.HttpClient.SendPostFile(token, fileName, bytesToUpload);
+            }
+            catch (Exception e)
+            {
+                UMI3DLogger.Log("error on upload file : " + fileName, scope);
+                UMI3DLogger.LogException(e, scope);
+            }
+        }
+
+        private async Task SendPostFileToURL(string url, string fileName, byte[] bytesToUpload)
+        {
+            try
+            {
+                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload);
             }
             catch (Exception e)
             {
@@ -1076,11 +1133,10 @@ namespace umi3d.cdk.collaboration
             NetWorker.PingForFirewall(port);
             if (!HasBeenSet)
             {
-                NotificationHub.Default.Subscribe(
-                    this,
-                    QuittingManagerNotificationKey.ApplicationIsQuitting,
-                    null,
-                    ApplicationQuit
+                Quitting.instance.SubscribeFor(
+                    Quitting.SubscriptionType.IsQuitting, 
+                    this, 
+                    (Callback)ApplicationQuit
                 );
             }
             HasBeenSet = true;
@@ -1091,7 +1147,7 @@ namespace umi3d.cdk.collaboration
         /// </summary>
         private void ApplicationQuit()
         {
-            if (!QuittingManager.applicationIsQuitting) return;
+            if (!Quitting.instance) return;
             NetworkManager.Instance.ApplicationQuit();
             Stop();
         }

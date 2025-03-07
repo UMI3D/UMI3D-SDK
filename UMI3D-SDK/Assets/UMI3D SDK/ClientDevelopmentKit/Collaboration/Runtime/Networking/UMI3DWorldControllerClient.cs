@@ -131,7 +131,7 @@ namespace umi3d.cdk.collaboration
                 {
                     case WaitConnectionDto wait:
                         {
-                            await GetFormAnswer(wait);
+                            var isCancel = await GetFormAnswer(wait);
                             var _answer = new WaitConnectionAnswerDto()
                             {
                                 waitId = wait.id,
@@ -140,9 +140,15 @@ namespace umi3d.cdk.collaboration
                                 gate = dto.gate,
                                 sdkVersion = dto.sdkVersion,
                                 formCompatibleVersions = dto.formCompatibleVersions,
-                                libraryPreloading = dto.libraryPreloading
+                                libraryPreloading = dto.libraryPreloading,
+                                isCancel = isCancel,
                             };
-                            return await Connect(_answer);
+
+                            if(!isCancel)
+                                return await Connect(_answer);
+
+                            await EnvironmentHttpClient.Connect(_answer, media.url);
+                            return false;
                         }
                     case PrivateIdentityDto identity:
                         Connected(identity);
@@ -223,10 +229,9 @@ namespace umi3d.cdk.collaboration
         }
 
 
-        private async Task GetFormAnswer(WaitConnectionDto form)
+        private async Task<bool> GetFormAnswer(WaitConnectionDto form)
         {
-            await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
-            // return await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
+            return await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(form);
         }
 
         private async Task<FormAnswerDto> GetFormAnswer(ConnectionFormDto form)

@@ -92,6 +92,7 @@ namespace umi3d.cdk.collaboration
             nodeLoader = new UMI3DNodeLoader();
 
             (loader = new EntityGroupLoader())
+            .SetNext(new UMI3DLineRendererLoader())
             .SetNext(new UMI3DInteractionLoader())
             .SetNext(new UMI3DAnimationLoader())
             .SetNext(new PreloadedSceneLoader())
@@ -99,7 +100,6 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DGlobalToolLoader())
             .SetNext(new CollaborationSkeletonAnimationNodeLoader())
             .SetNext(new UMI3DMeshNodeLoader())
-            .SetNext(new UMI3DLineRendererLoader())
             .SetNext(new UMI3DSubMeshNodeLoader())
             .SetNext(new UMI3DVolumeLoader())
             .SetNext(new UMI3DUINodeLoader())
@@ -114,6 +114,7 @@ namespace umi3d.cdk.collaboration
             .SetNext(new DistantEnvironmentLoader())
             .SetNext(new UMI3DNodeLoader())
             .SetNext(UMI3DEnvironmentLoader.Instance.nodeLoader)
+            .SetNext(new AudioBindingLoader());
             ;
         }
 

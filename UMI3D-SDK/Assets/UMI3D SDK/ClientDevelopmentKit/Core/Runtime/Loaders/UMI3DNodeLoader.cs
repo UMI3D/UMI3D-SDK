@@ -92,7 +92,7 @@ namespace umi3d.cdk
             }
         }
 
-        private void BindSkinnedMeshBone(ulong environmentId,ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
+        private void BindSkinnedMeshBone(ulong environmentId, ulong skinMeshEntityId, int boneId, Transform node, float maxDelay)
         {
             loadingManager.WaitUntilEntityLoaded(environmentId, skinMeshEntityId, e =>
             {
@@ -689,8 +689,7 @@ namespace umi3d.cdk
                         {
 
                             MeshCollider mesh = go.AddComponent<MeshCollider>();
-
-                            if (mesh.sharedMesh.isReadable)
+                            if (mesh.sharedMaterial && mesh.sharedMesh.isReadable)
                             {
                                 mesh.convex = false;
                                 SetCustomCollider(id, go, dto.customMeshCollider);

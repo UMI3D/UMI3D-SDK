@@ -33,6 +33,8 @@ using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using System.Net.NetworkInformation;
 using WebSocketSharp;
+using inetum.unityUtils.observation;
+using inetum.unityUtils.lifeCycle;
 
 namespace umi3d.edk.collaboration
 {
@@ -211,11 +213,10 @@ namespace umi3d.edk.collaboration
             Debug.Assert(Identifier != null, "Identifier cannot be null");
             Debug.Assert(WorldController != null, "WorldController cannot be null");
 
-            NotificationHub.Default.Subscribe(
-                this,
-                QuittingManagerNotificationKey.ApplicationIsQuitting,
-                null,
-                ApplicationQuit
+            Quitting.instance.SubscribeFor(
+                Quitting.SubscriptionType.IsQuitting, 
+                this, 
+                (Callback)ApplicationQuit
             );
         }
 
@@ -284,6 +285,7 @@ namespace umi3d.edk.collaboration
 
             WorldController.SetupAfterServerStart();
             OnServerStart.Invoke();
+            NotifyServerStarted();
 
             LBEManager.Instance.Init();
         }
@@ -437,6 +439,7 @@ namespace umi3d.edk.collaboration
             {
                 isRunning = false;
                 OnServerStop.Invoke();
+                NotifyServerStopped();
             }
             if (mumbleManager != null)
                 mumbleManager.Delete();
@@ -456,6 +459,7 @@ namespace umi3d.edk.collaboration
             {
                 isRunning = false;
                 OnServerStop.Invoke();
+                NotifyServerStopped();
             }
             if (mumbleManager != null)
                 mumbleManager.Delete();
@@ -751,7 +755,9 @@ namespace umi3d.edk.collaboration
         }
 
         #region session
+        [Obsolete("Use OnServerStarted instead.")]
         public UnityEvent OnServerStart = new UnityEvent();
+        [Obsolete("Use OnServerStopped instead.")]
         public UnityEvent OnServerStop = new UnityEvent();
         #endregion
     }

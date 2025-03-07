@@ -65,7 +65,7 @@ namespace umi3d.cdk.collaboration
     public enum MicrophoneInputType
     {
         Unity,
-        NAudio
+        Custom
     }
 
     [RequireComponent(typeof(AudioSource))]
@@ -318,6 +318,7 @@ namespace umi3d.cdk.collaboration
                 case MumbleMicrophone.MicType.MethodBased:
                     return MicrophoneMode.MethodBased;
             }
+
             return MicrophoneMode.AlwaysSend;
         }
         private MumbleMicrophone.MicType MicModeToType(MicrophoneMode? type)
@@ -333,6 +334,7 @@ namespace umi3d.cdk.collaboration
                 case MicrophoneMode.MethodBased:
                     return MumbleMicrophone.MicType.MethodBased;
             }
+
             return MumbleMicrophone.MicType.AlwaysSend;
         }
 
@@ -348,8 +350,8 @@ namespace umi3d.cdk.collaboration
                 case MicrophoneInputType.Unity:
                     mumbleMic = gameObject.AddComponent<MumbleMicrophone>();
                     break;
-                case MicrophoneInputType.NAudio:
-                    mumbleMic = gameObject.AddComponent<NAudioMicrophone>();
+                case MicrophoneInputType.Custom:
+                    mumbleMic = gameObject.AddComponent<CustomMicrophone>();
                     break;
                 default:
                     break;
@@ -432,7 +434,6 @@ namespace umi3d.cdk.collaboration
         }
         #endregion
 
-
         protected void SetChannelToJoin(string value)
         {
             pendingChannel = value;
@@ -447,11 +448,13 @@ namespace umi3d.cdk.collaboration
                     pendingChannel = null;
                     return false;
                 }
+
                 if (!mumbleClient.JoinChannel(pendingChannel))
                 {
                     await Delay(1000);
                     return false;
                 }
+
                 channel = pendingChannel;
                 pendingChannel = null;
 
@@ -462,6 +465,7 @@ namespace umi3d.cdk.collaboration
 
                 return true;
             }
+
             return false;
         }
 
@@ -551,8 +555,6 @@ namespace umi3d.cdk.collaboration
             {
                 microphoneStatus = MicrophoneStatus.MicrophoneConnecting;
 
-
-
                 if (mumbleMic == null)
                 {
                     microphoneStatus = MicrophoneStatus.NoMicrophone;
@@ -563,7 +565,7 @@ namespace umi3d.cdk.collaboration
 
                 SetMicrophone();
 
-                if (!microphoneIsValid())
+                if (!MicrophoneIsValid())
                 {
                     microphoneStatus = MicrophoneStatus.NoMicrophone;
                     return;
@@ -604,6 +606,7 @@ namespace umi3d.cdk.collaboration
 
                 UMI3DUser user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
 
+                UMI3DUser.OnUserMicrophoneStatusUpdated?.Invoke(user);
                 if (user.microphoneStatus == isMute)
                     user.SetMicrophoneStatus(!isMute);
 
@@ -671,15 +674,17 @@ namespace umi3d.cdk.collaboration
 
             string[] mics = GetMicrophonesNames();
             int count = mics.Length;
-            int i = 0;
 
-            for (; i < count; i++)
+            for (int i = 0; i < count; i++)
+            {
                 if (mics[i] == _pendingMic)
                 {
                     mumbleMic.MicNumberToUse = i;
                     _pendingMic = null;
                     return;
                 }
+            }
+
             LogError($"Microphone [{_pendingMic}] not found, set to first mic if any [{mics.FirstOrDefault()}]");
             mumbleMic.MicNumberToUse = 0;
         }
@@ -691,6 +696,7 @@ namespace umi3d.cdk.collaboration
             {
                 return await SetCurrentMicrophoneName(mics[value]);
             }
+
             return false;
         }
 
@@ -720,7 +726,7 @@ namespace umi3d.cdk.collaboration
             return true;
         }
 
-        bool microphoneIsValid()
+        bool MicrophoneIsValid()
         {
             return mumbleMic != null && mumbleMic.MicNumberToUse < GetMicrophonesNames().Length;
         }
@@ -731,6 +737,7 @@ namespace umi3d.cdk.collaboration
             {
                 await Yield();
             }
+
             return microphoneStatus == MicrophoneStatus.MicrophoneReady;
         }
 

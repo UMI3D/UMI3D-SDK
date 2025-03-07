@@ -98,6 +98,8 @@ namespace umi3d.common
         public const uint IsPartOfNavmesh = 3021;
         public const uint IsBlockingInteraction = 3022;
 
+        public const uint LineClientLineId = 30023;
+
         public const uint BlendShapeValues = 3030;
         #endregion
 
@@ -133,6 +135,10 @@ namespace umi3d.common
         public const uint InteractableHoverExitAnimation = 5302;
         public const uint EventTriggerAnimation = 5303;
         public const uint EventReleaseAnimation = 5304;
+
+        public const uint DrawingLine = 5305;
+        public const uint DrawingMesh = 5306;
+        public const uint DrawingInTheAir = 5307;
         #endregion
 
         #region UI
@@ -272,6 +278,8 @@ namespace umi3d.common
         public const uint AnimationStateName = 13402;
         public const uint AnimationAnimatorParameters = 13403;
         public const uint AnimationAnimatorNormalizedTime = 13404;
+        public const uint AnimationAnimatorLookAtPosition = 13405;
+        public const uint AnimationAnimatorLookAtWeight = 13406;
 
         #endregion
 

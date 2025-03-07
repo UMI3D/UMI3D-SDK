@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
+using inetum.unityUtils.observation;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -91,11 +93,10 @@ namespace umi3d.edk.collaboration
                 StopLoop();
             });
 
-            NotificationHub.Default.Subscribe(
-                this,
-                QuittingManagerNotificationKey.ApplicationIsQuitting,
-                null,
-                StopLoop
+            Quitting.instance.SubscribeFor(
+                Quitting.SubscriptionType.IsQuitting, 
+                this, 
+                (Callback)StopLoop
             );
 
 #if UNITY_EDITOR

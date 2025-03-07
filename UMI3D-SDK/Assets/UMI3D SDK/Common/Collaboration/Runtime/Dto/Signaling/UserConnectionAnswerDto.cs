@@ -37,5 +37,10 @@ namespace umi3d.common.collaboration.dto.signaling
         /// State if the libraries have been updated
         /// </summary>
         public bool librariesUpdated { get; set; } = false;
+
+        /// <summary>
+        /// State if the message is use to cancel the connection
+        /// </summary>
+        public bool isCancel { get; set; } = false;
     }
 }

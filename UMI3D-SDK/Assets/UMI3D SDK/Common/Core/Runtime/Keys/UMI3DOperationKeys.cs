@@ -34,6 +34,7 @@ namespace umi3d.common
         public const uint ForceLogoutRequest = 9;
         public const uint PlayPoseRequest = 10;
         public const uint ViewpointTeleportationRequest = 11;
+        public const uint UploadFileToUrlRequest = 12;
 
         public const uint UserMicrophoneStatus = 21;
         public const uint UserAvatarStatus = 22;
@@ -92,7 +93,7 @@ namespace umi3d.common
         public const uint EventStateChanged = 10002;
         public const uint EventTriggered = 10003;
         public const uint FormAnswer = 10004;
-        public const uint Hoverred = 10005;
+        public const uint Hovered = 10005;
         public const uint HoverStateChanged = 10006;
         public const uint LinkOpened = 10007;
         public const uint ManipulationRequest = 10008;
@@ -117,6 +118,9 @@ namespace umi3d.common
         public const uint LBEUserRegisterRequest = 10028;
         public const uint LBELeaderRegisterRequest = 10029;
 
+
+        public const uint Drawing = 10017;
+        public const uint DrawingSplitLineRequest = 10018;
 
         public const uint EmoteRequest = 10020;
 

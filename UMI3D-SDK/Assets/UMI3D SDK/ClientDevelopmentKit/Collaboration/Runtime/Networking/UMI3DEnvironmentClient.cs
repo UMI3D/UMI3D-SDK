@@ -532,7 +532,8 @@ namespace umi3d.cdk.collaboration
                     //UMI3DLogger.Log($"Update Identity parameters {UserDto.formdto} ", scope | DebugScope.Connection);
                     if (UserDto.waitDto != null)
                     {
-                        await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.waitDto);
+                        bool cancel = await UMI3DCollaborationClientServer.Instance.Identifier.GetParameterDtos(UserDto.waitDto);
+                        UserDto.answerDto.isCancel = cancel;
                         await HttpClient.SendPostUpdateIdentity(UserDto.answerDto);
                     }
                     else if (UserDto.divForm != null)

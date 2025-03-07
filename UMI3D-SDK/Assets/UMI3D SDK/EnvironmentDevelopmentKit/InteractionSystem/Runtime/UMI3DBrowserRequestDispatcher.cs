@@ -103,7 +103,7 @@ namespace umi3d.edk.interaction
                     boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
                     UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.HoverStateChanged(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                     break;
-                case UMI3DOperationKeys.Hoverred:
+                case UMI3DOperationKeys.Hovered:
                     interactionId = UMI3DSerializer.Read<ulong>(container);
                     hoveredId = UMI3DSerializer.Read<ulong>(container);
                     boneType = UMI3DSerializer.Read<uint>(container);
@@ -112,7 +112,7 @@ namespace umi3d.edk.interaction
                     UMI3DEnvironment.GetEntityInstance<UMI3DInteractable>(toolId)?.Hovered(user, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                     break;
                 default:
-                    if ((UMI3DOperationKeys.InteractionRequest <= operationKey && operationKey <= UMI3DOperationKeys.UserTrackingFrame) || operationKey == UMI3DOperationKeys.UploadFileRequest)
+                    if ((UMI3DOperationKeys.InteractionRequest <= operationKey && operationKey <= UMI3DOperationKeys.UserTrackingFrame) || operationKey == UMI3DOperationKeys.UploadFileRequest || operationKey == UMI3DOperationKeys.Drawing)
                         {
                         interactionId = UMI3DSerializer.Read<ulong>(container);
                         hoveredId = UMI3DSerializer.Read<ulong>(container);

@@ -44,5 +44,15 @@ namespace umi3d.common
         /// Animator parameters.
         /// </summary>
         public Dictionary<string, object> parameters { get; set; } = new Dictionary<string, object>();
+
+        /// <summary>
+        /// Look at position for the object.
+        /// </summary>
+        public Vector3Dto lookAtPosition { get; set; }
+
+        /// <summary>
+        /// Look at weight for the object.
+        /// </summary>
+        public float lookAtWeight { get; set; }
     }
 }

@@ -41,8 +41,7 @@ namespace umi3d.cdk.interaction
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
             var dto = value.dto as AbstractInteractionDto;
-
-            UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId, dto.id, dto, null).NotifyLoaded();
+            UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, dto.id, dto, null).NotifyLoaded();
 
         }
 
@@ -62,18 +61,35 @@ namespace umi3d.cdk.interaction
                 {
                     case EventDto dto:
                         {
+                            if(dto is DrawingInteractionDto drawing)
+                                switch (value.property.property)
+                                {
+                                    case UMI3DPropertyKeys.DrawingLine:
+                                        drawing.lineId = (ulong)value.property.value;
+                                        return true;
+                                    case UMI3DPropertyKeys.DrawingInTheAir:
+                                        drawing.canDrawInSpace = (bool)value.property.value;
+                                        return true;
+                                    case UMI3DPropertyKeys.DrawingMesh:
+                                        PropertyListSetter.SetEntity(value, drawing.meshIds);
+                                        return true;
+                                }
+
                             switch (value.property.property)
                             {
                                 case UMI3DPropertyKeys.EventTriggerAnimation:
-                                    dto.TriggerAnimationId = (ulong)value.property.value;
+                                    dto.triggerAnimationId = (ulong)value.property.value;
                                     break;
                                 case UMI3DPropertyKeys.EventReleaseAnimation:
-                                    dto.ReleaseAnimationId = (ulong)value.property.value;
+                                    dto.releaseAnimationId = (ulong)value.property.value;
                                     break;
                                 default:
                                     return false;
                             }
+
+
                             return true;
+
                         }
                     default:
                         return false;
@@ -94,17 +110,32 @@ namespace umi3d.cdk.interaction
                     return true;
                 }
 
-                //try to read commun value
+                //try to read common value
                 switch (value.entity?.dto)
                 {
                     case EventDto dto:
+
+                        if (dto is DrawingInteractionDto drawing)
+                            switch (value.propertyKey)
+                            {
+                                case UMI3DPropertyKeys.DrawingLine:
+                                    drawing.lineId = UMI3DSerializer.Read<ulong>(value.container);
+                                    return true;
+                                case UMI3DPropertyKeys.DrawingInTheAir:
+                                    drawing.canDrawInSpace = UMI3DSerializer.Read<bool>(value.container);
+                                    return true;
+                                case UMI3DPropertyKeys.DrawingMesh:
+                                    PropertyListSetter.SetEntity(value, drawing.meshIds);
+                                    return true;
+                            }
+
                         switch (value.propertyKey)
                         {
                             case UMI3DPropertyKeys.EventTriggerAnimation:
-                                dto.TriggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
+                                dto.triggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
                                 break;
                             case UMI3DPropertyKeys.EventReleaseAnimation:
-                                dto.TriggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
+                                dto.triggerAnimationId = UMI3DSerializer.Read<ulong>(value.container);
                                 break;
                             default:
                                 return false;
@@ -148,8 +179,8 @@ namespace umi3d.cdk.interaction
                     var Event = new EventDto();
                     ReadAbstractInteractionDto(Event, container);
                     Event.hold = UMI3DSerializer.Read<bool>(container);
-                    Event.TriggerAnimationId = UMI3DSerializer.Read<ulong>(container);
-                    Event.ReleaseAnimationId = UMI3DSerializer.Read<ulong>(container);
+                    Event.triggerAnimationId = UMI3DSerializer.Read<ulong>(container);
+                    Event.releaseAnimationId = UMI3DSerializer.Read<ulong>(container);
                     interaction = Event;
                     break;
                 case UMI3DInteractionKeys.Manipulation:

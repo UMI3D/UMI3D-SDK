@@ -33,7 +33,7 @@ namespace umi3d.cdk.collaboration.emotes
         /// <summary>
         /// Emotes attributed to the user
         /// </summary>
-        public virtual IReadOnlyList<Emote> Emotes => emotesConfig.Emotes;
+        public virtual IReadOnlyList<Emote> Emotes => emotesConfig?.Emotes ?? null;
 
         /// <summary>
         /// Last received Emote Configuration dto reference

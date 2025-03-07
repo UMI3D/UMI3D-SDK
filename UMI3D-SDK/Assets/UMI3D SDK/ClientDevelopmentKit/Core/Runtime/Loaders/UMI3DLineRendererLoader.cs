@@ -28,15 +28,62 @@ namespace umi3d.cdk
     /// </summary>
     public class UMI3DLineRendererLoader : AbstractRenderedNodeLoader
     {
+        public static event Action<ulong> OnSplitLineEvent;
+        public static void TriggerOnSplitLineEvent(ulong id) => OnSplitLineEvent?.Invoke(id);
 
         public UMI3DLineRendererLoader() { }
 
         protected LineRenderer line;
 
-        LineRenderer GetOrCreateLine(GameObject node)
+        static Dictionary<ulong, LineRenderer> maps;
+        static ulong localIdIndexer = 1000;
+
+        public static LineRenderer GetOrCreateLine(GameObject node, ulong localId)
         {
+            if (maps == null)
+                maps = new Dictionary<ulong, LineRenderer>();
+
             if (node == null)
                 return null;
+
+            var line = node.GetComponent<LineRenderer>();
+            if (line == null)
+            {
+                line = node.AddComponent<LineRenderer>();
+                Material UMI3DMat = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
+
+                if (UMI3DMat == null)
+                {
+                    UMI3DMat = new Material(Shader.Find("Sprites/Default"));
+                }
+                line.material = UMI3DMat;
+
+                if (localId != 0 && maps.TryGetValue(localId, out LineRenderer result))
+                {
+                    maps[localId] = line;
+                    GameObject.Destroy(result);
+                }
+            }
+            return line;
+        }
+
+        public static LineRenderer GetLine(ulong localId)
+        {
+            if (maps == null)
+                maps = new Dictionary<ulong, LineRenderer>();
+
+            if (localId != 0 && maps.TryGetValue(localId, out LineRenderer result))
+                return result;
+            return null;
+        }
+
+        public static (LineRenderer,ulong?) CopyLine(GameObject node, LineRenderer template)
+        {
+            if (maps == null)
+                maps = new Dictionary<ulong, LineRenderer>();
+
+            if (node == null)
+                return (null,null);
             var line = node.GetComponent<LineRenderer>();
             if (line == null)
             {
@@ -49,7 +96,21 @@ namespace umi3d.cdk
                 }
                 line.material = UMI3DMat;
             }
-            return line;
+
+            line.startColor = template.startColor;
+            line.endColor = template.endColor;
+            line.loop = template.loop;
+            line.useWorldSpace = template.useWorldSpace;
+            line.endWidth = template.endWidth;
+            line.startWidth = template.startWidth;
+            line.material = template.material;
+            line.positionCount = 0;
+            line.SetPositions(new Vector3[0]);
+
+            ulong localId = localIdIndexer++;
+            maps[localId] = line;
+
+            return (line,localId);
         }
 
         public override bool CanReadUMI3DExtension(ReadUMI3DExtensionData data)
@@ -69,12 +130,13 @@ namespace umi3d.cdk
             var lineDto = data.dto as UMI3DLineDto;
             if (data.node == null)
             {
-                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
+                throw (new umi3d.common.Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
             }
+
+            line = GetOrCreateLine(data.node, lineDto.clientLineId);
 
             await base.ReadUMI3DExtension(data);
 
-            line = GetOrCreateLine(data.node);
             line.startColor = lineDto.startColor.Struct();
             line.endColor = lineDto.endColor.Struct();
             line.loop = lineDto.loop;
@@ -92,14 +154,14 @@ namespace umi3d.cdk
         /// <inheritdoc/>
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData data)
         {
-            if (data.entity?.dto is UMI3DLineDto && data.entity is UMI3DNodeInstance node)
+            if (await base.SetUMI3DProperty(data))
+                return true;
+            if (data.entity is UMI3DNodeInstance node)
             {
-                if (await base.SetUMI3DProperty(data)) 
-                    return true;
                 var extension = (data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DLineDto;
                 if (extension == null) return false;
 
-                line = GetOrCreateLine(node.GameObject);
+                line = GetOrCreateLine(node.GameObject, extension.clientLineId);
                 if (line == null) return false;
 
                 switch (data.property.property)
@@ -115,6 +177,9 @@ namespace umi3d.cdk
                     case UMI3DPropertyKeys.LineLoop:
                         extension.loop = (bool)data.property.value;
                         line.loop = extension.loop;
+                        break;
+                    case UMI3DPropertyKeys.LineClientLineId:
+                        extension.clientLineId = (ulong)data.property.value;
                         break;
                     case UMI3DPropertyKeys.LinePositions:
                         switch (data.property)
@@ -178,7 +243,7 @@ namespace umi3d.cdk
 
             var node = data.entity as UMI3DNodeInstance;
 
-            line = GetOrCreateLine(node.GameObject);
+            line = GetOrCreateLine(node.GameObject, extension.clientLineId);
             if (line == null) return false;
 
             switch (data.propertyKey)
@@ -194,6 +259,9 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.LineLoop:
                     extension.loop = UMI3DSerializer.Read<bool>(data.container);
                     line.loop = extension.loop;
+                    break;
+                case UMI3DPropertyKeys.LineClientLineId:
+                    extension.clientLineId = UMI3DSerializer.Read<ulong>(data.container);
                     break;
                 case UMI3DPropertyKeys.LinePositions:
                     int index;
@@ -231,7 +299,7 @@ namespace umi3d.cdk
                     extension.startWidth = UMI3DSerializer.Read<float>(data.container);
                     line.startWidth = extension.startWidth;
                     break;
-                case UMI3DPropertyKeys.LineUseWorldSpace:
+                case UMI3DPropertyKeys.LineUseWorldSpace:                    
                     extension.useWorldSpace = UMI3DSerializer.Read<bool>(data.container);
                     line.useWorldSpace = extension.useWorldSpace;
                     break;
@@ -247,7 +315,7 @@ namespace umi3d.cdk
         {
             if (node == null) return;
 
-            line = GetOrCreateLine(node.GameObject);
+            line = GetOrCreateLine(node.GameObject,0);
             if (line == null) return;
 
             MeshCollider meshCollider = node.GameObject?.AddComponent<MeshCollider>();
@@ -258,7 +326,7 @@ namespace umi3d.cdk
 
             if (line.useWorldSpace)
             {
-                UMI3DLogger.LogWarning("Collider is not supported for now with LineRendere.useWorldSpace", DebugScope.CDK);
+                UMI3DLogger.LogWarning("Collider is not supported for now with LineRenderer.useWorldSpace", DebugScope.CDK);
             }
         }
 
@@ -278,7 +346,7 @@ namespace umi3d.cdk
 
             await UMI3DAsyncManager.Yield();
 
-            if (AtLeast3DistinctVertice(mesh))
+            if (meshCollider != null && AtLeast3DistinctVertice(mesh))
                 meshCollider.sharedMesh = mesh;
         }
 

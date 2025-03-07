@@ -29,18 +29,6 @@ namespace EditMode_Tests
     public class UMI3DVersion_Test
     {
 
-        [OneTimeSetUp]
-        public virtual void TimeSetUp()
-        {
-
-        }
-
-        [OneTimeTearDown]
-        public virtual void Teardown()
-        {
-
-        }
-
         [Test]
         public void ParseVersion()
         {
@@ -61,9 +49,6 @@ namespace EditMode_Tests
         [Test]
         public void ParseVersion2()
         {
-            int major = 2;
-            int minor = 3;
-            string status = "b";
             DateTime date = DateTime.Now;
 
             var version = new UMI3DVersion.Version("2.9.b.240529");

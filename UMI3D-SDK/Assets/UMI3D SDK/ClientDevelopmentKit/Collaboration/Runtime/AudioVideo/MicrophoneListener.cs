@@ -14,7 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using inetum.unityUtils;
+using inetum.unityUtils.lifeCycle;
+using inetum.unityUtils.observation;
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -34,11 +35,10 @@ namespace umi3d.cdk.collaboration
         {
             base.Start();
 
-            NotificationHub.Default.Subscribe(
-                this,
-                QuittingManagerNotificationKey.ApplicationIsQuitting,
-                null,
-                _OnApplicationQuit
+            Quitting.instance.SubscribeFor(
+                Quitting.SubscriptionType.IsQuitting, 
+                this, 
+                (Callback)_OnApplicationQuit
             );
 
             UMI3DUser.OnUserMicrophoneIdentityUpdated.AddListener(IdentityUpdate);
@@ -241,17 +241,17 @@ namespace umi3d.cdk.collaboration
         #endregion
 
 #if UNITY_STANDALONE
-        public bool UseNoiseReduction
+        public bool UseMicrophoneEnhancement
         {
             get
             {
-                if (!(mumbleMic is NAudioMicrophone nAudio)) return false;
-                return nAudio.UseNoiseReducer;
+                if (mumbleMic is not CustomMicrophone nAudio) return false;
+                return nAudio.UseAudioEnhancement;
             }
             set
             {
-                if (!(mumbleMic is NAudioMicrophone nAudio)) return;
-                nAudio.UseNoiseReducer = value;
+                if (mumbleMic is not CustomMicrophone nAudio) return;
+                nAudio.UseAudioEnhancement = value;
             }
         }
 #endif

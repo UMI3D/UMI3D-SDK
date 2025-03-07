@@ -14,7 +14,6 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Threading.Tasks;
 using umi3d.common;
 using UnityEngine;
@@ -65,7 +64,7 @@ namespace umi3d.cdk
         {
             var nodeDto = data.dto as UMI3DAbstractNodeDto;
             if (data.node == null)
-                throw (new Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
+                throw (new common.Umi3dException("dto should be an  UMI3DAbstractNodeDto"));
 
             if (data.dto != null)
             {

@@ -1,0 +1,16 @@
+{
+    "name": "inetum.unityUtils.versioning",
+    "rootNamespace": "",
+    "references": [
+        "GUID:05dc57616d30a9e48997ee96d4650695"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

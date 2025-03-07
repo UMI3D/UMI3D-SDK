@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
+using Path = inetum.unityUtils.systemIO.Path;
 using umi3d.common;
 
 namespace umi3d.edk

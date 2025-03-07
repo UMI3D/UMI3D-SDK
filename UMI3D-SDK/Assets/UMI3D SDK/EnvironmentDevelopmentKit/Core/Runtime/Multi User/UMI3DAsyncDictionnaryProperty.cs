@@ -34,11 +34,19 @@ namespace umi3d.edk
         /// <summary>
         /// A event that is triggered when inner value changes.
         /// </summary>
+        public Action<T, L, UMI3DGroupAsyncProperty> OnInnerGroupValueChanged;
+        /// <summary>
+        /// A event that is triggered when inner value changes.
+        /// </summary>
         public Action<T, UMI3DUser, L> OnUserInnerValueChanged;
         /// <summary>
         /// A event that is triggered when inner value is Added.
         /// </summary>
         public Action<T, L> OnInnerValueAdded;
+        /// <summary>
+        /// A event that is triggered when inner value is Added.
+        /// </summary>
+        public Action<T, L, UMI3DGroupAsyncProperty> OnInnerGroupValueAdded;
         /// <summary>
         /// A event that is triggered when inner value is Added.
         /// </summary>
@@ -48,6 +56,10 @@ namespace umi3d.edk
         /// A event that is triggered when inner value is Removed.
         /// </summary>
         public Action<T> OnInnerValueRemoved;
+        /// <summary>
+        /// A event that is triggered when inner value is Removed.
+        /// </summary>
+        public Action<T, UMI3DGroupAsyncProperty> OnInnerGroupValueRemoved;
         /// <summary>
         /// A event that is triggered when inner value is Removed.
         /// </summary>
@@ -74,11 +86,11 @@ namespace umi3d.edk
         private readonly Func<Dictionary<T, L>, Dictionary<T, L>> Copier;
 
         /// <summary>
-        /// Convert a serializer for a single value to a dictionnary serializer.
+        /// Convert a serializer for a single value to a dictionary serializer.
         /// </summary>
         /// <param name="serializer">Serializer for a single value.</param>
         /// <returns>Serializer for lists.</returns>
-        private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSeriliser(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
+        private static Func<Dictionary<T, L>, UMI3DUser, object> SerializerToListSerializer(Func<T, UMI3DUser, object> serializerT, Func<L, UMI3DUser, object> serializerL)
         {
             if (serializerT == null && serializerL == null) return null;
             if (serializerT == null)
@@ -127,14 +139,14 @@ namespace umi3d.edk
         private static Func<Dictionary<T, L>, Dictionary<T, L>, bool> EqualToListEqual(Func<L, L, bool> equal)
         {
             if (equal == null) return null;
-            bool DictionnaryEqual(Dictionary<T, L> dict, Dictionary<T, L> other)
+            bool DictionaryEqual(Dictionary<T, L> dict, Dictionary<T, L> other)
             {
                 return !dict.Keys.Except(other.Keys).Any() && !other.Keys.Except(dict.Keys).Any() && !dict.Where(p => { return !equal(p.Value, other[p.Key]); }).Any();
             }
-            return DictionnaryEqual;
+            return DictionaryEqual;
         }
 
-        public UMI3DAsyncDictionnaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSeriliser(serializerT, serializerL), EqualToListEqual(equal))
+        public UMI3DAsyncDictionnaryProperty(ulong entityId, uint propertyId, Dictionary<T, L> value, Func<T, UMI3DUser, object> serializerT = null, Func<L, UMI3DUser, object> serializerL = null, Func<L, L, bool> equal = null, Func<Dictionary<T, L>, Dictionary<T, L>> copier = null) : base(entityId, propertyId, value, SerializerToListSerializer(serializerT, serializerL), EqualToListEqual(equal))
         {
             if (equal == null)
             {
@@ -170,10 +182,7 @@ namespace umi3d.edk
         /// <param name="user">The user to get the key for</param>
         /// <returns></returns>
         /// A null user will call <see cref="UMI3DAsyncProperty.GetValue"/>
-        public L GetValue(T key, UMI3DUser user = null)
-        {
-            return GetValue(user)[key];
-        }
+        public L GetValue(T key, UMI3DUser user = null) => GetValue(user)[key];
 
         /// <summary>
         /// Set the property's default/synchronized value.
@@ -190,8 +199,34 @@ namespace umi3d.edk
                 return null;
             GetValue()[key] = value;
 
-            if (OnInnerValueChanged != null)
-                OnInnerValueChanged.Invoke(key, value);
+            OnInnerValueChanged?.Invoke(key, value);
+
+            if (UMI3DEnvironment.Exists)
+            {
+                return GetSetEntityOperationForAllUsers();
+            }
+            return null;
+        }
+
+        public SetEntityProperty SetValue(T key, L value, UMI3DGroupAsyncProperty group, bool forceOperation = false)
+        {
+            if(group == null)
+                return SetValue(key, value, forceOperation);
+
+            if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
+            {
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
+            }
+
+            L oldValue = defaultValue[key];
+
+            if (((oldValue == null && value == null) || (oldValue != null && Equal(oldValue, value))) && !forceOperation)
+                return null;
+
+            defaultValue[key] = value;
+
+            OnInnerGroupValueChanged?.Invoke(key, value, group);
 
             if (UMI3DEnvironment.Exists)
             {
@@ -253,27 +288,24 @@ namespace umi3d.edk
             GetValue().Add(key, value);
             OnInnerValueAdded?.Invoke(key, value);
 
-            var operation = new SetEntityDictionaryAddProperty()
+            return GetSetEntityDictionaryAddOperationForAllUsers(key);
+        }
+
+        public SetEntityProperty Add(T key, L value, UMI3DGroupAsyncProperty group)
+        {
+            if(group == null)
+                return Add(key, value);
+
+            if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
             {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                key = SerializerT(key, null),
-                value = SerializerL(value, null)
-            };
-            if (UMI3DEnvironment.Exists)
-            {
-                if (isAsync || isDeSync)
-                {
-                    operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
-                        user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
-                }
-                else
-                {
-                    operation += UMI3DServer.Instance.Users();
-                }
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
             }
-            return operation;
+
+            defaultValue.Add(key, value);
+            OnInnerGroupValueAdded?.Invoke(key, value, group);
+
+            return GetSetEntityDictionaryAddOperationForAllUsers(key);
         }
 
         /// <summary>
@@ -284,37 +316,17 @@ namespace umi3d.edk
         /// <returns>The operation to send to synchronize the changes.</returns>
         public SetEntityProperty Add(UMI3DUser user, T key, L value)
         {
-            var operation = new SetEntityDictionaryAddProperty()
-            {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                key = SerializerT(key, user),
-                value = SerializerL(value, user)
-            };
-            operation.users.Add(user);
-
-            if (asyncValues.ContainsKey(user))
-            {
-                GetValue(user).Add(key, value);
-                if (OnUserInnerValueAdded != null)
-                    OnUserInnerValueAdded.Invoke(key, user, value);
-                if (!UserDesync.Contains(user))
-                    return operation;
-                else
-                    return null;
-            }
-            else
-            {
+            if (!asyncValues.ContainsKey(user))
                 Sync(user, false);
-                GetValue(user).Add(key, value);
-                if (OnUserInnerValueAdded != null)
-                    OnUserInnerValueAdded.Invoke(key, user, value);
-                if (!UserDesync.Contains(user))
-                    return operation;
-                else
-                    return null;
-            }
+
+            GetValue(user).Add(key, value);
+
+            if (OnUserInnerValueAdded != null)
+                OnUserInnerValueAdded.Invoke(key, user, value);
+            if (!UserDesync.Contains(user))
+                return GetSetEntityDictionaryAddOperationForUser(key, user);
+            else
+                return null;
         }
 
         /// <summary>
@@ -326,30 +338,34 @@ namespace umi3d.edk
         {
             if (!GetValue().ContainsKey(key)) return null;
             L value = GetValue()[key];
-            if (!GetValue().Remove(key)) return null;
-            if (OnInnerValueRemoved != null)
-                OnInnerValueRemoved.Invoke(key);
 
-            var operation = new SetEntityDictionaryRemoveProperty()
+            var operation = GetSetEntityDictionaryRemoveOperationForAllUsers(key);
+
+            if (!GetValue().Remove(key)) return null;
+            OnInnerValueRemoved?.Invoke(key);
+
+            return operation;
+        }
+
+        public SetEntityProperty Remove(T key, UMI3DGroupAsyncProperty group)
+        {
+            if (group == null)
+                return Remove(key);
+
+            if (!this.groupValueMaps.TryGetValue(group, out var defaultValue))
             {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                key = SerializerT(key, null),
-                value = SerializerL(value, null)
-            };
-            if (UMI3DEnvironment.Exists)
-            {
-                if (isAsync || isDeSync)
-                {
-                    operation += UMI3DEnvironment.GetEntitiesWhere<UMI3DUser>(
-                        user => !asyncValues.ContainsKey(user) && !UserDesync.Contains(user));
-                }
-                else
-                {
-                    operation += UMI3DServer.Instance.Users();
-                }
+                group.Add(this);
+                defaultValue = this.groupValueMaps[group];
             }
+
+            if (!defaultValue.ContainsKey(key)) return null;
+            L value = defaultValue[key];
+
+            var operation = GetSetEntityDictionaryRemoveOperationForAllUsers(key);
+
+            if (!defaultValue.Remove(key)) return null;
+            OnInnerGroupValueRemoved?.Invoke(key, group);
+
             return operation;
         }
 
@@ -363,48 +379,52 @@ namespace umi3d.edk
             if (!GetValue(user).ContainsKey(key)) return null;
             L value = GetValue(user)[key];
 
-            var operation = new SetEntityDictionaryRemoveProperty()
-            {
-                users = new HashSet<UMI3DUser>(),
-                entityId = entityId,
-                property = propertyId,
-                key = SerializerT(key, user),
-                value = SerializerL(value, user)
-            };
-            operation.users.Add(user);
+            var operation = GetSetEntityDictionaryRemoveOperationForUser(key, user);
 
-            if (asyncValues.ContainsKey(user))
-            {
-                if (!GetValue(user).Remove(key)) return null;
-                if (OnUserInnerValueRemoved != null)
-                    OnUserInnerValueRemoved.Invoke(key, user);
-                if (!UserDesync.Contains(user))
-                    return operation;
-                else
-                    return null;
-            }
-            else
-            {
+            if (!asyncValues.ContainsKey(user))
                 Sync(user, false);
-                if (!GetValue(user).Remove(key)) return null;
-                if (OnUserInnerValueRemoved != null)
-                    OnUserInnerValueRemoved.Invoke(key, user);
-                if (!UserDesync.Contains(user))
-                    return operation;
-                else
-                    return null;
-            }
+
+            if (!GetValue(user).Remove(key)) return null;
+
+            if (OnUserInnerValueRemoved != null)
+                OnUserInnerValueRemoved.Invoke(key, user);
+            if (!UserDesync.Contains(user))
+                return operation;
+            else
+                return null;
         }
 
         /// <inheritdoc/>
         protected override Dictionary<T, L> CopyOfValue(Dictionary<T, L> value) { return Copier(value); }
 
+        #region Set
         /// <summary>
         /// Get a SetEntityListProperty for this property for all users matching the async information.
         /// </summary>
         public virtual SetEntityDictionaryProperty GetSetEntityOperationForAllUsers(T key)
         {
             return GetSetEntityOperationForUsers(key, u => true);
+        }
+
+        public virtual SetEntityDictionaryProperty GetSetEntityOperationForAllUsers(T key, UMI3DGroupAsyncProperty group)
+        {
+            if (group == null)
+                return GetSetEntityOperationForAllUsers(key);
+
+            return GetSetEntityOperationForUsers(key, u => true, group);
+        }
+
+        public virtual List<SetEntityDictionaryProperty> GetSetEntityOperationForUsersAndGroups(T key, Func<UMI3DUser, bool> condition)
+        {
+            var result = new List<SetEntityDictionaryProperty>()
+            {
+                GetSetEntityOperationForUsers(key,condition)
+            };
+
+            if (groupValueMaps.Count > 0)
+                result.AddRange(groupValueMaps.Select(g => GetSetEntityOperationForUsers(key, condition, g.Key)));
+
+            return result;
         }
 
         /// <summary>
@@ -417,7 +437,7 @@ namespace umi3d.edk
                 users = new HashSet<UMI3DUser>() { user },
                 entityId = entityId,
                 property = propertyId,
-                key = SerializerT(key,user),
+                key = SerializerT(key, user),
                 value = SerializerL(GetValue(user)[key], user)
             };
         }
@@ -427,21 +447,261 @@ namespace umi3d.edk
         /// </summary>
         public virtual SetEntityDictionaryProperty GetSetEntityOperationForUsers(T key, Func<UMI3DUser, bool> condition)
         {
-            bool IsUserAsync(UMI3DUser user)
+            bool IsUserSyncAndCondition(UMI3DUser user)
             {
-                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && condition(user);
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
             }
 
-            var _c = (isAsync || isDeSync) ? IsUserAsync : condition;
+            bool IsCondition(UMI3DUser user)
+            {
+                return !userGroupMaps.ContainsKey(user) && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? IsUserSyncAndCondition : (Func<UMI3DUser, bool>)IsCondition;
+
 
             return new SetEntityDictionaryProperty()
             {
-                users = new HashSet<UMI3DUser>(UMI3DServer.Instance.Users().Where(_c)),
+                users = GetUsersWhere(_c),
                 entityId = entityId,
                 property = propertyId,
                 key = SerializerT(key, null),
                 value = SerializerL(GetValue()[key], null)
             };
         }
+
+        /// <inheritdoc/>
+        public virtual SetEntityDictionaryProperty GetSetEntityOperationForUsers(T key, Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
+        {
+            if (group == null)
+                return GetSetEntityOperationForUsers(key, condition);
+
+            bool IsUserSyncAndCondition(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
+            }
+
+            bool IsCondition(UMI3DUser user)
+            {
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? (Func<UMI3DUser, bool>)IsUserSyncAndCondition : IsCondition;
+
+            return new SetEntityDictionaryProperty()
+            {
+                users = GetUsersWhere(_c),
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, null),
+                value = SerializerL(GetValue()[key], null)
+            };
+        }
+        #endregion Set
+
+        #region Add
+        /// <summary>
+        /// Get a SetEntityDictionaryAddListProperty for this property for all users matching the async information.
+        /// </summary>
+        public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForAllUsers(T key)
+        {
+            return GetSetEntityDictionaryAddOperationForUsers(key, u => true);
+        }
+
+        public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForAllUsers(T key, UMI3DGroupAsyncProperty group)
+        {
+            if (group == null)
+                return GetSetEntityDictionaryAddOperationForAllUsers(key);
+
+            return GetSetEntityDictionaryAddOperationForUsers(key, u => true, group);
+        }
+
+        public virtual List<SetEntityDictionaryAddProperty> GetSetEntityDictionaryAddOperationForUsersAndGroups(T key, Func<UMI3DUser, bool> condition)
+        {
+            var result = new List<SetEntityDictionaryAddProperty>()
+            {
+                GetSetEntityDictionaryAddOperationForUsers(key,condition)
+            };
+
+            if (groupValueMaps.Count > 0)
+                result.AddRange(groupValueMaps.Select(g => GetSetEntityDictionaryAddOperationForUsers(key, condition, g.Key)));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get a SetEntityDictionaryAddListProperty for this property for a given users.
+        /// </summary>
+        public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForUser(T key, UMI3DUser user)
+        {
+            return new SetEntityDictionaryAddProperty()
+            {
+                users = new HashSet<UMI3DUser>() { user },
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, user),
+                value = SerializerL(GetValue(user)[key], user)
+            };
+        }
+
+        /// <summary>
+        /// Get a SetEntityDictionaryAddListProperty for this property for users matching the given condition and the async information.
+        /// </summary>
+        public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForUsers(T key, Func<UMI3DUser, bool> condition)
+        {
+            bool IsUserSyncAndCondition(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
+            }
+
+            bool IsCondition(UMI3DUser user)
+            {
+                return !userGroupMaps.ContainsKey(user) && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? IsUserSyncAndCondition : (Func<UMI3DUser, bool>)IsCondition;
+
+
+            return new SetEntityDictionaryAddProperty()
+            {
+                users = GetUsersWhere(_c),
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, null),
+                value = SerializerL(GetValue()[key], null)
+            };
+        }
+
+        /// <inheritdoc/>
+        public virtual SetEntityDictionaryAddProperty GetSetEntityDictionaryAddOperationForUsers(T key, Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
+        {
+            if (group == null)
+                return GetSetEntityDictionaryAddOperationForUsers(key, condition);
+
+            bool IsUserSyncAndCondition(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
+            }
+
+            bool IsCondition(UMI3DUser user)
+            {
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? (Func<UMI3DUser, bool>)IsUserSyncAndCondition : IsCondition;
+
+            return new SetEntityDictionaryAddProperty()
+            {
+                users = GetUsersWhere(_c),
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, null),
+                value = SerializerL(GetValue()[key], null)
+            };
+        }
+        #endregion Add
+
+        #region Remove
+        /// <summary>
+        /// Get a SetEntityDictionaryRemoveListProperty for this property for all users matching the async information.
+        /// </summary>
+        public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForAllUsers(T key)
+        {
+            return GetSetEntityDictionaryRemoveOperationForUsers(key, u => true);
+        }
+
+        public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForAllUsers(T key, UMI3DGroupAsyncProperty group)
+        {
+            if (group == null)
+                return GetSetEntityDictionaryRemoveOperationForAllUsers(key);
+
+            return GetSetEntityDictionaryRemoveOperationForUsers(key, u => true, group);
+        }
+
+        public virtual List<SetEntityDictionaryRemoveProperty> GetSetEntityDictionaryRemoveOperationForUsersAndGroups(T key, Func<UMI3DUser, bool> condition)
+        {
+            var result = new List<SetEntityDictionaryRemoveProperty>()
+            {
+                GetSetEntityDictionaryRemoveOperationForUsers(key,condition)
+            };
+
+            if (groupValueMaps.Count > 0)
+                result.AddRange(groupValueMaps.Select(g => GetSetEntityDictionaryRemoveOperationForUsers(key, condition, g.Key)));
+
+            return result;
+        }
+
+        /// <summary>
+        /// Get a SetEntityDictionaryRemoveListProperty for this property for a given users.
+        /// </summary>
+        public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForUser(T key, UMI3DUser user)
+        {
+            return new SetEntityDictionaryRemoveProperty()
+            {
+                users = new HashSet<UMI3DUser>() { user },
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, user),
+                value = SerializerL(GetValue(user)[key], user)
+            };
+        }
+
+        /// <summary>
+        /// Get a SetEntityDictionaryRemoveListProperty for this property for users matching the given condition and the async information.
+        /// </summary>
+        public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForUsers(T key, Func<UMI3DUser, bool> condition)
+        {
+            bool IsUserSyncAndCondition(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && !userGroupMaps.ContainsKey(user) && condition(user);
+            }
+
+            bool IsCondition(UMI3DUser user)
+            {
+                return !userGroupMaps.ContainsKey(user) && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? IsUserSyncAndCondition : (Func<UMI3DUser, bool>)IsCondition;
+
+
+            return new SetEntityDictionaryRemoveProperty()
+            {
+                users = GetUsersWhere(_c),
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, null),
+                value = SerializerL(GetValue()[key], null)
+            };
+        }
+
+        /// <inheritdoc/>
+        public virtual SetEntityDictionaryRemoveProperty GetSetEntityDictionaryRemoveOperationForUsers(T key, Func<UMI3DUser, bool> condition, UMI3DGroupAsyncProperty group)
+        {
+            if(group == null)
+                return GetSetEntityDictionaryRemoveOperationForUsers(key, condition);
+
+            bool IsUserSyncAndCondition(UMI3DUser user)
+            {
+                return !asyncValues.ContainsKey(user) && !UserDesync.Contains(user) && userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
+            }
+
+            bool IsCondition(UMI3DUser user)
+            {
+                return userGroupMaps.ContainsKey(user) && userGroupMaps[user] == group && condition(user);
+            }
+
+            var _c = (isAsync || isDeSync) ? (Func<UMI3DUser, bool>)IsUserSyncAndCondition : IsCondition;
+
+            return new SetEntityDictionaryRemoveProperty()
+            {
+                users = GetUsersWhere(_c),
+                entityId = entityId,
+                property = propertyId,
+                key = SerializerT(key, null),
+                value = SerializerL(GetValue()[key], null)
+            };
+        }
+        #endregion Remove
+
     }
 }
