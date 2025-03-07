@@ -4,8 +4,12 @@ using UnityEngine;
 using System;
 using System.Threading;
 
-namespace Mumble {
-    public class AudioDecodeThread : IDisposable{
+namespace Mumble
+{
+    public class AudioDecodeThread : IDisposable
+    {
+
+        public bool ShouldDecodeAudio { get; set; } = true;
 
         private readonly MumbleClient _mumbleClient;
         private readonly AutoResetEvent _waitHandle;
@@ -89,6 +93,9 @@ namespace Mumble {
                 {
                     try
                     {
+                        if (!ShouldDecodeAudio)
+                            break;
+
                         MessageData messageData;
                         lock (_messageQueue)
                         {
@@ -117,7 +124,7 @@ namespace Mumble {
                                 if (_currentDecoders.TryGetValue(messageData.Session, out decoderState))
                                 {
                                     // Return the OpusDecoder
-                                    if(decoderState.Decoder != null)
+                                    if (decoderState.Decoder != null)
                                         _unusedDecoders.Enqueue(decoderState.Decoder);
                                     _currentDecoders.Remove(messageData.Session);
                                     //Debug.Log("Removing DecoderState for session: " + messageData.Session);
@@ -133,7 +140,7 @@ namespace Mumble {
                                     break;
                                 }
                                 // Make an OpusDecoder if there isn't one
-                                if(decoderState.Decoder == null)
+                                if (decoderState.Decoder == null)
                                 {
                                     if (_unusedDecoders.Count > 0)
                                     {
@@ -147,6 +154,7 @@ namespace Mumble {
                                     //Debug.Log("Added OpusDecoder for DecoderState session: " + messageData.Session);
                                     decoderState.Decoder = decoder;
                                 }
+
                                 DecodeAudio(messageData.Session, decoderState, messageData.CompressedAudio, messageData.PosData, messageData.Sequence,
                                     messageData.IsLast);
                                 break;
@@ -154,7 +162,8 @@ namespace Mumble {
                                 Debug.LogError("Message type not implemented:" + messageData.TypeOfMessage);
                                 break;
                         }
-                    }catch(Exception e)
+                    }
+                    catch (Exception e)
                     {
                         Debug.LogError("Exception in decode thread: " + e.ToString());
                     }
@@ -182,7 +191,7 @@ namespace Mumble {
                 long seqDiff = sequence - decoderState.NextSequenceToDecode;
 
                 // If new packet is VERY late, then the sequence number has probably reset
-                if(seqDiff < -MaxMissingPackets)
+                if (seqDiff < -MaxMissingPackets)
                 {
                     Debug.Log("Sequence has possibly reset diff = " + seqDiff);
                     decoderState.Decoder.ResetState();
@@ -235,7 +244,7 @@ namespace Mumble {
                     reevaluateInitialBuffer);
             }
             //else
-                //Debug.Log("empty packet data?");
+            //Debug.Log("empty packet data?");
 
             if (numRead < 0)
             {
@@ -255,7 +264,7 @@ namespace Mumble {
                 // Re-evaluate whether we need to fill up a buffer of audio before playing
                 //lock (_bufferLock)
                 //{
-                    //HasFilledInitialBuffer = (_encodedBuffer.Count + 1 >= InitialSampleBuffer);
+                //HasFilledInitialBuffer = (_encodedBuffer.Count + 1 >= InitialSampleBuffer);
                 //}
                 decoderState.Decoder.ResetState();
             }

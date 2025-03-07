@@ -160,7 +160,7 @@ namespace umi3d.cdk.collaboration
             if (volumeMemory.ContainsKey(user.login))
                 player.SetVolume(volumeMemory[user.login]);
             player.OnPlaying.AddListener(s => OnUserSpeaking.Invoke(user, s));
-            player.OnAudioSample = ((data, u) => OnAudioUserData.Invoke(user, data));
+            player.OnAudioSample += ((data, u) => OnAudioUserData.Invoke(user, data));
         }
 
         private void Start()

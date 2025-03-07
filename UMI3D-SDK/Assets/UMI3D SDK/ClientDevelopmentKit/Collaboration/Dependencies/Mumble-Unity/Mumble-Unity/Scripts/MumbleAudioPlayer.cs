@@ -12,12 +12,11 @@ namespace Mumble
     /*
      * WARNING : THIS CLASS IS MODIFIED !
      * 
-     * Most modifications concern OnAudioFilterRead method.
+     * Most modificatioon concern OnAudioFilterRead method.
      */
     [RequireComponent(typeof(AudioSource))]
     public class MumbleAudioPlayer : MonoBehaviour
     {
-
         public float Gain = 1;
         public UInt32 Session { get; private set; }
         private bool _isPlaying
@@ -40,8 +39,7 @@ namespace Mumble
         /// your own code, and it contains the percent of the data left
         /// un-read
         /// </summary>
-        public Action<float[], float> OnAudioSample;
-
+        public event Action<float[], float> OnAudioSample;
         private MumbleClient _mumbleClient;
         private AudioSource _audioSource;
         private bool __isPlaying = false;
@@ -73,6 +71,7 @@ namespace Mumble
                     _audioSource.Play();
             };
         }
+
         public string GetUsername()
         {
             if (_mumbleClient == null)
@@ -108,6 +107,7 @@ namespace Mumble
         }
         public void Reset()
         {
+            Debug.Log("call Reset");
             _mumbleClient = null;
             Session = 0;
             OnAudioSample = null;
@@ -121,7 +121,7 @@ namespace Mumble
         {
             _mumbleClient = source._mumbleClient;
             Session = source.Session;
-            OnAudioSample = source.OnAudioSample;
+            OnAudioSample = source.OnAudioSample; // 
             _isPlaying = false;
             if (_audioSource != null)
             {
@@ -138,9 +138,8 @@ namespace Mumble
         float[] monoSoundReceived;
         void OnAudioFilterRead(float[] data, int channels)
         {
-            if (_mumbleClient == null /*|| !_mumbleClient.ConnectionSetupFinished*/)
+            if (_mumbleClient == null)
                 return;
-
 
             if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
             {
@@ -171,8 +170,8 @@ namespace Mumble
 
             float percentUnderrun = 1f - numRead / data.Length;
 
-            if (OnAudioSample != null)
-                OnAudioSample?.Invoke(data.ToArray(), percentUnderrun);
+            float[] samples = data.ToArray();
+            OnAudioSample?.Invoke(samples, percentUnderrun);
 
             if (Gain == 1)
                 return;
@@ -227,7 +226,8 @@ namespace Mumble
             }
             if (!_isPlaying && _mumbleClient.HasPlayableAudio(Session))
             {
-                _audioSource.Play();     
+                _audioSource.Play();
+                //Debug.Log("play audio from mumble audio player "+ gameObject.name);
                 _isPlaying = true;
             }
             else if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))

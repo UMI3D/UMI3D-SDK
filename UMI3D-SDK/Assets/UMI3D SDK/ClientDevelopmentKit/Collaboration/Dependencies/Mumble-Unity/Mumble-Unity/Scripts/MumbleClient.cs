@@ -103,7 +103,7 @@ namespace Mumble
         private IPAddress[] _addresses;
         private readonly string _hostName;
         private readonly int _port;
-        private ManageAudioSendBuffer _manageSendBuffer;
+        public ManageAudioSendBuffer _manageSendBuffer;
         private MumbleMicrophone _mumbleMic;
         private readonly AudioPlayerCreatorMethod _audioPlayerCreator;
         private readonly AudioPlayerRemoverMethod _audioPlayerDestroyer;
@@ -134,6 +134,20 @@ namespace Mumble
         public int EncoderSampleRate { get; private set; }
         public int NumSamplesPerOutgoingPacket { get; private set; }
 
+        private bool shouldDecodeAudio = true;
+        public bool ShouldDecodeAudio
+        {
+            get => shouldDecodeAudio;
+            set
+            {
+                shouldDecodeAudio = value;
+
+                if (_audioDecodeThread == null)
+                    return;
+                _audioDecodeThread.ShouldDecodeAudio = value;
+            }
+        }
+
         //The Mumble version of this integration
         public const string ReleaseName = "MumbleUnity";
         public const uint Major = 1;
@@ -142,7 +156,7 @@ namespace Mumble
 
         public MumbleClient(string hostName, int port, AudioPlayerCreatorMethod createMumbleAudioPlayerMethod,
             AudioPlayerRemoverMethod removeMumbleAudioPlayerMethod, AnyUserStateChangedMethod anyChangeMethod = null,
-            bool async = false, SpeakerCreationMode speakerCreationMode = SpeakerCreationMode.ALL,
+            bool async = true, SpeakerCreationMode speakerCreationMode = SpeakerCreationMode.ALL,
             DebugValues debugVals = null, int maxPositionalDataLength = 0)
         {
             _hostName = hostName;
@@ -208,9 +222,9 @@ namespace Mumble
                 return null;
             return _addresses[0].ToString();
         }
+
         private void Init(IPAddress[] addresses)
         {
-            //Debug.Log("Host addresses recv");
             if (addresses == null || addresses.Length == 0)
             {
                 Debug.LogError("Failed to get addresses!");
@@ -222,16 +236,21 @@ namespace Mumble
 
             _addresses = addresses;
             var endpoint = new IPEndPoint(_addresses[0], _port);
-            //Debug.Log($"endpoint : {endpoint.Address} {endpoint.Port}");
-            _audioDecodeThread = new AudioDecodeThread(_outputSampleRate, _outputChannelCount, this);
+            //Debug.Log($"endpoint : {endpoint.Address} {endpoint.Port}");          
+            _audioDecodeThread = new AudioDecodeThread(_outputSampleRate, _outputChannelCount, this) { ShouldDecodeAudio = ShouldDecodeAudio };
             _decodingBufferPool = new DecodingBufferPool(_audioDecodeThread);
             _udpConnection = new MumbleUdpConnection(endpoint, _audioDecodeThread, this);
             _udpConnection.ConnectionError.AddListener(SendError);
             _tcpConnection = new MumbleTcpConnection(endpoint, _hostName,
                 _udpConnection.UpdateOcbServerNonce, _udpConnection, this);
-
+            Debug.LogWarning(endpoint.AddressFamily.ToString() + "  " + _hostName);
             _udpConnection.SetTcpConnection(_tcpConnection);
-            _manageSendBuffer = new ManageAudioSendBuffer(_udpConnection, this, _maxPositionalDataLength);
+            Debug.LogWarning("init send buffer");
+            if (_manageSendBuffer == null)
+            {
+                _manageSendBuffer = new ManageAudioSendBuffer(_udpConnection, this, _maxPositionalDataLength);
+            }
+
             ReadyToConnect = true;
         }
 
@@ -240,9 +259,10 @@ namespace Mumble
             ConnectionError.Invoke(e);
         }
 
-        private void OnHostRecv(IAsyncResult result)
+        async private void OnHostRecv(IAsyncResult result)
         {
             IPAddress[] addresses = Dns.EndGetHostAddresses(result);
+            await System.Threading.Tasks.Task.Delay(8000);
             Init(addresses);
         }
         public void AddMumbleMic(MumbleMicrophone newMic)
@@ -257,6 +277,8 @@ namespace Mumble
             NumSamplesPerOutgoingPacket = MumbleConstants.NUM_FRAMES_PER_OUTGOING_PACKET * EncoderSampleRate / 100;
             _manageSendBuffer.InitForSampleRate(EncoderSampleRate);
         }
+
+
         public PcmArray GetAvailablePcmArray()
         {
             return _manageSendBuffer.GetAvailablePcmArray();
@@ -344,8 +366,7 @@ namespace Mumble
             {
                 EventProcessor.Instance.QueueEvent(() =>
                 {
-                    if (_anyUserStateChange != null)
-                        _anyUserStateChange(newUserState.Session, newUserState, userState);
+                    _anyUserStateChange?.Invoke(newUserState.Session, newUserState, userState);
                 });
             }
         }
@@ -381,21 +402,23 @@ namespace Mumble
         }
         private void AddDecodingBuffer(UserState userState)
         {
+            if (_audioPlayerCreator is null)
+                return;
+
             // Make sure we don't double add
             if (_audioDecodingBuffers.ContainsKey(userState.Session))
                 return;
-            //Debug.Log("Adding : " + userState.Name + " #" + userState.Session);
-            //Debug.Log("Adding decoder session #" + userState.Session);
+
             DecodedAudioBuffer buffer = _decodingBufferPool.GetDecodingBuffer();
             buffer.Init(userState.Name, userState.Session);
             _audioDecodingBuffers.Add(userState.Session, buffer);
             EventProcessor.Instance.QueueEvent(() =>
             {
-                //Debug.Log("Adding audioPlayer session #" + userState.Session);
                 // We also create a new audio player for the user
                 MumbleAudioPlayer newPlayer = _audioPlayerCreator(userState.Name, userState.Session);
                 Debug.Assert(newPlayer != null, "MumbleAudioPlayer created null for " + userState.Name + ", " + userState.Session);
                 _mumbleAudioPlayers.Add(userState.Session, newPlayer);
+
                 // HACK new player should not be null but sometime it is null.
                 newPlayer?.Initialize(this, userState.Session);
             });
@@ -404,10 +427,12 @@ namespace Mumble
         }
         private void TryRemoveDecodingBuffer(UInt32 session)
         {
+            if (_audioPlayerCreator is null || _audioPlayerDestroyer is null)
+                return;
+
             DecodedAudioBuffer buffer;
             if (_audioDecodingBuffers.TryGetValue(session, out buffer))
             {
-                //Debug.LogWarning("Removing decoder session #" + session);
                 _audioDecodingBuffers.Remove(session);
                 _decodingBufferPool.ReturnDecodingBuffer(buffer);
 
@@ -464,8 +489,7 @@ namespace Mumble
                 {
                     EventProcessor.Instance.QueueEvent(() =>
                     {
-                        if (_anyUserStateChange != null)
-                            _anyUserStateChange(removedUserSession, null, removedUserState);
+                        _anyUserStateChange?.Invoke(removedUserSession, null, removedUserState);
                     });
                 }
             }
@@ -531,13 +555,17 @@ namespace Mumble
         {
             // Don't send anything out if we're muted
             if (OurUserState == null
-                || (OurUserState.Mute && !UseLocalLoopBack))
+                || OurUserState.Mute)
             {
                 floatData.UnRef();
+                Debug.LogWarning("mumble client muted or null");
                 return;
             }
             if (_manageSendBuffer != null)
+            {
+                Debug.LogWarning("mumble SendVoicePacket ");
                 _manageSendBuffer.SendVoice(floatData, SpeechTarget.Normal, 0);
+            }
         }
         public void ReceiveDecodedVoice(UInt32 session, float[] pcmData, int numSamples, byte[] posData, bool reevaluateInitialBuffer)
         {
@@ -716,7 +744,7 @@ namespace Mumble
             };
             _pendingMute = null;
 
-            // Debug.Log("Attempting to join channel Id: " + state.ChannelId);
+            Debug.Log("Attempting to join channel Id: " + state.ChannelId);
             _tcpConnection.SendMessage<MumbleProto.UserState>(MessageType.UserState, state);
             return true;
         }
@@ -826,6 +854,21 @@ namespace Mumble
             Debug.LogError("Could not get current channel");
             return null;
         }
+
+        public uint? GetCurrentChannelId()
+        {
+            if (Channels == null
+                || OurUserState == null)
+                return null;
+
+            Channel ourChannel;
+            if (Channels.TryGetValue(OurUserState.ChannelId, out ourChannel))
+                return ourChannel.ChannelId;
+
+            Debug.LogError("Could not get current channel");
+            return null;
+        }
+
         public uint GetOurSession()
         {
             if (OurUserState != null)
@@ -891,11 +934,14 @@ namespace Mumble
         }
         internal void OnNotifyPingReceived()
         {
+            //Debug.Log("call OnNotifyPingReceived");
             EventProcessor.Instance.QueueEvent(() =>
             {
                 if (OnPingReceived != null)
                     OnPingReceived();
             });
+            //Debug.Log("end of OnNotifyPingReceived");
+
         }
         internal void OnConnectionDisconnect()
         {
@@ -942,7 +988,7 @@ namespace Mumble
                     currentDifference = Math.Abs(listedRate - MumbleConstants.SUPPORTED_SAMPLE_RATES[i]);
                 }
             }
-
+            Debug.LogError("sample rate (should be 16000  " + currentBest);
             return currentBest;
         }
     }
