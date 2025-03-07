@@ -31,7 +31,6 @@ namespace umi3d.edk.collaboration.murmur
         private string url = "";
         Dictionary<string, string> headermap;
 
-
         /// <summary>
         /// 
         /// </summary>
@@ -86,7 +85,7 @@ namespace umi3d.edk.collaboration.murmur
 
         private string RequestToString(UnityWebRequest www)
         {
-            if (www.isHttpError || www.isNetworkError)
+            if (www.result != UnityWebRequest.Result.Success)
             {
                 var error = www.error;
                 var url = www.url;
@@ -206,8 +205,52 @@ namespace umi3d.edk.collaboration.murmur
         }
 
         //POST /servers/:serverid/conf? key = users & value = 100    Set configuration variable 'users' to 100
-        //POST /servers/:serverid/sendmessage Send a message to all channels in a server.formdata: message
+
         //POST /servers/:serverid/setsuperuserpw Sets SuperUser password. formdata: password
+        #endregion
+
+        #region Messages
+
+        //POST /servers/:serverid/sendmessage Send a message to all channels in a server.formdata: message
+
+        //POST /servers/:serverid/sendmessage/channel | Send a message to a specific channel in a server. formdata: message:str, channel:int, fromUserSession:int (optional)
+        public async Task SendMessageToChannel(int server, int channel, string message, int? fromUserSession = null)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("channel", channel.ToString()),
+                new MultipartFormDataSection("message", message),
+            };
+
+            if (fromUserSession.HasValue)
+                new MultipartFormDataSection("fromUserSession", fromUserSession.Value.ToString());
+
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/sendmessage/channel", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
+        }
+
+        //POST /servers/:serverid/sendmessage/user | Send a message to a specific user in a server. formdata: message:str, toUserSession:int, fromUserSession:int (optional)
+        public async Task SendMessageToUser(int server, int toUserSession, string message, int? fromUserSession = null)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("toUserSession", toUserSession.ToString()),
+                new MultipartFormDataSection("message", message),
+            };
+
+            if (fromUserSession.HasValue)
+                new MultipartFormDataSection("fromUserSession", fromUserSession.Value.ToString());
+
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/sendmessage/user", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
+        }
+
         #endregion
 
         #region Stats
@@ -284,10 +327,86 @@ namespace umi3d.edk.collaboration.murmur
             return RequestToString(www);
         }
 
+        //POST /servers/:serverid/channels/link/add | Link channel and other channel. formdata:  channel:int, otherChannel:int
+        public async Task LinkChannels(int server, int channel, int otherChannel)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("channel", channel.ToString()),
+                new MultipartFormDataSection($"otherChannel", otherChannel.ToString())
+            };
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/channels/link/add", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
+        }
+
+        //POST /servers/:serverid/channels/link/remove/:otherchannelId | Unlink channel and other channel. formdata: channel:int, otherChannel:int
+        public async Task UnlinkChannels(int server, int channel, int otherChannel)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("channel", channel.ToString()),
+                new MultipartFormDataSection($"otherChannel", otherChannel.ToString())
+            };
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/channels/link/remove", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
+        }
+
+        //POST /servers/:serverid/channels/link/clear | Clear all links from channel.
+        public async Task ClearChannelLinks(int server, int channel)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("channel", channel.ToString())
+            };
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/channels/link/clear", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
+        }
+
         //GET /servers/:serverid/channels/:channelid/acl Get ACL list for channel ID
         public async Task<string> GetServerChannelACL(int i, int channel)
         {
             return await GetRequest(url + "/servers/" + i + "/channels/" + channel + "/acl");
+        }
+
+        // POST /servers/:serverid/channels/acl/add | Add an ACL to a channel. formdata: channel:int, group:str, allowFlags:int, denyFlags:int
+        public async Task AddACLToChannel(int server, int channel, string groupName, int allowFlags, int denyFlags)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("channel", channel.ToString()),
+                new MultipartFormDataSection("group", groupName.ToString()),
+                new MultipartFormDataSection("allowFlags", allowFlags.ToString()),
+                new MultipartFormDataSection("denyFlags", denyFlags.ToString()),
+            };
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/channels/acl/add", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
+        }
+
+        // POST /servers/:serverid/channels/acl/remove | Remove an ACL from a channel. formdata: channel:int, group:str
+        public async Task RemoveACLFromChannel(int server, int channel, string groupName)
+        {
+            var form = new List<IMultipartFormSection>
+            {
+                new MultipartFormDataSection("channel", channel.ToString()),
+                new MultipartFormDataSection("group", groupName.ToString()),
+            };
+            UnityWebRequest www = UnityWebRequest.Post(url + "/servers/" + server + "/channels/acl/remove", form);
+
+            SetRequestHeader(www);
+            await Send(www);
+            RequestToString(www);
         }
 
         //DELETE /servers/:serverid/channels/:channelid Delete Channel
@@ -302,9 +421,9 @@ namespace umi3d.edk.collaboration.murmur
 
         private UnityWebRequest SetRequestHeader(UnityWebRequest www)
         {
-            foreach(var header in headermap)
-                if(header.Value != null)
-                    www.SetRequestHeader(header.Key,header.Value);
+            foreach (var header in headermap)
+                if (header.Value != null)
+                    www.SetRequestHeader(header.Key, header.Value);
 
             return www;
         }
