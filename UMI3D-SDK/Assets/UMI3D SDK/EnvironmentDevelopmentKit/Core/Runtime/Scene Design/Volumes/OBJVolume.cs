@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using inetum.unityUtils.systemIO;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;

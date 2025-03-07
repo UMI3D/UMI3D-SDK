@@ -63,6 +63,27 @@ namespace umi3d.cdk.collaboration
 
         #endregion Emotes
 
+        private bool isColocatedDevice;
+        public bool IsColocatedDevice
+        {
+            get => isColocatedDevice;
+            set => isColocatedDevice = value;
+        }
+
+        private ulong lBEGroupId = 0;
+        public ulong LBEGroupId
+        {
+            get => lBEGroupId;
+            set => lBEGroupId = value;
+        }
+
+        private bool isLBEGroupLeader = false;
+        public bool IsLBEGroupLeader
+        {
+            get => isLBEGroupLeader;
+            set => isLBEGroupLeader = value;
+        }
+
         public override void Init()
         {
             // force instanciation

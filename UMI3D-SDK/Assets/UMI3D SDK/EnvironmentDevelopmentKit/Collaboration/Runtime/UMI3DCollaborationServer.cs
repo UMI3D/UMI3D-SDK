@@ -284,6 +284,8 @@ namespace umi3d.edk.collaboration
 
             WorldController.SetupAfterServerStart();
             OnServerStart.Invoke();
+
+            LBEManager.Instance.Init();
         }
 
         private void ShouldAcceptPlayer(string identity, NetworkingPlayer player, Action<bool> action)

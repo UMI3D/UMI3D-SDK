@@ -23,6 +23,10 @@ using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.emotes;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
+using umi3d.common.lbe;
+using umi3d.common.lbe.description;
+
+using umi3d.common.userCapture;
 using umi3d.common.userCapture.tracking;
 using umi3d.edk.collaboration.emotes;
 using umi3d.edk.collaboration.tracking;
@@ -65,6 +69,11 @@ namespace umi3d.edk.collaboration
         public ushort connectionPort;
 
         public UMI3DTrackingRelay trackingRelay { get; private set; }
+
+        public static event Action<UMI3DUser, DeviceBatteryLevelRequestDto> OnDeviceDataReception;
+        
+        public static event Action<ulong, UserGuardianRequestDto> OnGuardianReceived;
+
 
         object timeLock = new object();
         public ulong Time
@@ -293,7 +302,8 @@ namespace umi3d.edk.collaboration
         /// <inheritdoc/>
         protected override void OnDataFrame(NetworkingPlayer player, Binary frame, NetWorker sender)
         {
-            UMI3DUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
+            //UMI3DUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);                
+            UMI3DCollaborationAbstractContentUser user = UMI3DCollaborationServer.Collaboration.GetUserByNetworkId(player.NetworkId);
             if (user == null)
                 return;
 
@@ -358,13 +368,47 @@ namespace umi3d.edk.collaboration
                             WebViewManager.Instance.SynchronisationRequest(user, webViewSynchroRequest.webViewId);
                         });
                         break;
-                    case UserActionRequestDto userAction:
+                    case TeleportGroupRequestDto teleportGroupRequest:
                         MainThreadManager.Run(() =>
                         {
-                            if (user is UMI3DCollaborationAbstractContentUser AUser)
-                                UMI3DCollaborationServer.Collaboration?.HandleUserActionRequest(AUser, userAction);
-                            else
-                                UnityEngine.Debug.LogError($"Received UserAction from a {user.GetType()}");
+                            LBEManager.Instance.TeleportGroup(user, teleportGroupRequest.teleportationVector); //TODO: AJOUTER PARAM isCommonGardian
+                        });
+                        break;
+                    case UserGuardianRequestDto userGuardianDto:
+                        MainThreadManager.Run(() =>
+                        {
+                            OnGuardianReceived?.Invoke(user.Id(), userGuardianDto);
+                        });
+                        break;
+                    case ARAnchorDto aRAnchorDto:
+                        MainThreadManager.Run(() =>
+                        {
+                            Debug.Log("Remi : Ok Get guardian 2");
+                            //GuardianManagerServer.Instance.GetARAnchor(user, aRAnchorDto.trackableId, aRAnchorDto.position, aRAnchorDto.rotation);
+                        });
+                        break;
+                    case LBEUserRegisterRequestDto lBEUserRegisterDto:
+                        MainThreadManager.Run(() =>
+                        {
+                            LBEManager.Instance.LBEAddUser(user, lBEUserRegisterDto.groupId);
+                        });
+                        break;
+                    case LBELeaderRegisterRequestDto lBELeaderRegisterDto:
+                        MainThreadManager.Run(() =>
+                        {
+                            LBEManager.Instance.LBESetNewLeader(user, lBELeaderRegisterDto.groupId);
+                        });
+                        break;
+                    case DeviceDescriptionRequestDto deviceDescription:
+                        MainThreadManager.Run(() =>
+                        {
+                            OnDeviceDataReception?.Invoke(user, deviceDescription);
+                        });
+                        break;
+                    case DeviceBatteryLevelRequestDto deviceBatteryLevel:
+                        MainThreadManager.Run(() =>
+                        {
+                            OnDeviceDataReception?.Invoke(user, deviceBatteryLevel);
                         });
                         break;
                     default:
@@ -372,7 +416,7 @@ namespace umi3d.edk.collaboration
                         {
                             UMI3DBrowserRequestDispatcher.DispatchBrowserRequest(user, dto);
                         });
-                        break;
+                        break;                  
                 }
             }
             else
@@ -449,24 +493,47 @@ namespace umi3d.edk.collaboration
                             WebViewManager.Instance.SynchronisationRequest(user, webViewId);
                         });
                         break;
-                    case UMI3DOperationKeys.UserActionRequest:
-                        ulong userActionId = UMI3DSerializer.Read<ulong>(container);
+                    case UMI3DOperationKeys.TeleportGroupRequest:
                         MainThreadManager.Run(() =>
                         {
-                            if (user is UMI3DCollaborationAbstractContentUser AUser)
-                                UMI3DCollaborationServer.Collaboration.HandleUserActionRequest(AUser, new UserActionRequestDto() { environmentId = container.environmentId, actionId = userActionId });
-                            else
-                                UnityEngine.Debug.LogError($"Received UserAction from a {user.GetType()}");
+                            Vector3Dto teleportationVector = UMI3DSerializer.Read<Vector3Dto>(container);
+                            LBEManager.Instance.TeleportGroup(user, teleportationVector); //TODO: ADD PARAM isCommonGardian
+                        });
+                        break;
+                    case UMI3DOperationKeys.MDMGuardianBrowserRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            UserGuardianRequestDto userGuardianDto = UMI3DSerializer.Read<UserGuardianRequestDto>(container);
+                            OnGuardianReceived?.Invoke(user.Id(), userGuardianDto);
 
                         });
                         break;
-                    case UMI3DOperationKeys.ServerMessageRequest:
-                        string message = UMI3DSerializer.Read<string>(container);
-
+                    case UMI3DOperationKeys.LBEUserRegisterRequest:
                         MainThreadManager.Run(() =>
                         {
-                            if (user is UMI3DServerUser serverUser)
-                                serverUser.ReceivedMessage(message);
+                            LBEUserRegisterRequestDto userRegisterRequestDto = UMI3DSerializer.Read<LBEUserRegisterRequestDto>(container);
+                            LBEManager.Instance.LBEAddUser(user, userRegisterRequestDto.groupId);
+                        });
+                        break;
+                    case UMI3DOperationKeys.LBELeaderRegisterRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            LBELeaderRegisterRequestDto leaderRegisterRequestDto = UMI3DSerializer.Read<LBELeaderRegisterRequestDto>(container);
+                            LBEManager.Instance.LBESetNewLeader(user, leaderRegisterRequestDto.groupId);
+                        });
+                        break;
+                    case UMI3DOperationKeys.DeviceDescriptionRequest:
+                        MainThreadManager.Run(() =>
+                        { 
+                            DeviceDescriptionRequestDto deviceDescription = UMI3DSerializer.Read<DeviceDescriptionRequestDto>(container);
+                            OnDeviceDataReception?.Invoke(user, deviceDescription);
+                        });
+                        break;
+                    case UMI3DOperationKeys.DeviceBatteryLevelRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            DeviceBatteryLevelRequestDto deviceBatteryLevel = UMI3DSerializer.Read<DeviceBatteryLevelRequestDto>(container);
+                            OnDeviceDataReception?.Invoke(user, deviceBatteryLevel);
                         });
                         break;
                     default:

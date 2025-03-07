@@ -93,6 +93,7 @@ namespace umi3d.cdk.collaboration
         /// See <see cref="UserDto.audioUseMumble"/>.
         /// </summary>
         public bool useMumble => dto.audioUseMumble;
+
         /// <summary>
         /// See <see cref="UserDto.audioLogin"/>.
         /// </summary>

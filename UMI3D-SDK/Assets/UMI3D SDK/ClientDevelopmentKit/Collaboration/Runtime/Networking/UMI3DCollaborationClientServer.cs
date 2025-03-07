@@ -115,8 +115,9 @@ namespace umi3d.cdk.collaboration
             //UMI3DSerializer.AddModule(new UMI3DEmotesSerializerModule());
             //UMI3DSerializer.AddModule(new UMI3DCollaborationSerializerModule());
             //UMI3DSerializer.AddModule(new common.collaboration.UMI3DCollaborationSerializerModule());
-        }
 
+            UMI3DForgeClient.PrivateIdentityReceptionEvent += ConnectOnIdentityReception;
+        }
 
         /// <summary>
         /// State if the Client is connected to a Server.
@@ -225,6 +226,36 @@ namespace umi3d.cdk.collaboration
                 media = dto,
                 gate = null
             }, failed);
+        }
+
+        private async void ConnectOnIdentityReception(string worldControllerUrl, PrivateIdentityDto newIdentity)
+        {
+            connectingWorldControllerClient = new UMI3DWorldControllerClient(new MediaDto() { url = worldControllerUrl });
+            if (await connectingWorldControllerClient.InjectIdentity(newIdentity))
+            {
+                Instance.OnRedirection.Invoke();
+                loadingEntities.Clear();
+                UMI3DEnvironmentLoader.Clear(false);
+
+                UMI3DEnvironmentClient env = environmentClient;
+                environmentClient = null;
+                //UMI3DEnvironmentLoader.Clear();
+
+                if (env != null)
+                    await env.Logout();
+                if (worldControllerClient != null)
+                    worldControllerClient.Logout();
+
+                //Connection will not restart without this...
+                await Task.Yield();
+
+                MultiProgress progress = EnvironmentProgress?.Invoke() ?? new MultiProgress("Joining Environment");
+                onProgress.Invoke(progress);
+
+                worldControllerClient = connectingWorldControllerClient;
+                environmentClient = await connectingWorldControllerClient.ConnectToEnvironment(progress);
+                environmentClient.status = StatusType.CREATED;
+            }
         }
 
         public static async void Logout()

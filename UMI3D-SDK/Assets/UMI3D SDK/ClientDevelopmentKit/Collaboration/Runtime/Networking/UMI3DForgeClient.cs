@@ -29,9 +29,12 @@ using umi3d.common.collaboration;
 using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.collaboration.dto.voip;
+using umi3d.common.lbe;
+using umi3d.common.lbe.description;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
+
 
 namespace umi3d.cdk.collaboration
 {
@@ -54,7 +57,20 @@ namespace umi3d.cdk.collaboration
 
         UMI3DVersion.VersionCompatibility version = new("2.9.240805", "*");
         private bool? IsCompatibleWithVersion = null;
-        
+
+        #region LBE Events
+
+        //public static event Action<LBEGroupSyncRequestDto> LBEGroupSyncEvent;
+        public static event Action<LBEAddUserGroupOperationDto> LBEUserAddedEvent;
+        public static event Action<LBERemoveUserGroupOperationDto> LBEUserRemovedEvent;
+        public static event Action LBEActivationEvent;
+        public static event Action<bool> LBELeaderEvent;
+        public static event Action<LBESetUserGroupDto> LBEGroupEvent;
+        public static event Action<List<ARAnchorDto>> LBEGuardianEvent;
+        public static event Action<string, PrivateIdentityDto> PrivateIdentityReceptionEvent;
+
+        #endregion
+
         private UMI3DUser GetUserByNetWorkId(uint nid)
         {
             if (UMI3DCollaborationEnvironmentLoader.Exists && UMI3DCollaborationEnvironmentLoader.Instance.UserList != null)
@@ -397,7 +413,7 @@ namespace umi3d.cdk.collaboration
             if (useDto)
             {
                 var dto = UMI3DDtoSerializer.FromBson(frame.StreamData.byteArr);
-
+   
                 switch (dto)
                 {
                     case TransactionDto transaction:
@@ -577,6 +593,54 @@ namespace umi3d.cdk.collaboration
                         PoseService.Instance.ChangeEnvironmentPoseCondition(operation.environmentId, validateEnvironmentPoseCondition.Id, validateEnvironmentPoseCondition.ShouldBeValidated);
                     });
                     break;
+                case LBEAddUserGroupOperationDto userAddedDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEUserAddedEvent?.Invoke(userAddedDto);
+                    });
+                    break;
+
+                case LBERemoveUserGroupOperationDto userRemovedDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEUserRemovedEvent?.Invoke(userRemovedDto);
+                    });
+                    break;
+
+                case LBELeaderDto leaderDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBELeaderEvent?.Invoke(leaderDto.isLeader);
+                    });
+                    break;
+
+                case LBESetUserGroupDto groupDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEGroupEvent?.Invoke(groupDto);
+                    });
+                    break;
+
+                case LBESetGuardianDto guardianDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEGuardianEvent?.Invoke(guardianDto.anchors);
+                    });
+                    break;
+
+                case LBEActivationDto lBEDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEActivationEvent?.Invoke();
+                    });
+                    break;
+                case SendPrivateIdentityOperationDto identityDto:
+                    MainThreadManager.Run(() =>
+                    {
+                        PrivateIdentityReceptionEvent?.Invoke(identityDto.WorldControllerUrl, identityDto.PrivateIdentityDto);
+                    });
+                    break;
+
                 default:
                     return false;
             }
@@ -778,6 +842,67 @@ namespace umi3d.cdk.collaboration
                         });
                         break;
                     }
+                case UMI3DOperationKeys.MDMAddUserOperation:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEAddUserGroupOperationDto addUserLBEGroupDTO = UMI3DSerializer.Read<LBEAddUserGroupOperationDto>(container);
+                        LBEUserAddedEvent?.Invoke(addUserLBEGroupDTO);
+                    });
+                    break;
+
+                case UMI3DOperationKeys.MDMRemoveUserOperation:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBERemoveUserGroupOperationDto delUserLBEGroupDTO = UMI3DSerializer.Read<LBERemoveUserGroupOperationDto>(container);
+                        LBEUserRemovedEvent?.Invoke(delUserLBEGroupDTO);
+                    });
+                    break;
+
+                case UMI3DOperationKeys.MDMLeaderOperation:
+
+                    bool isLeader = UMI3DSerializer.Read<bool>(container);
+
+                    MainThreadManager.Run(() =>
+                    {
+                        LBELeaderEvent?.Invoke(isLeader);
+                    });
+                    break;
+
+                case UMI3DOperationKeys.MDMSetGroupOperation:
+
+                    ulong groupId = UMI3DSerializer.Read<ulong>(container);
+                    List<ulong> colocatedUserIds = UMI3DSerializer.ReadList<ulong>(container);
+
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEGroupEvent?.Invoke(new LBESetUserGroupDto() { groupId = groupId, colocatedUserIds = colocatedUserIds});
+                    });
+                    break;
+
+                case UMI3DOperationKeys.MDMSetGuardianOperation:
+
+                    List<ARAnchorDto> anchors = UMI3DSerializer.ReadList<ARAnchorDto>(container);
+
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEGuardianEvent?.Invoke(anchors);
+                    });
+                    break;
+
+                case UMI3DOperationKeys.MDMActivationOperation:
+                    MainThreadManager.Run(() =>
+                    {
+                        LBEActivationEvent?.Invoke();
+                    });
+                    break;
+                case UMI3DOperationKeys.PrivateIdentityOperation:
+                    MainThreadManager.Run(() =>
+                    {
+                        PrivateIdentityDto dto = UMI3DSerializer.Read<PrivateIdentityDto>(container);
+                        string url = UMI3DSerializer.Read<string>(container);
+                        PrivateIdentityReceptionEvent?.Invoke(url, dto);
+                    });
+                    break;
 
                 default:
                     return false;

@@ -21,9 +21,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.navigation;
 using umi3d.cdk.userCapture;
-using umi3d.cdk.userCapture.pose;
 using umi3d.common;
-using umi3d.common.collaboration.dto.networking;
 using umi3d.common.collaboration.dto.signaling;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -578,6 +576,8 @@ namespace umi3d.cdk.collaboration
             UMI3DCollaborationClientServer.Instance.OnNewToken?.Invoke();
         }
 
+        static public EnterDto enterDto;
+
         private async void Join(MultiProgress progress)
         {
             libraryProgress.SetAsCompleted();
@@ -590,18 +590,29 @@ namespace umi3d.cdk.collaboration
             UMI3DLogger.Log($"Join", scope | DebugScope.Connection);
             isJoining = true;
 
-            var joinDto = new JoinDto()
-            {
-                clientLocalPoses = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses.Select(d => d.ToPoseDto()).ToList(),
-                userSize = PersonalSkeletonManager.Instance.PersonalSkeleton.Transform.localScale.Dto(),
-                hasHeadMountedDisplay = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasHeadMountedDisplay,
-                bonesWithController = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.BonesWithControllers.ToList(),
-                hasImmersiveDevice = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice,
-            };
+            var joinDto = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DCollabLoadingParameters).IsColocatedDevice ?
+                new JoinDto()
+                {
+                    clientLocalPoses = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses.Select(d => d.ToPoseDto()).ToList(),
+                    userSize = PersonalSkeletonManager.Instance.PersonalSkeleton.Transform.localScale.Dto(),
+                    hasHeadMountedDisplay = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasHeadMountedDisplay,
+                    bonesWithController = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.BonesWithControllers.ToList(),
+                    hasImmersiveDevice = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice,
+                    //lBEGroupId = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DCollabLoadingParameters).LBEGroupId,
+                    //IsLBEGroupLeader = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DCollabLoadingParameters).IsLBEGroupLeader
+                } : new JoinDto()
+                {
+                    clientLocalPoses = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters).ClientPoses.Select(d => d.ToPoseDto()).ToList(),
+                    userSize = PersonalSkeletonManager.Instance.PersonalSkeleton.Transform.localScale.Dto(),
+                    hasHeadMountedDisplay = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasHeadMountedDisplay,
+                    bonesWithController = (UMI3DEnvironmentLoader.Instance.LoadingParameters as IUMI3DUserCaptureLoadingParameters)?.BonesWithControllers.ToList(),
+                    hasImmersiveDevice = UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice,
+                };
             try
             {
                 PostJoinProgress.AddComplete();
                 EnterDto enter = await HttpClient.SendPostJoin(joinDto);
+                enterDto = enter;
                 PostJoinProgress.AddAndSetStatus("Joined Environment");
                 isConnecting = false;
                 isConnected = true;
@@ -618,6 +629,7 @@ namespace umi3d.cdk.collaboration
                 isJoining = false;
             }
         }
+
 
         private async Task EnterScene(EnterDto enter, MultiProgress progress)
         {

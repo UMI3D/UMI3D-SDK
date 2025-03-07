@@ -214,6 +214,14 @@ namespace umi3d.cdk.collaboration
             httpClient.HeaderToken = globalToken;
         }
 
+        public async Task<bool> InjectIdentity(PrivateIdentityDto identity)
+        {
+            Connected(identity);
+            await DownloadWorldLib();
+
+            return true;
+        }
+
 
         private async Task GetFormAnswer(WaitConnectionDto form)
         {

@@ -211,14 +211,14 @@ namespace umi3d.edk
 
         public UMI3DLocalAssetFilesDto ToFileDto()
         {
-            var directoryPath = inetum.unityUtils.systemIO.Path.Combine(Application.dataPath, UMI3DServer.dataPath, path);
+            var directoryPath = inetum.unityUtils.Path.Combine(Application.dataPath, UMI3DServer.dataPath, path);
 
             UMI3DLocalAssetFilesDto dto = new()
             {
                 name = name,
                 files = new FileListDto()
                 {
-                    baseUrl = inetum.unityUtils.systemIO.Path.Combine("file", path),
+                    baseUrl = inetum.unityUtils.Path.Combine("file", path),
                 },
                 metrics = metrics.ToDto(),
                 formats = formats,

@@ -27,6 +27,7 @@ using Unity.Collections;
 using Unity.Jobs;
 using Unity.Burst;
 using ReadOnlyAttribute = Unity.Collections.ReadOnlyAttribute;
+using MainThreadDispatcher;
 
 namespace umi3d.cdk
 {
@@ -125,6 +126,16 @@ namespace umi3d.cdk
         {
             get => hasHeadMountedDisplay;
             set => hasHeadMountedDisplay = value;
+        }
+
+        public void SetVR()
+        {
+            hasImmersiveDevice = true;
+        }
+
+        public void SetMR()
+        {
+            hasImmersiveDevice = false;
         }
 
         public virtual void Init()

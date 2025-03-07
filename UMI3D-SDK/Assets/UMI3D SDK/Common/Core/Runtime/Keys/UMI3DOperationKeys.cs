@@ -85,6 +85,9 @@ namespace umi3d.common
 
         public const uint ServerMessageRequest = 500;
 
+        public const uint PrivateIdentityOperation = 600;
+
+
         public const uint InteractionRequest = 10001;
         public const uint EventStateChanged = 10002;
         public const uint EventTriggered = 10003;
@@ -100,8 +103,20 @@ namespace umi3d.common
         public const uint UserCameraProperties = 10012;
         public const uint UserTrackingFrame = 10013;
         public const uint NotificationCallback = 10014;
-        public const uint BoardedVehicleRequest = 10015;
+        public const uint DeviceBatteryLevelRequest = 10015;
         public const uint UserTrackingBone = 10016;
+        public const uint TeleportGroupRequest = 10017;
+        public const uint DeviceDescriptionRequest = 10018;
+        public const uint MDMActivationOperation = 10021;
+        public const uint MDMAddUserOperation = 10022;
+        public const uint MDMRemoveUserOperation = 10023;
+        public const uint MDMLeaderOperation = 10024;
+        public const uint MDMSetGroupOperation = 10025;
+        public const uint MDMSetGuardianOperation = 10026;
+        public const uint MDMGuardianBrowserRequest = 10027;
+        public const uint LBEUserRegisterRequest = 10028;
+        public const uint LBELeaderRegisterRequest = 10029;
+
 
         public const uint EmoteRequest = 10020;
 

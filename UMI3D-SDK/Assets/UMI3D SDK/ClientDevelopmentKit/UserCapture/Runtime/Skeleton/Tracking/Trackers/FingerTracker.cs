@@ -27,7 +27,7 @@ namespace umi3d.cdk.userCapture.tracking
 
         public bool isOverrider { get; set; } = true;
 
-        public VirtualController controller;
+        public VirtualController controller = new();
 
         public IController Controller
         {

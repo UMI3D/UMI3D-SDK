@@ -1,4 +1,5 @@
 ﻿using BeardedManStudios.Forge.Logging;
+using MainThreadDispatcher;
 using UnityEngine;
 
 public class BMSLogger : MonoBehaviour, IBMSLogger
@@ -10,8 +11,12 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 		get
 		{
 			if (_instance == null)
-				Init();
-			return _instance;
+            {
+                UnityMainThreadDispatcher.Instance().Enqueue(() => Debug.Log("INIT"));
+                Init();
+            }
+
+            return _instance;
 		}
 	}
 	#endregion
@@ -32,7 +37,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 	#endregion
 
 	#region Runtime
-	[RuntimeInitializeOnLoadMethod]
+	//[RuntimeInitializeOnLoadMethod]
 	private static void Init()
 	{
 		if (_instance != null)
@@ -53,7 +58,9 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 #endif
 
 		GameObject prefab = Resources.Load<GameObject>("BMSLogger");
-		if (prefab != null)
+		Debug.Log("INIT");
+
+        if (prefab != null)
 		{
 			BMSLogger comp = prefab.GetComponent<BMSLogger>();
 			_instance = new GameObject("BMSLogger", typeof(BMSLogger)).GetComponent<BMSLogger>();
@@ -71,7 +78,7 @@ public class BMSLogger : MonoBehaviour, IBMSLogger
 	#region Public API
 	public static void DebugLog(string log)
 	{
-		Instance.Log(log);
+		//Instance.Log(log);
 	}
 
 	public void Log(string log)

@@ -78,6 +78,8 @@ namespace umi3d.edk.collaboration
 
         public bool isTalking { get; internal set; } = false;
 
+        public bool isColocated { get; internal set; } = false;
+
         public override void InitConnection(UMI3DForgeServer connection)
         {
             base.InitConnection(connection);
@@ -204,6 +206,15 @@ namespace umi3d.edk.collaboration
                     UMI3DLogger.LogWarning("Internal error : the user size is already registered", scope);
                 else
                     this.userSize.SetValue(joinDto.userSize);
+
+                if (joinDto is JoinLBEDto)
+                {
+                    isColocated = true;
+                    LBEManager.Instance.LBEAddUser(this, (joinDto as JoinLBEDto).lBEGroupId);
+
+                    if ((joinDto as JoinLBEDto).IsLBEGroupLeader)
+                        LBEManager.Instance.LBESetNewLeader(this, (joinDto as JoinLBEDto).lBEGroupId);
+                }
             }
 
             await UMI3DAsyncManager.Yield();

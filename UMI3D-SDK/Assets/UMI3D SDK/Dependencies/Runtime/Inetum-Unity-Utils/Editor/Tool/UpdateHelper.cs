@@ -25,7 +25,7 @@ namespace inetum.unityUtils.editor
     using System.Threading.Tasks;
     using UnityEditor;
     using UnityEngine;
-    using Path = systemIO.Path;
+    using Path = Path;
 
     public class UpdateHelper : InitedWindow<UpdateHelper>
     {

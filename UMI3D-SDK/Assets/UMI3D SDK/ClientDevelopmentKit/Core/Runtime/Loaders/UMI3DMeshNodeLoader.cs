@@ -82,6 +82,8 @@ namespace umi3d.cdk
 
             await base.ReadUMI3DExtension(data);
 
+            if (nodeDto.immersiveOnly && !UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice) return;
+
             //MeshRenderer nodeMesh = node.AddComponent<MeshRenderer>();
             FileDto fileToLoad = loadingManager.AbstractLoadingParameters.ChooseVariant(nodeDto.mesh.variants);  // Peut etre ameliore
             string url = fileToLoad.url;
@@ -305,7 +307,7 @@ namespace umi3d.cdk
 
             if (data is Scene scene)
             {
-                nodeInstance.scene = scene;
+                nodeInstance.scene = scene; 
                 FixLightMaps(root.GetComponentsInChildren<Renderer>(), renderers);
                 GameObject.Destroy(go);
             }

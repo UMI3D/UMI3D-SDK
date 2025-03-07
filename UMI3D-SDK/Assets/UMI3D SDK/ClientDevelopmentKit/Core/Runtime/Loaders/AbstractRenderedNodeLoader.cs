@@ -55,6 +55,7 @@ namespace umi3d.cdk
             if (data.entity == null) return false;
             var extension = (data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
             if (extension == null) return false;
+            if (extension.immersiveOnly && !UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice) return true;
             switch (data.property.property)
             {
 
@@ -252,6 +253,7 @@ namespace umi3d.cdk
             if (data.entity == null) return false;
             var extension = (data.entity?.dto as GlTFNodeDto)?.extensions?.umi3d as UMI3DRenderedNodeDto;
             if (extension == null) return false;
+            if (extension.immersiveOnly && !UMI3DEnvironmentLoader.Instance.LoadingParameters.HasImmersiveDevice) return true;
             var node = data.entity as UMI3DNodeInstance;
             switch (data.propertyKey)
             {

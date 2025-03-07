@@ -24,7 +24,7 @@ namespace umi3d.common
         public bool? IsCountable<T>()
         {
             if(typeof(T) == typeof(string))
-                return false;
+                return true;
             return null;
         }
 

@@ -15,6 +15,7 @@ limitations under the License.
 */
 
 using System;
+using UnityEngine;
 
 namespace umi3d.common
 {

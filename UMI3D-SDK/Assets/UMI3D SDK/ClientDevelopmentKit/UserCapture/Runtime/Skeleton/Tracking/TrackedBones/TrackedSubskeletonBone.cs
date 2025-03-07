@@ -46,12 +46,12 @@ namespace umi3d.cdk.userCapture.tracking
         /// <returns></returns>
         public SubSkeletonBoneDto ToBoneDto()
         {
-            return boneType == BoneType.None ? null : new SubSkeletonBoneDto { boneType = boneType, localRotation = this.transform.localRotation.Dto() };
+            return boneType == BoneType.None ? null : new SubSkeletonBoneDto { boneType = boneType, localRotation = (this.transform.localRotation * Quaternion.Inverse(UMI3DLoadingHandler.Instance.transform.rotation)).Dto() };
         }
 
         public virtual ControllerDto ToControllerDto()
         {
-            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = this.transform.position.Dto(), rotation = this.transform.rotation.Dto(), isOverrider = false };
+            return boneType == BoneType.None ? null : new ControllerDto { boneType = boneType, position = UMI3DLoadingHandler.Instance.transform.InverseTransformPoint(transform.position).Dto(), rotation = (Quaternion.Inverse(UMI3DLoadingHandler.Instance.transform.rotation) * transform.rotation).Dto(), isOverrider = false };
         }
     }
 }

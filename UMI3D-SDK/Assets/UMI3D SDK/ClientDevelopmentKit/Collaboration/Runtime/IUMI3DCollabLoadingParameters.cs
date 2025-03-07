@@ -22,6 +22,9 @@ namespace umi3d.cdk.collaboration
     public interface IUMI3DCollabLoadingParameters : IUMI3DUserCaptureLoadingParameters
     {
         bool CollaborationUserCaptureActivated { get; }
+        bool IsColocatedDevice { get; }
+        ulong LBEGroupId { get; }
+        bool IsLBEGroupLeader { get; }
         GameObject CollabTrackedSkeleton { get; }
     }
 }

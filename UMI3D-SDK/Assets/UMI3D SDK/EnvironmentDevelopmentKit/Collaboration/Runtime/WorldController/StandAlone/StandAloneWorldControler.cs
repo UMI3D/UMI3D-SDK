@@ -109,6 +109,7 @@ namespace umi3d.worldController
         private async Task<PrivateIdentityDto> GetIdentityDto(User user)
         {
             //General token is valid.
+
             if (!userMap.ContainsKey(user.Token))
             {
                 string tmp = userMap.FirstOrDefault(uk => uk.Value == user).Key;
