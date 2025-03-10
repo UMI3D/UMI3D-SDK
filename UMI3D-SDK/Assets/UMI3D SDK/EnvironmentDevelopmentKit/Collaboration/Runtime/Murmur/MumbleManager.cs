@@ -80,9 +80,11 @@ namespace umi3d.edk.collaboration.murmur
 
         class Room
         {
+            public bool root;
             public bool localRoom;
             public int id;
             public string name;
+            public List<Room> children = new();
 
             public Room(int id, string name, bool localRoom)
             {
@@ -120,6 +122,7 @@ namespace umi3d.edk.collaboration.murmur
         }
 
         List<Room> roomList;
+        Room rootRoom;
         Room defaultRoom;
         public List<User> userList;
 
@@ -210,8 +213,10 @@ namespace umi3d.edk.collaboration.murmur
         async void Init()
         {
             RefreshAsync();
+
             try
             {
+                rootRoom = await CreateRoomInternalAsync(null, true, true);
                 defaultRoom = await CreateRoomInternalAsync();
             }
             catch (Exception ex)
@@ -264,6 +269,9 @@ namespace umi3d.edk.collaboration.murmur
 
         private MumbleManager(string ip, string http, string guid = null)
         {
+            if (string.IsNullOrEmpty(guid))
+                guid = Guid.NewGuid().ToString();
+
             this.guid = guid;
             this.ip = ip;
             this.httpIp = (string.IsNullOrEmpty(http)) ? ip.Split(':')[0] : http;
@@ -271,7 +279,7 @@ namespace umi3d.edk.collaboration.murmur
             roomList = new List<Room>();
             userList = new List<User>();
 
-            generalRoomRegex = new Regex(@"Room([0-9]*)_\[(.*)\]");
+            generalRoomRegex = new Regex(@"Room_\[(.*)\]_([0-9]*)");
             userRegex = new Regex(@"User((.*))_\[" + guid + @"\]");
         }
 
@@ -287,7 +295,7 @@ namespace umi3d.edk.collaboration.murmur
 
         private string GenerateRoomName(int i)
         {
-            return RemoveSpace(@"Room" + i.ToString() + @"_[" + guid + @"]");
+            return RemoveSpace(@"Room_[" + guid + @"]_" + i.ToString());
         }
 
         public async Task Refresh()
@@ -375,25 +383,28 @@ namespace umi3d.edk.collaboration.murmur
             List<Room> toAdd = new List<Room>(this.roomList);
             List<Room> toDelete = new List<Room>();
 
-            foreach (MurmurAPI.Server.Channel room in serv.Channels)
+            foreach (MurmurAPI.Server.Channel channel in serv.Channels)
             {
-                var match = generalRoomRegex.Match(room.data.name);
+                var match = generalRoomRegex.Match(channel.data.name);
 
                 if (match.Success)
                 {
                     string VmID = match.Groups[2].Captures[0].Value;
 
-                    Room lr = toAdd.FirstOrDefault(r => r.name == room.data.name);
+                    Room lr = toAdd.FirstOrDefault(r => r.name == channel.data.name);
 
                     if (lr != null)
                     {
                         toAdd.Remove(lr);
-                        lr.id = room.data.id;
+                        lr.id = channel.data.id;
+
+                        foreach (Room child in lr.children)
+                            toAdd.Remove(child);
                     }
                     else if (VmID == guid)
                     {
                         var id = int.Parse(match.Groups[1].Captures[0].Value);
-                        toDelete.Add(new Room(room.data.id, room.data.name, true));
+                        toDelete.Add(new Room(channel.data.id, channel.data.name, true));
                     }
                 }
             }
@@ -409,14 +420,20 @@ namespace umi3d.edk.collaboration.murmur
         {
             if (!ignoreWait)
                 await WaitWhileRefreshing();
+
+            while (!room.root && rootRoom == null)
+                await Task.Yield();
+
             try
             {
                 var r = serv.Channels.FirstOrDefault(r => r.data.name == room.name);
 
                 if (r is null)
                 {
-                    MurmurAPI.Server.Channel c = await serv.CreateChannel(room.name);
+                    MurmurAPI.Server.Channel c = await serv.CreateChannel(room.name, rootRoom?.id);
                     room.id = (c.data.id);
+
+                    rootRoom?.children.Add(room);
                 }
                 else
                     room.id = r.data.id;
@@ -440,6 +457,7 @@ namespace umi3d.edk.collaboration.murmur
                 if (room.localRoom)
                 {
                     await (serv.Channels.FirstOrDefault(c => c.data.id == room.id)?.DeleteChannel() ?? Task.CompletedTask);
+                    rootRoom?.children.Remove(room);
 
                     try
                     {
@@ -523,11 +541,11 @@ namespace umi3d.edk.collaboration.murmur
             return room;
         }
 
-        private async Task<Room> CreateRoomInternalAsync(string name = null, bool localRoom = true)
+        private async Task<Room> CreateRoomInternalAsync(string name = null, bool localRoom = true, bool root = false)
         {
             var roomId = localRoomIndex++;
             name = name ?? GenerateRoomName(roomId);
-            var room = new Room(roomId, name, localRoom);
+            var room = new Room(roomId, name, localRoom) { root = root };
 
             await SendCreateRoomRequestAsync(room);
 
