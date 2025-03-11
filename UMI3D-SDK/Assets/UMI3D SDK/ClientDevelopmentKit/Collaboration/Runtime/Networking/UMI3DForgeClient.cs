@@ -34,7 +34,6 @@ using umi3d.common.collaboration.dto.voip;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
-using static Codice.CM.Common.Serialization.PacketFileReader;
 
 namespace umi3d.cdk.collaboration
 {
