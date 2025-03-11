@@ -682,12 +682,14 @@ namespace umi3d.common.collaboration
         /// <param name="bytes"></param>
         /// <param name="shouldTryAgain"></param>
         /// <returns></returns>
-        public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, List<(string, string)> headers, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            var headers = new List<(string, string)>
-            {
-                (UMI3DNetworkingKeys.contentHeader, fileName)
-            };
+            if (headers == null)
+                headers = new();
+
+            if (!headers.Any(c => c.Item1 == UMI3DNetworkingKeys.contentHeader))
+                headers.Add((UMI3DNetworkingKeys.contentHeader, fileName));
+
             UnityWebRequest uwr = await _PostRequest(this, null, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false, headers);
             uwr.Dispose();
         }

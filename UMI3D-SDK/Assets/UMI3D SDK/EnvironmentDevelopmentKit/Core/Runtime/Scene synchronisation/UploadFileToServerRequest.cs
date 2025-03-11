@@ -32,6 +32,7 @@ namespace umi3d.edk
         public string url;
         public List<string> extensions;
         public bool allowMultipleFiles;
+        public Dictionary<string,string> headers = new();
 
         /// <summary>
         /// 
@@ -50,8 +51,9 @@ namespace umi3d.edk
         {
             return UMI3DSerializer.Write(UMI3DOperationKeys.UploadFileToUrlRequest)
                 + UMI3DSerializer.Write(url) 
-                + UMI3DSerializer.Write(extensions) 
-                + UMI3DSerializer.Write(allowMultipleFiles);
+                + UMI3DSerializer.WriteCollection(extensions) 
+                + UMI3DSerializer.Write(allowMultipleFiles)
+                + UMI3DSerializer.WriteCollection(headers?.Select(k => new HeaderContent() { header = k.Key, content = k.Value }).ToList());
         }
 
         protected virtual RequestHttpUploadToUrlDto CreateDto() { return new RequestHttpUploadToUrlDto(); }
@@ -59,6 +61,7 @@ namespace umi3d.edk
             dto.url = url;
             dto.extensions = extensions;
             dto.allowMultipleFile = allowMultipleFiles;
+            dto.headers = headers?.Select(k => new HeaderContent() { header = k.Key, content = k.Value }).ToList();
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)

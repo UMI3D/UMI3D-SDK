@@ -19,6 +19,7 @@ using inetum.unityUtils.observation;
 using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Threading.Tasks;
 using umi3d.cdk.collaboration.userCapture;
@@ -33,6 +34,7 @@ using umi3d.common.collaboration.dto.voip;
 using umi3d.common.userCapture.pose;
 using umi3d.common.userCapture.tracking;
 using UnityEngine;
+using static Codice.CM.Common.Serialization.PacketFileReader;
 
 namespace umi3d.cdk.collaboration
 {
@@ -530,7 +532,7 @@ namespace umi3d.cdk.collaboration
                     UploadFileRequest(token, fileId);
                     break;
                 case RequestHttpUploadToUrlDto uploadFileRequest:
-                    UploadFileRequest(uploadFileRequest.url, uploadFileRequest.extensions, uploadFileRequest.allowMultipleFile);
+                    UploadFileRequest(uploadFileRequest.url, uploadFileRequest.extensions, uploadFileRequest.allowMultipleFile, uploadFileRequest.headers);
                     break;
                 case RedirectionDto redirection:
                     MainThreadManager.Run(() =>
@@ -702,7 +704,8 @@ namespace umi3d.cdk.collaboration
                     string url = UMI3DSerializer.Read<string>(container);
                     List<string> extensions = UMI3DSerializer.ReadList<string>(container);
                     bool allowMultipleFile = UMI3DSerializer.Read<bool>(container);
-                    UploadFileRequest(url, extensions, allowMultipleFile);
+                    List<HeaderContent> headers = UMI3DSerializer.ReadList<HeaderContent>(container);
+                    UploadFileRequest(url, extensions, allowMultipleFile, headers);
 
                     break;
 
@@ -825,7 +828,7 @@ namespace umi3d.cdk.collaboration
             });
         }
 
-        async void UploadFileRequest(string url, List<string> extensions, bool allowMultipleFile)
+        async void UploadFileRequest(string url, List<string> extensions, bool allowMultipleFile, List<HeaderContent> headers)
         {
 #if UNITY_STANDALONE_WIN
             try
@@ -836,7 +839,7 @@ namespace umi3d.cdk.collaboration
 
                 var tasks = result.Select(p => (FileUploader.TryGetFileToUpload(p, out byte[] bytesToUpload, out string fileName), bytesToUpload, fileName))
                     .Where(c => c.Item1)
-                    .Select(c => SendPostFileToURL(url, c.fileName, c.bytesToUpload));
+                    .Select(c => SendPostFileToURL(url, c.fileName, c.bytesToUpload, headers));
 
                 if (allowMultipleFile)
                     await Task.WhenAll(tasks);
@@ -880,16 +883,60 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        private async Task SendPostFileToURL(string url, string fileName, byte[] bytesToUpload)
+        private async Task SendPostFileToURL(string url, string fileName, byte[] bytesToUpload, List<HeaderContent> headers)
         {
             try
             {
-                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload);
+                // Create a boundary for the multipart form-data
+                string boundary = "------------------------" + System.DateTime.Now.Ticks.ToString("x");
+
+                var headers2 = headers?.Select(k => (k.header, k.content)).ToList() ?? new();
+
+                headers2.Add(("Content-Type", "multipart/form-data; boundary=" + boundary));
+
+                // Build the multipart form-data body
+                byte[] body = CreateMultipartFormData(bytesToUpload, fileName, boundary);
+
+
+                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload, headers2);
             }
             catch (Exception e)
             {
                 UMI3DLogger.Log("error on upload file : " + fileName, scope);
                 UMI3DLogger.LogException(e, scope);
+            }
+
+            static byte[] CreateMultipartFormData(byte[] fileData, string fileName, string boundary)
+            {
+                // Create a memory stream to build the multipart form-data body
+                using (MemoryStream memoryStream = new MemoryStream())
+                {
+                    // Write the boundary
+                    string boundaryStart = "--" + boundary + "\r\n";
+                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(boundaryStart), 0, boundaryStart.Length);
+
+                    // Write the content disposition for the file
+                    string contentDisposition = $"Content-Disposition: form-data; name=\"UploadedFile\"; filename=\"{fileName}\"\r\n";
+                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(contentDisposition), 0, contentDisposition.Length);
+
+                    // Write the content type for the file
+                    string contentType = "Content-Type: application/octet-stream\r\n\r\n";
+                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(contentType), 0, contentType.Length);
+
+                    // Write the file data
+                    memoryStream.Write(fileData, 0, fileData.Length);
+
+                    // Write a newline after the file data
+                    string newline = "\r\n";
+                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(newline), 0, newline.Length);
+
+                    // Write the closing boundary
+                    string boundaryEnd = "--" + boundary + "--\r\n";
+                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(boundaryEnd), 0, boundaryEnd.Length);
+
+                    // Return the built body as a byte array
+                    return memoryStream.ToArray();
+                }
             }
         }
 

@@ -21,6 +21,29 @@ using UnityEngine;
 
 namespace umi3d.common
 {
+    public class HeaderContentSerializer : UMI3DSerializerModule<HeaderContent>
+    {
+        public bool IsCountable()
+        {
+            return true;
+        }
+
+        public bool Read(ByteContainer container, out bool readable, out HeaderContent result)
+        {
+            readable = UMI3DSerializer.TryRead(container, out string header);
+            readable &= UMI3DSerializer.TryRead(container, out string content);
+
+            result = readable ? new HeaderContent() { header = header, content = content } : null;
+            return readable;
+        }
+
+        public bool Write(HeaderContent value, out Bytable bytable, params object[] parameters)
+        {
+            bytable = UMI3DSerializer.Write(value.header) + UMI3DSerializer.Write(value.content);
+            return true;
+        }
+    }
+
     [UMI3DSerializerOrder(1000)]
     public class UMI3DSerializerBasicModules : UMI3DSerializerModule
     {

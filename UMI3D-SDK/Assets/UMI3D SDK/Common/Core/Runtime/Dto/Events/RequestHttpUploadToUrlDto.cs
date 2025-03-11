@@ -26,6 +26,11 @@ namespace umi3d.common
         public string url { get; set; }
 
         /// <summary>
+        /// Headers
+        /// </summary>
+        public List<HeaderContent> headers { get; set; }
+
+        /// <summary>
         /// extensions filters
         /// </summary>
         public List<string> extensions { get; set; }
@@ -36,4 +41,19 @@ namespace umi3d.common
         public bool allowMultipleFile { get; set; }
 
     }
+
+    public class HeaderContent
+    {
+        /// <summary>
+        /// header name
+        /// </summary>
+        public string header { get; set; }
+
+        /// <summary>
+        /// header value
+        /// </summary>
+        public string content { get; set; }
+
+    }
+
 }
