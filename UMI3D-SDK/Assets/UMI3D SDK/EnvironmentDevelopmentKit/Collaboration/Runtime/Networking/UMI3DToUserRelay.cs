@@ -81,9 +81,20 @@ namespace umi3d.edk.collaboration
 
             lock (framesPerSourceLock)
             {
-                if (userTo is UMI3DCollaborationAbstractContentUser cUser && cUser?.RelayRoom != null && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume) && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
+                if (userTo is UMI3DCollaborationAbstractContentUser cUser && cUser?.RelayRoom != null
+                    && RelayVolume.relaysVolumes.TryGetValue(cUser.RelayRoom.Id(), out relayVolume)
+                    && relayVolume.HasStrategyFor(DataChannelTypes.Tracking))
                 {
-                    var users = relayVolume.RelayTrackingRequest(null, null, userTo, Receivers.Others).Select(u => u as UMI3DCollaborationAbstractContentUser).ToList();
+                    var users = relayVolume.RelayTrackingRequest(new ICollaborationRoom.DataSender()
+                    {
+                        id = cUser.Id(),
+                        position = cUser.CurrentTrackingFrame?.position.Struct() ?? Vector3.zero
+                    },
+                        null,
+                        userTo,
+                        Receivers.Others)
+                        .Select(u => u as UMI3DCollaborationAbstractContentUser).ToList();
+
                     tempUserFrameMap.AddRange(framesPerSource.Where(p => users.Any(u => u?.networkPlayer == p.Key)));
                     forceRelay = true;
                 }
@@ -93,7 +104,7 @@ namespace umi3d.edk.collaboration
                 }
             }
 
-            foreach (var other in tempUserFrameMap)
+            foreach (KeyValuePair<NetworkingPlayer, Frame> other in tempUserFrameMap)
             {
                 if (userTo.networkPlayer == other.Key)
                     continue;

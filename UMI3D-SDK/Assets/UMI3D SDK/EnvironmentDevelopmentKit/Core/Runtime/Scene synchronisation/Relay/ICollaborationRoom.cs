@@ -23,6 +23,13 @@ namespace umi3d.edk
     /// </summary>
     public interface ICollaborationRoom : UMI3DEntity
     {
+        public struct DataSender
+        {
+            public ulong id;
+
+            public UnityEngine.Vector3 position;
+        }
+
         /// <summary>
         /// Control the relay for the data channel.
         /// </summary>
@@ -32,7 +39,7 @@ namespace umi3d.edk
         /// <param name="target">User receiving data.</param>
         /// <param name="receiverSetting">Who should receive the data stream.</param>
         /// <param name="isReliable">Is the transaction reliable?</param>
-        List<UMI3DUser> RelayDataRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayDataRequest(DataSender sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 
         /// <summary>
         /// Control the relay for the user tracking channel.
@@ -43,7 +50,7 @@ namespace umi3d.edk
         /// <param name="target">User receiving data.</param>
         /// <param name="receiverSetting">Who should receive the data stream.</param>
         /// <param name="isReliable">Is the transaction reliable?</param>
-        List<UMI3DUser> RelayTrackingRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayTrackingRequest(DataSender sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 
         /// <summary>
         /// Control the relay for the voice over IP channel.
@@ -54,7 +61,7 @@ namespace umi3d.edk
         /// <param name="target">User receiving data.</param>
         /// <param name="receiverSetting">Who should receive the data stream.</param>
         /// <param name="isReliable">Is the transaction reliable?</param>
-        List<UMI3DUser> RelayVoIPRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayVoIPRequest(DataSender sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
 
         /// <summary>
         /// Control the relay for the video channel.
@@ -65,6 +72,6 @@ namespace umi3d.edk
         /// <param name="target">User receiving data.</param>
         /// <param name="receiverSetting">Who should receive the data stream.</param>
         /// <param name="isReliable">Is the transaction reliable?</param>
-        List<UMI3DUser> RelayVideoRequest(UMI3DAbstractNode sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
+        List<UMI3DUser> RelayVideoRequest(DataSender sender, object data, UMI3DUser target, Receivers receiverSetting, bool isReliable = false);
     }
 }
