@@ -898,7 +898,7 @@ namespace umi3d.cdk.collaboration
                 byte[] body = CreateMultipartFormData(bytesToUpload, fileName, boundary);
 
 
-                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload, headers2);
+                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, body, headers2);
             }
             catch (Exception e)
             {
