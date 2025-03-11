@@ -57,6 +57,19 @@ namespace umi3d.edk.interaction
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Distance for a user to interact with this tool. If value < 0, no distance check")]
         protected float InteractionDistance = -1;
+
+        [Header("Indicator")]
+        /// <summary>
+        /// Does the browser should highlight this interactable
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Does the browser should highlight this interactable")]
+        protected bool IndicatorDisplay = true;
+        /// <summary>
+        /// Indicator delta in the browser, Ignored if IndicatorDisplay is null
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Indicator delta in the browser, Ignored if IndicatorDisplay is null")]
+        protected Vector3 IndicatorDelta = Vector3.zero;
+
         /// <summary>
         /// Default value for the distance for a user to interact with this tool. If value < 0, no distance check.
         /// </summary>
@@ -192,6 +205,9 @@ namespace umi3d.edk.interaction
         private UMI3DAsyncProperty<UMI3DAbstractAnimation> _hoverEnterAnimation;
         private UMI3DAsyncProperty<UMI3DAbstractAnimation> _hoverExitAnimation;
 
+        private UMI3DAsyncProperty<bool> _interactionDisplay;
+        private UMI3DAsyncProperty<Vector3> _interactionDelta;
+
         /// <summary>
         /// True if the object is hovered by at least one bone
         /// </summary>
@@ -207,6 +223,10 @@ namespace umi3d.edk.interaction
         public UMI3DAsyncProperty<float> interactionDistance { get { Register(); return _interactionDistance; } protected set => _interactionDistance = value; }
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> hoverEnterAnimation { get { Register(); return _hoverEnterAnimation; } set => _hoverEnterAnimation = value; }
         public UMI3DAsyncProperty<UMI3DAbstractAnimation> hoverExitAnimation { get { Register(); return _hoverExitAnimation; } set => _hoverExitAnimation = value; }
+
+        public UMI3DAsyncProperty<bool> indicatorDisplay { get { Register(); return _interactionDisplay; } set => _interactionDisplay = value; }
+        public UMI3DAsyncProperty<Vector3> indicatorDelta { get { Register(); return _interactionDelta; } set => _interactionDelta = value; }
+
 
         #endregion
 
@@ -236,6 +256,8 @@ namespace umi3d.edk.interaction
             Idto.interactionDistance = interactionDistance.GetValue(user);
             Idto.HoverEnterAnimationId = hoverEnterAnimation.GetValue(user)?.Id() ?? 0;
             Idto.HoverExitAnimationId = hoverExitAnimation.GetValue(user)?.Id() ?? 0;
+            Idto.indicatorDisplay = indicatorDisplay.GetValue(user);
+            Idto.indicatorDelta = indicatorDelta.GetValue(user).Dto();
         }
 
         /// <inheritdoc/>
@@ -256,6 +278,11 @@ namespace umi3d.edk.interaction
 
             hoverEnterAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.InteractableHoverEnterAnimation, HoverEnterAnimation, (v, u) => v?.Id());
             hoverExitAnimation = new UMI3DAsyncProperty<UMI3DAbstractAnimation>(id, UMI3DPropertyKeys.InteractableHoverExitAnimation, HoverExitAnimation, (v, u) => v?.Id());
+
+            indicatorDisplay = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.InteractableIndicatorDisplay, IndicatorDisplay);
+            indicatorDisplay.OnValueChanged += (b) => IndicatorDisplay = b;
+            indicatorDelta = new UMI3DAsyncProperty<Vector3>(id, UMI3DPropertyKeys.InteractableIndicatorDelta, IndicatorDelta, ToUMI3DSerializable.ToSerializableVector3, (v1, v2) => UMI3DAsyncPropertyEquality.Equals(v1, v2));
+            indicatorDelta.OnValueChanged += (v) => IndicatorDelta = v;
         }
 
         /// <summary>
