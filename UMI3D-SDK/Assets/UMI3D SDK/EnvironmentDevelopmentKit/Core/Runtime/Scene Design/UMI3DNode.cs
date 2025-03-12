@@ -333,7 +333,7 @@ namespace umi3d.edk
             if (nodeDto == null) return;
             nodeDto.xBillboard = objectXBillboard.GetValue(user);
             nodeDto.yBillboard = objectYBillboard.GetValue(user);
-            nodeDto.colliderDto = GetColliderDto();
+            nodeDto.colliderDto = GetColliderDto(user);
             nodeDto.lodDto = GetLod();
             nodeDto.skinnedRendererLinks = skinnedRendererLinks;
         }
@@ -394,15 +394,19 @@ namespace umi3d.edk
         /// Get the collider as a <see cref="ColliderDto"/>.
         /// </summary>
         /// <returns></returns>
-        private ColliderDto GetColliderDto()
+        private ColliderDto GetColliderDto(UMI3DUser user)
         {
-            if (!hasCollider)
+            if (!objectHasCollider.GetValue(user))
                 return null;
+
+            ColliderType type = objectColliderType.GetValue(user);
+
             var res = new ColliderDto
             {
-                colliderType = colliderType
+                colliderType = type
             };
-            switch (colliderType)
+
+            switch (type)
             {
                 case ColliderType.Box:
                     res.colliderCenter = colliderCenter.Dto();
