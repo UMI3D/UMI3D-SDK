@@ -585,6 +585,9 @@ namespace Mumble
         }
         public bool HasPlayableAudio(UInt32 session)
         {
+            if (ServerSync != null && session == ServerSync.Session && !_debugValues.UseLocalLoopback)
+                return false;
+
             DecodedAudioBuffer decodingBuffer;
             if (_audioDecodingBuffers.TryGetValue(session, out decodingBuffer))
             {
