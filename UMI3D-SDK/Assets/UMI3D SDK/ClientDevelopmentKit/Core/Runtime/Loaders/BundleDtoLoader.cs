@@ -227,7 +227,7 @@ namespace umi3d.cdk
                 }
                 else
                 {
-                    UMI3DLogger.LogWarning($"Path {pathIfObjectInBundle} not found in bundle assets or scenes.\n Available assets were {data.assets.Keys.ToString<string>()}\nAvailable scenes were {data.scenes.Keys.ToString<string>()}", scope);
+                    UMI3DLogger.LogError($"Path {pathIfObjectInBundle} not found in bundle assets or scenes.\n Available assets were {data.assets.Keys.ToString<string>()}\nAvailable scenes were {data.scenes.Keys.ToString<string>()}", scope);
                     return (o);
                 }
             }
