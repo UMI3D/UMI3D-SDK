@@ -23,32 +23,13 @@ namespace umi3d.cdk.interaction
     {
         public new Renderer renderer;
         public InteractableContainer interactableContainer;
-        public GameObject interactableUI;
-
-        new Camera camera;
+        public InteractableUIController uiController;
 
         public bool isVisible { get; private set; } = false;
         public static readonly Delegates<IInteractableVisibilityDelegate> delegates = new();
-        public static IInteractableVisibilityDataDelegate dataDelegate;
-
-        Ray ray;
-        RaycastHit hit;
 
         void Start()
         {
-            camera = Camera.main;
-            
-            interactableUI = dataDelegate?.GetInteractableUI();
-            if (interactableUI != null)
-            {
-                interactableUI.transform.SetParent(transform, false);
-            }
-
-            if (renderer.isVisible)
-            {
-                OnBecameVisible();
-            }
-
             UMI3DEnvironmentLoader.Instance.onEnvironmentLoaded.AddListener(CallOnBecameVisibleWhenEnvironmentIsLoaded);
         }
 
@@ -104,15 +85,5 @@ namespace umi3d.cdk.interaction
         /// <param name="interactableContainer"></param>
         /// <param name="visibilityListener"></param>
         void OnBecameInvisible(Renderer renderer, InteractableContainer interactableContainer, InteractableVisibilityListener visibilityListener) { }
-    }
-
-    public interface IInteractableVisibilityDataDelegate
-    {
-        /// <summary>
-        /// Return the UI gameObject to display interactable information to the user.<br/>
-        /// This method is called once by renderer.
-        /// </summary>
-        /// <returns></returns>
-        GameObject GetInteractableUI();
     }
 }
