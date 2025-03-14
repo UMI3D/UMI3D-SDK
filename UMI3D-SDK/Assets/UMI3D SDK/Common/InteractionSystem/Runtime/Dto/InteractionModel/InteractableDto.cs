@@ -58,6 +58,16 @@ namespace umi3d.common.interaction
         /// </summary>
         public ulong HoverExitAnimationId { get; set; }
 
+        /// <summary>
+        /// Should an indicator be displayed
+        /// </summary>
+        public bool indicatorDisplay { get; set; }
+
+        /// <summary>
+        /// Indicator position Delta from the position
+        /// </summary>
+        public Vector3Dto indicatorDelta { get; set; }
+
         public InteractableDto() : base() { }
     }
 }

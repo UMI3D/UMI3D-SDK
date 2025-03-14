@@ -15,12 +15,10 @@ limitations under the License.
 */
 
 using System;
-using System.Collections;
-using umi3d.common;
-using UnityEngine;
 
 namespace umi3d.common
 {
+
     [UMI3DSerializerOrder(1000)]
     public class UMI3DSerializerBasicModules : UMI3DSerializerModule
     {

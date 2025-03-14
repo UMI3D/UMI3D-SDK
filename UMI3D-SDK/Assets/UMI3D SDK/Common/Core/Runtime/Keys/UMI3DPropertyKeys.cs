@@ -139,6 +139,9 @@ namespace umi3d.common
         public const uint DrawingLine = 5305;
         public const uint DrawingMesh = 5306;
         public const uint DrawingInTheAir = 5307;
+
+        public const uint InteractableIndicatorDisplay = 5308;
+        public const uint InteractableIndicatorDelta = 5309;
         #endregion
 
         #region UI
