@@ -17,6 +17,8 @@ limitations under the License.
 using inetum.unityUtils.observation;
 using System;
 using System.Diagnostics;
+using System.Linq;
+using System.Threading.Tasks;
 using UnityEngine;
 
 namespace inetum.unityUtils.lifeCycle
@@ -228,8 +230,8 @@ namespace inetum.unityUtils.lifeCycle
             switch (state)
             {
                 case QuittingState.NotQuitting:
-                    // Happen when user try to quit by pressing the close application top bar button.
-                    Quit(this, true);
+                    // Happen when user try to quit by pressing the close button from the window top bar or by user the shortcut ctrl + F4.
+                    SystemWantsToQuit();
                     return false;
 
                 case QuittingState.WaitsForConfirmation:
@@ -266,6 +268,17 @@ namespace inetum.unityUtils.lifeCycle
 #else
             Application.Quit();
 #endif
+        }
+
+        async void SystemWantsToQuit()
+        {
+            // Yield so that the WantsToQuit method can return before calling the
+            // _Quit or _AskToQuit method.
+            await Task.Yield();
+
+            int subscribersCount = NotificationHub.Default.GetSubscribersFor(ID.FromType<QuittingNotificationKeys.AskForConfirmation>()).Count();
+            if (subscribersCount == 0) { _Quit(this); }
+            else { _AskToQuit(this); }
         }
 
         [Conditional("UNITY_EDITOR")]
