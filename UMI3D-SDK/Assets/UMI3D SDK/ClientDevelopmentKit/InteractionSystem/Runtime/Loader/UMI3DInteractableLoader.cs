@@ -15,8 +15,6 @@ limitations under the License.
 */
 
 using inetum.unityUtils;
-using System;
-using System.ComponentModel;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.interaction;

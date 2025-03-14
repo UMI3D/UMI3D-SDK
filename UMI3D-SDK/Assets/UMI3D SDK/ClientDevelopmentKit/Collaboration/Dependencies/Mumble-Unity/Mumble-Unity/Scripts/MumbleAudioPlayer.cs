@@ -12,7 +12,7 @@ namespace Mumble
     /*
      * WARNING : THIS CLASS IS MODIFIED !
      * 
-     * Most modificatioon concern OnAudioFilterRead method.
+     * Most modifications concern OnAudioFilterRead method.
      */
     [RequireComponent(typeof(AudioSource))]
     public class MumbleAudioPlayer : MonoBehaviour
@@ -121,7 +121,7 @@ namespace Mumble
         {
             _mumbleClient = source._mumbleClient;
             Session = source.Session;
-            OnAudioSample = source.OnAudioSample; // 
+            OnAudioSample = source.OnAudioSample;
             _isPlaying = false;
             if (_audioSource != null)
             {
@@ -227,7 +227,6 @@ namespace Mumble
             if (!_isPlaying && _mumbleClient.HasPlayableAudio(Session))
             {
                 _audioSource.Play();
-                //Debug.Log("play audio from mumble audio player "+ gameObject.name);
                 _isPlaying = true;
             }
             else if (_isPlaying && !_mumbleClient.HasPlayableAudio(Session))
