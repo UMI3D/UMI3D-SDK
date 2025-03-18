@@ -468,10 +468,14 @@ namespace umi3d.cdk
             if (!entityFilters[entityId].ContainsKey(propertyKey))
             {
                 IExtrapolator newExtrapolator;
-                if (propertyKey == UMI3DPropertyKeys.Rotation)
+                if (startValue is Quaternion or Vector4Dto)
                     newExtrapolator = new QuaternionLinearDelayedExtrapolator();
-                else
+                else if (startValue is Vector3 or Vector3Dto)
                     newExtrapolator = new Vector3LinearDelayedExtrapolator();
+                else if (startValue is float)
+                    newExtrapolator = new FloatLinearDelayedExtrapolator();
+                else
+                    return false;
 
                 entityFilters[entityId].Add(propertyKey, newExtrapolator);
 

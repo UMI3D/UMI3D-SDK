@@ -403,6 +403,19 @@ namespace umi3d.cdk
             return true;
         }
 
+        public static Task<bool> ReadMyUMI3DProperty(ReadUMI3DPropertyData value)
+        {
+            value.result = value.propertyKey switch
+            {
+                UMI3DPropertyKeys.AnimationAnimatorLookAtWeight => UMI3DSerializer.Read<float>(value.container),
+                UMI3DPropertyKeys.AnimationAnimatorLookAtPosition => UMI3DSerializer.Read<Vector3Dto>(value.container),
+                UMI3DPropertyKeys.AnimationAnimatorNormalizedTime => UMI3DSerializer.Read<float>(value.container),
+                _ => null
+            };
+
+            return Task.FromResult(value.result is not null);
+        }
+
         /// <summary>
         /// Tries to apply a parameter to <see cref="animator"/>.
         /// </summary>

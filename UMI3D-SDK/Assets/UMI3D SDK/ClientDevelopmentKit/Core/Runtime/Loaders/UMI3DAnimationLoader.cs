@@ -84,6 +84,8 @@ namespace umi3d.cdk
                 return true;
             if (await UMI3DAudioPlayer.ReadMyUMI3DProperty(value))
                 return true;
+            if (await UMI3DAnimatorAnimation.ReadMyUMI3DProperty(value))
+                return true;
             return await UMI3DNodeAnimation.ReadMyUMI3DProperty(value);
         }
     }
