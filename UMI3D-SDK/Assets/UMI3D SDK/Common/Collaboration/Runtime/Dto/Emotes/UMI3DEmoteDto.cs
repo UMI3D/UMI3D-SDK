@@ -40,5 +40,10 @@ namespace umi3d.common.collaboration.dto.emotes
         /// Emote animation in the bundled animator
         /// </summary>
         public ulong animationId { get; set; }
+
+        /// <summary>
+        /// Estimated duration of the emote animation
+        /// </summary>
+        public float estimatedDuration { get; set; }
     }
 }

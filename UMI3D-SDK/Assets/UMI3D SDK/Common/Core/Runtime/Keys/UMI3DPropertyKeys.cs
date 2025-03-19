@@ -217,6 +217,7 @@ namespace umi3d.common
         public const uint ChangeEmoteConfig = 11005; // deprecated
         public const uint ActiveEmote = 11006;
         public const uint AnimationEmote = 11007;
+        public const uint EstimatedDurationEmote = 11500; // added afterwards. Beware.
 
         public const uint Poses = 11008;
         public const uint ValidationEnvironmentPoseCondition = 11009;
@@ -242,6 +243,9 @@ namespace umi3d.common
         public const uint TrackingConstraintConstrainingBone = 11115;
 
         public const uint UserActions = 11200;
+        
+        // Values between 11500-12000 are reserved for adding more properties to usercapture
+        // See property DurationEmote for example
 
         #endregion
 

@@ -34,6 +34,7 @@ namespace umi3d.common.collaboration.emotes
             readable &= UMI3DSerializer.TryRead(container, out ulong animationId);
             readable &= UMI3DSerializer.TryRead(container, out bool available);
             readable &= UMI3DSerializer.TryRead(container, out ResourceDto iconResource);
+            readable &= UMI3DSerializer.TryRead(container, out float estimatedDuration);
 
             if (readable)
             {
@@ -43,7 +44,8 @@ namespace umi3d.common.collaboration.emotes
                     label = label,
                     animationId = animationId,
                     available = available,
-                    iconResource = iconResource
+                    iconResource = iconResource,
+                    estimatedDuration = estimatedDuration,
                 };
                 result = e;
             }
@@ -58,7 +60,8 @@ namespace umi3d.common.collaboration.emotes
                 + UMI3DSerializer.Write(dto.label)
                 + UMI3DSerializer.Write(dto.animationId)
                 + UMI3DSerializer.Write(dto.available)
-                + UMI3DSerializer.Write(dto.iconResource);
+                + UMI3DSerializer.Write(dto.iconResource)
+                + UMI3DSerializer.Write(dto.estimatedDuration);
 
             return true;
         }

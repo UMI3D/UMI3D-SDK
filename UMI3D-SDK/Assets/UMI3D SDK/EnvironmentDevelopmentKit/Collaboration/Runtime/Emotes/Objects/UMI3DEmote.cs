@@ -52,6 +52,28 @@ namespace umi3d.edk.collaboration.emotes
         protected UMI3DAsyncProperty<ulong> _animationId;
 
         /// <summary>
+        /// Estimated duration of the emote in seconds.
+        /// </summary>
+        public virtual UMI3DAsyncProperty<float> EstimatedDuration
+        {
+            get
+            {
+                _estimatedDuration ??= new UMI3DAsyncProperty<float>(Id(), UMI3DPropertyKeys.EstimatedDurationEmote, estimatedDuration);
+                return _estimatedDuration;
+            }
+            private set => _estimatedDuration = value;
+        }
+
+        protected UMI3DAsyncProperty<float> _estimatedDuration;
+
+        /// <summary>
+        /// Estimated duration of the emote in seconds.
+        /// </summary>
+        /// A null value indicates no available estimation.
+        [Tooltip("Estimated duration of the emote in seconds.\nIf unknown, the value can be set to 0.")]
+        public float estimatedDuration = 0;
+
+        /// <summary>
         /// If the user can see and play the emote.
         /// </summary>
         public virtual UMI3DAsyncProperty<bool> Available
@@ -94,6 +116,7 @@ namespace umi3d.edk.collaboration.emotes
                 id = this.Id(),
                 label = this.label,
                 animationId = this.AnimationId.GetValue(user), // create a DTO
+                estimatedDuration = this.EstimatedDuration.GetValue(user),
                 available = this.availableAtStart,
                 iconResource = this.iconResource.ToDto(),
             };

@@ -118,6 +118,11 @@ namespace umi3d.cdk.collaboration.emotes
                     emoteManagementService.UpdateEmote(emote);
                     break;
 
+                case UMI3DPropertyKeys.EstimatedDurationEmote:
+                    emote.estimatedDuration = (float)value.property.value;
+                    emoteManagementService.UpdateEmote(emote);
+                    break;
+
                 default:
                     return await Task.FromResult(false);
             }
@@ -145,6 +150,11 @@ namespace umi3d.cdk.collaboration.emotes
                     emoteManagementService.UpdateEmote(emote);
                     break;
 
+                case UMI3DPropertyKeys.EstimatedDurationEmote:
+                    emote.estimatedDuration = UMI3DSerializer.Read<float>(value.container);
+                    emoteManagementService.UpdateEmote(emote);
+                    break;
+
                 default:
                     return await Task.FromResult(false);
             }
@@ -161,6 +171,7 @@ namespace umi3d.cdk.collaboration.emotes
             switch (data.propertyKey)
             {
                 case UMI3DPropertyKeys.ActiveEmote:
+                case UMI3DPropertyKeys.EstimatedDurationEmote:
                 case UMI3DPropertyKeys.AnimationEmote:
                     {
                         UMI3DEmoteDto emoteDto = UMI3DSerializer.Read<UMI3DEmoteDto>(data.container);
@@ -171,6 +182,7 @@ namespace umi3d.cdk.collaboration.emotes
 
                         emote.available = emoteDto.available;
                         emote.AnimationId = emoteDto.animationId;
+                        emote.estimatedDuration = emoteDto.estimatedDuration;
                         emoteManagementService.UpdateEmote(emote);
                         break;
                     }
