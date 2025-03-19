@@ -74,7 +74,7 @@ namespace umi3d.cdk
         /// <summary>
         /// If true, authorizations must be set in headers.
         /// </summary>
-        public bool AuthorizationInHeader => connectionDto?.authorizationInHeader ?? false;
+        public virtual bool AuthorizationInHeader => connectionDto?.authorizationInHeader ?? false;
 
         /// <summary>
         /// Environment connected to.
