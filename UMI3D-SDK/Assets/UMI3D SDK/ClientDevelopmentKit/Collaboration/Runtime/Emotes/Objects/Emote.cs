@@ -33,6 +33,7 @@ namespace umi3d.cdk.collaboration.emotes
             this.available = dto.available;
             this.AnimationId = dto.animationId;
             this.EnvironmentId = environmentId;
+            this.estimatedDuration = dto.estimatedDuration > 0 ? dto.estimatedDuration : null;
         }
 
         /// <summary>
@@ -63,5 +64,11 @@ namespace umi3d.cdk.collaboration.emotes
         /// Should the emote be available or not
         /// </summary>
         public bool available { get; internal set; }
+
+        /// <summary>
+        /// Estimated duration of the emote in seconds.
+        /// </summary>
+        /// A null value indicates no available estimation.
+        public float? estimatedDuration { get; internal set; }
     }
 }
