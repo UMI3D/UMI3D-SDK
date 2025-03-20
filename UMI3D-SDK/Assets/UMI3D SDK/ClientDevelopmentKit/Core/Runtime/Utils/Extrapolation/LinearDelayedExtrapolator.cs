@@ -130,4 +130,55 @@ namespace umi3d.cdk.utils.extrapolation
                 return lastEstimation;
         }
     }
+
+    /// <summary>
+    /// Extrapolator using a linear extrapolation regression system, specialised for <see cref="Vector4"/> computing.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Vector4LinearDelayedExtrapolator : AbstractLinearDelayedExtrapolator<Vector4>
+    {
+        /// <inheritdoc/>
+        public override Vector4 Extrapolate()
+        {
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
+            if (t > 0 && IsInited)
+                return Vector4.Lerp(lastEstimation, lastMeasure, t);
+            else
+                return lastEstimation;
+        }
+    }
+
+    /// <summary>
+    /// Extrapolator using a linear extrapolation regression system, specialised for <see cref="Vector2"/> computing.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class Vector2LinearDelayedExtrapolator : AbstractLinearDelayedExtrapolator<Vector2>
+    {
+        /// <inheritdoc/>
+        public override Vector2 Extrapolate()
+        {
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
+            if (t > 0 && IsInited)
+                return Vector2.Lerp(lastEstimation, lastMeasure, t);
+            else
+                return lastEstimation;
+        }
+    }
+
+    /// <summary>
+    /// Extrapolator using a linear extrapolation regression system, specialised for <see cref="Color"/> computing.
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    public class ColorLinearDelayedExtrapolator : AbstractLinearDelayedExtrapolator<Color>
+    {
+        /// <inheritdoc/>
+        public override Color Extrapolate()
+        {
+            var t = (Time.time - lastUpdateTime) * updateFrequency;
+            if (t > 0 && IsInited)
+                return Color.Lerp(lastEstimation, lastMeasure, t);
+            else
+                return lastEstimation;
+        }
+    }
 }
