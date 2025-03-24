@@ -54,6 +54,10 @@ namespace umi3d.cdk.collaboration
 
         public static PublicIdentityDto PublicIdentity => worldControllerClient?.PublicIdentity;
 
+        /// <summary>
+        /// If true, authorizations must be set in headers.
+        /// </summary>
+        public override bool AuthorizationInHeader => connectingWorldControllerClient == null ? base.AuthorizationInHeader : false; 
         protected override EnvironmentConnectionDto connectionDto => environmentClient?.connectionDto;
         public override UMI3DVersion.Version version => environmentClient?.version;
 
@@ -196,6 +200,7 @@ namespace umi3d.cdk.collaboration
                         worldControllerClient = connectingWorldControllerClient;
                         environmentClient = await connectingWorldControllerClient.ConnectToEnvironment(progress);
                         environmentClient.status = StatusType.CREATED;
+                        connectingWorldControllerClient = null;
                     }
                 }
                 else
@@ -255,6 +260,7 @@ namespace umi3d.cdk.collaboration
                 worldControllerClient = connectingWorldControllerClient;
                 environmentClient = await connectingWorldControllerClient.ConnectToEnvironment(progress);
                 environmentClient.status = StatusType.CREATED;
+                connectingWorldControllerClient = null;
             }
         }
 
@@ -420,7 +426,7 @@ namespace umi3d.cdk.collaboration
         protected override async Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader, Progress progress = null)
         {
             UMI3DLogger.Log($"GetFile {url}", scope);
-            return await (environmentClient?.GetFile(url, useParameterInsteadOfHeader, progress) ?? connectingWorldControllerClient?.GetFile(url, useParameterInsteadOfHeader, progress) ?? Task.FromResult<byte[]>(null));
+            return await (connectingWorldControllerClient?.GetFile(url, useParameterInsteadOfHeader, progress) ?? environmentClient?.GetFile(url, useParameterInsteadOfHeader, progress) ?? Task.FromResult<byte[]>(null));
         }
 
         /// <inheritdoc/>
