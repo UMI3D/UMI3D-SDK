@@ -684,15 +684,90 @@ namespace umi3d.common.collaboration
         /// <returns></returns>
         public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, List<(string, string)> headers, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
+            List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
+            var mime = MimeTypeMapper.GetMimeType(fileName);
+            formData.Add(new MultipartFormFileSection("UploadedFile", bytes, fileName, mime));
+            byte[] boundary = UnityWebRequest.GenerateBoundary();
+
             if (headers == null)
                 headers = new();
 
             if (!headers.Any(c => c.Item1 == UMI3DNetworkingKeys.contentHeader))
                 headers.Add((UMI3DNetworkingKeys.contentHeader, fileName));
 
-            UnityWebRequest uwr = await _PostRequest(this, null, url, null, bytes, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false, headers);
+            UnityWebRequest uwr = await _PostFormRequest(this, null, url, boundary, formData, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false, headers);
             uwr.Dispose();
         }
+
+        /// <summary>
+        /// A utility class for mapping file extensions to MIME types.
+        /// </summary>
+        public static class MimeTypeMapper
+        {
+            /// <summary>
+            /// A dictionary containing mappings of file extensions to MIME types.
+            /// </summary>
+            private static readonly Dictionary<string, string> MimeTypes = new Dictionary<string, string>(StringComparer.OrdinalIgnoreCase)
+            {
+                { ".txt", "text/plain" },
+                { ".html", "text/html" },
+                { ".htm", "text/html" },
+                { ".css", "text/css" },
+                { ".js", "application/javascript" },
+                { ".json", "application/json" },
+                { ".xml", "application/xml" },
+                { ".jpg", "image/jpeg" },
+                { ".jpeg", "image/jpeg" },
+                { ".png", "image/png" },
+                { ".gif", "image/gif" },
+                { ".bmp", "image/bmp" },
+                { ".webp", "image/webp" },
+                { ".svg", "image/svg+xml" },
+                { ".pdf", "application/pdf" },
+                { ".zip", "application/zip" },
+                { ".rar", "application/x-rar-compressed" },
+                { ".7z", "application/x-7z-compressed" },
+                { ".mp3", "audio/mpeg" },
+                { ".wav", "audio/wav" },
+                { ".mp4", "video/mp4" },
+                { ".avi", "video/x-msvideo" },
+                { ".mov", "video/quicktime" },
+                { ".wmv", "video/x-ms-wmv" },
+                { ".exe", "application/octet-stream" },
+                { ".dll", "application/octet-stream" }
+            };
+
+            /// <summary>
+            /// Gets the MIME type for a given file extension.
+            /// </summary>
+            /// <param name="fileName">The name of the file, including its extension.</param>
+            /// <returns>The MIME type as a string. If the extension is not found, returns "application/octet-stream".</returns>
+            public static string GetMimeType(string fileName)
+            {
+                if (string.IsNullOrWhiteSpace(fileName))
+                {
+                    throw new ArgumentException("File name cannot be null or empty.", nameof(fileName));
+                }
+
+                // Extract the file extension
+                string extension = System.IO.Path.GetExtension(fileName);
+
+                if (string.IsNullOrEmpty(extension))
+                {
+                    return "application/octet-stream"; // Default MIME type for unknown extensions
+                }
+
+                // Look up the MIME type in the dictionary
+                if (MimeTypes.TryGetValue(extension, out string mimeType))
+                {
+                    return mimeType;
+                }
+
+                // Return default MIME type if not found
+                return "application/octet-stream";
+            }
+        }
+
         #endregion
 
         #region utils
@@ -820,6 +895,42 @@ namespace umi3d.common.collaboration
             throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
         }
 
+        protected static async Task<UnityWebRequest> _PostFormRequest(AbstractHttpClient<T> instance, string HeaderToken, string url, byte[] boundary, List<IMultipartFormSection> multipartFormSections, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        {
+            UnityWebRequest www = CreatePostRequest(url, multipartFormSections, boundary, true);
+            if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
+            if (headers != null)
+            {
+                foreach ((string, string) item in headers)
+                {
+                    www.SetRequestHeader(item.Item1, item.Item2);
+                }
+            }
+            DateTime date = DateTime.UtcNow;
+
+            UnityWebRequestAsyncOperation operation = www.SendWebRequest();
+            while (!operation.isDone)
+                await UMI3DAsyncManager.Yield();
+
+#if UNITY_2020_1_OR_NEWER
+            if (www.result > UnityWebRequest.Result.Success)
+#else
+            if (www.isNetworkError || www.isHttpError)
+#endif
+            {
+                return
+                    await (instance?.Sub_PostFormRequest(www, date, HeaderToken, url, multipartFormSections, boundary, ShouldTryAgain, UseCredential, headers, tryCount)
+                    ?? throw new Umi3dNetworkingException(www, "Failed to post "));
+
+            }
+            return www;
+        }
+
+        protected virtual async Task<UnityWebRequest> Sub_PostFormRequest(UnityWebRequest www, DateTime date, string HeaderToken, string url, List<IMultipartFormSection> multipartFormSections, byte[] boundary, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        {
+            UnityEngine.Debug.Log(System.Text.Encoding.ASCII.GetString(www.uploadHandler.data));
+            throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
+        }
 
         /// <summary>
         /// Util function to create POST request.
@@ -838,6 +949,14 @@ namespace umi3d.common.collaboration
             if (withResult)
                 requestU.downloadHandler = new DownloadHandlerBuffer();
             //requestU.SetRequestHeader("access_token", UMI3DClientServer.GetToken(null));
+            return requestU;
+        }
+
+        private static UnityWebRequest CreatePostRequest(string url, List<IMultipartFormSection> multipartFormSections, byte[] boundary, bool withResult = false)
+        {
+            var requestU = UnityWebRequest.Post(url, multipartFormSections, boundary);
+            if (withResult)
+                requestU.downloadHandler = new DownloadHandlerBuffer();
             return requestU;
         }
 

@@ -44,7 +44,6 @@ namespace umi3d.cdk
             image.color = dto.color.Struct();
             image.type = dto.type.Convert();
 
-
             if (dto.sprite == null || dto.sprite.variants == null || dto.sprite.variants.Count < 1)
             {
                 image.sprite = null;
@@ -52,19 +51,7 @@ namespace umi3d.cdk
                 return;
             }
 
-            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite.variants);
-
-            string ext = fileToLoad.extension;
-            IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
-            if (loader != null)
-            {
-                var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad,loader );
-                var tex = (Texture2D)o;
-                if (tex != null)
-                    image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
-                else
-                    UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
-            }
+            LoadTexture(image, dto);
         }
 
         /// <summary>
@@ -92,16 +79,14 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.Image:
                     {
-                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         dto.sprite = property.value as ResourceDto;
-                        FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
-                        if (fileToLoad == null)
-                        {
-                            image.sprite = null;
-                            dto.sprite.variants = null;
-                            break;
-                        }
-                        LoadText(image, fileToLoad, dto);
+                        LoadTexture(node, dto);
+                    }
+                    break;
+                case UMI3DPropertyKeys.ImageBorder:
+                    {
+                        dto.border = (property.value as Vector4Dto);
+                        LoadTexture(node, dto);
                     }
                     break;
                 default:
@@ -110,8 +95,21 @@ namespace umi3d.cdk
             return true;
         }
 
-        async void LoadText(Image image, FileDto fileToLoad, UIImageDto dto)
+        void LoadTexture(UMI3DNodeInstance node, UIImageDto dto)
         {
+            Image image = node.GameObject.GetOrAddComponent<Image>();
+            LoadTexture(image, dto);
+        }
+
+        async void LoadTexture(Image image, UIImageDto dto)
+        {
+            FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
+            if (fileToLoad == null)
+            {
+                image.sprite = null;
+                return;
+            }
+
             string ext = fileToLoad.extension;
             IResourcesLoader loader = UMI3DEnvironmentLoader.AbstractParameters.SelectLoader(ext);
             if (loader != null)
@@ -119,7 +117,7 @@ namespace umi3d.cdk
                 var o = await UMI3DResourcesManager.LoadFile(dto.id, fileToLoad, loader);
                 var tex = (Texture2D)o;
                 if (tex != null)
-                    image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f);
+                    image.sprite = Sprite.Create(tex, new Rect(0.0f, 0.0f, tex.width, tex.height), new Vector2(0.5f, 0.5f), 100.0f, 0, SpriteMeshType.FullRect, dto.border?.Struct() ?? Vector4.zero);
                 else
                     UMI3DLogger.LogWarning($"invalid cast from {o.GetType()} to {typeof(Texture2D)}", scope);
             }
@@ -144,16 +142,14 @@ namespace umi3d.cdk
                     break;
                 case UMI3DPropertyKeys.Image:
                     {
-                        Image image = node.GameObject.GetOrAddComponent<Image>();
                         dto.sprite = UMI3DSerializer.Read<ResourceDto>(container);
-                        FileDto fileToLoad = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(dto.sprite?.variants);
-                        if (fileToLoad == null)
-                        {
-                            image.sprite = null;
-                            dto.sprite.variants = null;
-                            break;
-                        }
-                        LoadText(image, fileToLoad, dto);
+                        LoadTexture(node, dto);
+                    }
+                    break;
+                case UMI3DPropertyKeys.ImageBorder:
+                    {
+                        dto.border = UMI3DSerializer.Read<Vector4Dto>(container);
+                        LoadTexture(node, dto);
                     }
                     break;
                 default:

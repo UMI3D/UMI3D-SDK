@@ -36,5 +36,10 @@ namespace umi3d.common
         /// type of way to display the image.
         /// </summary>
         public ImageType type { get; set; }
+
+        /// <summary>
+        /// border of the image
+        /// </summary>
+        public Vector4Dto border { get; set; }
     }
 }

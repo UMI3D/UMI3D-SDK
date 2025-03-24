@@ -189,6 +189,7 @@ namespace umi3d.common
         public const uint ImageColor = 9001;
         public const uint ImageType = 9002;
         public const uint Image = 9003;
+        public const uint ImageBorder = 9004;
         #endregion
         #endregion
 
