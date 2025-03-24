@@ -116,6 +116,7 @@ namespace umi3d.edk
         /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
+            UnityEngine.Debug.Log("Is this even used ?");
             Bytable fp = base.ToBytes(user);
             var otherEntities = nodes.SelectMany(n => n.GetAllLoadableEntityUnderThisNode(user)).Select(o => o.ToBytes(user)).ToList();
             otherEntities.AddRange(GetAllLoadableEntityUnderThisNode(user).Select(o => o.ToBytes(user)));

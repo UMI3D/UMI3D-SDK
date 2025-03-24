@@ -886,56 +886,14 @@ namespace umi3d.cdk.collaboration
         {
             try
             {
-                // Create a boundary for the multipart form-data
-                string boundary = "------------------------" + System.DateTime.Now.Ticks.ToString("x");
-
                 var headers2 = headers?.Select(k => (k.header, k.content)).ToList() ?? new();
 
-                headers2.Add(("Content-Type", "multipart/form-data; boundary=" + boundary));
-
-                // Build the multipart form-data body
-                byte[] body = CreateMultipartFormData(bytesToUpload, fileName, boundary);
-
-
-                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, body, headers2);
+                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload, headers2);
             }
             catch (Exception e)
             {
                 UMI3DLogger.Log("error on upload file : " + fileName, scope);
                 UMI3DLogger.LogException(e, scope);
-            }
-
-            static byte[] CreateMultipartFormData(byte[] fileData, string fileName, string boundary)
-            {
-                // Create a memory stream to build the multipart form-data body
-                using (MemoryStream memoryStream = new MemoryStream())
-                {
-                    // Write the boundary
-                    string boundaryStart = "--" + boundary + "\r\n";
-                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(boundaryStart), 0, boundaryStart.Length);
-
-                    // Write the content disposition for the file
-                    string contentDisposition = $"Content-Disposition: form-data; name=\"UploadedFile\"; filename=\"{fileName}\"\r\n";
-                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(contentDisposition), 0, contentDisposition.Length);
-
-                    // Write the content type for the file
-                    string contentType = "Content-Type: application/octet-stream\r\n\r\n";
-                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(contentType), 0, contentType.Length);
-
-                    // Write the file data
-                    memoryStream.Write(fileData, 0, fileData.Length);
-
-                    // Write a newline after the file data
-                    string newline = "\r\n";
-                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(newline), 0, newline.Length);
-
-                    // Write the closing boundary
-                    string boundaryEnd = "--" + boundary + "--\r\n";
-                    memoryStream.Write(System.Text.Encoding.UTF8.GetBytes(boundaryEnd), 0, boundaryEnd.Length);
-
-                    // Return the built body as a byte array
-                    return memoryStream.ToArray();
-                }
             }
         }
 

@@ -38,6 +38,11 @@ namespace umi3d.edk
         private Image.Type type => GetComponent<Image>().type;
 
         /// <summary>
+        /// Image's border
+        /// </summary>
+        private Vector4 border => GetComponent<Image>().sprite != null ? GetComponent<Image>().sprite.border : Vector4.zero;
+
+        /// <summary>
         /// Image's sprite URL.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Image's sprite URL.")]
@@ -46,6 +51,7 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<UMI3DResource> _sprite;
         private UMI3DAsyncProperty<Color> _color;
         private UMI3DAsyncProperty<Image.Type> _imageType;
+        private UMI3DAsyncProperty<Vector4> _imageBorder;
 
         /// <summary>
         /// Sprite's URL (if any).
@@ -62,6 +68,10 @@ namespace umi3d.edk
         /// </summary>
         public UMI3DAsyncProperty<Image.Type> ImageType { get { Register(); return _imageType; } protected set => _imageType = value; }
 
+        /// <summary>
+        /// Image's border.
+        /// </summary>
+        public UMI3DAsyncProperty<Vector4> ImageBorder { get { Register(); return _imageBorder; } protected set => _imageBorder = value; }
 
         /// <summary>
         /// Initialise component.
@@ -72,6 +82,7 @@ namespace umi3d.edk
             Color = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.ImageColor, color, ToUMI3DSerializable.ToSerializableColor);
             ImageType = new UMI3DAsyncProperty<Image.Type>(objectId, UMI3DPropertyKeys.ImageType, type, (a, u) => a.Convert());
             Sprite = new UMI3DAsyncProperty<UMI3DResource>(objectId, UMI3DPropertyKeys.Image, sprite, (s, u) => s.ToDto());
+            ImageBorder = new UMI3DAsyncProperty<Vector4>(objectId, UMI3DPropertyKeys.ImageBorder, border, ToUMI3DSerializable.ToSerializableVector4);
         }
 
         /// <inheritdoc/>
@@ -84,16 +95,17 @@ namespace umi3d.edk
         protected override void WriteProperties(UMI3DAbstractNodeDto dto, UMI3DUser user)
         {
             base.WriteProperties(dto, user);
-            var rectDto = dto as UIImageDto;
-            rectDto.color = Color.GetValue(user).Dto();
-            rectDto.type = ImageType.GetValue(user).Convert();
-            if (sprite != null)
-                rectDto.sprite = Sprite.GetValue().ToDto();
+            var imageDto = dto as UIImageDto;
+            imageDto.color = Color.GetValue(user).Dto();
+            imageDto.type = ImageType.GetValue(user).Convert();
+            imageDto.sprite = Sprite.GetValue(user).ToDto();
+            imageDto.border = ImageBorder.GetValue(user).Dto();
         }
 
         /// <inheritdoc/>
         public override Bytable ToBytes(UMI3DUser user)
         {
+            UnityEngine.Debug.Log("Is this even used ?");
             return base.ToBytes(user)
                 + UMI3DSerializer.Write(Color.GetValue(user))
                 + UMI3DSerializer.Write((int)ImageType.GetValue(user).Convert());
