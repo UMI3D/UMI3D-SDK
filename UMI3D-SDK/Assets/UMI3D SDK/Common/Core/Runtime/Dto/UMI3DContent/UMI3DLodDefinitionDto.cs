@@ -29,7 +29,9 @@ namespace umi3d.common
         /// </summary>
         public List<ulong> nodes { get; set; }
 
-
+        /// <summary>
+        /// The screen relative height to use for the transition [0-1].
+        /// </summary>
         public float screenSize { get; set; }
 
         /// <summary>

@@ -23,6 +23,7 @@ using UnityEngine;
 
 namespace umi3d.edk
 {
+
     /// <summary>
     /// UMI3D empty object to load on the clients on their scene graph.
     /// </summary>
@@ -73,6 +74,11 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Check this box if a collider is attached to that node.")]
         protected bool hasCollider = false;
 
+        /// <summary>
+        /// Dto decription of a LOD. The value is computed in the initDefinition method call automatically.
+        /// </summary>
+        /// <seealso cref="ComputeLOD"/>
+        public UMI3DLodDto lodDto { get; set; }
 
         #region collider
 
@@ -244,6 +250,8 @@ namespace umi3d.edk
             Light light = GetComponent<Light>();
             objectLight = new UMI3DAsyncProperty<UMI3DKHRLight>(objectId, UMI3DPropertyKeys.Light, light ? new UMI3DKHRLight(objectId, light) : null, (l, u) => l?.ToDto(u));
 
+            ComputeLOD();
+
             /*if (ARTracker)
             {
                 ARTracker.initDefinition();
@@ -334,7 +342,7 @@ namespace umi3d.edk
             nodeDto.xBillboard = objectXBillboard.GetValue(user);
             nodeDto.yBillboard = objectYBillboard.GetValue(user);
             nodeDto.colliderDto = GetColliderDto(user);
-            nodeDto.lodDto = GetLod();
+            nodeDto.lodDto = lodDto;
             nodeDto.skinnedRendererLinks = skinnedRendererLinks;
         }
 
@@ -349,13 +357,64 @@ namespace umi3d.edk
         }
 
         /// <summary>
+        /// Searches for a UMI3D LOD component on this GameObject first, and if not found, 
+        /// falls back to searching for a Unity LOD component. Computes a <see cref="UMI3DLodDto"/> 
+        /// based on the found component.
+        /// </summary>
+        /// <returns>True if a <see cref="UMI3DLodDto"/> was successfully created; otherwise, false.</returns>
+        /// <remarks>
+        /// This method prioritizes the UMI3D LOD component over the Unity LOD component during the search.
+        /// </remarks>
+        /// <seealso cref="UMI3DLOD"/>
+        /// <seealso cref="UnityEngine.LODGroup"/>
+        public bool ComputeLOD()
+        {
+            this.lodDto = GetLod();
+            return (this.lodDto != null);
+        }
+
+        /// <summary>
         /// Compute UMI3DLodDto with LogGroup component on the node.
         /// </summary>
         /// <returns>null if not component</returns>
         private UMI3DLodDto GetLod()
         {
+            return GetLodFromUMI3D() ?? GetLodFromUnity();
+        }
+
+        /// <summary>
+        /// Compute UMI3DLodDto with a UMI3DLOD component on the node.
+        /// </summary>
+        /// <returns>null if no component</returns>
+        private UMI3DLodDto GetLodFromUMI3D()
+        {
+            UMI3DLOD lod = GetComponent<UMI3DLOD>();
+            if (lod == null) return null;
+            var lodg = new UMI3DLodDto
+            {
+                lods = new List<UMI3DLodDefinitionDto>()
+            };
+            foreach (UMI3DLOD.UMI3DLODGroup lofd in lod.groups)
+            {
+                var loddef = new UMI3DLodDefinitionDto();
+                loddef.nodes = lofd.nodes.Select(n => n.Id()).ToList();
+
+                loddef.screenSize = lofd.screenSize;
+                loddef.fadeTransition = lofd.fadeTransition;
+                lodg.lods.Add(loddef);
+            }
+            return lodg;
+        }
+
+        /// <summary>
+        /// Compute UMI3DLodDto with LODGroup component on the node.
+        /// </summary>
+        /// <returns>null if not component</returns>
+        private UMI3DLodDto GetLodFromUnity()
+        {
             LODGroup lod = GetComponent<LODGroup>();
             if (lod == null) return null;
+
             var lodg = new UMI3DLodDto
             {
                 lods = new List<UMI3DLodDefinitionDto>()
@@ -364,7 +423,16 @@ namespace umi3d.edk
             {
                 var loddef = new UMI3DLodDefinitionDto();
                 Renderer[] renderers = lofd.renderers;
-                loddef.nodes = transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponent<UMI3DNode>()).Where(s => s != null).Select(s => s.Id()).ToList();
+                loddef.nodes = new();
+                transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponentInParent<UMI3DNode>()).Where(s => s != null).Select(s => (n:s,id:s.Id()))
+                    .ForEach(s =>
+                        {
+                            if (!loddef.nodes.Contains(s.id))
+                            {
+                                loddef.nodes.Add(s.id);
+                            }
+                        });
+
                 loddef.screenSize = lofd.screenRelativeTransitionHeight;
                 loddef.fadeTransition = lofd.fadeTransitionWidth;
                 lodg.lods.Add(loddef);
