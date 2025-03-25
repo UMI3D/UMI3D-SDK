@@ -54,6 +54,18 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Values of blendShapes on skinnedMeshRenderer")]
         protected List<float> blendShapesValues = new();
 
+        [Header("Indicator")]
+        /// <summary>
+        /// Does the browser should highlight this interactable
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Does the browser should highlight this node if an interactable is on it")]
+        protected bool IndicatorDisplay = true;
+        /// <summary>
+        /// Indicator delta in the browser, Ignored if IndicatorDisplay is null
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Indicator delta in the browser, Ignored if IndicatorDisplay is null")]
+        protected Vector3 IndicatorDelta = Vector3.zero;
+
         #region properties
         /// <summary>
         /// See <see cref="overrideModelMaterials"/>
@@ -75,6 +87,10 @@ namespace umi3d.edk
         /// See <see cref="blendShapesValues"/>
         /// </summary>
         public UMI3DAsyncListProperty<float> objectBlendShapesValues { get { Register(); return _objectblendShapesValues; } protected set => _objectblendShapesValues = value; }
+
+        public UMI3DAsyncProperty<bool> indicatorDisplay { get { Register(); return _interactionDisplay; } set => _interactionDisplay = value; }
+        public UMI3DAsyncProperty<Vector3> indicatorDelta { get { Register(); return _interactionDelta; } set => _interactionDelta = value; }
+
         #endregion properties
 
         #region asyncproperties
@@ -98,6 +114,10 @@ namespace umi3d.edk
         /// See <see cref="blendShapesValues"/>
         /// </summary>
         protected UMI3DAsyncListProperty<float> _objectblendShapesValues;
+
+        private UMI3DAsyncProperty<bool> _interactionDisplay;
+        private UMI3DAsyncProperty<Vector3> _interactionDelta;
+
         #endregion asyncproperties
 
         /// <inheritdoc/>
@@ -120,6 +140,11 @@ namespace umi3d.edk
 
             objectBlendShapesValues = new UMI3DAsyncListProperty<float>(objectId, UMI3DPropertyKeys.BlendShapeValues, this.blendShapesValues, null, (a, b) => { return a.GetHashCode().Equals(b.GetHashCode()); });
             objectBlendShapesValues.OnValueChanged += value => blendShapesValues = value;
+
+            indicatorDisplay = new UMI3DAsyncProperty<bool>(id, UMI3DPropertyKeys.InteractableIndicatorDisplay, IndicatorDisplay);
+            indicatorDisplay.OnValueChanged += (b) => IndicatorDisplay = b;
+            indicatorDelta = new UMI3DAsyncProperty<Vector3>(id, UMI3DPropertyKeys.InteractableIndicatorDelta, IndicatorDelta, ToUMI3DSerializable.ToSerializableVector3, (v1, v2) => UMI3DAsyncPropertyEquality.Equals(v1, v2));
+            indicatorDelta.OnValueChanged += (v) => IndicatorDelta = v;
         }
 
         /// <inheritdoc/>
@@ -142,6 +167,8 @@ namespace umi3d.edk
             
             meshDto.blendShapesValues = objectBlendShapesValues.GetValue(user);
 
+            meshDto.indicatorDisplay = indicatorDisplay.GetValue(user);
+            meshDto.indicatorDelta = indicatorDelta.GetValue(user).Dto();
         }
 
         /// <inheritdoc/>
