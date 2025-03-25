@@ -10,7 +10,7 @@ For more information about UMI3D, visit the [UMI3D Consortium's website](https:/
 
 ### Version And Documentation
 
-The Current UMI3D-SDK version is 2.6<br>
+The Current UMI3D-SDK version is 2.9<br>
 The documentation can be found [here](https://umi3d.github.io/UMI3D-SDK/index.html)<br>
 The sdk is developed on unity version 2021.3.15f (See [Unity Archive](https://unity3d.com/fr/get-unity/download/archive)).
 For older unity compatibility please look at the [2.5 Umi3d Release] (https://github.com/UMI3D/UMI3D-SDK/releases/tag/2.5.r.221207)
@@ -18,8 +18,7 @@ For older unity compatibility please look at the [2.5 Umi3d Release] (https://gi
 ### UMI3D Browser & Samples
 
 - [Virtual Worlds Samples](https://github.com/UMI3D/UMI3D-Samples)
-- [UMI3D Desktop Browser](https://github.com/UMI3D/UMI3D-Desktop-Browser)
-- [UMI3D SteamVR Browser](https://github.com/UMI3D/UMI3D-OpenVR-Browser)
+- [UMI3D Browser](https://github.com/UMI3D/UMI3D-Browser)
 
 ### Unity Project Settings
 
@@ -81,6 +80,3 @@ The tag (#2.5.r.221207) can be set to any branch or tag on the sdk repo. Example
 
 To activate the intelsence of UMI3D-SDK in Visual Studio 2019, navigate to the menu :
 - **Edit > Preferences > External Tools** and check the option **Git packages**. It will be necesary to regenerate the project files.
-
-
-
