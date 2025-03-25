@@ -31,7 +31,7 @@ namespace umi3d
         public static readonly string major = "2";
         public static readonly string minor = "9";
         public static readonly string status = "b";
-        public static readonly string date = "250311";
+        public static readonly string date = "250325";
 
         public static readonly Version ComputedVersion = new Version(UMI3DVersion.version);
 
