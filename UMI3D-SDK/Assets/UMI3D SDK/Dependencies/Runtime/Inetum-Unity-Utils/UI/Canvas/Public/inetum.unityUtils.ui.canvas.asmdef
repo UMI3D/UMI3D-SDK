@@ -1,3 +1,16 @@
 {
-	"name": "inetum.unityUtils.ui.canvas"
+    "name": "inetum.unityUtils.ui.canvas",
+    "rootNamespace": "",
+    "references": [
+        "GUID:47c6c327aa0369a4f9e668c0087332d4"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": true,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
 }
