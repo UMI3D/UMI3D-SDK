@@ -154,19 +154,6 @@ namespace umi3d.cdk.interaction
             return currentTool == null;
         }
 
-        /// <summary>
-        /// Check if a tool requires the generation of a menu to be projected.
-        /// </summary>
-        /// <param name="tool"> The tool to be projected.</param>
-        /// <returns></returns>
-        public abstract bool RequiresMenu(AbstractTool tool);
-
-        /// <summary>
-        /// Create a menu to access each interactions of a tool separately.
-        /// </summary>
-        /// <param name="interactions"></param>
-        public abstract void CreateInteractionsMenuFor(AbstractTool tool);
-
         #endregion
 
         /// <summary>
@@ -182,16 +169,9 @@ namespace umi3d.cdk.interaction
             if (currentTool != null)
                 throw new System.Exception("A tool is already projected !");
 
-            if (RequiresMenu(tool))
-            {
-                CreateInteractionsMenuFor(tool);
-            }
-            else
-            {
-                AbstractInteractionDto[] interactions = tool.interactionsLoaded.ToArray();
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, tool.environmentId, interactions, tool.id, hoveredObjectId);
-                associatedInputs.Add((tool.id,tool.environmentId), inputs);
-            }
+            AbstractInteractionDto[] interactions = tool.interactionsLoaded.ToArray();
+            AbstractUMI3DInput[] inputs = projectionMemory.Project(this, tool.environmentId, interactions, tool.id, hoveredObjectId);
+            associatedInputs.Add((tool.id,tool.environmentId), inputs);
 
             currentTool = tool;
             currentToolId = tool.id;
@@ -257,23 +237,17 @@ namespace umi3d.cdk.interaction
             if (currentTool != tool)
                 throw new System.Exception("Try to update wrong tool");
 
-            if (RequiresMenu(tool))
+            var interaction = new AbstractInteractionDto[] { abstractInteractionDto };
+            AbstractUMI3DInput[] inputs = projectionMemory.Project(this, tool.environmentId, interaction, tool.id, GetCurrentHoveredId());
+            if (associatedInputs.ContainsKey((tool.id, tool.environmentId)))
             {
-                CreateInteractionsMenuFor(tool);
+                associatedInputs[(tool.id, tool.environmentId)] = associatedInputs[(tool.id, tool.environmentId)].Concat(inputs).ToArray();
             }
             else
             {
-                var interaction = new AbstractInteractionDto[] { abstractInteractionDto };
-                AbstractUMI3DInput[] inputs = projectionMemory.Project(this, tool.environmentId, interaction, tool.id, GetCurrentHoveredId());
-                if (associatedInputs.ContainsKey((tool.id, tool.environmentId)))
-                {
-                    associatedInputs[(tool.id, tool.environmentId)] = associatedInputs[(tool.id, tool.environmentId)].Concat(inputs).ToArray();
-                }
-                else
-                {
-                    associatedInputs.Add((tool.id, tool.environmentId), inputs);
-                }
+                associatedInputs.Add((tool.id, tool.environmentId), inputs);
             }
+
             currentTool = tool;
             currentToolId = tool.id;
         }

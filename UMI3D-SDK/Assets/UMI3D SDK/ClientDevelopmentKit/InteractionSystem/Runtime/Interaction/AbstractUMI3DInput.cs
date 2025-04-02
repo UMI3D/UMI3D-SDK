@@ -27,12 +27,6 @@ namespace umi3d.cdk.interaction
     public abstract class AbstractUMI3DInput : MonoBehaviour
     {
         /// <summary>
-        /// Menu that will contain this input.
-        /// </summary>
-        [Tooltip("Menu that will contain this input")]
-        public AbstractMenu Menu;
-
-        /// <summary>
         /// Controller the input is related to.
         /// </summary>
         [SerializeField]
