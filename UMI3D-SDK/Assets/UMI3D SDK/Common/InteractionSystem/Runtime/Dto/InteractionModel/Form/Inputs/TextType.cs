@@ -26,6 +26,7 @@ namespace umi3d.common.interaction.form
         Password,
         Phone,
         URL,
-        Number
+        Number,
+        Pin
     }
 }
