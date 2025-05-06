@@ -18,6 +18,7 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text;
 
 namespace inetum.unityUtils
 {
@@ -52,9 +53,56 @@ namespace inetum.unityUtils
         /// <returns></returns>
         public static string ToString<A>(this IEnumerable<A> source)
         {
-            if (source == null) return ($"[NULL]");
-            if (source.Count() == 0) return ($"[]");
-            return ($"[{source.Select(v => v.ToString()).Aggregate((a, b) => $"{a};{b}")}]");
+            if (source == null) return "[NULL]";
+
+            StringBuilder sb = new();
+            sb.Append("[");
+            int index = -1;
+
+            IEnumerator sourceEnumerator = source.GetEnumerator();
+            bool MoveNext()
+            {
+                bool result = false;
+                bool hasException = false;
+                do
+                {
+                    try
+                    {
+                        result = sourceEnumerator.MoveNext();
+                        hasException = false;
+                        index++;
+                    }
+                    catch (Exception e)
+                    {
+                        index++;
+                        UnityEngine.Debug.LogError($"Error: Try to concat an IEnumerable<{typeof(A)}> into a string but element at index: {index} throw an exception.");
+                        UnityEngine.Debug.LogException(e);
+                        hasException = true;
+                        if (index == 0) { sb.Append("EXCEPT"); }
+                        else { sb.Append("; EXCEPT"); }
+                    }
+                } while (hasException);
+                return result;
+            }
+
+            while (MoveNext())
+            {
+                try
+                {
+                    A elt = (A)sourceEnumerator.Current;
+                    if (index == 0) { sb.Append(elt); }
+                    else { sb.Append($"; {elt}"); }
+                }
+                catch (Exception e)
+                {
+                    UnityEngine.Debug.Log($"Error: Try to concat an IEnumerable<{typeof(A)}> into a string but element at index: {index} throw an exception.");
+                    if (index == 0) { sb.Append("EXCEPT"); }
+                    else { sb.Append("; EXCEPT"); }
+                }
+            }
+
+            sb.Append("]");
+            return sb.ToString();
         }
 
         /// <summary>
