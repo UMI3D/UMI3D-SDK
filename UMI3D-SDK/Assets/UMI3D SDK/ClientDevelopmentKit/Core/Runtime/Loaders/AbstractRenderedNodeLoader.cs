@@ -239,7 +239,12 @@ namespace umi3d.cdk
                         return false;
                     }
                     break;
-
+                case UMI3DPropertyKeys.InteractableIndicatorDisplay:
+                    extension.indicatorDisplay = (bool)data.property.value;
+                    break;
+                case UMI3DPropertyKeys.InteractableIndicatorDelta:
+                    extension.indicatorDelta = (Vector3Dto)data.property.value;
+                    break;
                 default:
                     return false;
             }
@@ -432,6 +437,12 @@ namespace umi3d.cdk
                     {
                         return false;
                     }
+                    break;
+                case UMI3DPropertyKeys.InteractableIndicatorDisplay:
+                    extension.indicatorDisplay = UMI3DSerializer.Read<bool>(data.container);
+                    break;
+                case UMI3DPropertyKeys.InteractableIndicatorDelta:
+                    extension.indicatorDelta = UMI3DSerializer.Read<Vector3Dto>(data.container);
                     break;
                 default:
                     return false;
