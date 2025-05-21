@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using inetum.unityUtils;
 using inetum.unityUtils.lifeCycle;
 using inetum.unityUtils.observation;
 using System;
@@ -430,7 +431,7 @@ namespace umi3d.edk.collaboration.murmur
 
                 if (r is null)
                 {
-                    MurmurAPI.Server.Channel c = await serv.CreateChannel(room.name, rootRoom?.id);
+                    MurmurAPI.Server.Channel c = await serv.CreateChannel(room.name, room.root ? null : rootRoom?.id);
                     room.id = (c.data.id);
 
                     rootRoom?.children.Add(room);
