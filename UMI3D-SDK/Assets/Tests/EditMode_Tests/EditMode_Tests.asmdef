@@ -16,7 +16,9 @@
         "UMI3D.EDK.Collaboration",
         "UMI3D.Common.UserCapture.Editor",
         "TestUtils",
-        "inetum.unityUtils.editor"
+        "inetum.unityUtils.editor",
+        "inetum.unityUtils.autoFixture",
+        ""
     ],
     "includePlatforms": [
         "Editor"
@@ -26,7 +28,8 @@
     "overrideReferences": true,
     "precompiledReferences": [
         "nunit.framework.dll",
-        "Moq.dll"
+        "Moq.dll",
+        "AutoFixture.dll"
     ],
     "autoReferenced": false,
     "defineConstraints": [
