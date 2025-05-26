@@ -20,7 +20,7 @@ using System.Linq;
 using umi3d;
 using umi3d.common;
 
-namespace EditMode_Tests
+namespace EditMode_Tests.Serializer
 {
     public class UMI3DDictionarySerializer_Test
     {
