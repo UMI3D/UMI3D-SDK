@@ -158,25 +158,25 @@ namespace umi3d.edk
         private UMI3DAsyncProperty<VerticalWrapMode> _verticalOverflow;
 
         /// <summary>
-        /// Initialise component.
+        /// Initialize component.
         /// </summary>
         protected override void InitDefinition(ulong id)
         {
             base.InitDefinition(id);
-            Alignment = new UMI3DAsyncProperty<TextAnchor>(objectId, UMI3DPropertyKeys.Alignement, alignment, (a, u) => a.Convert());
+            Alignment = new UMI3DAsyncProperty<TextAnchor>(objectId, UMI3DPropertyKeys.Alignement, alignment, (a, u) => (int)a.Convert());
             AlignByGeometry = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.AlignByGeometry, alignByGeometry);
             TextColor = new UMI3DAsyncProperty<Color>(objectId, UMI3DPropertyKeys.TextColor, color, ToUMI3DSerializable.ToSerializableColor);
             TextFont = new UMI3DAsyncProperty<Font>(objectId, UMI3DPropertyKeys.TextFont, font, (a, u) => a.name);
             FontSize = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.FontSize, fontSize);
-            FontStyle = new UMI3DAsyncProperty<FontStyle>(objectId, UMI3DPropertyKeys.FontStyle, fontStyle, (a, u) => a.Convert());
-            HorizontalOverflow = new UMI3DAsyncProperty<HorizontalWrapMode>(objectId, UMI3DPropertyKeys.HorizontalOverflow, horizontalOverflow, (a, u) => a.Convert());
+            FontStyle = new UMI3DAsyncProperty<FontStyle>(objectId, UMI3DPropertyKeys.FontStyle, fontStyle, (a, u) => (int)a.Convert());
+            HorizontalOverflow = new UMI3DAsyncProperty<HorizontalWrapMode>(objectId, UMI3DPropertyKeys.HorizontalOverflow, horizontalOverflow, (a, u) => (int)a.Convert());
             LineSpacing = new UMI3DAsyncProperty<float>(objectId, UMI3DPropertyKeys.LineSpacing, lineSpacing, null, equality.FloatEquality);
             ResizeTextForBestFit = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.ResizeTextForBestFit, resizeTextForBestFit);
             ResizeTextMaxSize = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.ResizeTextMaxSize, resizeTextMaxSize);
             ResizeTextMinSize = new UMI3DAsyncProperty<int>(objectId, UMI3DPropertyKeys.ResizeTextMinSize, resizeTextMinSize);
             SupportRichText = new UMI3DAsyncProperty<bool>(objectId, UMI3DPropertyKeys.SupportRichText, supportRichText);
             Text = new UMI3DAsyncProperty<string>(objectId, UMI3DPropertyKeys.Text, text);
-            VerticalOverflow = new UMI3DAsyncProperty<VerticalWrapMode>(objectId, UMI3DPropertyKeys.VerticalOverflow, verticalOverflow, (a, u) => a.Convert());
+            VerticalOverflow = new UMI3DAsyncProperty<VerticalWrapMode>(objectId, UMI3DPropertyKeys.VerticalOverflow, verticalOverflow, (a, u) => (int)a.Convert());
         }
 
         /// <inheritdoc/>
@@ -203,7 +203,7 @@ namespace umi3d.edk
             textDto.resizeTextMinSize = ResizeTextMinSize.GetValue(user);
             textDto.supportRichText = SupportRichText.GetValue(user);
             textDto.text = Text.GetValue(user);
-            if (textDto.text != null && textDto.text.Length > 0 && textDto.text[textDto.text.Length - 1] == '\\') textDto.text += " ";
+            if (textDto.text != null && textDto.text.Length > 0 && textDto.text[^1] == '\\') textDto.text += " ";
             textDto.verticalOverflow = VerticalOverflow.GetValue(user).Convert();
         }
 
@@ -211,7 +211,7 @@ namespace umi3d.edk
         public override Bytable ToBytes(UMI3DUser user)
         {
             string text = Text.GetValue(user);
-            if (text != null && text.Length > 0 && text[text.Length - 1] == '\\') text += " ";
+            if (text != null && text.Length > 0 && text[^1] == '\\') text += " ";
 
             return base.ToBytes(user)
                 + UMI3DSerializer.Write((int)Alignment.GetValue(user).Convert())
