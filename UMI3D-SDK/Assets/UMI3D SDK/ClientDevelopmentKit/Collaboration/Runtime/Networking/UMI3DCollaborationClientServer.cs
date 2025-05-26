@@ -273,7 +273,7 @@ namespace umi3d.cdk.collaboration
             if (await environmentClient.Logout())
                 success?.Invoke();
             else
-                failled?.Invoke("Failled to Logout");
+                failled?.Invoke("Failed to Logout");
             environmentClient = null;
             Instance.OnLeavingEnvironment.Invoke();
         }
