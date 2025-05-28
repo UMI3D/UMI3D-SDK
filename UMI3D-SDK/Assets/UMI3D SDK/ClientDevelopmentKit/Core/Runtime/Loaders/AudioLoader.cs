@@ -14,10 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using umi3d.common;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -30,6 +28,7 @@ namespace umi3d.cdk
     public class AudioLoader : IResourcesLoader
     {
         public List<string> supportedFileExtentions;
+
         public List<string> ignoredFileExtentions;
 
         /// <summary>
@@ -53,17 +52,17 @@ namespace umi3d.cdk
             return ignoredFileExtentions.Contains(extension);
         }
 
-         /// <inheritdoc/>
+        /// <inheritdoc/>
         public virtual async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID
             if (!url.Contains("http")) url = "file://" + url;
 #endif
-            UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, GetType(extension));
-            SetCertificate(www, authorization);
+            using UnityWebRequest www = UnityWebRequestMultimedia.GetAudioClip(url, GetType(extension));
+            LoaderUtils.SetWebRequestCertificate(www, authorization);
+
             await UMI3DResourcesManager.DownloadObject(www);
             AudioClip audioClip = DownloadHandlerAudioClip.GetContent(www);
-            www.Dispose();
             return (audioClip);
         }
 
@@ -87,33 +86,10 @@ namespace umi3d.cdk
             }
         }
 
-
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual async Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
+        public virtual Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
         {
-            return o;
-        }
-
-        /// <summary>
-        /// Set Webrequest Certificate
-        /// </summary>
-        /// <param name="www">web request</param>
-        /// <param name="fileAuthorization">authorization</param>
-        public virtual void SetCertificate(UnityWebRequest www, string fileAuthorization)
-        {
-            if (fileAuthorization != null && fileAuthorization != "")
-            {
-                string authorization = fileAuthorization;
-
-                if (!UMI3DClientServer.Instance.AuthorizationInHeader && www.url.StartsWith("http"))
-                {
-                    www.url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(www.url, fileAuthorization);
-                }
-                else
-                {
-                    www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
-                }
-            }
+            return Task.FromResult(o);
         }
 
         /// <inheritdoc/>

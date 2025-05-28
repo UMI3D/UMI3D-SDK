@@ -49,6 +49,7 @@ namespace umi3d.cdk
         private const DebugScope scope = DebugScope.CDK | DebugScope.Core | DebugScope.Loading;
 
         public List<string> supportedFileExtensions;
+
         public List<string> ignoredFileExtensions;
 
         /// <summary>
@@ -82,11 +83,13 @@ namespace umi3d.cdk
         {
             // add bundle in the cache
 #if UNITY_ANDROID
-            UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
+            using UnityWebRequest www = url.Contains("http") ? UnityWebRequestAssetBundle.GetAssetBundle(url) : UnityWebRequestAssetBundle.GetAssetBundle("file://" + url);
 #else
-            UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
+            using UnityWebRequest www = UnityWebRequestAssetBundle.GetAssetBundle(url);
 #endif
-            SetCertificate(www, authorization);
+
+            LoaderUtils.SetWebRequestCertificate(www, authorization);
+
             await UMI3DResourcesManager.DownloadObject(www);
 
             if (www.downloadHandler is DownloadHandlerAssetBundle downloadHandlerAssetBundle)
@@ -102,9 +105,7 @@ namespace umi3d.cdk
 
                 if (bundle != null)
                 {
-                    www.Dispose();
-
-                    BundleCacheData data = new BundleCacheData();
+                    BundleCacheData data = new();
 
                     try
                     {
@@ -149,7 +150,6 @@ namespace umi3d.cdk
                 else if (downloadHandlerAssetBundle?.error != null)
                 {
                     string error = downloadHandlerAssetBundle?.error;
-                    www.Dispose();
 
                     isLoadingABundle = false;
 
@@ -159,7 +159,6 @@ namespace umi3d.cdk
                 else
                 {
                     UMI3DResourcesManager.Instance.DebugCache();
-                    www.Dispose();
 
                     isLoadingABundle = false;
 
@@ -167,72 +166,71 @@ namespace umi3d.cdk
                 }
             }
 
-            www.Dispose();
-
             throw new common.Umi3dException("The downloadHandler provided is not a DownloadHandlerAssetBundle");
         }
 
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual async Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
+        public virtual Task<object> ObjectFromCache(object o, string pathIfObjectInBundle)
         {
-            if (!string.IsNullOrEmpty(pathIfObjectInBundle) && o is BundleCacheData data)
+            if (string.IsNullOrEmpty(pathIfObjectInBundle))
+                return Task.FromResult((o));
+
+            if (o is not BundleCacheData data)
+                return Task.FromResult((o));
+
+            bool isAsset = data.assets.ContainsKey(pathIfObjectInBundle);
+            bool isScene = false;
+
+            if (!isAsset)
+                isScene = data.scenes.ContainsKey(pathIfObjectInBundle);
+
+            if (!isAsset && !isScene)
             {
-                bool isAsset = data.assets.ContainsKey(pathIfObjectInBundle);
-                bool isScene = false;
+                object result = null;
 
-                if (!isAsset)
-                    isScene = data.scenes.ContainsKey(pathIfObjectInBundle);
+                string matchingPath = data.assets.Keys.FirstOrDefault(path => path.Contains(pathIfObjectInBundle));
+                if (matchingPath != null)
+                    result = data.assets[matchingPath];
 
-                if (!isAsset && !isScene)
+                if (result != null)
                 {
-                    object result = null;
-
-                    string matchingPath = data.assets.Keys.FirstOrDefault(path => path.Contains(pathIfObjectInBundle));
-                    if (matchingPath != null)
-                        result = data.assets[matchingPath];
-
-                    if (result != null)
-                    {
-                        isAsset = true;
-                        pathIfObjectInBundle = matchingPath;
-                    }
-                    else
-                    {
-                        matchingPath = data.scenes.Keys.FirstOrDefault(path => path.Contains(pathIfObjectInBundle));
-
-                        if (matchingPath != null)
-                        {
-                            isScene = true;
-                            pathIfObjectInBundle = matchingPath;
-                        }
-                    }
-                }
-
-                if (isAsset)
-                {
-                    Object asset = data.assets[pathIfObjectInBundle];
-
-                    if (asset is Material mat)
-                    {
-                        return (new Material(mat));
-                    }
-                    else
-                    {
-                        return (asset);
-                    }
-                }
-                else if (isScene)
-                {
-                    return data.scenes[pathIfObjectInBundle];
+                    isAsset = true;
+                    pathIfObjectInBundle = matchingPath;
                 }
                 else
                 {
-                    UMI3DLogger.LogError($"Path {pathIfObjectInBundle} not found in bundle assets or scenes.\n Available assets were {data.assets.Keys.ToString<string>()}\nAvailable scenes were {data.scenes.Keys.ToString<string>()}", scope);
-                    return (o);
+                    matchingPath = data.scenes.Keys.FirstOrDefault(path => path.Contains(pathIfObjectInBundle));
+
+                    if (matchingPath != null)
+                    {
+                        isScene = true;
+                        pathIfObjectInBundle = matchingPath;
+                    }
                 }
             }
 
-            return (o);
+            if (isAsset)
+            {
+                Object asset = data.assets[pathIfObjectInBundle];
+
+                if (asset is Material mat)
+                {
+                    return Task.FromResult((object)(new Material(mat)));
+                }
+                else
+                {
+                    return Task.FromResult((object)(asset));
+                }
+            }
+            else if (isScene)
+            {
+                return Task.FromResult((object)data.scenes[pathIfObjectInBundle]);
+            }
+            else
+            {
+                UMI3DLogger.LogError($"Path {pathIfObjectInBundle} not found in bundle assets or scenes.\n Available assets were {data.assets.Keys.ToString<string>()}\nAvailable scenes were {data.scenes.Keys.ToString<string>()}", scope);
+                return Task.FromResult((o)); ;
+            }
         }
 
         /// <summary>
@@ -270,7 +268,7 @@ namespace umi3d.cdk
                 }
             }
 
-            GameObject sceneObj = new GameObject(scenePath);
+            GameObject sceneObj = new(scenePath);
 
             if (UMI3DResourcesManager.Exists)
                 sceneObj.transform.SetParent(UMI3DResourcesManager.Instance.transform, true);
@@ -293,27 +291,6 @@ namespace umi3d.cdk
             LightProbes.TetrahedralizeAsync();
 
             return (sceneObj, scene);
-        }
-
-        /// <summary>
-        /// set Certificate for webRequest.
-        /// </summary>
-        /// <param name="www">web request.</param>
-        /// <param name="fileAuthorization">Authorization</param>
-        public virtual void SetCertificate(UnityWebRequest www, string fileAuthorization)
-        {
-            if (fileAuthorization != null && fileAuthorization != "")
-            {
-                string authorization = fileAuthorization;
-                if (!UMI3DClientServer.Instance.AuthorizationInHeader && www.url.StartsWith("http"))
-                {
-                    www.url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(www.url, fileAuthorization);
-                }
-                else
-                {
-                    www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, authorization);
-                }
-            }
         }
 
         /// <inheritdoc/>
@@ -347,7 +324,10 @@ namespace umi3d.cdk
                     bundleCacheData.scenes.Clear();
                 }
 
-                Resources.UnloadUnusedAssets();
+                UnityEngine.AsyncOperation unloadOp = Resources.UnloadUnusedAssets();
+
+                while (!unloadOp.isDone)
+                    await UMI3DAsyncManager.Yield();
             }
             catch (System.Exception ex)
             {

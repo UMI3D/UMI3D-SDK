@@ -141,13 +141,13 @@ namespace umi3d.cdk
         }
 
         // Enable to access the Collaboration implementation. Should not be there and will be reworked.
-        public static async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader, Progress progress = null)
+        public static async Task<byte[]> GetFile(string url, Progress progress = null)
         {
             try
             {
                 if (Exists)
                 {
-                    byte[] bytes = await Instance._GetFile(url, useParameterInsteadOfHeader, progress);
+                    byte[] bytes = await Instance._GetFile(url, progress);
                     if (bytes != null)
                         return (bytes);
                     throw new Umi3dLoadingException($"No Data in response for {url}");
@@ -162,7 +162,7 @@ namespace umi3d.cdk
 
         }
 
-        protected virtual Task<byte[]> _GetFile(string url, bool useParameterInsteadOfHeader, Progress progress = null)
+        protected virtual Task<byte[]> _GetFile(string url, Progress progress = null)
         {
             throw new NotImplementedException();
         }

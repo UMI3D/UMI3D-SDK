@@ -103,17 +103,27 @@ namespace umi3d.common
         public Umi3dNetworkingException(UnityWebRequest webRequest, string message) : base(message)
         {
             this.errorCode = webRequest?.responseCode ?? 0;
-            this.errorMessage = webRequest?.error ?? "Web request is null"; 
+            this.errorMessage = webRequest?.error ?? "Web request is null";
             this.url = webRequest?.url ?? "";
+
             try
             {
                 this.errorbody = webRequest?.downloadHandler?.text;
+            }
+            catch (NotSupportedException e)
+            {
+                this.errorbody = e.Message;
             }
             catch (Exception e)
             {
                 UnityEngine.Debug.LogException(e);
                 this.errorbody = e.Message;
             }
+        }
+
+        public Umi3dNetworkingException(UnityWebRequest webRequest, bool isRedirection, string message) : this(webRequest, message)
+        {
+            this.isRedirection = isRedirection;
         }
 
         public Umi3dNetworkingException(long errorCode, string errorMessage, string url, string message) : base(message)
@@ -127,6 +137,7 @@ namespace umi3d.common
         public string errorMessage { get; protected set; }
         public string errorbody { get; protected set; }
         public string url { get; protected set; }
+        public bool isRedirection { get; set; } = false;
 
         public override string Message => $"Networking Error : Error code : {errorCode} | Error Message : {errorMessage} {errorbody} | Error URL : {url} | [ {base.Message} ]";
 

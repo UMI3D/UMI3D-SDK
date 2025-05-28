@@ -668,21 +668,6 @@ namespace umi3d.cdk
             return Regex.IsMatch(url, ".*\\?((.*=.*)(&?))+");
         }
 
-        /// <summary>
-        /// Returns an url with authorization set with parameters
-        /// </summary>
-        /// <param name="fileUrl"></param>
-        /// <returns></returns>
-        public string SetAuthorizationWithParameter(string fileUrl, string authorization)
-        {
-            if (HasUrlGotParameters(fileUrl))
-                fileUrl += "&" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
-            else
-                fileUrl += "?" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + authorization;
-
-            return fileUrl;
-        }
-
         public static async Task<object> LoadFile(ulong id, FileDto file, IResourcesLoader loader)
         {
             return await Instance._LoadFile(id, file, loader);
@@ -701,8 +686,6 @@ namespace umi3d.cdk
 
             if (objectData.state == ObjectData.Estate.Loaded)
             {
-                //callback.Invoke(objectData.value);
-                // replace
                 return await loader.ObjectFromCache(objectData.value, PathIfInBundle);
 
             }
@@ -752,7 +735,7 @@ namespace umi3d.cdk
             DateTime date = DateTime.UtcNow;
             try
             {
-                return await _UrlToObject1(loader, path, extension, objectData.authorization, bundlePath);
+                return await _UrlToObject(loader, path, extension, objectData.authorization, bundlePath);
             }
             catch (Exception e)
             {
@@ -774,24 +757,33 @@ namespace umi3d.cdk
             return await UrlToObjectWithPolicy(path, extension, objectData, bundlePath, loader, ShouldTryAgain, tryCount + 1);
         }
 
-        protected virtual async Task<object> _UrlToObject1(IResourcesLoader loader, string url, string extension, string authorization, string pathIfObjectInBundle, int count = 0)
+        protected virtual async Task<object> _UrlToObject(IResourcesLoader loader, string url, string extension, string authorization, string pathIfObjectInBundle, int count = 0)
         {
+            int delayMs = 10000;
+
             try
             {
                 return await loader.UrlToObject(url, extension, authorization, pathIfObjectInBundle);
             }
+            catch (Umi3dNetworkingException networkingException) when (networkingException.isRedirection)
+            {
+                url = networkingException.url;
+                authorization = string.Empty;
+                delayMs = 0;
+
+                if (count >= 2 || networkingException.errorCode == 404)
+                    throw;
+            }
             catch (Exception e)
             {
-                if (e is Umi3dBundleException be && be.bundleAlreadyLoaded)
-                    throw;
-
                 Debug.LogException(e);
-                if (count >= 2 || (e is Umi3dNetworkingException n && n.errorCode == 404))
+                if (count >= 2)
                     throw;
             }
 
-            await UMI3DAsyncManager.Delay(10000);
-            return await _UrlToObject1(loader, url, extension, authorization, pathIfObjectInBundle, count + 1);
+            await UMI3DAsyncManager.Delay(delayMs);
+
+            return await _UrlToObject(loader, url, extension, authorization, pathIfObjectInBundle, count + 1);
         }
 
         public async Task<object> _LoadFile(ulong id, FileDto file, IResourcesLoader loader)
@@ -870,7 +862,8 @@ namespace umi3d.cdk
 
             if (objectData != null && objectData.downloadedPath != null)
                 return (File.ReadAllBytes(objectData.downloadedPath));
-            return await UMI3DClientServer.GetFile(url, false);
+
+            return await UMI3DClientServer.GetFile(url, null);
         }
 
         #endregion
@@ -1179,7 +1172,7 @@ namespace umi3d.cdk
             string fileName = System.IO.Path.GetFileName(filePath);
             progress?.SetStatus($"{progressState} \n{fileName}");
 
-            var bytes = await UMI3DClientServer.GetFile(url, !UMI3DClientServer.Instance.AuthorizationInHeader, progress);
+            var bytes = await UMI3DClientServer.GetFile(url, progress);
 
             UMI3DLogger.Log($"<color=green>{directoryPath} {filePath}</color>", scope);
 
@@ -1220,28 +1213,19 @@ namespace umi3d.cdk
 
         public static async Task DownloadObject(UnityWebRequest www, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            await Instance._DownloadObject(www, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
+            await Instance._DownloadObject(www, www.url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
         }
 
-        private async Task _DownloadObject(UnityWebRequest www, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
+        private async Task _DownloadObject(UnityWebRequest www, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
         {
-            www.SendWebRequest();
+            UnityWebRequestAsyncOperation op = www.SendWebRequest();
 
-            while (!www.isDone)
+            while (!op.isDone)
                 await UMI3DAsyncManager.Yield();
 
-#if UNITY_2020_1_OR_NEWER
-            if (www.result == UnityWebRequest.Result.ConnectionError || www.result == UnityWebRequest.Result.ProtocolError || www.result == UnityWebRequest.Result.DataProcessingError)
-#else
-            if (www.isNetworkError || www.isHttpError)
-#endif
+            if (www.result != UnityWebRequest.Result.Success)
             {
-                //DateTime date = DateTime.UtcNow;
-                //if (!UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, () => StartCoroutine(_DownloadObject(www, callback, failCallback,ShouldTryAgain,tryCount + 1)), tryCount, date, ShouldTryAgain)))
-                //{
-
-                //}
-                throw new Umi3dNetworkingException(www, $"Failed to load : " + www.url);
+                throw new Umi3dNetworkingException(www, www.url != url, $"Failed to load : " + www.url);
             }
         }
 

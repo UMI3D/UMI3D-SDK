@@ -14,6 +14,8 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using System;
+
 namespace umi3d.common
 {
     /// <summary>
@@ -40,6 +42,7 @@ namespace umi3d.common
         /// <summary>
         /// Should the authorization token should be in the url or in the header
         /// </summary>
+        [Obsolete]
         public bool authorizationInHeader { get; set; }
 
         /// <summary>

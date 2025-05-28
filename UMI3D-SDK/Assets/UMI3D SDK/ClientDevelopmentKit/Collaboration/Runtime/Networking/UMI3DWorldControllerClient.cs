@@ -144,7 +144,7 @@ namespace umi3d.cdk.collaboration
                                 isCancel = isCancel,
                             };
 
-                            if(!isCancel)
+                            if (!isCancel)
                                 return await Connect(_answer);
 
                             await EnvironmentHttpClient.Connect(_answer, media.url);
@@ -274,9 +274,9 @@ namespace umi3d.cdk.collaboration
             Logout();
         }
 
-        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader, Progress progress = null)
+        public async Task<byte[]> GetFile(string url, Progress progress = null)
         {
-            return await httpClient.SendGetPrivate(url, useParameterInsteadOfHeader, null, progress);
+            return await httpClient.SendGetPrivate(url, null, progress);
         }
     }
 }

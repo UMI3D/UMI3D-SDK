@@ -57,13 +57,13 @@ namespace umi3d.cdk
         /// <param name="callback"></param>
         /// <param name="pathIfObjectInBundle"></param>
         /// <see cref="IResourcesLoader.ObjectFromCache"/>
-        public virtual async Task<object> ObjectFromCache(object objectLoaded, string pathIfObjectInBundle)
+        public virtual Task<object> ObjectFromCache(object objectLoaded, string pathIfObjectInBundle)
         {
-            return objectLoaded;
+            return Task.FromResult(objectLoaded);
         }
 
         /// <summary>
-        /// Spread recursively transform layer to all is childrens.
+        /// Spread recursively transform layer to all is children.
         /// </summary>
         /// <param name="transform">Transform</param>
         public static void ApplyParentLayerInChildren(Transform transform)
@@ -95,7 +95,7 @@ namespace umi3d.cdk
         }
 
         /// <summary>
-        /// Show model recursivly
+        /// Show model recursively
         /// </summary>
         /// <param name="go"></param>
         public static void ShowModelRecursively(GameObject go)

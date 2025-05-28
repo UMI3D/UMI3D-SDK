@@ -31,7 +31,6 @@ namespace umi3d.cdk
         Transform GetSubModelNow(string fileUrl, string libraryKey, string subModelName, List<int> indexes, List<string> names);
         Transform GetSubModelRoot(string fileUrl, string librayKey);
         bool IsSubModelsSetFor(string fileUrl, string libraryKey);
-        string SetAuthorizationWithParameter(string fileUrl, string authorization);
         List<string> _LibrariesToDownload(List<AssetLibraryDto> assetLibraries);
         Task<object> _LoadFile(ulong id, FileDto file, IResourcesLoader loader);
     }
