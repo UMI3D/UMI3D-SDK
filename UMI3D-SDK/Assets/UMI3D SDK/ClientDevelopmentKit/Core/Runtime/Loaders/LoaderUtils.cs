@@ -1,4 +1,4 @@
-﻿using umi3d.common;
+using umi3d.common;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk
