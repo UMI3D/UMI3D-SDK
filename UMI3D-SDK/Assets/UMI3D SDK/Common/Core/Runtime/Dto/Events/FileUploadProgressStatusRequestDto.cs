@@ -13,52 +13,42 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-
-using System.Collections.Generic;
-
 namespace umi3d.common
 {
-    public class RequestHttpUploadToUrlDto : AbstractOperationDto
+    public class FileUploadProgressStatusRequestDto : AbstractBrowserRequestDto
     {
-        /// <summary>
-        /// url to upload the files to
-        /// </summary>
-        public string url { get; set; }
+
+        public ulong requestId { get; set; }
 
         /// <summary>
-        /// Headers
+        /// Entities to load id.
         /// </summary>
-        public List<HeaderContent> headers { get; set; }
+        public float progress { get; set; }
 
         /// <summary>
-        /// extensions filters
+        /// Name of the file on the user os.
         /// </summary>
-        public List<string> extensions { get; set; }
+        public string fileName { get; set; }
 
         /// <summary>
-        /// Allow to upload multiple files
+        /// Human readable status of the upload
         /// </summary>
-        public bool allowMultipleFile { get; set; }
+        public string status { get; set; }
 
         /// <summary>
-        /// Upload Request Id 
+        /// Size of the file uploaded in byte
         /// </summary>
-        public ulong id { get; set; } = 0;
+        public int fileSize { get; set; }
+
+        /// <summary>
+        /// State if the upload is ether failed or succeeded.
+        /// </summary>
+        /// 
+        public bool completed { get; set; }
+        /// <summary>
+        /// State, when completed is true, if the upload failed or succeeded.
+        /// </summary>
+        public bool succeeded { get; set; }
 
     }
-
-    public class HeaderContent
-    {
-        /// <summary>
-        /// header name
-        /// </summary>
-        public string header { get; set; }
-
-        /// <summary>
-        /// header value
-        /// </summary>
-        public string content { get; set; }
-
-    }
-
 }

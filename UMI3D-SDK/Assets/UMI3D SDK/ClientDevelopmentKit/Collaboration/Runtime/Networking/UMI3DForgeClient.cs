@@ -56,7 +56,12 @@ namespace umi3d.cdk.collaboration
 
         UMI3DVersion.VersionCompatibility version = new("2.9.240805", "*");
         private bool? IsCompatibleWithVersion = null;
-        
+
+        /// <summary>
+        /// Event called when a new file is uploaded.
+        /// </summary>
+        public static event Action<Progress, string> OnFileUploadProgress;
+
         private UMI3DUser GetUserByNetWorkId(uint nid)
         {
             if (UMI3DCollaborationEnvironmentLoader.Exists && UMI3DCollaborationEnvironmentLoader.Instance.UserList != null)
@@ -531,7 +536,7 @@ namespace umi3d.cdk.collaboration
                     UploadFileRequest(token, fileId);
                     break;
                 case RequestHttpUploadToUrlDto uploadFileRequest:
-                    UploadFileRequest(uploadFileRequest.url, uploadFileRequest.extensions, uploadFileRequest.allowMultipleFile, uploadFileRequest.headers);
+                    UploadFileRequest(operation.environmentId, uploadFileRequest.id, uploadFileRequest.url, uploadFileRequest.extensions, uploadFileRequest.allowMultipleFile, uploadFileRequest.headers);
                     break;
                 case RedirectionDto redirection:
                     MainThreadManager.Run(() =>
@@ -704,7 +709,8 @@ namespace umi3d.cdk.collaboration
                     List<string> extensions = UMI3DSerializer.ReadList<string>(container);
                     bool allowMultipleFile = UMI3DSerializer.Read<bool>(container);
                     List<HeaderContent> headers = UMI3DSerializer.ReadList<HeaderContent>(container);
-                    UploadFileRequest(url, extensions, allowMultipleFile, headers);
+                    ulong requestId = UMI3DSerializer.Read<ulong>(container);
+                    UploadFileRequest(container.environmentId,requestId, url, extensions, allowMultipleFile, headers);
 
                     break;
 
@@ -827,7 +833,12 @@ namespace umi3d.cdk.collaboration
             });
         }
 
-        async void UploadFileRequest(string url, List<string> extensions, bool allowMultipleFile, List<HeaderContent> headers)
+        static void NotifyFileProgress(Progress progress, string fileName)
+        {
+            OnFileUploadProgress?.Invoke(progress, fileName);
+        }
+
+        async void UploadFileRequest(ulong environmentId, ulong requestId, string url, List<string> extensions, bool allowMultipleFile, List<HeaderContent> headers)
         {
 #if UNITY_STANDALONE_WIN
             try
@@ -836,9 +847,40 @@ namespace umi3d.cdk.collaboration
                 if (result == null)
                     return;
 
+
+
                 var tasks = result.Select(p => (FileUploader.TryGetFileToUpload(p, out byte[] bytesToUpload, out string fileName), bytesToUpload, fileName))
                     .Where(c => c.Item1)
-                    .Select(c => SendPostFileToURL(url, c.fileName, c.bytesToUpload, headers));
+                    .Select(async c =>
+                    {
+                        Progress progress = new(1f, "Init File Upload");
+                        NotifyFileProgress(progress, c.fileName);
+
+                        void SendRequest(bool completed, bool succeeded)
+                        {
+                            FileUploadProgressStatusRequestDto dto = new()
+                            {
+                                progress = progress.progress,
+                                fileName = c.fileName,
+                                status = progress.currentState,
+                                fileSize = c.bytesToUpload.Length,
+
+                                completed = completed,
+                                succeeded = succeeded,
+
+                                environmentId = environmentId,
+                                requestId = requestId
+                            };
+
+                            UMI3DClientServer.SendRequest(dto, true);
+                        }
+
+                        progress.OnCompleteUpdated += (f) => SendRequest(false, false);
+
+                        await SendPostFileToURL(url, c.fileName, c.bytesToUpload, headers, progress);
+
+                        SendRequest(true, progress.failed < 0.01f);
+                    });
 
                 if (allowMultipleFile)
                     await Task.WhenAll(tasks);
@@ -852,8 +894,6 @@ namespace umi3d.cdk.collaboration
             }
 #endif
         }
-
-
 
         private async void SendGetLocalInfo(string key)
         {
@@ -882,16 +922,17 @@ namespace umi3d.cdk.collaboration
             }
         }
 
-        private async Task SendPostFileToURL(string url, string fileName, byte[] bytesToUpload, List<HeaderContent> headers)
+        private async Task SendPostFileToURL(string url, string fileName, byte[] bytesToUpload, List<HeaderContent> headers, Progress progress = null)
         {
             try
             {
                 var headers2 = headers?.Select(k => (k.header, k.content)).ToList() ?? new();
 
-                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload, headers2);
+                await environmentClient.HttpClient.SendPostFileToURL(url, fileName, bytesToUpload, headers2, progress:progress);
             }
             catch (Exception e)
             {
+                progress?.SetAsFailed();
                 UMI3DLogger.Log("error on upload file : " + fileName, scope);
                 UMI3DLogger.LogException(e, scope);
             }

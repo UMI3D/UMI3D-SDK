@@ -675,7 +675,7 @@ namespace umi3d.common.collaboration
         /// <param name="bytes"></param>
         /// <param name="shouldTryAgain"></param>
         /// <returns></returns>
-        public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, List<(string, string)> headers, Func<RequestFailedArgument, bool> shouldTryAgain = null)
+        public async Task SendPostFileToURL(string url, string fileName, byte[] bytes, List<(string, string)> headers, Func<RequestFailedArgument, bool> shouldTryAgain = null, Progress progress = null)
         {
             List<IMultipartFormSection> formData = new List<IMultipartFormSection>();
             var mime = MimeTypeMapper.GetMimeType(fileName);
@@ -688,7 +688,7 @@ namespace umi3d.common.collaboration
             if (!headers.Any(c => c.Item1 == UMI3DNetworkingKeys.contentHeader))
                 headers.Add((UMI3DNetworkingKeys.contentHeader, fileName));
 
-            UnityWebRequest uwr = await _PostFormRequest(this, null, url, boundary, formData, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false, headers);
+            UnityWebRequest uwr = await _PostFormRequest(this, null, url, boundary, formData, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false, headers, progress: progress);
             uwr.Dispose();
         }
 
@@ -895,8 +895,12 @@ namespace umi3d.common.collaboration
             throw new Umi3dNetworkingException(www, " Failed to post\n" + www.downloadHandler.text);
         }
 
-        protected static async Task<UnityWebRequest> _PostFormRequest(AbstractHttpClient<T> instance, string HeaderToken, string url, byte[] boundary, List<IMultipartFormSection> multipartFormSections, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
+        protected static async Task<UnityWebRequest> _PostFormRequest(AbstractHttpClient<T> instance, string HeaderToken, string url, byte[] boundary, List<IMultipartFormSection> multipartFormSections, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0, Progress progress = null)
         {
+            progress?.SetTotal(1f);
+            progress?.SetCompleted(0f);
+            progress?.SetStatus("Uploading File");
+
             UnityWebRequest www = CreatePostRequest(url, multipartFormSections, boundary, true);
             if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
@@ -910,7 +914,10 @@ namespace umi3d.common.collaboration
 
             UnityWebRequestAsyncOperation operation = www.SendWebRequest();
             while (!operation.isDone)
+            {
+                progress?.SetCompleted(operation.progress);
                 await UMI3DAsyncManager.Yield();
+            }
 
 #if UNITY_2020_1_OR_NEWER
             if (www.result > UnityWebRequest.Result.Success)
@@ -923,6 +930,7 @@ namespace umi3d.common.collaboration
                     ?? throw new Umi3dNetworkingException(www, "Failed to post "));
 
             }
+            progress?.SetAsCompleted();
             return www;
         }
 

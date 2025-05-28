@@ -13,20 +13,14 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
-using System.Collections.Generic;
-
 namespace umi3d.common
 {
-    /// <summary>
-    /// DTO to describe a group of entities to load on a browser.
-    /// </summary>
-    /// An EntityRequest is sent when a user gets the whole enviornment while joining.
-    public class EntityRequestDto : UMI3DDto
+    public class UserActionRequestDto : AbstractBrowserRequestDto
     {
-        public ulong environmentId { get; set; }
+
         /// <summary>
         /// Entities to load id.
         /// </summary>
-        public List<ulong> entitiesId { get; set; }
+        public ulong actionId { get; set; }
     }
 }
