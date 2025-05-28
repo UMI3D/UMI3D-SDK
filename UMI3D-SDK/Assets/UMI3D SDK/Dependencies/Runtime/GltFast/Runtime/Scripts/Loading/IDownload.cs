@@ -19,14 +19,12 @@ using System.Threading.Tasks;
 using UnityEngine;
 using UnityEngine.Networking;
 
-namespace GLTFast.Loading
-{
+namespace GLTFast.Loading {
 
     /// <summary>
     /// Provides a mechanism for loading external resources from a URI 
     /// </summary>
-    public interface IDownloadProvider
-    {
+    public interface IDownloadProvider {
         /// <summary>
         /// Sends a URI request
         /// </summary>
@@ -40,35 +38,34 @@ namespace GLTFast.Loading
         /// <param name="url">URI to request</param>
         /// <param name="nonReadable">If true, resulting texture is not CPU readable (uses less memory)</param>
         /// <returns>Object representing the request</returns>
-        Task<ITextureDownload> RequestTexture(Uri url, bool nonReadable);
+        Task<ITextureDownload> RequestTexture(Uri url,bool nonReadable);
     }
 
     /// <summary>
     /// Provides a mechanism to inspect the progress and result of a download
     /// or file access request
     /// </summary>
-    public interface IDownload : IEnumerator
-    {
+    public interface IDownload : IEnumerator {
         /// <summary>
         /// True, if the request was successful
         /// </summary>
-        bool success { get; }
-
+        bool success {get;}
+        
         /// <summary>
         /// Error message in case the request failed. Null otherwise.
         /// </summary>
-        string error { get; }
-
+        string error {get;}
+        
         /// <summary>
         /// Resulting data
         /// </summary>
         byte[] data { get; }
-
+        
         /// <summary>
         /// Resulting data as text
         /// </summary>
         string text { get; }
-
+        
         /// <summary>
         /// True if the result is a glTF-binary, false if it is not.
         /// No value if determining the glTF type was not possible or failed. 
@@ -82,8 +79,7 @@ namespace GLTFast.Loading
     /// Provides a mechanism to inspect the progress and result of a texture download
     /// or texture file access request
     /// </summary>
-    public interface ITextureDownload : IDownload
-    {
+    public interface ITextureDownload : IDownload {
         /// <summary>
         /// Resulting texture
         /// </summary>

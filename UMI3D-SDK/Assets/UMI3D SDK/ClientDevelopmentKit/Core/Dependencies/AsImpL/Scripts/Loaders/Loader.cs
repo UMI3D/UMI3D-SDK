@@ -68,12 +68,10 @@ namespace AsImpL
         /// </summary>
         public bool ConvertVertAxis
         {
-            get
-            {
+            get {
                 return buildOptions != null ? buildOptions.zUp : false;
             }
-            set
-            {
+            set {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -88,12 +86,10 @@ namespace AsImpL
         /// </summary>
         public float Scaling
         {
-            get
-            {
+            get {
                 return buildOptions != null ? buildOptions.modelScaling : 1f;
             }
-            set
-            {
+            set {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
