@@ -21,8 +21,9 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading.Tasks;
-using UnityEngine;
 using umi3d.common;
+using UnityEngine;
+using UnityEngine.Networking;
 
 namespace umi3d.cdk
 {
@@ -43,7 +44,6 @@ namespace umi3d.cdk
             ignoredFileExtentions = new List<string>() { ".bin" };
         }
 
-
         ///<inheritdoc/>
         public override async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
@@ -63,97 +63,74 @@ namespace umi3d.cdk
             IDeferAgent deferAgent = new MaxTimePerFrameDeferAgent(maxTimePerFrame); // new UninterruptedDeferAgent();
             IMaterialGenerator materialGenerator = new GltfastCustomMaterialGenerator();
 
-            if (authorization != null && authorization != "")
-            {
-                var headers = new HttpHeader[] { };
+            var headers = new HttpHeader[] { };
 
-                if (!UMI3DClientServer.Instance.AuthorizationInHeader && url.StartsWith("http"))
+            if (!string.IsNullOrEmpty(authorization))
+            {
+                var authorizationHeader = new HttpHeader
                 {
-                    url = UMI3DResourcesManager.Instance.SetAuthorizationWithParameter(url, authorization);
+                    key = UMI3DNetworkingKeys.Authorization,
+                    value = authorization
+                };
+                headers = new HttpHeader[] { authorizationHeader };
+            }
+
+            var customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
+
+            MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(async () =>
+            {
+                bool success = await gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator);
+
+                if (success)
+                {
+                    try
+                    {
+                        HideModelRecursively(createdObj);
+
+                        Transform newModel = gltfComp.transform;
+                        newModel.name = newModel.GetChild(0).name;
+                        newModel.SetParent(UMI3DResourcesManager.Instance.transform);
+                        newModel.localPosition = Vector3.zero;
+                        newModel.localEulerAngles += GetRotationOffset();
+                        newModel.gameObject.SetActive(true);
+                        callback.Invoke(newModel.gameObject);
+                    }
+                    catch (Exception error)
+                    {
+                        failCallback(new Umi3dNetworkingException(0, error.Message, url, "Importing failed for "));
+                    }
                 }
                 else
                 {
-                    var authorizationHeader = new HttpHeader
+                    using UnityWebRequest req = UnityWebRequest.Get(url);
+                    LoaderUtils.SetWebRequestCertificate(req, authorization);
+
+                    UnityWebRequestAsyncOperation op = req.SendWebRequest();
+
+                    while (!op.isDone)
                     {
-                        key = common.UMI3DNetworkingKeys.Authorization,
-                        value = authorization
-                    };
-                    headers = new HttpHeader[] { authorizationHeader };
+                        await Task.Yield();
+                    }
+
+                    if (req.result != UnityWebRequest.Result.Success && url != req.url)
+                    {
+
+                        failCallback(new Umi3dNetworkingException(req, true, req.downloadHandler?.text));
+                    }
+                    else
+                    {
+                        failCallback(new common.Umi3dException($"Importing failed for {url} \nLoad failed"));
+                    }
                 }
-
-                var customHeaderDownloadProvider = new CustomHeaderDownloadProvider(headers);
-
-                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(async () =>
-                {
-                    bool success = await gltfComp.Load(url, customHeaderDownloadProvider, deferAgent, materialGenerator);
-
-                    if (success)
-                    {
-                        //gltfComp.importer.InstantiateMainScene(createdObj.transform);
-                        try
-                        {
-                            HideModelRecursively(createdObj);
-
-                            Transform newModel = gltfComp.transform;//.GetChild(0);
-                            newModel.name = newModel.GetChild(0).name;
-                            newModel.SetParent(UMI3DResourcesManager.Instance.transform);
-                            newModel.localPosition = Vector3.zero;
-                            newModel.localEulerAngles += GetRotationOffset();
-                            newModel.gameObject.SetActive(true);
-                            callback.Invoke(newModel.gameObject);
-                        }
-
-
-                        catch (Exception error)
-                        {
-                            failCallback(new Umi3dNetworkingException(0, error.Message, url, "Importing failed for "));
-                        }
-                    }
-                    else
-                    {
-                        failCallback(new Umi3dException($"Importing failed for { url } \nLoad failed"));
-                    }
-                    //GameObject.Destroy(gltfComp.gameObject, 1);
-                }));
-            }
-            else
-            {
-                MainThreadDispatcher.UnityMainThreadDispatcher.Instance().StartCoroutine(WaitBaseMaterial(async () =>
-                {
-                    bool success = await gltfComp.Load(url, null, deferAgent, materialGenerator);
-
-                    if (success)
-                    {
-                        //gltfComp.importer.InstantiateMainScene(createdObj.transform);
-                        try
-                        {
-                            HideModelRecursively(createdObj);
-
-                            Transform newModel = gltfComp.transform;//.GetChild(0);
-                            newModel.name = newModel.GetChild(0).name;
-                            newModel.SetParent(UMI3DResourcesManager.Instance.transform);
-                            newModel.localPosition = Vector3.zero;
-                            newModel.localEulerAngles += GetRotationOffset();
-                            newModel.gameObject.SetActive(true);
-                            callback.Invoke(newModel.gameObject);
-                        }
-                        catch (Exception error)
-                        {
-                            failCallback(new Umi3dNetworkingException(0, error.Message, url, "Importing failed for "));
-                        }
-                    }
-                    else
-                    {
-                        failCallback(new Umi3dException($"Importing failed for { url } \nLoad failed"));
-                    }
-                    //GameObject.Destroy(gltfComp.gameObject, 1);
-                }));
-            }
+            }));
 
             while (!finished)
                 await UMI3DAsyncManager.Yield();
+
             if (e != null)
+            {
                 throw e;
+            }
 
             return result;
 
@@ -169,6 +146,5 @@ namespace umi3d.cdk
             yield return new WaitWhile(() => UMI3DEnvironmentLoader.Instance.baseMaterial == null);
             callback.Invoke();
         }
-
     }
 }

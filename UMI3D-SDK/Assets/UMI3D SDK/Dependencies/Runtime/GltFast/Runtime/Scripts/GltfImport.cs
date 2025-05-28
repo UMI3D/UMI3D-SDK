@@ -821,7 +821,19 @@ namespace GLTFast
             }
             else
             {
-                logger?.Error(LogCode.Download, download.error, url.ToString());
+                if (download.request != null && download.request.url != url.AbsoluteUri) // Unity doesn't handle well redirection
+                {
+                    IDownloadProvider current = this.downloadProvider;
+                    this.downloadProvider = new DefaultDownloadProvider();
+                    bool ok = await LoadFromUri(new Uri(download.request.url, UriKind.RelativeOrAbsolute));
+                    this.downloadProvider = current;
+
+                    return ok;
+                }
+                else
+                {
+                    logger?.Error(LogCode.Download, download.error, url.ToString());
+                }
             }
 
             DisposeVolatileData();

@@ -463,7 +463,7 @@ namespace umi3d.common.collaboration
         {
             UMI3DLogger.Log($"Send GetMedia", scope | DebugScope.Connection);
 
-            using (UnityWebRequest uwr = await _GetRequest(null, null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e)))
+            using (UnityWebRequest uwr = await _GetRequest(null, null, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), false))
             {
                 UMI3DLogger.Log($"Received GetMedia", scope | DebugScope.Connection);
                 if (uwr?.downloadHandler.data == null) return null;
@@ -535,19 +535,16 @@ namespace umi3d.common.collaboration
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <param name="useParameterInsteadOfHeader">If true, sets authorization via parameters instead of header</param>
-        public async Task<byte[]> SendGetPrivate(string url, bool useParameterInsteadOfHeader, Func<RequestFailedArgument, bool> shouldTryAgain = null, Progress progress = null)
+        public async Task<byte[]> SendGetPrivate(string url, Func<RequestFailedArgument, bool> shouldTryAgain = null, Progress progress = null)
         {
             UMI3DLogger.Log($"Send GetPrivate {url}", scope | DebugScope.Connection);
 
-            if (useParameterInsteadOfHeader)
-            {
-                url = SendGetPrivate(url);
-            }
             int i = 0;
+
             while (i < 10)
             {
                 i++;
-                using (UnityWebRequest uwr = await _GetRequest(this, _HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), !useParameterInsteadOfHeader, null, 0, progress))
+                using (UnityWebRequest uwr = await _GetRequest(this, _HeaderToken, url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e), true, null, 0, progress))
                 {
                     UMI3DLogger.Log($"Received GetPrivate {url}\n{uwr?.responseCode}\n{uwr?.url}", scope | DebugScope.Connection);
                     if (uwr?.responseCode != 204)
@@ -556,12 +553,8 @@ namespace umi3d.common.collaboration
                     await UMI3DAsyncManager.Delay(1000);
                 }
             }
-            return null;
-        }
 
-        public virtual string SendGetPrivate(string url)
-        {
-            return url;
+            return null;
         }
 
         #endregion
@@ -772,16 +765,16 @@ namespace umi3d.common.collaboration
 
         #region utils
         /// <summary>
-        /// Ienumerator to send GET request.
+        /// IEnumerator to send GET request.
         /// </summary>
         /// <param name="url">Url to send the request at.</param>
         /// <param name="callback">Action to be call when the request succeed.</param>
         /// <param name="onError">Action to be call when the request fail.</param>
         /// <returns></returns>
-        protected static async Task<UnityWebRequest> _GetRequest(AbstractHttpClient<T> instance, string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0, Progress progress = null)
+        protected static async Task<UnityWebRequest> _GetRequest(AbstractHttpClient<T> instance, string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool useCredential, List<(string, string)> headers = null, int tryCount = 0, Progress progress = null)
         {
             var www = UnityWebRequest.Get(url);
-            if (UseCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
+            if (useCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
             {
                 foreach ((string, string) item in headers)
@@ -836,7 +829,7 @@ namespace umi3d.common.collaboration
 #endif
             {
                 return
-                    await (instance?.Sub__GetRequest(www, date, HeaderToken, url, ShouldTryAgain, UseCredential, headers, tryCount)
+                    await (instance?.Sub__GetRequest(www, date, HeaderToken, url, ShouldTryAgain, useCredential, headers, tryCount)
                     ?? throw new Umi3dNetworkingException(www, "Failed to get "));
 
             }

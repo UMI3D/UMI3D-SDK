@@ -587,10 +587,10 @@ namespace umi3d.edk.collaboration
         }
 
         /// <inheritdoc/>
-        public async Task<byte[]> GetFile(string url, bool useParameterInsteadOfHeader)
+        public async Task<byte[]> GetFile(string url)
         {
             //UMI3DLogger.Log($"GetFile {url}", scope);
-            return await HttpClient.SendGetPrivate(url, useParameterInsteadOfHeader);
+            return await HttpClient.SendGetPrivate(url);
         }
 
         /// <inheritdoc/>

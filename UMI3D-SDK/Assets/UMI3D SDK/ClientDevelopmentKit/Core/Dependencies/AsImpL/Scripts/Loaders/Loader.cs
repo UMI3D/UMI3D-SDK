@@ -68,10 +68,12 @@ namespace AsImpL
         /// </summary>
         public bool ConvertVertAxis
         {
-            get {
+            get
+            {
                 return buildOptions != null ? buildOptions.zUp : false;
             }
-            set {
+            set
+            {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -86,10 +88,12 @@ namespace AsImpL
         /// </summary>
         public float Scaling
         {
-            get {
+            get
+            {
                 return buildOptions != null ? buildOptions.modelScaling : 1f;
             }
-            set {
+            set
+            {
                 if (buildOptions == null)
                 {
                     buildOptions = new ImportOptions();
@@ -246,7 +250,6 @@ namespace AsImpL
             totalProgress.singleProgress.Remove(objLoadingProgress);
             OnLoaded(loadedModels[absolutePath], absolutePath);
         }
-
 
         /// <summary>
         /// Parse the model to get a list of the paths of all used textures
@@ -609,6 +612,10 @@ namespace AsImpL
             return tex;
         }
 
+        protected void NotifyModelError(string error)
+        {
+            ModelError?.Invoke(error);
+        }
 
         protected struct BuildStats
         {
@@ -616,7 +623,6 @@ namespace AsImpL
             public float materialsTime;
             public float objectsTime;
         }
-
 
         protected struct Stats
         {

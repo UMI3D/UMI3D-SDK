@@ -14,18 +14,11 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
-using Newtonsoft.Json;
-using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
-using System.Linq;
 using System.Threading.Tasks;
 using umi3d.common;
 using umi3d.common.collaboration;
-using umi3d.common.collaboration.dto.networking;
-using umi3d.common.collaboration.dto.signaling;
-using umi3d.common.interaction;
-using UnityEngine;
 using UnityEngine.Networking;
 
 namespace umi3d.cdk.collaboration
@@ -50,15 +43,6 @@ namespace umi3d.cdk.collaboration
             set { _HeaderToken = value; }
         }
 
-        public override string SendGetPrivate(string url)
-        {
-            if (UMI3DResourcesManager.HasUrlGotParameters(url))
-                url += "&" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + UMI3DNetworkingKeys.bearer + _HeaderToken;
-            else
-                url += "?" + UMI3DNetworkingKeys.ResourceServerAuthorization + "=" + UMI3DNetworkingKeys.bearer + _HeaderToken;
-            return url;
-        }
-
         protected override async Task<UnityWebRequest> Sub__GetRequest(UnityWebRequest www, DateTime date, string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))
@@ -66,6 +50,7 @@ namespace umi3d.cdk.collaboration
             else
                 throw new Umi3dNetworkingException(www, "Failed to get ");
         }
+
         protected override async Task<UnityWebRequest> Sub_PostRequest(UnityWebRequest www, DateTime date, string HeaderToken, string url, string contentType, byte[] bytes, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)
         {
             if (UMI3DClientServer.Exists && await UMI3DClientServer.Instance.TryAgainOnHttpFail(new RequestFailedArgument(www, tryCount, date, ShouldTryAgain)))

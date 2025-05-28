@@ -40,7 +40,6 @@ namespace AsImpL
         private string mtlLib;
         protected string loadedText;
 
-
         /// <summary>
         /// Parse dependencies of the given OBJ file.
         /// </summary>
@@ -90,7 +89,6 @@ namespace AsImpL
             return mtlTexPathList.ToArray();
         }
 
-
         protected override IEnumerator LoadModelFile(string absolutePath)
         {
             string url = absolutePath.Contains("//") ? absolutePath : "file:///" + absolutePath;
@@ -107,7 +105,6 @@ namespace AsImpL
 
             yield return ParseGeometryData(loadedText);
         }
-
 
         protected override IEnumerator LoadMaterialLibrary(string absolutePath)
         {
@@ -168,7 +165,6 @@ namespace AsImpL
             }
 
         }
-
 
         private void GetFaceIndicesByOneFaceLine(DataSet.FaceIndices[] faces, string[] p, bool isFaceIndexPlus)
         {

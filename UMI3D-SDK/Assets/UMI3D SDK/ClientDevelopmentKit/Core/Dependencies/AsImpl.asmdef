@@ -1,7 +1,9 @@
 {
     "name": "AsImpl",
+    "rootNamespace": "",
     "references": [
-        "GUID:b7e5df3ab8d2c5c43aae26836d504c61"
+        "GUID:b7e5df3ab8d2c5c43aae26836d504c61",
+        "GUID:6e34c4b4c3202a14eb95e0a784041765"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
