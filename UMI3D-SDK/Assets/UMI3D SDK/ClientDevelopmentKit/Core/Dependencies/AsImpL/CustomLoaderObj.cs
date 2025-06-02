@@ -1,6 +1,6 @@
 ﻿using AsImpL;
 using System.Collections;
-using umi3d.common;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Networking;
 
@@ -10,22 +10,30 @@ public class CustomLoaderObj : LoaderObj
     {
         loadedText = null;
         using UnityWebRequest uwr = UnityWebRequest.Get(url);
+        uwr.redirectLimit = 0;
         SetCertificate(uwr);
 
         yield return uwr.SendWebRequest();
 
         if (uwr.result != UnityWebRequest.Result.Success)
         {
-            if (notifyErrors)
+            Dictionary<string, string> responseHeaders = uwr.GetResponseHeaders();
+
+            if (responseHeaders != null && responseHeaders.TryGetValue("Location", out string redirection))
             {
-                //Debug.LogError(uwr.error);
+                redirection = redirection.Replace(" ", "%20");
+                buildOptions.authorization = string.Empty;
+
+                yield return LoadOrDownloadText(redirection, notifyErrors);
             }
-
-            objLoadingProgress.error = true;
-
-            if (url != uwr.url)
+            else
             {
-                NotifyModelError(uwr.url);
+                if (notifyErrors)
+                {
+                    //Debug.LogError(uwr.error);
+                }
+
+                objLoadingProgress.error = true;
             }
         }
         else

@@ -83,19 +83,8 @@ namespace umi3d.cdk
 
                         objImporter.ImportError += (s) =>
                         {
-                            if (s.StartsWith("http") && s != url)
-                            {
-                                Umi3dNetworkingException e = new(200, s, s, $"Importing failed for");
-                                e.isRedirection = true;
-                                failCallback(e);
-                            }
-                            else if (!failed)
-                            {
-                                failCallback(new Umi3dNetworkingException(401, s, url, $"Importing failed for"));
-                            }
-
                             failed = true;
-
+                            failCallback(new Umi3dNetworkingException(401, s, url, $"Importing failed for"));
                         };
 
                         objImporter.ImportingComplete += () =>

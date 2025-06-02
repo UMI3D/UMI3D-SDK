@@ -103,6 +103,7 @@ namespace umi3d.cdk
                 else
                 {
                     using UnityWebRequest req = UnityWebRequest.Get(url);
+                    req.redirectLimit = 0;
                     LoaderUtils.SetWebRequestCertificate(req, authorization);
 
                     UnityWebRequestAsyncOperation op = req.SendWebRequest();
@@ -112,10 +113,12 @@ namespace umi3d.cdk
                         await Task.Yield();
                     }
 
-                    if (req.result != UnityWebRequest.Result.Success && url != req.url)
+                    if (req.result != UnityWebRequest.Result.Success)
                     {
+                        Dictionary<string, string> responseHeaders = req.GetResponseHeaders();
 
-                        failCallback(new Umi3dNetworkingException(req, true, req.downloadHandler?.text));
+                        bool redirection = responseHeaders != null && responseHeaders.ContainsKey("Location");
+                        failCallback(new Umi3dNetworkingException(req, redirection, req.downloadHandler?.text));
                     }
                     else
                     {
