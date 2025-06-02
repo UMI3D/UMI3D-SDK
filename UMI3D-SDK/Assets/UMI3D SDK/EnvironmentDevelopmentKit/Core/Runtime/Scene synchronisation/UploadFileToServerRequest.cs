@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using umi3d.common;
@@ -32,7 +33,12 @@ namespace umi3d.edk
         public string url;
         public List<string> extensions;
         public bool allowMultipleFiles;
-        public Dictionary<string,string> headers = new();
+        public Dictionary<string, string> headers = new();
+
+        public readonly ulong id;
+
+
+        public event Action<UMI3DUser, FileUploadProgressStatusRequestDto> OnStatusUpdate;
 
         /// <summary>
         /// 
@@ -45,19 +51,22 @@ namespace umi3d.edk
             this.url = url;
             this.extensions = extensions.ToList();
             this.allowMultipleFiles = allowMultipleFile;
+
+            this.id = UploadFileToServerRequestManager.Instance.Register(this);
         }
 
         public override Bytable ToBytable(UMI3DUser user)
         {
             return UMI3DSerializer.Write(UMI3DOperationKeys.UploadFileToUrlRequest)
-                + UMI3DSerializer.Write(url) 
-                + UMI3DSerializer.WriteCollection(extensions) 
+                + UMI3DSerializer.Write(url)
+                + UMI3DSerializer.WriteCollection(extensions)
                 + UMI3DSerializer.Write(allowMultipleFiles)
                 + UMI3DSerializer.WriteCollection(headers?.Select(k => new HeaderContent() { header = k.Key, content = k.Value }).ToList());
         }
 
         protected virtual RequestHttpUploadToUrlDto CreateDto() { return new RequestHttpUploadToUrlDto(); }
-        protected virtual void WriteProperties(RequestHttpUploadToUrlDto dto) {
+        protected virtual void WriteProperties(RequestHttpUploadToUrlDto dto)
+        {
             dto.url = url;
             dto.extensions = extensions;
             dto.allowMultipleFile = allowMultipleFiles;
@@ -69,6 +78,11 @@ namespace umi3d.edk
             RequestHttpUploadToUrlDto dto = CreateDto();
             WriteProperties(dto);
             return dto;
+        }
+
+        public void Notify(UMI3DUser user, FileUploadProgressStatusRequestDto update)
+        {
+            OnStatusUpdate?.Invoke(user, update);
         }
     }
 }
