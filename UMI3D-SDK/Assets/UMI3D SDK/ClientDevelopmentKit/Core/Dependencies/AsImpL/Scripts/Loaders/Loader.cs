@@ -612,11 +612,6 @@ namespace AsImpL
             return tex;
         }
 
-        protected void NotifyModelError(string error)
-        {
-            ModelError?.Invoke(error);
-        }
-
         protected struct BuildStats
         {
             public float texturesTime;

@@ -35,12 +35,11 @@ namespace umi3d.cdk.collaboration
 
         protected override string httpUrl => throw new NotImplementedException();
 
-
         internal string HeaderToken
         {
             get => _HeaderToken;
 
-            set { _HeaderToken = value; }
+            set { _HeaderToken = UMI3DNetworkingKeys.bearer + value; }
         }
 
         protected override async Task<UnityWebRequest> Sub__GetRequest(UnityWebRequest www, DateTime date, string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool UseCredential = false, List<(string, string)> headers = null, int tryCount = 0)

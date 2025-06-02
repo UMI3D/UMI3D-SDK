@@ -1213,11 +1213,13 @@ namespace umi3d.cdk
 
         public static async Task DownloadObject(UnityWebRequest www, Func<RequestFailedArgument, bool> shouldTryAgain = null)
         {
-            await Instance._DownloadObject(www, www.url, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
+            await Instance._DownloadObject(www, (e) => shouldTryAgain?.Invoke(e) ?? DefaultShouldTryAgain(e));
         }
 
-        private async Task _DownloadObject(UnityWebRequest www, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
+        private async Task _DownloadObject(UnityWebRequest www, Func<RequestFailedArgument, bool> ShouldTryAgain, int tryCount = 0)
         {
+            www.redirectLimit = 0;
+
             UnityWebRequestAsyncOperation op = www.SendWebRequest();
 
             while (!op.isDone)
@@ -1225,7 +1227,20 @@ namespace umi3d.cdk
 
             if (www.result != UnityWebRequest.Result.Success)
             {
-                throw new Umi3dNetworkingException(www, www.url != url, $"Failed to load : " + www.url);
+                Dictionary<string, string> responseHeaders = www.GetResponseHeaders();
+                Umi3dNetworkingException ex;
+
+                if (responseHeaders != null && responseHeaders.TryGetValue("Location", out string redirection))
+                {
+                    redirection = redirection.Replace(" ", "%20");
+                    ex = new Umi3dNetworkingException(www.responseCode, string.Empty, redirection, string.Empty) { isRedirection = true };
+                }
+                else
+                {
+                    ex = new Umi3dNetworkingException(www, false, $"Failed to load : " + www.url);
+                }
+
+                throw ex;
             }
         }
 

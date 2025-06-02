@@ -774,6 +774,8 @@ namespace umi3d.common.collaboration
         protected static async Task<UnityWebRequest> _GetRequest(AbstractHttpClient<T> instance, string HeaderToken, string url, Func<RequestFailedArgument, bool> ShouldTryAgain, bool useCredential, List<(string, string)> headers = null, int tryCount = 0, Progress progress = null)
         {
             var www = UnityWebRequest.Get(url);
+            www.redirectLimit = 0;
+
             if (useCredential) www.SetRequestHeader(UMI3DNetworkingKeys.Authorization, HeaderToken);
             if (headers != null)
             {
@@ -822,16 +824,21 @@ namespace umi3d.common.collaboration
 
             progress?.SetStatus(currentStateMessage);
 
-#if UNITY_2020_1_OR_NEWER
             if (www.result > UnityWebRequest.Result.Success)
-#else
-            if (www.isNetworkError || www.isHttpError)
-#endif
             {
-                return
-                    await (instance?.Sub__GetRequest(www, date, HeaderToken, url, ShouldTryAgain, useCredential, headers, tryCount)
-                    ?? throw new Umi3dNetworkingException(www, "Failed to get "));
+                Dictionary<string, string> responseHeaders = www.GetResponseHeaders();
 
+                if (responseHeaders != null && responseHeaders.TryGetValue("Location", out string redirection))
+                {
+                    www.Dispose();
+                    redirection = redirection.Replace(" ", "%20");
+                    return await _GetRequest(instance, HeaderToken, redirection, ShouldTryAgain, false, headers, tryCount);
+                }
+                else
+                {
+                    return await (instance?.Sub__GetRequest(www, date, HeaderToken, url, ShouldTryAgain, useCredential, headers, tryCount)
+                        ?? throw new Umi3dNetworkingException(www, "Failed to get "));
+                }
             }
 
             return www;
