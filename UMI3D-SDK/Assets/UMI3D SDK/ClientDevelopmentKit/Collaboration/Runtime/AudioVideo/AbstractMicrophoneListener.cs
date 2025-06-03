@@ -283,12 +283,13 @@ namespace umi3d.cdk.collaboration
                     mumbleMic.VoiceHoldSeconds = value;
             }
         }
-        public KeyCode pushToTalkKeycode
+        public bool pushToTalkInputDown
         {
-            get => mumbleMic?.PushToTalkKeycode ?? KeyCode.M; set
+            get => mumbleMic?.PushToTalkInputDown ?? false; 
+            set
             {
                 if (mumbleMic != null)
-                    mumbleMic.PushToTalkKeycode = value;
+                    mumbleMic.PushToTalkInputDown = value;
             }
         }
 

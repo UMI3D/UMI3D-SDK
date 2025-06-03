@@ -446,9 +446,9 @@ namespace umi3d.cdk.collaboration
                 if (lastMicrophoneMode != MicType.PushToTalk)
                     StopRecording();
 
-                if (Input.GetKeyDown(PushToTalkKeycode))
+                if (PushToTalkInputDown)
                     StartRecording();
-                else if (Input.GetKeyUp(PushToTalkKeycode))
+                else
                     StopRecording();
             }
             else
