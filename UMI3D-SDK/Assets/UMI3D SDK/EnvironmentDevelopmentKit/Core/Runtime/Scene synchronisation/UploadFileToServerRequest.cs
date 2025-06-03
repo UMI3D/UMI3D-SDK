@@ -13,6 +13,7 @@ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
 See the License for the specific language governing permissions and
 limitations under the License.
 */
+using MathNet.Numerics.Distributions;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -49,7 +50,7 @@ namespace umi3d.edk
         public UploadFileToServerRequest(string url, IEnumerable<string> extensions, bool allowMultipleFile)
         {
             this.url = url;
-            this.extensions = extensions.ToList();
+            this.extensions = extensions?.ToList() ?? new();
             this.allowMultipleFiles = allowMultipleFile;
 
             this.id = UploadFileToServerRequestManager.Instance.Register(this);
@@ -61,7 +62,8 @@ namespace umi3d.edk
                 + UMI3DSerializer.Write(url)
                 + UMI3DSerializer.WriteCollection(extensions)
                 + UMI3DSerializer.Write(allowMultipleFiles)
-                + UMI3DSerializer.WriteCollection(headers?.Select(k => new HeaderContent() { header = k.Key, content = k.Value }).ToList());
+                + UMI3DSerializer.WriteCollection(headers?.Select(k => new HeaderContent() { header = k.Key, content = k.Value }).ToList())
+                + UMI3DSerializer.Write(id);
         }
 
         protected virtual RequestHttpUploadToUrlDto CreateDto() { return new RequestHttpUploadToUrlDto(); }
@@ -71,6 +73,7 @@ namespace umi3d.edk
             dto.extensions = extensions;
             dto.allowMultipleFile = allowMultipleFiles;
             dto.headers = headers?.Select(k => new HeaderContent() { header = k.Key, content = k.Value }).ToList();
+            dto.id = this.id;
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)

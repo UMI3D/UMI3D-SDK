@@ -22,7 +22,7 @@ namespace umi3d.edk
 {
     public class UploadFileToServerRequestManager : Singleton<UploadFileToServerRequestManager>
     {
-        ulong availableId = 0;
+        ulong availableId = 1;
         Dictionary<ulong, UploadFileToServerRequest> map = new();
 
         public static event Action<ulong, UploadFileToServerRequest, UMI3DUser, FileUploadProgressStatusRequestDto> OnStatusUpdate;
@@ -34,7 +34,7 @@ namespace umi3d.edk
 
         private void Instance_OnServerStopped()
         {
-            availableId = 0;
+            availableId = 1;
             map = new();
         }
 
