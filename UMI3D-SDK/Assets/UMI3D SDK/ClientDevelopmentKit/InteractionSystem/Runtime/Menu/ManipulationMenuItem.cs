@@ -24,12 +24,12 @@ namespace umi3d.cdk.menu.interaction
     /// <summary>
     /// <see cref="AbstractMenuItem"/> for <see cref="ManipulationDto"/>
     /// </summary>
-    public class ManipulationMenuItem : InteractionMenuItem, ITogglable
+    public class ManipulationMenuItem : AbstractMenuItem, ITogglable
     {
         /// <summary>
         /// Dto for this manipulation.
         /// </summary>
-        public new ManipulationDto interaction;
+        public ManipulationDto interaction;
 
         /// <summary>
         /// Dof Seperation.

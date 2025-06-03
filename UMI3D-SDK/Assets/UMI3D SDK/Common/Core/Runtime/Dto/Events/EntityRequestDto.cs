@@ -29,13 +29,4 @@ namespace umi3d.common
         /// </summary>
         public List<ulong> entitiesId { get; set; }
     }
-
-    public class UserActionRequestDto : AbstractBrowserRequestDto
-    {
-
-        /// <summary>
-        /// Entities to load id.
-        /// </summary>
-        public ulong actionId { get; set; }
-    }
 }

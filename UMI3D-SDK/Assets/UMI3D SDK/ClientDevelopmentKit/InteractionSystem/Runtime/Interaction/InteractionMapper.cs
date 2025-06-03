@@ -126,7 +126,7 @@ namespace umi3d.cdk.interaction
         {
             AbstractTool tool = GetTool(environmentId, toolId);
 
-            if (toolIdToController.TryGetValue((tool.environmentId, tool.id), out AbstractController controller))
+            if (toolIdToController.TryGetValue((tool.environmentId,tool.id), out AbstractController controller))
             {
                 controller.Release(tool, reason);
                 toolIdToController.Remove((tool.environmentId, tool.id));
@@ -177,7 +177,7 @@ namespace umi3d.cdk.interaction
                     }
                 }
 
-                return SelectTool(tool.environmentId, tool.id, releasable, controller, hoveredObjectId, reason);
+                return SelectTool(tool.environmentId,tool.id, releasable, controller, hoveredObjectId, reason);
             }
             else
             {
@@ -226,7 +226,7 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public bool UpdateTools(ulong environmentId, ulong toolId, bool releasable, InteractionMappingReason reason = null)
         {
-            if (toolIdToController.ContainsKey((environmentId, toolId)))
+            if (toolIdToController.ContainsKey((environmentId,toolId)))
             {
                 AbstractController controller = toolIdToController[(environmentId, toolId)];
                 AbstractTool tool = GetTool(environmentId, toolId);
@@ -295,7 +295,7 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public virtual bool SwitchTools(ulong environmentId, ulong select, ulong release, bool releasable, ulong hoveredObjectId, InteractionMappingReason reason = null)
         {
-            if (toolIdToController.ContainsKey((environmentId, release)))
+            if (toolIdToController.ContainsKey((environmentId,release)))
             {
                 AbstractController controller = toolIdToController[(environmentId, release)];
                 ReleaseTool(environmentId, release);
@@ -326,7 +326,7 @@ namespace umi3d.cdk.interaction
             if (controller.tool == null)
                 return true; //check here
 
-            if (projectedTools.TryGetValue((controller.tool.environmentId, controller.tool.id), out InteractionMappingReason lastProjectionReason))
+            if (projectedTools.TryGetValue((controller.tool.environmentId,controller.tool.id), out InteractionMappingReason lastProjectionReason))
             {
                 //todo : add some intelligence here.
                 return !(reason is AutoProjectOnHover);
@@ -377,7 +377,7 @@ namespace umi3d.cdk.interaction
         /// <summary>
         /// Get the interaction with the given id (if any).
         /// </summary>
-        public AbstractInteractionDto GetInteraction(ulong environmentId, ulong id)
+        public AbstractInteractionDto GetInteraction(ulong environmentId,ulong id)
         {
             if (!InteractionExists(environmentId, id))
                 throw new KeyNotFoundException();

@@ -44,32 +44,30 @@ namespace umi3d.cdk.interaction
         public string name => abstractDto.name;
 
         /// <summary>
-        /// Toolbox description.
-        /// </summary>
-        public string description => abstractDto.description;
-
-        /// <summary>
-        /// 2D icon.
-        /// </summary>
-        public ResourceDto icon2D => abstractDto.icon2D;
-
-        /// <summary>
-        /// 3D icon.
-        /// </summary>
-        public ResourceDto icon3D => abstractDto.icon3D;
-
-        /// <summary>
         /// Is the tool active ?
         /// </summary>
         public bool Active => abstractDto?.active ?? false;
+
+
+
 
         /// <summary>
         /// Contained tools.
         /// </summary>
         public List<ulong> interactionsId => abstractDto.interactions;
-        public List<Task<AbstractInteractionDto>> interactions => abstractDto.interactions.Select(inta => UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, inta,null)).Select(async node => (await node).dto as AbstractInteractionDto).ToList();
 
-        public List<AbstractInteractionDto> interactionsLoaded => abstractDto.interactions.Select(id => UMI3DEnvironmentLoader.GetEntity(environmentId,id)).Select(node => node.dto as AbstractInteractionDto).ToList();
+
+
+
+        public List<Task<AbstractInteractionDto>> interactions 
+            => abstractDto.interactions.Select(inta 
+                => UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(environmentId, inta,null))
+            .Select(async node => (await node).dto as AbstractInteractionDto).ToList();
+
+        public List<AbstractInteractionDto> interactionsLoaded 
+            => abstractDto.interactions.Select(id 
+                => UMI3DEnvironmentLoader.GetEntity(environmentId,id))
+            .Select(node => node.dto as AbstractInteractionDto).ToList();
 
         // could be removed if unity project version is 2020.1 or newer 
         private class AbstractInteractionDtoEvent : UnityEvent<AbstractInteractionDto> { }

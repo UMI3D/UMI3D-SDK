@@ -23,7 +23,7 @@ using UnityEngine;
 namespace umi3d.cdk.interaction
 {
     /// <summary>
-    /// Helper class that manages the loading of <see cref="Interactable"/> entities.
+    /// Helper class that manages the loading of <see cref="InteractableDto"/> entities.
     /// </summary>
     public class UMI3DInteractableLoader : UMI3DAbstractToolLoader
     {
@@ -35,15 +35,21 @@ namespace umi3d.cdk.interaction
 
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
-            var dto = value.dto as InteractableDto;
+            InteractableDto dto = value.dto as InteractableDto;
 
-            var e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(value.environmentId, dto.nodeId,value.tokens);
+            UMI3DEntityInstance e = await UMI3DEnvironmentLoader.WaitForAnEntityToBeLoaded(value.environmentId, dto.nodeId,value.tokens);
 
             if (e is UMI3DNodeInstance nodeI)
             {
                 value.node = nodeI.GameObject;
-                Interactable interactable = value.node.GetOrAddComponent<InteractableContainer>().Interactable = new Interactable(value.environmentId, dto);
+                InteractableContainer container = value.node.GetOrAddComponent<InteractableContainer>();
+#if !UMI3D_NEW_LABEL
+                Interactable interactable = container.Interactable = new Interactable(value.environmentId, dto);
                 UMI3DEnvironmentLoader.RegisterEntityInstance(value.environmentId,dto.id, dto, interactable, interactable.Destroy).NotifyLoaded();
+#else
+                ToolManager.@default.InstantiateOrGet(out Tool tool, value.environmentId, dto);
+                container.tool = tool;
+#endif
             }
             else
                 throw (new Umi3dException($"Entity [{dto.nodeId}] is not a node"));
@@ -168,10 +174,20 @@ namespace umi3d.cdk.interaction
         private static void setInteractableOnNode(ulong environmentId, InteractableDto dto)
         {
             UMI3DNodeInstance node = UMI3DEnvironmentLoader.GetNode(environmentId, dto.nodeId);
+
+            InteractableContainer container = node.GameObject.GetOrAddComponent<InteractableContainer>();
+#if !UMI3D_NEW_LABEL
             var interactable = UMI3DEnvironmentLoader.GetEntity(environmentId, dto.id)?.Object as Interactable;
-            if (interactable == null)
-                interactable = new Interactable(environmentId, dto);
-            node.GameObject.GetOrAddComponent<InteractableContainer>().Interactable = interactable;
+            if (interactable == null) interactable = new Interactable(environmentId, dto);
+            container.Interactable = interactable;
+#else
+            bool isSuccess = ToolManager.@default.TryToFetchTool(out Tool tool, environmentId, dto.id);
+            if (!isSuccess)
+            {
+                ToolManager.@default.InstantiateOrGet(out tool, environmentId, dto);
+            }
+            container.tool = tool;
+#endif
         }
     }
 }

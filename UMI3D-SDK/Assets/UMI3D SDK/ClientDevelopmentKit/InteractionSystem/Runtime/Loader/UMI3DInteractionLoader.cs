@@ -40,9 +40,12 @@ namespace umi3d.cdk.interaction
 
         public override async Task ReadUMI3DExtension(ReadUMI3DExtensionData value)
         {
+#if !UMI3D_NEW_LABEL
             var dto = value.dto as AbstractInteractionDto;
             UMI3DEnvironmentLoader.Instance.RegisterEntity(value.environmentId, dto.id, dto, null).NotifyLoaded();
-
+#else
+            InteractionManager.@default.InstantiateOrGet(out _, value.environmentId, value.dto as AbstractInteractionDto);
+#endif
         }
 
         public override async Task<bool> SetUMI3DProperty(SetUMI3DPropertyData value)
