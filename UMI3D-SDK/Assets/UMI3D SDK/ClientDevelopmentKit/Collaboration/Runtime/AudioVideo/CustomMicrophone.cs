@@ -446,9 +446,9 @@ namespace umi3d.cdk.collaboration
                 if (lastMicrophoneMode != MicType.PushToTalk)
                     StopRecording();
 
-                if (PushToTalkInputDown)
+                if (PushToTalkInputDown && !_lastPushToTalkInputDown)
                     StartRecording();
-                else
+                else if (!PushToTalkInputDown && _lastPushToTalkInputDown)
                     StopRecording();
             }
             else
@@ -467,6 +467,7 @@ namespace umi3d.cdk.collaboration
                 SendVoiceIfReady();
 
             lastMicrophoneMode = VoiceSendingType;
+            _lastPushToTalkInputDown = PushToTalkInputDown;
         }
 
         /// <summary>
