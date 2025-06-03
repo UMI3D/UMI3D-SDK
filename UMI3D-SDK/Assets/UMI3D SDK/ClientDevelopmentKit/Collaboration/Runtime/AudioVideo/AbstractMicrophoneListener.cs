@@ -285,7 +285,7 @@ namespace umi3d.cdk.collaboration
         }
         public KeyCode pushToTalkKeycode
         {
-            get => mumbleMic?.PushToTalkKeycode ?? KeyCode.M; set
+            get => mumbleMic?.PushToTalkKeycode ?? KeyCode.V; set
             {
                 if (mumbleMic != null)
                     mumbleMic.PushToTalkKeycode = value;

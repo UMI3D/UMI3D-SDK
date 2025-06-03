@@ -367,6 +367,12 @@ namespace umi3d.edk.collaboration
                                 UnityEngine.Debug.LogError($"Received UserAction from a {user.GetType()}");
                         });
                         break;
+                    case FileUploadProgressStatusRequestDto uploadStatus:
+                        MainThreadManager.Run(() =>
+                        {
+                            UploadFileToServerRequestManager.Instance.Notify(user, uploadStatus);
+                        });
+                        break;
                     default:
                         MainThreadManager.Run(() =>
                         {
@@ -458,6 +464,12 @@ namespace umi3d.edk.collaboration
                             else
                                 UnityEngine.Debug.LogError($"Received UserAction from a {user.GetType()}");
 
+                        });
+                        break;
+                    case UMI3DOperationKeys.UploadFileToUrlStatusRequest:
+                        MainThreadManager.Run(() =>
+                        {
+                            UploadFileToServerRequestManager.Instance.Notify(user, container);
                         });
                         break;
                     case UMI3DOperationKeys.ServerMessageRequest:

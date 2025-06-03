@@ -76,9 +76,6 @@ namespace umi3d.cdk.collaboration
             .SetNext(new UMI3DAnimationLoader())
             .SetNext(new PreloadedSceneLoader())
             .SetNext(new UMI3DInteractableLoader())
-#if !UMI3D_NEW_LABEL
-            .SetNext(new UMI3DGlobalToolLoader())
-#endif
             .SetNext(new CollaborationSkeletonAnimationNodeLoader())
             .SetNext(new UMI3DMeshNodeLoader())
             .SetNext(new UMI3DSubMeshNodeLoader())
@@ -103,16 +100,38 @@ namespace umi3d.cdk.collaboration
         public override Task UnknownOperationHandler(DtoContainer operation)
         {
             base.UnknownOperationHandler(operation);
+
+            Tool toolToRelease;
+            Tool toolToProject;
+
             switch (operation.operation)
             {
                 case SwitchToolDto switchTool:
+#if !UMI3D_NEW_LABEL
                     InteractionMapper.Instance.SwitchTools(operation.environmentId, switchTool.toolId, switchTool.replacedToolId, switchTool.releasable, 0, new interaction.RequestedByEnvironment());
+#else
+                    // TODO: Projection.releasable
+                    ToolManager.@default.TryToFetchTool(out toolToRelease, operation.environmentId, switchTool.replacedToolId);
+                    ToolManager.@default.TryToFetchTool(out toolToProject, operation.environmentId, switchTool.toolId);
+                    SelectorManager.@default.serverSelector.Switch(toolToRelease, toolToProject);
+#endif
                     break;
                 case ProjectToolDto projection:
+#if !UMI3D_NEW_LABEL
                     InteractionMapper.Instance.SelectTool(operation.environmentId, projection.toolId, projection.releasable, 0, new interaction.RequestedByEnvironment());
+#else
+                    // TODO: Projection.releasable
+                    ToolManager.@default.TryToFetchTool(out toolToProject, operation.environmentId, projection.toolId);
+                    SelectorManager.@default.serverSelector.Select(toolToProject);
+#endif
                     break;
                 case ReleaseToolDto release:
+#if !UMI3D_NEW_LABEL
                     InteractionMapper.Instance.ReleaseTool(operation.environmentId, release.toolId, new interaction.RequestedByEnvironment());
+#else
+                    ToolManager.@default.TryToFetchTool(out toolToRelease, operation.environmentId, release.toolId);
+                    SelectorManager.@default.serverSelector.Deselect(toolToRelease);
+#endif
                     break;
             }
             return Task.CompletedTask;
@@ -126,22 +145,43 @@ namespace umi3d.cdk.collaboration
             ulong id;
             bool releasable;
 
+            Tool toolToRelease;
+            Tool toolToProject;
+
             switch (operationId)
             {
                 case UMI3DOperationKeys.SwitchTool:
                     id = UMI3DSerializer.Read<ulong>(container);
                     ulong oldid = UMI3DSerializer.Read<ulong>(container);
                     releasable = UMI3DSerializer.Read<bool>(container);
+#if !UMI3D_NEW_LABEL
                     InteractionMapper.Instance.SwitchTools(container.environmentId, id, oldid, releasable, 0, new interaction.RequestedByEnvironment());
+#else
+                    // TODO: Projection.releasable
+                    ToolManager.@default.TryToFetchTool(out toolToRelease, container.environmentId, oldid);
+                    ToolManager.@default.TryToFetchTool(out toolToProject, container.environmentId, id);
+                    SelectorManager.@default.serverSelector.Switch(toolToRelease, toolToProject);
+#endif
                     break;
                 case UMI3DOperationKeys.ProjectTool:
                     id = UMI3DSerializer.Read<ulong>(container);
                     releasable = UMI3DSerializer.Read<bool>(container);
+#if !UMI3D_NEW_LABEL
                     InteractionMapper.Instance.SelectTool(container.environmentId, id, releasable, 0, new interaction.RequestedByEnvironment());
+#else
+                    // TODO: Projection.releasable
+                    ToolManager.@default.TryToFetchTool(out toolToProject, container.environmentId, id);
+                    SelectorManager.@default.serverSelector.Select(toolToProject);
+#endif
                     break;
                 case UMI3DOperationKeys.ReleaseTool:
                     id = UMI3DSerializer.Read<ulong>(container);
+#if !UMI3D_NEW_LABEL
                     InteractionMapper.Instance.ReleaseTool(container.environmentId, id, new interaction.RequestedByEnvironment());
+#else
+                    ToolManager.@default.TryToFetchTool(out toolToRelease, container.environmentId, id);
+                    SelectorManager.@default.serverSelector.Deselect(toolToRelease);
+#endif
                     break;
             }
             return Task.CompletedTask;

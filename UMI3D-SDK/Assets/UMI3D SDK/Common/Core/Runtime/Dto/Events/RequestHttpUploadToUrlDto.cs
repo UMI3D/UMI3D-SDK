@@ -40,6 +40,11 @@ namespace umi3d.common
         /// </summary>
         public bool allowMultipleFile { get; set; }
 
+        /// <summary>
+        /// Upload Request Id 
+        /// </summary>
+        public ulong id { get; set; } = 0;
+
     }
 
     public class HeaderContent

@@ -103,7 +103,7 @@ namespace umi3d.common
         public Umi3dNetworkingException(UnityWebRequest webRequest, string message) : base(message)
         {
             this.errorCode = webRequest?.responseCode ?? 0;
-            this.errorMessage = webRequest?.error ?? "Web request is null";
+            this.errorMessage = webRequest?.error ?? "Web request is null"; 
             this.url = webRequest?.url ?? "";
 
             try

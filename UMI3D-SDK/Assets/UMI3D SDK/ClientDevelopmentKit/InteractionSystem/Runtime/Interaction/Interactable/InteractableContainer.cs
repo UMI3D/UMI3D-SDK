@@ -36,6 +36,8 @@ namespace umi3d.cdk.interaction
         [Tooltip("Interactable associated with the object")]
         public Interactable Interactable;
 
+        public Tool tool;
+
         private void Awake()
         {
             if (!containers.Contains(this))

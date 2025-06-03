@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 using inetum.unityUtils.observation;
+using System;
 using System.Linq;
 using umi3d.common.interaction;
 using UnityEngine;
@@ -21,13 +22,12 @@ using UnityEngine.Events;
 
 namespace umi3d.cdk.interaction
 {
+    [Obsolete("Will be removed when UMI3D_NEW_LABEL is enabled.")]
     /// <summary>
     /// Client's side interactable object, a specific tool related to a game object.
     /// </summary>
     public class Interactable : AbstractTool
     {
-        public class Event : UnityEvent<Interactable> { }
-
         /// <summary>
         /// Get <see cref="InteractableDto"/> from the DTO id.
         /// </summary>
@@ -60,6 +60,7 @@ namespace umi3d.cdk.interaction
 
         Notifier hoverStateChangedNotifier;
 
+        [Obsolete("Will be removed when UMI3D_NEW_LABEL is enabled.")]
         public Interactable(ulong environmentId, InteractableDto dto) : base(environmentId, dto)
         {
             hoverStateChangedNotifier = NotificationHub.Default.GetNotifier(this, ID.FromType<InteractableNotificationKeys.HoverStateChanged>());

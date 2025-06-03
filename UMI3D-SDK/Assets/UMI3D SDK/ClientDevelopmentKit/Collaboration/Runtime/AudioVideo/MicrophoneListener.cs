@@ -55,7 +55,7 @@ namespace umi3d.cdk.collaboration
 
             identity = new Identity(GetIdentity);
 
-            pushToTalkKeycode = KeyCode.M;
+            pushToTalkKeycode = KeyCode.V;
 
             MicrophoneListener.Instance.Subscribe(value => {
                 MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => {

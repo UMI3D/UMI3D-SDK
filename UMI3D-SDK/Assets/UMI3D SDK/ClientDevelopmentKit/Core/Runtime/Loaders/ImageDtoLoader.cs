@@ -50,7 +50,7 @@ namespace umi3d.cdk
             return ignoredFileExtensions.Contains(extension);
         }
 
-        /// <inheritdoc/>
+         /// <inheritdoc/>
         public virtual async Task<object> UrlToObject(string url, string extension, string authorization, string pathIfObjectInBundle = "")
         {
 #if UNITY_ANDROID

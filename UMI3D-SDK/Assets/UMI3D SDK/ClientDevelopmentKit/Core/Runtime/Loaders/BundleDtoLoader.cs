@@ -105,7 +105,7 @@ namespace umi3d.cdk
 
                 if (bundle != null)
                 {
-                    BundleCacheData data = new();
+                    BundleCacheData data = new ();
 
                     try
                     {
@@ -268,7 +268,7 @@ namespace umi3d.cdk
                 }
             }
 
-            GameObject sceneObj = new(scenePath);
+            GameObject sceneObj = new (scenePath);
 
             if (UMI3DResourcesManager.Exists)
                 sceneObj.transform.SetParent(UMI3DResourcesManager.Instance.transform, true);
