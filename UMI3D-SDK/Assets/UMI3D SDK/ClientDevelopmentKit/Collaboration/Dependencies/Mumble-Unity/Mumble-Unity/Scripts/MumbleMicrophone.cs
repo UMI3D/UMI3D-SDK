@@ -42,7 +42,8 @@ namespace Mumble
         public float VoiceHoldSeconds = 0.5f;
         public MicType VoiceSendingType = MicType.AlwaysSend;
         public AudioClip TestingClipToUse;
-        public KeyCode PushToTalkKeycode = KeyCode.Space;
+        public bool PushToTalkInputDown = false;
+        protected bool _lastPushToTalkInputDown = false;
 
         /// <summary>
         /// How long to make the audio buffer that Unity
@@ -303,15 +304,17 @@ namespace Mumble
 
             if (VoiceSendingType == MicType.PushToTalk)
             {
-                if (Input.GetKeyDown(PushToTalkKeycode))
+                if (PushToTalkInputDown && !_lastPushToTalkInputDown)
                     StartSendingAudio(_mumbleClient.EncoderSampleRate);
                 // TODO we should send one extra voice packet marked with isLast
                 // Instead of sending an empty packet marked with isLast
-                if (Input.GetKeyUp(PushToTalkKeycode))
+                if (!PushToTalkInputDown && _lastPushToTalkInputDown)
                     StopSendingAudio();
             }
             if (isRecording)
                 SendVoiceIfReady();
+
+            _lastPushToTalkInputDown = PushToTalkInputDown;
         }
     }
 }

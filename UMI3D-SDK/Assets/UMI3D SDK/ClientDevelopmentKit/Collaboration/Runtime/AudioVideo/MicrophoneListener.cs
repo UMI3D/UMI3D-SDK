@@ -55,8 +55,6 @@ namespace umi3d.cdk.collaboration
 
             identity = new Identity(GetIdentity);
 
-            pushToTalkKeycode = KeyCode.V;
-
             MicrophoneListener.Instance.Subscribe(value => {
                 MainThreadDispatcher.UnityMainThreadDispatcher.Instance().Enqueue(() => {
                     UMI3DClientServer.SendRequest(ConferenceRequest.GetUserIsSpeakingStatusRequest(UMI3DCollaborationClientServer.Instance.GetUserId(), value), true); 
@@ -268,7 +266,6 @@ namespace umi3d.cdk.collaboration
                 new DebugInfo<string>("Mumble Status",()=>{ return mumbleStatus.ToString(); }),
                 new DebugInfo<string>("Microphone Status",()=>{ return microphoneStatus.ToString(); }),
                 new DebugInfo<bool>("| Is Sending Audio",()=>{ return mumbleMic?.isRecording ?? false; }),
-                new DebugInfo<string>("| Push To Talk Key",()=>{ return pushToTalkKeycode.ToString(); }),
                 new DebugInfo<float>("| Min Amplitude",()=>{ return minAmplitudeToSend; }),
                 new DebugInfo<float>("| stop delay",()=>{ return voiceStopingDelaySeconds; }),
 
