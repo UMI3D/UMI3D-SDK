@@ -424,14 +424,14 @@ namespace umi3d.edk
                 var loddef = new UMI3DLodDefinitionDto();
                 Renderer[] renderers = lofd.renderers;
                 loddef.nodes = new();
-                transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponentInParent<UMI3DNode>()).Where(s => s != null).Select(s => (n:s,id:s.Id()))
+                transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponentInParent<UMI3DNode>()).Where(s => s != null).Select(s => (n: s, id: s.Id()))
                     .ForEach(s =>
+                    {
+                        if (!loddef.nodes.Contains(s.id))
                         {
-                            if (!loddef.nodes.Contains(s.id))
-                            {
-                                loddef.nodes.Add(s.id);
-                            }
-                        });
+                            loddef.nodes.Add(s.id);
+                        }
+                    });
 
                 loddef.screenSize = lofd.screenRelativeTransitionHeight;
                 loddef.fadeTransition = lofd.fadeTransitionWidth;
@@ -524,7 +524,6 @@ namespace umi3d.edk
             throw new NotImplementedException();
         }
 
-
         /// <summary>
         /// Look for a collider in the node, and fills out the adequate fields.
         /// </summary>
@@ -545,11 +544,13 @@ namespace umi3d.edk
                         colliderType = ColliderType.Box;
                         colliderBoxSize = bc.size;
                         colliderCenter = bc.center;
+                        _ = objectColliderBoxSize?.SetValue(colliderBoxSize);
                         break;
                     case SphereCollider sc:
                         colliderType = ColliderType.Sphere;
                         colliderRadius = sc.radius;
                         colliderCenter = sc.center;
+                        _ = objectColliderRadius?.SetValue(colliderRadius);
                         break;
                     case CapsuleCollider cc:
                         colliderType = ColliderType.Capsule;
@@ -557,12 +558,18 @@ namespace umi3d.edk
                         colliderDirection = (DirectionalType)cc.direction;
                         colliderHeight = cc.height;
                         colliderRadius = cc.radius;
+                        _ = objectColliderHeight?.SetValue(colliderHeight);
+                        _ = objectColliderRadius?.SetValue(colliderRadius);
+                        _ = objectColliderDirection?.SetValue(colliderDirection);
                         break;
                     case MeshCollider mc:
                         colliderType = ColliderType.Mesh;
                         customMeshCollider = null;
                         isMeshCustom = false;
                         convex = mc.convex;
+                        _ = objectIsMeshCustom?.SetValue(isMeshCustom);
+                        _ = objectIsConvexe?.SetValue(convex);
+                        _ = objectCustomMeshCollider?.SetValue(null);
                         break;
 
                     default:
@@ -570,6 +577,10 @@ namespace umi3d.edk
                         break;
                 }
             }
+
+            _ = objectHasCollider?.SetValue(hasCollider);
+            _ = objectColliderType?.SetValue(colliderType);
+            _ = objectColliderCenter?.SetValue(colliderCenter);
         }
 
 #if UNITY_EDITOR
