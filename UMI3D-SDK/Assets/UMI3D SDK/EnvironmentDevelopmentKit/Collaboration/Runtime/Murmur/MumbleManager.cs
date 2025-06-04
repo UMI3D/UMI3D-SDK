@@ -142,8 +142,8 @@ namespace umi3d.edk.collaboration.murmur
                 guid = System.Guid.NewGuid().ToString();
 
             var mm = new MumbleManager(ip, http, guid);
-            mm.Init();
             mm.HeartBeat();
+            mm.Init();
 
             Quitting.instance.SubscribeFor(
                 Quitting.SubscriptionType.IsQuitting,
@@ -326,6 +326,11 @@ namespace umi3d.edk.collaboration.murmur
 
         private async Task ForceRefresh()
         {
+            if (!running)
+            {
+                return;
+            }
+
             try
             {
                 if (serv == null)
