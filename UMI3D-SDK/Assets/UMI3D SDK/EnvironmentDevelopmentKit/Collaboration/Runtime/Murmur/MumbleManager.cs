@@ -213,6 +213,8 @@ namespace umi3d.edk.collaboration.murmur
 
         async void Init()
         {
+            running = true;
+
             RefreshAsync();
 
             try
@@ -326,6 +328,11 @@ namespace umi3d.edk.collaboration.murmur
 
         private async Task ForceRefresh()
         {
+            if (!running)
+            {
+                return;
+            }
+
             try
             {
                 if (serv == null)
