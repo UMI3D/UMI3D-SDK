@@ -79,6 +79,8 @@ namespace umi3d.common
         public const uint SetUTSBoneTargetFPS = 308;
         public const uint PerspectiveCameraProperties = 309;
         public const uint OrthographicCameraProperties = 310;
+        public const uint OmniscientView = 311;
+        public const uint ImmersiveView = 312;
 
         public const uint FpsNavigationMode = 400;
         public const uint FlyingNavigationMode = 401;

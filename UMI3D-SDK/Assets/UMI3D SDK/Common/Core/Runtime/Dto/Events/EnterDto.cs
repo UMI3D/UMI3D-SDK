@@ -34,5 +34,35 @@ namespace umi3d.common
         /// Has the dto alredy been used?
         /// </summary>
         public bool usedDto { get; set; }
+        /// <summary>
+        /// user default navigation mode
+        /// </summary>
+        public NavigationMode userNavigation { get; set; }
+
+        /// <summary>
+        /// user omniscient near plane
+        /// </summary>
+        public float userNearPlane { get; set; }
+
+        /// <summary>
+        /// user omniscient far plane
+        /// </summary>
+        public float userFarPlane { get; set; }
+        /// <summary>
+        /// user omniscient field of view
+        /// </summary>
+        public float userFOV { get; set; }
+        /// <summary>
+        /// user omniscient distance
+        /// </summary>
+        public float userDistance { get; set; }
+        /// <summary>
+        /// user omniscient flying speed
+        /// </summary>
+        public float userFlyingSpeed { get; set; }
+        /// <summary>
+        /// user omniscient Camera Limit
+        /// </summary>
+        public Vector2Dto userCameraLimit { get; set; }
     }
 }
