@@ -78,5 +78,10 @@ namespace umi3d.common
         /// ressource of the material applied to all objects by default.
         /// </summary>
         public ResourceDto defaultMaterial { get; set; }
+
+        /// <summary>
+        /// Default value for omniscient bounds.
+        /// </summary>
+        public BoundsDto omniscientBounds { get; set; }
     }
 }

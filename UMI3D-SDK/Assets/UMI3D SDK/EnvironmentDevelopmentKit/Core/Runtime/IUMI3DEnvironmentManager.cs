@@ -15,6 +15,8 @@ limitations under the License.
 */
 
 using System.Collections.Generic;
+using umi3d.common;
+using UnityEngine;
 
 namespace umi3d.edk
 {
@@ -23,6 +25,24 @@ namespace umi3d.edk
         ulong RegisterEntity(UMI3DEntity entity);
         ulong RegisterEntity(UMI3DEntity entity, ulong id);
         E _GetEntityInstance<E>(ulong id) where E : class, UMI3DEntity;
+
+        UMI3DAsyncProperty<NavigationMode> objectStartNavigationMode { get; }
+
+        UMI3DAsyncProperty<float> objectOmniscientNearPlane { get; }
+
+        UMI3DAsyncProperty<float> objectOmniscientFarPlane { get; }
+
+        UMI3DAsyncProperty<float> objectOmniscientFOV { get;  }
+
+        UMI3DAsyncProperty<float> objectOmniscientDistance { get;}
+
+        UMI3DAsyncProperty<float> objectOmniscientFlyingSpeed { get; }
+
+        UMI3DAsyncProperty<Vector2> objectOmniscientCameraLimit { get; }
+
+        UMI3DAsyncProperty<Vector2> objectOmniscientCameraZoomMinMaxLimit { get; }
+
+        UMI3DAsyncProperty<BoundsDto> objectOmniscientBounds { get; }
     }
 
     public interface IUserManager

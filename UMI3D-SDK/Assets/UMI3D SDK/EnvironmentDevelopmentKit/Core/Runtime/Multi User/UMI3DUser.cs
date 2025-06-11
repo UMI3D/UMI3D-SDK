@@ -112,5 +112,7 @@ namespace umi3d.edk
         #endregion
 
         #endregion
+
+        public NavigationMode navigationMode;
     }
 }

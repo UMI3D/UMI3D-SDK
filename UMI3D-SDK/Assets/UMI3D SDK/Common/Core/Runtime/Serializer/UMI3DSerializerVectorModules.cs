@@ -37,6 +37,7 @@ namespace umi3d.common
                 true when typeof(T) == typeof(Vector4) => true,
                 true when typeof(T) == typeof(Matrix4x4Dto) => true,
                 true when typeof(T) == typeof(Matrix4x4) => true,
+                true when typeof(T) == typeof(BoundsDto) => true,
                 _ => null,
             };
         }
@@ -171,6 +172,16 @@ namespace umi3d.common
                         return true;
                     }
                     break;
+                case true when typeof(T) == typeof(BoundsDto):
+                    if (container.length >= 6 * sizeof(float))
+                    {
+                        UMI3DSerializer.TryRead(container, out Vector3Dto size);
+                        UMI3DSerializer.TryRead(container, out Vector3Dto center);
+
+                        result = (T)Convert.ChangeType(new BoundsDto() { size = size, center = center}, typeof(T));
+                        return true;
+                    }
+                    break;
 
             }
 
@@ -263,6 +274,10 @@ namespace umi3d.common
                     return true;
                 case Matrix4x4 v4:
                     bytable = UMI3DSerializer.Write(v4.Dto());
+                    return true;
+                case BoundsDto bounds:
+                    bytable = UMI3DSerializer.Write(bounds.size);
+                    bytable += UMI3DSerializer.Write(bounds.center);
                     return true;
             }
             bytable = null;

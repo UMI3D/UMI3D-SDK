@@ -177,6 +177,14 @@ namespace umi3d.cdk
                     info[UMI3DClientNotificatonKeys.Info.CameraProperties] = orthographicCameraProperties;
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
+                case ImmersiveViewDto immersiveView:
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = immersiveView;
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
+                    break;
+                case OmniscientViewDto omniscientView:
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = omniscientView;
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
+                    break;
                 default:
                     if (!await OperationDto(operation))
                         await UMI3DEnvironmentLoader.AbstractParameters.UnknownOperationHandler(operation);
@@ -226,6 +234,26 @@ namespace umi3d.cdk
                     float orthoFar = UMI3DSerializer.Read<float>(container);
                     float size = UMI3DSerializer.Read<float>(container);
                     info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new OrthographicCameraPropertiesDto() { localPosition = orthoLocalPos, nearPlane = orthoNear, farPlane = orthoFar, size = size };
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
+                    break;
+                case UMI3DOperationKeys.ImmersiveView:
+                    Vector3Dto immersiveLocalPos = UMI3DSerializer.Read<Vector3Dto>(container);
+                    float immersiveNear = UMI3DSerializer.Read<float>(container);
+                    float immersiveFar = UMI3DSerializer.Read<float>(container);
+                    float immersiveFOV = UMI3DSerializer.Read<float>(container);
+                    Vector2Dto immersiveXAngle = UMI3DSerializer.Read<Vector2Dto>(container);
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new ImmersiveViewDto() { localPosition = immersiveLocalPos, nearPlane = immersiveNear, farPlane = immersiveFar, fieldOfView = immersiveFOV, cameraXAngle = immersiveXAngle};
+                    NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
+                    break;
+                case UMI3DOperationKeys.OmniscientView:
+                    Vector3Dto omniscientLocalPos = UMI3DSerializer.Read<Vector3Dto>(container);
+                    float omniscientNear = UMI3DSerializer.Read<float>(container);
+                    float omniscientFar = UMI3DSerializer.Read<float>(container);
+                    float omniscientFOV = UMI3DSerializer.Read<float>(container);
+                    Vector2Dto omniscientXAngle = UMI3DSerializer.Read<Vector2Dto>(container);
+                    float omniscientDistance = UMI3DSerializer.Read<float>(container);
+                    float omniscienFlyingSpeed = UMI3DSerializer.Read<float>(container);
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = new OmniscientViewDto() { localPosition = omniscientLocalPos, nearPlane = omniscientNear, farPlane = omniscientFar, fieldOfView = omniscientFOV, cameraXAngle = omniscientXAngle, distance = omniscientDistance, flyingSpeed = omniscienFlyingSpeed };
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
 

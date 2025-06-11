@@ -14,6 +14,7 @@ See the License for the specific language governing permissions and
 limitations under the License.
 */
 
+using BeardedManStudios;
 using inetum.unityUtils;
 using inetum.unityUtils.lifeCycle;
 using System;
@@ -81,13 +82,108 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Default rotation in the environment.")]
         private Vector3 defaultStartOrientation = new Vector3(0, 0, 0);
         /// <summary>
+        /// Default Spawn Naviagtion Mode in the environment.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Navigation Mode in the environment.")]
+        public NavigationMode defaultStartNavigationMode = NavigationMode.Default;
+        /// <summary>
+        /// Default Spawn Omniscient near planes.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient near planes.")]
+        private float defaultOmnscientNearPlane = 0;
+        /// <summary>
+        /// Default Spawn Omniscient far planes.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient far planes.")]
+        private float defaultOmnscientFarPlane = 0;
+        /// <summary>
+        /// Default Spawn Omniscient field of view.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient field of view.")]
+        private float defaultOmnscientFOV = 0;
+        /// <summary>
+        /// Default Spawn Omniscient distance.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient distance.")]
+        private float defaultOmnscientdistance = 0;
+        /// <summary>
+        /// Default Spawn Omniscient flying speed.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient flying speed.")]
+        private float defaultOmnscientFlyingSpeed = 0;
+        /// <summary>
+        /// Default Spawn Omniscient camera angle limit.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient camera limit.")]
+        private Vector2 defaultOmnscientCameraLimit = new Vector2(0,0);
+        /// <summary>
+        /// Default Spawn Omniscient camera Zoom limit.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient Camera Zoom limit.")]
+        private Vector2 defaultOmniscientCameraZoomMinMaxLimit = new Vector2(0,0);
+        /// <summary>
+        /// Omniscient Bounds.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Navigation Mode in the environment.")]
+        private BoundsDto defaultOmniscientBounds = new();
+        /// <summary>
         /// See <see cref="defaultStartPosition"/>.
         /// </summary>
         public static UMI3DAsyncProperty<Vector3> objectStartPosition { get; protected set; }
+
+        /// <summary>
+        /// See <see cref="defaultStartNavigationMode"/>.
+        /// </summary>
+        /// 
+        //private UMI3DAsyncProperty<NavigationMode> _objectStartNavigationMode;
+        public UMI3DAsyncProperty<NavigationMode> objectStartNavigationMode { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultOmnscientNearPlane"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<float> objectOmniscientNearPlane { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultOmnscientFarPlane"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<float> objectOmniscientFarPlane { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultOmnscientFOV"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<float> objectOmniscientFOV { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultOmnscientDistance"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<float> objectOmniscientDistance { get; protected set; }
+
+        /// <summary>
+        /// See <see cref="defaultOmnscientFlyingSpeed"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<float> objectOmniscientFlyingSpeed { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultOmnscientCameraLimit"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<Vector2> objectOmniscientCameraLimit { get; protected set; }
+
+        /// <summary>
+        /// See <see cref="defaultOmniscientCameraZoomMinMaxLimit"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<Vector2> objectOmniscientCameraZoomMinMaxLimit { get; protected set; }
+
         /// <summary>
         /// See <see cref="defaultStartOrientation"/>.
         /// </summary>
         public static UMI3DAsyncProperty<Quaternion> objectStartOrientation { get; protected set; }
+
+        /// <summary>
+        /// See <see cref="defaultOmniscientBounds"/>.
+        /// </summary>
+        public UMI3DAsyncProperty<BoundsDto> objectOmniscientBounds{ get; protected set; }
 
         private void Start()
         {
@@ -138,6 +234,7 @@ namespace umi3d.edk
             dto.skybox = objectAmbientSkyboxImage.GetValue(user)?.ToDto();
             dto.skyboxRotation = objectSkyboxRotation.GetValue(user);
             dto.defaultMaterial = defaultMaterial?.ToDto();
+            dto.omniscientBounds = objectOmniscientBounds.GetValue(user);
         }
 
         /// <summary>
@@ -154,7 +251,20 @@ namespace umi3d.edk
         /// </summary>
         public static EnterDto ToEnterDto(UMI3DUser user)
         {
-            return new EnterDto() { userPosition = objectStartPosition.GetValue(user).Dto(), userRotation = objectStartOrientation.GetValue(user).Dto(), usedDto = Instance.useDto };
+            user.navigationMode = Instance.objectStartNavigationMode.GetValue(user);
+            return new EnterDto()
+            {
+                userPosition = objectStartPosition.GetValue(user).Dto(),
+                userRotation = objectStartOrientation.GetValue(user).Dto(),
+                usedDto = Instance.useDto,
+                userNavigation = Instance.objectStartNavigationMode.GetValue(user),
+                userNearPlane = Instance.objectOmniscientNearPlane.GetValue(user),
+                userFarPlane = Instance.objectOmniscientFarPlane.GetValue(user),
+                userDistance = Instance.objectOmniscientDistance.GetValue(user),
+                userFlyingSpeed = Instance.objectOmniscientFlyingSpeed.GetValue(user),
+                userCameraLimit = Instance.objectOmniscientCameraLimit.GetValue(user).Dto(),
+                userFOV = Instance.objectOmniscientFOV.GetValue(user)
+            };
         }
 
         /// <summary>
@@ -198,9 +308,17 @@ namespace umi3d.edk
         private void InitDefinition()
         {
             ulong id = UMI3DGlobalID.EnvironmentId;
-
             objectStartPosition = new UMI3DAsyncProperty<Vector3>(id, 0, defaultStartPosition);
             objectStartOrientation = new UMI3DAsyncProperty<Quaternion>(id, 0, Quaternion.Euler(defaultStartOrientation));
+            objectStartNavigationMode = new UMI3DAsyncProperty<NavigationMode>(id, 0, defaultStartNavigationMode);
+            objectOmniscientNearPlane = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientNearPlane);
+            objectOmniscientFarPlane = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientFarPlane);
+            objectOmniscientDistance = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientdistance);
+            objectOmniscientFlyingSpeed = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientFlyingSpeed);
+            objectOmniscientCameraZoomMinMaxLimit = new UMI3DAsyncProperty<Vector2>(id, 0, defaultOmniscientCameraZoomMinMaxLimit);
+            objectOmniscientCameraLimit = new UMI3DAsyncProperty<Vector2>(id, 0, defaultOmnscientCameraLimit);
+            objectOmniscientFOV = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientFOV);
+            objectOmniscientBounds = new UMI3DAsyncProperty<BoundsDto>(id, UMI3DPropertyKeys.OmniscientBounds, defaultOmniscientBounds);
 
             objectPreloadedScenes = new UMI3DAsyncListProperty<UMI3DResource>(id, UMI3DPropertyKeys.PreloadedScenes, preloadedScenes, (UMI3DResource r, UMI3DUser user) => new PreloadedSceneDto() { scene = r.ToDto() });
             objectAmbientType = new UMI3DAsyncProperty<AmbientMode>(id, UMI3DPropertyKeys.AmbientType, mode, (mode, user) => (int)(AmbientType)mode);
