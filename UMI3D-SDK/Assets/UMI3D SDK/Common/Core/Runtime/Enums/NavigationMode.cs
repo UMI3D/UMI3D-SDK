@@ -19,9 +19,6 @@ namespace umi3d.common
     public enum NavigationMode
     {
         Default,
-        Continuous,
-        Teleportation,
-        Debug,
         Omniscient
     }
 }
