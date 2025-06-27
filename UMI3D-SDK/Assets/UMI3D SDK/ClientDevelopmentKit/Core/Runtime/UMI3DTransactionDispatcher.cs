@@ -177,12 +177,12 @@ namespace umi3d.cdk
                     info[UMI3DClientNotificatonKeys.Info.CameraProperties] = orthographicCameraProperties;
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
-                case ImmersiveViewDto immersiveView:
-                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = immersiveView;
+                case ImmersiveViewDto immersiveViewDto:
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = immersiveViewDto;
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
-                case OmniscientViewDto omniscientView:
-                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = omniscientView;
+                case OmniscientViewDto omniscientViewDto:
+                    info[UMI3DClientNotificatonKeys.Info.CameraProperties] = omniscientViewDto;
                     NotificationHub.Default.Notify(this, UMI3DClientNotificatonKeys.CameraPropertiesNotification, info);
                     break;
                 default:

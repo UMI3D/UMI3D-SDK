@@ -29,5 +29,6 @@ namespace umi3d.common
         /// The movement speed of forward, backward and lateral movements.
         /// </summary>
         public float flyingSpeed { get; set; }
+
     }
 }

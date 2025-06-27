@@ -178,7 +178,7 @@ namespace umi3d.common
                         UMI3DSerializer.TryRead(container, out Vector3Dto size);
                         UMI3DSerializer.TryRead(container, out Vector3Dto center);
 
-                        result = (T)Convert.ChangeType(new BoundsDto() { size = size, center = center}, typeof(T));
+                        result = (T)Convert.ChangeType(new BoundsDto() { size = size, center = center }, typeof(T));
                         return true;
                     }
                     break;
