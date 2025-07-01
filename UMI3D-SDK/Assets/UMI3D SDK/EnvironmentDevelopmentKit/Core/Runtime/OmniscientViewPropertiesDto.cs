@@ -32,7 +32,7 @@ namespace umi3d.edk.core
         /// <summary>
         /// The limit of the camera zoom
         /// </summary>
-        public Vector2 zoom_Min_Max { get; set; }
+        public Vector2 zoomLimit { get; set; }
         /// <summary>
         /// The speed of the Zoom
         /// </summary>
@@ -47,7 +47,7 @@ namespace umi3d.edk.core
             this.cameraXAngle = cameraXangle;
             this.distance = distance;
             this.flyingSpeed = flyingSpeed;
-            this.zoom_Min_Max = zoomLimit;
+            this.zoomLimit = zoomLimit;
             this.zoomSpeed = zoomSpeed;
         }
 
@@ -61,7 +61,7 @@ namespace umi3d.edk.core
                 + UMI3DSerializer.Write(cameraXAngle)
                 + UMI3DSerializer.Write(distance)
                 + UMI3DSerializer.Write(flyingSpeed)
-                + UMI3DSerializer.Write(zoom_Min_Max)
+                + UMI3DSerializer.Write(zoomLimit)
                 + UMI3DSerializer.Write(zoomSpeed);
         }
 
@@ -76,7 +76,7 @@ namespace umi3d.edk.core
                 fieldOfView = this.fieldOfView,
                 distance = this.distance,
                 flyingSpeed = this.flyingSpeed,
-                zoomLimit = this.zoom_Min_Max.Dto(),
+                zoomLimit = this.zoomLimit.Dto(),
                 zoomSpeed = this.zoomSpeed,
             };
         }
