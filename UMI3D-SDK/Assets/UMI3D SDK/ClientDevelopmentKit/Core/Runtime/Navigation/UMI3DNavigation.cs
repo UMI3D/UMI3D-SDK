@@ -111,6 +111,8 @@ namespace umi3d.cdk.navigation
                 dto.cameraXAngle = enter.userCameraLimit;
                 dto.fieldOfView = enter.userFOV;
                 dto.flyingSpeed = enter.userFlyingSpeed;
+                dto.zoomSpeed = enter.userZoomSpeed;
+                dto.zoomLimit = enter.userZoomLimit;
                 OnChangeView?.Invoke();
             }
         }
@@ -124,7 +126,6 @@ namespace umi3d.cdk.navigation
             else
             {
                 Bounds = bounds;
-                UnityEngine.Debug.Log("NewBoudingBox true : size "+ Bounds.size+ " Center "+ bounds.center);
                 return true;
             }
         }

@@ -29,6 +29,13 @@ namespace umi3d.common
         /// The movement speed of forward, backward and lateral movements.
         /// </summary>
         public float flyingSpeed { get; set; }
-
+        /// <summary>
+        /// The limit of the camera zoom
+        /// </summary>
+        public Vector2Dto zoomLimit { get; set; }
+        /// <summary>
+        /// The speed of the Zoom
+        /// </summary>
+        public float zoomSpeed { get; set; }
     }
 }
