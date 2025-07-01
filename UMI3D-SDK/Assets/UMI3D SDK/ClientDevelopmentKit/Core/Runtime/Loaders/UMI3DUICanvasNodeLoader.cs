@@ -15,7 +15,6 @@ limitations under the License.
 */
 
 
-using GLTFast.Schema;
 using inetum.unityUtils;
 using System;
 using System.Collections;
