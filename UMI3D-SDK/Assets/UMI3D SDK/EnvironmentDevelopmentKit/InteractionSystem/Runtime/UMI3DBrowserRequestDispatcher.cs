@@ -119,7 +119,6 @@ namespace umi3d.edk.interaction
                         boneType = UMI3DSerializer.Read<uint>(container);
                         bonePosition = UMI3DSerializer.Read<Vector3Dto>(container);
                         boneRotation = UMI3DSerializer.Read<Vector4Dto>(container);
-                        UnityEngine.Debug.Log("Event AbstractInteraction " + UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(interactionId));
                         UMI3DEnvironment.GetEntityInstance<AbstractInteraction>(interactionId)?.OnUserInteraction(user, operationKey, toolId, interactionId, hoveredId, boneType, bonePosition, boneRotation, container);
                         break;
                     }
