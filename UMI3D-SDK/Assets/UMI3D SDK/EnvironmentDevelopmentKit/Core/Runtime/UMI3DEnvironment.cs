@@ -122,6 +122,11 @@ namespace umi3d.edk
         [SerializeField, EditorReadOnly, Tooltip("Default Omniscient Camera Zoom limit.")]
         private Vector2 defaultOmniscientCameraZoomMinMaxLimit = new Vector2(0,0);
         /// <summary>
+        /// Default Spawn Omniscient zoom speed.
+        /// </summary>
+        [SerializeField, EditorReadOnly, Tooltip("Default Omniscient Zoom speed.")]
+        private float defaultOmnscientZoomSpeed = 0;
+        /// <summary>
         /// Omniscient Bounds.
         /// </summary>
         [SerializeField, EditorReadOnly, Tooltip("Default Navigation Mode in the environment.")]
@@ -174,6 +179,11 @@ namespace umi3d.edk
         /// </summary>
         /// 
         public UMI3DAsyncProperty<Vector2> objectOmniscientCameraZoomMinMaxLimit { get; protected set; }
+        /// <summary>
+        /// See <see cref="defaultOmnscientZoomSpeed"/>.
+        /// </summary>
+        /// 
+        public UMI3DAsyncProperty<float> objectOmniscientZoomSpeed { get; protected set; }
 
         /// <summary>
         /// See <see cref="defaultStartOrientation"/>.
@@ -263,7 +273,9 @@ namespace umi3d.edk
                 userDistance = Instance.objectOmniscientDistance.GetValue(user),
                 userFlyingSpeed = Instance.objectOmniscientFlyingSpeed.GetValue(user),
                 userCameraLimit = Instance.objectOmniscientCameraLimit.GetValue(user).Dto(),
-                userFOV = Instance.objectOmniscientFOV.GetValue(user)
+                userFOV = Instance.objectOmniscientFOV.GetValue(user),
+                userZoomLimit = Instance.objectOmniscientCameraZoomMinMaxLimit.GetValue(user).Dto(),
+                userZoomSpeed = Instance.objectOmniscientZoomSpeed.GetValue(user)
             };
         }
 
@@ -316,6 +328,7 @@ namespace umi3d.edk
             objectOmniscientDistance = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientdistance);
             objectOmniscientFlyingSpeed = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientFlyingSpeed);
             objectOmniscientCameraZoomMinMaxLimit = new UMI3DAsyncProperty<Vector2>(id, 0, defaultOmniscientCameraZoomMinMaxLimit);
+            objectOmniscientZoomSpeed = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientZoomSpeed);
             objectOmniscientCameraLimit = new UMI3DAsyncProperty<Vector2>(id, 0, defaultOmnscientCameraLimit);
             objectOmniscientFOV = new UMI3DAsyncProperty<float>(id, 0, defaultOmnscientFOV);
             objectOmniscientBounds = new UMI3DAsyncProperty<BoundsDto>(id, UMI3DPropertyKeys.OmniscientBounds, defaultOmniscientBounds);
