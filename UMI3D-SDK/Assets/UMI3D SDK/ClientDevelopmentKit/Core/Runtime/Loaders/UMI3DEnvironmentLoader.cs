@@ -26,6 +26,7 @@ using UnityEngine.Events;
 using UnityEngine.Rendering;
 using System.Threading;
 using inetum.unityUtils;
+using umi3d.cdk.navigation;
 
 namespace umi3d.cdk
 {
@@ -709,8 +710,8 @@ namespace umi3d.cdk
                 RenderSettings.ambientEquatorColor = extension.horizontalColor.Struct();
                 RenderSettings.ambientGroundColor = extension.groundColor.Struct();
                 RenderSettings.ambientIntensity = extension.ambientIntensity;
-
                 AbstractParameters.LoadSkybox(extension.skybox, extension.skyboxType, extension.skyboxRotation, extension.ambientIntensity);
+                UMI3DNavigation.NewBoudingBox(extension.omniscientBounds);
             }
         }
 
@@ -805,11 +806,12 @@ namespace umi3d.cdk
                     return true;
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
                     return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                case UMI3DPropertyKeys.OmniscientBounds:
+                    return UMI3DNavigation.NewBoudingBox(dto.omniscientBounds);
                 default:
                     return false;
             }
         }
-
 
         /// <summary>
         /// Update a property.
@@ -850,6 +852,9 @@ namespace umi3d.cdk
                 case UMI3DPropertyKeys.AmbientSkyboxRotation:
                     dto.skyboxRotation = UMI3DSerializer.Read<float>(data.container);
                     return AbstractParameters.SetSkyboxProperties(dto.skyboxType, dto.skyboxRotation, RenderSettings.ambientIntensity);
+                case UMI3DPropertyKeys.OmniscientBounds:
+                    dto.omniscientBounds = UMI3DSerializer.Read<BoundsDto>(data.container);
+                    return UMI3DNavigation.NewBoudingBox(dto.omniscientBounds);
                 default:
                     return false;
             }

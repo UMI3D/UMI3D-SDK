@@ -16,7 +16,6 @@ limitations under the License.
 
 namespace umi3d.common
 {
-
     public enum RenderMode
     {
         //
@@ -36,6 +35,7 @@ namespace umi3d.common
     /// <summary>
     /// DTO describing a Canvas for UI.
     /// </summary>
+    /// 
     [System.Serializable]
     public class UICanvasDto : UIRectDto
     {
@@ -54,7 +54,6 @@ namespace umi3d.common
         /// Order of the canvas in the rendering of the layer.
         /// </summary>
         public int orderInLayer { get; set; }
-
 
         /// <summary>
         /// Render mode of the canvas.

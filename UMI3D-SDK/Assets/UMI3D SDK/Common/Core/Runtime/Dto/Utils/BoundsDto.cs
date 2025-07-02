@@ -24,8 +24,8 @@ namespace umi3d.common
     [Serializable]
     public class BoundsDto : UMI3DDto
     {
-        public  Vector3Dto size { get; set; } = Vector3Dto.one;
-        public  Vector3Dto center { get; set; } = Vector3Dto.zero;
+        public Vector3Dto size { get; set; } = Vector3Dto.one;
+        public Vector3Dto center { get; set; } = Vector3Dto.zero;
 
         /// <inheritdoc/>
         public override string ToString()

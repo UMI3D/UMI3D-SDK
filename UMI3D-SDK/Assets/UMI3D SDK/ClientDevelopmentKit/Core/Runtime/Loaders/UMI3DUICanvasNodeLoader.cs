@@ -46,10 +46,18 @@ namespace umi3d.cdk
             canvas.overrideSorting = dto.orderInLayer != 0; // having a sorting order different from 0 require to activate overriding
             canvas.sortingOrder = dto.orderInLayer;
             
+            if (canvas.transform.gameObject.name == "MainCanvasScreenSpace")
+            {
+                GameObject gameObject = GameObject.Find("IngameUIManager");
+                canvas.transform.SetParent(gameObject.transform);
+                canvas.renderMode = (UnityEngine.RenderMode)umi3d.common.RenderMode.ScreenSpaceOverlay;
+            }
+
             // overrideSorting property cannot be modified if object is disabled, need to update at each activation.
             ActivationEventListener canvasListener = node.GetOrAddComponent<ActivationEventListener>();
             canvasListener.OnEnabled += () => CoroutineManager.Instance.AttachCoroutine(WaitAndSetOrder(dto, node));
         }
+
 
         /// <summary>
         /// Update a property.

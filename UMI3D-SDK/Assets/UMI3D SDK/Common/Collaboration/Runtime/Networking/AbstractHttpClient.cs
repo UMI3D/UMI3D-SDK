@@ -832,7 +832,7 @@ namespace umi3d.common.collaboration
                 {
                     www.Dispose();
                     redirection = redirection.Replace(" ", "%20");
-                    return await _GetRequest(instance, HeaderToken, redirection, ShouldTryAgain, false, headers, tryCount);
+                    return  await _GetRequest(instance, HeaderToken, redirection, ShouldTryAgain, false, headers, tryCount);
                 }
                 else
                 {

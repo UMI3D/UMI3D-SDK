@@ -29,8 +29,16 @@ namespace umi3d.edk.core
         /// The movement speed of forward, backward and lateral movements.
         /// </summary>
         public float flyingSpeed { get; set; }
+        /// <summary>
+        /// The limit of the camera zoom
+        /// </summary>
+        public Vector2 zoomLimit { get; set; }
+        /// <summary>
+        /// The speed of the Zoom
+        /// </summary>
+        public float zoomSpeed { get; set; }
 
-        public OmniscientViewPropertiesDto(Vector3 localPosition, float nearPlane, float farPlane, float fieldOFView, Vector2 cameraXangle, float distance, float flyingSpeed) : base(localPosition, nearPlane, farPlane, fieldOFView, cameraXangle)
+        public OmniscientViewPropertiesDto(Vector3 localPosition, float nearPlane, float farPlane, float fieldOFView, Vector2 cameraXangle, float distance, float flyingSpeed, Vector2 zoomLimit, float zoomSpeed) : base(localPosition, nearPlane, farPlane, fieldOFView, cameraXangle)
         {
             this.localPosition = localPosition;
             this.nearPlane = nearPlane;
@@ -39,6 +47,8 @@ namespace umi3d.edk.core
             this.cameraXAngle = cameraXangle;
             this.distance = distance;
             this.flyingSpeed = flyingSpeed;
+            this.zoomLimit = zoomLimit;
+            this.zoomSpeed = zoomSpeed;
         }
 
         public override Bytable ToBytable(UMI3DUser user)
@@ -50,7 +60,9 @@ namespace umi3d.edk.core
                 + UMI3DSerializer.Write(fieldOfView)
                 + UMI3DSerializer.Write(cameraXAngle)
                 + UMI3DSerializer.Write(distance)
-                + UMI3DSerializer.Write(flyingSpeed);
+                + UMI3DSerializer.Write(flyingSpeed)
+                + UMI3DSerializer.Write(zoomLimit)
+                + UMI3DSerializer.Write(zoomSpeed);
         }
 
         public override AbstractOperationDto ToOperationDto(UMI3DUser user)
@@ -64,6 +76,8 @@ namespace umi3d.edk.core
                 fieldOfView = this.fieldOfView,
                 distance = this.distance,
                 flyingSpeed = this.flyingSpeed,
+                zoomLimit = this.zoomLimit.Dto(),
+                zoomSpeed = this.zoomSpeed,
             };
         }
     }

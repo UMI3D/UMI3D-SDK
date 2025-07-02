@@ -21,6 +21,8 @@ using umi3d.common;
 
 namespace umi3d.cdk.navigation
 {
+    public delegate void ChangeViewHandler();
+
     /// <summary>
     /// Navigation manager for user displacement in the environment. 
     /// </summary>
@@ -38,6 +40,13 @@ namespace umi3d.cdk.navigation
         public delegate void OnEmbarkVehicleDelegate(ulong vehicleId);
 
         public static event OnEmbarkVehicleDelegate onUpdateFrameDelegate;
+
+        public static event ChangeViewHandler OnChangeView;
+
+        public static OmniscientViewDto dto = new();
+
+        public static BoundsDto Bounds = new BoundsDto();
+
 
         public void Init(params INavigationDelegate[] navigationDelegates)
         {
@@ -90,6 +99,35 @@ namespace umi3d.cdk.navigation
             }
 
             yield break;
+        }
+
+        public static void ChangeNavigationMode(EnterDto enter)
+        {
+            if (enter.userNavigation == NavigationMode.Omniscient)
+            {
+                dto.distance = enter.userDistance;
+                dto.farPlane = enter.userFarPlane;
+                dto.nearPlane = enter.userNearPlane;
+                dto.cameraXAngle = enter.userCameraLimit;
+                dto.fieldOfView = enter.userFOV;
+                dto.flyingSpeed = enter.userFlyingSpeed;
+                dto.zoomSpeed = enter.userZoomSpeed;
+                dto.zoomLimit = enter.userZoomLimit;
+                OnChangeView?.Invoke();
+            }
+        }
+
+        public static bool NewBoudingBox(BoundsDto bounds)
+        {
+            if(bounds == Bounds || bounds == null)
+            {
+                return false;
+            }
+            else
+            {
+                Bounds = bounds;
+                return true;
+            }
         }
     }
 }

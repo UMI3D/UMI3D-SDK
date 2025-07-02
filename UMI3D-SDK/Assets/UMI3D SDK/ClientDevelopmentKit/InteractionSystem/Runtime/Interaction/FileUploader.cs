@@ -223,6 +223,10 @@ namespace umi3d.cdk.interaction
         /// <returns></returns>
         public static string[] OpenFileBrowser(string title,List<string> authorizedExtensions, bool allowMultipleFiles)
         {
+
+            UnityEngine.Cursor.visible = true;
+            UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.None;
+
             ExtensionFilter[] extensions = (authorizedExtensions == null || authorizedExtensions.Count == 0)
                 ? null
                 : new[] { new ExtensionFilter("", authorizedExtensions.ToArray()) };
@@ -233,6 +237,9 @@ namespace umi3d.cdk.interaction
                     extensions,
                     allowMultipleFiles
                 );
+
+            UnityEngine.Cursor.visible = false;
+            UnityEngine.Cursor.lockState = UnityEngine.CursorLockMode.Locked;
 
             return paths;
         }

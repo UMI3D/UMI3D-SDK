@@ -424,14 +424,14 @@ namespace umi3d.edk
                 var loddef = new UMI3DLodDefinitionDto();
                 Renderer[] renderers = lofd.renderers;
                 loddef.nodes = new();
-                transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponentInParent<UMI3DNode>()).Where(s => s != null).Select(s => (n: s, id: s.Id()))
+                transform.GetComponentsInChildren<Renderer>().Where(r => renderers.Contains(r)).Select(s => s.GetComponentInParent<UMI3DNode>()).Where(s => s != null).Select(s => (n:s,id:s.Id()))
                     .ForEach(s =>
-                    {
-                        if (!loddef.nodes.Contains(s.id))
                         {
-                            loddef.nodes.Add(s.id);
-                        }
-                    });
+                            if (!loddef.nodes.Contains(s.id))
+                            {
+                                loddef.nodes.Add(s.id);
+                            }
+                        });
 
                 loddef.screenSize = lofd.screenRelativeTransitionHeight;
                 loddef.fadeTransition = lofd.fadeTransitionWidth;

@@ -42,7 +42,10 @@ namespace umi3d.edk
 
         UMI3DAsyncProperty<Vector2> objectOmniscientCameraZoomMinMaxLimit { get; }
 
+        UMI3DAsyncProperty<float> objectOmniscientZoomSpeed { get; }
+
         UMI3DAsyncProperty<BoundsDto> objectOmniscientBounds { get; }
+
     }
 
     public interface IUserManager

@@ -64,5 +64,13 @@ namespace umi3d.common
         /// user omniscient Camera Limit
         /// </summary>
         public Vector2Dto userCameraLimit { get; set; }
+        /// <summary>
+        /// user omniscient Zoom Limit
+        /// </summary>
+        public Vector2Dto userZoomLimit { get; set; }
+        /// <summary>
+        /// user omniscient Zoom speed
+        /// </summary>
+        public float userZoomSpeed { get; set; }
     }
 }
