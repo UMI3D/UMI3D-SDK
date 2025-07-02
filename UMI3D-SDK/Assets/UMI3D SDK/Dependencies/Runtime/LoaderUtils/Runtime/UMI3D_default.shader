@@ -328,12 +328,19 @@ Shader "UMI3D/UMI3D_default"
 			#endif
 
 			sampler2D _BaseMap;
+			float4 _BaseMap_ST;
 			sampler2D _BumpMap;
+			float4 _BumpMap_ST;
 			sampler2D _ChannelMap;
+			float4 _ChannelMap_ST;
 			sampler2D _EmissionMap;
+			float4 _EmissionMap_ST;
 			sampler2D _MetallicGlossMap;
+			float4 _MetallicGlossMap_ST;
 			sampler2D _SmoothnessTextureChannel;
+			float4 _SmoothnessTextureChannel_ST;
 			sampler2D _OcclusionMap;
+			float4 _OcclusionMap_ST;
 
 
 			//#include "Packages/com.unity.render-pipelines.universal/Editor/ShaderGraph/Includes/Varyings.hlsl"
@@ -564,18 +571,21 @@ Shader "UMI3D/UMI3D_default"
 				WorldViewDirection = SafeNormalize( WorldViewDirection );
 
 				float2 texCoord12 = IN.ase_texcoord8.xy * _Tilling + _Offset;
-				float2 texture_coord42 = texCoord12;
-				float4 Albedo52 = ( _BaseColor * tex2D( _BaseMap, texture_coord42 ) );
+				float2 texture_coordBaseMap = texCoord12 * _BaseMap_ST.xy + _BaseMap_ST.zw;
+				float4 Albedo52 = ( _BaseColor * tex2D( _BaseMap, texture_coordBaseMap ) );
 				
-				float3 unpack18 = UnpackNormalScale( tex2D( _BumpMap, texture_coord42 ), _BumpScale );
+				float2 texture_coordBumpMap = texCoord12 * _BumpMap_ST.xy + _BumpMap_ST.zw;
+				float3 unpack18 = UnpackNormalScale( tex2D( _BumpMap, texture_coordBumpMap ), _BumpScale );
 				unpack18.z = lerp( 1, unpack18.z, saturate(_BumpScale) );
 				float3 Normal55 = unpack18;
 				
 				int Channelmap170 = (( _ChannelMapONOFF )?( 1 ):( 0 ));
-				float4 break22 = tex2D( _ChannelMap, texture_coord42 );
+				float2 texture_coordChannelMap = texCoord12 * _ChannelMap_ST.xy + _ChannelMap_ST.zw;
+				float4 break22 = tex2D( _ChannelMap, texture_coordChannelMap );
 				float B_emission80 = break22.b;
 				float4 temp_cast_1 = (B_emission80).xxxx;
-				float4 Emissive51 = ( _EmissionColor * tex2D( _EmissionMap, texture_coord42 ) );
+				float2 texture_coordEmissiveMap = texCoord12 * _EmissionMap_ST.xy + _EmissionMap_ST.zw;
+				float4 Emissive51 = ( _EmissionColor * tex2D( _EmissionMap, texture_coordEmissiveMap ) );
 				float4 ifLocalVar181 = 0;
 				if( Channelmap170 == 1 )
 				ifLocalVar181 = temp_cast_1;
@@ -585,7 +595,8 @@ Shader "UMI3D/UMI3D_default"
 				
 				float R_metal78 = break22.r;
 				float4 temp_cast_3 = (R_metal78).xxxx;
-				float4 Metallic53 = ( tex2D( _MetallicGlossMap, texture_coord42 ) * _Metallic );
+				float2 texture_coordMetallicGlossMap = texCoord12 * _MetallicGlossMap_ST.xy + _MetallicGlossMap_ST.zw;
+				float4 Metallic53 = ( tex2D( _MetallicGlossMap, texture_coordMetallicGlossMap ) * _Metallic );
 				float4 ifLocalVar151 = 0;
 				if( Channelmap170 == 1 )
 				ifLocalVar151 = temp_cast_3;
@@ -595,7 +606,8 @@ Shader "UMI3D/UMI3D_default"
 				
 				float A_smoothness81 = break22.a;
 				float4 temp_cast_5 = (A_smoothness81).xxxx;
-				float4 text_smoothness202 = tex2D( _SmoothnessTextureChannel, texture_coord42 );
+				float2 texture_coordSmoothMap = texCoord12 * _SmoothnessTextureChannel_ST.xy + _SmoothnessTextureChannel_ST.zw;
+				float4 text_smoothness202 = tex2D( _SmoothnessTextureChannel, texture_coordSmoothMap );
 				float4 RoughorSmooth77 = ( (( _RoughnesstoSmoothness )?( ( 1.0 - text_smoothness202 ) ):( text_smoothness202 )) * _Smoothness );
 				float4 ifLocalVar185 = 0;
 				if( Channelmap170 == 1 )
@@ -606,7 +618,8 @@ Shader "UMI3D/UMI3D_default"
 				
 				float G_occlusion79 = break22.g;
 				float4 temp_cast_7 = (G_occlusion79).xxxx;
-				float4 Occlusion54 = ( tex2D( _OcclusionMap, texture_coord42 ) + (1.0 + (_OcclusionStrength - 0.0) * (0.0 - 1.0) / (1.0 - 0.0)) );
+				float2 texture_coordOcclusionMap = texCoord12 * _OcclusionMap_ST.xy + _OcclusionMap_ST.zw;
+				float4 Occlusion54 = ( tex2D( _OcclusionMap, texture_coordOcclusionMap ) + (1.0 + (_OcclusionStrength - 0.0) * (0.0 - 1.0) / (1.0 - 0.0)) );
 				float4 ifLocalVar177 = 0;
 				if( Channelmap170 == 1 )
 				ifLocalVar177 = temp_cast_7;

@@ -17,7 +17,6 @@ using GLTFast;
 using GLTFast.Materials;
 using GLTFast.Schema;
 using MrtkShader;
-using System.Collections.Generic;
 using System.IO;
 using umi3d.common;
 using UnityEngine;
@@ -87,7 +86,6 @@ namespace umi3d.cdk
                 material.ApplyShaderProperty(MRTKShaderUtils.MainColor, gltfMaterial.pbrMetallicRoughness.baseColor.gamma);
                 material.ApplyShaderProperty(MRTKShaderUtils.Metallic, gltfMaterial.pbrMetallicRoughness.metallicFactor);
                 material.ApplyShaderProperty(MRTKShaderUtils.Smoothness, 1 - gltfMaterial.pbrMetallicRoughness.roughnessFactor);
-
             }
 
             if (gltfMaterial.emissive != null && gltfMaterial.emissive != Color.black)
@@ -131,7 +129,7 @@ namespace umi3d.cdk
             if (newValue != null)
             {
                 matToApply.ApplyShaderProperty(property, newValue);
-                int propertyId = matToApply.shader.FindPropertyIndex(property.propertyName);
+                int propertyId = Shader.PropertyToID(property.propertyName);
 
                 if (propertyId > -1 && property == MRTKShaderUtils.MainTex)
                 {
@@ -161,7 +159,7 @@ namespace umi3d.cdk
             if (textureInfo.extensions != null && textureInfo.extensions.KHR_texture_transform != null)
             {
                 TextureTransform tt = textureInfo.extensions.KHR_texture_transform;
-                if (tt.texCoord != 0)
+                if (tt.texCoord > 0)
                 {
                     UMI3DLogger.LogError("Multiple UV sets are not supported!", scope);
                 }
@@ -174,12 +172,14 @@ namespace umi3d.cdk
                     offset.x = tt.offset[0];
                     offset.y = 1 - tt.offset[1];
                 }
+
                 if (tt.scale != null)
                 {
                     scale.x = tt.scale[0];
                     scale.y = tt.scale[1];
                     material.SetTextureScale(texturePropertyId, scale);
                 }
+
                 if (tt.rotation != 0)
                 {
                     /* cos = Mathf.Cos(tt.rotation);
@@ -189,6 +189,7 @@ namespace umi3d.cdk
                     UMI3DLogger.LogWarning("Texture rotation is not supported", scope);
                     offset.x += scale.y * sin;
                 }
+
                 offset.y -= scale.y * cos;
                 material.SetTextureOffset(texturePropertyId, offset);
             }
@@ -212,43 +213,33 @@ namespace umi3d.cdk
         protected override UnityEngine.Material GetPbrMetallicRoughnessMaterial(bool doubleSided = false)
         {
             UnityEngine.Material res = UMI3DEnvironmentLoader.Instance.GetBaseMaterial();
+
             if (doubleSided)
             {
                 // Turn of back-face culling
                 res.SetFloat(cullModePropId, 0);
             }
+
             return res;
         }
 
-        private Texture2D TryGetTexture(TextureInfo textureInfo,
-           //UnityEngine.Material material,
-           //MrtkShader.MRTKShaderUtils.ShaderProperty<UnityEngine.Texture> shaderProperty,
-
-
-           //ref GLTFast.Schema.Texture[] textures,
-           //ref Dictionary<int, Texture2D>[] imageVariants
-           IGltfReadable gltf
-           )
+        private Texture2D TryGetTexture(TextureInfo textureInfo, IGltfReadable gltf)
         {
             if (textureInfo != null && textureInfo.index >= 0)
             {
                 int bcTextureIndex = textureInfo.index;
+
                 if (gltf.textureCount > bcTextureIndex)
                 {
-                    //UMI3DLogger.LogError($"Before GetImage()", scope);
-                    Texture2D img = gltf.GetImage(bcTextureIndex);
-                    //UMI3DLogger.LogError($"2 " + img.name, scope);
+                    Texture2D img = gltf.GetTexture(bcTextureIndex);
+
                     if (img != null)
                     {
-                        //            int propertyId = material.shader.FindPropertyIndex(shaderProperty.propertyName);
-                        //             material.SetTexture(propertyId, img);
-                        //             var isKtx = txt.isKtx;
-                        //            TrySetTextureTransform(textureInfo, material, propertyId, isKtx);
                         return img;
                     }
                     else
                     {
-                        UMI3DLogger.LogError($"Image not found", scope);
+                        UMI3DLogger.LogError($"Texture #{bcTextureIndex} not found", scope);
                     }
                 }
                 else
