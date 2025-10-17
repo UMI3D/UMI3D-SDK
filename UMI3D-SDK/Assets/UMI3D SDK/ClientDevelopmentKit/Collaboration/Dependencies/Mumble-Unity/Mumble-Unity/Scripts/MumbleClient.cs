@@ -1,10 +1,10 @@
-﻿using System;
-using System.Net;
-using MumbleProto;
-using Version = MumbleProto.Version;
-using UnityEngine;
+﻿using MumbleProto;
+using System;
 using System.Collections.Generic;
+using System.Net;
+using UnityEngine;
 using UnityEngine.Events;
+using Version = MumbleProto.Version;
 
 namespace Mumble
 {
@@ -555,15 +555,13 @@ namespace Mumble
         {
             // Don't send anything out if we're muted
             if (OurUserState == null
-                || OurUserState.Mute)
+                || OurUserState.Mute || OurUserState.SelfMute)
             {
                 floatData.UnRef();
-                Debug.LogWarning("mumble client muted or null");
                 return;
             }
             if (_manageSendBuffer != null)
             {
-                Debug.LogWarning("mumble SendVoicePacket ");
                 _manageSendBuffer.SendVoice(floatData, SpeechTarget.Normal, 0);
             }
         }

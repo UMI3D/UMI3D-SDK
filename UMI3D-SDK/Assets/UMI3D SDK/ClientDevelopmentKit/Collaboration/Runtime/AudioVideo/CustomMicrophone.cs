@@ -453,6 +453,9 @@ namespace umi3d.cdk.collaboration
             }
             else
             {
+                if (!needToRecord)
+                    StartRecording();
+                /*
                 if (!_mumbleClient.IsSelfMuted())
                 {
                     StartRecording();
@@ -460,7 +463,7 @@ namespace umi3d.cdk.collaboration
                 else if (needToRecord)
                 {
                     StopRecording();
-                }
+                }*/
             }
 
             if (needToRecord && shouldSendAudioToServer)
