@@ -102,8 +102,11 @@ namespace umi3d.cdk.collaboration
         public static MumbleEvent OnMumbleStatusUpdate = new MumbleEvent();
         EventUpdater<MumbleStatus> OnMumbleStatusUpdateUpdater;
 
-        List<Action<float[]>> subscribedPCM = new ();
+        List<Action<float[]>> subscribedPCM = new();
         List<Action<bool>> subscribedIsSpeaking = new();
+
+        public Action<string> OnChanelUpdate;
+        public Action OnConnectionClose;
 
         protected class Identity
         {
@@ -285,7 +288,7 @@ namespace umi3d.cdk.collaboration
         }
         public bool pushToTalkInputDown
         {
-            get => mumbleMic?.PushToTalkInputDown ?? false; 
+            get => mumbleMic?.PushToTalkInputDown ?? false;
             set
             {
                 if (mumbleMic != null)
@@ -458,6 +461,7 @@ namespace umi3d.cdk.collaboration
 
                 channel = pendingChannel;
                 pendingChannel = null;
+                OnChanelUpdate?.Invoke(channel);
 
                 await Delay(300);
                 UMI3DUser user = UMI3DCollaborationEnvironmentLoader.Instance.GetClientUser();
@@ -491,6 +495,7 @@ namespace umi3d.cdk.collaboration
             {
                 LogError("client should be null");
                 mumbleClient.Close();
+                OnConnectionClose?.Invoke();
                 mumbleClient = null;
             }
 
@@ -500,7 +505,8 @@ namespace umi3d.cdk.collaboration
 
             mumbleClient.ConnectionError.AddListener(Failed);
 
-            while (!(mumbleClient?.ReadyToConnect ?? true) && await YieldConnected()) { }
+            while (!(mumbleClient?.ReadyToConnect ?? true) && await YieldConnected())
+            { }
             if (mumbleClient == null || mumbleStatus != MumbleStatus.Connecting)
             {
                 mumbleStatus = MumbleStatus.NotConnected;
@@ -521,7 +527,8 @@ namespace umi3d.cdk.collaboration
 
             lastPing = -1;
 
-            while (lastPing == -1 && await YieldConnected()) { }
+            while (lastPing == -1 && await YieldConnected())
+            { }
             if (mumbleStatus != MumbleStatus.Connecting)
             {
                 mumbleStatus = MumbleStatus.NotConnected;
@@ -545,6 +552,7 @@ namespace umi3d.cdk.collaboration
                 mumbleClient.OnDisconnected -= OnDisconnected;
                 mumbleClient.OnPingReceived -= OnPingReceived;
                 mumbleClient.Close();
+                OnConnectionClose?.Invoke();
                 mumbleClient = null;
                 mumbleStatus = MumbleStatus.NotConnected;
             }
@@ -634,7 +642,8 @@ namespace umi3d.cdk.collaboration
                     mumbleMic.OnMicDisconnect -= OnMicDisconnected;
                     mumbleMic.OnMicData -= DebugSample;
                 }
-                catch { };
+                catch { }
+                ;
                 microphoneStatus = MicrophoneStatus.NoMicrophone;
             }
         }
@@ -782,6 +791,7 @@ namespace umi3d.cdk.collaboration
                 mumbleClient.OnDisconnected -= OnDisconnected;
                 mumbleClient.OnPingReceived -= OnPingReceived;
                 mumbleClient.Close();
+                OnConnectionClose?.Invoke();
                 mumbleClient = null;
             }
             mumbleStatus = MumbleStatus.NotConnected;
@@ -849,7 +859,7 @@ namespace umi3d.cdk.collaboration
 
         private void DebugSample(PcmArray array)
         {
-            if(subscribedIsSpeaking.Count > 0)
+            if (subscribedIsSpeaking.Count > 0)
             {
                 var total = 0f;
                 foreach (var v in array.Pcm)
