@@ -40,9 +40,6 @@ namespace umi3d.edk.editor
         private SerializedProperty HoverEnterAnimation;
         private SerializedProperty HoverExitAnimation;
 
-        private SerializedProperty IndicatorDisplay;
-        private SerializedProperty IndicatorDelta;
-
         private bool showInteractionDistance;
 
         private GUIStyle interactionDistanceLabelStyle = new();
@@ -66,9 +63,6 @@ namespace umi3d.edk.editor
             HoverEnterAnimation = serializedObject.FindProperty("HoverEnterAnimation");
             HoverExitAnimation = serializedObject.FindProperty("HoverExitAnimation");
 
-            IndicatorDisplay = serializedObject.FindProperty("IndicatorDisplay");
-            IndicatorDelta = serializedObject.FindProperty("IndicatorDelta");
-
             showInteractionDistance = InteractionDistance.floatValue >= 0f;
 
             interactionDistanceLabelStyle.normal.textColor = interactionDistanceLabelColor;
@@ -84,10 +78,6 @@ namespace umi3d.edk.editor
             EditorGUILayout.PropertyField(NotifySubObject);
             EditorGUILayout.PropertyField(HasPriority);
 
-            EditorGUILayout.PropertyField(IndicatorDisplay);
-            if(IndicatorDisplay.boolValue)
-                EditorGUILayout.PropertyField(IndicatorDelta);
-
             showInteractionDistance = EditorGUILayout.Toggle("Has interaction distance", showInteractionDistance);
 
             if (showInteractionDistance)
@@ -96,10 +86,12 @@ namespace umi3d.edk.editor
                 {
                     InteractionDistance.floatValue = 1;
                 }
+
                 EditorGUI.indentLevel++;
                 EditorGUILayout.PropertyField(InteractionDistance);
                 EditorGUI.indentLevel--;
-            } else
+            }
+            else
             {
                 InteractionDistance.floatValue = -1;
             }
@@ -119,6 +111,7 @@ namespace umi3d.edk.editor
                     EditorGUILayout.PropertyField(HoverExitAnimation, true);
                 }
             }
+
             serializedObject.ApplyModifiedProperties();
         }
 
