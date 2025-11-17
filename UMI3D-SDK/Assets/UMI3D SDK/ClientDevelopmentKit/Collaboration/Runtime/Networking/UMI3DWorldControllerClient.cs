@@ -202,14 +202,7 @@ namespace umi3d.cdk.collaboration
             MultiProgress progress = new MultiProgress("Searching for Libraries");
             UMI3DCollaborationClientServer.onProgress.Invoke(progress);
 
-            try
-            {
-                await UMI3DResourcesManager.DownloadLibraries(privateIdentity.libraries, name, progress);
-            }
-            catch (Exception e)
-            {
-                Debug.LogException(e);
-            }
+            await UMI3DResourcesManager.DownloadLibraries(privateIdentity.libraries, name, progress);
         }
 
         private void Connected(PrivateIdentityDto identity)

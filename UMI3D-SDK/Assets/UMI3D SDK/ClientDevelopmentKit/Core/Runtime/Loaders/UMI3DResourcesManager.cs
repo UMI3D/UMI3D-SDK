@@ -953,67 +953,57 @@ namespace umi3d.cdk
 
             var lib = new Library(assetLibrary.libraryId, assetLibrary.version);
 
-            try
+            var applications = new List<string>() { application };
+            librariesMap[assetLibrary.id] = lib;
+            string directoryPath = Path.Combine(Application.persistentDataPath, libraryFolder, assetLibrary.libraryId, assetLibrary.version);
+
+            if (Directory.Exists(directoryPath))
             {
-                var applications = new List<string>() { application };
-                librariesMap[assetLibrary.id] = lib;
-                string directoryPath = Path.Combine(Application.persistentDataPath, libraryFolder, assetLibrary.libraryId, assetLibrary.version);
-
-                if (Directory.Exists(directoryPath))
+                try
                 {
-                    try
+                    DataFile dt = Instance.libraries[librariesMap[assetLibrary.id]].Key;
+
+                    if (dt.applications == null)
+                        dt.applications = new List<string>();
+
+                    if (!dt.applications.Contains(application))
                     {
-                        DataFile dt = Instance.libraries[librariesMap[assetLibrary.id]].Key;
-
-                        if (dt.applications == null)
-                            dt.applications = new List<string>();
-
-                        if (!dt.applications.Contains(application))
-                        {
-                            dt.applications.Add(application);
-                            SetData(dt, directoryPath);
-                        }
-
-                        progress.SetAsCompleted();
-                        UMI3DLogger.Log($"{assetLibrary.id} {assetLibrary.version} already in scene.", scope);
-
-                        return;
-                    }
-                    catch (Exception e)
-                    {
-                        UMI3DLogger.LogException(e, scope);
+                        dt.applications.Add(application);
+                        SetData(dt, directoryPath);
                     }
 
-                    RemoveLibrary(lib);
+                    progress.SetAsCompleted();
+                    UMI3DLogger.Log($"{assetLibrary.id} {assetLibrary.version} already in scene.", scope);
+
+                    return;
+                }
+                catch (Exception e)
+                {
+                    UMI3DLogger.LogException(e, scope);
                 }
 
-                UMI3DLocalAssetFilesDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
-
-                string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
-
-                if (!Directory.Exists(directoryPath))
-                    Directory.CreateDirectory(directoryPath);
-
-                DataFile data = await
-                    DownloadFiles(
-                        lib,
-                        directoryPath,
-                        assetDirectoryPath,
-                        applications,
-                        Path.Combine(assetLibrary.baseUrl, variant.files.baseUrl),
-                        variant.files.files,
-                        progress);
-
-                SetData(data, directoryPath);
-                progress3.AddComplete();
-            }
-            catch (Exception e)
-            {
-                UMI3DLogger.LogException(e, scope);
                 RemoveLibrary(lib);
-                if (!await progress.ResumeAfterFail(e))
-                    throw;
             }
+
+            UMI3DLocalAssetFilesDto variant = UMI3DEnvironmentLoader.AbstractParameters.ChooseVariant(assetLibrary);
+
+            string assetDirectoryPath = Path.Combine(directoryPath, assetDirectory);
+
+            if (!Directory.Exists(directoryPath))
+                Directory.CreateDirectory(directoryPath);
+
+            DataFile data = await
+                DownloadFiles(
+                    lib,
+                    directoryPath,
+                    assetDirectoryPath,
+                    applications,
+                    Path.Combine(assetLibrary.baseUrl, variant.files.baseUrl),
+                    variant.files.files,
+                    progress);
+
+            SetData(data, directoryPath);
+            progress3.AddComplete();
         }
 
         private static ObjectData FindObjectDataMatchingName(ObjectData data)
@@ -1111,26 +1101,16 @@ namespace umi3d.cdk
             {
                 UMI3DLogger.Log($"add file {name} {directoryPath}", scope);
 
-                try
-                {
-                    string path = Path.Combine(directoryPath, name);
-                    path = System.Uri.UnescapeDataString(path);
+                string path = Path.Combine(directoryPath, name);
+                path = System.Uri.UnescapeDataString(path);
 
-                    string dicPath = System.IO.Path.GetDirectoryName(path);
+                string dicPath = System.IO.Path.GetDirectoryName(path);
 
-                    string url = Path.Combine(baseUrl, name);
+                string url = Path.Combine(baseUrl, name);
 
-                    await DownloadFile(key, dicPath, path, url, name, progress);
-                    data.files.Add(new Data(url, path, name));
-                    progress.AddComplete();
-                }
-                catch (Exception e)
-                {
-                    UnityEngine.Debug.Log(e);
-                    UMI3DLogger.LogException(e, scope);
-                    if (!await progress.AddFailed(e))
-                        throw;
-                }
+                await DownloadFile(key, dicPath, path, url, name, progress);
+                data.files.Add(new Data(url, path, name));
+                progress.AddComplete();
             }
 
             libraries.Add(key, new KeyValuePair<DataFile, HashSet<ulong>>(data, new HashSet<ulong>()));
@@ -1173,6 +1153,7 @@ namespace umi3d.cdk
             progress?.SetStatus($"{progressState} \n{fileName}");
 
             var bytes = await UMI3DClientServer.GetFile(url, progress);
+            CheckDiskSpace(bytes.Length);
 
             UMI3DLogger.Log($"<color=green>{directoryPath} {filePath}</color>", scope);
 
@@ -1183,6 +1164,22 @@ namespace umi3d.cdk
             await File.WriteAllBytesAsync(filePath, bytes);
 
             progress?.SetStatus(progressState);
+        }
+
+        private void CheckDiskSpace(long bytesNeeded)
+        {
+            var freeSpace = GetDiskFreeSpace();
+            if (bytesNeeded > freeSpace)
+                throw new UMI3DNotEnoughSpaceException("Not enough disk place to download needed librairies for this world.");
+        }
+
+        private long GetDiskFreeSpace()
+        {
+            string driveLetter = System.IO.Path.GetPathRoot(Application.dataPath);
+            DriveInfo drive = new DriveInfo(driveLetter);
+
+            long freeSpace = drive.AvailableFreeSpace;
+            return freeSpace;
         }
 
         private void UnloadFile(string url, Library id, bool delete = false)
