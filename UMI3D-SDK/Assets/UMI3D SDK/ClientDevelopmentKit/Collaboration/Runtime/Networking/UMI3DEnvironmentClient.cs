@@ -516,6 +516,11 @@ namespace umi3d.cdk.collaboration
                             await UMI3DResourcesManager.DownloadLibraries(LibrariesDto.libraries, worldControllerClient.name, libraryProgress);
                             librariesUpdated = true;
                         }
+                        catch (UMI3DNotEnoughSpaceException e)
+                        {
+                            Debug.LogError("Not enough place to dowload libraries!");
+                            Ok = false;
+                        }
                         catch (Exception e)
                         {
                             UMI3DLogger.LogException(e, scope);
