@@ -238,7 +238,7 @@ namespace umi3d.cdk
         /// </summary>
         /// <param name="scenePath"></param>
         /// <returns>(Empty object which contains every object of loaded scene; loaded scene, empty)</returns>
-        private async Task<(GameObject, Scene)> LoadScene(string scenePath)
+        public static async Task<(GameObject, Scene)> LoadScene(string scenePath)
         {
             List<int> alreadyLoaded = new();
             for (int i = 0; i < SceneManager.sceneCount; i++)
